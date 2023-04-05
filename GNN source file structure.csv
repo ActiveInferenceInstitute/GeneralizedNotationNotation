@@ -1,0 +1,19 @@
+GNN Section,Section Meaning,Controlled Terms
+Image from paper,"Shows the image of the graphical model, if one exists.",
+GNN version and flags,Describes which specification of LanGauge is being used.,
+Model name,Gives a name for the model being expressed.,
+Model annotation,"Plaintext caption or annotation for the model. This is a free metadata field which does not need to use any formal or controlled language. ",
+State space block,"Describes all variables in the model, and their state space (dimensionality). ",
+Connections,Describes edges among variables in the graphical model.,
+"Initial parameterization ","Provides the initial parameter values for variables.  
+",
+Equations,"Describes any equations associated with the model, written in LaTeX. These equations are at least rendered for display, and further can actually specify relationships among variables. ",
+Time,"Describes the model’s treatment of Time. ","“Static” → Is a static model.
+“Dynamic” → Is a dynamic model.
+DiscreteTime=X_t → Specifies X_t as the temporal variable in a discrete time model. 
+ContinuousTime=X_t → Specifies X_t as the temporal variable in a continuous time model. 
+ModelTimeHorizon=X → Specifies X as the time horizon for finite-time modeling. "
+ActInf Ontology annotation,"Connects the variables to their associated Active Inference Ontology term, for display and model juxtaposition.","Variables in this section are associated with one or more terms from the Active Inference Ontology. 
+For example “C=Preference” means that the C variable plays the role of the Preference variable. "
+Footer,"Closes the file and allows read-in from either end. ",
+Signature,"Cryptographic signature block (can have information regarding the completeness or provenance of the .S file). ",

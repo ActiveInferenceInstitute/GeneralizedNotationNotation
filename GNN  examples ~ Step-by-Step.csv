@@ -1,0 +1,164 @@
+GNN Section,Static Perception,Dynamic Perception,Dynamic Perception with Policy Selection,Dynamic Perception with Flexible Policy Selection
+Image from paper,image.png,image.png,image.png,image.png
+GNN version and flags,"## LanGauge 
+v1","## LanGauge 
+v1","## LanGauge 
+v1","## LanGauge 
+v1"
+Model name,# Static perception v1,# Dynamic perception v1,"# Dynamic perception with Policy Selection v1 ",# Dynamic perception with Flexible Policy Selection v1
+Model annotation,"## Model annotations
+Static
+Perception
+Simple
+Snapshot
+This model relates a single hidden state, to a single observable modality. It is a static model.","## Model annotations
+Dynamic
+Perception
+This model relates a single hidden state, to a single observable modality. It is a dynamic model because it tracks changes in the hidden state through time. ","## Model annotations
+Dynamic
+Perception
+Action
+Variational Free Energy
+This model relates a single hidden state, to a single observable modality. It is a dynamic model because it tracks changes in the hidden state through time. There is Action applied via pi. ","## Model annotations
+Dynamic
+Perception
+Action
+Variational Free Energy
+This model relates a single hidden state, to a single observable modality. It is a dynamic model because it tracks changes in the hidden state through time. There is Action applied via pi, and uncertainty about action via the beta parameter. "
+State space block,"## State space block
+D[2,1,type=float]
+s[2,1,type=float]
+A[2,2,type=float]
+o[2,1,type=float]","## State space block
+D[2,1,type=float]
+B[2,1,type=float]
+s_t[2,1,type=float]
+A[2,2,type=float]
+o_t[2,1,type=float]
+t[1,type=int]","## State space block
+A[2,2,type=float]
+D[2,1,type=float]
+B[2,len(π), 1,type=float]
+π=[2]
+C=[2,1]
+G=len(π)
+s_t[2,1,type=float]
+o_t[2,1,type=float]
+t[1,type=int]","## State space block
+A[2,2,type=float]
+D[2,1,type=float]
+B[2,len(π),1,type=float]
+π=[2]
+C=[2,1]
+G=len(π)
+s_t[2,1,type=float]
+o_t[2,1,type=float]
+t[1,type=int]"
+Connections,"## Connections among variables
+D-s
+s-A
+A-o","## Connections among variables
+D-s_t
+s_t-A
+A-o
+s_t-B
+B-s_t+1","## Connections among variables
+D-s_t
+s_t-A
+A-o
+s_t-B
+B-s_t+1
+C>G
+G>π","## Connections among variables
+D-s_t
+s_t-A
+A-o
+s_t-B
+B-s_t+1
+C>G
+G>π
+E>π
+β-γ
+γ>π"
+"Initial parameterization ","Initial Parameterization
+
+D={0.5,0.5}
+
+o={1,0}
+
+A={(.9,.1),(.2,.8)}","## Initial Parameterization
+",## Initial Parameterization,Initial Parameterization
+Equations,"## Equations 
+\text{softmax}(\ln(D)+\ln(\mathbf{A}^\top o))
+","## Equations 
+s_{tau=1}=softmax((1/2)(ln(D)+ln(B^dagger_tau*s_{tau+1})+ln(trans(A)o_tau)
+
+s_{tau>1}=softmax((1/2)(ln(D)+ln(B^dagger_tau*s_{tau+1})+ln(trans(A)o_tau)","Equations
+
+s_{pi, tau=1}=sigma((1/2)(lnD+ln(B^dagger_{pi, tau}s_{pi, tau+1}))+lnA^T*o_tau)
+
+s_{pi, tau>1}=sigma((1/2)(ln(B_{pi, tau-1}s_{pi, tau-1})+ln(B^dagger_{pi, tau}s_{pi, tau+1}))+lnA^T*o_tau)
+
+G_pi=sum_tau(As_{pi, tau}(ln(A*s_{pi, tau})-lnC_tau)-diag(A^TlnA)*s_{pi, tau})
+
+pi=sigma(-G)","Equations
+
+F_pi = sum_tau (s_{pi, tau} * (ln(s_{pi, tau}) - (1/2)(ln(B_{pi, tau-1}s_{pi, tau-1}) + ln(B^dagger_{pi, tau}s_{pi, tau+1})) - A^To_tau))
+
+pi_0=sigma(lnE-gamma*G)
+
+pi=sigma(lnE-F-gamma*G)
+
+p(gamma)=Gamma(1,beta)
+
+E[gamma]=gamma=1/beta
+
+beta=beta-beta_{update}/psi
+
+beta_{update}=beta-beta_0+(pi-pi_0)*(-G)"
+Time,"## Time
+Static","## Time
+Dynamic
+s_t=DiscreteTime
+ModelTimeHorizon=Unbounded","## Time
+Dynamic
+s_t=DiscreteTime
+ModelTimeHorizon=Unbounded","## Time
+Dynamic
+s_t=DiscreteTime
+ModelTimeHorizon=Unbounded"
+ActInf Ontology annotation,"## Active Inference Ontology
+A=RecognitionMatrix
+D=Prior
+s=HiddenState
+o=Observation
+","## Active Inference Ontology
+A=RecognitionMatrix
+B=TransitionMatrix
+D=Prior
+s=HiddenState
+o=Observation
+t=Time
+","## Active Inference Ontology
+A=RecognitionMatrix
+B=TransitionMatrix
+C=Preference
+D=Prior
+G=ExpectedFreeEnergy
+s=HiddenState
+o=Observation
+π=PolicyVector
+t=Time
+","## Active Inference Ontology
+A=RecognitionMatrix
+B=TransitionMatrix
+C=Preference
+D=Prior
+E=Prior on Action
+G=ExpectedFreeEnergy
+s=HiddenState
+o=Observation
+π=PolicyVector
+t=Time"
+Footer,# Static perception v1,# Dynamic perception v1,"# Dynamic perception with Policy Selection v1 ",# Dynamic perception with Flexible Policy Selection v1
+Signature,,,,
