@@ -40,6 +40,7 @@ import glob
 from pathlib import Path
 import logging
 import traceback
+import re # Added import for regular expressions
 
 # --- Logger Setup ---
 # The logger for the GNN Pipeline orchestrator itself.
@@ -80,14 +81,45 @@ def parse_arguments():
 def get_pipeline_scripts():
     """Get all numbered pipeline scripts in sorted order based on the leading number."""
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    script_pattern = os.path.join(current_dir, "[0-9]_*.py")
-    logger.debug(f"ℹ️ Discovering pipeline scripts using pattern: {script_pattern}")
-    scripts_with_paths = sorted(glob.glob(script_pattern))
     
-    if logger.isEnabledFor(logging.DEBUG): # Log full paths only if DEBUG is enabled (typically via --verbose)
-        logger.debug(f"ℹ️ Found raw script files (full paths): {scripts_with_paths}")
+    # Use a general pattern to find potential scripts, then filter and sort with regex
+    # This pattern finds files like 'anyname_anything.py' in the current directory.
+    potential_scripts_pattern = os.path.join(current_dir, "*_*.py") 
+    logger.debug(f"ℹ️ Discovering potential pipeline scripts using pattern: {potential_scripts_pattern}")
+    
+    all_candidate_files = glob.glob(potential_scripts_pattern)
+    
+    pipeline_scripts_info = [] # Store dicts of {'num': int, 'basename': str}
+    
+    # Regex to match basenames starting with one or more digits, followed by an underscore, and ending with .py
+    script_name_regex = re.compile(r"^(\d+)_.*\.py$")
+
+    for script_path in all_candidate_files:
+        script_basename = os.path.basename(script_path)
+        match = script_name_regex.match(script_basename)
+        if match:
+            script_num = int(match.group(1)) # Extract the number part
+            pipeline_scripts_info.append({'num': script_num, 'basename': script_basename})
+            if logger.isEnabledFor(logging.DEBUG):
+                 logger.debug(f"ℹ️ Matched script for pipeline: {script_basename} (Number: {script_num})")
+        # Optionally log files that did not match if needed for debugging:
+        # else:
+            # if logger.isEnabledFor(logging.DEBUG):
+            #      logger.debug(f"ℹ️ File {script_basename} did not match numbered pipeline script pattern.")
+
+    # Sort scripts primarily by the extracted number, then by basename for tie-breaking (e.g. 1_foo.py vs 1_bar.py)
+    pipeline_scripts_info.sort(key=lambda x: (x['num'], x['basename']))
+    
+    # Extract just the basenames in the now correctly sorted order
+    sorted_script_basenames = [info['basename'] for info in pipeline_scripts_info]
+
+    if logger.isEnabledFor(logging.DEBUG): 
+        logger.debug(f"ℹ️ Found and sorted script basenames: {sorted_script_basenames}")
+        # For more detailed debugging, log the full paths that were considered:
+        # relevant_full_paths = [info['path'] for info in pipeline_scripts_info] # Assuming 'path' was stored
+        # logger.debug(f"ℹ️ Corresponding full paths for sorted scripts: {relevant_full_paths}")
         
-    return [os.path.basename(script) for script in scripts_with_paths]
+    return sorted_script_basenames
 
 def run_pipeline(args):
     """Run the full GNN processing pipeline."""
@@ -96,10 +128,18 @@ def run_pipeline(args):
     # --- ASCII Art Intro ---
     logger.info("""
 
-      ____ ____ ____   ____ ___  _ ____ ___ _ ____ _  _ ____
-     / ___| __ |__/   |  | |  \\ | |__|  |  | |___ |\\/| |___
-     \\___|__| |  \\   |__| |__/ | |  |  |  | |___ |  | |___ 
-
+ ██████╗ ███╗   ██╗███╗   ██╗  
+██╔════╝ ████╗  ██║████╗  ██║  
+██║  ███╗██╔██╗ ██║██╔██╗ ██║
+██║   ██║██║╚██╗██║██║╚██╗██║    
+╚██████╔╝██║ ╚████║██║ ╚████║    
+                                                                                 
+    Generalized Notation Notation Processing Pipeline 
+    
+    Version 0.1.0 ~ May 15, 2025
+    
+    https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
+            
     Initializing GNN Processing Pipeline...
     """)
     # --- End ASCII Art Intro ---

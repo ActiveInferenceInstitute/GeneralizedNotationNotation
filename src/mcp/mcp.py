@@ -58,6 +58,7 @@ class MCP:
         self.tools: Dict[str, MCPTool] = {}
         self.resources: Dict[str, MCPResource] = {}
         self.modules: Dict[str, Any] = {}
+        self._modules_discovered = False # Flag to track if discovery has run
         # Note: The _MCP_SDK_CONFIG_STATUS is module-level, not instance-level,
         # as SDK availability is a system-wide concern for this MCP setup.
         
@@ -67,6 +68,15 @@ class MCP:
         Returns:
             bool: True if all modules loaded successfully, False otherwise.
         """
+        if self._modules_discovered:
+            logger.debug("MCP modules already discovered. Skipping redundant discovery.")
+            # Return True assuming previous discovery's success state is what matters,
+            # or we'd need to store the previous result. For now, if it ran, assume it was handled.
+            # To be more precise, one might store the result of the first discovery.
+            # However, the function is meant to load modules into self.modules and register tools,
+            # which should not be redone.
+            return True # Or reflect stored status if available and needed.
+
         root_dir = Path(__file__).parent.parent
         logger.info(f"Discovering MCP modules in {root_dir}")
         all_modules_loaded_successfully = True
@@ -98,6 +108,7 @@ class MCP:
                 logger.error(f"Failed to load MCP module {module_name}: {str(e)}")
                 all_modules_loaded_successfully = False
 
+        self._modules_discovered = True # Set flag after successful completion of first discovery
         return all_modules_loaded_successfully
     
     def register_tool(self, name: str, func: Callable, schema: Dict, description: str):

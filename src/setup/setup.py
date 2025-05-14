@@ -95,6 +95,19 @@ def install_dependencies() -> None:
         # print(f"Created an empty {REQUIREMENTS_PATH}. Please add your dependencies.")
         return # Or raise an error if it's critical
 
+    print(f"Attempting to install 'inferactively-pymdp' individually into {VENV_PATH}...")
+    try:
+        if not VENV_PIP.exists():
+            print(f"Error: Pip executable not found at {VENV_PIP}.", file=sys.stderr)
+            print("Please ensure the virtual environment was created correctly.", file=sys.stderr)
+            raise FileNotFoundError(f"Pip not found at {VENV_PIP}")
+        
+        run_command([str(VENV_PIP), "install", "inferactively-pymdp"], cwd=PROJECT_ROOT, check=False) # Try this first, don't stop if it fails
+        print("Individual installation attempt for 'inferactively-pymdp' completed.")
+    except Exception as e:
+        print(f"An error occurred during the individual installation of 'inferactively-pymdp': {e}", file=sys.stderr)
+        # We still proceed to requirements.txt
+
     print(f"Installing/updating dependencies from {REQUIREMENTS_PATH} into {VENV_PATH}...")
     try:
         if not VENV_PIP.exists():

@@ -5,4 +5,5 @@ numpy
 pandas
 pytest
 scipy
+inferactively-pymdp
 # Add other project-wide dependencies here 

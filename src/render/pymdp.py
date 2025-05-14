@@ -10,9 +10,26 @@ The conversion is based on the technical documentation provided for PyMDP.
 import logging
 import numpy as np # For matrix/array generation if needed directly
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union # Added Union
 import json # For placeholder_gnn_parser_pymdp
 import re # for _numpy_array_to_string refinement
+
+# Attempt to import pymdp utilities, maths, and agent.
+# These are for the *generated* script, not for the renderer itself,
+# but having them available for type hints or constants can be useful if shared.
+_PMDP_AVAILABLE = False
+try:
+    from pymdp import utils as pymdp_utils
+    from pymdp import maths as pymdp_maths
+    from pymdp.agent import Agent as PymdpAgent # Alias to avoid confusion with internal Agent concepts
+    _PMDP_AVAILABLE = True
+except ImportError:
+    # These are not strictly needed for the renderer to generate code strings,
+    # but if we were to, e.g., validate matrix shapes, they would be.
+    pymdp_utils = None
+    pymdp_maths = None
+    PymdpAgent = None
+
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +41,8 @@ logger = logging.getLogger(__name__)
 
 def _numpy_array_to_string(arr: np.ndarray, indent=8) -> str:
     """Converts a NumPy array to a string representation for Python script, with proper indentation."""
+    if arr is None: # Handle cases where a None might be passed
+        return "None"
     if arr.ndim == 0: # Scalar
         return str(arr.item())
     if arr.ndim == 1:
@@ -75,6 +94,7 @@ def generate_pymdp_matrix_definition(
     """
     Generates Python code for a PyMDP matrix (A, B, C, D, etc.).
     Handles single matrices, lists of matrices (object arrays), and vectors.
+    If data is already a string (e.g. "pymdp.utils.get_A_likelihood_identity(...)"), use it directly.
     """
     lines = []
     indent_str = "    " # 4 spaces for base indent within script
@@ -82,10 +102,13 @@ def generate_pymdp_matrix_definition(
     if data is None:
         lines.append(f"{matrix_name} = None")
         return '\n'.join(lines)
+    
+    if isinstance(data, str) and ("pymdp." in data or "np." in data or "utils." in data or "maths." in data): # Heuristic for pre-formatted code string
+        lines.append(f"{matrix_name} = {data}")
+        return '\n'.join(lines)
 
     if is_object_array and isinstance(data, list):
         # This is for lists of np.arrays (e.g., A for multiple modalities)
-        # Each item in the list `data` should be a np.ndarray
         array_strs = []
         for i, arr_item in enumerate(data):
             if not isinstance(arr_item, np.ndarray):
@@ -130,7 +153,14 @@ def generate_pymdp_agent_instantiation(
     model_params: Dict[str, str], # Matrix names as strings, assuming they are defined in the global scope
     control_params: Optional[Dict[str, Any]] = None, 
     learning_params: Optional[Dict[str, Any]] = None, 
-    algorithm_params: Optional[Dict[str, Any]] = None
+    algorithm_params: Optional[Dict[str, Any]] = None,
+    # Added new parameters
+    policy_len: Optional[int] = None,
+    control_fac_idx: Optional[List[int]] = None,
+    use_utility: bool = True,
+    use_states_info_gain: bool = True,
+    use_param_info_gain: bool = False, # Default from PyMDP
+    action_selection: str = "stochastic" # Default from PyMDP
 ) -> str:
     lines = [f"{agent_name} = Agent("]
     indent = "    "
@@ -170,29 +200,141 @@ class GnnToPyMdpConverter:
 
     def __init__(self, gnn_spec: Dict[str, Any]):
         self.gnn_spec = gnn_spec
-        self.model_name = self.gnn_spec.get("model_name", "pymdp_agent_model").replace(" ", "_").replace("-", "_")
+        self.model_name = self.gnn_spec.get("ModelName", "pymdp_agent_model").replace(" ", "_").replace("-", "_")
         self.script_parts: Dict[str, List[str]] = {
-            "imports": ["import numpy as np", "from pymdp.agent import Agent"],
-            "comments": ["# Generated PyMDP script from GNN specification"],
+            "imports": [
+                "import numpy as np",
+                "from pymdp.agent import Agent",
+                "from pymdp import utils", # Added
+                "from pymdp import maths", # Added, for softmax etc.
+                "import copy" # Added for A_gp, B_gp
+            ],
+            "preamble_vars": [], # For obs_names, state_names etc.
+            "comments": [f"# --- GNN Model: {self.model_name} ---"],
             "matrix_definitions": [],
             "agent_instantiation": [],
             "example_usage": []
         }
         self.conversion_log: List[str] = [] # Log messages for summary
 
-        # Directly use dimension info from gnn_spec
-        self.num_hidden_states_factors = self.gnn_spec.get("num_hidden_states_factors", [])
-        self.num_obs_modalities = self.gnn_spec.get("num_obs_modalities", [])
-        self.num_control_factors = self.gnn_spec.get("control_states_factors", [])
+        # Extracted and processed GNN data
+        self.obs_names: List[str] = []
+        self.state_names: List[str] = []
+        self.action_names_per_control_factor: Dict[int, List[str]] = {} # factor_idx -> list of action names
+
+        self.num_obs: List[int] = [] # num_outcomes per modality
+        self.num_states: List[int] = [] # num_states per factor
+        self.num_actions_per_control_factor: Dict[int, int] = {} # factor_idx -> num_actions
+
+        self.num_modalities: int = 0
+        self.num_factors: int = 0
+        self.control_factor_indices: List[int] = [] # List of hidden state factor indices that are controllable
+
+        self.A_spec: Optional[Union[Dict, List[Dict]]] = None # Can be complex structure
+        self.B_spec: Optional[Union[Dict, List[Dict]]] = None
+        self.C_spec: Optional[Union[Dict, List[Dict]]] = None
+        self.D_spec: Optional[Union[Dict, List[Dict]]] = None
+        self.E_spec: Optional[Dict] = None # For expected future utilities / policies
+
+        self.agent_hyperparams: Dict[str, Any] = {}
+        self.simulation_params: Dict[str, Any] = {}
         
-        self.matrix_params = self.gnn_spec.get("matrix_parameters", {})
+        self._extract_gnn_data() # Populate the above fields
+
 
     def _add_log(self, message: str, level: str = "INFO"): 
         self.conversion_log.append(f"{level}: {message}")
         # print(f"[{level}] {message}") # Optional: print to console during conversion
 
+    def _extract_gnn_data(self):
+        """Parses the raw gnn_spec and populates structured attributes."""
+        self._add_log("Starting GNN data extraction.")
+
+        # StateSpaceBlock parsing
+        ss_block = self.gnn_spec.get("StateSpaceBlock", {})
+
+        # ObservationModalities
+        obs_modalities_spec = ss_block.get("ObservationModalities", [])
+        if not obs_modalities_spec:
+            self._add_log("No 'ObservationModalities' defined in StateSpaceBlock.", "WARNING")
+        for i, mod_spec in enumerate(obs_modalities_spec):
+            name = mod_spec.get("modality_name", f"modality_{i}")
+            num_outcomes = mod_spec.get("num_outcomes")
+            if num_outcomes is None:
+                self._add_log(f"Modality '{name}' missing 'num_outcomes'. Skipping.", "ERROR")
+                continue
+            self.obs_names.append(name)
+            self.num_obs.append(int(num_outcomes))
+        self.num_modalities = len(self.num_obs)
+        if self.num_modalities > 0:
+             self.script_parts["preamble_vars"].append(f"obs_names = {self.obs_names}")
+             self.script_parts["preamble_vars"].append(f"num_obs = {self.num_obs}")
+             self.script_parts["preamble_vars"].append(f"num_modalities = {self.num_modalities}")
+
+
+        # HiddenStateFactors
+        hidden_factors_spec = ss_block.get("HiddenStateFactors", [])
+        if not hidden_factors_spec:
+            self._add_log("No 'HiddenStateFactors' defined in StateSpaceBlock.", "WARNING")
+        for i, fac_spec in enumerate(hidden_factors_spec):
+            name = fac_spec.get("factor_name", f"factor_{i}")
+            num_states_val = fac_spec.get("num_states")
+            if num_states_val is None:
+                self._add_log(f"Factor '{name}' missing 'num_states'. Skipping.", "ERROR")
+                continue
+            self.state_names.append(name)
+            self.num_states.append(int(num_states_val))
+            if fac_spec.get("controllable", False):
+                self.control_factor_indices.append(i)
+                num_actions = fac_spec.get("num_actions")
+                if num_actions is None:
+                    self._add_log(f"Controllable factor '{name}' missing 'num_actions'. Defaulting to num_states ({num_states_val}).", "WARNING")
+                    num_actions = int(num_states_val) # Default for pymdp if not specified
+                self.num_actions_per_control_factor[i] = int(num_actions)
+                action_names = fac_spec.get("action_names")
+                if action_names and len(action_names) == num_actions:
+                    self.action_names_per_control_factor[i] = action_names
+                else:
+                    self.action_names_per_control_factor[i] = [f"{name}_action_{j}" for j in range(num_actions)]
+
+
+        self.num_factors = len(self.num_states)
+        if self.num_factors > 0:
+            self.script_parts["preamble_vars"].append(f"state_names = {self.state_names}")
+            self.script_parts["preamble_vars"].append(f"num_states = {self.num_states}")
+            self.script_parts["preamble_vars"].append(f"num_factors = {self.num_factors}")
+        if self.control_factor_indices:
+            self.script_parts["preamble_vars"].append(f"control_fac_idx = {self.control_factor_indices}")
+            # Potentially generate a flat list of all action names if needed by example
+            # all_action_names = []
+            # for f_idx in self.control_factor_indices:
+            #    all_action_names.extend(self.action_names_per_control_factor.get(f_idx, []))
+            # self.script_parts["preamble_vars"].append(f"action_names = {all_action_names}")
+
+
+        # InitialParameterization (or specific matrix blocks)
+        # This needs to be adapted based on how the GNN spec is structured for matrices.
+        # Assuming a structure like: gnn_spec.get("LikelihoodMatrixA", {})
+        param_block = self.gnn_spec.get("InitialParameterization", self.gnn_spec.get("MatrixParameters", {})) # Backward compatibility
+        
+        self.A_spec = param_block.get("A_Matrix", param_block.get("A")) # Support "A" or "A_Matrix"
+        self.B_spec = param_block.get("B_Matrix", param_block.get("B"))
+        self.C_spec = param_block.get("C_Vector", param_block.get("C")) # C is a vector of preferences over outcomes
+        self.D_spec = param_block.get("D_Vector", param_block.get("D")) # D is initial hidden states
+        self.E_spec = param_block.get("E_Vector", param_block.get("E")) # E is prior preferences over policies
+
+        self.agent_hyperparams = self.gnn_spec.get("AgentHyperparameters", {})
+        self.simulation_params = self.gnn_spec.get("SimulationParameters", {})
+
+        self._add_log("Finished GNN data extraction.")
+
+
     def _get_matrix_data(self, base_name: str, factor_idx: Optional[int] = None, modality_idx: Optional[int] = None) -> Any:
-        """Helper to retrieve matrix data from gnn_spec['matrix_parameters'] based on naming convention."""
+        """DEPRECATED: Use direct spec attributes like self.A_spec instead."""
+        # This method is kept for now if old parts of convert_X_matrix still use it,
+        # but the goal is to use the structured self.A_spec, self.B_spec etc.
+        param_block = self.gnn_spec.get("InitialParameterization", self.gnn_spec.get("MatrixParameters", {}))
+
         if factor_idx is not None:
             matrix_key = f"{base_name}_f{factor_idx}"
         elif modality_idx is not None:
@@ -200,370 +342,826 @@ class GnnToPyMdpConverter:
         else:
             matrix_key = base_name
         
-        data = self.matrix_params.get(matrix_key)
+        data = param_block.get(matrix_key)
         if data is None:
-            self._add_log(f"Matrix {matrix_key} not found in GNN InitialParameterization.", "WARNING")
+            self._add_log(f"Matrix {matrix_key} not found in GNN InitialParameterization/MatrixParameters.", "WARNING")
         return data
 
     def convert_A_matrix(self) -> str:
         """Converts GNN's A matrix (likelihood) to PyMDP format."""
-        if not self.num_obs_modalities: # No observation modalities defined
-            self._add_log("A_matrix: No observation modalities (num_obs_modalities) defined in GNN spec. 'A' will be None.", "WARNING")
-            return generate_pymdp_matrix_definition("A", None)
+        if not self.num_modalities:
+            self._add_log("A_matrix: No observation modalities defined. 'A' will be None.", "WARNING")
+            # Append 'A = None' to script parts directly, as generate_pymdp_matrix_definition is for variable assignment lines
+            self.script_parts["matrix_definitions"].append("A = None")
+            return "# A matrix set to None due to no observation modalities."
 
-        if len(self.num_obs_modalities) == 1:
-            # Single modality, look for plain "A" or "A_m0"
-            a_data = self._get_matrix_data("A")
-            if a_data is None: # Try A_m0 as fallback for single modality
-                 a_data = self._get_matrix_data("A", modality_idx=0)
+        init_code = f"A = utils.obj_array_zeros([[o_dim] + num_states for o_dim in num_obs])"
+        self.script_parts["matrix_definitions"].append(init_code)
+        
+        if not self.A_spec:
+            self._add_log("A_matrix: No A_spec provided in GNN. 'A' will be default (zeros from obj_array_zeros).", "INFO")
+            return "# A matrix remains default initialized (zeros)."
+
+        # Helper to generate assignment string for A[mod_idx]
+        def get_assignment_string(spec_value, indent_level=4) -> Optional[str]:
+            if isinstance(spec_value, np.ndarray):
+                # Ensure normalization for arrays that are likely distributions
+                # Check if it sums to 1.0 along the first axis (axis of outcomes)
+                if not np.allclose(np.sum(spec_value, axis=0), 1.0):
+                    self._add_log(f"A_matrix (array spec): Array for modality does not sum to 1.0 over outcomes. Will be wrapped with utils.normdist(). Original sum: {np.sum(spec_value, axis=0)}", "DEBUG")
+                    return f"utils.normdist({_numpy_array_to_string(spec_value, indent=indent_level+4)})"
+                return _numpy_array_to_string(spec_value, indent=indent_level)
+            elif isinstance(spec_value, list): # list of lists from JSON, convert to array then format
+                try:
+                    np_arr = np.array(spec_value)
+                    if not np.allclose(np.sum(np_arr, axis=0), 1.0):
+                        self._add_log(f"A_matrix (list spec): Array for modality does not sum to 1.0 over outcomes. Will be wrapped with utils.normdist(). Original sum: {np.sum(np_arr, axis=0)}", "DEBUG")
+                        return f"utils.normdist({_numpy_array_to_string(np_arr, indent=indent_level+4)})"
+                    return _numpy_array_to_string(np_arr, indent=indent_level)
+                except Exception as e:
+                    self._add_log(f"A_matrix: Error converting list to numpy array: {e}", "ERROR")
+                    return None
+            return None # Should not happen if spec is validated
+
+        if isinstance(self.A_spec, list): # List of specs per modality
+            if len(self.A_spec) != self.num_modalities:
+                self._add_log(f"A_matrix: Length of A_spec list ({len(self.A_spec)}) does not match num_modalities ({self.num_modalities}). Processing up to shorter length.", "ERROR")
             
-            if a_data is None:
-                self._add_log("A_matrix: 'A' or 'A_m0' not found for single observation modality.", "ERROR")
-                return generate_pymdp_matrix_definition("A", None)
-            self._add_log(f"A_matrix: Using single matrix for 1 modality.")
-            return generate_pymdp_matrix_definition("A", a_data)
-        else:
-            # Multiple modalities
-            A_list = []
-            all_found = True
-            for i in range(len(self.num_obs_modalities)):
-                a_mod_data = self._get_matrix_data("A", modality_idx=i)
-                if a_mod_data is None:
-                    self._add_log(f"A_matrix: A_m{i} not found for modality {i}.", "ERROR")
-                    A_list.append(None) # Or handle error more strictly
-                    all_found = False
+            for mod_idx, mod_spec in enumerate(self.A_spec):
+                if mod_idx >= self.num_modalities:
+                    break # Avoid index out of bounds if A_spec is longer
+                
+                if not isinstance(mod_spec, dict):
+                    self._add_log(f"A_matrix (modality {mod_idx}): Spec item is not a dictionary. Skipping.", "ERROR")
+                    continue
+
+                array_data = mod_spec.get("array")
+                rule_string = mod_spec.get("rule_string") # General rule string
+                rule_type = mod_spec.get("rule") # Specific predefined rule like "uniform"
+
+                assignment_val_str = None
+                log_msg_prefix = f"A_matrix (modality {self.obs_names[mod_idx] if mod_idx < len(self.obs_names) else mod_idx})"
+
+                if array_data is not None:
+                    try:
+                        np_array_val = np.array(array_data) # Convert list from JSON to numpy array
+                        expected_shape = tuple([self.num_obs[mod_idx]] + self.num_states)
+                        if np_array_val.shape == expected_shape:
+                            assignment_val_str = get_assignment_string(np_array_val)
+                            self._add_log(f"{log_msg_prefix}: Defined from 'array' spec.", "INFO")
+                        else:
+                            self._add_log(f"{log_msg_prefix}: Shape mismatch for 'array'. Expected {expected_shape}, got {np_array_val.shape}. Skipping.", "ERROR")
+                    except Exception as e:
+                        self._add_log(f"{log_msg_prefix}: Error processing 'array' data: {e}. Skipping.", "ERROR")
+                
+                elif rule_string is not None:
+                    assignment_val_str = rule_string # Use the rule string directly as code
+                    self._add_log(f"{log_msg_prefix}: Defined from 'rule_string': {rule_string}", "INFO")
+                
+                elif rule_type == "uniform":
+                    shape_tuple_str = f"({self.num_obs[mod_idx]}, {', '.join(map(str, self.num_states))})"
+                    assignment_val_str = f"utils.normdist(np.ones({shape_tuple_str}))"
+                    self._add_log(f"{log_msg_prefix}: Defined using 'uniform' rule.", "INFO")
+                
+                # Add other specific rules here e.g. "identity_mapping" if meaningful for A
+                # elif rule_type == "identity_mapping":
+                #    if self.num_factors == 1 and self.num_obs[mod_idx] == self.num_states[0]:
+                #        assignment_val_str = f"utils.onehot(np.arange({self.num_obs[mod_idx]}), num_values={self.num_obs[mod_idx]})" 
+                #    # This is a pymdp specific structure for identity A matrices, needs careful construction
+                #    # pymdp.utils.get_A_likelihood_identity might be better if it fits the multi-factor case.
+                #    # For now, let user specify via rule_string for complex identity A.
+                #    else:
+                #        self._add_log(f"{log_msg_prefix}: 'identity_mapping' rule for A is complex for multi-factor or mismatched dims. Use 'rule_string' for precise control.", "WARNING")
+
+                if assignment_val_str:
+                    self.script_parts["matrix_definitions"].append(f"A[{mod_idx}] = {assignment_val_str}")
                 else:
-                    A_list.append(np.array(a_mod_data)) # Convert to ndarray here
+                    self._add_log(f"{log_msg_prefix}: No valid definition found (array, rule_string, or known rule). A[{mod_idx}] will remain default (zeros).", "WARNING")
+
+        elif isinstance(self.A_spec, dict) and self.num_modalities == 1: # Single spec dict for single modality
+            mod_idx = 0
+            log_msg_prefix = f"A_matrix (modality {self.obs_names[0] if self.obs_names else 0})"
+            array_data = self.A_spec.get("array")
+            rule_string = self.A_spec.get("rule_string")
+            rule_type = self.A_spec.get("rule")
+            assignment_val_str = None
+
+            if array_data is not None:
+                try:
+                    np_array_val = np.array(array_data)
+                    expected_shape = tuple([self.num_obs[mod_idx]] + self.num_states)
+                    if np_array_val.shape == expected_shape:
+                        assignment_val_str = get_assignment_string(np_array_val)
+                        self._add_log(f"{log_msg_prefix}: Defined from 'array' spec.", "INFO")
+                    else:
+                        self._add_log(f"{log_msg_prefix}: Shape mismatch for 'array'. Expected {expected_shape}, got {np_array_val.shape}. Skipping.", "ERROR")
+                except Exception as e:
+                    self._add_log(f"{log_msg_prefix}: Error processing 'array' data: {e}. Skipping.", "ERROR")
             
-            if not all_found:
-                self._add_log("A_matrix: Not all modality-specific A matrices found. 'A' might be incomplete.", "ERROR")
-            self._add_log(f"A_matrix: Using list of matrices for {len(self.num_obs_modalities)} modalities.")
-            return generate_pymdp_matrix_definition("A", A_list, is_object_array=True, num_modalities_or_factors=len(self.num_obs_modalities))
+            elif rule_string is not None:
+                assignment_val_str = rule_string
+                self._add_log(f"{log_msg_prefix}: Defined from 'rule_string': {rule_string}", "INFO")
+            
+            elif rule_type == "uniform":
+                shape_tuple_str = f"({self.num_obs[mod_idx]}, {', '.join(map(str, self.num_states))})"
+                assignment_val_str = f"utils.normdist(np.ones({shape_tuple_str}))"
+                self._add_log(f"{log_msg_prefix}: Defined using 'uniform' rule.", "INFO")
+
+            if assignment_val_str:
+                self.script_parts["matrix_definitions"].append(f"A[{mod_idx}] = {assignment_val_str}")
+            else:
+                self._add_log(f"{log_msg_prefix}: No valid definition for single modality. A[0] will remain default (zeros).", "WARNING")
+        else:
+             self._add_log("A_matrix: A_spec format not recognized or incompatible with num_modalities. 'A' will be default (zeros).", "WARNING")
+
+        return "# A matrix processing complete."
+
 
     def convert_B_matrix(self) -> str:
         """Converts GNN's B matrix (transition) to PyMDP format."""
-        if not self.num_hidden_states_factors:
-            self._add_log("B_matrix: No hidden state factors (num_hidden_states_factors) defined. 'B' will be None.", "WARNING")
-            return generate_pymdp_matrix_definition("B", None)
+        if not self.num_factors:
+            self._add_log("B_matrix: No hidden state factors defined. 'B' will be None.", "WARNING")
+            self.script_parts["matrix_definitions"].append("B = None")
+            return "# B matrix set to None due to no hidden state factors."
 
-        if len(self.num_hidden_states_factors) == 1:
-            b_data = self._get_matrix_data("B")
-            if b_data is None: # Try B_f0 as fallback
-                b_data = self._get_matrix_data("B", factor_idx=0)
-            
-            if b_data is None:
-                # It's okay for B to be None if it's a static model (no transitions)
-                # Check GNN time spec
-                if self.gnn_spec.get("time_specification", "Static").lower() == "dynamic":
-                    self._add_log("B_matrix: 'B' or 'B_f0' not found for single dynamic hidden state factor.", "ERROR")
+        init_code = f"B = utils.obj_array(num_factors)"
+        self.script_parts["matrix_definitions"].append(init_code)
+
+        # Default initialization for all B slices first
+        for f_idx in range(self.num_factors):
+            num_states_f = self.num_states[f_idx]
+            log_msg_prefix_f = f"B_matrix (factor {self.state_names[f_idx] if f_idx < len(self.state_names) else f_idx})"
+            if f_idx in self.control_factor_indices:
+                num_actions_f = self.num_actions_per_control_factor.get(f_idx, num_states_f) # Default actions = num_states for that factor
+                # PyMDP default for controllable B: tile identity matrices for each action
+                self.script_parts["matrix_definitions"].append(f"B[{f_idx}] = np.tile(np.eye({num_states_f}), ({num_actions_f}, 1, 1)).transpose(1, 2, 0) # Default for controllable")
+                self._add_log(f"{log_msg_prefix_f}: Initialized with default structure for controllable factor (repeated identity matrices).", "DEBUG")
+            else: # Uncontrolled
+                self.script_parts["matrix_definitions"].append(f"B[{f_idx}] = np.eye({num_states_f})[:, :, np.newaxis] # Default for uncontrolled (identity)")
+                self._add_log(f"{log_msg_prefix_f}: Initialized with default identity matrix for uncontrolled factor.", "DEBUG")
+
+        if not self.B_spec:
+            self._add_log("B_matrix: No B_spec provided in GNN. B slices will use default initializations (identities).", "INFO")
+            return "# B matrix slices remain default initialized."
+
+        # Helper to generate assignment string for B[f_idx]
+        def get_b_assignment_string(spec_value, num_states_val, is_controlled_val, num_actions_val, indent_level=4) -> Optional[str]:
+            if isinstance(spec_value, (np.ndarray, list)):
+                try:
+                    np_arr = np.array(spec_value) # Convert if it's a list
+                    # Check normalization (sum over first axis (next_state) should be 1 for each current_state, action combination)
+                    # For controlled: sum over axis 0. For uncontrolled: sum over axis 0 of the (Ns,Ns) part.
+                    if is_controlled_val:
+                        if not np.allclose(np.sum(np_arr, axis=0), 1.0):
+                            self._add_log(f"B_matrix (array spec, factor): Array for controlled factor does not sum to 1.0 over next_states. Will be wrapped with utils.normdist(). Sums: {np.sum(np_arr, axis=0)}", "DEBUG")
+                            return f"utils.normdist({_numpy_array_to_string(np_arr, indent=indent_level+4)})"
+                    else: # uncontrolled, expect (Ns, Ns) or (Ns, Ns, 1)
+                        arr_to_check = np_arr[:,:,0] if np_arr.ndim == 3 else np_arr
+                        if not np.allclose(np.sum(arr_to_check, axis=0), 1.0):
+                             self._add_log(f"B_matrix (array spec, factor): Array for uncontrolled factor does not sum to 1.0 over next_states. Will be wrapped with utils.normdist(). Sums: {np.sum(arr_to_check, axis=0)}", "DEBUG")
+                             return f"utils.normdist({_numpy_array_to_string(np_arr, indent=indent_level+4)})" # normdist handles 2D or 3D
+
+                    return _numpy_array_to_string(np_arr, indent=indent_level)
+                except Exception as e:
+                    self._add_log(f"B_matrix: Error converting/processing array/list for B factor: {e}", "ERROR")
+                    return None
+            return None # Should not happen
+
+        if isinstance(self.B_spec, list): # List of specs per factor
+            if len(self.B_spec) != self.num_factors:
+                 self._add_log(f"B_matrix: Length of B_spec list ({len(self.B_spec)}) does not match num_factors ({self.num_factors}). Processing up to shorter length.", "ERROR")
+
+            for f_idx, fac_spec in enumerate(self.B_spec):
+                if f_idx >= self.num_factors: break
+
+                if not isinstance(fac_spec, dict):
+                    self._add_log(f"B_matrix (factor {f_idx}): Spec item is not a dictionary. Using default.", "ERROR")
+                    continue
+                
+                num_states_f = self.num_states[f_idx]
+                is_controlled = f_idx in self.control_factor_indices
+                num_actions_f = self.num_actions_per_control_factor.get(f_idx, 1)
+                log_msg_prefix_f = f"B_matrix (factor {self.state_names[f_idx] if f_idx < len(self.state_names) else f_idx})"
+
+                array_data = fac_spec.get("array")
+                rule_string = fac_spec.get("rule_string")
+                rule_type = fac_spec.get("rule")
+                assignment_val_str = None
+
+                if array_data is not None:
+                    try:
+                        np_array_val = np.array(array_data)
+                        expected_shape = (num_states_f, num_states_f, num_actions_f) if is_controlled else (num_states_f, num_states_f) # or (Ns,Ns,1)
+                        
+                        if is_controlled and np_array_val.shape == expected_shape:
+                            assignment_val_str = get_b_assignment_string(np_array_val, num_states_f, is_controlled, num_actions_f)
+                            self._add_log(f"{log_msg_prefix_f}: Defined from 'array' spec (controlled).", "INFO")
+                        elif not is_controlled and (np_array_val.shape == expected_shape or np_array_val.shape == (num_states_f, num_states_f, 1)):
+                            arr_to_assign = np_array_val if np_array_val.ndim == 3 else np_array_val[:, :, np.newaxis]
+                            assignment_val_str = get_b_assignment_string(arr_to_assign, num_states_f, is_controlled, 1)
+                            self._add_log(f"{log_msg_prefix_f}: Defined from 'array' spec (uncontrolled).", "INFO")
+                        else:
+                            self._add_log(f"{log_msg_prefix_f}: Shape mismatch for 'array'. Expected {expected_shape}, got {np_array_val.shape}. Using default.", "ERROR")
+                    except Exception as e:
+                        self._add_log(f"{log_msg_prefix_f}: Error processing 'array' data: {e}. Using default.", "ERROR")
+                
+                elif rule_string is not None:
+                    assignment_val_str = rule_string
+                    self._add_log(f"{log_msg_prefix_f}: Defined from 'rule_string': {rule_string}", "INFO")
+
+                elif rule_type == "identity":
+                    # Default initialization already handles this, but explicit GNN spec confirms it.
+                    self._add_log(f"{log_msg_prefix_f}: Confirmed 'identity' rule (already default).", "INFO")
+                    # No need to change assignment_val_str, default is already set up.
+                    continue # Continue to next factor, current B[f_idx] is already identity.
+                
+                if assignment_val_str:
+                    self.script_parts["matrix_definitions"].append(f"B[{f_idx}] = {assignment_val_str}")
                 else:
-                    self._add_log("B_matrix: Not specified for single factor static model. 'B' will be None (acceptable).", "INFO")
-                return generate_pymdp_matrix_definition("B", None)
-            self._add_log(f"B_matrix: Using single matrix for 1 hidden state factor.")
-            return generate_pymdp_matrix_definition("B", b_data)
+                    if rule_type != "identity": # If not identity and no other rule matched, log warning
+                        self._add_log(f"{log_msg_prefix_f}: No valid definition found. Using default identity B[{f_idx}].", "WARNING")
+        
+        # Handling for B_spec as a single dict for a single factor model (less common for B but possible)
+        elif isinstance(self.B_spec, dict) and self.num_factors == 1:
+            f_idx = 0
+            log_msg_prefix_f = f"B_matrix (factor {self.state_names[0] if self.state_names else 0})"
+            num_states_f = self.num_states[f_idx]
+            is_controlled = f_idx in self.control_factor_indices
+            num_actions_f = self.num_actions_per_control_factor.get(f_idx, 1)
+            
+            array_data = self.B_spec.get("array")
+            rule_string = self.B_spec.get("rule_string")
+            rule_type = self.B_spec.get("rule")
+            assignment_val_str = None
+
+            if array_data is not None:
+                try:
+                    np_array_val = np.array(array_data)
+                    expected_shape = (num_states_f, num_states_f, num_actions_f) if is_controlled else (num_states_f, num_states_f)
+                    if is_controlled and np_array_val.shape == expected_shape:
+                        assignment_val_str = get_b_assignment_string(np_array_val, num_states_f, is_controlled, num_actions_f)
+                    elif not is_controlled and (np_array_val.shape == expected_shape or np_array_val.shape == (num_states_f, num_states_f, 1)):
+                        arr_to_assign = np_array_val if np_array_val.ndim == 3 else np_array_val[:, :, np.newaxis]
+                        assignment_val_str = get_b_assignment_string(arr_to_assign, num_states_f, is_controlled, 1)
+                    else:
+                        self._add_log(f"{log_msg_prefix_f}: Shape mismatch for 'array'. Expected {expected_shape}, got {np_array_val.shape}. Using default.", "ERROR")
+                except Exception as e:
+                    self._add_log(f"{log_msg_prefix_f}: Error processing 'array' data for single factor: {e}. Using default.", "ERROR")
+            
+            elif rule_string is not None:
+                assignment_val_str = rule_string
+            
+            elif rule_type == "identity":
+                 self._add_log(f"{log_msg_prefix_f}: Confirmed 'identity' rule (already default).", "INFO")
+                 assignment_val_str = None # Will keep default
+            
+            if assignment_val_str:
+                self.script_parts["matrix_definitions"].append(f"B[{f_idx}] = {assignment_val_str}")
+            else:
+                if rule_type != "identity":
+                    self._add_log(f"{log_msg_prefix_f}: No valid definition for single factor. Using default identity B[0].", "WARNING")
         else:
-            # Multiple hidden state factors
-            B_list = []
-            all_found = True
-            for i in range(len(self.num_hidden_states_factors)):
-                b_factor_data = self._get_matrix_data("B", factor_idx=i)
-                if b_factor_data is None:
-                    self._add_log(f"B_matrix: B_f{i} not found for factor {i}.", "ERROR")
-                    B_list.append(None)
-                    all_found = False
-                else:
-                    B_list.append(np.array(b_factor_data))
-            
-            if not all_found:
-                self._add_log("B_matrix: Not all factor-specific B matrices found. 'B' might be incomplete.", "ERROR")
-            self._add_log(f"B_matrix: Using list of matrices for {len(self.num_hidden_states_factors)} hidden state factors.")
-            return generate_pymdp_matrix_definition("B", B_list, is_object_array=True, num_modalities_or_factors=len(self.num_hidden_states_factors))
+            self._add_log("B_matrix: B_spec format not recognized or incompatible with num_factors. B slices will use defaults.", "WARNING")
+
+        return "# B matrix processing complete."
 
     def convert_C_vector(self) -> str:
-        """Converts GNN's C vector (preferences over outcomes) to PyMDP format."""
-        # C can also be named G in some contexts (goal preferences)
-        if not self.num_obs_modalities:
-             self._add_log("C_vector: No observation modalities defined. 'C' will be None.", "INFO") # C is optional
-             return generate_pymdp_matrix_definition("C", None)
+        """Converts GNN's C vector (preferences) to PyMDP format."""
+        if not self.num_modalities:
+            self._add_log("C_vector: No observation modalities defined. 'C' will be None.", "INFO") # C is optional
+            # Directly append the definition to script_parts
+            self.script_parts["matrix_definitions"].append(generate_pymdp_matrix_definition("C", None)) 
+            return "# C matrix set to None due to no observation modalities." # Return value is for logging/info
 
-        if len(self.num_obs_modalities) == 1:
-            c_data = self._get_matrix_data("C")
-            if c_data is None: c_data = self._get_matrix_data("C", modality_idx=0)
-            if c_data is None: c_data = self._get_matrix_data("G") # Try G as an alias for C
-            if c_data is None: c_data = self._get_matrix_data("G", modality_idx=0)
-            
-            if c_data is None:
-                self._add_log("C_vector: 'C', 'C_m0', 'G', or 'G_m0' not found for single modality. 'C' will be None.", "INFO")
-                return generate_pymdp_matrix_definition("C", None)
-            self._add_log(f"C_vector: Using single vector for 1 modality.")
-            return generate_pymdp_matrix_definition("C", c_data, is_vector=True)
+        # Initialize C = utils.obj_array_zeros(num_obs)
+        init_code = f"C = utils.obj_array_zeros(num_obs)" # num_obs is list of outcome counts per modality
+        self.script_parts["matrix_definitions"].append(init_code)
+
+        if self.C_spec:
+            if isinstance(self.C_spec, list): # List of specs per modality
+                for mod_idx, mod_c_spec in enumerate(self.C_spec):
+                    if mod_c_spec is None: continue # Allow sparse C definition
+                    
+                    array_data = mod_c_spec.get("array") # Expects 1D array of length num_obs[mod_idx]
+                    if array_data:
+                        try:
+                            np_array = np.array(array_data)
+                            expected_shape = (self.num_obs[mod_idx],)
+                            if np_array.shape == expected_shape:
+                                self.script_parts["matrix_definitions"].append(f"C[{mod_idx}] = {_numpy_array_to_string(np_array, indent=4)}")
+                            else:
+                                self._add_log(f"C_vector (modality {mod_idx}): Shape mismatch. Expected {expected_shape}, got {np_array.shape}.", "ERROR")
+                        except Exception as e:
+                             self._add_log(f"C_vector (modality {mod_idx}): Error processing array data: {e}.", "ERROR")
+                    else:
+                         self._add_log(f"C_vector (modality {mod_idx}): No 'array' found in spec. C[{mod_idx}] will be zeros.", "INFO")
+            # Add handling for C_spec as single dict if num_modalities == 1
+            else:
+                self._add_log("C_vector: C_spec format not recognized for detailed construction. C will be zeros.", "WARNING")
         else:
-            C_list = []
-            all_found = True # Or some found is okay for C
-            any_found = False
-            for i in range(len(self.num_obs_modalities)):
-                c_mod_data = self._get_matrix_data("C", modality_idx=i)
-                if c_mod_data is None: c_mod_data = self._get_matrix_data("G", modality_idx=i)
-                
-                if c_mod_data is None:
-                    self._add_log(f"C_vector: C_m{i} or G_m{i} not found for modality {i}. Will use zeros or None.", "INFO")
-                    # PyMDP expects a C vector for each modality, even if it's neutral (zeros)
-                    # Infer dimension from num_obs_modalities[i]
-                    num_outcomes_mod = self.num_obs_modalities[i]
-                    C_list.append(np.zeros(num_outcomes_mod))
-                    # all_found = False # Don't mark as error if one C is missing, just use zeros
-                else:
-                    C_list.append(np.array(c_mod_data))
-                    any_found = True
-            
-            if not any_found:
-                self._add_log("C_vector: No modality-specific C or G vectors found. 'C' will be None.", "INFO")
-                return generate_pymdp_matrix_definition("C", None)
-
-            self._add_log(f"C_vector: Using list of vectors for {len(self.num_obs_modalities)} modalities.")
-            return generate_pymdp_matrix_definition("C", C_list, is_object_array=True, num_modalities_or_factors=len(self.num_obs_modalities), is_vector=True)
-
+            self._add_log("C_vector: No C_spec. C will be initialized to zeros by obj_array_zeros.", "INFO")
+        
+        return "# C vector definition appended to script parts"
+        
     def convert_D_vector(self) -> str:
-        """Converts GNN's D vector (initial hidden state priors) to PyMDP format."""
-        if not self.num_hidden_states_factors:
-            self._add_log("D_vector: No hidden state factors defined. 'D' will be None.", "ERROR")
+        """Converts GNN's D vector (initial hidden states) to PyMDP format."""
+        if not self.num_factors:
+            self._add_log("D_vector: No hidden state factors defined. 'D' will be None.", "ERROR") # D is usually required
             return generate_pymdp_matrix_definition("D", None)
 
-        if len(self.num_hidden_states_factors) == 1:
-            d_data = self._get_matrix_data("D")
-            if d_data is None: d_data = self._get_matrix_data("D", factor_idx=0)
+        # Initialize D = utils.obj_array(num_factors)
+        init_code = f"D = utils.obj_array(num_factors)"
+        self.script_parts["matrix_definitions"].append(init_code)
+        
+        # Default to uniform if no D_spec
+        for f_idx in range(self.num_factors):
+            self.script_parts["matrix_definitions"].append(f"D[{f_idx}] = utils.normdist(np.ones({self.num_states[f_idx]})) # Default: uniform D for factor {f_idx}")
 
-            if d_data is None:
-                self._add_log("D_vector: 'D' or 'D_f0' not found for single hidden state factor.", "ERROR")
-                return generate_pymdp_matrix_definition("D", None)
-            self._add_log(f"D_vector: Using single vector for 1 hidden state factor.")
-            return generate_pymdp_matrix_definition("D", d_data, is_vector=True)
+        if self.D_spec:
+            if isinstance(self.D_spec, list): # List of specs per factor
+                for f_idx, fac_d_spec in enumerate(self.D_spec):
+                    if fac_d_spec is None: continue
+
+                    array_data = fac_d_spec.get("array") # Expects 1D array of length num_states[f_idx]
+                    if array_data:
+                        try:
+                            np_array = np.array(array_data)
+                            expected_shape = (self.num_states[f_idx],)
+                            if np_array.shape == expected_shape:
+                                # Ensure it's normalized if it's a distribution
+                                if np.isclose(np.sum(np_array), 1.0):
+                                     assign_str = _numpy_array_to_string(np_array, indent=4)
+                                else: # Normalize
+                                     assign_str = f"utils.normdist({_numpy_array_to_string(np_array, indent=4)})"
+                                self.script_parts["matrix_definitions"].append(f"D[{f_idx}] = {assign_str}")
+                            else:
+                                self._add_log(f"D_vector (factor {f_idx}): Shape mismatch. Expected {expected_shape}, got {np_array.shape}. Using default uniform.", "ERROR")
+                        except Exception as e:
+                             self._add_log(f"D_vector (factor {f_idx}): Error processing array data: {e}. Using default uniform.", "ERROR")
+                    else:
+                        self._add_log(f"D_vector (factor {f_idx}): No 'array' found. Using default uniform D[{f_idx}].", "INFO")
+            # Add handling for D_spec as single dict if num_factors == 1
+            else:
+                 self._add_log("D_vector: D_spec format not recognized. D factors will be default uniform.", "WARNING")
         else:
-            D_list = []
-            all_found = True
-            for i in range(len(self.num_hidden_states_factors)):
-                d_factor_data = self._get_matrix_data("D", factor_idx=i)
-                if d_factor_data is None:
-                    self._add_log(f"D_vector: D_f{i} not found for factor {i}.", "ERROR")
-                    D_list.append(None)
-                    all_found = False
-                else:
-                    D_list.append(np.array(d_factor_data))
-            
-            if not all_found:
-                 self._add_log("D_vector: Not all factor-specific D vectors found. 'D' might be incomplete.", "ERROR")
-            self._add_log(f"D_vector: Using list of vectors for {len(self.num_hidden_states_factors)} hidden state factors.")
-            return generate_pymdp_matrix_definition("D", D_list, is_object_array=True, num_modalities_or_factors=len(self.num_hidden_states_factors), is_vector=True)
+            self._add_log("D_vector: No D_spec. D factors will be default uniform.", "INFO")
+
+        return "# D vector definition appended to script parts"
+
+    def convert_E_vector(self) -> str:
+        """Converts GNN's E vector (prior preferences for policies) to PyMDP format."""
+        # E is optional. It's a flat vector (num_policies) or not used if policy_len=1
+        if self.E_spec:
+            array_data = self.E_spec.get("array")
+            if array_data:
+                try:
+                    np_array = np.array(array_data)
+                    # Shape depends on policy_len and num_control_states, complex to validate here without policy_len
+                    # For now, just generate the assignment
+                    self.script_parts["matrix_definitions"].append(generate_pymdp_matrix_definition("E", np_array))
+                    self._add_log("E_vector: Defined from GNN spec.", "INFO")
+                except Exception as e:
+                    self._add_log(f"E_vector: Error processing array data: {e}. 'E' will be None.", "ERROR")
+                    self.script_parts["matrix_definitions"].append("E = None")
+            else:
+                self.script_parts["matrix_definitions"].append("E = None") # No array in E_spec
+        else:
+            self.script_parts["matrix_definitions"].append("E = None") # E is often None by default
+        return "# E vector definition appended to script parts"
+
 
     def extract_agent_hyperparameters(self) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]], Optional[Dict[str,Any]]]:
-        """Extracts control, learning, and algorithm parameters from GNN spec if available."""
-        # This is a placeholder. GNN spec needs a dedicated section for these.
-        # For now, assume they are not in the current GNN spec format.
-        control_params = None # e.g. self.gnn_spec.get("control_parameters") 
-        learning_params = None # e.g. self.gnn_spec.get("learning_parameters")
-        algorithm_params = None # e.g. self.gnn_spec.get("algorithm_parameters")
-
-        # Example: if policy_len is in GNN's time_specification or a specific hyperparameter section
-        # if self.num_control_factors and self.num_control_factors[0] > 0: # Assuming first control factor is policy length
-        #     control_params = control_params or {}
-        #     control_params["policy_len"] = self.num_control_factors[0] # This is a guess, needs proper GNN spec support
-
-        # Check for E matrix (prior over policies)
-        e_data = self._get_matrix_data("E")
-        if e_data is not None:
-            self.script_parts["matrix_definitions"].append(generate_pymdp_matrix_definition("E", e_data, is_vector=True))
-            control_params = control_params or {}
-            control_params["E"] = "E" # Pass the name of the E matrix
+        """Extracts control, learning, and algorithm parameters from GNN spec for Agent."""
+        # This method needs to be updated if GNN spec for these changes
+        self._add_log("AgentHyperparameters: Extracted control, learning, algorithm params (mostly placeholders).")
         
-        self._add_log("AgentHyperparameters: Extracted control, learning, algorithm params (mostly placeholders).", "INFO")
+        # Example: these would come from self.agent_hyperparams
+        control_params = self.agent_hyperparams.get("control_parameters", {})
+        learning_params = self.agent_hyperparams.get("learning_parameters", {})
+        algorithm_params = self.agent_hyperparams.get("algorithm_parameters", {})
+        
+        # Add specific parameters required by Agent constructor if they are in agent_hyperparams
+        # and not directly passed (like control_fac_idx)
+        if "policy_len" in self.agent_hyperparams:
+            control_params["policy_len"] = self.agent_hyperparams["policy_len"]
+        if "use_utility" in self.agent_hyperparams:
+            control_params["use_utility"] = self.agent_hyperparams["use_utility"]
+        # ... and so on for other Agent parameters
+
         return control_params, learning_params, algorithm_params
 
     def generate_agent_instantiation_code(self) -> str:
-        model_params_dict = {
-            "A": "A", "B": "B", "C": "C", "D": "D"
-        }
+        model_constructor_params = {"A": "A", "B": "B", "C": "C", "D": "D"} # E is part of control_params if not None
+        if self.E_spec and self.E_spec.get("array") is not None: # If E was defined
+             model_constructor_params["E"] = "E"
+
+
         control_params, learning_params, algorithm_params = self.extract_agent_hyperparameters()
+        
+        # Ensure control_fac_idx is passed if there are controllable factors
+        if self.control_factor_indices:
+            if control_params is None: control_params = {}
+            control_params["control_fac_idx"] = self.control_factor_indices # Pass the actual list
+
+        # Add other specific agent constructor params from self.agent_hyperparams
+        policy_len = self.agent_hyperparams.get("policy_len")
+        use_utility = self.agent_hyperparams.get("use_utility", True) # Default to True
+        use_states_info_gain = self.agent_hyperparams.get("use_states_info_gain", True) # Default True
+        use_param_info_gain = self.agent_hyperparams.get("use_param_info_gain", False) # Default False
+        action_selection = self.agent_hyperparams.get("action_selection", "stochastic") # Default 'stochastic'
+
+
         return generate_pymdp_agent_instantiation(
-            self.model_name,
-            model_params_dict,
+            self.model_name, 
+            model_constructor_params,
             control_params=control_params,
             learning_params=learning_params,
-            algorithm_params=algorithm_params
+            algorithm_params=algorithm_params,
+            # Pass specific params extracted
+            policy_len=policy_len,
+            # control_fac_idx already added to control_params if applicable
+            use_utility=use_utility,
+            use_states_info_gain=use_states_info_gain,
+            use_param_info_gain=use_param_info_gain,
+            action_selection=action_selection
         )
 
+    def generate_example_usage_code(self) -> List[str]:
+        """Generates a runnable example usage block based on the GNN spec and user's example."""
+        usage_lines = ["", "# --- Example Usage ---", "if __name__ == '__main__':"]
+        indent = "    "
+
+        sim_T = self.simulation_params.get("timesteps", 5)
+        init_o_raw = self.simulation_params.get("initial_observations")
+        init_s_raw = self.simulation_params.get("initial_true_states")
+        use_gp_copy = self.simulation_params.get("use_generative_process_copy", True)
+
+        print_obs = self.simulation_params.get("print_observations", True)
+        print_beliefs = self.simulation_params.get("print_belief_states", True)
+        print_actions = self.simulation_params.get("print_actions", True)
+        print_states = self.simulation_params.get("print_true_states", True)
+        
+        usage_lines.append(f"{indent}# Initialize agent (already done above)")
+        usage_lines.append(f"{indent}agent = {self.model_name}")
+        usage_lines.append(f"{indent}print(f\"Agent '{self.model_name}' initialized with {self.num_factors} factors and {self.num_modalities} modalities.\")")
+
+        # Initial observation
+        if init_o_raw and isinstance(init_o_raw, list) and len(init_o_raw) == self.num_modalities:
+            usage_lines.append(f"{indent}o_current = {init_o_raw} # Initial observation from GNN spec")
+        else: # Default initial observation (e.g., first outcome for each modality or a placeholder)
+            default_o = [0] * self.num_modalities if self.num_modalities > 0 else "None"
+            usage_lines.append(f"{indent}o_current = {default_o} # Example initial observation (e.g. first outcome for each modality)")
+            if not init_o_raw and self.num_modalities > 0 : self._add_log("Simulation: No 'initial_observations' in GNN, using default.", "INFO")
+        
+        # Initial true state (for simulation purposes, not agent's belief D)
+        if init_s_raw and isinstance(init_s_raw, list) and len(init_s_raw) == self.num_factors:
+             usage_lines.append(f"{indent}s_current = {init_s_raw} # Initial true states from GNN spec")
+        else:
+            default_s = [0] * self.num_factors if self.num_factors > 0 else "None" # Example: first state for each factor
+            usage_lines.append(f"{indent}s_current = {default_s} # Example initial true states for simulation")
+            if not init_s_raw and self.num_factors > 0: self._add_log("Simulation: No 'initial_true_states' in GNN, using default.", "INFO")
+
+        usage_lines.append(f"{indent}T = {sim_T} # Number of timesteps")
+
+        if use_gp_copy:
+            usage_lines.append(f"{indent}A_gen_process = copy.deepcopy(A)")
+            usage_lines.append(f"{indent}B_gen_process = copy.deepcopy(B)")
+        else:
+            usage_lines.append(f"{indent}A_gen_process = A")
+            usage_lines.append(f"{indent}B_gen_process = B")
+        
+        usage_lines.append("")
+        usage_lines.append(f"{indent}for t_step in range(T):")
+        inner_indent = indent * 2
+
+        if print_obs:
+            usage_lines.append(f"{inner_indent}print(f\"\\n--- Timestep {{t_step + 1}} ---\")")
+            usage_lines.append(f"{inner_indent}if o_current is not None:")
+            usage_lines.append(f"{inner_indent}{indent}for g_idx, o_val in enumerate(o_current):")
+            usage_lines.append(f"{inner_indent}{indent}{indent}print(f\"Observation ({{obs_names[g_idx] if obs_names else f'Modality {{g_idx}}'}}): {{o_val}}\")")
+        
+        usage_lines.append(f"{inner_indent}# Infer states")
+        usage_lines.append(f"{inner_indent}qs_current = agent.infer_states(o_current)")
+        if print_beliefs:
+            usage_lines.append(f"{inner_indent}if qs_current is not None:")
+            usage_lines.append(f"{inner_indent}{indent}for f_idx, q_val in enumerate(qs_current):")
+            usage_lines.append(f"{inner_indent}{indent}{indent}print(f\"Beliefs about {{state_names[f_idx] if state_names else f'Factor {{f_idx}}'}}: {{q_val}}\")")
+
+        usage_lines.append("")
+        usage_lines.append(f"{inner_indent}# Infer policies and sample action")
+        usage_lines.append(f"{inner_indent}q_pi_current, efe_current = agent.infer_policies()")
+        usage_lines.append(f"{inner_indent}action_agent = agent.sample_action()")
+        
+        # Map agent action (control_factor list) to environment action (all factors list)
+        usage_lines.append(f"{inner_indent}# Map agent's action (on control factors) to full environment action vector")
+        usage_lines.append(f"{inner_indent}action_env = np.zeros(num_factors, dtype=int)")
+        usage_lines.append(f"{inner_indent}if control_fac_idx and action_agent is not None:")
+        usage_lines.append(f"{inner_indent}{indent}for i, cf_idx in enumerate(control_fac_idx):")
+        usage_lines.append(f"{inner_indent}{indent}{indent}action_env[cf_idx] = int(action_agent[i])")
+
+
+        if print_actions:
+            usage_lines.append(f"{inner_indent}# Construct action names for printing")
+            usage_lines.append(f"{inner_indent}action_names_str_list = []")
+            usage_lines.append(f"{inner_indent}if control_fac_idx and action_agent is not None:")
+            usage_lines.append(f"{inner_indent}{indent}for i, cf_idx in enumerate(control_fac_idx):")
+            usage_lines.append(f"{inner_indent}{indent}{indent}factor_action_name_list = agent.action_names.get(cf_idx, []) if hasattr(agent, 'action_names') and isinstance(agent.action_names, dict) else []")
+            usage_lines.append(f"{inner_indent}{indent}{indent}action_idx_on_factor = int(action_agent[i])")
+            usage_lines.append(f"{inner_indent}{indent}{indent}if factor_action_name_list and action_idx_on_factor < len(factor_action_name_list):")
+            usage_lines.append(f"{inner_indent}{indent}{indent}{indent}action_names_str_list.append(f\"{{state_names[cf_idx] if state_names else f'Factor {{cf_idx}}'}}: {{factor_action_name_list[action_idx_on_factor]}} (idx {{action_idx_on_factor}})\")")
+            usage_lines.append(f"{inner_indent}{indent}{indent}else:")
+            usage_lines.append(f"{inner_indent}{indent}{indent}{indent}action_names_str_list.append(f\"{{state_names[cf_idx] if state_names else f'Factor {{cf_idx}}'}}: Action idx {{action_idx_on_factor}}\")")
+            usage_lines.append(f"{inner_indent}print(f\"Action taken: {{', '.join(action_names_str_list) if action_names_str_list else 'No controllable actions or names not found'}}\")")
+            usage_lines.append(f"{inner_indent}# Raw sampled action_agent: {{action_agent}}")
+            usage_lines.append(f"{inner_indent}# Mapped action_env for B matrix: {{action_env}}")
+
+        usage_lines.append("")
+        usage_lines.append(f"{inner_indent}# Update true states of the environment based on action")
+        usage_lines.append(f"{inner_indent}s_next = np.zeros(num_factors, dtype=int)")
+        usage_lines.append(f"{inner_indent}if s_current is not None and B_gen_process is not None:")
+        usage_lines.append(f"{inner_indent}{indent}for f_idx in range(num_factors):")
+        usage_lines.append(f"{inner_indent}{indent}{indent}# B_gen_process[f_idx] shape: (num_states[f_idx], num_states[f_idx], num_actions_for_this_factor_or_1)")
+        usage_lines.append(f"{inner_indent}{indent}{indent}action_for_factor = action_env[f_idx] if f_idx in control_fac_idx else 0")
+        usage_lines.append(f"{inner_indent}{indent}{indent}s_next[f_idx] = utils.sample(B_gen_process[f_idx][:, s_current[f_idx], action_for_factor])")
+        usage_lines.append(f"{inner_indent}s_current = s_next.tolist()")
+
+        if print_states:
+            usage_lines.append(f"{inner_indent}if s_current is not None:")
+            usage_lines.append(f"{inner_indent}{indent}for f_idx, s_val in enumerate(s_current):")
+            usage_lines.append(f"{inner_indent}{indent}{indent}print(f\"New true state ({{state_names[f_idx] if state_names else f'Factor {{f_idx}}'}}): {{s_val}}\")")
+
+
+        usage_lines.append("")
+        usage_lines.append(f"{inner_indent}# Generate next observation based on new true states")
+        usage_lines.append(f"{inner_indent}o_next = np.zeros(num_modalities, dtype=int)")
+        usage_lines.append(f"{inner_indent}if s_current is not None and A_gen_process is not None:")
+        usage_lines.append(f"{inner_indent}{indent}for g_idx in range(num_modalities):")
+        usage_lines.append(f"{inner_indent}{indent}{indent}# A_gen_process[g_idx] shape: (num_obs[g_idx], num_states[0], num_states[1], ...)")
+        usage_lines.append(f"{inner_indent}{indent}{indent}# Construct index for A matrix: (outcome_idx, s_f0, s_f1, ...)")
+        usage_lines.append(f"{inner_indent}{indent}{indent}prob_vector = A_gen_process[g_idx][:, " + ", ".join([f"s_current[{sf_i}]" for sf_i in range(self.num_factors)]) + "]")
+        usage_lines.append(f"{inner_indent}{indent}{indent}o_next[g_idx] = utils.sample(prob_vector)")
+        usage_lines.append(f"{inner_indent}o_current = o_next.tolist()")
+        
+        usage_lines.append("")
+        usage_lines.append(f"{indent}print(f\"\\nSimulation finished after {{T}} timesteps.\")")
+
+        return usage_lines
+
+
     def get_full_python_script(self, include_example_usage: bool = True) -> str:
-        """Generates the full Python script string for the PyMDP agent."""
-        self._add_log("Starting PyMDP script generation.", "INFO")
+        """Assembles all parts into a single Python script string."""
+        
+        # Pre-computation / matrix generation calls
+        # These methods will now append to self.script_parts["matrix_definitions"]
+        self.convert_A_matrix()
+        self.convert_B_matrix()
+        self.convert_C_vector()
+        self.convert_D_vector()
+        self.convert_E_vector() # E matrix for policy priors
 
-        # Process core matrices
-        self.script_parts["matrix_definitions"].append(self.convert_A_matrix())
-        self.script_parts["matrix_definitions"].append(self.convert_B_matrix())
-        self.script_parts["matrix_definitions"].append(self.convert_C_vector())
-        self.script_parts["matrix_definitions"].append(self.convert_D_vector())
-
-        # Agent instantiation (also handles E matrix if present via extract_agent_hyperparameters)
+        # Agent instantiation
         self.script_parts["agent_instantiation"].append(self.generate_agent_instantiation_code())
-
-        # Example Usage (placeholder)
-        if include_example_usage:
-            self.script_parts["example_usage"].extend([
-                "# --- Example Usage ---",
-                "if __name__ == '__main__':",
-                "    # Example: Initialize agent",
-                f"    # agent = {self.model_name}",
-                "    # print(\"Agent initialized\")",
-                "    # obs = [0] # Example observation (modality 0, outcome 0)",
-                "    # if hasattr(agent, 'num_obs_modalities') and agent.num_obs_modalities > 1:",
-                "    #    obs = [[0],[1]] # Example for multi-modal observations", 
-                "    # Qs = agent.infer_states(obs)",
-                "    # print(f\"Posterior states (Qs): {Qs}\")",
-                "    # Q_pi, EFE = agent.infer_policies()",
-                "    # print(f\"Posterior policies (Q_pi): {Q_pi}\")",
-                "    # print(f\"Expected Free Energy (EFE): {EFE}\")",
-                "    # action = agent.sample_action()",
-                "    # print(f\"Sampled action: {action}\")"
-            ])
         
+        # Example Usage (now more detailed)
+        if include_example_usage:
+            self.script_parts["example_usage"] = self.generate_example_usage_code()
+        else:
+            self.script_parts["example_usage"] = ["# Example usage block skipped as per options."]
+
+
         # Assemble the script
-        script_lines = []
-        script_lines.extend(self.script_parts["imports"])
-        script_lines.append("\n# --- Model Comments ---")
-        for log_msg in self.conversion_log:
-            script_lines.append(f"# {log_msg}")
-        script_lines.append("\n# --- Matrix Definitions ---")
-        script_lines.extend(self.script_parts["matrix_definitions"])
-        script_lines.append("\n# --- Agent Instantiation ---")
-        script_lines.extend(self.script_parts["agent_instantiation"])
-        if include_example_usage:
-            script_lines.append("\n")
-            script_lines.extend(self.script_parts["example_usage"])
+        script_content = []
+        script_content.extend(self.script_parts["imports"])
+        script_content.append("")
         
-        self._add_log("PyMDP script generation complete.", "INFO")
-        return "\n".join(script_lines)
+        # Add GNN to PyMDP Conversion Summary (from self.conversion_log)
+        summary_header = ["# --- GNN to PyMDP Conversion Summary ---"]
+        summary_lines = [f"# {log_entry}" for log_entry in self.conversion_log]
+        summary_footer = ["# --- End of GNN to PyMDP Conversion Summary ---"]
+        script_content.extend(summary_header)
+        script_content.extend(summary_lines)
+        script_content.extend(summary_footer)
+        script_content.append("")
+        script_content.append("")
 
+        script_content.extend(self.script_parts["comments"]) # Model specific comments
+        script_content.append("")
+
+        script_content.extend(self.script_parts["preamble_vars"]) # obs_names, num_states etc.
+        script_content.append("")
+
+        script_content.append("# --- Matrix Definitions ---")
+        script_content.extend(self.script_parts["matrix_definitions"])
+        script_content.append("")
+        
+        script_content.append("# --- Agent Instantiation ---")
+        script_content.extend(self.script_parts["agent_instantiation"])
+        script_content.append("")
+
+        script_content.extend(self.script_parts["example_usage"])
+        
+        return "\n".join(script_content)
 
 def render_gnn_to_pymdp(
     gnn_spec: Dict[str, Any],
     output_script_path: Path,
     options: Optional[Dict[str, Any]] = None # e.g. {"include_example_usage": True}
 ) -> Tuple[bool, str, List[str]]:
-    """Renders a GNN specification to a PyMDP Python script."""
-    
-    if options is None: options = {}
-    include_example = options.get("include_example_usage", True)
+    """
+    Main function to render a GNN specification to a PyMDP Python script.
 
-    converter = GnnToPyMdpConverter(gnn_spec)
-    script_content = converter.get_full_python_script(include_example_usage=include_example)
-    
-    summary_message = f"GNN to PyMDP conversion for model: {converter.model_name}"
-    
-    # Add conversion log to the top of the script as comments
-    log_header = ["# --- GNN to PyMDP Conversion Summary ---"]
-    log_header.extend([f"# {log}" for log in converter.conversion_log])
-    log_header.append("# --- End of GNN to PyMDP Conversion Summary ---")
-    
-    # Prepend log summary to the script_content, after imports
-    # Find where imports end
-    num_imports = len(converter.script_parts["imports"])
-    script_lines = script_content.split('\n')
-    final_script_content = "\n".join(
-        script_lines[:num_imports] + 
-        ["\n"] + log_header + ["\n"] + 
-        script_lines[num_imports:]
-    )
+    Args:
+        gnn_spec: The GNN specification as a Python dictionary.
+        output_script_path: The path where the generated Python script will be saved.
+        options: Dictionary of rendering options. 
+                 Currently supports "include_example_usage" (bool, default True).
+
+    Returns:
+        A tuple (success: bool, message: str, artifact_uris: List[str]).
+        `artifact_uris` will contain a file URI to the generated script on success.
+    """
+    options = options or {}
+    include_example_usage = options.get("include_example_usage", True)
 
     try:
-        output_script_path.parent.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Initializing GNN to PyMDP converter for model: {gnn_spec.get('ModelName', 'UnknownModel')}")
+        converter = GnnToPyMdpConverter(gnn_spec)
+        
+        logger.info("Generating PyMDP Python script content...")
+        python_script_content = converter.get_full_python_script(
+            include_example_usage=include_example_usage
+        )
+        
+        logger.info(f"Writing PyMDP script to: {output_script_path}")
         with open(output_script_path, "w", encoding='utf-8') as f:
-            f.write(final_script_content)
-        # print(f"Successfully wrote PyMDP script to {output_script_path}")
-        return True, f"Successfully wrote PyMDP script: {output_script_path.name}", converter.conversion_log
-    except IOError as e:
-        # print(f"Error writing PyMDP script to {output_script_path}: {e}")
-        error_msg = f"Error writing PyMDP script: {e}"
-        converter.conversion_log.append(f"FATAL_ERROR: {error_msg}")
-        return False, error_msg, converter.conversion_log
-
-# Placeholder for GNN parser if this script is run standalone or for testing
-# In the full pipeline, gnn_spec would come from the export step (5_export.py)
-def placeholder_gnn_parser_pymdp(gnn_file_path: Path) -> Optional[Dict[str, Any]]:
-    """Placeholder GNN parser, loads from a JSON file if it exists (simulating export step output)."""
-    # This assumes the export step has already run and created a .json for the .md GNN file.
-    # In the main pipeline, this function would not be used; gnn_spec comes from previous steps.
-    json_gnn_path = gnn_file_path.with_suffix(".json") # Assuming export creates this.
-    
-    if not json_gnn_path.exists():
-        print(f"Error: JSON GNN spec file not found: {json_gnn_path}. Run export step first.")
-        # Fallback: Try to simulate a very basic parse from the .md itself if needed for standalone testing
-        # This would be a very simplified version of what format_exporters.py does.
-        # For now, just error out if JSON isn't there.
-        return None
+            f.write(python_script_content)
         
-    try:
-        with open(json_gnn_path, 'r', encoding='utf-8') as f:
-            gnn_data = json.load(f)
-        return gnn_data
+        success_msg = f"Successfully wrote PyMDP script: {output_script_path.name}"
+        logger.info(success_msg)
+        
+        # Include conversion log in the final message for clarity, perhaps capped
+        log_summary = "\n".join(converter.conversion_log[:20]) # First 20 log messages
+        if len(converter.conversion_log) > 20:
+            log_summary += "\n... (log truncated)"
+            
+        return True, f"{success_msg}\nConversion Log Summary:\n{log_summary}", [output_script_path.as_uri()]
+
     except Exception as e:
-        print(f"Error loading or parsing GNN JSON file {json_gnn_path}: {e}")
+        error_msg = f"Failed to render GNN to PyMDP: {e}"
+        logger.exception(error_msg) # Log full traceback
+        return False, error_msg, []
+
+# Placeholder for a more sophisticated GNN parser if this script were to load GNN files directly
+# For now, it expects a pre-parsed gnn_spec dictionary.
+def placeholder_gnn_parser_pymdp(gnn_file_path: Path) -> Optional[Dict[str, Any]]:
+    """
+    Placeholder function to parse a GNN Markdown file into a dictionary.
+    This would ideally live in a dedicated GNN parsing module.
+    """
+    logger.warning(f"Using placeholder GNN parser for {gnn_file_path}. This is for testing/dev only.")
+    if not gnn_file_path.is_file():
+        logger.error(f"GNN file not found: {gnn_file_path}")
+        return None
+    try:
+        # This is a HACK: assumes GNN file is JSON for placeholder
+        with open(gnn_file_path, 'r') as f:
+            # A real parser would handle Markdown structure (StateSpaceBlock, Connections, etc.)
+            # and convert to the structured dict `GnnToPyMdpConverter` expects.
+            # For this placeholder, we assume it's a JSON that directly matches the expected dict structure.
+            # This will likely fail for actual .md GNN files.
+            data = json.load(f) 
+        return data
+    except Exception as e:
+        logger.error(f"Error in placeholder GNN parser for {gnn_file_path}: {e}")
         return None
 
-# Example main for standalone testing:
+# Example of how this module might be called (e.g., from a main pipeline script)
 if __name__ == '__main__':
-    print("Running GnnToPyMdpConverter standalone example...")
-    # This example assumes you have a GNN file exported to JSON by the pipeline
-    # For instance, from: output/gnn_exports/gnn_example_pymdp_agent/gnn_example_pymdp_agent.json
+    # This is for direct testing of this module.
+    # Assumes a JSON file that has the structure GnnToPyMdpConverter expects.
     
-    # Replace with the actual path to an exported GNN JSON file
-    example_gnn_json_path_str = "output/gnn_exports/gnn_example_pymdp_agent/gnn_example_pymdp_agent.json"
-    # Or provide a path to a .md file if you want to test placeholder_gnn_parser_pymdp
-    # example_gnn_md_path_str = "src/gnn/examples/gnn_example_pymdp_agent.md"
+    # Setup basic logging for testing
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    gnn_spec_data = None
-    gnn_path = Path(example_gnn_json_path_str)
+    # Create a dummy GNN spec dictionary for testing
+    # This should reflect the structure that the GNN parser (src/gnn/gnn_parser.py) would produce.
+    # And it should also reflect the new, more detailed GNN specification proposed.
+    
+    dummy_gnn_spec_path = Path(__file__).parent / "_test_dummy_gnn_spec_pymdp.json"
 
-    if gnn_path.suffix == '.json':
-        try:
-            with open(gnn_path, 'r') as f:
-                gnn_spec_data = json.load(f)
-            print(f"Successfully loaded GNN spec from: {gnn_path}")
-        except Exception as e:
-            print(f"Failed to load GNN spec from JSON {gnn_path}: {e}")
-    elif gnn_path.suffix == '.md': # Using the placeholder parser
-        print(f"Attempting to use placeholder parser for .md file (expects corresponding .json): {gnn_path.name}")
-        gnn_spec_data = placeholder_gnn_parser_pymdp(gnn_path)
+    # Generate a more complex dummy spec for testing
+    test_spec = {
+        "ModelName": "Test Agent Advanced",
+        "StateSpaceBlock": {
+            "ObservationModalities": [
+                {"modality_name": "Visual", "num_outcomes": 3, "outcome_names": ["Red", "Green", "Blue"]},
+                {"modality_name": "Audio", "num_outcomes": 2, "outcome_names": ["HighPitch", "LowPitch"]}
+            ],
+            "HiddenStateFactors": [
+                {"factor_name": "Location", "num_states": 3, "controllable": True, "num_actions": 3, "action_names": ["Stay", "MoveLeft", "MoveRight"]},
+                {"factor_name": "InternalContext", "num_states": 2, "controllable": False}
+            ]
+        },
+        "InitialParameterization": {
+            "A_Matrix": [ # List per modality
+                { # Modality 0 (Visual)
+                  "array": np.random.rand(3, 3, 2) # (n_obs_0, n_states_0, n_states_1)
+                  # Could also be: "rule": "uniform"
+                },
+                { # Modality 1 (Audio)
+                  "array": np.random.rand(2, 3, 2)
+                }
+            ],
+            "B_Matrix": [ # List per factor
+                { # Factor 0 (Location - controlled)
+                  "array": np.random.rand(3,3,3) # (n_states_0, n_states_0, n_actions_0)
+                },
+                { # Factor 1 (InternalContext - uncontrolled)
+                  "array": np.eye(2) # (n_states_1, n_states_1) -> will be expanded to (2,2,1)
+                }
+            ],
+            "C_Vector": [ # List per modality (preferences)
+                {"array": [1.0, 0.0, -1.0]}, # Pref for Visual
+                {"array": [0.5, -0.5]}      # Pref for Audio
+            ],
+            "D_Vector": [ # List per factor (initial beliefs)
+                {"array": [0.8, 0.1, 0.1]}, # Belief for Location
+                {"array": [0.5, 0.5]}      # Belief for InternalContext
+            ],
+            "E_Vector": {"array": [0.25, 0.25, 0.25, 0.25]} # Example: Prior over 4 policies
+        },
+        "AgentHyperparameters": {
+            "policy_len": 3,
+            "use_utility": True,
+            "action_selection": "stochastic"
+        },
+        "SimulationParameters": {
+            "timesteps": 10,
+            "initial_observations": [0,0],
+            "initial_true_states": [0,0],
+            "use_generative_process_copy": True,
+            "print_observations": True,
+            "print_belief_states": True,
+            "print_actions": True,
+            "print_true_states": True
+        }
+    }
+    # Normalize A matrices in test_spec
+    for mod_spec in test_spec["InitialParameterization"]["A_Matrix"]:
+        if "array" in mod_spec and isinstance(mod_spec["array"], np.ndarray):
+             mod_spec["array"] = pymdp_maths.norm_dist(mod_spec["array"]) if _PMDP_AVAILABLE else mod_spec["array"] / np.sum(mod_spec["array"], axis=0, keepdims=True)
+
+
+    # Normalize B matrices
+    for f_idx, fac_spec in enumerate(test_spec["InitialParameterization"]["B_Matrix"]):
+         if "array" in fac_spec and isinstance(fac_spec["array"], np.ndarray):
+            b_arr = fac_spec["array"]
+            if f_idx in test_spec["StateSpaceBlock"]["HiddenStateFactors"][f_idx].get("controllable", False): # Controlled
+                fac_spec["array"] = pymdp_maths.norm_dist(b_arr) if _PMDP_AVAILABLE else b_arr / np.sum(b_arr, axis=0, keepdims=True)
+
+            else: # Uncontrolled
+                # Ensure it's (Ns, Ns) then it will be expanded
+                if b_arr.ndim == 2 and b_arr.shape[0] == b_arr.shape[1]:
+                     fac_spec["array"] = pymdp_maths.norm_dist(b_arr) if _PMDP_AVAILABLE else b_arr / np.sum(b_arr, axis=0, keepdims=True)
+
+
+    # Normalize D vectors
+    for fac_spec in test_spec["InitialParameterization"]["D_Vector"]:
+        if "array" in fac_spec and isinstance(fac_spec["array"], np.ndarray):
+            fac_spec["array"] = pymdp_maths.norm_dist(fac_spec["array"]) if _PMDP_AVAILABLE else fac_spec["array"] / np.sum(fac_spec["array"])
+
+
+    # Serialize the complex spec with numpy arrays if needed for placeholder_gnn_parser_pymdp
+    # For direct use, it's fine.
+    # with open(dummy_gnn_spec_path, 'w') as f:
+    #    json.dump(test_spec, f, indent=2, cls=NumpyEncoder) # Needs a NumpyEncoder for json.dump
+
+    output_dir = Path(__file__).parent.parent.parent / "output" / "test_render_pymdp" 
+    output_dir.mkdir(parents=True, exist_ok=True)
+    script_path = output_dir / f"{test_spec['ModelName'].replace(' ','_')}_rendered.py"
+
+    logger.info(f"Testing PyMDP rendering with dummy spec. Output to: {script_path}")
+    
+    # Use the test_spec directly
+    success, msg, artifacts = render_gnn_to_pymdp(test_spec, script_path)
+
+    if success:
+        print(f"Dummy PyMDP script generated successfully: {artifacts}")
+        print(f"Message: {msg}")
+        # Try to run the generated script
+        # import subprocess
+        # try:
+        #     print("\nRunning generated script...")
+        #     result = subprocess.run([sys.executable, str(script_path)], capture_output=True, text=True, check=True)
+        #     print("Script Output:\n", result.stdout)
+        # except subprocess.CalledProcessError as e:
+        #     print("Error running script:")
+        #     print("STDOUT:", e.stdout)
+        #     print("STDERR:", e.stderr)
+        # except FileNotFoundError:
+        #     print(f"Could not find python interpreter {sys.executable} or script {script_path}")
+
     else:
-        print(f"Unsupported file type: {gnn_path.suffix}")
+        print(f"Dummy PyMDP script generation failed.")
+        print(f"Message: {msg}")
 
-    if gnn_spec_data:
-        output_dir = Path("output/gnn_rendered_simulators/pymdp/") / gnn_path.stem
-        output_dir.mkdir(parents=True, exist_ok=True)
-        output_script = output_dir / (gnn_path.stem + "_rendered_test.py")
-        
-        print(f"Rendering GNN spec to PyMDP script: {output_script}")
-        success, message, log = render_gnn_to_pymdp(gnn_spec_data, output_script)
-        
-        print("\n--- Conversion Log ---")
-        for log_entry in log:
-            print(log_entry)
-        print("--- End Log ---")
-        
-        if success:
-            print(f"\nSuccessfully generated PyMDP script: {output_script}")
-            print(f"Message: {message}")
-        else:
-            print(f"\nFailed to generate PyMDP script.")
-            print(f"Error Message: {message}")
-    else:
-        print("Could not load GNN specification. Aborting example.")
-
-# Note: The GNN spec for PyMDP needs to be carefully designed.
-# For A, B, C, D, it can provide:
-# 1. "type": "random_A_matrix", "num_obs": ..., "num_states": ... (similar for B, C_uniform, D_uniform)
-# 2. "type": "obj_array_from_list", "arrays": [ <list_of_numpy_array_like_lists_or_actual_arrays> ]
-# 3. A direct list of lists (for simple, non-object arrays).
-# The converter tries to handle these. More complex scenarios might need GNN spec refinement
-# or more sophisticated parsing/conversion logic.
-# Normalization of matrices (summing to 1 over appropriate axes) is assumed to be
-# handled by PyMDP's utils functions (like random_A_matrix) or needs to be ensured
-# by the GNN spec if providing raw arrays. This renderer currently doesn't add explicit normalization steps.
-# </rewritten_file> is not part of the python code. It is a marker for the system. 
