@@ -1,0 +1,194 @@
+{
+    "HiddenState": {
+        "description": "A state of the environment or agent that is not directly observable.",
+        "uri": "obo:ACTO_000001" 
+    },
+    "ObservableState": {
+        "description": "A state that can be directly observed.",
+        "uri": "obo:ACTO_000002"
+    },
+    "Observation": {
+        "description": "Data received from the environment through sensory input.",
+        "uri": "obo:ACTO_000003"
+    },
+    "Action": {
+        "description": "An output of the agent that can affect the environment or the agent itself.",
+        "uri": "obo:ACTO_000004"
+    },
+    "Policy": {
+        "description": "A sequence of actions, or a mapping from states to actions.",
+        "uri": "obo:ACTO_000005"
+    },
+    "PriorBelief": {
+        "description": "The agent's belief about a variable before observing new data.",
+        "uri": "obo:ACTO_000006"
+    },
+    "PosteriorBelief": {
+        "description": "The agent's belief about a variable after observing new data.",
+        "uri": "obo:ACTO_000007"
+    },
+    "LikelihoodMapping": {
+        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies).",
+        "uri": "obo:ACTO_000008"
+    },
+    "TransitionMatrix": {
+        "description": "A probabilistic mapping defining the dynamics of hidden states over time, potentially conditioned on action (e.g., 'B' matrix).",
+        "uri": "obo:ACTO_000009"
+    },
+    "Preferences": {
+        "description": "The agent's desired or preferred observations or states (e.g., 'C' vector/matrix).",
+        "uri": "obo:ACTO_000010"
+    },
+    "ExpectedFreeEnergy": {
+        "description": "A quantity minimized by the agent to select policies, balancing epistemic value (information gain) and pragmatic value (preference satisfaction).",
+        "uri": "obo:ACTO_000011"
+    },
+    "VariationalFreeEnergy": {
+        "description": "A bound on Bayesian model evidence, minimized during perception and learning to approximate posterior beliefs.",
+        "uri": "obo:ACTO_000012"
+    },
+    "GenerativeModel": {
+        "description": "The agent's internal probabilistic model of how its sensations are caused by states in the world.",
+        "uri": "obo:ACTO_000013"
+    },
+    "GenerativeProcess": {
+        "description": "The actual underlying process in the environment that generates observations.",
+        "uri": "obo:ACTO_000014"
+    },
+    "Precision": {
+        "description": "The inverse variance or uncertainty associated with a probability distribution, often modulating the influence of prediction errors.",
+        "uri": "obo:ACTO_000015"
+    },
+    "RecognitionMatrix": {
+        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix), representing the likelihood of observations given hidden states.",
+        "uri": "obo:TEMP_000016"
+    },
+    "Prior": {
+        "description": "A prior probability distribution over hidden states, typically representing initial beliefs before new evidence (e.g., 'D' vector/matrix).",
+        "uri": "obo:TEMP_000017"
+    },
+    "NextHiddenState": {
+        "description": "The anticipated or inferred hidden state at the subsequent time step (e.g., s_t+1 or s').",
+        "uri": "obo:TEMP_000018"
+    },
+    "Time": {
+        "description": "Represents a point or interval in a temporal sequence, often a discrete time step in a model.",
+        "uri": "obo:TEMP_000019"
+    },
+    "Preference": {
+        "description": "The agent's desired or preferred observations or states, influencing policy selection (e.g., 'C' vector/matrix).",
+        "uri": "obo:TEMP_000020"
+    },
+    "PolicyVector": {
+        "description": "A vector representing a specific sequence of actions or a probability distribution over available policies.",
+        "uri": "obo:TEMP_000021"
+    },
+    "PriorOnAction": {
+        "description": "A prior probability distribution over possible actions or policies, before considering expected free energy (e.g., 'E' matrix).",
+        "uri": "obo:TEMP_000022"
+    },
+    "BetaParameter": {
+        "description": "A parameter, often related to precision or an inverse temperature, that influences the stochasticity of policy selection or belief updates.",
+        "uri": "obo:TEMP_000023"
+    },
+    "GammaParameter": {
+        "description": "A general parameter, potentially a learning rate, discount factor, or another precision-like term in model updates or calculations.",
+        "uri": "obo:TEMP_000024"
+    },
+    "ExpectedFreeEnergyPerPolicy": {
+        "description": "The expected free energy calculated specifically for a given policy, used in policy selection.",
+        "uri": "obo:TEMP_000025"
+    },
+    "InitialPolicyProbability": {
+        "description": "The initial prior probability distribution over the set of all possible policies.",
+        "uri": "obo:TEMP_000026"
+    },
+    "PrecisionParameter": {
+        "description": "A parameter that quantifies the precision (inverse variance) of a probability distribution or belief, affecting the confidence in that belief.",
+        "uri": "obo:TEMP_000027"
+    },
+    "BetaUpdateTerm": {
+        "description": "A specific component or term used in the iterative update rule for a Beta parameter.",
+        "uri": "obo:TEMP_000028"
+    },
+    "InitialBeta": {
+        "description": "The starting or initial value assigned to a Beta parameter before any updates.",
+        "uri": "obo:TEMP_000029"
+    },
+    "LikelihoodMatrixModality0": {
+        "description": "Likelihood matrix (A_m) for observation modality 0. Specialization of LikelihoodMapping.",
+        "uri": "obo:TEMP_000030"
+    },
+    "LikelihoodMatrixModality1": {
+        "description": "Likelihood matrix (A_m) for observation modality 1. Specialization of LikelihoodMapping.",
+        "uri": "obo:TEMP_000031"
+    },
+    "LikelihoodMatrixModality2": {
+        "description": "Likelihood matrix (A_m) for observation modality 2. Specialization of LikelihoodMapping.",
+        "uri": "obo:TEMP_000032"
+    },
+    "TransitionMatrixFactor0": {
+        "description": "Transition matrix (B_f) for hidden state factor 0. Specialization of TransitionMatrix.",
+        "uri": "obo:TEMP_000033"
+    },
+    "TransitionMatrixFactor1": {
+        "description": "Transition matrix (B_f) for hidden state factor 1. Specialization of TransitionMatrix.",
+        "uri": "obo:TEMP_000034"
+    },
+    "LogPreferenceVectorModality0": {
+        "description": "Log preference vector (C_m) for observation modality 0. Specialization of Preferences.",
+        "uri": "obo:TEMP_000035"
+    },
+    "LogPreferenceVectorModality1": {
+        "description": "Log preference vector (C_m) for observation modality 1. Specialization of Preferences.",
+        "uri": "obo:TEMP_000036"
+    },
+    "LogPreferenceVectorModality2": {
+        "description": "Log preference vector (C_m) for observation modality 2. Specialization of Preferences.",
+        "uri": "obo:TEMP_000037"
+    },
+    "PriorOverHiddenStatesFactor0": {
+        "description": "Prior probability distribution over hidden states (D_f) for factor 0. Specialization of Prior.",
+        "uri": "obo:TEMP_000038"
+    },
+    "PriorOverHiddenStatesFactor1": {
+        "description": "Prior probability distribution over hidden states (D_f) for factor 1. Specialization of Prior.",
+        "uri": "obo:TEMP_000039"
+    },
+    "HiddenStateFactor0": {
+        "description": "Hidden state vector (s_f) for factor 0. Specialization of HiddenState.",
+        "uri": "obo:TEMP_000040"
+    },
+    "HiddenStateFactor1": {
+        "description": "Hidden state vector (s_f) for factor 1. Specialization of HiddenState.",
+        "uri": "obo:TEMP_000041"
+    },
+    "NextHiddenStateFactor0": {
+        "description": "Next hidden state vector (s_prime_f) for factor 0. Specialization of NextHiddenState.",
+        "uri": "obo:TEMP_000042"
+    },
+    "NextHiddenStateFactor1": {
+        "description": "Next hidden state vector (s_prime_f) for factor 1. Specialization of NextHiddenState.",
+        "uri": "obo:TEMP_000043"
+    },
+    "ObservationModality0": {
+        "description": "Observation vector (o_m) for modality 0. Specialization of Observation.",
+        "uri": "obo:TEMP_000044"
+    },
+    "ObservationModality1": {
+        "description": "Observation vector (o_m) for modality 1. Specialization of Observation.",
+        "uri": "obo:TEMP_000045"
+    },
+    "ObservationModality2": {
+        "description": "Observation vector (o_m) for modality 2. Specialization of Observation.",
+        "uri": "obo:TEMP_000046"
+    },
+    "PolicyVectorFactor1": {
+        "description": "Policy vector (pi_f) for controllable factor 1. Specialization of PolicyVector.",
+        "uri": "obo:TEMP_000047"
+    },
+    "ActionFactor1": {
+        "description": "Action (u_f) for controllable factor 1. Specialization of Action.",
+        "uri": "obo:TEMP_000048"
+    }
+} 

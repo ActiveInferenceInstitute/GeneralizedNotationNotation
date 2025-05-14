@@ -1,0 +1,65 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Friedman"
+    given-names: "Daniel Ari"
+    orcid: "[INSERT ORCID ID IF AVAILABLE, e.g., https://orcid.org/0000-0000-0000-0000]"
+    affiliation: "Active Inference Institute"
+  - name: "The GeneralizedNotationNotation Community Contributors"
+    # This entry acknowledges all contributors. Individual contributors can be listed above if desired.
+
+title: "GeneralizedNotationNotation (GNN)"
+version: 0.1.0 # Corresponds to an initial version, update as releases are made
+date-released: YYYY-MM-DD # To be filled upon actual release
+
+abstract: |
+  Generalized Notation Notation (GNN) is a text-based language designed to standardize the representation and communication of Active Inference generative models. It aims to enhance clarity, reproducibility, and interoperability in the field of Active Inference and cognitive modeling. GNN provides a structured way to describe complex models, making them human-readable and machine-parsable. It supports a "Triple Play" approach: text-based models, graphical model visualizations, and a blueprint for executable cognitive models.
+
+keywords:
+  - "active inference"
+  - "generative models"
+  - "cognitive modeling"
+  - "notation system"
+  - "reproducibility"
+  - "computational neuroscience"
+  - "bayesian inference"
+  - "python"
+
+license: MIT
+
+repository-code: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
+url: "https://activeinference.institute/" # General URL for the project or institute
+
+# Optional: Add reference to the GNN paper if it's a primary citation for the software itself
+references:
+  - type: article
+    authors:
+      - family-names: "Smékal"
+        given-names: "Jakub"
+        # orcid: "[SMEKAL ORCID]"
+      - family-names: "Friedman"
+        given-names: "Daniel Ari"
+        # orcid: "[FRIEDMAN ORCID]"
+    title: "Generalized Notation Notation for Active Inference Models"
+    journal: "Active Inference Journal"
+    year: 2023
+    # volume: X
+    # issue: Y
+    # start-page: Z
+    # end-page: W
+    doi: "10.5281/zenodo.7803328"
+    url: "https://zenodo.org/records/7803328"
+    notes: "Initial publication describing the GNN framework."
+
+# Preferred citation string (optional, but can be helpful)
+# preferred-citation:
+#   type: software
+#   title: "GeneralizedNotationNotation (GNN)"
+#   authors:
+#     - family-names: "Friedman"
+#       given-names: "Daniel Ari"
+#     - name: "The GeneralizedNotationNotation Community Contributors"
+#   version: 0.1.0 # Match current version
+#   date-released: YYYY-MM-DD # Match current release date
+#   repository-code: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
+#   license: MIT 

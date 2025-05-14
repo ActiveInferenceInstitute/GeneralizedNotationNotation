@@ -1,0 +1,8 @@
+graphviz
+matplotlib
+networkx
+numpy
+pandas
+pytest
+scipy
+# Add other project-wide dependencies here 
