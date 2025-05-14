@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__) # Will be child of GNN_Pipeline logger if r
 def run_pymdp_scripts(pipeline_output_dir: str, recursive_search: bool, verbose: bool) -> bool:
     """
     Finds and executes all .py files in the PyMDP rendered scripts directory.
+    Logs stdout/stderr for each script to a dedicated log directory.
 
     Args:
         pipeline_output_dir: The root output directory of the GNN pipeline.
@@ -26,7 +27,18 @@ def run_pymdp_scripts(pipeline_output_dir: str, recursive_search: bool, verbose:
     Returns:
         True if all found scripts executed successfully, False otherwise.
     """
-    rendered_pymdp_base_dir = Path(pipeline_output_dir).resolve() / "gnn_rendered_simulators" / "pymdp"
+    pipeline_output_path = Path(pipeline_output_dir).resolve()
+    rendered_pymdp_base_dir = pipeline_output_path / "gnn_rendered_simulators" / "pymdp"
+    
+    # Define base directory for execution logs from this step
+    step_10_log_dir_base = pipeline_output_path / "pymdp_execute_logs"
+    try:
+        step_10_log_dir_base.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Execution logs for Step 10 will be stored in: {step_10_log_dir_base}")
+    except OSError as e:
+        logger.error(f"Could not create base log directory {step_10_log_dir_base}: {e}")
+        # Proceeding without dedicated file logs if base dir creation fails, but log an error.
+        # Alternatively, could return False here. For now, attempt to continue.
 
     logger.info(f"Searching for PyMDP scripts to execute in: {rendered_pymdp_base_dir}")
     if not rendered_pymdp_base_dir.is_dir():
@@ -57,7 +69,22 @@ def run_pymdp_scripts(pipeline_output_dir: str, recursive_search: bool, verbose:
         logger.info(f"Using system Python executable: {python_executable}")
 
     for script_path in pymdp_scripts:
-        logger.info(f"  Executing PyMDP script: {script_path.relative_to(rendered_pymdp_base_dir.parent.parent)}")
+        script_stem = script_path.stem
+        script_log_dir = step_10_log_dir_base / script_stem
+        try:
+            script_log_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as e:
+            logger.error(f"Could not create log directory {script_log_dir} for {script_path.name}: {e}. Logs will not be saved to files for this script.")
+            # Fallback: don't use script_log_dir for this script if creation fails
+            current_script_log_dir = None 
+        else:
+            current_script_log_dir = script_log_dir
+
+        logger.info(f"  Executing PyMDP script: {script_path.relative_to(pipeline_output_path)}")
+        stdout_path = current_script_log_dir / "stdout.log" if current_script_log_dir else None
+        stderr_path = current_script_log_dir / "stderr.log" if current_script_log_dir else None
+        log_file_info = f" (Logs: {current_script_log_dir})" if current_script_log_dir else " (File logging disabled due to dir error)"
+
         try:
             # Scripts are run with their own directory as CWD to handle relative paths within the script if any.
             run_cwd = script_path.parent
@@ -74,32 +101,60 @@ def run_pymdp_scripts(pipeline_output_dir: str, recursive_search: bool, verbose:
                 env=env
             )
 
+            # Save stdout and stderr to files
+            if current_script_log_dir:
+                try:
+                    with open(stdout_path, 'w') as f_out:
+                        f_out.write(process.stdout if process.stdout else "")
+                    with open(stderr_path, 'w') as f_err:
+                        f_err.write(process.stderr if process.stderr else "")
+                except OSError as e:
+                    logger.error(f"    Error writing log files to {current_script_log_dir} for {script_path.name}: {e}")
+
             if process.returncode == 0:
-                logger.info(f"    ✅ Execution successful for: {script_path.name}")
-                if verbose and process.stdout:
-                    logger.debug(f"      Output:\n{process.stdout}")
-                overall_summary.append((str(script_path.name), "Success", process.stdout if process.stdout else "No output"))
+                logger.info(f"    ✅ Execution successful for: {script_path.name}{log_file_info}")
+                if verbose and process.stdout: # Still log to console if verbose
+                    logger.debug(f"      Output (also in {stdout_path}):\n{process.stdout}")
+                overall_summary.append((str(script_path.name), "Success", process.stdout if process.stdout else "No output", str(current_script_log_dir if current_script_log_dir else "N/A")))
             else:
                 all_executions_successful = False
-                logger.error(f"    ❌ Execution FAILED for: {script_path.name} (Exit code: {process.returncode})")
+                logger.error(f"    ❌ Execution FAILED for: {script_path.name} (Exit code: {process.returncode}){log_file_info}")
                 if process.stdout:
-                    logger.error(f"      Stdout:\n{process.stdout}")
+                    logger.error(f"      Stdout (see {stdout_path}):\n{process.stdout}")
                 if process.stderr:
-                    logger.error(f"      Stderr:\n{process.stderr}")
-                overall_summary.append((str(script_path.name), f"Failed (code {process.returncode})", process.stdout + process.stderr))
+                    logger.error(f"      Stderr (see {stderr_path}):\n{process.stderr}")
+                full_output_for_summary = (process.stdout if process.stdout else "") + (process.stderr if process.stderr else "")
+                overall_summary.append((str(script_path.name), f"Failed (code {process.returncode})", full_output_for_summary, str(current_script_log_dir if current_script_log_dir else "N/A")))
         except Exception as e:
             all_executions_successful = False
-            logger.error(f"    ❌ Exception during execution of {script_path.name}: {e}", exc_info=verbose)
-            overall_summary.append((str(script_path.name), "Exception", str(e)))
+            logger.error(f"    ❌ Exception during execution of {script_path.name}: {e}{log_file_info}", exc_info=verbose)
+            if current_script_log_dir: # Attempt to save exception to a file too
+                try:
+                    with open(current_script_log_dir / "exception.log", 'w') as f_exc:
+                        import traceback
+                        f_exc.write(f"Exception: {e}\n")
+                        f_exc.write(traceback.format_exc())
+                except OSError as e_write:
+                    logger.error(f"    Could not write exception log for {script_path.name}: {e_write}")
+            overall_summary.append((str(script_path.name), "Exception", str(e), str(current_script_log_dir if current_script_log_dir else "N/A")))
 
     logger.info("--- PyMDP Execution Summary ---")
-    for name, status, output_preview in overall_summary:
+    for name, status, output_preview, log_dir_path_str in overall_summary:
         log_func = logger.info if status == "Success" else logger.warning
-        log_func(f"  - {name}: {status}")
-        if verbose and output_preview.strip() and status == "Success":
-            logger.debug(f"    Output Preview (first 200 chars):\n{output_preview.strip()[:200]}...")
-        elif status != "Success" and output_preview.strip():
-            logger.warning(f"    Output/Error (first 500 chars):\n{output_preview.strip()[:500]}...")
+        log_func(f"  - Script: {name}")
+        log_func(f"    Status: {status}")
+        log_func(f"    Log Dir: {log_dir_path_str}")
+        
+        # Limit console output preview, direct users to log files
+        if status == "Success":
+            if verbose and output_preview.strip():
+                 logger.debug(f"    Console Output Preview (see stdout.log for full):\n{output_preview.strip()[:200]}...")
+        else: # Failed or Exception
+            if output_preview.strip():
+                logger.warning(f"    Console Output/Error Preview (see .log files for full):\n{output_preview.strip()[:500]}...")
+            if status == "Exception" and not output_preview.strip(): # If exception had no direct stdout/stderr
+                 logger.warning(f"    Exception details logged to exception.log in the log directory.")
+
 
     return all_executions_successful
 

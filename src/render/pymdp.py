@@ -103,38 +103,49 @@ def generate_pymdp_matrix_definition(
     indent_str = "    " # 4 spaces for base indent within script
 
     if data is None:
-        if is_object_array: # For A, B, D which are lists of np.arrays (object arrays)
-            logger.debug(f"Data for object array {matrix_name} is None, defaulting to [].")
-            lines.append(f"{matrix_name} = []")
-        else: # For C or other single arrays/vectors where PyMDP might handle None internally
+        if is_object_array: 
+            logger.debug(f"Data for object array {matrix_name} is None, defaulting to np.array([], dtype=object).")
+            lines.append(f"{matrix_name} = np.array([], dtype=object)")
+        else: 
             logger.debug(f"Data for non-object array {matrix_name} is None, setting to None.")
             lines.append(f"{matrix_name} = None")
         return '\n'.join(lines)
     
-    if isinstance(data, str) and ("pymdp." in data or "np." in data or "utils." in data or "maths." in data): # Heuristic for pre-formatted code string
+    if isinstance(data, str) and ("pymdp." in data or "np." in data or "utils." in data or "maths." in data):
         lines.append(f"{matrix_name} = {data}")
         return '\n'.join(lines)
 
     if is_object_array and isinstance(data, list):
-        # This is for lists of np.arrays (e.g., A for multiple modalities)
+        valid_arr_items = [item for item in data if item is not None]
+
+        if not valid_arr_items:
+            logger.debug(f"All items for object array {matrix_name} were None or filtered out. Defaulting {matrix_name} to np.array([], dtype=object).")
+            lines.append(f"{matrix_name} = np.array([], dtype=object)")
+            return '\n'.join(lines)
+
         array_strs = []
-        for i, arr_item in enumerate(data):
+        for i, arr_item in enumerate(valid_arr_items):
             if not isinstance(arr_item, np.ndarray):
-                # Fallback: if an item isn't a numpy array, try to convert it.
-                # This might happen if parsing yielded lists of lists instead of ndarrays directly.
                 try:
                     arr_item = np.array(arr_item)
                 except Exception as e:
-                    lines.append(f"# Warning: Could not convert item {i} of {matrix_name} to np.array: {e}")
-                    array_strs.append("None") # Placeholder for problematic item
-                    continue
+                    logger.error(f"Object array {matrix_name}: Could not convert non-None item at index {i} (value: {arr_item}) to np.array: {e}. Skipping this item.")
+                    continue 
             array_strs.append(_numpy_array_to_string(arr_item, indent=8))
         
-        lines.append(f"{matrix_name} = [ # Object array for {num_modalities_or_factors} modalities/factors")
+        if not array_strs: 
+            logger.debug(f"All non-None items for object array {matrix_name} failed string conversion or were skipped. Defaulting {matrix_name} to np.array([], dtype=object).")
+            lines.append(f"{matrix_name} = np.array([], dtype=object)")
+            return '\n'.join(lines)
+
+        actual_num_elements = len(array_strs)
+        lines.append(f"{matrix_name} = [ # Object array for {actual_num_elements} modalities/factors")
         for arr_s in array_strs:
             lines.append(indent_str + indent_str + arr_s + ",")
         lines.append(indent_str + "]")
-        lines.append(f"{matrix_name} = np.array({matrix_name}, dtype=object)")
+        
+        if actual_num_elements > 0:
+             lines.append(f"{matrix_name} = np.array({matrix_name}, dtype=object)")
 
     elif isinstance(data, (list, tuple)) and not is_object_array:
         # Single matrix provided as list/tuple of lists/tuples from GNN spec
@@ -164,11 +175,13 @@ def generate_pymdp_agent_instantiation(
     algorithm_params: Optional[Dict[str, Any]] = None,
     # Added new parameters
     policy_len: Optional[int] = None,
-    control_fac_idx_var_name: Optional[str] = None, # Changed from List[int] to var_name
-    use_utility: Optional[bool] = None, # Changed to Optional
-    use_states_info_gain: Optional[bool] = None, # Changed to Optional
-    use_param_info_gain: Optional[bool] = None, # Changed to Optional
-    action_selection: Optional[str] = None, # Changed to Optional
+    control_fac_idx_list: Optional[List[int]] = None, # CHANGED from var_name to list
+    use_utility: Optional[bool] = None, 
+    use_states_info_gain: Optional[bool] = None, 
+    use_param_info_gain: Optional[bool] = None, 
+    action_selection: Optional[str] = None, 
+    action_names: Optional[Dict[int, List[str]]] = None, # NEW: For named actions
+    qs_initial: Optional[Union[List[np.ndarray], str]] = None, # NEW: For initial beliefs
     # num_obs_var_name: Optional[str] = None, # REMOVED
     # num_states_var_name: Optional[str] = None, # REMOVED
     # num_controls_var_name: Optional[str] = None # REMOVED
@@ -176,30 +189,20 @@ def generate_pymdp_agent_instantiation(
     lines = [f"{agent_name} = Agent("]
     indent = "    "
 
-    # Dimensionality parameters - PyMDP infers these from A and B
-    # if num_obs_var_name: lines.append(f"{indent}num_obs={num_obs_var_name},") # REMOVED
-    # if num_states_var_name: lines.append(f"{indent}num_states={num_states_var_name},") # REMOVED
-    # if num_controls_var_name: lines.append(f"{indent}num_controls={num_controls_var_name},") # REMOVED
-
-    # Model parameters (A, B, C, D, E, etc.)
-    for key, matrix_name_str in model_params.items():
-        lines.append(f"{indent}{key}={matrix_name_str},")
-
-    # Control parameters (e.g., E, F, policy_len, etc.)
-    if control_params:
-        for key, value in control_params.items():
-            if isinstance(value, str): # If it's a variable name
-                lines.append(f"{indent}{key}={value},")
-            else: # If it's a literal value
-                lines.append(f"{indent}{key}={repr(value)},") # Use repr for correct literal representation
-    
     # Specific agent constructor parameters (handled separately now)
-    if control_fac_idx_var_name: lines.append(f"{indent}control_fac_idx={control_fac_idx_var_name},")
+    if control_fac_idx_list is not None: # Pass the list directly
+        lines.append(f"{indent}control_fac_idx={control_fac_idx_list},")
     if policy_len is not None: lines.append(f"{indent}policy_len={policy_len},")
     if use_utility is not None: lines.append(f"{indent}use_utility={use_utility},")
     if use_states_info_gain is not None: lines.append(f"{indent}use_states_info_gain={use_states_info_gain},")
     if use_param_info_gain is not None: lines.append(f"{indent}use_param_info_gain={use_param_info_gain},")
     if action_selection is not None: lines.append(f"{indent}action_selection='{action_selection}',")
+    if action_names is not None: lines.append(f"{indent}action_names={action_names},") # Added action_names
+    if qs_initial is not None: # qs_initial can be a list of arrays or a string variable name
+        if isinstance(qs_initial, str):
+            lines.append(f"{indent}qs_initial={qs_initial},")
+        else: # Assuming it's a list of arrays or similar that can be repr'd
+            lines.append(f"{indent}qs_initial={repr(qs_initial)},")
 
     # Learning parameters (e.g. use_B_learning, etc.)
     if learning_params:
@@ -277,62 +280,164 @@ class GnnToPyMdpConverter:
         """Parses the raw gnn_spec and populates structured attributes."""
         self._add_log("Starting GNN data extraction.")
 
-        # StateSpaceBlock parsing
-        ss_block = self.gnn_spec.get("StateSpaceBlock", {})
+        # Prioritize top-level keys from gnn_spec (populated by the exporter)
+        direct_num_obs = self.gnn_spec.get("num_obs_modalities")
+        direct_obs_names = self.gnn_spec.get("obs_modality_names") # New potential key
 
-        # ObservationModalities
-        obs_modalities_spec = ss_block.get("ObservationModalities", [])
-        if not obs_modalities_spec:
-            self._add_log("No 'ObservationModalities' defined in StateSpaceBlock.", "WARNING")
-        for i, mod_spec in enumerate(obs_modalities_spec):
-            name = mod_spec.get("modality_name", f"modality_{i}")
-            num_outcomes = mod_spec.get("num_outcomes")
-            if num_outcomes is None:
-                self._add_log(f"Modality '{name}' missing 'num_outcomes'. Skipping.", "ERROR")
-                continue
-            self.obs_names.append(name)
-            self.num_obs.append(int(num_outcomes))
-        self.num_modalities = len(self.num_obs)
-        # Always define these, even if empty
+        direct_num_states = self.gnn_spec.get("num_hidden_states_factors")
+        direct_state_names = self.gnn_spec.get("hidden_state_factor_names") # New potential key
+
+        direct_num_control_dims = self.gnn_spec.get("num_control_factors") # This should be a list of action dimensions for each factor
+        direct_control_action_names = self.gnn_spec.get("control_action_names_per_factor") # Dict: factor_idx -> list of names
+
+        ss_block = self.gnn_spec.get("StateSpaceBlock", {})
+        model_params_spec = self.gnn_spec.get("ModelParameters", {})
+
+        # Observation Modalities Dimensions & Names
+        processed_obs_directly = False
+        if isinstance(direct_num_obs, list) and all(isinstance(n, int) for n in direct_num_obs):
+            self.num_obs = direct_num_obs
+            self.num_modalities = len(self.num_obs)
+            self._add_log(f"Observation dimensions (num_obs) derived directly from gnn_spec.num_obs_modalities: {self.num_obs}", "INFO")
+            if isinstance(direct_obs_names, list) and len(direct_obs_names) == self.num_modalities:
+                self.obs_names = direct_obs_names
+                self._add_log(f"Observation names derived directly from gnn_spec.obs_modality_names: {self.obs_names}", "INFO")
+            else:
+                self.obs_names = [f"modality_{i}" for i in range(self.num_modalities)]
+                self._add_log(f"Observation names generated as defaults (gnn_spec.obs_modality_names not found or mismatched).", "INFO")
+            processed_obs_directly = True
+
+        if not processed_obs_directly:
+            num_obs_from_model_params = model_params_spec.get("num_obs_modalities")
+            if isinstance(num_obs_from_model_params, list) and all(isinstance(n, int) for n in num_obs_from_model_params):
+                self.num_obs = num_obs_from_model_params
+                self.num_modalities = len(self.num_obs)
+                self._add_log(f"Observation dimensions (num_obs) derived from ModelParameters: {self.num_obs}", "INFO")
+                obs_modalities_spec = ss_block.get("ObservationModalities", [])
+                if obs_modalities_spec and len(obs_modalities_spec) == self.num_modalities:
+                    self.obs_names = [mod.get("modality_name", f"modality_{i}") for i, mod in enumerate(obs_modalities_spec)]
+                else:
+                    self.obs_names = [f"modality_{i}" for i in range(self.num_modalities)]
+            else:
+                obs_modalities_spec = ss_block.get("ObservationModalities", [])
+                if not obs_modalities_spec:
+                    self._add_log("No 'ObservationModalities' in StateSpaceBlock and no 'num_obs_modalities' in ModelParameters or gnn_spec.", "WARNING")
+                for i, mod_spec in enumerate(obs_modalities_spec):
+                    name = mod_spec.get("modality_name", f"modality_{i}")
+                    num_outcomes = mod_spec.get("num_outcomes")
+                    if num_outcomes is None:
+                        self._add_log(f"Modality '{name}' missing 'num_outcomes'. Skipping.", "ERROR")
+                        continue
+                    self.obs_names.append(name)
+                    self.num_obs.append(int(num_outcomes))
+                self.num_modalities = len(self.num_obs)
+
         self.script_parts["preamble_vars"].append(f"obs_names = {self.obs_names if self.num_modalities > 0 else []}")
         self.script_parts["preamble_vars"].append(f"num_obs = {self.num_obs if self.num_modalities > 0 else []}")
         self.script_parts["preamble_vars"].append(f"num_modalities = {self.num_modalities}")
 
+        # Hidden State Factors Dimensions & Names
+        processed_states_directly = False
+        if isinstance(direct_num_states, list) and all(isinstance(n, int) for n in direct_num_states):
+            self.num_states = direct_num_states
+            self.num_factors = len(self.num_states)
+            self._add_log(f"Hidden state dimensions (num_states) derived directly from gnn_spec.num_hidden_states_factors: {self.num_states}", "INFO")
+            if isinstance(direct_state_names, list) and len(direct_state_names) == self.num_factors:
+                self.state_names = direct_state_names
+                self._add_log(f"Hidden state names derived directly from gnn_spec.hidden_state_factor_names: {self.state_names}", "INFO")
+            else:
+                self.state_names = [f"factor_{i}" for i in range(self.num_factors)]
+                self._add_log(f"Hidden state names generated as defaults (gnn_spec.hidden_state_factor_names not found or mismatched).", "INFO")
+            processed_states_directly = True
 
-        # HiddenStateFactors
-        hidden_factors_spec = ss_block.get("HiddenStateFactors", [])
-        if not hidden_factors_spec:
-            self._add_log("No 'HiddenStateFactors' defined in StateSpaceBlock.", "WARNING")
-        for i, fac_spec in enumerate(hidden_factors_spec):
-            name = fac_spec.get("factor_name", f"factor_{i}")
-            num_states_val = fac_spec.get("num_states")
-            if num_states_val is None:
-                self._add_log(f"Factor '{name}' missing 'num_states'. Skipping.", "ERROR")
-                continue
-            self.state_names.append(name)
-            self.num_states.append(int(num_states_val))
-            if fac_spec.get("controllable", False):
-                self.control_factor_indices.append(i)
-                num_actions = fac_spec.get("num_actions")
-                if num_actions is None:
-                    self._add_log(f"Controllable factor '{name}' missing 'num_actions'. Defaulting to num_states ({num_states_val}).", "WARNING")
-                    num_actions = int(num_states_val) # Default for pymdp if not specified
-                self.num_actions_per_control_factor[i] = int(num_actions)
-                action_names = fac_spec.get("action_names")
-                if action_names and len(action_names) == num_actions:
-                    self.action_names_per_control_factor[i] = action_names
+        if not processed_states_directly:
+            num_states_from_model_params = model_params_spec.get("num_hidden_states_factors")
+            if isinstance(num_states_from_model_params, list) and all(isinstance(n, int) for n in num_states_from_model_params):
+                self.num_states = num_states_from_model_params
+                self.num_factors = len(self.num_states)
+                self._add_log(f"Hidden state dimensions (num_states) derived from ModelParameters: {self.num_states}", "INFO")
+                hidden_factors_spec_mp_fallback = ss_block.get("HiddenStateFactors", [])
+                if hidden_factors_spec_mp_fallback and len(hidden_factors_spec_mp_fallback) == self.num_factors:
+                    self.state_names = [fac.get("factor_name", f"factor_{i}") for i, fac in enumerate(hidden_factors_spec_mp_fallback)]
                 else:
-                    self.action_names_per_control_factor[i] = [f"{name}_action_{j}" for j in range(num_actions)]
+                    self.state_names = [f"factor_{i}" for i in range(self.num_factors)]
+            else:
+                hidden_factors_spec = ss_block.get("HiddenStateFactors", [])
+                if not hidden_factors_spec:
+                    self._add_log("No 'HiddenStateFactors' in StateSpaceBlock and no 'num_hidden_states_factors' in ModelParameters or gnn_spec.", "WARNING")
+                for i, fac_spec in enumerate(hidden_factors_spec):
+                    name = fac_spec.get("factor_name", f"factor_{i}")
+                    num_states_val = fac_spec.get("num_states")
+                    if num_states_val is None:
+                        self._add_log(f"Factor '{name}' missing 'num_states'. Skipping.", "ERROR")
+                        continue
+                    self.state_names.append(name)
+                    self.num_states.append(int(num_states_val))
+                self.num_factors = len(self.num_states)
+            
+        # Controllable factors and actions - try direct gnn_spec keys first
+        processed_control_directly = False
+        if isinstance(direct_num_control_dims, list) and self.num_factors > 0 and len(direct_num_control_dims) == self.num_factors:
+            self._add_log(f"Control dimensions derived directly from gnn_spec.num_control_factors: {direct_num_control_dims}", "INFO")
+            for f_idx, num_actions_for_factor_val in enumerate(direct_num_control_dims):
+                num_actions_for_factor = int(num_actions_for_factor_val)
+                if num_actions_for_factor > 1: # Assumes >1 action means controllable
+                    self.control_factor_indices.append(f_idx)
+                    self.num_actions_per_control_factor[f_idx] = num_actions_for_factor
+                    # Get action names if provided directly
+                    if isinstance(direct_control_action_names, dict) and f_idx in direct_control_action_names and \
+                       isinstance(direct_control_action_names[f_idx], list) and len(direct_control_action_names[f_idx]) == num_actions_for_factor:
+                        self.action_names_per_control_factor[f_idx] = direct_control_action_names[f_idx]
+                        self._add_log(f"Action names for control factor {f_idx} derived directly from gnn_spec.control_action_names_per_factor.", "INFO")
+                    else:
+                        factor_name_for_action = self.state_names[f_idx] if f_idx < len(self.state_names) else f"factor_{f_idx}"
+                        self.action_names_per_control_factor[f_idx] = [f"{factor_name_for_action}_action_{j}" for j in range(num_actions_for_factor)]
+            processed_control_directly = True
 
+        if not processed_control_directly:
+            num_control_factors_dims_mp = model_params_spec.get("num_control_factors", model_params_spec.get("num_control_action_dims"))
+            if isinstance(num_control_factors_dims_mp, list) and self.num_factors > 0 and len(num_control_factors_dims_mp) == self.num_factors:
+                self._add_log(f"Control dimensions derived from ModelParameters.num_control_factors/dims: {num_control_factors_dims_mp}", "INFO")
+                for f_idx, num_actions_for_factor_val in enumerate(num_control_factors_dims_mp):
+                    num_actions_for_factor = int(num_actions_for_factor_val)
+                    if num_actions_for_factor > 1:
+                        self.control_factor_indices.append(f_idx)
+                        self.num_actions_per_control_factor[f_idx] = num_actions_for_factor
+                        hsf_block = ss_block.get("HiddenStateFactors", [])
+                        factor_name_for_action = self.state_names[f_idx] if f_idx < len(self.state_names) else f"factor_{f_idx}"
+                        action_names_from_hsf = None
+                        if f_idx < len(hsf_block) and hsf_block[f_idx].get("factor_name") == factor_name_for_action:
+                            action_names_from_hsf = hsf_block[f_idx].get("action_names")
+                        
+                        if action_names_from_hsf and len(action_names_from_hsf) == num_actions_for_factor:
+                           self.action_names_per_control_factor[f_idx] = action_names_from_hsf
+                        else:
+                           self.action_names_per_control_factor[f_idx] = [f"{factor_name_for_action}_action_{j}" for j in range(num_actions_for_factor)]
+            else:
+                hidden_factors_spec_ctrl = ss_block.get("HiddenStateFactors", [])
+                if self.num_factors > 0 and len(hidden_factors_spec_ctrl) == self.num_factors:
+                    for i, fac_spec in enumerate(hidden_factors_spec_ctrl):
+                        if fac_spec.get("controllable", False):
+                            self.control_factor_indices.append(i)
+                            num_actions = fac_spec.get("num_actions")
+                            factor_name_for_action = self.state_names[i] if i < len(self.state_names) else f"factor_{i}"
+                            if num_actions is None:
+                                self._add_log(f"Controllable factor '{factor_name_for_action}' missing 'num_actions'. Defaulting to num_states ({self.num_states[i]}).", "WARNING")
+                                num_actions = int(self.num_states[i])
+                            self.num_actions_per_control_factor[i] = int(num_actions)
+                            action_names = fac_spec.get("action_names")
+                            if action_names and len(action_names) == num_actions:
+                                self.action_names_per_control_factor[i] = action_names
+                            else:
+                                self.action_names_per_control_factor[i] = [f"{factor_name_for_action}_action_{j}" for j in range(num_actions)]
+                else:
+                     self._add_log(f"Could not definitively determine control structure from gnn_spec, ModelParameters or StateSpaceBlock. control_fac_idx might be empty.", "WARNING")
 
-        self.num_factors = len(self.num_states)
-        # Always define these, even if empty
         self.script_parts["preamble_vars"].append(f"state_names = {self.state_names if self.num_factors > 0 else []}")
         self.script_parts["preamble_vars"].append(f"num_states = {self.num_states if self.num_factors > 0 else []}")
         self.script_parts["preamble_vars"].append(f"num_factors = {self.num_factors}")
         self.script_parts["preamble_vars"].append(f"control_fac_idx = {self.control_factor_indices if self.control_factor_indices else []}")
 
-        # Derive and add num_controls
         num_controls_list = []
         if self.num_factors > 0:
             for f_idx in range(self.num_factors):
@@ -382,9 +487,9 @@ class GnnToPyMdpConverter:
     def convert_A_matrix(self) -> str:
         """Converts GNN's A matrix (likelihood) to PyMDP format."""
         if not self.num_modalities:
-            self._add_log("A_matrix: No observation modalities defined. 'A' will be [].", "WARNING")
-            self.script_parts["matrix_definitions"].append("A = []")
-            return "# A matrix set to [] due to no observation modalities."
+            self._add_log("A_matrix: No observation modalities defined. 'A' will be None.", "INFO")
+            self.script_parts["matrix_definitions"].append("A = None")
+            return "# A matrix set to None due to no observation modalities."
 
         init_code = f"A = utils.obj_array_zeros([[o_dim] + num_states for o_dim in num_obs])"
         self.script_parts["matrix_definitions"].append(init_code)
@@ -511,9 +616,9 @@ class GnnToPyMdpConverter:
     def convert_B_matrix(self) -> str:
         """Converts GNN's B matrix (transition) to PyMDP format."""
         if not self.num_factors:
-            self._add_log("B_matrix: No hidden state factors defined. 'B' will be [].", "WARNING")
-            self.script_parts["matrix_definitions"].append("B = []")
-            return "# B matrix set to [] due to no hidden state factors."
+            self._add_log("B_matrix: No hidden state factors defined. 'B' will be None.", "INFO")
+            self.script_parts["matrix_definitions"].append("B = None")
+            return "# B matrix set to None due to no hidden state factors."
 
         init_code = f"B = utils.obj_array(num_factors)"
         self.script_parts["matrix_definitions"].append(init_code)
@@ -697,11 +802,9 @@ class GnnToPyMdpConverter:
     def convert_D_vector(self) -> str:
         """Converts GNN's D vector (initial hidden states) to PyMDP format."""
         if not self.num_factors:
-            self._add_log("D_vector: No hidden state factors defined. 'D' will be [].", "ERROR") # D is usually required
-            self.script_parts["matrix_definitions"].append(
-                generate_pymdp_matrix_definition("D", None, is_object_array=True)
-            )
-            return "# D matrix set to [] due to no hidden state factors."
+            self._add_log("D_vector: No hidden state factors defined. 'D' will be None.", "INFO") # D is optional if qs_initial is used
+            self.script_parts["matrix_definitions"].append("D = None")
+            return "# D vector set to None due to no hidden state factors."
 
         # Initialize D = utils.obj_array(num_factors)
         init_code = f"D = utils.obj_array(num_factors)"
@@ -774,42 +877,48 @@ class GnnToPyMdpConverter:
         learning_params_dict = self.agent_hyperparams.get("learning_parameters", {})
         algorithm_params_dict = self.agent_hyperparams.get("algorithm_parameters", {})
         
-        # Return None for control_params_dict if it's not meant for direct Agent args here.
+        # Return None for control_params_dict if it's not meant for direct Agent constructor args here.
         # Or ensure it only contains parameters that pymdp.Agent would accept via **kwargs if that's supported.
         # For now, assume it's not directly used for fixed Agent constructor args.
         return None, learning_params_dict, algorithm_params_dict
 
-    def generate_agent_instantiation_code(self) -> str:
-        model_matrix_params = {"A": "A", "B": "B", "C": "C"}
-        if self.num_factors > 0:
+    def generate_agent_instantiation_code(self, action_names: Optional[Dict[int,List[str]]] = None, qs_initial: Optional[Any] = None) -> str: # Added args
+        model_matrix_params = {"A": "A", "B": "B", "C": "C"} # A and B are always included
+        
+        # Add D if there are factors, otherwise Agent handles D=None if not provided and factors exist
+        if self.num_factors > 0: 
             model_matrix_params["D"] = "D"
-        if self.E_spec and self.E_spec.get("array") is not None:
+        
+        # E is added only if explicitly provided and non-empty in the spec
+        if self.E_spec and self.E_spec.get("array") is not None and len(self.E_spec.get("array")) > 0 :
              model_matrix_params["E"] = "E"
 
         _unused_control_dict, learning_params, algorithm_params = self.extract_agent_hyperparameters()
         
-        # Agent-specific constructor arguments from self.agent_hyperparams
-        policy_len = self.agent_hyperparams.get("policy_len") 
-        # Pass the variable name "control_fac_idx" which is defined in preamble
-        control_fac_idx_var_name_to_pass = "control_fac_idx" 
+        policy_len = self.agent_hyperparams.get("policy_len")
+        control_fac_idx_to_pass = self.control_factor_indices if self.control_factor_indices else None
         
-        use_utility = self.agent_hyperparams.get("use_utility") 
+        use_utility = self.agent_hyperparams.get("use_utility")
         use_states_info_gain = self.agent_hyperparams.get("use_states_info_gain")
         use_param_info_gain = self.agent_hyperparams.get("use_param_info_gain")
         action_selection = self.agent_hyperparams.get("action_selection")
 
+        # qs_initial can be a string like "np.array(...)" or None (if not specified)
+        # The generate_pymdp_agent_instantiation function handles this.
+        # If qs_initial is actual data (list of arrays), it should be formatted by the caller or handled in generate_...
+        # For now, assume if qs_initial (the variable) is passed, it's a string name of a var or direct data.
+
         return generate_pymdp_agent_instantiation(
             self.model_name, 
             model_params=model_matrix_params,
-            # Pass names of script variables for dimensions
-            # Pass specific agent constructor args
-            control_fac_idx_var_name=control_fac_idx_var_name_to_pass,
+            control_fac_idx_list=control_fac_idx_to_pass,
             policy_len=policy_len,
             use_utility=use_utility,
             use_states_info_gain=use_states_info_gain,
             use_param_info_gain=use_param_info_gain,
             action_selection=action_selection,
-            # Pass through other parameter dicts
+            action_names=action_names, # Pass parsed action_names
+            qs_initial=qs_initial,     # Pass parsed qs_initial
             learning_params=learning_params,
             algorithm_params=algorithm_params
         )
@@ -831,13 +940,13 @@ class GnnToPyMdpConverter:
         
         usage_lines.append(f"{indent}# Initialize agent (already done above)")
         usage_lines.append(f"{indent}agent = {self.model_name}")
-        usage_lines.append(f"{indent}print(f\"Agent '{self.model_name}' initialized with {self.num_factors} factors and {self.num_modalities} modalities.\")")
+        usage_lines.append(f"{indent}print(f\"Agent '{self.model_name}' initialized with {{agent.num_factors if hasattr(agent, 'num_factors') else 'N/A'}} factors and {{agent.num_modalities if hasattr(agent, 'num_modalities') else 'N/A'}} modalities.\")")
 
         # Initial observation
         if init_o_raw and isinstance(init_o_raw, list) and len(init_o_raw) == self.num_modalities:
             usage_lines.append(f"{indent}o_current = {init_o_raw} # Initial observation from GNN spec")
         else: # Default initial observation (e.g., first outcome for each modality or a placeholder)
-            default_o = [0] * self.num_modalities if self.num_modalities > 0 else "None"
+            default_o = [0] * self.num_modalities if self.num_modalities > 0 else []
             usage_lines.append(f"{indent}o_current = {default_o} # Example initial observation (e.g. first outcome for each modality)")
             if not init_o_raw and self.num_modalities > 0 : self._add_log("Simulation: No 'initial_observations' in GNN, using default.", "INFO")
         
@@ -845,7 +954,7 @@ class GnnToPyMdpConverter:
         if init_s_raw and isinstance(init_s_raw, list) and len(init_s_raw) == self.num_factors:
              usage_lines.append(f"{indent}s_current = {init_s_raw} # Initial true states from GNN spec")
         else:
-            default_s = [0] * self.num_factors if self.num_factors > 0 else "None" # Example: first state for each factor
+            default_s = [0] * self.num_factors if self.num_factors > 0 else [] # Example: first state for each factor
             usage_lines.append(f"{indent}s_current = {default_s} # Example initial true states for simulation")
             if not init_s_raw and self.num_factors > 0: self._add_log("Simulation: No 'initial_true_states' in GNN, using default.", "INFO")
 
@@ -940,29 +1049,24 @@ class GnnToPyMdpConverter:
         """Assembles all parts into a single Python script string."""
         
         # Pre-computation / matrix generation calls
-        # These methods will now append to self.script_parts["matrix_definitions"]
         self.convert_A_matrix()
         self.convert_B_matrix()
         self.convert_C_vector()
         self.convert_D_vector()
-        self.convert_E_vector() # E matrix for policy priors
+        self.convert_E_vector()
 
         # Agent instantiation
         self.script_parts["agent_instantiation"].append(self.generate_agent_instantiation_code())
         
-        # Example Usage (now more detailed)
         if include_example_usage:
             self.script_parts["example_usage"] = self.generate_example_usage_code()
         else:
             self.script_parts["example_usage"] = ["# Example usage block skipped as per options."]
 
-
-        # Assemble the script
         script_content = []
         script_content.extend(self.script_parts["imports"])
         script_content.append("")
         
-        # Add GNN to PyMDP Conversion Summary (from self.conversion_log)
         summary_header = ["# --- GNN to PyMDP Conversion Summary ---"]
         summary_lines = [f"# {log_entry}" for log_entry in self.conversion_log]
         summary_footer = ["# --- End of GNN to PyMDP Conversion Summary ---"]
@@ -972,10 +1076,10 @@ class GnnToPyMdpConverter:
         script_content.append("")
         script_content.append("")
 
-        script_content.extend(self.script_parts["comments"]) # Model specific comments
+        script_content.extend(self.script_parts["comments"])
         script_content.append("")
 
-        script_content.extend(self.script_parts["preamble_vars"]) # obs_names, num_states etc.
+        script_content.extend(self.script_parts["preamble_vars"])
         script_content.append("")
 
         script_content.append("# --- Matrix Definitions ---")
@@ -986,9 +1090,51 @@ class GnnToPyMdpConverter:
         script_content.extend(self.script_parts["agent_instantiation"])
         script_content.append("")
 
-        script_content.extend(self.script_parts["example_usage"])
+        # Define agent_params_for_debug dictionary for the debug block
+        # It should capture the actual arguments intended for the Agent constructor
+        agent_params_lines = ["agent_params_for_debug = {"]
+        # Collect args from how generate_agent_instantiation_code structures them
+        # Based on model_matrix_params and other specific args in generate_agent_instantiation_code:
+        agent_params_lines.append("    'A': A if 'A' in globals() else None,")
+        agent_params_lines.append("    'B': B if 'B' in globals() else None,")
+        agent_params_lines.append("    'C': C if 'C' in globals() else None,")
+        if self.num_factors > 0: # D is only passed if there are factors
+             agent_params_lines.append("    'D': D if 'D' in globals() else None,")
+        if self.E_spec and self.E_spec.get("array") is not None:
+             agent_params_lines.append("    'E': E if 'E' in globals() else None,")
+
+        # Add other specific Agent constructor parameters that generate_agent_instantiation_code handles
+        # These should ideally be sourced from the same place generate_agent_instantiation_code gets them (self.agent_hyperparams)
+        # or directly from the variables defined in the preamble.
+        agent_params_lines.append("    'control_fac_idx': (control_fac_idx if control_fac_idx else None) if 'control_fac_idx' in globals() else None,")
+        if self.agent_hyperparams.get("policy_len") is not None:
+             agent_params_lines.append(f"    'policy_len': {self.agent_hyperparams['policy_len']},")
+        if self.agent_hyperparams.get("use_utility") is not None:
+             agent_params_lines.append(f"    'use_utility': {self.agent_hyperparams['use_utility']},")
+        if self.agent_hyperparams.get("use_states_info_gain") is not None:
+            agent_params_lines.append(f"    'use_states_info_gain': {self.agent_hyperparams['use_states_info_gain']},")
+        if self.agent_hyperparams.get("use_param_info_gain") is not None:
+            agent_params_lines.append(f"    'use_param_info_gain': {self.agent_hyperparams['use_param_info_gain']},")
+        if self.agent_hyperparams.get("action_selection") is not None:
+            agent_params_lines.append(f"    'action_selection': '{self.agent_hyperparams['action_selection']}',")
+        
+        # Learning and algorithm params are passed as dicts
+        _, learning_params_dict, algorithm_params_dict = self.extract_agent_hyperparameters()
+        if learning_params_dict:
+            agent_params_lines.append(f"    'learning_params': {learning_params_dict},")
+        if algorithm_params_dict:
+            agent_params_lines.append(f"    'algorithm_params': {algorithm_params_dict},")
+
+        if agent_params_lines[-1].endswith(','): # Remove trailing comma if any
+            agent_params_lines[-1] = agent_params_lines[-1][:-1]
+        agent_params_lines.append("}")
+        script_content.extend(agent_params_lines)
+        script_content.append("")
+
+        script_content.extend(self.script_parts["example_usage"]) # This should come after agent_params_for_debug definition
         
         # Add runtime debug block
+        # The temp_agent instantiation should use agent_params_for_debug
         debug_block = [
             "print('--- PyMDP Runtime Debug ---')",
             "try:",
@@ -998,26 +1144,31 @@ class GnnToPyMdpConverter:
             "    from pymdp.agent import Agent",
             "    print(f'AGENT_SCRIPT: Imported Agent: {Agent}')",
             "    print(f'AGENT_SCRIPT: Agent module location: {inspect.getfile(Agent)}')",
-            "    # Check if required variables are in global scope",
-            "    required_vars = ['A', 'B', 'C', 'D', 'num_obs', 'num_states', 'num_controls', 'control_factor_idx', 'agent_params']",
             "    print('AGENT_SCRIPT: Checking for required variables in global scope:')",
-            "    for var_name in required_vars:",
-            "        if var_name in globals():",
-            "            print(f'  AGENT_SCRIPT: {var_name} is defined. Value (first 100 chars): {str(globals()[var_name])[:100]}')",
-            "        else:",
-            "            print(f'  AGENT_SCRIPT: {var_name} is NOT defined.')",
-            "    # Instantiate agent to catch initialization errors",
-            "    print('AGENT_SCRIPT: Attempting to instantiate agent with defined parameters...')",
-            "    temp_agent = Agent(**agent_params)",
-            "    print(f'AGENT_SCRIPT: Agent successfully instantiated: {temp_agent}')",
+            "    # Check defined parameters for the main agent",
+            "    print(f\"  AGENT_SCRIPT: A = {{A if 'A' in globals() else 'Not Defined'}}\")",
+            "    print(f\"  AGENT_SCRIPT: B = {{B if 'B' in globals() else 'Not Defined'}}\")",
+            "    print(f\"  AGENT_SCRIPT: C = {{C if 'C' in globals() else 'Not Defined'}}\")",
+            "    print(f\"  AGENT_SCRIPT: D = {{D if 'D' in globals() else 'Not Defined'}}\")",
+            "    print(f\"  AGENT_SCRIPT: E = {{E if 'E' in globals() else 'Not Defined'}}\")",
+            "    print(f\"  AGENT_SCRIPT: control_fac_idx = {{control_fac_idx if 'control_fac_idx' in globals() else 'Not Defined'}}\")",
+            "    print(f\"  AGENT_SCRIPT: action_names = {{action_names_dict_str if action_names_dict_str != '{{}}' else 'Not Defined'}}\")",
+            "    print(f\"  AGENT_SCRIPT: qs_initial = {{qs_initial_str if qs_initial_str != 'None' else 'Not Defined'}}\")",
+            "    print(f\"  AGENT_SCRIPT: agent_hyperparams = {{{agent_hyperparams_dict_str}}}\")",
+            "    print('AGENT_SCRIPT: Attempting to instantiate agent with defined parameters for debug...')",
+            "    # Filter out None hyperparams from agent_params_for_debug if it was originally None",
+            "    # The ** unpacking handles empty dicts correctly if agent_hyperparams_dict_str was \"{}\"",
+            "    debug_params_copy = {k: v for k, v in agent_params_for_debug.items() if not (isinstance(v, str) and v == 'None')}",
+            "    temp_agent = Agent(**debug_params_copy)",
+            "    print(f'AGENT_SCRIPT: Debug agent successfully instantiated: {temp_agent}')",
             "except Exception as e_debug:",
-            "    print(f'AGENT_SCRIPT: Error during PyMDP runtime debug: {e_debug}')", # Ensure this f-string is properly terminated
-            "    print(f'AGENT_SCRIPT: Traceback:\\n{traceback.format_exc()}')",
+            "    print(f'AGENT_SCRIPT: Error during PyMDP runtime debug: {e_debug}')", 
+            "    print(f\"AGENT_SCRIPT: Traceback:\\n{traceback.format_exc()}\")", # Keep f\" for this multi-line
             "print('--- End PyMDP Runtime Debug ---')",
         ]
         script_content.extend(debug_block)
 
-        script_content.append(f"# --- GNN Model: {self.model_name} ---\n")
+        script_content.append(f"# --- GNN Model: {self.model_name} ---\\n")
 
         return "\n".join(script_content)
 

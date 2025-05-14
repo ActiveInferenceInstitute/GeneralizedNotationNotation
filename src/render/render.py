@@ -80,6 +80,7 @@ def main(cli_args: Optional[List[str]] = None):
     try:
         with open(args.gnn_spec_file, 'r', encoding='utf-8') as f:
             gnn_spec = json.load(f)
+        logger.debug(f"src/render/render.py: Loaded gnn_spec from JSON ({args.gnn_spec_file}): {{gnn_spec}}")
         logger.info(f"Successfully loaded GNN specification from {args.gnn_spec_file}")
     except json.JSONDecodeError as e:
         logger.error(f"Error decoding JSON from GNN specification file {args.gnn_spec_file}: {e}")

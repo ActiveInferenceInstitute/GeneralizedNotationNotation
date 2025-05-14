@@ -543,7 +543,9 @@ def _gnn_model_to_dict(gnn_file_path_str: str) -> dict:
     # Similar inference for num_obs_modalities and num_control_factors if they are empty
     # and ModelParameters section didn't provide them. For now, we rely on ModelParameters.
 
-    return model
+    # After processing all sections
+    logger.debug(f"_gnn_model_to_dict: Final parsed_data before return for {gnn_file_path_str}: {{parsed_data}}") # Added detailed log
+    return parsed_data
 
 # --- Export Functions ---
 
