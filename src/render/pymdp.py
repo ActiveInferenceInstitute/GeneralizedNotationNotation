@@ -13,6 +13,9 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union # Added Union
 import json # For placeholder_gnn_parser_pymdp
 import re # for _numpy_array_to_string refinement
+import sys # for sys.modules
+import inspect # for inspect.signature
+import traceback # for traceback.format_exc()
 
 # Attempt to import pymdp utilities, maths, and agent.
 # These are for the *generated* script, not for the renderer itself,
@@ -156,16 +159,24 @@ def generate_pymdp_agent_instantiation(
     algorithm_params: Optional[Dict[str, Any]] = None,
     # Added new parameters
     policy_len: Optional[int] = None,
-    control_fac_idx: Optional[List[int]] = None,
-    use_utility: bool = True,
-    use_states_info_gain: bool = True,
-    use_param_info_gain: bool = False, # Default from PyMDP
-    action_selection: str = "stochastic" # Default from PyMDP
+    control_fac_idx_var_name: Optional[str] = None, # Changed from List[int] to var_name
+    use_utility: Optional[bool] = None, # Changed to Optional
+    use_states_info_gain: Optional[bool] = None, # Changed to Optional
+    use_param_info_gain: Optional[bool] = None, # Changed to Optional
+    action_selection: Optional[str] = None, # Changed to Optional
+    num_obs_var_name: Optional[str] = None, # ADDED
+    num_states_var_name: Optional[str] = None, # ADDED
+    num_controls_var_name: Optional[str] = None # ADDED
 ) -> str:
     lines = [f"{agent_name} = Agent("]
     indent = "    "
 
-    # Model parameters (A, B, C, D, etc.)
+    # Dimensionality parameters (must be passed if A/B are None or not sufficient for inference)
+    if num_obs_var_name: lines.append(f"{indent}num_obs={num_obs_var_name},")
+    if num_states_var_name: lines.append(f"{indent}num_states={num_states_var_name},")
+    if num_controls_var_name: lines.append(f"{indent}num_controls={num_controls_var_name},")
+
+    # Model parameters (A, B, C, D, E, etc.)
     for key, matrix_name_str in model_params.items():
         lines.append(f"{indent}{key}={matrix_name_str},")
 
@@ -177,9 +188,17 @@ def generate_pymdp_agent_instantiation(
             else: # If it's a literal value
                 lines.append(f"{indent}{key}={repr(value)},") # Use repr for correct literal representation
     
+    # Specific agent constructor parameters (handled separately now)
+    if control_fac_idx_var_name: lines.append(f"{indent}control_fac_idx={control_fac_idx_var_name},")
+    if policy_len is not None: lines.append(f"{indent}policy_len={policy_len},")
+    if use_utility is not None: lines.append(f"{indent}use_utility={use_utility},")
+    if use_states_info_gain is not None: lines.append(f"{indent}use_states_info_gain={use_states_info_gain},")
+    if use_param_info_gain is not None: lines.append(f"{indent}use_param_info_gain={use_param_info_gain},")
+    if action_selection is not None: lines.append(f"{indent}action_selection='{action_selection}',")
+
     # Learning parameters (e.g. use_B_learning, etc.)
     if learning_params:
-         for key, value in learning_params.items():
+        for key, value in learning_params.items():
             lines.append(f"{indent}{key}={repr(value)},")
 
     # Algorithm parameters (e.g. G_learn_method, etc.)
@@ -207,7 +226,10 @@ class GnnToPyMdpConverter:
                 "from pymdp.agent import Agent",
                 "from pymdp import utils", # Added
                 "from pymdp import maths", # Added, for softmax etc.
-                "import copy" # Added for A_gp, B_gp
+                "import copy", # Added for A_gp, B_gp
+                "import sys", # for sys.modules
+                "import inspect", # for inspect.signature
+                "import traceback" # for traceback.format_exc()
             ],
             "preamble_vars": [], # For obs_names, state_names etc.
             "comments": [f"# --- GNN Model: {self.model_name} ---"],
@@ -266,10 +288,10 @@ class GnnToPyMdpConverter:
             self.obs_names.append(name)
             self.num_obs.append(int(num_outcomes))
         self.num_modalities = len(self.num_obs)
-        if self.num_modalities > 0:
-             self.script_parts["preamble_vars"].append(f"obs_names = {self.obs_names}")
-             self.script_parts["preamble_vars"].append(f"num_obs = {self.num_obs}")
-             self.script_parts["preamble_vars"].append(f"num_modalities = {self.num_modalities}")
+        # Always define these, even if empty
+        self.script_parts["preamble_vars"].append(f"obs_names = {self.obs_names if self.num_modalities > 0 else []}")
+        self.script_parts["preamble_vars"].append(f"num_obs = {self.num_obs if self.num_modalities > 0 else []}")
+        self.script_parts["preamble_vars"].append(f"num_modalities = {self.num_modalities}")
 
 
         # HiddenStateFactors
@@ -299,19 +321,24 @@ class GnnToPyMdpConverter:
 
 
         self.num_factors = len(self.num_states)
+        # Always define these, even if empty
+        self.script_parts["preamble_vars"].append(f"state_names = {self.state_names if self.num_factors > 0 else []}")
+        self.script_parts["preamble_vars"].append(f"num_states = {self.num_states if self.num_factors > 0 else []}")
+        self.script_parts["preamble_vars"].append(f"num_factors = {self.num_factors}")
+        self.script_parts["preamble_vars"].append(f"control_fac_idx = {self.control_factor_indices if self.control_factor_indices else []}")
+
+        # Derive and add num_controls
+        num_controls_list = []
         if self.num_factors > 0:
-            self.script_parts["preamble_vars"].append(f"state_names = {self.state_names}")
-            self.script_parts["preamble_vars"].append(f"num_states = {self.num_states}")
-            self.script_parts["preamble_vars"].append(f"num_factors = {self.num_factors}")
-        if self.control_factor_indices:
-            self.script_parts["preamble_vars"].append(f"control_fac_idx = {self.control_factor_indices}")
-            # Potentially generate a flat list of all action names if needed by example
-            # all_action_names = []
-            # for f_idx in self.control_factor_indices:
-            #    all_action_names.extend(self.action_names_per_control_factor.get(f_idx, []))
-            # self.script_parts["preamble_vars"].append(f"action_names = {all_action_names}")
-
-
+            for f_idx in range(self.num_factors):
+                if f_idx in self.control_factor_indices:
+                    # Default to num_states for that factor if num_actions not specified
+                    num_actions_for_factor = self.num_actions_per_control_factor.get(f_idx, self.num_states[f_idx])
+                    num_controls_list.append(num_actions_for_factor)
+                else:
+                    num_controls_list.append(1) # PyMDP convention for uncontrollable factors
+        self.script_parts["preamble_vars"].append(f"num_controls = {num_controls_list}")
+        
         # InitialParameterization (or specific matrix blocks)
         # This needs to be adapted based on how the GNN spec is structured for matrices.
         # Assuming a structure like: gnn_spec.get("LikelihoodMatrixA", {})
@@ -733,57 +760,54 @@ class GnnToPyMdpConverter:
     def extract_agent_hyperparameters(self) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]], Optional[Dict[str,Any]]]:
         """Extracts control, learning, and algorithm parameters from GNN spec for Agent."""
         # This method needs to be updated if GNN spec for these changes
-        self._add_log("AgentHyperparameters: Extracted control, learning, algorithm params (mostly placeholders).")
+        self._add_log("AgentHyperparameters: Extracting learning and algorithm parameter dicts.")
         
-        # Example: these would come from self.agent_hyperparams
-        control_params = self.agent_hyperparams.get("control_parameters", {})
-        learning_params = self.agent_hyperparams.get("learning_parameters", {})
-        algorithm_params = self.agent_hyperparams.get("algorithm_parameters", {})
+        # These are generic dictionaries for other parameters not explicitly handled by Agent constructor args
+        # control_params_dict = self.agent_hyperparams.get("control_parameters", {}) # Potentially unused or for other control aspects
+        learning_params_dict = self.agent_hyperparams.get("learning_parameters", {})
+        algorithm_params_dict = self.agent_hyperparams.get("algorithm_parameters", {})
         
-        # Add specific parameters required by Agent constructor if they are in agent_hyperparams
-        # and not directly passed (like control_fac_idx)
-        if "policy_len" in self.agent_hyperparams:
-            control_params["policy_len"] = self.agent_hyperparams["policy_len"]
-        if "use_utility" in self.agent_hyperparams:
-            control_params["use_utility"] = self.agent_hyperparams["use_utility"]
-        # ... and so on for other Agent parameters
-
-        return control_params, learning_params, algorithm_params
+        # Return None for control_params_dict if it's not meant for direct Agent args here.
+        # Or ensure it only contains parameters that pymdp.Agent would accept via **kwargs if that's supported.
+        # For now, assume it's not directly used for fixed Agent constructor args.
+        return None, learning_params_dict, algorithm_params_dict
 
     def generate_agent_instantiation_code(self) -> str:
-        model_constructor_params = {"A": "A", "B": "B", "C": "C", "D": "D"} # E is part of control_params if not None
-        if self.E_spec and self.E_spec.get("array") is not None: # If E was defined
-             model_constructor_params["E"] = "E"
+        model_matrix_params = {"A": "A", "B": "B", "C": "C"}
+        if self.num_factors > 0:
+            model_matrix_params["D"] = "D"
+        if self.E_spec and self.E_spec.get("array") is not None:
+             model_matrix_params["E"] = "E"
 
-
-        control_params, learning_params, algorithm_params = self.extract_agent_hyperparameters()
+        _unused_control_dict, learning_params, algorithm_params = self.extract_agent_hyperparameters()
         
-        # Ensure control_fac_idx is passed if there are controllable factors
-        if self.control_factor_indices:
-            if control_params is None: control_params = {}
-            control_params["control_fac_idx"] = self.control_factor_indices # Pass the actual list
-
-        # Add other specific agent constructor params from self.agent_hyperparams
-        policy_len = self.agent_hyperparams.get("policy_len")
-        use_utility = self.agent_hyperparams.get("use_utility", True) # Default to True
-        use_states_info_gain = self.agent_hyperparams.get("use_states_info_gain", True) # Default True
-        use_param_info_gain = self.agent_hyperparams.get("use_param_info_gain", False) # Default False
-        action_selection = self.agent_hyperparams.get("action_selection", "stochastic") # Default 'stochastic'
-
+        # Agent-specific constructor arguments from self.agent_hyperparams
+        policy_len = self.agent_hyperparams.get("policy_len") 
+        # Pass the variable name "control_fac_idx" which is defined in preamble
+        control_fac_idx_var_name_to_pass = "control_fac_idx" 
+        
+        use_utility = self.agent_hyperparams.get("use_utility") 
+        use_states_info_gain = self.agent_hyperparams.get("use_states_info_gain")
+        use_param_info_gain = self.agent_hyperparams.get("use_param_info_gain")
+        action_selection = self.agent_hyperparams.get("action_selection")
 
         return generate_pymdp_agent_instantiation(
             self.model_name, 
-            model_constructor_params,
-            control_params=control_params,
-            learning_params=learning_params,
-            algorithm_params=algorithm_params,
-            # Pass specific params extracted
+            model_params=model_matrix_params,
+            # Pass names of script variables for dimensions
+            num_obs_var_name="num_obs",
+            num_states_var_name="num_states",
+            num_controls_var_name="num_controls",
+            # Pass specific agent constructor args
+            control_fac_idx_var_name=control_fac_idx_var_name_to_pass,
             policy_len=policy_len,
-            # control_fac_idx already added to control_params if applicable
             use_utility=use_utility,
             use_states_info_gain=use_states_info_gain,
             use_param_info_gain=use_param_info_gain,
-            action_selection=action_selection
+            action_selection=action_selection,
+            # Pass through other parameter dicts
+            learning_params=learning_params,
+            algorithm_params=algorithm_params
         )
 
     def generate_example_usage_code(self) -> List[str]:
@@ -960,6 +984,30 @@ class GnnToPyMdpConverter:
 
         script_content.extend(self.script_parts["example_usage"])
         
+        # Add runtime debug block
+        debug_block = [
+            "print('--- PyMDP Runtime Debug ---')",
+            "try:",
+            "    import pymdp",
+            "    print(f'AGENT_SCRIPT: Using PyMDP version: {pymdp.__version__}')",
+            "    print(f'AGENT_SCRIPT: PyMDP package location: {pymdp.__file__}')",
+            "    from pymdp.agent import Agent as AgentFromImport",
+            "    print(f'AGENT_SCRIPT: Imported pymdp.agent.Agent as: {AgentFromImport}')",
+            "    agent_module = sys.modules.get(AgentFromImport.__module__)",
+            "    agent_module_file = getattr(agent_module, '__file__', 'N/A')",
+            "    print(f'AGENT_SCRIPT: Agent module ({AgentFromImport.__module__}) file: {agent_module_file}')",
+            "    agent_init_sig = inspect.signature(AgentFromImport.__init__)",
+            "    print(f'AGENT_SCRIPT: Agent.__init__ signature: {agent_init_sig}')",
+            "    print(f'AGENT_SCRIPT: Agent.__init__ parameters: {list(agent_init_sig.parameters.keys())}')",
+            "except Exception as e_debug:",
+            "    print(f'AGENT_SCRIPT: Error during PyMDP runtime debug: {e_debug}\n{traceback.format_exc()}')",
+            "print('--- End PyMDP Runtime Debug ---')",
+            ""
+        ]
+        script_content.extend(debug_block)
+
+        script_content.append(f"# --- GNN Model: {self.model_name} ---\n")
+
         return "\n".join(script_content)
 
 def render_gnn_to_pymdp(

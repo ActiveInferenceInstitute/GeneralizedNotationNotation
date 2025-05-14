@@ -101,6 +101,22 @@ def main(args):
                 logger.error("❌ Python virtual environment and dependency setup failed.") # Changed from print
                 return 1 # Propagate failure
             logger.info("  ✅ Python virtual environment and dependencies setup completed.") # Was print if verbose
+
+            # --- Confirm PyMDP Installation ---
+            logger.info("  Phase 3: Confirming PyMDP installation...")
+            try:
+                import pymdp
+                logger.info(f"    Successfully imported pymdp. Version: {pymdp.__version__}")
+                logger.info(f"    PyMDP location: {pymdp.__file__}")
+                from pymdp.agent import Agent
+                logger.info(f"    Successfully imported pymdp.agent.Agent: {Agent}")
+                logger.info("  ✅ PyMDP installation confirmed.")
+            except ImportError as e:
+                logger.error(f"  ❌ Failed to import pymdp or pymdp.agent.Agent after setup: {e}")
+                logger.error("  ❌ This indicates a critical issue with the PyMDP installation or environment.")
+                return 1 # Indicate failure
+            # --- End PyMDP Confirmation ---
+
         except Exception as e:
             logger.error(f"❌ Error during virtual environment setup: {e}", exc_info=True) # Changed from print, added exc_info
             # import traceback # Not needed if using exc_info=True

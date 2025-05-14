@@ -244,7 +244,7 @@ class MatrixVisualizer:
             
             # Save figure
             output_path = output_dir / 'combined_matrices.png'
-            plt.tight_layout(rect=[0, 0, 0.9, 0.95])  # Make room for colorbar and title
+            plt.tight_layout()  # Make room for colorbar and title
             plt.savefig(output_path, dpi=150, bbox_inches='tight')
             plt.close()
             
