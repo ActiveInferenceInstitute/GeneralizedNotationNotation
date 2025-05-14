@@ -1,0 +1,1 @@
+GNN Model Summary: N/A\nSource File: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_dynamic_perception.md\n\nMetadata:\n\nStates (0):\n\nParameters (0):\n\nObservations (0):\n\nTransitions (0):\n\nOntology Annotations (0):\n\n

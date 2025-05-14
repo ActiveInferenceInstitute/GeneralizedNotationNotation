@@ -1,0 +1,7 @@
+{
+  "ModelName": "Dynamic perception with Policy Selection v1",
+  "ModelAnnotation": "This model relates a single hidden state to a single observable modality. It is a dynamic model because it tracks changes in the hidden state through time. There is Action applied via policy selection (\u03c0).",
+  "GNNVersionAndFlags": "GNN v1",
+  "Time": "Dynamic\nDiscreteTime=s\nModelTimeHorizon=Unbounded",
+  "ActInfOntologyAnnotation": "A=RecognitionMatrix\nB=TransitionMatrix\nC=Preference\nD=Prior\nG=ExpectedFreeEnergy\ns=HiddenState\ns_prime=NextHiddenState\no=Observation\n\u03c0=PolicyVector\nt=Time"
+}

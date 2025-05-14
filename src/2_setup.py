@@ -102,23 +102,64 @@ def main(args):
                 return 1 # Propagate failure
             logger.info("  ✅ Python virtual environment and dependencies setup completed.") # Was print if verbose
 
-            # --- Confirm PyMDP Installation ---
-            logger.info("  Phase 3: Confirming PyMDP installation...")
+            # --- Confirm PyMDP Availability (Informational) ---
+            logger.info("  Phase 3: Confirming PyMDP availability (informational)...")
+            pymdp_confirmed_fully = False
             try:
+                # Try to import pymdp itself
                 import pymdp
-                logger.info(f"    Successfully imported pymdp. Version: {pymdp.__version__}")
-                logger.info(f"    PyMDP location: {pymdp.__file__}")
+                logger.info("    Successfully imported the 'pymdp' module.")
+
+                # Try to get version using importlib.metadata
+                pymdp_version_str = "N/A"
+                try:
+                    import importlib.metadata
+                    pymdp_version_str = importlib.metadata.version('inferactively-pymdp')
+                    logger.info(f"    Version of 'inferactively-pymdp' via importlib.metadata: {pymdp_version_str}")
+                except importlib.metadata.PackageNotFoundError:
+                    logger.warning("    ⚠️ 'inferactively-pymdp' package not found by importlib.metadata. Version unknown.")
+                except Exception as e_meta:
+                    logger.warning(f"    ⚠️ Error getting version via importlib.metadata: {e_meta}")
+
+                # Try to get pymdp module file location
+                pymdp_module_location = "N/A"
+                try:
+                    pymdp_module_location = pymdp.__file__
+                    logger.info(f"    'pymdp' module location: {pymdp_module_location}")
+                except AttributeError:
+                    logger.warning("    ⚠️ 'pymdp' module has no __file__ attribute.")
+                except Exception as e_fileloc:
+                    logger.warning(f"    ⚠️ Error getting 'pymdp' module __file__: {e_fileloc}")
+
+                # Try to import Agent from pymdp.agent
                 from pymdp.agent import Agent
-                logger.info(f"    Successfully imported pymdp.agent.Agent: {Agent}")
-                logger.info("  ✅ PyMDP installation confirmed.")
-            except ImportError as e:
-                logger.error(f"  ❌ Failed to import pymdp or pymdp.agent.Agent after setup: {e}")
-                logger.error("  ❌ This indicates a critical issue with the PyMDP installation or environment.")
-                return 1 # Indicate failure
-            # --- End PyMDP Confirmation ---
+                logger.info(f"    Successfully imported 'pymdp.agent.Agent': {Agent}")
+                
+                # Try to get Agent module file location
+                agent_module_file = "N/A"
+                try:
+                    agent_module = sys.modules.get(Agent.__module__) # sys needs to be imported in the script
+                    if agent_module:
+                        agent_module_file = getattr(agent_module, '__file__', 'N/A')
+                    logger.info(f"    'pymdp.agent.Agent' module ({Agent.__module__}) location: {agent_module_file}")
+                except Exception as e_agentloc:
+                    logger.warning(f"    ⚠️ Error getting Agent module location: {e_agentloc}")
+
+                logger.info("  ✅ PyMDP module and Agent class appear to be available and importable.")
+                pymdp_confirmed_fully = True
+
+            except ImportError as e_imp:
+                logger.warning(f"  ⚠️ Failed to import 'pymdp' or 'pymdp.agent.Agent': {e_imp}")
+                logger.warning("      This may affect PyMDP-dependent steps (e.g., 9_render, 10_execute).")
+            except Exception as e_other: # Catch any other unexpected errors during confirmation
+                logger.warning(f"  ⚠️ An unexpected error occurred during PyMDP availability check: {e_other}", exc_info=args.verbose)
+            
+            if not pymdp_confirmed_fully:
+                logger.warning("  ⚠️ PyMDP availability check did not fully succeed. Subsequent PyMDP steps may fail or use unexpected versions.")
+            # --- End PyMDP Availability Confirmation ---
 
         except Exception as e:
-            logger.error(f"❌ Error during virtual environment setup: {e}", exc_info=True) # Changed from print, added exc_info
+            logger.error(f"❌ Error during virtual environment setup or core dependency installation: {e}", exc_info=True) # Changed from print, added exc_info
             # import traceback # Not needed if using exc_info=True
             # traceback.print_exc()
             return 1 # Indicate failure

@@ -97,13 +97,18 @@ def generate_pymdp_matrix_definition(
     """
     Generates Python code for a PyMDP matrix (A, B, C, D, etc.).
     Handles single matrices, lists of matrices (object arrays), and vectors.
-    If data is already a string (e.g. "pymdp.utils.get_A_likelihood_identity(...)"), use it directly.
+    If data is already a string (e.g. "pymdp.utils.get_A_likelihood_identity(...)""), use it directly.
     """
     lines = []
     indent_str = "    " # 4 spaces for base indent within script
 
     if data is None:
-        lines.append(f"{matrix_name} = None")
+        if is_object_array: # For A, B, D which are lists of np.arrays (object arrays)
+            logger.debug(f"Data for object array {matrix_name} is None, defaulting to [].")
+            lines.append(f"{matrix_name} = []")
+        else: # For C or other single arrays/vectors where PyMDP might handle None internally
+            logger.debug(f"Data for non-object array {matrix_name} is None, setting to None.")
+            lines.append(f"{matrix_name} = None")
         return '\n'.join(lines)
     
     if isinstance(data, str) and ("pymdp." in data or "np." in data or "utils." in data or "maths." in data): # Heuristic for pre-formatted code string
@@ -164,17 +169,17 @@ def generate_pymdp_agent_instantiation(
     use_states_info_gain: Optional[bool] = None, # Changed to Optional
     use_param_info_gain: Optional[bool] = None, # Changed to Optional
     action_selection: Optional[str] = None, # Changed to Optional
-    num_obs_var_name: Optional[str] = None, # ADDED
-    num_states_var_name: Optional[str] = None, # ADDED
-    num_controls_var_name: Optional[str] = None # ADDED
+    # num_obs_var_name: Optional[str] = None, # REMOVED
+    # num_states_var_name: Optional[str] = None, # REMOVED
+    # num_controls_var_name: Optional[str] = None # REMOVED
 ) -> str:
     lines = [f"{agent_name} = Agent("]
     indent = "    "
 
-    # Dimensionality parameters (must be passed if A/B are None or not sufficient for inference)
-    if num_obs_var_name: lines.append(f"{indent}num_obs={num_obs_var_name},")
-    if num_states_var_name: lines.append(f"{indent}num_states={num_states_var_name},")
-    if num_controls_var_name: lines.append(f"{indent}num_controls={num_controls_var_name},")
+    # Dimensionality parameters - PyMDP infers these from A and B
+    # if num_obs_var_name: lines.append(f"{indent}num_obs={num_obs_var_name},") # REMOVED
+    # if num_states_var_name: lines.append(f"{indent}num_states={num_states_var_name},") # REMOVED
+    # if num_controls_var_name: lines.append(f"{indent}num_controls={num_controls_var_name},") # REMOVED
 
     # Model parameters (A, B, C, D, E, etc.)
     for key, matrix_name_str in model_params.items():
@@ -377,10 +382,9 @@ class GnnToPyMdpConverter:
     def convert_A_matrix(self) -> str:
         """Converts GNN's A matrix (likelihood) to PyMDP format."""
         if not self.num_modalities:
-            self._add_log("A_matrix: No observation modalities defined. 'A' will be None.", "WARNING")
-            # Append 'A = None' to script parts directly, as generate_pymdp_matrix_definition is for variable assignment lines
-            self.script_parts["matrix_definitions"].append("A = None")
-            return "# A matrix set to None due to no observation modalities."
+            self._add_log("A_matrix: No observation modalities defined. 'A' will be [].", "WARNING")
+            self.script_parts["matrix_definitions"].append("A = []")
+            return "# A matrix set to [] due to no observation modalities."
 
         init_code = f"A = utils.obj_array_zeros([[o_dim] + num_states for o_dim in num_obs])"
         self.script_parts["matrix_definitions"].append(init_code)
@@ -507,9 +511,9 @@ class GnnToPyMdpConverter:
     def convert_B_matrix(self) -> str:
         """Converts GNN's B matrix (transition) to PyMDP format."""
         if not self.num_factors:
-            self._add_log("B_matrix: No hidden state factors defined. 'B' will be None.", "WARNING")
-            self.script_parts["matrix_definitions"].append("B = None")
-            return "# B matrix set to None due to no hidden state factors."
+            self._add_log("B_matrix: No hidden state factors defined. 'B' will be [].", "WARNING")
+            self.script_parts["matrix_definitions"].append("B = []")
+            return "# B matrix set to [] due to no hidden state factors."
 
         init_code = f"B = utils.obj_array(num_factors)"
         self.script_parts["matrix_definitions"].append(init_code)
@@ -693,8 +697,11 @@ class GnnToPyMdpConverter:
     def convert_D_vector(self) -> str:
         """Converts GNN's D vector (initial hidden states) to PyMDP format."""
         if not self.num_factors:
-            self._add_log("D_vector: No hidden state factors defined. 'D' will be None.", "ERROR") # D is usually required
-            return generate_pymdp_matrix_definition("D", None)
+            self._add_log("D_vector: No hidden state factors defined. 'D' will be [].", "ERROR") # D is usually required
+            self.script_parts["matrix_definitions"].append(
+                generate_pymdp_matrix_definition("D", None, is_object_array=True)
+            )
+            return "# D matrix set to [] due to no hidden state factors."
 
         # Initialize D = utils.obj_array(num_factors)
         init_code = f"D = utils.obj_array(num_factors)"
@@ -795,9 +802,6 @@ class GnnToPyMdpConverter:
             self.model_name, 
             model_params=model_matrix_params,
             # Pass names of script variables for dimensions
-            num_obs_var_name="num_obs",
-            num_states_var_name="num_states",
-            num_controls_var_name="num_controls",
             # Pass specific agent constructor args
             control_fac_idx_var_name=control_fac_idx_var_name_to_pass,
             policy_len=policy_len,
@@ -989,20 +993,27 @@ class GnnToPyMdpConverter:
             "print('--- PyMDP Runtime Debug ---')",
             "try:",
             "    import pymdp",
-            "    print(f'AGENT_SCRIPT: Using PyMDP version: {pymdp.__version__}')",
-            "    print(f'AGENT_SCRIPT: PyMDP package location: {pymdp.__file__}')",
-            "    from pymdp.agent import Agent as AgentFromImport",
-            "    print(f'AGENT_SCRIPT: Imported pymdp.agent.Agent as: {AgentFromImport}')",
-            "    agent_module = sys.modules.get(AgentFromImport.__module__)",
-            "    agent_module_file = getattr(agent_module, '__file__', 'N/A')",
-            "    print(f'AGENT_SCRIPT: Agent module ({AgentFromImport.__module__}) file: {agent_module_file}')",
-            "    agent_init_sig = inspect.signature(AgentFromImport.__init__)",
-            "    print(f'AGENT_SCRIPT: Agent.__init__ signature: {agent_init_sig}')",
-            "    print(f'AGENT_SCRIPT: Agent.__init__ parameters: {list(agent_init_sig.parameters.keys())}')",
+            "    print(f'AGENT_SCRIPT: Imported pymdp version: {pymdp.__version__}')",
+            "    print(f'AGENT_SCRIPT: pymdp module location: {pymdp.__file__}')",
+            "    from pymdp.agent import Agent",
+            "    print(f'AGENT_SCRIPT: Imported Agent: {Agent}')",
+            "    print(f'AGENT_SCRIPT: Agent module location: {inspect.getfile(Agent)}')",
+            "    # Check if required variables are in global scope",
+            "    required_vars = ['A', 'B', 'C', 'D', 'num_obs', 'num_states', 'num_controls', 'control_factor_idx', 'agent_params']",
+            "    print('AGENT_SCRIPT: Checking for required variables in global scope:')",
+            "    for var_name in required_vars:",
+            "        if var_name in globals():",
+            "            print(f'  AGENT_SCRIPT: {var_name} is defined. Value (first 100 chars): {str(globals()[var_name])[:100]}')",
+            "        else:",
+            "            print(f'  AGENT_SCRIPT: {var_name} is NOT defined.')",
+            "    # Instantiate agent to catch initialization errors",
+            "    print('AGENT_SCRIPT: Attempting to instantiate agent with defined parameters...')",
+            "    temp_agent = Agent(**agent_params)",
+            "    print(f'AGENT_SCRIPT: Agent successfully instantiated: {temp_agent}')",
             "except Exception as e_debug:",
-            "    print(f'AGENT_SCRIPT: Error during PyMDP runtime debug: {e_debug}\n{traceback.format_exc()}')",
+            "    print(f'AGENT_SCRIPT: Error during PyMDP runtime debug: {e_debug}')", # Ensure this f-string is properly terminated
+            "    print(f'AGENT_SCRIPT: Traceback:\\n{traceback.format_exc()}')",
             "print('--- End PyMDP Runtime Debug ---')",
-            ""
         ]
         script_content.extend(debug_block)
 

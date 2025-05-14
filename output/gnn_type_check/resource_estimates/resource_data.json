@@ -1,0 +1,362 @@
+{
+  "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_dynamic_perception.md": {
+    "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_dynamic_perception.md",
+    "model_name": "Dynamic perception v1",
+    "memory_estimate": 0.07421875,
+    "inference_estimate": 68.42167173345126,
+    "storage_estimate": 2.4717421875000003,
+    "flops_estimate": {
+      "total_flops": 280.0,
+      "matrix_operations": 36,
+      "element_operations": 16,
+      "nonlinear_operations": 60
+    },
+    "inference_time_estimate": {
+      "cpu_time_seconds": 5.6e-09,
+      "cpu_time_ms": 5.6e-06,
+      "cpu_time_us": 0.0056
+    },
+    "batched_inference_estimate": {
+      "batch_1": {
+        "flops": 280.0,
+        "time_seconds": 5.6e-09,
+        "throughput_per_second": 178571428.57142857
+      },
+      "batch_8": {
+        "flops": 1779.9923972000095,
+        "time_seconds": 3.559984794400019e-08,
+        "throughput_per_second": 224720060.95599848
+      },
+      "batch_32": {
+        "flops": 6804.868752202467,
+        "time_seconds": 1.3609737504404933e-07,
+        "throughput_per_second": 235125769.2489871
+      },
+      "batch_128": {
+        "flops": 26621.540364375323,
+        "time_seconds": 5.324308072875065e-07,
+        "throughput_per_second": 240406825.16494855
+      },
+      "batch_512": {
+        "flops": 105129.17246499482,
+        "time_seconds": 2.1025834492998962e-06,
+        "throughput_per_second": 243509954.4660081
+      }
+    },
+    "model_overhead": {
+      "compilation_ms": 41,
+      "optimization_ms": 52.0,
+      "memory_overhead_kb": 1.732421875
+    },
+    "complexity": {
+      "state_space_complexity": 4.321928094887363,
+      "graph_density": 0.08928571428571429,
+      "avg_in_degree": 1.0,
+      "avg_out_degree": 1.25,
+      "max_in_degree": 1,
+      "max_out_degree": 2,
+      "cyclic_complexity": 0,
+      "temporal_complexity": 0.0,
+      "equation_complexity": 49.0,
+      "overall_complexity": 10,
+      "variable_count": 8,
+      "edge_count": 5,
+      "total_state_space_dim": 19,
+      "max_variable_dim": 4
+    },
+    "model_info": {
+      "variables_count": 8,
+      "edges_count": 5,
+      "time_spec": "Dynamic",
+      "equation_count": 2
+    }
+  },
+  "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_butterfly_pheromone_agent.md": {
+    "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_butterfly_pheromone_agent.md",
+    "model_name": "Butterfly Pheromone Detection PyMDP Agent v1",
+    "memory_estimate": 0.453125,
+    "inference_estimate": 145.6259756639475,
+    "storage_estimate": 3.9383906250000003,
+    "flops_estimate": {
+      "total_flops": 1050.0,
+      "matrix_operations": 0,
+      "element_operations": 0,
+      "nonlinear_operations": 0
+    },
+    "inference_time_estimate": {
+      "cpu_time_seconds": 2.1e-08,
+      "cpu_time_ms": 2.1e-05,
+      "cpu_time_us": 0.020999999999999998
+    },
+    "batched_inference_estimate": {
+      "batch_1": {
+        "flops": 1050.0,
+        "time_seconds": 2.1e-08,
+        "throughput_per_second": 47619047.61904762
+      },
+      "batch_8": {
+        "flops": 6674.971489500035,
+        "time_seconds": 1.334994297900007e-07,
+        "throughput_per_second": 59925349.58826627
+      },
+      "batch_32": {
+        "flops": 25518.25782075925,
+        "time_seconds": 5.10365156415185e-07,
+        "throughput_per_second": 62700205.13306323
+      },
+      "batch_128": {
+        "flops": 99830.77636640746,
+        "time_seconds": 1.9966155273281492e-06,
+        "throughput_per_second": 64108486.710652955
+      },
+      "batch_512": {
+        "flops": 394234.3967437306,
+        "time_seconds": 7.884687934874611e-06,
+        "throughput_per_second": 64935987.85760216
+      }
+    },
+    "model_overhead": {
+      "compilation_ms": 74,
+      "optimization_ms": 240.5,
+      "memory_overhead_kb": 2.474609375
+    },
+    "complexity": {
+      "state_space_complexity": 6.870364719583405,
+      "graph_density": 0.004761904761904762,
+      "avg_in_degree": 1.0,
+      "avg_out_degree": 1.0,
+      "max_in_degree": 1,
+      "max_out_degree": 1,
+      "cyclic_complexity": 0,
+      "temporal_complexity": 0.0,
+      "equation_complexity": 8.4375,
+      "overall_complexity": 8.500063312172655,
+      "variable_count": 21,
+      "edge_count": 2,
+      "total_state_space_dim": 116,
+      "max_variable_dim": 27
+    },
+    "model_info": {
+      "variables_count": 21,
+      "edges_count": 2,
+      "time_spec": "Dynamic",
+      "equation_count": 4
+    }
+  },
+  "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_test_example.md": {
+    "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_test_example.md",
+    "model_name": "Gold Standard POMDP Agent v1.0",
+    "memory_estimate": 0.56640625,
+    "inference_estimate": 158.0995247133244,
+    "storage_estimate": 3.98634375,
+    "flops_estimate": {
+      "total_flops": 15.0,
+      "matrix_operations": 0,
+      "element_operations": 6,
+      "nonlinear_operations": 0
+    },
+    "inference_time_estimate": {
+      "cpu_time_seconds": 3e-10,
+      "cpu_time_ms": 3e-07,
+      "cpu_time_us": 0.0003
+    },
+    "batched_inference_estimate": {
+      "batch_1": {
+        "flops": 15.0,
+        "time_seconds": 3e-10,
+        "throughput_per_second": 3333333333.3333335
+      },
+      "batch_8": {
+        "flops": 95.35673556428623,
+        "time_seconds": 1.9071347112857244e-09,
+        "throughput_per_second": 4194774471.1786385
+      },
+      "batch_32": {
+        "flops": 364.5465402965607,
+        "time_seconds": 7.290930805931214e-09,
+        "throughput_per_second": 4389014359.314426
+      },
+      "batch_128": {
+        "flops": 1426.1539480915353,
+        "time_seconds": 2.8523078961830706e-08,
+        "throughput_per_second": 4487594069.745707
+      },
+      "batch_512": {
+        "flops": 5631.919953481865,
+        "time_seconds": 1.126383990696373e-07,
+        "throughput_per_second": 4545519150.032151
+      }
+    },
+    "model_overhead": {
+      "compilation_ms": 86,
+      "optimization_ms": 182.0,
+      "memory_overhead_kb": 2.66015625
+    },
+    "complexity": {
+      "state_space_complexity": 7.189824558880018,
+      "graph_density": 0.0,
+      "avg_in_degree": 0.0,
+      "avg_out_degree": 0.0,
+      "max_in_degree": 0,
+      "max_out_degree": 0,
+      "cyclic_complexity": 0,
+      "temporal_complexity": 0.0,
+      "equation_complexity": 9.4375,
+      "overall_complexity": 9.257412279440008,
+      "variable_count": 18,
+      "edge_count": 0,
+      "total_state_space_dim": 145,
+      "max_variable_dim": 54
+    },
+    "model_info": {
+      "variables_count": 18,
+      "edges_count": 0,
+      "time_spec": "Dynamic",
+      "equation_count": 8
+    }
+  },
+  "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_dynamic_perception_policy.md": {
+    "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_dynamic_perception_policy.md",
+    "model_name": "Dynamic perception with Policy Selection v1",
+    "memory_estimate": 0.125,
+    "inference_estimate": 100.58035704338849,
+    "storage_estimate": 2.9085078125,
+    "flops_estimate": {
+      "total_flops": 322.5,
+      "matrix_operations": 36,
+      "element_operations": 18,
+      "nonlinear_operations": 75
+    },
+    "inference_time_estimate": {
+      "cpu_time_seconds": 6.45e-09,
+      "cpu_time_ms": 6.45e-06,
+      "cpu_time_us": 0.00645
+    },
+    "batched_inference_estimate": {
+      "batch_1": {
+        "flops": 322.5,
+        "time_seconds": 6.45e-09,
+        "throughput_per_second": 155038759.68992248
+      },
+      "batch_8": {
+        "flops": 2050.1698146321537,
+        "time_seconds": 4.1003396292643074e-08,
+        "throughput_per_second": 195105789.35714597
+      },
+      "batch_32": {
+        "flops": 7837.750616376055,
+        "time_seconds": 1.567550123275211e-07,
+        "throughput_per_second": 204140202.75881052
+      },
+      "batch_128": {
+        "flops": 30662.309883968006,
+        "time_seconds": 6.132461976793601e-07,
+        "throughput_per_second": 208725305.56956777
+      },
+      "batch_512": {
+        "flops": 121086.2789998601,
+        "time_seconds": 2.421725579997202e-06,
+        "throughput_per_second": 211419495.35033262
+      }
+    },
+    "model_overhead": {
+      "compilation_ms": 57,
+      "optimization_ms": 70.0,
+      "memory_overhead_kb": 2.083984375
+    },
+    "complexity": {
+      "state_space_complexity": 4.906890595608519,
+      "graph_density": 0.07777777777777778,
+      "avg_in_degree": 1.0,
+      "avg_out_degree": 1.1666666666666667,
+      "max_in_degree": 1,
+      "max_out_degree": 2,
+      "cyclic_complexity": 0,
+      "temporal_complexity": 0.0,
+      "equation_complexity": 26.3125,
+      "overall_complexity": 10,
+      "variable_count": 10,
+      "edge_count": 7,
+      "total_state_space_dim": 29,
+      "max_variable_dim": 8
+    },
+    "model_info": {
+      "variables_count": 10,
+      "edges_count": 7,
+      "time_spec": "Dynamic",
+      "equation_count": 4
+    }
+  },
+  "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md": {
+    "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md",
+    "model_name": "Multifactor PyMDP Agent v1",
+    "memory_estimate": 0.484375,
+    "inference_estimate": 154.06988264859797,
+    "storage_estimate": 3.82846875,
+    "flops_estimate": {
+      "total_flops": 1050.0,
+      "matrix_operations": 0,
+      "element_operations": 0,
+      "nonlinear_operations": 0
+    },
+    "inference_time_estimate": {
+      "cpu_time_seconds": 2.1e-08,
+      "cpu_time_ms": 2.1e-05,
+      "cpu_time_us": 0.020999999999999998
+    },
+    "batched_inference_estimate": {
+      "batch_1": {
+        "flops": 1050.0,
+        "time_seconds": 2.1e-08,
+        "throughput_per_second": 47619047.61904762
+      },
+      "batch_8": {
+        "flops": 6674.971489500035,
+        "time_seconds": 1.334994297900007e-07,
+        "throughput_per_second": 59925349.58826627
+      },
+      "batch_32": {
+        "flops": 25518.25782075925,
+        "time_seconds": 5.10365156415185e-07,
+        "throughput_per_second": 62700205.13306323
+      },
+      "batch_128": {
+        "flops": 99830.77636640746,
+        "time_seconds": 1.9966155273281492e-06,
+        "throughput_per_second": 64108486.710652955
+      },
+      "batch_512": {
+        "flops": 394234.3967437306,
+        "time_seconds": 7.884687934874611e-06,
+        "throughput_per_second": 64935987.85760216
+      }
+    },
+    "model_overhead": {
+      "compilation_ms": 79,
+      "optimization_ms": 240.5,
+      "memory_overhead_kb": 2.572265625
+    },
+    "complexity": {
+      "state_space_complexity": 6.965784284662087,
+      "graph_density": 0.004761904761904762,
+      "avg_in_degree": 1.0,
+      "avg_out_degree": 1.0,
+      "max_in_degree": 1,
+      "max_out_degree": 1,
+      "cyclic_complexity": 0,
+      "temporal_complexity": 0.0,
+      "equation_complexity": 8.76,
+      "overall_complexity": 8.741273094711996,
+      "variable_count": 21,
+      "edge_count": 2,
+      "total_state_space_dim": 124,
+      "max_variable_dim": 27
+    },
+    "model_info": {
+      "variables_count": 21,
+      "edges_count": 2,
+      "time_spec": "Dynamic",
+      "equation_count": 5
+    }
+  }
+}

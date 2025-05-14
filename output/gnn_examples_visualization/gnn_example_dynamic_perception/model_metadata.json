@@ -1,0 +1,7 @@
+{
+  "ModelName": "Dynamic perception v1",
+  "ModelAnnotation": "This model relates a single hidden state to a single observable modality. It is a dynamic model because it tracks changes in the hidden state through time.",
+  "GNNVersionAndFlags": "GNN v1",
+  "Time": "Dynamic\nDiscreteTime=s\nModelTimeHorizon=Unbounded",
+  "ActInfOntologyAnnotation": "A=RecognitionMatrix\nB=TransitionMatrix\nD=Prior\ns=HiddenState\ns_prime=NextHiddenState\no=Observation\nt=Time"
+}

@@ -1,0 +1,12 @@
+{
+    "directed": true,
+    "multigraph": false,
+    "graph": [
+        [
+            "name",
+            "GNN_Model"
+        ]
+    ],
+    "nodes": [],
+    "adjacency": []
+}

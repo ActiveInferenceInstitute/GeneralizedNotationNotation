@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+<gnn_model>
+  <file_path>/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_dynamic_perception_policy.md</file_path>
+  <name>gnn_example_dynamic_perception_policy</name>
+  <metadata/>
+  <states/>
+  <parameters/>
+  <observations/>
+  <transitions/>
+  <ontology_annotations/>
+  <equations_text/>
+  <time_info/>
+  <footer_text/>
+  <signature/>
+  <raw_sections>
+    <GNNSection>DynamicPerceptionWithPolicySelection
+
+## ImageFromPaper
+image.png
+
+## GNNVersionAndFlags
+GNN v1
+
+## ModelName
+Dynamic perception with Policy Selection v1
+
+## ModelAnnotation
+This model relates a single hidden state to a single observable modality. It is a dynamic model because it tracks changes in the hidden state through time. There is Action applied via policy selection (π).
+
+## StateSpaceBlock
+A[2,2,type=float]
+D[2,1,type=float]
+B[2,len(π),2,type=float]
+π=[2]
+C=[2,1]
+G[len(π),type=float]
+s[2,1,type=float]
+s_prime[2,1,type=float] # Next state (s at t+1)
+o[2,1,type=float]
+t[1,type=int]
+
+## Connections
+D-s
+s-A
+A-o
+s-B
+B-s_prime
+C&gt;G
+G&gt;π
+
+## InitialParameterization
+A={(0.7,0.3),(0.4,0.6)}
+D={(0.5),(0.5)}
+C={(0.8),(0.2)}
+B={( ( (0.9,0.1),(0.1,0.9) ), ( (0.1,0.9),(0.9,0.1) ) )} # B[policy_index][state_from][state_to]
+
+## Equations
+s=sigma((1/2)(lnD+ln(B^dagger_{pi,tau}s_{pi,tau+1}))+lnA^T*o_tau) # for tau=1, policy π
+s=sigma((1/2)(ln(B_{pi,tau-1}s_{pi,tau-1})+ln(B^dagger_{pi,tau}s_{pi,tau+1}))+lnA^T*o_tau) # for tau&gt;1, policy π
+G[π]=sum_tau(As_{pi,tau}(ln(A*s_{pi,tau})-lnC_tau)-diag(A^TlnA)*s_{pi,tau})
+π=sigma(-G)
+
+## Time
+Dynamic
+DiscreteTime=s
+ModelTimeHorizon=Unbounded
+
+## ActInfOntologyAnnotation
+A=RecognitionMatrix
+B=TransitionMatrix
+C=Preference
+D=Prior
+G=ExpectedFreeEnergy
+s=HiddenState
+s_prime=NextHiddenState
+o=Observation
+π=PolicyVector
+t=Time
+
+## ModelParameters
+num_hidden_states_factors: [2]
+num_obs_modalities: [2]
+num_control_action_dims: [2] # From len(π) which is 2, used in B matrix
+
+## Footer
+Dynamic perception with Policy Selection v1
+
+## Signature
+NA</GNNSection>
+  </raw_sections>
+  <other_sections/>
+  <gnnsection>
+    <A_2_2_type>float]</A_2_2_type>
+    <D_2_1_type>float]</D_2_1_type>
+    <B_2_len____2_type>float]</B_2_len____2_type>
+    <_>PolicyVector</_>
+    <C>Preference</C>
+    <G_len____type>float]</G_len____type>
+    <s_2_1_type>float]</s_2_1_type>
+    <s_prime_2_1_type>float] # Next state (s at t+1)</s_prime_2_1_type>
+    <o_2_1_type>float]</o_2_1_type>
+    <t_1_type>int]</t_1_type>
+    <A>RecognitionMatrix</A>
+    <D>Prior</D>
+    <B>TransitionMatrix</B>
+    <s>HiddenState</s>
+    <G___>sum_tau(As_{pi,tau}(ln(A*s_{pi,tau})-lnC_tau)-diag(A^TlnA)*s_{pi,tau})</G___>
+    <DiscreteTime>s</DiscreteTime>
+    <ModelTimeHorizon>Unbounded</ModelTimeHorizon>
+    <G>ExpectedFreeEnergy</G>
+    <s_prime>NextHiddenState</s_prime>
+    <o>Observation</o>
+    <t>Time</t>
+    <num_hidden_states_factors>[2]</num_hidden_states_factors>
+    <num_obs_modalities>[2]</num_obs_modalities>
+    <num_control_action_dims>[2] # From len(π) which is 2, used in B matrix</num_control_action_dims>
+  </gnnsection>
+  <num_obs_modalities/>
+  <num_hidden_states_factors/>
+  <num_control_factors/>
+</gnn_model>
