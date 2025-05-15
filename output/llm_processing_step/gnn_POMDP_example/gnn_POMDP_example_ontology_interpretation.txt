@@ -1,0 +1,63 @@
+### 1. Explain Mappings
+
+The **ActInfOntologyAnnotation** block in the GNN file provides mappings of model components to terms used within the Active Inference framework. Here’s a breakdown of these mappings:
+
+- **Hidden States:**
+  - `s_f0=HiddenStateFactor0`
+  - `s_f1=HiddenStateFactor1`
+  
+  These mappings indicate that the hidden states of the model, which represent unobserved factors affecting decision-making (like the agent's location and resource level), correspond to the ontology's concept of hidden state factors. In Active Inference, hidden states represent the agent's beliefs about the world that are not directly observable.
+
+- **Observations:**
+  - `o_m0=ObservationModality0`
+  - `o_m1=ObservationModality1`
+  
+  This mapping denotes that the observation modalities, which are the sensory inputs that the agent receives (like visual and auditory cues), relate to the observation terms in the ontology. Observations are critical in Active Inference as they provide the evidence from which the agent updates its beliefs.
+
+- **Control/Policy Related:**
+  - `pi_c0=PolicyVector`
+  - `pi_c1=PolicyVectorFactor1`
+  - `u_c0=Action`
+  - `u_c1=ActionFactor1`
+  
+  Here, the policies (pi) represent the agent's strategies for choosing actions based on its beliefs and observations. The terms Action and Policy Vector indicate actions taken by the agent, which are based on the computed policies. In Active Inference, actions are selected to minimize expected free energy based on the current beliefs.
+
+- **Likelihoods:**
+  - `A_m0=LikelihoodMatrixModality0`
+  - `A_m1=LikelihoodMatrixModality1`
+  
+  The likelihood matrices represent the probability of observing certain outcomes given the hidden states. This aligns with the Active Inference concept of likelihood, which is essential for updating beliefs based on new evidence.
+
+- **Transitions:**
+  - `B_f0=TransitionMatrixFactor0`
+  - `B_f1=TransitionMatrixFactor1`
+  
+  These mappings indicate that the transition matrices describe how hidden states evolve over time based on actions taken. This reflects the Active Inference framework's use of transition models to predict future states based on current states and actions.
+
+- **Preferences:**
+  - `C_m0=LogPreferenceVectorModality0`
+  - `C_m1=LogPreferenceVectorModality1`
+  
+  Preferences represent the agent's value judgments about the outcomes of observations. Mapped to the ontology, these preferences inform the agent's decision-making process by guiding it toward states and actions that are deemed more favorable.
+
+- **Priors:**
+  - `D_f0=PriorOverHiddenStatesFactor0`
+  - `D_f1=PriorOverHiddenStatesFactor1`
+  
+  The priors denote the initial beliefs about the hidden states before any observations are made. In Active Inference, priors are foundational as they encode the agent's expectations regarding the environment.
+
+### 2. Significance
+
+The mappings in the **ActInfOntologyAnnotation** block reveal the intended interpretation of the model as an Active Inference agent. Here are some key insights regarding specific terms and their relevance:
+
+- **Belief (Hidden States):** The model maintains beliefs about unobserved factors (like location and resource level). These beliefs are updated as observations are made, which is fundamental to the Active Inference framework where belief updating is a continuous process.
+
+- **Likelihood:** The mapping of likelihood matrices (A_m0 and A_m1) indicates that the model estimates the probability of receiving certain observations given its beliefs about hidden states. This likelihood plays a crucial role in belief updating, as the agent uses sensory data to refine its understanding of the environment.
+
+- **Transition Model:** The transition matrices (B_f0 and B_f1) model how the hidden states change over time in response to actions. This is essential for the agent's ability to predict future states and make informed decisions, as it closely relates to the core principle of Active Inference where actions are taken to minimize prediction errors.
+
+- **Prior Preferences:** The preferences (C_m0 and C_m1) represent the agent's goals or values concerning different outcomes. This aligns with the Active Inference concept where agents strive to interact with the environment in a way that satisfies their preferences, thereby reducing uncertainty and achieving desired states.
+
+- **Expected Free Energy (EFE):** The Expected Free Energy (G) is a critical aspect of the Active Inference framework, as it guides action selection. The agent evaluates the expected outcomes of various policies and selects actions that minimize EFE, effectively aligning its behavior with its beliefs and preferences.
+
+In summary, these mappings illustrate how the model is structured to operate as an Active Inference agent, capable of continuous learning and adaptation based on its experiences in the environment. The use of terms like "Belief," "Likelihood," "Transition Model," "Prior Preferences," and "Expected Free Energy" establishes a clear connection between the GNN model and the principles of Active Inference, emphasizing its role in decision-making and behavior optimization in uncertain environments.

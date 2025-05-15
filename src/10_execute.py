@@ -54,13 +54,13 @@ def main(args: argparse.Namespace) -> int:
     # Key arguments for the runner:
     # - args.output_dir: This is the main pipeline output directory.
     #   The runner will construct the path to <output_dir>/gnn_rendered_simulators/pymdp/ from this.
-    # - args.recursive: From main pipeline args, to control search within the pymdp folder.
-    # - args.verbose: To control verbosity of the runner itself.
+    # - verbose: To control verbosity of the runner itself.
+    # The runner now handles recursive search internally by default.
     
     try:
         success = pymdp_runner.run_pymdp_scripts(
             pipeline_output_dir=args.output_dir,
-            recursive_search=args.recursive, # Assumes main.py's recursive applies here
+            # recursive_search=args.recursive, # Removed, runner is always recursive now
             verbose=args.verbose
         )
         
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     parser.add_argument("--output-dir", default=str(default_pipeline_output_dir),
                         help=f"Main pipeline output directory (default: {default_pipeline_output_dir})")
     parser.add_argument("--recursive", action="store_true", default=True,
-                        help="Recursively search for PyMDP scripts in their base output folder.")
+                        help="Recursively search for PyMDP scripts in their base output folder. (Note: Runner is now always recursive, this arg is for pipeline compatibility)")
     parser.add_argument("--verbose", action="store_true",
                         help="Enable verbose output for this script and the runner.")
     # Add any other args from main.py that this script's main() or its callees might expect

@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2025-05-15">
+    <creator>NetworkX 3.4.2</creator>
+  </meta>
+  <graph defaultedgetype="directed" mode="static" name="Multifactor PyMDP Agent v1">
+    <attributes mode="static" class="node">
+      <attribute id="0" title="dimensions" type="string" />
+      <attribute id="1" title="original_id" type="string" />
+    </attributes>
+    <nodes>
+      <node id="A_m0" label="A_m0">
+        <attvalues>
+          <attvalue for="0" value="3,2,3,type=float" />
+          <attvalue for="1" value="A_m0" />
+        </attvalues>
+      </node>
+      <node id="A_m1" label="A_m1">
+        <attvalues>
+          <attvalue for="0" value="3,2,3,type=float" />
+          <attvalue for="1" value="A_m1" />
+        </attvalues>
+      </node>
+      <node id="A_m2" label="A_m2">
+        <attvalues>
+          <attvalue for="0" value="3,2,3,type=float" />
+          <attvalue for="1" value="A_m2" />
+        </attvalues>
+      </node>
+      <node id="B_f0" label="B_f0">
+        <attvalues>
+          <attvalue for="0" value="2,2,1,type=float" />
+          <attvalue for="1" value="B_f0" />
+        </attvalues>
+      </node>
+      <node id="B_f1" label="B_f1">
+        <attvalues>
+          <attvalue for="0" value="3,3,3,type=float" />
+          <attvalue for="1" value="B_f1" />
+        </attvalues>
+      </node>
+      <node id="C_m0" label="C_m0">
+        <attvalues>
+          <attvalue for="0" value="3,type=float" />
+          <attvalue for="1" value="C_m0" />
+        </attvalues>
+      </node>
+      <node id="C_m1" label="C_m1">
+        <attvalues>
+          <attvalue for="0" value="3,type=float" />
+          <attvalue for="1" value="C_m1" />
+        </attvalues>
+      </node>
+      <node id="C_m2" label="C_m2">
+        <attvalues>
+          <attvalue for="0" value="3,type=float" />
+          <attvalue for="1" value="C_m2" />
+        </attvalues>
+      </node>
+      <node id="D_f0" label="D_f0">
+        <attvalues>
+          <attvalue for="0" value="2,type=float" />
+          <attvalue for="1" value="D_f0" />
+        </attvalues>
+      </node>
+      <node id="D_f1" label="D_f1">
+        <attvalues>
+          <attvalue for="0" value="3,type=float" />
+          <attvalue for="1" value="D_f1" />
+        </attvalues>
+      </node>
+      <node id="s_f0" label="s_f0">
+        <attvalues>
+          <attvalue for="0" value="2,1,type=float" />
+          <attvalue for="1" value="s_f0" />
+        </attvalues>
+      </node>
+      <node id="s_f1" label="s_f1">
+        <attvalues>
+          <attvalue for="0" value="3,1,type=float" />
+          <attvalue for="1" value="s_f1" />
+        </attvalues>
+      </node>
+      <node id="s_prime_f0" label="s_prime_f0">
+        <attvalues>
+          <attvalue for="0" value="2,1,type=float" />
+          <attvalue for="1" value="s_prime_f0" />
+        </attvalues>
+      </node>
+      <node id="s_prime_f1" label="s_prime_f1">
+        <attvalues>
+          <attvalue for="0" value="3,1,type=float" />
+          <attvalue for="1" value="s_prime_f1" />
+        </attvalues>
+      </node>
+      <node id="o_m0" label="o_m0">
+        <attvalues>
+          <attvalue for="0" value="3,1,type=float" />
+          <attvalue for="1" value="o_m0" />
+        </attvalues>
+      </node>
+      <node id="o_m1" label="o_m1">
+        <attvalues>
+          <attvalue for="0" value="3,1,type=float" />
+          <attvalue for="1" value="o_m1" />
+        </attvalues>
+      </node>
+      <node id="o_m2" label="o_m2">
+        <attvalues>
+          <attvalue for="0" value="3,1,type=float" />
+          <attvalue for="1" value="o_m2" />
+        </attvalues>
+      </node>
+      <node id="u_f1" label="u_f1">
+        <attvalues>
+          <attvalue for="0" value="1,type=int" />
+          <attvalue for="1" value="u_f1" />
+        </attvalues>
+      </node>
+      <node id="G" label="G">
+        <attvalues>
+          <attvalue for="0" value="1,type=float" />
+          <attvalue for="1" value="G" />
+        </attvalues>
+      </node>
+      <node id="t" label="t">
+        <attvalues>
+          <attvalue for="0" value="1,type=int" />
+          <attvalue for="1" value="t" />
+        </attvalues>
+      </node>
+    </nodes>
+    <edges />
+  </graph>
+</gexf>

@@ -14,14 +14,13 @@ import os
 
 logger = logging.getLogger(__name__) # Will be child of GNN_Pipeline logger if run by main
 
-def run_pymdp_scripts(pipeline_output_dir: str, recursive_search: bool, verbose: bool) -> bool:
+def run_pymdp_scripts(pipeline_output_dir: str, verbose: bool) -> bool:
     """
     Finds and executes all .py files in the PyMDP rendered scripts directory.
     Logs stdout/stderr for each script to a dedicated log directory.
 
     Args:
         pipeline_output_dir: The root output directory of the GNN pipeline.
-        recursive_search: Whether to search for PyMDP scripts recursively in their base directory.
         verbose: If True, sets subprocess output to be more verbose.
 
     Returns:
@@ -43,10 +42,13 @@ def run_pymdp_scripts(pipeline_output_dir: str, recursive_search: bool, verbose:
     logger.info(f"Searching for PyMDP scripts to execute in: {rendered_pymdp_base_dir}")
     if not rendered_pymdp_base_dir.is_dir():
         logger.warning(f"PyMDP rendered scripts directory not found: {rendered_pymdp_base_dir}")
-        logger.warning("This might be expected if no PyMDP models were rendered in step 9.")
+        logger.warning("This might be expected if no PyMDP models were rendered in step 9, or if step 9 failed.")
         return True # Not a failure of this step, just no scripts to run.
 
-    glob_pattern = "**/*.py" if recursive_search else "*.py"
+    # Always search recursively because Step 9 creates a nested structure for outputs.
+    # e.g. <rendered_pymdp_base_dir>/<original_gnn_stem>/<original_gnn_stem>_rendered.py
+    glob_pattern = "**/*.py" 
+    logger.debug(f"Using glob pattern '{glob_pattern}' in {rendered_pymdp_base_dir}")
     pymdp_scripts = list(rendered_pymdp_base_dir.glob(glob_pattern))
 
     if not pymdp_scripts:
@@ -199,7 +201,6 @@ if __name__ == '__main__':
     logger.info(f"Standalone Test: Running PyMDP scripts from output directory: {test_output_dir}")
     success = run_pymdp_scripts(
         pipeline_output_dir=str(test_output_dir),
-        recursive_search=True, # Typically rendered scripts might be in subdirs
         verbose=True
     )
 

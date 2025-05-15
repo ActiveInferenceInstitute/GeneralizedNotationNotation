@@ -48,7 +48,18 @@ def run_tests(tests_dir, output_dir, verbose=False):
         logger.warning(f"⚠️ Tests directory '{tests_dir}' not found or not a directory. Skipping tests.")
         return True # Not a fatal error for a placeholder
 
-    pytest_command = [sys.executable, "-m", "pytest", str(tests_path)]
+    # Construct path to venv pytest
+    # run_cwd is expected to be src/
+    run_cwd = tests_path.parent # This should be src/, where .venv is
+    venv_pytest_path = run_cwd / ".venv" / "bin" / "pytest"
+
+    if not venv_pytest_path.exists():
+        logger.error(f"❌ Pytest executable not found at {venv_pytest_path}. Falling back to sys.executable -m pytest.")
+        # Fallback to original method if direct path fails, though this is unlikely to solve the core issue if it exists
+        pytest_command = [sys.executable, "-m", "pytest", str(tests_path)]
+    else:
+        logger.info(f"ℹ️ Using pytest executable: {venv_pytest_path}")
+        pytest_command = [str(venv_pytest_path), str(tests_path)]
     
     if verbose:
         pytest_command.append("-v")
@@ -56,7 +67,7 @@ def run_tests(tests_dir, output_dir, verbose=False):
     logger.debug(f"  🐍 Executing test command: {' '.join(pytest_command)}")
 
     try:
-        run_cwd = tests_path.parent # This should be src/
+        # run_cwd = tests_path.parent # This should be src/ - Already defined above
         logger.debug(f"  📂 Running tests in CWD: {run_cwd}")
 
         env = os.environ.copy()

@@ -44,40 +44,36 @@ def main(args: argparse.Namespace) -> int:
     logger.info(f"Executing render step with arguments from main pipeline: {args}")
 
     # The render step should process GNN files exported by a previous pipeline step (e.g., 5_export.py).
-    # These exported GNN specifications (expected to be *.json or *.gnn files)
+    # These exported GNN specifications (expected to be *.json files)
     # are typically found in a subdirectory of the main pipeline output directory.
-    # We'll use "gnn_exports" as the conventional name for this subdirectory.
     gnn_export_subdir_name = "gnn_exports"
     base_target_dir = Path(args.output_dir).resolve() / gnn_export_subdir_name
     logger.info(f"Render step will target GNN specifications from: {base_target_dir}")
 
     # Specific output subdirectory for this rendering step
-    step_output_dir_name = "gnn_rendered_simulators" # Changed from "gnn_renders" for clarity
+    step_output_dir_name = "gnn_rendered_simulators"
     base_output_dir = Path(args.output_dir).resolve() / step_output_dir_name
     
     supported_formats = ["pymdp", "rxinfer"]
     overall_success = True
     files_processed_count = 0
 
-    # Determine glob pattern for GNN files
-    # Common patterns could be *.gnn.json or simply *.json if the directory only contains GNN specs.
-    # For now, let's assume *.json as a common case for GNN specs.
-    # Users can place their GNN JSON files directly in gnn/examples or subdirectories.
     glob_pattern = "*.json" 
     
     if not base_target_dir.is_dir():
         logger.error(f"Target directory for GNN specs not found or is not a directory: {base_target_dir}")
+        logger.error("This directory should have been created by Step 5 (export). Please check Step 5's logs and output.")
         return 1
 
-    logger.info(f"Searching for GNN specification files ({glob_pattern}) in {base_target_dir} (recursive: {args.recursive})")
-
-    if args.recursive:
-        gnn_files = list(base_target_dir.rglob(glob_pattern))
-    else:
-        gnn_files = list(base_target_dir.glob(glob_pattern))
+    # Step 9 should always search recursively in the 'gnn_exports' directory (base_target_dir)
+    # because Step 5 (export_gnn_to_all_formats) organizes exports into subdirectories per GNN file
+    # (e.g., .../gnn_exports/my_model_stem/my_model_stem.json).
+    # The pipeline's top-level args.recursive applies to the initial discovery of .md source files.
+    logger.info(f"Searching for GNN specification files ({glob_pattern}) in {base_target_dir} (always recursively for this step).")
+    gnn_files = list(base_target_dir.rglob(glob_pattern)) # Always use rglob here
 
     if not gnn_files:
-        logger.warning(f"No GNN specification files ({glob_pattern}) found in {base_target_dir}.")
+        logger.warning(f"No GNN specification files ({glob_pattern}) found recursively in {base_target_dir}.")
         # Still return 0 as this isn't an error of the script itself, but no work to do.
         return 0
 

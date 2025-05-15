@@ -24,31 +24,31 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 # Global placeholders, to be resolved by the MCP system providing them or through mcp_instance_ref
-MCPTool = None
-MCPSDKNotFoundError = None
+_MCPTool_llm_module_ref = None 
+_MCPSDKNotFoundError_llm_module_ref = None
 
 def initialize_llm_module(mcp_instance_ref):
     """
     Initializes the LLM module, loads API key, and updates MCP status.
     This should be called by the MCP main system after it has initialized mcp_instance.
     """
-    global llm_operations, MCPTool, MCPSDKNotFoundError # Allow modification of global placeholders
+    global llm_operations, _MCPTool_llm_module_ref, _MCPSDKNotFoundError_llm_module_ref # Allow modification of global placeholders
 
     # Import MCPTool and MCPSDKNotFoundError directly from src.mcp.mcp
     try:
         from src.mcp.mcp import MCPTool as RealMCPTool, MCPSDKNotFoundError as RealMCPSDKNotFoundError
-        MCPTool = RealMCPTool
-        MCPSDKNotFoundError = RealMCPSDKNotFoundError
+        _MCPTool_llm_module_ref = RealMCPTool
+        _MCPSDKNotFoundError_llm_module_ref = RealMCPSDKNotFoundError
         logger.info("Successfully imported MCPTool and MCPSDKNotFoundError from src.mcp.mcp in initialize_llm_module.")
     except ImportError:
-        logger.warning("Could not import MCPTool or MCPSDKNotFoundError from src.mcp.mcp in initialize_llm_module. Tool registration might fail.")
+        logger.warning("Could not import MCPTool or MCPSDKNotFoundError from src.mcp.mcp in initialize_llm_module. LLM Tool registration might fail or use dummies.")
         # Keep them as None or a dummy type if not found
-        if MCPTool is None: MCPTool = type('MCPTool', (object,), {}) # Dummy class
-        if MCPSDKNotFoundError is None: MCPSDKNotFoundError = type('MCPSDKNotFoundError', (Exception,), {}) # Dummy exception
+        if _MCPTool_llm_module_ref is None: _MCPTool_llm_module_ref = type('DummyMCPTool', (object,), {})
+        if _MCPSDKNotFoundError_llm_module_ref is None: _MCPSDKNotFoundError_llm_module_ref = type('DummyMCPSDKNotFoundError', (Exception,), {})
 
     if not llm_operations:
         logger.error("LLM operations module not loaded. LLM tools cannot be initialized or registered.")
-        if mcp_instance_ref and hasattr(mcp_instance_ref, 'sdk_status'):
+        if mcp_instance_ref and hasattr(mcp_instance_ref, 'sdk_status'): # Check sdk_status attribute
             mcp_instance_ref.sdk_status = False
             mcp_instance_ref.sdk_status_message = "LLM operations module not loaded."
         return False
@@ -56,14 +56,14 @@ def initialize_llm_module(mcp_instance_ref):
     try:
         llm_operations.load_api_key()
         logger.info("LLM API Key loaded successfully.")
-        if mcp_instance_ref and hasattr(mcp_instance_ref, 'sdk_status'):
-            mcp_instance_ref.sdk_status = True # Assuming successful load means SDK is ready
+        if mcp_instance_ref and hasattr(mcp_instance_ref, 'sdk_status'): # Check sdk_status attribute
+            mcp_instance_ref.sdk_status = True 
             mcp_instance_ref.sdk_status_message = "LLM SDK ready (API Key loaded)."
         return True
     except ValueError as e:
         logger.error(f"MCP for LLM: OpenAI API Key not loaded: {e}. LLM tools will not function.")
-        if mcp_instance_ref and hasattr(mcp_instance_ref, 'sdk_status'):
-            mcp_instance_ref.sdk_status = False # Indicate SDK (LLM part) is not ready
+        if mcp_instance_ref and hasattr(mcp_instance_ref, 'sdk_status'): # Check sdk_status attribute
+            mcp_instance_ref.sdk_status = False 
             mcp_instance_ref.sdk_status_message = f"OpenAI API Key not loaded: {e}. LLM tools will not function."
         return False
 
@@ -163,21 +163,19 @@ def generate_professional_summary_from_gnn(file_path_str: str, experiment_detail
 TOOL_CATEGORY = "LLM Operations"
 
 def register_tools(mcp_instance_ref):
-    global MCPTool # Use the MCPTool that initialize_llm_module is responsible for setting
+    global _MCPTool_llm_module_ref # Use the renamed global
 
     if not mcp_instance_ref:
         logger.warning("MCP instance not available. LLM tools not registered.")
         return
     
-    if MCPTool is None: # This means initialize_llm_module failed to set it (even to a dummy)
-        logger.error("MCPTool is None after initialize_llm_module was expected to set it. LLM tools registration aborted.")
+    if _MCPTool_llm_module_ref is None: 
+        logger.error(f"LLM module's reference to MCPTool class is None. It should have been set by initialize_llm_module. LLM tools registration aborted.")
         return
-
-    # At this point, MCPTool is either the real MCPTool class from src.mcp.mcp
-    # or the dummy class type('MCPTool', (object,), {}) if the import failed in initialize_llm_module.
-    # We proceed with the assumption that MCPTool is callable and usable for instantiation.
-    # If it's the dummy and incompatible with instantiation or registration,
-    # the try-except block below during tool creation/registration will catch it.
+    
+    if _MCPTool_llm_module_ref.__name__ == 'DummyMCPTool': # Check if it's the dummy
+        logger.warning(f"LLM module is using a DummyMCPTool ({_MCPTool_llm_module_ref}). Registration will proceed but this might indicate an underlying issue with MCPTool import if real functionality was expected from the reference.")
+        # The registration itself relies on mcp_instance_ref.register_tool, so this check is more for diagnosing init issues.
 
     tool_definitions = [
         {
@@ -236,30 +234,28 @@ def register_tools(mcp_instance_ref):
                 
                 properties[param_name] = {"type": param_type_str, "description": desc}
                 if param.default == inspect.Parameter.empty and param.kind != inspect.Parameter.VAR_KEYWORD and param.kind != inspect.Parameter.VAR_POSITIONAL:
-                    # Consider a parameter required if it has no default and is not *args or **kwargs
-                    # Further refinement: check if type hint is Optional or includes None
                     if not (str(param.annotation).startswith("Optional[") or ("None" in str(param.annotation))):
                          required_params.append(param_name)
             
-            # Attempt to create and register the tool
-            mcp_tool_instance = MCPTool( # This will use the MCPTool set by initialize_llm_module
+            current_tool_schema = {
+                "type": "object",
+                "properties": properties,
+            }
+            if required_params:
+                current_tool_schema["required"] = required_params
+
+            # Call the register_tool method of the MCP instance
+            mcp_instance_ref.register_tool(
                 name=tool_def["name"],
-                description=tool_def["description"],
-                category=TOOL_CATEGORY,
-                func_ref=tool_def["func"],
-                parameters_jsonschema={
-                    "type": "object",
-                    "properties": properties,
-                    "required": required_params
-                }
+                func=tool_def["func"], # Pass the function reference directly
+                schema=current_tool_schema, # Pass the constructed JSON schema
+                description=tool_def["description"]
+                # Category is not supported by MCP.register_tool or MCPTool constructor
             )
-            mcp_instance_ref.register_tool(mcp_tool_instance)
-            logger.info(f"LLM tool '{tool_def['name']}' registered with MCP.")
+            logger.info(f"LLM tool '{tool_def['name']}' registration call made to MCP.")
 
         except Exception as e:
-            logger.error(f"Failed to register LLM tool '{tool_def['name']}': {e}", exc_info=True)
-            # This will catch errors if MCPTool is the dummy and incompatible,
-            # or if there are other issues with tool definition or registration.
+            logger.error(f"Failed to prepare or call registration for LLM tool '{tool_def['name']}': {e}", exc_info=True)
 
 def ensure_llm_tools_registered(mcp_instance_ref): # Added mcp_instance_ref parameter
     """

@@ -8,20 +8,10 @@ validating them against a defined set of terms, and assisting in report generati
 import json
 import re
 import os
+import logging
 
-def get_mcp_interface():
-    """
-    Returns the MCP interface for the Ontology module.
-    """
-    return {
-        "status": "Ontology module MCP active",
-        "capabilities": [
-            "parse_gnn_ontology_section",
-            "load_defined_ontology_terms",
-            "validate_annotations",
-            "generate_ontology_report_for_file"
-        ]
-    }
+# Initialize logger for this module if not already present
+logger = logging.getLogger(__name__)
 
 def parse_gnn_ontology_section(gnn_file_content: str, verbose: bool = False) -> dict:
     """
@@ -94,52 +84,50 @@ def load_defined_ontology_terms(ontology_terms_path: str, verbose: bool = False)
 
     Args:
         ontology_terms_path: Path to the JSON file containing ontology terms.
-        verbose: If True, prints loading information.
+        verbose: If True, prints loading information (now handled by logger levels).
 
     Returns:
         A dictionary of defined ontology terms (term: description/metadata).
         Returns an empty dictionary if the file cannot be loaded or parsed.
     """
     defined_terms = {}
+    # Use logger for messages. Verbose flag can control specific debug logs if needed,
+    # but errors/warnings should always use the logger.
+    # The level of these messages will be controlled by the pipeline's main logger config.
+    
+    # Get absolute path for clearer logging, especially if ontology_terms_path is relative
+    abs_path_str = "<unknown>"
     try:
-        # Ensure the path is treated as absolute if it's not already.
-        # This helps if the CWD is unexpected.
-        # However, the path from the log ('src/ontology/act_inf_ontology_terms.json')
-        # is likely relative to the project root.
-        # For now, let's rely on the path being correctly resolved by the caller (8_ontology.py)
-        
-        if verbose: # Added this line to see the path being used
-            print(f"MCP: Attempting to load ontology terms from: {os.path.abspath(ontology_terms_path)}")
+        abs_path_str = os.path.abspath(ontology_terms_path)
+    except Exception:
+        pass # Keep default if abspath fails for some exotic reason
 
-        with open(ontology_terms_path, 'r', encoding='utf-8-sig') as f: # Changed encoding
+    # Log the attempt at debug level. If verbose is True, this will show.
+    logger.debug(f"Attempting to load ontology terms from: {abs_path_str} (Original path argument: {ontology_terms_path})")
+
+    try:
+        with open(ontology_terms_path, 'r', encoding='utf-8-sig') as f: # utf-8-sig handles BOM
             data = json.load(f)
         if isinstance(data, dict):
             defined_terms = data
-            if verbose:
-                print(f"MCP: Loaded {len(defined_terms)} ontology terms from {ontology_terms_path}.")
+            # Log success at debug level or info if verbose was specifically for this.
+            # For consistency, let's use debug for successful operational details.
+            logger.debug(f"Successfully loaded {len(defined_terms)} ontology terms from {ontology_terms_path}.")
         else:
-            if verbose:
-                print(f"MCP: Error: Ontology terms file {ontology_terms_path} does not contain a root JSON object.")
-            else: # Added this else block for non-verbose error
-                print(f"MCP_ERROR_TRACE: Ontology terms file {ontology_terms_path} does not contain a root JSON object. Data type: {type(data)}")
-            return {}
+            # This is a structural error in the file content.
+            logger.warning(f"Ontology terms file {ontology_terms_path} (abs: {abs_path_str}) did not contain a root JSON object as expected. Found type: {type(data)}.")
+            return {} # Return empty on structure error
     except FileNotFoundError:
-        if verbose:
-            print(f"MCP: Ontology terms file not found: {ontology_terms_path}")
-        else: # Added this else block for non-verbose error
-            print(f"MCP_ERROR_TRACE: Ontology terms file not found: {ontology_terms_path} (Absolute: {os.path.abspath(ontology_terms_path)})")
+        # This is a common, potentially expected issue if the file is optional or path is wrong.
+        logger.warning(f"Ontology terms definition file not found: {ontology_terms_path} (abs: {abs_path_str}). Validation will be skipped or limited.")
         return {}
     except json.JSONDecodeError as e:
-        if verbose:
-            print(f"MCP: Error decoding JSON from {ontology_terms_path}: {e}")
-        else: # Added this else block for non-verbose error
-            print(f"MCP_ERROR_TRACE: Error decoding JSON from {ontology_terms_path} (Absolute: {os.path.abspath(ontology_terms_path)}): {e}")
+        # This indicates a malformed JSON file.
+        logger.warning(f"Error decoding JSON from ontology terms file {ontology_terms_path} (abs: {abs_path_str}): {e}. Check JSON syntax.")
         return {}
     except Exception as e:
-        if verbose:
-            print(f"MCP: An unexpected error occurred while loading ontology terms from {ontology_terms_path}: {e}")
-        else: # Added this else block for non-verbose error
-            print(f"MCP_ERROR_TRACE: An unexpected error occurred while loading {ontology_terms_path} (Absolute: {os.path.abspath(ontology_terms_path)}): {e}")
+        # Catch any other unexpected errors during file loading/parsing.
+        logger.error(f"An unexpected error occurred while loading or parsing ontology terms from {ontology_terms_path} (abs: {abs_path_str}): {e}", exc_info=True)
         return {}
     return defined_terms
 
@@ -215,11 +203,115 @@ def generate_ontology_report_for_file(gnn_file_path: str, parsed_annotations: di
     report_parts.append("\n---\n")
     return "".join(report_parts)
 
+# --- MCP Tool Wrappers ---
+
+def parse_gnn_ontology_section_mcp(gnn_file_content: str, verbose: bool = False) -> dict:
+    """
+    MCP Tool: Parses the 'ActInfOntologyAnnotation' section from GNN file content.
+    Returns a dictionary mapping model variables to ontological terms.
+    """
+    # The original function already returns a dict, but let's ensure a consistent success/error structure
+    try:
+        annotations = parse_gnn_ontology_section(gnn_file_content, verbose)
+        return {
+            "success": True,
+            "annotations": annotations
+        }
+    except Exception as e:
+        logger.error(f"MCP parse_gnn_ontology_section_mcp failed: {e}", exc_info=True)
+        return {
+            "success": False,
+            "error": str(e),
+            "annotations": {}
+        }
+
+def load_defined_ontology_terms_mcp(ontology_terms_path: str, verbose: bool = False) -> dict:
+    """
+    MCP Tool: Loads defined ontological terms from a JSON file.
+    Returns a dictionary of defined ontology terms.
+    """
+    try:
+        defined_terms = load_defined_ontology_terms(ontology_terms_path, verbose)
+        # Check if terms were actually loaded or if an error occurred (e.g., file not found)
+        # The original function returns {} on error and logs warnings.
+        # For MCP, more explicit success/failure is better.
+        if not defined_terms and not Path(ontology_terms_path).exists():
+             return {
+                "success": False,
+                "error": f"Ontology terms file not found: {ontology_terms_path}",
+                "defined_terms": {}
+            }
+        return {
+            "success": True,
+            "defined_terms": defined_terms,
+            "source_path": ontology_terms_path
+        }
+    except Exception as e:
+        logger.error(f"MCP load_defined_ontology_terms_mcp failed: {e}", exc_info=True)
+        return {
+            "success": False,
+            "error": str(e),
+            "defined_terms": {}
+        }
+
+def validate_annotations_mcp(parsed_annotations: dict, defined_terms: dict, verbose: bool = False) -> dict:
+    """
+    MCP Tool: Validates parsed GNN annotations against a set of defined ontological terms.
+    Returns a dictionary with validation results.
+    """
+    try:
+        validation_results = validate_annotations(parsed_annotations, defined_terms, verbose)
+        return {
+            "success": True,
+            "validation_results": validation_results
+        }
+    except Exception as e:
+        logger.error(f"MCP validate_annotations_mcp failed: {e}", exc_info=True)
+        return {
+            "success": False,
+            "error": str(e),
+            "validation_results": {}
+        }
+
+# --- MCP Registration Function ---
+def register_tools(mcp_instance):
+    """Register Ontology module tools with the MCP instance."""
+
+    mcp_instance.register_tool(
+        name="ontology.parse_gnn_ontology_section",
+        func=parse_gnn_ontology_section_mcp,
+        schema={
+            "gnn_file_content": {"type": "string", "description": "The full string content of a GNN file."},
+            "verbose": {"type": "boolean", "description": "Enable verbose logging during parsing.", "optional": True}
+        },
+        description="Parses the 'ActInfOntologyAnnotation' section from GNN file content and extracts mappings."
+    )
+
+    mcp_instance.register_tool(
+        name="ontology.load_defined_ontology_terms",
+        func=load_defined_ontology_terms_mcp,
+        schema={
+            "ontology_terms_path": {"type": "string", "description": "Path to the JSON file containing defined ontology terms."},
+            "verbose": {"type": "boolean", "description": "Enable verbose logging during loading.", "optional": True}
+        },
+        description="Loads defined ontological terms from a specified JSON file."
+    )
+
+    mcp_instance.register_tool(
+        name="ontology.validate_annotations",
+        func=validate_annotations_mcp,
+        schema={
+            "parsed_annotations": {"type": "object", "description": "Dictionary of {model_var: ontology_term} from a GNN file."},
+            "defined_terms": {"type": "object", "description": "Dictionary of {ontology_term: description} from a definition file."},
+            "verbose": {"type": "boolean", "description": "Enable verbose logging during validation.", "optional": True}
+        },
+        description="Validates parsed GNN annotations against a set of defined ontological terms."
+    )
+    logger.info("Ontology module MCP tools registered.")
+
 
 if __name__ == '__main__':
     print("Ontology Module MCP - Self-Test")
-    interface = get_mcp_interface()
-    print(f"Interface: {interface}\n")
 
     # Test parse_gnn_ontology_section
     sample_gnn_content_ok = """

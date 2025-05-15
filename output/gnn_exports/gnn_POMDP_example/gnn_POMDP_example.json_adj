@@ -1,0 +1,122 @@
+{
+    "directed": true,
+    "multigraph": false,
+    "graph": [
+        [
+            "name",
+            "Standard POMDP Agent v1.0"
+        ]
+    ],
+    "nodes": [
+        {
+            "dimensions": "3,1,type=int",
+            "original_id": "s_f0",
+            "id": "s_f0"
+        },
+        {
+            "dimensions": "2,1,type=int",
+            "original_id": "s_f1",
+            "id": "s_f1"
+        },
+        {
+            "dimensions": "4,1,type=int",
+            "original_id": "o_m0",
+            "id": "o_m0"
+        },
+        {
+            "dimensions": "2,1,type=int",
+            "original_id": "o_m1",
+            "id": "o_m1"
+        },
+        {
+            "dimensions": "3,type=float",
+            "original_id": "pi_c0",
+            "id": "pi_c0"
+        },
+        {
+            "dimensions": "2,type=float",
+            "original_id": "pi_c1",
+            "id": "pi_c1"
+        },
+        {
+            "dimensions": "1,type=int",
+            "original_id": "u_c0",
+            "id": "u_c0"
+        },
+        {
+            "dimensions": "1,type=int",
+            "original_id": "u_c1",
+            "id": "u_c1"
+        },
+        {
+            "dimensions": "4,3,2,type=float",
+            "original_id": "A_m0",
+            "id": "A_m0"
+        },
+        {
+            "dimensions": "2,3,2,type=float",
+            "original_id": "A_m1",
+            "id": "A_m1"
+        },
+        {
+            "dimensions": "3,3,3,2,type=float",
+            "original_id": "B_f0",
+            "id": "B_f0"
+        },
+        {
+            "dimensions": "2,2,3,2,type=float",
+            "original_id": "B_f1",
+            "id": "B_f1"
+        },
+        {
+            "dimensions": "4,type=float",
+            "original_id": "C_m0",
+            "id": "C_m0"
+        },
+        {
+            "dimensions": "2,type=float",
+            "original_id": "C_m1",
+            "id": "C_m1"
+        },
+        {
+            "dimensions": "3,type=float",
+            "original_id": "D_f0",
+            "id": "D_f0"
+        },
+        {
+            "dimensions": "2,type=float",
+            "original_id": "D_f1",
+            "id": "D_f1"
+        },
+        {
+            "dimensions": "1,type=float",
+            "original_id": "G",
+            "id": "G"
+        },
+        {
+            "dimensions": "1,type=int",
+            "original_id": "t",
+            "id": "t"
+        }
+    ],
+    "adjacency": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+    ]
+}

@@ -1,0 +1,66 @@
+### 1. Summary
+The model presented is titled **"Multifactor PyMDP Agent v1"** and is structured in the Generalized Notation Notation (GNN) format to represent a multifactor PyMDP agent. Key components include:
+- **States:** The model comprises two hidden state factors: "reward_level" (with 2 states) and "decision_state" (with 3 states).
+- **Observations:** The agent has three observation modalities: "state_observation" (3 outcomes), "reward" (3 outcomes), and "decision_proprioceptive" (3 outcomes).
+- **Connections:** The model defines relationships between states, observations, and actions, facilitating dynamic interactions among these components.
+
+### 2. General Explanation
+The **Multifactor PyMDP Agent** is designed to model decision-making processes in environments with multiple sources of information. It utilizes a framework known as Active Inference, where the agent infers its internal states based on observations and optimizes its actions to minimize expected free energy.
+
+In this model, the **state space** consists of hidden states representing the agent's belief about its internal conditions, specifically its reward levels and decision-making states. The **observation modalities** provide the agent with sensory information, enabling it to update its beliefs about the environment. The agent’s **actions** are influenced by its control factors, which are determined by both the internal state and the expected outcomes of those actions.
+
+The interplay among states, observations, and control factors facilitates a feedback loop where the agent continuously updates its beliefs and actions based on new information and states, reflecting an adaptive learning process in uncertain environments.
+
+### 3. Key Components Identification
+- **Hidden States:**
+  - **s_f0** (Hidden state for "reward_level"): 
+    - **Type:** float
+    - **Dimensions:** [2, 1]
+    - **Value Range/Labels:** 2 states (e.g., low and high reward levels)
+  
+  - **s_f1** (Hidden state for "decision_state"): 
+    - **Type:** float
+    - **Dimensions:** [3, 1]
+    - **Value Range/Labels:** 3 states (e.g., different decision-making states)
+
+  - **s_prime_f0** (Next hidden state for "reward_level"): 
+    - **Type:** float
+    - **Dimensions:** [2, 1]
+
+  - **s_prime_f1** (Next hidden state for "decision_state"): 
+    - **Type:** float
+    - **Dimensions:** [3, 1]
+
+- **Observation Modalities:**
+  - **o_m0** (Observation modality for "state_observation"): 
+    - **Type:** float
+    - **Dimensions:** [3, 1]
+
+  - **o_m1** (Observation modality for "reward"): 
+    - **Type:** float
+    - **Dimensions:** [3, 1]
+
+  - **o_m2** (Observation modality for "decision_proprioceptive"): 
+    - **Type:** float
+    - **Dimensions:** [3, 1]
+
+- **Control Factors:**
+  - **u_f1** (Action taken for "decision_state"): 
+    - **Type:** int
+    - **Dimensions:** [1]
+    - **Action Labels:** 3 possible actions (corresponding to the decision states)
+
+  - **π_f1** (Policy vector for "decision_state"): 
+    - **Type:** float
+    - **Dimensions:** [3]
+
+### 4. Connectivity Description
+The **Connections** section describes the relationships among the various components of the model:
+- The hidden states \(D_f0\) and \(D_f1\) (priors) are linked to their respective hidden states \(s_f0\) and \(s_f1\), indicating that these priors inform the initial beliefs about the hidden states.
+- The hidden states \(s_f0\) and \(s_f1\) are connected to the likelihood matrices \(A_m0\), \(A_m1\), and \(A_m2\), which define how the hidden states affect the observations. This signifies that the current beliefs about the states influence what is observed.
+- Observations \(o_m0\), \(o_m1\), and \(o_m2\) feed into the expected free energy \(G\), representing the overall cost or desirability of different beliefs/actions.
+- The action taken \(u_f1\) is primarily linked to the transition matrix \(B_f1\), which determines how the decision state transitions based on the chosen action. \(B_f0\) is uncontrolled and solely governed by its prior.
+- The expected free energy \(G\) influences the policy \(π_f1\), which determines the distribution of actions taken by the agent.
+- The time step \(t\) indicates that the model operates in discrete time, with an unbounded time horizon for the agent's actions.
+
+These connections imply a dynamic structure where observations inform state beliefs, which in turn dictate actions, creating a feedback loop that allows the agent to adaptively respond to its environment.

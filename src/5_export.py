@@ -262,67 +262,74 @@ def export_gnn_to_all_formats(gnn_file_path: Path, base_output_dir: Path, verbos
 
 def main(args):
     """Main function for the export step."""
-    # Set this script's logger level based on pipeline's args.verbose
-    # This is typically handled by main.py for child modules.
-    # logger.setLevel(logging.DEBUG if args.verbose else logging.INFO)
+    logger.info(f"▶️ Starting Step 5: Export Operations ({Path(__file__).name})")
+    logger.debug(f"  Parsed options: Target='{args.target_dir}', Output='{args.output_dir}', Recursive={args.recursive}, Verbose={args.verbose}")
 
-    logger.info(f"▶️ Starting Step 5: Export ({Path(__file__).name})") 
-    logger.debug(f"  Parsing options:") # Was print if verbose
-    logger.debug(f"    Target directory: {args.target_dir}") # Was print if verbose
-    logger.debug(f"    Output directory: {args.output_dir}") # Was print if verbose
-    logger.debug(f"    Recursive: {args.recursive}") # Was print if verbose
-    logger.debug(f"    Verbose: {args.verbose}") # Was print if verbose
-
-    # Resolve paths once
-    target_dir_path = Path(args.target_dir).resolve()
-    output_dir_path = Path(args.output_dir).resolve()
-
-    # Create base output directory if it doesn't exist
+    # Ensure output directory and main export subdirectory exist
+    base_output_dir = Path(args.output_dir).resolve()
+    main_gnn_export_dir = base_output_dir / "gnn_exports" # Specific subdir for GNN structured exports
     try:
-        output_dir_path.mkdir(parents=True, exist_ok=True)
+        main_gnn_export_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Ensured GNN export directory exists: {main_gnn_export_dir}")
     except OSError as e:
-        logger.error(f"❌ CRITICAL: Failed to create base output directory {output_dir_path}: {e}")
-        return 1 # Cannot proceed
+        logger.error(f"CRITICAL: Failed to create GNN export directory {main_gnn_export_dir}: {e}")
+        return 1 # Critical failure if this directory cannot be made
 
-    # Generate summary report
-    if not generate_summary_report(str(target_dir_path), str(output_dir_path), args.recursive, args.verbose):
-        logger.error(f"❌ ERROR: Summary report generation failed for target '{target_dir_path}'.") # Changed from print
-        # Continue to attempt other exports, but this is a notable failure.
+    # Generate the main summary report first, as it summarizes all GNN files found
+    # It uses args.target_dir (e.g. src/gnn/examples) to find .md files
+    try:
+        summary_success = generate_summary_report(args.target_dir, str(base_output_dir), args.recursive, args.verbose)
+        if not summary_success:
+            # Log this but don't necessarily make the whole step fail if exports can proceed.
+            logger.warning("Summary report generation encountered issues (see logs above).")
+    except Exception as e:
+        logger.error(f"Error during summary report generation: {e}", exc_info=True)
+        # Continue to exports if possible
+
+    # Process individual GNN files for export to multiple formats
+    # These GNN files are the source .md files
+    # Their exports will go into main_gnn_export_dir / gnn_file_stem / ...
+    search_pattern = "**/*.md" if args.recursive else "*.md"
+    gnn_source_files = list(Path(args.target_dir).glob(search_pattern))
+
+    if not gnn_source_files:
+        logger.info(f"No GNN source files (.md) found in '{args.target_dir}' with pattern '{search_pattern}'. No specific GNN exports will be generated.")
     else:
-        summary_file_path = output_dir_path / "gnn_processing_summary.md"
-        logger.debug(f"  📄 Summary report successfully generated: {summary_file_path}") # Was print if verbose
+        logger.info(f"Found {len(gnn_source_files)} GNN source files to export.")
 
-    # Discover GNN files to export
-    logger.info(f"🔎 Discovering GNN files in {target_dir_path} for export...")
-    if not target_dir_path.is_dir():
-        logger.error(f"❌ Target directory '{target_dir_path}' does not exist or is not a directory.")
-        # If summary generation also depends on this, it might have already logged an error.
-        # Consider if this should be a fatal error for the export step.
-        # For now, if target_dir isn't there, we can't export anything.
-        return 1
+    successful_exports = 0
+    failed_exports = 0
 
-    gnn_files_to_process = list(target_dir_path.glob("**/*.md" if args.recursive else "*.md"))
+    for gnn_file_path in gnn_source_files:
+        logger.info(f"--- Processing exports for: {gnn_file_path.name} ---")
+        # Note: export_gnn_to_all_formats uses 'base_output_dir' and internally appends 'gnn_exports'
+        # and then the gnn_file_path.stem. This is consistent with main_gnn_export_dir being pre-created.
+        export_result = export_gnn_to_all_formats(gnn_file_path, base_output_dir, args.verbose)
+        if export_result:
+            successful_exports += 1
+        else:
+            failed_exports += 1
+            logger.error(f"Export failed for {gnn_file_path.name}. Check logs for details.")
+
+    if failed_exports > 0:
+        logger.warning(f"Step 5: Export operations completed with {failed_exports} GNN file(s) failing to export some/all formats.")
+        # Decide if this constitutes a partial or full failure for the step's exit code.
+        # For now, if any GNN files were found and attempted, let's consider it a soft failure/warning.
+        # If generate_summary_report failed critically earlier, that might be a harder failure.
+        # Let's return 0 if some exports were made, or if no files were found (nothing to fail on).
+        # Return 1 only for critical setup failures like directory creation.
     
-    if not gnn_files_to_process:
-        logger.info(f"ℹ️ No GNN files (.md) found in '{target_dir_path}' {'recursively' if args.recursive else ''} to export.")
-    else:
-        logger.info(f"Found {len(gnn_files_to_process)} GNN files to process for export.")
-        
-        all_exports_succeeded = True
-        for gnn_file in gnn_files_to_process:
-            logger.info(f"--- Starting export for: {gnn_file.name} ---")
-            if not export_gnn_to_all_formats(gnn_file, output_dir_path, args.verbose):
-                all_exports_succeeded = False # Mark if any file had export failures
-            logger.info(f"--- Finished export for: {gnn_file.name} ---")
+    if successful_exports > 0 and failed_exports == 0:
+        logger.info(f"✅ Step 5: Export Operations ({Path(__file__).name}) - COMPLETED successfully for all {successful_exports} GNN file(s).")
+    elif successful_exports > 0 and failed_exports > 0:
+        logger.info(f"✅ Step 5: Export Operations ({Path(__file__).name}) - COMPLETED for {successful_exports} GNN file(s), but {failed_exports} had issues.")
+    elif not gnn_source_files:
+        logger.info(f"✅ Step 5: Export Operations ({Path(__file__).name}) - COMPLETED (no GNN source files to export).")
+    else: # No successful exports, but files were present and all failed
+        logger.error(f"❌ Step 5: Export Operations ({Path(__file__).name}) - FAILED (all {failed_exports} GNN files encountered export errors).")
+        return 1 # If files were there but all failed to export, it's a failure of the step.
 
-        if not all_exports_succeeded:
-            logger.warning("⚠️ Some GNN files had errors during their format exports. Check logs above.")
-            # Decide if this constitutes a partial failure (return 1) or just a warning.
-            # For now, let's return 0 if the script itself ran, but log warnings.
-            # If any single file export is critical, this logic might need adjustment.
-
-    logger.info(f"✅ Step 5: Export ({Path(__file__).name}) - COMPLETED") # Was print if verbose, now always INFO
-    return 0
+    return 0 # Default to success if it reaches here
 
 if __name__ == "__main__":
     # This block allows 5_export.py to be run standalone.

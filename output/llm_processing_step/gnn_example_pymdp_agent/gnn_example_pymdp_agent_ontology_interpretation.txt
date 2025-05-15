@@ -1,0 +1,69 @@
+### 1. Explain Mappings
+
+The **ActInfOntologyAnnotation** block in the GNN file provides mappings from the model components to terms used in the Active Inference ontology, which helps to define and standardize the understanding of elements in the model. Here’s a breakdown of these mappings:
+
+- **A_m0, A_m1, A_m2**: These are the likelihood matrices for each observation modality. Each matrix represents how likely different observations are given the hidden states. In the ontology, they are referred to as:
+  - **LikelihoodMatrixModality0** for A_m0
+  - **LikelihoodMatrixModality1** for A_m1
+  - **LikelihoodMatrixModality2** for A_m2
+  This mapping signifies that these matrices are used to compute the likelihood of observations given the hidden states in the Active Inference framework.
+
+- **B_f0, B_f1**: These are transition matrices for the hidden state factors. They define how the hidden states evolve over time based on actions. In the ontology, they are:
+  - **TransitionMatrixFactor0** for B_f0
+  - **TransitionMatrixFactor1** for B_f1
+  This suggests that these transition matrices are crucial for modeling the dynamics of the agent's hidden states, highlighting the role of state transitions in belief updating and state inference.
+
+- **C_m0, C_m1, C_m2**: These are preference vectors for each observation modality, indicating how much the agent "favors" certain observations. They are labeled in the ontology as:
+  - **LogPreferenceVectorModality0** for C_m0
+  - **LogPreferenceVectorModality1** for C_m1
+  - **LogPreferenceVectorModality2** for C_m2
+  This mapping indicates that these preferences influence the agent's decision-making process by weighing different observations according to their desirability.
+
+- **D_f0, D_f1**: These are prior distributions over the hidden states. They define the initial beliefs about the states before any observations are made. They are mapped to:
+  - **PriorOverHiddenStatesFactor0** for D_f0
+  - **PriorOverHiddenStatesFactor1** for D_f1
+  This highlights the importance of prior beliefs in the Active Inference model, as they serve as a starting point for inference and learning.
+
+- **s_f0, s_f1**: These represent the hidden states of the agent. They are mapped to:
+  - **HiddenStateFactor0** for s_f0
+  - **HiddenStateFactor1** for s_f1
+  This indicates that these hidden states are central to the model, as they encapsulate the internal states that are inferred based on observations.
+
+- **s_prime_f0, s_prime_f1**: These represent the next hidden states, which are influenced by actions and the transition matrices. They map to:
+  - **NextHiddenStateFactor0** for s_prime_f0
+  - **NextHiddenStateFactor1** for s_prime_f1
+  This signifies the dynamic nature of the hidden states, showing how they evolve over time based on actions taken.
+
+- **o_m0, o_m1, o_m2**: These are the observations made by the agent. They are mapped to:
+  - **ObservationModality0** for o_m0
+  - **ObservationModality1** for o_m1
+  - **ObservationModality2** for o_m2
+  This mapping illustrates that observations are critical inputs for the agent's inferential processes and decision-making.
+
+- **π_f1**: This is the policy vector, representing the distribution over actions for the controllable factor. It is mapped to:
+  - **PolicyVectorFactor1** 
+  This indicates the decision-making aspect of the agent, where the policy is derived from the expected outcomes of actions based on current beliefs.
+
+- **u_f1**: This is the action taken for controllable factor 1. It is mapped to:
+  - **ActionFactor1** 
+  This shows the direct action component in the model, linking the agent's beliefs and preferences to actual behavior.
+
+- **G**: This represents the expected free energy, which is a central concept in Active Inference. It is mapped to:
+  - **ExpectedFreeEnergy** 
+  This term is crucial as it encapsulates the agent's goal of minimizing expected surprise (or maximizing expected utility), driving its inferential and decision-making processes.
+
+### 2. Significance
+
+The mappings in the **ActInfOntologyAnnotation** block provide a structured understanding of how the model components relate to the principles of Active Inference. Each term used in the ontology has specific significance:
+
+- **Belief**: The model's hidden states (s_f0, s_f1) represent the agent's beliefs about the world and itself. These beliefs are continuously updated in response to new observations, reflecting the core Active Inference principle of belief updating based on evidence.
+
+- **Likelihood**: The likelihood matrices (A_m0, A_m1, A_m2) indicate how probable different observations are given the current beliefs. In Active Inference, beliefs are adjusted to better match the incoming evidence based on these likelihoods, highlighting the agent's learning process.
+
+- **Transition Model**: The transition matrices (B_f0, B_f1) describe how hidden states change over time, which is fundamental in modeling the dynamics of the agent's behavior and understanding how actions influence future states.
+
+- **Prior Preferences**: The prior distributions (D_f0, D_f1) reflect the initial assumptions or beliefs about the hidden states before observing any data. This aspect is crucial in Active Inference as it sets the baseline for how the agent interprets new information.
+
+- **Expected Free Energy (G)**: This term is vital as it encapsulates the agent's objective—minimizing uncertainty and maximizing expected utility. The mapping to ExpectedFreeEnergy indicates that the agent is designed to act in a manner that reduces future surprise, making it an adaptive and goal-oriented system.
+
+In summary, these mappings not only clarify the roles of various components within the model but also emphasize the Active Inference framework's focus on belief updating, decision-making, and adaptive behavior, all guided by the principles of minimizing expected free energy. This understanding can be used to analyze the model's functionality as an Active Inference agent, its potential applications, and its theoretical implications in cognitive science and artificial intelligence.

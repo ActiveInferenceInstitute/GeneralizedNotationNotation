@@ -39,7 +39,7 @@ Based on the context above, please perform the following task:
     logger.debug(f"Constructed prompt: {prompt[:500]}...") # Log a preview
     return prompt
 
-def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 8000, temperature: float = 0.7) -> str:
+def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 8000, temperature: float = 0.7, request_timeout: float = 60.0) -> str:
     """
     Sends a prompt to the specified OpenAI model and returns the response.
 
@@ -48,14 +48,17 @@ def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 
         model (str): The OpenAI model to use (e.g., "gpt-3.5-turbo", "gpt-4").
         max_tokens (int): The maximum number of tokens to generate.
         temperature (float): Controls randomness (0.0 to 2.0). Lower values are more deterministic.
+        request_timeout (float): Timeout in seconds for the API request.
 
     Returns:
         str: The LLM's response.
     """
     try:
-        logger.info(f"Sending prompt to OpenAI model: {model}")
+        logger.info(f"Sending prompt to OpenAI model: {model} (timeout: {request_timeout}s)")
         # Using the new client syntax for OpenAI API version >= 1.0
-        client = openai.OpenAI() 
+        # Set timeout when instantiating the client
+        client = openai.OpenAI(timeout=request_timeout) 
+        
         response = client.chat.completions.create(
             model=model,
             messages=[
@@ -66,17 +69,22 @@ def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 
             temperature=temperature,
             n=1,
             stop=None
+            # Per-request timeout can also be set here if preferred and supported by the client version:
+            # timeout=request_timeout 
         )
         llm_response = response.choices[0].message.content.strip()
         logger.info(f"Received response from LLM. Length: {len(llm_response)} chars.")
         logger.debug(f"LLM Response preview: {llm_response[:500]}...")
         return llm_response
-    except openai.APIError as e:
-        logger.error(f"OpenAI API Error: {e}", exc_info=True)
-        return f"Error: OpenAI API Error - {e}"
-    except Exception as e:
-        logger.error(f"An unexpected error occurred while getting LLM response: {e}", exc_info=True)
-        return f"Error: An unexpected error occurred - {e}"
+    except openai.Timeout as e_timeout:
+        logger.error(f"OpenAI API request timed out after {request_timeout} seconds: {e_timeout}", exc_info=True)
+        return f"Error: OpenAI API request timed out - {e_timeout}"
+    except openai.APIError as e_api: # Catch API specific errors more broadly
+        logger.error(f"OpenAI API Error: {e_api}", exc_info=True)
+        return f"Error: OpenAI API Error - {e_api}"
+    except Exception as e_unexpected: # General catch-all for other issues
+        logger.error(f"An unexpected error occurred while getting LLM response: {e_unexpected}", exc_info=True)
+        return f"Error: An unexpected error occurred - {e_unexpected}"
 
 if __name__ == '__main__':
     # Example Usage (requires .env file with OPENAI_API_KEY)

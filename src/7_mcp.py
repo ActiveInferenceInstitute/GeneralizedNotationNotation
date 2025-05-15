@@ -178,10 +178,11 @@ def process_mcp_operations(src_root_dir_str: str, mcp_base_dir_str: str, output_
                     report_lines.append(f"- **Tool:** `{tool_name}`")
                     report_lines.append(f"  - **Defined in Module:** `{tool_module}`")
                     report_lines.append(f"  - **Arguments (from signature):** `{args_str}`")
-                    report_lines.append(f"  - **Description:** \"{description}\"")
+                    report_lines.append(f'  - **Description:** "{description}"')
                     report_lines.append(f"  - **Schema:**")
                     report_lines.append(f"    ```json")
-                    report_lines.append(f"    {schema_str.replace('\n', '\n    ')}") # Indent schema for markdown
+                    indented_schema_str = schema_str.replace('\n', '\n    ')
+                    report_lines.append(f"    {indented_schema_str}")
                     report_lines.append(f"    ```")
                 report_lines.append("\n") 
             else:

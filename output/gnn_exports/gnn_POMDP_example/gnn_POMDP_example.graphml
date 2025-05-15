@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d2" for="node" attr.name="original_id" attr.type="string" />
+  <key id="d1" for="node" attr.name="dimensions" attr.type="string" />
+  <key id="d0" for="graph" attr.name="name" attr.type="string" />
+  <graph edgedefault="directed">
+    <node id="s_f0">
+      <data key="d1">3,1,type=int</data>
+      <data key="d2">s_f0</data>
+    </node>
+    <node id="s_f1">
+      <data key="d1">2,1,type=int</data>
+      <data key="d2">s_f1</data>
+    </node>
+    <node id="o_m0">
+      <data key="d1">4,1,type=int</data>
+      <data key="d2">o_m0</data>
+    </node>
+    <node id="o_m1">
+      <data key="d1">2,1,type=int</data>
+      <data key="d2">o_m1</data>
+    </node>
+    <node id="pi_c0">
+      <data key="d1">3,type=float</data>
+      <data key="d2">pi_c0</data>
+    </node>
+    <node id="pi_c1">
+      <data key="d1">2,type=float</data>
+      <data key="d2">pi_c1</data>
+    </node>
+    <node id="u_c0">
+      <data key="d1">1,type=int</data>
+      <data key="d2">u_c0</data>
+    </node>
+    <node id="u_c1">
+      <data key="d1">1,type=int</data>
+      <data key="d2">u_c1</data>
+    </node>
+    <node id="A_m0">
+      <data key="d1">4,3,2,type=float</data>
+      <data key="d2">A_m0</data>
+    </node>
+    <node id="A_m1">
+      <data key="d1">2,3,2,type=float</data>
+      <data key="d2">A_m1</data>
+    </node>
+    <node id="B_f0">
+      <data key="d1">3,3,3,2,type=float</data>
+      <data key="d2">B_f0</data>
+    </node>
+    <node id="B_f1">
+      <data key="d1">2,2,3,2,type=float</data>
+      <data key="d2">B_f1</data>
+    </node>
+    <node id="C_m0">
+      <data key="d1">4,type=float</data>
+      <data key="d2">C_m0</data>
+    </node>
+    <node id="C_m1">
+      <data key="d1">2,type=float</data>
+      <data key="d2">C_m1</data>
+    </node>
+    <node id="D_f0">
+      <data key="d1">3,type=float</data>
+      <data key="d2">D_f0</data>
+    </node>
+    <node id="D_f1">
+      <data key="d1">2,type=float</data>
+      <data key="d2">D_f1</data>
+    </node>
+    <node id="G">
+      <data key="d1">1,type=float</data>
+      <data key="d2">G</data>
+    </node>
+    <node id="t">
+      <data key="d1">1,type=int</data>
+      <data key="d2">t</data>
+    </node>
+    <data key="d0">Standard POMDP Agent v1.0</data>
+  </graph>
+</graphml>

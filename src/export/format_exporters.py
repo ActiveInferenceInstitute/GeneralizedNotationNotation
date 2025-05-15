@@ -44,8 +44,16 @@ def _ensure_path(path_str: str) -> Path:
     return Path(path_str)
 
 def _parse_matrix_string(matrix_str: str) -> Any:
-    """Safely parses a string representation of a matrix."""
-    processed_str = matrix_str.strip()
+    """Safely parses a string representation of a matrix, after stripping comments."""
+    # First, remove any comments from the string
+    # A comment is considered anything from '#' to the end of the line/string
+    processed_str = re.sub(r"#.*", "", matrix_str).strip()
+    
+    # If after stripping comments, the string is empty or clearly malformed (e.g., just an opening bracket)
+    if not processed_str or processed_str in ["{", "[", "("]:
+        logger.debug(f"Matrix string '{matrix_str}' became empty or malformed ('{processed_str}') after comment stripping. Returning as raw string.")
+        return matrix_str # Return raw original string, as it might be a placeholder intended to be a string
+
     # Heuristic to convert GNN's {{...}} or {(...)} for tuples/lists of tuples into valid Python literal strings
     if processed_str.startswith("{") and processed_str.endswith("}"):
         inner_content = processed_str[1:-1].strip()
@@ -56,36 +64,53 @@ def _parse_matrix_string(matrix_str: str) -> Any:
              # For GNN, this often means a list/tuple of tuples.
              # Example: A_m0={ ( (0.333,...), (0.333,...) ),  ( (0.333,...), (0.333,...) ) }
              # This structure is more like a tuple of tuples.
-             # The original heuristic was:
-             # if '(' in processed_str[1:-1] and ')' in processed_str[1:-1]:
-             #     processed_str = "(" + processed_str[1:-1] + ")"
-             # Let's refine it: if it's a set of tuples like format, convert to tuple of tuples
-             if inner_content.count("(") > 1 and inner_content.count(")") > 1 and inner_content.count("{") == 0 and inner_content.count("}") == 0 : # like ((v,v),(v,v)), ((v,v),(v,v))
+             # Refined heuristic: if it's a set of tuples like format, convert to tuple of tuples
+             # Make sure inner_content is not empty and doesn't just contain whitespace
+             if inner_content and inner_content.count("(") > 0 and inner_content.count(")") > 0 and \
+                inner_content.count("{") == 0 and inner_content.count("}") == 0 :
+                 # Handles cases like "{(t1), (t2)}" or "{ (t1), (t2) }" -> "((t1), (t2))"
+                 # Also handles simple sets of numbers like {1,2,3} -> (1,2,3) if they don't have sub-tuples
+                 # If there are tuples inside, like {(1,2), (3,4)}, it becomes ((1,2), (3,4))
                  processed_str = f"({inner_content})"
-
+    
+    # Handle common cases where GNN uses {...} for lists/tuples of numbers directly
+    # e.g. D_f0 = {0.5, 0.5} should become [0.5, 0.5] or (0.5, 0.5)
+    # This is tricky because {1,2} is a valid set for ast.literal_eval.
+    # The goal is to make GNN matrix formats more consistently lists/tuples.
+    # The later conversion of top-level sets to lists handles this,
+    # but this initial shaping helps ast.literal_eval.
 
     try:
+        # Redundant check, but safe: if processed_str somehow became empty after heuristics, treat as error for ast.literal_eval
+        if not processed_str:
+            logger.warning(f"Matrix string '{matrix_str}' became empty after heuristics, should have been caught. Returning raw string.")
+            return matrix_str
+
         parsed_value = ast.literal_eval(processed_str)
-        # PyMDP often expects lists of lists or lists of tuples, not top-level sets or tuples of sets.
+        
         # Convert sets to lists at various levels if necessary.
+        # PyMDP often expects lists of lists or lists of tuples, not top-level sets or tuples of sets.
+        
+        # Initial conversion for top-level set or tuple
         if isinstance(parsed_value, set):
             parsed_value = list(parsed_value)
-        if isinstance(parsed_value, tuple): # Convert top-level tuple to list
+        if isinstance(parsed_value, tuple): # Convert top-level tuple to list for consistency
              parsed_value = list(parsed_value)
 
         def convert_sets_in_nesting(item):
             if isinstance(item, set):
                 return list(item)
             elif isinstance(item, (list, tuple)):
+                # Ensure elements within lists/tuples are also processed
                 return type(item)(convert_sets_in_nesting(x) for x in item)
             return item
 
         parsed_value = convert_sets_in_nesting(parsed_value)
         
-        logger.debug(f"Parsed matrix string '{matrix_str}' to: {parsed_value}")
+        logger.debug(f"Parsed matrix string '{matrix_str}' (processed: '{processed_str}') to: {parsed_value}")
         return parsed_value
     except (ValueError, TypeError, SyntaxError, MemoryError, RecursionError) as e:
-        logger.warning(f"Error parsing matrix string with ast.literal_eval: '{matrix_str}'. Error: {e}. Returning as raw string.")
+        logger.warning(f"Error parsing matrix string with ast.literal_eval: '{matrix_str}' (processed: '{processed_str}'). Error: {e}. Returning as raw string.")
         return matrix_str # Return raw string if parsing fails
 
 # --- Parsers for GNN Sections (kept for _gnn_model_to_dict) ---

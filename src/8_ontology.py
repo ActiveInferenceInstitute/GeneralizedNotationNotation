@@ -201,38 +201,40 @@ def main(args):
     logger.debug(f"    Target GNN files directory: {args.target_dir}")
     logger.debug(f"    Output directory for report: {args.output_dir}")
     logger.debug(f"    Recursive: {args.recursive}")
-    if args.ontology_terms_file:
+    if hasattr(args, 'ontology_terms_file') and args.ontology_terms_file:
         logger.debug(f"    Ontology terms definition file: {args.ontology_terms_file}")
     else:
         logger.debug(f"    Ontology terms file: Not provided (validation will be skipped)")
     logger.debug(f"    Verbose flag from args: {args.verbose}")
 
+    ontology_terms_file_path = args.ontology_terms_file if hasattr(args, 'ontology_terms_file') else None
+
     success, num_failed_validations = process_ontology_operations(
         args.target_dir, 
         args.output_dir, 
-        args.ontology_terms_file,
+        ontology_terms_file_path, # Use the potentially None path
         args.recursive if hasattr(args, 'recursive') else False, 
         args.verbose
     )
 
     if not success:
-        logger.error(f"❌ Step 8: Ontology Operations ({Path(__file__).name}) FAILED critically.")
+        logger.error(f"❌ Step 8: Ontology Operations ({Path(__file__).name}) FAILED critically (e.g., report writing failed or mcp module issue).")
         return 1 # Critical failure
     
+    # If the process itself succeeded (report generated etc.)
     if num_failed_validations > 0:
+        report_file_location = Path(args.output_dir) / 'ontology_processing' / 'ontology_processing_report.md'
         warning_message = (
-            f"Ontology validation completed with {num_failed_validations} failed term(s). "
-            f"Check '{Path(args.output_dir) / 'ontology_processing/ontology_processing_report.md'}' "
-            f"for details."
+            f"Ontology validation completed with {num_failed_validations} unrecognized/failed term(s). "
+            f"Check '{report_file_location}' for details."
         )
         logger.warning(f"⚠️ Step 8: {warning_message}")
-        return {
-            "status": "success_with_warnings",
-            "summary": f"Ontology: {num_failed_validations} failed term(s).", # Shorter summary for main pipeline
-            "warnings": [warning_message] # Detailed message
-        }
+        # The step completed its operation (generating the report), so it returns 0.
+        # Warnings are for the user/pipeline to note.
+        logger.info(f"✅ Step 8: Ontology Operations ({Path(__file__).name}) - COMPLETED (report generated), but with {num_failed_validations} validation warning(s).")
+        return 0 
         
-    logger.info(f"✅ Step 8: Ontology Operations ({Path(__file__).name}) - COMPLETED without validation errors.")
+    logger.info(f"✅ Step 8: Ontology Operations ({Path(__file__).name}) - COMPLETED successfully and without validation errors.")
     return 0
 
 if __name__ == "__main__":

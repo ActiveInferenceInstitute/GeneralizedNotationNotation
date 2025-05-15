@@ -1,0 +1,53 @@
+### 1. Summary
+The GNN model presented is a **Standard POMDP Agent v1.0**, designed as a comprehensive representation of a Partially Observable Markov Decision Process (POMDP). Its key components include:
+- **Hidden States**: Two factors representing the agent's location (3 states: RoomA, RoomB, Corridor) and resource level (2 states: Low, High).
+- **Observations**: Two modalities capturing different cues from the environment: VisualCue (4 outcomes: Door, Window, Food, Empty) and AuditorySignal (2 outcomes: Silence, Beep).
+- **Control Factors**: Two action types, Movement (3 actions: Stay, MoveClockwise, MoveCounterClockwise) and Interaction (2 actions: Wait, InteractWithResource).
+This model serves as a basis for testing GNN features within the PyMDP framework.
+
+### 2. General Explanation
+This GNN model is structured to facilitate the representation and processing of decision-making tasks under uncertainty, characteristic of POMDPs. It captures the dynamics of an agent operating in an environment with incomplete information about its state. The model's state space includes hidden states that define the agent's current location and resource level, while observations provide sensory inputs that inform the agent's understanding of its environment. The connections between the components suggest a flow of information where observations are generated based on hidden states, and the agent's actions influence transitions between these states. The model is designed for dynamic environments, allowing for policy evaluation and action selection based on the agent's expected free energy.
+
+### 3. Key Components Identification
+#### State Variables
+- **Hidden States**:
+  - **s_f0**: Location (3 states)
+    - States: RoomA (0), RoomB (1), Corridor (2)
+  - **s_f1**: ResourceLevel (2 states)
+    - States: Low (0), High (1)
+
+#### Observation Modalities
+- **o_m0**: VisualCue (4 outcomes)
+  - Outcomes: Door (0), Window (1), Food (2), Empty (3)
+- **o_m1**: AuditorySignal (2 outcomes)
+  - Outcomes: Silence (0), Beep (1)
+
+#### Control Factors
+- **pi_c0**: Movement (3 actions)
+  - Actions: Stay (0), MoveClockwise (1), MoveCounterClockwise (2)
+- **pi_c1**: Interaction (2 actions)
+  - Actions: Wait (0), InteractWithResource (1)
+
+### 4. Connectivity Description
+The connections outlined in the ## Connections block illustrate how different components of the model interact and depend on one another:
+
+- **Priors to Initial States**: 
+  - **(D_f0, D_f1) -> (s_f0, s_f1)**: The initial state distributions (priors) for Location and ResourceLevel set the starting conditions for the hidden states.
+
+- **States to Likelihoods to Observations**: 
+  - **(s_f0, s_f1) -> (A_m0, A_m1)**: The hidden states influence the likelihood of observing certain cues. The likelihood matrices (A_m0 for VisualCue, A_m1 for AuditorySignal) provide the probabilities of different observations based on the current hidden states.
+  - **(A_m0) -> (o_m0)** and **(A_m1) -> (o_m1)**: The likelihoods directly lead to the observed outcomes, demonstrating how the agent's understanding of its environment is shaped by its hidden states.
+
+- **States and Actions to Transitions**: 
+  - **(s_f0, s_f1, u_c0, u_c1) -> (B_f0, B_f1)**: A combined effect of the current states and chosen actions determines the transition dynamics, where the transition matrices (B_f0 for Location, B_f1 for ResourceLevel) dictate how the hidden states evolve over time.
+
+- **Preferences and States/Observations to EFE**:
+  - **(C_m0, C_m1, s_f0, s_f1, A_m0, A_m1) > G**: The preferences for different observations and current states contribute to the calculation of the Expected Free Energy (G), which evaluates the desirability of a policy.
+
+- **EFE to Policies**:
+  - **G > (pi_c0, pi_c1)**: The Expected Free Energy informs the decision-making process, helping to shape the policies for movement and interaction.
+
+- **Policies to Chosen Actions**:
+  - **(pi_c0) -> u_c0** and **(pi_c1) -> u_c1**: The derived policies determine the actions taken by the agent, completing the cycle of information flow from states to actions.
+
+Overall, these connections imply a structured flow of data through the model, where states inform observations, which in turn influence future actions and state transitions, ultimately allowing the agent to make informed decisions in its environment. The matrices (A, B, C, D, G) play crucial roles in defining the probabilities and preferences that govern these interactions.
