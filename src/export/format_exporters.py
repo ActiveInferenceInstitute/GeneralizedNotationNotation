@@ -251,7 +251,7 @@ def _parse_ontology_annotations(section_content: str) -> dict:
 def _parse_model_parameters_section(section_content: str) -> dict:
     """Parses ModelParameters section, converting list-like strings to Python lists."""
     data = {}
-    for line in section_content.strip().split('\\n'):
+    for line in section_content.strip().split('\n'):
         line_stripped_comments = line.split('#', 1)[0].strip() # Remove comments before parsing
         if not line_stripped_comments: # Skip empty or comment-only lines
             continue
