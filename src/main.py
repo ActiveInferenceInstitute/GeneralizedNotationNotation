@@ -36,6 +36,7 @@ Options:
     --ontology-terms-file   Path to the ontology terms file (default: src/ontology/act_inf_ontology_terms.json)
     --llm-tasks LIST        Comma-separated list of LLM tasks to run for 11_llm.py 
                             (e.g., "summarize,explain_structure")
+    --llm-timeout           Timeout in seconds for the LLM processing step (11_llm.py)
     --pipeline-summary-file FILE
                             Path to save the final pipeline summary report (default: output/pipeline_execution_summary.json)
 
@@ -119,6 +120,12 @@ def parse_arguments():
     parser.add_argument(
         "--llm-tasks", default="all", type=str,
         help='Comma-separated list of LLM tasks for 11_llm.py (e.g., "overview,purpose,ontology"). Default: "all".'
+    )
+    parser.add_argument(
+        "--llm-timeout",
+        type=int,
+        default=360, # Default to 6 minutes for the entire LLM script
+        help="Timeout in seconds for the LLM processing step (11_llm.py). Default: 360"
     )
     parser.add_argument(
         "--pipeline-summary-file",
@@ -289,7 +296,10 @@ def run_pipeline(args: argparse.Namespace):
             pass # Uses venv_python_path internally for pytest
         elif script_name_no_ext == "4_gnn_type_checker":
             cmd_list.extend(["--target-dir", str(args.target_dir)])
-            if args.recursive: cmd_list.append("--recursive")
+            if args.recursive:
+                cmd_list.append("--recursive")
+            else:
+                cmd_list.append("--no-recursive")
             if args.strict: cmd_list.append("--strict")
             cmd_list.append("--estimate-resources" if args.estimate_resources else "--no-estimate-resources")
         elif script_name_no_ext == "5_export":
@@ -311,7 +321,11 @@ def run_pipeline(args: argparse.Namespace):
         elif script_name_no_ext == "11_llm":
             cmd_list.extend(["--target-dir", str(args.target_dir)])
             if args.recursive: cmd_list.append("--recursive")
-            if args.llm_tasks: cmd_list.extend(["--llm-tasks", args.llm_tasks])
+            if args.llm_tasks:
+                tasks = [task.strip() for task in args.llm_tasks.split(',') if task.strip()]
+                if tasks:
+                    cmd_list.append("--llm-tasks")
+                    cmd_list.extend(tasks)
 
         step_process_env = os.environ.copy()
         if _venv_site_packages_path_for_subproc:
@@ -349,7 +363,8 @@ def run_pipeline(args: argparse.Namespace):
                     for line in iter(process.stdout.readline, ''):
                         stripped_line = line.strip()
                         if stripped_line: # Avoid logging empty lines from child process
-                            logger.info(f"    [{script_name_no_ext}] {stripped_line}")
+                            # Log stdout from subprocess at DEBUG level when main.py is verbose
+                            logger.debug(f"    [{script_name_no_ext}-STDOUT] {stripped_line}")
                         stdout_lines.append(line)
                     process.stdout.close()
                 
@@ -358,48 +373,36 @@ def run_pipeline(args: argparse.Namespace):
                     for line in iter(process.stderr.readline, ''):
                         stripped_line = line.strip()
                         if stripped_line: # Avoid logging empty lines
-                            # Try to parse log level from the sub-script's stderr
-                            parsed_level = None
-                            log_parts = stripped_line.split(' - ', 2) # Common format: TIMESTAMP - LOGGER - LEVEL - MESSAGE
-                            if len(log_parts) >= 3:
-                                level_candidate = log_parts[2].split(' - ', 1)[0] # Get the first part of the third segment
-                                if level_candidate in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
-                                    parsed_level = level_candidate
-                            else: # Try another common format: LEVEL:LOGGER:MESSAGE
-                                log_parts_alt = stripped_line.split(':', 2)
-                                if len(log_parts_alt) >= 3:
-                                    level_candidate_alt = log_parts_alt[0]
-                                    if level_candidate_alt in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
-                                        parsed_level = level_candidate_alt
-
-                            if parsed_level == 'DEBUG':
-                                logger.debug(f"    [{script_name_no_ext}] {stripped_line}")
-                            elif parsed_level == 'INFO':
-                                logger.info(f"    [{script_name_no_ext}] {stripped_line}")
-                            elif parsed_level == 'WARNING':
-                                logger.warning(f"    [{script_name_no_ext}-WARN] {stripped_line}")
-                            elif parsed_level == 'ERROR':
-                                logger.error(f"    [{script_name_no_ext}-ERR] {stripped_line}")
-                            elif parsed_level == 'CRITICAL':
-                                logger.critical(f"    [{script_name_no_ext}-CRIT] {stripped_line}")
-                            else:
-                                # Default to ERROR if no recognized level is parsed or if it's an actual error
-                                logger.error(f"    [{script_name_no_ext}-ERR] {stripped_line}")
+                            # Log all stderr from subprocess with a clear prefix and as a warning/error
+                            logger.warning(f"    [{script_name_no_ext}-STDERR] {stripped_line}")
                         stderr_lines.append(line)
                     process.stderr.close()
                     
-                return_code = process.wait()
+                # Determine timeout for wait() based on the script
+                current_step_timeout = None
+                if script_name_no_ext == "11_llm":
+                    current_step_timeout = args.llm_timeout
+                    logger.debug(f"  Applying LLM step-specific timeout of {current_step_timeout}s for wait().")
+
+                return_code = process.wait(timeout=current_step_timeout)
                 step_log_data["stdout"] = "".join(stdout_lines)
                 step_log_data["stderr"] = "".join(stderr_lines)
             else:
                 # Original behavior for non-verbose mode
+                # Determine timeout for run() based on the script
+                current_step_timeout_run = None
+                if script_name_no_ext == "11_llm":
+                    current_step_timeout_run = args.llm_timeout
+                    logger.debug(f"  Applying LLM step-specific timeout of {current_step_timeout_run}s for run().")
+
                 step_process_result = subprocess.run(
                     cmd_list, 
                     capture_output=True, 
                     text=True, 
                     check=False, 
                     env=step_process_env, 
-                    cwd=current_script_dir
+                    cwd=current_script_dir,
+                    timeout=current_step_timeout_run
                 )
                 step_log_data["stdout"] = step_process_result.stdout
                 step_log_data["stderr"] = step_process_result.stderr
@@ -413,7 +416,9 @@ def run_pipeline(args: argparse.Namespace):
                 if not args.verbose and step_log_data["stdout"] and step_log_data["stdout"].strip():
                     logger.debug(f"   Output from {script_name_no_ext}:\n{step_log_data['stdout'].strip()}")
                 if not args.verbose and step_log_data["stderr"] and step_log_data["stderr"].strip(): # Also log stderr if any for non-verbose success
-                    logger.debug(f"   Stderr from {script_name_no_ext}:\n{step_log_data['stderr'].strip()}")
+                    # If main is not verbose, but a script wrote to stderr and succeeded,
+                    # it's good to see this at least at DEBUG level in main log.
+                    logger.debug(f"   Stderr from {script_name_no_ext} (non-verbose main, step success):\n{step_log_data['stderr'].strip()}")
 
             elif return_code == 2: # Special code for success with warnings
                 step_log_data["status"] = "SUCCESS_WITH_WARNINGS"
@@ -442,6 +447,37 @@ def run_pipeline(args: argparse.Namespace):
                     pipeline_run_data["steps"].append(step_log_data)
                     break 
         
+        except subprocess.TimeoutExpired:
+            step_log_data["status"] = "FAILED_TIMEOUT"
+            timeout_duration = current_step_timeout if args.verbose else current_step_timeout_run
+            step_log_data["details"] = f"Step timed out after {timeout_duration} seconds."
+            logger.error(f"❌ {step_header} - FAILED due to TIMEOUT after {timeout_duration}s.")
+            overall_status = "FAILED"
+            # Ensure process is killed if it timed out during wait()
+            if args.verbose and process:
+                try:
+                    logger.warning(f"  Attempting to terminate timed-out process for {script_name_no_ext} (PID: {process.pid})")
+                    process.kill() # or process.terminate()
+                    #oudates to captured stdout/stderr might be lost or partial
+                    process.wait() # wait for termination to complete
+                    logger.info(f"  Process {script_name_no_ext} terminated.")
+                except Exception as e_kill:
+                    logger.error(f"  Error trying to terminate process {script_name_no_ext}: {e_kill}")
+            
+            # For non-verbose, subprocess.run() handles termination on timeout.
+            # Capture any output that might have occurred before timeout
+            if args.verbose and process.stdout:
+                 step_log_data["stdout"] = "".join(stdout_lines) + "\n[TIMEOUT OCCURRED - STDOUT MAY BE INCOMPLETE]"
+            if args.verbose and process.stderr:
+                step_log_data["stderr"] = "".join(stderr_lines) + "\n[TIMEOUT OCCURRED - STDERR MAY BE INCOMPLETE]"
+            # For non-verbose, this is already handled by subprocess.run returning the captured output up to timeout.
+            
+            if is_critical_step:
+                logger.critical(f"🔥 Critical step {script_name_no_ext} timed out. Halting pipeline.")
+                step_log_data["details"] += " Critical step timeout, pipeline halted."
+                pipeline_run_data["steps"].append(step_log_data)
+                break
+
         except Exception as e:
             step_log_data["status"] = "ERROR_UNHANDLED_EXCEPTION"
             step_log_data["details"] = f"Unhandled exception: {str(e)}"
@@ -515,7 +551,8 @@ def main():
         # Ensure this specific error message can make it to console/stderr if main logger isn't fully working
         if not temp_error_logger.handlers:
             err_handler = logging.StreamHandler(sys.stderr)
-            err_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            # Use a more specific format for this temp logger to distinguish its origin
+            err_formatter = logging.Formatter('%(asctime)s - %(name)s - [TEMP_SETUP_ERROR] - %(levelname)s - %(message)s')
             err_handler.setFormatter(err_formatter)
             temp_error_logger.addHandler(err_handler)
             temp_error_logger.propagate = False # Don't double log this specific error message
@@ -529,6 +566,8 @@ def main():
         for handler in pipeline_logger.handlers + logging.getLogger().handlers: # Ensure root handlers also set
             # Only set level if handler's current level is not effectively DEBUG or lower
             if handler.level == 0 or handler.level > logging.DEBUG: # 0 means NOTSET, effectively inherits.
+                current_level_name = logging.getLevelName(handler.level)
+                logger.debug(f"Updating handler {type(handler).__name__} level from {current_level_name} to DEBUG")
                 handler.setLevel(logging.DEBUG)
         # For Popen streaming, we use GNN_Pipeline's INFO and ERROR, so DEBUG on GNN_Pipeline is fine.
     else:
@@ -536,7 +575,9 @@ def main():
         # Propagate level to handlers
         for handler in pipeline_logger.handlers + logging.getLogger().handlers: # Ensure root handlers also set
             if handler.level == 0 or handler.level > logging.INFO:
-                 handler.setLevel(logging.INFO)
+                current_level_name = logging.getLevelName(handler.level)
+                logger.debug(f"Updating handler {type(handler).__name__} level from {current_level_name} to INFO")
+                handler.setLevel(logging.INFO)
 
     pipeline_logger.debug("Logger level configured based on verbosity.")
 

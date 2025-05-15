@@ -103,7 +103,7 @@ class MCP:
             return True # Or reflect stored status if available and needed.
 
         root_dir = Path(__file__).parent.parent
-        logger.info(f"Discovering MCP modules in {root_dir}")
+        logger.debug(f"Discovering MCP modules in {root_dir}")
         all_modules_loaded_successfully = True
         
         for directory in root_dir.iterdir():
@@ -122,12 +122,12 @@ class MCP:
                     sys.path.append(str(root_dir.parent))
                 
                 module = importlib.import_module(module_name)
-                logger.info(f"Loaded MCP module: {module_name}")
+                logger.debug(f"Loaded MCP module: {module_name}")
                 
                 # Special handling for llm module initialization
                 if module_name == "src.llm.mcp":
                     if hasattr(module, "initialize_llm_module") and callable(module.initialize_llm_module):
-                        logger.info(f"Calling initialize_llm_module for {module_name}")
+                        logger.debug(f"Calling initialize_llm_module for {module_name}")
                         module.initialize_llm_module(self) # Pass MCP instance
                     else:
                         logger.warning(f"Module {module_name} does not have a callable initialize_llm_module function.")
@@ -150,7 +150,7 @@ class MCP:
             logger.warning(f"Tool '{name}' already registered. Overwriting.")
         
         self.tools[name] = MCPTool(name, func, schema, description)
-        logger.info(f"Registered tool: {name}")
+        logger.debug(f"Registered tool: {name}")
         
     def register_resource(self, uri_template: str, retriever: Callable, description: str):
         """Register a new resource with the MCP."""
@@ -158,11 +158,11 @@ class MCP:
             logger.warning(f"Resource '{uri_template}' already registered. Overwriting.")
             
         self.resources[uri_template] = MCPResource(uri_template, retriever, description)
-        logger.info(f"Registered resource: {uri_template}")
+        logger.debug(f"Registered resource: {uri_template}")
     
     def execute_tool(self, tool_name: str, params: Dict[str, Any]) -> Dict[str, Any]:
         """Execute a registered tool with the given parameters."""
-        logger.info(f"Attempting to execute tool: {tool_name} with params: {params}")
+        logger.debug(f"Attempting to execute tool: {tool_name} with params: {params}")
         if tool_name not in self.tools:
             logger.error(f"Tool not found: {tool_name}")
             raise MCPToolNotFoundError(tool_name)
@@ -222,7 +222,7 @@ class MCP:
     
     def get_resource(self, uri: str) -> Dict[str, Any]:
         """Retrieve a resource by URI."""
-        logger.info(f"Attempting to retrieve resource: {uri}")
+        logger.debug(f"Attempting to retrieve resource: {uri}")
         # Basic implementation - would need more sophisticated URI template matching
         for template, resource in self.resources.items():
             # This is a very simplified matching logic. 
@@ -371,7 +371,8 @@ Current SDK status details: {consequences_details}
 mcp, sdk_found, all_modules_loaded = initialize(halt_on_missing_sdk=True, force_proceed_flag=False)
 
 # Check if all modules loaded successfully
-if all_modules_loaded:
-    print("All MCP modules loaded successfully.")
-else:
-    print("Some MCP modules failed to load.")
+# if all_modules_loaded:
+# print("All MCP modules loaded successfully.")
+# else:
+# print("Some MCP modules failed to load.")
+# Comment out example usage to prevent execution during import

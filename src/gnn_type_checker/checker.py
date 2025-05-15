@@ -10,6 +10,7 @@ import re
 from pathlib import Path
 from typing import Dict, List, Set, Tuple, Any, Optional, Union
 import logging
+import argparse
 
 from visualization.parser import GNNParser
 
@@ -524,9 +525,9 @@ class GNNTypeChecker:
             f.write(html_content)
         logger.info(f"Successfully wrote HTML report to: {output_file}")
     
-    def _generate_json_data(self, results: Dict[str, Dict[str, Any]], output_file: Path) -> None:
+    def generate_json_data(self, results: Dict[str, Dict[str, Any]], output_file: Path) -> None:
         """
-        Generate JSON data for resource estimator.
+        Generate JSON data for resource estimator and general use.
         
         Args:
             results: Dictionary mapping file paths to check results
@@ -549,16 +550,4 @@ class GNNTypeChecker:
         # Save JSON data
         with open(output_file, 'w') as f:
             json.dump(json_data, f, indent=2)
-        logger.info(f"Successfully wrote JSON data to: {output_file}")
-
-# Helper function to find line number (example, may need adjustment)
-# This is a placeholder for a more robust way to get line numbers if needed for errors
-def get_line_number(file_path: str, text_to_find: str) -> Optional[int]:
-    try:
-        with open(file_path, 'r') as f:
-            for i, line in enumerate(f):
-                if text_to_find in line:
-                    return i + 1
-    except Exception:
-        return None
-    return None 
+        logger.info(f"Successfully wrote JSON data to: {output_file}") 

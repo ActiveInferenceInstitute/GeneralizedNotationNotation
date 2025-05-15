@@ -39,7 +39,7 @@ Based on the context above, please perform the following task:
     logger.debug(f"Constructed prompt: {prompt[:500]}...") # Log a preview
     return prompt
 
-def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 8000, temperature: float = 0.7) -> str:
+def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 8000, temperature: float = 0.7, request_timeout: float = 30.0) -> str:
     """
     Sends a prompt to the specified OpenAI model and returns the response.
 
@@ -48,12 +48,13 @@ def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 
         model (str): The OpenAI model to use (e.g., "gpt-3.5-turbo", "gpt-4").
         max_tokens (int): The maximum number of tokens to generate.
         temperature (float): Controls randomness (0.0 to 2.0). Lower values are more deterministic.
+        request_timeout (float): Timeout in seconds for the API request.
 
     Returns:
-        str: The LLM's response.
+        str: The LLM's response or an error message.
     """
     try:
-        logger.info(f"Sending prompt to OpenAI model: {model}")
+        logger.info(f"Sending prompt to OpenAI model: {model} (Timeout: {request_timeout}s)")
         # Using the new client syntax for OpenAI API version >= 1.0
         client = openai.OpenAI() 
         response = client.chat.completions.create(
@@ -65,12 +66,16 @@ def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 
             max_tokens=max_tokens,
             temperature=temperature,
             n=1,
-            stop=None
+            stop=None,
+            timeout=request_timeout
         )
         llm_response = response.choices[0].message.content.strip()
         logger.info(f"Received response from LLM. Length: {len(llm_response)} chars.")
         logger.debug(f"LLM Response preview: {llm_response[:500]}...")
         return llm_response
+    except openai.APITimeoutError as e:
+        logger.error(f"OpenAI API Timeout Error after {request_timeout}s: {e}", exc_info=True)
+        return f"Error: OpenAI API Timeout Error after {request_timeout}s - {e}"
     except openai.APIError as e:
         logger.error(f"OpenAI API Error: {e}", exc_info=True)
         return f"Error: OpenAI API Error - {e}"

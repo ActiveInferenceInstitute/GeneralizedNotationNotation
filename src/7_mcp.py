@@ -52,7 +52,9 @@ except ImportError:
         initialize_mcp_system = None
 
 # Logger for this module
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__) # Defaults to '7_mcp' if run standalone, or 'src.7_mcp' if imported.
+                                    # We want it to be a child of GNN_Pipeline if imported by main.py
+                                    # For standalone, __name__ is fine. main.py will set GNN_Pipeline.7_mcp
 
 # Define the expected functional module directories that should have MCP integration
 # IMPORTANT: If a new functional module with an mcp.py is added to src/,
@@ -123,16 +125,22 @@ def process_mcp_operations(src_root_dir_str: str, mcp_base_dir_str: str, output_
     report_lines.append(f"**Output Directory for this report:** `{mcp_step_output_path.resolve()}`\n")
     
     # Control verbosity of the core 'mcp' module (from src/mcp or mcp package)
-    core_mcp_logger = logging.getLogger("mcp") # Assuming the core mcp logger is named "mcp"
-    # If it's imported as 'from src.mcp ...', its logger might be "src.mcp"
-    # It might be safer to try to get both if unsure, or rely on the one that was successfully imported.
-    # For now, let's assume "mcp" or that initialize_mcp_system handles its own verbosity based on root.
-    # A more robust way is if initialize_mcp_system took a verbosity/logger level argument.
-    # Given the current setup, we adjust it here:
+    core_mcp_logger_name = "mcp" # Default logger name for the core MCP system
+    if initialize_mcp_system and hasattr(initialize_mcp_system, '__module__') and initialize_mcp_system.__module__.startswith("src."):
+        core_mcp_logger_name = "src.mcp" # If imported from src.mcp, its logger is likely src.mcp
+
+    core_mcp_logger = logging.getLogger(core_mcp_logger_name)
+    
+    # The verbosity of this script (7_mcp.py) is controlled by its own logger's level,
+    # which is set by main.py if run as part of the pipeline.
+    # The `verbose` flag passed to this function determines whether core_mcp_logger gets DEBUG or INFO.
     if verbose: # verbose is from the pipeline's args.verbose
-        core_mcp_logger.setLevel(logging.INFO) # Allow core mcp to show its INFO messages
+        # If pipeline is verbose, allow core mcp to show its INFO and DEBUG messages
+        # Its own DEBUG messages were already modified in mcp.py to be less noisy INFOs.
+        core_mcp_logger.setLevel(logging.DEBUG) 
     else:
-        core_mcp_logger.setLevel(logging.WARNING) # Suppress core mcp INFO messages by default
+        # If pipeline is not verbose, suppress core mcp INFO/DEBUG messages by setting it to WARNING
+        core_mcp_logger.setLevel(logging.WARNING) 
 
     overall_step_success = True # Initialize overall success for this step
 
@@ -374,6 +382,12 @@ def main(args):
     # The verbosity of the *core* 'mcp' module (from src/mcp or package) is set 
     # inside process_mcp_operations based on args.verbose passed to it.
 
+    script_name = Path(__file__).stem # e.g., "7_mcp"
+    # Construct logger name to be child of GNN_Pipeline, matching main.py's convention for subprocesses
+    module_logger_name = f"GNN_Pipeline.{script_name}"
+    global logger # Allow reassignment of the global logger for this module
+    logger = logging.getLogger(module_logger_name)
+
     script_dir = Path(__file__).parent.resolve() # Should be src/
     mcp_core_dir = script_dir / "mcp" # This is the specific directory for core MCP files: src/mcp/
                                       # src_root_dir for module scanning is script_dir itself (src/)
@@ -417,35 +431,67 @@ def main(args):
 
 if __name__ == "__main__":
     # This block allows 7_mcp.py to be run standalone to generate the MCP integration report.
+    
+    # --- Argument Parsing for Standalone Execution ---
+    parser = argparse.ArgumentParser(
+        description="GNN Processing Pipeline - Step 7: MCP Operations (Standalone Runner). "
+                    "Performs MCP integration checks and generates a report.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument(
+        "--output-dir", 
+        type=str, 
+        default="output", # Sensible default for standalone
+        help="Directory to save the MCP integration report."
+    )
+    parser.add_argument(
+        "--verbose", 
+        action="store_true", 
+        help="Enable verbose logging for this script and potentially for the core MCP system."
+    )
+    parser.add_argument(
+        "--mcp-core-dir-override",
+        type=str,
+        default=None,
+        help="Override the default MCP core directory (e.g., src/mcp)."
+    )
+    parser.add_argument(
+        "--src-root-override",
+        type=str,
+        default=None,
+        help="Override the default project source root directory (e.g., src/) for module scanning."
+    )
+    # --- End Argument Parsing ---
+
+    # Parse arguments *before* using args.verbose or passing args to main()
+    args = parser.parse_args() # THIS IS THE CRITICAL FIX
+
     # Basic configuration for running this script standalone
     log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
     log_level = getattr(logging, log_level_str, logging.INFO)
+    
+    # If --verbose is used in standalone, override log_level to DEBUG
+    if args.verbose:
+        log_level = logging.DEBUG
+
     logging.basicConfig(
         level=log_level,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
     )
-
-    # Argument parsing for standalone execution
-    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 7: Model Context Protocol (MCP) Integration Report Generator")
-    parser.add_argument("--output-dir", default="../output",
-                        help="Base directory to save the MCP report (default: ../output)")
-    parser.add_argument("--mcp-core-dir-override", default=None,
-                        help="Override the default path for the MCP core directory (e.g., src/mcp)")
-    parser.add_argument("--src-root-override", default=None,
-                        help="Override the default path for the project source root (e.g., src/)")
-    parser.add_argument("--verbose", action="store_true",
-                        help="Enable verbose output for this MCP step.")
+    # Re-fetch the logger with the potentially new name for standalone context.
+    # This will now be '7_mcp' or similar if run standalone, with basicConfig applied.
+    logger = logging.getLogger(__name__) 
     
-    parsed_args = parser.parse_args()
-
-    # Update log level if --verbose is used in standalone mode
-    if parsed_args.verbose:
-        logging.getLogger().setLevel(logging.DEBUG)
-        for handler in logging.getLogger().handlers:
-            handler.setLevel(logging.DEBUG)
-        # Also set the mcp module's logger to DEBUG if verbose
+    # Update log level if --verbose is used in standalone mode (after basicConfig)
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+        # For standalone, also set root handlers if any, though basicConfig should handle it.
+        # for handler in logging.getLogger().handlers:
+        #     handler.setLevel(logging.DEBUG)
+        # Also set the mcp module's logger to DEBUG if verbose standalone
         logging.getLogger("mcp").setLevel(logging.DEBUG) 
+        logging.getLogger("src.mcp").setLevel(logging.DEBUG) # And its potential alias
         logger.debug("Verbose logging enabled for standalone run of 7_mcp.py.")
 
-    sys.exit(main(parsed_args)) 
+    sys.exit(main(args)) 

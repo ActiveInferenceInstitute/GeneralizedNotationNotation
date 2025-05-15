@@ -17,373 +17,403 @@ import sys
 from pathlib import Path
 import datetime
 import os
+import json # For saving structured LLM outputs
+
+# --- Standardized Project Imports ---
+# The goal is to make imports robust whether running as a script or part of a larger package.
+# Assuming this script (11_llm.py) is in src/ and needs to import from src/llm/ and src/mcp/
+
+# Add project root to sys.path to allow for `from module import ...`
+# This is a common pattern for scripts within a package structure.
+# Path(__file__).resolve() -> /path/to/GeneralizedNotationNotation/src/11_llm.py
+# Path(__file__).resolve().parent -> /path/to/GeneralizedNotationNotation/src
+# Path(__file__).resolve().parent.parent -> /path/to/GeneralizedNotationNotation (project root)
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+# --- End Standardized Project Imports ---
 
 logger = logging.getLogger(__name__) # GNN_Pipeline.11_llm or __main__
 
-# Attempt to import necessary functions from the llm module
-# This structure assumes 11_llm.py is in src/ and other llm files are in src/llm/
+# Now, attempt to import necessary functions from the llm module
 try:
-    from llm import llm_operations
-    from llm import mcp as llm_mcp # To potentially call ensure_llm_tools_registered
-except ImportError:
-    # Fallback for standalone execution or if src isn't correctly in path
+    # These imports should now work if src/ (parent of 11_llm.py) is effectively the context
+    # and PROJECT_ROOT is in sys.path.
+    from src.llm import llm_operations
+    from src.llm import mcp as llm_mcp # To potentially call ensure_llm_tools_registered
+    from src.mcp.mcp import mcp_instance # Import for ensuring tools are registered
+    logger.info("Successfully imported llm_operations, llm_mcp, and mcp_instance.")
+except ImportError as e_import:
+    logger.critical(f"Failed to import LLM modules or mcp_instance in 11_llm.py: {e_import}", exc_info=True)
+    llm_operations = None
+    llm_mcp = None
+    mcp_instance = None # Ensure it's None if import fails
+
+# --- Global constants ---
+LLM_OUTPUT_DIR_NAME = "llm_processing_step"
+SUMMARY_FILE_SUFFIX = "_summary.txt"
+COMPREHENSIVE_ANALYSIS_FILE_SUFFIX = "_comprehensive_analysis.json" # Changed to JSON for structured data
+QA_FILE_SUFFIX = "_qa.json"
+
+# Define task constants
+TASK_SUMMARY = "summary"
+TASK_ANALYSIS = "analysis"
+TASK_QA = "qa"
+ALL_TASKS = [TASK_SUMMARY, TASK_ANALYSIS, TASK_QA]
+
+
+def process_gnn_with_llm(gnn_file_path: Path, output_dir_for_file: Path, tasks_to_run: list[str], verbose: bool = False):
+    """
+    Processes a single GNN file with specified LLM tasks and saves results.
+    Tasks:
+    1. General Summary of the GNN file.
+    2. Comprehensive Analysis (structured into sections like purpose, components, interactions, ontology mapping).
+    3. Generate 3-5 relevant questions about the GNN file.
+    4. Answer those generated questions based on the GNN file.
+    """
+    if not llm_operations or not llm_mcp or not mcp_instance:
+        logger.error(f"LLM operations module, LLM MCP, or main MCP instance not available. Skipping {gnn_file_path.name}")
+        return
+
+    # Ensure LLM tools are registered (this also handles API key loading)
     try:
-        # If 11_llm.py is in src/, and llm_operations is in src/llm/
-        # We need to ensure src/ is in the path for `from llm import ...`
-        current_script_dir = Path(__file__).resolve().parent # src/
-        if str(current_script_dir.parent) not in sys.path: # Add project root
-            sys.path.insert(0, str(current_script_dir.parent))
-        
-        # Now try importing assuming structure is src/llm/llm_operations.py
-        from llm import llm_operations
-        from llm import mcp as llm_mcp
-    except ImportError as e_fallback_refined:
-        logger.critical(f"Failed to import llm_operations or llm.mcp in 11_llm.py (after path adjustment): {e_fallback_refined}")
-        llm_operations = None
-        llm_mcp = None
+        logger.info(f"Ensuring LLM tools are registered for {gnn_file_path.name}...")
+        llm_mcp.ensure_llm_tools_registered(mcp_instance) # Pass the actual mcp_instance
+        # Check if the API key was loaded successfully.
+        # Assuming a function `is_api_key_loaded()` exists or can be added to llm_operations.
+        # For now, we'll rely on the logging within ensure_llm_tools_registered/initialize_llm_module.
+        # If mcp_instance.sdk_status is available and relevant to LLM, could check that too.
+        logger.info(f"LLM tools registration check complete for {gnn_file_path.name}.")
+    except Exception as e_reg:
+        logger.error(f"Failed to ensure LLM tools were registered for {gnn_file_path.name}: {e_reg}", exc_info=True)
+        return # Cannot proceed if tools are not registered
 
-# Import mcp_instance for use with ensure_llm_tools_registered
-try:
-    from src.mcp.mcp import mcp_instance
-except ImportError:
-    logger.warning("Could not import mcp_instance from src.mcp.mcp. Tool registration re-check might not be robust.")
-    mcp_instance = None
-
-
-def process_gnn_with_llm(gnn_file_path: Path, output_dir_for_file: Path, verbose: bool = False):
-    """Processes a single GNN file with three comprehensive LLM tasks and saves results."""
-    if not llm_operations:
-        logger.error(f"LLM operations module not available. Skipping {gnn_file_path.name}")
-        return False, {"file_name": gnn_file_path.name}
-
-    results = {
-        "file_name": gnn_file_path.name,
-        "overview_structure": "",
-        "purpose_professional_summary": "",
-        "ontology_interpretation": ""
-    }
-    all_tasks_successful = True
-
-    logger.info(f"  🧠 Processing GNN file with LLM (3 consolidated calls): {gnn_file_path.name}")
+    logger.info(f"Processing GNN file with LLM: {gnn_file_path.name}")
 
     try:
-        gnn_content = gnn_file_path.read_text(encoding='utf-8')
+        with open(gnn_file_path, 'r', encoding='utf-8') as f:
+            gnn_content = f.read()
+        if not gnn_content.strip():
+            logger.warning(f"GNN file {gnn_file_path.name} is empty. Skipping LLM processing.")
+            return
     except Exception as e:
-        logger.error(f"    ❌ Error reading GNN file {gnn_file_path.name}: {e}", exc_info=verbose)
-        for key in results:
-            if key != "file_name":
-                results[key] = f"Error reading file: {e}"
-        return False, results
+        logger.error(f"Error reading GNN file {gnn_file_path}: {e}", exc_info=True)
+        return
 
-    # Call 1: Comprehensive Model Overview & Structure
-    try:
-        logger.debug(f"    Requesting comprehensive overview & structure for {gnn_file_path.name}")
-        task_desc_overview = (
-            "Provide a comprehensive overview of this GNN model. Your response should include:\n"
-            "1.  **Summary:** A concise summary highlighting its key components (ModelName, primary states/observations, and main connections).\n"
-            "2.  **General Explanation:** A general explanation covering its potential purpose (at a high level for this section), the nature of its state space, and how its components might interact, suitable for someone broadly familiar with modeling.\n"
-            "3.  **Key Components Identification:** Identify and list the key state variables (including their types, dimensions, and any specified value ranges/labels), observation modalities (with dimensions and labels if provided), and control factors (with dimensions/action labels if provided) defined in this GNN model, focusing on what is explicitly defined in the StateSpaceBlock and related sections.\n"
-            "4.  **Connectivity Description:** Describe the primary relationships and dependencies between the components (states, observations, controls) as outlined in the ## Connections block. Explain what these connections imply about the model's structure and potential information flow. If parameters like A, B, C, D, E matrices/vectors are mentioned or implied by connections, briefly note their roles."
-        )
-        overview_structure = llm_operations.get_llm_response(
-            llm_operations.construct_prompt(
-                contexts=[f"GNN File Content ({gnn_file_path.name}):\\n{gnn_content}"],
-                task_description=task_desc_overview
-            )
-        )
-        results["overview_structure"] = overview_structure
-        output_file_path_overview = output_dir_for_file / f"{gnn_file_path.stem}_overview_structure.txt"
-        with open(output_file_path_overview, 'w', encoding='utf-8') as f:
-            f.write(overview_structure)
-        logger.info(f"    ✅ Saved comprehensive overview & structure to: {output_file_path_overview} (Length: {len(overview_structure)} chars)")
-    except Exception as e:
-        logger.error(f"    ❌ Error generating comprehensive overview for {gnn_file_path.name}: {e}", exc_info=verbose)
-        results["overview_structure"] = f"Error: {e}"
-        all_tasks_successful = False
+    output_dir_for_file.mkdir(parents=True, exist_ok=True)
 
-    # Call 2: Model Purpose, Application & Professional Narrative
-    try:
-        logger.debug(f"    Requesting purpose, application & professional narrative for {gnn_file_path.name}")
-        task_desc_purpose_professional = (
-            "Analyze the GNN model for its purpose and generate a professional narrative. Your response should cover:\n"
-            "1.  **Inferred Purpose/Domain:** Based on the entire GNN file content (including ModelName, names of states/observations/actions, structure of connections, any initial parameterizations, and ActInfOntologyAnnotation if present), infer and describe the likely domain, purpose, or type of system being modeled. Provide a justification for your inference, citing specific parts of the GNN file.\n"
-            "2.  **Professional Summary:** Generate a professional, publication-quality summary of the GNN model. If applicable, consider potential experimental contexts or applications. The summary should be targeted at fellow researchers, be well-structured, highlight key model characteristics, and be suitable for inclusion in a research paper or technical report."
-        )
-        purpose_professional_summary = llm_operations.get_llm_response(
-            llm_operations.construct_prompt(
-                contexts=[f"GNN Model Specification ({gnn_file_path.name}):\\n{gnn_content}"],
-                task_description=task_desc_purpose_professional
-            ),
-            model="gpt-4o-mini"
-        )
-        results["purpose_professional_summary"] = purpose_professional_summary
-        output_file_path_summary = output_dir_for_file / f"{gnn_file_path.stem}_purpose_professional_summary.md"
-        with open(output_file_path_summary, 'w', encoding='utf-8') as f:
-            f.write(f"# Model Purpose, Application & Professional Narrative for {gnn_file_path.name}\\n\\n{purpose_professional_summary}")
-        logger.info(f"    ✅ Saved purpose, application & professional narrative to: {output_file_path_summary} (Length: {len(purpose_professional_summary)} chars)")
-    except Exception as e:
-        logger.error(f"    ❌ Error generating purpose & professional summary for {gnn_file_path.name}: {e}", exc_info=verbose)
-        results["purpose_professional_summary"] = f"Error: {e}"
-        all_tasks_successful = False
+    # --- Task 1: General Summary ---
+    summary_output_path = output_dir_for_file / (gnn_file_path.stem + SUMMARY_FILE_SUFFIX)
+    if TASK_SUMMARY in tasks_to_run:
+        logger.info(f"Task 1: Generating summary for {gnn_file_path.name}...")
+        try:
+            # Using the MCP tool for summarization as an example, though direct llm_operations can also be used.
+            # summarize_gnn_file_content is defined in src/llm/mcp.py
+            summary_prompt_suffix = "Focus on the model's purpose, main components, and interactions."
+            # summary_response = llm_mcp.summarize_gnn_file_content(str(gnn_file_path), user_prompt_suffix=summary_prompt_suffix)
+            
+            # Direct call for more control and specific prompt construction
+            summary_task_desc = f"Provide a concise summary of the following GNN model, highlighting its key components (ModelName, primary states/observations, and main connections). {summary_prompt_suffix}"
+            summary_prompt = llm_operations.construct_prompt([f"GNN File Content ({gnn_file_path.name}):\n{gnn_content}"], summary_task_desc)
+            
+            logger.debug(f"Summary prompt for {gnn_file_path.name} (first 500 chars): {summary_prompt[:500]}...")
+            summary_response = llm_operations.get_llm_response(summary_prompt, model="gpt-4o-mini", max_tokens=1000) # Increased max_tokens for summary
 
-    # Call 3: Ontology Interpretation (Conditional)
-    try:
-        if "## ActInfOntologyAnnotation" in gnn_content:
-            logger.debug(f"    Requesting ontology interpretation for {gnn_file_path.name}")
-            task_desc_ontology = (
-                "The GNN file includes an ## ActInfOntologyAnnotation block. Provide a detailed interpretation of these ontology mappings:\n"
-                "1.  **Explain Mappings:** Clearly explain how the model components (states, observations, parameters like A, B, C, D, E if mentioned in ontology) are mapped to the Active Inference Ontology terms found in this block.\n"
-                "2.  **Significance:** What do these mappings tell us about the intended interpretation of the model within the Active Inference framework? Discuss any specific terms used (e.g., 'Belief', 'Likelihood', 'TransitionModel', 'PriorPreferences', 'ExpectedFreeEnergy') and their relevance to the model's function and how it might be used or understood as an Active Inference agent/model."
+            if summary_response.startswith("Error:"):
+                logger.error(f"LLM summary generation failed for {gnn_file_path.name}: {summary_response}")
+            else:
+                with open(summary_output_path, 'w', encoding='utf-8') as f:
+                    f.write(summary_response)
+                file_size = summary_output_path.stat().st_size
+                logger.info(f"Successfully generated summary for {gnn_file_path.name}. Saved to: {summary_output_path} (Size: {file_size} bytes)")
+        except Exception as e:
+            logger.error(f"Error during summary generation for {gnn_file_path.name}: {e}", exc_info=True)
+    else:
+        logger.info(f"Skipping Task 1 (Summary) for {gnn_file_path.name} as it's not in the requested tasks.")
+
+    # --- Task 2: Comprehensive Analysis (Structured JSON Output) ---
+    analysis_output_path = output_dir_for_file / (gnn_file_path.stem + COMPREHENSIVE_ANALYSIS_FILE_SUFFIX)
+    if TASK_ANALYSIS in tasks_to_run:
+        logger.info(f"Task 2: Generating comprehensive analysis for {gnn_file_path.name}...")
+        try:
+            analysis_task_desc = (
+                "Analyze the provided GNN file in detail. Structure your response as a JSON object with the following keys: "
+                "\'model_purpose\', \'key_components\', \'component_interactions\', \'data_types_and_dimensions\', "
+                "\'potential_applications\', \'limitations_or_ambiguities\', and \'ontology_mapping_assessment\'. "
+                "For \'key_components\', describe states, observations, actions, etc. "
+                "For \'ontology_mapping_assessment\', briefly assess if ActInfOntology terms are present and relevant if any."
             )
-            ontology_interpretation = llm_operations.get_llm_response(
-                llm_operations.construct_prompt(
-                    contexts=[f"GNN File Content ({gnn_file_path.name}):\\n{gnn_content}"],
-                    task_description=task_desc_ontology
-                )
+            analysis_prompt = llm_operations.construct_prompt([f"GNN File Content ({gnn_file_path.name}):\n{gnn_content}"], analysis_task_desc)
+            
+            logger.debug(f"Comprehensive analysis prompt for {gnn_file_path.name} (first 500 chars): {analysis_prompt[:500]}...")
+            analysis_response_str = llm_operations.get_llm_response(analysis_prompt, model="gpt-4o-mini", max_tokens=3000) # Increased tokens
+
+            if analysis_response_str.startswith("Error:"):
+                logger.error(f"LLM comprehensive analysis generation failed for {gnn_file_path.name}: {analysis_response_str}")
+            else:
+                # Attempt to parse as JSON, with fallback for non-JSON response
+                try:
+                    # The LLM might wrap the JSON in backticks or "json" language specifier
+                    cleaned_response_str = analysis_response_str.strip()
+                    if cleaned_response_str.startswith("```json"):
+                        cleaned_response_str = cleaned_response_str[len("```json"):]
+                    if cleaned_response_str.startswith("```"): # Generic backticks
+                        cleaned_response_str = cleaned_response_str[len("```"):]
+                    if cleaned_response_str.endswith("```"):
+                        cleaned_response_str = cleaned_response_str[:-len("```")]
+                    
+                    analysis_data = json.loads(cleaned_response_str.strip())
+                    with open(analysis_output_path, 'w', encoding='utf-8') as f:
+                        json.dump(analysis_data, f, indent=4)
+                    file_size = analysis_output_path.stat().st_size
+                    logger.info(f"Successfully generated comprehensive analysis for {gnn_file_path.name}. Saved to: {analysis_output_path} (Size: {file_size} bytes)")
+                except json.JSONDecodeError:
+                    logger.warning(f"LLM comprehensive analysis for {gnn_file_path.name} was not valid JSON. Saving as raw text.")
+                    # Fallback: save as text if not valid JSON
+                    analysis_output_path_txt = analysis_output_path.with_suffix(".txt")
+                    with open(analysis_output_path_txt, 'w', encoding='utf-8') as f:
+                        f.write(analysis_response_str)
+                    file_size = analysis_output_path_txt.stat().st_size
+                    logger.info(f"Saved raw analysis output to: {analysis_output_path_txt} (Size: {file_size} bytes)")
+
+        except Exception as e:
+            logger.error(f"Error during comprehensive analysis for {gnn_file_path.name}: {e}", exc_info=True)
+    else:
+        logger.info(f"Skipping Task 2 (Comprehensive Analysis) for {gnn_file_path.name} as it's not in the requested tasks.")
+
+    # --- Tasks 3 & 4: Generate Questions and Answers (Structured JSON Output) ---
+    qa_output_path = output_dir_for_file / (gnn_file_path.stem + QA_FILE_SUFFIX)
+    if TASK_QA in tasks_to_run:
+        logger.info(f"Tasks 3 & 4: Generating Q&A for {gnn_file_path.name}...")
+        try:
+            # Task 3: Generate 3-5 relevant questions
+            question_gen_task_desc = (
+                "Based on the provided GNN file, generate 3 to 5 insightful questions that would help understand the model's nuances, assumptions, or implications. "
+                "Return these questions as a JSON list of strings."
             )
-            results["ontology_interpretation"] = ontology_interpretation
-            output_file_path_ontology = output_dir_for_file / f"{gnn_file_path.stem}_ontology_interpretation.txt"
-            with open(output_file_path_ontology, 'w', encoding='utf-8') as f:
-                f.write(ontology_interpretation)
-            logger.info(f"    ✅ Saved ontology interpretation to: {output_file_path_ontology} (Length: {len(ontology_interpretation)} chars)")
+            question_gen_prompt = llm_operations.construct_prompt([f"GNN File Content ({gnn_file_path.name}):\n{gnn_content}"], question_gen_task_desc)
+            
+            logger.debug(f"Question generation prompt for {gnn_file_path.name} (first 500 chars): {question_gen_prompt[:500]}...")
+            questions_response_str = llm_operations.get_llm_response(question_gen_prompt, model="gpt-4o-mini", max_tokens=1000)
+
+            generated_questions = []
+            if questions_response_str.startswith("Error:"):
+                logger.error(f"LLM question generation failed for {gnn_file_path.name}: {questions_response_str}")
+            else:
+                try:
+                    # Clean potential markdown/code block markers
+                    cleaned_q_response = questions_response_str.strip()
+                    if cleaned_q_response.startswith("```json"):
+                        cleaned_q_response = cleaned_q_response[len("```json"):]
+                    if cleaned_q_response.startswith("```"):
+                         cleaned_q_response = cleaned_q_response[len("```"):]
+                    if cleaned_q_response.endswith("```"):
+                        cleaned_q_response = cleaned_q_response[:-len("```")]
+                    
+                    generated_questions = json.loads(cleaned_q_response.strip())
+                    if not isinstance(generated_questions, list):
+                        logger.warning(f"LLM generated questions for {gnn_file_path.name} was not a list. Found: {type(generated_questions)}")
+                        generated_questions = [] # Reset if not a list
+                    else:
+                        logger.info(f"Successfully generated {len(generated_questions)} questions for {gnn_file_path.name}.")
+                except json.JSONDecodeError:
+                    logger.warning(f"LLM generated questions for {gnn_file_path.name} was not valid JSON: {questions_response_str[:200]}...")
+                    # Fallback: try to parse as a list of strings if it's just text lines
+                    if isinstance(questions_response_str, str) and "\n" in questions_response_str: # Check if it's a multi-line string
+                        generated_questions = [q.strip() for q in questions_response_str.split("\n") if q.strip()]
+                        if generated_questions:
+                             logger.info(f"Fallback: Parsed {len(generated_questions)} questions from raw text for {gnn_file_path.name}.")
+
+
+            # Task 4: Answer the generated questions
+            qa_pairs = []
+            if generated_questions:
+                logger.info(f"Answering {len(generated_questions)} generated questions for {gnn_file_path.name}...")
+                for i, question in enumerate(generated_questions):
+                    if not isinstance(question, str) or not question.strip(): # Skip empty or non-string questions
+                        logger.warning(f"Skipping invalid question at index {i} for {gnn_file_path.name}: {question}")
+                        continue
+
+                    logger.debug(f"Answering question {i+1}/{len(generated_questions)}: '{question}'")
+                    answer_task_desc = (
+                        f"Based *solely* on the provided GNN file content, answer the following question: '{question}'. "
+                        "If the GNN file does not contain enough information to answer, state that explicitly. "
+                        "Be concise and directly address the question."
+                    )
+                    answer_prompt = llm_operations.construct_prompt([f"GNN File Content ({gnn_file_path.name}):\n{gnn_content}"], answer_task_desc)
+                    
+                    answer_response = llm_operations.get_llm_response(answer_prompt, model="gpt-4o-mini", max_tokens=1000)
+
+                    if answer_response.startswith("Error:"):
+                        logger.error(f"LLM answer generation failed for question '{question}' on {gnn_file_path.name}: {answer_response}")
+                        qa_pairs.append({"question": question, "answer": "Error during answer generation."})
+                    else:
+                        qa_pairs.append({"question": question, "answer": answer_response})
+                        logger.debug(f"Answer for '{question}': {answer_response[:100]}...")
+                
+                if qa_pairs:
+                    with open(qa_output_path, 'w', encoding='utf-8') as f:
+                        json.dump(qa_pairs, f, indent=4)
+                    file_size = qa_output_path.stat().st_size
+                    logger.info(f"Successfully generated and answered questions for {gnn_file_path.name}. Saved to: {qa_output_path} (Size: {file_size} bytes)")
+                else:
+                    logger.warning(f"No valid Q&A pairs were generated for {gnn_file_path.name}.")
+            else:
+                logger.warning(f"No questions were generated for {gnn_file_path.name}, so no Q&A will be saved.")
+
+        except Exception as e:
+            logger.error(f"Error during Q&A generation for {gnn_file_path.name}: {e}", exc_info=True)
+    else:
+        logger.info(f"Skipping Tasks 3 & 4 (Q&A) for {gnn_file_path.name} as it's not in the requested tasks.")
+
+    logger.info(f"Finished LLM processing for GNN file: {gnn_file_path.name}")
+
+
+def discover_gnn_files(target_dir: Path, recursive: bool = False) -> list[Path]:
+    """Discovers GNN files (.gnn.md, .md, .json) in the target directory."""
+    patterns = ["*.gnn.md", "*.md", "*.json"] # Added .json as per user instruction context. Consider if .json is always a GNN file.
+    gnn_files = []
+    for pattern in patterns:
+        if recursive:
+            gnn_files.extend(list(target_dir.rglob(pattern)))
         else:
-            logger.info(f"    ℹ️ No ActInfOntologyAnnotation block found in {gnn_file_path.name}. Skipping ontology interpretation task.")
-            results["ontology_interpretation"] = "N/A - No ActInfOntologyAnnotation block found."
-    except Exception as e:
-        logger.error(f"    ❌ Error generating ontology interpretation for {gnn_file_path.name}: {e}", exc_info=verbose)
-        results["ontology_interpretation"] = f"Error: {e}"
-        all_tasks_successful = False
-
-    return all_tasks_successful, results
+            gnn_files.extend(list(target_dir.glob(pattern)))
+    
+    # Filter out files from .venv or other common non-gnn directories if necessary
+    # For now, assume all found files are candidates
+    unique_files = sorted(list(set(gnn_files))) # Deduplicate and sort
+    logger.info(f"Discovered {len(unique_files)} potential GNN input files.")
+    if verbose_discovery := True: # Control verbose logging of discovered files
+        for f_path in unique_files:
+            logger.debug(f"  - Found: {f_path}")
+    return unique_files
 
 def main(args: argparse.Namespace) -> int:
-    """Main function for the LLM operations step (Step 11).
-
-    This function orchestrates the LLM processing of GNN files. It handles:
-    - Loading the OpenAI API key.
-    - Ensuring LLM tools are registered with MCP (if applicable).
-    - Identifying GNN files in the target directory.
-    - Invoking `process_gnn_with_llm` for each GNN file to perform LLM tasks.
-    - Generating a summary report of the LLM operations.
-
-    Args:
-        args (argparse.Namespace):
-            Parsed command-line arguments from `main.py` or standalone execution.
-            Expected attributes include: target_dir (str/Path), output_dir (str/Path),
-            recursive (bool), verbose (bool), llm_tasks (str).
-
-    Returns:
-        int: 0 if all GNN files are processed successfully by LLM tasks,
-             1 if there are any failures or if critical setup (like API key) fails.
     """
-    logger.info(f"▶️ Starting Step 11: LLM Operations ({Path(__file__).name})")
+    Main function to orchestrate LLM processing of GNN files.
+    The script expects to be run with `main.py` which sets up logging.
+    If run standalone, basic logging is configured.
+    """
+    # If this script is run directly, ensure basic logging is set up.
+    # If GNN_Pipeline logger (used in main.py) or root logger has no handlers, set up a basic one.
+    pipeline_logger_configured = any(handler is not None for handler in logging.getLogger("GNN_Pipeline").handlers)
+    root_logger_configured = any(handler is not None for handler in logging.getLogger().handlers)
+
+    if not pipeline_logger_configured and not root_logger_configured:
+        logging.basicConfig(level=logging.INFO if not args.verbose else logging.DEBUG,
+                            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                            stream=sys.stdout) # Ensure logs go to stdout for main.py to capture
+        logger.info("Basic logging configured for standalone 11_llm.py execution.")
+    
     if args.verbose:
-        logger.debug(f"  Pipeline arguments received: {args}")
+        logger.setLevel(logging.DEBUG)
+        # Also set level for llm_operations if it has its own logger and you want its debug logs
+        if llm_operations: # and hasattr(llm_operations, 'logger'): # Check if llm_operations has 'logger'
+            logging.getLogger(llm_operations.__name__).setLevel(logging.DEBUG)
+        logger.debug("Verbose mode enabled by CLI argument.")
 
-    if not llm_operations or not llm_mcp:
-        logger.critical("LLM modules (llm_operations, llm.mcp) not loaded. Cannot proceed.")
-        return 1
 
-    try:
-        llm_operations.load_api_key()
-        if hasattr(llm_mcp, 'ensure_llm_tools_registered'):
-            if mcp_instance: # Only call if mcp_instance was successfully imported
-                llm_mcp.ensure_llm_tools_registered(mcp_instance)
-            else:
-                logger.warning("mcp_instance not available, skipping ensure_llm_tools_registered call.")
-    except ValueError as e:
-        logger.error(f"❌ OpenAI API Key not configured: {e}. This step cannot run.")
-        return 1
-    except Exception as e_key_load:
-        logger.error(f"❌ Unexpected error loading API key or ensuring tool registration: {e_key_load}. This step cannot run.", exc_info=True)
-        return 1
+    logger.info(f"Starting LLM processing step. Target directory: {args.target_dir}, Output directory: {args.output_dir}")
+    logger.debug(f"Full arguments: {args}")
+
+    if not llm_operations or not llm_mcp or not mcp_instance:
+        logger.critical("LLM support modules (llm_operations, llm_mcp, or mcp_instance) are not available. Terminating LLM processing.")
+        return 1 # Indicate failure
+
+    target_dir = Path(args.target_dir)
+    pipeline_output_dir = Path(args.output_dir) # This is the main output dir for the whole pipeline
     
-    gnn_source_dir = Path(args.target_dir).resolve()
-    if not gnn_source_dir.is_dir():
-        logger.error(f"Target directory for GNN source files not found: {gnn_source_dir}")
-        return 1
+    # Specific output directory for this LLM step
+    llm_step_output_dir = pipeline_output_dir / LLM_OUTPUT_DIR_NAME
+    llm_step_output_dir.mkdir(parents=True, exist_ok=True)
+    logger.info(f"LLM outputs will be saved in: {llm_step_output_dir}")
 
-    llm_step_output_dir = Path(args.output_dir).resolve() / "llm_processing_step"
-    try:
-        llm_step_output_dir.mkdir(parents=True, exist_ok=True)
-        logger.info(f"LLM processing outputs will be saved in: {llm_step_output_dir}")
-    except OSError as e:
-        logger.error(f"Failed to create LLM output directory {llm_step_output_dir}: {e}")
-        return 1
-
-    processed_files_summary = []
-    gnn_files = []
+    selected_tasks = []
+    if "all" in args.llm_tasks:
+        selected_tasks = ALL_TASKS
+    else:
+        selected_tasks = [task for task in args.llm_tasks if task in ALL_TASKS]
+        if not selected_tasks:
+            logger.warning(f"No valid LLM tasks specified or recognized: {args.llm_tasks}. Defaulting to all tasks.")
+            selected_tasks = ALL_TASKS # Or could choose to run no tasks / error out
     
-    # Refactored GNN file discovery logic
-    all_potential_files = []
-    if args.recursive:
-        all_potential_files.extend(sorted(gnn_source_dir.rglob("*.gnn.md")))
-        all_potential_files.extend(sorted(gnn_source_dir.rglob("*.md")))
-    else:
-        all_potential_files.extend(sorted(gnn_source_dir.glob("*.gnn.md")))
-        all_potential_files.extend(sorted(gnn_source_dir.glob("*.md")))
+    logger.info(f"LLM tasks to run: {', '.join(selected_tasks)}")
 
-    preferred_files = {} # stem_key -> Path
-    for f_path in all_potential_files:
-        # Create a stem key by removing .gnn if it exists, then .md implicitly by stem property
-        stem_candidate = f_path.stem
-        if stem_candidate.endswith(".gnn"): # e.g. file.gnn from file.gnn.md
-            stem_key = stem_candidate[:-4]
-        else: # e.g. file from file.md
-            stem_key = stem_candidate
-        
-        # Prioritize .gnn.md files
-        if f_path.name.endswith(".gnn.md"):
-            preferred_files[stem_key] = f_path
-        elif stem_key not in preferred_files: # Only add .md if a .gnn.md for the same stem isn't already chosen
-            preferred_files[stem_key] = f_path
-            
-    gnn_files = sorted(list(preferred_files.values()), key=lambda p: p.name)
+    gnn_files_to_process = discover_gnn_files(target_dir, args.recursive)
 
-    # Filter out any .md files that are known to be non-GNN, e.g. README.md
-    # This is a heuristic; a better way would be GNN validation or specific include patterns.
-    gnn_files = [f for f in gnn_files if not f.name.lower() in ["readme.md", "contributing.md", "license.md"]]
-    # Also filter out files that might be in '.git' or other hidden/system directories if rglob goes too deep
-    gnn_files = [f for f in gnn_files if not any(part.startswith('.') for part in f.parts)]
-
-    if not gnn_files:
-        logger.warning(f"No GNN files (.md, .gnn.md) found in {gnn_source_dir} {'recursively' if args.recursive else ''}.")
-    else:
-        logger.info(f"Found {len(gnn_files)} GNN files to process with LLM from '{gnn_source_dir}'.")
-
-    total_success_count = 0
-    for gnn_file in gnn_files:
-        # Create a subdirectory for this specific GNN file's LLM outputs
-        file_specific_output_dir = llm_step_output_dir / gnn_file.stem
-        try:
-            file_specific_output_dir.mkdir(parents=True, exist_ok=True)
-        except OSError as e:
-            logger.error(f"  ❌ Failed to create output directory {file_specific_output_dir} for {gnn_file.name}: {e}")
-            processed_files_summary.append({
-                "file_name": gnn_file.name,
-                "status": "Error (Output directory creation failed)",
-                "outputs": []
-            })
-            continue # Skip to the next file
-
-        success, llm_results = process_gnn_with_llm(gnn_file, file_specific_output_dir, args.verbose)
-        
-        output_files_generated = []
-        if success:
-            total_success_count += 1
-            status_msg = "Success"
-            if llm_results.get("overview_structure"): output_files_generated.append(f"{gnn_file.stem}_overview_structure.txt")
-            if llm_results.get("purpose_professional_summary"): output_files_generated.append(f"{gnn_file.stem}_purpose_professional_summary.md")
-            if llm_results.get("ontology_interpretation") and not llm_results["ontology_interpretation"].startswith("N/A") : 
-                output_files_generated.append(f"{gnn_file.stem}_ontology_interpretation.txt")
-        else:
-            status_msg = "Partial or Total Failure (see logs)"
-            # Log which specific outputs were generated despite failure
-            if Path(file_specific_output_dir / f"{gnn_file.stem}_overview_structure.txt").exists(): output_files_generated.append(f"{gnn_file.stem}_overview_structure.txt")
-            if Path(file_specific_output_dir / f"{gnn_file.stem}_purpose_professional_summary.md").exists(): output_files_generated.append(f"{gnn_file.stem}_purpose_professional_summary.md")
-            if Path(file_specific_output_dir / f"{gnn_file.stem}_ontology_interpretation.txt").exists(): output_files_generated.append(f"{gnn_file.stem}_ontology_interpretation.txt")
-
-        processed_files_summary.append({
-            "file_name": gnn_file.name,
-            "status": status_msg,
-            "output_dir": str(file_specific_output_dir.relative_to(Path(args.output_dir).resolve())),
-            "outputs_generated": output_files_generated,
-            "llm_call_results": llm_results # Store detailed results for the report
-        })
-
-    # --- Report Generation ---
-    report_path = llm_step_output_dir / f"{Path(__file__).stem}_report.md"
-    with open(report_path, 'w', encoding='utf-8') as f:
-        f.write(f"# Step 11: LLM Operations Report\n")
-        f.write(f"*Report generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*\n\n")
-        f.write(f"Processed **{len(gnn_files)}** GNN files from `{gnn_source_dir}`.\n")
-        f.write(f"Successfully processed (all LLM tasks completed): **{total_success_count}** files.\n")
-        f.write(f"Failed or partially failed: **{len(gnn_files) - total_success_count}** files.\n\n")
-        f.write(f"LLM outputs are stored in subdirectories within: `{llm_step_output_dir}`\n\n")
-        f.write("## Detailed Processing Results:\n")
-        for summary_item in processed_files_summary:
-            f.write(f"\n### 📄 File: `{summary_item['file_name']}`\n")
-            f.write(f"- **Status:** {summary_item['status']}\n")
-            f.write(f"- **Output Directory:** `{summary_item['output_dir']}`\n")
-            f.write(f"- **Generated Outputs:**\n")
-            if summary_item['outputs_generated']:
-                for out_file in summary_item['outputs_generated']:
-                    f.write(f"  - `{out_file}`\n")
-            else:
-                f.write("  - (No files generated or error before generation)\n")
-            
-            # Include text content of LLM calls for quick review in report
-            # Overview & Structure
-            f.write(f"- **Comprehensive Overview & Structure:**\n")
-            f.write("  ```text\n")
-            f.write(f"  {summary_item['llm_call_results'].get('overview_structure', 'Not generated or error.')[:1000]}...\n")
-            f.write("  ```\n")
-            # Purpose & Professional Summary
-            f.write(f"- **Purpose, Application & Professional Narrative:**\n")
-            f.write("  ```markdown\n")
-            f.write(f"  {summary_item['llm_call_results'].get('purpose_professional_summary', 'Not generated or error.')[:1000]}...\n")
-            f.write("  ```\n")
-            # Ontology Interpretation
-            ontology_res = summary_item['llm_call_results'].get('ontology_interpretation', 'Not generated or error.')
-            if not ontology_res.startswith("N/A"):
-                f.write(f"- **Ontology Interpretation:**\n")
-                f.write("  ```text\n")
-                f.write(f"  {ontology_res[:1000]}...\n")
-                f.write("  ```\n")
-            else:
-                f.write(f"- **Ontology Interpretation:** N/A\n")
-
-    logger.info(f"LLM Operations report saved to: {report_path}")
-
-    if total_success_count < len(gnn_files):
-        logger.warning(f"⚠️ Step 11: LLM Operations ({Path(__file__).name}) - COMPLETED, but with errors for some files. Check logs and report.")
-        return 1 # Indicate partial failure
-    else:
-        logger.info(f"✅ Step 11: LLM Operations ({Path(__file__).name}) - COMPLETED successfully.")
+    if not gnn_files_to_process:
+        logger.info("No GNN files found to process.")
         return 0
 
+    for gnn_file_path in gnn_files_to_process:
+        # Create a subdirectory for each GNN file's outputs within the llm_step_output_dir
+        # e.g., output/llm_processing_step/gnn_example_A/
+        file_specific_output_dir = llm_step_output_dir / gnn_file_path.stem
+        file_specific_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        logger.info(f"--- Processing GNN file: {gnn_file_path.relative_to(target_dir) if gnn_file_path.is_relative_to(target_dir) else gnn_file_path} ---")
+        process_gnn_with_llm(gnn_file_path, file_specific_output_dir, selected_tasks, args.verbose)
+
+    logger.info("LLM processing step completed.")
+    return 0
+
+
 if __name__ == '__main__':
-    log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    log_level = getattr(logging, log_level_str, logging.INFO)
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
-
-    parser = argparse.ArgumentParser(description="GNN Pipeline - Step 11: LLM Operations (Standalone)")
-    script_dir = Path(__file__).resolve().parent # src/
-    # Default target for GNN .md files for this step
-    default_target_dir = script_dir / "gnn" / "examples" 
-    # Default main output dir for the whole pipeline
-    default_pipeline_output_dir = script_dir.parent / "output" 
-
-    parser.add_argument("--target-dir", default=str(default_target_dir),
-                        help=f"Target directory for GNN source files (default: {default_target_dir})")
-    parser.add_argument("--output-dir", default=str(default_pipeline_output_dir),
-                        help=f"Main pipeline output directory (default: {default_pipeline_output_dir})")
-    parser.add_argument("--recursive", action="store_true", default=True, # Make default True as per main.py
-                        help="Recursively search for GNN files in the target directory.")
-    parser.add_argument("--no-recursive", dest='recursive', action='store_false',
-                        help="Disable recursive search for GNN files.")
-    parser.add_argument("--verbose", action="store_true",
-                        help="Enable verbose output for this script.")
-    parser.add_argument("--llm-tasks", type=str, default="all", # Added to match main.py call
-                        help="Comma-separated list of LLM tasks to run (e.g., overview,purpose,ontology). Default: 'all'. Currently, all tasks are run by default.")
+    parser = argparse.ArgumentParser(description="""
+Process GNN files using LLMs for tasks like summarization, analysis, and Q&A generation.
+This script is intended to be called as part of the GNN processing pipeline (via main.py)
+but can be run standalone for testing with appropriate arguments.
+""")
+    parser.add_argument("--target-dir", type=str, required=True, help="Directory containing GNN files to process.")
+    parser.add_argument("--output-dir", type=str, required=True, help="Main output directory for the GNN pipeline. LLM outputs will be in a subfolder.")
+    parser.add_argument("--recursive", action="store_true", help="Recursively search for GNN files in target-dir.")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable detailed DEBUG logging.")
+    parser.add_argument("--llm-tasks", nargs='+', default=["all"], 
+                        choices=ALL_TASKS + ["all"], # Allow individual tasks or "all"
+                        help=f"Specify which LLM tasks to run. Choices: {', '.join(ALL_TASKS)}, or 'all'. "
+                             f"Default is 'all'. Can provide multiple space-separated tasks.")
     
+    # Add an argument for API key, though .env is preferred.
+    # parser.add_argument("--openai-api-key", type=str, default=os.getenv("OPENAI_API_KEY"), help="OpenAI API Key. Defaults to OPENAI_API_KEY env var.")
+
+    # Potentially other LLM related args like model name, temperature, max_tokens if needed here
+    # For now, these are handled in llm_operations.py or hardcoded for specific tasks.
+
     parsed_args = parser.parse_args()
 
-    if parsed_args.verbose:
-        logging.getLogger().setLevel(logging.DEBUG) # Set root logger to DEBUG
-        logger.setLevel(logging.DEBUG) # Set this script's logger to DEBUG
-        if llm_operations: # If module loaded, set its logger to DEBUG too
-            logging.getLogger(llm_operations.__name__).setLevel(logging.DEBUG)
-        if llm_mcp: # If module loaded, set its logger to DEBUG too
-             logging.getLogger(llm_mcp.__name__).setLevel(logging.DEBUG)
-        logger.debug("Verbose logging enabled for standalone run of 11_llm.py.")
+    # Basic logging setup for standalone run (main.py should handle its own richer config)
+    # This ensures that if __name__ == '__main__', logs are visible.
+    log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
+    logging.basicConfig(level=log_level, 
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                        handlers=[logging.StreamHandler(sys.stdout)]) # stdout for pipeline capture
+    
+    # Manually set API key if provided and not already set by load_dotenv in llm_operations
+    # if parsed_args.openai_api_key:
+    #     openai.api_key = parsed_args.openai_api_key
+    #     logger.info("OpenAI API key set from command line argument.")
+    # elif not os.getenv("OPENAI_API_KEY"):
+    #     logger.warning("OpenAI API Key not found in environment variables or command line.")
+        # llm_operations.load_api_key() might still try and raise error if not found.
+    
+    # For standalone execution, it's important that mcp_instance is available
+    # and that LLM tools can be registered.
+    if not mcp_instance:
+        logger.error("Main MCP instance is not available. Cannot ensure LLM tools registration for standalone run. Exiting.")
+        sys.exit(1)
+    
+    try:
+        logger.info("Standalone run: Ensuring LLM tools are registered...")
+        if llm_mcp: # if llm_mcp was successfully imported
+            llm_mcp.ensure_llm_tools_registered(mcp_instance)
+            logger.info("Standalone run: LLM tools registration check complete.")
+        else:
+            logger.error("Standalone run: llm_mcp module not available. Cannot register LLM tools.")
+            sys.exit(1) # Cannot proceed without llm_mcp
+    except Exception as e_reg_standalone:
+        logger.error(f"Standalone run: Failed to ensure LLM tools were registered: {e_reg_standalone}", exc_info=True)
+        sys.exit(1)
 
-    # Quiet noisy libraries if run standalone
-    logging.getLogger('PIL').setLevel(logging.WARNING)
-    logging.getLogger('matplotlib').setLevel(logging.WARNING)
 
-    sys.exit(main(parsed_args)) 
+    exit_code = main(parsed_args)
+    sys.exit(exit_code) 

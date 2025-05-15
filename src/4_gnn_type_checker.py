@@ -18,6 +18,8 @@ import sys
 from pathlib import Path
 import logging # Added logging
 import os
+import argparse # Added missing import
+from gnn_type_checker.resource_estimator import GNNResourceEstimator # Moved import
 
 # Configure basic logging
 # The level will be set more specifically in run_type_checker based on verbosity
@@ -111,47 +113,11 @@ def run_type_checker(target_dir: str,
             # Use logger for error messages
             logger.error(f"❌ GNN Type Checker module reported errors (exit code: {type_checker_cli_exit_code}).")
             logger.error(f"   Check logs and reports in {type_checker_step_output_dir} for details.")
-            # Still proceed to resource estimation if requested and type checking didn't critically fail import/setup
+            # Resource estimation will still be attempted by the CLI if the flag was passed,
+            # even if type checking reported errors, as per cli.py logic.
 
-        # --- Explicitly call Resource Estimator if flag is set ---
-        if estimate_resources:
-            logger.info("   ⚙️ Estimating GNN resources...")
-            try:
-                from gnn_type_checker.resource_estimator import GNNResourceEstimator
-
-                # Define the output directory for resource estimation reports
-                # This will be under the gnn_type_check directory
-                resource_estimation_reports_dir = type_checker_step_output_dir / "resource_estimates"
-                resource_estimation_reports_dir.mkdir(parents=True, exist_ok=True)
-                
-                # Initialize estimator. It can parse files directly if type_check_data JSON is not available.
-                estimator = GNNResourceEstimator(type_check_data=None)
-
-                # Determine if target_dir is a file or directory for the estimator
-                # Note: target_dir is the input_path for the type_checker_cli,
-                # which could be a file or a directory.
-                path_to_estimate = Path(target_dir)
-                if path_to_estimate.is_file():
-                    logger.info(f"     Estimating resources for single file: {target_dir}")
-                    estimator.estimate_from_file(target_dir)
-                elif path_to_estimate.is_dir():
-                    logger.info(f"     Estimating resources for directory: {target_dir} (recursive: {recursive})")
-                    estimator.estimate_from_directory(target_dir, recursive=recursive)
-                else:
-                    logger.warning(f"     Target for resource estimation is not a valid file or directory: {target_dir}")
-
-                # Generate reports (this also saves them)
-                report_summary = estimator.generate_report(output_dir=str(resource_estimation_reports_dir))
-                if verbose:
-                    # Report summary can be quite long, so log only a confirmation or key parts.
-                    logger.info(f"     Resource estimation report generated in: {resource_estimation_reports_dir}")
-                logger.info(f"   ✅ Resource estimation complete. Reports in: {resource_estimation_reports_dir}")
-
-            except ImportError as e_res:
-                logger.error(f"   ❌ Could not import GNNResourceEstimator for resource estimation: {e_res}")
-            except Exception as e_res:
-                logger.error(f"   ❌ An error occurred during resource estimation: {e_res}", exc_info=verbose)
-        # --- End Resource Estimator call ---
+        # The GNN Type Checker CLI now handles resource estimation internally if the flag is passed.
+        # No need to call it separately here.
             
         return type_checker_successful # Success of the step is based on type checking
             
@@ -218,17 +184,14 @@ if __name__ == '__main__':
                         help=f"Target directory for GNN files (default: {default_target_dir.relative_to(project_root)})")
     parser.add_argument("--output-dir", type=Path, default=default_output_dir,
                         help=f"Main output directory (default: {default_output_dir.relative_to(project_root)})")
-    parser.add_argument("--recursive", action="store_true", default=True, # Make default True
-                        help="Recursively search for GNN files.")
-    parser.add_argument("--no-recursive", dest='recursive', action='store_false',
-                        help="Disable recursive search for GNN files.")
+    parser.add_argument("--recursive", default=True, action=argparse.BooleanOptionalAction,
+                        help="Recursively search for GNN files. Enabled by default. Use --no-recursive to disable.")
     parser.add_argument("--strict", action="store_true",
                         help="Enable strict type checking mode.")
     parser.add_argument("--estimate-resources", default=True, action=argparse.BooleanOptionalAction,
                         help="Estimate computational resources (default: True). Use --no-estimate-resources to disable.")
-    parser.add_argument("--verbose", action="store_true",
-                        help="Enable verbose (DEBUG level) logging.")
-    # No --no-verbose, if --verbose is not set, it defaults to INFO via basicConfig
+    parser.add_argument("--verbose", default=False, action=argparse.BooleanOptionalAction, # Default to False for standalone, True if called by main.py with verbose
+                        help="Enable verbose (DEBUG level) logging. Use --no-verbose to ensure INFO level if LOG_LEVEL is not set.")
 
     args = parser.parse_args()
 

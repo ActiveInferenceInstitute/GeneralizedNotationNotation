@@ -113,39 +113,45 @@ def run_pymdp_scripts(pipeline_output_dir: str, recursive_search: bool, verbose:
             )
 
             # Save stdout and stderr to files
-            if current_script_log_dir:
-                try:
-                    with open(stdout_path, 'w') as f_out:
-                        f_out.write(process.stdout if process.stdout else "")
-                    logger.debug(f"      Stdout successfully written to {stdout_path}")
-                except OSError as e:
-                    logger.error(f"    Error writing stdout log to {stdout_path} for {script_path.name}: {e}")
-                try:
-                    with open(stderr_path, 'w') as f_err:
-                        f_err.write(process.stderr if process.stderr else "")
-                    logger.debug(f"      Stderr successfully written to {stderr_path}")
-                except OSError as e:
-                    logger.error(f"    Error writing stderr log to {stderr_path} for {script_path.name}: {e}")
+            stdout_log_path = script_log_dir / "stdout.log"
+            stderr_log_path = script_log_dir / "stderr.log"
+            try:
+                with open(stdout_log_path, "w", encoding='utf-8') as f_out:
+                    f_out.write(process.stdout if process.stdout else "")
+                if verbose: logger.debug(f"      Stdout successfully written to {stdout_log_path}")
+                with open(stderr_log_path, "w", encoding='utf-8') as f_err:
+                    f_err.write(process.stderr if process.stderr else "")
+                if verbose: logger.debug(f"      Stderr successfully written to {stderr_log_path}")
+            except IOError as e:
+                logger.error(f"    ❌ Error writing log files for {script_path.name} to {script_log_dir}: {e}")
+                # Continue, but this script's logs might be missing
+
+            script_summary_data = {
+                "status": "Unknown", 
+                "log_dir": str(script_log_dir),
+                "stdout_preview": process.stdout[:300].strip() if process.stdout else "",
+                "stderr_preview": process.stderr.strip() if process.stderr else ""
+            }
 
             if process.returncode == 0:
-                logger.info(f"    ✅ Execution successful for: {script_path.name}{log_file_info}")
-                if verbose and process.stdout and process.stdout.strip(): # Still log to console if verbose and stdout has content
-                    logger.debug(f"      Output (also in {stdout_path}):\\n{process.stdout.strip()}")
-                overall_summary.append((str(script_path.name), "Success", process.stdout if process.stdout else "No output", str(current_script_log_dir if current_script_log_dir else "N/A")))
+                script_summary_data["status"] = "Success"
+                logger.info(f"    ✅ Execution successful for: {script_path.name} (Logs: {script_log_dir})")
+                if verbose:
+                    if process.stdout:
+                        logger.debug(f"      Stdout Preview (see {stdout_log_path.name} for full):\n{process.stdout[:300].strip()}...")
+                    if process.stderr:
+                        logger.warning(f"      Stderr Output from {script_path.name} (see {stderr_log_path.name} for full):\n{process.stderr.strip()}")
             else:
+                script_summary_data["status"] = "Failure"
+                logger.error(f"    ❌ Execution FAILED for: {script_path.name} (Return Code: {process.returncode}, Logs: {script_log_dir})")
                 all_executions_successful = False
-                logger.error(f"    ❌ Execution FAILED for: {script_path.name} (Exit code: {process.returncode}){log_file_info}")
-                if process.stdout and process.stdout.strip():
-                    logger.error(f"      Stdout content for failed script (see full log in {stdout_path}). Preview:\\n{process.stdout.strip()[:500]}...")
-                else:
-                    logger.error(f"      No stdout content for failed script (Full log: {stdout_path}).")
-                if process.stderr and process.stderr.strip():
-                    logger.error(f"      Stderr content (see full log in {stderr_path}):\\n{process.stderr.strip()}")
-                else:
-                    logger.error(f"      No stderr content for failed script (Full log: {stderr_path}).")
-
-                full_output_for_summary = (process.stdout if process.stdout else "") + (process.stderr if process.stderr else "")
-                overall_summary.append((str(script_path.name), f"Failed (code {process.returncode})", full_output_for_summary, str(current_script_log_dir if current_script_log_dir else "N/A")))
+                # For failed scripts, log previews even if not verbose, as this is important diagnostic info from the runner's perspective.
+                if process.stdout:
+                    logger.error(f"      Stdout from failed {script_path.name} (see {stdout_log_path.name} for full):\n{process.stdout.strip()}")
+                if process.stderr:
+                    logger.error(f"      Stderr from failed {script_path.name} (see {stderr_log_path.name} for full):\n{process.stderr.strip()}")
+            
+            overall_summary.append((str(script_path.name), script_summary_data["status"], script_summary_data["stdout_preview"], script_summary_data["stderr_preview"], str(script_log_dir)))
         except Exception as e:
             all_executions_successful = False
             logger.error(f"    ❌ Exception during execution of {script_path.name}: {e}{log_file_info}", exc_info=verbose)
@@ -160,22 +166,23 @@ def run_pymdp_scripts(pipeline_output_dir: str, recursive_search: bool, verbose:
             overall_summary.append((str(script_path.name), "Exception", str(e), str(current_script_log_dir if current_script_log_dir else "N/A")))
 
     logger.info("--- PyMDP Execution Summary ---")
-    for name, status, output_preview, log_dir_path_str in overall_summary:
-        log_func = logger.info if status == "Success" else logger.warning
-        log_func(f"  - Script: {name}")
-        log_func(f"    Status: {status}")
-        log_func(f"    Log Dir: {log_dir_path_str}")
-        
-        # Limit console output preview, direct users to log files
-        if status == "Success":
-            if verbose and output_preview.strip():
-                 logger.debug(f"    Console Output Preview (see stdout.log for full):\n{output_preview.strip()[:200]}...")
-        else: # Failed or Exception
-            if output_preview.strip():
-                logger.warning(f"    Console Output/Error Preview (see .log files for full):\n{output_preview.strip()[:500]}...")
-            if status == "Exception" and not output_preview.strip(): # If exception had no direct stdout/stderr
-                 logger.warning(f"    Exception details logged to exception.log in the log directory.")
+    total_scripts = len(overall_summary)
+    successful_scripts = sum(1 for data in overall_summary if data[1] == "Success")
+    failed_scripts = total_scripts - successful_scripts
 
+    logger.info(f"  Total scripts processed: {total_scripts}")
+    logger.info(f"  Successfully executed: {successful_scripts}")
+    logger.info(f"  Failed: {failed_scripts}")
+
+    if verbose and failed_scripts > 0 : # Only print detailed summary of failures if verbose
+        logger.info("  Details of failed/warning executions:")
+        for name, status, stdout_preview, stderr_preview, log_dir in overall_summary:
+            if status != "Success":
+                logger.warning(f"    - Script: {name}")
+                logger.warning(f"      Status: {status}")
+                logger.warning(f"      Log Dir: {log_dir}")
+                if stderr_preview: # Only show stderr preview from summary if it exists
+                     logger.warning(f"      Stderr Preview: {stderr_preview[:300]}...")
 
     return all_executions_successful
 

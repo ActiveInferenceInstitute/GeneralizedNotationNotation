@@ -120,18 +120,33 @@ class GnnToPyMdpConverter:
     def _parse_string_to_literal(self, data_str: Any, context_msg: str) -> Optional[Any]:
         """Attempts to parse a string representation of a Python literal (e.g., list, tuple, dict)."""
         if not isinstance(data_str, str):
-            if data_str is None or isinstance(data_str, (list, dict, tuple, int, float, bool)):
+            if data_str is None or isinstance(data_str, (list, dict, tuple, int, float, bool, np.ndarray)): # Added np.ndarray
                  return data_str
-            self._add_log(f"{context_msg}: Expected string for ast.literal_eval or pre-parsed object, but got {type(data_str)}. Value: '{str(data_str)[:100]}...'. Returning as is.", "WARNING")
-            return data_str
+            self._add_log(f"{context_msg}: Expected string for ast.literal_eval or a known pre-parsed type (list, dict, tuple, int, float, bool, np.ndarray), but got {type(data_str)}. Value: \'{str(data_str)[:100]}...\'. Returning None as parsing is not applicable.", "ERROR") # Changed to ERROR and returning None
+            return None
 
         if not data_str.strip():
             self._add_log(f"{context_msg}: Received empty string data. Cannot parse. Returning None.", "WARNING")
             return None
+        
+        # Add a check for potentially very large strings to avoid performance issues with ast.literal_eval
+        # This limit is arbitrary and can be adjusted.
+        MAX_STRING_LEN_FOR_AST_EVAL = 1_000_000 # 1MB of string data
+        if len(data_str) > MAX_STRING_LEN_FOR_AST_EVAL:
+            self._add_log(f"{context_msg}: Input string data is very long (len: {len(data_str)} characters). Parsing with ast.literal_eval might be slow or consume significant memory. Consider optimizing GNN spec to provide parsed data directly if possible.", "WARNING")
+
         try:
             return ast.literal_eval(data_str)
         except (ValueError, SyntaxError, TypeError) as e:
-            self._add_log(f"{context_msg}: Failed to parse string data '{data_str[:100]}...' with ast.literal_eval: {e}. Returning None.", "ERROR")
+            # It's possible that the string is a numpy array string representation,
+            # which ast.literal_eval cannot handle directly.
+            # Example: "array([1., 2., 3.])"
+            # This is a basic attempt; a more robust solution might involve regex
+            # or trying to exec in a controlled environment if absolutely necessary (generally not recommended).
+            if "array(" in data_str:
+                 self._add_log(f"{context_msg}: ast.literal_eval failed. String \'{data_str[:100]}...\' appears to contain 'array(...)'. This construct is not supported by ast.literal_eval. The GNN spec should provide lists/numbers directly or use a format that can be parsed to basic Python types. {e}. Returning None.", "ERROR")
+            else:
+                self._add_log(f"{context_msg}: Failed to parse string data \'{data_str[:100]}...\' with ast.literal_eval: {e}. Returning None.", "ERROR")
             return None
 
     def _extract_gnn_data(self):
@@ -1062,6 +1077,22 @@ class GnnToPyMdpConverter:
 
         script_content.extend(self.script_parts["example_usage"]) # This should come after agent_params_for_debug definition
         
+        # Prepare string representations for the debug_block f-strings
+        # These are string versions of the GNN spec sections or derived values
+        # that the debug block intends to print.
+        
+        # Action names as passed to the agent
+        # self.action_names_per_control_factor is the dict like {factor_idx: [name1, name2]}
+        action_names_val = self.action_names_per_control_factor
+        action_names_dict_str = str(action_names_val) # Creates a string like "{0: ['action_0', 'action_1']}"
+
+        # qs_initial from agent_hyperparams
+        qs_initial_val = self.agent_hyperparams.get("qs_initial")
+        qs_initial_str = str(qs_initial_val) # String representation, e.g., 'None' or list as string
+
+        # The full agent_hyperparams dictionary from the GNN spec
+        agent_hyperparams_dict_str = str(self.agent_hyperparams)
+
         # Add runtime debug block
         # The temp_agent instantiation should use agent_params_for_debug
         debug_block = [
@@ -1084,9 +1115,9 @@ class GnnToPyMdpConverter:
             "    print(f\"  AGENT_SCRIPT: D = {{D if 'D' in globals() else 'Not Defined'}}\")",
             "    print(f\"  AGENT_SCRIPT: E = {{E if 'E' in globals() else 'Not Defined'}}\")",
             "    print(f\"  AGENT_SCRIPT: control_fac_idx = {{control_fac_idx if 'control_fac_idx' in globals() else 'Not Defined'}}\")",
-            "    print(f\"  AGENT_SCRIPT: action_names = {{action_names_dict_str if action_names_dict_str != '{{}}' else 'Not Defined'}}\")",
-            "    print(f\"  AGENT_SCRIPT: qs_initial = {{qs_initial_str if qs_initial_str != 'None' else 'Not Defined'}}\")",
-            "    print(f\"  AGENT_SCRIPT: agent_hyperparams = {{{agent_hyperparams_dict_str}}}\")",
+            "    print(f'  AGENT_SCRIPT: action_names = {action_names_dict_str if action_names_dict_str != \"{{}}\" else \"Not Defined\"}')",
+            "    print(f'  AGENT_SCRIPT: qs_initial = {qs_initial_str if qs_initial_str != \"None\" else \"Not Defined\"}')",
+            "    print(f'  AGENT_SCRIPT: agent_hyperparams = {agent_hyperparams_dict_str}')",
             "    print('AGENT_SCRIPT: Attempting to instantiate agent with defined parameters for debug...')",
             "    # Filter out None hyperparams from agent_params_for_debug if it was originally None",
             "    # The ** unpacking handles empty dicts correctly if agent_hyperparams_dict_str was \"{}\"",
@@ -1122,6 +1153,11 @@ def render_gnn_to_pymdp(
         A tuple (success: bool, message: str, artifact_uris: List[str]).
         `artifact_uris` will contain a file URI to the generated script on success.
     """
+    # If the rendering process itself seems to hang, investigate large string parsing (see _parse_string_to_literal)
+    # or complex GNN structures leading to extensive processing.
+    # If the *generated script* hangs when executed, it's likely due to PyMDP agent computations
+    # (e.g., large state spaces, long policy horizons). In that case, profile the generated script
+    # (e.g., using cProfile or line_profiler) to identify bottlenecks within PyMDP or the simulation loop.
     options = options or {}
     include_example_usage = options.get("include_example_usage", True)
 

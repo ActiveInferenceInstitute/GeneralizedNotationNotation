@@ -83,7 +83,13 @@ def main(cmd_args=None):
             logger.info(line)
         logger.info("--- End of Type Check Report Summary ---")
         logger.info(f"Main type check report saved in: {actual_output_dir / markdown_report_name}")
-        logger.info(f"Detailed JSON data saved in: {actual_output_dir / 'resources' / 'type_check_data.json'}")
+        
+        # Generate and save the detailed JSON data
+        json_output_dir = actual_output_dir / "resources"
+        json_output_dir.mkdir(parents=True, exist_ok=True)
+        type_check_data_json_path = json_output_dir / "type_check_data.json"
+        checker.generate_json_data(results, type_check_data_json_path) # Call the new public method
+        logger.info(f"Detailed JSON data saved in: {type_check_data_json_path}")
 
     except Exception as e_report:
         logger.error(f"An error occurred during report generation for type checking: {e_report}", exc_info=True)
