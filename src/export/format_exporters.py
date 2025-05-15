@@ -46,20 +46,47 @@ def _ensure_path(path_str: str) -> Path:
 def _parse_matrix_string(matrix_str: str) -> Any:
     """Safely parses a string representation of a matrix."""
     processed_str = matrix_str.strip()
-    if processed_str.startswith("{") and processed_str.endswith("}") and \
-       not (processed_str.startswith("{{") or processed_str.startswith("{\"") or processed_str.startswith("{[")): 
-        if '(' in processed_str[1:-1] and ')' in processed_str[1:-1]:
-            processed_str = "(" + processed_str[1:-1] + ")"
+    # Heuristic to convert GNN's {{...}} or {(...)} for tuples/lists of tuples into valid Python literal strings
+    if processed_str.startswith("{") and processed_str.endswith("}"):
+        inner_content = processed_str[1:-1].strip()
+        if inner_content.startswith("(") and inner_content.endswith(")"): # Looks like {(...)}
+            processed_str = "(" + inner_content + ")" # Treat as a single tuple
+        elif inner_content.startswith("{") and inner_content.endswith("}"): # Potentially a set of tuples
+             # This case needs care. If it's like {{t1},{t2}}, ast.literal_eval might treat it as set of sets.
+             # For GNN, this often means a list/tuple of tuples.
+             # Example: A_m0={ ( (0.333,...), (0.333,...) ),  ( (0.333,...), (0.333,...) ) }
+             # This structure is more like a tuple of tuples.
+             # The original heuristic was:
+             # if '(' in processed_str[1:-1] and ')' in processed_str[1:-1]:
+             #     processed_str = "(" + processed_str[1:-1] + ")"
+             # Let's refine it: if it's a set of tuples like format, convert to tuple of tuples
+             if inner_content.count("(") > 1 and inner_content.count(")") > 1 and inner_content.count("{") == 0 and inner_content.count("}") == 0 : # like ((v,v),(v,v)), ((v,v),(v,v))
+                 processed_str = f"({inner_content})"
+
+
     try:
         parsed_value = ast.literal_eval(processed_str)
+        # PyMDP often expects lists of lists or lists of tuples, not top-level sets or tuples of sets.
+        # Convert sets to lists at various levels if necessary.
         if isinstance(parsed_value, set):
-            logger.debug(f"Converted set to list during matrix string parsing: {parsed_value}")
-            return list(parsed_value)
+            parsed_value = list(parsed_value)
+        if isinstance(parsed_value, tuple): # Convert top-level tuple to list
+             parsed_value = list(parsed_value)
+
+        def convert_sets_in_nesting(item):
+            if isinstance(item, set):
+                return list(item)
+            elif isinstance(item, (list, tuple)):
+                return type(item)(convert_sets_in_nesting(x) for x in item)
+            return item
+
+        parsed_value = convert_sets_in_nesting(parsed_value)
+        
+        logger.debug(f"Parsed matrix string '{matrix_str}' to: {parsed_value}")
         return parsed_value
     except (ValueError, TypeError, SyntaxError, MemoryError, RecursionError) as e:
-        # Do not print here, let the caller handle logging if desired based on context
-        # logger.warning(f"Error parsing matrix string with ast.literal_eval: '{matrix_str}'. Error: {e}")
-        return None # Return None to indicate parsing failure
+        logger.warning(f"Error parsing matrix string with ast.literal_eval: '{matrix_str}'. Error: {e}. Returning as raw string.")
+        return matrix_str # Return raw string if parsing fails
 
 # --- Parsers for GNN Sections (kept for _gnn_model_to_dict) ---
 
@@ -211,6 +238,37 @@ def _parse_model_parameters_section(section_content: str) -> dict:
             logger.debug(f"  Skipping malformed line in ModelParameters: {line}")
     return data
 
+def _parse_initial_parameterization_section(section_content: str) -> dict:
+    """
+    Parses the InitialParameterization section.
+    Keys are parameter names (e.g., A_m0, D_f1).
+    Values are GNN matrix strings which are parsed into Python objects (lists/tuples).
+    """
+    data = {}
+    for line in section_content.strip().split('\n'):
+        line = line.strip()
+        if not line or line.startswith('#'): # Skip comments and empty lines
+            continue
+        
+        # Split by the first '=' to separate key and value
+        if '=' in line:
+            key, value_str = line.split('=', 1)
+            key = key.strip()
+            value_str = value_str.strip()
+            
+            if key and value_str:
+                # Attempt to parse the matrix string value
+                parsed_value = _parse_matrix_string(value_str)
+                data[key] = parsed_value
+                if isinstance(parsed_value, str) and parsed_value == value_str: # Check if parsing failed
+                    logger.warning(f"Value for '{key}' in InitialParameterization was not parsed into a data structure, kept as string: {value_str}")
+            else:
+                logger.debug(f"Skipping malformed line in InitialParameterization (empty key or value): '{line}'")
+        else:
+            logger.debug(f"Skipping line in InitialParameterization without '=': '{line}'")
+            
+    return data
+
 SECTION_PARSERS = {
     "ActInfOntologyAnnotation": _parse_ontology_annotations,
     "StateSpaceBlock": lambda content: _parse_list_items_section(content, _parse_state_line),
@@ -228,7 +286,7 @@ SECTION_PARSERS = {
     "ModelName": _parse_free_text_section, 
     "ModelAnnotation": _parse_free_text_section, 
     "Connections": lambda content: _parse_list_items_section(content, _parse_transition_line), 
-    "InitialParameterization": _parse_key_value_section, 
+    "InitialParameterization": _parse_initial_parameterization_section, 
     "Equations": _parse_free_text_section, 
     "Time": _parse_key_value_section, 
     "Footer": _parse_free_text_section,
@@ -301,17 +359,12 @@ def _gnn_model_to_dict(gnn_file_path_str: str) -> dict:
                     elif known_parser_name == "ActInfOntologyAnnotation":
                         model["ontology_annotations"] = parsed_data
                     elif known_parser_name == "InitialParameterization":
-                        temp_initial_params_raw_strings = parsed_data
-                        model["raw_sections"]["InitialParameterization_parsed_kv"] = temp_initial_params_raw_strings
-                        parsed_matrices = {}
-                        for param_name, param_val_str in temp_initial_params_raw_strings.items():
-                            matrix_data = _parse_matrix_string(param_val_str)
-                            if matrix_data is not None: 
-                                parsed_matrices[param_name] = matrix_data
-                            else: 
-                                parsed_matrices[param_name] = param_val_str 
-                        model["initial_parameters"] = parsed_matrices 
+                        model["initial_parameters"] = parsed_data # 'parsed_data' is the direct result from _parse_initial_parameterization_section
+                        
+                        # Store the raw content for reference.
                         model["raw_sections"]["InitialParameterization_raw_content"] = section_content_raw
+                        # Optionally, if wanting to trace the output of the section parser specifically:
+                        # model["raw_sections"]["InitialParameterization_parsed_by_section_parser"] = parsed_data
                     elif known_parser_name == "Time":
                         model["time_info"] = parsed_data
                         if "type" in parsed_data: 

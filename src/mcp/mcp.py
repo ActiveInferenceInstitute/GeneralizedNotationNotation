@@ -124,6 +124,14 @@ class MCP:
                 module = importlib.import_module(module_name)
                 logger.info(f"Loaded MCP module: {module_name}")
                 
+                # Special handling for llm module initialization
+                if module_name == "src.llm.mcp":
+                    if hasattr(module, "initialize_llm_module") and callable(module.initialize_llm_module):
+                        logger.info(f"Calling initialize_llm_module for {module_name}")
+                        module.initialize_llm_module(self) # Pass MCP instance
+                    else:
+                        logger.warning(f"Module {module_name} does not have a callable initialize_llm_module function.")
+
                 # Register tools and resources from the module
                 if hasattr(module, "register_tools") and callable(module.register_tools):
                     module.register_tools(self)

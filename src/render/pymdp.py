@@ -117,6 +117,23 @@ class GnnToPyMdpConverter:
         self.conversion_log.append(f"{level}: {message}")
         # print(f"[{level}] {message}") # Optional: print to console during conversion
 
+    def _parse_string_to_literal(self, data_str: Any, context_msg: str) -> Optional[Any]:
+        """Attempts to parse a string representation of a Python literal (e.g., list, tuple, dict)."""
+        if not isinstance(data_str, str):
+            if data_str is None or isinstance(data_str, (list, dict, tuple, int, float, bool)):
+                 return data_str
+            self._add_log(f"{context_msg}: Expected string for ast.literal_eval or pre-parsed object, but got {type(data_str)}. Value: '{str(data_str)[:100]}...'. Returning as is.", "WARNING")
+            return data_str
+
+        if not data_str.strip():
+            self._add_log(f"{context_msg}: Received empty string data. Cannot parse. Returning None.", "WARNING")
+            return None
+        try:
+            return ast.literal_eval(data_str)
+        except (ValueError, SyntaxError, TypeError) as e:
+            self._add_log(f"{context_msg}: Failed to parse string data '{data_str[:100]}...' with ast.literal_eval: {e}. Returning None.", "ERROR")
+            return None
+
     def _extract_gnn_data(self):
         """Parses the raw gnn_spec and populates structured attributes."""
         self._add_log("Starting GNN data extraction.")
@@ -447,79 +464,81 @@ class GnnToPyMdpConverter:
             self.script_parts["matrix_definitions"].append("A = None")
             return "# A matrix set to None due to no observation modalities."
 
-        # Initialize A = utils.obj_array(self.num_modalities)
-        self.script_parts["matrix_definitions"].append(f"A = utils.obj_array({self.num_modalities})")
+        if not self.num_factors: # A multi-factor likelihood depends on states
+            self._add_log("A_matrix: No hidden state factors defined. Cannot form A. 'A' will be None.", "INFO")
+            self.script_parts["matrix_definitions"].append("A = None")
+            return "# A matrix set to None due to no hidden state factors."
 
-        any_mod_spec_found = False
+        init_code = f"A = utils.obj_array({self.num_modalities})"
+        self.script_parts["matrix_definitions"].append(init_code)
+
+        # Default to uniform if no A_spec
         for mod_idx in range(self.num_modalities):
-            mod_spec_item = None
-            # Try to get specific spec for this modality
-            if isinstance(self.A_spec, list) and mod_idx < len(self.A_spec):
-                mod_spec_item = self.A_spec[mod_idx]
-            elif isinstance(self.A_spec, dict) and self.num_modalities == 1 and mod_idx == 0: # single spec dict for single modality
-                mod_spec_item = self.A_spec
-            # If A_spec is a single array (not a list of dicts/arrays, not a dict itself) and it's the first modality, assume it's for this one.
-            # This handles the case where A_spec might be a direct np.ndarray or a rule_string for a single modality model.
-            elif not isinstance(self.A_spec, (list, dict)) and self.A_spec is not None and mod_idx == 0 and self.num_modalities == 1:
-                 mod_spec_item = self.A_spec # Could be array, string rule etc.
+            shape_A_mod = tuple([self.num_obs[mod_idx]] + self.num_states)
+            self.script_parts["matrix_definitions"].append(f"A[{mod_idx}] = utils.norm_dist(np.ones({shape_A_mod})) # Defaulted to uniform")
 
-            assignment_val_str = None
-            log_msg_prefix = f"A_matrix (modality {self.obs_names[mod_idx] if mod_idx < len(self.obs_names) else mod_idx})"
+        if self.A_spec:
+            if isinstance(self.A_spec, list): # List of specs per modality
+                for mod_idx, mod_a_spec in enumerate(self.A_spec):
+                    if mod_a_spec is None: # Modality spec might be missing
+                        self._add_log(f"A_matrix (modality {mod_idx}): Spec is None. Using default uniform A[{mod_idx}].", "INFO")
+                        continue
 
-            if mod_spec_item is not None:
-                any_mod_spec_found = True
-                spec_value = None
-                if isinstance(mod_spec_item, dict):
-                    array_data = mod_spec_item.get("array")
-                    rule_string = mod_spec_item.get("rule_string")
-                    rule_type = mod_spec_item.get("rule")
+                    array_data_input = mod_a_spec.get("array")
+                    rule = mod_a_spec.get("rule")
+                    context_msg = f"A_matrix (modality {self.obs_names[mod_idx] if mod_idx < len(self.obs_names) else mod_idx})"
 
-                    if array_data is not None:
-                        try:
-                            spec_value = np.array(array_data)
-                            assignment_val_str = self._get_assignment_string(spec_value, mod_idx, "A")
-                        except Exception as e:
-                            self._add_log(f"{log_msg_prefix}: Error converting array_data to numpy array: {e}", "ERROR")
-                    elif rule_string is not None:
-                        assignment_val_str = self._format_rule_string(rule_string, "A", mod_idx)
-                        self._add_log(f"{log_msg_prefix}: Using rule string: {rule_string}", "INFO")
-                    elif rule_type == "uniform":
-                        shape_tuple_str = f"({self.num_obs[mod_idx]}, {', '.join(map(str, self.num_states))})"
-                        assignment_val_str = f"utils.norm_dist(np.ones({shape_tuple_str}))"
-                        self._add_log(f"{log_msg_prefix}: Specified as uniform.", "INFO")
+                    if array_data_input is not None:
+                        parsed_array_data = self._parse_string_to_literal(array_data_input, context_msg)
+                        if parsed_array_data is not None:
+                            try:
+                                np_array = np.array(parsed_array_data)
+                                expected_shape = tuple([self.num_obs[mod_idx]] + self.num_states)
+                                if np_array.shape == expected_shape:
+                                    assign_str = f"utils.norm_dist({_numpy_array_to_string(np_array, indent=4)})"
+                                    self.script_parts["matrix_definitions"].append(f"A[{mod_idx}] = {assign_str}")
+                                else:
+                                    self._add_log(f"{context_msg}: Shape mismatch. Expected {expected_shape}, got {np_array.shape}. Using default uniform A[{mod_idx}].", "ERROR")
+                            except Exception as e:
+                                self._add_log(f"{context_msg}: Error processing parsed array data to NumPy: {e}. Using default uniform A[{mod_idx}].", "ERROR")
+                        else:
+                            self._add_log(f"{context_msg}: Failed to parse array data string. Using default uniform A[{mod_idx}].", "INFO")
+                    elif rule:
+                        self._add_log(f"{context_msg}: Rule '{rule}' not fully implemented yet. Using default uniform A[{mod_idx}].", "WARNING")
                     else:
-                        self._add_log(f"{log_msg_prefix}: Modality spec found but not usable (no array, rule_string, or known rule_type).", "WARNING")
-                
-                elif isinstance(mod_spec_item, (np.ndarray, list, tuple)):
-                    try:
-                        spec_value = np.array(mod_spec_item)
-                        assignment_val_str = self._get_assignment_string(spec_value, mod_idx, "A")
-                    except Exception as e:
-                        self._add_log(f"{log_msg_prefix}: Error converting direct spec_item to numpy array: {e}", "ERROR")
-                elif isinstance(mod_spec_item, str): # Assumed to be a rule_string or direct pymdp/np call
-                    assignment_val_str = self._format_rule_string(mod_spec_item, "A", mod_idx)
-                    self._add_log(f"{log_msg_prefix}: Using direct string spec: {mod_spec_item}", "INFO")
+                        self._add_log(f"{context_msg}: No 'array' or 'rule' found. Using default uniform A[{mod_idx}].", "INFO")
+            # Handling for A_spec as single dict if num_modalities == 1
+            elif isinstance(self.A_spec, dict) and self.num_modalities == 1:
+                mod_idx = 0
+                array_data_input = self.A_spec.get("array")
+                rule = self.A_spec.get("rule")
+                context_msg = f"A_matrix (modality {mod_idx})"
+                if array_data_input is not None:
+                    parsed_array_data = self._parse_string_to_literal(array_data_input, context_msg)
+                    if parsed_array_data is not None:
+                        try:
+                            np_array = np.array(parsed_array_data)
+                            expected_shape = tuple([self.num_obs[mod_idx]] + self.num_states)
+                            if np_array.shape == expected_shape:
+                                assign_str = f"utils.norm_dist({_numpy_array_to_string(np_array, indent=4)})"
+                                self.script_parts["matrix_definitions"].append(f"A[{mod_idx}] = {assign_str}")
+                            else:
+                                self._add_log(f"{context_msg}: Shape mismatch. Expected {expected_shape}, got {np_array.shape}. Using default uniform A[{mod_idx}].", "ERROR")
+                        except Exception as e:
+                            self._add_log(f"{context_msg}: Error processing parsed array data to NumPy: {e}. Using default uniform A[{mod_idx}].", "ERROR")
+                    else:
+                        self._add_log(f"{context_msg}: Failed to parse array data string. Using default uniform A[{mod_idx}].", "INFO")
+                elif rule:
+                    self._add_log(f"{context_msg}: Rule '{rule}' not fully implemented. Using default uniform A[{mod_idx}].", "WARNING")
                 else:
-                    self._add_log(f"{log_msg_prefix}: Modality spec type {type(mod_spec_item)} not recognized.", "WARNING")
-            
-            if assignment_val_str:
-                self.script_parts["matrix_definitions"].append(f"A[{mod_idx}] = {assignment_val_str}")
+                    self._add_log(f"{context_msg}: No 'array' or 'rule'. Using default uniform A[{mod_idx}].", "INFO")
             else:
-                # Default to uniform if no spec for this modality or spec was invalid
-                shape_tuple_str = f"({self.num_obs[mod_idx]}, {', '.join(map(str, self.num_states))})"
-                default_A_mod_str = f"utils.norm_dist(np.ones({shape_tuple_str}))"
-                self.script_parts["matrix_definitions"].append(f"A[{mod_idx}] = {default_A_mod_str} # Defaulted to uniform")
-                if mod_spec_item is None:
-                    self._add_log(f"{log_msg_prefix}: No spec found. A[{mod_idx}] defaulted to uniform.", "INFO")
-                else:
-                    self._add_log(f"{log_msg_prefix}: Invalid/incomplete spec. A[{mod_idx}] defaulted to uniform.", "WARNING")
-        
-        if not any_mod_spec_found and self.A_spec is not None:
-             self._add_log("A_matrix: A_spec was provided but no valid per-modality specifications were extracted. All modalities defaulted to uniform.", "WARNING")
-        elif self.A_spec is None:
+                self._add_log("A_matrix: A_spec format not recognized for multiple modalities. All A modalities will be default uniform.", "WARNING")
+        else: # No A_spec
             self._add_log("A_matrix: No A_spec provided in GNN. All modalities of A defaulted to uniform.", "INFO")
-
-        return "# A matrix definitions applied above."
+            return "# A matrix modalities remain default initialized (uniform)."
+        
+        return "# A matrix construction based on GNN spec."
 
 
     def convert_B_matrix(self) -> str:
@@ -549,126 +568,87 @@ class GnnToPyMdpConverter:
             self._add_log("B_matrix: No B_spec provided in GNN. B slices will use default initializations (identities).", "INFO")
             return "# B matrix slices remain default initialized."
 
-        # Helper to generate assignment string for B[f_idx]
-        def get_b_assignment_string(spec_value, num_states_val, is_controlled_val, num_actions_val, indent_level=4) -> Optional[str]:
-            if isinstance(spec_value, (np.ndarray, list)):
-                try:
-                    np_arr = np.array(spec_value) # Convert if it's a list
-                    # Check normalization (sum over first axis (next_state) should be 1 for each current_state, action combination)
-                    # For controlled: sum over axis 0. For uncontrolled: sum over axis 0 of the (Ns,Ns) part.
-                    if is_controlled_val:
-                        if not np.allclose(np.sum(np_arr, axis=0), 1.0):
-                            self._add_log(f"B_matrix (array spec, factor): Array for controlled factor does not sum to 1.0 over next_states. Will be wrapped with utils.norm_dist(). Sums: {np.sum(np_arr, axis=0)}", "DEBUG")
-                            return f"utils.norm_dist({_numpy_array_to_string(np_arr, indent=indent_level+4)})"
-                    else: # uncontrolled, expect (Ns, Ns) or (Ns, Ns, 1)
-                        arr_to_check = np_arr[:,:,0] if np_arr.ndim == 3 else np_arr
-                        if not np.allclose(np.sum(arr_to_check, axis=0), 1.0):
-                             self._add_log(f"B_matrix (array spec, factor): Array for uncontrolled factor does not sum to 1.0 over next_states. Will be wrapped with utils.norm_dist(). Sums: {np.sum(arr_to_check, axis=0)}", "DEBUG")
-                             return f"utils.norm_dist({_numpy_array_to_string(np_arr, indent=indent_level+4)})" # norm_dist handles 2D or 3D
+        def get_b_assignment_string(spec_value_input, num_states_val, is_controlled_val, num_actions_val, factor_idx_for_log, indent_level=4) -> Optional[str]:
+            np_array = None
+            context_msg_b_assign = f"B_matrix (factor {self.state_names[factor_idx_for_log] if factor_idx_for_log < len(self.state_names) else factor_idx_for_log}) internal assignment"
+            
+            parsed_spec_value = self._parse_string_to_literal(spec_value_input, context_msg_b_assign)
 
-                    return _numpy_array_to_string(np_arr, indent=indent_level)
-                except Exception as e:
-                    self._add_log(f"B_matrix: Error converting/processing array/list for B factor: {e}", "ERROR")
+            if parsed_spec_value is None:
+                self._add_log(f"{context_msg_b_assign}: Parsed spec value from string is None. Cannot create NumPy array.", "ERROR")
+                return None
+            try:
+                np_array = np.array(parsed_spec_value)
+            except Exception as e:
+                self._add_log(f"{context_msg_b_assign}: Error converting parsed data to NumPy array: {e}. Value was: '{str(parsed_spec_value)[:100]}...'", "ERROR")
+                return None
+
+            expected_shape_controlled = (num_states_val, num_states_val, num_actions_val)
+            expected_shape_uncontrolled_2d = (num_states_val, num_states_val)
+            expected_shape_uncontrolled_3d = (num_states_val, num_states_val, 1)
+
+            assign_str_val = _numpy_array_to_string(np_array, indent=indent_level)
+
+            if is_controlled_val:
+                if np_array.shape == expected_shape_controlled:
+                    return f"utils.norm_dist({assign_str_val})"
+                else:
+                    self._add_log(f"{context_msg_b_assign}: Shape mismatch for controlled factor. Expected {expected_shape_controlled}, got {np_array.shape}. Not assigning.", "ERROR")
                     return None
-            return None # Should not happen
-
-        if isinstance(self.B_spec, list): # List of specs per factor
-            if len(self.B_spec) != self.num_factors:
-                 self._add_log(f"B_matrix: Length of B_spec list ({len(self.B_spec)}) does not match num_factors ({self.num_factors}). Processing up to shorter length.", "ERROR")
-
-            for f_idx, fac_spec in enumerate(self.B_spec):
-                if f_idx >= self.num_factors: break
-
-                if not isinstance(fac_spec, dict):
-                    self._add_log(f"B_matrix (factor {f_idx}): Spec item is not a dictionary. Using default.", "ERROR")
+            else: # Uncontrolled
+                if np_array.shape == expected_shape_uncontrolled_2d:
+                    return f"utils.norm_dist({assign_str_val})[:, :, np.newaxis]"
+                elif np_array.shape == expected_shape_uncontrolled_3d:
+                    return f"utils.norm_dist({assign_str_val})"
+                else:
+                    self._add_log(f"{context_msg_b_assign}: Shape mismatch for uncontrolled factor. Expected {expected_shape_uncontrolled_2d} or {expected_shape_uncontrolled_3d}, got {np_array.shape}. Not assigning.", "ERROR")
+                    return None
+        
+        if isinstance(self.B_spec, list):
+            for f_idx, fac_b_spec in enumerate(self.B_spec):
+                if fac_b_spec is None: 
+                    self._add_log(f"B_matrix (factor {f_idx}): Spec is None. Using default B[{f_idx}].", "INFO")
                     continue
                 
-                num_states_f = self.num_states[f_idx]
+                array_data_input = fac_b_spec.get("array")
+                rule = fac_b_spec.get("rule")
                 is_controlled = f_idx in self.control_factor_indices
-                num_actions_f = self.num_actions_per_control_factor.get(f_idx, 1)
-                log_msg_prefix_f = f"B_matrix (factor {self.state_names[f_idx] if f_idx < len(self.state_names) else f_idx})"
+                num_actions = self.num_actions_per_control_factor.get(f_idx, 1) if is_controlled else 1
+                context_msg_b = f"B_matrix (factor {self.state_names[f_idx] if f_idx < len(self.state_names) else f_idx})"
 
-                array_data = fac_spec.get("array")
-                rule_string = fac_spec.get("rule_string")
-                rule_type = fac_spec.get("rule")
-                assignment_val_str = None
-
-                if array_data is not None:
-                    try:
-                        np_array_val = np.array(array_data)
-                        expected_shape = (num_states_f, num_states_f, num_actions_f) if is_controlled else (num_states_f, num_states_f) # or (Ns,Ns,1)
-                        
-                        if is_controlled and np_array_val.shape == expected_shape:
-                            assignment_val_str = get_b_assignment_string(np_array_val, num_states_f, is_controlled, num_actions_f)
-                            self._add_log(f"{log_msg_prefix_f}: Defined from 'array' spec (controlled).", "INFO")
-                        elif not is_controlled and (np_array_val.shape == expected_shape or np_array_val.shape == (num_states_f, num_states_f, 1)):
-                            arr_to_assign = np_array_val if np_array_val.ndim == 3 else np_array_val[:, :, np.newaxis]
-                            assignment_val_str = get_b_assignment_string(arr_to_assign, num_states_f, is_controlled, 1)
-                            self._add_log(f"{log_msg_prefix_f}: Defined from 'array' spec (uncontrolled).", "INFO")
-                        else:
-                            self._add_log(f"{log_msg_prefix_f}: Shape mismatch for 'array'. Expected {expected_shape}, got {np_array_val.shape}. Using default.", "ERROR")
-                    except Exception as e:
-                        self._add_log(f"{log_msg_prefix_f}: Error processing 'array' data: {e}. Using default.", "ERROR")
-                
-                elif rule_string is not None:
-                    assignment_val_str = rule_string
-                    self._add_log(f"{log_msg_prefix_f}: Defined from 'rule_string': {rule_string}", "INFO")
-
-                elif rule_type == "identity":
-                    # Default initialization already handles this, but explicit GNN spec confirms it.
-                    self._add_log(f"{log_msg_prefix_f}: Confirmed 'identity' rule (already default).", "INFO")
-                    # No need to change assignment_val_str, default is already set up.
-                    continue # Continue to next factor, current B[f_idx] is already identity.
-                
-                if assignment_val_str:
-                    self.script_parts["matrix_definitions"].append(f"B[{f_idx}] = {assignment_val_str}")
+                if array_data_input is not None:
+                    assign_str = get_b_assignment_string(array_data_input, self.num_states[f_idx], is_controlled, num_actions, f_idx)
+                    if assign_str:
+                        self.script_parts["matrix_definitions"].append(f"B[{f_idx}] = {assign_str}")
+                    else:
+                        self._add_log(f"{context_msg_b}: Failed to get assignment string from array data. Using default B[{f_idx}].", "WARNING")
+                elif rule:
+                    self._add_log(f"{context_msg_b}: Rule '{rule}' for B not fully implemented. Using default B[{f_idx}].", "WARNING")
                 else:
-                    if rule_type != "identity": # If not identity and no other rule matched, log warning
-                        self._add_log(f"{log_msg_prefix_f}: No valid definition found. Using default identity B[{f_idx}].", "WARNING")
-        
-        # Handling for B_spec as a single dict for a single factor model (less common for B but possible)
+                    self._add_log(f"{context_msg_b}: No 'array' or 'rule' found. Using default B[{f_idx}].", "INFO")
+
         elif isinstance(self.B_spec, dict) and self.num_factors == 1:
             f_idx = 0
-            log_msg_prefix_f = f"B_matrix (factor {self.state_names[0] if self.state_names else 0})"
-            num_states_f = self.num_states[f_idx]
+            array_data_input = self.B_spec.get("array")
+            rule = self.B_spec.get("rule")
             is_controlled = f_idx in self.control_factor_indices
-            num_actions_f = self.num_actions_per_control_factor.get(f_idx, 1)
-            
-            array_data = self.B_spec.get("array")
-            rule_string = self.B_spec.get("rule_string")
-            rule_type = self.B_spec.get("rule")
-            assignment_val_str = None
+            num_actions = self.num_actions_per_control_factor.get(f_idx, 1) if is_controlled else 1
+            context_msg_b = f"B_matrix (factor {self.state_names[f_idx] if f_idx < len(self.state_names) else f_idx})"
 
-            if array_data is not None:
-                try:
-                    np_array_val = np.array(array_data)
-                    expected_shape = (num_states_f, num_states_f, num_actions_f) if is_controlled else (num_states_f, num_states_f)
-                    if is_controlled and np_array_val.shape == expected_shape:
-                        assignment_val_str = get_b_assignment_string(np_array_val, num_states_f, is_controlled, num_actions_f)
-                    elif not is_controlled and (np_array_val.shape == expected_shape or np_array_val.shape == (num_states_f, num_states_f, 1)):
-                        arr_to_assign = np_array_val if np_array_val.ndim == 3 else np_array_val[:, :, np.newaxis]
-                        assignment_val_str = get_b_assignment_string(arr_to_assign, num_states_f, is_controlled, 1)
-                    else:
-                        self._add_log(f"{log_msg_prefix_f}: Shape mismatch for 'array'. Expected {expected_shape}, got {np_array_val.shape}. Using default.", "ERROR")
-                except Exception as e:
-                    self._add_log(f"{log_msg_prefix_f}: Error processing 'array' data for single factor: {e}. Using default.", "ERROR")
-            
-            elif rule_string is not None:
-                assignment_val_str = rule_string
-            
-            elif rule_type == "identity":
-                 self._add_log(f"{log_msg_prefix_f}: Confirmed 'identity' rule (already default).", "INFO")
-                 assignment_val_str = None # Will keep default
-            
-            if assignment_val_str:
-                self.script_parts["matrix_definitions"].append(f"B[{f_idx}] = {assignment_val_str}")
+            if array_data_input is not None:
+                assign_str = get_b_assignment_string(array_data_input, self.num_states[f_idx], is_controlled, num_actions, f_idx)
+                if assign_str:
+                    self.script_parts["matrix_definitions"].append(f"B[{f_idx}] = {assign_str}")
+                else:
+                    self._add_log(f"{context_msg_b}: Failed to get assignment string from array data for single factor. Using default B[{f_idx}].", "WARNING")
+            elif rule:
+                self._add_log(f"{context_msg_b}: Rule '{rule}' for B (single factor) not fully implemented. Using default B[{f_idx}].", "WARNING")
             else:
-                if rule_type != "identity":
-                    self._add_log(f"{log_msg_prefix_f}: No valid definition for single factor. Using default identity B[0].", "WARNING")
+                self._add_log(f"{context_msg_b}: No 'array' or 'rule' for B (single factor). Using default B[{f_idx}].", "INFO")
         else:
-            self._add_log("B_matrix: B_spec format not recognized or incompatible with num_factors. B slices will use defaults.", "WARNING")
-
-        return "# B matrix processing complete."
+            self._add_log("B_matrix: B_spec format not recognized. B factors will be default initialized.", "WARNING")
+            
+        return "# B matrix construction based on GNN spec."
 
     def convert_C_vector(self) -> str:
         """Converts GNN's C vector (preferences) to PyMDP format."""
@@ -687,10 +667,10 @@ class GnnToPyMdpConverter:
                 for mod_idx, mod_c_spec in enumerate(self.C_spec):
                     if mod_c_spec is None: continue # Allow sparse C definition
                     
-                    array_data = mod_c_spec.get("array") # Expects 1D array of length num_obs[mod_idx]
-                    if array_data:
+                    array_data_input = mod_c_spec.get("array") # Expects 1D array of length num_obs[mod_idx]
+                    if array_data_input:
                         try:
-                            np_array = np.array(array_data)
+                            np_array = np.array(array_data_input)
                             expected_shape = (self.num_obs[mod_idx],)
                             if np_array.shape == expected_shape:
                                 self.script_parts["matrix_definitions"].append(f"C[{mod_idx}] = {_numpy_array_to_string(np_array, indent=4)}")
@@ -709,14 +689,13 @@ class GnnToPyMdpConverter:
         return "# C vector definition appended to script parts"
         
     def convert_D_vector(self) -> str:
-        """Converts GNN's D vector (initial hidden states) to PyMDP format."""
+        """Converts GNN's D vector (initial beliefs about hidden states) to PyMDP format."""
         if not self.num_factors:
-            self._add_log("D_vector: No hidden state factors defined. 'D' will be None.", "INFO") # D is optional if qs_initial is used
+            self._add_log("D_vector: No hidden state factors defined. 'D' will be None.", "INFO")
             self.script_parts["matrix_definitions"].append("D = None")
             return "# D vector set to None due to no hidden state factors."
 
-        # Initialize D = utils.obj_array(num_factors)
-        init_code = f"D = utils.obj_array(num_factors)"
+        init_code = f"D = utils.obj_array({self.num_factors})"
         self.script_parts["matrix_definitions"].append(init_code)
         
         # Default to uniform if no D_spec
@@ -724,35 +703,72 @@ class GnnToPyMdpConverter:
             self.script_parts["matrix_definitions"].append(f"D[{f_idx}] = utils.norm_dist(np.ones({self.num_states[f_idx]})) # Default: uniform D for factor {f_idx}")
 
         if self.D_spec:
-            if isinstance(self.D_spec, list): # List of specs per factor
+            if isinstance(self.D_spec, list): 
                 for f_idx, fac_d_spec in enumerate(self.D_spec):
-                    if fac_d_spec is None: continue
+                    if fac_d_spec is None: 
+                        self._add_log(f"D_vector (factor {f_idx}): Spec is None. Using default uniform D[{f_idx}].", "INFO")
+                        continue
 
-                    array_data = fac_d_spec.get("array") # Expects 1D array of length num_states[f_idx]
-                    if array_data:
+                    array_data_input = fac_d_spec.get("array")
+                    rule = fac_d_spec.get("rule")
+                    context_msg = f"D_vector (factor {self.state_names[f_idx] if f_idx < len(self.state_names) else f_idx})"
+
+                    if array_data_input is not None:
+                        parsed_array_data = self._parse_string_to_literal(array_data_input, context_msg)
+                        if parsed_array_data is not None:
+                            try:
+                                np_array = np.array(parsed_array_data)
+                                expected_shape = (self.num_states[f_idx],)
+                                if np_array.shape == expected_shape:
+                                    if np.isclose(np.sum(np_array), 1.0) and np.all(np_array >= 0):
+                                         assign_str = _numpy_array_to_string(np_array, indent=4)
+                                    else: 
+                                         assign_str = f"utils.norm_dist({_numpy_array_to_string(np_array, indent=4)})"
+                                    self.script_parts["matrix_definitions"].append(f"D[{f_idx}] = {assign_str}")
+                                else:
+                                    self._add_log(f"{context_msg}: Shape mismatch. Expected {expected_shape}, got {np_array.shape}. Using default uniform.", "ERROR")
+                            except Exception as e:
+                                 self._add_log(f"{context_msg}: Error processing parsed array data to NumPy: {e}. Using default uniform.", "ERROR")
+                        else:
+                            self._add_log(f"{context_msg}: Failed to parse array data string. Using default uniform D[{f_idx}].", "INFO")
+                    elif rule:
+                        self._add_log(f"{context_msg}: Rule '{rule}' for D not implemented. Using default uniform D[{f_idx}].", "WARNING")
+                    else:
+                        self._add_log(f"{context_msg}: No 'array' or 'rule' found. Using default uniform D[{f_idx}].", "INFO")
+            elif isinstance(self.D_spec, dict) and self.num_factors == 1:
+                f_idx = 0
+                array_data_input = self.D_spec.get("array")
+                rule = self.D_spec.get("rule")
+                context_msg = f"D_vector (factor {f_idx})"
+                if array_data_input is not None:
+                    parsed_array_data = self._parse_string_to_literal(array_data_input, context_msg)
+                    if parsed_array_data is not None:
                         try:
-                            np_array = np.array(array_data)
+                            np_array = np.array(parsed_array_data)
                             expected_shape = (self.num_states[f_idx],)
                             if np_array.shape == expected_shape:
-                                # Ensure it's normalized if it's a distribution
-                                if np.isclose(np.sum(np_array), 1.0):
+                                if np.isclose(np.sum(np_array), 1.0) and np.all(np_array >= 0):
                                      assign_str = _numpy_array_to_string(np_array, indent=4)
-                                else: # Normalize
+                                else: 
                                      assign_str = f"utils.norm_dist({_numpy_array_to_string(np_array, indent=4)})"
                                 self.script_parts["matrix_definitions"].append(f"D[{f_idx}] = {assign_str}")
                             else:
-                                self._add_log(f"D_vector (factor {f_idx}): Shape mismatch. Expected {expected_shape}, got {np_array.shape}. Using default uniform.", "ERROR")
+                                self._add_log(f"{context_msg}: Shape mismatch for single factor D. Expected {expected_shape}, got {np_array.shape}. Using default uniform.", "ERROR")
                         except Exception as e:
-                             self._add_log(f"D_vector (factor {f_idx}): Error processing array data: {e}. Using default uniform.", "ERROR")
+                            self._add_log(f"{context_msg}: Error processing parsed array data for single factor D: {e}. Using default uniform.", "ERROR")
                     else:
-                        self._add_log(f"D_vector (factor {f_idx}): No 'array' found. Using default uniform D[{f_idx}].", "INFO")
-            # Add handling for D_spec as single dict if num_factors == 1
-            else:
+                         self._add_log(f"{context_msg}: Failed to parse array data string for single factor D. Using default uniform D[{f_idx}].", "INFO")
+                elif rule:
+                    self._add_log(f"{context_msg}: Rule '{rule}' for D (single factor) not implemented. Using default uniform D[{f_idx}].", "WARNING")
+                else:
+                    self._add_log(f"{context_msg}: No 'array' or 'rule' for D (single factor). Using default uniform D[{f_idx}].", "INFO")
+            else: # This 'else' aligns with 'if isinstance(self.D_spec, list)' and 'elif isinstance(self.D_spec, dict)'
                  self._add_log("D_vector: D_spec format not recognized. D factors will be default uniform.", "WARNING")
-        else:
-            self._add_log("D_vector: No D_spec. D factors will be default uniform.", "INFO")
-
-        return "# D vector definition appended to script parts"
+        else: # This 'else' aligns with 'if self.D_spec:'
+            self._add_log("D_vector: No D_spec. All factors of D defaulted to uniform.", "INFO")
+            return "# D vector factors remain default initialized (uniform)."
+        
+        return "# D vector construction based on GNN spec."
 
     def convert_E_vector(self) -> str:
         """Converts GNN's E vector (prior preferences for policies) to PyMDP format."""
@@ -896,6 +912,10 @@ class GnnToPyMdpConverter:
         usage_lines.append("")
         usage_lines.append(f"{inner_indent}# Infer policies and sample action")
         usage_lines.append(f"{inner_indent}q_pi_current, efe_current = agent.infer_policies()")
+        usage_lines.append(f"{inner_indent}if hasattr(agent, 'q_pi') and agent.q_pi is not None:") # Check if q_pi is available
+        usage_lines.append(f"{inner_indent}{indent}print(f\"Posterior over policies (q_pi): {{agent.q_pi}}\")")
+        usage_lines.append(f"{inner_indent}if efe_current is not None:")
+        usage_lines.append(f"{inner_indent}{indent}print(f\"Expected Free Energy (EFE): {{efe_current}}\")")
         usage_lines.append(f"{inner_indent}action_agent = agent.sample_action()")
         
         # Map agent action (control_factor list) to environment action (all factors list)

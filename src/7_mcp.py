@@ -157,7 +157,7 @@ def process_mcp_operations(src_root_dir_str: str, mcp_base_dir_str: str, output_
             if mcp_instance.tools: 
                 report_lines.append("This section lists all tools currently registered with the MCP system, along with their defining module, arguments, and description.\n")
                 
-                sorted_tools = sorted(mcp_instance.tools.items())
+                sorted_tools = sorted(mcp_instance.tools.items(), key=lambda item: str(item[0]))
                 
                 for tool_name, tool_obj in sorted_tools:
                     tool_module = "N/A"
@@ -306,8 +306,10 @@ def process_mcp_operations(src_root_dir_str: str, mcp_base_dir_str: str, output_
                     if name not in registered_methods_added_for_this_module:
                         args_str = ', '.join(args)
                         # Use AST-parsed docstring for these non-MCP-tool functions
-                        desc_str = f" - *\"{doc_preview}\"..." if doc_preview else ""
-                        module_report_methods.append((name, args_str, desc_str))
+                        desc_str = f" - *\"{doc_preview}\"" if doc_preview else ""
+                        # Format as a string consistent with MCP tools for sorting
+                        ast_method_info_str = f"`def {name}({args_str})` (AST parsed){desc_str}"
+                        module_report_methods.append(ast_method_info_str) 
                         logger.debug(f"          Found AST method (not a direct MCP tool or already listed): {name}({args_str}) - Docstring: {doc_preview}")
 
             if module_report_methods:

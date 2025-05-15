@@ -89,8 +89,19 @@ def run_pymdp_scripts(pipeline_output_dir: str, recursive_search: bool, verbose:
             # Scripts are run with their own directory as CWD to handle relative paths within the script if any.
             run_cwd = script_path.parent
             env = os.environ.copy()
-            # If scripts need access to modules in src or src/.venv, PYTHONPATH might need adjustment
-            # For now, assume they are self-contained or use stdlib/pymdp from the venv python
+            # Ensure PYTHONPATH includes project root and venv site-packages for consistency
+            project_root_str = str(project_root)
+            venv_site_packages_path = str(project_root / ".venv" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages")
+            
+            current_python_path = env.get("PYTHONPATH", "")
+            path_parts = {project_root_str, venv_site_packages_path}
+            if current_python_path:
+                path_parts.update(current_python_path.split(os.pathsep))
+            
+            env["PYTHONPATH"] = os.pathsep.join(sorted(list(path_parts)))
+
+            if verbose:
+                logger.debug(f"      Using PYTHONPATH for subprocess: {env['PYTHONPATH']}")
 
             process = subprocess.run(
                 [python_executable, str(script_path.name)],
@@ -106,23 +117,33 @@ def run_pymdp_scripts(pipeline_output_dir: str, recursive_search: bool, verbose:
                 try:
                     with open(stdout_path, 'w') as f_out:
                         f_out.write(process.stdout if process.stdout else "")
+                    logger.debug(f"      Stdout successfully written to {stdout_path}")
+                except OSError as e:
+                    logger.error(f"    Error writing stdout log to {stdout_path} for {script_path.name}: {e}")
+                try:
                     with open(stderr_path, 'w') as f_err:
                         f_err.write(process.stderr if process.stderr else "")
+                    logger.debug(f"      Stderr successfully written to {stderr_path}")
                 except OSError as e:
-                    logger.error(f"    Error writing log files to {current_script_log_dir} for {script_path.name}: {e}")
+                    logger.error(f"    Error writing stderr log to {stderr_path} for {script_path.name}: {e}")
 
             if process.returncode == 0:
                 logger.info(f"    ✅ Execution successful for: {script_path.name}{log_file_info}")
-                if verbose and process.stdout: # Still log to console if verbose
-                    logger.debug(f"      Output (also in {stdout_path}):\n{process.stdout}")
+                if verbose and process.stdout and process.stdout.strip(): # Still log to console if verbose and stdout has content
+                    logger.debug(f"      Output (also in {stdout_path}):\\n{process.stdout.strip()}")
                 overall_summary.append((str(script_path.name), "Success", process.stdout if process.stdout else "No output", str(current_script_log_dir if current_script_log_dir else "N/A")))
             else:
                 all_executions_successful = False
                 logger.error(f"    ❌ Execution FAILED for: {script_path.name} (Exit code: {process.returncode}){log_file_info}")
-                if process.stdout:
-                    logger.error(f"      Stdout (see {stdout_path}):\n{process.stdout}")
-                if process.stderr:
-                    logger.error(f"      Stderr (see {stderr_path}):\n{process.stderr}")
+                if process.stdout and process.stdout.strip():
+                    logger.error(f"      Stdout content for failed script (see full log in {stdout_path}). Preview:\\n{process.stdout.strip()[:500]}...")
+                else:
+                    logger.error(f"      No stdout content for failed script (Full log: {stdout_path}).")
+                if process.stderr and process.stderr.strip():
+                    logger.error(f"      Stderr content (see full log in {stderr_path}):\\n{process.stderr.strip()}")
+                else:
+                    logger.error(f"      No stderr content for failed script (Full log: {stderr_path}).")
+
                 full_output_for_summary = (process.stdout if process.stdout else "") + (process.stderr if process.stderr else "")
                 overall_summary.append((str(script_path.name), f"Failed (code {process.returncode})", full_output_for_summary, str(current_script_log_dir if current_script_log_dir else "N/A")))
         except Exception as e:
