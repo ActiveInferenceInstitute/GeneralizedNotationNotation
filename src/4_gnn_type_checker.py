@@ -17,6 +17,7 @@ Options:
 import sys
 from pathlib import Path
 import logging # Added logging
+import os
 
 # Configure basic logging
 # The level will be set more specifically in run_type_checker based on verbosity
@@ -74,7 +75,7 @@ def run_type_checker(target_dir: str,
 
     # Prepare arguments for the gnn_type_checker.cli.main() function
     cli_args = [
-        target_dir, # input_path
+        str(target_dir), # input_path, ensure it's a string
         "--output-dir", str(type_checker_step_output_dir),
         "--report-file", report_filename, # This filename will be created inside type_checker_step_output_dir
         "--project-root", str(project_root) # Pass project root to the CLI
@@ -163,7 +164,18 @@ def run_type_checker(target_dir: str,
         return False
 
 def main(args):
-    """Main function for the type checking step."""
+    """Main function for the type checking step (Step 4).
+
+    Orchestrates the GNN type checking process by invoking 'run_type_checker'.
+    This function is typically called by the main pipeline (`main.py`) with
+    a pre-populated args object, or by the standalone execution block which
+    parses command-line arguments.
+
+    Args:
+        args (argparse.Namespace): 
+            Parsed command-line arguments. Expected attributes include:
+            target_dir, output_dir, recursive, strict, estimate_resources, verbose.
+    """
     # The logger level for this module (__name__) and for "gnn_type_checker"
     # should be set by run_type_checker based on args.verbose, or if run standalone,
     # by the __main__ block. Direct setLevel here is redundant if called by main.py.
@@ -186,75 +198,53 @@ def main(args):
     return 0
 
 if __name__ == '__main__':
-    import argparse
-    
-    # Setup basicConfig for when script is run directly, so logs are visible
-    # The level set here will be overridden by main() or run_type_checker() if they are called with verbose.
-    # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    # If run standalone, basicConfig in this __main__ block will set the root logger.
-    # The logger instance for __name__ will inherit this.
-    
-    # Parse arguments directly if called as a script
-    # The ArgumentParser setup here is mostly for standalone testing of this script.
-    # main.py will provide the args object when run as part of the pipeline.
-    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 4: Type Checking")
-    parser.add_argument("target_dir", nargs='?', default="gnn/examples",  # Made target_dir optional for easier testing if cli.main takes it as first arg
-                        help="Target directory or GNN file to process (default: gnn/examples)")
-    parser.add_argument("--output-dir", default="../output",
-                        help="Base directory to save pipeline outputs (default: ../output)")
-    parser.add_argument("--recursive", action="store_true", 
-                        help="Recursively process directories")
-    parser.add_argument("--strict", action="store_true",
-                        help="Enable strict type checking mode")
-    parser.add_argument("--estimate-resources", action="store_true",
-                        help="Estimate computational resources")
-    parser.add_argument("--verbose", action="store_true",
-                        help="Enable verbose output for this script")
-    
-    parsed_args = parser.parse_args()
-    
-    # Configure root logger for standalone execution if main.py didn't do it.
-    # This ensures that if this script is run by itself, its logs (and any library logs)
-    # are formatted and leveled correctly.
-    standalone_log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
+    # Setup basic logging for standalone execution
+    # Adapting the logging setup from other pipeline scripts
+    log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
+    log_level = getattr(logging, log_level_str, logging.INFO)
     logging.basicConfig(
-        level=standalone_log_level,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-        stream=sys.stdout
+        level=log_level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
     )
+    logger = logging.getLogger(__name__) # Get a logger for this script when run as main
+
+    parser = argparse.ArgumentParser(description="GNN Type Checker (Standalone)")
+    project_root = Path(__file__).resolve().parent.parent
+    default_target_dir = project_root / "src" / "gnn" / "examples"
+    default_output_dir = project_root / "output"
+
+    parser.add_argument("--target-dir", type=Path, default=default_target_dir,
+                        help=f"Target directory for GNN files (default: {default_target_dir.relative_to(project_root)})")
+    parser.add_argument("--output-dir", type=Path, default=default_output_dir,
+                        help=f"Main output directory (default: {default_output_dir.relative_to(project_root)})")
+    parser.add_argument("--recursive", action="store_true", default=True, # Make default True
+                        help="Recursively search for GNN files.")
+    parser.add_argument("--no-recursive", dest='recursive', action='store_false',
+                        help="Disable recursive search for GNN files.")
+    parser.add_argument("--strict", action="store_true",
+                        help="Enable strict type checking mode.")
+    parser.add_argument("--estimate-resources", default=True, action=argparse.BooleanOptionalAction,
+                        help="Estimate computational resources (default: True). Use --no-estimate-resources to disable.")
+    parser.add_argument("--verbose", action="store_true",
+                        help="Enable verbose (DEBUG level) logging.")
+    # No --no-verbose, if --verbose is not set, it defaults to INFO via basicConfig
+
+    args = parser.parse_args()
+
+    if args.verbose:
+        logging.getLogger().setLevel(logging.DEBUG) # Set root logger to DEBUG
+        logger.setLevel(logging.DEBUG) # Set this script's logger to DEBUG
+        # If gnn_type_checker_logic has its own logger, set it to DEBUG too
+        try:
+            from gnn_type_checker import gnn_type_checker_logic
+            logging.getLogger(gnn_type_checker_logic.__name__).setLevel(logging.DEBUG)
+        except (ImportError, AttributeError):
+            logger.debug("Could not set verbose logging for gnn_type_checker_logic module.")
+        logger.debug("Verbose logging enabled.")
     
-    # The logger for this module (__name__) will now use the above basicConfig.
-    # The main() function will then further refine this module\'s logger level if needed,
-    # but basicConfig sets the baseline for all loggers when run standalone.
+    # Quiet noisy libraries if run standalone
+    logging.getLogger('PIL').setLevel(logging.WARNING)
+    logging.getLogger('matplotlib').setLevel(logging.WARNING)
 
-    # Additionally, for standalone, set the gnn_type_checker module logger based on parsed_args.verbose
-    # This ensures that when running this script directly, the gnn_type_checker module\'s verbosity is also controlled.
-    type_checker_module_logger_standalone = logging.getLogger("gnn_type_checker")
-    if parsed_args.verbose:
-        type_checker_module_logger_standalone.setLevel(logging.INFO)
-    else:
-        type_checker_module_logger_standalone.setLevel(logging.WARNING)
-
-    # Resolve paths if running directly for consistency
-    # (similar to other pipeline scripts' __main__ blocks)
-    script_file_path = Path(__file__).resolve()
-    if script_file_path.parent.name == "src": # If CWD is project root
-        project_root = script_file_path.parent.parent
-        if not Path(parsed_args.target_dir).is_absolute():
-             parsed_args.target_dir = str(project_root / parsed_args.target_dir)
-        if not Path(parsed_args.output_dir).is_absolute():
-             parsed_args.output_dir = str(project_root / parsed_args.output_dir)
-    else: # Assuming CWD is src/ or script is run from somewhere else
-        if not Path(parsed_args.target_dir).is_absolute():
-             parsed_args.target_dir = str(Path.cwd() / parsed_args.target_dir)
-        if not Path(parsed_args.output_dir).is_absolute():
-             parsed_args.output_dir = str(Path.cwd() / parsed_args.output_dir)
-    
-    if parsed_args.verbose:
-        # Use logger for informational messages
-        logger.info(f"Running {Path(__file__).name} directly with resolved paths:") # Changed from print to logger.info
-        logger.info(f"  Target Dir: {parsed_args.target_dir}")
-        logger.info(f"  Output Dir: {parsed_args.output_dir}")
-
-    sys.exit(main(parsed_args)) 
+    sys.exit(main(args)) 

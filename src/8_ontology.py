@@ -187,7 +187,18 @@ def process_ontology_operations(target_dir_str: str, output_dir_str: str, ontolo
     return True, total_validations_failed
 
 def main(args):
-    """Main function for the ontology operations step."""
+    """Main function for the ontology operations step (Step 8).
+
+    This function is the entry point for ontology processing. It logs the start
+    of the step and calls `process_ontology_operations` with the necessary arguments
+    derived from the `args` Namespace object.
+
+    Args:
+        args (argparse.Namespace): 
+            Parsed command-line arguments from `main.py` or standalone execution.
+            Expected attributes include: target_dir, output_dir, ontology_terms_file,
+            recursive, verbose.
+    """
     # Set this script's logger level based on pipeline's args.verbose
     # This is typically handled by main.py for child modules.
     # The __main__ block handles it for standalone execution.
@@ -248,12 +259,11 @@ if __name__ == "__main__":
     # Simplified arg parsing for standalone run
     parser = argparse.ArgumentParser(description="Standalone Ontology Processing.")
     parser.add_argument("--target-dir", default="../output/gnn_exports", help="Directory with GNN exports.")
-    parser.add_argument("--output-dir", default="../output/ontology_processing", help="Directory for ontology outputs.")
-    parser.add_argument("--ontology-terms-file", default="act_inf_ontology_terms.json", help="Ontology terms JSON file.")
-    parser.add_argument("--verbose", action="store_true", help="Verbose logging.")
+    parser.add_argument("--output-dir", default="../output", help="Output directory for reports.")
+    parser.add_argument("--ontology-terms-file", default="act_inf_ontology_terms.json", help="JSON file with defined ontology terms.")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output.")
+    parser.add_argument("--recursive", action="store_true", help="Recursively process GNN files in the target directory.")
     
-    # Create a namespace from a dictionary for main function compatibility
-    # This is a simplified way to mimic the args object from the main pipeline
     cli_args = parser.parse_args()
     
     # Update log level if --verbose is used in standalone mode
@@ -266,4 +276,11 @@ if __name__ == "__main__":
     # Construct the args object that the script's main() expects
     # It seems the script's main expects an object with attributes like args.output_dir, etc.
     # We'll pass the parsed cli_args directly as it should have the necessary attributes.
-    main(cli_args) # Pass the parsed args directly 
+    result = main(cli_args) # Pass the parsed args directly 
+    if isinstance(result, dict): # Handle success with warnings
+        if result.get("status") == "success_with_warnings":
+            sys.exit(2) # Exit code 2 for warnings
+        else:
+            sys.exit(1) # Generic error if dict is not as expected
+    else:
+        sys.exit(result) # Exit with the integer code (0 or 1) 

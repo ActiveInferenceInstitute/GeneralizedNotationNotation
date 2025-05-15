@@ -242,24 +242,25 @@ def register_tools(mcp_instance_ref):
                          required_params.append(param_name)
             
             # Attempt to create and register the tool
-            mcp_tool_instance = MCPTool( # This will use the MCPTool set by initialize_llm_module
+            # MCPTool instance is created internally by mcp_instance_ref.register_tool
+            mcp_instance_ref.register_tool(
                 name=tool_def["name"],
-                description=tool_def["description"],
-                category=TOOL_CATEGORY,
-                func_ref=tool_def["func"],
-                parameters_jsonschema={
+                func=tool_def["func"],
+                schema={
                     "type": "object",
                     "properties": properties,
                     "required": required_params
-                }
+                },
+                description=tool_def["description"]
             )
-            mcp_instance_ref.register_tool(mcp_tool_instance)
-            logger.info(f"LLM tool '{tool_def['name']}' registered with MCP.")
+            logger.info(f"LLM tool '{tool_def['name']}' registration submitted to MCP.") # Clarified log
 
+        except TypeError as te:
+            logger.error(f"TypeError registering LLM tool '{tool_def['name']}': {te}. Check MCPTool constructor compatibility.")
         except Exception as e:
             logger.error(f"Failed to register LLM tool '{tool_def['name']}': {e}", exc_info=True)
-            # This will catch errors if MCPTool is the dummy and incompatible,
-            # or if there are other issues with tool definition or registration.
+    
+    logger.info(f"LLM tools registration process completed for {len(tool_definitions)} tools.")
 
 def ensure_llm_tools_registered(mcp_instance_ref): # Added mcp_instance_ref parameter
     """

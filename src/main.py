@@ -15,117 +15,178 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 6_visualization.py (Corresponds to visualization/ folder, uses visualize_gnn.py)
 - 7_mcp.py (Corresponds to mcp/ folder)
 - 8_ontology.py (Corresponds to ontology/ folder)
+- 9_render.py (Corresponds to render/ folder)
+- 10_execute.py (Corresponds to execute/ folder)
+- 11_llm.py (Corresponds to llm/ folder)
+
 
 Usage:
     python main.py [options]
     
 Options:
-    --target-dir DIR        Target directory for GNN files (default: gnn/examples)
-                            (Note: Individual scripts might target their specific folders e.g. src/mcp)
+    --target-dir DIR        Target directory for GNN files (default: src/gnn/examples)
     --output-dir DIR        Directory to save outputs (default: ../output)
-    --recursive             Recursively process directories (passed to relevant steps)
+    --recursive / --no-recursive    Recursively process directories (default: --recursive)
     --skip-steps LIST       Comma-separated list of steps to skip (e.g., "1_gnn,7_mcp" or "1,7")
     --only-steps LIST       Comma-separated list of steps to run (e.g., "4_gnn_type_checker,6_visualization")
     --verbose               Enable verbose output
     --strict                Enable strict type checking mode (for 4_gnn_type_checker)
-    --estimate-resources    Estimate computational resources (for 4_gnn_type_checker)
-    --ontology-terms-file   Path to the ontology terms file (e.g., src/ontology/act_inf_ontology_terms.json, for 8_ontology)
+    --estimate-resources / --no-estimate-resources 
+                            Estimate computational resources (for 4_gnn_type_checker) (default: --estimate-resources)
+    --ontology-terms-file   Path to the ontology terms file (default: src/ontology/act_inf_ontology_terms.json)
+    --llm-tasks LIST        Comma-separated list of LLM tasks to run for 11_llm.py 
+                            (e.g., "summarize,explain_structure")
+    --pipeline-summary-file FILE
+                            Path to save the final pipeline summary report (default: output/pipeline_execution_summary.json)
+
 """
 
 import os
 import sys
-import importlib
+import subprocess
 import argparse
 import glob
 from pathlib import Path
 import logging
 import traceback
-import re # Added import for regular expressions
+import re
+import datetime # For pipeline summary timestamp
+import json # For pipeline summary structured data
 
 # --- Logger Setup ---
-# The logger for the GNN Pipeline orchestrator itself.
-# Configuration will be done by basicConfig in the __main__ block.
 logger = logging.getLogger("GNN_Pipeline")
 # --- End Logger Setup ---
 
 def parse_arguments():
-    # Calculate default output directory relative to project root
-    # Assuming main.py is in src/ and project root is its parent.
-    script_file_path = Path(__file__).resolve() # Full path to src/main.py
-    project_root = script_file_path.parent.parent # Project root
+    project_root = Path(__file__).resolve().parent.parent
+    
     default_output_dir = project_root / "output"
+    default_target_dir = project_root / "src" / "gnn" / "examples"
+    default_ontology_terms_file = project_root / "src" / "ontology" / "act_inf_ontology_terms.json"
+    default_pipeline_summary_file = default_output_dir / "pipeline_execution_summary.json"
 
-    parser = argparse.ArgumentParser(description="GNN Processing Pipeline",
-                                     formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument("--target-dir", default="gnn/examples",
-                        help=("Target directory for GNN files (default: gnn/examples)\\n"
-                             "(Note: Individual scripts might target their specific folders e.g. src/mcp)"))
-    parser.add_argument("--output-dir", default=str(default_output_dir),
-                        help=f"Directory to save outputs (default: {default_output_dir})")
-    parser.add_argument("--recursive", default=True, action=argparse.BooleanOptionalAction,
-                        help="Recursively process directories (passed to relevant steps). Enabled by default. Use --no-recursive to disable.")
-    parser.add_argument("--skip-steps", default="",
-                        help=("Comma-separated list of steps to skip (e.g., \"1_gnn,7_mcp\" or \"1,7\")"))
-    parser.add_argument("--only-steps", default="",
-                        help=("Comma-separated list of steps to run (e.g., \"4_gnn_type_checker,6_visualization\")"))
-    parser.add_argument("--verbose", action="store_true",
-                        help="Enable verbose output")
-    parser.add_argument("--strict", action="store_true",
-                        help="Enable strict type checking mode (for 4_gnn_type_checker)")
-    parser.add_argument("--estimate-resources", default=True, action=argparse.BooleanOptionalAction,
-                        help="Estimate computational resources (for 4_gnn_type_checker) (default: True)")
-    parser.add_argument("--ontology-terms-file", default="ontology/act_inf_ontology_terms.json",
-                        help="Path to the ontology terms file (e.g., src/ontology/act_inf_ontology_terms.json, for 8_ontology)")
+    parser = argparse.ArgumentParser(
+        description="GNN Processing Pipeline: Orchestrates GNN file processing, analysis, and export.",
+        formatter_class=argparse.RawTextHelpFormatter
+    )
+    parser.add_argument(
+        "--target-dir",
+        type=Path,
+        default=default_target_dir,
+        help=(f"Target directory for GNN source files (e.g., .md GNN specifications).\\n"
+              f"Default: {default_target_dir.relative_to(project_root) if default_target_dir.is_relative_to(project_root) else default_target_dir}")
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=default_output_dir,
+        help=(f"Main directory to save all pipeline outputs.\\n"
+              f"Default: {default_output_dir.relative_to(project_root) if default_output_dir.is_relative_to(project_root) else default_output_dir}")
+    )
+    parser.add_argument(
+        "--recursive", default=True, action=argparse.BooleanOptionalAction,
+        help="Recursively process GNN files in the target directory. Enabled by default. Use --no-recursive to disable."
+    )
+    parser.add_argument(
+        "--skip-steps", default="",
+        help='Comma-separated list of step numbers or names to skip (e.g., "1,7_mcp" or "1_gnn,7").'
+    )
+    parser.add_argument(
+        "--only-steps", default="",
+        help='Comma-separated list of step numbers or names to run exclusively (e.g., "4,6_visualization").'
+    )
+    parser.add_argument(
+        "--verbose", 
+        default=True, 
+        action=argparse.BooleanOptionalAction, 
+        help="Enable verbose output for the pipeline and its steps. On by default (use --no-verbose to disable)."
+    )
+    parser.add_argument(
+        "--strict", action="store_true",
+        help="Enable strict type checking mode (passed to 4_gnn_type_checker.py)."
+    )
+    parser.add_argument(
+        "--estimate-resources", default=True, action=argparse.BooleanOptionalAction,
+        help="Estimate computational resources (passed to 4_gnn_type_checker.py). Enabled by default."
+    )
+    parser.add_argument(
+        "--ontology-terms-file",
+        type=Path,
+        default=default_ontology_terms_file,
+        help=(f"Path to a JSON file defining valid ontological terms (for 8_ontology.py).\\n"
+              f"Default: {default_ontology_terms_file.relative_to(project_root) if default_ontology_terms_file.is_relative_to(project_root) else default_ontology_terms_file}")
+    )
+    parser.add_argument(
+        "--llm-tasks", default="all", type=str,
+        help='Comma-separated list of LLM tasks for 11_llm.py (e.g., "overview,purpose,ontology"). Default: "all".'
+    )
+    parser.add_argument(
+        "--pipeline-summary-file",
+        type=Path,
+        default=default_pipeline_summary_file,
+        help=(f"Path to save the final pipeline summary report (JSON format).\\n"
+              f"Default: {default_pipeline_summary_file.relative_to(project_root) if default_pipeline_summary_file.is_relative_to(project_root) else default_pipeline_summary_file}")
+    )
     return parser.parse_args()
 
-def get_pipeline_scripts():
-    """Get all numbered pipeline scripts in sorted order based on the leading number."""
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Use a general pattern to find potential scripts, then filter and sort with regex
-    # This pattern finds files like 'anyname_anything.py' in the current directory.
-    potential_scripts_pattern = os.path.join(current_dir, "*_*.py") 
+def get_pipeline_scripts(current_dir: Path) -> list[str]:
+    potential_scripts_pattern = current_dir / "*_*.py"
     logger.debug(f"ℹ️ Discovering potential pipeline scripts using pattern: {potential_scripts_pattern}")
+    all_candidate_files = glob.glob(str(potential_scripts_pattern))
     
-    all_candidate_files = glob.glob(potential_scripts_pattern)
-    
-    pipeline_scripts_info = [] # Store dicts of {'num': int, 'basename': str}
-    
-    # Regex to match basenames starting with one or more digits, followed by an underscore, and ending with .py
+    pipeline_scripts_info = []
     script_name_regex = re.compile(r"^(\d+)_.*\.py$")
 
-    for script_path in all_candidate_files:
-        script_basename = os.path.basename(script_path)
+    for script_path_str in all_candidate_files:
+        script_basename = os.path.basename(script_path_str)
         match = script_name_regex.match(script_basename)
         if match:
-            script_num = int(match.group(1)) # Extract the number part
-            pipeline_scripts_info.append({'num': script_num, 'basename': script_basename})
+            script_num = int(match.group(1))
+            pipeline_scripts_info.append({'num': script_num, 'basename': script_basename, 'path': Path(script_path_str)})
             if logger.isEnabledFor(logging.DEBUG):
                  logger.debug(f"ℹ️ Matched script for pipeline: {script_basename} (Number: {script_num})")
-        # Optionally log files that did not match if needed for debugging:
-        # else:
-            # if logger.isEnabledFor(logging.DEBUG):
-            #      logger.debug(f"ℹ️ File {script_basename} did not match numbered pipeline script pattern.")
-
-    # Sort scripts primarily by the extracted number, then by basename for tie-breaking (e.g. 1_foo.py vs 1_bar.py)
-    pipeline_scripts_info.sort(key=lambda x: (x['num'], x['basename']))
     
-    # Extract just the basenames in the now correctly sorted order
+    pipeline_scripts_info.sort(key=lambda x: (x['num'], x['basename']))
     sorted_script_basenames = [info['basename'] for info in pipeline_scripts_info]
 
     if logger.isEnabledFor(logging.DEBUG): 
         logger.debug(f"ℹ️ Found and sorted script basenames: {sorted_script_basenames}")
-        # For more detailed debugging, log the full paths that were considered:
-        # relevant_full_paths = [info['path'] for info in pipeline_scripts_info] # Assuming 'path' was stored
-        # logger.debug(f"ℹ️ Corresponding full paths for sorted scripts: {relevant_full_paths}")
-        
     return sorted_script_basenames
 
-def run_pipeline(args):
-    """Run the full GNN processing pipeline."""
-    # Logger level is set by basicConfig based on args.verbose before this function is called.
+def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
+    venv_path = script_dir / ".venv"
+    venv_python_path = None
+    site_packages_path = None
+
+    if venv_path.is_dir():
+        potential_python_executables = [
+            venv_path / "bin" / "python",
+            venv_path / "bin" / "python3",
+            venv_path / "Scripts" / "python.exe", # Windows
+        ]
+        for py_exec in potential_python_executables:
+            if py_exec.exists() and py_exec.is_file():
+                venv_python_path = py_exec
+                logger.debug(f"🐍 Found virtual environment Python: {venv_python_path}")
+                break
+        
+        lib_path = venv_path / "lib"
+        if lib_path.is_dir():
+            for python_version_dir in lib_path.iterdir():
+                if python_version_dir.is_dir() and python_version_dir.name.startswith("python"):
+                    current_site_packages = python_version_dir / "site-packages"
+                    if current_site_packages.is_dir():
+                        site_packages_path = current_site_packages
+                        logger.debug(f"Found site-packages at: {site_packages_path}")
+                        break
     
-    # --- ASCII Art Intro ---
+    if not venv_python_path:
+        logger.warning("⚠️ Virtual environment Python not found. Using system Python. This may lead to issues if dependencies are not globally available.")
+        venv_python_path = Path(sys.executable) # Fallback to current interpreter
+    
+    return venv_python_path, site_packages_path
+
+def run_pipeline(args: argparse.Namespace):
     logger.info("""
 
  ██████╗ ███╗   ██╗███╗   ██╗  
@@ -136,311 +197,433 @@ def run_pipeline(args):
                                                                                  
     Generalized Notation Notation Processing Pipeline 
     
-    Version 0.1.0 ~ May 15, 2025
-    
-    https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
+    Version 0.1.1 ~ Improvements by AI Assistant
             
     Initializing GNN Processing Pipeline...
     """)
-    # --- End ASCII Art Intro ---
 
-    # Resolve and log paths
-    abs_target_dir = Path(args.target_dir).resolve()
-    abs_output_dir = Path(args.output_dir).resolve()
+    current_script_dir = Path(__file__).resolve().parent
+    venv_python_path, _venv_site_packages_path_for_subproc = get_venv_python(current_script_dir)
 
-    if args.verbose: # Or use logger.isDebugEnabled()
-        logger.debug(f"ℹ️ Resolved Target Directory: {abs_target_dir}")
-        logger.debug(f"ℹ️ Resolved Output Directory: {abs_output_dir}")
-        logger.debug(f"ℹ️ Full Arguments: {args}") # Moved from later
-
-    # Create output directory
     try:
-        abs_output_dir.mkdir(parents=True, exist_ok=True)
-        logger.info(f"✅ Ensured output directory exists: {abs_output_dir}")
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"✅ Ensured output directory exists: {args.output_dir}")
     except OSError as e:
-        logger.error(f"❌ Failed to create output directory {abs_output_dir}: {e}")
-        return 1 # Cannot proceed without output directory
+        logger.error(f"❌ Failed to create output directory {args.output_dir}: {e}")
+        return 1
 
-    # --- BEGIN VENV PATH MODIFICATION ---
-    # Attempt to add the virtual environment's site-packages to sys.path
-    # This ensures that modules imported by importlib can find packages installed
-    # by the setup script (e.g., 2_setup.py) into the .venv.
-    current_script_dir = Path(__file__).resolve().parent # Should be src/
-    venv_path = current_script_dir / ".venv"
-    site_packages_found_path = None
-
-    if venv_path.is_dir(): # Check if .venv exists and is a directory
-        lib_path = venv_path / "lib"
-        if lib_path.is_dir():
-            # Iterate through subdirectories in lib/ (e.g., python3.10, python3.12)
-            for python_version_dir in lib_path.iterdir():
-                if python_version_dir.is_dir() and python_version_dir.name.startswith("python"):
-                    current_site_packages = python_version_dir / "site-packages"
-                    if current_site_packages.is_dir():
-                        site_packages_found_path = current_site_packages
-                        logger.debug(f"Found site-packages at: {site_packages_found_path}")
-                        break # Found one, assume it's the correct one for the venv
-    
-    if site_packages_found_path:
-        site_packages_str = str(site_packages_found_path.resolve())
-        if site_packages_str not in sys.path:
-            logger.info(f"ℹ️ Adding to sys.path for dynamic module loading: {site_packages_str}")
-            sys.path.insert(0, site_packages_str) # Prepend to give it priority
-        else:
-            logger.debug(f"ℹ️ Virtual env site-packages already in sys.path: {site_packages_str}")
-    elif venv_path.is_dir(): # .venv exists but site-packages not found as expected
-        logger.debug(
-            f"ℹ️ Virtual environment at {venv_path} exists, "
-            f"but its site-packages directory could not be automatically determined or found. "
-            f"Dynamically loaded modules might not find their dependencies if 2_setup.py is skipped or fails."
-        )
-    else: # .venv directory itself does not exist
-        logger.debug(
-            f"ℹ️ No .venv directory found at {venv_path}. "
-            f"Assuming system Python or environment is managed externally, "
-            f"or will be created by a setup script in the pipeline."
-        )
-    # --- END VENV PATH MODIFICATION ---
-
-    all_scripts = get_pipeline_scripts()
-    
+    all_scripts = get_pipeline_scripts(current_script_dir)
     if not all_scripts:
-        logger.error("❌ No pipeline scripts found (e.g., 1_gnn.py, 2_setup.py, etc.).")
-        logger.error("Please ensure numbered scripts matching folder names exist in the src/ directory.")
+        logger.error("❌ No pipeline scripts found in src/. Cannot proceed.")
         return 1
     
     logger.info("🚀 Starting GNN Processing Pipeline...")
-    if args.verbose: # Log discovered scripts only in verbose mode for cleaner default output
+    if args.verbose:
         logger.debug(f"ℹ️ All discovered script modules (basenames): {all_scripts}")
 
-    skip_steps_input = [s.strip() for s in args.skip_steps.split(",") if s.strip()] if args.skip_steps else []
-    only_steps_input = [s.strip() for s in args.only_steps.split(",") if s.strip()] if args.only_steps else []
+    skip_steps_input = {s.strip() for s in args.skip_steps.split(",") if s.strip()}
+    only_steps_input = {s.strip() for s in args.only_steps.split(",") if s.strip()}
     
-    processed_scripts_count = 0
-    successful_scripts_count = 0
-    skipped_due_to_args_count = 0
-    skipped_due_to_no_main_count = 0
-    failed_steps_details = [] # Stores tuples of (script_name, reason, exit_code_or_exception)
-    pipeline_level_warnings = [] # To store summaries and detailed warnings from steps
-    critical_step_failed = False
-    critical_step_name = ""
+    pipeline_run_data = {
+        "start_time": datetime.datetime.now().isoformat(),
+        "arguments": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
+        "steps": []
+    }
+    
+    overall_status = "SUCCESS" # Will change to FAILED or SUCCESS_WITH_WARNINGS
 
-    for i, script_file in enumerate(all_scripts):
-        script_name_no_ext = os.path.splitext(script_file)[0]
+    for i, script_file_basename in enumerate(all_scripts):
+        script_name_no_ext = Path(script_file_basename).stem
         step_num_str = script_name_no_ext.split("_")[0]
         
-        step_header = f"Step {i+1}/{len(all_scripts)}: {script_name_no_ext}"
-        # Consider making other steps critical, e.g., 1_gnn if its failure means no data for subsequent steps.
-        is_critical_step = (script_name_no_ext == "2_setup") 
-
-        should_skip_due_to_args = False
-        if only_steps_input:
-            if not (script_name_no_ext in only_steps_input or 
-                      script_file in only_steps_input or 
-                      step_num_str in only_steps_input):
-                should_skip_due_to_args = True
-        elif skip_steps_input:
-            if (script_name_no_ext in skip_steps_input or 
-                script_file in skip_steps_input or 
-                step_num_str in skip_steps_input):
-                should_skip_due_to_args = True
+        step_log_data = {
+            "step_number": i + 1,
+            "script_name": script_name_no_ext,
+            "status": "SKIPPED",
+            "start_time": None,
+            "end_time": None,
+            "duration_seconds": None,
+            "details": "",
+            "stdout": "",
+            "stderr": ""
+        }
         
-        if should_skip_due_to_args:
-            logger.info(f"⏭️ {step_header} - SKIPPED (due to --skip-steps or --only-steps filter)")
-            skipped_due_to_args_count += 1
+        step_header = f"Step {i+1}/{len(all_scripts)}: {script_name_no_ext}"
+        is_critical_step = (script_name_no_ext == "2_setup")
+
+        should_skip = False
+        if only_steps_input:
+            if not (script_name_no_ext in only_steps_input or step_num_str in only_steps_input):
+                should_skip = True
+                step_log_data["details"] = "Skipped due to --only-steps filter."
+        elif skip_steps_input:
+            if (script_name_no_ext in skip_steps_input or step_num_str in skip_steps_input):
+                should_skip = True
+                step_log_data["details"] = "Skipped due to --skip-steps filter."
+        
+        if should_skip:
+            logger.info(f"⏭️ {step_header} - SKIPPED ({step_log_data['details']})")
+            pipeline_run_data["steps"].append(step_log_data)
             continue
         
-        # If not skipped by args, it's considered for processing.
-        processed_scripts_count += 1
-        logger.info(f"⚙️ {step_header} (from {script_file}) - STARTING")
+        logger.info(f"⚙️ {step_header} (from {script_file_basename}) - STARTING")
+        step_log_data["start_time"] = datetime.datetime.now().isoformat()
         
-        try:
-            module = importlib.import_module(script_name_no_ext)
-            
-            if hasattr(module, 'main'):
-                result = module.main(args) # This is where individual scripts execute
-                
-                if isinstance(result, dict) and result.get('status') == 'success_with_warnings':
-                    successful_scripts_count += 1
-                    logger.info(f"✅ {step_header} - COMPLETED with warnings.")
-                    if 'summary' in result and 'warnings' in result:
-                        pipeline_level_warnings.append({
-                            'step': script_name_no_ext,
-                            'summary': result['summary'],
-                            'details': result['warnings']
-                        })
-                        # Log the detailed warnings from the step immediately if verbose, 
-                        # or a summary otherwise. The main summary will show all summaries later.
-                        if args.verbose:
-                            for warn_detail in result['warnings']:
-                                logger.warning(f"   Step Warning: {warn_detail}")
-                        else:
-                            logger.warning(f"   Step Summary: {result['summary']}")
-                    else:
-                        logger.warning(f"   Step returned 'success_with_warnings' but without standard 'summary' or 'warnings' keys.")
+        script_full_path = current_script_dir / script_file_basename
+        cmd_list = [str(venv_python_path), str(script_full_path)]
 
-                elif result not in [0, None]: # Step reported a controlled failure via return code
-                    error_message = f"❌ {step_header} - FAILED (Reported exit code: {result})."
-                    logger.error(error_message)
-                    failed_steps_details.append({'name': script_name_no_ext, 'reason': 'NonZeroExitCode', 'code': result})
-                    
-                    if is_critical_step:
-                        logger.critical(f"🔥 This ({script_name_no_ext}) was a CRITICAL step. Halting pipeline.")
-                        critical_step_failed = True
-                        critical_step_name = script_name_no_ext
-                        # No return here; summary will handle final exit code
-                        break # Exit loop to go to summary
-                    else:
-                        logger.warning(f"⚠️ This was a non-critical step. Pipeline will attempt to continue.")
-                else: # Successful run (exit code 0 or None)
-                    successful_scripts_count += 1
-                    logger.info(f"✅ {step_header} - COMPLETED successfully.")
-                    if args.verbose: # Detailed success only in verbose
-                         logger.debug(f"   (Script returned: {result})")
-            else:
-                logger.warning(f"⚠️ {step_header} (from {script_file}) - SKIPPED (no main() function found).")
-                skipped_due_to_no_main_count +=1
-                # It was an attempt to process, so don't decrement processed_scripts_count here.
-                # We'll account for it in the summary.
-                
-        except ImportError as e:
-            logger.error(f"❌ Error importing module {script_name_no_ext} for script {script_file}: {e}")
-            logger.debug(traceback.format_exc(), exc_info=True)
-            failed_steps_details.append({'name': script_name_no_ext, 'reason': 'ImportError', 'details': str(e)})
-            if is_critical_step:
-                 logger.critical(f"🔥 Critical step {script_name_no_ext} failed to import. Halting pipeline.")
-                 critical_step_failed = True
-                 critical_step_name = script_name_no_ext
-                 break # Exit loop
-            else:
-                logger.warning(f"⚠️ Module import failure for non-critical step {script_name_no_ext}. Pipeline will attempt to continue.")
-
-        except Exception as e:
-            logger.error(f"❌ Unhandled exception in step {script_name_no_ext} (from {script_file}): {e}")
-            logger.debug(traceback.format_exc(), exc_info=True) # Log full traceback in debug
-            failed_steps_details.append({'name': script_name_no_ext, 'reason': 'UnhandledException', 'details': str(e)})
-            if is_critical_step:
-                logger.critical(f"🔥 Critical step {script_name_no_ext} encountered an unhandled exception. Halting pipeline.")
-                critical_step_failed = True
-                critical_step_name = script_name_no_ext
-                break # Exit loop
-            else:
-                logger.warning(f"⚠️ Step {script_name_no_ext} failed due to an unhandled exception. Pipeline will attempt to continue.")
-    
-    # --- Pipeline Summary ---
-    logger.info("\n--- Pipeline Execution Summary ---")
-    total_discovered_scripts = len(all_scripts)
-    total_attempted_to_run = processed_scripts_count # Scripts not skipped by args
-    total_skipped = skipped_due_to_args_count + skipped_due_to_no_main_count
-    
-    logger.info(f"📊 Total Scripts Discovered: {total_discovered_scripts}")
-    logger.info(f"   Attempted to Run:      {total_attempted_to_run}")
-    logger.info(f"   Successfully Completed: {successful_scripts_count}")
-    logger.info(f"   Skipped:                {total_skipped}")
-    if total_skipped > 0:
-        logger.info(f"     - Skipped by arguments (--skip-steps/--only-steps): {skipped_due_to_args_count}")
-        logger.info(f"     - Skipped (no main() function):                   {skipped_due_to_no_main_count}")
-    
-    num_failed_steps = len(failed_steps_details)
-    logger.info(f"   Failed:                 {num_failed_steps}")
-
-    final_exit_code = 0
-
-    if pipeline_level_warnings:
-        logger.warning("\n--- Pipeline Step Warnings Summary ---")
-        for warning_info in pipeline_level_warnings:
-            logger.warning(f"  - Step '{warning_info['step']}': {warning_info['summary']}")
-            if args.verbose: # In verbose mode, re-iterate detailed warnings here or ensure they were logged before.
-                for detail in warning_info['details']:
-                    logger.warning(f"    Details: {detail}")
-        logger.warning("  (For full details, check individual step logs or reports mentioned in warnings.)")
-
-    if critical_step_failed:
-        logger.error(f"🛑 PIPELINE HALTED due to critical step failure: '{critical_step_name}'.")
-        if failed_steps_details:
-            last_failure = failed_steps_details[-1] # Assumes the critical failure is the last one if loop broke
-            if last_failure['name'] == critical_step_name:
-                 logger.error(f"   Reason: {last_failure['reason']}, Details: {last_failure.get('code') or last_failure.get('details')}")
-        final_exit_code = 1 
-    elif num_failed_steps > 0:
-        logger.warning(f"⚠️ PIPELINE COMPLETED, but with {num_failed_steps} FAILED non-critical step(s):")
-        for failure in failed_steps_details:
-            logger.warning(f"   - Script: {failure['name']}, Reason: {failure['reason']}, Details: {failure.get('code') or failure.get('details')}")
-        logger.info("   Please review the logs for details on these failed steps.")
-        final_exit_code = 1 # Non-critical failure, but still an error exit code
-    elif total_attempted_to_run > 0 and successful_scripts_count == total_attempted_to_run:
-        if pipeline_level_warnings:
-            logger.warning("🎉 PIPELINE FINISHED, but with warnings from some steps. Please review above.")
-            # Optionally, could set final_exit_code to a specific value for 'success with warnings'
+        # Common arguments
+        cmd_list.extend(["--output-dir", str(args.output_dir)])
+        if args.verbose: 
+            cmd_list.append("--verbose")
         else:
-            logger.info("🎉 PIPELINE FINISHED SUCCESSFULLY. All attempted steps completed without errors.")
-    elif total_attempted_to_run == 0 and total_discovered_scripts > 0 : # All scripts skipped by args or no main
-        logger.info("✅ PIPELINE FINISHED. All discovered steps were skipped (by arguments or missing main() function).")
-    elif total_discovered_scripts == 0: # No scripts found at all
-         logger.info("✅ PIPELINE FINISHED. No scripts were found to process.")
-    else: # Mixed outcome, possibly some skipped, some successful, no failures that weren't critical
-        logger.info("✅ PIPELINE FINISHED.") # General completion message
-    
-    return final_exit_code
+            cmd_list.append("--no-verbose")
+
+        # Script-specific arguments
+        if script_name_no_ext == "1_gnn":
+            cmd_list.extend(["--target-dir", str(args.target_dir)])
+            if args.recursive: cmd_list.append("--recursive")
+        elif script_name_no_ext == "2_setup":
+            cmd_list.extend(["--target-dir", str(args.target_dir)])
+        elif script_name_no_ext == "3_tests":
+            pass # Uses venv_python_path internally for pytest
+        elif script_name_no_ext == "4_gnn_type_checker":
+            cmd_list.extend(["--target-dir", str(args.target_dir)])
+            if args.recursive: cmd_list.append("--recursive")
+            if args.strict: cmd_list.append("--strict")
+            cmd_list.append("--estimate-resources" if args.estimate_resources else "--no-estimate-resources")
+        elif script_name_no_ext == "5_export":
+            cmd_list.extend(["--target-dir", str(args.target_dir)])
+            if args.recursive: cmd_list.append("--recursive")
+        elif script_name_no_ext == "6_visualization":
+            cmd_list.extend(["--target-dir", str(args.target_dir)])
+            if args.recursive: cmd_list.append("--recursive")
+        elif script_name_no_ext == "7_mcp":
+            pass # Common args are sufficient
+        elif script_name_no_ext == "8_ontology":
+            cmd_list.extend(["--target-dir", str(args.target_dir)])
+            if args.recursive: cmd_list.append("--recursive") # Script needs to support this
+            cmd_list.extend(["--ontology-terms-file", str(args.ontology_terms_file)])
+        elif script_name_no_ext == "9_render":
+            if args.recursive: cmd_list.append("--recursive") # Searches in output_dir/gnn_exports
+        elif script_name_no_ext == "10_execute":
+            if args.recursive: cmd_list.append("--recursive") # Searches in output_dir/gnn_rendered_simulators
+        elif script_name_no_ext == "11_llm":
+            cmd_list.extend(["--target-dir", str(args.target_dir)])
+            if args.recursive: cmd_list.append("--recursive")
+            if args.llm_tasks: cmd_list.extend(["--llm-tasks", args.llm_tasks])
+
+        step_process_env = os.environ.copy()
+        if _venv_site_packages_path_for_subproc:
+            python_path_parts = {str(_venv_site_packages_path_for_subproc)}
+            if "PYTHONPATH" in step_process_env:
+                python_path_parts.update(step_process_env["PYTHONPATH"].split(os.pathsep))
+            step_process_env["PYTHONPATH"] = os.pathsep.join(python_path_parts)
+        
+        logger.debug(f"  Running command: {' '.join(cmd_list)}")
+        if args.verbose and "PYTHONPATH" in step_process_env:
+            logger.debug(f"    with PYTHONPATH: {step_process_env['PYTHONPATH']}")
+
+        try:
+            return_code = -1 # Default return code
+
+            if args.verbose:
+                logger.debug(f"  Streaming output for command: {' '.join(cmd_list)}")
+                # Use Popen to stream output for verbose mode
+                process = subprocess.Popen(
+                    cmd_list,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    env=step_process_env,
+                    cwd=current_script_dir,
+                    bufsize=1,  # Line buffered
+                    universal_newlines=True # Ensure text mode for iter
+                )
+                
+                stdout_lines = []
+                stderr_lines = []
+
+                # Log stdout
+                if process.stdout:
+                    for line in iter(process.stdout.readline, ''):
+                        stripped_line = line.strip()
+                        if stripped_line: # Avoid logging empty lines from child process
+                            logger.info(f"    [{script_name_no_ext}] {stripped_line}")
+                        stdout_lines.append(line)
+                    process.stdout.close()
+                
+                # Log stderr
+                if process.stderr:
+                    for line in iter(process.stderr.readline, ''):
+                        stripped_line = line.strip()
+                        if stripped_line: # Avoid logging empty lines
+                            # Try to parse log level from the sub-script's stderr
+                            parsed_level = None
+                            log_parts = stripped_line.split(' - ', 2) # Common format: TIMESTAMP - LOGGER - LEVEL - MESSAGE
+                            if len(log_parts) >= 3:
+                                level_candidate = log_parts[2].split(' - ', 1)[0] # Get the first part of the third segment
+                                if level_candidate in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+                                    parsed_level = level_candidate
+                            else: # Try another common format: LEVEL:LOGGER:MESSAGE
+                                log_parts_alt = stripped_line.split(':', 2)
+                                if len(log_parts_alt) >= 3:
+                                    level_candidate_alt = log_parts_alt[0]
+                                    if level_candidate_alt in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+                                        parsed_level = level_candidate_alt
+
+                            if parsed_level == 'DEBUG':
+                                logger.debug(f"    [{script_name_no_ext}] {stripped_line}")
+                            elif parsed_level == 'INFO':
+                                logger.info(f"    [{script_name_no_ext}] {stripped_line}")
+                            elif parsed_level == 'WARNING':
+                                logger.warning(f"    [{script_name_no_ext}-WARN] {stripped_line}")
+                            elif parsed_level == 'ERROR':
+                                logger.error(f"    [{script_name_no_ext}-ERR] {stripped_line}")
+                            elif parsed_level == 'CRITICAL':
+                                logger.critical(f"    [{script_name_no_ext}-CRIT] {stripped_line}")
+                            else:
+                                # Default to ERROR if no recognized level is parsed or if it's an actual error
+                                logger.error(f"    [{script_name_no_ext}-ERR] {stripped_line}")
+                        stderr_lines.append(line)
+                    process.stderr.close()
+                    
+                return_code = process.wait()
+                step_log_data["stdout"] = "".join(stdout_lines)
+                step_log_data["stderr"] = "".join(stderr_lines)
+            else:
+                # Original behavior for non-verbose mode
+                step_process_result = subprocess.run(
+                    cmd_list, 
+                    capture_output=True, 
+                    text=True, 
+                    check=False, 
+                    env=step_process_env, 
+                    cwd=current_script_dir
+                )
+                step_log_data["stdout"] = step_process_result.stdout
+                step_log_data["stderr"] = step_process_result.stderr
+                return_code = step_process_result.returncode
+
+            if return_code == 0:
+                step_log_data["status"] = "SUCCESS"
+                logger.info(f"✅ {step_header} - COMPLETED successfully.")
+                # For non-verbose successful runs, if there's any output, log it at DEBUG level.
+                # For verbose runs, it's already streamed.
+                if not args.verbose and step_log_data["stdout"] and step_log_data["stdout"].strip():
+                    logger.debug(f"   Output from {script_name_no_ext}:\n{step_log_data['stdout'].strip()}")
+                if not args.verbose and step_log_data["stderr"] and step_log_data["stderr"].strip(): # Also log stderr if any for non-verbose success
+                    logger.debug(f"   Stderr from {script_name_no_ext}:\n{step_log_data['stderr'].strip()}")
+
+            elif return_code == 2: # Special code for success with warnings
+                step_log_data["status"] = "SUCCESS_WITH_WARNINGS"
+                logger.warning(f"⚠️ {step_header} - COMPLETED with warnings (Code 2). Check script output.")
+                if overall_status == "SUCCESS": overall_status = "SUCCESS_WITH_WARNINGS"
+                # Log stdout/stderr for warnings as well (if not already streamed in verbose)
+                if not args.verbose:
+                    if step_log_data["stdout"] and step_log_data["stdout"].strip(): 
+                        logger.warning(f"   Stdout for warnings from {script_name_no_ext}:\n{step_log_data['stdout'].strip()}")
+                    if step_log_data["stderr"] and step_log_data["stderr"].strip(): 
+                        logger.warning(f"   Stderr for warnings from {script_name_no_ext}:\n{step_log_data['stderr'].strip()}")
+            else:
+                step_log_data["status"] = "FAILED"
+                step_log_data["details"] = f"Exited with code {return_code}."
+                logger.error(f"❌ {step_header} - FAILED (Code: {return_code}).")
+                overall_status = "FAILED"
+                # Log stdout/stderr for failures (if not already streamed in verbose)
+                if not args.verbose:
+                    if step_log_data["stdout"] and step_log_data["stdout"].strip(): 
+                        logger.error(f"   Stdout from {script_name_no_ext}:\n{step_log_data['stdout'].strip()}")
+                    if step_log_data["stderr"] and step_log_data["stderr"].strip(): 
+                        logger.error(f"   Stderr from {script_name_no_ext}:\n{step_log_data['stderr'].strip()}")
+                if is_critical_step:
+                    logger.critical(f"🔥 Critical step {script_name_no_ext} failed. Halting pipeline.")
+                    step_log_data["details"] += " Critical step failure, pipeline halted."
+                    pipeline_run_data["steps"].append(step_log_data)
+                    break 
+        
+        except Exception as e:
+            step_log_data["status"] = "ERROR_UNHANDLED_EXCEPTION"
+            step_log_data["details"] = f"Unhandled exception: {str(e)}"
+            logger.error(f"❌ Unhandled exception in {step_header}: {e}")
+            logger.debug(traceback.format_exc())
+            overall_status = "FAILED"
+            if is_critical_step:
+                logger.critical(f"🔥 Critical step {script_name_no_ext} failed due to unhandled exception. Halting pipeline.")
+                step_log_data["details"] += " Critical step failure, pipeline halted."
+                pipeline_run_data["steps"].append(step_log_data)
+                break
+        
+        finally:
+            step_log_data["end_time"] = datetime.datetime.now().isoformat()
+            if step_log_data["start_time"]:
+                duration = datetime.datetime.fromisoformat(step_log_data["end_time"]) - datetime.datetime.fromisoformat(step_log_data["start_time"])
+                step_log_data["duration_seconds"] = duration.total_seconds()
+            pipeline_run_data["steps"].append(step_log_data)
+
+    pipeline_run_data["end_time"] = datetime.datetime.now().isoformat()
+    pipeline_run_data["overall_status"] = overall_status
+    # Log a brief summary before returning from run_pipeline
+    logger.info(f"🏁 Pipeline processing completed. Overall Status: {overall_status}")
+
+    return 0 if overall_status in ["SUCCESS", "SUCCESS_WITH_WARNINGS"] else 1, pipeline_run_data, all_scripts, overall_status
 
 def main():
+    # Configure logging early. If GNN_Pipeline or root logger has no handlers,
+    # set up a basic one. The user's traceback suggests handlers are present,
+    # so this configuration is for robustness, especially if run in different contexts.
+    pipeline_logger = logging.getLogger("GNN_Pipeline") # Use the specific logger
+
+    if not pipeline_logger.hasHandlers() and not logging.getLogger().hasHandlers():
+        logging.basicConfig(
+            level=logging.INFO, # Default level
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            datefmt=None, # Explicitly use default to get milliseconds
+            stream=sys.stdout
+        )
+        pipeline_logger.info("Initialized basic logging config as no handlers were found for GNN_Pipeline or root.")
+
     args = parse_arguments()
+
+    # Quieten noisy dependency loggers (PIL, Matplotlib) unconditionally
+    logging.getLogger('PIL').setLevel(logging.WARNING)
+    logging.getLogger('matplotlib').setLevel(logging.WARNING)
+    # Add other noisy libraries here if needed, e.g.:
+    # logging.getLogger('some_other_library').setLevel(logging.WARNING)
+
+    logger.info("Starting GNN Processing Pipeline...")
+
+    # --- File Handler Setup (after args are parsed) ---
+    # Ensure logs directory exists
+    log_dir = args.output_dir / "logs"
+    try:
+        log_dir.mkdir(parents=True, exist_ok=True)
+        # Add a file handler to the GNN_Pipeline logger
+        log_file_path = log_dir / "pipeline.log"
+        file_handler = logging.FileHandler(log_file_path, mode='w') # 'w' to overwrite each run
+        # Use the same format as basicConfig, explicitly ensure milliseconds
+        file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt=None)
+        file_handler.setFormatter(file_formatter)
+        # The level of the file_handler will be determined by the pipeline_logger's effective level,
+        # which is set below based on args.verbose.
+        pipeline_logger.addHandler(file_handler)
+        # Log this message *after* the handler is added so it goes to the file too.
+        pipeline_logger.info(f"File logging configured to: {log_file_path}") 
+    except Exception as e:
+        # Log this error to console, as file handler might have failed.
+        temp_error_logger = logging.getLogger("GNN_Pipeline.FileHandlerSetup")
+        # Ensure this specific error message can make it to console/stderr if main logger isn't fully working
+        if not temp_error_logger.handlers:
+            err_handler = logging.StreamHandler(sys.stderr)
+            err_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            err_handler.setFormatter(err_formatter)
+            temp_error_logger.addHandler(err_handler)
+            temp_error_logger.propagate = False # Don't double log this specific error message
+        temp_error_logger.error(f"Failed to configure file logging to {log_dir / 'pipeline.log'}: {e}. Continuing with console logging only.")
+    # --- End File Handler Setup ---
+
+    # Configure logger level based on verbose flag AFTER parsing args
+    if args.verbose:
+        pipeline_logger.setLevel(logging.DEBUG)
+        # Propagate level to handlers if they exist and basicConfig wasn't just called
+        for handler in pipeline_logger.handlers + logging.getLogger().handlers: # Ensure root handlers also set
+            # Only set level if handler's current level is not effectively DEBUG or lower
+            if handler.level == 0 or handler.level > logging.DEBUG: # 0 means NOTSET, effectively inherits.
+                handler.setLevel(logging.DEBUG)
+        # For Popen streaming, we use GNN_Pipeline's INFO and ERROR, so DEBUG on GNN_Pipeline is fine.
+    else:
+        pipeline_logger.setLevel(logging.INFO)
+        # Propagate level to handlers
+        for handler in pipeline_logger.handlers + logging.getLogger().handlers: # Ensure root handlers also set
+            if handler.level == 0 or handler.level > logging.INFO:
+                 handler.setLevel(logging.INFO)
+
+    pipeline_logger.debug("Logger level configured based on verbosity.")
+
+    # --- Defensive Path Conversion ---
+    # Ensure critical path arguments are pathlib.Path objects.
+    # argparse with type=Path should handle this, but this adds robustness.
+    path_args_to_check = [
+        'output_dir', 'target_dir', 'ontology_terms_file', 'pipeline_summary_file'
+    ]
+
+    for arg_name in path_args_to_check:
+        if not hasattr(args, arg_name):
+            pipeline_logger.debug(f"Argument --{arg_name.replace('_', '-')} not present in args namespace.")
+            continue
+
+        arg_value = getattr(args, arg_name)
+        
+        # Only proceed if arg_value is not None. If it's None, it might be an optional Path not provided.
+        if arg_value is not None and not isinstance(arg_value, Path):
+            pipeline_logger.warning(
+                f"Argument --{arg_name.replace('_', '-')} was unexpectedly a {type(arg_value).__name__} "
+                f"(value: '{arg_value}') instead of pathlib.Path. Converting explicitly. "
+                "This might indicate an issue with argument parsing configuration or an external override."
+            )
+            try:
+                setattr(args, arg_name, Path(arg_value))
+            except TypeError as e:
+                pipeline_logger.error(
+                    f"Failed to convert argument --{arg_name.replace('_', '-')} (value: '{arg_value}') to Path: {e}. "
+                    "This could be due to an unsuitable value for a path."
+                )
+                # If a critical path like output_dir fails conversion, it's a fatal error for the script's purpose.
+                if arg_name in ['output_dir', 'target_dir']:
+                    pipeline_logger.critical(f"Critical path argument --{arg_name.replace('_', '-')} could not be converted to Path. Exiting.")
+                    sys.exit(1)
+        elif arg_value is None and arg_name in ['output_dir', 'target_dir']: # These should always have a default Path value.
+             pipeline_logger.critical(
+                f"Critical path argument --{arg_name.replace('_', '-')} is None after parsing. "
+                "This indicates a problem with default value setup in argparse. Exiting."
+             )
+             sys.exit(1)
+    # --- End Defensive Path Conversion ---
+
+    pipeline_logger.info(f"🚀 Initializing GNN Pipeline with Target: '{args.target_dir}', Output: '{args.output_dir}'")
     
-    # --- Centralized Logging Configuration ---
-    log_level = logging.DEBUG if args.verbose else logging.INFO
-    log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    logging.basicConfig(level=log_level, format=log_format)
-    # --- End Centralized Logging Configuration ---
+    # Log the arguments being used, showing their types after potential conversion
+    if pipeline_logger.isEnabledFor(logging.DEBUG): # Check level before formatting potentially many lines
+        log_msgs = ["🛠️ Effective Arguments (after potential defensive conversion):"]
+        for arg, value in sorted(vars(args).items()):
+            log_msgs.append(f"  --{arg.replace('_', '-')}: {value} (Type: {type(value).__name__})")
+        pipeline_logger.debug('\n'.join(log_msgs))
 
-    # Log initial arguments, now that logging is configured.
-    logger.debug(f"Parsed arguments: {args}")
 
-    # Resolve paths after argument parsing and logging setup
-    # Ensure target_dir and output_dir are absolute for clarity and consistency
-    # Note: Individual pipeline scripts will receive the args object and should resolve paths as needed,
-    # potentially using their own script's location as a base if args.target_dir is relative for them.
-    original_target_dir = args.target_dir
-    original_output_dir = args.output_dir
+    # Call the main pipeline execution function
+    exit_code, pipeline_run_data, all_scripts, overall_status = run_pipeline(args)
 
-    # Attempt to resolve relative to CWD first, which is common for CLI tools.
-    # If they are already absolute, resolve() does no harm.
-    args.target_dir = str(Path(args.target_dir).resolve())
-    args.output_dir = str(Path(args.output_dir).resolve())
-    
-    # Log resolved paths. Important if the original was relative.
-    if Path(original_target_dir) != Path(args.target_dir):
-        logger.debug(f"Original target_dir '{original_target_dir}' resolved to '{args.target_dir}'")
-    if Path(original_output_dir) != Path(args.output_dir):
-        logger.debug(f"Original output_dir '{original_output_dir}' resolved to '{args.output_dir}'")
+    # --- Pipeline Summary Report ---
+    logger.info("\n--- Pipeline Execution Summary ---")
+    num_total = len(pipeline_run_data["steps"])
+    num_success = len([s for s in pipeline_run_data["steps"] if s["status"] == "SUCCESS"])
+    num_warn = len([s for s in pipeline_run_data["steps"] if s["status"] == "SUCCESS_WITH_WARNINGS"])
+    num_failed = len([s for s in pipeline_run_data["steps"] if "FAILED" in s["status"] or "ERROR" in s["status"]])
+    num_skipped = len([s for s in pipeline_run_data["steps"] if s["status"] == "SKIPPED"])
 
-    if not Path(args.target_dir).exists():
-        logger.warning(f"⚠️ Target directory {args.target_dir} does not exist. Some steps might fail or create it.")
+    logger.info(f"📊 Total Steps Attempted/Processed: {num_total - num_skipped} / {len(all_scripts)}")
+    logger.info(f"  ✅ Successful: {num_success}")
+    logger.info(f"  ⚠️ Success with Warnings: {num_warn}")
+    logger.info(f"  ❌ Failed/Error: {num_failed}")
+    logger.info(f"  ⏭️ Skipped: {num_skipped}")
 
-    # Before running the pipeline, ensure critical paths used by main.py itself are set up.
-    # For example, if `ontology_terms_file` is relative, resolve it against a sensible base.
-    # Here, we assume it might be relative to the project root if not absolute.
-    if args.ontology_terms_file and not Path(args.ontology_terms_file).is_absolute():
-        script_file_path = Path(__file__).resolve()
-        project_root = script_file_path.parent.parent
-        resolved_ontology_file = project_root / args.ontology_terms_file
-        if resolved_ontology_file.exists():
-            logger.debug(f"Ontology terms file '{args.ontology_terms_file}' resolved to '{resolved_ontology_file}'")
-            args.ontology_terms_file = str(resolved_ontology_file)
-        else:
-            # If not found relative to project root, try relative to CWD (implicitly handled by Path.resolve() if not absolute)
-            # However, if it was meant to be relative to src/, this simple resolve might not be enough.
-            # For now, we assume project root or CWD is sufficient for this specific argument if relative.
-            # An alternative is to resolve it against Path(__file__).parent if it's meant to be in src/ by default.
-            cwd_resolved_ontology_file = Path(args.ontology_terms_file).resolve()
-            if cwd_resolved_ontology_file.exists():
-                 logger.debug(f"Ontology terms file '{args.ontology_terms_file}' resolved via CWD to '{cwd_resolved_ontology_file}'")
-                 args.ontology_terms_file = str(cwd_resolved_ontology_file)
-            else:
-                 logger.warning(f"Ontology terms file '{args.ontology_terms_file}' not found at project root or CWD. Step 8 might fail if it relies on this relative path.")
-    
-    exit_code = run_pipeline(args)
+    if overall_status == "SUCCESS":
+        logger.info("🎉 PIPELINE FINISHED SUCCESSFULLY.")
+    elif overall_status == "SUCCESS_WITH_WARNINGS":
+        logger.warning("🎉 PIPELINE FINISHED, but with warnings from some steps.")
+    else: # FAILED
+        logger.error("🛑 PIPELINE FINISHED WITH ERRORS.")
+
+    # Save detailed summary report
+    try:
+        args.pipeline_summary_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(args.pipeline_summary_file, 'w') as f_summary:
+            json.dump(pipeline_run_data, f_summary, indent=4)
+        logger.info(f"💾 Detailed pipeline execution summary (JSON) saved to: {args.pipeline_summary_file}")
+    except Exception as e:
+        logger.error(f"❌ Error saving pipeline summary report: {e}")
+
     sys.exit(exit_code)
 
 if __name__ == "__main__":
-    # Note: The basicConfig for logging is now inside main() after args are parsed.
     main() 

@@ -1,0 +1,86 @@
+Agent 'Multifactor_PyMDP_Agent_v1' initialized with 2 factors and 3 modalities.
+
+--- Timestep 1 ---
+Observation (modality_0): 0
+Observation (modality_1): 0
+Observation (modality_2): 0
+Beliefs about factor_0: [0.5 0.5]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [0.33333333 0.33333333 0.33333333]
+Expected Free Energy (EFE): [-3.29583383 -3.29583383 -3.29583383]
+Action taken: factor_1: Action idx 0
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 2 ---
+Observation (modality_0): 2
+Observation (modality_1): 2
+Observation (modality_2): 1
+Beliefs about factor_0: [0.5 0.5]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [0.33333333 0.33333333 0.33333333]
+Expected Free Energy (EFE): [-3.29583383 -3.29583383 -3.29583383]
+Action taken: factor_1: Action idx 0
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 3 ---
+Observation (modality_0): 1
+Observation (modality_1): 0
+Observation (modality_2): 2
+Beliefs about factor_0: [0.5 0.5]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [0.33333333 0.33333333 0.33333333]
+Expected Free Energy (EFE): [-3.29583383 -3.29583383 -3.29583383]
+Action taken: factor_1: Action idx 0
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 4 ---
+Observation (modality_0): 0
+Observation (modality_1): 1
+Observation (modality_2): 2
+Beliefs about factor_0: [0.5 0.5]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [0.33333333 0.33333333 0.33333333]
+Expected Free Energy (EFE): [-3.29583383 -3.29583383 -3.29583383]
+Action taken: factor_1: Action idx 0
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 5 ---
+Observation (modality_0): 1
+Observation (modality_1): 2
+Observation (modality_2): 2
+Beliefs about factor_0: [0.5 0.5]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [0.33333333 0.33333333 0.33333333]
+Expected Free Energy (EFE): [-3.29583383 -3.29583383 -3.29583383]
+Action taken: factor_1: Action idx 0
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+Simulation finished after 5 timesteps.
+--- PyMDP Runtime Debug ---
+AGENT_SCRIPT: pymdp.__version__ attribute not found.
+AGENT_SCRIPT: pymdp module location: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/pymdp/__init__.py
+AGENT_SCRIPT: Imported Agent: <class 'pymdp.agent.Agent'>
+AGENT_SCRIPT: Agent module location: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/pymdp/agent.py
+AGENT_SCRIPT: Checking for required variables in global scope:
+  AGENT_SCRIPT: A = {A if 'A' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: B = {B if 'B' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: C = {C if 'C' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: D = {D if 'D' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: E = {E if 'E' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: control_fac_idx = {control_fac_idx if 'control_fac_idx' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: action_names = {action_names_dict_str if action_names_dict_str != '{}' else 'Not Defined'}
+  AGENT_SCRIPT: qs_initial = {qs_initial_str if qs_initial_str != 'None' else 'Not Defined'}
+AGENT_SCRIPT: Error during PyMDP runtime debug: name 'agent_hyperparams_dict_str' is not defined
+AGENT_SCRIPT: Traceback:
+Traceback (most recent call last):
+  File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/pymdp/gnn_example_pymdp_agent/gnn_example_pymdp_agent_rendered.py", line 170, in <module>
+    print(f"  AGENT_SCRIPT: agent_hyperparams = {{{agent_hyperparams_dict_str}}}")
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'agent_hyperparams_dict_str' is not defined
+
+--- End PyMDP Runtime Debug ---

@@ -55,6 +55,8 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 # Define the expected functional module directories that should have MCP integration
+# IMPORTANT: If a new functional module with an mcp.py is added to src/,
+# it should be added to this list for 7_mcp.py to check and report on it.
 EXPECTED_MCP_MODULE_DIRS = [
     "export",
     "gnn",
@@ -347,7 +349,18 @@ def process_mcp_operations(src_root_dir_str: str, mcp_base_dir_str: str, output_
     return overall_step_success # Return the overall success status
 
 def main(args):
-    """Main function for the MCP operations step."""
+    """Main function for the MCP operations step (Step 7).
+
+    Handles path determinations for MCP core and source root directories
+    (considering potential overrides from args), and then calls
+    `process_mcp_operations` to perform MCP integration checks and reporting.
+
+    Args:
+        args (argparse.Namespace): 
+            Parsed command-line arguments from `main.py` or standalone execution.
+            Expected attributes include: output_dir, verbose, and optional
+            mcp_core_dir_override, src_root_override.
+    """
     # Set this script's logger level based on pipeline's args.verbose
     # This is typically handled by main.py for child modules.
     # The process_mcp_operations function also sets levels for core_mcp_logger.

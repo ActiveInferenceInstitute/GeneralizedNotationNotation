@@ -9,6 +9,12 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+import logging
+import argparse
+
+# --- Logger Setup ---
+logger = logging.getLogger(__name__)
+# --- End Logger Setup ---
 
 # --- Configuration ---
 VENV_DIR = ".venv"  # Name of the virtual environment directory
@@ -32,129 +38,172 @@ else:
 
 # --- Helper Functions ---
 
-def run_command(command: list[str], cwd: Path = PROJECT_ROOT, check: bool = True) -> None:
+def run_command(command: list[str], cwd: Path = PROJECT_ROOT, check: bool = True, verbose: bool = False) -> None:
     """
-    Runs a shell command and prints its output.
+    Runs a shell command and logs its output based on verbosity.
 
     Args:
         command: The command and its arguments as a list of strings.
         cwd: The current working directory for the command.
         check: If True, raises CalledProcessError if the command returns a non-zero exit code.
+        verbose: If True, enables detailed (DEBUG level) logging for this setup process.
     """
-    # Ensure command elements are strings
     command_str_list = [str(c) for c in command]
-    print(f"Running command: '{' '.join(command_str_list)}' in {cwd}")
+    if verbose:
+        logger.debug(f"Running command: '{' '.join(command_str_list)}' in {cwd}")
+    else:
+        logger.debug(f"Running command: '{command_str_list[0]} ...' in {cwd}")
+    
     try:
-        process = subprocess.run(command_str_list, cwd=cwd, check=check, capture_output=True, text=True)
-        if process.stdout:
-            print(process.stdout)
-        if process.stderr:
-            print(process.stderr, file=sys.stderr)
+        process = subprocess.run(command_str_list, cwd=cwd, check=check, capture_output=True, text=True, errors='replace')
+        if verbose:
+            if process.stdout:
+                logger.debug(f"Stdout:\n{process.stdout.strip()}")
+            if process.stderr:
+                logger.debug(f"Stderr:\n{process.stderr.strip()}")
+        if not check and process.returncode != 0:
+            logger.warning(f"Command returned non-zero exit code: {process.returncode}")
+            if process.stdout:
+                logger.warning(f"Stdout:\n{process.stdout.strip()}")
+            if process.stderr:
+                logger.warning(f"Stderr:\n{process.stderr.strip()}")
     except subprocess.CalledProcessError as e:
-        print(f"Error running command: '{' '.join(e.cmd)}'", file=sys.stderr)
-        print(f"Return code: {e.returncode}", file=sys.stderr)
+        logger.error(f"Error running command: '{' '.join(e.cmd)}'")
+        logger.error(f"Return code: {e.returncode}")
         if e.stdout:
-            print(f"Stdout:\n{e.stdout}", file=sys.stderr)
+            logger.error(f"Stdout:\n{e.stdout.strip()}")
         if e.stderr:
-            print(f"Stderr:\n{e.stderr}", file=sys.stderr)
+            logger.error(f"Stderr:\n{e.stderr.strip()}")
         if check:
             raise
     except FileNotFoundError as e:
-        print(f"Error: Command not found - {command_str_list[0]}. Ensure it is installed and in PATH.", file=sys.stderr)
-        print(f"Details: {e}", file=sys.stderr)
+        logger.error(f"Error: Command not found - {command_str_list[0]}. Ensure it is installed and in PATH.")
+        logger.error(f"Details: {e}")
         if check:
             raise
 
-def create_virtual_environment() -> None:
+def create_virtual_environment(verbose: bool = False) -> None:
     """
     Creates a virtual environment if it doesn't already exist.
+
+    Args:
+        verbose: If True, enables detailed (DEBUG level) logging for this setup process.
     """
     if not VENV_PATH.exists():
-        print(f"Creating virtual environment in {VENV_PATH}...")
+        logger.info(f"Creating virtual environment in {VENV_PATH}...")
         try:
-            # Use sys.executable to ensure we're using the python that runs this script
-            run_command([sys.executable, "-m", "venv", VENV_DIR], cwd=PROJECT_ROOT)
-            print(f"Virtual environment created successfully at {VENV_PATH}")
+            run_command([sys.executable, "-m", "venv", VENV_DIR], cwd=PROJECT_ROOT, verbose=verbose)
+            logger.info(f"Virtual environment created successfully at {VENV_PATH}")
         except Exception as e:
-            print(f"Failed to create virtual environment: {e}", file=sys.stderr)
-            # sys.exit(1) # Avoid exiting if called as a library
-            raise # Re-raise the exception to be handled by the caller
+            logger.error(f"Failed to create virtual environment: {e}", exc_info=verbose)
+            raise
     else:
-        print(f"Virtual environment already exists at {VENV_PATH}")
+        logger.info(f"Virtual environment already exists at {VENV_PATH}")
 
-def install_dependencies() -> None:
+def install_dependencies(verbose: bool = False) -> None:
     """
     Installs or updates dependencies from the requirements.txt file
     into the virtual environment.
+
+    Args:
+        verbose: If True, enables detailed (DEBUG level) logging for this setup process.
     """
     if not REQUIREMENTS_PATH.exists():
-        print(f"Error: {REQUIREMENTS_PATH} not found.", file=sys.stderr)
-        print(f"Please create a {REQUIREMENTS_FILE} file in the {PROJECT_ROOT} directory.", file=sys.stderr)
-        # Optionally, create an empty one if it doesn't exist
-        # REQUIREMENTS_PATH.touch()
-        # print(f"Created an empty {REQUIREMENTS_PATH}. Please add your dependencies.")
-        return # Or raise an error if it's critical
+        logger.warning(f"{REQUIREMENTS_PATH} not found. Skipping dependency installation from this file.")
+        return
 
-    print(f"Attempting to install 'inferactively-pymdp' individually into {VENV_PATH}...")
+    logger.info(f"Attempting to install 'inferactively-pymdp' individually into {VENV_PATH}...")
     try:
         if not VENV_PIP.exists():
-            print(f"Error: Pip executable not found at {VENV_PIP}.", file=sys.stderr)
-            print("Please ensure the virtual environment was created correctly.", file=sys.stderr)
+            logger.error(f"Pip executable not found at {VENV_PIP}. Cannot install dependencies.")
             raise FileNotFoundError(f"Pip not found at {VENV_PIP}")
         
-        run_command([str(VENV_PIP), "install", "inferactively-pymdp"], cwd=PROJECT_ROOT, check=False) # Try this first, don't stop if it fails
-        print("Individual installation attempt for 'inferactively-pymdp' completed.")
+        run_command([str(VENV_PIP), "install", "inferactively-pymdp"], cwd=PROJECT_ROOT, check=False, verbose=verbose)
+        logger.debug("Individual installation attempt for 'inferactively-pymdp' completed.")
     except Exception as e:
-        print(f"An error occurred during the individual installation of 'inferactively-pymdp': {e}", file=sys.stderr)
-        # We still proceed to requirements.txt
+        logger.warning(f"An error occurred during the individual installation of 'inferactively-pymdp': {e}", exc_info=verbose)
 
-    print(f"Installing/updating dependencies from {REQUIREMENTS_PATH} into {VENV_PATH}...")
+    logger.info(f"Installing/updating dependencies from {REQUIREMENTS_PATH} into {VENV_PATH}...")
     try:
         if not VENV_PIP.exists():
-            print(f"Error: Pip executable not found at {VENV_PIP}.", file=sys.stderr)
-            print("Please ensure the virtual environment was created correctly.", file=sys.stderr)
-            # sys.exit(1) # Avoid exiting
+            logger.error(f"Pip executable not found at {VENV_PIP}. Cannot install dependencies.")
             raise FileNotFoundError(f"Pip not found at {VENV_PIP}")
 
-        run_command([str(VENV_PIP), "install", "-r", str(REQUIREMENTS_PATH)], cwd=PROJECT_ROOT)
-        print("Dependencies installed successfully.")
+        run_command([str(VENV_PIP), "install", "-r", str(REQUIREMENTS_PATH)], cwd=PROJECT_ROOT, verbose=verbose)
+        logger.info("Dependencies from requirements.txt installed successfully.")
     except subprocess.CalledProcessError:
-        print("Failed to install dependencies.", file=sys.stderr)
-        # sys.exit(1) # Avoid exiting
+        logger.error("Failed to install dependencies from requirements.txt.")
         raise
     except Exception as e:
-        print(f"An unexpected error occurred during dependency installation: {e}", file=sys.stderr)
-        # sys.exit(1) # Avoid exiting
+        logger.error(f"An unexpected error occurred during dependency installation from requirements.txt: {e}", exc_info=verbose)
         raise
 
 # --- Callable Main Function ---
-def perform_full_setup():
+def perform_full_setup(verbose: bool = False):
     """
     Performs the full setup: creates virtual environment and installs dependencies.
     This function is intended to be called by other scripts.
+
+    Args:
+        verbose (bool): If True, enables detailed (DEBUG level) logging for this setup process.
     """
-    print(f"Starting environment setup (venv and dependencies) targeting {PROJECT_ROOT}...")
+    
+    # Configure logger for this module based on verbosity passed from caller
+    # This assumes that the caller (e.g., 2_setup.py) has already configured the root logger if necessary.
+    # We are setting the level for THIS logger instance.
+    log_level_to_set = logging.DEBUG if verbose else logging.INFO
+    logger.setLevel(log_level_to_set)
+    # If no handlers are configured on the root logger (e.g. running this script directly without a pre-configured root logger),
+    # add a basic one for this logger to output to console.
+    if not logging.getLogger().hasHandlers() and not logger.hasHandlers():
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+        logger.addHandler(console_handler)
+        logger.propagate = False # Avoid double-logging if root also gets configured later
+
+    logger.info(f"Starting environment setup (venv and dependencies) targeting {PROJECT_ROOT}...")
+    logger.debug(f"Verbose mode: {verbose}")
+    logger.debug(f"Project root: {PROJECT_ROOT}")
+    logger.debug(f"Venv path: {VENV_PATH}")
+    logger.debug(f"Requirements path: {REQUIREMENTS_PATH}")
+    logger.debug(f"Venv Python: {VENV_PYTHON}")
+    logger.debug(f"Venv Pip: {VENV_PIP}")
+
     try:
-        create_virtual_environment()
-        install_dependencies()
-        print(f"Environment setup completed successfully for {PROJECT_ROOT}.")
-        print(f"To activate the virtual environment, navigate to {PROJECT_ROOT} and run:")
+        create_virtual_environment(verbose=verbose)
+        install_dependencies(verbose=verbose)
+        logger.info(f"Environment setup completed successfully for {PROJECT_ROOT}.")
+        logger.info(f"To activate the virtual environment, navigate to {PROJECT_ROOT} and run:")
         if sys.platform == "win32":
-            print(f"  .\\{VENV_DIR}\\Scripts\\activate")
+            logger.info(f"  .\\{VENV_DIR}\\Scripts\\activate")
         else:
-            print(f"  source {VENV_DIR}/bin/activate")
+            logger.info(f"  source {VENV_DIR}/bin/activate")
         return 0 # Success
     except Exception as e:
-        print(f"Environment setup failed: {e}", file=sys.stderr)
+        logger.error(f"Environment setup failed: {e}", exc_info=verbose)
         return 1 # Failure
 
 # --- Main Execution (for direct script running) ---
 
 if __name__ == "__main__":
-    print("Running src/setup/setup.py directly...")
-    exit_code = perform_full_setup()
+    # Basic argument parsing for direct execution
+    parser = argparse.ArgumentParser(description="Direct execution of GNN project setup script (venv and dependencies).")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose (DEBUG level) logging.")
+    cli_args = parser.parse_args()
+
+    # Setup basic logging for direct run if not already configured by perform_full_setup's internal check
+    # This initial basicConfig is for messages before perform_full_setup potentially reconfigures its own handler.
+    if not logging.getLogger().hasHandlers():
+        logging.basicConfig(
+            level=logging.DEBUG if cli_args.verbose else logging.INFO, 
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            stream=sys.stdout
+        )
+
+    logger.info("Running src/setup/setup.py directly...")
+    exit_code = perform_full_setup(verbose=cli_args.verbose)
     if exit_code == 0:
-        print("Direct execution of setup.py completed.")
+        logger.info("Direct execution of setup.py completed.")
     else:
-        print("Direct execution of setup.py failed.", file=sys.stderr)
+        logger.error("Direct execution of setup.py failed.")
     sys.exit(exit_code) 

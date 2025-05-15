@@ -17,8 +17,6 @@ Options:
 import sys
 from pathlib import Path
 import logging # Import logging
-import os # Import os
-# Removed os and subprocess
 
 # --- Logger Setup ---
 logger = logging.getLogger(__name__)
@@ -47,6 +45,10 @@ def run_visualization(target_dir: str,
         logger.setLevel(logging.DEBUG)
     else:
         logger.setLevel(logging.INFO)
+
+    # Set logging level for noisy libraries
+    logging.getLogger('PIL').setLevel(logging.WARNING)
+    logging.getLogger('matplotlib').setLevel(logging.WARNING)
 
     # Configure logging level for the visualization module based on pipeline verbosity
     viz_module_logger = logging.getLogger("visualization") # Get the parent logger for the module
@@ -109,7 +111,17 @@ def run_visualization(target_dir: str,
         return False
 
 def main(args):
-    """Main function for the visualization step."""
+    """Main function for the visualization step (Step 6).
+
+    This function serves as the entry point when 6_visualization.py is called.
+    It logs the start of the step and invokes the `run_visualization` function
+    with the parsed arguments.
+
+    Args:
+        args (argparse.Namespace): 
+            Parsed command-line arguments from `main.py` or standalone execution.
+            Expected attributes include: target_dir, output_dir, recursive, verbose.
+    """
     # Set this script's logger level based on pipeline's args.verbose
     # This is typically handled by main.py for child modules, and run_visualization also sets levels.
     # if args.verbose:
@@ -134,25 +146,63 @@ def main(args):
     logger.info(f"✅ Step 6: Visualization ({Path(__file__).name}) - COMPLETED") # Was print if verbose
     return 0
 
-if __name__ == "__main__":
-    # Basic configuration for running this script standalone
-    log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    log_level = getattr(logging, log_level_str, logging.INFO)
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
+if __name__ == '__main__':
+    import argparse # Ensure imported
+    # This script is called by main.py with arguments.
+    # Set up argparse to receive these arguments.
+    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 6: Visualization")
+    parser.add_argument(
+        "--target-dir",
+        type=str, 
+        required=True, 
+        help="Target GNN file or directory for visualization (passed by main.py)."
     )
-    
-    # Create a dummy args object for standalone execution
-    class DummyArgs:
-        def __init__(self):
-            self.target_dir = "../output/gnn_exports" # Example: point to where gnn_exports might be
-            self.output_dir = "../output"             # Main output directory
-            self.recursive = True
-            self.verbose = (log_level == logging.DEBUG)
-            # Add other attributes if main() expects them from the pipeline's args object
-            # e.g., self.skip_steps = "", self.only_steps = ""
+    parser.add_argument(
+        "--output-dir",
+        type=str, 
+        required=True, 
+        help="Main pipeline output directory (passed by main.py)."
+    )
+    parser.add_argument(
+        "--recursive",
+        action="store_true",
+        help="Recursively process subdirectories (passed by main.py if set)."
+    )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Enable verbose output for this script (passed by main.py if set)."
+    )
+    # Add --project-root, as run_visualization passes it to visualization_cli
+    # main.py doesn't explicitly pass --project-root to 6_visualization.py currently.
+    # However, run_visualization calculates it. For consistency if run standalone and wanting to mimic pipeline call:
+    # We can let run_visualization calculate it, or expect it here if main.py were to pass it.
+    # For now, stick to what main.py explicitly passes to this script via command line.
 
-    dummy_args = DummyArgs()
-    sys.exit(main(dummy_args)) 
+    parsed_script_args = parser.parse_args() # Parses arguments from sys.argv, set by main.py
+
+    script_logger_instance = logging.getLogger(__name__) # Use the module-level logger
+    log_level_to_set = logging.DEBUG if parsed_script_args.verbose else logging.INFO
+    
+    # Configure logging for this script instance if it's being run directly
+    # and doesn't seem to have handlers (e.g. from a parent orchestrator like main.py)
+    if not script_logger_instance.hasHandlers() or not any(isinstance(h, logging.StreamHandler) for h in script_logger_instance.handlers):
+        logging.basicConfig(
+            level=log_level_to_set,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+            stream=sys.stdout,
+            force=True # Override any root config
+        )
+        script_logger_instance.info(f"Configured basic logging for {__name__} (standalone run).")
+    else:
+        script_logger_instance.setLevel(log_level_to_set)
+
+    # Adjust visualization module logger level for standalone verbose runs
+    if parsed_script_args.verbose:
+        viz_module_logger_standalone = logging.getLogger("visualization")
+        viz_module_logger_standalone.setLevel(logging.INFO) # Match run_visualization logic
+
+    # Call the script's main logic function with the parsed arguments
+    exit_code = main(parsed_script_args)
+    sys.exit(exit_code) 

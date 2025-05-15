@@ -87,14 +87,15 @@ def process_gnn_with_llm(gnn_file_path: Path, output_dir_for_file: Path, verbose
         )
         overview_structure = llm_operations.get_llm_response(
             llm_operations.construct_prompt(
-                contexts=[f"GNN File Content ({gnn_file_path.name}):\n{gnn_content}"],
+                contexts=[f"GNN File Content ({gnn_file_path.name}):\\n{gnn_content}"],
                 task_description=task_desc_overview
             )
         )
         results["overview_structure"] = overview_structure
-        with open(output_dir_for_file / f"{gnn_file_path.stem}_overview_structure.txt", 'w', encoding='utf-8') as f:
+        output_file_path_overview = output_dir_for_file / f"{gnn_file_path.stem}_overview_structure.txt"
+        with open(output_file_path_overview, 'w', encoding='utf-8') as f:
             f.write(overview_structure)
-        logger.info(f"    ✅ Comprehensive overview & structure generated for {gnn_file_path.name}")
+        logger.info(f"    ✅ Saved comprehensive overview & structure to: {output_file_path_overview} (Length: {len(overview_structure)} chars)")
     except Exception as e:
         logger.error(f"    ❌ Error generating comprehensive overview for {gnn_file_path.name}: {e}", exc_info=verbose)
         results["overview_structure"] = f"Error: {e}"
@@ -110,15 +111,16 @@ def process_gnn_with_llm(gnn_file_path: Path, output_dir_for_file: Path, verbose
         )
         purpose_professional_summary = llm_operations.get_llm_response(
             llm_operations.construct_prompt(
-                contexts=[f"GNN Model Specification ({gnn_file_path.name}):\n{gnn_content}"],
+                contexts=[f"GNN Model Specification ({gnn_file_path.name}):\\n{gnn_content}"],
                 task_description=task_desc_purpose_professional
             ),
             model="gpt-4o-mini"
         )
         results["purpose_professional_summary"] = purpose_professional_summary
-        with open(output_dir_for_file / f"{gnn_file_path.stem}_purpose_professional_summary.md", 'w', encoding='utf-8') as f:
-            f.write(f"# Model Purpose, Application & Professional Narrative for {gnn_file_path.name}\n\n{purpose_professional_summary}")
-        logger.info(f"    ✅ Purpose, application & professional narrative generated for {gnn_file_path.name}")
+        output_file_path_summary = output_dir_for_file / f"{gnn_file_path.stem}_purpose_professional_summary.md"
+        with open(output_file_path_summary, 'w', encoding='utf-8') as f:
+            f.write(f"# Model Purpose, Application & Professional Narrative for {gnn_file_path.name}\\n\\n{purpose_professional_summary}")
+        logger.info(f"    ✅ Saved purpose, application & professional narrative to: {output_file_path_summary} (Length: {len(purpose_professional_summary)} chars)")
     except Exception as e:
         logger.error(f"    ❌ Error generating purpose & professional summary for {gnn_file_path.name}: {e}", exc_info=verbose)
         results["purpose_professional_summary"] = f"Error: {e}"
@@ -135,14 +137,15 @@ def process_gnn_with_llm(gnn_file_path: Path, output_dir_for_file: Path, verbose
             )
             ontology_interpretation = llm_operations.get_llm_response(
                 llm_operations.construct_prompt(
-                    contexts=[f"GNN File Content ({gnn_file_path.name}):\n{gnn_content}"],
+                    contexts=[f"GNN File Content ({gnn_file_path.name}):\\n{gnn_content}"],
                     task_description=task_desc_ontology
                 )
             )
             results["ontology_interpretation"] = ontology_interpretation
-            with open(output_dir_for_file / f"{gnn_file_path.stem}_ontology_interpretation.txt", 'w', encoding='utf-8') as f:
+            output_file_path_ontology = output_dir_for_file / f"{gnn_file_path.stem}_ontology_interpretation.txt"
+            with open(output_file_path_ontology, 'w', encoding='utf-8') as f:
                 f.write(ontology_interpretation)
-            logger.info(f"    ✅ Ontology interpretation generated for {gnn_file_path.name}")
+            logger.info(f"    ✅ Saved ontology interpretation to: {output_file_path_ontology} (Length: {len(ontology_interpretation)} chars)")
         else:
             logger.info(f"    ℹ️ No ActInfOntologyAnnotation block found in {gnn_file_path.name}. Skipping ontology interpretation task.")
             results["ontology_interpretation"] = "N/A - No ActInfOntologyAnnotation block found."
@@ -154,7 +157,25 @@ def process_gnn_with_llm(gnn_file_path: Path, output_dir_for_file: Path, verbose
     return all_tasks_successful, results
 
 def main(args: argparse.Namespace) -> int:
-    """Main function for the LLM operations step."""
+    """Main function for the LLM operations step (Step 11).
+
+    This function orchestrates the LLM processing of GNN files. It handles:
+    - Loading the OpenAI API key.
+    - Ensuring LLM tools are registered with MCP (if applicable).
+    - Identifying GNN files in the target directory.
+    - Invoking `process_gnn_with_llm` for each GNN file to perform LLM tasks.
+    - Generating a summary report of the LLM operations.
+
+    Args:
+        args (argparse.Namespace):
+            Parsed command-line arguments from `main.py` or standalone execution.
+            Expected attributes include: target_dir (str/Path), output_dir (str/Path),
+            recursive (bool), verbose (bool), llm_tasks (str).
+
+    Returns:
+        int: 0 if all GNN files are processed successfully by LLM tasks,
+             1 if there are any failures or if critical setup (like API key) fails.
+    """
     logger.info(f"▶️ Starting Step 11: LLM Operations ({Path(__file__).name})")
     if args.verbose:
         logger.debug(f"  Pipeline arguments received: {args}")
@@ -192,42 +213,32 @@ def main(args: argparse.Namespace) -> int:
 
     processed_files_summary = []
     gnn_files = []
+    
+    # Refactored GNN file discovery logic
+    all_potential_files = []
     if args.recursive:
-        gnn_files.extend(sorted(gnn_source_dir.rglob("*.gnn.md")))
-        gnn_files.extend(sorted(gnn_source_dir.rglob("*.md")))
-        # Deduplicate if .md and .gnn.md versions of same base exist, prioritize .gnn.md or handle as per project spec
-        # For now, simple extend and sort might catch both if not careful with naming
-        # A more robust way would be to filter out non-GNN .md files if possible
-        # Let's refine to avoid double processing if a .gnn.md and its .md variant exist
-        # This is a basic deduplication by stem for .md and .gnn.md files.
-        temp_file_dict = {}
-        for f_path in gnn_files:
-            # Prioritize .gnn.md if both .md and .gnn.md for the same stem exist
-            if f_path.name.endswith(".gnn.md"):
-                temp_file_dict[f_path.stem.replace(".gnn", "")] = f_path
-            elif f_path.stem not in temp_file_dict or not temp_file_dict[f_path.stem].name.endswith(".gnn.md"):
-                # if .md and no .gnn.md version exists, or if current is not .gnn.md and stored is not .gnn.md
-                # but we only add if the stem (without .gnn) doesn't already point to a .gnn.md
-                stem_key = f_path.stem
-                if stem_key.endswith(".gnn"): # handle cases like file.gnn.md -> stem is file.gnn
-                    stem_key = stem_key[:-4]
-                
-                if not (stem_key in temp_file_dict and temp_file_dict[stem_key].name.endswith(".gnn.md")):
-                    temp_file_dict[stem_key] = f_path
-
-        gnn_files = sorted(list(temp_file_dict.values()), key=lambda p: p.name)
+        all_potential_files.extend(sorted(gnn_source_dir.rglob("*.gnn.md")))
+        all_potential_files.extend(sorted(gnn_source_dir.rglob("*.md")))
     else:
-        gnn_files.extend(sorted(gnn_source_dir.glob("*.gnn.md")))
-        # Similar deduplication logic for non-recursive might be needed if both can exist
-        # For simplicity, assume non-recursive means specific GNN files are targeted or naming is distinct.
-        # Add .md files as well, then deduplicate
-        non_recursive_mds = sorted(gnn_source_dir.glob("*.md"))
-        temp_file_dict = {f.stem.replace(".gnn", ""): f for f in gnn_files} # prioritize .gnn.md
-        for md_file in non_recursive_mds:
-            stem_key = md_file.stem
-            if stem_key not in temp_file_dict or not temp_file_dict[stem_key].name.endswith(".gnn.md"):
-                temp_file_dict[stem_key] = md_file
-        gnn_files = sorted(list(temp_file_dict.values()), key=lambda p: p.name)
+        all_potential_files.extend(sorted(gnn_source_dir.glob("*.gnn.md")))
+        all_potential_files.extend(sorted(gnn_source_dir.glob("*.md")))
+
+    preferred_files = {} # stem_key -> Path
+    for f_path in all_potential_files:
+        # Create a stem key by removing .gnn if it exists, then .md implicitly by stem property
+        stem_candidate = f_path.stem
+        if stem_candidate.endswith(".gnn"): # e.g. file.gnn from file.gnn.md
+            stem_key = stem_candidate[:-4]
+        else: # e.g. file from file.md
+            stem_key = stem_candidate
+        
+        # Prioritize .gnn.md files
+        if f_path.name.endswith(".gnn.md"):
+            preferred_files[stem_key] = f_path
+        elif stem_key not in preferred_files: # Only add .md if a .gnn.md for the same stem isn't already chosen
+            preferred_files[stem_key] = f_path
+            
+    gnn_files = sorted(list(preferred_files.values()), key=lambda p: p.name)
 
     # Filter out any .md files that are known to be non-GNN, e.g. README.md
     # This is a heuristic; a better way would be GNN validation or specific include patterns.
@@ -357,6 +368,8 @@ if __name__ == '__main__':
                         help="Disable recursive search for GNN files.")
     parser.add_argument("--verbose", action="store_true",
                         help="Enable verbose output for this script.")
+    parser.add_argument("--llm-tasks", type=str, default="all", # Added to match main.py call
+                        help="Comma-separated list of LLM tasks to run (e.g., overview,purpose,ontology). Default: 'all'. Currently, all tasks are run by default.")
     
     parsed_args = parser.parse_args()
 
@@ -368,5 +381,9 @@ if __name__ == '__main__':
         if llm_mcp: # If module loaded, set its logger to DEBUG too
              logging.getLogger(llm_mcp.__name__).setLevel(logging.DEBUG)
         logger.debug("Verbose logging enabled for standalone run of 11_llm.py.")
+
+    # Quiet noisy libraries if run standalone
+    logging.getLogger('PIL').setLevel(logging.WARNING)
+    logging.getLogger('matplotlib').setLevel(logging.WARNING)
 
     sys.exit(main(parsed_args)) 

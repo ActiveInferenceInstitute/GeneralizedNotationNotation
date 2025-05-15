@@ -37,7 +37,21 @@ except ImportError:
         pymdp_runner = None # Ensure it exists for later checks
 
 def main(args: argparse.Namespace) -> int:
-    """Main function for the GNN model execution step."""
+    """Main function for the GNN model execution step (Step 10).
+
+    This function serves as the entry point for executing rendered GNN simulators.
+    It primarily focuses on orchestrating the execution of PyMDP scripts generated
+    by Step 9, using the `pymdp_runner` module.
+
+    Args:
+        args (argparse.Namespace):
+            Parsed command-line arguments from `main.py` or standalone execution.
+            Expected attributes include: output_dir (PathLike), recursive (bool),
+            and verbose (bool).
+
+    Returns:
+        int: 0 for success, 1 for failure.
+    """
     # Logger level for this script's logger (__name__) should be set by main.py
     # based on args.verbose, or by standalone __main__ block.
 

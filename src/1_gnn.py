@@ -20,6 +20,26 @@ import sys
 from pathlib import Path
 import re # For parsing sections
 import logging
+import argparse # Added
+
+# Attempt to import the new logging utility
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    # Fallback if utils is not in path (e.g. very direct execution or testing)
+    # This assumes utils/ is a sibling to the script's directory if script is in src/
+    # or that src/ is in PYTHONPATH.
+    sys.path.append(str(Path(__file__).resolve().parent.parent))
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None # Define it as None if import fails
+        # Log a warning using a temporary basic config if util is missing
+        if not logging.getLogger().hasHandlers():
+            logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
+        logging.getLogger(__name__).warning(
+            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
+        )
 
 # --- Logger Setup ---
 # Configure logger for this specific script.
@@ -33,50 +53,49 @@ logger = logging.getLogger(__name__) # Use module name for logger
 _project_root_path_1_gnn = None
 # --- End Global ---
 
-def _get_relative_path_if_possible(absolute_path_obj: Path) -> str:
-    """Returns a path string relative to project_root if set, otherwise absolute."""
-    global _project_root_path_1_gnn
-    if _project_root_path_1_gnn:
+def _get_relative_path_if_possible(absolute_path_obj: Path, project_root: Path | None) -> str:
+    """Returns a path string relative to project_root if provided and applicable, otherwise absolute."""
+    if project_root:
         try:
-            return str(absolute_path_obj.relative_to(_project_root_path_1_gnn))
+            return str(absolute_path_obj.relative_to(project_root))
         except ValueError:
             return str(absolute_path_obj) # Not under project root
     return str(absolute_path_obj)
 
-def process_gnn_folder(target_dir: str, output_dir: str, recursive: bool = False, verbose: bool = False):
+def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Path | None, recursive: bool = False, verbose: bool = False):
     """
     Process the GNN folder:
     - Discover .md files.
     - Perform basic parsing for key GNN sections.
     - Log findings and simple statistics to a report file.
     """
-    logger.info(f"Starting GNN file processing for directory: '{_get_relative_path_if_possible(Path(target_dir).resolve())}'")
+    logger.info(f"Starting GNN file processing for directory: '{_get_relative_path_if_possible(target_dir.resolve(), project_root)}'")
     if recursive:
         logger.info("Recursive mode enabled: searching in subdirectories.")
     else:
         logger.info("Recursive mode disabled: searching in top-level directory only.")
 
     # Determine project root, assuming this script is in 'src/' subdirectory of project root
-    try:
-        script_file_path = Path(__file__).resolve()
-        # project_root is the parent of the 'src' directory
-        project_root = script_file_path.parent.parent
-        logger.debug(f"Determined project root: {project_root}")
-        global _project_root_path_1_gnn
-        _project_root_path_1_gnn = project_root
-    except Exception as e:
-        logger.warning(f"Could not automatically determine project root. File paths in report might be absolute or less standardized: {e}")
-        project_root = None # Fallback
+    # This is now passed as an argument, but can be determined as a fallback if not provided.
+    # if not project_root:
+    #     try:
+    #         script_file_path = Path(__file__).resolve()
+    #         project_root_determined = script_file_path.parent.parent
+    #         logger.debug(f"Determined project root internally: {project_root_determined}")
+    #         # No longer setting global _project_root_path_1_gnn
+    #     except Exception as e:
+    #         logger.warning(f"Could not automatically determine project root. File paths in report might be absolute or less standardized: {e}")
+    # else:
+    #     logger.debug(f"Using provided project root: {project_root}")
 
-    gnn_target_path = Path(target_dir)
-    gnn_target_path_abs = gnn_target_path.resolve()
+    gnn_target_path_abs = target_dir.resolve()
 
-    if not gnn_target_path.is_dir():
-        logger.warning(f"GNN target directory '{_get_relative_path_if_possible(gnn_target_path_abs)}' not found or not a directory. Skipping GNN processing for this target.")
-        return True # Not a fatal error for this step, allows pipeline to continue
+    if not target_dir.is_dir():
+        logger.warning(f"GNN target directory '{_get_relative_path_if_possible(gnn_target_path_abs, project_root)}' not found or not a directory. Skipping GNN processing for this target.")
+        return 2 # Return 2 for warning/non-fatal issue
 
     # Ensure output directory for this step exists
-    step_output_dir = Path(output_dir) / "gnn_processing_step"
+    step_output_dir = output_dir / "gnn_processing_step"
     step_output_dir_abs = step_output_dir.resolve()
     try:
         step_output_dir.mkdir(parents=True, exist_ok=True)
@@ -99,33 +118,25 @@ def process_gnn_folder(target_dir: str, output_dir: str, recursive: bool = False
     # --- End Counters ---
 
     logger.debug(f"Searching for GNN files matching pattern '{file_pattern}' in '{gnn_target_path_abs}'")
-    gnn_files = list(gnn_target_path.glob(file_pattern))
+    gnn_files = list(target_dir.glob(file_pattern))
 
     if not gnn_files:
-        logger.info(f"No .md files found in '{_get_relative_path_if_possible(gnn_target_path_abs)}' with pattern '{file_pattern}'.")
+        logger.info(f"No .md files found in '{_get_relative_path_if_possible(gnn_target_path_abs, project_root)}' with pattern '{file_pattern}'.")
         try:
             with open(report_file_path, "w", encoding="utf-8") as f_report:
                 f_report.write("# GNN File Discovery Report\n\n")
-                f_report.write(f"No .md files found in `{_get_relative_path_if_possible(gnn_target_path_abs)}` using pattern `{file_pattern}`.\n")
-            logger.info(f"Empty report saved to: {_get_relative_path_if_possible(report_file_path_abs)}")
+                f_report.write(f"No .md files found in `{_get_relative_path_if_possible(gnn_target_path_abs, project_root)}` using pattern `{file_pattern}`.\n")
+            logger.info(f"Empty report saved to: {_get_relative_path_if_possible(report_file_path_abs, project_root)}")
         except IOError as e:
             logger.error(f"Failed to write empty report to {report_file_path_abs}: {e}")
             # Decide if this is fatal for the step; for now, non-fatal to allow pipeline progress
-        return True
+        return 0 # No files found is not an error for the script itself, just an outcome.
 
-    logger.info(f"Found {len(gnn_files)} .md file(s) to process in '{_get_relative_path_if_possible(gnn_target_path_abs)}'.")
+    logger.info(f"Found {len(gnn_files)} .md file(s) to process in '{_get_relative_path_if_possible(gnn_target_path_abs, project_root)}'.")
 
-    for gnn_file_path_obj in gnn_files: # Renamed to avoid confusion with Path object
-        # Determine path for reporting
-        path_for_report_str = ""
-        resolved_gnn_file_path = Path(gnn_file_path_obj).resolve()
-        if project_root:
-            try:
-                path_for_report_str = str(resolved_gnn_file_path.relative_to(project_root))
-            except ValueError: # If gnn_file is not under project_root for some reason
-                path_for_report_str = str(resolved_gnn_file_path)
-        else: # Fallback if project_root couldn't be determined
-            path_for_report_str = str(resolved_gnn_file_path)
+    for gnn_file_path_obj in gnn_files:
+        resolved_gnn_file_path = gnn_file_path_obj.resolve() # gnn_file_path_obj is already a Path
+        path_for_report_str = _get_relative_path_if_possible(resolved_gnn_file_path, project_root)
         
         logger.debug(f"Processing file: {path_for_report_str}")
         
@@ -145,37 +156,57 @@ def process_gnn_folder(target_dir: str, output_dir: str, recursive: bool = False
             # Basic section parsing
             # ModelName parsing
             model_name_section_header_text = "ModelName"
-            # Regex for the "## ModelName" header line itself
-            model_name_search_pattern = rf"^##\s*{re.escape(model_name_section_header_text)}\s*$" 
-            model_name_str = "Not found"
-            model_name_header_match = re.search(model_name_search_pattern, content, re.MULTILINE | re.IGNORECASE)
+            model_name_str = "Not found" # Default status message
+            parsed_model_name = "Not found" # Actual parsed name
+
+            # Regex to find the "## ModelName" header, case-insensitive for "ModelName"
+            # It captures the header itself to know its end position.
+            model_name_header_pattern = re.compile(rf"^##\s*{model_name_section_header_text}\s*$\r?", re.IGNORECASE | re.MULTILINE)
+            model_name_header_match = model_name_header_pattern.search(content)
 
             if model_name_header_match:
-                header_end_pos = model_name_header_match.end()
-                # Regex to find the first non-empty, non-header line after the ## ModelName header.
-                # It captures content that doesn't start with '#' and is not just whitespace.
-                actual_model_name_match = re.search(r"^\s*([^\s#].*?)\s*$", content[header_end_pos:], re.MULTILINE)
-                if actual_model_name_match:
-                    extracted_name = actual_model_name_match.group(1).strip()
-                    if extracted_name: # Ensure it's not an empty capture
-                        model_name_str = f"Found: {extracted_name}"
-                        file_summary["model_name"] = extracted_name # Store parsed name
-                        found_model_name_count += 1
-                        logger.debug(f"  Found {model_name_section_header_text}: '{extracted_name}' in {path_for_report_str}")
-                    else: # Header found, but name line was effectively empty after stripping
-                        model_name_str = "Found (header only, name line empty)"
-                        file_summary["model_name"] = "(Header only, name empty)" # Store status
-                        found_model_name_count +=1 # Count if header is present
-                        logger.debug(f"  Found ## {model_name_section_header_text} header, but name line was empty in {path_for_report_str}")
-                else: # Header found, but no suitable line for name found after it
-                    model_name_str = "Found (header only, name line not found or suitable)"
-                    file_summary["model_name"] = "(Header only, name not found)" # Store status
-                    found_model_name_count += 1 # Count if header is present
-                    logger.debug(f"  Found ## {model_name_section_header_text} header, but no subsequent content line found for name in {path_for_report_str}")
-            else: # ## ModelName header itself not found
-                logger.debug(f"  ## {model_name_section_header_text} section not found in {path_for_report_str}")
-            file_summary["sections_found"].append(f"ModelName: {model_name_str}")
+                logger.debug(f"  Found '## {model_name_section_header_text}' header in {path_for_report_str}")
+                found_model_name_count += 1 # Count if header is present
+                
+                # Determine the content region for the model name:
+                # from end of its header to start of the next section or end of file.
+                content_after_header = content[model_name_header_match.end():]
+                next_section_header_match = re.search(r"^##\s+\\w+", content_after_header, re.MULTILINE)
+                
+                if next_section_header_match:
+                    name_region_content = content_after_header[:next_section_header_match.start()]
+                else:
+                    name_region_content = content_after_header
+                
+                # Find the first suitable line in this region
+                extracted_name_candidate = ""
+                for line in name_region_content.splitlines():
+                    stripped_line = line.strip()
+                    if stripped_line and not stripped_line.startswith("#"):
+                        extracted_name_candidate = stripped_line
+                        break # Found the first potential name
+                
+                if extracted_name_candidate:
+                    parsed_model_name = extracted_name_candidate
+                    model_name_str = f"Found: {parsed_model_name}" # Status message for report
+                    logger.debug(f"    Extracted {model_name_section_header_text}: '{parsed_model_name}' from {path_for_report_str}")
+                else:
+                    # Header was found, but no suitable non-comment/non-empty line followed in its section
+                    parsed_model_name = "(Header found, but name line empty or only comments)"
+                    model_name_str = "Found (header only, name line empty/commented)" # Status message
+                    logger.debug(f"    '## {model_name_section_header_text}' header found, but no suitable name line in {path_for_report_str}")
+            else:
+                # '## ModelName' header itself was not found
+                parsed_model_name = "Not found"
+                model_name_str = "Not found" # Status message (already default)
+                logger.debug(f"  '## {model_name_section_header_text}' section header not found in {path_for_report_str}")
 
+            file_summary["model_name"] = parsed_model_name # Store the parsed name or status
+            # The sections_found list in the report will use model_name_str for its verbose status.
+            # We need to update how sections_found is populated for ModelName.
+            # First, remove any old ModelName entry from sections_found if it exists from a previous iteration logic.
+            file_summary["sections_found"] = [s for s in file_summary["sections_found"] if not s.startswith("ModelName:")]
+            file_summary["sections_found"].insert(0, f"ModelName: {model_name_str}") # Insert at beginning
 
             # StateSpaceBlock parsing
             statespace_section_header_text = "StateSpaceBlock"
@@ -272,7 +303,7 @@ def process_gnn_folder(target_dir: str, output_dir: str, recursive: bool = False
     try:
         with open(report_file_path, "w", encoding="utf-8") as f_report:
             f_report.write("# GNN File Discovery Report\n\n") 
-            f_report.write(f"Processed {len(gnn_files)} GNN file(s) from directory: `{_get_relative_path_if_possible(gnn_target_path_abs)}`\n")
+            f_report.write(f"Processed {len(gnn_files)} GNN file(s) from directory: `{_get_relative_path_if_possible(gnn_target_path_abs, project_root)}`\n")
             f_report.write(f"Search pattern used: `{file_pattern}`\n\n")
 
             # --- Add Overall Summary ---
@@ -301,72 +332,210 @@ def process_gnn_folder(target_dir: str, output_dir: str, recursive: bool = False
                     for error in summary["errors"]:
                         f_report.write(f"- {error}\n")
                 f_report.write("\n---\n")
-        logger.info(f"GNN discovery report saved to: {_get_relative_path_if_possible(report_file_path_abs)}")
+        logger.info(f"GNN discovery report saved to: {_get_relative_path_if_possible(report_file_path_abs, project_root)}")
     except IOError as e:
         logger.error(f"Failed to write GNN discovery report to {report_file_path_abs}: {e}")
-        return False # Report generation is a key output of this step.
+        return 1 # Failure to write report is an error for this step
 
-    return True
+    if files_with_errors_count > 0:
+        logger.warning(f"{files_with_errors_count} file(s) encountered errors during processing.")
+        return 2 # Success with warnings
+    
+    return 0 # Pure success
 
-def main(args):
-    """Main function for the GNN file discovery and basic parsing step."""
-    # The logger level for __name__ should be set by main.py based on args.verbose.
-    # If this script is run standalone, the default logging level (WARNING) will apply
-    # unless explicitly configured here or via environment variables.
-    # For pipeline integration, main.py's logger setup for the root logger and its propagation
-    # settings, along with this module's logger.setLevel in main.py's loop, will handle verbosity.
-    global _project_root_path_1_gnn
+def main(args=None):
+    """Main function to handle argument parsing and call processing logic.
+
+    If args are not provided (e.g. running standalone), command-line arguments
+    are parsed. If args are provided (e.g., from an internal call with a pre-parsed
+    Namespace object), those are used.
+
+    Args:
+        args (argparse.Namespace | list | None): 
+            - If None, parses arguments from sys.argv.
+            - If a list, assumes it's a list of string arguments to be parsed.
+            - If an argparse.Namespace, uses it directly.
+            Expected attributes on the Namespace object include:
+            target_dir, output_dir, recursive, verbose.
+    """
+    # If args are not provided (e.g. running standalone), parse them.
+    # If args are provided (e.g. from main.py's subprocess call), use them.
+    if args is None: # Standalone execution or direct call without pre-parsed args
+        # Determine project root for default paths, assuming this script is in 'src/'
+        script_file_path = Path(__file__).resolve()
+        project_root_for_defaults = script_file_path.parent.parent
+
+        default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
+        default_output_dir = project_root_for_defaults / "output"
+
+        parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 1: GNN File Discovery and Basic Parsing.")
+        parser.add_argument(
+            "--target-dir", 
+            type=Path, 
+            default=default_target_dir,
+            help=f"Target directory for GNN files (default: {default_target_dir.relative_to(project_root_for_defaults) if default_target_dir.is_relative_to(project_root_for_defaults) else default_target_dir})"
+        )
+        parser.add_argument(
+            "--output-dir", 
+            type=Path, 
+            default=default_output_dir,
+            help=f"Main directory to save outputs (default: {default_output_dir.relative_to(project_root_for_defaults) if default_output_dir.is_relative_to(project_root_for_defaults) else default_output_dir})"
+        )
+        parser.add_argument(
+            "--recursive", 
+            default=True, 
+            action=argparse.BooleanOptionalAction,
+            help="Recursively process GNN files in subdirectories (default: True)."
+        )
+        parser.add_argument(
+            "--verbose", 
+            default=True, 
+            action=argparse.BooleanOptionalAction,
+            help="Enable verbose (DEBUG level) logging. On by default (use --no-verbose to disable)."
+        )
+        # In a subprocess context, sys.argv will include the script name + args from main.py
+        # For direct call 'main(parsed_args_obj)', this block is skipped.
+        parsed_args = parser.parse_args() # sys.argv will be used here by default
+    else: # Args provided directly (e.g. an object from a direct import, not typical for subprocess)
+        # This path is less likely if always run via main.py's subprocess. 
+        # If main.py used importlib, 'args' would be the Namespace object. 
+        # For subprocess, we re-parse from sys.argv effectively via the block above if args is None.
+        # To robustly handle being called as a library with an args object, we'd check its type.
+        # For now, assume if 'args' is not None, it's a Namespace-like object.
+        if isinstance(args, list): # If main.py passes sys.argv list directly
+            # This case is if main.py did module.main(sys.argv[1:]) which is not current model
+            # We need an ArgumentParser to parse this list
+            script_file_path = Path(__file__).resolve()
+            project_root_for_defaults = script_file_path.parent.parent
+            default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
+            default_output_dir = project_root_for_defaults / "output"
+
+            parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 1: GNN File Discovery and Basic Parsing.")
+            parser.add_argument("--target-dir", type=Path, default=default_target_dir)
+            parser.add_argument("--output-dir", type=Path, default=default_output_dir)
+            parser.add_argument("--recursive", default=True, action=argparse.BooleanOptionalAction)
+            parser.add_argument(
+                "--verbose", 
+                default=True, 
+                action=argparse.BooleanOptionalAction,
+                help="Enable verbose (DEBUG level) logging. On by default (use --no-verbose to disable)."
+            )
+            parsed_args = parser.parse_args(args) # Parse the provided list
+        elif hasattr(args, 'target_dir'): # If it's already a parsed Namespace-like object
+            parsed_args = args
+        else:
+            logger.error("Invalid 'args' type passed to main(). Expected None, list, or Namespace-like object.")
+            sys.exit(1)
+
+    # Setup logging level based on verbosity
+    log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
+    # Ensure basicConfig is only called if no handlers are already configured for the root logger
+    # or if we want to override. For a script, it's often fine to configure its own logger's level.
+    # If run by main.py, main.py configures the root logger.
+    # If standalone, we need to configure.
+    if not logging.getLogger().hasHandlers(): # Configure root logger if not already done
+        logging.basicConfig(level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", stream=sys.stdout)
+    else: # If root logger has handlers, just set level for this script's logger
+        logger.setLevel(log_level)
+    
+    # Determine project_root for use in process_gnn_folder
+    # This assumes the script itself (1_gnn.py) is in a 'src' directory, 
+    # and 'src' is a direct child of the project root.
     try:
         script_file_path = Path(__file__).resolve()
-        _project_root_path_1_gnn = script_file_path.parent.parent
-        logger.debug(f"[{Path(__file__).name}] Determined project root for relative path logging: {_project_root_path_1_gnn}")
+        current_project_root = script_file_path.parent.parent 
+        logger.debug(f"Project root determined for path relativization: {current_project_root}")
     except Exception:
-        _project_root_path_1_gnn = None # Ensure it's None if determination fails
-        logger.debug(f"[{Path(__file__).name}] Could not determine project root for 1_gnn.py logging, paths may be absolute.")
+        current_project_root = None
+        logger.warning("Could not determine project root from script location. Paths in report may be absolute.")
 
-    script_name = Path(__file__).name
-    logger.info(f"Executing GNN processing step: {script_name}")
-    
-    # Resolve target_dir and output_dir to absolute paths for consistency.
-    # main.py already resolves paths before passing them in `args`, 
-    # but this makes 1_gnn.py's main() more robust if called directly with relative paths.
-    resolved_target_dir = str(Path(args.target_dir).resolve())
-    resolved_output_dir = str(Path(args.output_dir).resolve())
-    
-    logger.debug(f"Resolved target directory for GNN processing: {resolved_target_dir}")
-    logger.debug(f"Resolved output directory for GNN processing: {resolved_output_dir}")
+    # Convert string paths from argparse to Path objects if they aren't already
+    # (argparse with type=Path should handle this, but defensive)
+    target_dir_path = Path(parsed_args.target_dir)
+    output_dir_path = Path(parsed_args.output_dir)
 
-    success = process_gnn_folder(
-        target_dir=resolved_target_dir, 
-        output_dir=resolved_output_dir, 
-        recursive=args.recursive if hasattr(args, 'recursive') else False, 
-        verbose=args.verbose 
+    # Ensure paths are absolute before passing to processing function
+    # This is good practice, though process_gnn_folder also resolves them.
+    # Argparse with type=Path and default values based on Path(__file__) should result in absolute paths
+    # if defaults are used, or if user provides absolute paths.
+    # If user provides relative paths, they are relative to CWD. We should resolve them.
+    target_dir_abs = target_dir_path.resolve()
+    output_dir_abs = output_dir_path.resolve()
+
+    logger.info(f"GNN Step 1: Target directory: {target_dir_abs}")
+    logger.info(f"GNN Step 1: Output directory: {output_dir_abs}")
+    logger.info(f"GNN Step 1: Recursive: {parsed_args.recursive}")
+    logger.info(f"GNN Step 1: Verbose: {parsed_args.verbose}")
+
+    result_code = process_gnn_folder(
+        target_dir=target_dir_abs, 
+        output_dir=output_dir_abs, 
+        project_root=current_project_root,
+        recursive=parsed_args.recursive, 
+        verbose=parsed_args.verbose
     )
-        
-    if not success:
-        logger.error(f"{script_name} failed during GNN file processing.")
-        return 1 # Indicate failure
-        
-    logger.info(f"{script_name} completed successfully.")
-    return 0 # Indicate success
+    
+    if result_code == 0:
+        logger.info("Step 1_gnn completed successfully.")
+    elif result_code == 2:
+        logger.warning("Step 1_gnn completed with warnings.")
+    else:
+        logger.error("Step 1_gnn failed.")
+        sys.exit(result_code)
 
 if __name__ == "__main__":
-    # Basic configuration for running this script standalone
-    log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    log_level = getattr(logging, log_level_str, logging.INFO)
-    logging.basicConfig(level=log_level,
-                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S')
+    # When run as a script, create a simple parser for standalone execution
+    # Pass only relevant arguments to this script's main function.
+    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 1: GNN File Discovery and Basic Parsing (Standalone)")
+    
+    # Determine project root for defaults, assuming script is in src/
+    script_file_path_for_defaults = Path(__file__).resolve()
+    project_root_for_defaults = script_file_path_for_defaults.parent.parent
 
-    # Create a dummy args object or use a minimal one for standalone execution
-    class DummyArgs:
-        def __init__(self):
-            self.target_dir = "gnn/examples"  # Default GNN source directory
-            self.output_dir = "../output"     # Default main output directory
-            self.recursive = True
-            self.verbose = (log_level == logging.DEBUG)
-            # Add any other attributes main() might expect from the pipeline's args object
-            # e.g., self.skip_steps = "", self.only_steps = "", etc.
+    default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
+    default_output_dir = project_root_for_defaults / "output"
 
-    dummy_args = DummyArgs()
-    sys.exit(main(dummy_args)) 
+    parser.add_argument("--target-dir", type=Path, default=default_target_dir, help="Target directory for GNN files.")
+    parser.add_argument("--output-dir", type=Path, default=default_output_dir, help="Directory to save outputs.")
+    parser.add_argument("--recursive", action=argparse.BooleanOptionalAction, default=True, help="Recursively search target directory.")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose (DEBUG level) logging.")
+    
+    # Parse only the arguments defined for this standalone script
+    # This avoids issues if unknown args (meant for main.py) are passed.
+    # Use parse_known_args if you want to ignore unknown args, or ensure no extra args are passed.
+    # For simple standalone, parse_args() is fine if we expect only these args.
+    cli_args = parser.parse_args()
+
+    # Setup logging for standalone execution using the utility function
+    log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
+    if setup_standalone_logging:
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
+    else:
+        # Fallback basic config if utility function couldn't be imported
+        # This ensures some logging still happens.
+        if not logging.getLogger().hasHandlers():
+            logging.basicConfig(
+                level=log_level_to_set,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                stream=sys.stdout
+            )
+        logger.setLevel(log_level_to_set) # Set level for the script's logger
+        logger.warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+
+    # Call the script's main function, which processes arguments and calls business logic.
+    # Pass the parsed args specific to this script.
+    main(cli_args) # Pass the parsed args intended for this script
+
+# --- Helper function to simulate main.py args for testing (if needed) ---
+# This is how main.py (subprocess version) would effectively call this script:
+# python 1_gnn.py --target-dir path/to/target --output-dir path/to/output --recursive --verbose
+
+# Example for direct call testing (if you were to import and run main() from another script):
+# class DummyArgs:
+#     def __init__(self):
+#         self.target_dir = "../src/gnn/examples" # Adjust path as needed for testing
+#         self.output_dir = "../output"
+#         self.recursive = True
+#         self.verbose = True
+# test_args = DummyArgs()
+# main(test_args) # To test with a pre-constructed args object 

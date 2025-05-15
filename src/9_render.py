@@ -19,12 +19,27 @@ logger = logging.getLogger(__name__) # If part of GNN_Pipeline, __name__ will be
 
 def main(args: argparse.Namespace) -> int:
     """
-    Entry point for the GNN rendering pipeline step.
+    Entry point for the GNN rendering pipeline step (Step 9).
 
-    This function imports and calls the main function from the render.py module
-    located in the 'render' subdirectory. It iterates over GNN specification
-    files found in the target directory and renders them to specified formats.
+    This function imports and calls the main function from the `render.py` module
+    (expected in `src/render/`). It identifies GNN specification files
+    (typically JSON exports from Step 5) in a subdirectory of `args.output_dir`
+    (conventionally `args.output_dir/gnn_exports/`) and attempts to render them
+    into specified simulator formats (e.g., pymdp, rxinfer).
+
+    Args:
+        args (argparse.Namespace):
+            Parsed command-line arguments. Expected attributes include:
+            output_dir (PathLike): Main pipeline output directory.
+            recursive (bool): Whether to search for GNN spec files recursively.
+            verbose (bool): Flag for verbose logging.
+
+    Returns:
+        int: 0 for success, 1 for failure.
     """
+    # Set logging level for noisy libraries
+    logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
     current_script_path = Path(__file__).resolve()
     # Add 'src' to sys.path to allow 'from render import render'
     # This assumes '9_render.py' is in 'src/' and 'render.py' is in 'src/render/'
@@ -139,45 +154,53 @@ def main(args: argparse.Namespace) -> int:
 if __name__ == "__main__":
     # Basic configuration for running this script standalone
     log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    log_level = getattr(logging, log_level_str, logging.INFO)
+    log_level_for_standalone = getattr(logging, log_level_str, logging.INFO)
     logging.basicConfig(
-        level=log_level,
+        level=log_level_for_standalone,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
+        datefmt="%Y-%m-%d %H:%M:%S",
+        stream=sys.stdout,
+        force=True # Override any existing root logger configuration for standalone run
     )
 
-    # Mimic the args object for standalone run
-    class DummyArgs:
-        def __init__(self):
-            self.gnn_spec_file = "gnn/examples/gnn_example_dynamic_perception_policy.gnn.json" # Example default
-            self.output_dir = "../output/gnn_rendered_simulators" # Example default
-            self.target_format = "pymdp" # Example default, or make it a CLI arg for standalone
-            self.output_filename = None
-            self.verbose = (log_level == logging.DEBUG)
-            # Add other render-specific options from the pipeline args if needed for main()
-            # e.g., self.render_option_x = True
-
-    # For standalone testing with arguments:
-    parser = argparse.ArgumentParser(description="GNN Rendering Step - Standalone")
-    parser.add_argument("gnn_spec_file", nargs='?', default=DummyArgs.gnn_spec_file,
-                        help="Path to the GNN specification file (JSON format).")
-    parser.add_argument("--output-dir", default=DummyArgs.output_dir,
-                        help="Directory to save the rendered output script.")
-    parser.add_argument("--target-format", choices=["pymdp", "rxinfer"], default=DummyArgs.target_format,
-                        help="Target format for rendering (pymdp or rxinfer).")
-    parser.add_argument("--output-filename", default=None,
-                        help="Optional custom name for the output file.")
-    parser.add_argument("--verbose", action="store_true", default=DummyArgs.verbose,
-                        help="Enable verbose logging for the renderer.")
-    # Add any other specific args main() might expect, mirroring main.py's parser
+    # Define arguments that 9_render.py's main() function expects when called by main.py
+    # or for a similar standalone test.
+    # The main() function of 9_render.py itself scans a directory derived from output_dir.
+    parser = argparse.ArgumentParser(description="GNN Rendering Step - Standalone Directory Processing Mode")
+    parser.add_argument(
+        "--output-dir", 
+        default="../output", # This script's main() derives scan path from this
+        type=Path,
+        help="Main pipeline output directory. Render step scans 'output_dir/gnn_exports'. Default: ../output"
+    )
+    parser.add_argument(
+        "--recursive", 
+        action="store_true", 
+        default=False, # Default for standalone, main.py passes it if true.
+        help="Recursively scan for GNN spec files in 'output_dir/gnn_exports'."
+    )
+    parser.add_argument(
+        "--verbose", 
+        action="store_true", 
+        default=(log_level_for_standalone == logging.DEBUG),
+        help="Enable verbose logging for this script."
+    )
+    # Note: The main() function of 9_render.py does not take individual gnn_spec_file, target_format, etc.
+    # It orchestrates calls to render_module.main() for files it finds.
 
     cli_args = parser.parse_args()
 
-    # Update log level if --verbose is used in standalone mode, after basicConfig has run
+    # If verbose is set by arg, ensure logger level is DEBUG for standalone run
     if cli_args.verbose:
-        logging.getLogger().setLevel(logging.DEBUG)
-        for handler in logging.getLogger().handlers:
-            handler.setLevel(logging.DEBUG)
-        logger.debug("Verbose logging enabled for standalone run of 9_render.py.")
+        current_script_logger = logging.getLogger(__name__) # __name__ will be __main__ here
+        current_script_logger.setLevel(logging.DEBUG)
+        # Also set root logger and handlers if basicConfig was used
+        if logging.getLogger().handlers: # Check if basicConfig has run
+             logging.getLogger().setLevel(logging.DEBUG)
+             for handler in logging.getLogger().handlers:
+                 handler.setLevel(logging.DEBUG)
+        current_script_logger.debug("Verbose logging enabled for standalone run of 9_render.py.")
 
-    sys.exit(main(cli_args)) # Pass the parsed CLI args 
+    # Call the script's main function, which processes a directory.
+    exit_code = main(cli_args) 
+    sys.exit(exit_code) 

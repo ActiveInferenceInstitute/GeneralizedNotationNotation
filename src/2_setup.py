@@ -18,6 +18,7 @@ import os
 import sys
 from pathlib import Path
 import logging # Add logging
+import argparse # Added
 
 # --- Logger Setup ---
 logger = logging.getLogger(__name__)
@@ -72,45 +73,104 @@ def verify_directories(target_dir, output_dir, verbose=False):
     
     return True
 
-def main(args):
-    """Main function for the setup step."""
-    # Logger level for __name__ is set by main.py based on args.verbose.
-    # This script's logger.info/debug messages will respect that.
+def main(cmd_args=None): # Renamed 'args' to 'cmd_args' to avoid conflict with module name 'args'
+    """Main function for the setup step (Step 2).
+
+    Handles argument parsing if run standalone, then orchestrates directory
+    verification and Python virtual environment setup.
+
+    Args:
+        cmd_args (argparse.Namespace | list | None):
+            - If None, parses arguments from sys.argv for standalone execution.
+            - If a list, assumes it's a list of string arguments to be parsed.
+            - If an argparse.Namespace, uses it directly.
+            Expected attributes on the Namespace object include:
+            target_dir, output_dir, verbose.
+    """
+    # Main function for the setup step.
     
-    logger.info("▶️ Starting Step 2: Setup") # Was print if verbose
-    logger.debug("  Phase 1: Verifying project directories...") # Was print if verbose
+    if cmd_args is None: # Standalone execution
+        script_file_path = Path(__file__).resolve()
+        project_root_for_defaults = script_file_path.parent.parent
+        default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples" # Consistent with 1_gnn.py
+        default_output_dir = project_root_for_defaults / "output"
+
+        parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 2: Setup.")
+        parser.add_argument(
+            "--target-dir", 
+            type=Path, 
+            default=default_target_dir,
+            help=f"Target directory for GNN source files (used for verification, default: {default_target_dir.relative_to(project_root_for_defaults) if default_target_dir.is_relative_to(project_root_for_defaults) else default_target_dir})"
+        )
+        parser.add_argument(
+            "--output-dir", 
+            type=Path, 
+            default=default_output_dir,
+            help=f"Main directory to save outputs (default: {default_output_dir.relative_to(project_root_for_defaults) if default_output_dir.is_relative_to(project_root_for_defaults) else default_output_dir})"
+        )
+        parser.add_argument(
+            "--verbose", 
+            action="store_true", 
+            help="Enable verbose (DEBUG level) logging."
+        )
+        parsed_args = parser.parse_args() # sys.argv will be used here
+    elif isinstance(cmd_args, list): # If called with a list of string args
+        script_file_path = Path(__file__).resolve()
+        project_root_for_defaults = script_file_path.parent.parent
+        default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
+        default_output_dir = project_root_for_defaults / "output"
+        parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 2: Setup.")
+        parser.add_argument("--target-dir", type=Path, default=default_target_dir)
+        parser.add_argument("--output-dir", type=Path, default=default_output_dir)
+        parser.add_argument("--verbose", action="store_true")
+        parsed_args = parser.parse_args(cmd_args)
+    elif hasattr(cmd_args, 'target_dir'): # If it's already a parsed Namespace-like object
+        parsed_args = cmd_args
+    else:
+        # Use print for initial error as logger might not be configured
+        print("ERROR: Invalid 'cmd_args' type passed to 2_setup.py main(). Expected None, list, or Namespace-like object.", file=sys.stderr)
+        sys.exit(1)
+
+    # Setup logging level based on verbosity
+    log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
+    # Configure root logger if not already done (e.g., by main.py)
+    # If already configured, this will be a no-op for level/format if propagate=True for this logger.
+    # We mainly want to ensure that if run standalone, it logs something.
+    if not logging.getLogger().hasHandlers():
+        logging.basicConfig(level=log_level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', stream=sys.stdout)
+    else: # If root has handlers (e.g., from main.py), just set this script's logger level
+        logger.setLevel(log_level)
+
+    logger.info("▶️ Starting Step 2: Setup")
+    logger.debug(f"  Parsed arguments for setup: {parsed_args}")
+    logger.debug("  Phase 1: Verifying project directories...")
     
-    # Verify project structure directories (e.g., output folders)
-    if not verify_directories(args.target_dir, args.output_dir, args.verbose):
-        logger.error("❌ Directory verification failed. Halting setup step.") # Changed from print
-        return 1 # Indicate failure
+    target_dir_abs = Path(parsed_args.target_dir).resolve()
+    output_dir_abs = Path(parsed_args.output_dir).resolve()
+
+    # Pass string paths to verify_directories as it expects strings currently
+    if not verify_directories(str(target_dir_abs), str(output_dir_abs), parsed_args.verbose):
+        logger.error("❌ Directory verification failed. Halting setup step.")
+        sys.exit(1)
     
-    logger.info("  ✅ Project directories verified successfully.") # Was print if verbose
-    logger.info("  Phase 2: Setting up Python virtual environment and dependencies...") # Was print and added newline
+    logger.info("  ✅ Project directories verified successfully.")
+    logger.info("  Phase 2: Setting up Python virtual environment and dependencies...")
 
     if project_env_setup and hasattr(project_env_setup, 'perform_full_setup'):
         try:
-            logger.debug("  🐍 Attempting to run perform_full_setup from src/setup/setup.py") # Was print if verbose
-            # The perform_full_setup function in src/setup/setup.py now handles its own
-            # pathing relative to the 'src/' directory.
-            # NOTE: project_env_setup.perform_full_setup() likely prints directly.
-            # For full logging control, it should be modified to accept a logger or verbosity level,
-            # and use logging instead of print, or return its output for this script to log.
-            env_setup_result = project_env_setup.perform_full_setup() # Pass verbose
+            logger.debug("  🐍 Attempting to run perform_full_setup from src/setup/setup.py")
+            # Pass verbose to perform_full_setup. This requires perform_full_setup to accept it.
+            env_setup_result = project_env_setup.perform_full_setup(verbose=parsed_args.verbose) 
             if env_setup_result != 0:
-                logger.error("❌ Python virtual environment and dependency setup failed.") # Changed from print
-                return 1 # Propagate failure
-            logger.info("  ✅ Python virtual environment and dependencies setup completed.") # Was print if verbose
+                logger.error(f"❌ Python virtual environment and dependency setup failed (returned code: {env_setup_result}).")
+                sys.exit(1)
+            logger.info("  ✅ Python virtual environment and dependencies setup completed.")
 
-            # --- Confirm PyMDP Availability (Informational) ---
             logger.info("  Phase 3: Confirming PyMDP availability (informational)...")
             pymdp_confirmed_fully = False
             try:
-                # Try to import pymdp itself
-                import pymdp
+                import pymdp # type: ignore
                 logger.info("    Successfully imported the 'pymdp' module.")
-
-                # Try to get version using importlib.metadata
                 pymdp_version_str = "N/A"
                 try:
                     import importlib.metadata
@@ -120,75 +180,35 @@ def main(args):
                     logger.warning("    ⚠️ 'inferactively-pymdp' package not found by importlib.metadata. Version unknown.")
                 except Exception as e_meta:
                     logger.warning(f"    ⚠️ Error getting version via importlib.metadata: {e_meta}")
-
-                # Try to get pymdp module file location
-                pymdp_module_location = "N/A"
-                try:
-                    pymdp_module_location = pymdp.__file__
-                    logger.info(f"    'pymdp' module location: {pymdp_module_location}")
-                except AttributeError:
-                    logger.warning("    ⚠️ 'pymdp' module has no __file__ attribute.")
-                except Exception as e_fileloc:
-                    logger.warning(f"    ⚠️ Error getting 'pymdp' module __file__: {e_fileloc}")
-
-                # Try to import Agent from pymdp.agent
-                from pymdp.agent import Agent
+                pymdp_module_location = getattr(pymdp, '__file__', 'N/A')
+                logger.info(f"    'pymdp' module location: {pymdp_module_location}")
+                from pymdp.agent import Agent # type: ignore
                 logger.info(f"    Successfully imported 'pymdp.agent.Agent': {Agent}")
-                
-                # Try to get Agent module file location
-                agent_module_file = "N/A"
-                try:
-                    agent_module = sys.modules.get(Agent.__module__) # sys needs to be imported in the script
-                    if agent_module:
-                        agent_module_file = getattr(agent_module, '__file__', 'N/A')
-                    logger.info(f"    'pymdp.agent.Agent' module ({Agent.__module__}) location: {agent_module_file}")
-                except Exception as e_agentloc:
-                    logger.warning(f"    ⚠️ Error getting Agent module location: {e_agentloc}")
-
+                agent_module = sys.modules.get(Agent.__module__)
+                agent_module_file = getattr(agent_module, '__file__', 'N/A') if agent_module else 'N/A'
+                logger.info(f"    'pymdp.agent.Agent' module ({Agent.__module__}) location: {agent_module_file}")
                 logger.info("  ✅ PyMDP module and Agent class appear to be available and importable.")
                 pymdp_confirmed_fully = True
-
             except ImportError as e_imp:
                 logger.warning(f"  ⚠️ Failed to import 'pymdp' or 'pymdp.agent.Agent': {e_imp}")
                 logger.warning("      This may affect PyMDP-dependent steps (e.g., 9_render, 10_execute).")
-            except Exception as e_other: # Catch any other unexpected errors during confirmation
-                logger.warning(f"  ⚠️ An unexpected error occurred during PyMDP availability check: {e_other}", exc_info=args.verbose)
+            except Exception as e_other:
+                logger.warning(f"  ⚠️ An unexpected error occurred during PyMDP availability check: {e_other}", exc_info=parsed_args.verbose)
             
             if not pymdp_confirmed_fully:
                 logger.warning("  ⚠️ PyMDP availability check did not fully succeed. Subsequent PyMDP steps may fail or use unexpected versions.")
-            # --- End PyMDP Availability Confirmation ---
 
         except Exception as e:
-            logger.error(f"❌ Error during virtual environment setup or core dependency installation: {e}", exc_info=True) # Changed from print, added exc_info
-            # import traceback # Not needed if using exc_info=True
-            # traceback.print_exc()
-            return 1 # Indicate failure
+            logger.error(f"❌ Error during virtual environment setup or core dependency installation: {e}", exc_info=True)
+            sys.exit(1)
     else:
-        logger.warning("⚠️ Warning: `project_env_setup` or `perform_full_setup` not available. Skipping virtual environment setup.") # Was print
-        logger.error("❌ Critical setup phase (virtual environment and dependencies) was skipped due to import issues.") # Changed from print
-        return 1 # Treat as failure as this is a critical step
+        logger.warning("⚠️ Warning: 'project_env_setup.perform_full_setup' not available from src/setup/setup.py. Skipping virtual environment setup.")
+        logger.error("❌ Critical setup phase (virtual environment and dependencies) was skipped due to import issues.")
+        sys.exit(1)
     
-    logger.info("✅ Step 2: Setup complete") # Was print if verbose
-    return 0 # Indicate success
+    logger.info("✅ Step 2: Setup complete")
+    sys.exit(0)
 
 if __name__ == "__main__":
-    # Basic configuration for running this script standalone
-    # In a pipeline, main.py should configure logging.
-    # Determine log level based on a simple environment variable or default to INFO
-    log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    log_level = getattr(logging, log_level_str, logging.INFO)
-    logging.basicConfig(level=log_level,
-                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S')
-
-    # Create a dummy args object if needed, or use a minimal one for standalone execution
-    class DummyArgs:
-        def __init__(self):
-            self.verbose = (log_level == logging.DEBUG) # Example: link verbose to DEBUG
-            # Add other attributes that main() might expect, with sensible defaults for standalone run
-            self.output_dir = "../output" # Example default
-            self.target_dir = "gnn/examples" # Example default
-            # ... any other args the script's main() expects
-
-    dummy_args = DummyArgs()
-    main(dummy_args) 
+    # When run standalone, main() will parse sys.argv itself.
+    main() 
