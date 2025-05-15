@@ -10,6 +10,35 @@ from typing import Dict, List, Any, Callable, Optional, TypedDict, Union, Tuple
 # logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("mcp")
 
+# --- Custom MCP Exceptions ---
+class MCPError(Exception):
+    """Base class for MCP related errors."""
+    def __init__(self, message, code=-32000, data=None):
+        super().__init__(message)
+        self.code = code
+        self.data = data
+
+class MCPToolNotFoundError(MCPError):
+    def __init__(self, tool_name):
+        super().__init__(f"Tool '{tool_name}' not found.", code=-32601, data=f"Tool '{tool_name}' not found.")
+
+class MCPResourceNotFoundError(MCPError):
+    def __init__(self, uri):
+        # Or a custom code, but -32601 (Method not found) can also be used if resources are accessed like methods
+        super().__init__(f"Resource '{uri}' not found.", code=-32601, data=f"Resource '{uri}' not found.")
+
+class MCPInvalidParamsError(MCPError):
+    def __init__(self, message, details=None):
+        super().__init__(message, code=-32602, data=details)
+
+class MCPToolExecutionError(MCPError):
+    def __init__(self, tool_name, original_exception):
+        super().__init__(f"Error executing tool '{tool_name}': {original_exception}", code=-32000, data=str(original_exception))
+
+class MCPSDKNotFoundError(MCPError): # This was already defined, ensuring it inherits from MCPError
+    def __init__(self, message="MCP SDK not found or failed to initialize."):
+        super().__init__(message, code=-32001, data=message) # Example custom server error code
+
 # --- MCP SDK Status Simulation ---
 # This simulates the detection of the MCP SDK.
 # In a real application, this status would be set by the actual SDK loading mechanism.
@@ -29,10 +58,6 @@ _MCP_SDK_CONFIG_STATUS = {"found": True, "details": "Using project's internal MC
 #     _MCP_SDK_CONFIG_STATUS["found"] = False
 #     _MCP_SDK_CONFIG_STATUS["details"] = "Failed to import a critical MCP SDK component. MCP functionality will be impaired."
     # The original "root - WARNING..." might be logged by such a mechanism.
-
-class MCPSDKNotFoundError(RuntimeError):
-    """Custom exception for when the MCP SDK is not found and pipeline should halt."""
-    pass
 
 class MCPTool:
     """Represents an MCP tool that can be executed."""
@@ -129,26 +154,89 @@ class MCP:
     
     def execute_tool(self, tool_name: str, params: Dict[str, Any]) -> Dict[str, Any]:
         """Execute a registered tool with the given parameters."""
+        logger.info(f"Attempting to execute tool: {tool_name} with params: {params}")
         if tool_name not in self.tools:
-            raise ValueError(f"Tool '{tool_name}' not found")
+            logger.error(f"Tool not found: {tool_name}")
+            raise MCPToolNotFoundError(tool_name)
             
         tool = self.tools[tool_name]
-        result = tool.func(**params)
-        return {"result": result}
+        
+        # Basic schema validation (can be enhanced with a proper JSON schema validator)
+        # For simplicity, this example just checks for required parameters.
+        # A real implementation should use a library like jsonschema for full validation.
+        if tool.schema and tool.schema.get('properties'):
+            required_params = tool.schema.get('required', [])
+            for param_name in required_params:
+                if param_name not in params:
+                    err_msg = f"Missing required parameter for {tool_name}: {param_name}"
+                    logger.error(err_msg)
+                    raise MCPInvalidParamsError(err_msg, details={"missing_parameter": param_name})
+            # Optional: Add type checking here based on schema if not using full jsonschema validation
+            for param_name, param_value in params.items():
+                if param_name in tool.schema['properties']:
+                    expected_type_str = tool.schema['properties'][param_name].get('type')
+                    # Basic type mapping - extend as needed
+                    type_map = {
+                        'string': str,
+                        'integer': int,
+                        'number': (int, float),
+                        'boolean': bool,
+                        'array': list,
+                        'object': dict
+                    }
+                    if expected_type_str and expected_type_str in type_map:
+                        expected_type = type_map[expected_type_str]
+                        if not isinstance(param_value, expected_type):
+                            err_msg = f"Invalid type for parameter '{param_name}' in tool '{tool_name}'. Expected {expected_type_str}, got {type(param_value).__name__}."
+                            logger.error(err_msg)
+                            raise MCPInvalidParamsError(err_msg, details={ "parameter": param_name, "expected_type": expected_type_str, "actual_type": type(param_value).__name__})
+        
+        try:
+            # The actual tool function (tool.func) is responsible for its own logic.
+            # It should return a dictionary or JSON-serializable data.
+            result_data = tool.func(**params)
+            logger.info(f"Tool {tool_name} executed successfully.")
+            # The MCP spec usually expects the result of the tool directly.
+            # The client then wraps this in a JSON-RPC response if it's an MCP client.
+            # If this mcp.py is part of a server that forms the full JSON-RPC response,
+            # then it might return just `result_data`.
+            # The previous code `return {"result": result_data}` implies this method might be
+            # called by something that expects the *full* JSON-RPC `result` field content.
+            # However, the method is `execute_tool`, not `handle_execute_tool_rpc_request`.
+            # For clarity and adhering to what a tool execution means, it should return the tool's direct output.
+            # The JSON-RPC formatting ({"jsonrpc": ..., "result": ..., "id": ...}) should be handled by the transport layer.
+            return result_data # Return the direct result of the tool function
+        except MCPError: # Re-raise MCP-specific errors directly
+            raise
+        except Exception as e:
+            logger.error(f"Unhandled error during execution of tool {tool_name}: {e}", exc_info=True)
+            raise MCPToolExecutionError(tool_name, e)
     
     def get_resource(self, uri: str) -> Dict[str, Any]:
         """Retrieve a resource by URI."""
+        logger.info(f"Attempting to retrieve resource: {uri}")
         # Basic implementation - would need more sophisticated URI template matching
         for template, resource in self.resources.items():
-            if template == uri or uri.startswith(template.split("{")[0]):
+            # This is a very simplified matching logic. 
+            # A robust solution would use URI template libraries or regex.
+            # Example: if uri matches template pattern (e.g. using re or a template library)
+            if template == uri or (template.endswith('{}') and uri.startswith(template[:-2])) or (template.endswith('{id}') and uri.startswith(template[:-4])) :
                 try:
-                    result = resource.retriever(uri)
-                    return {"content": result}
-                except Exception as e:
-                    logger.error(f"Error retrieving resource {uri}: {str(e)}")
+                    # The retriever function should return the resource content directly.
+                    resource_content = resource.retriever(uri=uri) # Pass the actual URI to the retriever
+                    logger.info(f"Resource {uri} retrieved successfully.")
+                    # Similar to execute_tool, return the direct content of the resource.
+                    # The JSON-RPC formatting should be handled by the transport layer.
+                    return resource_content
+                except MCPError: # Re-raise MCP-specific errors
                     raise
+                except Exception as e:
+                    logger.error(f"Error retrieving resource {uri} via retriever for template {template}: {e}", exc_info=True)
+                    # Treat retriever failure like a tool execution failure
+                    raise MCPToolExecutionError(f"resource_retriever_for_{template}", e) # Use template as a quasi-toolname
                     
-        raise ValueError(f"Resource with URI '{uri}' not found")
+        logger.warning(f"Resource with URI '{uri}' not found after checking all templates.")
+        raise MCPResourceNotFoundError(uri)
     
     def get_capabilities(self) -> Dict[str, Any]:
         """Return the capabilities of this MCP instance."""

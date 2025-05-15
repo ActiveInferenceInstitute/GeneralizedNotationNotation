@@ -222,6 +222,21 @@ To start using GNN with MCP-enabled LLMs:
 3. **Access GNN Capabilities**:
    Ask Claude to help you create, visualize, or validate GNN models.
 
+## MCP in the GeneralizedNotationNotation (GNN) Project
+
+The GeneralizedNotationNotation (GNN) project utilizes the Model Context Protocol (MCP) to expose its suite of tools and functionalities as an **MCP Server**. This allows various MCP Hosts (such as AI assistants, IDEs, or automated research pipelines) to programmatically interact with GNN capabilities, including GNN file parsing, type checking, resource estimation, model exporting, and rendering to executable formats.
+
+Key aspects of MCP implementation within GNN include:
+
+*   **GNN Functionalities as MCP Tools**: Core GNN operations are wrapped as callable MCP tools, each with a defined schema for inputs and outputs.
+*   **GNN Files as MCP Resources**: GNN specification files (`.gnn.md`) are the primary resources that these tools operate upon.
+*   **Modular Tool Registration**: Tools are registered from various GNN sub-modules (e.g., `export`, `render`, `gnn_type_checker`) into a central MCP server instance.
+*   **Multiple Transport Options**: The GNN MCP server can be run using HTTP or standard I/O (stdio) for flexible integration.
+
+For a comprehensive overview of how MCP is specifically implemented and utilized within the GNN project, including details on the available tools, server architecture, and typical workflows, please refer to the GNN-specific MCP documentation: **[GNN MCP Integration README](./README.md)**.
+
+This integration enables GNN to be a highly interoperable and automatable component in the broader ecosystem of AI and cognitive modeling tools that support MCP.
+
 ## Conclusion
 
 Model Context Protocol represents a significant advancement in connecting LLMs with external data sources and tools. By standardizing these connections, MCP enables developers to create more powerful and flexible AI systems while addressing important security and privacy concerns. The protocol's growing ecosystem and adoption by major AI companies suggest it will play an increasingly important role in the development of AI applications.
@@ -250,7 +265,7 @@ Citations:
 [17] https://www.npmjs.com/package/@modelcontextprotocol/sdk?activeTab=readme
 [18] https://modelcontextprotocol.io/examples
 [19] https://diamantai.substack.com/p/model-context-protocol-mcp-explained
-[20] https://github.com/yonaka15/mcp-schema
+[20] https://www.microsoft.com/en-us/microsoft-copilot/blog/copilot-studio/introducing-model-context-protocol-mcp-in-copilot-studio-simplified-integration-with-ai-apps-and-agents/
 [21] https://www.philschmid.de/mcp-introduction
 [22] https://stytch.com/blog/model-context-protocol-introduction/
 [23] https://github.com/cyanheads/model-context-protocol-resources

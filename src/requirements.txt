@@ -6,4 +6,6 @@ pandas
 pytest
 scipy
 inferactively-pymdp
-# Add other project-wide dependencies here 
+# Add other project-wide dependencies here
+openai
+python-dotenv 

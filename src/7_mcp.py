@@ -21,6 +21,10 @@ import ast # For parsing Python files to find MCP methods
 import datetime # For report timestamp
 import logging # Import logging
 import inspect # For inspecting function signatures
+import json # For JSON operations
+
+# Pre-define MCPSDKNotFoundError to satisfy linter in case of import issues in the try-except block
+MCPSDKNotFoundError = Exception
 
 # Attempt to import the main MCP instance and initializer
 # This relies on main.py having set up sys.path correctly for the venv
@@ -59,6 +63,7 @@ EXPECTED_MCP_MODULE_DIRS = [
     "setup",
     "tests",
     "visualization",
+    "llm"
 ]
 
 def _get_mcp_methods(mcp_file_path: Path, verbose: bool = False):
@@ -168,11 +173,16 @@ def process_mcp_operations(src_root_dir_str: str, mcp_base_dir_str: str, output_
                         logger.debug(f"Could not retrieve signature for tool {tool_name}")
                     
                     description = tool_obj.description if tool_obj.description else "No description provided."
+                    schema_str = json.dumps(tool_obj.schema, indent=4) if hasattr(tool_obj, 'schema') and tool_obj.schema else "No schema provided."
                     
                     report_lines.append(f"- **Tool:** `{tool_name}`")
                     report_lines.append(f"  - **Defined in Module:** `{tool_module}`")
-                    report_lines.append(f"  - **Arguments:** `{args_str}`")
+                    report_lines.append(f"  - **Arguments (from signature):** `{args_str}`")
                     report_lines.append(f"  - **Description:** \"{description}\"")
+                    report_lines.append(f"  - **Schema:**")
+                    report_lines.append(f"    ```json")
+                    report_lines.append(f"    {schema_str.replace('\n', '\n    ')}") # Indent schema for markdown
+                    report_lines.append(f"    ```")
                 report_lines.append("\n") 
             else:
                 report_lines.append("No MCP tools found registered in `mcp_instance.tools` after initialization.\n")
@@ -269,15 +279,25 @@ def process_mcp_operations(src_root_dir_str: str, mcp_base_dir_str: str, output_
                     try:
                         sig = inspect.signature(tool_obj.func)
                         args = [param.name for param in sig.parameters.values()]
-                        args_str = ', '.join(args)
+                        args_str_sig = ', '.join(args)
                     except (ValueError, TypeError):
-                        args_str = "..." # Fallback if signature can't be read
+                        args_str_sig = "..." # Fallback if signature can't be read
                     
-                    # Use the registered description
-                    desc_str = f" - *\"{tool_obj.description}\"*" if tool_obj.description else ""
-                    module_report_methods.append((tool_obj.name, args_str, desc_str))
+                    # Use the registered description and schema
+                    desc_str = f" - *Description: \"{tool_obj.description}\"" if tool_obj.description else ""
+                    schema_info = ""
+                    if hasattr(tool_obj, 'schema') and tool_obj.schema:
+                        schema_dump = json.dumps(tool_obj.schema, indent=2).replace('\n', '\n    ') # Indent for display
+                        schema_info = f"\n    - Schema:\n      ```json\n      {schema_dump}\n      ```"
+                    
+                    # Combine method name, signature-derived args, description, and schema for the report line
+                    # The original `module_report_methods` stored (name, args_str, description_str)
+                    # We need to adjust this or how it's used.
+                    # For now, let's make the description string richer for these tools.
+                    full_tool_info_str = f"`def {tool_obj.name}({args_str_sig})`{desc_str}{schema_info}"
+                    module_report_methods.append(full_tool_info_str) # Storing the full string
                     registered_methods_added_for_this_module.add(tool_obj.name)
-                    logger.debug(f"          Found registered MCP tool: {tool_obj.name}({args_str}) - Description: {tool_obj.description}")
+                    logger.debug(f"          Found registered MCP tool: {tool_obj.name}({args_str_sig}) - Description: {tool_obj.description}")
             
             # 2. List other functions (like register_tools) using AST, avoiding duplicates
             ast_methods = _get_mcp_methods(mcp_integration_file, verbose=verbose)
@@ -292,8 +312,8 @@ def process_mcp_operations(src_root_dir_str: str, mcp_base_dir_str: str, output_
 
             if module_report_methods:
                 report_lines.append("- **Exposed Methods & Tools:**")
-                for name, args_str, desc_str in sorted(module_report_methods): # Sort for consistent output
-                    report_lines.append(f"  - `def {name}({args_str})`{desc_str}")
+                for method_info_str in sorted(module_report_methods): # Sort for consistent output
+                    report_lines.append(f"  - {method_info_str}") # Directly use the formatted string
             else:
                 report_lines.append("- **Exposed Methods & Tools:** No methods found or file could not be parsed effectively.")
         else:

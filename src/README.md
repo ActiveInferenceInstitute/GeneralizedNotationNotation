@@ -31,6 +31,9 @@ graph TD
     J --> K[End Pipeline];
 
     F --> J; // 5_export.py output is input for 9_render.py
+    I --> L(11_llm.py: LLM Operations);
+    J --> L; // 9_render.py output (rendered scripts) might be indirectly related or GNN specs from 5_export.py used by LLM
+    L --> K;
 
     subgraph Modules Called by Pipeline Steps
         E --> E1[gnn_type_checker/cli.py];
@@ -189,6 +192,21 @@ Below is a detailed description of each pipeline step script (located in `src/`)
 
 ---
 
+### 11. `11_llm.py` - LLM Operations
+-   **Folder:** `src/llm/`
+-   **What:** Utilizes Large Language Models (LLMs) for tasks like summarizing GNN files, explaining model aspects, or generating professional summaries. Requires an OpenAI API key set in a `.env` file.
+-   **Why:** To leverage AI capabilities for deeper understanding, documentation, and analysis of GNN models and experiments.
+-   **How:**
+    -   Imports `llm_operations` and `mcp` from `src/llm/`.
+    -   Loads OpenAI API key via `llm_operations.load_api_key()`.
+    -   Processes GNN files (e.g., `.md` source files from `args.target_dir`).
+    -   For each file, calls functions in `llm_operations` (e.g., `construct_prompt`, `get_llm_response`) to perform tasks like summarization and explanation.
+    -   Saves generated text outputs (summaries, explanations) into `<output_dir>/llm_processing_step/<model_name>/`.
+    -   Generates a consolidated report (`<output_dir>/llm_processing_step/11_llm_processing_report.md`).
+-   **Output:** Text files containing LLM-generated summaries/explanations for each processed GNN file, and a main markdown report for the step, all within `<output_dir>/llm_processing_step/`.
+
+---
+
 ## Core Utility Modules
 
 Beyond the pipeline step scripts, several folders in `src/` contain core logic and utilities used by these steps:
@@ -196,12 +214,13 @@ Beyond the pipeline step scripts, several folders in `src/` contain core logic a
 -   **`src/gnn/`**: Defines GNN file structure, punctuation, and may contain example GNN files.
 -   **`src/gnn_type_checker/`**: Contains the `GNNTypeChecker` and `GNNResourceEstimator` classes and their CLI, forming the backbone of the type checking and resource estimation capabilities.
 -   **`src/visualization/`**: Contains the `GNNParser`, `GNNVisualizer`, and related components (e.g., `MatrixVisualizer`, `OntologyVisualizer`) along with its CLI, responsible for parsing GNN files and generating various visual outputs.
--   **`src/mcp/`**: Implements the Model Context Protocol server (`server_stdio.py`, `server_http.py`), client (`cli.py`), core MCP class (`mcp.py`), and meta-module (`meta_mcp.py`). Individual modules like `export`, `visualization`, etc., are expected to have their own `mcp.py` to register tools with this MCP framework.
+-   **`src/mcp/`**: Implements the Model Context Protocol server (`server_stdio.py`, `server_http.py`), client (`cli.py`), core MCP class (`mcp.py`), and meta-module (`meta_mcp.py`). Individual modules like `export`, `visualization`, `llm`, etc., are expected to have their own `mcp.py` to register tools with this MCP framework.
 -   **`src/ontology/`**: Provides tools for ontology processing, including parsing annotations from GNN files and validating them. Its `mcp.py` file contains helper functions for these tasks.
 -   **`src/export/`**: Contains logic for formatting and exporting data. Currently, `5_export.py` focuses on generating the main pipeline summary report. More specific exporters (e.g., `format_exporters.py`, `report_formatters.py`) exist for potential future use or direct invocation by MCP tools.
 -   **`src/setup/`**: Contains the detailed Python environment setup script (`setup.py`) used by `2_setup.py`.
 -   **`src/tests/`**: Contains test files (e.g., `test_gnn_type_checker.py`) used by `3_tests.py`.
 -   **`src/execute/`**: Contains logic for executing rendered GNN models. `pymdp_runner.py` handles the execution of PyMDP scripts. Its `mcp.py` allows for future MCP integration of execution tasks.
+-   **`src/llm/`**: Contains modules for Large Language Model (LLM) integration. `llm_operations.py` provides core functions for API interaction (OpenAI), and `mcp.py` defines and registers LLM-related tools with the MCP framework.
 
 ## Usage
 

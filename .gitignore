@@ -1,7 +1,9 @@
-
 /src/.venv
 
 .venv/
 .pytest_cache/
 src/.venv/
 src/.pytest_cache/
+
+# Environment variables
+.env
