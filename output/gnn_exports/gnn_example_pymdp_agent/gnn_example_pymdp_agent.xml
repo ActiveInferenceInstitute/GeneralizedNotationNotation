@@ -423,7 +423,11 @@ num_control_factors: [1, 3]   # B_f0 actions_dim=1 (uncontrolled), B_f1 actions_
 # action = sample_action()</equations>
   <ModelParameters>
     <num_hidden_states_factors>[2, 3]</num_hidden_states_factors>
+    <num_obs_modalities>[3, 3, 3]</num_obs_modalities>
+    <num_control_factors>[1, 3]</num_control_factors>
   </ModelParameters>
   <num_hidden_states_factors>[2, 3]</num_hidden_states_factors>
+  <num_obs_modalities>[3, 3, 3]</num_obs_modalities>
+  <num_control_factors>[1, 3]</num_control_factors>
   <footer>Multifactor PyMDP Agent v1 - GNN Representation</footer>
 </Multifactor_PyMDP_Agent_v1>

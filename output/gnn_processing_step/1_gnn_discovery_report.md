@@ -17,7 +17,7 @@ Search pattern used: `**/*.md`
 ### File: `src/gnn/examples/gnn_POMDP_example.md`
 
 #### Found Sections:
-- ModelName: Found: Gold Standard POMDP Agent v1.0
+- ModelName: Found: Standard POMDP Agent v1.0
 - StateSpaceBlock: Not found
 - Connections: Not found
 - ModelParameters: Found (3 parameters parsed)

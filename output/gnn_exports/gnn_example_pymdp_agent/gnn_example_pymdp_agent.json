@@ -224,8 +224,12 @@
     "gnnversionandflags": {},
     "equations": "# Standard PyMDP agent equations for state inference (infer_states),\n# policy inference (infer_policies), and action sampling (sample_action).\n# qs = infer_states(o)\n# q_pi, efe = infer_policies()\n# action = sample_action()",
     "ModelParameters": {
-        "num_hidden_states_factors": "[2, 3]"
+        "num_hidden_states_factors": "[2, 3]",
+        "num_obs_modalities": "[3, 3, 3]",
+        "num_control_factors": "[1, 3]"
     },
     "num_hidden_states_factors": "[2, 3]",
+    "num_obs_modalities": "[3, 3, 3]",
+    "num_control_factors": "[1, 3]",
     "footer": "Multifactor PyMDP Agent v1 - GNN Representation"
 }

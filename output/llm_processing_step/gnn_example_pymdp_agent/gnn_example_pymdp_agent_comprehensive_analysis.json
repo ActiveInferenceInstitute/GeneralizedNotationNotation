@@ -1,32 +1,30 @@
 {
-    "model_purpose": "The model represents a PyMDP (Partially Observable Markov Decision Process) agent designed to handle multifactor observations and hidden states, utilizing Active Inference principles for decision making and control.",
+    "model_purpose": "The model serves as a representation of a Multifactor PyMDP agent that employs multiple observation modalities and hidden state factors. It is designed for active inference tasks, where the agent learns to infer states, policies, and actions based on observations.",
     "key_components": {
-        "hidden_states": {
-            "factors": {
+        "states": {
+            "hidden_state_factors": {
                 "reward_level": {
                     "num_states": 2,
-                    "description": "Represents the level of reward the agent perceives."
+                    "description": "Indicates the level of reward."
                 },
                 "decision_state": {
                     "num_states": 3,
-                    "description": "Represents the state of the decision-making process."
+                    "description": "Represents the state of decision-making."
                 }
             }
         },
         "observations": {
-            "modalities": {
-                "state_observation": {
-                    "num_outcomes": 3,
-                    "description": "Observations related to the current state."
-                },
-                "reward": {
-                    "num_outcomes": 3,
-                    "description": "Observations related to the perceived reward."
-                },
-                "decision_proprioceptive": {
-                    "num_outcomes": 3,
-                    "description": "Observations related to the agent's proprioceptive state."
-                }
+            "state_observation": {
+                "num_outcomes": 3,
+                "description": "Observations related to the current state."
+            },
+            "reward": {
+                "num_outcomes": 3,
+                "description": "Observations related to the rewards received."
+            },
+            "decision_proprioceptive": {
+                "num_outcomes": 3,
+                "description": "Observations related to the decision-making process."
             }
         },
         "actions": {
@@ -36,93 +34,136 @@
             }
         },
         "parameters": {
-            "A_matrices": "Likelihood matrices for observations.",
-            "B_matrices": "Transition matrices for hidden states.",
-            "C_vectors": "Preference vectors for observations.",
+            "A_matrices": "Likelihood matrices for each observation modality.",
+            "B_matrices": "Transition matrices for hidden state factors.",
+            "C_vectors": "Preference vectors for observation modalities.",
             "D_vectors": "Prior distributions for hidden states."
         }
     },
     "component_interactions": {
-        "hidden_states_interaction": "(D_f0,D_f1)-(s_f0,s_f1)",
-        "observation_generation": "(s_f0,s_f1)-(A_m0,A_m1,A_m2)",
-        "observation_output": "(A_m0,A_m1,A_m2)-(o_m0,o_m1,o_m2)",
-        "action_effect": "(s_f0,s_f1,u_f1)-(B_f0,B_f1)",
-        "state_transition": "(B_f0,B_f1)-(s_prime_f0,s_prime_f1)",
-        "expected_free_energy": "(C_m0,C_m1,C_m2)>G",
-        "policy_inference": "G>\u03c0_f1",
-        "action_execution": "\u03c0_f1-u_f1"
+        "D_f0, D_f1": "Initial priors influence the hidden states.",
+        "s_f0, s_f1": "Hidden states connect to likelihood matrices A_m0, A_m1, A_m2 representing observations.",
+        "A_m0, A_m1, A_m2": "Likelihood matrices map observations to hidden states.",
+        "s_f0, s_f1, u_f1": "Hidden states and action affect the transition matrices B_f0 and B_f1.",
+        "B_f0, B_f1": "Transition matrices determine the next hidden states.",
+        "C_m0, C_m1, C_m2": "Preferences influence the expected free energy G.",
+        "G": "Expected free energy informs the policy distribution \u03c0_f1.",
+        "\u03c0_f1": "Policy influences the action taken u_f1."
     },
     "data_types_and_dimensions": {
         "A_matrices": {
-            "dimensions": "[3, 2, 3]",
-            "type": "float"
+            "A_m0": {
+                "dimensions": "[3, 2, 3]",
+                "data_type": "float"
+            },
+            "A_m1": {
+                "dimensions": "[3, 2, 3]",
+                "data_type": "float"
+            },
+            "A_m2": {
+                "dimensions": "[3, 2, 3]",
+                "data_type": "float"
+            }
         },
-        "B_f0": {
-            "dimensions": "[2, 2, 1]",
-            "type": "float"
-        },
-        "B_f1": {
-            "dimensions": "[3, 3, 3]",
-            "type": "float"
+        "B_matrices": {
+            "B_f0": {
+                "dimensions": "[2, 2, 1]",
+                "data_type": "float"
+            },
+            "B_f1": {
+                "dimensions": "[3, 3, 3]",
+                "data_type": "float"
+            }
         },
         "C_vectors": {
-            "dimensions": "[3]",
-            "type": "float"
+            "C_m0": {
+                "dimensions": "[3]",
+                "data_type": "float"
+            },
+            "C_m1": {
+                "dimensions": "[3]",
+                "data_type": "float"
+            },
+            "C_m2": {
+                "dimensions": "[3]",
+                "data_type": "float"
+            }
         },
         "D_vectors": {
-            "dimensions": "[2]",
-            "type": "float"
+            "D_f0": {
+                "dimensions": "[2]",
+                "data_type": "float"
+            },
+            "D_f1": {
+                "dimensions": "[3]",
+                "data_type": "float"
+            }
         },
         "hidden_states": {
             "s_f0": {
                 "dimensions": "[2, 1]",
-                "type": "float"
+                "data_type": "float"
             },
             "s_f1": {
                 "dimensions": "[3, 1]",
-                "type": "float"
+                "data_type": "float"
+            },
+            "s_prime_f0": {
+                "dimensions": "[2, 1]",
+                "data_type": "float"
+            },
+            "s_prime_f1": {
+                "dimensions": "[3, 1]",
+                "data_type": "float"
             }
         },
         "observations": {
             "o_m0": {
                 "dimensions": "[3, 1]",
-                "type": "float"
+                "data_type": "float"
             },
             "o_m1": {
                 "dimensions": "[3, 1]",
-                "type": "float"
+                "data_type": "float"
             },
             "o_m2": {
                 "dimensions": "[3, 1]",
-                "type": "float"
+                "data_type": "float"
             }
         },
         "policy": {
             "\u03c0_f1": {
                 "dimensions": "[3]",
-                "type": "float"
-            }
-        },
-        "actions": {
+                "data_type": "float"
+            },
             "u_f1": {
                 "dimensions": "[1]",
-                "type": "int"
-            }
-        },
-        "expected_free_energy": {
+                "data_type": "int"
+            },
             "G": {
                 "dimensions": "[1]",
-                "type": "float"
-            }
-        },
-        "time_step": {
+                "data_type": "float"
+            },
             "t": {
                 "dimensions": "[1]",
-                "type": "int"
+                "data_type": "int"
             }
         }
     },
-    "potential_applications": "This model can be applied in various domains such as robotics, cognitive modeling, and adaptive control systems where decision making under uncertainty is critical.",
-    "limitations_or_ambiguities": "The model assumes a specific structure and parameterization derived from a Python script example, which may not generalize across all scenarios. The unbounded time horizon could lead to computational challenges in practice.",
-    "ontology_mapping_assessment": "The ActInfOntology terms are present and relevant, providing a clear mapping of model components to ontology concepts which enhances understanding and integration with other models and frameworks."
+    "potential_applications": [
+        "Robotics: Control of robotic agents in uncertain environments.",
+        "Reinforcement Learning: Developing agents that learn through interaction with their environment.",
+        "Cognitive Modeling: Simulating human-like decision-making processes.",
+        "Adaptive Systems: Systems that can adapt to changing conditions based on feedback."
+    ],
+    "limitations_or_ambiguities": [
+        "The model assumes that all transitions are deterministic for transition factor B_f1.",
+        "The priors are uniform, which may not represent certain environments well.",
+        "Lack of detail on how observations are generated from the environment.",
+        "The model's infinite time horizon may not be practical for certain applications."
+    ],
+    "ontology_mapping_assessment": {
+        "presence_of_terms": true,
+        "relevance": "The terms from the ActInfOntology are present and relevant, providing a clear mapping for the components of the model, enhancing interpretability and integration with other frameworks."
+    }
 }

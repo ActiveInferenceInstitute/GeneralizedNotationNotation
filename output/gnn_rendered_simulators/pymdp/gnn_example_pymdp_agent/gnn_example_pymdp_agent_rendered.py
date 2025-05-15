@@ -9,8 +9,10 @@ import traceback
 
 # --- GNN to PyMDP Conversion Summary ---
 # INFO: Starting GNN data extraction.
+# DEBUG: Successfully parsed stringified direct_num_obs: [3, 3, 3]
 # DEBUG: Successfully parsed stringified direct_num_states: [2, 3]
-# WARNING: No 'ObservationModalities' in StateSpaceBlock and no 'num_obs_modalities' in ModelParameters or gnn_spec.
+# INFO: Observation dimensions (num_obs) derived directly from gnn_spec.num_obs_modalities: [3, 3, 3]
+# INFO: Observation names generated as defaults (gnn_spec.obs_modality_names not found or mismatched).
 # INFO: Hidden state dimensions (num_states) derived directly from gnn_spec.num_hidden_states_factors: [2, 3]
 # INFO: Hidden state names generated as defaults (gnn_spec.hidden_state_factor_names not found or mismatched).
 # WARNING: Could not definitively determine control structure from gnn_spec, ModelParameters or StateSpaceBlock. control_fac_idx might be empty.
@@ -20,22 +22,23 @@ import traceback
 # INFO: D_spec: No 'D_Vector' or 'D_f<idx>' keys found in InitialParameterization.
 # INFO: E_spec: No 'E_Vector' or 'E' key found.
 # INFO: Finished GNN data extraction.
-# INFO: A_matrix: No observation modalities defined. 'A' will be None.
+# INFO: A_matrix: No A_spec provided in GNN. All modalities of A defaulted to uniform.
 # DEBUG: B_matrix (factor factor_0): Initialized with default identity matrix for uncontrolled factor.
 # DEBUG: B_matrix (factor factor_1): Initialized with default identity matrix for uncontrolled factor.
 # INFO: B_matrix: No B_spec provided in GNN. B slices will use default initializations (identities).
-# INFO: C_vector: No observation modalities defined. 'C' will be None.
+# INFO: C_vector: No C_spec. C will be initialized to zeros by obj_array_zeros.
 # INFO: D_vector: No D_spec. All factors of D defaulted to uniform.
 # INFO: AgentHyperparameters: Extracting learning and algorithm parameter dicts.
+# INFO: Simulation: No 'initial_observations' in GNN, using default.
 # INFO: Simulation: No 'initial_true_states' in GNN, using default.
 # --- End of GNN to PyMDP Conversion Summary ---
 
 
 # --- GNN Model: Multifactor_PyMDP_Agent_v1 ---
 
-obs_names = []
-num_obs = []
-num_modalities = 0
+obs_names = ['modality_0', 'modality_1', 'modality_2']
+num_obs = [3, 3, 3]
+num_modalities = 3
 state_names = ['factor_0', 'factor_1']
 num_states = [2, 3]
 num_factors = 2
@@ -43,11 +46,14 @@ control_fac_idx = []
 num_controls = [1, 1]
 
 # --- Matrix Definitions ---
-A = None
+A = utils.obj_array(3)
+A[0] = utils.norm_dist(np.ones((3, 2, 3))) # Defaulted to uniform
+A[1] = utils.norm_dist(np.ones((3, 2, 3))) # Defaulted to uniform
+A[2] = utils.norm_dist(np.ones((3, 2, 3))) # Defaulted to uniform
 B = utils.obj_array(num_factors)
 B[0] = np.eye(2)[:, :, np.newaxis] # Default for uncontrolled (identity)
 B[1] = np.eye(3)[:, :, np.newaxis] # Default for uncontrolled (identity)
-C = None
+C = utils.obj_array_zeros(num_obs)
 D = utils.obj_array(2)
 D[0] = utils.norm_dist(np.ones(2)) # Default: uniform D for factor 0
 D[1] = utils.norm_dist(np.ones(3)) # Default: uniform D for factor 1
@@ -75,7 +81,7 @@ if __name__ == '__main__':
     # Initialize agent (already done above)
     agent = Multifactor_PyMDP_Agent_v1
     print(f"Agent 'Multifactor_PyMDP_Agent_v1' initialized with {agent.num_factors if hasattr(agent, 'num_factors') else 'N/A'} factors and {agent.num_modalities if hasattr(agent, 'num_modalities') else 'N/A'} modalities.")
-    o_current = [] # Example initial observation (e.g. first outcome for each modality)
+    o_current = [0, 0, 0] # Example initial observation (e.g. first outcome for each modality)
     s_current = [0, 0] # Example initial true states for simulation
     T = 5 # Number of timesteps
     A_gen_process = copy.deepcopy(A)

@@ -1,41 +1,44 @@
-### Summary of the GNN Model: Gold Standard POMDP Agent v1.0
+### Summary of the GNN Model: Comprehensive POMDP Agent
 
-**ModelName:** Gold Standard POMDP Agent v1.0
+**Model Name:** Standard POMDP Agent v1.0
 
-**Purpose:**  
-This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent designed to test various GNN parsing and rendering capabilities, particularly within the PyMDP framework.
+**Purpose:** 
+This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent. It is designed to evaluate GNN parsing and rendering capabilities, particularly for applications like PyMDP.
 
 **Key Components:**
 
-1. **Hidden States:**
-   - **Location (s_f0):** 3 states (e.g., RoomA, RoomB, Corridor)
-   - **Resource Level (s_f1):** 2 states (e.g., Low, High)
+1. **Hidden State Factors:**
+   - **Location (s_f0):** 3 states (e.g., RoomA, RoomB, Corridor).
+   - **Resource Level (s_f1):** 2 states (e.g., Low, High).
 
-2. **Observations:**
-   - **Visual Cue (o_m0):** 4 outcomes (e.g., Door, Window, Food, Empty)
-   - **Auditory Signal (o_m1):** 2 outcomes (e.g., Silence, Beep)
+2. **Observation Modalities:**
+   - **Visual Cue (o_m0):** 4 outcomes (e.g., Door, Window, Food, Empty).
+   - **Auditory Signal (o_m1):** 2 outcomes (e.g., Silence, Beep).
 
 3. **Control Factors (Actions):**
-   - **Movement (pi_c0):** 3 actions (e.g., Stay, MoveClockwise, MoveCounterClockwise)
-   - **Interaction (pi_c1):** 2 actions (e.g., Wait, InteractWithResource)
+   - **Movement (pi_c0):** 3 actions (e.g., Stay, MoveClockwise, MoveCounterClockwise).
+   - **Interaction (pi_c1):** 2 actions (e.g., Wait, InteractWithResource).
 
-4. **Transition Dynamics:**
-   - **Location Transitions (B_f0):** Governed by current location and actions.
-   - **Resource Level Transitions (B_f1):** Governed by current resource level and actions.
+4. **Likelihood Mapping:**
+   - **A_m0:** Likelihood of visual cues based on location and resource level.
+   - **A_m1:** Likelihood of auditory signals based on the same factors.
 
-5. **Likelihood Mapping:**
-   - **Visual Cue Likelihood (A_m0):** Conditional on location and resource level.
-   - **Auditory Signal Likelihood (A_m1):** Conditional on location and resource level.
+5. **Transition Dynamics:**
+   - **B_f0:** Transition dynamics for location influenced by current state and actions.
+   - **B_f1:** Transition dynamics for resource level similarly influenced.
 
 6. **Preferences:**
-   - **Visual Cue Preferences (C_m0):** Log preferences for outcomes related to visual cues.
-   - **Auditory Signal Preferences (C_m1):** Log preferences for outcomes related to auditory signals.
+   - **C_m0:** Log preferences for visual cues.
+   - **C_m1:** Log preferences for auditory signals.
+
+7. **Initial Priors:**
+   - **D_f0:** Priors for initial location states.
+   - **D_f1:** Priors for initial resource level states.
 
 **Main Connections:**
+- Initial priors (D_f0, D_f1) connect to hidden states (s_f0, s_f1).
+- Hidden states influence the likelihoods (A_m0, A_m1), which in turn affect observations (o_m0, o_m1).
+- States and actions feed into the transition dynamics (B_f0, B_f1), determining next states.
+- Preferences and states/observations are linked to the Expected Free Energy (G), which then informs policy decisions (pi_c0, pi_c1) and chosen actions (u_c0, u_c1).
 
-- **Initial Priors (D_f0, D_f1)** are connected to the hidden states (s_f0, s_f1).
-- **Hidden States** (s_f0, s_f1) lead to **Likelihoods** (A_m0, A_m1) which in turn produce **Observations** (o_m0, o_m1).
-- **States and Actions** influence **Transitions** (B_f0, B_f1) to determine next states.
-- **Preferences** and states/observations impact the **Expected Free Energy** (G), which subsequently influences the policies (pi_c0, pi_c1) and ultimately dictates the chosen actions (u_c0, u_c1).
-
-This model serves as a gold standard for evaluating POMDP implementations in GNN, providing a structured representation of agent behaviors in partially observable environments.
+Overall, the model encapsulates the complexities of a POMDP agent, emphasizing the interplay between hidden states, observations, actions, and decision-making processes within a structured GNN framework.

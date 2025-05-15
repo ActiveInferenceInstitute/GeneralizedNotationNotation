@@ -1,5 +1,5 @@
 {
-  "ModelName": "Gold Standard POMDP Agent v1.0",
+  "ModelName": "Standard POMDP Agent v1.0",
   "ModelAnnotation": "This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.\nIt includes:\n- Two hidden state factors: Location (3 states), ResourceLevel (2 states).\n- Two observation modalities: VisualCue (4 outcomes), AuditorySignal (2 outcomes).\n- Two control factors (actions): Movement (3 actions), Interaction (2 actions).\nThis example is designed to test various GNN parsing and rendering capabilities, especially for PyMDP.",
   "GNNVersionAndFlags": "GNN v1",
   "Time": "Dynamic\nDiscreteTime=t\nModelTimeHorizon=50 # Example planning horizon for simulations",

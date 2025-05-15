@@ -1,7 +1,7 @@
 {
   "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_POMDP_example.md": {
     "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_POMDP_example.md",
-    "model_name": "Gold Standard POMDP Agent v1.0",
+    "model_name": "Standard POMDP Agent v1.0",
     "memory_estimate": 0.56640625,
     "inference_estimate": 158.0995247133244,
     "storage_estimate": 3.98634375,

@@ -1,4 +1,4 @@
-GNN Model Summary: Gold Standard POMDP Agent v1.0
+GNN Model Summary: Standard POMDP Agent v1.0
 Source File: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_POMDP_example.md
 
 Metadata:

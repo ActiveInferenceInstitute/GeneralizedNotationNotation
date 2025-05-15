@@ -1,7 +1,7 @@
 using RxInfer
 
 
-@model function Gold Standard POMDP Agent v1.0()
+@model function Standard POMDP Agent v1.0()
 
 end
 
@@ -16,6 +16,6 @@ end
 # X_matrix_data = Matrix(my_data_table[!, [:x1_column, :x2_column]])
 
 result = infer(
-    model = Gold Standard POMDP Agent v1.0
+    model = Standard POMDP Agent v1.0
     iterations = 50
 )

@@ -5,7 +5,7 @@ ComprehensivePOMDPAgent
 GNN v1
 
 ## ModelName
-Gold Standard POMDP Agent v1.0
+Standard POMDP Agent v1.0
 
 ## ModelAnnotation
 This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
@@ -180,7 +180,7 @@ num_obs_modalities: [4, 2]     # o_m0[4], o_m1[2]
 num_control_factors: [3, 2]    # pi_c0[3], pi_c1[2]
 
 ## Footer
-Gold Standard POMDP Agent v1.0 - End of Specification
+Standard POMDP Agent v1.0 - End of Specification
 
 ## Signature
 Creator: AI Assistant for GNN

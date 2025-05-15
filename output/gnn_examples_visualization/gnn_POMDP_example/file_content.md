@@ -1,7 +1,7 @@
-# GNN File: src/gnn/examples/gnn_POMDP_example.md\n\n## Raw File Content\n\n```\n# GNN Gold Standard Example: Comprehensive POMDP Agent
+# GNN File: src/gnn/examples/gnn_POMDP_example.md\n\n## Raw File Content\n\n```\n# GNN Standard Example: Comprehensive POMDP Agent
 # Format: Markdown representation of a complex POMDP model for testing GNN features.
 # Version: 1.0
-# This file is machine-readable and aims to be a gold standard for the GNN pipeline.
+# This file is machine-readable and aims to be a standard for the GNN pipeline.
 
 ## GNNSection
 ComprehensivePOMDPAgent
@@ -10,7 +10,7 @@ ComprehensivePOMDPAgent
 GNN v1
 
 ## ModelName
-Gold Standard POMDP Agent v1.0
+Standard POMDP Agent v1.0
 
 ## ModelAnnotation
 This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
@@ -185,7 +185,7 @@ num_obs_modalities: [4, 2]     # o_m0[4], o_m1[2]
 num_control_factors: [3, 2]    # pi_c0[3], pi_c1[2]
 
 ## Footer
-Gold Standard POMDP Agent v1.0 - End of Specification
+Standard POMDP Agent v1.0 - End of Specification
 
 ## Signature
 Creator: AI Assistant for GNN
@@ -195,16 +195,16 @@ Status: Example for testing and demonstration. InitialParameterization for A & B
 ### _HeaderComments
 
 ```
-# GNN Gold Standard Example: Comprehensive POMDP Agent
+# GNN Standard Example: Comprehensive POMDP Agent
 # Format: Markdown representation of a complex POMDP model for testing GNN features.
 # Version: 1.0
-# This file is machine-readable and aims to be a gold standard for the GNN pipeline.
+# This file is machine-readable and aims to be a standard for the GNN pipeline.
 ```
 
 ### ModelName
 
 ```
-Gold Standard POMDP Agent v1.0
+Standard POMDP Agent v1.0
 ```
 
 ### GNNSection
@@ -418,7 +418,7 @@ num_control_factors: [3, 2]    # pi_c0[3], pi_c1[2]
 ### Footer
 
 ```
-Gold Standard POMDP Agent v1.0 - End of Specification
+Standard POMDP Agent v1.0 - End of Specification
 ```
 
 ### Signature

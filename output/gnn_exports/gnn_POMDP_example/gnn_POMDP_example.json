@@ -1,6 +1,6 @@
 {
     "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_POMDP_example.md",
-    "name": "Gold Standard POMDP Agent v1.0",
+    "name": "Standard POMDP Agent v1.0",
     "metadata": {
         "description": "This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.\nIt includes:\n- Two hidden state factors: Location (3 states), ResourceLevel (2 states).\n- Two observation modalities: VisualCue (4 outcomes), AuditorySignal (2 outcomes).\n- Two control factors (actions): Movement (3 actions), Interaction (2 actions).\nThis example is designed to test various GNN parsing and rendering capabilities, especially for PyMDP."
     },
@@ -224,7 +224,7 @@
     "raw_sections": {
         "GNNSection": "ComprehensivePOMDPAgent",
         "GNNVersionAndFlags": "GNN v1",
-        "ModelName": "Gold Standard POMDP Agent v1.0",
+        "ModelName": "Standard POMDP Agent v1.0",
         "ModelAnnotation": "This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.\nIt includes:\n- Two hidden state factors: Location (3 states), ResourceLevel (2 states).\n- Two observation modalities: VisualCue (4 outcomes), AuditorySignal (2 outcomes).\n- Two control factors (actions): Movement (3 actions), Interaction (2 actions).\nThis example is designed to test various GNN parsing and rendering capabilities, especially for PyMDP.",
         "StateSpaceBlock": "# Hidden States (s_factorIndex[num_states_factor, 1, type=dataType])\ns_f0[3,1,type=int]   # Hidden State Factor 0: Location (e.g., RoomA, RoomB, Corridor)\ns_f1[2,1,type=int]   # Hidden State Factor 1: ResourceLevel (e.g., Low, High)\n\n# Observations (o_modalityIndex[num_outcomes_modality, 1, type=dataType])\no_m0[4,1,type=int]   # Observation Modality 0: VisualCue (e.g., Door, Window, Food, Empty)\no_m1[2,1,type=int]   # Observation Modality 1: AuditorySignal (e.g., Silence, Beep)\n\n# Control Factors / Policies (pi_factorIndex[num_actions_factor, type=dataType])\n# These represent the distribution over actions for each controllable factor.\npi_c0[3,type=float]  # Policy for Control Factor 0: Movement (e.g., Stay, MoveClockwise, MoveCounterClockwise)\npi_c1[2,type=float]  # Policy for Control Factor 1: Interaction (e.g., Wait, InteractWithResource)\n\n# Actions (u_factorIndex[1, type=dataType]) - chosen actions\nu_c0[1,type=int]     # Chosen action for Movement\nu_c1[1,type=int]     # Chosen action for Interaction\n\n# Likelihood Mapping (A_modalityIndex[outcomes, factor0_states, factor1_states, ..., type=dataType])\nA_m0[4,3,2,type=float] # VisualCue likelihood given Location and ResourceLevel\nA_m1[2,3,2,type=float] # AuditorySignal likelihood\n\n# Transition Dynamics (B_factorIndex[next_states, prev_states, control0_actions, control1_actions, ..., type=dataType])\nB_f0[3,3,3,2,type=float] # Location transitions, depends on current Location, Movement action, and Interaction action\nB_f1[2,2,3,2,type=float] # ResourceLevel transitions, depends on current ResourceLevel, Movement action, and Interaction action\n\n# Preferences (C_modalityIndex[outcomes, type=dataType]) - Log preferences over outcomes\nC_m0[4,type=float]   # Preferences for VisualCues\nC_m1[2,type=float]   # Preferences for AuditorySignals\n\n# Priors over Initial Hidden States (D_factorIndex[num_states_factor, type=dataType])\nD_f0[3,type=float]   # Prior for Location\nD_f1[2,type=float]   # Prior for ResourceLevel\n\n# Expected Free Energy (G[num_policies_controlFactor0 * num_policies_controlFactor1, ... , type=dataType])\n# For this example, G would be complex if policies are combinations of actions.\n# Simpler: G_c0[3,type=float] for EFE of movement, G_c1[2,type=float] for EFE of interaction.\n# Or a single G if policies are evaluated jointly. Let's use a single G for overall policy EFE.\n# Assuming policies are evaluated over a fixed horizon and combined.\nG[1,type=float]      # Overall Expected Free Energy of chosen combined policy\n\n# Time\nt[1,type=int]",
         "Connections": "# Priors to initial states\n(D_f0, D_f1) -> (s_f0, s_f1)\n\n# States to likelihoods to observations\n(s_f0, s_f1) -> (A_m0, A_m1)\n(A_m0) -> (o_m0)\n(A_m1) -> (o_m1)\n\n# States and actions to transitions to next states\n(s_f0, s_f1, u_c0, u_c1) -> (B_f0, B_f1)\n(B_f0) -> s_f0_next # Implied next state for factor 0\n(B_f1) -> s_f1_next # Implied next state for factor 1\n\n# Preferences and states/observations to EFE\n(C_m0, C_m1, s_f0, s_f1, A_m0, A_m1) > G # Simplified EFE dependency\n\n# EFE to policies\nG > (pi_c0, pi_c1)\n\n# Policies to chosen actions\n(pi_c0) -> u_c0\n(pi_c1) -> u_c1",
@@ -234,7 +234,7 @@
         "Time": "Dynamic\nDiscreteTime=t\nModelTimeHorizon=50 # Example planning horizon for simulations",
         "ActInfOntologyAnnotation": "# Hidden States\ns_f0=HiddenStateFactor0\ns_f1=HiddenStateFactor1\n\n# Observations\no_m0=ObservationModality0\no_m1=ObservationModality1\n\n# Control/Policy Related\npi_c0=PolicyVector      # Or PolicyVectorFactor0\npi_c1=PolicyVectorFactor1      # Or PolicyVectorFactor1\nu_c0=Action # Or ActionFactor0\nu_c1=ActionFactor1 # Or ActionFactor1\n\n# Likelihoods\nA_m0=LikelihoodMatrixModality0\nA_m1=LikelihoodMatrixModality1\n\n# Transitions\nB_f0=TransitionMatrixFactor0\nB_f1=TransitionMatrixFactor1\n\n# Preferences\nC_m0=LogPreferenceVectorModality0 # Or LogPreferenceVectorModality0\nC_m1=LogPreferenceVectorModality1 # Or LogPreferenceVectorModality1\n\n# Priors\nD_f0=PriorOverHiddenStatesFactor0\nD_f1=PriorOverHiddenStatesFactor1\n\n# Other\nG=ExpectedFreeEnergy\nt=Time",
         "ModelParameters": "num_hidden_states_factors: [3, 2]  # s_f0[3], s_f1[2]\nnum_obs_modalities: [4, 2]     # o_m0[4], o_m1[2]\nnum_control_factors: [3, 2]    # pi_c0[3], pi_c1[2]",
-        "Footer": "Gold Standard POMDP Agent v1.0 - End of Specification",
+        "Footer": "Standard POMDP Agent v1.0 - End of Specification",
         "Signature": "Creator: AI Assistant for GNN\nDate: 2024-07-26\nStatus: Example for testing and demonstration. InitialParameterization for A & B matrices is placeholder due to parsing complexity of >2D arrays from GNN string format."
     },
     "other_sections": {},
@@ -242,8 +242,12 @@
     "gnnversionandflags": {},
     "equations": "# Standard POMDP / Active Inference equations for:\n# 1. State estimation (approximate posterior over hidden states)\n#    q(s_t) = σ( ln(A^T o_t) + ln(D) ) for t=0\n#    q(s_t) = σ( ln(A^T o_t) + sum_{s_{t-1}} B(s_t | s_{t-1}, u_{t-1}) q(s_{t-1}) ) for t>0\n# 2. Policy evaluation (Expected Free Energy)\n#    G(π) = sum_t E_q(o_t, s_t | π) [ ln q(s_t | o_t, π) - ln q(s_t, o_t | π) - ln C(o_t) ]\n# 3. Action selection (Softmax over -G)\n#    P(u_t | π) = σ(-G(π))",
     "ModelParameters": {
-        "num_hidden_states_factors": "[3, 2]"
+        "num_hidden_states_factors": "[3, 2]",
+        "num_obs_modalities": "[4, 2]",
+        "num_control_factors": "[3, 2]"
     },
     "num_hidden_states_factors": "[3, 2]",
-    "footer": "Gold Standard POMDP Agent v1.0 - End of Specification"
+    "num_obs_modalities": "[4, 2]",
+    "num_control_factors": "[3, 2]",
+    "footer": "Standard POMDP Agent v1.0 - End of Specification"
 }

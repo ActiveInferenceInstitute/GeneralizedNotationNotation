@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/pymdp/gnn_POMDP_example/gnn_POMDP_example_rendered.py", line 57, in <module>
-    Gold_Standard_POMDP_Agent_v10 = Agent(
-                                    ^^^^^^
-  File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/pymdp/agent.py", line 88, in __init__
-    raise TypeError(
-TypeError: A matrix must be a numpy array

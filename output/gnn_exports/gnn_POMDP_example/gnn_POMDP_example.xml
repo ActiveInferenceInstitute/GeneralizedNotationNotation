@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
-<Gold_Standard_POMDP_Agent_v1.0>
+<Standard_POMDP_Agent_v1.0>
   <file_path>/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_POMDP_example.md</file_path>
-  <name>Gold Standard POMDP Agent v1.0</name>
+  <name>Standard POMDP Agent v1.0</name>
   <metadata>
     <description>This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
 It includes:
@@ -230,7 +230,7 @@ This example is designed to test various GNN parsing and rendering capabilities,
   <raw_sections>
     <GNNSection>ComprehensivePOMDPAgent</GNNSection>
     <GNNVersionAndFlags>GNN v1</GNNVersionAndFlags>
-    <ModelName>Gold Standard POMDP Agent v1.0</ModelName>
+    <ModelName>Standard POMDP Agent v1.0</ModelName>
     <ModelAnnotation>This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
 It includes:
 - Two hidden state factors: Location (3 states), ResourceLevel (2 states).
@@ -426,7 +426,7 @@ t=Time</ActInfOntologyAnnotation>
     <ModelParameters>num_hidden_states_factors: [3, 2]  # s_f0[3], s_f1[2]
 num_obs_modalities: [4, 2]     # o_m0[4], o_m1[2]
 num_control_factors: [3, 2]    # pi_c0[3], pi_c1[2]</ModelParameters>
-    <Footer>Gold Standard POMDP Agent v1.0 - End of Specification</Footer>
+    <Footer>Standard POMDP Agent v1.0 - End of Specification</Footer>
     <Signature>Creator: AI Assistant for GNN
 Date: 2024-07-26
 Status: Example for testing and demonstration. InitialParameterization for A &amp; B matrices is placeholder due to parsing complexity of &gt;2D arrays from GNN string format.</Signature>
@@ -444,7 +444,11 @@ Status: Example for testing and demonstration. InitialParameterization for A &am
 #    P(u_t | π) = σ(-G(π))</equations>
   <ModelParameters>
     <num_hidden_states_factors>[3, 2]</num_hidden_states_factors>
+    <num_obs_modalities>[4, 2]</num_obs_modalities>
+    <num_control_factors>[3, 2]</num_control_factors>
   </ModelParameters>
   <num_hidden_states_factors>[3, 2]</num_hidden_states_factors>
-  <footer>Gold Standard POMDP Agent v1.0 - End of Specification</footer>
-</Gold_Standard_POMDP_Agent_v1.0>
+  <num_obs_modalities>[4, 2]</num_obs_modalities>
+  <num_control_factors>[3, 2]</num_control_factors>
+  <footer>Standard POMDP Agent v1.0 - End of Specification</footer>
+</Standard_POMDP_Agent_v1.0>

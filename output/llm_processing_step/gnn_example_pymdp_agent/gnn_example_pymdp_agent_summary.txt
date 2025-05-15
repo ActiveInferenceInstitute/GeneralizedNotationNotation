@@ -1,33 +1,28 @@
-### Summary of GNN Model: Multifactor PyMDP Agent
+### Summary of the GNN Model: Multifactor PyMDP Agent
 
 **Model Name:** Multifactor PyMDP Agent v1
 
-**Purpose:**  
-The model represents a PyMDP (Partially Observable Markov Decision Process) agent designed for active inference with multiple observation modalities and hidden state factors. Its aim is to infer states, formulate policies, and sample actions based on observations and hidden states.
+**Purpose:** 
+This model represents a PyMDP (Partially Observable Markov Decision Process) agent designed for active inference, utilizing multiple observation modalities and hidden state factors to make decisions based on uncertain environments.
 
 **Key Components:**
 
 1. **Observation Modalities:**
-   - **State Observation (o_m0):** 3 outcomes
-   - **Reward (o_m1):** 3 outcomes
-   - **Decision Proprioceptive (o_m2):** 3 outcomes
+   - **State Observation:** 3 outcomes
+   - **Reward:** 3 outcomes
+   - **Decision Proprioceptive:** 3 outcomes
 
 2. **Hidden State Factors:**
-   - **Reward Level (s_f0):** 2 states
-   - **Decision State (s_f1):** 3 states
+   - **Reward Level:** 2 states (uncontrollable)
+   - **Decision State:** 3 states (controllable with 3 possible actions)
 
 3. **Control Mechanism:**
-   - The **decision_state** factor is controllable with 3 possible actions (u_f1), influencing transitions in the model.
-
-4. **State Transition and Likelihood Matrices:**
-   - **A_matrices:** Likelihood matrices for each observation modality.
-   - **B_matrices:** Transition matrices for the hidden state factors.
-   - **C_vectors:** Preference vectors for each modality.
-   - **D_vectors:** Priors over the hidden states.
+   - The decision state factor is controllable, allowing the agent to select actions based on the policy.
 
 **Main Connections:**
-- The model structure connects priors (D_f0, D_f1) to hidden states (s_f0, s_f1), which in turn connect to the likelihood matrices (A_m0, A_m1, A_m2) and observations (o_m0, o_m1, o_m2).
-- The hidden states influence the transition dynamics represented in the B_matrices, with the action taken (u_f1) primarily affecting the **decision_state** transitions (B_f1).
-- The expected free energy (G) is computed from the preferences (C_m0, C_m1, C_m2) and subsequently influences the policy vector (π_f1).
+- The hidden states (s_f0 for reward level and s_f1 for decision state) are connected to the likelihood matrices (A_m0, A_m1, A_m2) which determine the probabilities of observations based on these states.
+- The transitions between hidden states are governed by the transition matrices (B_f0, B_f1), where B_f1 is influenced by the agent's actions (u_f1).
+- Observations (o_m0, o_m1, o_m2) provide data that is processed to update beliefs about the hidden states through the likelihood matrices.
+- Expected Free Energy (G) is computed from the preferences (C_m0, C_m1, C_m2) and influences the policy (π_f1), guiding the agent's actions.
 
-Overall, this GNN model encapsulates a multifactor agent capable of processing various observations and making decisions based on inferred hidden states within a structured active inference framework.
+This model utilizes standard PyMDP equations for state inference, policy inference, and action sampling, functioning in a discrete time dynamic system with an unbounded time horizon.

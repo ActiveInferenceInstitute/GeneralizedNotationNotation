@@ -1,6 +1,6 @@
 {
-  "_HeaderComments": "# GNN Gold Standard Example: Comprehensive POMDP Agent\n# Format: Markdown representation of a complex POMDP model for testing GNN features.\n# Version: 1.0\n# This file is machine-readable and aims to be a gold standard for the GNN pipeline.",
-  "ModelName": "Gold Standard POMDP Agent v1.0",
+  "_HeaderComments": "# GNN Standard Example: Comprehensive POMDP Agent\n# Format: Markdown representation of a complex POMDP model for testing GNN features.\n# Version: 1.0\n# This file is machine-readable and aims to be a standard for the GNN pipeline.",
+  "ModelName": "Standard POMDP Agent v1.0",
   "GNNSection": "ComprehensivePOMDPAgent",
   "GNNVersionAndFlags": "GNN v1",
   "ModelAnnotation": "This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.\nIt includes:\n- Two hidden state factors: Location (3 states), ResourceLevel (2 states).\n- Two observation modalities: VisualCue (4 outcomes), AuditorySignal (2 outcomes).\n- Two control factors (actions): Movement (3 actions), Interaction (2 actions).\nThis example is designed to test various GNN parsing and rendering capabilities, especially for PyMDP.",
@@ -11,6 +11,6 @@
   "Time": "Dynamic\nDiscreteTime=t\nModelTimeHorizon=50 # Example planning horizon for simulations",
   "ActInfOntologyAnnotation": "# Hidden States\ns_f0=HiddenStateFactor0\ns_f1=HiddenStateFactor1\n\n# Observations\no_m0=ObservationModality0\no_m1=ObservationModality1\n\n# Control/Policy Related\npi_c0=PolicyVector      # Or PolicyVectorFactor0\npi_c1=PolicyVectorFactor1      # Or PolicyVectorFactor1\nu_c0=Action # Or ActionFactor0\nu_c1=ActionFactor1 # Or ActionFactor1\n\n# Likelihoods\nA_m0=LikelihoodMatrixModality0\nA_m1=LikelihoodMatrixModality1\n\n# Transitions\nB_f0=TransitionMatrixFactor0\nB_f1=TransitionMatrixFactor1\n\n# Preferences\nC_m0=LogPreferenceVectorModality0 # Or LogPreferenceVectorModality0\nC_m1=LogPreferenceVectorModality1 # Or LogPreferenceVectorModality1\n\n# Priors\nD_f0=PriorOverHiddenStatesFactor0\nD_f1=PriorOverHiddenStatesFactor1\n\n# Other\nG=ExpectedFreeEnergy\nt=Time",
   "ModelParameters": "num_hidden_states_factors: [3, 2]  # s_f0[3], s_f1[2]\nnum_obs_modalities: [4, 2]     # o_m0[4], o_m1[2]\nnum_control_factors: [3, 2]    # pi_c0[3], pi_c1[2]",
-  "Footer": "Gold Standard POMDP Agent v1.0 - End of Specification",
+  "Footer": "Standard POMDP Agent v1.0 - End of Specification",
   "Signature": "Creator: AI Assistant for GNN\nDate: 2024-07-26\nStatus: Example for testing and demonstration. InitialParameterization for A & B matrices is placeholder due to parsing complexity of >2D arrays from GNN string format."
 }
