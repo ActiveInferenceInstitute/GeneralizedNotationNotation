@@ -1,157 +1,118 @@
 {
-    "model_purpose": "The GNN file represents a Multifactor PyMDP agent designed to operate under the principles of Active Inference, incorporating multiple observation modalities and hidden state factors to make decisions based on inferred states and expected free energy.",
+    "model_purpose": "The GNN file represents a Multifactor PyMDP (Partially Observable Markov Decision Process) agent designed for active inference tasks, incorporating multiple observation modalities and hidden state factors to infer states, policies, and actions.",
     "key_components": {
         "hidden_states": {
-            "reward_level": {
-                "states": 2,
-                "description": "Represents the reward level of the agent."
-            },
-            "decision_state": {
-                "states": 3,
-                "description": "Represents the state of the decision-making process."
+            "factors": {
+                "reward_level": {
+                    "states": 2,
+                    "description": "Represents the level of reward, with two possible states."
+                },
+                "decision_state": {
+                    "states": 3,
+                    "description": "Represents the decision-making state, with three possible states."
+                }
             }
         },
         "observations": {
-            "state_observation": {
-                "outcomes": 3,
-                "description": "Observations related to the state of the environment."
-            },
-            "reward": {
-                "outcomes": 3,
-                "description": "Observations related to the rewards received."
-            },
-            "decision_proprioceptive": {
-                "outcomes": 3,
-                "description": "Observations related to the proprioceptive state of decisions."
+            "modalities": {
+                "state_observation": {
+                    "outcomes": 3,
+                    "description": "Observations related to the state with three potential outcomes."
+                },
+                "reward": {
+                    "outcomes": 3,
+                    "description": "Observations related to the reward with three potential outcomes."
+                },
+                "decision_proprioceptive": {
+                    "outcomes": 3,
+                    "description": "Observations regarding the proprioceptive state of decisions, with three potential outcomes."
+                }
             }
         },
         "actions": {
             "decision_state": {
                 "actions": 3,
-                "description": "Controllable actions affecting the decision state."
-            }
-        },
-        "policy": {
-            "policy_vector": {
-                "factors": 1,
-                "description": "Distribution over actions for the controllable decision state."
-            }
-        },
-        "preferences": {
-            "C_vectors": {
-                "modalities": 3,
-                "description": "Preferences for each observation modality."
-            }
-        },
-        "priors": {
-            "D_vectors": {
-                "factors": 2,
-                "description": "Prior distributions for each hidden state factor."
+                "description": "Three possible actions that can be taken based on the controllable decision state."
             }
         }
     },
     "component_interactions": {
         "hidden_states": {
-            "connections": [
-                "D_f0 and D_f1 influence s_f0 and s_f1",
-                "s_f0 and s_f1 affect A_m0, A_m1, A_m2 (observations)",
-                "s_f0, s_f1, and u_f1 influence B_f0 and B_f1 (transitions)"
-            ]
+            "reward_level": "Uncontrolled transitions defined in B_f0 matrix, with dynamics influenced by observations.",
+            "decision_state": "Controlled transitions defined in B_f1 matrix, influenced by actions taken."
         },
         "observations": {
-            "connections": [
-                "A_m0, A_m1, A_m2 produce o_m0, o_m1, o_m2 respectively",
-                "C_m0, C_m1, C_m2 are used to compute G (expected free energy)"
-            ]
+            "state_observation": "Linked to likelihood matrices A_m0, A_m1, and A_m2, influencing the inference of hidden states.",
+            "reward": "Works in conjunction with hidden states to inform the agent's decision-making process.",
+            "decision_proprioceptive": "Provides feedback on the decision-making process."
         },
         "policy_and_control": {
-            "connections": [
-                "G influences \u03c0_f1 (policy vector)",
-                "\u03c0_f1 and u_f1 determine the action taken"
-            ]
+            "policy": "\u03c0_f1 represents the distribution over actions based on expected free energy G.",
+            "action": "u_f1 indicates the chosen action for the decision state, influencing transitions in B_f1."
         },
         "time": {
-            "connections": [
-                "t represents the discrete time steps in the model."
-            ]
+            "discrete timestep": "Indicated by variable t, representing the progression of the agent's dynamics."
         }
     },
     "data_types_and_dimensions": {
         "A_matrices": {
-            "dimensions": "[3, 2, 3]",
-            "types": "float"
+            "types": "float",
+            "dimensions": {
+                "A_m0": "[3, 2, 3]",
+                "A_m1": "[3, 2, 3]",
+                "A_m2": "[3, 2, 3]"
+            }
         },
         "B_matrices": {
-            "dimensions": "[2, 2, 1] for B_f0 and [3, 3, 3] for B_f1",
-            "types": "float"
+            "types": "float",
+            "dimensions": {
+                "B_f0": "[2, 2, 1]",
+                "B_f1": "[3, 3, 3]"
+            }
         },
         "C_vectors": {
-            "dimensions": "[3] for each modality",
-            "types": "float"
+            "types": "float",
+            "dimensions": {
+                "C_m0": "[3]",
+                "C_m1": "[3]",
+                "C_m2": "[3]"
+            }
         },
         "D_vectors": {
-            "dimensions": "[2] for D_f0 and [3] for D_f1",
-            "types": "float"
+            "types": "float",
+            "dimensions": {
+                "D_f0": "[2]",
+                "D_f1": "[3]"
+            }
         },
         "hidden_states": {
-            "dimensions": "[2, 1] for s_f0 and [3, 1] for s_f1",
-            "types": "float"
+            "types": "float",
+            "dimensions": {
+                "s_f0": "[2, 1]",
+                "s_f1": "[3, 1]",
+                "s_prime_f0": "[2, 1]",
+                "s_prime_f1": "[3, 1]"
+            }
         },
         "observations": {
-            "dimensions": "[3, 1] for each modality",
-            "types": "float"
+            "types": "float",
+            "dimensions": {
+                "o_m0": "[3, 1]",
+                "o_m1": "[3, 1]",
+                "o_m2": "[3, 1]"
+            }
         },
-        "policy": {
-            "dimensions": "[3] for \u03c0_f1",
-            "types": "float"
-        },
-        "action": {
-            "dimensions": "[1] for u_f1",
-            "types": "int"
-        },
-        "expected_free_energy": {
-            "dimensions": "[1]",
-            "types": "float"
-        },
-        "time_step": {
-            "dimensions": "[1]",
-            "types": "int"
+        "policy_and_control": {
+            "types": "float",
+            "dimensions": {
+                "\u03c0_f1": "[3]",
+                "u_f1": "[1]",
+                "G": "[1]",
+                "t": "[1]"
+            }
         }
     },
-    "potential_applications": [
-        "Development of intelligent agents capable of decision-making under uncertainty.",
-        "Applications in robotics, where agents must learn and adapt to changing environments.",
-        "Behavioral modeling in psychological and cognitive studies.",
-        "Simulations in environments where multiple factors influence outcomes."
-    ],
-    "limitations_or_ambiguities": [
-        "The model's complexity may lead to challenges in parameter estimation.",
-        "Uncontrolled factors (like B_f0) may limit the agent's adaptability in certain scenarios.",
-        "The implementation specifics of the equations for state inference and policy may not be thoroughly defined."
-    ],
-    "ontology_mapping_assessment": {
-        "terms_present": [
-            "LikelihoodMatrixModality0",
-            "LikelihoodMatrixModality1",
-            "LikelihoodMatrixModality2",
-            "TransitionMatrixFactor0",
-            "TransitionMatrixFactor1",
-            "LogPreferenceVectorModality0",
-            "LogPreferenceVectorModality1",
-            "LogPreferenceVectorModality2",
-            "PriorOverHiddenStatesFactor0",
-            "PriorOverHiddenStatesFactor1",
-            "HiddenStateFactor0",
-            "HiddenStateFactor1",
-            "NextHiddenStateFactor0",
-            "NextHiddenStateFactor1",
-            "ObservationModality0",
-            "ObservationModality1",
-            "ObservationModality2",
-            "PolicyVectorFactor1",
-            "ActionFactor1",
-            "ExpectedFreeEnergy"
-        ],
-        "relevance": "The ontology terms are relevant as they provide a structured vocabulary to understand the components and relationships within the model. They help in aligning the model with established concepts in Active Inference."
-    }
+    "potential_applications": "This model can be applied in robotics, decision-making systems, reinforcement learning, and scenarios requiring complex state inference under uncertainty, particularly where multiple sensory modalities are present.",
+    "limitations_or_ambiguities": "The model's assumptions about the uniformity of priors and the specific forms of the likelihood matrices may not accurately represent all real-world scenarios. Additionally, the dynamics of the unobserved control factor (B_f0) could limit the model's applicability in highly dynamic environments.",
+    "ontology_mapping_assessment": "The ActInfOntology terms are present and relevant. The terms used align with standard nomenclature in active inference literature, facilitating integration with other models and frameworks in the field."
 }

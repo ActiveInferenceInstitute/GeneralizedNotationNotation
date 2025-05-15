@@ -12,8 +12,8 @@ New true state (factor_0): 0
 New true state (factor_1): 0
 
 --- Timestep 2 ---
-Observation (modality_0): 0
-Observation (modality_1): 0
+Observation (modality_0): 1
+Observation (modality_1): 2
 Beliefs about factor_0: [0.25 0.25 0.25 0.25]
 Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
 Posterior over policies (q_pi): [1.]
@@ -34,8 +34,8 @@ New true state (factor_0): 0
 New true state (factor_1): 0
 
 --- Timestep 4 ---
-Observation (modality_0): 0
-Observation (modality_1): 2
+Observation (modality_0): 2
+Observation (modality_1): 1
 Beliefs about factor_0: [0.25 0.25 0.25 0.25]
 Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
 Posterior over policies (q_pi): [1.]
@@ -45,7 +45,7 @@ New true state (factor_0): 0
 New true state (factor_1): 0
 
 --- Timestep 5 ---
-Observation (modality_0): 1
+Observation (modality_0): 0
 Observation (modality_1): 2
 Beliefs about factor_0: [0.25 0.25 0.25 0.25]
 Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]

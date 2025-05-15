@@ -1,31 +1,27 @@
-### Summary of GNN Model: Airplane Trading POMDP
+### Summary of the GNN Model: Airplane Trading POMDP
 
-**ModelName**: Airplane Trading POMDP v1.0
+**Model Name**: Airplane Trading POMDP v1.0
 
-**Purpose**: This model represents a Partially Observable Markov Decision Process (POMDP) for an agent managing an investment portfolio aboard an airplane. The unique challenge of this scenario is the direct impact of financial losses from trading on the airplane's fuel reserves.
+**Purpose**: This model represents a Partially Observable Markov Decision Process (POMDP) for an agent managing an investment portfolio aboard an airplane. The critical challenge addressed is the impact of financial trading losses on the airplane's fuel reserves.
 
-**Key Components**:
+#### Key Components:
 
 1. **Hidden States**:
-   - `NivelCombustible` (Fuel Level): 
-     - States: {Crítico, Bajo, Medio, Alto} (4 states)
-   - `RendimientoMercado` (Market Performance): 
-     - States: {Pérdidas, Neutral, Rentable} (3 states)
+   - **Fuel Level (`NivelCombustible`)**: Four discrete states - {Crítico, Bajo, Medio, Alto}.
+   - **Market Performance (`RendimientoMercado`)**: Three discrete states - {Pérdidas, Neutral, Rentable}.
 
 2. **Observations**:
-   - `IndicadorCombustible` (Fuel Gauge): 
-     - Outcomes: {CasiVacío, Mitad, Lleno} (3 outcomes)
-   - `ResultadoOperacion` (Trading Outcome): 
-     - Outcomes: {Pérdida, SinCambio, Ganancia} (3 outcomes)
+   - **Fuel Gauge (`IndicadorCombustible`)**: Three outcomes - {CasiVacío, Mitad, Lleno}.
+   - **Trading Outcome (`ResultadoOperacion`)**: Three outcomes - {Pérdida, SinCambio, Ganancia}.
 
 3. **Control Factor (Action)**:
-   - `EstrategiaInversion` (Investment Strategy): 
-     - Actions: {Desinvertir, Mantener, Invertir} (3 actions)
+   - **Investment Strategy (`EstrategiaInversion`)**: Three actions - {Desinvertir, Mantener, Invertir}.
 
-**Main Connections**:
-- **Priors to Initial States**: The model connects prior distributions over hidden states (`D_f0`, `D_f1`) to the initial hidden states (`s_f0`, `s_f1`).
+#### Main Connections:
+
+- **Priors to Initial States**: Initial distributions (`D_f0`, `D_f1`) inform the hidden states (`s_f0`, `s_f1`).
 - **States to Observations**: The hidden states influence the likelihood of observations through likelihood mappings (`A_m0`, `A_m1`).
-- **States and Actions to Transitions**: The hidden states and chosen actions define the transition dynamics to the next states (`B_f0`, `B_f1`).
-- **Preferences and Expected Free Energy**: Preferences over outcomes contribute to the calculation of Expected Free Energy (`G`), which in turn influences policy decisions (`pi_c0`), leading to chosen actions (`u_c0`).
+- **State Transitions**: The relationships between states and actions determine the transition dynamics (`B_f0`, `B_f1`) for the next state given current states and chosen actions.
+- **Expected Free Energy**: Preferences over outcomes and predicted states contribute to the overall expected free energy (`G`), which influences the choice of policies (`pi_c0`) and, subsequently, the chosen actions (`u_c0`).
 
-This model encapsulates the complex interactions between trading decisions, fuel management, and market performance, providing a framework for decision-making under uncertainty in a unique operational environment.
+This model encapsulates the interplay between financial decision-making and operational constraints in an airborne context, providing a structured approach to managing risk associated with trading in dynamic environments.

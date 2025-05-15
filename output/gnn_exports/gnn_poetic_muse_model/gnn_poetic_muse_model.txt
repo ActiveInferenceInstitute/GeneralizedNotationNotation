@@ -1,0 +1,83 @@
+GNN Model Summary: The Generative Poetic Muse v1.0
+Source File: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_poetic_muse_model.md
+
+Metadata:
+  description: This model represents a Bayesian Network that stochastically generates a "verse concept" based on hierarchical creative influences.
+It aims to model the flow of poetic inspiration from abstract emotional and elemental inputs to concrete poetic characteristics.
+The model demonstrates:
+- A non-POMDP generative structure.
+- Interdependent latent variables (states).
+- Use of priors for root variables and Conditional Probability Tables (CPTs) for dependent variables.
+- An observable "quality" estimate derived from the final verse concept.
+- Rich annotations for ontology mapping and LLM processing.
+This model is designed to test GNN parsing, type-checking, export, visualization, and ontology features.
+It is not directly renderable to standard PyMDP/RxInfer POMDP simulators without a custom BN renderer.
+
+States (22):
+  - ID: s_v0 (dimensions=4,1,type=int, original_id=s_v0)
+  - ID: s_v1 (dimensions=4,1,type=int, original_id=s_v1)
+  - ID: s_v2 (dimensions=3,1,type=int, original_id=s_v2)
+  - ID: s_v3 (dimensions=3,1,type=int, original_id=s_v3)
+  - ID: s_v4 (dimensions=3,1,type=int, original_id=s_v4)
+  - ID: s_v5 (dimensions=3,1,type=int, original_id=s_v5)
+  - ID: s_v6 (dimensions=3,1,type=int, original_id=s_v6)
+  - ID: s_v7 (dimensions=3,1,type=int, original_id=s_v7)
+  - ID: s_v8 (dimensions=5,1,type=int, original_id=s_v8)
+  - ID: o_m0 (dimensions=3,1,type=int, original_id=o_m0)
+  - ID: D_v0 (dimensions=4,type=float, original_id=D_v0)
+  - ID: D_v1 (dimensions=4,type=float, original_id=D_v1)
+  - ID: D_v2 (dimensions=3,type=float, original_id=D_v2)
+  - ID: B_v3 (dimensions=3,4,4,type=float, original_id=B_v3)
+  - ID: B_v4 (dimensions=3,4,type=float, original_id=B_v4)
+  - ID: B_v5 (dimensions=3,4,type=float, original_id=B_v5)
+  - ID: B_v6 (dimensions=3,3,3,type=float, original_id=B_v6)
+  - ID: B_v7 (dimensions=3,3,3,type=float, original_id=B_v7)
+  - ID: B_v8 (dimensions=5,3,3,3,type=float, original_id=B_v8)
+  - ID: A_m0 (dimensions=3,5,type=float, original_id=A_m0)
+  - ID: C_m0 (dimensions=3,type=float, original_id=C_m0)
+  - ID: t (dimensions=1,type=int, original_id=t)
+
+Initial Parameters (0):
+
+General Parameters (0):
+
+Observations (0):
+
+Transitions (17):
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+
+Ontology Annotations (17):
+  s_v0 = InternalStateFactor_EmotionalTone
+  s_v1 = ContextualFactor_ElementalTheme
+  s_v2 = StructuralPrior_RhythmicPattern
+  s_v3 = LatentFactor_ImageryFocus
+  s_v4 = InformationMetric_LexicalDensity
+  s_v5 = PhoneticAttribute_DominantVowelSound
+  s_v6 = ComplexityMetric_SyllableCount
+  s_v7 = StylisticChoice_PoeticDeviceAffinity
+  s_v8 = GeneratedOutputLatent_FinalVerseConcept
+  o_m0 = ObservableOutcome_VerseQuality
+  D_v0 = PriorDistribution_EmotionalTone
+  D_v1 = PriorDistribution_ElementalTheme
+  D_v2 = PriorDistribution_RhythmicPattern
+  B_v3 = ConditionalProbabilityTable_ImageryFocus
+  A_m0 = LikelihoodMatrix_VerseQuality
+  C_m0 = LogPreferenceVector_VerseQuality
+  t = StaticTimePoint
+

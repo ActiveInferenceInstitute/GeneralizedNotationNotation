@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/pymdp/gnn_active_inference_language_model/gnn_active_inference_language_model_rendered.py", line 48, in <module>
+    Active_Inference_Language_Model_AILM_v01 = Agent(
+                                               ^^^^^^
+  File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/pymdp/agent.py", line 88, in __init__
+    raise TypeError(
+TypeError: A matrix must be a numpy array

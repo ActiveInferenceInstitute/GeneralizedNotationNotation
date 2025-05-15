@@ -1,9 +1,37 @@
 # GNN Resource Estimation Report
 
-Analyzed 3 files
-Average Memory Usage: 0.71 KB
-Average Inference Time: 155.04 units
-Average Storage: 4.10 KB
+Analyzed 5 files
+Average Memory Usage: 6904.27 KB
+Average Inference Time: 298.64 units
+Average Storage: 8289.34 KB
+
+## gnn_poetic_muse_model.md
+Path: src/gnn/examples/gnn_poetic_muse_model.md
+Memory Estimate: 1.27 KB
+Inference Estimate: 189.36 units
+Storage Estimate: 5.29 KB
+
+### Model Info
+- variables_count: 22
+- edges_count: 0
+- time_spec: Static
+- equation_count: 7
+
+### Complexity Metrics
+- state_space_complexity: 8.3487
+- graph_density: 0.0000
+- avg_in_degree: 0.0000
+- avg_out_degree: 0.0000
+- max_in_degree: 0.0000
+- max_out_degree: 0.0000
+- cyclic_complexity: 0.0000
+- temporal_complexity: 0.0000
+- equation_complexity: 13.2857
+- overall_complexity: 10.0000
+- variable_count: 22.0000
+- edge_count: 0.0000
+- total_state_space_dim: 325.0000
+- max_variable_dim: 135.0000
 
 ## gnn_POMDP_example.md
 Path: src/gnn/examples/gnn_POMDP_example.md
@@ -32,6 +60,34 @@ Storage Estimate: 3.99 KB
 - edge_count: 0.0000
 - total_state_space_dim: 145.0000
 - max_variable_dim: 54.0000
+
+## gnn_active_inference_language_model.md
+Path: src/gnn/examples/gnn_active_inference_language_model.md
+Memory Estimate: 34517.93 KB
+Inference Estimate: 838.72 units
+Storage Estimate: 41429.14 KB
+
+### Model Info
+- variables_count: 56
+- edges_count: 0
+- time_spec: Dynamic
+- equation_count: 7
+
+### Complexity Metrics
+- state_space_complexity: 23.0751
+- graph_density: 0.0000
+- avg_in_degree: 0.0000
+- avg_out_degree: 0.0000
+- max_in_degree: 0.0000
+- max_out_degree: 0.0000
+- cyclic_complexity: 0.0000
+- temporal_complexity: 0.0000
+- equation_complexity: 10.3878
+- overall_complexity: 10.0000
+- variable_count: 56.0000
+- edge_count: 0.0000
+- total_state_space_dim: 8836591.0000
+- max_variable_dim: 4000000.0000
 
 ## gnn_airplane_trading_pomdp.md
 Path: src/gnn/examples/gnn_airplane_trading_pomdp.md

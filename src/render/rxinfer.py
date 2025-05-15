@@ -159,6 +159,8 @@ class GnnToRxInferConverter:
     def __init__(self, gnn_spec: Dict[str, Any]):
         self.gnn_spec = gnn_spec
         self.model_name = gnn_spec.get("name", "GNNModel")
+        # Model arguments are primarily defined by "arguments" in GNN spec.
+        # The node processing logic might add to this if not using model_logic.
         self.model_args = list(gnn_spec.get("arguments", []))
         self.julia_model_lines: List[str] = []
         self.julia_constraints_lines: List[str] = []
@@ -166,6 +168,8 @@ class GnnToRxInferConverter:
         self._dependencies_map: Dict[str, List[str]] = {}
         self._processed_nodes: set[str] = set()
         self.nodes_map: Dict[str, Dict[str, Any]] = {}
+        # self.model_return_values is not strictly needed if return is part of model_logic lines
+        # self.model_return_values: List[str] = gnn_spec.get("returns", [])
 
     def _build_dependencies_map(self):
         """Builds a map of node dependencies from the GNN specification."""
@@ -176,6 +180,13 @@ class GnnToRxInferConverter:
     def _resolve_processing_order(self) -> List[Dict[str, Any]]:
         """Resolves node processing order based on dependencies (topological sort)."""
         ordered_nodes_ids: List[str] = []
+        
+        # Ensure nodes_map is built if not already
+        if not self.nodes_map:
+            self.nodes_map = {node["id"]: node for node in self.gnn_spec.get("nodes", [])}
+            for node_id, node_data in self.nodes_map.items():
+                self._dependencies_map[node_id] = node_data.get("dependencies", [])
+
         nodes_to_visit = list(self.nodes_map.keys())
         temp_mark = set()  # For detecting cycles in current DFS path
         perm_mark = set()  # For nodes whose processing is complete
@@ -216,13 +227,135 @@ class GnnToRxInferConverter:
                 visit(node_id_to_visit)
         
         # Return full node dicts in the order they should be declared
-        # The original `ordered_nodes_ids` is in reverse post-order (parents after children).
-        # For declaration, we often want dependencies declared first.
-        # However, visit appends after dependencies, so `ordered_nodes_ids` IS the topological sort.
-        return [self.nodes_map[id_] for id_ in ordered_nodes_ids]
+        # The `ordered_nodes_ids` is a topological sort (dependencies first).
+        return [self.nodes_map[id_] for id_ in ordered_nodes_ids if id_ in self.nodes_map]
+
+    def _parse_param_value(self, value: Any) -> str:
+        """Helper to parse parameter values, including matrix strings."""
+        if isinstance(value, str):
+            # Check if it's a GNN-style matrix string
+            if value.startswith("{") and value.endswith("}"):
+                return _parse_active_inference_matrix_str(value)
+            # Check if it's an identifier (another variable/argument) or needs quotes
+            # Allow existing Julia arrays/tuples or expressions that might be complex
+            if value.isidentifier() or \
+               (value.startswith("[") and value.endswith("]")) or \
+               (value.startswith("(") and value.endswith(")")) or \
+               any(op in value for op in ["+:", "-:", "*:", "/:", ".*", ".+", ".-", ".:", "[", "]"]) : # crude check for expressions
+                return value
+            # It's likely a string literal that needs quoting for Julia
+            return f'"{value.replace("\"", "\\\"")}"' # Escape double quotes for Julia string
+        elif isinstance(value, bool):
+            return str(value).lower()
+        # Numbers, etc., can be directly converted to string
+        return str(value)
+
+    def _format_params_for_distribution(self, params: Dict[str, Any]) -> str:
+        """Formats parameters for a distribution call, parsing values as needed."""
+        if not params:
+            return ""
+        formatted_params = []
+        for k, v_raw in params.items():
+            v_parsed = self._parse_param_value(v_raw)
+            formatted_params.append(f"{k} = {v_parsed}")
+        return ", ".join(formatted_params)
+
+    # Update generate_julia_variable_declaration to use _format_params_for_distribution
+    def _generate_julia_variable_declaration(
+        self,
+        var_name: str, # Can be s[t] or observations[t]
+        distribution: str,
+        params: Dict[str, Any],
+        is_observed: bool,
+        is_vectorized: bool = False,
+        observed_data_name: Optional[str] = None, # If var_name is different from data source name
+        base_indent: str = "    "
+    ) -> str:
+        operator = ". ~" if is_vectorized else "~"
+        # Use the new params formatter
+        params_str = self._format_params_for_distribution(params)
+
+        # If var_name itself is the observed data (e.g. observations[t]), observed_data_name should be var_name
+        target_name_for_observed = observed_data_name if observed_data_name else var_name
+
+        if is_observed:
+            return f"{base_indent}{target_name_for_observed} {operator} {distribution}({params_str})"
+        else: # RV declaration
+            return f"{base_indent}{var_name} {operator} {distribution}({params_str})"
+
+    def _handle_rv_vector_declaration(self, item: Dict[str, Any], base_indent: str) -> str:
+        name = item["name"]
+        size_var = item["size_var"]
+        # Default type of elements in RxInfer RandomVariable vectors
+        element_type = item.get("element_type", "RandomVariable") 
+        return f"{base_indent}{name} = Vector{{{element_type}}}(undef, {size_var})"
+
+    def _handle_assignment(self, item: Dict[str, Any], base_indent: str) -> str:
+        lhs = item["variable"] # e.g., "s[1]", "s[t]", "observations[t]"
+        dist = item["distribution"]
+        params = item.get("params", {})
+        is_observed = item.get("is_observed_data", False)
+        is_vectorized = item.get("is_vectorized", False)
+        
+        # When is_observed_data is true, lhs (e.g. "observations[t]") is the data placeholder
+        return self._generate_julia_variable_declaration(
+            var_name=lhs,
+            distribution=dist,
+            params=params,
+            is_observed=is_observed,
+            is_vectorized=is_vectorized,
+            observed_data_name=lhs if is_observed else None, # if observed, var_name is the data name
+            base_indent=base_indent
+        )
+
+    def _handle_loop(self, item: Dict[str, Any], base_indent: str) -> List[str]:
+        loop_var = item["variable"]
+        range_start = item["range_start"]
+        range_end = item["range_end"] # This could be a variable like 'T'
+        body_items = item["body"]
+        
+        loop_lines = [f"{base_indent}for {loop_var} in {range_start}:{range_end}"]
+        # Process body with increased indentation
+        loop_lines.extend(self._process_model_logic_block(body_items, base_indent + "    "))
+        loop_lines.append(f"{base_indent}end")
+        return loop_lines
+
+    def _handle_return_statement(self, item: Dict[str, Any], base_indent: str) -> str:
+        values_to_return = item.get("values", [])
+        if not values_to_return:
+            return f"{base_indent}# No return values specified"
+        return f"{base_indent}return {', '.join(values_to_return)}"
+        
+    def _handle_raw_julia(self, item: Dict[str, Any], base_indent: str) -> str:
+        raw_code = item.get("code", "")
+        # Ensure the raw code is indented correctly if it's multi-line
+        lines = raw_code.splitlines() # Use splitlines() for better handling of newlines
+        if not lines:
+            return f"{base_indent}# Raw Julia item was empty"
+        indented_lines = [f"{base_indent}{lines[0].strip()}"] # Indent first line
+        indented_lines.extend([f"{base_indent}{line.strip()}" for line in lines[1:]]) # Indent subsequent lines
+        return "\n".join(indented_lines)
+
+    def _process_model_logic_block(self, logic_block: List[Dict[str, Any]], base_indent: str) -> List[str]:
+        processed_lines: List[str] = []
+        for item in logic_block:
+            item_type = item.get("item_type")
+            if item_type == "rv_vector_declaration":
+                processed_lines.append(self._handle_rv_vector_declaration(item, base_indent))
+            elif item_type == "assignment":
+                processed_lines.append(self._handle_assignment(item, base_indent))
+            elif item_type == "loop":
+                processed_lines.extend(self._handle_loop(item, base_indent))
+            elif item_type == "return_statement":
+                processed_lines.append(self._handle_return_statement(item, base_indent))
+            elif item_type == "raw_julia":
+                processed_lines.append(self._handle_raw_julia(item, base_indent))
+            else:
+                logger.warning(f"Unknown model_logic item_type: '{item_type}'. Skipping.")
+        return processed_lines
 
     def convert_node_to_julia(self, node: Dict[str, Any]):
-        """Translates a single GNN node into Julia code for the @model block."""
+        """Translates a single GNN node into Julia code for the @model block (fallback)."""
         node_id = node["id"]
         node_type = node.get("type", "random_variable")
         act_inf_role = node.get("act_inf_role")
@@ -234,98 +367,91 @@ class GnnToRxInferConverter:
         if node_id in self._processed_nodes:
             return
 
-        # --- Handle based on Active Inference Role --- 
+        # This method should only add to self.model_args if they are not already defined
+        # by the main "arguments" field of the GNN spec.
+        # And it should primarily add to self.julia_model_lines.
+
         if act_inf_role == "Prior" and node_type == "constant":
-            # This constant (e.g., D_param value) will be used by HiddenState
-            # It should be defined as a model argument to be passed in during inference call.
-            if node_id not in self.model_args:
-                self.model_args.append(node_id)
-            # The actual assignment of data happens in the `infer` call typically for RxInfer
-            # So, no direct `node_id = value` line here in the @model, unless it truly is a fixed model constant.
-            # For GNN, D is often a prior that can be fixed. Let's assume it is passed as data.
-            logger.debug(f"Node '{node_id}' (Prior) will be a model argument/data.")
+            if node_id not in self.model_args: self.model_args.append(node_id)
+            logger.debug(f"Node '{node_id}' (Prior) registered as model argument/data for fallback.")
 
         elif act_inf_role == "LikelihoodMatrix" and node_type == "constant":
-            if node_id not in self.model_args:
-                self.model_args.append(node_id)
-            logger.debug(f"Node '{node_id}' (LikelihoodMatrix) will be a model argument/data.")
-
-        elif act_inf_role == "HiddenState":
-            dist = node.get("distribution", "Categorical") # Default for discrete hidden state
-            # Parameters for this distribution, e.g., {"p": "D_node_id"}
-            # These params should be in the GNN spec node definition
+            if node_id not in self.model_args: self.model_args.append(node_id)
+            logger.debug(f"Node '{node_id}' (LikelihoodMatrix) registered as model argument/data for fallback.")
+        
+        elif act_inf_role == "HiddenState" and node_type == "random_variable": # Simplified, no vector handling
+            dist = node.get("distribution", "Categorical") 
             params = node.get("params", {})
+            # Infer params from dependencies logic for fallback:
             if not params and node.get("dependencies"):
-                # Try to infer params from dependencies if not explicit
-                # E.g. if depends on D_node (Prior), then p = D_node
-                prior_dep = next((dep for dep in node.get("dependencies") if self.nodes_map.get(dep,{}).get("act_inf_role") == "Prior"), None)
-                if prior_dep:
-                    params = {"p": prior_dep}
-                else:
-                    logger.warning(f"HiddenState '{node_id}' has no explicit params and suitable Prior dependency not found.")
+                prior_dep = next((dep for dep in node.get("dependencies", []) if self.nodes_map.get(dep,{}).get("act_inf_role") == "Prior"), None)
+                if prior_dep: params = {"p": prior_dep}
             
             self.julia_model_lines.append(
-                generate_julia_variable_declaration(node_id, dist, params, is_observed=False)
+                self._generate_julia_variable_declaration(node_id, dist, params, is_observed=False)
             )
         
         elif act_inf_role == "Observation" and node_type == "observed_data":
-            dist = node.get("distribution", "Categorical") # Default for discrete observation
+            dist = node.get("distribution", "Categorical")
             params = node.get("params", {})
-            # Example params: {"p": "A_matrix_node_id * s_node_id"} or {"p": "A_matrix_node_id[:, s_node_id]"}
-            # These must be correctly specified in the GNN spec node for RxInfer.
-            if not params and node.get("dependencies"):
-                logger.warning(f"Observation '{node_id}' has no explicit params in GNN spec.")
-
-            if node_id not in self.model_args: # Observation data variable must be a model argument
-                self.model_args.append(node_id)
-
+            if node_id not in self.model_args: self.model_args.append(node_id)
             self.julia_model_lines.append(
-                generate_julia_variable_declaration(
-                    var_name=node_id, # This is the data variable name itself
-                    distribution=dist,
-                    params=params,
-                    is_observed=True,
+                self._generate_julia_variable_declaration(
+                    var_name=node_id, 
+                    distribution=dist, params=params, 
+                    is_observed=True, 
                     is_vectorized=node.get("is_vectorized", False),
                     observed_data_name=node_id
                 )
             )
         
-        # --- Fallback to original generic type handling if no specific ActInf role logic applies ---
-        elif node_type == "random_variable":
-            dist = node["distribution"]
+        elif node_type == "random_variable": # General RV, not specific ActInf role
+            dist = node.get("distribution", "Distributions.Normal") # Default if missing
             params = node.get("params", {})
-            # Resolve param names that might be other nodes
-            resolved_params = {k: (v if not isinstance(v, str) or (v not in self.nodes_map and v not in self.model_args) else v)
-                               for k, v in params.items()}
+            resolved_params = {k: (self._parse_param_value(v) if isinstance(v, str) else v) for k, v in params.items()}
             self.julia_model_lines.append(
-                generate_julia_variable_declaration(node_id, dist, resolved_params, is_observed=False)
+                self._generate_julia_variable_declaration(node_id, dist, resolved_params, is_observed=False)
             )
-        elif node_type == "constant": # General constant not tied to specific ActInf role handled above
+        elif node_type == "constant": 
             if julia_value_str:
-                 # If it's a model-internal constant not passed as arg
                 self.julia_model_lines.append(f"    {node_id} = {julia_value_str}")
-            elif node_id not in self.model_args: # Otherwise, assume it might be passed as an argument
-                self.model_args.append(node_id)
-                logger.debug(f"General constant '{node_id}' added as model argument.")
+            elif node_id not in self.model_args: 
+                self.model_args.append(node_id) # Assume passed as argument
+                logger.debug(f"General constant '{node_id}' added as model argument for fallback.")
 
-        elif node_type == "submodel_call":
+        elif node_type == "submodel_call": # Fallback, less common without model_logic
             submodel_name = node["submodel_name"]
             instance_params = node.get("params", {})
             output_var = node_id
-            resolved_instance_params = {k: (v if (v not in self.nodes_map and v not in self.model_args) else v) for k, v in instance_params.items()}
-            param_str = _format_params(resolved_instance_params)
+            param_str = self._format_params_for_distribution(instance_params)
             self.julia_model_lines.append(f"    {output_var} ~ {submodel_name}({param_str})")
         else:
-            logger.warning(f"Unsupported GNN node type: '{node_type}' for node '{node_id}'.")
+            logger.warning(f"Unsupported GNN node type: '{node_type}' for node '{node_id}' in fallback processing.")
         self._processed_nodes.add(node_id)
 
     def convert_gnn_structure(self):
-        """Iterates GNN nodes, populating Julia code lines."""
-        self._build_dependencies_map()
-        ordered_nodes = self._resolve_processing_order()
-        for node in ordered_nodes:
-            self.convert_node_to_julia(node)
+        """Iterates GNN nodes or uses model_logic, populating Julia code lines."""
+        self.julia_model_lines = [] # Reset for each conversion
+
+        # Prioritize model_logic if present
+        if "model_logic" in self.gnn_spec and self.gnn_spec["model_logic"]:
+            logger.info("Processing GNN specification using 'model_logic' section.")
+            self.julia_model_lines = self._process_model_logic_block(self.gnn_spec["model_logic"], base_indent="    ")
+            # Ensure model_args from GNN spec are respected, model_logic should use them.
+            # No need to auto-add args from nodes if model_logic is used.
+        else:
+            logger.info("No 'model_logic' found or it's empty. Falling back to node-based processing.")
+            self._build_dependencies_map() # Builds nodes_map and _dependencies_map
+            if not self.nodes_map:
+                logger.warning("No nodes found in GNN specification for node-based processing.")
+            else:
+                ordered_nodes = self._resolve_processing_order()
+                if not ordered_nodes:
+                    logger.warning("Node order resolution yielded no nodes. Model body might be empty.")
+                for node in ordered_nodes:
+                    self.convert_node_to_julia(node)
         
+        # Process constraints and meta, these append to their respective lists
         gnn_constraints = self.gnn_spec.get("constraints")
         if gnn_constraints:
             if isinstance(gnn_constraints, list):
@@ -344,6 +470,7 @@ class GnnToRxInferConverter:
             if isinstance(gnn_meta, list):
                 for meta_item in gnn_meta:
                     node_ref = meta_item.get("node_id", meta_item.get("factor_ref"))
+                    # Use _format_params for consistency in settings string
                     settings_str = _format_params(meta_item.get("settings", {}))
                     if node_ref and settings_str:
                         self.julia_meta_lines.append(f"{node_ref} -> _ where {{ {settings_str} }}")
@@ -352,28 +479,78 @@ class GnnToRxInferConverter:
 
     def generate_inference_script(self, data_bindings: Dict[str, str], iterations: int = 50, free_energy: bool = False) -> str:
         """Generates Julia code for running inference."""
-        model_call_args = []
-        data_tuple_entries = []
-        for arg_name in self.model_args:
+        model_call_args_bindings = [] # For (param = value) in model call
+        data_tuple_entries = []       # For data = (obs = my_obs_data, ...)
+        
+        # self.model_args should be set from gnn_spec["arguments"] primarily
+        for arg_name in self.model_args: # Iterate over declared model arguments
             if arg_name in data_bindings:
                 val_str = str(data_bindings[arg_name])
-                try:
-                    float(val_str) # Check if it's a number
-                    model_call_args.append(f"{arg_name} = {val_str}")
-                    # Literals don't go into the data tuple typically, only variables
-                except ValueError:
-                    model_call_args.append(f"{arg_name} = {val_str}")
+                # Assume val_str is a valid Julia expression or variable name for the binding
+                model_call_args_bindings.append(f"{arg_name} = {val_str}")
+                
+                # Check if this arg_name corresponds to an observed_data node or is used for data
+                # This heuristic might need refinement: check if arg_name is used as observed data in model_logic or nodes.
+                # For now, if it's in data_bindings, assume it *could* be data for the tuple.
+                # A more robust way is to identify "observed_data" nodes/vars from GNN spec.
+                is_data_var = False
+                if "model_logic" in self.gnn_spec and self.gnn_spec["model_logic"]:
+                    for item in self.gnn_spec["model_logic"]:
+                        if item.get("item_type") == "assignment" and item.get("is_observed_data", False) and item.get("variable","").startswith(arg_name): # e.g. obs[t] for arg obs
+                            is_data_var = True
+                            break
+                        if item.get("item_type") == "loop": # Check inside loops
+                            for sub_item in item.get("body",[]):
+                                 if sub_item.get("item_type") == "assignment" and sub_item.get("is_observed_data", False) and sub_item.get("variable","").startswith(arg_name):
+                                     is_data_var = True; break
+                            if is_data_var: break
+                else: # Fallback: check nodes
+                    node_def = self.nodes_map.get(arg_name)
+                    if node_def and node_def.get("type") == "observed_data":
+                        is_data_var = True
+                
+                if is_data_var:
                     data_tuple_entries.append(f"{arg_name} = {val_str}")
             else:
-                logger.warning(f"Model argument '{arg_name}' not found in data_bindings for inference. Will be omitted from call if not a data variable.")
+                # If a model argument is not in data_bindings, it's an unbound parameter.
+                # RxInfer might require all arguments to be bound or have defaults in the model itself (not handled here).
+                logger.warning(f"Model argument '{arg_name}' not found in data_bindings for inference. It will be omitted from the `data` tuple and assumed to be passed directly if needed, or be a model constant.")
+                # It will still be part of model_call_args_bindings if it was meant to be a constant value not in data tuple.
+                # This part is tricky: should non-data args also be in data_bindings?
+                # For RxInfer: model_call_args_bindings are for args like `model = MyModel(N=10, k=0.5)`
+                # data_tuple_entries are for `data = (y = y_data, x = x_data)`
+                # Let's assume if not in data_bindings, it's not for the `data` tuple for now.
+                # If it's a parameter like `transition_matrix` that is NOT data, it should still be in data_bindings.
 
         model_signature_for_call = self.model_name
-        if model_call_args: # Only add () if there are actual arguments to pass
-            model_signature_for_call += f"({', '.join(model_call_args)})"
+        # Parameters passed directly to the model function call
+        model_direct_params_str = ", ".join(model_call_args_bindings)
+        if model_direct_params_str:
+             model_signature_for_call += f"({model_direct_params_str})"
+        # else: # If no params, call as MyModel() or just MyModel if it's a submodel ref.
+        #    model_signature_for_call += "()" # RxInfer usually needs () if it's a function
 
         data_arg_str = f"data = ({', '.join(data_tuple_entries)})," if data_tuple_entries else ""
-        constraints_arg_str = f"constraints = {self.model_name}Constraints()," if self.julia_constraints_lines else ""
-        meta_arg_str = f"meta = {self.model_name}Meta()," if self.julia_meta_lines else ""
+        
+        # Determine if constraints/meta functions are named or anonymous
+        constraints_name_from_spec = self.gnn_spec.get("constraints",{}).get("name")
+        meta_name_from_spec = self.gnn_spec.get("meta",{}).get("name")
+
+        constraints_arg_str = ""
+        if self.julia_constraints_lines:
+            constraints_func_name = constraints_name_from_spec if constraints_name_from_spec else f"{self.model_name}Constraints"
+            if self.gnn_spec.get("constraints",{}).get("is_anonymous"): # Check if anonymous
+                 constraints_arg_str = f"constraints = @constraints begin\\n{self.julia_constraints_lines[0]}\\nend," # Simplified for one line
+            else:
+                 constraints_arg_str = f"constraints = {constraints_func_name}(),"
+
+        meta_arg_str = ""
+        if self.julia_meta_lines:
+            meta_func_name = meta_name_from_spec if meta_name_from_spec else f"{self.model_name}Meta"
+            if self.gnn_spec.get("meta",{}).get("is_anonymous"):
+                meta_arg_str = f"meta = @meta begin\\n{self.julia_meta_lines[0]}\\nend," # Simplified for one line
+            else:
+                meta_arg_str = f"meta = {meta_func_name}(),"
 
         inference_params_list = [
             f"model = {model_signature_for_call}",
@@ -443,12 +620,16 @@ class GnnToRxInferConverter:
         
         constraints_definition = ""
         if self.julia_constraints_lines:
-            constraints_name = f"{self.model_name}Constraints" if not self.gnn_spec.get("constraints",{}).get("is_anonymous") else None
+            constraints_name = self.gnn_spec.get("constraints",{}).get("name") # Get potential custom name
+            if not constraints_name and not self.gnn_spec.get("constraints",{}).get("is_anonymous"):
+                constraints_name = f"{self.model_name}Constraints" # Default name if not anonymous and no custom name
             constraints_definition = generate_rxinfer_constraints_definition(constraints_name, self.julia_constraints_lines)
             
         meta_definition = ""
         if self.julia_meta_lines:
-            meta_name = f"{self.model_name}Meta" if not self.gnn_spec.get("meta",{}).get("is_anonymous") else None
+            meta_name = self.gnn_spec.get("meta",{}).get("name") # Get potential custom name
+            if not meta_name and not self.gnn_spec.get("meta",{}).get("is_anonymous"):
+                meta_name = f"{self.model_name}Meta" # Default name if not anonymous and no custom name
             meta_definition = generate_rxinfer_meta_definition(meta_name, self.julia_meta_lines)
 
         script_parts = [imports_str, model_definition]
@@ -520,48 +701,121 @@ if __name__ == '__main__':
     # Original linear regression test (can be kept or removed)
     dummy_gnn_data_linear_regression = {
         "name": "LinearRegressionGNN",
-        "arguments": ["y_obs", "x_matrix", "sigma_sq_val"],
+        "arguments": ["y_obs", "x_matrix", "sigma_sq_val_arg"], # sigma_sq_val_arg to avoid clash with node
         "nodes": [
             {"id": "beta", "type": "random_variable", "distribution": "Normal", "params": {"mean": 0.0, "variance": 1.0}, "report_posterior": True},
             {"id": "intercept", "type": "random_variable", "distribution": "Normal", "params": {"mean": 0.0, "variance": 10.0}, "report_posterior": True},
-            {"id": "sigma_sq_val", "type": "constant", "value": 0.1},
+            {"id": "sigma_sq_val_node", "type": "constant", "initial_value": "0.1"}, # Node for internal constant
             {"id": "y_obs", "type": "observed_data", "distribution": "Normal", 
-             "params": {"mean": "x_matrix * beta + intercept", "variance": "sigma_sq_val"}, 
-             "is_vectorized": True, "dependencies": ["x_matrix", "beta", "intercept", "sigma_sq_val"]
+             "params": {"mean": "x_matrix * beta + intercept", "variance": "sigma_sq_val_arg"}, # use arg here
+             "is_vectorized": True, "dependencies": ["x_matrix", "beta", "intercept", "sigma_sq_val_arg"]
             }
         ],
+        # No model_logic, so it will use node-based processing.
         "constraints": [{"type": "mean_field", "factors": [["beta", "intercept"]]}],
-        "meta": [{"factor_ref": "Normal", "settings": {"damped": True}}],
-        "julia_imports": ["using Distributions"]
+        "meta": [{"factor_ref": "Normal", "settings": {"damped": "true"}}], # Ensure boolean is string for _format_params
+        "julia_imports": ["using Distributions"] # Example of specific imports
     }
     
-    output_script = test_output_dir / "generated_linear_regression_script.jl"
-    render_options = {
+    output_script_lr = test_output_dir / "generated_linear_regression_script.jl"
+    render_options_lr = {
         "data_bindings": {
-            "y_obs": "actual_y_data",
-            "x_matrix": "actual_x_data",
+            "y_obs": "actual_y_data",      # This is data
+            "x_matrix": "actual_x_data",    # This is data
+            "sigma_sq_val_arg": "0.05"      # This is a parameter passed to model
         },
         "inference_iterations": 75,
         "calculate_free_energy": True
     }
 
-    success, msg, artifacts = render_gnn_to_rxinfer_jl(
+    success_lr, msg_lr, artifacts_lr = render_gnn_to_rxinfer_jl(
         dummy_gnn_data_linear_regression,
-        output_script, 
-        options=render_options
+        output_script_lr, 
+        options=render_options_lr
     )
 
-    if success:
-        logger.info(f"RxInfer.jl rendering test successful: {msg}")
-        logger.info(f"Artifacts: {artifacts}")
-        if output_script.exists():
-            logger.info(f"--- Generated Julia Script ({output_script.name}) ---")
-            # Read and print the content for review
-            script_content = output_script.read_text(encoding='utf-8')
-            print(f"\n{script_content}\n")
-            logger.info(f"--- End of Script ---")
+    if success_lr:
+        logger.info(f"RxInfer.jl LR rendering test successful: {msg_lr}")
+        if output_script_lr.exists():
+            logger.info(f"--- Generated LR Julia Script ({output_script_lr.name}) ---")
+            print(f"\n{output_script_lr.read_text(encoding='utf-8')}\n")
+            logger.info(f"--- End of LR Script ---")
     else:
-        logger.error(f"RxInfer.jl rendering test failed: {msg}")
+        logger.error(f"RxInfer.jl LR rendering test failed: {msg_lr}")
+
+    # --- HMM Test using model_logic ---
+    dummy_gnn_data_hmm_ml = {
+        "name": "SimpleHMM_from_Logic",
+        "arguments": ["observations", "T", "A", "B", "initial_dist_p"], # A=transition, B=emission
+        "nodes": [ 
+            # Nodes can still define types or be informative, but model structure comes from model_logic
+            {"id": "observations", "type": "observed_data", "description": "Vector of observed states"},
+            {"id": "T", "type": "constant", "description": "Time horizon / number of observations"},
+            {"id": "A", "type": "constant", "description": "Transition matrix"},
+            {"id": "B", "type": "constant", "description": "Emission matrix"},
+            {"id": "initial_dist_p", "type": "constant", "description": "Initial state distribution parameters (vector p)"},
+            {"id": "s", "type": "random_variable_vector", "description": "Latent state sequence"}
+        ],
+        "model_logic": [
+            {"item_type": "raw_julia", "code": "# Hidden Markov Model implementation from GNN model_logic"},
+            {"item_type": "rv_vector_declaration", "name": "s", "size_var": "T", "element_type": "RandomVariable"},
+            {"item_type": "assignment", "variable": "s[1]", "distribution": "Categorical", "params": {"p": "initial_dist_p"}},
+            {
+                "item_type": "loop", "variable": "t", "range_start": 2, "range_end": "T",
+                "body": [
+                    {"item_type": "assignment", "variable": "s[t]", "distribution": "Categorical", 
+                     "params": {"p": "A[s[t-1], :]"}} # Assuming A is passed as matrix
+                ]
+            },
+            {
+                "item_type": "loop", "variable": "t", "range_start": 1, "range_end": "T",
+                "body": [
+                    # observations[t] is the data placeholder from model arguments
+                    {"item_type": "assignment", "variable": "observations[t]", "is_observed_data": True, 
+                     "distribution": "Categorical", "params": {"p": "B[s[t], :]"}} # Assuming B is passed
+                ]
+            },
+            {"item_type": "return_statement", "values": ["s", "observations"]}
+        ],
+        "julia_imports": ["using Distributions"], # Explicitly list required packages for the model
+        "constraints": { # Example of named constraints
+            "name": "MyHMMConstraints", # Optional custom name
+            "is_anonymous": False, # Explicitly not anonymous
+             "raw_lines": ["q(s) :: MeanField()"] # Raw lines for constraints body
+        },
+        "meta": { # Example of anonymous meta
+            "is_anonymous": True,
+            "raw_lines": ["Categorical(p) -> ((p = p ./ sum(p)),)"] # Example meta line
+        }
+    }
+
+    output_script_hmm_ml = test_output_dir / "generated_hmm_model_logic_script.jl"
+    render_options_hmm_ml = {
+        "data_bindings": {
+            "observations": "my_observed_sequence", # Name of Julia variable holding observations
+            "T": "length(my_observed_sequence)",   # Julia expression for T
+            "A": "transition_matrix_data",         # Name of Julia variable for transition matrix
+            "B": "emission_matrix_data",           # Name of Julia variable for emission matrix
+            "initial_dist_p": "initial_probabilities_vector" # Julia variable for initial dist
+        },
+        "inference_iterations": 100,
+        "calculate_free_energy": True
+    }
+
+    success_hmm_ml, msg_hmm_ml, artifacts_hmm_ml = render_gnn_to_rxinfer_jl(
+        dummy_gnn_data_hmm_ml,
+        output_script_hmm_ml,
+        options=render_options_hmm_ml
+    )
+
+    if success_hmm_ml:
+        logger.info(f"RxInfer.jl HMM (model_logic) rendering test successful: {msg_hmm_ml}")
+        if output_script_hmm_ml.exists():
+            logger.info(f"--- Generated HMM (model_logic) Julia Script ({output_script_hmm_ml.name}) ---")
+            print(f"\n{output_script_hmm_ml.read_text(encoding='utf-8')}\n")
+            logger.info(f"--- End of HMM (model_logic) Script ---")
+    else:
+        logger.error(f"RxInfer.jl HMM (model_logic) rendering test failed: {msg_hmm_ml}")
 
     # Cleanup (optional)
     # import shutil

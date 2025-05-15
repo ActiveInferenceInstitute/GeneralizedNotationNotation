@@ -1,33 +1,41 @@
 ### Summary of the GNN Model: Comprehensive POMDP Agent
 
-**Model Name:**  
-Standard POMDP Agent v1.0
+**Model Name:** Standard POMDP Agent v1.0
 
-**Purpose:**  
-This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent designed to test various GNN parsing and rendering capabilities, particularly within the context of active inference and decision-making processes.
+**Purpose:**
+This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent designed for testing GNN features, particularly for PyMDP. It emphasizes state estimation, policy evaluation, and action selection in a dynamic environment.
 
 **Key Components:**
+1. **Hidden States:**
+   - **Location (3 states):** Represents different locations such as RoomA, RoomB, and Corridor.
+   - **ResourceLevel (2 states):** Describes the availability of resources, categorized as Low or High.
 
-1. **Hidden States (2 Factors):**
-   - **Location (3 States):** Represents different locations (e.g., RoomA, RoomB, Corridor).
-   - **Resource Level (2 States):** Indicates the availability of resources (e.g., Low, High).
+2. **Observations:**
+   - **VisualCue (4 outcomes):** Possible outcomes include Door, Window, Food, and Empty.
+   - **AuditorySignal (2 outcomes):** Includes Silence and Beep.
 
-2. **Observations (2 Modalities):**
-   - **Visual Cue (4 Outcomes):** Various visual inputs (e.g., Door, Window, Food, Empty).
-   - **Auditory Signal (2 Outcomes):** Sound inputs (e.g., Silence, Beep).
+3. **Control Factors (Actions):**
+   - **Movement (3 actions):** Actions include Stay, MoveClockwise, and MoveCounterClockwise.
+   - **Interaction (2 actions):** Actions consist of Wait and InteractWithResource.
 
-3. **Control Factors (2 Actions):**
-   - **Movement (3 Actions):** Options for movement (e.g., Stay, MoveClockwise, MoveCounterClockwise).
-   - **Interaction (2 Actions):** Actions related to interacting with resources (e.g., Wait, InteractWithResource).
+4. **Policies:**
+   - Two policy vectors (pi_c0 for Movement and pi_c1 for Interaction) that govern the agent's actions based on the current state.
 
-4. **Expected Free Energy (EFE):**  
-   - Overall evaluation of combined policies, accounting for preferences and states, which informs action selection.
+5. **Likelihood Mappings and Transition Dynamics:**
+   - **Likelihoods (A_m0 and A_m1):** Define the probability of observing certain cues given the hidden states.
+   - **Transition Dynamics (B_f0 and B_f1):** Model the state transitions based on previous states and actions taken.
+
+6. **Preferences:**
+   - Preferences (C_m0 and C_m1) indicate the agent’s biases towards certain observations, guiding the decision-making process.
+
+7. **Initial States:**
+   - Priors over initial hidden states (D_f0 for Location and D_f1 for ResourceLevel) provide starting conditions for the model.
 
 **Main Connections:**
-- **Priors to Initial States:** The model starts with specified priors for hidden states, linking them to their respective hidden state factors.
-- **States to Likelihoods:** The hidden states influence the likelihoods of observations, where the observations are derived from the state factors.
-- **States and Actions to Transitions:** The current states and chosen actions determine the transitions to the next states, encapsulated in transition matrices for both location and resource levels.
-- **Preferences to EFE:** Preferences for observations contribute to the calculation of expected free energy, guiding the agent's decision-making process.
-- **Policies to Actions:** The selected policies directly determine the actions taken by the agent.
+- Priors lead to initial hidden states.
+- Hidden states influence the likelihood of observations.
+- States and actions dictate transitions to next states.
+- Preferences and observations contribute to the calculation of Expected Free Energy (EFE).
+- EFE then informs the policy decisions, which culminate in the selection of actions.
 
-This model serves as a foundational example for developing and testing POMDP frameworks within GNN applications, emphasizing the integration of state estimation, action selection, and preference modeling.
+This model is structured to enable simulations and evaluations of POMDP strategies, providing a framework for understanding decision-making in uncertain environments.

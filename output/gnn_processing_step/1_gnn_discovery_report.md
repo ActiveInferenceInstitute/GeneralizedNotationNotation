@@ -1,12 +1,12 @@
 # GNN File Discovery Report
 
-Processed 3 GNN file(s) from directory: `src/gnn/examples`
+Processed 5 GNN file(s) from directory: `src/gnn/examples`
 Search pattern used: `**/*.md`
 
 ## Overall Summary
 
-- GNN files processed: 3
-- Files with ModelName found: 3
+- GNN files processed: 5
+- Files with ModelName found: 5
 - Files with StateSpaceBlock found: 0
 - Files with Connections section found: 0
 - Files with processing errors: 0
@@ -14,6 +14,15 @@ Search pattern used: `**/*.md`
 ---
 ## Detailed File Analysis
 
+### File: `src/gnn/examples/gnn_poetic_muse_model.md`
+
+#### Found Sections:
+- ModelName: Found: The Generative Poetic Muse v1.0
+- StateSpaceBlock: Not found
+- Connections: Not found
+- ModelParameters: Found (10 parameters parsed)
+
+---
 ### File: `src/gnn/examples/gnn_POMDP_example.md`
 
 #### Found Sections:
@@ -21,6 +30,15 @@ Search pattern used: `**/*.md`
 - StateSpaceBlock: Not found
 - Connections: Not found
 - ModelParameters: Found (3 parameters parsed)
+
+---
+### File: `src/gnn/examples/gnn_active_inference_language_model.md`
+
+#### Found Sections:
+- ModelName: Found: Active Inference Language Model (AILM) v0.1
+- StateSpaceBlock: Not found
+- Connections: Not found
+- ModelParameters: Found (6 parameters parsed)
 
 ---
 ### File: `src/gnn/examples/gnn_airplane_trading_pomdp.md`
