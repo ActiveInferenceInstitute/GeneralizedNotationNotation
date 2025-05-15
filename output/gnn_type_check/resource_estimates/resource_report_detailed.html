@@ -28,26 +28,26 @@
 </head>
 <body>
     <h1>GNN Resource Estimation Report</h1>
-    <p>Generated on 2025-05-15 13:12:56</p>
+    <p>Generated on 2025-05-15 13:53:32</p>
     
     <div class="summary">
         <h2>Summary</h2>
-        <p>This report provides detailed resource estimates for 2 GNN models, analyzing their memory usage, computational requirements, and storage needs.</p>
+        <p>This report provides detailed resource estimates for 3 GNN models, analyzing their memory usage, computational requirements, and storage needs.</p>
         
         <div class="metric-container">
             <div class="metric-box">
                 <h3>Average Memory Usage</h3>
-                <div class="metric-value">0.53 KB</div>
+                <div class="metric-value">0.71 KB</div>
                 <p>RAM required to hold model in memory</p>
             </div>
             <div class="metric-box">
                 <h3>Average Inference Time</h3>
-                <div class="metric-value">156.08 units</div>
+                <div class="metric-value">155.04 units</div>
                 <p>Relative computational cost</p>
             </div>
             <div class="metric-box">
                 <h3>Average Storage</h3>
-                <div class="metric-value">3.91 KB</div>
+                <div class="metric-value">4.10 KB</div>
                 <p>Disk space required to store model</p>
             </div>
         </div>
@@ -131,6 +131,13 @@
                 <td>15</td>
             </tr>
             <tr>
+                <td>gnn_airplane_trading_pomdp</td>
+                <td>0</td>
+                <td>5</td>
+                <td>0</td>
+                <td>12</td>
+            </tr>
+            <tr>
                 <td>gnn_example_pymdp_agent</td>
                 <td>0</td>
                 <td>0</td>
@@ -188,6 +195,49 @@
                 <tr>
                     <td>Overall Complexity</td>
                     <td colspan="3">9.26 / 10.0</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="model-card">
+            <h3>gnn_airplane_trading_pomdp</h3>
+            <p><strong>Type:</strong> Dynamic model</p>
+            
+            <div class="resource-comparison">
+                <div>
+                    <h4>Memory Usage</h4>
+                    <div class="metric-value">1.07 KB</div>
+                    <p>Variables: 16</p>
+                </div>
+                <div>
+                    <h4>Inference Time</h4>
+                    <div class="metric-value">152.96 units</div>
+                    <p>Edges: 1</p>
+                </div>
+                <div>
+                    <h4>Storage</h4>
+                    <div class="metric-value">4.48 KB</div>
+                    <p>Equations: 7</p>
+                </div>
+            </div>
+            
+            <h4>Complexity Metrics</h4>
+            <table>
+                <tr>
+                    <td>State Space Complexity</td>
+                    <td>8.11</td>
+                    <td>Graph Density</td>
+                    <td>0.00</td>
+                </tr>
+                <tr>
+                    <td>Temporal Complexity</td>
+                    <td>0.00</td>
+                    <td>Equation Complexity</td>
+                    <td>8.16</td>
+                </tr>
+                <tr>
+                    <td>Overall Complexity</td>
+                    <td colspan="3">8.95 / 10.0</td>
                 </tr>
             </table>
         </div>
@@ -284,10 +334,10 @@
         new Chart(memoryCtx, {
             type: 'bar',
             data: {
-                labels: ["gnn_POMDP_example", "gnn_example_pymdp_agent"],
+                labels: ["gnn_POMDP_example", "gnn_airplane_trading_pomdp", "gnn_example_pymdp_agent"],
                 datasets: [{
                     label: 'Memory Usage (KB)',
-                    data: [0.56640625, 0.484375],
+                    data: [0.56640625, 1.07421875, 0.484375],
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
@@ -322,10 +372,10 @@
         new Chart(inferenceCtx, {
             type: 'bar',
             data: {
-                labels: ["gnn_POMDP_example", "gnn_example_pymdp_agent"],
+                labels: ["gnn_POMDP_example", "gnn_airplane_trading_pomdp", "gnn_example_pymdp_agent"],
                 datasets: [{
                     label: 'Inference Time (units)',
-                    data: [158.0995247133244, 154.06988264859797],
+                    data: [158.0995247133244, 152.96410328531923, 154.06988264859797],
                     backgroundColor: 'rgba(153, 102, 255, 0.2)',
                     borderColor: 'rgba(153, 102, 255, 1)',
                     borderWidth: 1
@@ -360,10 +410,10 @@
         new Chart(storageCtx, {
             type: 'bar',
             data: {
-                labels: ["gnn_POMDP_example", "gnn_example_pymdp_agent"],
+                labels: ["gnn_POMDP_example", "gnn_airplane_trading_pomdp", "gnn_example_pymdp_agent"],
                 datasets: [{
                     label: 'Storage (KB)',
-                    data: [3.98634375, 3.82846875],
+                    data: [3.98634375, 4.482390625, 3.82846875],
                     backgroundColor: 'rgba(255, 159, 64, 0.2)',
                     borderColor: 'rgba(255, 159, 64, 1)',
                     borderWidth: 1
@@ -397,18 +447,18 @@
         const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
         
         // Normalize data
-        const maxMemory = Math.max(...[0.56640625, 0.484375]);
-        const maxInference = Math.max(...[158.0995247133244, 154.06988264859797]);
-        const maxStorage = Math.max(...[3.98634375, 3.82846875]);
+        const maxMemory = Math.max(...[0.56640625, 1.07421875, 0.484375]);
+        const maxInference = Math.max(...[158.0995247133244, 152.96410328531923, 154.06988264859797]);
+        const maxStorage = Math.max(...[3.98634375, 4.482390625, 3.82846875]);
         
-        const normMemory = [0.56640625, 0.484375].map(v => v / maxMemory);
-        const normInference = [158.0995247133244, 154.06988264859797].map(v => v / maxInference);
-        const normStorage = [3.98634375, 3.82846875].map(v => v / maxStorage);
+        const normMemory = [0.56640625, 1.07421875, 0.484375].map(v => v / maxMemory);
+        const normInference = [158.0995247133244, 152.96410328531923, 154.06988264859797].map(v => v / maxInference);
+        const normStorage = [3.98634375, 4.482390625, 3.82846875].map(v => v / maxStorage);
         
         new Chart(comparisonCtx, {
             type: 'bar',
             data: {
-                labels: ["gnn_POMDP_example", "gnn_example_pymdp_agent"],
+                labels: ["gnn_POMDP_example", "gnn_airplane_trading_pomdp", "gnn_example_pymdp_agent"],
                 datasets: [
                     {
                         label: 'Memory',
@@ -457,10 +507,10 @@
         new Chart(flopsCtx, {
             type: 'bar',
             data: {
-                labels: ["gnn_POMDP_example", "gnn_example_pymdp_agent"],
+                labels: ["gnn_POMDP_example", "gnn_airplane_trading_pomdp", "gnn_example_pymdp_agent"],
                 datasets: [{
                     label: 'FLOPS',
-                    data: [15.0, 1050.0],
+                    data: [15.0, 12.5, 1050.0],
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1

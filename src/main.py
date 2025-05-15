@@ -18,6 +18,7 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 9_render.py (Corresponds to render/ folder)
 - 10_execute.py (Corresponds to execute/ folder)
 - 11_llm.py (Corresponds to llm/ folder)
+- 12_site.py (Corresponds to site/ folder, generates HTML summary site)
 
 
 Usage:
@@ -39,6 +40,8 @@ Options:
     --llm-timeout           Timeout in seconds for the LLM processing step (11_llm.py)
     --pipeline-summary-file FILE
                             Path to save the final pipeline summary report (default: output/pipeline_execution_summary.json)
+    --site-html-filename NAME
+                            Filename for the generated HTML summary site (for 12_site.py, saved in output-dir, default: gnn_pipeline_summary_site.html)
 
 """
 
@@ -131,8 +134,15 @@ def parse_arguments():
         "--pipeline-summary-file",
         type=Path,
         default=default_pipeline_summary_file,
-        help=(f"Path to save the final pipeline summary report (JSON format).\\n"
+        help=(f"Path to save the final pipeline summary report (JSON format).\n"
               f"Default: {default_pipeline_summary_file.relative_to(project_root) if default_pipeline_summary_file.is_relative_to(project_root) else default_pipeline_summary_file}")
+    )
+    parser.add_argument(
+        "--site-html-filename",
+        type=str,
+        default="gnn_pipeline_summary_site.html",
+        help=(f"Filename for the generated HTML summary site (for 12_site.py). It will be saved in the main output directory.\n"
+              f"Default: gnn_pipeline_summary_site.html")
     )
     return parser.parse_args()
 
@@ -327,6 +337,10 @@ def run_pipeline(args: argparse.Namespace):
                 if tasks:
                     cmd_list.append("--llm-tasks")
                     cmd_list.extend(tasks)
+        elif script_name_no_ext == "12_site":
+            # 12_site.py uses --output-dir (where it reads from) 
+            # and --site-html-file (the name of the file it creates within output-dir)
+            cmd_list.extend(["--site-html-file", str(args.site_html_filename)])
 
         step_process_env = os.environ.copy()
         if _venv_site_packages_path_for_subproc:

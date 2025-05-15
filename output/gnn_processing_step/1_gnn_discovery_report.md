@@ -1,12 +1,12 @@
 # GNN File Discovery Report
 
-Processed 2 GNN file(s) from directory: `src/gnn/examples`
+Processed 3 GNN file(s) from directory: `src/gnn/examples`
 Search pattern used: `**/*.md`
 
 ## Overall Summary
 
-- GNN files processed: 2
-- Files with ModelName found: 2
+- GNN files processed: 3
+- Files with ModelName found: 3
 - Files with StateSpaceBlock found: 0
 - Files with Connections section found: 0
 - Files with processing errors: 0
@@ -18,6 +18,15 @@ Search pattern used: `**/*.md`
 
 #### Found Sections:
 - ModelName: Found: Standard POMDP Agent v1.0
+- StateSpaceBlock: Not found
+- Connections: Not found
+- ModelParameters: Found (3 parameters parsed)
+
+---
+### File: `src/gnn/examples/gnn_airplane_trading_pomdp.md`
+
+#### Found Sections:
+- ModelName: Found: Airplane Trading POMDP v1.0
 - StateSpaceBlock: Not found
 - Connections: Not found
 - ModelParameters: Found (3 parameters parsed)

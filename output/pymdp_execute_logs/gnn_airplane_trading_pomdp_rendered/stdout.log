@@ -1,0 +1,79 @@
+Agent 'Airplane_Trading_POMDP_v10' initialized with 2 factors and 2 modalities.
+
+--- Timestep 1 ---
+Observation (modality_0): 0
+Observation (modality_1): 0
+Beliefs about factor_0: [0.25 0.25 0.25 0.25]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [1.]
+Expected Free Energy (EFE): [-2.19722356]
+Action taken: No controllable actions or names not found
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 2 ---
+Observation (modality_0): 0
+Observation (modality_1): 0
+Beliefs about factor_0: [0.25 0.25 0.25 0.25]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [1.]
+Expected Free Energy (EFE): [-2.19722356]
+Action taken: No controllable actions or names not found
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 3 ---
+Observation (modality_0): 2
+Observation (modality_1): 0
+Beliefs about factor_0: [0.25 0.25 0.25 0.25]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [1.]
+Expected Free Energy (EFE): [-2.19722356]
+Action taken: No controllable actions or names not found
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 4 ---
+Observation (modality_0): 0
+Observation (modality_1): 2
+Beliefs about factor_0: [0.25 0.25 0.25 0.25]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [1.]
+Expected Free Energy (EFE): [-2.19722356]
+Action taken: No controllable actions or names not found
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 5 ---
+Observation (modality_0): 1
+Observation (modality_1): 2
+Beliefs about factor_0: [0.25 0.25 0.25 0.25]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [1.]
+Expected Free Energy (EFE): [-2.19722356]
+Action taken: No controllable actions or names not found
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+Simulation finished after 5 timesteps.
+--- PyMDP Runtime Debug ---
+AGENT_SCRIPT: pymdp.__version__ attribute not found.
+AGENT_SCRIPT: pymdp module location: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/pymdp/__init__.py
+AGENT_SCRIPT: Imported Agent: <class 'pymdp.agent.Agent'>
+AGENT_SCRIPT: Agent module location: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/pymdp/agent.py
+AGENT_SCRIPT: Checking for required variables in global scope:
+  AGENT_SCRIPT: A = {A if 'A' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: B = {B if 'B' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: C = {C if 'C' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: D = {D if 'D' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: E = {E if 'E' in globals() else 'Not Defined'}
+  AGENT_SCRIPT: control_fac_idx = {control_fac_idx if 'control_fac_idx' in globals() else 'Not Defined'}
+AGENT_SCRIPT: Error during PyMDP runtime debug: name 'action_names_dict_str' is not defined
+AGENT_SCRIPT: Traceback:
+Traceback (most recent call last):
+  File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/pymdp/gnn_airplane_trading_pomdp/gnn_airplane_trading_pomdp_rendered.py", line 168, in <module>
+    print(f'  AGENT_SCRIPT: action_names = {action_names_dict_str if action_names_dict_str != "{{}}" else "Not Defined"}')
+                                                                     ^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'action_names_dict_str' is not defined. Did you mean: 'action_names_str_list'?
+
+--- End PyMDP Runtime Debug ---

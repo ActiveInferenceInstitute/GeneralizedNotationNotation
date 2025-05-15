@@ -71,6 +71,78 @@
       "equation_count": 8
     }
   },
+  "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_airplane_trading_pomdp.md": {
+    "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_airplane_trading_pomdp.md",
+    "model_name": "Airplane Trading POMDP v1.0",
+    "memory_estimate": 1.07421875,
+    "inference_estimate": 152.96410328531923,
+    "storage_estimate": 4.482390625,
+    "flops_estimate": {
+      "total_flops": 12.5,
+      "matrix_operations": 0,
+      "element_operations": 5,
+      "nonlinear_operations": 0
+    },
+    "inference_time_estimate": {
+      "cpu_time_seconds": 2.5e-10,
+      "cpu_time_ms": 2.5000000000000004e-07,
+      "cpu_time_us": 0.00025
+    },
+    "batched_inference_estimate": {
+      "batch_1": {
+        "flops": 12.5,
+        "time_seconds": 2.5e-10,
+        "throughput_per_second": 3999999999.9999995
+      },
+      "batch_8": {
+        "flops": 79.46394630357186,
+        "time_seconds": 1.5892789260714371e-09,
+        "throughput_per_second": 5033729365.414366
+      },
+      "batch_32": {
+        "flops": 303.7887835804673,
+        "time_seconds": 6.0757756716093455e-09,
+        "throughput_per_second": 5266817231.177311
+      },
+      "batch_128": {
+        "flops": 1188.4616234096127,
+        "time_seconds": 2.3769232468192254e-08,
+        "throughput_per_second": 5385112883.694848
+      },
+      "batch_512": {
+        "flops": 4693.266627901554,
+        "time_seconds": 9.386533255803108e-08,
+        "throughput_per_second": 5454622980.038582
+      }
+    },
+    "model_overhead": {
+      "compilation_ms": 78,
+      "optimization_ms": 148.0,
+      "memory_overhead_kb": 2.494140625
+    },
+    "complexity": {
+      "state_space_complexity": 8.108524456778168,
+      "graph_density": 0.004166666666666667,
+      "avg_in_degree": 1.0,
+      "avg_out_degree": 1.0,
+      "max_in_degree": 1,
+      "max_out_degree": 1,
+      "cyclic_complexity": 0,
+      "temporal_complexity": 0.0,
+      "equation_complexity": 8.16326530612245,
+      "overall_complexity": 8.954304745395888,
+      "variable_count": 16,
+      "edge_count": 1,
+      "total_state_space_dim": 275,
+      "max_variable_dim": 144
+    },
+    "model_info": {
+      "variables_count": 16,
+      "edges_count": 1,
+      "time_spec": "Dynamic",
+      "equation_count": 7
+    }
+  },
   "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md": {
     "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md",
     "model_name": "Multifactor PyMDP Agent v1",

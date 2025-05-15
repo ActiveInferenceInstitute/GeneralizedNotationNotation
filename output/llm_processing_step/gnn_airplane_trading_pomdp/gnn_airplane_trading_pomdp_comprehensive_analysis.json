@@ -1,0 +1,214 @@
+{
+    "model_purpose": "The GNN model represents a Partially Observable Markov Decision Process (POMDP) for an agent managing an investment portfolio aboard an airplane. The model aims to simulate decision-making under uncertainty, where financial losses impact fuel reserves, thus posing unique challenges in trading strategies.",
+    "key_components": {
+        "hidden_states": {
+            "NivelCombustible": {
+                "states": [
+                    "Cr\u00edtico",
+                    "Bajo",
+                    "Medio",
+                    "Alto"
+                ],
+                "description": "Represents the fuel level of the airplane."
+            },
+            "RendimientoMercado": {
+                "states": [
+                    "P\u00e9rdidas",
+                    "Neutral",
+                    "Rentable"
+                ],
+                "description": "Represents the performance of the market."
+            }
+        },
+        "observations": {
+            "IndicadorCombustible": {
+                "outcomes": [
+                    "CasiVac\u00edo",
+                    "Mitad",
+                    "Lleno"
+                ],
+                "description": "Observations about the fuel gauge."
+            },
+            "ResultadoOperacion": {
+                "outcomes": [
+                    "P\u00e9rdida",
+                    "SinCambio",
+                    "Ganancia"
+                ],
+                "description": "Observations about the trading outcome."
+            }
+        },
+        "actions": {
+            "EstrategiaInversion": {
+                "actions": [
+                    "Desinvertir",
+                    "Mantener",
+                    "Invertir"
+                ],
+                "description": "The investment strategy chosen by the agent."
+            }
+        },
+        "transition_dynamics": {
+            "B_f0": {
+                "description": "Transition probabilities for fuel level given previous states and actions.",
+                "dimensions": "[next_fuel, prev_fuel, prev_market, action_investment]"
+            },
+            "B_f1": {
+                "description": "Transition probabilities for market performance based on previous states and actions.",
+                "dimensions": "[next_market, prev_market, action_investment]"
+            }
+        },
+        "preferences": {
+            "C_m0": {
+                "description": "Log preferences over fuel gauge outcomes, favoring 'Lleno'."
+            },
+            "C_m1": {
+                "description": "Log preferences over trading outcomes, favoring 'Ganancia'."
+            }
+        },
+        "priors": {
+            "D_f0": {
+                "description": "Prior probabilities for the initial fuel level state."
+            },
+            "D_f1": {
+                "description": "Prior probabilities for the initial market performance state."
+            }
+        }
+    },
+    "component_interactions": {
+        "initial_states": {
+            "D_f0": "Maps to initial hidden state s_f0 (NivelCombustible)",
+            "D_f1": "Maps to initial hidden state s_f1 (RendimientoMercado)"
+        },
+        "observations": {
+            "s_f0, s_f1": "Determine the likelihood of observations A_m0 (IndicadorCombustible) and A_m1 (ResultadoOperacion)."
+        },
+        "state_transitions": {
+            "s_f0, s_f1, u_c0": "Determine the next states through transition dynamics B_f0 and B_f1."
+        },
+        "expected_free_energy": {
+            "C_m0, C_m1, A_m0, A_m1, B_f0, B_f1, s_f0, s_f1": "Influence the computation of Expected Free Energy G."
+        },
+        "policy_actions": {
+            "G": "Influences the policy vector pi_c0 for action selection."
+        },
+        "chosen_action": {
+            "pi_c0": "Maps to chosen action u_c0."
+        }
+    },
+    "data_types_and_dimensions": {
+        "hidden_states": {
+            "s_f0": {
+                "dimensions": "[4, 1]",
+                "type": "int"
+            },
+            "s_f1": {
+                "dimensions": "[3, 1]",
+                "type": "int"
+            }
+        },
+        "observations": {
+            "o_m0": {
+                "dimensions": "[3, 1]",
+                "type": "int"
+            },
+            "o_m1": {
+                "dimensions": "[3, 1]",
+                "type": "int"
+            }
+        },
+        "control_factors": {
+            "pi_c0": {
+                "dimensions": "[3]",
+                "type": "float"
+            },
+            "u_c0": {
+                "dimensions": "[1]",
+                "type": "int"
+            }
+        },
+        "likelihoods": {
+            "A_m0": {
+                "dimensions": "[3, 4, 3]",
+                "type": "float"
+            },
+            "A_m1": {
+                "dimensions": "[3, 4, 3]",
+                "type": "float"
+            }
+        },
+        "transitions": {
+            "B_f0": {
+                "dimensions": "[4, 4, 3, 3]",
+                "type": "float"
+            },
+            "B_f1": {
+                "dimensions": "[3, 3, 3]",
+                "type": "float"
+            }
+        },
+        "preferences": {
+            "C_m0": {
+                "dimensions": "[3]",
+                "type": "float"
+            },
+            "C_m1": {
+                "dimensions": "[3]",
+                "type": "float"
+            }
+        },
+        "priors": {
+            "D_f0": {
+                "dimensions": "[4]",
+                "type": "float"
+            },
+            "D_f1": {
+                "dimensions": "[3]",
+                "type": "float"
+            }
+        },
+        "expected_free_energy": {
+            "G": {
+                "dimensions": "[1]",
+                "type": "float"
+            }
+        },
+        "time": {
+            "t": {
+                "dimensions": "[1]",
+                "type": "int"
+            }
+        }
+    },
+    "potential_applications": [
+        "Simulating trading strategies in uncertain environments.",
+        "Analyzing the impact of financial decisions on operational resources.",
+        "Training agents in reinforcement learning scenarios with real-world constraints."
+    ],
+    "limitations_or_ambiguities": [
+        "The B_f0 transition dynamics require careful normalization to ensure valid probability distributions.",
+        "The model's complexity may pose challenges in practical implementation and interpretation.",
+        "Assumptions about the independence of observations from certain states may not hold in all scenarios."
+    ],
+    "ontology_mapping_assessment": {
+        "ActInfOntology_terms": {
+            "s_f0": "NivelDeCombustible",
+            "s_f1": "DesempenoDelMercado",
+            "o_m0": "MedidorDeCombustible",
+            "o_m1": "ResultadoDeTransaccion",
+            "pi_c0": "VectorPoliticaControl0",
+            "u_c0": "AccionControl0",
+            "A_m0": "MatrizVerosimilitudModalidad0",
+            "A_m1": "MatrizVerosimilitudModalidad1",
+            "B_f0": "MatrizTransicionFactor0",
+            "B_f1": "MatrizTransicionFactor1",
+            "C_m0": "VectorPreferenciaModalidad0",
+            "C_m1": "VectorPreferenciaModalidad1",
+            "D_f0": "DistribucionPreviaFactorOculto0",
+            "D_f1": "DistribucionPreviaFactorOculto1",
+            "G": "EnergiaLibreEsperada",
+            "t": "PasoDeTiempo"
+        },
+        "assessment": "The ActInfOntology terms are present and relevant, mapping well to the underlying components of the model. This enhances the clarity and interoperability of the model with other frameworks."
+    }
+}

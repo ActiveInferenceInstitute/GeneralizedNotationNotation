@@ -5,6 +5,11 @@
       "errors": [],
       "warnings": []
     },
+    "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_airplane_trading_pomdp.md": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": []
+    },
     "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md": {
       "is_valid": true,
       "errors": [],
@@ -12,8 +17,8 @@
     }
   },
   "summary": {
-    "total_files": 2,
-    "valid_files": 2,
+    "total_files": 3,
+    "valid_files": 3,
     "invalid_files": 0,
     "total_errors": 0,
     "total_warnings": 0

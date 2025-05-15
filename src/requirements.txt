@@ -9,3 +9,4 @@ inferactively-pymdp
 # Add other project-wide dependencies here
 openai
 python-dotenv 
+Markdown 

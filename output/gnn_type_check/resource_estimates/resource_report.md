@@ -1,9 +1,9 @@
 # GNN Resource Estimation Report
 
-Analyzed 2 files
-Average Memory Usage: 0.53 KB
-Average Inference Time: 156.08 units
-Average Storage: 3.91 KB
+Analyzed 3 files
+Average Memory Usage: 0.71 KB
+Average Inference Time: 155.04 units
+Average Storage: 4.10 KB
 
 ## gnn_POMDP_example.md
 Path: src/gnn/examples/gnn_POMDP_example.md
@@ -32,6 +32,34 @@ Storage Estimate: 3.99 KB
 - edge_count: 0.0000
 - total_state_space_dim: 145.0000
 - max_variable_dim: 54.0000
+
+## gnn_airplane_trading_pomdp.md
+Path: src/gnn/examples/gnn_airplane_trading_pomdp.md
+Memory Estimate: 1.07 KB
+Inference Estimate: 152.96 units
+Storage Estimate: 4.48 KB
+
+### Model Info
+- variables_count: 16
+- edges_count: 1
+- time_spec: Dynamic
+- equation_count: 7
+
+### Complexity Metrics
+- state_space_complexity: 8.1085
+- graph_density: 0.0042
+- avg_in_degree: 1.0000
+- avg_out_degree: 1.0000
+- max_in_degree: 1.0000
+- max_out_degree: 1.0000
+- cyclic_complexity: 0.0000
+- temporal_complexity: 0.0000
+- equation_complexity: 8.1633
+- overall_complexity: 8.9543
+- variable_count: 16.0000
+- edge_count: 1.0000
+- total_state_space_dim: 275.0000
+- max_variable_dim: 144.0000
 
 ## gnn_example_pymdp_agent.md
 Path: src/gnn/examples/gnn_example_pymdp_agent.md

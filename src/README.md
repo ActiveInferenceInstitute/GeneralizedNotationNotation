@@ -30,7 +30,8 @@ graph TD
     I --> J(9_render.py: Render GNN Simulators);
     J --> K(10_execute.py: Execute Simulators);
     K --> L(11_llm.py: LLM Operations);
-    L --> Z[End Pipeline];
+    L --> M(12_site.py: Generate HTML Site Summary);
+    M --> Z[End Pipeline];
 
     subgraph Key Modules Called by Pipeline Steps
         E --> E1[gnn_type_checker/cli.py];
@@ -38,11 +39,12 @@ graph TD
         J --> J1[render/render.py];
         K --> K1[execute/pymdp_runner.py];
         L --> L1[llm/llm_operations.py];
+        M --> M1[site/generator.py];
     end
 
     style C fill:#f99,stroke:#333,stroke-width:2px;
 ```
-*Note: While the diagram shows a linear flow, data dependencies exist. For example, `5_export.py` prepares GNN data used by `6_visualization.py`, `9_render.py`, and potentially `11_llm.py`. `9_render.py`'s output is used by `10_execute.py`.*
+*Note: While the diagram shows a linear flow, data dependencies exist. For example, `5_export.py` prepares GNN data used by `6_visualization.py`, `9_render.py`, and potentially `11_llm.py`. `9_render.py`'s output is used by `10_execute.py`. The final `12_site.py` step consumes outputs from all previous steps that write to the `output/` directory.*
 
 ## Pipeline Steps & Corresponding Modules
 
@@ -220,6 +222,21 @@ Below is a detailed description of each pipeline step script (located in `src/`)
 
 ---
 
+### 12. `12_site.py` - Generate HTML Site Summary
+-   **Folder:** `src/site/`
+-   **What:** Generates a single, comprehensive HTML website that summarizes and provides access to all artifacts produced by the GNN processing pipeline and stored in the `args.output_dir`.
+-   **Why:** To provide a user-friendly, centralized way to view and navigate all pipeline outputs, including reports, visualizations, logs, and data files. This aids in understanding the overall pipeline execution and easily accessing specific results.
+-   **How:**
+    -   Imports and calls the `generate_html_report` function from `src/site/generator.py`.
+    -   The `generator.py` module scans the entire `args.output_dir` (passed from `main.py`).
+    -   It identifies various file types (Markdown, JSON, text/logs, images, HTML reports) and known directory structures (e.g., `gnn_examples_visualization/`, `llm_processing_step/`).
+    -   It dynamically constructs an HTML page with sections for each major output category or pipeline step.
+    -   Content is embedded directly where feasible (e.g., images via base64, Markdown converted to HTML, JSON/text in `<pre>` tags) or linked (especially for complex HTML files or other artifacts).
+    -   The script uses the `--output-dir` argument (from `main.py`) to know where to find the pipeline outputs and saves the generated HTML file (e.g., `gnn_pipeline_summary_site.html`) directly into this same `output_dir`.
+-   **Output:** A single HTML file (e.g., `gnn_pipeline_summary_site.html` or as specified by `args.site_html_filename` in `main.py`) saved in the main `--output-dir`.
+
+---
+
 ## Core Utility Modules
 
 Beyond the pipeline step scripts, several folders in `src/` contain core logic and utilities used by these steps:
@@ -235,6 +252,7 @@ Beyond the pipeline step scripts, several folders in `src/` contain core logic a
 -   **`src/render/`**: Contains the core GNN rendering logic (in `render.py` which utilizes helpers like `pymdp_utils.py`) used by `9_render.py` to convert GNN specifications into executable simulators.
 -   **`src/execute/`**: Contains logic for executing rendered GNN models. `pymdp_runner.py` handles the execution of PyMDP scripts and is used by `10_execute.py`.
 -   **`src/llm/`**: Contains modules for Large Language Model (LLM) integration. `llm_operations.py` provides core functions for API interaction (OpenAI), and `mcp.py` defines and registers LLM-related tools with the MCP framework.
+-   **`src/site/`**: Contains modules for generating an HTML summary website of pipeline outputs. `generator.py` includes the core logic for scanning the output directory and building the HTML page. `mcp.py` defines an MCP tool for this functionality.
 -   **`src/utils/`**: Contains utility modules, such as `logging_utils.py` for standardized logging setup across pipeline scripts.
 
 ## Usage
@@ -284,6 +302,8 @@ The `main.py` script accepts several command-line options to customize the pipel
     Default: `360`.
 -   `--pipeline-summary-file FILE`: Path to save the final pipeline execution summary report in JSON format.
     Default: `output/pipeline_execution_summary.json` (relative to project root).
+-   `--site-html-filename NAME`: Filename for the generated HTML summary site (passed to `12_site.py`). This file is saved in the main `--output-dir`.
+    Default: `gnn_pipeline_summary_site.html`.
 
 ## Deprecated Scripts
 

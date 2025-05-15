@@ -2,15 +2,15 @@
 
 ## 📊 Summary of Ontology Processing
 
-- **Files Processed:** 2 / 2
-- **Total Ontological Annotations Found:** 38
-- **Total Annotations Validated:** 38
+- **Files Processed:** 3 / 3
+- **Total Ontological Annotations Found:** 54
+- **Total Annotations Validated:** 54
   - ✅ Passed: 38
-  - ❌ Failed: 0
+  - ❌ Failed: 16
 
 ---
 
-��️ Report Generated: 2025-05-15 13:13:28
+��️ Report Generated: 2025-05-15 13:54:17
 🎯 GNN Source Directory: `src/gnn/examples`
 📖 Ontology Terms Definition: `src/ontology/act_inf_ontology_terms.json` (Loaded: 48 terms)
 
@@ -38,6 +38,29 @@
 - `t` -> `Time`
 
 **Validation Summary**: All ontological terms are recognized.
+
+---
+
+### Ontological Annotations for `src/gnn/examples/gnn_airplane_trading_pomdp.md`
+#### Mappings:
+- `s_f0` -> `NivelDeCombustible` (**INVALID TERM**)
+- `s_f1` -> `DesempenoDelMercado` (**INVALID TERM**)
+- `o_m0` -> `MedidorDeCombustible` (**INVALID TERM**)
+- `o_m1` -> `ResultadoDeTransaccion` (**INVALID TERM**)
+- `pi_c0` -> `VectorPoliticaControl0` (**INVALID TERM**)
+- `u_c0` -> `AccionControl0` (**INVALID TERM**)
+- `A_m0` -> `MatrizVerosimilitudModalidad0` (**INVALID TERM**)
+- `A_m1` -> `MatrizVerosimilitudModalidad1` (**INVALID TERM**)
+- `B_f0` -> `MatrizTransicionFactor0` (**INVALID TERM**)
+- `B_f1` -> `MatrizTransicionFactor1` (**INVALID TERM**)
+- `C_m0` -> `VectorPreferenciaModalidad0` (**INVALID TERM**)
+- `C_m1` -> `VectorPreferenciaModalidad1` (**INVALID TERM**)
+- `D_f0` -> `DistribucionPreviaFactorOculto0` (**INVALID TERM**)
+- `D_f1` -> `DistribucionPreviaFactorOculto1` (**INVALID TERM**)
+- `G` -> `EnergiaLibreEsperada` (**INVALID TERM**)
+- `t` -> `PasoDeTiempo` (**INVALID TERM**)
+
+**Validation Summary**: 16 unrecognized ontological term(s) found.
 
 ---
 
