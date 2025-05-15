@@ -1,0 +1,41 @@
+### Summary of the GNN Model: Gold Standard POMDP Agent v1.0
+
+**ModelName:** Gold Standard POMDP Agent v1.0
+
+**Purpose:**  
+This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent designed to test various GNN parsing and rendering capabilities, particularly within the PyMDP framework.
+
+**Key Components:**
+
+1. **Hidden States:**
+   - **Location (s_f0):** 3 states (e.g., RoomA, RoomB, Corridor)
+   - **Resource Level (s_f1):** 2 states (e.g., Low, High)
+
+2. **Observations:**
+   - **Visual Cue (o_m0):** 4 outcomes (e.g., Door, Window, Food, Empty)
+   - **Auditory Signal (o_m1):** 2 outcomes (e.g., Silence, Beep)
+
+3. **Control Factors (Actions):**
+   - **Movement (pi_c0):** 3 actions (e.g., Stay, MoveClockwise, MoveCounterClockwise)
+   - **Interaction (pi_c1):** 2 actions (e.g., Wait, InteractWithResource)
+
+4. **Transition Dynamics:**
+   - **Location Transitions (B_f0):** Governed by current location and actions.
+   - **Resource Level Transitions (B_f1):** Governed by current resource level and actions.
+
+5. **Likelihood Mapping:**
+   - **Visual Cue Likelihood (A_m0):** Conditional on location and resource level.
+   - **Auditory Signal Likelihood (A_m1):** Conditional on location and resource level.
+
+6. **Preferences:**
+   - **Visual Cue Preferences (C_m0):** Log preferences for outcomes related to visual cues.
+   - **Auditory Signal Preferences (C_m1):** Log preferences for outcomes related to auditory signals.
+
+**Main Connections:**
+
+- **Initial Priors (D_f0, D_f1)** are connected to the hidden states (s_f0, s_f1).
+- **Hidden States** (s_f0, s_f1) lead to **Likelihoods** (A_m0, A_m1) which in turn produce **Observations** (o_m0, o_m1).
+- **States and Actions** influence **Transitions** (B_f0, B_f1) to determine next states.
+- **Preferences** and states/observations impact the **Expected Free Energy** (G), which subsequently influences the policies (pi_c0, pi_c1) and ultimately dictates the chosen actions (u_c0, u_c1).
+
+This model serves as a gold standard for evaluating POMDP implementations in GNN, providing a structured representation of agent behaviors in partially observable environments.

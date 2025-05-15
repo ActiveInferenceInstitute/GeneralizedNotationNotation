@@ -11,6 +11,9 @@ import unittest
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import tempfile
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Add parent directory to Python path to import modules
 parent_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -42,6 +45,7 @@ def run_type_checker_on_file(file_path: str) -> Dict[str, Any]:
             "warnings": warnings
         }
     except Exception as e:
+        logger.error(f"Error in run_type_checker_on_file for {file_path}: {e}", exc_info=True)
         return {
             "file_path": file_path,
             "success": False,
@@ -92,6 +96,7 @@ def run_type_checker_on_directory(dir_path: str, report_file: Optional[str] = No
             }
         }
     except Exception as e:
+        logger.error(f"Error in run_type_checker_on_directory for {dir_path}: {e}", exc_info=True)
         return {
             "directory_path": dir_path,
             "success": False,
@@ -135,6 +140,7 @@ def run_unit_tests() -> Dict[str, Any]:
             "output": test_output
         }
     except Exception as e:
+        logger.error(f"Error in run_unit_tests: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e)
@@ -154,13 +160,17 @@ def get_test_report(uri: str) -> Dict[str, Any]:
     """
     # Extract file path from URI
     if not uri.startswith("test-report://"):
-        raise ValueError(f"Invalid URI format: {uri}")
+        error_msg = f"Invalid URI format: {uri}"
+        logger.error(f"get_test_report: {error_msg}")
+        raise ValueError(error_msg)
     
-    file_path = uri[14:]  # Remove 'test-report://' prefix
-    file_path = Path(file_path)
+    file_path_str = uri[14:]  # Remove 'test-report://' prefix
+    file_path = Path(file_path_str)
     
     if not file_path.exists() or not file_path.is_file():
-        raise ValueError(f"Report file does not exist: {file_path}")
+        error_msg = f"Report file does not exist: {file_path}"
+        logger.error(f"get_test_report: {error_msg}")
+        raise ValueError(error_msg)
     
     # Read the report content
     report_content = file_path.read_text()
@@ -207,4 +217,6 @@ def register_tools(mcp):
         "test-report://{report_file}",
         get_test_report,
         "Retrieve a test report by file path"
-    ) 
+    )
+    
+    logger.info("Tests module MCP tools and resources registered.") 

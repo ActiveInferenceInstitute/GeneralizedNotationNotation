@@ -16,6 +16,28 @@ from typing import Optional, Tuple, List
 from .pymdp import render_gnn_to_pymdp, placeholder_gnn_parser_pymdp # Placeholder for actual parser
 from .rxinfer import render_gnn_to_rxinfer_jl, placeholder_gnn_parser # Placeholder for actual parser
 
+# Attempt to import the logging utility for standalone execution
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    # Fallback for standalone execution or if src is not directly in path
+    _current_script_path_for_util = Path(__file__).resolve()
+    _project_root_for_util = _current_script_path_for_util.parent.parent
+    _paths_to_try_util = [str(_project_root_for_util), str(_project_root_for_util / "src")]
+    _original_sys_path_util = list(sys.path)
+    for _p_try_util in _paths_to_try_util:
+        if _p_try_util not in sys.path:
+            sys.path.insert(0, _p_try_util)
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None # Define as None if import fails
+    finally:
+        # Restore sys.path if it was modified, to prevent side effects
+        # This is important if this module might be imported after standalone path manipulation
+        if _current_script_path_for_util:
+             sys.path = _original_sys_path_util
+
 logger = logging.getLogger(__name__)
 
 RENDERER_MAPPING = {
@@ -70,6 +92,17 @@ def main(cli_args: Optional[List[str]] = None):
     parser.add_argument("--verbose", action="store_true", help="Enable verbose logging for the renderer.")
 
     args = parser.parse_args(cli_args)
+
+    # Set logger level based on verbose flag, effective if main() is called directly
+    # or if standalone and setup_standalone_logging hasn't already set this specific logger.
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Verbose logging enabled for render.py.")
+    else:
+        # If not verbose, and not configured by a parent, it might default to WARNING or INFO.
+        # Ensure it's at least INFO if no parent logger set it higher or if standalone.
+        if logger.level == logging.NOTSET or logger.level > logging.INFO: # check if unconfigured or too high
+            logger.setLevel(logging.INFO)
 
     logger.info(f"Starting GNN rendering process for {args.gnn_spec_file} to {args.target_format}")
 
@@ -136,8 +169,37 @@ def main(cli_args: Optional[List[str]] = None):
 
 if __name__ == "__main__":
     # When run as a script, cli_args is None, so sys.argv will be used by main().
-    # Basic logging setup for standalone execution.
-    # This will be effective only if this script is run directly.
-    # If imported, the importing module (e.g., main.py) should handle basicConfig.
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    
+    # For standalone execution, we need to parse verbosity to set up logging correctly *before* calling main().
+    # Create a temporary parser just to get the verbose flag for initial logging setup.
+    temp_parser = argparse.ArgumentParser(add_help=False) # Don't show help for this temporary parse
+    temp_parser.add_argument("--verbose", action="store_true")
+    # Use parse_known_args to avoid errors if other args are present (they'll be parsed by main's parser)
+    known_args, _ = temp_parser.parse_known_args()
+    
+    log_level_for_standalone = logging.DEBUG if known_args.verbose else logging.INFO
+
+    if setup_standalone_logging:
+        # logger_name=None will configure the root logger.
+        # If we want this script's logger (__main__) to also be set, pass logger_name=__name__.
+        setup_standalone_logging(level=log_level_for_standalone, logger_name=__name__) 
+    else:
+        # Fallback basic config if utility function couldn't be imported
+        # Ensure this only runs if no handlers are configured on the root logger yet.
+        if not logging.getLogger().hasHandlers():
+            logging.basicConfig(
+                level=log_level_for_standalone, 
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                stream=sys.stdout
+            )
+        # Ensure this script's logger (__main__) level is set even in fallback
+        logging.getLogger(__name__).setLevel(log_level_for_standalone)
+        if not setup_standalone_logging: # Log warning only if it was actually None
+            logging.getLogger(__name__).warning(
+                "Using fallback basicConfig for logging due to missing setup_standalone_logging utility."
+            )
+
+    # Now that logging is configured based on potential --verbose, call main().
+    # main() will then parse all arguments again and also set its logger level.
+    # This is slightly redundant but ensures correct behavior in all invocation scenarios.
     sys.exit(main()) 

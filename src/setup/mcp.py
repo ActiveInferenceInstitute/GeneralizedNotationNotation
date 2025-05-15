@@ -7,6 +7,9 @@ This module exposes utility functions from the setup module through MCP.
 import os
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Import utilities from the setup module
 # Assuming the file is src/setup/mcp.py, utils.py is in the same directory
@@ -32,6 +35,7 @@ def ensure_directory_exists_mcp(directory_path: str) -> Dict[str, Any]:
             "created": not Path(directory_path).exists() # Check if it was created now or existed before
         }
     except Exception as e:
+        logger.error(f"Error in ensure_directory_exists_mcp for {directory_path}: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e)
@@ -56,6 +60,7 @@ def find_project_gnn_files_mcp(search_directory: str, recursive: bool = False) -
             "count": len(files)
         }
     except Exception as e:
+        logger.error(f"Error in find_project_gnn_files_mcp for {search_directory}: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e)
@@ -78,6 +83,7 @@ def get_standard_output_paths_mcp(base_output_directory: str) -> Dict[str, Any]:
             "paths": {name: str(p) for name, p in paths.items()}
         }
     except Exception as e:
+        logger.error(f"Error in get_standard_output_paths_mcp for {base_output_directory}: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e)
@@ -113,4 +119,6 @@ def register_tools(mcp_instance): # Changed 'mcp' to 'mcp_instance' for clarity
             "base_output_directory": {"type": "string", "description": "The base directory where output subdirectories will be managed."}
         },
         "Gets a dictionary of standard output directory paths (e.g., for type_check, visualization), creating them if needed."
-    ) 
+    )
+    
+    logger.info("Setup module MCP tools registered.") 

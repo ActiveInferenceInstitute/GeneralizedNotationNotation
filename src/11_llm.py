@@ -19,6 +19,34 @@ import datetime
 import os
 import json # For saving structured LLM outputs
 
+# Attempt to import the new logging utility (utils.logging_utils.py)
+# This should be tried before other project imports that might depend on logging being set up by it for standalone.
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    # Fallback for standalone execution or if src is not directly in path
+    _current_script_path_for_util = Path(__file__).resolve()
+    _project_root_for_util = _current_script_path_for_util.parent.parent
+    _paths_to_try_util = [str(_project_root_for_util), str(_project_root_for_util / "src")]
+    _original_sys_path_util = list(sys.path)
+    for _p_try_util in _paths_to_try_util:
+        if _p_try_util not in sys.path:
+            sys.path.insert(0, _p_try_util)
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None
+        # Minimal logging for this specific failure, as main logger isn't fully set up yet.
+        _temp_logger_name_util = __name__ if __name__ != "__main__" else "src.11_llm_util_import_warning"
+        _temp_logger_util = logging.getLogger(_temp_logger_name_util)
+        if not _temp_logger_util.hasHandlers() and not logging.getLogger().hasHandlers():
+            logging.basicConfig(level=logging.WARNING, stream=sys.stderr, format='%(levelname)s: %(message)s')
+        _temp_logger_util.warning(
+            "Could not import setup_standalone_logging. Standalone logging will be basic."
+        )
+    finally:
+        sys.path = _original_sys_path_util # Restore original sys.path
+
 # --- Standardized Project Imports ---
 # The goal is to make imports robust whether running as a script or part of a larger package.
 # Assuming this script (11_llm.py) is in src/ and needs to import from src/llm/ and src/mcp/
@@ -283,7 +311,7 @@ def discover_gnn_files(target_dir: Path, recursive: bool = False) -> list[Path]:
     # For now, assume all found files are candidates
     unique_files = sorted(list(set(gnn_files))) # Deduplicate and sort
     logger.info(f"Discovered {len(unique_files)} potential GNN input files.")
-    if verbose_discovery := True: # Control verbose logging of discovered files
+    if logger.isEnabledFor(logging.DEBUG): # Check logger level for verbose discovery log
         for f_path in unique_files:
             logger.debug(f"  - Found: {f_path}")
     return unique_files
@@ -291,27 +319,20 @@ def discover_gnn_files(target_dir: Path, recursive: bool = False) -> list[Path]:
 def main(args: argparse.Namespace) -> int:
     """
     Main function to orchestrate LLM processing of GNN files.
-    The script expects to be run with `main.py` which sets up logging.
-    If run standalone, basic logging is configured.
     """
-    # If this script is run directly, ensure basic logging is set up.
-    # If GNN_Pipeline logger (used in main.py) or root logger has no handlers, set up a basic one.
-    pipeline_logger_configured = any(handler is not None for handler in logging.getLogger("GNN_Pipeline").handlers)
-    root_logger_configured = any(handler is not None for handler in logging.getLogger().handlers)
-
-    if not pipeline_logger_configured and not root_logger_configured:
-        logging.basicConfig(level=logging.INFO if not args.verbose else logging.DEBUG,
-                            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                            stream=sys.stdout) # Ensure logs go to stdout for main.py to capture
-        logger.info("Basic logging configured for standalone 11_llm.py execution.")
+    # Set this script's logger level based on args.verbose.
+    # If run standalone, setup_standalone_logging in __main__ will have already configured handlers
+    # and potentially set this logger's level. This call ensures it respects args.verbose.
+    # If run by main.py, main.py's logging config applies, and this sets this script's specific level.
+    log_level_for_this_script = logging.DEBUG if args.verbose else logging.INFO
+    logger.setLevel(log_level_for_this_script)
+    if logger.isEnabledFor(logging.DEBUG): # Log this only if we are actually in debug mode now
+        logger.debug(f"Script logger '{logger.name}' level set to {logging.getLevelName(log_level_for_this_script)}.")
     
-    if args.verbose:
-        logger.setLevel(logging.DEBUG)
-        # Also set level for llm_operations if it has its own logger and you want its debug logs
-        if llm_operations: # and hasattr(llm_operations, 'logger'): # Check if llm_operations has 'logger'
-            logging.getLogger(llm_operations.__name__).setLevel(logging.DEBUG)
-        logger.debug("Verbose mode enabled by CLI argument.")
-
+    # If verbose, also set level for llm_operations module if it exists.
+    if args.verbose and llm_operations and hasattr(llm_operations, '__name__'):
+        logging.getLogger(llm_operations.__name__).setLevel(logging.DEBUG)
+        logger.debug(f"Verbose mode: Set logger for '{llm_operations.__name__}' to DEBUG.")
 
     logger.info(f"Starting LLM processing step. Target directory: {args.target_dir}, Output directory: {args.output_dir}")
     logger.debug(f"Full arguments: {args}")
@@ -363,38 +384,48 @@ if __name__ == '__main__':
 Process GNN files using LLMs for tasks like summarization, analysis, and Q&A generation.
 This script is intended to be called as part of the GNN processing pipeline (via main.py)
 but can be run standalone for testing with appropriate arguments.
-""")
-    parser.add_argument("--target-dir", type=str, required=True, help="Directory containing GNN files to process.")
-    parser.add_argument("--output-dir", type=str, required=True, help="Main output directory for the GNN pipeline. LLM outputs will be in a subfolder.")
-    parser.add_argument("--recursive", action="store_true", help="Recursively search for GNN files in target-dir.")
-    parser.add_argument("--verbose", "-v", action="store_true", help="Enable detailed DEBUG logging.")
+""", formatter_class=argparse.RawTextHelpFormatter) # Added formatter for better help text
+
+    # Define defaults for standalone execution relative to this script's project root
+    script_file_path = Path(__file__).resolve()
+    project_root_for_defaults = script_file_path.parent.parent # src/ -> project_root
+    default_target_dir_standalone = project_root_for_defaults / "src" / "gnn" / "examples"
+    default_output_dir_standalone = project_root_for_defaults / "output"
+
+    parser.add_argument("--target-dir", type=Path, default=default_target_dir_standalone, 
+                        help=f"Directory containing GNN files to process. Default: {default_target_dir_standalone.relative_to(project_root_for_defaults) if default_target_dir_standalone.is_relative_to(project_root_for_defaults) else default_target_dir_standalone}")
+    parser.add_argument("--output-dir", type=Path, default=default_output_dir_standalone, 
+                        help=f"Main output directory for the GNN pipeline. LLM outputs will be in a subfolder. Default: {default_output_dir_standalone.relative_to(project_root_for_defaults) if default_output_dir_standalone.is_relative_to(project_root_for_defaults) else default_output_dir_standalone}")
+    parser.add_argument("--recursive", action=argparse.BooleanOptionalAction, default=False, 
+                        help="Recursively search for GNN files in target-dir.")
+    parser.add_argument("--verbose", "-v", action=argparse.BooleanOptionalAction, default=False, 
+                        help="Enable detailed DEBUG logging.")
     parser.add_argument("--llm-tasks", nargs='+', default=["all"], 
                         choices=ALL_TASKS + ["all"], # Allow individual tasks or "all"
                         help=f"Specify which LLM tasks to run. Choices: {', '.join(ALL_TASKS)}, or 'all'. "
                              f"Default is 'all'. Can provide multiple space-separated tasks.")
     
-    # Add an argument for API key, though .env is preferred.
-    # parser.add_argument("--openai-api-key", type=str, default=os.getenv("OPENAI_API_KEY"), help="OpenAI API Key. Defaults to OPENAI_API_KEY env var.")
-
-    # Potentially other LLM related args like model name, temperature, max_tokens if needed here
-    # For now, these are handled in llm_operations.py or hardcoded for specific tasks.
-
     parsed_args = parser.parse_args()
 
-    # Basic logging setup for standalone run (main.py should handle its own richer config)
-    # This ensures that if __name__ == '__main__', logs are visible.
-    log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
-    logging.basicConfig(level=log_level, 
-                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                        handlers=[logging.StreamHandler(sys.stdout)]) # stdout for pipeline capture
-    
-    # Manually set API key if provided and not already set by load_dotenv in llm_operations
-    # if parsed_args.openai_api_key:
-    #     openai.api_key = parsed_args.openai_api_key
-    #     logger.info("OpenAI API key set from command line argument.")
-    # elif not os.getenv("OPENAI_API_KEY"):
-    #     logger.warning("OpenAI API Key not found in environment variables or command line.")
-        # llm_operations.load_api_key() might still try and raise error if not found.
+    # Setup logging for standalone execution using the utility function
+    log_level_to_set = logging.DEBUG if parsed_args.verbose else logging.INFO
+    if setup_standalone_logging:
+        # Pass __name__ so the utility can also set this script's specific logger level
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__) 
+    else:
+        # Fallback basic config if utility function couldn't be imported
+        if not logging.getLogger().hasHandlers(): # Check root handlers
+            logging.basicConfig(
+                level=log_level_to_set,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                stream=sys.stdout # stdout for pipeline capture
+            )
+        # Ensure this script's logger (which is __main__ here) level is set even in fallback
+        logging.getLogger(__name__).setLevel(log_level_to_set) 
+        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+
+    # Quieten noisy libraries if run standalone, after main logging is set up
+    # Example: logging.getLogger('some_noisy_dependency').setLevel(logging.WARNING)
     
     # For standalone execution, it's important that mcp_instance is available
     # and that LLM tools can be registered.

@@ -11,6 +11,37 @@ from pathlib import Path
 import glob # Added for file searching
 import os
 
+# Attempt to import the new logging utility
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    # Fallback for standalone execution or if src is not directly in path
+    current_script_path_for_util = Path(__file__).resolve()
+    project_root_for_util = current_script_path_for_util.parent.parent
+    # Try adding project root, then src, to sys.path for utils
+    paths_to_try = [str(project_root_for_util), str(project_root_for_util / "src")]
+    original_sys_path = list(sys.path) # Store original path
+    for p_try in paths_to_try:
+        if p_try not in sys.path:
+            sys.path.insert(0, p_try)
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None
+        _temp_logger_name = __name__ if __name__ != "__main__" else "src.9_render_import_warning"
+        _temp_logger = logging.getLogger(_temp_logger_name)
+        if not _temp_logger.hasHandlers():
+            if not logging.getLogger().hasHandlers():
+                logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
+            else:
+                 _temp_logger.addHandler(logging.StreamHandler(sys.stderr))
+                 _temp_logger.propagate = False
+        _temp_logger.warning(
+            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
+        )
+    finally:
+        sys.path = original_sys_path # Restore original sys.path
+
 # Ensure the GNN_Pipeline logger is used if this script is run in that context.
 # If run standalone, it will use the root logger configured by its own main.
 logger = logging.getLogger(__name__) # If part of GNN_Pipeline, __name__ will be '9_render'
@@ -153,36 +184,42 @@ def main(args: argparse.Namespace) -> int:
 
 if __name__ == "__main__":
     # Basic configuration for running this script standalone
-    log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    log_level_for_standalone = getattr(logging, log_level_str, logging.INFO)
-    logging.basicConfig(
-        level=log_level_for_standalone,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-        stream=sys.stdout,
-        force=True # Override any existing root logger configuration for standalone run
-    )
+    # log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
+    # log_level_for_standalone = getattr(logging, log_level_str, logging.INFO)
+    # logging.basicConfig(
+    #     level=log_level_for_standalone,
+    #     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    #     datefmt="%Y-%m-%d %H:%M:%S",
+    #     stream=sys.stdout,
+    #     force=True # Override any existing root logger configuration for standalone run
+    # )
 
     # Define arguments that 9_render.py's main() function expects when called by main.py
     # or for a similar standalone test.
     # The main() function of 9_render.py itself scans a directory derived from output_dir.
     parser = argparse.ArgumentParser(description="GNN Rendering Step - Standalone Directory Processing Mode")
+    
+    # Determine project root for default paths, assuming script is in src/
+    script_file_path = Path(__file__).resolve()
+    project_root_for_defaults = script_file_path.parent.parent # src/ -> project_root
+    default_output_dir_standalone = project_root_for_defaults / "output"
+
     parser.add_argument(
         "--output-dir", 
-        default="../output", # This script's main() derives scan path from this
+        default=default_output_dir_standalone, 
         type=Path,
-        help="Main pipeline output directory. Render step scans 'output_dir/gnn_exports'. Default: ../output"
+        help=f"Main pipeline output directory. Render step scans 'output_dir/gnn_exports'. Default: {default_output_dir_standalone.relative_to(project_root_for_defaults) if default_output_dir_standalone.is_relative_to(project_root_for_defaults) else default_output_dir_standalone}"
     )
     parser.add_argument(
         "--recursive", 
-        action="store_true", 
-        default=False, # Default for standalone, main.py passes it if true.
+        action=argparse.BooleanOptionalAction, 
+        default=False, 
         help="Recursively scan for GNN spec files in 'output_dir/gnn_exports'."
     )
     parser.add_argument(
         "--verbose", 
-        action="store_true", 
-        default=(log_level_for_standalone == logging.DEBUG),
+        action=argparse.BooleanOptionalAction, 
+        default=False,
         help="Enable verbose logging for this script."
     )
     # Note: The main() function of 9_render.py does not take individual gnn_spec_file, target_format, etc.
@@ -190,16 +227,25 @@ if __name__ == "__main__":
 
     cli_args = parser.parse_args()
 
-    # If verbose is set by arg, ensure logger level is DEBUG for standalone run
-    if cli_args.verbose:
-        current_script_logger = logging.getLogger(__name__) # __name__ will be __main__ here
-        current_script_logger.setLevel(logging.DEBUG)
-        # Also set root logger and handlers if basicConfig was used
-        if logging.getLogger().handlers: # Check if basicConfig has run
-             logging.getLogger().setLevel(logging.DEBUG)
-             for handler in logging.getLogger().handlers:
-                 handler.setLevel(logging.DEBUG)
-        current_script_logger.debug("Verbose logging enabled for standalone run of 9_render.py.")
+    # Setup logging for standalone execution
+    log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
+    if setup_standalone_logging:
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
+    else:
+        if not logging.getLogger().hasHandlers(): # Check root handlers
+            logging.basicConfig(
+                level=log_level_to_set,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                # datefmt="%Y-%m-%d %H:%M:%S", # Use default datefmt
+                stream=sys.stdout
+            )
+        # Ensure this script's logger (which is __main__ here) level is set even in fallback
+        logging.getLogger(__name__).setLevel(log_level_to_set) 
+        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+
+    # Quieten noisy libraries if run standalone
+    logging.getLogger('matplotlib').setLevel(logging.WARNING)
+    # (PIL is not directly used here, but matplotlib might use it)
 
     # Call the script's main function, which processes a directory.
     exit_code = main(cli_args) 

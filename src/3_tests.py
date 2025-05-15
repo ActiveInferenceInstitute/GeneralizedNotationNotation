@@ -20,6 +20,32 @@ from pathlib import Path
 import logging # Import logging
 import argparse # Added
 
+# Attempt to import the new logging utility
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    sys.path.append(str(Path(__file__).resolve().parent.parent))
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None
+        _temp_logger_name = __name__ if __name__ != "__main__" else "src.3_tests_import_warning"
+        _temp_logger = logging.getLogger(_temp_logger_name)
+        if not _temp_logger.hasHandlers() and not logging.getLogger().hasHandlers():
+            logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
+            _temp_logger.warning(
+                "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
+            )
+        elif not _temp_logger.hasHandlers():
+            _temp_logger.addHandler(logging.StreamHandler(sys.stderr))
+            _temp_logger.warning(
+                "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic (using existing root handlers)."
+            )
+        else:
+            _temp_logger.warning(
+                "Could not import setup_standalone_logging from utils.logging_utils (already has handlers)."
+            )
+
 # --- Logger Setup ---
 logger = logging.getLogger(__name__)
 # --- End Logger Setup ---
@@ -114,57 +140,17 @@ def run_tests(tests_dir: Path, output_dir: Path, verbose: bool = False) -> int:
         logger.error(f"❌ An unexpected error occurred while trying to run tests: {e}", exc_info=verbose)
         return 1 # Critical failure for this step
 
-def main(cmd_args=None): # Renamed 'args' to 'cmd_args'
-    """Main function for the testing step (Step 3).
-
-    Handles argument parsing if run standalone and then invokes the test runner.
+def main(parsed_args: argparse.Namespace): # Renamed 'cmd_args' and type hinted
+    """Main function for the testing step (Step 3).\n
+    Invokes the test runner.
 
     Args:
-        cmd_args (argparse.Namespace | list | None):
-            - If None, parses arguments from sys.argv for standalone execution.
-            - If a list, assumes it's a list of string arguments to be parsed.
-            - If an argparse.Namespace, uses it directly.
-            Expected attributes on the Namespace object include:
-            output_dir, verbose.
+        parsed_args (argparse.Namespace): Pre-parsed command-line arguments.
+            Expected attributes include: output_dir, verbose.
     """
-    if cmd_args is None:
-        script_file_path = Path(__file__).resolve()
-        project_root_for_defaults = script_file_path.parent.parent # src/
-        # Output dir for test reports defaults to output/test_reports inside project root
-        default_output_dir = project_root_for_defaults.parent / "output" 
-
-        parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 3: Tests.")
-        parser.add_argument(
-            "--output-dir", 
-            type=Path, 
-            default=default_output_dir,
-            help=f"Main output directory where a 'test_reports' subdirectory will be created (default: {default_output_dir})"
-        )
-        parser.add_argument(
-            "--verbose", 
-            action="store_true", 
-            help="Enable verbose (DEBUG level) logging and detailed pytest output."
-        )
-        parsed_args = parser.parse_args()
-    elif isinstance(cmd_args, list):
-        script_file_path = Path(__file__).resolve()
-        project_root_for_defaults = script_file_path.parent.parent
-        default_output_dir = project_root_for_defaults.parent / "output"
-        parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 3: Tests.")
-        parser.add_argument("--output-dir", type=Path, default=default_output_dir)
-        parser.add_argument("--verbose", action="store_true")
-        parsed_args = parser.parse_args(cmd_args)
-    elif hasattr(cmd_args, 'output_dir'):
-        parsed_args = cmd_args
-    else:
-        print("ERROR: Invalid 'cmd_args' type passed to 3_tests.py main().", file=sys.stderr)
-        sys.exit(1)
-
     log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
-    if not logging.getLogger().hasHandlers():
-        logging.basicConfig(level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", stream=sys.stdout)
-    else:
-        logger.setLevel(log_level)
+    logger.setLevel(log_level)
+    logger.debug(f"Script logger '{logger.name}' level set to {logging.getLevelName(log_level)}.")
 
     logger.info("▶️ Starting Step 3: Tests")
     logger.debug(f"  Parsed arguments for tests: {parsed_args}")
@@ -188,4 +174,39 @@ def main(cmd_args=None): # Renamed 'args' to 'cmd_args'
     sys.exit(result_code)
 
 if __name__ == "__main__":
-    main() 
+    script_file_path = Path(__file__).resolve()
+    # project_root_for_defaults should be the actual project root (parent of src/)
+    project_root_for_defaults = script_file_path.parent.parent 
+    # Output dir for test reports defaults to PROJECT_ROOT/output/
+    default_output_dir = project_root_for_defaults / "output"
+
+    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 3: Tests (Standalone).")
+    parser.add_argument(
+        "--output-dir", 
+        type=Path, 
+        default=default_output_dir,
+        help=f"Main output directory where a 'test_reports' subdirectory will be created (default: {default_output_dir.relative_to(project_root_for_defaults) if default_output_dir.is_relative_to(project_root_for_defaults) else default_output_dir})"
+    )
+    parser.add_argument(
+        "--verbose", 
+        action="store_true", 
+        default=False, # Default to False for standalone
+        help="Enable verbose (DEBUG level) logging and detailed pytest output."
+    )
+    cli_args = parser.parse_args()
+
+    # Setup logging for standalone execution
+    log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
+    if setup_standalone_logging:
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
+    else:
+        if not logging.getLogger().hasHandlers():
+            logging.basicConfig(
+                level=log_level_to_set,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                stream=sys.stdout
+            )
+        logging.getLogger(__name__).setLevel(log_level_to_set)
+        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+
+    main(cli_args) 

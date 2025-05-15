@@ -1,18 +1,18 @@
-Generalized Notation Notation: From Plaintext to Triple Play
+# Generalized Notation Notation: From Plaintext to Triple Play
 
-https://www.youtube.com/live/3tYOBVIOLyU
-Active InferAnt Stream 014.1 ~ Generalized Notation Notation: From Plaintext to Triple Play
-May 15, 2025. 
-https://www.youtube.com/live/3tYOBVIOLyU
-Daniel Friedman, Active Inference Institute. 
-
-
-## 🗓️ Livestream Agenda: Generalized Notation Notation - From Plaintext to Triple Play 🚀
-
-**Host:** Daniel Friedman, Active Inference Institute
+**Stream:** Active InferAnt Stream 014.1
+**Presenter:** Daniel Friedman, Active Inference Institute
 **Date:** May 15, 2025
 **Watch Live:** https://www.youtube.com/live/3tYOBVIOLyU
-https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
+**GitHub:** https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
+
+---
+
+## 🗓️ Livestream Agenda 🚀
+
+**Tools Used:**
+*   Cursor 0.50.4
+*   Gemini 2.5 Pro (Preview 05-06)
 
 ---
 

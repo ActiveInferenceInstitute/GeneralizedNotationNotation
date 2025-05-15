@@ -343,101 +343,34 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Path | 
     
     return 0 # Pure success
 
-def main(args=None):
+def main(parsed_args: argparse.Namespace):
     """Main function to handle argument parsing and call processing logic.
 
-    If args are not provided (e.g. running standalone), command-line arguments
-    are parsed. If args are provided (e.g., from an internal call with a pre-parsed
-    Namespace object), those are used.
-
     Args:
-        args (argparse.Namespace | list | None): 
-            - If None, parses arguments from sys.argv.
-            - If a list, assumes it's a list of string arguments to be parsed.
-            - If an argparse.Namespace, uses it directly.
-            Expected attributes on the Namespace object include:
-            target_dir, output_dir, recursive, verbose.
+        parsed_args (argparse.Namespace): Pre-parsed command-line arguments.
+            Expected attributes include: target_dir, output_dir, recursive, verbose.
     """
-    # If args are not provided (e.g. running standalone), parse them.
-    # If args are provided (e.g. from main.py's subprocess call), use them.
-    if args is None: # Standalone execution or direct call without pre-parsed args
-        # Determine project root for default paths, assuming this script is in 'src/'
-        script_file_path = Path(__file__).resolve()
-        project_root_for_defaults = script_file_path.parent.parent
-
-        default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
-        default_output_dir = project_root_for_defaults / "output"
-
-        parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 1: GNN File Discovery and Basic Parsing.")
-        parser.add_argument(
-            "--target-dir", 
-            type=Path, 
-            default=default_target_dir,
-            help=f"Target directory for GNN files (default: {default_target_dir.relative_to(project_root_for_defaults) if default_target_dir.is_relative_to(project_root_for_defaults) else default_target_dir})"
-        )
-        parser.add_argument(
-            "--output-dir", 
-            type=Path, 
-            default=default_output_dir,
-            help=f"Main directory to save outputs (default: {default_output_dir.relative_to(project_root_for_defaults) if default_output_dir.is_relative_to(project_root_for_defaults) else default_output_dir})"
-        )
-        parser.add_argument(
-            "--recursive", 
-            default=True, 
-            action=argparse.BooleanOptionalAction,
-            help="Recursively process GNN files in subdirectories (default: True)."
-        )
-        parser.add_argument(
-            "--verbose", 
-            default=True, 
-            action=argparse.BooleanOptionalAction,
-            help="Enable verbose (DEBUG level) logging. On by default (use --no-verbose to disable)."
-        )
-        # In a subprocess context, sys.argv will include the script name + args from main.py
-        # For direct call 'main(parsed_args_obj)', this block is skipped.
-        parsed_args = parser.parse_args() # sys.argv will be used here by default
-    else: # Args provided directly (e.g. an object from a direct import, not typical for subprocess)
-        # This path is less likely if always run via main.py's subprocess. 
-        # If main.py used importlib, 'args' would be the Namespace object. 
-        # For subprocess, we re-parse from sys.argv effectively via the block above if args is None.
-        # To robustly handle being called as a library with an args object, we'd check its type.
-        # For now, assume if 'args' is not None, it's a Namespace-like object.
-        if isinstance(args, list): # If main.py passes sys.argv list directly
-            # This case is if main.py did module.main(sys.argv[1:]) which is not current model
-            # We need an ArgumentParser to parse this list
-            script_file_path = Path(__file__).resolve()
-            project_root_for_defaults = script_file_path.parent.parent
-            default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
-            default_output_dir = project_root_for_defaults / "output"
-
-            parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 1: GNN File Discovery and Basic Parsing.")
-            parser.add_argument("--target-dir", type=Path, default=default_target_dir)
-            parser.add_argument("--output-dir", type=Path, default=default_output_dir)
-            parser.add_argument("--recursive", default=True, action=argparse.BooleanOptionalAction)
-            parser.add_argument(
-                "--verbose", 
-                default=True, 
-                action=argparse.BooleanOptionalAction,
-                help="Enable verbose (DEBUG level) logging. On by default (use --no-verbose to disable)."
-            )
-            parsed_args = parser.parse_args(args) # Parse the provided list
-        elif hasattr(args, 'target_dir'): # If it's already a parsed Namespace-like object
-            parsed_args = args
-        else:
-            logger.error("Invalid 'args' type passed to main(). Expected None, list, or Namespace-like object.")
-            sys.exit(1)
-
-    # Setup logging level based on verbosity
+    # Setup logging level for this script's logger based on verbosity.
+    # If run standalone, setup_standalone_logging (called in __main__ block) would have already
+    # configured the root logger and potentially this logger's level.
+    # If run as part of a pipeline (main.py), the pipeline's logger is configured,
+    # and this script's logger will inherit. We explicitly set this script's logger level
+    # here to ensure it respects its own verbose flag if the pipeline's verbosity differs
+    # or if setup_standalone_logging didn't target this specific logger name with setLevel.
     log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
-    # Ensure basicConfig is only called if no handlers are already configured for the root logger
-    # or if we want to override. For a script, it's often fine to configure its own logger's level.
-    # If run by main.py, main.py configures the root logger.
-    # If standalone, we need to configure.
-    if not logging.getLogger().hasHandlers(): # Configure root logger if not already done
-        logging.basicConfig(level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", stream=sys.stdout)
-    else: # If root logger has handlers, just set level for this script's logger
-        logger.setLevel(log_level)
-    
+    logger.setLevel(log_level)
+    # Ensure handlers also respect this level if they were configured higher by a root setup.
+    # This is particularly for the case where main.py sets a global INFO, but this script is --verbose.
+    for handler in logging.getLogger().handlers: # Check root handlers
+        if handler.level > log_level: # only if root handler is less verbose
+            # This is tricky. We don't want to override main.py's console handler level usually.
+            # setup_standalone_logging handles its own logger.setLevel(logger_name) call.
+            # For now, let's assume main.py's verbosity setting for handlers is king if already set.
+            # The script's own logger.setLevel(log_level) above is the main control for this script's messages.
+            pass 
+
+    logger.debug(f"Script logger '{logger.name}' level set to {logging.getLevelName(log_level)}.")
+
     # Determine project_root for use in process_gnn_folder
     # This assumes the script itself (1_gnn.py) is in a 'src' directory, 
     # and 'src' is a direct child of the project root.
@@ -485,7 +418,6 @@ def main(args=None):
 
 if __name__ == "__main__":
     # When run as a script, create a simple parser for standalone execution
-    # Pass only relevant arguments to this script's main function.
     parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 1: GNN File Discovery and Basic Parsing (Standalone)")
     
     # Determine project root for defaults, assuming script is in src/
@@ -498,33 +430,30 @@ if __name__ == "__main__":
     parser.add_argument("--target-dir", type=Path, default=default_target_dir, help="Target directory for GNN files.")
     parser.add_argument("--output-dir", type=Path, default=default_output_dir, help="Directory to save outputs.")
     parser.add_argument("--recursive", action=argparse.BooleanOptionalAction, default=True, help="Recursively search target directory.")
-    parser.add_argument("--verbose", action="store_true", help="Enable verbose (DEBUG level) logging.")
+    # Changed default for --verbose to False for standalone, as main.py controls its default True for pipeline context
+    parser.add_argument("--verbose", action="store_true", default=False, help="Enable verbose (DEBUG level) logging.")
     
-    # Parse only the arguments defined for this standalone script
-    # This avoids issues if unknown args (meant for main.py) are passed.
-    # Use parse_known_args if you want to ignore unknown args, or ensure no extra args are passed.
-    # For simple standalone, parse_args() is fine if we expect only these args.
     cli_args = parser.parse_args()
 
     # Setup logging for standalone execution using the utility function
     log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
     if setup_standalone_logging:
+        # Pass __name__ so the utility can also set this script's specific logger level
         setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
     else:
         # Fallback basic config if utility function couldn't be imported
-        # This ensures some logging still happens.
         if not logging.getLogger().hasHandlers():
             logging.basicConfig(
                 level=log_level_to_set,
                 format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                 stream=sys.stdout
             )
-        logger.setLevel(log_level_to_set) # Set level for the script's logger
-        logger.warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+        # Ensure this script's logger level is set even in fallback
+        logging.getLogger(__name__).setLevel(log_level_to_set)
+        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
 
-    # Call the script's main function, which processes arguments and calls business logic.
-    # Pass the parsed args specific to this script.
-    main(cli_args) # Pass the parsed args intended for this script
+    # Call the script's main function, passing the parsed args.
+    main(cli_args)
 
 # --- Helper function to simulate main.py args for testing (if needed) ---
 # This is how main.py (subprocess version) would effectively call this script:
@@ -533,9 +462,17 @@ if __name__ == "__main__":
 # Example for direct call testing (if you were to import and run main() from another script):
 # class DummyArgs:
 #     def __init__(self):
-#         self.target_dir = "../src/gnn/examples" # Adjust path as needed for testing
-#         self.output_dir = "../output"
+#         self.target_dir = Path("../src/gnn/examples").resolve() # Adjust path as needed for testing
+#         self.output_dir = Path("../output").resolve()
 #         self.recursive = True
-#         self.verbose = True
+#         self.verbose = True # Set to False to test non-verbose
 # test_args = DummyArgs()
-# main(test_args) # To test with a pre-constructed args object 
+# # If testing standalone, the __main__ block handles logging setup.
+# # If testing main() directly after importing, ensure logging is configured before calling main(test_args).
+# # Example for direct main() call with manual logging setup (mimicking standalone for test):
+# # if setup_standalone_logging:
+# #    setup_standalone_logging(level=logging.DEBUG if test_args.verbose else logging.INFO, logger_name=__name__)
+# # else:
+# #    logging.basicConfig(level=logging.DEBUG if test_args.verbose else logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', stream=sys.stdout)
+# #    logging.getLogger(__name__).setLevel(logging.DEBUG if test_args.verbose else logging.INFO)
+# main(test_args) 

@@ -21,6 +21,28 @@ import os
 import argparse # Added missing import
 from gnn_type_checker.resource_estimator import GNNResourceEstimator # Moved import
 
+# Attempt to import the new logging utility
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    sys.path.append(str(Path(__file__).resolve().parent.parent))
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None
+        _temp_logger_name = __name__ if __name__ != "__main__" else "src.4_type_checker_import_warning"
+        _temp_logger = logging.getLogger(_temp_logger_name)
+        # Basic warning if the utility is missing, ensuring it can be seen
+        if not _temp_logger.hasHandlers():
+            if not logging.getLogger().hasHandlers(): # If no root handlers either
+                logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
+            else: # Root handlers exist, add one for this specific logger if needed
+                 _temp_logger.addHandler(logging.StreamHandler(sys.stderr)) 
+                 _temp_logger.propagate = False # Don't double log this specific message
+        _temp_logger.warning(
+            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
+        )
+
 # Configure basic logging
 # The level will be set more specifically in run_type_checker based on verbosity
 # logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s') # BasicConfig should be handled by main.py
@@ -50,16 +72,18 @@ def run_type_checker(target_dir: str,
     """
     Run type checking on GNN files in the target directory using the gnn_type_checker module.
     """
-    if verbose:
-        logger.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.INFO)
+    # Set level for this script's logger. If run standalone via __main__ and setup_standalone_logging was used
+    # with logger_name=__name__, this logger's level might already be set. Re-setting is fine.
+    # If run by main.py, main.py sets its own logger, this script's logger inherits and then is set here.
+    current_script_log_level = logging.DEBUG if verbose else logging.INFO
+    logger.setLevel(current_script_log_level)
+    logger.debug(f"Set logger '{logger.name}' to {logging.getLevelName(current_script_log_level)} within run_type_checker.")
 
     type_checker_module_logger = logging.getLogger("gnn_type_checker")
-    if verbose:
-        type_checker_module_logger.setLevel(logging.INFO)
-    else:
-        type_checker_module_logger.setLevel(logging.WARNING)
+    # It's good to control the verbosity of the module we are calling
+    type_checker_module_log_level = logging.INFO if verbose else logging.WARNING # Let type_checker be a bit verbose if we are, otherwise only warnings
+    type_checker_module_logger.setLevel(type_checker_module_log_level)
+    logger.debug(f"Set logger '{type_checker_module_logger.name}' to {logging.getLevelName(type_checker_module_log_level)}.")
 
     if not gnn_type_checker_cli:
         logger.error("❌ GNN Type Checker CLI module not loaded. Cannot proceed.")
@@ -166,14 +190,14 @@ def main(args):
 if __name__ == '__main__':
     # Setup basic logging for standalone execution
     # Adapting the logging setup from other pipeline scripts
-    log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    log_level = getattr(logging, log_level_str, logging.INFO)
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
-    logger = logging.getLogger(__name__) # Get a logger for this script when run as main
+    # log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
+    # log_level = getattr(logging, log_level_str, logging.INFO)
+    # logging.basicConfig(
+    #     level=log_level,
+    #     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    #     datefmt="%Y-%m-%d %H:%M:%S"
+    # )
+    # logger = logging.getLogger(__name__) # Get a logger for this script when run as main
 
     parser = argparse.ArgumentParser(description="GNN Type Checker (Standalone)")
     project_root = Path(__file__).resolve().parent.parent
@@ -195,19 +219,27 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.verbose:
-        logging.getLogger().setLevel(logging.DEBUG) # Set root logger to DEBUG
-        logger.setLevel(logging.DEBUG) # Set this script's logger to DEBUG
-        # If gnn_type_checker_logic has its own logger, set it to DEBUG too
-        try:
-            from gnn_type_checker import gnn_type_checker_logic
-            logging.getLogger(gnn_type_checker_logic.__name__).setLevel(logging.DEBUG)
-        except (ImportError, AttributeError):
-            logger.debug("Could not set verbose logging for gnn_type_checker_logic module.")
-        logger.debug("Verbose logging enabled.")
-    
-    # Quiet noisy libraries if run standalone
+    # Setup logging for standalone execution using the utility function
+    log_level_to_set = logging.DEBUG if args.verbose else logging.INFO
+    if setup_standalone_logging:
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__) # Pass __name__
+    else:
+        # Fallback basic config if utility function couldn't be imported
+        if not logging.getLogger().hasHandlers(): # Check root handlers
+            logging.basicConfig(
+                level=log_level_to_set,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                stream=sys.stdout
+            )
+        # Ensure this script's logger (which is __main__ here) level is set even in fallback
+        logging.getLogger(__name__).setLevel(log_level_to_set) 
+        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+
+    # Quieten noisy libraries if run standalone, after main logging is set up
     logging.getLogger('PIL').setLevel(logging.WARNING)
     logging.getLogger('matplotlib').setLevel(logging.WARNING)
 
+    # The main() function expects args, and its first action related to logging
+    # is to call run_type_checker, which will then set logger levels again based on args.verbose.
+    # This is slightly redundant but ensures correct levels are applied within run_type_checker's scope.
     sys.exit(main(args)) 

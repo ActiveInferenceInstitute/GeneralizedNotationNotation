@@ -8,6 +8,9 @@ validating them against a defined set of terms, and assisting in report generati
 import json
 import re
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_mcp_interface():
     """
@@ -40,14 +43,12 @@ def parse_gnn_ontology_section(gnn_file_content: str, verbose: bool = False) -> 
         # Regex to find the ActInfOntologyAnnotation section and capture its content
         match = re.search(r"^## ActInfOntologyAnnotation\s*$\n(.*?)(?:^## \S+|^\Z)", gnn_file_content, re.MULTILINE | re.DOTALL)
         if not match:
-            if verbose:
-                print("MCP: 'ActInfOntologyAnnotation' section not found.")
+            logger.debug("'ActInfOntologyAnnotation' section not found.")
             return annotations
 
         section_content = match.group(1).strip()
         if not section_content:
-            if verbose:
-                print("MCP: 'ActInfOntologyAnnotation' section is empty.")
+            logger.debug("'ActInfOntologyAnnotation' section is empty.")
             return annotations
 
         lines = section_content.split('\n')
@@ -69,18 +70,14 @@ def parse_gnn_ontology_section(gnn_file_content: str, verbose: bool = False) -> 
                 if key and value:
                     annotations[key] = value
                 else:
-                    if verbose:
-                        print(f"MCP: Malformed line {i+1} in ActInfOntologyAnnotation: '{line}' - skipping.")
+                    logger.debug(f"Malformed line {i+1} in ActInfOntologyAnnotation: '{line}' - skipping.")
             else:
-                if verbose:
-                    print(f"MCP: Line {i+1} in ActInfOntologyAnnotation does not contain '=': '{line}' - skipping.")
+                logger.debug(f"Line {i+1} in ActInfOntologyAnnotation does not contain '=': '{line}' - skipping.")
         
-        if verbose:
-            print(f"MCP: Parsed annotations: {annotations}")
+        logger.debug(f"Parsed annotations: {annotations}")
             
     except Exception as e:
-        if verbose:
-            print(f"MCP: Error parsing ActInfOntologyAnnotation section: {e}")
+        logger.error(f"Error parsing ActInfOntologyAnnotation section: {e}", exc_info=True)
         # Fallback to empty dict on any parsing error
         return {}
         
@@ -108,38 +105,24 @@ def load_defined_ontology_terms(ontology_terms_path: str, verbose: bool = False)
         # is likely relative to the project root.
         # For now, let's rely on the path being correctly resolved by the caller (8_ontology.py)
         
-        if verbose: # Added this line to see the path being used
-            print(f"MCP: Attempting to load ontology terms from: {os.path.abspath(ontology_terms_path)}")
+        logger.debug(f"Attempting to load ontology terms from: {os.path.abspath(ontology_terms_path)}")
 
         with open(ontology_terms_path, 'r', encoding='utf-8-sig') as f: # Changed encoding
             data = json.load(f)
         if isinstance(data, dict):
             defined_terms = data
-            if verbose:
-                print(f"MCP: Loaded {len(defined_terms)} ontology terms from {ontology_terms_path}.")
+            logger.debug(f"Loaded {len(defined_terms)} ontology terms from {ontology_terms_path}.")
         else:
-            if verbose:
-                print(f"MCP: Error: Ontology terms file {ontology_terms_path} does not contain a root JSON object.")
-            else: # Added this else block for non-verbose error
-                print(f"MCP_ERROR_TRACE: Ontology terms file {ontology_terms_path} does not contain a root JSON object. Data type: {type(data)}")
+            logger.error(f"Ontology terms file {ontology_terms_path} does not contain a root JSON object. Data type: {type(data)}")
             return {}
     except FileNotFoundError:
-        if verbose:
-            print(f"MCP: Ontology terms file not found: {ontology_terms_path}")
-        else: # Added this else block for non-verbose error
-            print(f"MCP_ERROR_TRACE: Ontology terms file not found: {ontology_terms_path} (Absolute: {os.path.abspath(ontology_terms_path)})")
+        logger.error(f"Ontology terms file not found: {ontology_terms_path} (Absolute: {os.path.abspath(ontology_terms_path)})")
         return {}
     except json.JSONDecodeError as e:
-        if verbose:
-            print(f"MCP: Error decoding JSON from {ontology_terms_path}: {e}")
-        else: # Added this else block for non-verbose error
-            print(f"MCP_ERROR_TRACE: Error decoding JSON from {ontology_terms_path} (Absolute: {os.path.abspath(ontology_terms_path)}): {e}")
+        logger.error(f"Error decoding JSON from {ontology_terms_path} (Absolute: {os.path.abspath(ontology_terms_path)}): {e}", exc_info=True)
         return {}
     except Exception as e:
-        if verbose:
-            print(f"MCP: An unexpected error occurred while loading ontology terms from {ontology_terms_path}: {e}")
-        else: # Added this else block for non-verbose error
-            print(f"MCP_ERROR_TRACE: An unexpected error occurred while loading {ontology_terms_path} (Absolute: {os.path.abspath(ontology_terms_path)}): {e}")
+        logger.error(f"An unexpected error occurred while loading ontology terms from {ontology_terms_path} (Absolute: {os.path.abspath(ontology_terms_path)}): {e}", exc_info=True)
         return {}
     return defined_terms
 
@@ -171,19 +154,16 @@ def validate_annotations(parsed_annotations: dict, defined_terms: dict, verbose:
     for model_var, ontology_term in parsed_annotations.items():
         if not ontology_term: # Should not happen if parser ensures value exists
              results["unmapped_model_vars"].append(model_var)
-             if verbose:
-                print(f"MCP: Model variable '{model_var}' has no ontology term mapped.")
+             logger.debug(f"Model variable '{model_var}' has no ontology term mapped.")
              continue
 
         if ontology_term in defined_term_keys:
             results["valid_mappings"][model_var] = ontology_term
         else:
             results["invalid_terms"][model_var] = ontology_term
-            if verbose:
-                print(f"MCP: Ontology term '{ontology_term}' (for model var '{model_var}') is not in the defined set of terms.")
+            logger.debug(f"Ontology term '{ontology_term}' (for model var '{model_var}') is not in the defined set of terms.")
     
-    if verbose:
-        print(f"MCP: Validation complete. Valid: {len(results['valid_mappings'])}, Invalid: {len(results['invalid_terms'])}")
+    logger.debug(f"Validation complete. Valid: {len(results['valid_mappings'])}, Invalid: {len(results['invalid_terms'])}")
     return results
 
 def generate_ontology_report_for_file(gnn_file_path: str, parsed_annotations: dict, validation_results: dict = None) -> str:
@@ -217,9 +197,13 @@ def generate_ontology_report_for_file(gnn_file_path: str, parsed_annotations: di
 
 
 if __name__ == '__main__':
-    print("Ontology Module MCP - Self-Test")
+    # Setup basic logging for standalone test execution if the utility is available
+    # This is a simple setup; for robust standalone, use setup_standalone_logging from utils
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    logger.info("Ontology Module MCP - Self-Test")
     interface = get_mcp_interface()
-    print(f"Interface: {interface}\n")
+    logger.info(f"Interface: {interface}\n")
 
     # Test parse_gnn_ontology_section
     sample_gnn_content_ok = """
@@ -252,100 +236,79 @@ NoOntology
 ## Footer
     """
 
-    print("\n--- Testing parse_gnn_ontology_section ---")
+    logger.info("--- Testing parse_gnn_ontology_section ---")
+    logger.info("Test Case 1: Valid content")
     parsed_ok = parse_gnn_ontology_section(sample_gnn_content_ok, verbose=True)
-    # Expected: {'s_t': 'HiddenState', 'A_matrix': 'TransitionMatrix', 'good_var': 'GoodTerm'}
-    assert parsed_ok == {'s_t': 'HiddenState', 'A_matrix': 'TransitionMatrix', 'good_var': 'GoodTerm'}
-    print(f"Parsed OK: {parsed_ok}")
-    
-    parsed_no_section = parse_gnn_ontology_section(sample_gnn_content_no_section, verbose=True)
-    assert parsed_no_section == {}
-    print(f"Parsed No Section: {parsed_no_section}")
+    expected_annotations_ok = {'s_t': 'HiddenState', 'A_matrix': 'TransitionMatrix', 'good_var': 'GoodTerm'}
+    logger.info(f"  Parsed: {parsed_ok}")
+    logger.info(f"  Expected: {expected_annotations_ok}")
+    assert parsed_ok == expected_annotations_ok
 
+    logger.info("Test Case 2: No section")
+    parsed_no_section = parse_gnn_ontology_section(sample_gnn_content_no_section, verbose=True)
+    logger.info(f"  Parsed: {parsed_no_section}")
+    assert parsed_no_section == {}
+
+    logger.info("Test Case 3: Empty section")
     parsed_empty_section = parse_gnn_ontology_section(sample_gnn_content_empty_section, verbose=True)
+    logger.info(f"  Parsed: {parsed_empty_section}")
     assert parsed_empty_section == {}
-    print(f"Parsed Empty Section: {parsed_empty_section}")
+    logger.info("parse_gnn_ontology_section tests passed.\n")
 
     # Test load_defined_ontology_terms
-    print("\n--- Testing load_defined_ontology_terms ---")
-    # Use the newly created standard terms file for a more realistic test
-    # Ensure this path is relative to where mcp.py might be run from if __name__ == '__main__'
-    # Assuming mcp.py is in src/ontology/, so ontology/act_inf_ontology_terms.json is ../ontology/act_inf_ontology_terms.json
-    # For robustness in testing, let's try to construct path relative to this script file.
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    standard_terms_file = os.path.join(script_dir, "act_inf_ontology_terms.json")
-
-    if not os.path.exists(standard_terms_file):
-        print(f"MCP Self-Test WARNING: Standard terms file not found at {standard_terms_file}. Skipping some tests.")
-        # Create a dummy for basic tests to pass if main file is missing during isolated test
-        temp_terms_file = "temp_ontology_terms.json"
-        valid_terms_data = {"HiddenState": {"description": "A state not directly observable."}, "TransitionMatrix": {"description":"Defines state transitions."}}
-        with open(temp_terms_file, 'w') as f:
-            json.dump(valid_terms_data, f)
-        terms_to_load_path = temp_terms_file
-        expected_loaded_terms = valid_terms_data
-    else:
-        terms_to_load_path = standard_terms_file
-        # Load expected directly from file to ensure test matches content
-        with open(standard_terms_file, 'r') as f_expected:
-            expected_loaded_terms = json.load(f_expected)
-    
-    loaded_terms = load_defined_ontology_terms(terms_to_load_path, verbose=True)
-    assert loaded_terms == expected_loaded_terms
-    print(f"Loaded terms from {terms_to_load_path}: {len(loaded_terms)} terms")
-
-    load_defined_ontology_terms("non_existent_file.json", verbose=True) # Should not crash
-
-    # Test with a malformed JSON file
-    malformed_json_file = "temp_malformed_ontology_terms.json"
-    with open(malformed_json_file, 'w') as f: # Malformed JSON
-        f.write("not json")
-    load_defined_ontology_terms(malformed_json_file, verbose=True)
-    os.remove(malformed_json_file) # Clean up malformed file
-
-    # Test validate_annotations using terms from the standard file if available
-    print("\n--- Testing validate_annotations ---")
-    annotations_to_validate = {
-        "s1": "HiddenState", 
-        "A": "TransitionMatrix", 
-        "obs": "Observation", 
-        "param_x": "UnknownTerm", # This term won't be in act_inf_ontology_terms.json
-        "model_EFE": "ExpectedFreeEnergy"
+    logger.info("--- Testing load_defined_ontology_terms ---")
+    # Create a dummy ontology terms file for testing
+    dummy_terms_content = {
+        "HiddenState": "Represents the unobservable states of the system.",
+        "TransitionMatrix": "Defines probabilities of transitioning between hidden states.",
+        "GoodTerm": "A valid term for testing."
     }
+    dummy_terms_path = "./dummy_ontology_terms.json"
+    with open(dummy_terms_path, 'w') as f_dummy:
+        json.dump(dummy_terms_content, f_dummy)
+
+    logger.info(f"Test Case 1: Load valid terms from {dummy_terms_path}")
+    loaded_terms = load_defined_ontology_terms(dummy_terms_path, verbose=True)
+    logger.info(f"  Loaded: {loaded_terms}")
+    assert loaded_terms == dummy_terms_content
+
+    logger.info("Test Case 2: File not found")
+    non_existent_path = "./non_existent_terms.json"
+    loaded_terms_not_found = load_defined_ontology_terms(non_existent_path, verbose=True)
+    logger.info(f"  Loaded (should be empty): {loaded_terms_not_found}")
+    assert loaded_terms_not_found == {}
     
-    # Use the loaded_terms from standard_terms_file (or the fallback dummy)
-    defined_terms_for_validation = loaded_terms 
+    # Clean up dummy file
+    os.remove(dummy_terms_path)
+    logger.info("load_defined_ontology_terms tests passed.\n")
+
+    # Test validate_annotations
+    logger.info("--- Testing validate_annotations ---")
+    parsed_ann = {"s1": "HiddenState", "A1": "TransitionMatrix", "B1": "UnknownTerm", "s2": "HiddenState"}
+    defined_terms_for_test = {"HiddenState": "desc1", "TransitionMatrix": "desc2"}
     
-    validation_res = validate_annotations(annotations_to_validate, defined_terms_for_validation, verbose=True)
-    
-    # Dynamically create expected results based on what's in defined_terms_for_validation
-    expected_valid = {}
-    expected_invalid = {}
-    for k, v in annotations_to_validate.items():
-        if v in defined_terms_for_validation:
-            expected_valid[k] = v
-        else:
-            expected_invalid[k] = v
-            
+    logger.info("Test Case 1: Mixed valid and invalid terms")
+    validation_res = validate_annotations(parsed_ann, defined_terms_for_test, verbose=True)
+    expected_valid = {"s1": "HiddenState", "s2": "HiddenState", "A1": "TransitionMatrix"}
+    expected_invalid = {"B1": "UnknownTerm"}
+    logger.info(f"  Validation Result: {validation_res}")
+    logger.info(f"    Expected Valid: {expected_valid}")
+    logger.info(f"    Expected Invalid: {expected_invalid}")
     assert validation_res["valid_mappings"] == expected_valid
     assert validation_res["invalid_terms"] == expected_invalid
-    print(f"Validation results: Valid: {len(validation_res['valid_mappings'])}, Invalid: {len(validation_res['invalid_terms'])}")
-    print(f"Validated against: {list(defined_terms_for_validation.keys())[:5]}... and {len(defined_terms_for_validation)-5} more terms")
+    logger.info("validate_annotations tests passed.")
 
     # Test generate_ontology_report_for_file
-    print("\n--- Testing generate_ontology_report_for_file ---")
-    report_str = generate_ontology_report_for_file("example.gnn.md", annotations_to_validate, validation_res)
-    print("Generated Report String:\n" + report_str)
+    logger.info("\n--- Testing generate_ontology_report_for_file ---")
+    report_str = generate_ontology_report_for_file("example.gnn.md", parsed_ann, validation_res)
+    logger.info("Generated Report String:\n" + report_str)
     assert "example.gnn.md" in report_str
     assert "`s1` -> `HiddenState`" in report_str
     assert "`obs` -> `Observation` (**INVALID TERM**)" in report_str
     assert "2 unrecognized ontological term(s) found" in report_str
     
-    report_no_val = generate_ontology_report_for_file("example_no_val.gnn.md", annotations_to_validate)
-    print("Generated Report (No Validation) String:\n" + report_no_val)
+    report_no_val = generate_ontology_report_for_file("example_no_val.gnn.md", parsed_ann)
+    logger.info("Generated Report (No Validation) String:\n" + report_no_val)
     assert "(**INVALID TERM**)" not in report_no_val
 
-    # Clean up temp_terms_file if it was created
-    if not os.path.exists(standard_terms_file) and os.path.exists(terms_to_load_path):
-        os.remove(terms_to_load_path) 
-    print("\nSelf-tests complete.") 
+    logger.info("\nSelf-tests complete.") 

@@ -75,12 +75,15 @@ def summarize_gnn_file_content(file_path_str: str, user_prompt_suffix: Optional[
     An optional user prompt suffix can be added to guide the summary.
     """
     if not llm_operations:
-        return "Error: LLM operations module not loaded."
+        error_msg = "Error: LLM operations module not loaded."
+        logger.error(f"summarize_gnn_file_content: {error_msg}")
+        return error_msg
 
     file_path = Path(file_path_str)
     if not file_path.is_file():
-        logger.error(f"File not found: {file_path_str}")
-        return f"Error: File not found at {file_path_str}"
+        error_msg = f"File not found at {file_path_str}"
+        logger.error(f"summarize_gnn_file_content: {error_msg}")
+        return f"Error: {error_msg}"
 
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -104,12 +107,15 @@ def explain_gnn_file_content(file_path_str: str, aspect_to_explain: Optional[str
     If aspect_to_explain is provided, the explanation focuses on that part.
     """
     if not llm_operations:
-        return "Error: LLM operations module not loaded."
+        error_msg = "Error: LLM operations module not loaded."
+        logger.error(f"explain_gnn_file_content: {error_msg}")
+        return error_msg
 
     file_path = Path(file_path_str)
     if not file_path.is_file():
-        logger.error(f"File not found: {file_path_str}")
-        return f"Error: File not found at {file_path_str}"
+        error_msg = f"File not found at {file_path_str}"
+        logger.error(f"explain_gnn_file_content: {error_msg}")
+        return f"Error: {error_msg}"
 
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -134,12 +140,15 @@ def generate_professional_summary_from_gnn(file_path_str: str, experiment_detail
     Useful for reports or presentations.
     """
     if not llm_operations:
-        return "Error: LLM operations module not loaded."
+        error_msg = "Error: LLM operations module not loaded."
+        logger.error(f"generate_professional_summary_from_gnn: {error_msg}")
+        return error_msg
 
     file_path = Path(file_path_str)
     if not file_path.is_file():
-        logger.error(f"File not found: {file_path_str}")
-        return f"Error: File not found at {file_path_str}"
+        error_msg = f"File not found at {file_path_str}"
+        logger.error(f"generate_professional_summary_from_gnn: {error_msg}")
+        return f"Error: {error_msg}"
 
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -253,14 +262,11 @@ def register_tools(mcp_instance_ref):
                 },
                 description=tool_def["description"]
             )
-            logger.info(f"LLM tool '{tool_def['name']}' registration submitted to MCP.") # Clarified log
-
-        except TypeError as te:
-            logger.error(f"TypeError registering LLM tool '{tool_def['name']}': {te}. Check MCPTool constructor compatibility.")
-        except Exception as e:
-            logger.error(f"Failed to register LLM tool '{tool_def['name']}': {e}", exc_info=True)
+            logger.info(f"Registered MCP tool: {tool_def['name']}")
+        except Exception as e_reg:
+            logger.error(f"Failed to register MCP tool {tool_def['name']}: {e_reg}", exc_info=True)
     
-    logger.info(f"LLM tools registration process completed for {len(tool_definitions)} tools.")
+    logger.info("LLM module MCP tools registration process completed.")
 
 def ensure_llm_tools_registered(mcp_instance_ref): # Added mcp_instance_ref parameter
     """

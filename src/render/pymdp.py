@@ -114,15 +114,33 @@ class GnnToPyMdpConverter:
 
 
     def _add_log(self, message: str, level: str = "INFO"): 
-        self.conversion_log.append(f"{level}: {message}")
-        # print(f"[{level}] {message}") # Optional: print to console during conversion
+        """Adds a message to the internal conversion log and also logs it via the module logger."""
+        level_upper = level.upper()
+        self.conversion_log.append(f"{level_upper}: {message}")
+        
+        log_level_map = {
+            "DEBUG": logging.DEBUG,
+            "INFO": logging.INFO,
+            "WARNING": logging.WARNING,
+            "ERROR": logging.ERROR,
+            "CRITICAL": logging.CRITICAL
+        }
+        actual_log_level = log_level_map.get(level_upper, logging.INFO)
+        
+        # For errors caught and logged, include exception info if it's a genuine error message
+        # This is a heuristic; specific calls might pass exc_info directly if appropriate
+        if actual_log_level >= logging.ERROR and sys.exc_info()[0] is not None:
+             logger.log(actual_log_level, message, exc_info=True)
+        else:
+             logger.log(actual_log_level, message)
 
     def _parse_string_to_literal(self, data_str: Any, context_msg: str) -> Optional[Any]:
         """Attempts to parse a string representation of a Python literal (e.g., list, tuple, dict)."""
         if not isinstance(data_str, str):
             if data_str is None or isinstance(data_str, (list, dict, tuple, int, float, bool, np.ndarray)): # Added np.ndarray
                  return data_str
-            self._add_log(f"{context_msg}: Expected string for ast.literal_eval or a known pre-parsed type (list, dict, tuple, int, float, bool, np.ndarray), but got {type(data_str)}. Value: \'{str(data_str)[:100]}...\'. Returning None as parsing is not applicable.", "ERROR") # Changed to ERROR and returning None
+            # This log call will use the updated _add_log which also logs to the module logger
+            self._add_log(f"{context_msg}: Expected string for ast.literal_eval or a known pre-parsed type (list, dict, tuple, int, float, bool, np.ndarray), but got {type(data_str)}. Value: \'{str(data_str)[:100]}...\'. Returning None as parsing is not applicable.", "ERROR")
             return None
 
         if not data_str.strip():
@@ -138,15 +156,14 @@ class GnnToPyMdpConverter:
         try:
             return ast.literal_eval(data_str)
         except (ValueError, SyntaxError, TypeError) as e:
-            # It's possible that the string is a numpy array string representation,
-            # which ast.literal_eval cannot handle directly.
-            # Example: "array([1., 2., 3.])"
-            # This is a basic attempt; a more robust solution might involve regex
-            # or trying to exec in a controlled environment if absolutely necessary (generally not recommended).
+            # The _add_log method will now also log this to the standard logger with ERROR level
+            # and exc_info=True if an exception is active.
+            # No need to call logger.error(..., exc_info=True) directly here if _add_log handles it.
+            error_message_detail = f"ast.literal_eval failed. String \'{data_str[:100]}...\'. {e}"
             if "array(" in data_str:
-                 self._add_log(f"{context_msg}: ast.literal_eval failed. String \'{data_str[:100]}...\' appears to contain 'array(...)'. This construct is not supported by ast.literal_eval. The GNN spec should provide lists/numbers directly or use a format that can be parsed to basic Python types. {e}. Returning None.", "ERROR")
+                 self._add_log(f"{context_msg}: {error_message_detail} Appears to contain 'array(...)'. This construct is not supported by ast.literal_eval. The GNN spec should provide lists/numbers directly or use a format that can be parsed to basic Python types.", "ERROR")
             else:
-                self._add_log(f"{context_msg}: Failed to parse string data \'{data_str[:100]}...\' with ast.literal_eval: {e}. Returning None.", "ERROR")
+                self._add_log(f"{context_msg}: {error_message_detail}", "ERROR")
             return None
 
     def _extract_gnn_data(self):

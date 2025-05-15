@@ -9,6 +9,9 @@ import sys
 import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+import logging
+
+logger = logging.getLogger(__name__)
 
 from .visualizer import GNNVisualizer
 from .parser import GNNParser
@@ -36,6 +39,7 @@ def visualize_file(file_path: str, output_dir: Optional[str] = None) -> Dict[str
             "file_path": file_path
         }
     except Exception as e:
+        logger.error(f"Error in visualize_file for {file_path}: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e),
@@ -63,6 +67,7 @@ def visualize_directory(dir_path: str, output_dir: Optional[str] = None) -> Dict
             "directory_path": dir_path
         }
     except Exception as e:
+        logger.error(f"Error in visualize_directory for {dir_path}: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e),
@@ -97,6 +102,7 @@ def parse_gnn_file(file_path: str) -> Dict[str, Any]:
             "file_path": file_path
         }
     except Exception as e:
+        logger.error(f"Error in parse_gnn_file for {file_path}: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e),
@@ -117,13 +123,17 @@ def get_visualization_results(uri: str) -> Dict[str, Any]:
     """
     # Extract directory path from URI
     if not uri.startswith("visualization://"):
-        raise ValueError(f"Invalid URI format: {uri}")
+        error_msg = f"Invalid URI format: {uri}"
+        logger.error(f"get_visualization_results: {error_msg}")
+        raise ValueError(error_msg)
     
-    dir_path = uri[16:]  # Remove 'visualization://' prefix
-    dir_path = Path(dir_path)
+    dir_path_str = uri[16:]  # Remove 'visualization://' prefix
+    dir_path = Path(dir_path_str)
     
     if not dir_path.exists() or not dir_path.is_dir():
-        raise ValueError(f"Directory does not exist: {dir_path}")
+        error_msg = f"Directory does not exist: {dir_path}"
+        logger.error(f"get_visualization_results: {error_msg}")
+        raise ValueError(error_msg)
     
     # Collect visualization files
     visualization_files = []
@@ -180,4 +190,6 @@ def register_tools(mcp):
         "visualization://{output_directory}",
         get_visualization_results,
         "Retrieve visualization results by output directory"
-    ) 
+    )
+    
+    logger.info("Visualization module MCP tools and resources registered.") 

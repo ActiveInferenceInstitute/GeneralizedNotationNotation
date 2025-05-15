@@ -146,6 +146,7 @@ def register_tools(mcp_instance):
             schema=base_schema.copy(), 
             description=description
         )
+    logger.info("Export module MCP tools registration process completed.")
 
 # Remove the old get_mcp_interface if it exists, or ensure this file only defines the above.
 # The main MCP loader will look for `register_tools`. 

@@ -273,6 +273,7 @@ def run_pipeline(args: argparse.Namespace):
             pipeline_run_data["steps"].append(step_log_data)
             continue
         
+        logger.info("") # Add spacing before step start
         logger.info(f"⚙️ {step_header} (from {script_file_basename}) - STARTING")
         step_log_data["start_time"] = datetime.datetime.now().isoformat()
         
@@ -411,6 +412,7 @@ def run_pipeline(args: argparse.Namespace):
             if return_code == 0:
                 step_log_data["status"] = "SUCCESS"
                 logger.info(f"✅ {step_header} - COMPLETED successfully.")
+                logger.info("") # Add spacing after step completion
                 # For non-verbose successful runs, if there's any output, log it at DEBUG level.
                 # For verbose runs, it's already streamed.
                 if not args.verbose and step_log_data["stdout"] and step_log_data["stdout"].strip():
@@ -423,6 +425,7 @@ def run_pipeline(args: argparse.Namespace):
             elif return_code == 2: # Special code for success with warnings
                 step_log_data["status"] = "SUCCESS_WITH_WARNINGS"
                 logger.warning(f"⚠️ {step_header} - COMPLETED with warnings (Code 2). Check script output.")
+                logger.info("") # Add spacing after step completion
                 if overall_status == "SUCCESS": overall_status = "SUCCESS_WITH_WARNINGS"
                 # Log stdout/stderr for warnings as well (if not already streamed in verbose)
                 if not args.verbose:
@@ -434,6 +437,7 @@ def run_pipeline(args: argparse.Namespace):
                 step_log_data["status"] = "FAILED"
                 step_log_data["details"] = f"Exited with code {return_code}."
                 logger.error(f"❌ {step_header} - FAILED (Code: {return_code}).")
+                logger.info("") # Add spacing after step completion
                 overall_status = "FAILED"
                 # Log stdout/stderr for failures (if not already streamed in verbose)
                 if not args.verbose:
@@ -452,6 +456,7 @@ def run_pipeline(args: argparse.Namespace):
             timeout_duration = current_step_timeout if args.verbose else current_step_timeout_run
             step_log_data["details"] = f"Step timed out after {timeout_duration} seconds."
             logger.error(f"❌ {step_header} - FAILED due to TIMEOUT after {timeout_duration}s.")
+            logger.info("") # Add spacing after step completion
             overall_status = "FAILED"
             # Ensure process is killed if it timed out during wait()
             if args.verbose and process:
@@ -482,6 +487,7 @@ def run_pipeline(args: argparse.Namespace):
             step_log_data["status"] = "ERROR_UNHANDLED_EXCEPTION"
             step_log_data["details"] = f"Unhandled exception: {str(e)}"
             logger.error(f"❌ Unhandled exception in {step_header}: {e}")
+            logger.info("") # Add spacing after step completion
             logger.debug(traceback.format_exc())
             overall_status = "FAILED"
             if is_critical_step:

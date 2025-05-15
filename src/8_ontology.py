@@ -22,6 +22,38 @@ import argparse
 import datetime
 import logging # Import logging
 
+# Attempt to import the new logging utility
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    # Fallback for standalone execution or if src is not directly in path
+    current_script_path_for_util = Path(__file__).resolve()
+    project_root_for_util = current_script_path_for_util.parent.parent
+    # Try adding project root, then src, to sys.path for utils
+    paths_to_try = [str(project_root_for_util), str(project_root_for_util / "src")]
+    original_sys_path = list(sys.path)
+    for p in paths_to_try:
+        if p not in sys.path:
+            sys.path.insert(0, p)
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None
+        _temp_logger_name = __name__ if __name__ != "__main__" else "src.8_ontology_import_warning"
+        _temp_logger = logging.getLogger(_temp_logger_name)
+        if not _temp_logger.hasHandlers():
+            if not logging.getLogger().hasHandlers():
+                logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
+            else:
+                 _temp_logger.addHandler(logging.StreamHandler(sys.stderr))
+                 _temp_logger.propagate = False
+        _temp_logger.warning(
+            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
+        )
+    finally:
+        # Restore original sys.path to avoid side effects if this script is imported elsewhere
+        sys.path = original_sys_path
+
 # Logger for this module
 logger = logging.getLogger(__name__)
 
@@ -237,11 +269,8 @@ def main(args):
             f"for details."
         )
         logger.warning(f"⚠️ Step 8: {warning_message}")
-        return {
-            "status": "success_with_warnings",
-            "summary": f"Ontology: {num_failed_validations} failed term(s).", # Shorter summary for main pipeline
-            "warnings": [warning_message] # Detailed message
-        }
+        # Return 2 for success with warnings, aligning with main.py expectations
+        return 2 
         
     logger.info(f"✅ Step 8: Ontology Operations ({Path(__file__).name}) - COMPLETED without validation errors.")
     return 0
@@ -249,38 +278,49 @@ def main(args):
 if __name__ == "__main__":
     # Basic configuration for running this script standalone
     # In a pipeline, main.py should configure logging.
-    log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    log_level = getattr(logging, log_level_str, logging.INFO)
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
+    # log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
+    # log_level = getattr(logging, log_level_str, logging.INFO)
+    # logging.basicConfig(
+    #     level=log_level,
+    #     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    #     datefmt="%Y-%m-%d %H:%M:%S"
+    # )
     # Simplified arg parsing for standalone run
     parser = argparse.ArgumentParser(description="Standalone Ontology Processing.")
-    parser.add_argument("--target-dir", default="../output/gnn_exports", help="Directory with GNN exports.")
-    parser.add_argument("--output-dir", default="../output", help="Output directory for reports.")
-    parser.add_argument("--ontology-terms-file", default="act_inf_ontology_terms.json", help="JSON file with defined ontology terms.")
-    parser.add_argument("--verbose", action="store_true", help="Enable verbose output.")
-    parser.add_argument("--recursive", action="store_true", help="Recursively process GNN files in the target directory.")
+    
+    # Define defaults for standalone execution relative to this script's project root
+    script_file_path = Path(__file__).resolve()
+    project_root_for_defaults = script_file_path.parent.parent # src/ -> project_root
+    default_target_dir_standalone = project_root_for_defaults / "output" / "gnn_exports" # Example, adjust if needed
+    default_output_dir_standalone = project_root_for_defaults / "output"
+    default_ontology_terms_file_standalone = project_root_for_defaults / "src" / "ontology" / "act_inf_ontology_terms.json"
+
+    parser.add_argument("--target-dir", type=Path, default=default_target_dir_standalone, help="Directory with GNN exports.")
+    parser.add_argument("--output-dir", type=Path, default=default_output_dir_standalone, help="Output directory for reports.")
+    parser.add_argument("--ontology-terms-file", type=Path, default=default_ontology_terms_file_standalone, help="JSON file with defined ontology terms.")
+    parser.add_argument("--verbose", action=argparse.BooleanOptionalAction, default=False, help="Enable verbose output.")
+    parser.add_argument("--recursive", action=argparse.BooleanOptionalAction, default=False, help="Recursively process GNN files in the target directory.")
     
     cli_args = parser.parse_args()
     
-    # Update log level if --verbose is used in standalone mode
-    if cli_args.verbose:
-        logging.getLogger().setLevel(logging.DEBUG)
-        for handler in logging.getLogger().handlers:
-            handler.setLevel(logging.DEBUG)
-        logger.debug("Verbose logging enabled for standalone run.")
-
-    # Construct the args object that the script's main() expects
-    # It seems the script's main expects an object with attributes like args.output_dir, etc.
-    # We'll pass the parsed cli_args directly as it should have the necessary attributes.
-    result = main(cli_args) # Pass the parsed args directly 
-    if isinstance(result, dict): # Handle success with warnings
-        if result.get("status") == "success_with_warnings":
-            sys.exit(2) # Exit code 2 for warnings
-        else:
-            sys.exit(1) # Generic error if dict is not as expected
+    # Setup logging for standalone execution
+    log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
+    if setup_standalone_logging:
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
     else:
-        sys.exit(result) # Exit with the integer code (0 or 1) 
+        if not logging.getLogger().hasHandlers():
+            logging.basicConfig(
+                level=log_level_to_set,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                # datefmt="%Y-%m-%d %H:%M:%S", # Use default datefmt
+                stream=sys.stdout
+            )
+        logging.getLogger(__name__).setLevel(log_level_to_set) 
+        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+
+    # Quieten noisy libraries if run standalone
+    logging.getLogger('PIL').setLevel(logging.WARNING)
+    logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
+    result_code = main(cli_args) 
+    sys.exit(result_code) 

@@ -110,6 +110,7 @@ def generate_pymdp_matrix_definition(
             np_array = np.array(data)
             lines.append(f"{matrix_name} = {_numpy_array_to_string(np_array, indent=4)}")
         except ValueError as e:
+            logger.error(f"Could not convert data for matrix '{matrix_name}' to numpy array: {e}. Assigning None.", exc_info=True)
             lines.append(f"# ERROR: Could not convert {matrix_name} data to numpy array: {e}")
             lines.append(f"# Raw data: {data}")
             lines.append(f"{matrix_name} = None")
@@ -117,6 +118,7 @@ def generate_pymdp_matrix_definition(
     elif isinstance(data, np.ndarray) and not is_object_array:
         lines.append(f"{matrix_name} = {_numpy_array_to_string(data, indent=4)}")
     else:
+        logger.warning(f"Data for matrix '{matrix_name}' is of unexpected type: {type(data)}. Assigning as is or None.")
         lines.append(f"# Note: Data for {matrix_name} is of unexpected type: {type(data)}. Assigning as is or None.")
         lines.append(f"{matrix_name} = {data if data is not None else 'None'}")
 

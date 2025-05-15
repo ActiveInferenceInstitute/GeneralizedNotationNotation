@@ -20,6 +20,34 @@ from pathlib import Path
 import logging # Add logging
 import argparse # Added
 
+# Attempt to import the new logging utility
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    sys.path.append(str(Path(__file__).resolve().parent.parent))
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None
+        # Temporary basic config for this specific warning if util is missing
+        # This logger will be __main__ if script is run directly.
+        _temp_logger_name = __name__ if __name__ != "__main__" else "src.2_setup_import_warning"
+        _temp_logger = logging.getLogger(_temp_logger_name)
+        if not _temp_logger.hasHandlers() and not logging.getLogger().hasHandlers():
+            logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
+            _temp_logger.warning(
+                "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
+            )
+        elif not _temp_logger.hasHandlers(): # If root has handlers, but this one doesn't
+            _temp_logger.addHandler(logging.StreamHandler(sys.stderr)) # Ensure it can output
+            _temp_logger.warning(
+                "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic (using existing root handlers)."
+            )
+        else: # Already has handlers
+             _temp_logger.warning(
+                "Could not import setup_standalone_logging from utils.logging_utils (already has handlers)."
+            )
+
 # --- Logger Setup ---
 logger = logging.getLogger(__name__)
 # --- End Logger Setup ---
@@ -73,73 +101,18 @@ def verify_directories(target_dir, output_dir, verbose=False):
     
     return True
 
-def main(cmd_args=None): # Renamed 'args' to 'cmd_args' to avoid conflict with module name 'args'
-    """Main function for the setup step (Step 2).
-
-    Handles argument parsing if run standalone, then orchestrates directory
-    verification and Python virtual environment setup.
+def main(parsed_args: argparse.Namespace): # Renamed 'args' to 'cmd_args' and type hinted
+    """Main function for the setup step (Step 2).\n
+    Orchestrates directory verification and Python virtual environment setup.
 
     Args:
-        cmd_args (argparse.Namespace | list | None):
-            - If None, parses arguments from sys.argv for standalone execution.
-            - If a list, assumes it's a list of string arguments to be parsed.
-            - If an argparse.Namespace, uses it directly.
-            Expected attributes on the Namespace object include:
-            target_dir, output_dir, verbose.
-    """
-    # Main function for the setup step.
-    
-    if cmd_args is None: # Standalone execution
-        script_file_path = Path(__file__).resolve()
-        project_root_for_defaults = script_file_path.parent.parent
-        default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples" # Consistent with 1_gnn.py
-        default_output_dir = project_root_for_defaults / "output"
-
-        parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 2: Setup.")
-        parser.add_argument(
-            "--target-dir", 
-            type=Path, 
-            default=default_target_dir,
-            help=f"Target directory for GNN source files (used for verification, default: {default_target_dir.relative_to(project_root_for_defaults) if default_target_dir.is_relative_to(project_root_for_defaults) else default_target_dir})"
-        )
-        parser.add_argument(
-            "--output-dir", 
-            type=Path, 
-            default=default_output_dir,
-            help=f"Main directory to save outputs (default: {default_output_dir.relative_to(project_root_for_defaults) if default_output_dir.is_relative_to(project_root_for_defaults) else default_output_dir})"
-        )
-        parser.add_argument(
-            "--verbose", 
-            action="store_true", 
-            help="Enable verbose (DEBUG level) logging."
-        )
-        parsed_args = parser.parse_args() # sys.argv will be used here
-    elif isinstance(cmd_args, list): # If called with a list of string args
-        script_file_path = Path(__file__).resolve()
-        project_root_for_defaults = script_file_path.parent.parent
-        default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
-        default_output_dir = project_root_for_defaults / "output"
-        parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 2: Setup.")
-        parser.add_argument("--target-dir", type=Path, default=default_target_dir)
-        parser.add_argument("--output-dir", type=Path, default=default_output_dir)
-        parser.add_argument("--verbose", action="store_true")
-        parsed_args = parser.parse_args(cmd_args)
-    elif hasattr(cmd_args, 'target_dir'): # If it's already a parsed Namespace-like object
-        parsed_args = cmd_args
-    else:
-        # Use print for initial error as logger might not be configured
-        print("ERROR: Invalid 'cmd_args' type passed to 2_setup.py main(). Expected None, list, or Namespace-like object.", file=sys.stderr)
-        sys.exit(1)
-
-    # Setup logging level based on verbosity
+        parsed_args (argparse.Namespace): Pre-parsed command-line arguments.
+            Expected attributes include: target_dir, output_dir, verbose.
+    """    
+    # Setup logging level for this script's logger based on verbosity.
     log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
-    # Configure root logger if not already done (e.g., by main.py)
-    # If already configured, this will be a no-op for level/format if propagate=True for this logger.
-    # We mainly want to ensure that if run standalone, it logs something.
-    if not logging.getLogger().hasHandlers():
-        logging.basicConfig(level=log_level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', stream=sys.stdout)
-    else: # If root has handlers (e.g., from main.py), just set this script's logger level
-        logger.setLevel(log_level)
+    logger.setLevel(log_level)
+    logger.debug(f"Script logger '{logger.name}' level set to {logging.getLevelName(log_level)}.")
 
     logger.info("▶️ Starting Step 2: Setup")
     logger.debug(f"  Parsed arguments for setup: {parsed_args}")
@@ -148,7 +121,7 @@ def main(cmd_args=None): # Renamed 'args' to 'cmd_args' to avoid conflict with m
     target_dir_abs = Path(parsed_args.target_dir).resolve()
     output_dir_abs = Path(parsed_args.output_dir).resolve()
 
-    # Pass string paths to verify_directories as it expects strings currently
+    # Pass verbose to verify_directories, although it now uses logger levels directly.
     if not verify_directories(str(target_dir_abs), str(output_dir_abs), parsed_args.verbose):
         logger.error("❌ Directory verification failed. Halting setup step.")
         sys.exit(1)
@@ -210,5 +183,45 @@ def main(cmd_args=None): # Renamed 'args' to 'cmd_args' to avoid conflict with m
     sys.exit(0)
 
 if __name__ == "__main__":
-    # When run standalone, main() will parse sys.argv itself.
-    main() 
+    script_file_path = Path(__file__).resolve()
+    project_root_for_defaults = script_file_path.parent.parent
+    default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
+    default_output_dir = project_root_for_defaults / "output"
+
+    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 2: Setup (Standalone)." )
+    parser.add_argument(
+        "--target-dir", 
+        type=Path, 
+        default=default_target_dir,
+        help=f"Target directory for GNN source files (used for verification, default: {default_target_dir.relative_to(project_root_for_defaults) if default_target_dir.is_relative_to(project_root_for_defaults) else default_target_dir})"
+    )
+    parser.add_argument(
+        "--output-dir", 
+        type=Path, 
+        default=default_output_dir,
+        help=f"Main directory to save outputs (default: {default_output_dir.relative_to(project_root_for_defaults) if default_output_dir.is_relative_to(project_root_for_defaults) else default_output_dir})"
+    )
+    parser.add_argument(
+        "--verbose", 
+        action="store_true", 
+        default=False, # Default to False for standalone, main.py controls for pipeline
+        help="Enable verbose (DEBUG level) logging."
+    )
+    cli_args = parser.parse_args()
+
+    # Setup logging for standalone execution
+    log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
+    if setup_standalone_logging:
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
+    else:
+        # Fallback basic config if utility function couldn't be imported
+        if not logging.getLogger().hasHandlers():
+            logging.basicConfig(
+                level=log_level_to_set,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                stream=sys.stdout
+            )
+        logging.getLogger(__name__).setLevel(log_level_to_set)
+        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+
+    main(cli_args) 

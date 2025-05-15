@@ -10,6 +10,9 @@ import sys
 import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Add parent directory to Python path if running this module directly for testing
 # and to ensure imports from sibling directories (like visualization for parser) work.
@@ -22,22 +25,22 @@ try:
 except ImportError:
     # Fallback if checker.py is not found or GNNTypeChecker is not directly in it
     # This is a placeholder; ideally, the import should be direct.
-    print("Warning: GNNTypeChecker not found in gnn_type_checker.checker. Using a mock.")
+    logger.warning("GNNTypeChecker not found in gnn_type_checker.checker. Using a mock.")
     class GNNTypeChecker:
         def check_file(self, file_path: str) -> tuple[bool, list, list]:
-            print(f"Mock GNNTypeChecker.check_file called for {file_path}")
+            logger.debug(f"Mock GNNTypeChecker.check_file called for {file_path}")
             return True, [], []
         def check_directory(self, dir_path: str, recursive: bool = False) -> dict:
-            print(f"Mock GNNTypeChecker.check_directory called for {dir_path}")
+            logger.debug(f"Mock GNNTypeChecker.check_directory called for {dir_path}")
             return {dir_path: {"is_valid": True, "errors": [], "warnings": []}}
         def generate_report(self, results: dict, output_dir_base: Path, report_md_filename: str = "type_check_report.md") -> str:
-            print(f"Mock GNNTypeChecker.generate_report called.")
+            logger.debug(f"Mock GNNTypeChecker.generate_report called.")
             return "Mock report content"
 
 try:
     from .resource_estimator import GNNResourceEstimator
 except ImportError:
-    print("Warning: GNNResourceEstimator not found. Resource estimation tools will be unavailable.")
+    logger.warning("GNNResourceEstimator not found. Resource estimation tools will be unavailable.")
     class GNNResourceEstimator:
         def estimate_from_file(self, file_path: str) -> dict:
             return {"error": "GNNResourceEstimator not available"}
@@ -68,6 +71,7 @@ def type_check_gnn_file_mcp(file_path: str) -> Dict[str, Any]:
             "warnings": warnings
         }
     except Exception as e:
+        logger.error(f"Error in type_check_gnn_file_mcp for {file_path}: {e}", exc_info=True)
         return {
             "success": False,
             "file_path": file_path,
@@ -112,6 +116,7 @@ def type_check_gnn_directory_mcp(dir_path: str, recursive: bool = False, output_
             "report_generated_at": report_generated_path
         }
     except Exception as e:
+        logger.error(f"Error in type_check_gnn_directory_mcp for {dir_path}: {e}", exc_info=True)
         return {
             "success": False,
             "directory_path": dir_path,
@@ -138,6 +143,7 @@ def estimate_resources_for_gnn_file_mcp(file_path: str) -> Dict[str, Any]:
             "estimates": estimates
         }
     except Exception as e:
+        logger.error(f"Error in estimate_resources_for_gnn_file_mcp for {file_path}: {e}", exc_info=True)
         return {
             "success": False,
             "file_path": file_path,
@@ -164,6 +170,7 @@ def estimate_resources_for_gnn_directory_mcp(dir_path: str, recursive: bool = Fa
             "all_estimates": all_estimates
         }
     except Exception as e:
+        logger.error(f"Error in estimate_resources_for_gnn_directory_mcp for {dir_path}: {e}", exc_info=True)
         return {
             "success": False,
             "directory_path": dir_path,
@@ -202,7 +209,10 @@ def register_tools(mcp_instance): # Changed 'mcp' to 'mcp_instance' for clarity
             # This is a bit heuristic; a more robust way would be to avoid mocks in production if possible
             # or have a clearer way to distinguish them.
             estimator_instance = GNNResourceEstimator()
-            if estimator_instance.estimate_from_file.__doc__ is None or "mock" not in estimator_instance.estimate_from_file.__doc__.lower():
+            # Check if estimate_from_file method exists and its docstring does not contain "mock"
+            if hasattr(estimator_instance, 'estimate_from_file') and \
+               (estimator_instance.estimate_from_file.__doc__ is None or \
+                "mock" not in estimator_instance.estimate_from_file.__doc__.lower()):
                  is_real_estimator = True
             else:
                  is_real_estimator = False
@@ -228,4 +238,8 @@ def register_tools(mcp_instance): # Changed 'mcp' to 'mcp_instance' for clarity
                 },
                 "Estimates computational resources for all GNN files in a specified directory."
             )
+        else:
+            logger.warning("GNNResourceEstimator appears to be a mock or unavailable. Resource estimation MCP tools will not be registered.")
+            
+    logger.info("GNN Type Checker module MCP tools registered.")
     # No specific resources to register for type_checker beyond the files it might create (handled by report_file param) 

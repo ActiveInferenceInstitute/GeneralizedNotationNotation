@@ -7,6 +7,9 @@ This module exposes GNN documentation files through the Model Context Protocol.
 import os
 from pathlib import Path
 from typing import Dict, Any, Literal
+import logging
+
+logger = logging.getLogger(__name__)
 
 # MCP Tools for GNN Documentation Module
 
@@ -29,15 +32,19 @@ def get_gnn_documentation(doc_name: Literal["file_structure", "punctuation"]) ->
     elif doc_name == "punctuation":
         file_to_read = base_path / "gnn_punctuation.md"
     else:
+        error_msg = f"Invalid document name: {doc_name}. Allowed: 'file_structure', 'punctuation'."
+        logger.error(f"get_gnn_documentation: {error_msg}")
         return {
             "success": False,
-            "error": f"Invalid document name: {doc_name}. Allowed: 'file_structure', 'punctuation'."
+            "error": error_msg
         }
         
     if not file_to_read.exists():
+        error_msg = f"Documentation file not found: {file_to_read.name} (expected at {file_to_read.resolve()})"
+        logger.error(f"get_gnn_documentation: {error_msg}")
         return {
             "success": False,
-            "error": f"Documentation file not found: {file_to_read.name}"
+            "error": error_msg
         }
         
     try:
@@ -48,9 +55,11 @@ def get_gnn_documentation(doc_name: Literal["file_structure", "punctuation"]) ->
             "content": content
         }
     except Exception as e:
+        error_msg = f"Error reading {file_to_read.name}: {str(e)}"
+        logger.error(f"get_gnn_documentation: {error_msg}", exc_info=True)
         return {
             "success": False,
-            "error": f"Error reading {file_to_read.name}: {str(e)}"
+            "error": error_msg
         }
 
 # Resource retrievers
@@ -60,19 +69,25 @@ def _retrieve_gnn_doc_resource(uri: str) -> Dict[str, Any]:
     Example URI: gnn://documentation/file_structure
     """
     if not uri.startswith("gnn://documentation/"):
-        raise ValueError(f"Invalid URI format for GNN documentation: {uri}")
+        error_msg = f"Invalid URI format for GNN documentation: {uri}"
+        logger.error(f"_retrieve_gnn_doc_resource: {error_msg}")
+        raise ValueError(error_msg)
     
     doc_name_part = uri.replace("gnn://documentation/", "")
     
     if doc_name_part not in ["file_structure", "punctuation"]:
-        raise ValueError(f"Invalid document name in URI: {doc_name_part}")
+        error_msg = f"Invalid document name in URI: {doc_name_part}"
+        logger.error(f"_retrieve_gnn_doc_resource: {error_msg}")
+        raise ValueError(error_msg)
         
     # Type casting for Literal
     doc_name_literal = doc_name_part # type: Literal["file_structure", "punctuation"]
     
     result = get_gnn_documentation(doc_name=doc_name_literal)
     if not result["success"]:
-        raise ValueError(f"Failed to retrieve document {doc_name_part}: {result.get('error', 'Unknown error')}")
+        error_msg = f"Failed to retrieve document {doc_name_part}: {result.get('error', 'Unknown error')}"
+        logger.error(f"_retrieve_gnn_doc_resource: {error_msg}")
+        raise ValueError(error_msg)
     return result
 
 
@@ -97,4 +112,5 @@ def register_tools(mcp_instance): # Changed 'mcp' to 'mcp_instance' for clarity
         "gnn://documentation/{doc_name}", # Using a more specific URI template
         _retrieve_gnn_doc_resource,
         "Access GNN core documentation files like syntax and file structure definitions."
-    ) 
+    )
+    logger.info("GNN documentation module MCP tools and resources registered.") 

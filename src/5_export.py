@@ -27,6 +27,27 @@ import logging
 import re
 import argparse
 
+# Attempt to import the new logging utility
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    sys.path.append(str(Path(__file__).resolve().parent.parent))
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None
+        _temp_logger_name = __name__ if __name__ != "__main__" else "src.5_export_import_warning"
+        _temp_logger = logging.getLogger(_temp_logger_name)
+        if not _temp_logger.hasHandlers():
+            if not logging.getLogger().hasHandlers():
+                logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
+            else:
+                 _temp_logger.addHandler(logging.StreamHandler(sys.stderr))
+                 _temp_logger.propagate = False
+        _temp_logger.warning(
+            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
+        )
+
 # --- Logger Setup ---
 logger = logging.getLogger(__name__)
 # --- End Logger Setup ---
@@ -193,49 +214,25 @@ def generate_overall_pipeline_summary_report(target_dir_abs: Path, output_dir_ab
         f.write(f"🗓️ Generated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
         f.write("## ⚙️ Processing Configuration\n\n")
 
-def main(cmd_args=None):
-    """Main function for the GNN export step (Step 5).
-
-    Handles argument parsing if run standalone. Orchestrates the process of finding GNN files,
-    exporting them to selected formats, and generating summary reports for the export step
-    and the overall GNN processing (a basic file listing).
+def main(parsed_args: argparse.Namespace):
+    """Main function for the GNN export step (Step 5).\n
+    Orchestrates the process of finding GNN files, exporting them to selected formats,
+    and generating summary reports.
 
     Args:
-        cmd_args (list[str] | None):
-            A list of command-line arguments (strings) to be parsed, or None to use sys.argv[1:].
-            If called from main.py, this will typically be None, and argparse will use sys.argv.
-            Expected parsed arguments on the Namespace object include:
-            target_dir (Path), output_dir (Path), recursive (bool), formats (str), verbose (bool).
+        parsed_args (argparse.Namespace): Pre-parsed command-line arguments.
+            Expected attributes: target_dir, output_dir, recursive, formats, verbose.
     """
     script_file_path = Path(__file__).resolve()
-    project_root = script_file_path.parent.parent
-
-    default_target_dir = project_root / "src" / "gnn" / "examples"
-    default_output_dir = project_root / "output"
-    default_formats_str = ",".join(DEFAULT_EXPORT_FORMATS)
-
-    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 5: Export GNNs & Generate Summary Report")
-    parser.add_argument("--target-dir", type=Path, default=default_target_dir, help=f"Target directory for GNN files (default: {default_target_dir.relative_to(project_root)})" )
-    parser.add_argument("--output-dir", type=Path, default=default_output_dir, help=f"Base directory to save outputs (default: {default_output_dir.relative_to(project_root)})" )
-    parser.add_argument("--recursive", action="store_true", help="Recursively process GNN files in the target directory.")
-    parser.add_argument("--formats", type=str, default=default_formats_str, help=f"Comma-separated list of formats to export (e.g., json,xml,dsl). Available: {', '.join(AVAILABLE_EXPORT_FUNCTIONS.keys())}. Default: '{default_formats_str}'. Use 'all' for all available.")
-    parser.add_argument("--verbose", action="store_true", help="Enable verbose output for this script.")
-
-    parsed_args = parser.parse_args(cmd_args if cmd_args else sys.argv[1:])
+    project_root = script_file_path.parent.parent # Assuming this script is in src/
 
     # Configure logger for this script
-    current_logger = logging.getLogger(__name__) 
     log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
-    # Basic config if no handlers for THIS logger, to ensure output if standalone
-    if not current_logger.hasHandlers() or not any(isinstance(h, logging.StreamHandler) for h in current_logger.handlers):
-        logging.basicConfig(level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", stream=sys.stdout, force=True)
-        current_logger.info(f"Configured basic logging for {__name__} at level {log_level}.")
-    else:
-        current_logger.setLevel(log_level)
+    logger.setLevel(log_level)
+    logger.debug(f"Script logger '{logger.name}' level set to {logging.getLevelName(log_level)}.")
     
-    current_logger.info(f"▶️ Starting Step 5: Export ({script_file_path.name})")
-    current_logger.debug(f"  Raw args received: {cmd_args if cmd_args else sys.argv[1:]}")
-    current_logger.debug(f"  Parsed args: {parsed_args}")
+    logger.info(f"▶️ Starting Step 5: Export ({script_file_path.name})")
+    logger.debug(f"  Parsed args: {parsed_args}")
 
     target_dir_abs = parsed_args.target_dir.resolve()
     output_dir_abs = parsed_args.output_dir.resolve()
@@ -243,15 +240,15 @@ def main(cmd_args=None):
     try:
         output_dir_abs.mkdir(parents=True, exist_ok=True)
         (output_dir_abs / "gnn_exports").mkdir(parents=True, exist_ok=True)
-        current_logger.info(f"  Ensured output directory for exports: {output_dir_abs / 'gnn_exports'}")
+        logger.info(f"  Ensured output directory for exports: {output_dir_abs / 'gnn_exports'}")
     except OSError as e:
-        current_logger.error(f"  ❌ Failed to create output directories: {e}. Aborting export step.")
+        logger.error(f"  ❌ Failed to create output directories: {e}. Aborting export step.")
         return 1
 
     formats_input_str = parsed_args.formats.lower()
     if "all" in formats_input_str or not formats_input_str.strip():
         selected_formats = list(AVAILABLE_EXPORT_FUNCTIONS.keys())
-        current_logger.info(f"  Exporting to all available formats: {selected_formats}")
+        logger.info(f"  Exporting to all available formats: {selected_formats}")
     else:
         requested_formats_list = [f.strip() for f in formats_input_str.split(',') if f.strip()]
         selected_formats = []
@@ -259,11 +256,11 @@ def main(cmd_args=None):
             if req_f in AVAILABLE_EXPORT_FUNCTIONS:
                 selected_formats.append(req_f)
             else:
-                current_logger.warning(f"  ⚠️ Requested export format '{req_f}' is not available/supported. Skipping.")
-        current_logger.info(f"  Selected formats for export: {selected_formats}")
+                logger.warning(f"  ⚠️ Requested export format '{req_f}' is not available/supported. Skipping.")
+        logger.info(f"  Selected formats for export: {selected_formats}")
 
     if not FORMAT_EXPORTERS_LOADED:
-        current_logger.critical("CRITICAL: Cannot perform GNN exports because 'format_exporters' module failed to load.")
+        logger.critical("CRITICAL: Cannot perform GNN exports because 'format_exporters' module failed to load.")
         generate_overall_pipeline_summary_report(target_dir_abs, output_dir_abs, project_root, parsed_args.recursive, parsed_args.verbose)
         return 1
  
@@ -273,16 +270,16 @@ def main(cmd_args=None):
     num_files_with_failures = 0
 
     if not selected_formats:
-        current_logger.warning("No valid/available export formats selected. Skipping GNN model exports.")
+        logger.warning("No valid/available export formats selected. Skipping GNN model exports.")
     else:
         glob_pattern = "**/*.md" if parsed_args.recursive else "*.md"
         gnn_files_to_export = list(target_dir_abs.glob(glob_pattern))
         num_files_processed = len(gnn_files_to_export)
 
         if not gnn_files_to_export:
-            current_logger.info(f"No GNN files (.md) found in '{target_dir_abs}' (pattern: '{glob_pattern}') to export.")
+            logger.info(f"No GNN files (.md) found in '{target_dir_abs}' (pattern: '{glob_pattern}') to export.")
         else:
-            current_logger.info(f"Found {len(gnn_files_to_export)} GNN file(s) to process for export from '{target_dir_abs}'.")
+            logger.info(f"Found {len(gnn_files_to_export)} GNN file(s) to process for export from '{target_dir_abs}'.")
             for gnn_file in gnn_files_to_export:
                 file_all_formats_succeeded = export_gnn_file_to_selected_formats(
                     gnn_file,
@@ -296,7 +293,7 @@ def main(cmd_args=None):
                 else:
                     num_files_with_failures += 1
             
-            current_logger.info(f"Export processing complete. Files with all formats successful: {num_successful_file_exports}, Files with at least one failure: {num_files_with_failures}")
+            logger.info(f"Export processing complete. Files with all formats successful: {num_successful_file_exports}, Files with at least one failure: {num_files_with_failures}")
             if num_files_with_failures > 0:
                 overall_export_status_code = 1
     
@@ -306,11 +303,47 @@ def main(cmd_args=None):
     # Generate the main pipeline summary report (gnn_processing_summary.md)
     generate_overall_pipeline_summary_report(target_dir_abs, output_dir_abs, project_root, parsed_args.recursive, parsed_args.verbose)
     
-    current_logger.info(f"✅ Step 5: Export operations finished.")
+    logger.info(f"✅ Step 5: Export operations finished.")
     return overall_export_status_code
 
 if __name__ == '__main__':
-    exit_code = main() 
+    # Determine project root for default paths
+    script_file_path = Path(__file__).resolve()
+    project_root_for_defaults = script_file_path.parent.parent # src/ -> project_root
+
+    default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
+    default_output_dir = project_root_for_defaults / "output"
+    default_formats_str = ",".join(DEFAULT_EXPORT_FORMATS)
+
+    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 5: Export GNNs & Generate Summary Report (Standalone)")
+    parser.add_argument("--target-dir", type=Path, default=default_target_dir, help=f"Target directory for GNN files (default: {default_target_dir.relative_to(project_root_for_defaults) if default_target_dir.is_relative_to(project_root_for_defaults) else default_target_dir})" )
+    parser.add_argument("--output-dir", type=Path, default=default_output_dir, help=f"Base directory to save outputs (default: {default_output_dir.relative_to(project_root_for_defaults) if default_output_dir.is_relative_to(project_root_for_defaults) else default_output_dir})" )
+    # Adjusted recursive default to False for standalone, True is often by main.py unless specified
+    parser.add_argument("--recursive", action=argparse.BooleanOptionalAction, default=False, help="Recursively process GNN files in the target directory.")
+    parser.add_argument("--formats", type=str, default=default_formats_str, help=f"Comma-separated list of formats to export (e.g., json,xml,dsl). Available: {', '.join(AVAILABLE_EXPORT_FUNCTIONS.keys()) if FORMAT_EXPORTERS_LOADED else 'Error loading formats'}. Default: '{default_formats_str}'. Use 'all' for all available.")
+    parser.add_argument("--verbose", action=argparse.BooleanOptionalAction, default=False, help="Enable verbose output for this script.") # Default False for standalone
+
+    cli_args = parser.parse_args() # Parses from sys.argv
+
+    # Setup logging for standalone execution
+    log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
+    if setup_standalone_logging:
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
+    else:
+        if not logging.getLogger().hasHandlers():
+            logging.basicConfig(
+                level=log_level_to_set,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                stream=sys.stdout
+            )
+        logging.getLogger(__name__).setLevel(log_level_to_set)
+        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+    
+    # Quieten noisy libraries if run standalone
+    logging.getLogger('PIL').setLevel(logging.WARNING)
+    logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
+    exit_code = main(cli_args) 
     sys.exit(exit_code)
 
 # The generate_summary_report_v2 and export_all_gnn_files_v2 functions will be defined

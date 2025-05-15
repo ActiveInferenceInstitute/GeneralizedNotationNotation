@@ -17,6 +17,28 @@ Options:
 import sys
 from pathlib import Path
 import logging # Import logging
+import argparse # Ensure imported for __main__
+
+# Attempt to import the new logging utility
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    sys.path.append(str(Path(__file__).resolve().parent.parent))
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None
+        _temp_logger_name = __name__ if __name__ != "__main__" else "src.6_visualization_import_warning"
+        _temp_logger = logging.getLogger(_temp_logger_name)
+        if not _temp_logger.hasHandlers():
+            if not logging.getLogger().hasHandlers():
+                logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
+            else:
+                 _temp_logger.addHandler(logging.StreamHandler(sys.stderr))
+                 _temp_logger.propagate = False
+        _temp_logger.warning(
+            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
+        )
 
 # --- Logger Setup ---
 logger = logging.getLogger(__name__)
@@ -150,58 +172,60 @@ if __name__ == '__main__':
     import argparse # Ensure imported
     # This script is called by main.py with arguments.
     # Set up argparse to receive these arguments.
-    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 6: Visualization")
+
+    # Define defaults for standalone execution
+    script_file_path = Path(__file__).resolve()
+    project_root_for_defaults = script_file_path.parent.parent # src/ -> project_root
+    default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
+    default_output_dir = project_root_for_defaults / "output"
+
+    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 6: Visualization (Standalone)")
     parser.add_argument(
         "--target-dir",
         type=str, 
-        required=True, 
-        help="Target GNN file or directory for visualization (passed by main.py)."
+        default=str(default_target_dir), # Added default for standalone
+        help="Target GNN file or directory for visualization."
     )
     parser.add_argument(
         "--output-dir",
         type=str, 
-        required=True, 
-        help="Main pipeline output directory (passed by main.py)."
+        default=str(default_output_dir), # Added default for standalone
+        help="Main pipeline output directory."
     )
     parser.add_argument(
         "--recursive",
-        action="store_true",
-        help="Recursively process subdirectories (passed by main.py if set)."
+        action=argparse.BooleanOptionalAction, # Changed to BooleanOptionalAction
+        default=False, # Default False for standalone
+        help="Recursively process subdirectories."
     )
     parser.add_argument(
         "--verbose",
-        action="store_true",
-        help="Enable verbose output for this script (passed by main.py if set)."
+        action=argparse.BooleanOptionalAction, # Changed to BooleanOptionalAction
+        default=False, # Default False for standalone
+        help="Enable verbose output for this script."
     )
-    # Add --project-root, as run_visualization passes it to visualization_cli
-    # main.py doesn't explicitly pass --project-root to 6_visualization.py currently.
-    # However, run_visualization calculates it. For consistency if run standalone and wanting to mimic pipeline call:
-    # We can let run_visualization calculate it, or expect it here if main.py were to pass it.
-    # For now, stick to what main.py explicitly passes to this script via command line.
 
-    parsed_script_args = parser.parse_args() # Parses arguments from sys.argv, set by main.py
+    parsed_script_args = parser.parse_args() # Parses arguments from sys.argv
 
-    script_logger_instance = logging.getLogger(__name__) # Use the module-level logger
+    # Setup logging for standalone execution
     log_level_to_set = logging.DEBUG if parsed_script_args.verbose else logging.INFO
-    
-    # Configure logging for this script instance if it's being run directly
-    # and doesn't seem to have handlers (e.g. from a parent orchestrator like main.py)
-    if not script_logger_instance.hasHandlers() or not any(isinstance(h, logging.StreamHandler) for h in script_logger_instance.handlers):
-        logging.basicConfig(
-            level=log_level_to_set,
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-            stream=sys.stdout,
-            force=True # Override any root config
-        )
-        script_logger_instance.info(f"Configured basic logging for {__name__} (standalone run).")
+    if setup_standalone_logging:
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
     else:
-        script_logger_instance.setLevel(log_level_to_set)
+        if not logging.getLogger().hasHandlers(): # Check root handlers
+            logging.basicConfig(
+                level=log_level_to_set,
+                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                # datefmt="%Y-%m-%d %H:%M:%S", # Use default datefmt for consistency
+                stream=sys.stdout
+            )
+        logging.getLogger(__name__).setLevel(log_level_to_set) # Set this script's logger level
+        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
 
-    # Adjust visualization module logger level for standalone verbose runs
+    # Adjust visualization module logger level for standalone verbose runs (run_visualization will also do this)
     if parsed_script_args.verbose:
         viz_module_logger_standalone = logging.getLogger("visualization")
-        viz_module_logger_standalone.setLevel(logging.INFO) # Match run_visualization logic
+        viz_module_logger_standalone.setLevel(logging.INFO) 
 
     # Call the script's main logic function with the parsed arguments
     exit_code = main(parsed_script_args)

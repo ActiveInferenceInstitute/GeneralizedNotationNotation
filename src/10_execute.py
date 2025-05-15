@@ -18,6 +18,35 @@ import logging
 import argparse
 import os # For LOG_LEVEL in standalone
 
+# Attempt to import the new logging utility
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    current_script_path_for_util = Path(__file__).resolve()
+    project_root_for_util = current_script_path_for_util.parent.parent
+    paths_to_try = [str(project_root_for_util), str(project_root_for_util / "src")]
+    original_sys_path = list(sys.path)
+    for p_try in paths_to_try:
+        if p_try not in sys.path:
+            sys.path.insert(0, p_try)
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None
+        _temp_logger_name = __name__ if __name__ != "__main__" else "src.10_execute_import_warning"
+        _temp_logger = logging.getLogger(_temp_logger_name)
+        if not _temp_logger.hasHandlers():
+            if not logging.getLogger().hasHandlers():
+                logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
+            else:
+                 _temp_logger.addHandler(logging.StreamHandler(sys.stderr))
+                 _temp_logger.propagate = False
+        _temp_logger.warning(
+            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
+        )
+    finally:
+        sys.path = original_sys_path
+
 # Logger for this pipeline step
 logger = logging.getLogger(__name__) # GNN_Pipeline.10_execute or __main__
 
@@ -94,39 +123,54 @@ def main(args: argparse.Namespace) -> int:
 
 if __name__ == '__main__':
     # Basic configuration for running this script standalone
-    log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    log_level = getattr(logging, log_level_str, logging.INFO)
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
+    # log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
+    # log_level = getattr(logging, log_level_str, logging.INFO)
+    # logging.basicConfig(
+    #     level=log_level,
+    #     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    #     datefmt="%Y-%m-%d %H:%M:%S"
+    # )
 
     # Create a dummy args object mimicking what main.py would provide
     parser = argparse.ArgumentParser(description="GNN Pipeline - Step 10: Execute Rendered Simulators (Standalone)")
     # Default output_dir for standalone: ../output (relative to src/ where this script is)
     script_dir = Path(__file__).resolve().parent
-    default_pipeline_output_dir = script_dir.parent / "output"
+    project_root_for_defaults = script_dir.parent
+    default_pipeline_output_dir = project_root_for_defaults / "output"
 
-    parser.add_argument("--output-dir", default=str(default_pipeline_output_dir),
-                        help=f"Main pipeline output directory (default: {default_pipeline_output_dir})")
-    parser.add_argument("--recursive", action="store_true", default=True,
+    parser.add_argument("--output-dir", type=Path, default=default_pipeline_output_dir, # Changed to Path type
+                        help=f"Main pipeline output directory (default: {default_pipeline_output_dir.relative_to(project_root_for_defaults) if default_pipeline_output_dir.is_relative_to(project_root_for_defaults) else default_pipeline_output_dir})")
+    parser.add_argument("--recursive", action=argparse.BooleanOptionalAction, default=True, # Keep True if sensible default for standalone execution of this step
                         help="Recursively search for PyMDP scripts in their base output folder.")
-    parser.add_argument("--verbose", action="store_true",
+    parser.add_argument("--verbose", action=argparse.BooleanOptionalAction, default=False, # Default False for standalone consistency
                         help="Enable verbose output for this script and the runner.")
-    # Add any other args from main.py that this script's main() or its callees might expect
-    # For example, target_dir is usually there, but not directly used by this step.
-    parser.add_argument("--target-dir", default="not_used_by_this_step", help="Placeholder for target-dir.")
+    # Removed --target-dir placeholder as it's not used by this script.
 
     parsed_args = parser.parse_args()
 
-    # Update log level if --verbose is used in standalone mode, after basicConfig
+    # Setup logging for standalone execution
+    log_level_to_set = logging.DEBUG if parsed_args.verbose else logging.INFO
+    if setup_standalone_logging:
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
+    else:
+        if not logging.getLogger().hasHandlers():
+            logging.basicConfig(
+                level=log_level_to_set,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                stream=sys.stdout
+            )
+        logging.getLogger(__name__).setLevel(log_level_to_set)
+        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+
+    # If verbose, also set the pymdp_runner's logger to DEBUG for more detailed output from it.
     if parsed_args.verbose:
-        logging.getLogger().setLevel(logging.DEBUG) # Set root logger level
-        # Ensure this script's logger also gets DEBUG if it was already created
-        logger.setLevel(logging.DEBUG)
-        if pymdp_runner:
+        if pymdp_runner and hasattr(pymdp_runner, '__name__'):
             logging.getLogger(pymdp_runner.__name__).setLevel(logging.DEBUG)
-        logger.debug("Verbose logging enabled for standalone run of 10_execute.py.")
+            logging.getLogger(__name__).debug(f"Verbose logging extended to '{pymdp_runner.__name__}' module.")
+        else:
+            logging.getLogger(__name__).debug("pymdp_runner module not available or has no __name__, cannot set its verbose level.")
+
+    # Quieten other noisy libraries if necessary
+    logging.getLogger('matplotlib').setLevel(logging.WARNING)
 
     sys.exit(main(parsed_args)) 

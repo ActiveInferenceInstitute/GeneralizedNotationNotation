@@ -43,50 +43,73 @@ logger = logging.getLogger(__name__)
 def _ensure_path(path_str: str) -> Path:
     return Path(path_str)
 
+def _strip_comments_from_multiline_str(m_str: str) -> str:
+    """Removes Python-style comments from a multi-line string."""
+    lines = []
+    for line in m_str.splitlines():
+        stripped_line = line.split('#', 1)[0].rstrip()
+        lines.append(stripped_line)
+    # Join and then remove lines that became empty AFTER comment stripping and rstrip
+    # but preserve structure for multiline arrays that might have legitimate empty lines (though uncommon)
+    # For ast.literal_eval, truly empty lines within a list/tuple definition are often problematic anyway
+    # So, filtering them out is usually safer if they are not part of string literals.
+    # A simple join and then re-strip should be fine for ast.literal_eval
+    return "\n".join(lines).strip() # Final strip to remove leading/trailing empty lines from the whole block
+
 def _parse_matrix_string(matrix_str: str) -> Any:
-    """Safely parses a string representation of a matrix."""
-    processed_str = matrix_str.strip()
-    # Heuristic to convert GNN's {{...}} or {(...)} for tuples/lists of tuples into valid Python literal strings
+    """Safely parses a string representation of a matrix after stripping comments."""
+    
+    processed_str = _strip_comments_from_multiline_str(matrix_str)
+    # After stripping comments, processed_str might be empty or just whitespace
+    if not processed_str:
+        logger.debug(f"Matrix string was empty after comment stripping (original: '{matrix_str}')")
+        return matrix_str # Or perhaps None, or an empty list, depending on desired behavior
+
+    # Heuristic to convert GNN's common {{...}} or {(...)} for parameterization
+    # into valid Python literal strings, typically aiming for list-of-lists or list-of-tuples.
+    # This should happen AFTER comment stripping.
     if processed_str.startswith("{") and processed_str.endswith("}"):
         inner_content = processed_str[1:-1].strip()
-        if inner_content.startswith("(") and inner_content.endswith(")"): # Looks like {(...)}
-            processed_str = "(" + inner_content + ")" # Treat as a single tuple
-        elif inner_content.startswith("{") and inner_content.endswith("}"): # Potentially a set of tuples
-             # This case needs care. If it's like {{t1},{t2}}, ast.literal_eval might treat it as set of sets.
-             # For GNN, this often means a list/tuple of tuples.
-             # Example: A_m0={ ( (0.333,...), (0.333,...) ),  ( (0.333,...), (0.333,...) ) }
-             # This structure is more like a tuple of tuples.
-             # The original heuristic was:
-             # if '(' in processed_str[1:-1] and ')' in processed_str[1:-1]:
-             #     processed_str = "(" + processed_str[1:-1] + ")"
-             # Let's refine it: if it's a set of tuples like format, convert to tuple of tuples
-             if inner_content.count("(") > 1 and inner_content.count(")") > 1 and inner_content.count("{") == 0 and inner_content.count("}") == 0 : # like ((v,v),(v,v)), ((v,v),(v,v))
-                 processed_str = f"({inner_content})"
-
+        # If it looks like a dict, leave it as is for ast.literal_eval
+        if ':' in inner_content and not (inner_content.startswith("(") and inner_content.endswith(")")):
+            pass # Likely a dictionary, ast.literal_eval handles dicts with {}
+        else:
+            # Otherwise, assume GNN's { } means a list-like structure (set or list of items/tuples)
+            # Convert to [ ] for ast.literal_eval to parse as a list.
+            processed_str = "[" + inner_content + "]"
 
     try:
         parsed_value = ast.literal_eval(processed_str)
-        # PyMDP often expects lists of lists or lists of tuples, not top-level sets or tuples of sets.
-        # Convert sets to lists at various levels if necessary.
-        if isinstance(parsed_value, set):
-            parsed_value = list(parsed_value)
-        if isinstance(parsed_value, tuple): # Convert top-level tuple to list
-             parsed_value = list(parsed_value)
-
-        def convert_sets_in_nesting(item):
+        
+        def convert_structure(item):
             if isinstance(item, set):
-                return list(item)
-            elif isinstance(item, (list, tuple)):
-                return type(item)(convert_sets_in_nesting(x) for x in item)
+                # Convert sets to sorted lists for deterministic output
+                try:
+                    return sorted(list(item))
+                except TypeError:
+                    # Cannot sort if items are of mixed uncomparable types (e.g. int and tuple)
+                    return list(item)
+            elif isinstance(item, list):
+                return [convert_structure(x) for x in item]
+            elif isinstance(item, tuple):
+                return tuple(convert_structure(x) for x in item)
+            elif isinstance(item, dict):
+                return {k: convert_structure(v) for k, v in item.items()}
             return item
 
-        parsed_value = convert_sets_in_nesting(parsed_value)
+        parsed_value = convert_structure(parsed_value)
         
-        logger.debug(f"Parsed matrix string '{matrix_str}' to: {parsed_value}")
+        # If the original GNN was like D_f0={(1.0,0.0,0.0)} and became [[(1.0,0.0,0.0)]] due to {[()]} heuristic,
+        # and only contains one element that is a list/tuple, unwrap it.
+        if isinstance(parsed_value, list) and len(parsed_value) == 1 and isinstance(parsed_value[0], (list,tuple)) and processed_str.startswith('[(') and processed_str.endswith(')]'):
+            if processed_str.count('(') == 1 and processed_str.count(')') == 1 : # Check if it was a single tuple in original like {(...)}
+                 parsed_value = list(parsed_value[0]) # Convert the inner tuple to list
+
+        logger.debug(f"Parsed matrix string (original: \'{matrix_str}\') to (processed for eval: \'{processed_str}\'): {parsed_value}")
         return parsed_value
     except (ValueError, TypeError, SyntaxError, MemoryError, RecursionError) as e:
-        logger.warning(f"Error parsing matrix string with ast.literal_eval: '{matrix_str}'. Error: {e}. Returning as raw string.")
-        return matrix_str # Return raw string if parsing fails
+        logger.warning(f"Error parsing matrix string with ast.literal_eval (original: \'{matrix_str}\', processed for eval: \'{processed_str}\'). Error: {e}. Returning as raw string.")
+        return matrix_str
 
 # --- Parsers for GNN Sections (kept for _gnn_model_to_dict) ---
 
@@ -148,30 +171,50 @@ def _parse_state_line(line: str) -> dict | None:
 
 def _parse_transition_line(line: str) -> dict | None:
     """
-    Parses a line describing a transition.
+    Parses a line describing a transition or connection.
     Example: s1 -> s2 : probability=0.8, action="A1" label="Transition X"
-    Also handles: s1-s2
+    Also handles: (s1, s2) -> (s3, s4)
+                  s1 > s2
+                  s1 - s2 (simple link)
     Prime characters like s' are supported in IDs.
     """
-    match = re.match(r"^\s*([a-zA-Z0-9_']+)\s*(?:->|-)\s*([a-zA-Z0-9_']+)\s*(?::\s*(.*))?$", line)
+    # Non-verbose, single-line raw string regex pattern
+    pattern = r"^\s*(\(?[a-zA-Z0-9_,'\s]+\)?|[a-zA-Z0-9_']+)\s*([-><]+|-)\s*(\(?[a-zA-Z0-9_,'\s]+\)?|[a-zA-Z0-9_']+)\s*(?::\s*(.*))?$"
+    match = re.match(pattern, line)
+
     if not match:
         logger.debug(f"Could not parse transition/connection line: {line}")
         return None
 
-    source, target, attrs_str = match.groups()
+    source_str, operator, target_str, attrs_str = match.groups()
+
+    def clean_variable_list_str(s: str) -> List[str]:
+        s = s.strip()
+        if s.startswith('(') and s.endswith(')'):
+            s = s[1:-1] # Remove parentheses
+        return [v.strip() for v in s.split(',') if v.strip()]
+
+    sources = clean_variable_list_str(source_str)
+    targets = clean_variable_list_str(target_str)
+    
     attributes = {}
     if attrs_str:
-        for part in attrs_str.split(','):
-            part = part.strip()
-            if '=' in part:
-                key, value = part.split('=', 1)
-                key = key.strip()
-                value = value.strip()
-                if (value.startswith('"') and value.endswith('"')) or \
-                   (value.startswith("'") and value.endswith("'")):
-                    value = value[1:-1]
-                attributes[key] = value
-    return {"source": source, "target": target, "attributes": attributes}
+        # Regex to find key="value" or key='value' or key=bare_value
+        # Handles escaped quotes within quoted values.
+        attr_pairs = re.findall(r'([a-zA-Z_][a-zA-Z0-9_]*)\\s*=\\s*("[^"\\\\]*(?:\\\\.[^"\\\\]*)*"|\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'|[^{},\\s]+)', attrs_str)
+        for key_attr, value_attr in attr_pairs: # Renamed to avoid conflict
+            key_attr = key_attr.strip()
+            value_attr = value_attr.strip()
+            # Attempt to evaluate if it looks like a string literal, to unescape and convert
+            if (value_attr.startswith('"') and value_attr.endswith('"')) or \
+               (value_attr.startswith("'") and value_attr.endswith("'")): # Corrected
+                try:
+                    value_attr = ast.literal_eval(value_attr)
+                except Exception: # Broad exception to catch any ast.literal_eval issues
+                    logger.warning(f"Could not ast.literal_eval attribute value '{value_attr}' for key '{key_attr}'. Keeping as raw quoted string.")
+            attributes[key_attr] = value_attr
+        
+    return {"sources": sources, "operator": operator.strip(), "targets": targets, "attributes": attributes}
 
 def _parse_list_items_section(section_content: str, item_parser: callable) -> list:
     """Parses lines in a section using a specific item_parser for each line."""
@@ -208,12 +251,12 @@ def _parse_ontology_annotations(section_content: str) -> dict:
 def _parse_model_parameters_section(section_content: str) -> dict:
     """Parses ModelParameters section, converting list-like strings to Python lists."""
     data = {}
-    for line in section_content.strip().split('\n'):
-        line = line.strip()
-        if not line or line.startswith('#'):
+    for line in section_content.strip().split('\\n'):
+        line_stripped_comments = line.split('#', 1)[0].strip() # Remove comments before parsing
+        if not line_stripped_comments: # Skip empty or comment-only lines
             continue
         
-        match = re.match(r"([\w_]+):\s*(\[.*?\])\s*(?:#.*)?", line)
+        match = re.match(r"([\\w_]+):\\s*(\\[.*?\\])", line_stripped_comments) # Regex for key: [list]
         if match:
             key = match.group(1).strip()
             value_str = match.group(2).strip()
@@ -228,11 +271,11 @@ def _parse_model_parameters_section(section_content: str) -> dict:
             except (ValueError, SyntaxError, TypeError) as e: 
                 logger.warning(f"  Could not parse ModelParameter value for '{key}' ('{value_str}') as list: {e}. Storing as string.")
                 data[key] = value_str 
-        elif ':' in line: 
-            key_part, value_part = line.split(":", 1)
+        elif ':' in line_stripped_comments: # General key: value fallback
+            key_part, value_part = line_stripped_comments.split(":", 1)
             key = key_part.strip()
-            value = value_part.split("#", 1)[0].strip() 
-            data[key] = value
+            value = value_part.strip() 
+            data[key] = value # Store as string, could attempt _parse_matrix_string if values can be complex
             logger.debug(f"  Parsed ModelParameter (as string): {key} = {value}")
         else:
             logger.debug(f"  Skipping malformed line in ModelParameters: {line}")
@@ -243,29 +286,57 @@ def _parse_initial_parameterization_section(section_content: str) -> dict:
     Parses the InitialParameterization section.
     Keys are parameter names (e.g., A_m0, D_f1).
     Values are GNN matrix strings which are parsed into Python objects (lists/tuples).
+    Handles multi-line values for a single parameter.
     """
     data = {}
-    for line in section_content.strip().split('\n'):
-        line = line.strip()
-        if not line or line.startswith('#'): # Skip comments and empty lines
-            continue
+    current_key: Optional[str] = None
+    current_value_lines: List[str] = []
+    
+    for line_raw in section_content.split('\n'):
+        # A new parameter key is expected to be at the start of a line (ignoring whitespace)
+        # and not be part of a comment.
+        stripped_line_for_key_check = line_raw.lstrip()
         
-        # Split by the first '=' to separate key and value
-        if '=' in line:
-            key, value_str = line.split('=', 1)
-            key = key.strip()
-            value_str = value_str.strip()
+        is_new_key_line = False
+        if not stripped_line_for_key_check.startswith('#') and '=' in stripped_line_for_key_check:
+            # Try to match "key = value" where key is simple alphanumeric.
+            # This assumes the first '=' on such a line is the delimiter.
+            match = re.match(r"^([a-zA-Z0-9_]+)\\s*=\\s*(.*)", stripped_line_for_key_check)
+            if match:
+                is_new_key_line = True
+        
+        if is_new_key_line and match: # Confirm match is not None
+            # If there was a previous key, process its collected value lines
+            if current_key is not None and current_value_lines:
+                val_str_collected = "\n".join(current_value_lines).strip() # Strip whole block
+                if val_str_collected: # only parse if non-empty after stripping
+                    data[current_key] = _parse_matrix_string(val_str_collected)
+                else:
+                    data[current_key] = "" # Or some indicator of empty value if appropriate
+                    logger.debug(f"Collected value for '{current_key}' was empty after stripping comments.")
             
-            if key and value_str:
-                # Attempt to parse the matrix string value
-                parsed_value = _parse_matrix_string(value_str)
-                data[key] = parsed_value
-                if isinstance(parsed_value, str) and parsed_value == value_str: # Check if parsing failed
-                    logger.warning(f"Value for '{key}' in InitialParameterization was not parsed into a data structure, kept as string: {value_str}")
-            else:
-                logger.debug(f"Skipping malformed line in InitialParameterization (empty key or value): '{line}'")
+            current_key = match.group(1).strip()
+            initial_value_part = match.group(2) # This is the rest of the line after "key ="
+            current_value_lines = [initial_value_part.strip()] # Start new value collection, strip this first part
+        elif current_key is not None:
+            # This line is a continuation of the previous key's value
+            # We append the raw line to preserve its original content (including leading whitespace)
+            # as _parse_matrix_string will handle comment stripping for the whole block later.
+            current_value_lines.append(line_raw) 
         else:
-            logger.debug(f"Skipping line in InitialParameterization without '=': '{line}'")
+            # This line is not a new key and there's no current_key being processed.
+            # It might be a full-line comment or a malformed line at the start of the section.
+            if not line_raw.strip().startswith('#') and line_raw.strip():
+                 logger.debug(f"Skipping orphan/malformed line at start/between params in InitialParameterization: '{line_raw}'")
+    
+    # Process the last collected parameter after the loop ends
+    if current_key is not None and current_value_lines:
+        val_str_collected = "\n".join(current_value_lines).strip()
+        if val_str_collected:
+            data[current_key] = _parse_matrix_string(val_str_collected)
+        else:
+            data[current_key] = ""
+            logger.debug(f"Collected value for '{current_key}' (last param) was empty after stripping comments.")
             
     return data
 

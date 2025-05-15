@@ -23,6 +23,33 @@ import logging # Import logging
 import inspect # For inspecting function signatures
 import json # For JSON operations
 
+# Attempt to import the new logging utility
+try:
+    from utils.logging_utils import setup_standalone_logging
+except ImportError:
+    # Fallback for standalone execution or if src is not directly in path
+    current_script_path_for_util = Path(__file__).resolve()
+    project_root_for_util = current_script_path_for_util.parent.parent
+    if str(project_root_for_util) not in sys.path:
+        sys.path.insert(0, str(project_root_for_util)) # Add project root
+    if str(project_root_for_util / "src") not in sys.path: # Also try adding src directly for utils
+        sys.path.insert(0, str(project_root_for_util / "src"))
+    try:
+        from utils.logging_utils import setup_standalone_logging
+    except ImportError:
+        setup_standalone_logging = None
+        _temp_logger_name = __name__ if __name__ != "__main__" else "src.7_mcp_import_warning"
+        _temp_logger = logging.getLogger(_temp_logger_name)
+        if not _temp_logger.hasHandlers():
+            if not logging.getLogger().hasHandlers():
+                logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
+            else:
+                 _temp_logger.addHandler(logging.StreamHandler(sys.stderr))
+                 _temp_logger.propagate = False
+        _temp_logger.warning(
+            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
+        )
+
 # Pre-define MCPSDKNotFoundError to satisfy linter in case of import issues in the try-except block
 MCPSDKNotFoundError = Exception
 
@@ -136,11 +163,12 @@ def process_mcp_operations(src_root_dir_str: str, mcp_base_dir_str: str, output_
     # The `verbose` flag passed to this function determines whether core_mcp_logger gets DEBUG or INFO.
     if verbose: # verbose is from the pipeline's args.verbose
         # If pipeline is verbose, allow core mcp to show its INFO and DEBUG messages
-        # Its own DEBUG messages were already modified in mcp.py to be less noisy INFOs.
         core_mcp_logger.setLevel(logging.DEBUG) 
+        logger.debug(f"Set logger '{core_mcp_logger.name}' to DEBUG for MCP operations.")
     else:
         # If pipeline is not verbose, suppress core mcp INFO/DEBUG messages by setting it to WARNING
         core_mcp_logger.setLevel(logging.WARNING) 
+        logger.debug(f"Set logger '{core_mcp_logger.name}' to WARNING for MCP operations.")
 
     overall_step_success = True # Initialize overall success for this step
 
@@ -369,24 +397,13 @@ def main(args):
             Expected attributes include: output_dir, verbose, and optional
             mcp_core_dir_override, src_root_override.
     """
-    # Set this script's logger level based on pipeline's args.verbose
-    # This is typically handled by main.py for child modules.
-    # The process_mcp_operations function also sets levels for core_mcp_logger.
-    # if args.verbose:
-    #     logger.setLevel(logging.DEBUG)
-    # else:
-    #     logger.setLevel(logging.INFO)
-    
-    # When this script's logger is set to DEBUG (due to args.verbose),
-    # its own logger.debug messages will show.
-    # The verbosity of the *core* 'mcp' module (from src/mcp or package) is set 
-    # inside process_mcp_operations based on args.verbose passed to it.
-
-    script_name = Path(__file__).stem # e.g., "7_mcp"
-    # Construct logger name to be child of GNN_Pipeline, matching main.py's convention for subprocesses
-    module_logger_name = f"GNN_Pipeline.{script_name}"
-    global logger # Allow reassignment of the global logger for this module
-    logger = logging.getLogger(module_logger_name)
+    # Set this script's logger level based on parsed_args.verbose
+    # This logger is defined at the module level as logging.getLogger(__name__)
+    log_level_for_this_script = logging.DEBUG if args.verbose else logging.INFO
+    logger.setLevel(log_level_for_this_script)
+    # Log that this happened, but only if we are at DEBUG level already
+    if logger.isEnabledFor(logging.DEBUG):
+        logger.debug(f"Script logger '{logger.name}' level set to {logging.getLevelName(log_level_for_this_script)}.")
 
     script_dir = Path(__file__).parent.resolve() # Should be src/
     mcp_core_dir = script_dir / "mcp" # This is the specific directory for core MCP files: src/mcp/
@@ -464,34 +481,32 @@ if __name__ == "__main__":
     # --- End Argument Parsing ---
 
     # Parse arguments *before* using args.verbose or passing args to main()
-    args = parser.parse_args() # THIS IS THE CRITICAL FIX
+    cli_args = parser.parse_args() # Corrected: args renamed to cli_args for clarity
 
-    # Basic configuration for running this script standalone
-    log_level_str = os.environ.get("LOG_LEVEL", "INFO").upper()
-    log_level = getattr(logging, log_level_str, logging.INFO)
+    # Setup logging for standalone execution using the utility function
+    log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
+    if setup_standalone_logging:
+        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
+    else:
+        # Fallback basic config if utility function couldn't be imported
+        if not logging.getLogger().hasHandlers(): # Check root handlers
+            logging.basicConfig(
+                level=log_level_to_set,
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                # datefmt="%Y-%m-%d %H:%M:%S", # Use default datefmt
+                stream=sys.stdout
+            )
+        # Ensure this script's logger (which is __main__ here) level is set even in fallback
+        current_script_logger = logging.getLogger(__name__)
+        current_script_logger.setLevel(log_level_to_set) 
+        current_script_logger.warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
     
-    # If --verbose is used in standalone, override log_level to DEBUG
-    if args.verbose:
-        log_level = logging.DEBUG
-
-    logging.basicConfig(
-        level=log_level,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
-    # Re-fetch the logger with the potentially new name for standalone context.
-    # This will now be '7_mcp' or similar if run standalone, with basicConfig applied.
-    logger = logging.getLogger(__name__) 
-    
-    # Update log level if --verbose is used in standalone mode (after basicConfig)
-    if args.verbose:
-        logger.setLevel(logging.DEBUG)
-        # For standalone, also set root handlers if any, though basicConfig should handle it.
-        # for handler in logging.getLogger().handlers:
-        #     handler.setLevel(logging.DEBUG)
-        # Also set the mcp module's logger to DEBUG if verbose standalone
+    # Update log level for core MCP loggers if --verbose is used in standalone mode
+    if cli_args.verbose:
+        # The main script logger (e.g., '__main__') should already be DEBUG via setup_standalone_logging
+        # We also want the mcp module it calls to be verbose.
         logging.getLogger("mcp").setLevel(logging.DEBUG) 
-        logging.getLogger("src.mcp").setLevel(logging.DEBUG) # And its potential alias
-        logger.debug("Verbose logging enabled for standalone run of 7_mcp.py.")
+        logging.getLogger("src.mcp").setLevel(logging.DEBUG) # And its potential alias if imported that way
+        logging.getLogger(__name__).debug("Verbose logging enabled for standalone run of 7_mcp.py, including core MCP modules.")
 
-    sys.exit(main(args)) 
+    sys.exit(main(cli_args)) 

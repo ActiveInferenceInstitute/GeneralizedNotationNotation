@@ -147,6 +147,7 @@ async def handle_render_gnn_spec(input_data: RenderGnnInput) -> RenderGnnOutput:
             rendered_content_preview=content_preview
         )
     else:
+        logger.error(f"MCP Tool: Rendering GNN failed. Message from renderer: {message}")
         return RenderGnnOutput(success=False, message=message)
 
 async def handle_list_render_targets() -> ListRenderTargetsOutput:
@@ -190,9 +191,7 @@ def register_tools(mcp_instance_param): # Name changed to avoid conflict if mcp_
 # This module now only defines tools to be registered by the main MCP system.
 
 
-if __name__ == "__main__":
-    # Example of how to run the MCP server directly (e.g., for testing)
-    # It will use Stdio transport by default.
-    # To test with a hypothetical TCP transport, you might pass an argument:
-    # serve_render_mcp(listen_on="tcp://localhost:8080") 
-    serve_render_mcp() 
+# Removed the if __name__ == "__main__": block as this module is intended
+# to be loaded by the main MCP system for tool registration, not run standalone as a server.
+# For isolated testing of handlers, one would typically import them and call them directly
+# with mock inputs, or use a dedicated test script that sets up a minimal MCP environment. 
