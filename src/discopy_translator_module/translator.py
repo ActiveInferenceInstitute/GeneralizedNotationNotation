@@ -83,7 +83,9 @@ def gnn_statespace_to_discopy_types(parsed_gnn: dict) -> dict[str, Ty]:
     # Allows for simple names (interpreted as Ty('VarName'))
     # and names with dimensions (Ty('VarName[dim1,dim2]'))
     # Regex changed to be more permissive for content within brackets for Ty name creation.
-    var_pattern = re.compile(r"^([a-zA-Z_][\w_]*)(?:\s*\[([^\]]+)\])?(?:\s*#.*)?$")
+    # Also allows for Greek letters like π in variable names.
+    # Using (.*?) for bracket content to ensure compilation, will refine later if needed.
+    var_pattern = re.compile(r"^([a-zA-Z_π][\w_π]*)(?:\s*\[(.*?)\])?(?:\s*#.*)?$")
 
     for line in statespace_lines:
         line = line.strip()
@@ -130,52 +132,84 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, types: dict[str, Ty]) -
 
     # Regex for connections.
     
-    # Pattern for a single variable name: e.g., "VarName"
-    var_id_pattern = r"[a-zA-Z_]\\w*"
+    # Pattern for a single variable name: e.g., "VarName", "π_f1"
+    # Allows for Greek letters like π. Ensuring this uses \w.
+    var_id_pattern = r"[a-zA-Z_π][\w_π]*"
     
     # Pattern for a list of one or more comma-separated variable names: 
     # e.g., "Var1", "Var1, Var2", "Var1, Var2, Var3"
     # This pattern itself does not match surrounding parentheses.
-    var_list_content_pattern = var_id_pattern + r"(?:\\s*,\\s*" + var_id_pattern + r")*"
+    var_list_content_pattern = var_id_pattern + r"(?:\s*,\s*" + var_id_pattern + r")*"
 
     # Pattern for a block of text that forms one side of a connection (source or target).
     # This matches EITHER a parenthesized list OR a non-parenthesized list.
     # Example: matches "( Var1, Var2 )" OR "Var1, Var2".
-    # The content matched by this (e.g., "( Var1, Var2 )" or "Var1, Var2") 
-    # is then captured by the main connection pattern.
     single_side_block_pattern = (
-        r"(?:\\s*\\(\\s*" + var_list_content_pattern + r"\\s*\\)\\s*|"  # Option 1: ( list )
-        r"\\s*" + var_list_content_pattern + r"\\s*)"                  # Option 2: list
+        # Option 1: ( list of vars ) - captures list content in a group
+        # Using \( and \) for literal parentheses.
+        r"(?:\s*\(\s*(" + var_list_content_pattern + r")\s*\)\s*|" +
+        # Option 2: list of vars 
+        r"\s*(" + var_list_content_pattern + r")\s*)"
     )
             
     # Final connection pattern string.
-    # It captures the entire block for the source (group 1) and target (group 2).
+    # It captures the source block (group 1 for parenthesized, group 2 for non-parenthesized)
+    # and target block (group 3 for parenthesized, group 4 for non-parenthesized)
+    # Supports '>', '->', '-' as connectors.
+    # Ignores '=' for assignments for now.
     conn_pattern_str = (
-        r"^\\s*(" + single_side_block_pattern + r")\\s*" +
-        r"(?:>|->|-)\\s*" +
-        r"(" + single_side_block_pattern + r")\\s*(?:#.*)?$"
+        # Source part: matches either a parenthesized list or a direct list/single var
+        # Using \( and \) for literal parentheses.
+        r"^\s*(?:\(\s*(" + var_list_content_pattern + r")\s*\)|(" + var_list_content_pattern + r"))\s*" +
+        # Connector
+        r"(?:>|->|-)\s*" +
+        # Target part: matches either a parenthesized list or a direct list/single var
+        r"(?:\(\s*(" + var_list_content_pattern + r")\s*\)|(" + var_list_content_pattern + r"))\s*(?:#.*)?$"
     )
     conn_pattern = re.compile(conn_pattern_str)
 
-    def parse_vars_from_group(group_str: str) -> list[str]:
-        # Remove parentheses and split by comma, then strip whitespace
-        cleaned_str = group_str.strip()
-        if cleaned_str.startswith("(") and cleaned_str.endswith(")"):
-            cleaned_str = cleaned_str[1:-1]
-        return [v.strip() for v in cleaned_str.split(',') if v.strip()]
+    # Pattern for assignment-like connections (e.g., G=ExpectedFreeEnergy, t=Time)
+    # These are treated as non-diagrammatic for now. Ensuring this uses \w and \s.
+    assignment_pattern_str = r"^\s*([a-zA-Z_π][\w_π]*)\s*=\s*([^#]+?)\s*(?:#.*)?$"
+    assignment_pattern = re.compile(assignment_pattern_str)
+
+    def parse_vars_from_group(group_str: str | None) -> list[str]:
+        if not group_str:
+            return []
+        # Handles cases where the string might already be clean or needs splitting.
+        return [v.strip() for v in group_str.split(',') if v.strip()]
 
     for line in connections_lines:
         line = line.strip()
         if not line or line.startswith("#"):
             continue
         
+        assignment_match = assignment_pattern.match(line)
+        if assignment_match:
+            var_name = assignment_match.group(1)
+            value_assigned = assignment_match.group(2).strip()
+            logger.info(f"Parsed assignment: '{var_name}' = '{value_assigned}'. Not creating a DisCoPy box for this.")
+            # Optionally, these could be stored as annotations on the diagram or nodes if relevant
+            continue # Move to next line
+
         match = conn_pattern.match(line)
         if match:
-            source_group_str = match.group(1)
-            target_group_str = match.group(2)
+            # Determine actual source and target strings from the four possible capture groups
+            # Groups are: 1 (source parenthesized), 2 (source direct), 3 (target parenthesized), 4 (target direct)
+            source_str_paren = match.group(1)
+            source_str_direct = match.group(2)
+            target_str_paren = match.group(3)
+            target_str_direct = match.group(4)
 
-            source_vars = parse_vars_from_group(source_group_str)
-            target_vars = parse_vars_from_group(target_group_str)
+            source_content = source_str_paren if source_str_paren else source_str_direct
+            target_content = target_str_paren if target_str_paren else target_str_direct
+            
+            if not source_content or not target_content:
+                logger.warning(f"Could not determine source or target content from connection line: '{line}'. Skipping.")
+                continue
+
+            source_vars = parse_vars_from_group(source_content)
+            target_vars = parse_vars_from_group(target_content)
 
             if not source_vars or not target_vars:
                 logger.warning(f"Empty source or target variables after parsing connection: \'{line}\'. Skipping.")
@@ -232,7 +266,7 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, types: dict[str, Ty]) -
                 # This indicates a more complex structure (e.g. parallel wires or new starting chain)
                 # For now, we will log a warning and try to append it as a new parallel component
                 # This is a placeholder for more sophisticated diagram construction.
-                logger.warning(f"Connection from \'{source_group_str}\' to \'{target_group_str}\' (Box dom={dom_type}, cod={cod_type}) does not directly chain with previous diagram codomain ({diagram.cod}). Appending in parallel (basic).")
+                logger.warning(f"Connection from \'{source_content}\' to \'{target_content}\' (Box dom={dom_type}, cod={cod_type}) does not directly chain with previous diagram codomain ({diagram.cod}). Appending in parallel (basic).")
                 # Attempting a parallel composition; this assumes variables are distinct flows if not chained.
                 # A more robust solution would analyze the full graph structure.
                 try:
