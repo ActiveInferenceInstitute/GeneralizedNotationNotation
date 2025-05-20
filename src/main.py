@@ -19,6 +19,7 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 10_execute.py (Corresponds to execute/ folder)
 - 11_llm.py (Corresponds to llm/ folder)
 - 12_site.py (Corresponds to site/ folder, generates HTML summary site)
+- 12_discopy.py (Corresponds to discopy/ folder, generates DisCoPy diagrams from GNN)
 
 
 Usage:
@@ -42,6 +43,8 @@ Options:
                             Path to save the final pipeline summary report (default: output/pipeline_execution_summary.json)
     --site-html-filename NAME
                             Filename for the generated HTML summary site (for 12_site.py, saved in output-dir, default: gnn_pipeline_summary_site.html)
+    --discopy-gnn-input-dir DIR
+                            Directory containing GNN files for DisCoPy processing (for 12_discopy.py, default: src/gnn/examples or --target-dir if specified)
 
 """
 
@@ -68,6 +71,7 @@ def parse_arguments():
     default_target_dir = project_root / "src" / "gnn" / "examples"
     default_ontology_terms_file = project_root / "src" / "ontology" / "act_inf_ontology_terms.json"
     default_pipeline_summary_file = default_output_dir / "pipeline_execution_summary.json"
+    default_discopy_gnn_input_dir = default_target_dir # Default discopy input to general target dir
 
     parser = argparse.ArgumentParser(
         description="GNN Processing Pipeline: Orchestrates GNN file processing, analysis, and export.",
@@ -144,6 +148,13 @@ def parse_arguments():
         help=(f"Filename for the generated HTML summary site (for 12_site.py). It will be saved in the main output directory.\n"
               f"Default: gnn_pipeline_summary_site.html")
     )
+    parser.add_argument(
+        "--discopy-gnn-input-dir",
+        type=Path,
+        default=None, # Will be set to default_target_dir or args.target_dir later
+        help=(f"Directory containing GNN files for DisCoPy processing (12_discopy.py). \n"
+              f"If not set, uses the main --target-dir. Default if --target-dir is also default: {default_discopy_gnn_input_dir.relative_to(project_root) if default_discopy_gnn_input_dir.is_relative_to(project_root) else default_discopy_gnn_input_dir}")
+    )
     return parser.parse_args()
 
 def get_pipeline_scripts(current_dir: Path) -> list[str]:
@@ -151,7 +162,7 @@ def get_pipeline_scripts(current_dir: Path) -> list[str]:
     logger.debug(f"ℹ️ Discovering potential pipeline scripts using pattern: {potential_scripts_pattern}")
     all_candidate_files = glob.glob(str(potential_scripts_pattern))
     
-    pipeline_scripts_info = []
+    pipeline_scripts_info: list[dict[str, int | str | Path]] = [] # Explicitly type hint
     script_name_regex = re.compile(r"^(\d+)_.*\.py$")
 
     for script_path_str in all_candidate_files:
@@ -341,6 +352,18 @@ def run_pipeline(args: argparse.Namespace):
             # 12_site.py uses --output-dir (where it reads from) 
             # and --site-html-file (the name of the file it creates within output-dir)
             cmd_list.extend(["--site-html-file", str(args.site_html_filename)])
+        elif script_name_no_ext == "12_discopy":
+            # Determine the input directory for 12_discopy.py
+            # Priority: --discopy-gnn-input-dir > --target-dir > default (src/gnn/examples)
+            discopy_input_dir_to_use = args.target_dir # Default to the general target_dir
+            if args.discopy_gnn_input_dir is not None:
+                discopy_input_dir_to_use = args.discopy_gnn_input_dir
+            
+            cmd_list.extend(["--gnn-input-dir", str(discopy_input_dir_to_use)])
+            # --output-dir is already added as a common argument
+            if args.recursive: # Pass recursive if set for the main pipeline
+                cmd_list.append("--recursive")
+            # Verbosity is also handled by common args
 
         step_process_env = os.environ.copy()
         if _venv_site_packages_path_for_subproc:
@@ -583,7 +606,8 @@ def main():
     if args.verbose:
         pipeline_logger.setLevel(logging.DEBUG)
         # Propagate level to handlers if they exist and basicConfig wasn't just called
-        for handler in pipeline_logger.handlers + logging.getLogger().handlers: # Ensure root handlers also set
+        handlers_to_update = list(pipeline_logger.handlers) + list(logging.getLogger().handlers)
+        for handler in handlers_to_update:
             # Only set level if handler's current level is not effectively DEBUG or lower
             if handler.level == 0 or handler.level > logging.DEBUG: # 0 means NOTSET, effectively inherits.
                 current_level_name = logging.getLevelName(handler.level)
@@ -593,7 +617,8 @@ def main():
     else:
         pipeline_logger.setLevel(logging.INFO)
         # Propagate level to handlers
-        for handler in pipeline_logger.handlers + logging.getLogger().handlers: # Ensure root handlers also set
+        handlers_to_update_info = list(pipeline_logger.handlers) + list(logging.getLogger().handlers)
+        for handler in handlers_to_update_info:
             if handler.level == 0 or handler.level > logging.INFO:
                 current_level_name = logging.getLevelName(handler.level)
                 logger.debug(f"Updating handler {type(handler).__name__} level from {current_level_name} to INFO")

@@ -1,7 +1,0 @@
-{
-  "ModelName": "Airplane Trading POMDP v1.0",
-  "ModelAnnotation": "This model represents a POMDP agent managing an investment portfolio aboard an airplane.\nThe key challenge is that financial losses from trading directly impact the plane's fuel reserves.\n- Hidden State Factors:\n    1.  `NivelCombustible` (Fuel Level): {Cr\u00edtico, Bajo, Medio, Alto} - 4 states\n    2.  `RendimientoMercado` (Market Performance): {P\u00e9rdidas, Neutral, Rentable} - 3 states\n- Observation Modalities:\n    1.  `IndicadorCombustible` (Fuel Gauge): {CasiVac\u00edo, Mitad, Lleno} - 3 outcomes\n    2.  `ResultadoOperacion` (Trading Outcome): {P\u00e9rdida, SinCambio, Ganancia} - 3 outcomes\n- Control Factor (Action):\n    1.  `EstrategiaInversion` (Investment Strategy): {Desinvertir, Mantener, Invertir} - 3 actions",
-  "GNNVersionAndFlags": "GNN v1",
-  "Time": "Dynamic\nDiscreteTime=t\nModelTimeHorizon=20 # Example planning horizon",
-  "ActInfOntologyAnnotation": "# Hidden States\ns_f0=NivelDeCombustible\ns_f1=DesempenoDelMercado\n\n# Observations\no_m0=MedidorDeCombustible\no_m1=ResultadoDeTransaccion\n\n# Control/Policy Related\npi_c0=VectorPoliticaControl0\nu_c0=AccionControl0\n\n# Likelihoods\nA_m0=MatrizVerosimilitudModalidad0\nA_m1=MatrizVerosimilitudModalidad1\n\n# Transitions\nB_f0=MatrizTransicionFactor0\nB_f1=MatrizTransicionFactor1\n\n# Preferences\nC_m0=VectorPreferenciaModalidad0\nC_m1=VectorPreferenciaModalidad1\n\n# Priors\nD_f0=DistribucionPreviaFactorOculto0\nD_f1=DistribucionPreviaFactorOculto1\n\n# Other\nG=EnergiaLibreEsperada\nt=PasoDeTiempo"
-}
