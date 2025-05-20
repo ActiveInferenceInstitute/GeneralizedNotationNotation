@@ -1,0 +1,67 @@
+GNN Model Summary: Standard POMDP Agent v1.0
+Source File: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_POMDP_example.md
+
+Metadata:
+  description: This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
+It includes:
+- Two hidden state factors: Location (3 states), ResourceLevel (2 states).
+- Two observation modalities: VisualCue (4 outcomes), AuditorySignal (2 outcomes).
+- Two control factors (actions): Movement (3 actions), Interaction (2 actions).
+This example is designed to test various GNN parsing and rendering capabilities, especially for PyMDP.
+
+States (18):
+  - ID: s_f0 (dimensions=3,1,type=int, original_id=s_f0)
+  - ID: s_f1 (dimensions=2,1,type=int, original_id=s_f1)
+  - ID: o_m0 (dimensions=4,1,type=int, original_id=o_m0)
+  - ID: o_m1 (dimensions=2,1,type=int, original_id=o_m1)
+  - ID: pi_c0 (dimensions=3,type=float, original_id=pi_c0)
+  - ID: pi_c1 (dimensions=2,type=float, original_id=pi_c1)
+  - ID: u_c0 (dimensions=1,type=int, original_id=u_c0)
+  - ID: u_c1 (dimensions=1,type=int, original_id=u_c1)
+  - ID: A_m0 (dimensions=4,3,2,type=float, original_id=A_m0)
+  - ID: A_m1 (dimensions=2,3,2,type=float, original_id=A_m1)
+  - ID: B_f0 (dimensions=3,3,3,2,type=float, original_id=B_f0)
+  - ID: B_f1 (dimensions=2,2,3,2,type=float, original_id=B_f1)
+  - ID: C_m0 (dimensions=4,type=float, original_id=C_m0)
+  - ID: C_m1 (dimensions=2,type=float, original_id=C_m1)
+  - ID: D_f0 (dimensions=3,type=float, original_id=D_f0)
+  - ID: D_f1 (dimensions=2,type=float, original_id=D_f1)
+  - ID: G (dimensions=1,type=float, original_id=G)
+  - ID: t (dimensions=1,type=int, original_id=t)
+
+Initial Parameters (0):
+
+General Parameters (0):
+
+Observations (0):
+
+Transitions (8):
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+  - None -> None
+
+Ontology Annotations (18):
+  s_f0 = HiddenStateFactor0
+  s_f1 = HiddenStateFactor1
+  o_m0 = ObservationModality0
+  o_m1 = ObservationModality1
+  pi_c0 = PolicyVector      # Or PolicyVectorFactor0
+  pi_c1 = PolicyVectorFactor1      # Or PolicyVectorFactor1
+  u_c0 = Action # Or ActionFactor0
+  u_c1 = ActionFactor1 # Or ActionFactor1
+  A_m0 = LikelihoodMatrixModality0
+  A_m1 = LikelihoodMatrixModality1
+  B_f0 = TransitionMatrixFactor0
+  B_f1 = TransitionMatrixFactor1
+  C_m0 = LogPreferenceVectorModality0 # Or LogPreferenceVectorModality0
+  C_m1 = LogPreferenceVectorModality1 # Or LogPreferenceVectorModality1
+  D_f0 = PriorOverHiddenStatesFactor0
+  D_f1 = PriorOverHiddenStatesFactor1
+  G = ExpectedFreeEnergy
+  t = Time
+

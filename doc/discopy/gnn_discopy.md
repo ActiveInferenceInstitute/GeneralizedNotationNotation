@@ -34,7 +34,7 @@ The foundational data structure in DisCoPy is the `Diagram` class. A diagram in 
         # B > C
         ```
         could translate to:
-        ```python
+   ```python
         from discopy.monoidal import Diagram, Ty, Box
         A_type, B_type, C_type = Ty('A[2]'), Ty('B[3]'), Ty('C[2]')
         f_AB = Box('A_to_B', A_type, B_type)
@@ -237,7 +237,7 @@ DisCoPy can be integrated into the existing GNN processing pipeline (`src/main.p
     *   Take GNN files (e.g., from `output/gnn_exports/` or directly from `src/gnn/examples/`) as input.
     *   Utilize a GNN parser and a `gnn_to_discopy_diagram` translator.
     *   Generate DisCoPy diagrams.
-    *   Output these diagrams in various formats (e.g., serialized DisCoPy objects, Python scripts that reconstruct the diagrams, or images via `diagram.draw()`) to a new directory like `output/discopy_diagrams/`.
+    *   Output these diagrams in various formats (e.g., serialized DisCoPy objects, Python scripts that reconstruct the diagrams, or images via `diagram.draw()`) to a new directory like `output/discopy_gnn/`.
     *   Optionally, apply predefined functors (e.g., for simplification or basic analysis).
 
 *   **Enhancing Existing Steps:**
@@ -287,7 +287,7 @@ Citations:
 
 ## Using the GNN-to-DisCoPy Pipeline Step (12_discopy.py)
 
-The GNN processing pipeline includes a dedicated step, `12_discopy.py`, for automatically translating GNN model specifications into DisCoPy diagrams and visualizing them. This step leverages the `src.discopy.translator` module.
+The GNN processing pipeline includes a dedicated step, `12_discopy.py`, for automatically translating GNN model specifications into DisCoPy diagrams and visualizing them. This step leverages the `src.discopy_translator_module.translator` module.
 
 ### Purpose
 
@@ -310,7 +310,7 @@ python src/main.py --only-steps 12_discopy
 
 Key command-line arguments relevant to this step when running via `src/main.py`:
 
-*   `--output-dir <PATH>`: The main output directory for the entire pipeline. The DisCoPy diagrams will be saved under `<PATH>/discopy_diagrams/`.
+*   `--output-dir <PATH>`: The main output directory for the entire pipeline. The DisCoPy diagrams will be saved under `<PATH>/discopy_gnn/`.
 *   `--target-dir <PATH>` (or `--discopy-gnn-input-dir <PATH>`): Specifies the directory containing the input GNN files for the DisCoPy step. If `--discopy-gnn-input-dir` is provided, it takes precedence for this step; otherwise, the general `--target-dir` is used.
 *   `--recursive` / `--no-recursive`: Controls whether to search for GNN files recursively in the input directory.
 *   `--verbose` / `--no-verbose`: Enables detailed logging for the step.
@@ -325,14 +325,14 @@ Key command-line arguments relevant to this step when running via `src/main.py`:
 
 For each processed GNN file (e.g., `example_model.md`), the script generates:
 
-*   A PNG image of the DisCoPy diagram: `output/discopy_diagrams/example_model_diagram.png`.
-    *   If the GNN file was in a subdirectory of the input path (e.g., `my_models/example_model.md`), the output structure is preserved: `output/discopy_diagrams/my_models/example_model_diagram.png`.
+*   A PNG image of the DisCoPy diagram: `output/discopy_gnn/example_model_diagram.png`.
+    *   If the GNN file was in a subdirectory of the input path (e.g., `my_models/example_model.md`), the output structure is preserved: `output/discopy_gnn/my_models/example_model_diagram.png`.
 
 The diagrams visualize the types (`Ty`) as wires and the connections (`Box`) as boxes, illustrating the categorical structure inferred from the GNN specification.
 
 ### Current Limitations and Future Work
 
-*   **Parsing**: The GNN parser in `src.discopy.translator` is basic and expects GNN sections and syntax to be well-formed.
+*   **Parsing**: The GNN parser in `src.discopy_translator_module.translator` is basic and expects GNN sections and syntax to be well-formed.
 *   **Connection Complexity**: The current translator primarily handles sequential connections (`A > B`). More complex graph structures (parallel compositions, feedback loops, multi-input/multi-output boxes from a single GNN connection line) are handled with simplifications or might not be fully represented.
 *   **Functorial Semantics**: This step focuses on structural translation. Assigning concrete computational semantics (via DisCoPy functors) to these diagrams is a subsequent step, potentially for a different pipeline stage or manual exploration.
 

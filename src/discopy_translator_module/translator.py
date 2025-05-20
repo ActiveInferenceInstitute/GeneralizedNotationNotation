@@ -8,7 +8,7 @@ import re
 import logging
 from pathlib import Path
 
-from discopy import Ty, Box, Diagram, Id, Swap # type: ignore
+from discopy.monoidal import Ty, Box, Diagram, Id # type: ignore
 # DisCoPy might not be in the project's direct dependencies for static analysis,
 # so we can ignore type errors for it here.
 
@@ -20,31 +20,44 @@ def parse_gnn_content(gnn_content: str) -> dict:
     Each section's content is a list of non-empty, non-comment lines.
     """
     parsed_data = {}
-    current_section_name = None
+    current_section_name: str | None = None
     
-    # Regex to identify GNN section headers like ## ModelName, ## StateSpaceBlock
-    section_header_pattern = re.compile(r"^##\s*([\w\s]+)\s*$", re.MULTILINE)
+    # Regex to identify GNN section headers like ## ModelName
+    # This regex attempts to be more robust for section titles.
+    section_header_pattern = re.compile(r"^##\s*([^#\n]+?)\s*(?:#.*)?$")
 
     lines = gnn_content.splitlines()
-    
-    for line_number, line in enumerate(lines):
-        stripped_line = line.strip()
-        
-        header_match = section_header_pattern.match(stripped_line)
-        if header_match:
-            # A section header was found
-            current_section_name = header_match.group(1).strip().replace(" ", "")
-            if current_section_name not in parsed_data:
-                parsed_data[current_section_name] = []
-            logger.debug(f"Found section: {current_section_name} at line {line_number + 1}")
-            continue # Move to the next line after processing a header
 
-        # If we are inside a section (current_section_name is not None),
-        # and the line is actual content (not empty, not a comment).
-        if current_section_name is not None and stripped_line and not stripped_line.startswith("#"):
-            # current_section_name is guaranteed to be a key in parsed_data if it's not None
-            # because it would have been added when the section header was matched.
-            parsed_data[current_section_name].append(stripped_line)
+    for line_number, line_content in enumerate(lines):
+        stripped_line = line_content.strip()
+
+        # Try to match a section header first
+        header_match = section_header_pattern.match(stripped_line) # Match on the stripped line
+        if header_match:
+            section_title_match = header_match.group(1)
+            if section_title_match is not None:
+                current_section_name = section_title_match.strip().replace(" ", "")
+                if current_section_name not in parsed_data:
+                    parsed_data[current_section_name] = []
+                logger.debug(f"Found section: {current_section_name} at line {line_number + 1}")
+            else:
+                # This case should ideally not be reached if the regex is well-defined.
+                logger.warning(f"Matched a section header but failed to extract title at line {line_number + 1}: '{stripped_line}'")
+                current_section_name = None # Ensure it's reset
+            continue # Important: move to the next line after processing a header
+
+        # If it's not a header, and we are inside a section, and it's a content line
+        if current_section_name and stripped_line and not stripped_line.startswith("#"):
+            # current_section_name should be a valid key if we are here due to header processing.
+            if current_section_name in parsed_data:
+                parsed_data[current_section_name].append(stripped_line)
+            else:
+                # This path indicates an issue - current_section_name was set, but not as a key.
+                # This implies a logic error if a section name was determined but not added to parsed_data.
+                logger.warning(
+                    f"Attempting to add line to section '{current_section_name}' which was not "
+                    f"initialized in parsed_data. Line: '{stripped_line}'. This may indicate a parsing logic error."
+                )
             
     # Log a summary of parsed sections and line counts for debugging
     if logger.isEnabledFor(logging.DEBUG):
@@ -69,7 +82,8 @@ def gnn_statespace_to_discopy_types(parsed_gnn: dict) -> dict[str, Ty]:
     # Variable pattern: VarName or VarName[dim1,dim2,...] or VarName[dim]
     # Allows for simple names (interpreted as Ty('VarName'))
     # and names with dimensions (Ty('VarName[dim1,dim2]'))
-    var_pattern = re.compile(r"^([a-zA-Z_][\w_]*)(?:\s*\[([\w\s,\*\:]+)\])?(?:\s*#.*)?$")
+    # Regex changed to be more permissive for content within brackets for Ty name creation.
+    var_pattern = re.compile(r"^([a-zA-Z_][\w_]*)(?:\s*\[([^\]]+)\])?(?:\s*#.*)?$")
 
     for line in statespace_lines:
         line = line.strip()
@@ -112,11 +126,43 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, types: dict[str, Ty]) -
     # Track the current domain/codomain to build the diagram sequentially.
     # This is a simplification; real GNNs can have complex graphs.
     
-    parsed_connections = [] # Store as (source_var, target_var)
+    parsed_connections = [] # Store as (source_vars_list, target_vars_list)
 
-    # Connection pattern: SourceVar > TargetVar
-    # Ignores anything after #
-    conn_pattern = re.compile(r"^([a-zA-Z_][\w_]*)\s*>\s*([a-zA-Z_][\w_]*)(?:\s*#.*)?$")
+    # Regex for connections.
+    
+    # Pattern for a single variable name: e.g., "VarName"
+    var_id_pattern = r"[a-zA-Z_]\\w*"
+    
+    # Pattern for a list of one or more comma-separated variable names: 
+    # e.g., "Var1", "Var1, Var2", "Var1, Var2, Var3"
+    # This pattern itself does not match surrounding parentheses.
+    var_list_content_pattern = var_id_pattern + r"(?:\\s*,\\s*" + var_id_pattern + r")*"
+
+    # Pattern for a block of text that forms one side of a connection (source or target).
+    # This matches EITHER a parenthesized list OR a non-parenthesized list.
+    # Example: matches "( Var1, Var2 )" OR "Var1, Var2".
+    # The content matched by this (e.g., "( Var1, Var2 )" or "Var1, Var2") 
+    # is then captured by the main connection pattern.
+    single_side_block_pattern = (
+        r"(?:\\s*\\(\\s*" + var_list_content_pattern + r"\\s*\\)\\s*|"  # Option 1: ( list )
+        r"\\s*" + var_list_content_pattern + r"\\s*)"                  # Option 2: list
+    )
+            
+    # Final connection pattern string.
+    # It captures the entire block for the source (group 1) and target (group 2).
+    conn_pattern_str = (
+        r"^\\s*(" + single_side_block_pattern + r")\\s*" +
+        r"(?:>|->|-)\\s*" +
+        r"(" + single_side_block_pattern + r")\\s*(?:#.*)?$"
+    )
+    conn_pattern = re.compile(conn_pattern_str)
+
+    def parse_vars_from_group(group_str: str) -> list[str]:
+        # Remove parentheses and split by comma, then strip whitespace
+        cleaned_str = group_str.strip()
+        if cleaned_str.startswith("(") and cleaned_str.endswith(")"):
+            cleaned_str = cleaned_str[1:-1]
+        return [v.strip() for v in cleaned_str.split(',') if v.strip()]
 
     for line in connections_lines:
         line = line.strip()
@@ -125,36 +171,74 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, types: dict[str, Ty]) -
         
         match = conn_pattern.match(line)
         if match:
-            source_var = match.group(1)
-            target_var = match.group(2)
-            
-            if source_var not in types or target_var not in types:
-                logger.warning(f"Unknown variable in connection: '{source_var}' -> '{target_var}'. Skipping connection.")
+            source_group_str = match.group(1)
+            target_group_str = match.group(2)
+
+            source_vars = parse_vars_from_group(source_group_str)
+            target_vars = parse_vars_from_group(target_group_str)
+
+            if not source_vars or not target_vars:
+                logger.warning(f"Empty source or target variables after parsing connection: \'{line}\'. Skipping.")
+                continue
+
+            # Validate all variables exist in types
+            all_vars_valid = True
+            for var_list in [source_vars, target_vars]:
+                for var_name in var_list:
+                    if var_name not in types:
+                        logger.warning(f"Unknown variable \'{var_name}\' in connection: \'{line}\'. Skipping connection.")
+                        all_vars_valid = False
+                        break
+                if not all_vars_valid:
+                    break
+            if not all_vars_valid:
                 continue
             
-            source_type = types[source_var]
-            target_type = types[target_var]
+            # Create source and target types (tensor product if multiple)
+            dom_type = types[source_vars[0]] if len(source_vars) == 1 else Id()
+            if len(source_vars) > 1:
+                current_dom = types[source_vars[0]]
+                for i in range(1, len(source_vars)):
+                    current_dom = current_dom @ types[source_vars[i]]
+                dom_type = current_dom
+            elif not source_vars: # Should not happen due to check above, but defensive
+                logger.warning(f"Source variable list is empty for line \'{line}\'. Skipping box creation.")
+                continue
+
+
+            cod_type = types[target_vars[0]] if len(target_vars) == 1 else Id()
+            if len(target_vars) > 1:
+                current_cod = types[target_vars[0]]
+                for i in range(1, len(target_vars)):
+                    current_cod = current_cod @ types[target_vars[i]]
+                cod_type = current_cod
+            elif not target_vars: # Should not happen
+                logger.warning(f"Target variable list is empty for line \'{line}\'. Skipping box creation.")
+                continue
             
-            box_name = f"{source_var}_to_{target_var}"
-            box = Box(box_name, source_type, target_type)
-            logger.debug(f"Created DisCoPy Box: Box('{box_name}', dom={source_type}, cod={target_type})")
+            source_name_part = "_".join(source_vars)
+            target_name_part = "_".join(target_vars)
+            box_name = f"{source_name_part}_to_{target_name_part}"
+            
+            box = Box(box_name, dom_type, cod_type)
+            logger.debug(f"Created DisCoPy Box: Box(\'{box_name}\', dom={dom_type}, cod={cod_type})")
             
             # Simple sequential composition for now
             if diagram.dom == Id().dom and diagram.cod == Id().cod : # First box
                  diagram = box
-            elif diagram.cod == source_type: # Chainable
+            elif diagram.cod == dom_type: # Chainable
                  diagram = diagram >> box
             else:
                 # This indicates a more complex structure (e.g. parallel wires or new starting chain)
                 # For now, we will log a warning and try to append it as a new parallel component
                 # This is a placeholder for more sophisticated diagram construction.
-                logger.warning(f"Connection '{source_var} > {target_var}' does not directly chain with previous diagram codomain ({diagram.cod}). Appending in parallel (basic).")
+                logger.warning(f"Connection from \'{source_group_str}\' to \'{target_group_str}\' (Box dom={dom_type}, cod={cod_type}) does not directly chain with previous diagram codomain ({diagram.cod}). Appending in parallel (basic).")
                 # Attempting a parallel composition; this assumes variables are distinct flows if not chained.
                 # A more robust solution would analyze the full graph structure.
                 try:
                     diagram = diagram @ box 
                 except Exception as e_parallel:
-                    logger.error(f"Failed to compose Box('{box_name}') in parallel: {e_parallel}. Diagram construction may be incorrect.")
+                    logger.error(f"Failed to compose Box(\'{box_name}\') in parallel: {e_parallel}. Diagram construction may be incorrect.")
                     return diagram # Return what we have so far
         else:
             logger.warning(f"Could not parse Connections line: '{line}'. Supported format: 'Source > Target'.")

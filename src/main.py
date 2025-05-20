@@ -19,7 +19,7 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 10_execute.py (Corresponds to execute/ folder)
 - 11_llm.py (Corresponds to llm/ folder)
 - 12_site.py (Corresponds to site/ folder, generates HTML summary site)
-- 12_discopy.py (Corresponds to discopy/ folder, generates DisCoPy diagrams from GNN)
+- 12_discopy.py (Corresponds to discopy_translator_module/ folder, generates DisCoPy diagrams from GNN)
 
 
 Usage:
@@ -59,10 +59,30 @@ import traceback
 import re
 import datetime # For pipeline summary timestamp
 import json # For pipeline summary structured data
+from typing import TypedDict, List, Union, Dict, Any # Add typing for clarity
 
 # --- Logger Setup ---
 logger = logging.getLogger("GNN_Pipeline")
 # --- End Logger Setup ---
+
+# Define types for pipeline summary data
+class StepLogData(TypedDict):
+    step_number: int
+    script_name: str
+    status: str
+    start_time: Union[str, None]
+    end_time: Union[str, None]
+    duration_seconds: Union[float, None] # Changed from int | str | None
+    details: str
+    stdout: str
+    stderr: str
+
+class PipelineRunData(TypedDict):
+    start_time: str
+    arguments: Dict[str, Any]
+    steps: List[StepLogData]
+    end_time: Union[str, None]
+    overall_status: str
 
 def parse_arguments():
     project_root = Path(__file__).resolve().parent.parent
@@ -175,7 +195,7 @@ def get_pipeline_scripts(current_dir: Path) -> list[str]:
                  logger.debug(f"ℹ️ Matched script for pipeline: {script_basename} (Number: {script_num})")
     
     pipeline_scripts_info.sort(key=lambda x: (x['num'], x['basename']))
-    sorted_script_basenames = [info['basename'] for info in pipeline_scripts_info]
+    sorted_script_basenames: list[str] = [str(info['basename']) for info in pipeline_scripts_info] # Explicitly cast to str and type hint
 
     if logger.isEnabledFor(logging.DEBUG): 
         logger.debug(f"ℹ️ Found and sorted script basenames: {sorted_script_basenames}")
@@ -252,10 +272,12 @@ def run_pipeline(args: argparse.Namespace):
     skip_steps_input = {s.strip() for s in args.skip_steps.split(",") if s.strip()}
     only_steps_input = {s.strip() for s in args.only_steps.split(",") if s.strip()}
     
-    pipeline_run_data = {
+    pipeline_run_data: PipelineRunData = { # Use the defined TypedDict
         "start_time": datetime.datetime.now().isoformat(),
         "arguments": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
-        "steps": []
+        "steps": [],
+        "end_time": None, # Initialize all keys
+        "overall_status": "PENDING" # Initialize
     }
     
     overall_status = "SUCCESS" # Will change to FAILED or SUCCESS_WITH_WARNINGS
@@ -264,7 +286,7 @@ def run_pipeline(args: argparse.Namespace):
         script_name_no_ext = Path(script_file_basename).stem
         step_num_str = script_name_no_ext.split("_")[0]
         
-        step_log_data = {
+        step_log_data: StepLogData = { # Use the defined TypedDict
             "step_number": i + 1,
             "script_name": script_name_no_ext,
             "status": "SKIPPED",
@@ -302,7 +324,7 @@ def run_pipeline(args: argparse.Namespace):
         cmd_list = [str(venv_python_path), str(script_full_path)]
 
         # Common arguments
-        cmd_list.extend(["--output-dir", str(args.output_dir)])
+        cmd_list.extend(["--output-dir", str(args.output_dir.resolve())])
         if args.verbose: 
             cmd_list.append("--verbose")
         else:
@@ -359,7 +381,7 @@ def run_pipeline(args: argparse.Namespace):
             if args.discopy_gnn_input_dir is not None:
                 discopy_input_dir_to_use = args.discopy_gnn_input_dir
             
-            cmd_list.extend(["--gnn-input-dir", str(discopy_input_dir_to_use)])
+            cmd_list.extend(["--gnn-input-dir", str(discopy_input_dir_to_use.resolve())]) # Ensure absolute path
             # --output-dir is already added as a common argument
             if args.recursive: # Pass recursive if set for the main pipeline
                 cmd_list.append("--recursive")
@@ -545,7 +567,7 @@ def run_pipeline(args: argparse.Namespace):
     # Log a brief summary before returning from run_pipeline
     logger.info(f"🏁 Pipeline processing completed. Overall Status: {overall_status}")
 
-    return 0 if overall_status in ["SUCCESS", "SUCCESS_WITH_WARNINGS"] else 1, pipeline_run_data, all_scripts, overall_status
+    return (0 if overall_status in ["SUCCESS", "SUCCESS_WITH_WARNINGS"] else 1), pipeline_run_data, all_scripts, overall_status # Explicitly tuple
 
 def main():
     # Configure logging early. If GNN_Pipeline or root logger has no handlers,

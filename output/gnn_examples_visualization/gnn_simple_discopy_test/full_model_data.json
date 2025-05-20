@@ -1,0 +1,7 @@
+{
+  "GNNSection": "SimpleDiscopyTest",
+  "GNNVersionAndFlags": "GNN v1",
+  "ModelName": "Simple DisCoPy Test Model",
+  "StateSpaceBlock": "X[type=A]\nY[type=B]\nZ[type=C]",
+  "Connections": "X > Y\nY > Z"
+}

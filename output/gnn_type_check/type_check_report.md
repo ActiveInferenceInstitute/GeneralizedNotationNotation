@@ -1,0 +1,22 @@
+# GNN Type Checker Report
+## gnn_simple_discopy_test.md: ❌ INVALID
+Path: src/gnn/examples/gnn_simple_discopy_test.md
+Errors:
+  - Missing required section: Footer
+  - Missing required section: Signature
+  - Variable 'X' has no dimensions specified
+  - Variable 'X' has invalid type: A
+  - Variable 'Y' has no dimensions specified
+  - Variable 'Y' has invalid type: B
+  - Variable 'Z' has no dimensions specified
+  - Variable 'Z' has invalid type: C
+Warnings:
+  - Time section not specified
+
+## gnn_POMDP_example.md: ✅ VALID
+Path: src/gnn/examples/gnn_POMDP_example.md
+
+## gnn_example_pymdp_agent.md: ✅ VALID
+Path: src/gnn/examples/gnn_example_pymdp_agent.md
+
+Checked 3 files, 2 valid, 1 invalid

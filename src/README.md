@@ -31,7 +31,8 @@ graph TD
     J --> K(10_execute.py: Execute Simulators);
     K --> L(11_llm.py: LLM Operations);
     L --> M(12_site.py: Generate HTML Site Summary);
-    M --> Z[End Pipeline];
+    M --> N(12_discopy.py: Generate DisCoPy Diagrams);
+    N --> Z[End Pipeline];
 
     subgraph Key Modules Called by Pipeline Steps
         E --> E1[gnn_type_checker/cli.py];
@@ -40,6 +41,7 @@ graph TD
         K --> K1[execute/pymdp_runner.py];
         L --> L1[llm/llm_operations.py];
         M --> M1[site/generator.py];
+        N --> N1[discopy_translator_module/translator.py];
     end
 
     style C fill:#f99,stroke:#333,stroke-width:2px;
@@ -237,6 +239,19 @@ Below is a detailed description of each pipeline step script (located in `src/`)
 
 ---
 
+### 12. `12_discopy.py` - GNN to DisCoPy Transformation
+-   **Folder:** `src/discopy_translator_module/`
+-   **What:** Translates GNN model specifications into DisCoPy diagrams and saves visualizations of these diagrams. It processes GNN files from the input directory specified by `args.discopy_gnn_input_dir` (or `args.target_dir` if the former is not provided).
+-   **Why:** To represent GNN models within the formal framework of category theory using DisCoPy, enabling structural analysis, visualization, and a pathway to functorial semantics (execution, transformation).
+-   **How:**
+    -   Uses `src.discopy_translator_module.translator.gnn_file_to_discopy_diagram()` to parse GNN files.
+    -   `StateSpaceBlock` entries are mapped to `discopy.Ty` objects.
+    -   `Connections` section entries (e.g., `A > B`) are mapped to `discopy.Box` objects and composed into a `discopy.Diagram`.
+    -   The resulting diagram is visualized and saved as a PNG image.
+-   **Output:** PNG images of DisCoPy diagrams (e.g., `<model_name_stem>_diagram.png`) saved in `<pipeline_output_dir>/discopy_gnn/<model_name_stem_if_subdir>/`.
+
+---
+
 ## Core Utility Modules
 
 Beyond the pipeline step scripts, several folders in `src/` contain core logic and utilities used by these steps:
@@ -253,6 +268,7 @@ Beyond the pipeline step scripts, several folders in `src/` contain core logic a
 -   **`src/execute/`**: Contains logic for executing rendered GNN models. `pymdp_runner.py` handles the execution of PyMDP scripts and is used by `10_execute.py`.
 -   **`src/llm/`**: Contains modules for Large Language Model (LLM) integration. `llm_operations.py` provides core functions for API interaction (OpenAI), and `mcp.py` defines and registers LLM-related tools with the MCP framework.
 -   **`src/site/`**: Contains modules for generating an HTML summary website of pipeline outputs. `generator.py` includes the core logic for scanning the output directory and building the HTML page. `mcp.py` defines an MCP tool for this functionality.
+-   **`src/discopy_translator_module/`**: Contains the `translator.py` module responsible for parsing GNN files and converting them into DisCoPy diagrams. This module is used by the `12_discopy.py` pipeline step.
 -   **`src/utils/`**: Contains utility modules, such as `logging_utils.py` for standardized logging setup across pipeline scripts.
 
 ## Usage
@@ -302,6 +318,7 @@ The `main.py` script accepts several command-line options to customize the pipel
     Default: `360`.
 -   `--pipeline-summary-file FILE`: Path to save the final pipeline execution summary report in JSON format.
     Default: `output/pipeline_execution_summary.json` (relative to project root).
+-   `--discopy-gnn-input-dir DIR`: Directory containing GNN files for DisCoPy processing (for `12_discopy.py`). If not set, uses the main `--target-dir`. Default if `--target-dir` is also default: `src/gnn/examples`.
 -   `--site-html-filename NAME`: Filename for the generated HTML summary site (passed to `12_site.py`). This file is saved in the main `--output-dir`.
     Default: `gnn_pipeline_summary_site.html`.
 

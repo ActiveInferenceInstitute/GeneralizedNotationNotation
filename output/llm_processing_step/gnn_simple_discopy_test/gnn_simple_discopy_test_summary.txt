@@ -1,0 +1,16 @@
+### Summary of the GNN Model: Simple DisCoPy Test Model
+
+**Model Name:** Simple DisCoPy Test Model
+
+**Key Components:**
+- **State Space:**
+  - **X** (Type: A)
+  - **Y** (Type: B)
+  - **Z** (Type: C)
+
+**Main Connections:**
+- X is connected to Y
+- Y is connected to Z
+
+**Purpose:** 
+The Simple DisCoPy Test Model is designed to illustrate the basic structure and interactions within a system using a generalized notation framework. The model consists of three distinct states (X, Y, Z) that demonstrate a sequential flow of information or influence from one state to another, emphasizing the relationships between different types of states in the system.

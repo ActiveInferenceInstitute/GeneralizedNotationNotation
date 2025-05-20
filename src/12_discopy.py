@@ -14,15 +14,20 @@ from pathlib import Path
 # Ensure src directory is in Python path for relative imports
 current_script_path = Path(__file__).resolve()
 project_root = current_script_path.parent.parent # Assuming src/12_discopy.py
-if str(project_root) not in sys.path:
-    sys.path.insert(0, str(project_root))
-if str(project_root / "src") not in sys.path: # Also ensure src is in path for src.discopy etc.
-    sys.path.insert(0, str(project_root / "src"))
 
-from discopy.drawing import equation_to_gif # type: ignore
+# Ensure project_root is at the beginning of sys.path for `import src.xxx`
+if str(project_root) in sys.path:
+    sys.path.remove(str(project_root))
+sys.path.insert(0, str(project_root))
+
+# Ensure src is also in sys.path, potentially for other types of imports or checks,
+# but after project_root to prioritize `src.` pattern from root.
+if str(project_root / "src") in sys.path:
+    sys.path.remove(str(project_root / "src"))
+sys.path.insert(1, str(project_root / "src"))
 
 try:
-    from src.discopy.translator import gnn_file_to_discopy_diagram
+    from src.discopy_translator_module.translator import gnn_file_to_discopy_diagram
     from src.utils.logging_utils import setup_standalone_logging
 except ImportError as e:
     logging.basicConfig(level=logging.ERROR)
@@ -34,7 +39,13 @@ except ImportError as e:
 
 logger = logging.getLogger(__name__) # GNN_Pipeline.12_discopy or __main__
 
-DEFAULT_OUTPUT_SUBDIR = "discopy_diagrams"
+DEFAULT_OUTPUT_SUBDIR = "discopy_gnn"
+
+# Initialize variables for standalone execution context to satisfy linter
+cli_args: argparse.Namespace | None = None
+log_level_to_set: int = logging.INFO
+_log_level_standalone: int = logging.INFO
+exit_code: int = 1
 
 def parse_arguments() -> argparse.Namespace:
     """Parses command-line arguments for the GNN to DisCoPy script."""
@@ -184,6 +195,11 @@ def main_discopy_step(args: argparse.Namespace) -> int:
 
 if __name__ == "__main__":
     cli_args = parse_arguments()
+
+    # Initialize variables to satisfy linter - These are now module-level
+    # log_level_to_set = logging.INFO
+    # _log_level_standalone = logging.INFO
+    # exit_code: int = 1
 
     # Setup logging for standalone execution using the utility function
     if setup_standalone_logging:

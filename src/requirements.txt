@@ -10,3 +10,6 @@ inferactively-pymdp
 openai
 python-dotenv 
 Markdown 
+# Visualization and Diagramming
+altair
+discopy 
