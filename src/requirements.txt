@@ -1,5 +1,5 @@
 graphviz
-matplotlib
+matplotlib>=3.0.0
 networkx
 numpy
 pandas
@@ -7,9 +7,13 @@ pytest
 scipy
 inferactively-pymdp
 # Add other project-wide dependencies here
-openai
-python-dotenv 
-Markdown 
+openai>=1.0.0
+python-dotenv>=1.0.0
+Markdown
 # Visualization and Diagramming
 altair
-discopy 
+discopy[matrix]>=1.0.0
+jax>=0.4.20  # For DisCoPy's JAX backend and JAX evaluation step
+jaxlib>=0.4.20 # Companion to JAX
+# For site generation (15_site.py)
+markdown>=3.0 

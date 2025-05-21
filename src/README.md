@@ -30,9 +30,10 @@ graph TD
     I --> J(9_render.py: Render GNN Simulators);
     J --> K(10_execute.py: Execute Simulators);
     K --> L(11_llm.py: LLM Operations);
-    L --> M(12_site.py: Generate HTML Site Summary);
-    M --> N(12_discopy.py: Generate DisCoPy Diagrams);
-    N --> Z[End Pipeline];
+    L --> M(12_discopy.py: Generate DisCoPy Diagrams);
+    M --> N(13_discopy_jax_eval.py: DisCoPy JAX Eval & Viz);
+    N --> O(15_site.py: Generate HTML Site Summary);
+    O --> Z[End Pipeline];
 
     subgraph Key Modules Called by Pipeline Steps
         E --> E1[gnn_type_checker/cli.py];
@@ -40,13 +41,14 @@ graph TD
         J --> J1[render/render.py];
         K --> K1[execute/pymdp_runner.py];
         L --> L1[llm/llm_operations.py];
-        M --> M1[site/generator.py];
-        N --> N1[discopy_translator_module/translator.py];
+        M --> M1[discopy_translator_module/translator.py];
+        N --> N2[discopy_translator_module/translator.py, discopy_translator_module/visualize_jax_output.py];
+        O --> O1[site/generator.py];
     end
 
     style C fill:#f99,stroke:#333,stroke-width:2px;
 ```
-*Note: While the diagram shows a linear flow, data dependencies exist. For example, `5_export.py` prepares GNN data used by `6_visualization.py`, `9_render.py`, and potentially `11_llm.py`. `9_render.py`'s output is used by `10_execute.py`. The final `12_site.py` step consumes outputs from all previous steps that write to the `output/` directory.*
+*Note: While the diagram shows a linear flow, data dependencies exist. For example, `5_export.py` prepares GNN data used by `6_visualization.py`, `9_render.py`, and potentially `11_llm.py`. `9_render.py`'s output is used by `10_execute.py`. The final `15_site.py` step consumes outputs from all previous steps that write to the `output/` directory.*
 
 ## Pipeline Steps & Corresponding Modules
 
@@ -213,29 +215,20 @@ Below is a detailed description of each pipeline step script (located in `src/`)
 -   **How:**
     -   Imports `llm_operations` and `mcp` from `src/llm/` and `mcp_instance` from `src/mcp/mcp.py`.
     -   Ensures LLM tools are registered with the main `mcp_instance` (this also loads the API key).
+    -   Utilizes `src/utils/logging_utils.py` for console logging. Informational messages (INFO, DEBUG) from `11_llm.py` are directed to its `stdout`, while warnings and errors (WARNING, ERROR, CRITICAL) go to its `stderr`.
     -   Processes GNN files (e.g., `.md`, `.json` source files from `args.target_dir`).
     -   For each file, calls functions in `llm_operations` (e.g., `construct_prompt`, `get_llm_response`) to perform tasks specified by `args.llm_tasks` (summary, comprehensive analysis, Q&A).
     -   Saves generated text outputs:
         -   Summaries as `*_summary.txt`.
         -   Comprehensive analyses as structured `*_comprehensive_analysis.json`.
         -   Question-Answer pairs as `*_qa.json`.
-    -   Outputs are saved in `<pipeline_output_dir>/llm_processing_step/<model_name_stem>/`.
--   **Output:** Text and JSON files containing LLM-generated content for each processed GNN file, saved within `<pipeline_output_dir>/llm_processing_step/`.
-
----
-
-### 12. `12_site.py` - Generate HTML Site Summary
--   **Folder:** `src/site/`
--   **What:** Generates a single, comprehensive HTML website that summarizes and provides access to all artifacts produced by the GNN processing pipeline and stored in the `args.output_dir`.
--   **Why:** To provide a user-friendly, centralized way to view and navigate all pipeline outputs, including reports, visualizations, logs, and data files. This aids in understanding the overall pipeline execution and easily accessing specific results.
--   **How:**
-    -   Imports and calls the `generate_html_report` function from `src/site/generator.py`.
-    -   The `generator.py` module scans the entire `args.output_dir` (passed from `main.py`).
-    -   It identifies various file types (Markdown, JSON, text/logs, images, HTML reports) and known directory structures (e.g., `gnn_examples_visualization/`, `llm_processing_step/`).
-    -   It dynamically constructs an HTML page with sections for each major output category or pipeline step.
-    -   Content is embedded directly where feasible (e.g., images via base64, Markdown converted to HTML, JSON/text in `<pre>` tags) or linked (especially for complex HTML files or other artifacts).
-    -   The script uses the `--output-dir` argument (from `main.py`) to know where to find the pipeline outputs and saves the generated HTML file (e.g., `gnn_pipeline_summary_site.html`) directly into this same `output_dir`.
--   **Output:** A single HTML file (e.g., `gnn_pipeline_summary_site.html` or as specified by `args.site_html_filename` in `main.py`) saved in the main `--output-dir`.
+    -   Output files are saved in `<pipeline_output_dir>/llm_processing_step/<model_name_stem>/`.
+-   **Output Files:** Text and JSON files containing LLM-generated content for each processed GNN file are saved within `<pipeline_output_dir>/llm_processing_step/`.
+-   **Console Logging & `main.py` Interaction:**
+    -   When `11_llm.py` is run by `main.py` (with default `--verbose` settings for `main.py`):
+        -   `INFO` and `DEBUG` logs from `11_llm.py` (sent to its `stdout`) will appear in `main.py`'s console output prefixed with `[11_llm-STDOUT]` and logged at the `GNN_Pipeline` logger's `DEBUG` level.
+        -   `WARNING`, `ERROR`, and `CRITICAL` logs from `11_llm.py` (sent to its `stderr`) will appear in `main.py`'s console output prefixed with `[11_llm-STDERR]` and logged at the `GNN_Pipeline` logger's `WARNING` or `ERROR` level, respectively.
+    -   The full, raw `stdout` and `stderr` streams from the `11_llm.py` process are always captured by `main.py` and saved in the `pipeline_execution_summary.json` file (in the `steps[N].stdout` and `steps[N].stderr` fields for the LLM step). This summary file provides the most detailed record of the script's console output.
 
 ---
 
@@ -249,6 +242,34 @@ Below is a detailed description of each pipeline step script (located in `src/`)
     -   `Connections` section entries (e.g., `A > B`) are mapped to `discopy.Box` objects and composed into a `discopy.Diagram`.
     -   The resulting diagram is visualized and saved as a PNG image.
 -   **Output:** PNG images of DisCoPy diagrams (e.g., `<model_name_stem>_diagram.png`) saved in `<pipeline_output_dir>/discopy_gnn/<model_name_stem_if_subdir>/`.
+
+---
+
+### 13. `13_discopy_jax_eval.py` - DisCoPy JAX Evaluation & Output Visualization
+-   **Folder:** `src/discopy_translator_module/`
+-   **What:** Translates GNN models to DisCoPy `MatrixDiagram` objects using JAX-backed tensors, evaluates these diagrams, and visualizes the resulting output tensors. It processes GNN files from `args.discopy_jax_gnn_input_dir` (or `args.target_dir`).
+-   **Why:** To perform concrete computations and statistical inference with GNN models translated into a JAX-compatible DisCoPy representation, and to inspect the results.
+-   **How:**
+    -   Uses `src.discopy_translator_module.translator.gnn_file_to_discopy_matrix_diagram()` to create JAX-backed DisCoPy `MatrixDiagrams`.
+    -   Tensor data for boxes is sourced from the `TensorDefinitions` section of the GNN file, supporting direct data, loading from `.npy` files, or random initialization using JAX PRNG (seeded by `args.discopy_jax_seed`).
+    -   Evaluates the `MatrixDiagram` using `diagram.eval()`, which triggers JAX computations.
+    -   Uses `src.discopy_translator_module.visualize_jax_output.plot_tensor_output()` to generate visualizations (text, line plots, heatmaps) of the evaluated tensor data.
+-   **Output:** Visualizations of JAX tensor outputs (e.g., `*_scalar.txt`, `*_plot.png`, `*_heatmap.png`, `*_raw.txt`) saved in `<pipeline_output_dir>/discopy_jax_eval/<model_name_stem_if_subdir>/`.
+
+---
+
+### 15. `15_site.py` - Generate HTML Site Summary
+-   **Folder:** `src/site/`
+-   **What:** Generates a single, comprehensive HTML website that summarizes and provides access to all artifacts produced by the GNN processing pipeline and stored in the `args.output_dir`.
+-   **Why:** To provide a user-friendly, centralized way to view and navigate all pipeline outputs, including reports, visualizations, logs, and data files. This aids in understanding the overall pipeline execution and easily accessing specific results.
+-   **How:**
+    -   Imports and calls the `generate_html_report` function from `src/site/generator.py`.
+    -   The `generator.py` module scans the entire `args.output_dir` (passed from `main.py`).
+    -   It identifies various file types (Markdown, JSON, text/logs, images, HTML reports) and known directory structures (e.g., `gnn_examples_visualization/`, `llm_processing_step/`, `discopy_gnn/`, `discopy_jax_eval/`).
+    -   It dynamically constructs an HTML page with sections for each major output category or pipeline step.
+    -   Content is embedded directly where feasible (e.g., images via base64, Markdown converted to HTML, JSON/text in `<pre>` tags) or linked (especially for complex HTML files or other artifacts).
+    -   The script uses the `--output-dir` argument (from `main.py`) to know where to find the pipeline outputs and saves the generated HTML file (e.g., `gnn_pipeline_summary_site.html`) directly into this same `output_dir`.
+-   **Output:** A single HTML file (e.g., `gnn_pipeline_summary_site.html` or as specified by `args.site_html_filename` in `main.py`) saved in the main `--output-dir`.
 
 ---
 
@@ -319,7 +340,9 @@ The `main.py` script accepts several command-line options to customize the pipel
 -   `--pipeline-summary-file FILE`: Path to save the final pipeline execution summary report in JSON format.
     Default: `output/pipeline_execution_summary.json` (relative to project root).
 -   `--discopy-gnn-input-dir DIR`: Directory containing GNN files for DisCoPy processing (for `12_discopy.py`). If not set, uses the main `--target-dir`. Default if `--target-dir` is also default: `src/gnn/examples`.
--   `--site-html-filename NAME`: Filename for the generated HTML summary site (passed to `12_site.py`). This file is saved in the main `--output-dir`.
+-   `--discopy-jax-gnn-input-dir DIR`: Directory containing GNN files for DisCoPy JAX evaluation (for `13_discopy_jax_eval.py`). If not set, uses the main `--target-dir`.
+-   `--discopy-jax-seed INT`: Seed for JAX pseudo-random number generator used in `13_discopy_jax_eval.py` (for tensor initializations). Default: `0`.
+-   `--site-html-filename NAME`: Filename for the generated HTML summary site (passed to `15_site.py`). This file is saved in the main `--output-dir`.
     Default: `gnn_pipeline_summary_site.html`.
 
 ## Deprecated Scripts

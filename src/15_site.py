@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Pipeline Step 99: Generate HTML Site Summary
+Pipeline Step 15: Generate HTML Site Summary
 
 This script generates a single HTML website that summarizes the contents of the 
  GNN pipeline's output directory. It consolidates various reports, visualizations, 
@@ -16,14 +16,14 @@ from pathlib import Path
 # This is often handled by the execution environment (e.g., main.py or IDE)
 # but good for robustness if script is called directly in some contexts.
 current_script_path = Path(__file__).resolve()
-project_root = current_script_path.parent.parent # Assuming src/12_site.py, so two levels up
+project_root = current_script_path.parent.parent # Assuming src/15_site.py, so two levels up
 if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
 from src.site.generator import generate_html_report, logger as generator_logger # Import main function and logger
 
 # Logger for this pipeline script
-logger = logging.getLogger(__name__) # __name__ will be '12_site' or '__main__'
+logger = logging.getLogger(__name__) # __name__ will be '15_site' or '__main__'
 
 def parse_arguments() -> argparse.Namespace:
     """Parses command-line arguments for the site generation script."""
@@ -49,7 +49,7 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 def main():
-    """Main execution function for the 12_site.py pipeline step."""
+    """Main execution function for the 15_site.py pipeline step."""
     args = parse_arguments()
 
     # Configure logging for this script
@@ -76,7 +76,7 @@ def main():
              generator_logger.addHandler(ch_gen)
              generator_logger.propagate = False # Avoid double log if root gets handler from basicConfig
 
-    logger.info(f"Starting pipeline step: 12_site.py - Generate HTML Summary Site")
+    logger.info(f"Starting pipeline step: 15_site.py - Generate HTML Summary Site")
     logger.info(f"Reading from pipeline output directory: {args.output_dir}")
     logger.info(f"Generated site will be saved as: {args.output_dir / args.site_html_file}")
 

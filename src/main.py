@@ -20,6 +20,8 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 11_llm.py (Corresponds to llm/ folder)
 - 12_site.py (Corresponds to site/ folder, generates HTML summary site)
 - 12_discopy.py (Corresponds to discopy_translator_module/ folder, generates DisCoPy diagrams from GNN)
+- 13_discopy_jax_eval.py (Corresponds to discopy_translator_module/ folder, generates DisCoPy diagrams from GNN using JAX)
+- 15_site.py (Corresponds to site/ folder, generates HTML summary site)
 
 
 Usage:
@@ -42,9 +44,12 @@ Options:
     --pipeline-summary-file FILE
                             Path to save the final pipeline summary report (default: output/pipeline_execution_summary.json)
     --site-html-filename NAME
-                            Filename for the generated HTML summary site (for 12_site.py, saved in output-dir, default: gnn_pipeline_summary_site.html)
+                            Filename for the generated HTML summary site (for 15_site.py, saved in output-dir, default: gnn_pipeline_summary_site.html)
     --discopy-gnn-input-dir DIR
                             Directory containing GNN files for DisCoPy processing (for 12_discopy.py, default: src/gnn/examples or --target-dir if specified)
+    --discopy-jax-gnn-input-dir DIR
+                            Directory containing GNN files for DisCoPy JAX evaluation (13_discopy_jax_eval.py)
+    --discopy-jax-seed      Seed for JAX PRNG in 13_discopy_jax_eval.py
 
 """
 
@@ -59,7 +64,7 @@ import traceback
 import re
 import datetime # For pipeline summary timestamp
 import json # For pipeline summary structured data
-from typing import TypedDict, List, Union, Dict, Any # Add typing for clarity
+from typing import TypedDict, List, Union, Dict, Any, cast # Add typing for clarity, added cast
 
 # --- Logger Setup ---
 logger = logging.getLogger("GNN_Pipeline")
@@ -165,15 +170,28 @@ def parse_arguments():
         "--site-html-filename",
         type=str,
         default="gnn_pipeline_summary_site.html",
-        help=(f"Filename for the generated HTML summary site (for 12_site.py). It will be saved in the main output directory.\n"
+        help=(f"Filename for the generated HTML summary site (for 15_site.py). It will be saved in the main output directory.\\n"
               f"Default: gnn_pipeline_summary_site.html")
     )
     parser.add_argument(
         "--discopy-gnn-input-dir",
         type=Path,
         default=None, # Will be set to default_target_dir or args.target_dir later
-        help=(f"Directory containing GNN files for DisCoPy processing (12_discopy.py). \n"
+        help=(f"Directory containing GNN files for DisCoPy processing (12_discopy.py). \\n"
               f"If not set, uses the main --target-dir. Default if --target-dir is also default: {default_discopy_gnn_input_dir.relative_to(project_root) if default_discopy_gnn_input_dir.is_relative_to(project_root) else default_discopy_gnn_input_dir}")
+    )
+    parser.add_argument(
+        "--discopy-jax-gnn-input-dir",
+        type=Path,
+        default=None, # Will be set to default_target_dir or args.target_dir later
+        help=(f"Directory containing GNN files for DisCoPy JAX evaluation (13_discopy_jax_eval.py). \\n"
+              f"If not set, uses the main --target-dir. Default if --target-dir is also default: {default_discopy_gnn_input_dir.relative_to(project_root) if default_discopy_gnn_input_dir.is_relative_to(project_root) else default_discopy_gnn_input_dir}")
+    )
+    parser.add_argument(
+        "--discopy-jax-seed",
+        type=int,
+        default=0,
+        help="Seed for JAX PRNG in 13_discopy_jax_eval.py. Default: 0."
     )
     return parser.parse_args()
 
@@ -258,12 +276,48 @@ def run_pipeline(args: argparse.Namespace):
         logger.info(f"✅ Ensured output directory exists: {args.output_dir}")
     except OSError as e:
         logger.error(f"❌ Failed to create output directory {args.output_dir}: {e}")
-        return 1
+        # Construct a minimal PipelineRunData for this specific error
+        output_dir_creation_failed_data: PipelineRunData = {
+            "start_time": datetime.datetime.now().isoformat(),
+            "arguments": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
+            "steps": [{
+                "step_number": 0,
+                "script_name": "Pre-check (Output Directory Creation)",
+                "status": "FAILED",
+                "start_time": datetime.datetime.now().isoformat(),
+                "end_time": datetime.datetime.now().isoformat(),
+                "duration_seconds": 0.0,
+                "details": f"Failed to create output directory {args.output_dir}: {e}",
+                "stdout": "",
+                "stderr": str(e)
+            }],
+            "end_time": datetime.datetime.now().isoformat(),
+            "overall_status": "FAILED"
+        }
+        return 1, output_dir_creation_failed_data, [], "FAILED"
 
     all_scripts = get_pipeline_scripts(current_script_dir)
     if not all_scripts:
         logger.error("❌ No pipeline scripts found in src/. Cannot proceed.")
-        return 1
+        # Construct a minimal PipelineRunData for the error case
+        failed_pipeline_data: PipelineRunData = {
+            "start_time": datetime.datetime.now().isoformat(),
+            "arguments": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
+            "steps": [{
+                "step_number": 0,
+                "script_name": "Pre-check",
+                "status": "FAILED",
+                "start_time": datetime.datetime.now().isoformat(),
+                "end_time": datetime.datetime.now().isoformat(),
+                "duration_seconds": 0.0,
+                "details": "No pipeline scripts found.",
+                "stdout": "",
+                "stderr": ""
+            }],
+            "end_time": datetime.datetime.now().isoformat(),
+            "overall_status": "FAILED"
+        }
+        return 1, failed_pipeline_data, [], "FAILED" # Return consistent tuple
     
     logger.info("🚀 Starting GNN Processing Pipeline...")
     if args.verbose:
@@ -272,12 +326,13 @@ def run_pipeline(args: argparse.Namespace):
     skip_steps_input = {s.strip() for s in args.skip_steps.split(",") if s.strip()}
     only_steps_input = {s.strip() for s in args.only_steps.split(",") if s.strip()}
     
-    pipeline_run_data: PipelineRunData = { # Use the defined TypedDict
+    # Use a standard dict internally for pipeline_run_data
+    _pipeline_run_data_dict: Dict[str, Any] = { 
         "start_time": datetime.datetime.now().isoformat(),
         "arguments": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
         "steps": [],
-        "end_time": None, # Initialize all keys
-        "overall_status": "PENDING" # Initialize
+        "end_time": None, 
+        "overall_status": "PENDING" 
     }
     
     overall_status = "SUCCESS" # Will change to FAILED or SUCCESS_WITH_WARNINGS
@@ -313,7 +368,7 @@ def run_pipeline(args: argparse.Namespace):
         
         if should_skip:
             logger.info(f"⏭️ {step_header} - SKIPPED ({step_log_data['details']})")
-            pipeline_run_data["steps"].append(step_log_data)
+            _pipeline_run_data_dict["steps"].append(step_log_data)
             continue
         
         logger.info("") # Add spacing before step start
@@ -386,6 +441,17 @@ def run_pipeline(args: argparse.Namespace):
             if args.recursive: # Pass recursive if set for the main pipeline
                 cmd_list.append("--recursive")
             # Verbosity is also handled by common args
+        elif script_name_no_ext == "13_discopy_jax_eval":
+            discopy_jax_input_dir_to_use = args.target_dir # Default to general target_dir
+            if args.discopy_jax_gnn_input_dir is not None:
+                discopy_jax_input_dir_to_use = args.discopy_jax_gnn_input_dir
+            
+            cmd_list.extend(["--gnn-input-dir", str(discopy_jax_input_dir_to_use.resolve())])
+            cmd_list.extend(["--jax-seed", str(args.discopy_jax_seed)])
+            if args.recursive:
+                cmd_list.append("--recursive")
+        elif script_name_no_ext == "15_site": # Renamed from 12_site / 14_site
+            cmd_list.extend(["--site-html-file", str(args.site_html_filename)])
 
         step_process_env = os.environ.copy()
         if _venv_site_packages_path_for_subproc:
@@ -422,8 +488,9 @@ def run_pipeline(args: argparse.Namespace):
                 if process.stdout:
                     for line in iter(process.stdout.readline, ''):
                         stripped_line = line.strip()
-                        if stripped_line: # Avoid logging empty lines from child process
-                            # Log stdout from subprocess at DEBUG level when main.py is verbose
+                        # Log stdout from subprocess at DEBUG level if main.py is verbose.
+                        # This helps keep main pipeline log cleaner unless deep debugging.
+                        if stripped_line: # Avoid logging empty lines
                             logger.debug(f"    [{script_name_no_ext}-STDOUT] {stripped_line}")
                         stdout_lines.append(line)
                     process.stdout.close()
@@ -433,7 +500,8 @@ def run_pipeline(args: argparse.Namespace):
                     for line in iter(process.stderr.readline, ''):
                         stripped_line = line.strip()
                         if stripped_line: # Avoid logging empty lines
-                            # Log all stderr from subprocess with a clear prefix and as a warning/error
+                            # Log all actual stderr from subprocess with a clear prefix,
+                            # and use WARNING level to make it visible by default.
                             logger.warning(f"    [{script_name_no_ext}-STDERR] {stripped_line}")
                         stderr_lines.append(line)
                     process.stderr.close()
@@ -472,26 +540,28 @@ def run_pipeline(args: argparse.Namespace):
                 step_log_data["status"] = "SUCCESS"
                 logger.info(f"✅ {step_header} - COMPLETED successfully.")
                 logger.info("") # Add spacing after step completion
-                # For non-verbose successful runs, if there's any output, log it at DEBUG level.
-                # For verbose runs, it's already streamed.
+                # For non-verbose successful runs, if there's any output, log a summary.
+                # For verbose runs, stdout is already streamed at DEBUG.
                 if not args.verbose and step_log_data["stdout"] and step_log_data["stdout"].strip():
-                    logger.debug(f"   Output from {script_name_no_ext}:\n{step_log_data['stdout'].strip()}")
-                if not args.verbose and step_log_data["stderr"] and step_log_data["stderr"].strip(): # Also log stderr if any for non-verbose success
-                    # If main is not verbose, but a script wrote to stderr and succeeded,
-                    # it's good to see this at least at DEBUG level in main log.
-                    logger.debug(f"   Stderr from {script_name_no_ext} (non-verbose main, step success):\n{step_log_data['stderr'].strip()}")
+                    logger.debug(f"   [{script_name_no_ext}-STDOUT] Output captured (see summary JSON for full details). First 200 chars: {step_log_data['stdout'].strip()[:200]}")
+                # If a successful step wrote to stderr (and main is not verbose), log it at WARNING.
+                if step_log_data["stderr"] and step_log_data["stderr"].strip():
+                    stderr_level = logging.WARNING # Default for any stderr from successful/warning step
+                    if not args.verbose:
+                         logger.log(stderr_level, f"   [{script_name_no_ext}-STDERR] Output captured from stderr even on success (see summary JSON). First 200 chars: {step_log_data['stderr'].strip()[:200]}")
+                    # If verbose, it was already streamed line-by-line at WARNING.
 
             elif return_code == 2: # Special code for success with warnings
                 step_log_data["status"] = "SUCCESS_WITH_WARNINGS"
                 logger.warning(f"⚠️ {step_header} - COMPLETED with warnings (Code 2). Check script output.")
                 logger.info("") # Add spacing after step completion
                 if overall_status == "SUCCESS": overall_status = "SUCCESS_WITH_WARNINGS"
-                # Log stdout/stderr for warnings as well (if not already streamed in verbose)
+                # Log stdout/stderr for warnings (if not already streamed in verbose)
                 if not args.verbose:
                     if step_log_data["stdout"] and step_log_data["stdout"].strip(): 
-                        logger.warning(f"   Stdout for warnings from {script_name_no_ext}:\n{step_log_data['stdout'].strip()}")
+                        logger.info(f"   [{script_name_no_ext}-STDOUT] Output for warning step (see summary JSON). First 200 chars: {step_log_data['stdout'].strip()[:200]}")
                     if step_log_data["stderr"] and step_log_data["stderr"].strip(): 
-                        logger.warning(f"   Stderr for warnings from {script_name_no_ext}:\n{step_log_data['stderr'].strip()}")
+                        logger.warning(f"   [{script_name_no_ext}-STDERR] Output for warning step (see summary JSON). First 200 chars: {step_log_data['stderr'].strip()[:200]}")
             else:
                 step_log_data["status"] = "FAILED"
                 step_log_data["details"] = f"Exited with code {return_code}."
@@ -501,13 +571,13 @@ def run_pipeline(args: argparse.Namespace):
                 # Log stdout/stderr for failures (if not already streamed in verbose)
                 if not args.verbose:
                     if step_log_data["stdout"] and step_log_data["stdout"].strip(): 
-                        logger.error(f"   Stdout from {script_name_no_ext}:\n{step_log_data['stdout'].strip()}")
+                        logger.error(f"   [{script_name_no_ext}-STDOUT] Output from failed step (see summary JSON). Content: {step_log_data['stdout'].strip()}")
                     if step_log_data["stderr"] and step_log_data["stderr"].strip(): 
-                        logger.error(f"   Stderr from {script_name_no_ext}:\n{step_log_data['stderr'].strip()}")
+                        logger.error(f"   [{script_name_no_ext}-STDERR] Output from failed step (see summary JSON). Content: {step_log_data['stderr'].strip()}")
                 if is_critical_step:
                     logger.critical(f"🔥 Critical step {script_name_no_ext} failed. Halting pipeline.")
                     step_log_data["details"] += " Critical step failure, pipeline halted."
-                    pipeline_run_data["steps"].append(step_log_data)
+                    _pipeline_run_data_dict["steps"].append(step_log_data)
                     break 
         
         except subprocess.TimeoutExpired:
@@ -539,7 +609,7 @@ def run_pipeline(args: argparse.Namespace):
             if is_critical_step:
                 logger.critical(f"🔥 Critical step {script_name_no_ext} timed out. Halting pipeline.")
                 step_log_data["details"] += " Critical step timeout, pipeline halted."
-                pipeline_run_data["steps"].append(step_log_data)
+                _pipeline_run_data_dict["steps"].append(step_log_data)
                 break
 
         except Exception as e:
@@ -552,7 +622,7 @@ def run_pipeline(args: argparse.Namespace):
             if is_critical_step:
                 logger.critical(f"🔥 Critical step {script_name_no_ext} failed due to unhandled exception. Halting pipeline.")
                 step_log_data["details"] += " Critical step failure, pipeline halted."
-                pipeline_run_data["steps"].append(step_log_data)
+                _pipeline_run_data_dict["steps"].append(step_log_data)
                 break
         
         finally:
@@ -560,14 +630,14 @@ def run_pipeline(args: argparse.Namespace):
             if step_log_data["start_time"]:
                 duration = datetime.datetime.fromisoformat(step_log_data["end_time"]) - datetime.datetime.fromisoformat(step_log_data["start_time"])
                 step_log_data["duration_seconds"] = duration.total_seconds()
-            pipeline_run_data["steps"].append(step_log_data)
+            _pipeline_run_data_dict["steps"].append(step_log_data)
 
-    pipeline_run_data["end_time"] = datetime.datetime.now().isoformat()
-    pipeline_run_data["overall_status"] = overall_status
+    _pipeline_run_data_dict["end_time"] = datetime.datetime.now().isoformat()
+    _pipeline_run_data_dict["overall_status"] = overall_status
     # Log a brief summary before returning from run_pipeline
     logger.info(f"🏁 Pipeline processing completed. Overall Status: {overall_status}")
 
-    return (0 if overall_status in ["SUCCESS", "SUCCESS_WITH_WARNINGS"] else 1), pipeline_run_data, all_scripts, overall_status # Explicitly tuple
+    return (0 if overall_status in ["SUCCESS", "SUCCESS_WITH_WARNINGS"] else 1), cast(PipelineRunData, _pipeline_run_data_dict), all_scripts, overall_status
 
 def main():
     # Configure logging early. If GNN_Pipeline or root logger has no handlers,

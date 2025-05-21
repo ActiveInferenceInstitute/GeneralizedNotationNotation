@@ -1,5 +1,5 @@
 {
-    "model_purpose": "The GNN file describes a simple model for testing DisCoPy, which is likely focused on the representation and manipulation of categorical data and morphisms in a computational framework.",
+    "model_purpose": "The 'Simple DisCoPy Test Model' is designed to demonstrate basic connectivity and state interactions within a system using a directed graph structure.",
     "key_components": {
         "states": [
             {
@@ -22,29 +22,29 @@
         {
             "from": "X",
             "to": "Y",
-            "type": "direct connection"
+            "description": "Entity X influences or connects to entity Y."
         },
         {
             "from": "Y",
             "to": "Z",
-            "type": "direct connection"
+            "description": "Entity Y influences or connects to entity Z."
         }
     ],
     "data_types_and_dimensions": {
         "X": {
             "type": "A",
-            "dimension": "not specified"
+            "dimension": "single"
         },
         "Y": {
             "type": "B",
-            "dimension": "not specified"
+            "dimension": "single"
         },
         "Z": {
             "type": "C",
-            "dimension": "not specified"
+            "dimension": "single"
         }
     },
-    "potential_applications": "This model could be used for testing the behavior of morphisms in categorical programming, particularly in the context of DisCoPy, allowing for simple simulations of data transformations and flow.",
-    "limitations_or_ambiguities": "The GNN file does not specify the dimensions of the types A, B, and C, which may limit the understanding of the model's data structures. Additionally, there are no observations or actions defined, which may indicate a lack of dynamic interaction or monitoring.",
-    "ontology_mapping_assessment": "The GNN file does not explicitly reference any ActInfOntology terms. However, the concepts of states and connections could potentially relate to ontology terms in the context of categorical data representation and morphisms, warranting further investigation to establish relevant mappings."
+    "potential_applications": "This model could be used in educational settings to teach the fundamentals of directed graphs and state transitions, or as a simple framework for testing more complex models in computational theory.",
+    "limitations_or_ambiguities": "The GNN file does not specify the nature of the interactions (e.g., weights, timings) or the specific behaviors of states in response to inputs, which may limit its utility for more complex analyses.",
+    "ontology_mapping_assessment": "The GNN file does not explicitly reference terms from the ActInfOntology, but the concepts of states and connections could potentially align with ontology terms related to state transitions and system dynamics."
 }

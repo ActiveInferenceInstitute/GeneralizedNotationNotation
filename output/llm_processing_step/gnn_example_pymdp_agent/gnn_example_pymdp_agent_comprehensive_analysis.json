@@ -1,57 +1,55 @@
 {
-    "model_purpose": "To represent a Multifactor PyMDP (Partially Observable Markov Decision Process) agent that incorporates multiple observation modalities and hidden state factors using Active Inference principles.",
+    "model_purpose": "The model represents a Multifactor PyMDP agent that integrates multiple observation modalities and hidden state factors for active inference, facilitating decision-making and state inference in complex environments.",
     "key_components": {
         "hidden_states": {
             "factors": {
                 "reward_level": {
-                    "states": 2,
-                    "description": "Represents the level of reward with two possible states."
+                    "states": 2
                 },
                 "decision_state": {
-                    "states": 3,
-                    "description": "Indicates the state of the decision-making process with three possible states."
+                    "states": 3
                 }
             }
         },
         "observations": {
             "modalities": {
                 "state_observation": {
-                    "outcomes": 3,
-                    "description": "Observations related to the current state."
+                    "outcomes": 3
                 },
                 "reward": {
-                    "outcomes": 3,
-                    "description": "Observations related to the reward received."
+                    "outcomes": 3
                 },
                 "decision_proprioceptive": {
-                    "outcomes": 3,
-                    "description": "Proprioceptive observations related to decision-making."
+                    "outcomes": 3
                 }
             }
         },
         "actions": {
             "decision_state": {
-                "actions": 3,
-                "description": "The controllable actions associated with the decision state."
+                "actions": 3
             }
         },
-        "parameters": {
-            "control": "The decision_state factor is controllable with 3 possible actions.",
-            "state_transitions": {
-                "B_f0": "Uncontrolled transitions for reward_level.",
-                "B_f1": "Controlled transitions for decision_state with 3 actions."
+        "preferences": {
+            "C_vectors": {
+                "C_m0": 3,
+                "C_m1": 3,
+                "C_m2": 3
             }
+        },
+        "priors": {
+            "D_f0": 2,
+            "D_f1": 3
         }
     },
     "component_interactions": {
-        "hidden_states": "(D_f0,D_f1)-(s_f0,s_f1)",
-        "observations": "(s_f0,s_f1)-(A_m0,A_m1,A_m2)-(o_m0,o_m1,o_m2)",
-        "control": "(s_f0,s_f1,u_f1)-(B_f0,B_f1)",
-        "state_transitions": "(B_f0,B_f1)-(s_prime_f0,s_prime_f1)",
-        "preferences": "(C_m0,C_m1,C_m2)>G",
-        "expected_free_energy": "G>\u03c0_f1",
-        "actions": "\u03c0_f1-u_f1",
-        "time": "t=Time"
+        "hidden_states_interaction": "(D_f0,D_f1) -> (s_f0,s_f1)",
+        "state_transition": "(s_f0,s_f1) -> (A_m0,A_m1,A_m2)",
+        "observation_generation": "(A_m0,A_m1,A_m2) -> (o_m0,o_m1,o_m2)",
+        "policy_and_control": "(s_f0,s_f1,u_f1) -> (B_f0,B_f1)",
+        "future_state_transition": "(B_f0,B_f1) -> (s_prime_f0,s_prime_f1)",
+        "expected_free_energy": "(C_m0,C_m1,C_m2) -> G",
+        "policy_distribution": "G -> \u03c0_f1",
+        "action_selection": "\u03c0_f1 -> u_f1"
     },
     "data_types_and_dimensions": {
         "A_matrices": {
@@ -72,35 +70,25 @@
             "D_f0": "[2]",
             "D_f1": "[3]"
         },
-        "hidden_states": {
+        "HiddenStates": {
             "s_f0": "[2,1]",
             "s_f1": "[3,1]",
             "s_prime_f0": "[2,1]",
             "s_prime_f1": "[3,1]"
         },
-        "observations": {
+        "Observations": {
             "o_m0": "[3,1]",
             "o_m1": "[3,1]",
             "o_m2": "[3,1]"
         },
-        "policy_and_control": {
+        "PolicyAndControl": {
             "\u03c0_f1": "[3]",
             "u_f1": "[1]",
             "G": "[1]",
             "t": "[1]"
         }
     },
-    "potential_applications": [
-        "Modeling decision-making processes in adaptive systems.",
-        "Simulating agent behavior in environments with multiple sources of information.",
-        "Research in active inference and cognitive modeling."
-    ],
-    "limitations_or_ambiguities": [
-        "The model is unbounded in time, which may limit its applicability in scenarios requiring finite time horizons.",
-        "Details on the initialization and update of parameters are vague and could benefit from more explicit definitions."
-    ],
-    "ontology_mapping_assessment": {
-        "presence": "All major components are mapped to relevant ActInfOntology terms.",
-        "relevance": "The terms used in the ontology mapping effectively correspond to the model's components, aiding in understanding and integration with existing frameworks."
-    }
+    "potential_applications": "This model can be applied in areas such as robotics, decision-making systems, cognitive modeling, and any domain where active inference is relevant for managing uncertainties in observations and states.",
+    "limitations_or_ambiguities": "The model does not specify certain implementation details such as the specific dynamics of actions or the exact nature of the interactions between hidden states and observations. Additionally, the policy inference and action sampling functions are mentioned but not elaborated upon, leading to potential ambiguities in their implementation.",
+    "ontology_mapping_assessment": "The ActInfOntology terms are present and relevant, providing a clear mapping of the components in the model to established terminology in active inference, enhancing the clarity and interoperability of the model with other systems."
 }

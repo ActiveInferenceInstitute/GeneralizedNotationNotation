@@ -1,32 +1,23 @@
-### Summary of the GNN Model: Comprehensive POMDP Agent
+The GNN model outlined in the document is a **Standard POMDP Agent v1.0**, designed as a comprehensive example for testing GNN features, particularly with the PyMDP framework. It represents a **Partially Observable Markov Decision Process (POMDP)** agent that integrates several key components:
 
-**Model Name:** Standard POMDP Agent v1.0
+### Key Components:
+1. **Hidden States**:
+   - **Location**: 3 states (e.g., RoomA, RoomB, Corridor).
+   - **ResourceLevel**: 2 states (e.g., Low, High).
 
-**Purpose:**  
-The model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent designed to facilitate testing and demonstration of GNN features, particularly for PyMDP. It includes various factors for hidden states, observations, actions, and policies to simulate decision-making under uncertainty.
+2. **Observations**:
+   - **VisualCue**: 4 outcomes (e.g., Door, Window, Food, Empty).
+   - **AuditorySignal**: 2 outcomes (e.g., Silence, Beep).
 
-**Key Components:**
+3. **Control Factors**:
+   - **Movement**: 3 actions (e.g., Stay, MoveClockwise, MoveCounterClockwise).
+   - **Interaction**: 2 actions (e.g., Wait, InteractWithResource).
 
-1. **Hidden States:**
-   - **Location (3 states):** Represents different locations such as RoomA, RoomB, and Corridor.
-   - **Resource Level (2 states):** Indicates the availability of resources, categorized as Low or High.
+### Main Connections:
+- **Priors to Initial States**: Initial distributions over the hidden states (Location and ResourceLevel) are established from priors.
+- **States to Observations**: Hidden states influence the likelihood of observations through likelihood mappings.
+- **States and Actions to Transitions**: The current hidden states and chosen actions determine the transitions to the next states.
+- **Preferences and Observations to Expected Free Energy (EFE)**: The preferences for observations impact the calculation of the EFE, which guides policy decisions.
+- **Policies to Chosen Actions**: The EFE is used to derive the chosen actions for both movement and interaction.
 
-2. **Observations:**
-   - **Visual Cues (4 outcomes):** Possible observations include Door, Window, Food, and Empty.
-   - **Auditory Signals (2 outcomes):** Possible observations include Silence and Beep.
-
-3. **Control Factors (Actions):**
-   - **Movement (3 actions):** Actions include Stay, MoveClockwise, and MoveCounterClockwise.
-   - **Interaction (2 actions):** Actions include Wait and InteractWithResource.
-
-4. **Policies:**
-   - The model includes policy distributions over actions for movement and interaction, which influence the agent's decisions based on its state and observations.
-
-**Main Connections:**
-- **Initial State Priors:** The model connects initial state priors to the hidden states, indicating a starting point for the agent's beliefs about its environment.
-- **States to Observations:** Hidden states influence observations through likelihood mappings, establishing how different states affect what the agent perceives.
-- **States and Actions to Transitions:** The model defines how current states and chosen actions lead to transitions to next states, capturing the dynamics of the environment.
-- **Preferences to Expected Free Energy:** Log preferences over outcomes feed into the calculation of Expected Free Energy (EFE), guiding the agent's decision-making process.
-- **Policies to Actions:** Policies inform the chosen actions, connecting the theoretical framework to practical implementations in the agent's behavior.
-
-This model serves as a foundational example for exploring complex decision-making scenarios in uncertain environments, utilizing the GNN framework to structure its components and interactions effectively.
+The model is intended to facilitate understanding and testing of POMDPs and their applications in active inference, with a focus on the interactions between hidden states, observations, actions, and policies. Overall, it serves as a foundational example for exploring the capabilities of GNN frameworks in modeling decision processes under uncertainty.

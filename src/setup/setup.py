@@ -112,26 +112,70 @@ def install_dependencies(verbose: bool = False) -> None:
         logger.warning(f"{REQUIREMENTS_PATH} not found. Skipping dependency installation from this file.")
         return
 
-    logger.info(f"Attempting to install 'inferactively-pymdp' individually into {VENV_PATH}...")
-    try:
-        if not VENV_PIP.exists():
-            logger.error(f"Pip executable not found at {VENV_PIP}. Cannot install dependencies.")
-            raise FileNotFoundError(f"Pip not found at {VENV_PIP}")
-        
-        run_command([str(VENV_PIP), "install", "inferactively-pymdp"], cwd=PROJECT_ROOT, check=False, verbose=verbose)
-        logger.debug("Individual installation attempt for 'inferactively-pymdp' completed.")
-    except Exception as e:
-        logger.warning(f"An error occurred during the individual installation of 'inferactively-pymdp': {e}", exc_info=verbose)
-
     logger.info(f"Installing/updating dependencies from {REQUIREMENTS_PATH} into {VENV_PATH}...")
     try:
         if not VENV_PIP.exists():
             logger.error(f"Pip executable not found at {VENV_PIP}. Cannot install dependencies.")
             raise FileNotFoundError(f"Pip not found at {VENV_PIP}")
 
-        run_command([str(VENV_PIP), "install", "-r", str(REQUIREMENTS_PATH)], cwd=PROJECT_ROOT, verbose=verbose)
-        logger.info("Dependencies from requirements.txt installed successfully.")
-    except subprocess.CalledProcessError:
+        # Read all requirements
+        with open(REQUIREMENTS_PATH, 'r') as f:
+            all_reqs_raw = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+        
+        # Strip comments from each requirement line
+        all_reqs = [req.split('#')[0].strip() for req in all_reqs_raw]
+
+        # Specific packages for staged install
+        jax_reqs = [r for r in all_reqs if r.startswith('jax>=') or r.startswith('jaxlib>=')]
+        discopy_req_line = next((r for r in all_reqs if r.startswith('discopy[matrix]')), None)
+        
+        other_reqs = [r for r in all_reqs if not (r.startswith('jax>=') or 
+                                                   r.startswith('jaxlib>=') or 
+                                                   (discopy_req_line and r == discopy_req_line))]
+
+        # Stage 1: Install JAX and JAXLIB first
+        if jax_reqs:
+            logger.info(f"Stage 1: Installing JAX prerequisites: {', '.join(jax_reqs)}...")
+            run_command([str(VENV_PIP), "install", "--no-cache-dir"] + jax_reqs, cwd=PROJECT_ROOT, verbose=verbose)
+            logger.info("JAX prerequisites installed/updated with --no-cache-dir.")
+        else:
+            logger.info("Stage 1: No specific JAX prerequisites found in requirements.txt (expected jax>=... and jaxlib>=...).")
+
+        # Stage 1.5: Uninstall any existing DisCoPy to ensure a clean slate for matrix extras
+        if discopy_req_line: # Check if discopy is in requirements to attempt uninstall
+            logger.info(f"Stage 1.5: Attempting to uninstall any existing 'discopy' before reinstalling...")
+            try:
+                run_command([str(VENV_PIP), "uninstall", "-y", "discopy"], cwd=PROJECT_ROOT, verbose=verbose, check=False) # check=False as it might not be installed
+                logger.info("'discopy' (if present) uninstalled.")
+            except Exception as e_uninstall:
+                logger.warning(f"Could not uninstall 'discopy' (it might not have been installed): {e_uninstall}")
+        
+        # Stage 2: Explicitly install/reinstall discopy[matrix]
+        if discopy_req_line:
+            logger.info(f"Stage 2: Force reinstalling and upgrading {discopy_req_line} into {VENV_PATH} to ensure JAX extras...")
+            # We use the specific line from requirements.txt to respect versioning
+            run_command([str(VENV_PIP), "install", "--no-cache-dir", "--force-reinstall", "--upgrade", discopy_req_line], cwd=PROJECT_ROOT, verbose=verbose)
+            logger.info(f"{discopy_req_line} force reinstalled and upgraded successfully with --no-cache-dir.")
+        else:
+            logger.warning("Stage 2: discopy[matrix]>=... not found in requirements.txt. Skipping explicit reinstall/upgrade.")
+
+        # Stage 3: Install all other dependencies from requirements.txt
+        if other_reqs:
+            temp_other_reqs_file = PROJECT_ROOT / "temp_other_requirements.txt"
+            with open(temp_other_reqs_file, 'w') as f_other:
+                for req in other_reqs:
+                    f_other.write(req + '\n')
+            
+            logger.info(f"Stage 3: Installing remaining dependencies from a temporary list ({len(other_reqs)} packages)...")
+            run_command([str(VENV_PIP), "install", "--no-cache-dir", "-r", str(temp_other_reqs_file)], cwd=PROJECT_ROOT, verbose=verbose)
+            logger.info("Remaining dependencies installed/updated with --no-cache-dir.")
+            temp_other_reqs_file.unlink() # Clean up temporary file
+        else:
+            logger.info("Stage 3: No other dependencies to install.")
+
+        logger.info("All dependency installation stages completed.")
+
+    except subprocess.CalledProcessError as e:
         logger.error("Failed to install dependencies from requirements.txt.")
         raise
     except Exception as e:

@@ -330,9 +330,9 @@ def main(args: argparse.Namespace) -> int:
         logger.debug(f"Script logger '{logger.name}' level set to {logging.getLevelName(log_level_for_this_script)}.")
     
     # If verbose, also set level for llm_operations module if it exists.
-    if args.verbose and llm_operations and hasattr(llm_operations, '__name__'):
-        logging.getLogger(llm_operations.__name__).setLevel(logging.DEBUG)
-        logger.debug(f"Verbose mode: Set logger for '{llm_operations.__name__}' to DEBUG.")
+    if args.verbose and llm_operations: # Removed hasattr check, direct string usage
+        logging.getLogger("src.llm.llm_operations").setLevel(logging.DEBUG)
+        logger.debug("Verbose mode: Set logger for 'src.llm.llm_operations' to DEBUG.")
 
     logger.info(f"Starting LLM processing step. Target directory: {args.target_dir}, Output directory: {args.output_dir}")
     logger.debug(f"Full arguments: {args}")
@@ -411,18 +411,22 @@ but can be run standalone for testing with appropriate arguments.
     log_level_to_set = logging.DEBUG if parsed_args.verbose else logging.INFO
     if setup_standalone_logging:
         # Pass __name__ so the utility can also set this script's specific logger level
+        # The utility now handles splitting streams, so no need for fallback basicConfig.
         setup_standalone_logging(level=log_level_to_set, logger_name=__name__) 
     else:
-        # Fallback basic config if utility function couldn't be imported
-        if not logging.getLogger().hasHandlers(): # Check root handlers
-            logging.basicConfig(
-                level=log_level_to_set,
-                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                stream=sys.stdout # stdout for pipeline capture
-            )
-        # Ensure this script's logger (which is __main__ here) level is set even in fallback
-        logging.getLogger(__name__).setLevel(log_level_to_set) 
-        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+        # This else block might ideally not be needed if setup_standalone_logging is always available.
+        # However, keeping a minimal error message if the import itself failed.
+        # The complex sys.path manipulation at the top aims to prevent this.
+        _fallback_logger = logging.getLogger(__name__) # Use __name__ for this fallback logger
+        if not _fallback_logger.hasHandlers() and not logging.getLogger().hasHandlers():
+            # Minimal config to stderr if utility is completely missing, so errors are seen.
+            logging.basicConfig(level=logging.WARNING, stream=sys.stderr, format='%(levelname)s: %(message)s')
+        _fallback_logger.error(
+            "CRITICAL: setup_standalone_logging utility was not imported. Logging may be incomplete or misdirected. Ensure src/utils is in PYTHONPATH."
+        )
+        # Ensure this script's logger (which is __name__ here) level is set even in this dire fallback
+        # to at least INFO to see basic progress, though it might go to stderr.
+        logging.getLogger(__name__).setLevel(logging.INFO) 
 
     # Quieten noisy libraries if run standalone, after main logging is set up
     # Example: logging.getLogger('some_noisy_dependency').setLevel(logging.WARNING)

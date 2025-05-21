@@ -2,11 +2,9 @@
 
 **Model Name:** Multifactor PyMDP Agent v1
 
-**Purpose:** 
-The model represents a PyMDP (Partially Observable Markov Decision Process) agent designed for active inference, incorporating multiple observation modalities and hidden state factors. It aims to facilitate decision-making through a structured representation of state inference, policy inference, and action sampling.
+**Purpose:** This model represents a PyMDP (Partially Observable Markov Decision Process) agent that incorporates multiple observation modalities and hidden state factors, designed for applications in active inference.
 
 **Key Components:**
-
 1. **Observation Modalities:**
    - **State Observation:** 3 outcomes
    - **Reward:** 3 outcomes
@@ -15,14 +13,31 @@ The model represents a PyMDP (Partially Observable Markov Decision Process) agen
 2. **Hidden State Factors:**
    - **Reward Level:** 2 states
    - **Decision State:** 3 states
+   - The decision state factor is controllable with 3 possible actions.
 
-3. **Control:**
-   - The "decision_state" factor is controllable, allowing for 3 possible actions.
+3. **State Space Matrices:**
+   - **A_m matrices** represent the likelihood of observations given the hidden states (3 modalities).
+   - **B_f matrices** define transitions between hidden states based on actions (2 factors).
+   - **C vectors** indicate preferences for each modality (3 preferences per modality).
+   - **D vectors** provide priors over hidden states (uniform distribution for both factors).
+
+4. **Hidden States:**
+   - **s_f0:** Hidden state for reward level (2 states)
+   - **s_f1:** Hidden state for decision state (3 states)
+
+5. **Observations:**
+   - **o_m0, o_m1, o_m2:** Observations corresponding to each modality (3 outcomes each).
+
+6. **Policy and Control:**
+   - **π_f1:** Policy distribution over actions for the controllable factor.
+   - **u_f1:** Action taken for the controllable factor.
+   - **G:** Represents the expected free energy of the system.
 
 **Main Connections:**
-- Hidden states (s_f0 and s_f1) are connected to the likelihood matrices (A_m0, A_m1, A_m2) representing observations.
-- The transitions of hidden states (B_f0 and B_f1) are influenced by the actions taken (u_f1) and affect the future hidden states (s_prime_f0 and s_prime_f1).
-- Preferences (C_m0, C_m1, C_m2) contribute to the calculation of Expected Free Energy (G), which in turn influences the policy distribution (π_f1) and the chosen action (u_f1).
-- The model operates in a discrete time setting with an unbounded time horizon, making it suitable for dynamic decision-making scenarios.
+- The model defines a series of connections that link hidden states, observations, and actions:
+  - Hidden state factors (D_f0, D_f1) connect to the state space matrices (A_m0, A_m1, A_m2).
+  - Observations (o_m0, o_m1, o_m2) are derived from the state space matrices.
+  - The control action (u_f1) primarily influences the transitions of the decision state (B_f1).
+  - The expected free energy (G) is influenced by the preference vectors (C_m0, C_m1, C_m2) and defines the policy (π_f1).
 
-Overall, the Multifactor PyMDP Agent integrates various components for effective state and action inference, enabling robust decision-making in complex environments.
+This multifactor PyMDP agent serves as a flexible framework for modeling decision-making processes under uncertainty, leveraging multiple inputs and states for informed action selection.
