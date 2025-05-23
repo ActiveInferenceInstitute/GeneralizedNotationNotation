@@ -1,10 +1,15 @@
 # 📊 GNN Processing Summary
 
-🗓️ Generated: 2025-05-22 12:41:02
+🗓️ Generated: 2025-05-23 05:17:57
 
 ## ⚙️ Processing Configuration
 
-- Configuration details not available
+- **Target Directory**: `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples`
+- **Output Directory**: `/home/trim/Documents/GitHub/GeneralizedNotationNotation/output`
+- **Recursive Processing**: True
+- **Verbose Mode**: True
+- **Strict Mode**: False
+- **Resource Estimation**: True
 
 ## 📁 GNN Files Discovered
 
@@ -17,22 +22,63 @@ Found **4** GNN files for processing:
 
 ## 🔄 Pipeline Execution Status
 
-Pipeline execution data not available.
+**Overall Status**: 8/14 steps completed successfully
+
+**Total Execution Time**: 123.43 seconds
+
+### Step-by-Step Results
+
+| Step | Script | Status | Duration (s) | Details |
+|------|--------|--------|--------------|----------|
+| 1 | `1_gnn` | ✅ SUCCESS | 0.154 |  |
+| 2 | `2_setup` | ✅ SUCCESS | 29.234 |  |
+| 3 | `3_tests` | ❌ FAILED | 2.277 | Exited with code 1. |
+| 4 | `4_gnn_type_checker` | ❌ FAILED | 2.264 | Exited with code 1. |
+| 5 | `5_export` | ✅ SUCCESS | 0.243 |  |
+| 6 | `6_visualization` | ✅ SUCCESS | 16.959 |  |
+| 7 | `7_mcp` | ✅ SUCCESS | 3.148 |  |
+| 8 | `8_ontology` | ✅ SUCCESS | 0.107 |  |
+| 9 | `9_render` | ✅ SUCCESS | 4.641 |  |
+| 10 | `10_execute` | ❌ FAILED | 0.279 | Exited with code 1. |
+| 11 | `11_llm` | ⚠️ FAILED_TIMEOUT | 60.037 | Step timed out after 60 seconds. |
+| 12 | `12_discopy` | ⚠️ SUCCESS_WITH_WARNINGS | 2.051 |  |
+| 13 | `13_discopy_jax_eval` | ⚠️ SUCCESS_WITH_WARNINGS | 1.752 |  |
+| 14 | `15_site` | ✅ SUCCESS | 0.284 |  |
+
+### ❌ Failed Steps Details
+
+**Step 3: 3_tests**
+- Duration: 2.277s
+- Details: Exited with code 1.
+
+**Step 4: 4_gnn_type_checker**
+- Duration: 2.264s
+- Details: Exited with code 1.
+
+**Step 10: 10_execute**
+- Duration: 0.279s
+- Details: Exited with code 1.
 
 ## 📊 Output Summary
 
 - **GNN Processing**: 1 files in `gnn_processing_step/`
 - **Type Checking**: 11 files in `gnn_type_check/`
 - **Exports**: 17 files in `gnn_exports/`
-- **Visualizations**: 0 files in `gnn_examples_visualization/`
-- **Rendered Simulators**: No output directory found
+- **Visualizations**: 42 files in `gnn_examples_visualization/`
+- **Rendered Simulators**: 8 files in `gnn_rendered_simulators/`
 - **Test Reports**: 1 files in `test_reports/`
 
 ## 🔍 Key Findings
 
-- **Test Results**: 46/80 tests passed (34 failures, 0 errors)
+- **Test Results**: 52/80 tests passed (28 failures, 0 errors)
 
 ## 📋 Recommendations
+
+### Immediate Actions Required
+
+- **Fix Step 3 (3_tests)**: Exited with code 1.
+- **Fix Step 4 (4_gnn_type_checker)**: Exited with code 1.
+- **Fix Step 10 (10_execute)**: Exited with code 1.
 
 ### General Improvements
 

@@ -1,35 +1,33 @@
-### Summary of the GNN Model: Comprehensive POMDP Agent
+### Summary of GNN Model: Standard POMDP Agent v1.0
 
-**Model Name:**  
-Standard POMDP Agent v1.0
-
-**Purpose:**  
-This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent designed for testing GNN parsing and rendering capabilities, particularly in the context of PyMDP.
+**Model Purpose:**  
+The model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent designed for testing GNN parsing and rendering capabilities, particularly within the PyMDP framework.
 
 **Key Components:**
 
-1. **Hidden States:**
-   - **Location (3 states):** Represents possible locations such as RoomA, RoomB, and Corridor.
-   - **Resource Level (2 states):** Indicates resource availability, categorized as Low or High.
+1. **Model Name:**
+   - Standard POMDP Agent v1.0
 
-2. **Observations:**
-   - **Visual Cue (4 outcomes):** Includes Door, Window, Food, and Empty.
-   - **Auditory Signal (2 outcomes):** Consists of Silence and Beep.
+2. **Primary States:**
+   - **Hidden State Factors:**
+     - **Location:** 3 states (e.g., RoomA, RoomB, Corridor)
+     - **ResourceLevel:** 2 states (e.g., Low, High)
 
-3. **Control Factors (Actions):**
-   - **Movement (3 actions):** Actions include Stay, MoveClockwise, and MoveCounterClockwise.
-   - **Interaction (2 actions):** Actions encompass Wait and InteractWithResource.
+3. **Observations:**
+   - **Observation Modalities:**
+     - **VisualCue:** 4 outcomes (e.g., Door, Window, Food, Empty)
+     - **AuditorySignal:** 2 outcomes (e.g., Silence, Beep)
+
+4. **Control Factors:**
+   - **Actions:**
+     - **Movement:** 3 actions (e.g., Stay, MoveClockwise, MoveCounterClockwise)
+     - **Interaction:** 2 actions (e.g., Wait, InteractWithResource)
 
 **Main Connections:**
+- **Priors to Initial States:** The model establishes connections between prior distributions over hidden states and the hidden states themselves.
+- **States to Likelihoods:** The hidden states influence the likelihoods of observations, connecting states to observations.
+- **States and Actions to Transitions:** The model captures how current states and chosen actions determine the transitions to next states.
+- **Preferences to Expected Free Energy:** Preferences for observations are linked to the calculation of Expected Free Energy (EFE), which evaluates the policies.
+- **Policies to Actions:** The calculated policies inform the chosen actions for the agent.
 
-- **Priors to Initial States:** Initial state priors (D_f0 for Location and D_f1 for Resource Level) influence the hidden state factors (s_f0 and s_f1).
-  
-- **States to Observations:** The hidden states (s_f0 and s_f1) are connected to likelihoods (A_m0 and A_m1) which lead to the observed modalities (o_m0 and o_m1).
-
-- **States and Actions to Transitions:** The transitions (B_f0 and B_f1) depend on current hidden states and chosen actions, determining the next state (s_f0_next and s_f1_next).
-
-- **Preferences and Outcomes to Expected Free Energy (EFE):** Preferences (C_m0 and C_m1) and states/observations contribute to the calculation of expected free energy (G).
-
-- **EFE to Policies:** The expected free energy (G) influences the control policies (pi_c0 and pi_c1), which in turn determine the chosen actions (u_c0 and u_c1).
-
-This model is structured to evaluate the dynamics of a POMDP agent, focusing on the interplay between hidden states, observations, and actions to optimize decision-making under uncertainty.
+This GNN model serves as a structured framework for simulating decision-making processes under uncertainty, integrating hidden states, observations, actions, and their respective interactions.

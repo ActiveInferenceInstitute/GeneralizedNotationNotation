@@ -1,0 +1,124 @@
+Agent 'Multifactor_PyMDP_Agent_v1' initialized with 2 factors and 3 modalities.
+
+--- Timestep 1 ---
+Observation (modality_0): 0
+Observation (modality_1): 0
+Observation (modality_2): 0
+Beliefs about factor_0: [0.5 0.5]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [1.]
+Expected Free Energy (EFE): [-3.29583383]
+Action taken: No controllable actions or names not found
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 2 ---
+Observation (modality_0): 2
+Observation (modality_1): 1
+Observation (modality_2): 1
+Beliefs about factor_0: [0.5 0.5]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [1.]
+Expected Free Energy (EFE): [-3.29583383]
+Action taken: No controllable actions or names not found
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 3 ---
+Observation (modality_0): 1
+Observation (modality_1): 0
+Observation (modality_2): 0
+Beliefs about factor_0: [0.5 0.5]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [1.]
+Expected Free Energy (EFE): [-3.29583383]
+Action taken: No controllable actions or names not found
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 4 ---
+Observation (modality_0): 0
+Observation (modality_1): 1
+Observation (modality_2): 0
+Beliefs about factor_0: [0.5 0.5]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [1.]
+Expected Free Energy (EFE): [-3.29583383]
+Action taken: No controllable actions or names not found
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+--- Timestep 5 ---
+Observation (modality_0): 2
+Observation (modality_1): 1
+Observation (modality_2): 2
+Beliefs about factor_0: [0.5 0.5]
+Beliefs about factor_1: [0.33333333 0.33333333 0.33333333]
+Posterior over policies (q_pi): [1.]
+Expected Free Energy (EFE): [-3.29583383]
+Action taken: No controllable actions or names not found
+New true state (factor_0): 0
+New true state (factor_1): 0
+
+Simulation finished after 5 timesteps.
+--- PyMDP Runtime Debug ---
+AGENT_SCRIPT: Imported Agent: <class 'pymdp.agent.Agent'>
+AGENT_SCRIPT: Agent module location: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/pymdp/agent.py
+AGENT_SCRIPT: Checking for required variables in global scope:
+  AGENT_SCRIPT: A = [array([[[0.33333333, 0.33333333, 0.33333333],
+         [0.33333333, 0.33333333, 0.33333333]],
+
+        [[0.33333333, 0.33333333, 0.33333333],
+         [0.33333333, 0.33333333, 0.33333333]],
+
+        [[0.33333333, 0.33333333, 0.33333333],
+         [0.33333333, 0.33333333, 0.33333333]]])
+ array([[[0.33333333, 0.33333333, 0.33333333],
+         [0.33333333, 0.33333333, 0.33333333]],
+
+        [[0.33333333, 0.33333333, 0.33333333],
+         [0.33333333, 0.33333333, 0.33333333]],
+
+        [[0.33333333, 0.33333333, 0.33333333],
+         [0.33333333, 0.33333333, 0.33333333]]])
+ array([[[0.33333333, 0.33333333, 0.33333333],
+         [0.33333333, 0.33333333, 0.33333333]],
+
+        [[0.33333333, 0.33333333, 0.33333333],
+         [0.33333333, 0.33333333, 0.33333333]],
+
+        [[0.33333333, 0.33333333, 0.33333333],
+         [0.33333333, 0.33333333, 0.33333333]]])]
+  AGENT_SCRIPT: B = [array([[[1.],
+         [0.]],
+
+        [[0.],
+         [1.]]]) array([[[1.],
+                         [0.],
+                         [0.]],
+
+                        [[0.],
+                         [1.],
+                         [0.]],
+
+                        [[0.],
+                         [0.],
+                         [1.]]])]
+  AGENT_SCRIPT: C = [array([0., 0., 0.]) array([0., 0., 0.]) array([0., 0., 0.])]
+  AGENT_SCRIPT: D = [array([0.5, 0.5]) array([0.33333333, 0.33333333, 0.33333333])]
+  AGENT_SCRIPT: E = None
+  AGENT_SCRIPT: control_fac_idx = []
+  AGENT_SCRIPT: action_names = {}
+  AGENT_SCRIPT: qs_initial = None
+  AGENT_SCRIPT: agent_hyperparams = {}
+AGENT_SCRIPT: Attempting to instantiate agent with defined parameters for debug...
+AGENT_SCRIPT: Debug - agent_hyperparams_dict_str ('{}') is empty or '{}'. Using empty dict for debug agent.
+AGENT_SCRIPT: Error during PyMDP runtime debug: Agent.__init__() missing 2 required positional arguments: 'A' and 'B'
+AGENT_SCRIPT: Traceback:
+Traceback (most recent call last):
+  File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/pymdp/gnn_example_pymdp_agent/gnn_example_pymdp_agent_rendered.py", line 210, in <module>
+    temp_agent = Agent(**debug_params_copy)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Agent.__init__() missing 2 required positional arguments: 'A' and 'B'
+
+--- End PyMDP Runtime Debug ---

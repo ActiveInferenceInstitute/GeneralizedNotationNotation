@@ -2,8 +2,8 @@
 ## gnn_simple_discopy_test.md: ❌ INVALID
 Path: src/gnn/examples/gnn_simple_discopy_test.md
 Errors:
-  - Missing required section: Signature
   - Missing required section: Footer
+  - Missing required section: Signature
   - Variable 'X' has no dimensions specified
   - Variable 'X' has invalid type: A
   - Variable 'Y' has no dimensions specified

@@ -1,0 +1,24 @@
+--- PyMDP Runtime Debug ---
+AGENT_SCRIPT: Imported Agent: <class 'pymdp.agent.Agent'>
+AGENT_SCRIPT: Agent module location: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/pymdp/agent.py
+AGENT_SCRIPT: Checking for required variables in global scope:
+  AGENT_SCRIPT: A = None
+  AGENT_SCRIPT: B = None
+  AGENT_SCRIPT: C = None
+  AGENT_SCRIPT: D = None
+  AGENT_SCRIPT: E = None
+  AGENT_SCRIPT: control_fac_idx = []
+  AGENT_SCRIPT: action_names = {}
+  AGENT_SCRIPT: qs_initial = None
+  AGENT_SCRIPT: agent_hyperparams = {}
+AGENT_SCRIPT: Attempting to instantiate agent with defined parameters for debug...
+AGENT_SCRIPT: Debug - agent_hyperparams_dict_str ('{}') is empty or '{}'. Using empty dict for debug agent.
+AGENT_SCRIPT: Error during PyMDP runtime debug: Agent.__init__() missing 2 required positional arguments: 'A' and 'B'
+AGENT_SCRIPT: Traceback:
+Traceback (most recent call last):
+  File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/pymdp/gnn_simple_discopy_test/gnn_simple_discopy_test_rendered.py", line 102, in <module>
+    temp_agent = Agent(**debug_params_copy)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Agent.__init__() missing 2 required positional arguments: 'A' and 'B'
+
+--- End PyMDP Runtime Debug ---
