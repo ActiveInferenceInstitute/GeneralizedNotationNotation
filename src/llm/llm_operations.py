@@ -39,13 +39,13 @@ Based on the context above, please perform the following task:
     logger.debug(f"Constructed prompt: {prompt[:500]}...") # Log a preview
     return prompt
 
-def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 8000, temperature: float = 0.7, request_timeout: float = 30.0) -> str:
+def get_llm_response(prompt: str, model: str = "gpt-3.5-turbo", max_tokens: int = 8000, temperature: float = 0.7, request_timeout: float = 30.0) -> str:
     """
     Sends a prompt to the specified OpenAI model and returns the response.
 
     Args:
         prompt (str): The prompt to send to the LLM.
-        model (str): The OpenAI model to use (e.g., "gpt-3.5-turbo", "gpt-4").
+        model (str): The OpenAI model to use (e.g., "gpt-3.5-turbo", "gpt-4o-mini").
         max_tokens (int): The maximum number of tokens to generate.
         temperature (float): Controls randomness (0.0 to 2.0). Lower values are more deterministic.
         request_timeout (float): Timeout in seconds for the API request.
@@ -54,9 +54,11 @@ def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 
         str: The LLM's response or an error message.
     """
     try:
-        logger.info(f"Sending prompt to OpenAI model: {model} (Timeout: {request_timeout}s)")
+        logger.info(f"Sending prompt to OpenAI model: {model} (Timeout: {request_timeout}s, Max Tokens: {max_tokens}, Temperature: {temperature})")
+        logger.debug(f"Full prompt for {model} (first 500 chars): {prompt[:500]}...")
         # Using the new client syntax for OpenAI API version >= 1.0
-        client = openai.OpenAI() 
+        client = openai.OpenAI()
+        logger.info(f"Attempting to call OpenAI API with model {model}...")
         response = client.chat.completions.create(
             model=model,
             messages=[
@@ -70,7 +72,16 @@ def get_llm_response(prompt: str, model: str = "gpt-4o-mini", max_tokens: int = 
             timeout=request_timeout
         )
         llm_response = response.choices[0].message.content.strip()
-        logger.info(f"Received response from LLM. Length: {len(llm_response)} chars.")
+        response_length = len(llm_response)
+        # Log token usage if available
+        token_usage = response.usage
+        if token_usage:
+            logger.info(
+                f"LLM call successful. Response length: {response_length} chars. "
+                f"Token usage: Prompt={token_usage.prompt_tokens}, Completion={token_usage.completion_tokens}, Total={token_usage.total_tokens}"
+            )
+        else:
+            logger.info(f"LLM call successful. Response length: {response_length} chars. Token usage not available in response.")
         logger.debug(f"LLM Response preview: {llm_response[:500]}...")
         return llm_response
     except openai.APITimeoutError as e:

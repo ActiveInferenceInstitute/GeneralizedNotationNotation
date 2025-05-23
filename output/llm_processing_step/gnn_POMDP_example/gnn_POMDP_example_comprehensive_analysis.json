@@ -1,253 +1,172 @@
 {
-    "model_purpose": "To represent a comprehensive Partially Observable Markov Decision Process (POMDP) agent, primarily for testing GNN parsing and rendering capabilities, particularly in PyMDP.",
+    "model_purpose": "To represent a comprehensive Partially Observable Markov Decision Process (POMDP) agent for testing GNN features, particularly for parsing and rendering capabilities in PyMDP.",
     "key_components": {
         "hidden_states": {
             "location": {
+                "factors": 1,
                 "states": 3,
-                "description": "Represents possible locations (e.g., RoomA, RoomB, Corridor)."
+                "description": "Represents the location of the agent (e.g., RoomA, RoomB, Corridor)."
             },
-            "resourceLevel": {
+            "resource_level": {
+                "factors": 1,
                 "states": 2,
-                "description": "Indicates the level of resources (e.g., Low, High)."
+                "description": "Represents the resource level available to the agent (e.g., Low, High)."
             }
         },
         "observations": {
-            "visualCue": {
+            "visual_cue": {
+                "modalities": 1,
                 "outcomes": 4,
-                "description": "Visual stimuli such as Door, Window, Food, Empty."
+                "description": "Visual observations that the agent can perceive (e.g., Door, Window, Food, Empty)."
             },
-            "auditorySignal": {
+            "auditory_signal": {
+                "modalities": 1,
                 "outcomes": 2,
-                "description": "Auditory stimuli such as Silence and Beep."
+                "description": "Auditory observations available to the agent (e.g., Silence, Beep)."
             }
         },
-        "actions": {
+        "control_factors": {
             "movement": {
                 "actions": 3,
-                "description": "Actions related to movement (e.g., Stay, MoveClockwise, MoveCounterClockwise)."
+                "description": "Actions related to the agent's movement (e.g., Stay, MoveClockwise, MoveCounterClockwise)."
             },
             "interaction": {
                 "actions": 2,
-                "description": "Interaction actions (e.g., Wait, InteractWithResource)."
-            }
-        },
-        "policies": {
-            "movement_policy": {
-                "dimension": 3,
-                "description": "Policy vector for movement actions."
-            },
-            "interaction_policy": {
-                "dimension": 2,
-                "description": "Policy vector for interaction actions."
-            }
-        },
-        "preferences": {
-            "visualCue_preferences": {
-                "dimension": 4,
-                "description": "Log preferences associated with visual cues."
-            },
-            "auditorySignal_preferences": {
-                "dimension": 2,
-                "description": "Log preferences associated with auditory signals."
+                "description": "Actions related to interaction with resources (e.g., Wait, InteractWithResource)."
             }
         },
         "transition_dynamics": {
-            "location_transitions": {
-                "dimensions": [
-                    3,
-                    3,
-                    3,
-                    2
-                ],
-                "description": "Transition dynamics for location based on previous states and actions."
-            },
-            "resourceLevel_transitions": {
-                "dimensions": [
-                    2,
-                    2,
-                    3,
-                    2
-                ],
-                "description": "Transition dynamics for resource level based on previous states and actions."
-            }
-        },
-        "initial_states": {
-            "location_prior": {
-                "description": "Prior distribution over initial locations.",
-                "dimension": 3
-            },
-            "resourceLevel_prior": {
-                "description": "Prior distribution over initial resource levels.",
-                "dimension": 2
-            }
-        },
-        "expected_free_energy": {
-            "dimension": 1,
-            "description": "Overall expected free energy of the chosen combined policy."
-        }
-    },
-    "component_interactions": {
-        "initial_states": "(D_f0, D_f1) -> (s_f0, s_f1)",
-        "hidden_states_to_likelihoods": "(s_f0, s_f1) -> (A_m0, A_m1)",
-        "likelihoods_to_observations": "(A_m0) -> (o_m0), (A_m1) -> (o_m1)",
-        "states_and_actions_to_transitions": "(s_f0, s_f1, u_c0, u_c1) -> (B_f0, B_f1)",
-        "preferences_and_states_to_efe": "(C_m0, C_m1, s_f0, s_f1, A_m0, A_m1) > G",
-        "efe_to_policies": "G > (pi_c0, pi_c1)",
-        "policies_to_actions": "(pi_c0) -> u_c0, (pi_c1) -> u_c1"
-    },
-    "data_types_and_dimensions": {
-        "hidden_states": {
             "location": {
-                "data_type": "int",
-                "dimension": [
-                    3,
-                    1
-                ]
+                "description": "Transitions of the agent's location based on current state and actions taken.",
+                "dimensions": "3x3x3x2"
             },
-            "resourceLevel": {
-                "data_type": "int",
-                "dimension": [
-                    2,
-                    1
-                ]
-            }
-        },
-        "observations": {
-            "visualCue": {
-                "data_type": "int",
-                "dimension": [
-                    4,
-                    1
-                ]
-            },
-            "auditorySignal": {
-                "data_type": "int",
-                "dimension": [
-                    2,
-                    1
-                ]
-            }
-        },
-        "policies": {
-            "movement_policy": {
-                "data_type": "float",
-                "dimension": [
-                    3
-                ]
-            },
-            "interaction_policy": {
-                "data_type": "float",
-                "dimension": [
-                    2
-                ]
-            }
-        },
-        "actions": {
-            "movement_action": {
-                "data_type": "int",
-                "dimension": [
-                    1
-                ]
-            },
-            "interaction_action": {
-                "data_type": "int",
-                "dimension": [
-                    1
-                ]
-            }
-        },
-        "likelihoods": {
-            "visualCue": {
-                "data_type": "float",
-                "dimension": [
-                    4,
-                    3,
-                    2
-                ]
-            },
-            "auditorySignal": {
-                "data_type": "float",
-                "dimension": [
-                    2,
-                    3,
-                    2
-                ]
-            }
-        },
-        "transitions": {
-            "location_transition": {
-                "data_type": "float",
-                "dimension": [
-                    3,
-                    3,
-                    3,
-                    2
-                ]
-            },
-            "resourceLevel_transition": {
-                "data_type": "float",
-                "dimension": [
-                    2,
-                    2,
-                    3,
-                    2
-                ]
+            "resource_level": {
+                "description": "Transitions of resource levels based on actions.",
+                "dimensions": "2x2x3x2"
             }
         },
         "preferences": {
-            "visualCue_preferences": {
-                "data_type": "float",
-                "dimension": [
-                    4
-                ]
+            "visual_cue": {
+                "description": "Log preferences for visual cues that influence action selection.",
+                "dimensions": "4"
             },
-            "auditorySignal_preferences": {
-                "data_type": "float",
-                "dimension": [
-                    2
-                ]
+            "auditory_signal": {
+                "description": "Log preferences for auditory signals.",
+                "dimensions": "2"
             }
         },
-        "initial_state_priors": {
-            "location_prior": {
-                "data_type": "float",
-                "dimension": [
-                    3
-                ]
+        "priors": {
+            "location": {
+                "description": "Prior probabilities for each location state.",
+                "dimensions": "3"
             },
-            "resourceLevel_prior": {
-                "data_type": "float",
-                "dimension": [
-                    2
-                ]
+            "resource_level": {
+                "description": "Prior probabilities for each resource level.",
+                "dimensions": "2"
             }
         },
         "expected_free_energy": {
-            "data_type": "float",
-            "dimension": [
-                1
-            ]
+            "description": "Overall expected free energy of the chosen combined policy.",
+            "dimensions": "1"
+        }
+    },
+    "component_interactions": {
+        "priors_to_initial_states": "(D_f0, D_f1) -> (s_f0, s_f1)",
+        "states_to_likelihoods": "(s_f0, s_f1) -> (A_m0, A_m1)",
+        "likelihoods_to_observations": "(A_m0) -> (o_m0); (A_m1) -> (o_m1)",
+        "states_actions_to_transitions": "(s_f0, s_f1, u_c0, u_c1) -> (B_f0, B_f1)",
+        "preferences_and_states_to_EFE": "(C_m0, C_m1, s_f0, s_f1, A_m0, A_m1) > G",
+        "EFE_to_policies": "G > (pi_c0, pi_c1)",
+        "policies_to_chosen_actions": "(pi_c0) -> u_c0; (pi_c1) -> u_c1"
+    },
+    "data_types_and_dimensions": {
+        "hidden_states": {
+            "type": "int",
+            "dimensions": {
+                "location": "[3, 1]",
+                "resource_level": "[2, 1]"
+            }
+        },
+        "observations": {
+            "type": "int",
+            "dimensions": {
+                "visual_cue": "[4, 1]",
+                "auditory_signal": "[2, 1]"
+            }
+        },
+        "control_factors": {
+            "type": "float",
+            "dimensions": {
+                "movement": "[3]",
+                "interaction": "[2]"
+            }
+        },
+        "chosen_actions": {
+            "type": "int",
+            "dimensions": {
+                "movement": "[1]",
+                "interaction": "[1]"
+            }
+        },
+        "likelihood_mapping": {
+            "type": "float",
+            "dimensions": {
+                "visual_cue": "[4, 3, 2]",
+                "auditory_signal": "[2, 3, 2]"
+            }
+        },
+        "transition_dynamics": {
+            "type": "float",
+            "dimensions": {
+                "location": "[3, 3, 3, 2]",
+                "resource_level": "[2, 2, 3, 2]"
+            }
+        },
+        "preferences": {
+            "type": "float",
+            "dimensions": {
+                "visual_cue": "[4]",
+                "auditory_signal": "[2]"
+            }
+        },
+        "initial_state_priors": {
+            "type": "float",
+            "dimensions": {
+                "location": "[3]",
+                "resource_level": "[2]"
+            }
+        },
+        "expected_free_energy": {
+            "type": "float",
+            "dimensions": "[1]"
         },
         "time": {
-            "data_type": "int",
-            "dimension": [
-                1
-            ]
+            "type": "int",
+            "dimensions": "[1]"
         }
     },
     "potential_applications": [
-        "Testing GNN parsing and rendering capabilities.",
-        "Simulating decision-making processes in uncertain environments.",
-        "Developing POMDP-based agents for autonomous systems.",
-        "Modeling scenarios in robotics, AI planning, and cognitive science."
+        "Simulation of decision-making processes in robotics and AI.",
+        "Testing GNN frameworks for POMDP-related tasks.",
+        "Modeling scenarios with incomplete information and uncertainty in state estimation.",
+        "Active inference in cognitive science research."
     ],
     "limitations_or_ambiguities": [
-        "The InitialParameterization for likelihood and transition matrices is only a placeholder due to parsing complexity of >2D arrays.",
-        "Potential need for manual adjustments or enhancements in parser for multi-dimensional data support.",
-        "The model's complexity may lead to difficulties in interpretation or implementation without robust support for higher-dimensional data."
+        "Complexity in parsing >2D arrays for likelihoods and transition matrices may require enhancements in GNN evaluation.",
+        "Initial parameterization for matrix definitions is a placeholder, indicating that a more robust system is needed.",
+        "The model does not explicitly define transition dynamics, which may affect the evaluation of the model's performance."
     ],
     "ontology_mapping_assessment": {
-        "presence_of_terms": true,
-        "relevance": "ActInfOntology terms are present and relevant, providing a clear mapping to key components such as hidden states, observations, control factors, and expected free energy. This enhances the model's clarity and interoperability with other systems."
+        "terms_present": [
+            "HiddenStateFactor0",
+            "HiddenStateFactor1",
+            "ObservationModality0",
+            "ObservationModality1",
+            "PolicyVector",
+            "ExpectedFreeEnergy",
+            "PriorOverHiddenStatesFactor0",
+            "PriorOverHiddenStatesFactor1"
+        ],
+        "relevancy": "The terms present in the ontology mapping are relevant and accurately reflect the components of the POMDP model, facilitating better understanding and integration into active inference frameworks."
     }
 }

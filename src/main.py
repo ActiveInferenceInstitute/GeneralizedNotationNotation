@@ -70,6 +70,29 @@ from typing import TypedDict, List, Union, Dict, Any, cast # Add typing for clar
 logger = logging.getLogger("GNN_Pipeline")
 # --- End Logger Setup ---
 
+# --- Default Pipeline Step Configuration ---
+# This dictionary controls which pipeline steps are enabled by default.
+# Steps are identified by their script basename.
+# Command-line --skip-steps and --only-steps will override these defaults.
+PIPELINE_STEP_CONFIGURATION: Dict[str, bool] = {
+    "1_gnn.py": True,
+    "2_setup.py": True,
+    "3_tests.py": True,
+    "4_gnn_type_checker.py": True,
+    "5_export.py": True,
+    "6_visualization.py": True,
+    "7_mcp.py": True,
+    "8_ontology.py": True,
+    "9_render.py": True,
+    "10_execute.py": True,
+    "11_llm.py": True,
+    "12_discopy.py": True, # Note: 12_site.py was an old name, 12_discopy.py is current
+    "13_discopy_jax_eval.py": True,
+    "15_site.py": True, # Covers the HTML summary site generation
+    # Add any new [number]_script_name.py here and set to True/False
+}
+# --- End Default Pipeline Step Configuration ---
+
 # Define types for pipeline summary data
 class StepLogData(TypedDict):
     step_number: int
@@ -156,7 +179,7 @@ def parse_arguments():
     parser.add_argument(
         "--llm-timeout",
         type=int,
-        default=360, # Default to 6 minutes for the entire LLM script
+        default=60, # Default to 1 minute for the entire LLM script
         help="Timeout in seconds for the LLM processing step (11_llm.py). Default: 360"
     )
     parser.add_argument(
@@ -254,18 +277,25 @@ def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
 
 def run_pipeline(args: argparse.Namespace):
     logger.info("""
+  ██████╗  ███╗   ██╗ ███╗   ██╗   Pipeline Power!
+ ██╔════╝  ████╗  ██║ ████╗  ██║   ---------------->
+ ██║  ███╗ ██╔██╗ ██║ ██╔██╗ ██║   [Step 1]--[Step 2]--[Step 3] ...
+ ██║   ██║ ██║╚██╗██║ ██║╚██╗██║   ---------------->
+ ╚██████╔╝ ██║ ╚████║ ██║ ╚████║   Gearing up for GNNs!
+   ╚═════╝  ╚═╝  ╚═══╝ ╚═╝  ╚═══╝
+  +-------------------------------------------------+
+  |   Generalized Notation Notation Processor 3500  |
+  |      "We turn markdown into magic!" ✨          |
+  |      (Or at least, structured data.)            |
+  +-------------------------------------------------+
+  | Status: Awake and slightly mischievous.         |
+  | Mood: Ready to parse! (nom nom nom)             |
+  +-------------------------------------------------+
 
- ██████╗ ███╗   ██╗███╗   ██╗  
-██╔════╝ ████╗  ██║████╗  ██║  
-██║  ███╗██╔██╗ ██║██╔██╗ ██║
-██║   ██║██║╚██╗██║██║╚██╗██║    
-╚██████╔╝██║ ╚████║██║ ╚████║    
-                                                                                 
-    Generalized Notation Notation Processing Pipeline 
-    
-    Version 0.1.1 ~ Improvements by AI Assistant
-            
+    Version 0.1.2 ~ May 21, 2025
+
     Initializing GNN Processing Pipeline...
+    Fasten your seatbelts, we're going on a data adventure!
     """)
 
     current_script_dir = Path(__file__).resolve().parent
@@ -357,16 +387,26 @@ def run_pipeline(args: argparse.Namespace):
         is_critical_step = (script_name_no_ext == "2_setup")
 
         should_skip = False
+        # 1. Check --only-steps first (most restrictive)
         if only_steps_input:
             if not (script_name_no_ext in only_steps_input or step_num_str in only_steps_input):
                 should_skip = True
                 step_log_data["details"] = "Skipped due to --only-steps filter."
+        # 2. If not skipped by --only-steps, check --skip-steps
         elif skip_steps_input:
             if (script_name_no_ext in skip_steps_input or step_num_str in skip_steps_input):
                 should_skip = True
                 step_log_data["details"] = "Skipped due to --skip-steps filter."
-        
+        # 3. If not skipped by command-line args, check internal PIPELINE_STEP_CONFIGURATION
+        elif not PIPELINE_STEP_CONFIGURATION.get(script_file_basename, True): # Default to True if script not in config (should not happen with good maintenance)
+            should_skip = True
+            step_log_data["details"] = f"Skipped due to internal configuration (PIPELINE_STEP_CONFIGURATION['{script_file_basename}'] = False)."
+            logger.info(f"⏭️ {step_header} - SKIPPED (Internal Configuration)")
+
         if should_skip:
+            # Ensure logger message reflects the actual reason if already set by CLI options
+            if not step_log_data["details"]: # Should not happen if logic above is correct
+                 step_log_data["details"] = "Skipped (reason not specified, check logic)."
             logger.info(f"⏭️ {step_header} - SKIPPED ({step_log_data['details']})")
             _pipeline_run_data_dict["steps"].append(step_log_data)
             continue
@@ -454,14 +494,25 @@ def run_pipeline(args: argparse.Namespace):
             cmd_list.extend(["--site-html-file", str(args.site_html_filename)])
 
         step_process_env = os.environ.copy()
+        # Ensure src and venv site-packages are prioritized in PYTHONPATH for subprocesses
+        project_src_dir = str(current_script_dir) # Assuming main.py is in src/
+        paths_to_prepend = []
+
         if _venv_site_packages_path_for_subproc:
-            python_path_parts = {str(_venv_site_packages_path_for_subproc)}
-            if "PYTHONPATH" in step_process_env:
-                python_path_parts.update(step_process_env["PYTHONPATH"].split(os.pathsep))
-            step_process_env["PYTHONPATH"] = os.pathsep.join(python_path_parts)
+            paths_to_prepend.append(str(_venv_site_packages_path_for_subproc))
+        
+        # Always ensure the project's src directory is available for imports within pipeline scripts
+        paths_to_prepend.append(project_src_dir)
+
+        existing_pythonpath = step_process_env.get("PYTHONPATH", "")
+        if existing_pythonpath:
+            # Prepend new paths, then append existing ones to maintain their relative order
+            step_process_env["PYTHONPATH"] = os.pathsep.join(paths_to_prepend + [existing_pythonpath])
+        else:
+            step_process_env["PYTHONPATH"] = os.pathsep.join(paths_to_prepend)
         
         logger.debug(f"  Running command: {' '.join(cmd_list)}")
-        if args.verbose and "PYTHONPATH" in step_process_env:
+        if args.verbose:
             logger.debug(f"    with PYTHONPATH: {step_process_env['PYTHONPATH']}")
 
         try:
@@ -469,52 +520,50 @@ def run_pipeline(args: argparse.Namespace):
 
             if args.verbose:
                 logger.debug(f"  Streaming output for command: {' '.join(cmd_list)}")
-                # Use Popen to stream output for verbose mode
+                
+                current_step_timeout = None
+                if script_name_no_ext == "11_llm":
+                    current_step_timeout = args.llm_timeout
+                    logger.debug(f"  Applying LLM step-specific timeout of {current_step_timeout}s for communicate().")
+
                 process = subprocess.Popen(
                     cmd_list,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True,
                     env=step_process_env,
-                    cwd=current_script_dir,
-                    bufsize=1,  # Line buffered
-                    universal_newlines=True # Ensure text mode for iter
+                    cwd=current_script_dir
                 )
                 
-                stdout_lines = []
-                stderr_lines = []
+                try:
+                    # Use communicate with a timeout to prevent hanging on readline
+                    stdout_data, stderr_data = process.communicate(timeout=current_step_timeout)
+                    return_code = process.returncode
+                    step_log_data["stdout"] = stdout_data
+                    step_log_data["stderr"] = stderr_data
 
-                # Log stdout
-                if process.stdout:
-                    for line in iter(process.stdout.readline, ''):
-                        stripped_line = line.strip()
-                        # Log stdout from subprocess at DEBUG level if main.py is verbose.
-                        # This helps keep main pipeline log cleaner unless deep debugging.
-                        if stripped_line: # Avoid logging empty lines
-                            logger.debug(f"    [{script_name_no_ext}-STDOUT] {stripped_line}")
-                        stdout_lines.append(line)
-                    process.stdout.close()
+                    # Log captured output after communicate has finished
+                    if stdout_data:
+                        for line in stdout_data.splitlines():
+                            if line.strip(): # Avoid logging empty lines
+                                logger.debug(f"    [{script_name_no_ext}-STDOUT] {line.strip()}")
+                    if stderr_data:
+                        for line in stderr_data.splitlines():
+                            if line.strip(): # Avoid logging empty lines
+                                logger.warning(f"    [{script_name_no_ext}-STDERR] {line.strip()}")
                 
-                # Log stderr
-                if process.stderr:
-                    for line in iter(process.stderr.readline, ''):
-                        stripped_line = line.strip()
-                        if stripped_line: # Avoid logging empty lines
-                            # Log all actual stderr from subprocess with a clear prefix,
-                            # and use WARNING level to make it visible by default.
-                            logger.warning(f"    [{script_name_no_ext}-STDERR] {stripped_line}")
-                        stderr_lines.append(line)
-                    process.stderr.close()
-                    
-                # Determine timeout for wait() based on the script
-                current_step_timeout = None
-                if script_name_no_ext == "11_llm":
-                    current_step_timeout = args.llm_timeout
-                    logger.debug(f"  Applying LLM step-specific timeout of {current_step_timeout}s for wait().")
+                except subprocess.TimeoutExpired:
+                    # This block will be entered if communicate() times out.
+                    # The outer `except subprocess.TimeoutExpired:` block will handle logging,
+                    # setting status to FAILED_TIMEOUT, and ensuring the process is killed.
+                    # We just need to re-raise the exception for the outer handler.
+                    logger.warning(f"  Process for {script_name_no_ext} timed out during communicate() after {current_step_timeout}s. Killing process (if not already done by outer handler).")
+                    # Ensure process is killed; Popen.communicate() should do this on timeout,
+                    # but an explicit kill here is safer if we are taking over some handling.
+                    # However, the original design is that the outer handler does the kill.
+                    # Let's stick to that: just re-raise.
+                    raise # Re-raise the TimeoutExpired for the outer handler.
 
-                return_code = process.wait(timeout=current_step_timeout)
-                step_log_data["stdout"] = "".join(stdout_lines)
-                step_log_data["stderr"] = "".join(stderr_lines)
             else:
                 # Original behavior for non-verbose mode
                 # Determine timeout for run() based on the script
@@ -601,9 +650,9 @@ def run_pipeline(args: argparse.Namespace):
             # For non-verbose, subprocess.run() handles termination on timeout.
             # Capture any output that might have occurred before timeout
             if args.verbose and process.stdout:
-                 step_log_data["stdout"] = "".join(stdout_lines) + "\n[TIMEOUT OCCURRED - STDOUT MAY BE INCOMPLETE]"
+                 step_log_data["stdout"] = "[TIMEOUT OCCURRED - STDOUT MAY BE INCOMPLETE]" # Simplified
             if args.verbose and process.stderr:
-                step_log_data["stderr"] = "".join(stderr_lines) + "\n[TIMEOUT OCCURRED - STDERR MAY BE INCOMPLETE]"
+                step_log_data["stderr"] = "[TIMEOUT OCCURRED - STDERR MAY BE INCOMPLETE]" # Simplified
             # For non-verbose, this is already handled by subprocess.run returning the captured output up to timeout.
             
             if is_critical_step:

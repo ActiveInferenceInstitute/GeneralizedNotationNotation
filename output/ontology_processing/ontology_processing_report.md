@@ -2,7 +2,7 @@
 
 ## 📊 Summary of Ontology Processing
 
-- **Files Processed:** 3 / 3
+- **Files Processed:** 4 / 4
 - **Total Ontological Annotations Found:** 38
 - **Total Annotations Validated:** 38
   - ✅ Passed: 38
@@ -10,7 +10,7 @@
 
 ---
 
-��️ Report Generated: 2025-05-20 19:05:58
+��️ Report Generated: 2025-05-22 12:41:22
 🎯 GNN Source Directory: `src/gnn/examples`
 📖 Ontology Terms Definition: `src/ontology/act_inf_ontology_terms.json` (Loaded: 48 terms)
 
@@ -43,6 +43,9 @@
 **Validation Summary**: All ontological terms are recognized.
 
 ---
+
+### Ontological Annotations for `src/gnn/examples/gnn_alice_loves_bob.md`
+- No `ActInfOntologyAnnotation` section found or section was empty.
 
 ### Ontological Annotations for `src/gnn/examples/gnn_example_pymdp_agent.md`
 #### Mappings:

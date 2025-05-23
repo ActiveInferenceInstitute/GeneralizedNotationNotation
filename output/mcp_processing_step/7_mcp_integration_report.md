@@ -1,6 +1,6 @@
 # 🤖 MCP Integration and API Report
 
-🗓️ Report Generated: 2025-05-20 19:05:58
+🗓️ Report Generated: 2025-05-22 12:41:21
 
 **MCP Core Directory:** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/mcp`
 **Project Source Root (for modules):** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src`
@@ -897,7 +897,7 @@ Checking for `mcp.py` in these subdirectories of `/home/trim/Documents/GitHub/Ge
 ---
 
 ### Module: `llm` (at `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/llm`)
-- ✅ **`mcp.py` Status:** Found (16468 bytes)
+- ✅ **`mcp.py` Status:** Found (19238 bytes)
 - **Exposed Methods & Tools:**
   - `def ensure_llm_tools_registered(mcp_instance_ref)` (AST parsed) - *"Ensures that LLM tools are registered with the provided MCP instance."
   - `def explain_gnn_file_content(file_path_str, aspect_to_explain)` (AST parsed) - *"Reads a GNN file, sends its content to an LLM, and returns an explanation."

@@ -26,6 +26,7 @@ from pathlib import Path
 import logging
 import re
 import argparse
+import json
 
 # Attempt to import the new logging utility
 try:
@@ -209,10 +210,170 @@ def generate_overall_pipeline_summary_report(target_dir_abs: Path, output_dir_ab
     md_files = list(target_dir_abs.glob("**/*.md" if recursive else "*.md"))
     logger.debug(f"  📊 Found {len(md_files)} .md files for overall summary in '{target_dir_abs}'.")
 
+    # Read pipeline execution summary if available
+    pipeline_summary_file = output_dir_abs / "pipeline_execution_summary.json"
+    pipeline_data = None
+    if pipeline_summary_file.exists():
+        try:
+            with open(pipeline_summary_file, 'r') as f:
+                pipeline_data = json.load(f)
+        except Exception as e:
+            logger.warning(f"Could not read pipeline execution summary: {e}")
+
     with open(summary_file, "w") as f:
         f.write("# 📊 GNN Processing Summary\n\n")
         f.write(f"🗓️ Generated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+        
         f.write("## ⚙️ Processing Configuration\n\n")
+        if pipeline_data and "arguments" in pipeline_data:
+            args = pipeline_data["arguments"]
+            f.write(f"- **Target Directory**: `{args.get('target_dir', 'N/A')}`\n")
+            f.write(f"- **Output Directory**: `{args.get('output_dir', 'N/A')}`\n")
+            f.write(f"- **Recursive Processing**: {args.get('recursive', False)}\n")
+            f.write(f"- **Verbose Mode**: {args.get('verbose', False)}\n")
+            f.write(f"- **Strict Mode**: {args.get('strict', False)}\n")
+            f.write(f"- **Resource Estimation**: {args.get('estimate_resources', False)}\n")
+        else:
+            f.write("- Configuration details not available\n")
+        f.write("\n")
+
+        f.write("## 📁 GNN Files Discovered\n\n")
+        f.write(f"Found **{len(md_files)}** GNN files for processing:\n\n")
+        for md_file in md_files:
+            relative_path = md_file.relative_to(project_root) if md_file.is_relative_to(project_root) else md_file
+            f.write(f"- `{relative_path}`\n")
+        f.write("\n")
+
+        f.write("## 🔄 Pipeline Execution Status\n\n")
+        if pipeline_data and "steps" in pipeline_data:
+            steps = pipeline_data["steps"]
+            total_steps = len(steps)
+            successful_steps = sum(1 for step in steps if step.get("status") == "SUCCESS")
+            failed_steps = sum(1 for step in steps if step.get("status") == "FAILED")
+            
+            f.write(f"**Overall Status**: {successful_steps}/{total_steps} steps completed successfully\n\n")
+            
+            if pipeline_data.get("start_time") and pipeline_data.get("end_time"):
+                start_time = datetime.datetime.fromisoformat(pipeline_data["start_time"])
+                end_time = datetime.datetime.fromisoformat(pipeline_data["end_time"])
+                total_duration = (end_time - start_time).total_seconds()
+                f.write(f"**Total Execution Time**: {total_duration:.2f} seconds\n\n")
+            
+            f.write("### Step-by-Step Results\n\n")
+            f.write("| Step | Script | Status | Duration (s) | Details |\n")
+            f.write("|------|--------|--------|--------------|----------|\n")
+            
+            for step in steps:
+                step_num = step.get("step_number", "?")
+                script_name = step.get("script_name", "unknown")
+                status = step.get("status", "UNKNOWN")
+                duration = step.get("duration_seconds", 0)
+                details = step.get("details", "")
+                
+                status_emoji = "✅" if status == "SUCCESS" else "❌" if status == "FAILED" else "⚠️"
+                f.write(f"| {step_num} | `{script_name}` | {status_emoji} {status} | {duration:.3f} | {details} |\n")
+            
+            f.write("\n")
+            
+            if failed_steps > 0:
+                f.write("### ❌ Failed Steps Details\n\n")
+                for step in steps:
+                    if step.get("status") == "FAILED":
+                        f.write(f"**Step {step.get('step_number')}: {step.get('script_name')}**\n")
+                        f.write(f"- Duration: {step.get('duration_seconds', 0):.3f}s\n")
+                        if step.get("details"):
+                            f.write(f"- Details: {step.get('details')}\n")
+                        f.write("\n")
+        else:
+            f.write("Pipeline execution data not available.\n\n")
+
+        f.write("## 📊 Output Summary\n\n")
+        
+        # Check for various output directories and files
+        output_sections = [
+            ("GNN Processing", "gnn_processing_step"),
+            ("Type Checking", "gnn_type_check"),
+            ("Exports", "gnn_exports"),
+            ("Visualizations", "gnn_examples_visualization"),
+            ("Rendered Simulators", "gnn_rendered_simulators"),
+            ("Test Reports", "test_reports"),
+        ]
+        
+        for section_name, dir_name in output_sections:
+            section_dir = output_dir_abs / dir_name
+            if section_dir.exists():
+                files = list(section_dir.rglob("*"))
+                file_count = len([f for f in files if f.is_file()])
+                f.write(f"- **{section_name}**: {file_count} files in `{dir_name}/`\n")
+            else:
+                f.write(f"- **{section_name}**: No output directory found\n")
+        
+        f.write("\n")
+
+        f.write("## 🔍 Key Findings\n\n")
+        
+        # Analyze test results if available
+        test_report_file = output_dir_abs / "test_reports" / "pytest_report.xml"
+        if test_report_file.exists():
+            try:
+                # Simple XML parsing to extract test results
+                with open(test_report_file, 'r') as tf:
+                    test_content = tf.read()
+                    # Extract basic test statistics from XML
+                    import re
+                    tests_match = re.search(r'tests="(\d+)"', test_content)
+                    failures_match = re.search(r'failures="(\d+)"', test_content)
+                    errors_match = re.search(r'errors="(\d+)"', test_content)
+                    
+                    if tests_match:
+                        total_tests = int(tests_match.group(1))
+                        failures = int(failures_match.group(1)) if failures_match else 0
+                        errors = int(errors_match.group(1)) if errors_match else 0
+                        passed = total_tests - failures - errors
+                        
+                        f.write(f"- **Test Results**: {passed}/{total_tests} tests passed")
+                        if failures > 0 or errors > 0:
+                            f.write(f" ({failures} failures, {errors} errors)")
+                        f.write("\n")
+            except Exception as e:
+                f.write(f"- **Test Results**: Could not parse test report ({e})\n")
+        
+        # Check for GNN parsing issues
+        gnn_discovery_file = output_dir_abs / "gnn_processing_step" / "1_gnn_discovery_report.md"
+        if gnn_discovery_file.exists():
+            try:
+                with open(gnn_discovery_file, 'r') as gf:
+                    gnn_content = gf.read()
+                    if "StateSpaceBlock section not found" in gnn_content:
+                        f.write("- **GNN Parsing**: Some StateSpaceBlock sections not detected\n")
+                    if "Connections section not found" in gnn_content:
+                        f.write("- **GNN Parsing**: Some Connections sections not detected\n")
+            except Exception as e:
+                logger.debug(f"Could not analyze GNN discovery report: {e}")
+        
+        f.write("\n")
+
+        f.write("## 📋 Recommendations\n\n")
+        
+        if pipeline_data and "steps" in pipeline_data:
+            failed_steps = [step for step in pipeline_data["steps"] if step.get("status") == "FAILED"]
+            if failed_steps:
+                f.write("### Immediate Actions Required\n\n")
+                for step in failed_steps:
+                    f.write(f"- **Fix Step {step.get('step_number')} ({step.get('script_name')})**: {step.get('details', 'Check logs for details')}\n")
+                f.write("\n")
+        
+        f.write("### General Improvements\n\n")
+        f.write("- Review and fix any test failures in the PyMDP converter components\n")
+        f.write("- Investigate GNN section parsing issues (StateSpaceBlock/Connections detection)\n")
+        f.write("- Consider running pipeline with `--verbose` flag for detailed debugging\n")
+        f.write("- Check individual step logs in the output directory for specific error details\n")
+        
+        f.write("\n")
+        f.write("---\n")
+        f.write(f"*Report generated by GNN Processing Pipeline Step 5 (Export)*\n")
+
+    logger.info(f"📄 Overall pipeline summary report saved to: {summary_file}")
 
 def main(parsed_args: argparse.Namespace):
     """Main function for the GNN export step (Step 5).\n

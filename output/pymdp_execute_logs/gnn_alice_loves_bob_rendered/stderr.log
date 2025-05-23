@@ -1,0 +1,4 @@
+  File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/pymdp/gnn_alice_loves_bob/gnn_alice_loves_bob_rendered.py", line 81
+    print(f'  AGENT_SCRIPT: action_names = {action_names_dict_str} if {action_names_dict_str} != "{}" else "Not Defined"')
+                                                                                                   ^
+SyntaxError: f-string: valid expression required before '}'

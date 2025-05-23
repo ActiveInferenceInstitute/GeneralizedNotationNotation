@@ -16,21 +16,26 @@ import numpy
 from typing import Optional, Tuple, List, Dict, Any
 import shutil # For cleaning up output directory
 
-# Ensure src directory is in Python path for relative imports
-current_script_path = Path(__file__).resolve()
-project_root = current_script_path.parent.parent # Assuming src/13_discopy_jax_eval.py
+# --- Python Path Setup for 'src' imports ---
+# Ensure the script can find other modules in the 'src' directory, especially when run as a subprocess.
+# This makes the script more robust to different execution contexts.
+_current_script_path = Path(__file__).resolve()
+_src_dir = _current_script_path.parent.parent # Assuming src/13_discopy_jax_eval.py, so parent.parent is project root
+_project_root = _src_dir # If script is in src, then src_dir is project_root/src. If project_root is desired, use parent.parent
 
-# Ensure project_root is at the beginning of sys.path for `import src.xxx`
-if str(project_root) in sys.path:
-    sys.path.remove(str(project_root))
-sys.path.insert(0, str(project_root))
+# Add project_root to sys.path if not already present, to allow 'from src.module import ...'
+# This specifically targets the directory containing the 'src' folder.
+_generalized_notation_notation_root = _current_script_path.parent.parent # This should be GeneralizedNotationNotation/
+if str(_generalized_notation_notation_root) not in sys.path:
+    sys.path.insert(0, str(_generalized_notation_notation_root))
+    # print(f"[13_discopy_jax_eval.py sys.path debug] Added to sys.path: {str(_generalized_notation_notation_root)}", file=sys.stderr)
+# --- End Python Path Setup ---
 
-# Ensure src is also in sys.path
-if str(project_root / "src") in sys.path:
-    sys.path.remove(str(project_root / "src"))
-sys.path.insert(1, str(project_root / "src"))
+# --- Set up logging ---
+# Standalone logger for this script - DEFINED EARLY
+logger = logging.getLogger(__name__) # MOVED TO TOP
 
-# Import JAX_AVAILABLE first from translator to gate subsequent imports
+# --- JAX and DisCoPy Availability Flags & Placeholders (initialized assuming not available) ---
 _JAX_CORE_AVAILABLE_FROM_TRANSLATOR = False
 _DISCOPY_JAX_BACKEND_FROM_TRANSLATOR = None # Will hold the actual backend object or placeholder
 _DISCOPY_MATRIX_COMPONENTS_AVAILABLE_FROM_TRANSLATOR = False # New flag
@@ -38,14 +43,39 @@ _DISCOPY_MATRIX_COMPONENTS_AVAILABLE_FROM_TRANSLATOR = False # New flag
 try:
     # Import all relevant flags and the backend object from the translator
     from src.discopy_translator_module.translator import JAX_CORE_AVAILABLE as _JAX_CORE_AVAILABLE_FROM_TRANSLATOR, \
-                                                       DISCOPY_MATRIX_AVAILABLE as _DISCOPY_MATRIX_COMPONENTS_AVAILABLE_FROM_TRANSLATOR, \
+                                                       DISCOPY_MATRIX_MODULE_AVAILABLE as _DISCOPY_MATRIX_COMPONENTS_AVAILABLE_FROM_TRANSLATOR, \
                                                        JAX_AVAILABLE as _OVERALL_JAX_READY_FROM_TRANSLATOR, \
-                                                       discopy_backend as _DISCOPY_JAX_BACKEND_FROM_TRANSLATOR
+                                                       discopy_backend as _DISCOPY_JAX_BACKEND_FROM_TRANSLATOR, \
+                                                       Ty as _DisCoPy_Ty, Dim as _DisCoPy_Dim, Box as _DisCoPy_Box, Diagram as _DisCoPy_Diagram, Matrix as _DisCoPy_Matrix # Import DisCoPy base classes
+
+    # The following debug logs will be moved outside this try-except block
+    # logger.debug(f"Successfully imported flags from translator: JAX_CORE={_JAX_CORE_AVAILABLE_FROM_TRANSLATOR}, "
+    #              f"DISCOPY_MATRIX_COMPONENTS={_DISCOPY_MATRIX_COMPONENTS_AVAILABLE_FROM_TRANSLATOR}, "
+    #              f"OVERALL_JAX_READY={_OVERALL_JAX_READY_FROM_TRANSLATOR}")
+    # logger.debug(f"Imported discopy_backend from translator is of type: {type(_DISCOPY_JAX_BACKEND_FROM_TRANSLATOR)}")
+    # logger.debug(f"Imported DisCoPy types: Ty={type(_DisCoPy_Ty)}, Dim={type(_DisCoPy_Dim)}, Box={type(_DisCoPy_Box)}, Diagram={type(_DisCoPy_Diagram)}, Matrix={type(_DisCoPy_Matrix)}")
+
 except ImportError as e_translator_core:
-    logging.basicConfig(level=logging.ERROR)
-    _logger_init_fail_translator = logging.getLogger(__name__)
-    _logger_init_fail_translator.error(f"Failed to import core JAX flags from translator: {e_translator_core}")
-    # JAX_AVAILABLE will remain False, discopy_backend will remain None
+    logging.basicConfig(level=logging.ERROR) # Basic fallback logger if module logger isn't even setup
+    # logger is defined at module level, should be available here.
+    # If this critical error occurs, the script will likely abort in check_jax_fully_operational().
+    logger.critical(f"Failed to import core JAX flags or types from translator: {e_translator_core}")
+    _JAX_CORE_AVAILABLE_FROM_TRANSLATOR = False
+    _DISCOPY_MATRIX_COMPONENTS_AVAILABLE_FROM_TRANSLATOR = False
+    _OVERALL_JAX_READY_FROM_TRANSLATOR = False
+    _DISCOPY_JAX_BACKEND_FROM_TRANSLATOR = None 
+    # Placeholders for DisCoPy types will be used as they are initialized globally
+
+# Log the imported flags and backend type for debugging - MOVED HERE from the try block
+logger.debug(f"Flags from translator after import attempt: JAX_CORE={_JAX_CORE_AVAILABLE_FROM_TRANSLATOR}, "
+             f"DISCOPY_MATRIX_COMPONENTS={_DISCOPY_MATRIX_COMPONENTS_AVAILABLE_FROM_TRANSLATOR}, "
+             f"OVERALL_JAX_READY={_OVERALL_JAX_READY_FROM_TRANSLATOR}")
+logger.debug(f"Imported discopy_backend from translator is of type: {type(_DISCOPY_JAX_BACKEND_FROM_TRANSLATOR)}")
+# Ensure _DisCoPy_Ty etc. are defined even if import failed (they should be due to global placeholders)
+# Using string 'PlaceholderBase_local_ref' for logging if actual PlaceholderBase not imported.
+logger.debug(f"Imported DisCoPy types after import attempt: Ty={type(globals().get('_DisCoPy_Ty', 'PlaceholderBase_local_ref'))}, "
+             f"Dim={type(globals().get('_DisCoPy_Dim', 'PlaceholderBase_local_ref'))}, Box={type(globals().get('_DisCoPy_Box', 'PlaceholderBase_local_ref'))}, "
+             f"Diagram={type(globals().get('_DisCoPy_Diagram', 'PlaceholderBase_local_ref'))}, Matrix={type(globals().get('_DisCoPy_Matrix', 'PlaceholderBase_local_ref'))}")
 
 try:
     # These are the primary functions and flags this script uses directly from the translator
@@ -122,8 +152,6 @@ elif not JAX_FULLY_OPERATIONAL and _JAX_CORE_AVAILABLE_FROM_TRANSLATOR and _DISC
         "Consider reinstalling DisCoPy with matrix/JAX support: pip install --upgrade \"discopy[matrix]\". Aborting 13_discopy_jax_eval.py step."
     )
 # Redundant checks for placeholder removed as direct isinstance is used now.
-
-logger = logging.getLogger(__name__) # GNN_Pipeline.13_discopy_jax_eval or __main__
 
 DEFAULT_OUTPUT_SUBDIR = "discopy_jax_eval"
 

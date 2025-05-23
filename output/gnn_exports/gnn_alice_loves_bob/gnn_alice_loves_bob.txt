@@ -1,0 +1,32 @@
+GNN Model Summary: Alice Loves Bob - DisCoPy Quantum NLP Example
+Source File: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_alice_loves_bob.md
+
+Metadata:
+  description: This GNN file represents the "Alice loves Bob" quantum NLP example from DisCoPy.
+It's designed to be parsed by `discopy_translator_module` and produce a JAX-backed
+DisCoPy diagram that evaluates to the expected amplitude.
+The target amplitude for "Alice loves Bob" is [0.0 - 1.0j].
+
+States (9):
+  - ID: n (dimensions=2, original_id=n)
+  - ID: s (dimensions=1, original_id=s)
+  - ID: InitState_scalar (dimensions=1, original_id=InitState_scalar)
+  - ID: QubitState_A (dimensions=2, original_id=QubitState_A)
+  - ID: QubitState_L1 (dimensions=2, original_id=QubitState_L1)
+  - ID: QubitState_L2 (dimensions=2, original_id=QubitState_L2)
+  - ID: QubitState_B (dimensions=2, original_id=QubitState_B)
+  - ID: Combined_4Qubit_State (dimensions=16, original_id=Combined_4Qubit_State)
+  - ID: FinalScalarOutput (dimensions=1, original_id=FinalScalarOutput)
+
+Initial Parameters (0):
+
+General Parameters (0):
+
+Observations (0):
+
+Transitions (2):
+  - None -> None
+  - None -> None
+
+Ontology Annotations (0):
+

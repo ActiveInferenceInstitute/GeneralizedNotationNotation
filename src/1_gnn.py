@@ -21,6 +21,7 @@ from pathlib import Path
 import re # For parsing sections
 import logging
 import argparse # Added
+from typing import TypedDict, List, Dict, Any # Added for FileSummaryType
 
 # Attempt to import the new logging utility
 try:
@@ -52,6 +53,16 @@ logger = logging.getLogger(__name__) # Use module name for logger
 # --- Global variable to store project_root if determined by main() or process_gnn_folder() ---
 _project_root_path_1_gnn = None
 # --- End Global ---
+
+# --- Define TypedDict for file_summary structure ---
+class FileSummaryType(TypedDict):
+    file_name: str
+    path: str
+    model_name: str
+    sections_found: List[str]
+    model_parameters: Dict[str, Any] # Or more specific type if parameters are uniform
+    errors: List[str]
+# --- End TypedDict ---
 
 def _get_relative_path_if_possible(absolute_path_obj: Path, project_root: Path | None) -> str:
     """Returns a path string relative to project_root if provided and applicable, otherwise absolute."""
@@ -140,13 +151,13 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Path | 
         
         logger.debug(f"Processing file: {path_for_report_str}")
         
-        file_summary = {
-            "file_name": resolved_gnn_file_path.name, # Use resolved path's name
+        file_summary: FileSummaryType = {
+            "file_name": resolved_gnn_file_path.name,
             "path": path_for_report_str,
-            "model_name": "Not found", # Added for specific storage
-            "sections_found": [],
-            "model_parameters": {}, # Added to store parsed ModelParameters
-            "errors": []
+            "model_name": "Not found",
+            "sections_found": list(),
+            "model_parameters": dict(),
+            "errors": list()
         }
         try:
             with open(resolved_gnn_file_path, "r", encoding="utf-8") as f: # Use resolved path to open
@@ -161,7 +172,8 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Path | 
 
             # Regex to find the "## ModelName" header, case-insensitive for "ModelName"
             # It captures the header itself to know its end position.
-            model_name_header_pattern = re.compile(rf"^##\s*{model_name_section_header_text}\s*$\r?", re.IGNORECASE | re.MULTILINE)
+            _model_name_regex_string: str = rf"^##\s*{model_name_section_header_text}\s*$\r?"
+            model_name_header_pattern: re.Pattern[str] = re.compile(_model_name_regex_string, re.IGNORECASE | re.MULTILINE)
             model_name_header_match = model_name_header_pattern.search(content)
 
             if model_name_header_match:

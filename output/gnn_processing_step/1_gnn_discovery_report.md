@@ -1,12 +1,12 @@
 # GNN File Discovery Report
 
-Processed 3 GNN file(s) from directory: `src/gnn/examples`
+Processed 4 GNN file(s) from directory: `src/gnn/examples`
 Search pattern used: `**/*.md`
 
 ## Overall Summary
 
-- GNN files processed: 3
-- Files with ModelName found: 3
+- GNN files processed: 4
+- Files with ModelName found: 4
 - Files with StateSpaceBlock found: 0
 - Files with Connections section found: 0
 - Files with processing errors: 0
@@ -30,6 +30,15 @@ Search pattern used: `**/*.md`
 - StateSpaceBlock: Not found
 - Connections: Not found
 - ModelParameters: Found (3 parameters parsed)
+
+---
+### File: `src/gnn/examples/gnn_alice_loves_bob.md`
+
+#### Found Sections:
+- ModelName: Found: Alice Loves Bob - DisCoPy Quantum NLP Example
+- StateSpaceBlock: Not found
+- Connections: Not found
+- ModelParameters: Not found
 
 ---
 ### File: `src/gnn/examples/gnn_example_pymdp_agent.md`

@@ -83,6 +83,26 @@ SUMMARY_FILE_SUFFIX = "_summary.txt"
 COMPREHENSIVE_ANALYSIS_FILE_SUFFIX = "_comprehensive_analysis.json" # Changed to JSON for structured data
 QA_FILE_SUFFIX = "_qa.json"
 
+# --- LLM Initialization Handler ---
+class LLMInitializer:
+    _initialized = False
+
+    def ensure_initialized(self, mcp_instance_ref, llm_mcp_ref):
+        if not self._initialized:
+            if not llm_mcp_ref or not mcp_instance_ref:
+                logger.error("LLM MCP module or main MCP instance not available for initialization.")
+                raise RuntimeError("LLM initialization prerequisites missing.")
+            try:
+                logger.info("Ensuring LLM tools are registered (one-time setup)...")
+                llm_mcp_ref.ensure_llm_tools_registered(mcp_instance_ref)
+                self._initialized = True
+                logger.info("LLM tools registration check complete and API key loaded.")
+            except Exception as e_reg:
+                logger.error(f"Failed to ensure LLM tools were registered: {e_reg}", exc_info=True)
+                raise # Re-raise the exception to halt processing if initialization fails
+
+llm_initializer = LLMInitializer() # Module-level instance
+
 # Define task constants
 TASK_SUMMARY = "summary"
 TASK_ANALYSIS = "analysis"
@@ -103,18 +123,14 @@ def process_gnn_with_llm(gnn_file_path: Path, output_dir_for_file: Path, tasks_t
         logger.error(f"LLM operations module, LLM MCP, or main MCP instance not available. Skipping {gnn_file_path.name}")
         return
 
-    # Ensure LLM tools are registered (this also handles API key loading)
     try:
-        logger.info(f"Ensuring LLM tools are registered for {gnn_file_path.name}...")
-        llm_mcp.ensure_llm_tools_registered(mcp_instance) # Pass the actual mcp_instance
-        # Check if the API key was loaded successfully.
-        # Assuming a function `is_api_key_loaded()` exists or can be added to llm_operations.
-        # For now, we'll rely on the logging within ensure_llm_tools_registered/initialize_llm_module.
-        # If mcp_instance.sdk_status is available and relevant to LLM, could check that too.
-        logger.info(f"LLM tools registration check complete for {gnn_file_path.name}.")
-    except Exception as e_reg:
-        logger.error(f"Failed to ensure LLM tools were registered for {gnn_file_path.name}: {e_reg}", exc_info=True)
-        return # Cannot proceed if tools are not registered
+        llm_initializer.ensure_initialized(mcp_instance, llm_mcp)
+    except RuntimeError:
+        logger.error(f"LLM initialization failed. Skipping GNN file: {gnn_file_path.name}")
+        return
+    except Exception as e_init: # Catch any other unexpected error from ensure_initialized
+        logger.error(f"Unexpected error during LLM initialization for {gnn_file_path.name}: {e_init}", exc_info=True)
+        return
 
     logger.info(f"Processing GNN file with LLM: {gnn_file_path.name}")
 
@@ -437,18 +453,18 @@ but can be run standalone for testing with appropriate arguments.
         logger.error("Main MCP instance is not available. Cannot ensure LLM tools registration for standalone run. Exiting.")
         sys.exit(1)
     
+    # Standalone run: ensure LLM tools are registered.
+    # The llm_initializer instance handles the "only once" logic.
     try:
-        logger.info("Standalone run: Ensuring LLM tools are registered...")
-        if llm_mcp: # if llm_mcp was successfully imported
-            llm_mcp.ensure_llm_tools_registered(mcp_instance)
-            logger.info("Standalone run: LLM tools registration check complete.")
-        else:
-            logger.error("Standalone run: llm_mcp module not available. Cannot register LLM tools.")
-            sys.exit(1) # Cannot proceed without llm_mcp
+        logger.info("Standalone run: Ensuring LLM tools are registered (if not already done)...")
+        llm_initializer.ensure_initialized(mcp_instance, llm_mcp) # Use the instance
+        logger.info("Standalone run: LLM tools registration check complete.")
+    except RuntimeError:
+        logger.error("Standalone run: LLM initialization failed. Exiting.")
+        sys.exit(1)
     except Exception as e_reg_standalone:
         logger.error(f"Standalone run: Failed to ensure LLM tools were registered: {e_reg_standalone}", exc_info=True)
         sys.exit(1)
-
 
     exit_code = main(parsed_args)
     sys.exit(exit_code) 

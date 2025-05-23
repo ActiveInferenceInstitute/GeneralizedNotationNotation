@@ -244,7 +244,8 @@ class GnnToRxInferConverter:
                any(op in value for op in ["+:", "-:", "*:", "/:", ".*", ".+", ".-", ".:", "[", "]"]) : # crude check for expressions
                 return value
             # It's likely a string literal that needs quoting for Julia
-            return f'"{value.replace("\"", "\\\"")}"' # Escape double quotes for Julia string
+            escaped_value = value.replace("\"", "\\\"") # Julia string escape: " -> \"
+            return f'"{escaped_value}"'
         elif isinstance(value, bool):
             return str(value).lower()
         # Numbers, etc., can be directly converted to string

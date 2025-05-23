@@ -11,207 +11,202 @@ import json # For parsing tensor initializers
 import numpy # For loading .npy files
 from typing import Union, List, Dict, Any, Callable, Optional # Added typing imports
 import sys # Added sys import for sys.path logging
+import functools
 
 # Initialize logger early for use in placeholder classes
 logger = logging.getLogger(__name__)
 
-# --- Define Placeholder Classes ---
+# Global variables for DisCoPy components, JAX, and jax.numpy
+# These will be replaced by actual imports if available, otherwise they remain placeholders.
+Dim, Box, Diagram, Id, Swap, Cup, Cap, Spider, Functor, Matrix = None, None, None, None, None, None, None, None, None, None
+Ty, Word = None, None 
+jax, jnp = None, None 
+discopy_backend = None # For discopy.matrix.backend
+
+TENSOR_COMPONENTS_AVAILABLE = False
+TY_AVAILABLE = False
+JAX_CORE_AVAILABLE = False # Specific to JAX itself
+DISCOPY_MATRIX_MODULE_AVAILABLE = False # Specific to discopy.matrix module
+JAX_AVAILABLE = False # Overall flag for JAX-backed DisCoPy readiness
+
+# Placeholder base class (defined once)
 class PlaceholderBase:
-    """A base placeholder class for DisCoPy JAX-related components when JAX is not available."""
+    """A base placeholder class for DisCoPy JAX-related components when JAX/DisCoPy is not available."""
     def __init__(self, *args, **kwargs):
-        # Ensure 'name' is captured for better logging if provided.
-        self.name_for_debug = kwargs.get('name', f'UnnamedPlaceholder_{type(self).__name__}')
-        logger.debug(f"{self.name_for_debug} initialized with args: {args}, kwargs: {kwargs}")
+        self.name = kwargs.get('name', f'UnnamedPlaceholder_{type(self).__name__}')
+        # logger.debug(f"{self.name} initialized with args: {args}, kwargs: {kwargs}") # Logger might not be init'd here
         self.args = args
         self.kwargs = kwargs
 
     def __call__(self, *args, **kwargs):
-        logger.debug(f"{self.name_for_debug} called with args: {args}, kwargs: {kwargs}")
+        # logger.debug(f"{self.name} called with args: {args}, kwargs: {kwargs}")
         return self
 
     def __getattr__(self, name: str):
-        logger.debug(f"{self.name_for_debug}.__getattr__ called for '{name}'. Returning placeholder for it.")
-        if name in ['dom', 'cod', 'boxes', 'shape', 'array', 'inside']:
-             if name == 'boxes': return []
-             if name == 'inside': return ()
-             if name == 'shape': return ()
-             if name == 'array': return numpy.array([])
-             new_placeholder_name = f"attr_{name}_on_{self.name_for_debug}"
-             return PlaceholderBase(name=new_placeholder_name)
-        raise AttributeError(f"'{type(self).__name__}' (placeholder: {self.name_for_debug}) object has no attribute '{name}'")
-
-    def eval(self):
-        logger.warning(f"eval() called on {self.name_for_debug}. JAX/DisCoPy matrix components likely not available.")
-        return PlaceholderBase(name=f"eval_result_on_{self.name_for_debug}")
-    
-    def __matmul__(self, other):
-        logger.debug(f"{self.name_for_debug} __matmul__ called with {other}")
-        return PlaceholderBase(name=f"matmul_result_on_{self.name_for_debug}")
-
-    def __rshift__(self, other):
-        logger.debug(f"{self.name_for_debug} __rshift__ called with {other}")
-        return PlaceholderBase(name=f"rshift_result_on_{self.name_for_debug}")
-
-class DimPlaceholder(PlaceholderBase):
-    """A placeholder class for DisCoPy's Dim when JAX is not available."""
-    def __init__(self, *values):
-        super().__init__(values=values, name=f"DimPlaceholder({values})")
-        self.values = values
-        # logger.debug(f"DimPlaceholder initialized with values: {values}") # Covered by super
-
-    def __repr__(self):
-        return f"DimPlaceholder({', '.join(map(str, self.values))})"
-    
-    @property
-    def inside(self):
-        return self.values
-
-class PlaceholderBackend:
-    def __init__(self, name="placeholder_backend"):
-        self.name = name
-        logger.info(f"Using PlaceholderBackend for '{name}'")
-
-    def __enter__(self):
-        logger.debug(f"Entering PlaceholderBackend context for {self.name}")
-        class PlaceholderNp:
-            def __getattr__(self, attr_name):
-                logger.debug(f"PlaceholderNp: Attempting to access '{attr_name}'")
-                # Simplified for brevity, can be expanded as before
-                if attr_name in ['array', 'float32', 'complex64', 'zeros', 'ones', 'eye', 'normal', 'uniform']:
-                    def placeholder_np_method(*args, **kwargs):
-                        logger.debug(f"PlaceholderNp.{attr_name} called with args: {args}, kwargs: {kwargs}")
-                        if attr_name == 'array': return numpy.array(args[0]) if args else numpy.array([])
-                        if attr_name == 'float32': return 'float32'
-                        if attr_name == 'complex64': return 'complex64'
-                        # For functions like zeros, ones, normal, uniform, they often take a shape.
-                        # Returning a placeholder that itself might be an empty array or a specific placeholder.
-                        return PlaceholderBase(name=f"placeholder_np_{attr_name}_result")
-                    return placeholder_np_method
-                raise AttributeError(f"PlaceholderNp has no attribute '{attr_name}'")
-        return PlaceholderNp()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        logger.debug(f"Exiting PlaceholderBackend context for {self.name}")
-
-    def __call__(self, backend_name: str):
-        logger.debug(f"PlaceholderBackend called with backend_name: {backend_name}. This instance is {self.name}")
+        if name == 'inside': # Common attribute for Dim
+            return () 
+        # logger.debug(f"{self.name}.__getattr__('{name}') called, returning self.")
         return self
-# --- End Placeholder Classes ---
-
-# --- Initialize Global Names and Flags ---
-JAX_CORE_AVAILABLE = False
-DISCOPY_MATRIX_AVAILABLE = False
-JAX_AVAILABLE = False # Overall flag for JAX + DisCoPy matrix readiness
-
-jax = None # Placeholder for jax module
-jnp = None # Placeholder for jax.numpy module
-
-# DisCoPy monoidal components
-Ty = PlaceholderBase(name="Ty_placeholder")
-
-# DisCoPy tensor components (will be tried first for non-JAX, or as fallback)
-TensorDim = DimPlaceholder() # Placeholder for discopy.tensor.Dim
-TensorBox = PlaceholderBase(name="TensorBox_placeholder")
-TensorDiagram = PlaceholderBase(name="TensorDiagram_placeholder")
-TensorId = PlaceholderBase(name="TensorId_placeholder")
-
-# DisCoPy matrix components (tried if JAX is available)
-MatrixDim = DimPlaceholder()    # Placeholder for discopy.matrix.Dim
-MatrixBox = PlaceholderBase(name="MatrixBox_placeholder")
-MatrixDiagram = PlaceholderBase(name="MatrixDiagram_placeholder")
-MatrixId = PlaceholderBase(name="MatrixId_placeholder")
-Matrix = PlaceholderBase(name="Matrix_data_placeholder") # For discopy.matrix.Matrix (data container)
-
-# Default global Dim to a placeholder. It will be updated based on imports.
-Dim = DimPlaceholder()
-
-# Backend
-discopy_backend = PlaceholderBackend() # Placeholder for discopy.matrix.backend
-# --- End Initialization of Global Names ---
-
-# --- Attempt Imports (This section will be populated by subsequent edits) ---
-
-# 1. Try to import discopy.monoidal.Ty
-try:
-    from discopy.monoidal import Ty as Ty_actual
-    Ty = Ty_actual # Update global Ty if import is successful
-    logger.info("Successfully imported Ty from discopy.monoidal.")
-except ImportError as e_ty:
-    logger.warning(f"Failed to import Ty from discopy.monoidal: {e_ty}. Global Ty remains {type(Ty)}.")
-    # Ty remains its placeholder value if import fails
-
-# 2. Try to import JAX core
-try:
-    import sys # For logging sys.path, though already imported earlier if this is run multiple times
-    logger.debug(f"Attempting to import JAX. sys.path: {sys.path}")
-    import jax as jax_actual
-    import jax.numpy as jnp_actual
-    jax = jax_actual # Update global jax
-    jnp = jnp_actual # Update global jnp
-    JAX_CORE_AVAILABLE = True
-    logger.info("JAX and jax.numpy imported successfully.")
-except ImportError as e_jax_core:
-    logger.warning(f"Failed to import JAX core (jax, jax.numpy): {e_jax_core}. JAX features will be unavailable.")
-    # jax, jnp remain None (their initial placeholder value), JAX_CORE_AVAILABLE remains False
-
-# 3. Conditional import of DisCoPy tensor and matrix components
-if JAX_CORE_AVAILABLE:
-    logger.info("JAX core is available. Attempting to import DisCoPy matrix components and then tensor components.")
-    try:
-        from discopy.matrix import Dim as MatrixDim_actual, Box as MatrixBox_actual, Diagram as MatrixDiagram_actual, Id as MatrixId_actual, Matrix as Matrix_actual, backend as backend_actual
         
-        Dim = MatrixDim_actual                 # Global Dim uses matrix.Dim when JAX is on
-        MatrixBox = MatrixBox_actual
-        MatrixDiagram = MatrixDiagram_actual
-        MatrixId = MatrixId_actual
-        Matrix = Matrix_actual
+    def __repr__(self):
+        return f"{type(self).__name__}Placeholder(args={self.args}, kwargs={self.kwargs})"
+
+# --- Define specific placeholder classes ---
+class DimPlaceholder(PlaceholderBase): pass
+class BoxPlaceholder(PlaceholderBase): pass
+class DiagramPlaceholder(PlaceholderBase): pass
+class IdPlaceholder(PlaceholderBase): pass
+class SwapPlaceholder(PlaceholderBase): pass
+class CupPlaceholder(PlaceholderBase): pass
+class CapPlaceholder(PlaceholderBase): pass
+class SpiderPlaceholder(PlaceholderBase): pass
+class FunctorPlaceholder(PlaceholderBase): pass
+class MatrixPlaceholder(BoxPlaceholder): pass # Matrix is a type of Box
+class TyPlaceholder(PlaceholderBase): pass
+class WordPlaceholder(BoxPlaceholder): pass # Word is a type of Box
+class JaxPlaceholder:
+    def __getattr__(self, name):
+        raise AttributeError(f"JAX not available. Cannot access jax.{name}")
+class JnpPlaceholder:
+    def __getattr__(self, name):
+        raise AttributeError(f"JAX (numpy) not available. Cannot access jnp.{name}")
+    def array(self, data, dtype=None): # Mock jnp.array
+        if isinstance(data, list) and all(isinstance(x, complex) for x in data):
+            return [complex(item.real, item.imag) for item in data] # Keep as list of python complex
+        return data # return raw data
+class DiscopyBackendPlaceholder:
+    def __enter__(self): pass
+    def __exit__(self, exc_type, exc_val, exc_tb): pass
+
+
+# Assign placeholders by default
+Dim, Box, Diagram, Id, Swap, Cup, Cap, Spider, Functor, Matrix = (
+    DimPlaceholder(), BoxPlaceholder(), DiagramPlaceholder(), IdPlaceholder(), SwapPlaceholder(), 
+    CupPlaceholder(), CapPlaceholder(), SpiderPlaceholder(), FunctorPlaceholder(), MatrixPlaceholder()
+)
+Ty, Word = TyPlaceholder(), WordPlaceholder()
+jax, jnp = JaxPlaceholder(), JnpPlaceholder()
+discopy_backend = DiscopyBackendPlaceholder()
+
+
+# --- Attempt Imports ---
+
+# 1. Configure logging (early, so import attempts can log)
+# Logging setup is done after this import block by the main script normally.
+# For direct execution/testing of this module, basic logging can be enabled here.
+# We'll rely on the main script's logger for now.
+
+# 2. Try to import discopy.monoidal components (Ty, Word)
+try:
+    from discopy.monoidal import Ty as Ty_actual, Word as Word_actual
+    Ty = Ty_actual
+    Word = Word_actual
+    TY_AVAILABLE = True
+    logger.info("Successfully imported Ty, Word from discopy.monoidal.")
+except ImportError as e_monoidal:
+    logger.warning(f"Failed to import Ty, Word from discopy.monoidal: {e_monoidal}. They remain placeholders.")
+    # Ty, Word remain TyPlaceholder, WordPlaceholder
+
+# 3. Try to import discopy.tensor components and discopy.matrix.Matrix
+# These are essential for JAX backend.
+try:
+    from discopy.tensor import (
+        Dim as Dim_actual, Box as Box_actual, Diagram as Diagram_actual, Id as Id_actual,
+        Swap as Swap_actual, Cup as Cup_actual, Cap as Cap_actual, Spider as Spider_actual,
+        Functor as Functor_actual
+    )
+    from discopy.matrix import Matrix as Matrix_actual
+
+    Dim = Dim_actual
+    Box = Box_actual
+    Diagram = Diagram_actual
+    Id = Id_actual
+    Swap = Swap_actual
+    Cup = Cup_actual
+    Cap = Cap_actual
+    Spider = Spider_actual
+    Functor = Functor_actual
+    Matrix = Matrix_actual
+
+    TENSOR_COMPONENTS_AVAILABLE = True
+    logger.info("Successfully imported core components from discopy.tensor and discopy.matrix.Matrix.")
+
+except ImportError as e_tensor_matrix:
+    logger.error(f"CRITICAL: Failed to import core components from discopy.tensor or discopy.matrix.Matrix: {e_tensor_matrix}")
+    logger.error("DisCoPy JAX translation cannot proceed without these. Ensure DisCoPy is correctly installed.")
+    # Dim, Box, etc. remain placeholders as set initially.
+    TENSOR_COMPONENTS_AVAILABLE = False
+
+# 4. Attempt to import JAX and jax.numpy only if tensor components are available
+if TENSOR_COMPONENTS_AVAILABLE:
+    try:
+        import jax as jax_actual_import
+        import jax.numpy as jnp_actual_import
+        
+        jax = jax_actual_import
+        jnp = jnp_actual_import
+
+        _ = jnp.array([1, 2, 3]) # Test JAX
+        JAX_CORE_AVAILABLE = True
+        logger.info("JAX and jax.numpy imported successfully and tested.")
+    except ImportError as e_jax:
+        logger.warning(f"JAX or jax.numpy not found, or basic JAX op failed: {e_jax}. JAX-dependent features will be disabled.")
+        # jax, jnp remain placeholders
+        JAX_CORE_AVAILABLE = False
+    except Exception as e_jax_other:
+        logger.warning(f"An error occurred during JAX import or test: {e_jax_other}. JAX-dependent features will be disabled.")
+        # jax, jnp remain placeholders
+        JAX_CORE_AVAILABLE = False
+else:
+    logger.warning("Import of JAX and jax.numpy skipped as TENSOR_COMPONENTS_AVAILABLE is False.")
+    # jax, jnp remain placeholders
+    JAX_CORE_AVAILABLE = False
+
+
+# 5. Try to import discopy.matrix.backend
+# This is needed for `with discopy_backend(\'jax\'):`
+if JAX_CORE_AVAILABLE: # Only if JAX itself is loaded
+    try:
+        from discopy.matrix import backend as backend_actual
         discopy_backend = backend_actual
-        
-        DISCOPY_MATRIX_AVAILABLE = True
-        JAX_AVAILABLE = True # Overall: JAX core + DisCoPy matrix are ready
-        logger.info("Successfully imported DisCoPy matrix components. JAX is fully available for DisCoPy.")
+        DISCOPY_MATRIX_MODULE_AVAILABLE = True # Signifies backend context manager is available
+        logger.info("Successfully imported backend from discopy.matrix.")
+    except ImportError as e_matrix_backend:
+        logger.warning(f"JAX core is available, but failed to import backend from discopy.matrix: {e_matrix_backend}.")
+        # discopy_backend remains placeholder
+        DISCOPY_MATRIX_MODULE_AVAILABLE = False
+else:
+    logger.warning("Import of discopy.matrix.backend skipped as JAX_CORE_AVAILABLE is False.")
+    # discopy_backend remains placeholder
+    DISCOPY_MATRIX_MODULE_AVAILABLE = False
 
-    except ImportError as e_discopy_matrix:
-        logger.warning(f"JAX core is available, but DisCoPy matrix components failed to import: {e_discopy_matrix}. Matrix features will use placeholders. JAX_AVAILABLE (overall) remains False.")
-        # DISCOPY_MATRIX_AVAILABLE remains False, JAX_AVAILABLE remains False
-        # Matrix*, Matrix, discopy_backend, and global Dim (which would have been matrix.Dim) remain placeholders.
-        # Global Dim will be attempted by tensor import next.
+# 6. Determine overall JAX_AVAILABLE readiness for DisCoPy
+if TENSOR_COMPONENTS_AVAILABLE and JAX_CORE_AVAILABLE and DISCOPY_MATRIX_MODULE_AVAILABLE and TY_AVAILABLE:
+    JAX_AVAILABLE = True
+    logger.info("JAX_AVAILABLE is True: JAX and all required DisCoPy components are loaded for JAX backend.")
+else:
+    JAX_AVAILABLE = False
+    logger.warning("JAX_AVAILABLE is False. One or more critical components (DisCoPy tensor/matrix/monoidal, JAX core, DisCoPy backend) failed to load.")
 
-    # Always attempt to import tensor components if JAX_CORE_AVAILABLE, for separate use or as fallback for Dim
-    try:
-        from discopy.tensor import Dim as TensorDim_actual, Box as TensorBox_actual, Diagram as TensorDiagram_actual, Id as TensorId_actual
-        TensorDim = TensorDim_actual # Store specifically as TensorDim
-        TensorBox = TensorBox_actual
-        TensorDiagram = TensorDiagram_actual
-        TensorId = TensorId_actual
-        logger.info("Successfully imported discopy.tensor components (alongside JAX core attempt).")
-        if not DISCOPY_MATRIX_AVAILABLE: # If matrix failed, global Dim falls back to tensor.Dim
-            Dim = TensorDim_actual
-            logger.info("DisCoPy matrix import failed; global Dim is now discopy.tensor.Dim.")
-    except ImportError as e_tensor_with_jax:
-        logger.warning(f"Failed to import discopy.tensor components (JAX core attempt was made): {e_tensor_with_jax}. Tensor components will use placeholders.")
-        # TensorDim, TensorBox, TensorDiagram, TensorId remain placeholders.
-        # If DISCOPY_MATRIX_AVAILABLE is also False, Dim remains its original placeholder.
 
-else: # JAX_CORE_AVAILABLE is False
-    logger.info("JAX core not available. Attempting to import only discopy.tensor components.")
-    # JAX_AVAILABLE remains False, DISCOPY_MATRIX_AVAILABLE remains False
-    # Matrix*, Matrix, discopy_backend remain placeholders
-    try:
-        from discopy.tensor import Dim as TensorDim_actual, Box as TensorBox_actual, Diagram as TensorDiagram_actual, Id as TensorId_actual
-        Dim = TensorDim_actual             # Global Dim uses tensor.Dim
-        TensorDim = TensorDim_actual       # Store specifically as TensorDim
-        TensorBox = TensorBox_actual
-        TensorDiagram = TensorDiagram_actual
-        TensorId = TensorId_actual
-        logger.info("Successfully imported discopy.tensor components (JAX not available).")
-    except ImportError as e_discopy_tensor_no_jax:
-        logger.warning(f"JAX core not available AND discopy.tensor components also failed to import: {e_discopy_tensor_no_jax}. All DisCoPy components will use placeholders.")
-        # Dim, TensorDim, TensorBox, TensorDiagram, TensorId remain placeholders.
+# --- End Import Block ---
 
-# Ensure logger is defined for the rest of the module
-if 'logger' not in globals(): # Should be redundant
-    logger = logging.getLogger(__name__)
+def _convert_json_to_complex_array(data: Any) -> Any:
+    """
+    Recursively converts a list structure (from JSON) potentially containing [real, imag] pairs
+    into a structure of Python complex numbers, suitable for jnp.array.
+    """
+    if isinstance(data, list):
+        # Check if it's a [real, imag] pair that should be converted to a complex number
+        if len(data) == 2 and isinstance(data[0], (int, float)) and isinstance(data[1], (int, float)):
+            # This condition identifies a list of two numbers as a complex pair.
+            return complex(data[0], data[1])
+        else:
+            # It's a list, but not a [real, imag] pair itself.
+            # Recursively process its elements.
+            return [_convert_json_to_complex_array(item) for item in data]
+    # If data is not a list (e.g., it's a number, string, or already a complex number from a previous step), return it as is.
+    return data
 
 def _parse_dims_str(dims_str: str | None) -> list[int]:
     """Helper to parse a comma-separated string of dimensions into a list of ints.
@@ -288,11 +283,37 @@ def parse_gnn_content(gnn_content: str) -> dict:
                 if isinstance(target_dict_for_tensor_defs, dict):
                     parts = [p.strip() for p in stripped_line.split('|')]
                     if len(parts) == 4:
-                        box_name, dom_spec, cod_spec, init_str = parts
-                        try:
-                            initializer = json.loads(init_str)
-                        except json.JSONDecodeError:
-                            initializer = init_str 
+                        box_name, dom_spec, cod_spec, init_str_raw = parts # Renamed
+                        
+                        init_str_for_json_parse = init_str_raw.strip()
+                        potential_json_literal = False
+
+                        # Check if it's a double-quoted string that might contain JSON
+                        if init_str_for_json_parse.startswith('"') and init_str_for_json_parse.endswith('"'):
+                            inner_str = init_str_for_json_parse[1:-1]
+                            # Check if the inner content looks like a JSON array or object
+                            if ((inner_str.startswith('[') and inner_str.endswith(']')) or
+                                (inner_str.startswith('{') and inner_str.endswith('}'))):
+                                init_str_for_json_parse = inner_str # Use the unquoted inner string
+                                potential_json_literal = True
+                        # Check if it's an unquoted string that already looks like JSON
+                        elif ((init_str_for_json_parse.startswith('[') and init_str_for_json_parse.endswith(']')) or
+                              (init_str_for_json_parse.startswith('{') and init_str_for_json_parse.endswith('}'))):
+                            potential_json_literal = True
+
+                        # Attempt to parse as JSON only if it's a potential literal and not "load:"
+                        if potential_json_literal and not init_str_raw.strip().startswith("load:"):
+                            try:
+                                initializer_from_json = json.loads(init_str_for_json_parse)
+                                logger.debug(f"TensorDef: Parsed init_str for '{box_name}' with json.loads. Type: {type(initializer_from_json)}, Value: {str(initializer_from_json)[:200]}")
+                                initializer = initializer_from_json
+                            except json.JSONDecodeError as e_json:
+                                logger.warning(f"TensorDef: json.loads failed for '{box_name}' after attempting to unquote/prepare. Error: {e_json}. init_str_for_json_parse was: {init_str_for_json_parse}")
+                                initializer = init_str_raw.strip() # Fallback to stripped raw string
+                        else:
+                            # Not a JSON literal (e.g. "load:...", "random_normal", or a simple string name for a function)
+                            logger.debug(f"TensorDef: Initializer for '{box_name}' not treated as direct JSON: {init_str_raw}")
+                            initializer = init_str_raw.strip() # Store it stripped
                         
                         target_dict_for_tensor_defs[box_name] = {
                             "dom_spec": dom_spec, 
@@ -332,97 +353,111 @@ def parse_gnn_content(gnn_content: str) -> dict:
                     first_key = next(iter(content_lines_or_dict))
                     logger.debug(f"    First definition in '{section}': '{first_key}': {content_lines_or_dict[first_key]}")
     
+    #logger.debug(f"Final parsed_data before return: {json.dumps(parsed_data, indent=2)[:1000]}")
     return parsed_data
 
-def gnn_statespace_to_discopy_types(parsed_gnn: dict) -> dict[str, Ty]:
+def _get_discopy_dim_from_gnn_spec(dim_spec_str: str, logger: logging.Logger) -> Optional[Dim]:
     """
-    Converts GNN StateSpaceBlock entries into DisCoPy Ty objects.
-    Returns a dictionary mapping variable names to Ty objects.
+    Parses a GNN dimension specification string (e.g., "2", "2,3", or even an empty string for Dim())
+    and returns a DisCoPy Dim object.
+    Returns None if Dim is a placeholder or parsing fails critically.
     """
-    types = {}
-    statespace_lines = parsed_gnn.get("StateSpaceBlock", [])
-    if not statespace_lines:
-        logger.warning("StateSpaceBlock not found or empty. No DisCoPy types will be created.")
-        return types
+    if isinstance(Dim, PlaceholderBase):
+        logger.error("DisCoPy Dim component is a Placeholder. Cannot create Dim objects from spec.")
+        return None
 
-    # Regex changed to be more permissive for content within brackets for Ty name creation.
-    # Also allows for Greek letters like π in variable names.
-    # Using (.*?) for bracket content to ensure compilation, will refine later if needed.
-    var_pattern = re.compile(r"^\s*([a-zA-Z_π][\w_π]*)\s*(?:\x5B([^\x5D]*)\x5D)?\s*(?:#.*)?$")
+    if not dim_spec_str: # Empty string or None implies Dim() or Dim(1) depending on convention
+        logger.debug("Empty dim_spec_str provided, creating Dim().")
+        try:
+            return Dim() # DisCoPy's Dim() is the unit for tensor product, effectively Dim(1) in some contexts
+        except Exception as e:
+            logger.error(f"Error creating Dim() for empty dim_spec_str: {e}")
+            return None
 
-    for line in statespace_lines:
-        line = line.strip()
-        if not line or line.startswith("#"): # Skip empty lines and comments
-            continue
-        
-        match = var_pattern.match(line)
-        if match:
-            var_name = match.group(1)
-            # Dimensions are captured but currently only used to create a more descriptive Ty name.
-            # For actual tensor operations, a functor would need to interpret these dimensions.
-            dims_str = match.group(2)
-            
-            type_name = var_name
-            if dims_str is not None: # Check if brackets were present, even if empty
-                parsed_dims_list = _parse_dims_str(dims_str)
-                # For Ty, we just make a descriptive name. Actual dims are for Dim.
-                type_name = f"{var_name}[{','.join(map(str, parsed_dims_list))}]" if parsed_dims_list else f"{var_name}[]"
-            
-            types[var_name] = Ty(type_name)
-            logger.debug(f"Created DisCoPy type: Ty('{type_name}') for GNN variable '{var_name}'")
-        else:
-            logger.warning(f"Could not parse StateSpaceBlock line: '{line}'. Skipping.")
-            
-    return types
+    # Remove any type annotations like "type=A" or extra spaces before splitting
+    # Focus on numeric parts. e.g. "2, type=A, 3" -> "2, 3"
+    cleaned_spec = re.sub(r"type=[^,]+", "", dim_spec_str) # Remove type=...
+    cleaned_spec = re.sub(r"[^0-9,]", "", cleaned_spec)   # Remove non-numeric, non-comma chars
+    
+    dim_values_str = [s.strip() for s in cleaned_spec.split(',') if s.strip()]
 
-def gnn_statespace_to_discopy_dims(parsed_gnn: dict) -> dict[str, Dim]:
+    if not dim_values_str: # If after cleaning, no numbers remain (e.g. "type=A")
+        logger.debug(f"No numeric dimensions found in '{dim_spec_str}' after cleaning. Creating Dim().")
+        try:
+            return Dim()
+        except Exception as e:
+            logger.error(f"Error creating Dim() for cleaned non-numeric spec '{dim_spec_str}': {e}")
+            return None
+            
+    try:
+        # Convert valid string numbers to integers
+        dims_as_ints = [int(val) for val in dim_values_str] # Renamed to avoid conflict
+        if not dims_as_ints: # Should be caught by 'if not dim_values_str' earlier, but as a safeguard
+             logger.debug(f"No dimensions to create Dim object from '{dim_spec_str}'. Defaulting to Dim().")
+             return Dim()
+        return Dim(*dims_as_ints)
+    except ValueError as ve:
+        logger.error(f"Invalid character in dimension specification '{dim_spec_str}' (cleaned: '{cleaned_spec}'). Error: {ve}")
+        return None
+    except Exception as e:
+        logger.error(f"Error creating Dim from spec '{dim_spec_str}' (parsed as {dims_as_ints if 'dims_as_ints' in locals() else 'unknown'}): {e}")
+        return None
+
+def gnn_statespace_to_discopy_dims_map(parsed_gnn: dict) -> dict[str, Dim]:
     """
-    Converts GNN StateSpaceBlock entries into DisCoPy Dim objects.
-    Returns a dictionary mapping variable names to Dim objects.
-    Requires JAX_AVAILABLE to be True.
+    Converts GNN StateSpaceBlock entries into a dictionary mapping variable names to DisCoPy Dim objects.
+    Handles parsing of dimensions like VarName[dim1,dim2,...] or VarName.
     """
-    if not JAX_AVAILABLE:
-        logger.error("JAX or DisCoPy's matrix module not available. Cannot create Dim objects.")
+    if isinstance(Dim, PlaceholderBase):
+        logger.error("DisCoPy Dim component is a Placeholder. Cannot create Dim objects.")
         return {}
 
-    dims_map = {}
+    dims_map: dict[str, Dim] = {}
     statespace_lines = parsed_gnn.get("StateSpaceBlock", [])
     if not statespace_lines:
         logger.warning("StateSpaceBlock not found or empty. No DisCoPy Dim objects will be created.")
         return dims_map
 
-    # Pattern for variable names and optional dimensions: VarName[dim1,dim2,...] or VarName[dim] or VarName
-    # Dimensions are comma-separated integers. If no dims, defaults to Dim(1).
+    # Pattern for variable names and optional dimensions: VarName[dim1,dim2,...] or VarName[dim]
+    # Dimensions are comma-separated integers. Ignores content like type=...
     var_pattern = re.compile(r"^\s*([a-zA-Z_π][\w_π]*)\s*(?:\x5B([^\x5D]*)\x5D)?\s*(?:#.*)?$")
 
-
     for line in statespace_lines:
-        line = line.strip()
-        if not line or line.startswith("#"):  # Skip empty lines and comments
+        line_content = line.strip()
+        if not line_content or line_content.startswith("#"):
             continue
 
-        match = var_pattern.match(line)
-        if match:
-            var_name = match.group(1)
-            dims_str_content = match.group(2) # Content of the brackets e.g. "3,1,type=int" or "type=A" or None
-            
-            actual_dims = _parse_dims_str(dims_str_content) # Handles None, empty string, and parsing complex content
-            
-            dims_map[var_name] = Dim(*actual_dims)
-            logger.debug(f"Created DisCoPy Dim: Dim(*{actual_dims}) for GNN variable '{var_name}' from dims_str_content '{dims_str_content}'")
-        else:
-            logger.warning(f"Could not parse StateSpaceBlock line for Dim: '{line}'. Skipping.")
+        match = var_pattern.match(line_content)
+        if not match:
+            logger.warning(f"Could not parse variable from StateSpaceBlock line: '{line_content}'. Skipping.")
+            continue
+
+        var_name = match.group(1)
+        dims_str = match.group(2)
+        
+        parsed_dims_list = _parse_dims_str(dims_str) # _parse_dims_str returns list[int], e.g., [1] or [2,3]
+
+        try:
+            # Create Dim object using the parsed integer dimensions
+            # Dim(*[1]) creates Dim(1), Dim(*[2,3]) creates Dim(2,3)
+            current_dim = Dim(*parsed_dims_list)
+            dims_map[var_name] = current_dim
+            logger.debug(f"Created DisCoPy Dim: {current_dim} for GNN variable '{var_name}'")
+        except Exception as e_dim_creation: # Catch potential errors during Dim creation
+            logger.error(f"Error creating DisCoPy Dim for '{var_name}' with dims {parsed_dims_list}: {e_dim_creation}")
+            continue
             
     return dims_map
 
-def gnn_connections_to_discopy_diagram(parsed_gnn: dict, types: dict[str, Ty]) -> Optional[TensorDiagram]:
+def gnn_connections_to_discopy_diagram(parsed_gnn: dict, dims_map: dict[str, Dim]) -> Optional[Diagram]:
     """
-    Converts GNN Connections into a DisCoPy Diagram (specifically, a discopy.tensor.Diagram).
-    Currently supports simple directed connections (A > B).
+    Converts GNN Connections into a DisCoPy Diagram (from discopy.tensor).
+    This version creates a diagram with abstract boxes (no tensor data).
     """
-    # Check if TensorDiagram, TensorBox, TensorId are placeholders
-    if any(isinstance(comp, PlaceholderBase) for comp in [TensorDiagram, TensorBox, TensorId]): # Simpler check for instance
-        logger.error("TensorDiagram, TensorBox, or TensorId is a Placeholder. Cannot create tensor-based DisCoPy diagram. DisCoPy tensor import likely failed.")
+    # Check if Diagram, Box, Id, Dim are placeholders (essential for basic diagram structure)
+    # Ty is also fundamental for DisCoPy, even if not directly used for Box dom/cod here, its availability implies DisCoPy loaded.
+    if any(isinstance(comp, PlaceholderBase) for comp in [Diagram, Box, Id, Dim, Ty]): 
+        logger.error("Core DisCoPy components (Diagram, Box, Id, Dim, or Ty) are Placeholders. Cannot create tensor-based DisCoPy diagram. DisCoPy import likely failed.")
         return None
 
     connections_lines = parsed_gnn.get("Connections", [])
@@ -430,7 +465,7 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, types: dict[str, Ty]) -
         logger.warning("Connections section not found or empty. Cannot create DisCoPy diagram.")
         return None
 
-    diagram: TensorDiagram = TensorId() # Start with a TensorId for tensor diagrams, explicitly type hint diagram
+    diagram: Diagram = Id() # Start with an Id for tensor diagrams, explicitly type hint diagram
     
     # Regex patterns (copied from original, ensure they are correct for this context)
     var_id_pattern = r"[a-zA-Z_π][\w_π]*"
@@ -518,8 +553,8 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, types: dict[str, Ty]) -
             all_vars_valid = True
             for var_list in [source_vars, target_vars]:
                 for var_name in var_list:
-                    if var_name not in types:
-                        logger.warning(f"Unknown variable '{var_name}' in connection: '{line}'. Skipping connection.")
+                    if var_name not in dims_map:
+                        logger.warning(f"Unknown variable '{var_name}' (not in dims_map) in connection: '{line}'. Skipping connection.")
                         all_vars_valid = False
                         break
                 if not all_vars_valid:
@@ -527,44 +562,47 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, types: dict[str, Ty]) -
             if not all_vars_valid:
                 continue
             
-            # Create source and target types (tensor product if multiple)
+            # Determine domain and codomain types (which are Dim objects)
             if len(source_vars) == 1:
-                dom_type = types[source_vars[0]]
+                dom_dim = dims_map[source_vars[0]]
             elif len(source_vars) > 1:
-                current_dom = types[source_vars[0]]
-                for i in range(1, len(source_vars)):
-                    current_dom = current_dom @ types[source_vars[i]]
-                dom_type = current_dom
-            else: # No source vars, use empty Ty
-                dom_type = Ty()
+                # Tensor product of Dim objects
+                try:
+                    dom_dim = functools.reduce(lambda a, b: a @ b, [dims_map[v] for v in source_vars])
+                except TypeError: # If @ is not defined for PlaceholderBase or initial reduce object
+                    logger.error(f"Cannot compute tensor product for domain with vars {source_vars} due to placeholder Dim objects. Skipping connection.")
+                    continue
+            else: # No source vars, use empty Dim (identity for tensor product, usually Dim(1))
+                dom_dim = Dim() 
 
             if len(target_vars) == 1:
-                cod_type = types[target_vars[0]]
+                cod_dim = dims_map[target_vars[0]]
             elif len(target_vars) > 1:
-                current_cod = types[target_vars[0]]
-                for i in range(1, len(target_vars)):
-                    current_cod = current_cod @ types[target_vars[i]]
-                cod_type = current_cod
-            else: # No target vars, use empty Ty
-                cod_type = Ty()
+                try:
+                    cod_dim = functools.reduce(lambda a, b: a @ b, [dims_map[v] for v in target_vars])
+                except TypeError:
+                    logger.error(f"Cannot compute tensor product for codomain with vars {target_vars} due to placeholder Dim objects. Skipping connection.")
+                    continue
+            else: # No target vars, use empty Dim
+                cod_dim = Dim()
             
             source_name_part = "_".join(source_vars)
             target_name_part = "_".join(target_vars)
             box_name = f"{source_name_part}_to_{target_name_part}"
             
-            box = TensorBox(box_name, dom_type, cod_type)
-            logger.debug(f"Created DisCoPy TensorBox: Box('{box_name}', dom={dom_type}, cod={cod_type})")
+            box = Box(box_name, dom_dim, cod_dim) # Box expects Dim for dom/cod in discopy.tensor
+            logger.debug(f"Created DisCoPy Box: Box('{box_name}', dom={dom_dim}, cod={cod_dim})")
             
             # Simple sequential composition for now
-            if diagram.dom == Ty() and diagram.cod == Ty() and not diagram.boxes: # First box, Ty() is the domain/codomain of TensorId()
-                 diagram = box
-            elif diagram.cod == dom_type: # Chainable
+            if diagram.dom == Dim() and diagram.cod == Dim() and not diagram.boxes: # First box, Dim() is the domain/codomain of Id()
+                diagram = box
+            elif diagram.cod == dom_dim: # Chainable
                  diagram = diagram >> box
             else:
                 # This indicates a more complex structure (e.g. parallel wires or new starting chain)
                 # For now, we will log a warning and try to append it as a new parallel component
                 # This is a placeholder for more sophisticated diagram construction.
-                logger.warning(f"Connection from \'{source_content}\' to \'{target_content}\' (Box dom={dom_type}, cod={cod_type}) does not directly chain with previous diagram codomain ({diagram.cod}). Appending in parallel (basic).")
+                logger.warning(f"Connection from \'{source_content}\' to \'{target_content}\' (Box dom={dom_dim}, cod={cod_dim}) does not directly chain with previous diagram codomain ({diagram.cod}). Appending in parallel (basic).")
                 # Attempting a parallel composition; this assumes variables are distinct flows if not chained.
                 # A more robust solution would analyze the full graph structure.
                 try:
@@ -575,8 +613,8 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, types: dict[str, Ty]) -
         else:
             logger.warning(f"Could not parse Connections line: '{line}'. Supported format: 'Source > Target'.")
 
-    if diagram.dom == Ty() and diagram.cod == Ty() and not diagram.boxes: # Check if any boxes were actually added
-        logger.warning("No valid connections were parsed to form a TensorDiagram.")
+    if diagram.dom == Dim() and diagram.cod == Dim() and not diagram.boxes: # Check if any boxes were actually added
+        logger.warning("No valid connections were parsed to form a Diagram.")
         return None
         
     return diagram
@@ -585,22 +623,23 @@ def gnn_connections_to_discopy_matrix_diagram(
     parsed_gnn: dict, 
     dims_map: dict[str, Dim], 
     tensor_definitions: dict, 
-    prng_key_provider: Optional[Callable[[str], Any]] = None, # e.g., lambda name: jax.random.fold_in(base_key, hash(name))
+    prng_key_provider: Optional[Callable[[str], Any]] = None, 
     default_dtype_str: str = 'float32'
-) -> Optional[MatrixDiagram]: # Return type updated
+) -> Optional[Diagram]:
     """
-    Converts GNN Connections into a DisCoPy MatrixDiagram using JAX-backed Tensors.
-    Tensor data is sourced from tensor_definitions.
+    Converts GNN Connections into a DisCoPy Diagram, where boxes are populated with Matrix objects
+    (from discopy.matrix) containing JAX-backed Tensors if JAX is available.
+    If JAX is not available or tensor data is missing, boxes may be abstract or use placeholders.
     """
-    if not JAX_AVAILABLE or not discopy_backend or not jax or not jnp: # Added jax and jnp checks
-        logger.error("JAX, JAX-dependent DisCoPy modules (backend, Dim, etc.), or jax/jnp itself are not available. Cannot create MatrixDiagram.")
+    if not JAX_AVAILABLE: # Check the overall JAX_AVAILABLE flag
+        logger.error("JAX or essential DisCoPy components for matrix operations are not available. Cannot create a JAX-backed MatrixDiagram.")
         return None
-
-    # Further check if MatrixId, MatrixBox, jax, jnp, discopy_backend are not placeholders/None
-    if any(isinstance(comp, PlaceholderBase) for comp in [MatrixDiagram, MatrixBox, MatrixId]) or \
+    
+    # Also ensure Diagram, Box, Id, Dim, Matrix, discopy_backend are not placeholders
+    if any(isinstance(comp, PlaceholderBase) for comp in [Diagram, Box, Id, Dim, Matrix]) or \
        isinstance(discopy_backend, PlaceholderBackend) or \
-       jax is None or jnp is None:
-        logger.error("Critical JAX/DisCoPy matrix components (MatrixDiagram, MatrixBox, MatrixId, jax, jnp, backend) are placeholders or None. Cannot create MatrixDiagram.")
+       jax is None or jnp is None: # jax and jnp should be non-None if JAX_AVAILABLE is True
+        logger.error("Critical JAX/DisCoPy components (Diagram, Box, Id, Dim, Matrix, jax, jnp, backend) are placeholders or None. Cannot create MatrixDiagram.")
         return None
 
     connections_lines = parsed_gnn.get("Connections", [])
@@ -608,7 +647,7 @@ def gnn_connections_to_discopy_matrix_diagram(
         logger.warning("Connections section not found or empty. Cannot create DisCoPy MatrixDiagram.")
         return None
 
-    diagram: MatrixDiagram = MatrixId() # Start with a MatrixId for matrix diagrams, explicitly type hint
+    diagram: Diagram = Id() # Start with an Id, explicitly type hint
     
     # Regex patterns (ensure they are correct for this context)
     var_id_pattern = r"[a-zA-Z_π][\w_π]*"
@@ -651,16 +690,34 @@ def gnn_connections_to_discopy_matrix_diagram(
         if not group_str: return []
         return [v.strip() for v in group_str.split(',') if v.strip()]
 
-    # Determine JAX dtype
-    try:
-        jax_dtype = getattr(jnp, default_dtype_str) if JAX_AVAILABLE and jnp else 'float32' # Fallback for non-JAX
-        if JAX_AVAILABLE and jnp and jax_dtype != 'float32' and not hasattr(jnp, default_dtype_str): # Check if it's a valid jnp dtype
-            logger.warning(f"JAX dtype '{default_dtype_str}' not found in jnp. Defaulting to jnp.float32.")
-            jax_dtype = jnp.float32
-    except AttributeError: # Should not happen with JAX_AVAILABLE check but as a safeguard
-        logger.warning(f"JAX dtype '{default_dtype_str}' caused AttributeError. Defaulting to 'float32' (for NumPy path) or jnp.float32 (if JAX).")
-        jax_dtype = jnp.float32 if JAX_AVAILABLE and jnp else 'float32'
+    # Initialize with an empty diagram or appropriate identity
+    diagram: Matrix = Id(Dim(1)) # Start with Identity on Dim(1) for matrix diagrams
 
+    tensor_definitions = parsed_gnn.get("TensorDefinitions", {})
+    # Get the raw dtype definition, which might be a string or a type object
+    raw_default_dtype = tensor_definitions.get("default_dtype", "float32") 
+
+    # Ensure default_dtype_str is a string name
+    if isinstance(raw_default_dtype, str):
+        default_dtype_str = raw_default_dtype
+    elif hasattr(raw_default_dtype, '__name__'): # Check if it's a type object with a name
+        default_dtype_str = raw_default_dtype.__name__
+    else:
+        logger.warning(f"Unrecognized default_dtype format: {raw_default_dtype}. Defaulting to 'float32'.")
+        default_dtype_str = "float32"
+    
+    logger.debug(f"Processed default_dtype_str: {default_dtype_str}")
+
+    # Attempt to get the actual JAX dtype object using the string name
+    if JAX_AVAILABLE and jnp and hasattr(jnp, default_dtype_str):
+        jax_dtype = getattr(jnp, default_dtype_str)
+    else:
+        # Fallback if JAX not available or dtype string not a jnp attribute
+        # Using the string name itself as a placeholder if actual jnp dtype can't be resolved.
+        # This might be okay if it's only used for numpy array creation later, 
+        # or if the actual tensor_def provides a valid jax_array_data directly.
+        jax_dtype = default_dtype_str 
+        logger.debug(f"JAX/jnp not fully available or '{default_dtype_str}' not in jnp. Using '{jax_dtype}' as jax_dtype placeholder.")
 
     for line_idx, line in enumerate(connections_lines):
         line = line.strip()
@@ -724,6 +781,25 @@ def gnn_connections_to_discopy_matrix_diagram(
                 logger.warning(f"No tensor definition found for box '{box_name_short}' or full line '{box_name_full_line}'. Skipping box.")
                 continue
 
+            # Determine data type for JAX array for this specific box
+            raw_box_dtype = tensor_def.get("dtype", default_dtype_str) # Inherit default if not specified
+
+            if isinstance(raw_box_dtype, str):
+                box_dtype_str = raw_box_dtype
+            elif hasattr(raw_box_dtype, '__name__'):
+                box_dtype_str = raw_box_dtype.__name__
+            else:
+                logger.warning(f"Unrecognized dtype format for box '{box_name_short}': {raw_box_dtype}. Using default: '{default_dtype_str}'.")
+                box_dtype_str = default_dtype_str
+            
+            logger.debug(f"Processed box_dtype_str for '{box_name_short}': {box_dtype_str}")
+
+            if JAX_AVAILABLE and jnp and hasattr(jnp, box_dtype_str):
+                current_jax_dtype = getattr(jnp, box_dtype_str)
+            else:
+                current_jax_dtype = box_dtype_str # Fallback to string name
+                logger.debug(f"JAX/jnp not fully available or '{box_dtype_str}' not in jnp for box '{box_name_short}'. Using '{current_jax_dtype}' as current_jax_dtype placeholder.")
+
             initializer = tensor_def.get("initializer")
             jax_array_data = None
             
@@ -737,25 +813,43 @@ def gnn_connections_to_discopy_matrix_diagram(
             
             box_shape = dom_inside_tuple + cod_inside_tuple
 
-            if isinstance(initializer, list): # Direct data
+            if isinstance(initializer, list): # Direct data from JSON
+                logger.debug(f"MatrixDiagram: Initializer for '{box_name_short}' IS a list. Processing with _convert_json_to_complex_array.")
                 try:
+                    # Convert [real, imag] pairs to complex numbers before creating JAX array
+                    processed_initializer = _convert_json_to_complex_array(initializer)
+                    
                     if JAX_AVAILABLE and jnp:
-                        jax_array_data = jnp.array(initializer, dtype=jax_dtype).reshape(box_shape)
-                    else: # Fallback for non-JAX (e.g. if called by something not checking JAX_AVAILABLE)
+                        # Ensure jax_dtype is a JAX dtype object if complex data is detected
+                        # This is a bit of a heuristic; ideally, dtype comes from GNN or is more robustly inferred.
+                        if any(isinstance(x, complex) for x in processed_initializer) or \
+                           (isinstance(processed_initializer, list) and processed_initializer and any(isinstance(x, complex) for row in processed_initializer if isinstance(row,list) for x in row)) : # check nested for complex
+                            if isinstance(current_jax_dtype, str) and 'complex' not in current_jax_dtype.lower():
+                                logger.debug(f"Initializer for '{box_name_short}' contains complex numbers. Overriding dtype to jnp.complex64 from {current_jax_dtype}.")
+                                current_jax_dtype = jnp.complex64 if hasattr(jnp, 'complex64') else 'complex64'
+                            elif not hasattr(current_jax_dtype, 'is_complex'): # if it's already a jax dtype, check if complex
+                                if jnp.issubdtype(current_jax_dtype, jnp.complexfloating) == False:
+                                     logger.debug(f"Initializer for '{box_name_short}' contains complex numbers. Overriding dtype to jnp.complex64 from {current_jax_dtype}.")
+                                     current_jax_dtype = jnp.complex64 if hasattr(jnp, 'complex64') else 'complex64'
+
+
+                        jax_array_data = jnp.array(processed_initializer, dtype=current_jax_dtype).reshape(box_shape)
+                    else: 
                         logger.warning("JAX not available, attempting to create NumPy array for MatrixBox data from list. This path might not be fully supported for MatrixDiagrams.")
                         # MatrixBox itself might still expect a JAX tensor if DisCoPy is in JAX mode,
                         # this is more of a graceful degradation attempt.
                         # The proper fix is to not call this function if JAX is not available.
                         # For now, we make a numpy array, but this won't work if a JAX tensor is strictly required by DisCoPy.
                         import numpy # Local import for this fallback
-                        jax_array_data = numpy.array(initializer, dtype=default_dtype_str).reshape(box_shape)
+                        jax_array_data = numpy.array(processed_initializer, dtype=default_dtype_str).reshape(box_shape)
 
                 except Exception as e:
-                    logger.error(f"Failed to create JAX array from literal for '{box_name_short}': {e}. Shape: {box_shape}, Init: {initializer}")
+                    logger.error(f"Failed to create JAX array from literal for '{box_name_short}': {e}. Shape: {box_shape}, Init: {processed_initializer}")
                     continue
             elif isinstance(initializer, str):
+                logger.debug(f"MatrixDiagram: Initializer for '{box_name_short}' IS a string: '{initializer}'. Checking for load/random.")
                 if initializer.startswith("load:"):
-                    file_path_str = initializer.split(":", 1)[1]
+                    file_path_str = initializer[len("load:"):]
                     try:
                         # Ensure path is absolute or resolve relative to GNN file (if context available)
                         # For now, assume path is resolvable as is or relative to where script runs
@@ -805,9 +899,40 @@ def gnn_connections_to_discopy_matrix_diagram(
                 logger.warning(f"Could not initialize data for box '{box_name_short}'. Skipping.")
                 continue
 
-            box = MatrixBox(box_name_short, dom_dim, cod_dim, data=jax_array_data)
-            logger.debug(f"Created JAX-backed MatrixBox: '{box_name_short}', dom={dom_dim}, cod={cod_dim}, shape={jax_array_data.shape}")
-            
+            # Create a discopy.matrix.Matrix object to hold the JAX array
+            # This Matrix IS a Box, so it can be directly used in the diagram.
+            try:
+                # Ensure dom_dim.inside and cod_dim.inside are tuples for concatenation
+                # This was a previous source of error, Dim should handle .inside correctly if not placeholder
+                box_shape_tuple = tuple(getattr(dom_dim, 'inside', ())) + tuple(getattr(cod_dim, 'inside', ())) 
+                
+                if not all(isinstance(d, int) for d in box_shape_tuple):
+                    logger.error(f"Box '{box_name_short}' has non-integer dimensions in shape: {box_shape_tuple}. Dom: {dom_dim}, Cod: {cod_dim}. Skipping.")
+                    continue
+                
+                reshaped_jax_array = jax_array_data.reshape(box_shape_tuple) # Reshape based on combined dom and cod dims
+
+                # Create the Matrix (which is a Box)
+                logger.debug(f"Preparing to create Matrix for box '{box_name_short}'.")
+                logger.debug(f"  dom_dim: {dom_dim} (type: {type(dom_dim)})")
+                logger.debug(f"  cod_dim: {cod_dim} (type: {type(cod_dim)})")
+                if hasattr(reshaped_jax_array, 'shape') and hasattr(reshaped_jax_array, 'dtype'):
+                    logger.debug(f"  reshaped_jax_array: shape={reshaped_jax_array.shape}, dtype={reshaped_jax_array.dtype} (type: {type(reshaped_jax_array)})")
+                else:
+                    logger.debug(f"  reshaped_jax_array: (type: {type(reshaped_jax_array)}), attributes like shape/dtype might be missing.")
+
+                box = Matrix(dom_dim, cod_dim, reshaped_jax_array) # discopy.matrix.Matrix
+                # Manually set the name for the Matrix/Box if not automatically handled by constructor in all versions
+                box.name = box_name_short
+
+            except Exception as e_matrix_creation:
+                logger.error(f"Error creating discopy.matrix.Matrix for box '{box_name_short}': {e_matrix_creation}. Dom: {dom_dim}, Cod: {cod_dim}, Data shape: {jax_array_data.shape if hasattr(jax_array_data, 'shape') else 'N/A'}")
+                continue
+
+            # Use box_name_short for logging as box.name might not be set if box is a placeholder or construction failed early
+            box_data_shape_log = getattr(box.data, 'shape', 'unknown') if hasattr(box, 'data') and box.data is not None else 'no data'
+            logger.debug(f"Created JAX-backed Matrix: '{box_name_short}', dom={box.dom}, cod={box.cod}, data_shape={box_data_shape_log}")
+
             if diagram.dom == Dim() and diagram.cod == Dim() and not diagram.boxes: # First box, Dim() is the domain/codomain of Id()
                  diagram = box
             elif diagram.cod == dom_dim: # Chainable
@@ -828,9 +953,9 @@ def gnn_connections_to_discopy_matrix_diagram(
         
     return diagram
 
-def gnn_file_to_discopy_diagram(gnn_file_path: Path, verbose: bool = False) -> Optional[TensorDiagram]: # Return type updated
+def gnn_file_to_discopy_diagram(gnn_file_path: Path, verbose: bool = False) -> Optional[Diagram]:
     """
-    Orchestrates the conversion of a GNN file to a DisCoPy diagram (TensorDiagram).
+    Orchestrates the conversion of a GNN file to a DisCoPy diagram (tensor.Diagram).
     Reads the file, parses content, converts state space and connections.
     """
     # Set logger level for this module based on verbose flag from the caller
@@ -853,16 +978,16 @@ def gnn_file_to_discopy_diagram(gnn_file_path: Path, verbose: bool = False) -> O
             logger.error(f"Failed to parse GNN content from {gnn_file_path}. No sections found.")
             return None
             
-        discopy_types = gnn_statespace_to_discopy_types(parsed_gnn)
-        if not discopy_types:
-            logger.warning(f"No DisCoPy types generated from StateSpaceBlock in {gnn_file_path}. Diagram construction might be incomplete.")
-            # We might still proceed if connections reference types implicitly, but it's unlikely for a well-formed GNN.
+        discopy_dims_map = gnn_statespace_to_discopy_dims_map(parsed_gnn)
+        if not discopy_dims_map:
+            logger.warning(f"No DisCoPy Dims generated from StateSpaceBlock in {gnn_file_path}.")
+            # Proceeding as some diagrams might not need explicit dims (e.g. only names)
             
-        diagram = gnn_connections_to_discopy_diagram(parsed_gnn, discopy_types)
+        diagram = gnn_connections_to_discopy_diagram(parsed_gnn, discopy_dims_map)
         
         if diagram:
             logger.info(f"Successfully created DisCoPy diagram from GNN file: {gnn_file_path}")
-            logger.debug(f"Diagram structure: dom={diagram.dom}, cod={diagram.cod}, #boxes={len(diagram.boxes)}")
+            logger.debug(f"Diagram structure: dom={diagram.dom}, cod={diagram.cod}, #boxes={len(diagram.boxes) if hasattr(diagram, 'boxes') else 'N/A'}")
         else:
             logger.warning(f"Could not create a DisCoPy diagram from GNN file: {gnn_file_path}. Check Connections section.")
             
@@ -872,16 +997,16 @@ def gnn_file_to_discopy_diagram(gnn_file_path: Path, verbose: bool = False) -> O
         logger.error(f"Error converting GNN file {gnn_file_path} to DisCoPy diagram: {e}", exc_info=True)
         return None
 
-def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = False, jax_seed: int = 0) -> Optional[MatrixDiagram]: # Return type updated
+def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = False, jax_seed: int = 0) -> Optional[Diagram]:
     """
-    Orchestrates the conversion of a GNN file to a DisCoPy MatrixDiagram with JAX-backed tensors.
+    Orchestrates the conversion of a GNN file to a DisCoPy Diagram with JAX-backed matrices.
     Reads the file, parses content (including TensorDefinitions), converts state space to Dims,
     and constructs the MatrixDiagram.
     """
-    if not JAX_AVAILABLE or not discopy_backend or not jax or not jnp: # Added jax and jnp checks
-        logger.error("JAX, JAX-dependent DisCoPy modules (backend, Dim, etc.), or jax/jnp itself are not available. Cannot create MatrixDiagram.")
+    if not JAX_AVAILABLE: # Check the overall JAX_AVAILABLE flag
+        logger.error("JAX or essential DisCoPy components for matrix operations are not available. Cannot create a JAX-backed MatrixDiagram.")
         return None
-
+    
     if verbose: logger.setLevel(logging.DEBUG)
     else: logger.setLevel(logging.INFO)
     
@@ -901,8 +1026,8 @@ def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = Fals
         
         # Set JAX backend for DisCoPy matrix operations
         with discopy_backend('jax'):
-            discopy_dims = gnn_statespace_to_discopy_dims(parsed_gnn)
-            if not discopy_dims:
+            discopy_dims_map = gnn_statespace_to_discopy_dims_map(parsed_gnn)
+            if not discopy_dims_map:
                 logger.warning(f"No DisCoPy Dims generated from StateSpaceBlock in {gnn_file_path}.")
             
             tensor_definitions = parsed_gnn.get("TensorDefinitions", {})
@@ -929,7 +1054,7 @@ def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = Fals
 
             diagram = gnn_connections_to_discopy_matrix_diagram(
                 parsed_gnn, 
-                discopy_dims, 
+                discopy_dims_map, 
                 tensor_definitions,
                 key_provider, # Pass the potentially None key_provider
                 default_dtype_str=getattr(jnp, 'float32', 'float32') if JAX_AVAILABLE and jnp else 'float32' # Pass jnp.dtype or fallback
@@ -937,50 +1062,52 @@ def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = Fals
         
         if diagram:
             logger.info(f"Successfully created DisCoPy MatrixDiagram from GNN file: {gnn_file_path}")
-            logger.debug(f"MatrixDiagram: dom={diagram.dom}, cod={diagram.cod}, #boxes={len(diagram.boxes)}")
-            if diagram.boxes and hasattr(diagram.boxes[0], 'data'):
+            logger.debug(f"MatrixDiagram: dom={diagram.dom}, cod={diagram.cod}, #boxes={len(diagram.boxes) if hasattr(diagram, 'boxes') else 'N/A'}")
+            if hasattr(diagram, 'boxes') and diagram.boxes and hasattr(diagram.boxes[0], 'data') and diagram.boxes[0].data is not None:
                 first_box_data = diagram.boxes[0].data
+                # Check if it's a JAX array (if jnp is not None and it's an instance)
                 if JAX_AVAILABLE and jnp and isinstance(first_box_data, jnp.ndarray):
                     logger.info(f"  First box data (JAX array): {first_box_data}")
                 elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as fallback
                     logger.info(f"  First box data (NumPy array): {first_box_data}")
                 elif isinstance(first_box_data, PlaceholderBase):
-                    logger.info(f"  First box data is a Placeholder: {type(first_box_data)} (likely JAX features not fully available)")
+                    logger.info(f"  First box data is a Placeholder: {type(first_box_data)} (data: {getattr(first_box_data, 'args', '')})")
                 else:
-                    logger.info(f"  First box data (unknown type): {first_box_data}")
-            
-            # Example evaluation (will run JAX computation if JAX is real, or placeholder eval)
-            try:
-                # Ensure backend context even for placeholder, as script might try to use it.
-                backend_context = discopy_backend('jax') if discopy_backend and not isinstance(discopy_backend, PlaceholderBackend) else None
-                if backend_context:
-                    with backend_context:
-                        eval_result = diagram.eval()
-                else: # discopy_backend is a placeholder or None
-                    eval_result = diagram.eval() # Call eval on placeholder if needed
-
-                logger.info(f"MatrixDiagram evaluation result: {eval_result}")
+                    logger.info(f"  First box data type: {type(first_box_data)}")
                 
-                actual_eval_array = None
-                if hasattr(eval_result, 'array'):
-                    actual_eval_array = eval_result.array
-                
-                if JAX_AVAILABLE and jnp and isinstance(actual_eval_array, jnp.ndarray):
-                    logger.info(f"Evaluated tensor data (JAX array): {actual_eval_array}, Shape: {actual_eval_array.shape}, Length: {len(actual_eval_array) if actual_eval_array.ndim > 0 else 1}")
-                elif isinstance(actual_eval_array, numpy.ndarray):
-                    # Ensure ndim check for numpy arrays too before len()
-                    length_info = len(actual_eval_array) if hasattr(actual_eval_array, 'ndim') and actual_eval_array.ndim > 0 else 1
-                    shape_info = actual_eval_array.shape if hasattr(actual_eval_array, 'shape') else "N/A"
-                    logger.info(f"Evaluated tensor data (NumPy array): {actual_eval_array}, Shape: {shape_info}, Length: {length_info}")
-                elif isinstance(actual_eval_array, PlaceholderBase):
-                    logger.info(f"Evaluated tensor data is a Placeholder: {type(actual_eval_array)}. Cannot determine shape/length.")
-                elif actual_eval_array is not None:
-                    logger.info(f"Evaluated tensor data (unknown type): {actual_eval_array}. Cannot determine shape/length.")
+                # Evaluation test
+                if discopy_backend and not isinstance(discopy_backend, PlaceholderBackend):
+                    backend_context = discopy_backend('jax')
+                    if backend_context:
+                        with backend_context:
+                            eval_result = diagram.eval()
+                            logger.info(f"MatrixDiagram evaluation result (JAX backend): {eval_result}")
+                            if hasattr(eval_result, 'array'):
+                                logger.info(f"  Evaluation result array: {eval_result.array}")
+                    else:
+                        logger.warning("Could not obtain JAX backend context for evaluation.")
                 else:
-                    logger.info("Evaluation result has no .array attribute or it is None.")
-
-            except Exception as e_eval:
-                logger.error(f"Error evaluating MatrixDiagram: {e_eval}", exc_info=True)
+                    logger.warning("DisCoPy JAX backend is not available or is a placeholder. Skipping evaluation test.")
+                # Log matrix_diagram properties safely
+                if not isinstance(matrix_diagram, PlaceholderBase):
+                    logger.info(f"MatrixDiagram created: dom={matrix_diagram.dom}, cod={matrix_diagram.cod}, boxes: {len(matrix_diagram.boxes) if hasattr(matrix_diagram, 'boxes') else 'N/A'}")
+                    if hasattr(matrix_diagram, 'boxes') and matrix_diagram.boxes and hasattr(matrix_diagram.boxes[0], 'data') and matrix_diagram.boxes[0].data is not None:
+                        first_box_data = matrix_diagram.boxes[0].data
+                        # Check if it's a JAX array (if jnp is not None and it's an instance)
+                        if JAX_AVAILABLE and jnp and isinstance(first_box_data, jnp.ndarray):
+                            logger.info(f"  First box data (JAX array): {first_box_data}")
+                        elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as fallback
+                            logger.info(f"  First box data (NumPy array): {first_box_data}")
+                        elif isinstance(first_box_data, PlaceholderBase):
+                            logger.info(f"  First box data is a Placeholder: {type(first_box_data)} (data: {getattr(first_box_data, 'args', '')})")
+                        else:
+                            logger.info(f"  First box data type: {type(first_box_data)}")
+                    else:
+                        logger.info("MatrixDiagram has no boxes or first box has no data (or diagram is a placeholder).")
+                else:
+                    logger.info(f"MatrixDiagram is a placeholder: {type(matrix_diagram)}")
+            else:
+                logger.info("MatrixDiagram has no boxes or first box has no data (or diagram is a placeholder).")
         else:
             logger.error(f"Overall MatrixDiagram creation failed for {gnn_file_path}.")
             
@@ -1026,22 +1153,22 @@ B > C
     logger.info(f"Parsed GNN content: {parsed_data}")
     
     if parsed_data:
-        # Test type conversion
-        types = gnn_statespace_to_discopy_types(parsed_data)
-        logger.info(f"Generated DisCoPy types: {types}")
+        # Test Dim map creation (replaces type conversion)
+        dims_map_test = gnn_statespace_to_discopy_dims_map(parsed_data)
+        logger.info(f"Generated DisCoPy Dims map: {dims_map_test}")
     
         # Test diagram creation
-        diagram = gnn_connections_to_discopy_diagram(parsed_data, types)
-        if diagram:
-            logger.info(f"Generated DisCoPy diagram: {diagram}")
-            logger.info(f"  Diagram DOM: {diagram.dom}, COD: {diagram.cod}")
-            logger.info(f"  Diagram Boxes: {diagram.boxes}")
+        diagram_test = gnn_connections_to_discopy_diagram(parsed_data, dims_map_test)
+        if diagram_test:
+            logger.info(f"Generated DisCoPy diagram: {diagram_test}")
+            logger.info(f"  Diagram DOM: {diagram_test.dom}, COD: {diagram_test.cod}")
+            logger.info(f"  Diagram Boxes: {diagram_test.boxes}")
             
             # Try to draw if matplotlib is available
             try:
                 from matplotlib import pyplot as plt # type: ignore
                 output_image_path = Path("__test_discopy_diagram.png")
-                diagram.draw(path=str(output_image_path), show_types=True, figsize=(8,4))
+                diagram_test.draw(path=str(output_image_path), show_types=True, figsize=(8,4))
                 logger.info(f"Diagram drawn to {output_image_path}")
             except ImportError:
                 logger.warning("matplotlib not found, skipping diagram drawing.")
@@ -1057,7 +1184,18 @@ B > C
     logger.info(f"--- Testing gnn_file_to_discopy_diagram on {dummy_gnn_path} ---")
     overall_diagram = gnn_file_to_discopy_diagram(dummy_gnn_path, verbose=True)
     if overall_diagram:
-        logger.info(f"Overall diagram created successfully: {overall_diagram}")
+        # Log diagram properties safely, checking if it's not a placeholder
+        if not isinstance(overall_diagram, PlaceholderBase):
+            logger.info(f"Overall diagram created successfully: {overall_diagram}. Dom: {overall_diagram.dom}, Cod: {overall_diagram.cod}, Boxes: {len(overall_diagram.boxes) if hasattr(overall_diagram, 'boxes') else 'N/A'}")
+            if TENSOR_COMPONENTS_AVAILABLE and TY_AVAILABLE and hasattr(overall_diagram, 'draw'): # Draw if real components are available
+                try:
+                    draw_path = Path("__test_discopy_diagram.png")
+                    overall_diagram.draw(path=str(draw_path), show_types=True, figsize=(8,4))
+                    logger.info(f"Diagram drawn to {draw_path}")
+                except Exception as e_draw:
+                    logger.error(f"Error drawing diagram: {e_draw}")
+        else:
+            logger.info(f"Overall diagram is a placeholder: {type(overall_diagram)}")
     else:
         logger.error(f"Overall diagram creation failed for {dummy_gnn_path}.")
         
@@ -1094,58 +1232,55 @@ B > C
             f_dummy_matrix.write(test_gnn_matrix_content)
 
         logger.info(f"--- Testing gnn_file_to_discopy_matrix_diagram on {dummy_matrix_gnn_path} ---")
-        if JAX_AVAILABLE and DISCOPY_MATRIX_AVAILABLE and discopy_backend and not isinstance(discopy_backend, PlaceholderBackend): # Ensure backend is available for the context manager
+        if JAX_AVAILABLE and DISCOPY_MATRIX_MODULE_AVAILABLE and discopy_backend and not isinstance(discopy_backend, PlaceholderBackend): # Ensure backend is available for the context manager
             matrix_diagram = gnn_file_to_discopy_matrix_diagram(dummy_matrix_gnn_path, verbose=True, jax_seed=42)
             if matrix_diagram:
-                logger.info(f"Overall MatrixDiagram created: dom={matrix_diagram.dom}, cod={matrix_diagram.cod}")
-                logger.info(f"  Diagram Boxes: {matrix_diagram.boxes}")
-                if matrix_diagram.boxes and hasattr(matrix_diagram.boxes[0], 'data'):
+                logger.info(f"MatrixDiagram created: dom={matrix_diagram.dom}, cod={matrix_diagram.cod}, boxes: {len(matrix_diagram.boxes) if hasattr(matrix_diagram, 'boxes') else 'N/A'}")
+                if hasattr(matrix_diagram, 'boxes') and matrix_diagram.boxes and hasattr(matrix_diagram.boxes[0], 'data') and matrix_diagram.boxes[0].data is not None:
                     first_box_data = matrix_diagram.boxes[0].data
+                    # Check if it's a JAX array (if jnp is not None and it's an instance)
                     if JAX_AVAILABLE and jnp and isinstance(first_box_data, jnp.ndarray):
                         logger.info(f"  First box data (JAX array): {first_box_data}")
                     elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as fallback
                         logger.info(f"  First box data (NumPy array): {first_box_data}")
                     elif isinstance(first_box_data, PlaceholderBase):
-                        logger.info(f"  First box data is a Placeholder: {type(first_box_data)} (likely JAX features not fully available)")
+                        logger.info(f"  First box data is a Placeholder: {type(first_box_data)} (data: {getattr(first_box_data, 'args', '')})")
                     else:
-                        logger.info(f"  First box data (unknown type): {first_box_data}")
-            
-                # Example evaluation (will run JAX computation if JAX is real, or placeholder eval)
-                try:
-                    # Ensure backend context even for placeholder, as script might try to use it.
-                    backend_context = discopy_backend('jax') if discopy_backend and not isinstance(discopy_backend, PlaceholderBackend) else None
+                        logger.info(f"  First box data type: {type(first_box_data)}")
+                
+                # Evaluation test
+                if discopy_backend and not isinstance(discopy_backend, PlaceholderBackend):
+                    backend_context = discopy_backend('jax')
                     if backend_context:
                         with backend_context:
                             eval_result = matrix_diagram.eval()
-                    else: # discopy_backend is a placeholder or None
-                        eval_result = matrix_diagram.eval() # Call eval on placeholder if needed
-
-                    logger.info(f"MatrixDiagram evaluation result: {eval_result}")
-                    
-                    actual_eval_array = None
-                    if hasattr(eval_result, 'array'):
-                        actual_eval_array = eval_result.array
-                    
-                    if JAX_AVAILABLE and jnp and isinstance(actual_eval_array, jnp.ndarray):
-                        logger.info(f"Evaluated tensor data (JAX array): {actual_eval_array}, Shape: {actual_eval_array.shape}, Length: {len(actual_eval_array) if actual_eval_array.ndim > 0 else 1}")
-                    elif isinstance(actual_eval_array, numpy.ndarray):
-                        # Ensure ndim check for numpy arrays too before len()
-                        length_info = len(actual_eval_array) if hasattr(actual_eval_array, 'ndim') and actual_eval_array.ndim > 0 else 1
-                        shape_info = actual_eval_array.shape if hasattr(actual_eval_array, 'shape') else "N/A"
-                        logger.info(f"Evaluated tensor data (NumPy array): {actual_eval_array}, Shape: {shape_info}, Length: {length_info}")
-                    elif isinstance(actual_eval_array, PlaceholderBase):
-                        logger.info(f"Evaluated tensor data is a Placeholder: {type(actual_eval_array)}. Cannot determine shape/length.")
-                    elif actual_eval_array is not None:
-                        logger.info(f"Evaluated tensor data (unknown type): {actual_eval_array}. Cannot determine shape/length.")
+                            logger.info(f"MatrixDiagram evaluation result (JAX backend): {eval_result}")
+                            if hasattr(eval_result, 'array'):
+                                logger.info(f"  Evaluation result array: {eval_result.array}")
                     else:
-                        logger.info("Evaluation result has no .array attribute or it is None.")
-
-                except Exception as e_eval:
-                    logger.error(f"Error evaluating MatrixDiagram: {e_eval}", exc_info=True)
+                        logger.warning("Could not obtain JAX backend context for evaluation.")
+                else:
+                    logger.warning("DisCoPy JAX backend is not available or is a placeholder. Skipping evaluation test.")
+                # Log matrix_diagram properties safely
+                if not isinstance(matrix_diagram, PlaceholderBase):
+                    logger.info(f"MatrixDiagram created: dom={matrix_diagram.dom}, cod={matrix_diagram.cod}, boxes: {len(matrix_diagram.boxes) if hasattr(matrix_diagram, 'boxes') else 'N/A'}")
+                    if hasattr(matrix_diagram, 'boxes') and matrix_diagram.boxes and hasattr(matrix_diagram.boxes[0], 'data') and matrix_diagram.boxes[0].data is not None:
+                        first_box_data = matrix_diagram.boxes[0].data
+                        # Check if it's a JAX array (if jnp is not None and it's an instance)
+                        if JAX_AVAILABLE and jnp and isinstance(first_box_data, jnp.ndarray):
+                            logger.info(f"  First box data (JAX array): {first_box_data}")
+                        elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as fallback
+                            logger.info(f"  First box data (NumPy array): {first_box_data}")
+                        elif isinstance(first_box_data, PlaceholderBase):
+                            logger.info(f"  First box data is a Placeholder: {type(first_box_data)} (data: {getattr(first_box_data, 'args', '')})")
+                        else:
+                            logger.info(f"  First box data type: {type(first_box_data)}")
+                    else:
+                        logger.info("MatrixDiagram has no boxes or first box has no data (or diagram is a placeholder).")
+                else:
+                    logger.info(f"MatrixDiagram is a placeholder: {type(matrix_diagram)}")
             else:
                 logger.error(f"Overall MatrixDiagram creation failed for {dummy_matrix_gnn_path}.")
-        else:
-            logger.info("Skipping MatrixDiagram test because JAX or discopy_backend is not available.")
         
         dummy_matrix_gnn_path.unlink(missing_ok=True)
         # Path("__dummy_tensor_data.npy").unlink(missing_ok=True) # If using load

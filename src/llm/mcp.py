@@ -43,8 +43,20 @@ def initialize_llm_module(mcp_instance_ref):
     except ImportError:
         logger.warning("Could not import MCPTool or MCPSDKNotFoundError from src.mcp.mcp in initialize_llm_module. Tool registration might fail.")
         # Keep them as None or a dummy type if not found
-        if MCPTool is None: MCPTool = type('MCPTool', (object,), {}) # Dummy class
-        if MCPSDKNotFoundError is None: MCPSDKNotFoundError = type('MCPSDKNotFoundError', (Exception,), {}) # Dummy exception
+        if MCPTool is None:
+            # Create a dummy class that can be instantiated
+            class DummyMCPTool:
+                def __init__(self, name, func, schema, description):
+                    self.name = name
+                    self.func = func
+                    self.schema = schema
+                    self.description = description
+            MCPTool = DummyMCPTool
+        if MCPSDKNotFoundError is None: 
+            # Create a dummy exception class
+            class DummyMCPSDKNotFoundError(Exception):
+                pass
+            MCPSDKNotFoundError = DummyMCPSDKNotFoundError
 
     if not llm_operations:
         logger.error("LLM operations module not loaded. LLM tools cannot be initialized or registered.")
@@ -74,6 +86,7 @@ def summarize_gnn_file_content(file_path_str: str, user_prompt_suffix: Optional[
     Reads a GNN file, sends its content to an LLM, and returns a summary.
     An optional user prompt suffix can be added to guide the summary.
     """
+    logger.info(f"MCP Tool 'summarize_gnn_file_content' called with file: {file_path_str}, suffix: '{user_prompt_suffix}'")
     if not llm_operations:
         error_msg = "Error: LLM operations module not loaded."
         logger.error(f"summarize_gnn_file_content: {error_msg}")
@@ -86,6 +99,7 @@ def summarize_gnn_file_content(file_path_str: str, user_prompt_suffix: Optional[
         return f"Error: {error_msg}"
 
     try:
+        logger.debug(f"Reading content of file: {file_path}")
         with open(file_path, 'r', encoding='utf-8') as f:
             gnn_content = f.read()
         
@@ -93,9 +107,12 @@ def summarize_gnn_file_content(file_path_str: str, user_prompt_suffix: Optional[
         task = "Provide a concise summary of the GNN model described in the content above, highlighting its key components (ModelName, primary states/observations, and main connections)."
         if user_prompt_suffix:
             task += f" {user_prompt_suffix}"
-            
+        
+        logger.debug(f"Constructing prompt for summarization. Task: '{task}'")
         prompt = llm_operations.construct_prompt(contexts, task)
+        logger.info(f"Calling LLM for summarization of {file_path.name}")
         summary = llm_operations.get_llm_response(prompt)
+        logger.info(f"Summarization for {file_path.name} completed.")
         return summary
     except Exception as e:
         logger.error(f"Error summarizing GNN file {file_path_str}: {e}", exc_info=True)
@@ -106,6 +123,7 @@ def explain_gnn_file_content(file_path_str: str, aspect_to_explain: Optional[str
     Reads a GNN file, sends its content to an LLM, and returns an explanation.
     If aspect_to_explain is provided, the explanation focuses on that part.
     """
+    logger.info(f"MCP Tool 'explain_gnn_file_content' called with file: {file_path_str}, aspect: '{aspect_to_explain}'")
     if not llm_operations:
         error_msg = "Error: LLM operations module not loaded."
         logger.error(f"explain_gnn_file_content: {error_msg}")
@@ -118,6 +136,7 @@ def explain_gnn_file_content(file_path_str: str, aspect_to_explain: Optional[str
         return f"Error: {error_msg}"
 
     try:
+        logger.debug(f"Reading content of file: {file_path}")
         with open(file_path, 'r', encoding='utf-8') as f:
             gnn_content = f.read()
 
@@ -127,8 +146,11 @@ def explain_gnn_file_content(file_path_str: str, aspect_to_explain: Optional[str
         else:
             task = "Provide a general explanation of the GNN model described above. Cover its potential purpose, the nature of its state space, and how its components might interact."
         
+        logger.debug(f"Constructing prompt for explanation. Task: '{task}'")
         prompt = llm_operations.construct_prompt(contexts, task)
+        logger.info(f"Calling LLM for explanation of {file_path.name}, aspect: '{aspect_to_explain}'")
         explanation = llm_operations.get_llm_response(prompt)
+        logger.info(f"Explanation for {file_path.name} completed.")
         return explanation
     except Exception as e:
         logger.error(f"Error explaining GNN file {file_path_str}: {e}", exc_info=True)
@@ -139,6 +161,7 @@ def generate_professional_summary_from_gnn(file_path_str: str, experiment_detail
     Generates a professional summary of a GNN model and its experimental context.
     Useful for reports or presentations.
     """
+    logger.info(f"MCP Tool 'generate_professional_summary_from_gnn' called with file: {file_path_str}, audience: '{target_audience}'")
     if not llm_operations:
         error_msg = "Error: LLM operations module not loaded."
         logger.error(f"generate_professional_summary_from_gnn: {error_msg}")
@@ -151,18 +174,23 @@ def generate_professional_summary_from_gnn(file_path_str: str, experiment_detail
         return f"Error: {error_msg}"
 
     try:
+        logger.debug(f"Reading content of file: {file_path}")
         with open(file_path, 'r', encoding='utf-8') as f:
             gnn_content = f.read()
         
         contexts = [f"GNN Model Specification ({file_path.name}):\n{gnn_content}"]
         if experiment_details:
             contexts.append(f"Experimental Context/Results:\n{experiment_details}")
+            logger.debug("Experimental details provided and added to context.")
         
         task = f"Generate a professional, publication-quality summary of the GNN model and its experimental context. The summary should be targeted at {target_audience}. It should be well-structured, highlight key findings or model characteristics, and be suitable for inclusion in a research paper or technical report."
         
+        logger.debug(f"Constructing prompt for professional summary. Task: '{task}'")
         prompt = llm_operations.construct_prompt(contexts, task)
         # Potentially use a more capable model or higher token limit for professional summaries
+        logger.info(f"Calling LLM for professional summary of {file_path.name} (model: gpt-4o-mini)")
         prof_summary = llm_operations.get_llm_response(prompt, model="gpt-4o-mini")
+        logger.info(f"Professional summary for {file_path.name} completed.")
         return prof_summary
     except Exception as e:
         logger.error(f"Error generating professional summary for {file_path_str}: {e}", exc_info=True)
@@ -224,9 +252,21 @@ def register_tools(mcp_instance_ref):
             properties = {}
             required_params = []
             
-            sig = inspect.signature(tool_def["func"])
+            # Ensure tool_def["func"] is a callable before passing to inspect.signature
+            current_func = tool_def.get("func")
+            if not callable(current_func):
+                logger.error(f"Function for tool {tool_def.get('name', 'Unnamed tool')} is not callable. Skipping registration.")
+                continue
+
+            sig = inspect.signature(current_func)
+            # Ensure arg_descriptions is fetched correctly and is a dict
+            arg_descs = tool_def.get("arg_descriptions") 
+            if not isinstance(arg_descs, dict):
+                logger.warning(f"arg_descriptions for tool {tool_def.get('name', 'Unnamed tool')} is not a dictionary or is missing. Using empty descriptions.")
+                arg_descs = {} # Default to empty dict if not found or not a dict
+
             for param_name, param in sig.parameters.items():
-                desc = tool_def["arg_descriptions"].get(param_name, "")
+                desc = arg_descs.get(param_name, "") # Now arg_descs is guaranteed to be a dict
                 param_type_str = "string"
                 if param.annotation == str:
                     param_type_str = "string"
@@ -284,10 +324,14 @@ def ensure_llm_tools_registered(mcp_instance_ref): # Added mcp_instance_ref para
         # Even if initialization has issues, try to proceed with registration if MCPTool was set somehow
 
     # Check API key status via llm_operations if possible
-    if llm_operations and hasattr(llm_operations, 'is_api_key_loaded') and not llm_operations.is_api_key_loaded():
-        logger.warning("LLM API key is not loaded. LLM tools will not function correctly even if registered.")
+    if mcp_instance_ref and hasattr(mcp_instance_ref, 'sdk_status') and not mcp_instance_ref.sdk_status:
+        logger.warning(
+            f"LLM module indicated it's not ready (mcp_instance_ref.sdk_status is False, message: "
+            f"{getattr(mcp_instance_ref, 'sdk_status_message', 'N/A')}). "
+            "LLM tools might not function correctly even if registered."
+        )
     elif not llm_operations:
-        logger.warning("llm_operations module not available for API key check.")
+        logger.warning("llm_operations module not available for API key check (should have been caught by initialize_llm_module).")
 
     # Now, attempt to register tools
     # register_tools itself uses the global MCPTool set by initialize_llm_module

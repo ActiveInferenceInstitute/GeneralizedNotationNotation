@@ -143,6 +143,78 @@
       "equation_count": 8
     }
   },
+  "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_alice_loves_bob.md": {
+    "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_alice_loves_bob.md",
+    "model_name": "Alice Loves Bob - DisCoPy Quantum NLP Example",
+    "memory_estimate": 0.11328125,
+    "inference_estimate": 47.530688362140296,
+    "storage_estimate": 2.384765625,
+    "flops_estimate": {
+      "total_flops": 180,
+      "matrix_operations": 0,
+      "element_operations": 0,
+      "nonlinear_operations": 0
+    },
+    "inference_time_estimate": {
+      "cpu_time_seconds": 3.6e-09,
+      "cpu_time_ms": 3.6e-06,
+      "cpu_time_us": 0.0036
+    },
+    "batched_inference_estimate": {
+      "batch_1": {
+        "flops": 180,
+        "time_seconds": 3.6e-09,
+        "throughput_per_second": 277777777.7777778
+      },
+      "batch_8": {
+        "flops": 1144.2808267714347,
+        "time_seconds": 2.2885616535428694e-08,
+        "throughput_per_second": 349564539.2648865
+      },
+      "batch_32": {
+        "flops": 4374.558483558729,
+        "time_seconds": 8.749116967117458e-08,
+        "throughput_per_second": 365751196.60953546
+      },
+      "batch_128": {
+        "flops": 17113.847377098424,
+        "time_seconds": 3.422769475419685e-07,
+        "throughput_per_second": 373966172.4788089
+      },
+      "batch_512": {
+        "flops": 67583.03944178238,
+        "time_seconds": 1.3516607888356477e-06,
+        "throughput_per_second": 378793262.5026792
+      }
+    },
+    "model_overhead": {
+      "compilation_ms": 35,
+      "optimization_ms": 60.5,
+      "memory_overhead_kb": 1.595703125
+    },
+    "complexity": {
+      "state_space_complexity": 4.906890595608519,
+      "graph_density": 0.027777777777777776,
+      "avg_in_degree": 1.0,
+      "avg_out_degree": 1.0,
+      "max_in_degree": 1,
+      "max_out_degree": 1,
+      "cyclic_complexity": 0,
+      "temporal_complexity": 0.0,
+      "equation_complexity": 0.0,
+      "overall_complexity": 2.467334186693148,
+      "variable_count": 9,
+      "edge_count": 2,
+      "total_state_space_dim": 29,
+      "max_variable_dim": 16
+    },
+    "model_info": {
+      "variables_count": 9,
+      "edges_count": 2,
+      "time_spec": "Static",
+      "equation_count": 1
+    }
+  },
   "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md": {
     "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md",
     "model_name": "Multifactor PyMDP Agent v1",

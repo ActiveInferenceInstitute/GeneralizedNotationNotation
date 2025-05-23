@@ -10,10 +10,10 @@ import logging
 import json # For parsing GNN spec file
 from pathlib import Path
 import sys
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple, List, Dict, Any
 
-# Assuming pymdp.py and rxinfer.py are in the same directory
-from .pymdp import render_gnn_to_pymdp, placeholder_gnn_parser_pymdp # Placeholder for actual parser
+# Import the new modular renderer
+from .pymdp_renderer import render_gnn_to_pymdp
 from .rxinfer import render_gnn_to_rxinfer_jl, placeholder_gnn_parser # Placeholder for actual parser
 
 # Attempt to import the logging utility for standalone execution
@@ -46,10 +46,10 @@ RENDERER_MAPPING = {
 }
 
 def render_gnn_spec(
-    gnn_spec: dict, 
+    gnn_spec: Dict[str, Any], 
     output_script_path: Path, 
     target_format: str,
-    render_options: Optional[dict] = None
+    render_options: Optional[Dict[str, Any]] = None
 ) -> Tuple[bool, str, List[str]]:
     """
     Renders a GNN specification to the specified target format.
@@ -67,13 +67,11 @@ def render_gnn_spec(
 
     if target_format.lower() == "pymdp":
         logger.info(f"Rendering GNN spec to PyMDP format at {output_script_path}...")
-        # Note: render_gnn_to_pymdp will be refactored to take gnn_spec (dict) directly
-        # and output_script_path. The gnn_parser argument will be removed from it.
-        # For now, we pass a dummy parser, but this part of render_gnn_to_pymdp will be unused.
+        # Using the modular PyMDP renderer from pymdp_renderer.py
         return render_gnn_to_pymdp(gnn_spec, output_script_path, options=render_options)
     elif target_format.lower() == "rxinfer":
         logger.info(f"Rendering GNN spec to RxInfer.jl format at {output_script_path}...")
-        # Note: render_gnn_to_rxinfer_jl will be refactored similarly.
+        # Note: render_gnn_to_rxinfer_jl will be refactored similarly in the future
         return render_gnn_to_rxinfer_jl(gnn_spec, output_script_path, options=render_options)
     else:
         msg = f"Unsupported target format: {target_format}. Supported formats: pymdp, rxinfer."
@@ -139,8 +137,9 @@ def main(cli_args: Optional[List[str]] = None):
     output_script_name = f"{base_filename}_rendered{file_extension}"
     output_script_path = args.output_dir / output_script_name
 
-    # Placeholder for render_options; could be extended via more CLI args or a config file
-    render_options = {}
+    # Create render_options with proper typing to avoid linter errors
+    render_options: Dict[str, Any] = {}
+    
     if args.target_format == "pymdp":
         render_options["include_example_usage"] = True # Default for PyMDP
     elif args.target_format == "rxinfer":
