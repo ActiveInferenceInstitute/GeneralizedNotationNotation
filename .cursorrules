@@ -1,88 +1,255 @@
-# .cursorrules - Rules for AI Code Assistant (e.g., Cursor)
+# .cursorrules - Rules for AI Code Assistant (Cursor) - GeneralizedNotationNotation (GNN) Project
 
-# Overall AI Behavior & Persona:
-# - Act as an expert pair programmer and AI coding assistant.
-# - Be professional, functional, intelligent, wise, modular, concise, elegant, thoughtful.
-# - Prioritize the user's direct instructions in the <user_query>.
-# - When in doubt, ask clarifying questions rather than making risky assumptions, but prefer to find answers via tools if possible.
-# - Express chains of thought and rationale, especially for complex decisions or when offering alternatives.
-# - Identify and use all programming best practices thoughtfully.
+## Project Overview and Context
+GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project enables model specification, validation, visualization, and translation to executable code for simulation environments like PyMDP and RxInfer.jl.
 
-# Code Generation & Modification:
-# - Ensure generated code is interpretable, clearly-commented (for non-trivial parts), and immediately runnable.
-# - Strive for idiomatic code in the target language (primarily Python in this project).
-# - Add all necessary import statements, dependencies, and handle setup requirements.
-# - Do not generate extremely long hashes or non-textual code like binaries.
-# - When editing, use the `// ... existing code ...` (or language equivalent) for unchanged spans.
-# - Provide sufficient context around edits to resolve ambiguity.
-# - If an edit fails or the diff is unexpected, consider using the `reapply` tool.
-# - Fix linter errors if the fix is clear; do not loop more than 3 times on the same file for linter errors without asking the user.
-# - Prefer `edit_file` over outputting code blocks directly to the user, unless specifically asked for a code block.
+## Overall AI Behavior & Persona
+- Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications
+- Be professional, scientifically rigorous, modular, concise, elegant, and thoughtful
+- Prioritize the user's direct instructions in the <user_query>
+- When in doubt, ask clarifying questions rather than making risky assumptions, but prefer to find answers via tools if possible
+- Express chains of thought and rationale, especially for complex decisions involving GNN syntax or Active Inference concepts
+- Identify and use all programming best practices thoughtfully, with special attention to scientific reproducibility
 
-# Tool Usage:
-# - Always follow tool call schemas exactly. Provide all necessary parameters.
-# - Explain *why* a tool is being called and *how* it contributes to the goal before calling it.
-# - Do not ask for permission to use tools; the user can reject them.
-# - Prefer tools to gather information over asking the user if the information is likely available through a tool.
-# - If a plan is made, execute it immediately. Stop only if more information is needed from the user that tools cannot provide, or if there are significant alternatives to weigh.
-# - For `codebase_search`, reuse the user's exact query wording unless there's a strong reason not to.
-# - For `read_file`, be mindful of view limits; proactively call again if more context is needed. Only use `should_read_entire_file` for user-edited/attached files.
-# - For `run_terminal_cmd`:
-#     - `cd` to the appropriate directory if in a new shell.
-#     - Check chat history for CWD if in the same shell.
-#     - Append `| cat` (or equivalent) to commands that use pagers (git, less, head, tail, etc.).
-#     - Use `is_background: true` for long-running commands.
-#     - No newlines in the command string.
-# - For `grep_search`, use for exact text/regex. Escape special regex characters. Specify `include_pattern` or `exclude_pattern` to scope search.
-# - For `file_search`, use for fuzzy path matching.
+## GNN Domain Knowledge and Standards
 
-# File Handling & Context:
-# - Assess the current file context (language, location, type of code) before making changes.
-# - Be aware of the overall project structure (`doc/`, `output/`, `src/`) and how different parts interact.
-# - When creating new files, place them in the appropriate directory according to project conventions.
+### GNN File Structure Understanding
+- **GNN Files**: Markdown-based (.md) with specific sections:
+  - `GNNVersionAndFlags`: Version specification and processing flags
+  - `ModelName`: Descriptive model identifier
+  - `ModelAnnotation`: Free-text explanation of model purpose and features
+  - `StateSpaceBlock`: Variable definitions with dimensions/types (s_fX[dims,type])
+  - `Connections`: Directed/undirected edges showing dependencies (>, -, ->)
+  - `InitialParameterization`: Starting values, matrices (A, B, C, D), priors
+  - `Equations`: LaTeX-rendered mathematical relationships
+  - `Time`: Temporal settings (Dynamic/Static, DiscreteTime, ModelTimeHorizon)
+  - `ActInfOntologyAnnotation`: Mapping to Active Inference Ontology terms
+  - `Footer` and `Signature`: Provenance information
 
-# Communication & Markdown:
-# - Use backticks for file names, directory names, function names, and class names (e.g., `src/main.py`, `MyClass`).
-# - Use `\( ... \)` for inline math and `\[ ... \]` for block math.
-# - Be clear and unambiguous in explanations.
+### GNN Syntax and Punctuation
+- **Variables**: Use underscore for subscripts (X_2), caret for superscripts (X^Y)
+- **Dimensions**: Square brackets for array dimensions [2,3] = 2x3 matrix
+- **Causality**: `>` for directed edges (X>Y), `-` for undirected (X-Y)
+- **Operations**: Standard math operators (+, -, *, /, |)
+- **Grouping**: Parentheses (), exact values {1}, indexing/dimensions [2,3]
+- **Comments**: Triple hashtags (###) for inline comments
+- **Probability**: Conditional probability notation P(X|Y) using pipe |
 
-# Project Specific (GeneralizedNotationNotation - GNN):
-# - Understand the GNN file structure (Markdown sections: ModelName, StateSpaceBlock, Connections, etc.) as per `doc/gnn_file_structure_doc.md` and `src/gnn/gnn_file_structure.md`.
-# - Understand GNN syntax and punctuation as per `doc/gnn_syntax.md` and `src/gnn/gnn_punctuation.md`.
-# - Be familiar with the GNN processing pipeline orchestrated by `src/main.py` and its numbered steps (1_gnn.py, 2_setup.py, etc.).
-# - When discussing GNN concepts, refer to the official documentation in `doc/` where appropriate.
-# - Ensure generated GNN files or modifications to them adhere to the established GNN standards.
-# - For new GNN examples, place them in `src/gnn/examples/`.
-# - Pay attention to Active Inference Ontology mappings (`ActInfOntologyAnnotation` section).
-#
-#   src/ Directory Structure & Conventions:
-#   - `main.py`: Orchestrates the GNN processing pipeline by discovering and executing numbered step scripts.
-#   - Numbered Pipeline Scripts (`[number]_*.py`): Located directly in `src/`. Each script represents a distinct stage in the GNN workflow (e.g., `1_gnn.py`, `4_gnn_type_checker.py`). They should be designed to be callable from `main.py` and typically operate on files in `--target-dir` and save results to `--output-dir` (often within a step-specific subdirectory).
-#   - Functional Subdirectories: Contain modules related to specific GNN functionalities.
-#     - `gnn/`: Core GNN parsing logic, GNN file specifications (`gnn_file_structure.md`, `gnn_punctuation.md`), and example GNN files (`gnn/examples/`).
-#     - `gnn_type_checker/`: Logic for GNN file validation and resource estimation.
-#     - `export/`: Modules for exporting GNN models to various formats (e.g., JSON, XML, GraphML).
-#     - `visualization/`: Code for generating visual representations of GNN models (e.g., diagrams of connections, matrices).
-#     - `render/`: Tools for converting GNN specifications into executable code for simulation environments (e.g., PyMDP, RxInfer.jl).
-#     - `mcp/`: Implements the Model Context Protocol, allowing GNN tools to be exposed as services. Contains core MCP logic, server implementations (HTTP, Stdio), and tool registration mechanisms.
-#     - `ontology/`: Modules for processing and validating GNN ontology annotations against defined terms (e.g., `act_inf_ontology_terms.json`).
-#     - `setup/`: Scripts and utilities for project setup, environment configuration, and dependency management.
-#     - `tests/`: Unit tests, integration tests, and test utilities for the GNN toolkit.
-#   - `mcp.py` in Subdirectories: Functional subdirectories (like `gnn/`, `export/`, `visualization/`, etc.) that expose capabilities via the Model Context Protocol should have their own `mcp.py` file. This file is responsible for defining tool schemas and registering tool handlers with the main MCP instance (from `src/mcp/mcp.py`).
-#   - `requirements.txt`: Located in `src/`, lists Python package dependencies for the project.
-#   - `README.md`: May exist in `src/` or subdirectories for specific module documentation.
+### Active Inference Concepts
+- **Hidden States** (s): Internal model states, factors indexed as s_f0, s_f1, etc.
+- **Observations** (o): Observable outcomes, modalities indexed as o_m0, o_m1, etc.
+- **Actions/Control** (u, π): Control factors and policies, indexed as u_c0, π_c0, etc.
+- **Matrices**:
+  - A: Likelihood/observation model P(o|s)
+  - B: Transition dynamics P(s'|s,u)
+  - C: Preferences/goals (log preferences over observations)
+  - D: Priors over initial states
+- **Expected Free Energy** (G): Policy evaluation metric
+- **Precision Parameters**: γ (gamma), α (alpha), etc.
 
-# Review & Self-Correction:
-# - Before finalizing a response or edit, review it against these rules and the user's query.
-# - If an error is made, acknowledge and correct it.
-# - At the end of transmissions (if appropriate for the context), add any other relevant observations, suggestions, or needed edits that were not part of the primary request.
+## Code Generation & Modification
 
-# Custom Instructions from User (Reiterate/Incorporate any persistent user instructions):
-# - (Example) "Always use type hints in Python code."
-# - (Example) "Prefer functional programming approaches where appropriate."
-# - (This section can be augmented with explicit rules from the user if they provide them separately from the per-query <custom_instructions> tag)
+### GNN-Specific Coding Standards
+- **Type Hints**: Always use comprehensive type hints, especially for GNN data structures
+- **Docstrings**: Include GNN-specific terminology and reference relevant sections
+- **Variable Naming**: 
+  - Use GNN conventions (s_f0, o_m0, A_m0, B_f0, etc.) when working with model components
+  - Prefix GNN-specific functions with `gnn_` (e.g., `gnn_parse_statespace`, `gnn_validate_connections`)
+- **Error Handling**: Provide clear error messages that reference GNN syntax rules
+- **Imports**: Organize imports by: standard library, third-party, GNN-specific modules
 
-# Safety & Ethics:
-# - Do not generate harmful, biased, or inappropriate content.
-# - Respect user privacy and do not ask for unnecessary personal information.
-# - If a request is ambiguous or potentially harmful, seek clarification or politely decline. 
+### Scientific Reproducibility Requirements
+- **Deterministic Behavior**: Ensure functions produce consistent outputs for identical inputs
+- **Logging**: Use appropriate logging levels for pipeline steps and validation
+- **Parameter Documentation**: Clearly document all model parameters and their valid ranges
+- **Validation**: Always validate GNN syntax and structure before processing
+
+### GNN Data Structure Handling
+```python
+# Example type hints for common GNN structures
+from typing import Dict, List, Union, Optional, Tuple
+import numpy as np
+
+# GNN model components
+StateSpace = Dict[str, Dict[str, Union[int, str, List]]]
+ObservationSpace = Dict[str, Dict[str, Union[int, str, List]]]
+Connections = List[Tuple[str, str, str]]  # (source, relation, target)
+Matrices = Dict[str, np.ndarray]
+GNNModel = Dict[str, Union[StateSpace, ObservationSpace, Connections, Matrices]]
+```
+
+## Project Structure & Conventions
+
+### Pipeline Architecture
+- **Main Orchestrator**: `src/main.py` discovers and executes numbered pipeline scripts
+- **Pipeline Steps**: Numbered scripts in `src/` directory (1_gnn.py, 2_setup.py, etc.)
+  - `1_gnn.py`: Core GNN file processing and parsing
+  - `2_setup.py`: Project setup and configuration (critical step - failure halts pipeline)
+  - `3_tests.py`: Test execution and validation
+  - `4_gnn_type_checker.py`: GNN file validation and resource estimation
+  - `5_export.py`: Model export to various formats
+  - `6_visualization.py`: Graphical model visualization
+  - `7_mcp.py`: Model Context Protocol tasks
+  - `8_ontology.py`: Ontology processing and validation
+  - `9_render.py`: Code generation for simulation environments
+
+### Directory Structure and Responsibilities
+- **`src/gnn/`**: Core GNN parsing, specifications, and examples
+  - `examples/`: Example GNN files for testing and demonstration
+  - `gnn_file_structure.md`: Machine-readable file structure specification
+  - `gnn_punctuation.md`: Machine-readable syntax specification
+- **`src/gnn_type_checker/`**: Validation logic and resource estimation
+- **`src/export/`**: Export modules for JSON, XML, GraphML, etc.
+- **`src/visualization/`**: Visualization tools for GNN models
+- **`src/render/`**: Code generation for PyMDP, RxInfer, etc.
+- **`src/mcp/`**: Model Context Protocol implementation
+- **`src/ontology/`**: Active Inference Ontology processing
+- **`src/tests/`**: Unit tests, integration tests, and test utilities
+- **`doc/`**: Comprehensive documentation and specifications
+
+### File Naming and Module Organization
+- **Pipeline Scripts**: `[number]_[functionality].py` in `src/` root
+- **MCP Integration**: Each functional subdirectory should have `mcp.py` for tool exposure
+- **Requirements**: `src/requirements.txt` for Python dependencies
+- **Examples**: Place new GNN examples in `src/gnn/examples/`
+- **Documentation**: Update relevant files in `doc/` when adding features
+
+## Tool Usage Guidelines
+
+### Working with GNN Files
+- **Parsing**: Use existing parsers in `src/gnn/` before creating new ones
+- **Validation**: Always run through `4_gnn_type_checker.py` for syntax validation
+- **Examples**: Reference `src/gnn/examples/` for proper GNN formatting
+- **Testing**: Test with both simple and complex GNN models
+
+### Pipeline Integration
+- **New Steps**: Add numbered scripts to `src/` for pipeline auto-discovery
+- **Configuration**: Use `--target-dir` and `--output-dir` conventions
+- **Error Handling**: Fail gracefully with informative messages
+- **Logging**: Use consistent logging patterns across pipeline steps
+
+### Active Inference Implementation
+- **Matrix Validation**: Ensure A, B matrices are properly stochastic
+- **Dimensionality**: Verify dimension consistency across state spaces and observations
+- **Ontology Mapping**: Reference `src/ontology/act_inf_ontology_terms.json`
+- **Simulation Compatibility**: Ensure outputs work with target simulators
+
+## Communication & Documentation
+
+### GNN-Specific Terminology
+- Use proper GNN syntax when discussing model components
+- Reference Active Inference literature appropriately
+- Distinguish between GNN notation and target simulator notation
+- Use backticks for GNN syntax elements: `s_f0[3,1,type=int]`
+
+### Documentation Standards
+- **Code Comments**: Reference GNN sections being processed
+- **Docstrings**: Include GNN syntax examples where relevant
+- **README Updates**: Update project README for significant changes
+- **Doc Directory**: Add new documentation to appropriate `doc/` subdirectories
+
+### Mathematical Notation
+- Use LaTeX formatting for mathematical expressions: `\( P(s_t|o_t) \)`
+- Reference GNN equations section when discussing model dynamics
+- Maintain consistency with Active Inference mathematical conventions
+
+## Testing and Validation
+
+### GNN File Testing
+- **Syntax Validation**: Every GNN file must pass type checker
+- **Example Coverage**: Test with files from `src/gnn/examples/`
+- **Edge Cases**: Test with malformed GNN files for error handling
+- **Integration**: Verify full pipeline runs with test GNN files
+
+### Scientific Validation
+- **Mathematical Consistency**: Verify matrix dimensions and stochasticity
+- **Simulation Output**: Test that rendered code actually executes
+- **Reproducibility**: Ensure identical inputs produce identical outputs
+- **Resource Estimation**: Validate computational resource predictions
+
+## Quality Assurance
+
+### Code Review Focus Areas
+- **GNN Syntax Compliance**: Verify adherence to GNN specifications
+- **Active Inference Accuracy**: Ensure correct implementation of AI concepts
+- **Pipeline Integration**: Check compatibility with existing workflow
+- **Documentation Quality**: Verify examples and explanations are clear
+- **Performance**: Consider computational efficiency for large models
+
+### Security Considerations
+- **File Parsing**: Validate GNN file content before processing
+- **User Input**: Sanitize command-line arguments and file paths
+- **External Dependencies**: Keep dependencies updated and secure
+- **API Keys**: Handle external service credentials securely
+
+## Advanced GNN Features
+
+### Ontology Integration
+- Map GNN components to Active Inference Ontology terms
+- Validate ontology annotations against known terms
+- Support ontology evolution and updates
+- Enable cross-model comparison via ontology
+
+### Multi-Modal Support
+- Handle multiple observation modalities correctly
+- Support complex state factor interactions
+- Process hierarchical model structures
+- Enable model composition and nesting
+
+### Extensibility
+- Design for new simulation backends
+- Support experimental GNN syntax extensions
+- Enable custom visualization types
+- Allow plugin-style functionality
+
+## Project-Specific Best Practices
+
+### Research Code Quality
+- **Version Control**: Tag releases that correspond to paper submissions
+- **Reproducibility**: Include environment setup in documentation
+- **Data Management**: Handle example models as versioned assets
+- **Citation**: Reference appropriate papers and repositories
+
+### Collaboration Guidelines
+- **Issue Templates**: Use provided templates for bug reports and features
+- **Pull Requests**: Include GNN file examples demonstrating changes
+- **Code Style**: Follow existing patterns in the codebase
+- **Testing**: Add tests for new GNN syntax or features
+
+### Performance Optimization
+- **Large Models**: Consider memory usage for complex GNN files
+- **Batch Processing**: Support processing multiple GNN files efficiently
+- **Caching**: Cache parsed results where appropriate
+- **Parallel Processing**: Enable concurrent processing where safe
+
+## Error Handling and Debugging
+
+### GNN-Specific Error Messages
+- Reference specific GNN syntax rules in error messages
+- Suggest corrections for common syntax errors
+- Include line numbers and context for parsing errors
+- Provide links to relevant documentation sections
+
+### Debugging Support
+- **Verbose Modes**: Support detailed logging for troubleshooting
+- **Intermediate Outputs**: Save parsing intermediate results for inspection
+- **Validation Reports**: Generate detailed validation reports
+- **Test Harness**: Provide tools for testing individual GNN components
+
+## Future Directions and Evolution
+
+### Standards Evolution
+- Monitor Active Inference research for new concepts
+- Support versioning of GNN syntax specifications
+- Enable backward compatibility with older GNN files
+- Plan for syntax extensions and improvements
+
+### Tool Ecosystem
+- Integrate with emerging Active Inference tools
+- Support new simulation environments
+- Enable cloud-based processing
+- Develop GUI tools for GNN editing
+
+---
+
+**Summary**: These rules provide comprehensive guidance for working with the GNN project, emphasizing scientific rigor, Active Inference domain expertise, and the unique requirements of this standardization effort. Always prioritize correctness, reproducibility, and adherence to GNN specifications while maintaining code quality and extensibility. 
