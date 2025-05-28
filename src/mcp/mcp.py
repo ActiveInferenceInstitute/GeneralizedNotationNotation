@@ -141,6 +141,27 @@ class MCP:
                 logger.error(f"Failed to load MCP module {module_name}: {str(e)}")
                 all_modules_loaded_successfully = False
 
+        # Special handling for core MCP tools in the mcp directory itself
+        mcp_dir = Path(__file__).parent
+        logger.debug(f"Discovering core MCP tools in {mcp_dir}")
+        
+        # Load SymPy MCP integration
+        sympy_mcp_file = mcp_dir / "sympy_mcp.py"
+        if sympy_mcp_file.exists():
+            try:
+                module = importlib.import_module("src.mcp.sympy_mcp")
+                logger.debug(f"Loaded core MCP module: src.mcp.sympy_mcp")
+                
+                # Register tools and resources from the module
+                if hasattr(module, "register_tools") and callable(module.register_tools):
+                    module.register_tools(self)
+                    logger.info("Successfully registered SymPy MCP tools")
+                
+                self.modules["sympy_mcp"] = module
+            except Exception as e:
+                logger.error(f"Failed to load core MCP module src.mcp.sympy_mcp: {str(e)}")
+                all_modules_loaded_successfully = False
+
         self._modules_discovered = True # Set flag after successful completion of first discovery
         return all_modules_loaded_successfully
     

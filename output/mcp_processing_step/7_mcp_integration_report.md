@@ -1,6 +1,6 @@
 # 🤖 MCP Integration and API Report
 
-🗓️ Report Generated: 2025-05-23 05:18:19
+🗓️ Report Generated: 2025-05-28 05:51:05
 
 **MCP Core Directory:** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/mcp`
 **Project Source Root (for modules):** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src`
@@ -441,6 +441,168 @@ This section lists all tools currently registered with the MCP system, along wit
     ```json
     No schema provided.
     ```
+- **Tool:** `sympy_analyze_stability`
+  - **Defined in Module:** `src.mcp.sympy_mcp`
+  - **Arguments (from signature):** `(transition_matrices)`
+  - **Description:** "Analyze system stability using eigenvalue analysis"
+  - **Schema:**
+    ```json
+    {
+        "type": "object",
+        "properties": {
+            "transition_matrices": {
+                "type": "array",
+                "description": "List of transition matrices to analyze"
+            }
+        },
+        "required": [
+            "transition_matrices"
+        ]
+    }
+    ```
+- **Tool:** `sympy_cleanup`
+  - **Defined in Module:** `src.mcp.sympy_mcp`
+  - **Arguments (from signature):** `()`
+  - **Description:** "Clean up SymPy MCP integration and reset state"
+  - **Schema:**
+    ```json
+    {
+        "type": "object",
+        "properties": {}
+    }
+    ```
+- **Tool:** `sympy_get_latex`
+  - **Defined in Module:** `src.mcp.sympy_mcp`
+  - **Arguments (from signature):** `(expression)`
+  - **Description:** "Convert a mathematical expression to LaTeX format"
+  - **Schema:**
+    ```json
+    {
+        "type": "object",
+        "properties": {
+            "expression": {
+                "type": "string",
+                "description": "Expression to convert to LaTeX"
+            }
+        },
+        "required": [
+            "expression"
+        ]
+    }
+    ```
+- **Tool:** `sympy_initialize`
+  - **Defined in Module:** `src.mcp.sympy_mcp`
+  - **Arguments (from signature):** `(server_executable)`
+  - **Description:** "Initialize SymPy MCP integration"
+  - **Schema:**
+    ```json
+    {
+        "type": "object",
+        "properties": {
+            "server_executable": {
+                "type": "string",
+                "description": "Path to SymPy MCP server executable",
+                "default": null
+            }
+        }
+    }
+    ```
+- **Tool:** `sympy_simplify_expression`
+  - **Defined in Module:** `src.mcp.sympy_mcp`
+  - **Arguments (from signature):** `(expression)`
+  - **Description:** "Simplify a mathematical expression to canonical form"
+  - **Schema:**
+    ```json
+    {
+        "type": "object",
+        "properties": {
+            "expression": {
+                "type": "string",
+                "description": "Mathematical expression to simplify"
+            }
+        },
+        "required": [
+            "expression"
+        ]
+    }
+    ```
+- **Tool:** `sympy_solve_equation`
+  - **Defined in Module:** `src.mcp.sympy_mcp`
+  - **Arguments (from signature):** `(equation, variable, domain)`
+  - **Description:** "Solve an equation algebraically for a specified variable"
+  - **Schema:**
+    ```json
+    {
+        "type": "object",
+        "properties": {
+            "equation": {
+                "type": "string",
+                "description": "Equation to solve"
+            },
+            "variable": {
+                "type": "string",
+                "description": "Variable to solve for"
+            },
+            "domain": {
+                "type": "string",
+                "description": "Solution domain (COMPLEX, REAL, etc.)",
+                "default": "COMPLEX"
+            }
+        },
+        "required": [
+            "equation",
+            "variable"
+        ]
+    }
+    ```
+- **Tool:** `sympy_validate_equation`
+  - **Defined in Module:** `src.mcp.sympy_mcp`
+  - **Arguments (from signature):** `(equation, context)`
+  - **Description:** "Validate a mathematical equation using SymPy symbolic processing"
+  - **Schema:**
+    ```json
+    {
+        "type": "object",
+        "properties": {
+            "equation": {
+                "type": "string",
+                "description": "Mathematical equation to validate"
+            },
+            "context": {
+                "type": "object",
+                "description": "GNN context for variable definitions",
+                "default": {}
+            }
+        },
+        "required": [
+            "equation"
+        ]
+    }
+    ```
+- **Tool:** `sympy_validate_matrix`
+  - **Defined in Module:** `src.mcp.sympy_mcp`
+  - **Arguments (from signature):** `(matrix_data, matrix_type)`
+  - **Description:** "Validate matrix properties including stochasticity constraints"
+  - **Schema:**
+    ```json
+    {
+        "type": "object",
+        "properties": {
+            "matrix_data": {
+                "type": "array",
+                "description": "Matrix data as array of arrays"
+            },
+            "matrix_type": {
+                "type": "string",
+                "description": "Type of matrix (transition, observation, etc.)",
+                "default": "transition"
+            }
+        },
+        "required": [
+            "matrix_data"
+        ]
+    }
+    ```
 - **Tool:** `type_check_gnn_directory`
   - **Defined in Module:** `src.gnn_type_checker.mcp`
   - **Arguments (from signature):** `(dir_path, recursive, output_dir_base, report_md_filename)`
@@ -523,7 +685,7 @@ This section lists all tools currently registered with the MCP system, along wit
 
 This section verifies the presence of essential MCP files in the core directory: `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/mcp`
 
-- ✅ `mcp.py`: Found (19286 bytes)
+- ✅ `mcp.py`: Found (20304 bytes)
 - ✅ `meta_mcp.py`: Found (4954 bytes)
 - ✅ `cli.py`: Found (4644 bytes)
 - ✅ `server_stdio.py`: Found (7620 bytes)

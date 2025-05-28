@@ -10,6 +10,7 @@ inferactively-pymdp
 openai>=1.0.0
 python-dotenv>=1.0.0
 Markdown
+httpx>=0.27.0  # For SymPy MCP client HTTP communication
 # Visualization and Diagramming
 altair
 discopy[matrix]>=1.0.0
