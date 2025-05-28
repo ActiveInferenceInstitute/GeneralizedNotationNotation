@@ -3,7 +3,7 @@ message: "If you use this software, please cite it as below."
 authors:
   - family-names: "Friedman"
     given-names: "Daniel Ari"
-    orcid: "[INSERT ORCID ID IF AVAILABLE, e.g., https://orcid.org/0000-0000-0000-0000]"
+    orcid: "0000-0001-6232-9096"
     affiliation: "Active Inference Institute"
   - name: "The GeneralizedNotationNotation Community Contributors"
     # This entry acknowledges all contributors. Individual contributors can be listed above if desired.
