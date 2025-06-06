@@ -415,9 +415,12 @@ def run_pipeline(args: argparse.Namespace):
         
         # Script-specific supported arguments 
         "1_gnn.py": ["recursive"],
-        "4_gnn_type_checker.py": ["strict", "estimate-resources"],
-        "8_ontology.py": ["ontology-terms-file"],
-        "11_llm.py": ["llm-tasks", "llm-timeout"],
+        "4_gnn_type_checker.py": ["strict", "estimate-resources", "recursive"],
+        "5_export.py": ["recursive"],
+        "6_visualization.py": ["recursive"],
+        "8_ontology.py": ["ontology-terms-file", "recursive"],
+        "9_render.py": ["recursive"],
+        "11_llm.py": ["llm-tasks", "llm-timeout", "recursive"],
         "12_discopy.py": ["discopy-gnn-input-dir"],
         "13_discopy_jax_eval.py": ["discopy-jax-gnn-input-dir", "discopy-jax-seed"],
         "15_site.py": ["site-html-filename"],
@@ -475,6 +478,15 @@ def run_pipeline(args: argparse.Namespace):
     
     if gnn_type_checker_args:
         step_specific_args["4_gnn_type_checker.py"] = gnn_type_checker_args
+    
+    # For steps that support recursion
+    recursive_scripts = ["4_gnn_type_checker.py", "5_export.py", "6_visualization.py", "8_ontology.py", "9_render.py", "11_llm.py"]
+    for script_name in recursive_scripts:
+        if script_supports_arg(script_name, "recursive"):
+            if args.recursive:
+                if script_name not in step_specific_args:
+                    step_specific_args[script_name] = []
+                step_specific_args[script_name].append("--recursive")
     
     # For step 8 (ontology)
     ontology_args = []

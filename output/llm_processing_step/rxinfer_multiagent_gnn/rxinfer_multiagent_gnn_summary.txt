@@ -3,30 +3,25 @@
 **Model Name:** Multi-agent Trajectory Planning
 
 **Purpose:**  
-This model is designed to simulate trajectory planning for multiple agents in a 2D environment using RxInfer.jl. It incorporates various constraints, including obstacle avoidance, goal-directed behavior, and inter-agent collision avoidance, making it suitable for complex environments with obstacles.
+This model is designed for simulating trajectory planning in a multi-agent scenario within a 2D environment using the RxInfer.jl framework. It incorporates features for obstacle avoidance, goal-directed behavior, and inter-agent collision avoidance, making it suitable for various environments with obstacles.
 
 **Key Components:**
 
 1. **State Space Model:**
-   - **Parameters:**
-     - Time step (`dt`), constraint parameter (`gamma`), number of time steps (`nr_steps`), number of agents (`nr_agents`), and softmin temperature.
-   - **Matrices:**
-     - State transition matrix (`A`), control input matrix (`B`), and observation matrix (`C`).
-   - **Prior Distributions:**
-     - Variances for initial states, control inputs, and goal constraints.
+   - **State Transition Matrix (A):** Defines how agents transition between states over discrete time steps.
+   - **Control Input Matrix (B):** Represents the impact of control inputs on agent states.
+   - **Observation Matrix (C):** Maps the state space to observable outputs.
 
-2. **Environment Definitions:**
-   - Obstacles are defined for different scenarios, including door and wall environments, with parameters for center and size.
+2. **Model Parameters:**
+   - **Time Step (dt):** The increment of time for state updates.
+   - **Number of Agents (nr_agents):** Defines the number of agents in the simulation (set to 4).
+   - **Trajectory Length (nr_steps):** The number of time steps for the trajectory (set to 40).
+   - **Inference Iterations (nr_iterations):** Specifies how many iterations are used in the inference process (set to 350).
 
-3. **Agent Configurations:**
-   - Each agent is defined with an ID, radius, initial position, and target position. Four agents are configured in total, each with distinct properties.
+3. **Connections:**
+   - **Agent Trajectories:** The output of the state space model, influenced by initial state and control variances.
+   - **Goal Constraints:** Integrates goal-directed behavior by modeling the probability of reaching a target position.
+   - **Obstacle Avoidance:** Models the probability distribution of agent positions concerning obstacles to prevent collisions.
+   - **Collision Avoidance:** Ensures that agents maintain a safe distance from one another based on their respective radii.
 
-4. **Experiment Configurations:**
-   - Includes random seeds for reproducibility and file paths for saving results and visualizations.
-
-**Main Connections:**
-- The model parameters interact with the state space model to generate agent trajectories.
-- The agent trajectories are utilized to enforce goal constraints and obstacle avoidance.
-- The planning system integrates the outcomes of goal-directed behavior, obstacle avoidance, and collision avoidance to achieve effective trajectory planning.
-
-This GNN model serves as a foundational structure for simulating and analyzing multi-agent interactions in trajectory planning scenarios, addressing both dynamic environment challenges and agent-specific behaviors.
+The model effectively combines these components to create a comprehensive planning system that simulates the movement and interaction of multiple agents within a defined environment, adhering to specified constraints and goals.
