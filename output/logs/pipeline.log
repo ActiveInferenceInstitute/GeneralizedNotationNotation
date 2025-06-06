@@ -1,7 +1,7 @@
-2025-06-06 11:55:39,952 - GNN_Pipeline - INFO - File logging configured to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/logs/pipeline.log
-2025-06-06 11:55:39,952 - GNN_Pipeline - DEBUG - Logger level configured based on verbosity.
-2025-06-06 11:55:39,952 - GNN_Pipeline - INFO - 🚀 Initializing GNN Pipeline with Target: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples', Output: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/output'
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - 🛠️ Effective Arguments (after potential defensive conversion):
+2025-06-06 12:02:03,855 - GNN_Pipeline - INFO - File logging configured to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/logs/pipeline.log
+2025-06-06 12:02:03,856 - GNN_Pipeline - DEBUG - Logger level configured based on verbosity.
+2025-06-06 12:02:03,856 - GNN_Pipeline - INFO - 🚀 Initializing GNN Pipeline with Target: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples', Output: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/output'
+2025-06-06 12:02:03,856 - GNN_Pipeline - DEBUG - 🛠️ Effective Arguments (after potential defensive conversion):
   --dev: False (Type: bool)
   --discopy-gnn-input-dir: None (Type: NoneType)
   --discopy-jax-gnn-input-dir: None (Type: NoneType)
@@ -20,203 +20,203 @@
   --strict: False (Type: bool)
   --target-dir: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples (Type: PosixPath)
   --verbose: True (Type: bool)
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - ℹ️ Discovering potential pipeline scripts using pattern: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/*_*.py
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 7_mcp.py (Number: 7)
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 2_setup.py (Number: 2)
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 1_gnn.py (Number: 1)
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 5_export.py (Number: 5)
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 9_render.py (Number: 9)
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 6_visualization.py (Number: 6)
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 13_discopy_jax_eval.py (Number: 13)
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 3_tests.py (Number: 3)
-2025-06-06 11:55:39,953 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 12_discopy.py (Number: 12)
-2025-06-06 11:55:39,954 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 15_site.py (Number: 15)
-2025-06-06 11:55:39,954 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 10_execute.py (Number: 10)
-2025-06-06 11:55:39,954 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 11_llm.py (Number: 11)
-2025-06-06 11:55:39,954 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 4_gnn_type_checker.py (Number: 4)
-2025-06-06 11:55:39,954 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 8_ontology.py (Number: 8)
-2025-06-06 11:55:39,954 - GNN_Pipeline - DEBUG - ℹ️ Found and sorted script basenames: ['1_gnn.py', '2_setup.py', '3_tests.py', '4_gnn_type_checker.py', '5_export.py', '6_visualization.py', '7_mcp.py', '8_ontology.py', '9_render.py', '10_execute.py', '11_llm.py', '12_discopy.py', '13_discopy_jax_eval.py', '15_site.py']
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO - 📋 Will execute 14 pipeline steps:
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   1. 1: 1_gnn.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   2. 2: 2_setup.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   3. 3: 3_tests.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   4. 4: 4_gnn_type_checker.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   5. 5: 5_export.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   6. 6: 6_visualization.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   7. 7: 7_mcp.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   8. 8: 8_ontology.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   9. 9: 9_render.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   10. 10: 10_execute.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   11. 11: 11_llm.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   12. 12: 12_discopy.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   13. 13: 13_discopy_jax_eval.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - INFO -   14. 15: 15_site.py
-2025-06-06 11:55:39,954 - GNN_Pipeline - DEBUG - 🔍 Determining Python executable for subprocess calls...
-2025-06-06 11:55:39,955 - GNN_Pipeline - DEBUG - 🐍 Found virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
-2025-06-06 11:55:39,955 - GNN_Pipeline - DEBUG - Found site-packages at: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages
-2025-06-06 11:55:39,955 - GNN_Pipeline - DEBUG - ✓ Using virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
-2025-06-06 11:55:39,955 - GNN_Pipeline - DEBUG - 🐍 Selected Python for subprocess calls: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
-2025-06-06 11:55:39,955 - GNN_Pipeline - INFO - 
+2025-06-06 12:02:03,856 - GNN_Pipeline - DEBUG - ℹ️ Discovering potential pipeline scripts using pattern: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/*_*.py
+2025-06-06 12:02:03,856 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 7_mcp.py (Number: 7)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 2_setup.py (Number: 2)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 1_gnn.py (Number: 1)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 5_export.py (Number: 5)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 9_render.py (Number: 9)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 6_visualization.py (Number: 6)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 13_discopy_jax_eval.py (Number: 13)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 3_tests.py (Number: 3)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 12_discopy.py (Number: 12)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 15_site.py (Number: 15)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 10_execute.py (Number: 10)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 11_llm.py (Number: 11)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 4_gnn_type_checker.py (Number: 4)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 8_ontology.py (Number: 8)
+2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Found and sorted script basenames: ['1_gnn.py', '2_setup.py', '3_tests.py', '4_gnn_type_checker.py', '5_export.py', '6_visualization.py', '7_mcp.py', '8_ontology.py', '9_render.py', '10_execute.py', '11_llm.py', '12_discopy.py', '13_discopy_jax_eval.py', '15_site.py']
+2025-06-06 12:02:03,857 - GNN_Pipeline - INFO - 📋 Will execute 14 pipeline steps:
+2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   1. 1: 1_gnn.py
+2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   2. 2: 2_setup.py
+2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   3. 3: 3_tests.py
+2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   4. 4: 4_gnn_type_checker.py
+2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   5. 5: 5_export.py
+2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   6. 6: 6_visualization.py
+2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   7. 7: 7_mcp.py
+2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   8. 8: 8_ontology.py
+2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   9. 9: 9_render.py
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   10. 10: 10_execute.py
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   11. 11: 11_llm.py
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   12. 12: 12_discopy.py
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   13. 13: 13_discopy_jax_eval.py
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   14. 15: 15_site.py
+2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - 🔍 Determining Python executable for subprocess calls...
+2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - 🐍 Found virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - Found site-packages at: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages
+2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - ✓ Using virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - 🐍 Selected Python for subprocess calls: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO - 
   ██████╗  ███╗   ██╗ ███╗   ██╗
-2025-06-06 11:55:39,955 - GNN_Pipeline - INFO -   ██╔════╝ ████╗  ██║ ████╗  ██║
-2025-06-06 11:55:39,955 - GNN_Pipeline - INFO -   ██║  ███╗██╔██╗ ██║ ██╔██╗ ██║
-2025-06-06 11:55:39,955 - GNN_Pipeline - INFO -   ██║   ██║██║╚██╗██║ ██║╚██╗██║
-2025-06-06 11:55:39,955 - GNN_Pipeline - INFO -   ╚██████╔╝██║ ╚████║ ██║ ╚████║
-2025-06-06 11:55:39,955 - GNN_Pipeline - INFO -    ╚═════╝ ╚═╝  ╚═══╝ ╚═╝  ╚═══╝
-2025-06-06 11:55:39,955 - GNN_Pipeline - INFO -   Running GNN Processing Pipeline...
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   ██╔════╝ ████╗  ██║ ████╗  ██║
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   ██║  ███╗██╔██╗ ██║ ██╔██╗ ██║
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   ██║   ██║██║╚██╗██║ ██║╚██╗██║
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   ╚██████╔╝██║ ╚████║ ██║ ╚████║
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -    ╚═════╝ ╚═╝  ╚═══╝ ╚═╝  ╚═══╝
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   Running GNN Processing Pipeline...
 
-2025-06-06 11:55:39,955 - GNN_Pipeline - INFO - 🚀 Starting Step 1/14 (1: 1_gnn.py)
-2025-06-06 11:55:39,955 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/1_gnn.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --recursive
-2025-06-06 11:55:39,994 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,994 - __main__ - DEBUG - Script logger '__main__' level set to DEBUG.
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,994 - __main__ - DEBUG - Project root determined for path relativization: /home/trim/Documents/GitHub/GeneralizedNotationNotation
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,994 - __main__ - INFO - GNN Step 1: Target directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,994 - __main__ - INFO - GNN Step 1: Output directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,994 - __main__ - INFO - GNN Step 1: Recursive: True
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,995 - __main__ - INFO - GNN Step 1: Verbose: True
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,995 - __main__ - INFO - Starting GNN file processing for directory: 'src/gnn/examples'
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,995 - __main__ - INFO - Recursive mode enabled: searching in subdirectories.
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,995 - __main__ - DEBUG - Ensured output directory exists: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,995 - __main__ - DEBUG - Searching for GNN files matching pattern '**/*.md' in '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples'
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,995 - __main__ - INFO - Found 3 .md file(s) to process in 'src/gnn/examples'.
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,995 - __main__ - DEBUG - Processing file: src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,995 - __main__ - DEBUG - Successfully read content from src/gnn/examples/rxinfer_multiagent_gnn.md.
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,995 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,996 - __main__ - DEBUG -     Extracted ModelName: 'Multi-agent Trajectory Planning' from src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,996 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,996 - __main__ - DEBUG -     Content snippet for src/gnn/examples/rxinfer_multiagent_gnn.md (up to 500 chars) where StateSpaceBlock was not found:
-2025-06-06 11:55:40,008 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: RxInfer Multi-agent Trajectory Planning
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multi-agent Trajectory Planning model for RxInfer.jl
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and represents the configuration for the RxInfer.jl multi-agent trajectory planning example.
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] RxInferMultiAgentTrajectoryPlanning
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] Multi-agent Trajectory Planning
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] This model represents a multi-agent trajectory planning scenario i
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,996 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,996 - __main__ - DEBUG -     Content snippet for src/gnn/examples/rxinfer_multiagent_gnn.md (up to 500 chars) where Connections was not found:
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: RxInfer Multi-agent Trajectory Planning
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multi-agent Trajectory Planning model for RxInfer.jl
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and represents the configuration for the RxInfer.jl multi-agent trajectory planning example.
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] RxInferMultiAgentTrajectoryPlanning
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] Multi-agent Trajectory Planning
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] This model represents a multi-agent trajectory planning scenario i
-2025-06-06 11:55:40,009 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,996 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,996 - __main__ - DEBUG - Processing file: src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,996 - __main__ - DEBUG - Successfully read content from src/gnn/examples/gnn_POMDP_example.md.
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,996 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,996 - __main__ - DEBUG -     Extracted ModelName: 'Standard POMDP Agent v1.0' from src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,997 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,997 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_POMDP_example.md (up to 500 chars) where StateSpaceBlock was not found:
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] # GNN Standard Example: Comprehensive POMDP Agent
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a complex POMDP model for testing GNN features.
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and aims to be a standard for the GNN pipeline.
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] ComprehensivePOMDPAgent
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] Standard POMDP Agent v1.0
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] It includes:
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] - Two hidden state factors: Lo
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,997 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,997 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_POMDP_example.md (up to 500 chars) where Connections was not found:
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] # GNN Standard Example: Comprehensive POMDP Agent
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a complex POMDP model for testing GNN features.
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and aims to be a standard for the GNN pipeline.
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] ComprehensivePOMDPAgent
-2025-06-06 11:55:40,010 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] Standard POMDP Agent v1.0
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] It includes:
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] - Two hidden state factors: Lo
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,997 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:39,999 - __main__ - DEBUG -     Parsed ModelParameter: num_hidden_states_factors = [3, 2]
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,000 - __main__ - DEBUG -     Parsed ModelParameter: num_obs_modalities = [4, 2]
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,000 - __main__ - DEBUG -     Parsed ModelParameter: num_control_factors = [3, 2]
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,000 - __main__ - DEBUG - Processing file: src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,000 - __main__ - DEBUG - Successfully read content from src/gnn/examples/gnn_example_pymdp_agent.md.
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,000 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,000 - __main__ - DEBUG -     Extracted ModelName: 'Multifactor PyMDP Agent v1' from src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,000 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,000 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_example_pymdp_agent.md (up to 500 chars) where StateSpaceBlock was not found:
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: Multifactor PyMDP Agent
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multifactor PyMDP model in Active Inference format
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and attempts to represent a PyMDP agent with multiple observation modalities and hidden state factors.
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] MultifactorPyMDPAgent
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] Multifactor PyMDP Agent v1
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,011 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] This model represents a PyMDP agent with multiple observation modalities and hidden state fac
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,001 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,001 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_example_pymdp_agent.md (up to 500 chars) where Connections was not found:
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: Multifactor PyMDP Agent
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multifactor PyMDP model in Active Inference format
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and attempts to represent a PyMDP agent with multiple observation modalities and hidden state factors.
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] MultifactorPyMDPAgent
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] Multifactor PyMDP Agent v1
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] This model represents a PyMDP agent with multiple observation modalities and hidden state fac
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,001 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,001 - __main__ - DEBUG -     Parsed ModelParameter: num_hidden_states_factors = [2, 3]
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,001 - __main__ - DEBUG -     Parsed ModelParameter: num_obs_modalities = [3, 3, 3]
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,001 - __main__ - DEBUG -     Parsed ModelParameter: num_control_factors = [1, 3]
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,001 - __main__ - INFO - GNN discovery report saved to: output/gnn_processing_step/1_gnn_discovery_report.md
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,001 - __main__ - INFO - Step 1_gnn completed successfully.
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO - ✅ Step 1/14 (1: 1_gnn.py) - COMPLETED successfully.
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO - 
-2025-06-06 11:55:40,012 - GNN_Pipeline - INFO - 🚀 Starting Step 2/14 (2: 2_setup.py)
-2025-06-06 11:55:40,012 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/2_setup.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
-2025-06-06 11:55:40,013 - GNN_Pipeline - INFO - ⏳ Setting up environment and dependencies (timeout: 600s). This may take several minutes...
-2025-06-06 11:55:40,013 - GNN_Pipeline - INFO -    The process will display progress logs while running.
-2025-06-06 11:55:40,067 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 11:55:40,067 - __main__ - DEBUG - Script logger '__main__' level set to DEBUG.
+2025-06-06 12:02:03,858 - GNN_Pipeline - INFO - 🚀 Starting Step 1/14 (1: 1_gnn.py)
+2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/1_gnn.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --recursive
+2025-06-06 12:02:03,896 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - DEBUG - Script logger '__main__' level set to DEBUG.
+2025-06-06 12:02:03,909 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - DEBUG - Project root determined for path relativization: /home/trim/Documents/GitHub/GeneralizedNotationNotation
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - GNN Step 1: Target directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - GNN Step 1: Output directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - GNN Step 1: Recursive: True
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - GNN Step 1: Verbose: True
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - Starting GNN file processing for directory: 'src/gnn/examples'
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - Recursive mode enabled: searching in subdirectories.
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - DEBUG - Ensured output directory exists: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - DEBUG - Searching for GNN files matching pattern '**/*.md' in '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples'
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - INFO - Found 3 .md file(s) to process in 'src/gnn/examples'.
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG - Processing file: src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG - Successfully read content from src/gnn/examples/rxinfer_multiagent_gnn.md.
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -     Extracted ModelName: 'Multi-agent Trajectory Planning' from src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -     Content snippet for src/gnn/examples/rxinfer_multiagent_gnn.md (up to 500 chars) where StateSpaceBlock was not found:
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: RxInfer Multi-agent Trajectory Planning
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multi-agent Trajectory Planning model for RxInfer.jl
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and represents the configuration for the RxInfer.jl multi-agent trajectory planning example.
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] RxInferMultiAgentTrajectoryPlanning
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] Multi-agent Trajectory Planning
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] This model represents a multi-agent trajectory planning scenario i
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -     Content snippet for src/gnn/examples/rxinfer_multiagent_gnn.md (up to 500 chars) where Connections was not found:
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: RxInfer Multi-agent Trajectory Planning
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multi-agent Trajectory Planning model for RxInfer.jl
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and represents the configuration for the RxInfer.jl multi-agent trajectory planning example.
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] RxInferMultiAgentTrajectoryPlanning
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] Multi-agent Trajectory Planning
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] This model represents a multi-agent trajectory planning scenario i
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG - Processing file: src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG - Successfully read content from src/gnn/examples/gnn_POMDP_example.md.
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -     Extracted ModelName: 'Standard POMDP Agent v1.0' from src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_POMDP_example.md (up to 500 chars) where StateSpaceBlock was not found:
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # GNN Standard Example: Comprehensive POMDP Agent
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a complex POMDP model for testing GNN features.
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and aims to be a standard for the GNN pipeline.
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ComprehensivePOMDPAgent
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] Standard POMDP Agent v1.0
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] It includes:
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] - Two hidden state factors: Lo
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_POMDP_example.md (up to 500 chars) where Connections was not found:
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] # GNN Standard Example: Comprehensive POMDP Agent
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a complex POMDP model for testing GNN features.
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and aims to be a standard for the GNN pipeline.
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ComprehensivePOMDPAgent
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] Standard POMDP Agent v1.0
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] It includes:
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] - Two hidden state factors: Lo
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,900 - __main__ - DEBUG -     Parsed ModelParameter: num_hidden_states_factors = [3, 2]
+2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,900 - __main__ - DEBUG -     Parsed ModelParameter: num_obs_modalities = [4, 2]
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Parsed ModelParameter: num_control_factors = [3, 2]
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG - Processing file: src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG - Successfully read content from src/gnn/examples/gnn_example_pymdp_agent.md.
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Extracted ModelName: 'Multifactor PyMDP Agent v1' from src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_example_pymdp_agent.md (up to 500 chars) where StateSpaceBlock was not found:
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: Multifactor PyMDP Agent
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multifactor PyMDP model in Active Inference format
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and attempts to represent a PyMDP agent with multiple observation modalities and hidden state factors.
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] MultifactorPyMDPAgent
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] Multifactor PyMDP Agent v1
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] This model represents a PyMDP agent with multiple observation modalities and hidden state fac
+2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_example_pymdp_agent.md (up to 500 chars) where Connections was not found:
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: Multifactor PyMDP Agent
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multifactor PyMDP model in Active Inference format
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and attempts to represent a PyMDP agent with multiple observation modalities and hidden state factors.
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] MultifactorPyMDPAgent
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] Multifactor PyMDP Agent v1
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] This model represents a PyMDP agent with multiple observation modalities and hidden state fac
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Parsed ModelParameter: num_hidden_states_factors = [2, 3]
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Parsed ModelParameter: num_obs_modalities = [3, 3, 3]
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Parsed ModelParameter: num_control_factors = [1, 3]
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,902 - __main__ - INFO - GNN discovery report saved to: output/gnn_processing_step/1_gnn_discovery_report.md
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,902 - __main__ - INFO - Step 1_gnn completed successfully.
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO - ✅ Step 1/14 (1: 1_gnn.py) - COMPLETED successfully.
+2025-06-06 12:02:03,914 - GNN_Pipeline - INFO - 
+2025-06-06 12:02:03,915 - GNN_Pipeline - INFO - 🚀 Starting Step 2/14 (2: 2_setup.py)
+2025-06-06 12:02:03,915 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/2_setup.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
+2025-06-06 12:02:03,915 - GNN_Pipeline - INFO - ⏳ Setting up environment and dependencies (timeout: 600s). This may take several minutes...
+2025-06-06 12:02:03,915 - GNN_Pipeline - INFO -    The process will display progress logs while running.
+2025-06-06 12:02:03,963 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,963 - __main__ - DEBUG - Script logger '__main__' level set to DEBUG.
