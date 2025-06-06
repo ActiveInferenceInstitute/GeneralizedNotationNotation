@@ -499,3 +499,257 @@
 2025-06-06 12:18:10,615 - GNN_Pipeline - INFO - 
 2025-06-06 12:18:10,615 - GNN_Pipeline - INFO - 🚀 Starting Step 6/14 (6: 6_visualization.py)
 2025-06-06 12:18:10,615 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/6_visualization.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
+2025-06-06 12:18:11,120 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - INFO - ▶️ Starting Step 6: Visualization (6_visualization.py)
+2025-06-06 12:18:20,090 - GNN_Pipeline - WARNING -     [STDERR] /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/visualization/matrix_visualizer.py:247: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+2025-06-06 12:18:20,190 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - DEBUG -   Parsing options:
+2025-06-06 12:18:20,190 - GNN_Pipeline - WARNING -     [STDERR] plt.tight_layout()  # Make room for colorbar and title
+2025-06-06 12:18:20,290 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - DEBUG -     Target directory/file: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:18:25,103 - GNN_Pipeline - WARNING -     [STDERR] /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/visualization/matrix_visualizer.py:247: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+2025-06-06 12:18:25,203 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - DEBUG -     Pipeline output directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output
+2025-06-06 12:18:25,203 - GNN_Pipeline - WARNING -     [STDERR] plt.tight_layout()  # Make room for colorbar and title
+2025-06-06 12:18:25,303 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - DEBUG -     Recursive: False
+2025-06-06 12:18:29,590 - GNN_Pipeline - WARNING -     [STDERR] /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/visualization/matrix_visualizer.py:247: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+2025-06-06 12:18:29,690 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - DEBUG -     Verbose: True
+2025-06-06 12:18:29,690 - GNN_Pipeline - WARNING -     [STDERR] plt.tight_layout()  # Make room for colorbar and title
+2025-06-06 12:18:29,790 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - INFO - 🖼️ Preparing to generate GNN visualizations...
+2025-06-06 12:18:31,448 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - DEBUG -   🎯 Target GNN files in: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:18:31,449 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - DEBUG -   ել Output visualizations will be in: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization
+2025-06-06 12:18:31,449 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - DEBUG -   ➡️ Recursive mode: Disabled
+2025-06-06 12:18:31,450 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - DEBUG -   🐍 Invoking GNN Visualization module (visualization.cli.main)
+2025-06-06 12:18:31,450 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:11,120 - __main__ - DEBUG -      Arguments: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization --project-root /home/trim/Documents/GitHub/GeneralizedNotationNotation
+2025-06-06 12:18:31,450 - GNN_Pipeline - INFO -     [STDOUT] Checking for variables in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_multiagent_gnn.md...
+2025-06-06 12:18:31,450 - GNN_Pipeline - INFO -     [STDOUT] Found 60 variables: ['dt', 'gamma', 'nr_steps', 'nr_iterations', 'nr_agents', 'softmin_temperature', 'intermediate_steps', 'save_intermediates', 'A', 'B', 'C', 'initial_state_variance', 'control_variance', 'goal_constraint_variance', 'gamma_shape', 'gamma_scale_factor', 'x_limits', 'y_limits', 'fps', 'heatmap_resolution', 'plot_width', 'plot_height', 'agent_alpha', 'target_alpha', 'color_palette', 'door_obstacle_center_1', 'door_obstacle_size_1', 'door_obstacle_center_2', 'door_obstacle_size_2', 'wall_obstacle_center', 'wall_obstacle_size', 'combined_obstacle_center_1', 'combined_obstacle_size_1', 'combined_obstacle_center_2', 'combined_obstacle_size_2', 'combined_obstacle_center_3', 'combined_obstacle_size_3', 'agent1_id', 'agent1_radius', 'agent1_initial_position', 'agent1_target_position', 'agent2_id', 'agent2_radius', 'agent2_initial_position', 'agent2_target_position', 'agent3_id', 'agent3_radius', 'agent3_initial_position', 'agent3_target_position', 'agent4_id', 'agent4_radius', 'agent4_initial_position', 'agent4_target_position', 'experiment_seeds', 'results_dir', 'animation_template', 'control_vis_filename', 'obstacle_distance_filename', 'path_uncertainty_filename', 'convergence_filename']
+2025-06-06 12:18:31,451 - GNN_Pipeline - INFO -     [STDOUT] State space visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/state_space.png
+2025-06-06 12:18:31,451 - GNN_Pipeline - INFO -     [STDOUT] Checking for edges in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_multiagent_gnn.md...
+2025-06-06 12:18:31,451 - GNN_Pipeline - INFO -     [STDOUT] Found 1 edges
+2025-06-06 12:18:31,451 - GNN_Pipeline - INFO -     [STDOUT] Connections visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/connections.png
+2025-06-06 12:18:31,451 - GNN_Pipeline - INFO -     [STDOUT] [GNNVisualizer] Found 'InitialParameterization' section for rxinfer_multiagent_gnn. Attempting matrix visualization.
+2025-06-06 12:18:31,452 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_A.png
+2025-06-06 12:18:31,452 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_B.png
+2025-06-06 12:18:31,452 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_C.png
+2025-06-06 12:18:31,452 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_xlimits.png
+2025-06-06 12:18:31,452 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_ylimits.png
+2025-06-06 12:18:31,453 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_doorobstaclecenter1.png
+2025-06-06 12:18:31,453 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_doorobstaclesize1.png
+2025-06-06 12:18:31,453 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_doorobstaclecenter2.png
+2025-06-06 12:18:31,453 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_doorobstaclesize2.png
+2025-06-06 12:18:31,453 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_wallobstaclecenter.png
+2025-06-06 12:18:31,453 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_wallobstaclesize.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_combinedobstaclecenter1.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_combinedobstaclesize1.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_combinedobstaclecenter2.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_combinedobstaclesize2.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_combinedobstaclecenter3.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_combinedobstaclesize3.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_agent1initialposition.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_agent1targetposition.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_agent2initialposition.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_agent2targetposition.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_agent3initialposition.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_agent3targetposition.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_agent4initialposition.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_agent4targetposition.png
+2025-06-06 12:18:31,454 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/matrix_experimentseeds.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Combined matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/combined_matrices.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] [GNNVisualizer] Found 'ActInfOntologyAnnotation' section for rxinfer_multiagent_gnn. Attempting ontology visualization.
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Ontology visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/ontology_annotations.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Combined visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/rxinfer_multiagent_gnn/combined_visualization.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Checking for variables in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_POMDP_example.md...
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Found 18 variables: ['s_f0', 's_f1', 'o_m0', 'o_m1', 'pi_c0', 'pi_c1', 'u_c0', 'u_c1', 'A_m0', 'A_m1', 'B_f0', 'B_f1', 'C_m0', 'C_m1', 'D_f0', 'D_f1', 'G', 't']
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] State space visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_POMDP_example/state_space.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Checking for edges in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_POMDP_example.md...
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] No edges found in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Connections content: # Priors to initial states
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] (D_f0, D_f1) -> (s_f0, s_f1)
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] # States to likelihoods to observations
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] (s_...
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] [GNNVisualizer] Found 'InitialParameterization' section for gnn_POMDP_example. Attempting matrix visualization.
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_POMDP_example/matrix_Df0.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_POMDP_example/matrix_Df1.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_POMDP_example/matrix_Am0.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_POMDP_example/matrix_Am1.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_POMDP_example/matrix_Cm0.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_POMDP_example/matrix_Cm1.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Combined matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_POMDP_example/combined_matrices.png
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] [GNNVisualizer] Found 'ActInfOntologyAnnotation' section for gnn_POMDP_example. Attempting ontology visualization.
+2025-06-06 12:18:31,455 - GNN_Pipeline - INFO -     [STDOUT] Ontology visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_POMDP_example/ontology_annotations.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Checking for variables in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md...
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Found 21 variables: ['A_m0', 'A_m1', 'A_m2', 'B_f0', 'B_f1', 'C_m0', 'C_m1', 'C_m2', 'D_f0', 'D_f1', 's_f0', 's_f1', 's_prime_f0', 's_prime_f1', 'o_m0', 'o_m1', 'o_m2', 'π_f1', 'u_f1', 'G', 't']
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] State space visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/state_space.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Checking for edges in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md...
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Found 2 edges
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Connections visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/connections.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] [GNNVisualizer] Found 'InitialParameterization' section for gnn_example_pymdp_agent. Attempting matrix visualization.
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/matrix_Am0.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/matrix_Am1.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/matrix_Am2.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/matrix_Bf0.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/matrix_Bf1.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/matrix_Cm0.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/matrix_Cm1.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/matrix_Cm2.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/matrix_Df0.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/matrix_Df1.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Combined matrix visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/combined_matrices.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] [GNNVisualizer] Found 'ActInfOntologyAnnotation' section for gnn_example_pymdp_agent. Attempting ontology visualization.
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Ontology visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/ontology_annotations.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Combined visualization saved to /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization/gnn_example_pymdp_agent/combined_visualization.png
+2025-06-06 12:18:31,456 - GNN_Pipeline - INFO -     [STDOUT] Visualizations generated in /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization
+2025-06-06 12:18:31,457 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:31,229 - __main__ - INFO - ✅ GNN Visualization module completed successfully.
+2025-06-06 12:18:31,457 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:31,229 - __main__ - DEBUG -   🖼️ Visualizations should be available in: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization
+2025-06-06 12:18:31,457 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:31,230 - __main__ - DEBUG -   📊 Found 67 items (files/directories) in the output directory.
+2025-06-06 12:18:31,457 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:31,230 - __main__ - INFO - ✅ Step 6: Visualization (6_visualization.py) - COMPLETED
+2025-06-06 12:18:31,457 - GNN_Pipeline - INFO - ✅ Step 6/14 (6: 6_visualization.py) - COMPLETED successfully.
+2025-06-06 12:18:31,457 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:31,457 - GNN_Pipeline - INFO - 🚀 Starting Step 7/14 (7: 7_mcp.py)
+2025-06-06 12:18:31,457 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/7_mcp.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
+2025-06-06 12:18:33,193 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,597 - root - WARNING - Could not directly import MCPTool from src.mcp. This might be okay if loaded by the main MCP system.
+2025-06-06 12:18:33,193 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,608 - src.render.mcp - INFO - Render module MCP tools registered.
+2025-06-06 12:18:33,193 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,907 - src.llm.mcp - INFO - Successfully imported MCPTool and MCPSDKNotFoundError from src.mcp.mcp in initialize_llm_module.
+2025-06-06 12:18:33,193 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,907 - llm.llm_operations - INFO - OpenAI API key loaded successfully.
+2025-06-06 12:18:33,193 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,907 - src.llm.mcp - INFO - LLM API Key loaded successfully.
+2025-06-06 12:18:33,193 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,907 - src.llm.mcp - INFO - Registered MCP tool: llm.summarize_gnn_file
+2025-06-06 12:18:33,193 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,907 - src.llm.mcp - INFO - Registered MCP tool: llm.explain_gnn_file
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,907 - src.llm.mcp - INFO - Registered MCP tool: llm.generate_professional_summary
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,907 - src.llm.mcp - INFO - LLM module MCP tools registration process completed.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,908 - src.mcp.sympy_mcp - INFO - Successfully registered SymPy MCP tools
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,908 - mcp - INFO - Successfully registered SymPy MCP tools
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,908 - mcp - INFO - MCP system initialized using project's internal MCP components. SDK Status: Using project's internal MCP implementation.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,908 - mcp - ERROR - Failed to load MCP module src.site.mcp: cannot import name 'MCPSchema' from 'src.mcp.mcp' (/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/mcp/mcp.py)
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,908 - src.tests.mcp - INFO - Tests module MCP tools and resources registered.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,908 - src.export.mcp - INFO - Export module MCP tools registration process completed.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,908 - src.setup.mcp - INFO - Setup module MCP tools registered.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,908 - src.gnn.mcp - INFO - GNN documentation module MCP tools and resources registered.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,908 - src.visualization.mcp - INFO - Visualization module MCP tools and resources registered.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - src.render.mcp - INFO - Render module MCP tools registered.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - src.llm.mcp - INFO - Successfully imported MCPTool and MCPSDKNotFoundError from src.mcp.mcp in initialize_llm_module.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - llm.llm_operations - INFO - OpenAI API key loaded successfully.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - src.llm.mcp - INFO - LLM API Key loaded successfully.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - src.llm.mcp - INFO - Registered MCP tool: llm.summarize_gnn_file
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - src.llm.mcp - INFO - Registered MCP tool: llm.explain_gnn_file
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - src.llm.mcp - INFO - Registered MCP tool: llm.generate_professional_summary
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - src.llm.mcp - INFO - LLM module MCP tools registration process completed.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - src.mcp.sympy_mcp - INFO - Successfully registered SymPy MCP tools
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - mcp - INFO - Successfully registered SymPy MCP tools
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:32,909 - mcp - INFO - MCP system initialized using project's internal MCP components. SDK Status: Using project's internal MCP implementation.
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] usage: 7_mcp.py [-h] [--output-dir OUTPUT_DIR] [--verbose]
+2025-06-06 12:18:33,194 - GNN_Pipeline - WARNING -     [STDERR] [--mcp-core-dir-override MCP_CORE_DIR_OVERRIDE]
+2025-06-06 12:18:33,195 - GNN_Pipeline - WARNING -     [STDERR] [--src-root-override SRC_ROOT_OVERRIDE]
+2025-06-06 12:18:33,195 - GNN_Pipeline - WARNING -     [STDERR] 7_mcp.py: error: unrecognized arguments: --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:18:33,195 - GNN_Pipeline - ERROR - ❌ Step 7/14 (7: 7_mcp.py) - FAILED with exit code 2 after 1.7 seconds.
+2025-06-06 12:18:33,195 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:33,195 - GNN_Pipeline - INFO - 🚀 Starting Step 8/14 (8: 8_ontology.py)
+2025-06-06 12:18:33,195 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/8_ontology.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --ontology-terms-file /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
+2025-06-06 12:18:33,236 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,236 - __main__ - INFO - ▶️ Starting Step 8: Ontology Operations (8_ontology.py)
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,236 - __main__ - DEBUG -   Parsed options (from main.py or standalone):
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,236 - __main__ - DEBUG -     Target GNN files directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,236 - __main__ - DEBUG -     Output directory for report: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -     Recursive: False
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -     Ontology terms definition file: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -     Verbose flag from args: True
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - INFO -   🔎 Processing ontology related tasks...
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -     🎯 Target GNN files in: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -     ել Output directory for ontology report: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -     🔄 Recursive mode: Disabled
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -     📖 Using ontology terms definition from: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -     🧠 Conceptual Note: Ontologies provide a formal way to represent knowledge.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -       - Informal ontologies (like folksonomies or taxonomies) help organize concepts.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -       - Formal ontologies (e.g., in OWL, RDF) allow for logical reasoning and consistency checks.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -       - This script focuses on extracting and validating terms based on a predefined JSON schema.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -       - Different ontology languages (OWL, RDF, SKOS) offer varying expressiveness.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -     ✍️ Ontology report will be saved in: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/ontology_processing
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -     🧐 Loading defined ontology terms from: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,237 - __main__ - DEBUG -       📚 Loaded 48 ontology terms successfully.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,238 - __main__ - DEBUG -     📊 Found 3 GNN (.md) files to process.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,238 - __main__ - DEBUG -     📄 Processing file: rxinfer_multiagent_gnn.md (9002 bytes)
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,238 - __main__ - DEBUG -       Found 12 ontology annotations in rxinfer_multiagent_gnn.md.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,239 - __main__ - DEBUG -         Validated for rxinfer_multiagent_gnn.md: 0 passed, 12 failed.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,239 - __main__ - DEBUG -     📄 Processing file: gnn_POMDP_example.md (8049 bytes)
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,239 - __main__ - DEBUG -       Found 18 ontology annotations in gnn_POMDP_example.md.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,239 - __main__ - DEBUG -         Validated for gnn_POMDP_example.md: 18 passed, 0 failed.
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,240 - __main__ - DEBUG -     📄 Processing file: gnn_example_pymdp_agent.md (6387 bytes)
+2025-06-06 12:18:33,249 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,240 - __main__ - DEBUG -       Found 20 ontology annotations in gnn_example_pymdp_agent.md.
+2025-06-06 12:18:33,250 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,240 - __main__ - DEBUG -         Validated for gnn_example_pymdp_agent.md: 20 passed, 0 failed.
+2025-06-06 12:18:33,250 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,240 - __main__ - DEBUG -   ✅ Ontology processing report saved: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/ontology_processing/ontology_processing_report.md (2988 bytes)
+2025-06-06 12:18:33,250 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:33,240 - __main__ - WARNING - ⚠️ Step 8: Ontology validation completed with 12 failed term(s). Check '/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/ontology_processing/ontology_processing_report.md' for details.
+2025-06-06 12:18:33,250 - GNN_Pipeline - ERROR - ❌ Step 8/14 (8: 8_ontology.py) - FAILED with exit code 2 after 0.1 seconds.
+2025-06-06 12:18:33,250 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:33,250 - GNN_Pipeline - INFO - 🚀 Starting Step 9/14 (9: 9_render.py)
+2025-06-06 12:18:33,250 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/9_render.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
+2025-06-06 12:18:33,298 - GNN_Pipeline - WARNING -     [STDERR] usage: 9_render.py [-h] [--output-dir OUTPUT_DIR]
+2025-06-06 12:18:33,298 - GNN_Pipeline - WARNING -     [STDERR] [--recursive | --no-recursive] [--verbose | --no-verbose]
+2025-06-06 12:18:33,298 - GNN_Pipeline - WARNING -     [STDERR] [--target-format {pymdp,rxinfer,rxinfer_toml}]
+2025-06-06 12:18:33,298 - GNN_Pipeline - WARNING -     [STDERR] 9_render.py: error: unrecognized arguments: --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:18:33,298 - GNN_Pipeline - ERROR - ❌ Step 9/14 (9: 9_render.py) - FAILED with exit code 2 after 0.0 seconds.
+2025-06-06 12:18:33,298 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:33,298 - GNN_Pipeline - INFO - 🚀 Starting Step 10/14 (10: 10_execute.py)
+2025-06-06 12:18:33,298 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/10_execute.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
+2025-06-06 12:18:33,345 - GNN_Pipeline - WARNING -     [STDERR] usage: 10_execute.py [-h] [--output-dir OUTPUT_DIR]
+2025-06-06 12:18:33,346 - GNN_Pipeline - WARNING -     [STDERR] [--recursive | --no-recursive] [--verbose | --no-verbose]
+2025-06-06 12:18:33,346 - GNN_Pipeline - WARNING -     [STDERR] [--pymdp-only] [--rxinfer-only]
+2025-06-06 12:18:33,346 - GNN_Pipeline - WARNING -     [STDERR] 10_execute.py: error: unrecognized arguments: --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:18:33,346 - GNN_Pipeline - ERROR - ❌ Step 10/14 (10: 10_execute.py) - FAILED with exit code 2 after 0.0 seconds.
+2025-06-06 12:18:33,346 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:33,346 - GNN_Pipeline - INFO - 🚀 Starting Step 11/14 (11: 11_llm.py)
+2025-06-06 12:18:33,346 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/11_llm.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --llm-tasks all --llm-timeout 60
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] Failed to load MCP module src.site.mcp: cannot import name 'MCPSchema' from partially initialized module 'src.mcp.mcp' (most likely due to a circular import) (/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/mcp/mcp.py)
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,768 - root - WARNING - Could not directly import MCPTool from src.mcp. This might be okay if loaded by the main MCP system.
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,773 - src.render.mcp - INFO - Render module MCP tools registered.
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,773 - src.llm.mcp - INFO - Successfully imported MCPTool and MCPSDKNotFoundError from src.mcp.mcp in initialize_llm_module.
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,773 - llm.llm_operations - INFO - OpenAI API key loaded successfully.
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,773 - src.llm.mcp - INFO - LLM API Key loaded successfully.
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,773 - src.llm.mcp - INFO - Registered MCP tool: llm.summarize_gnn_file
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,773 - src.llm.mcp - INFO - Registered MCP tool: llm.explain_gnn_file
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,774 - src.llm.mcp - INFO - Registered MCP tool: llm.generate_professional_summary
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,774 - src.llm.mcp - INFO - LLM module MCP tools registration process completed.
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,774 - src.mcp.sympy_mcp - INFO - Successfully registered SymPy MCP tools
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,774 - mcp - INFO - Successfully registered SymPy MCP tools
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,774 - mcp - INFO - MCP system initialized using project's internal MCP components. SDK Status: Using project's internal MCP implementation.
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 2025-06-06 12:18:34,774 - __main__ - INFO - Successfully imported llm_operations, llm_mcp, and mcp_instance.
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] usage: 11_llm.py [-h] [--target-dir TARGET_DIR] [--output-dir OUTPUT_DIR]
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] [--recursive | --no-recursive]
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] [--verbose | --no-verbose | -v]
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] [--llm-tasks {summary,analysis,qa,all} [{summary,analysis,qa,all} ...]]
+2025-06-06 12:18:35,071 - GNN_Pipeline - WARNING -     [STDERR] 11_llm.py: error: unrecognized arguments: --llm-timeout 60
+2025-06-06 12:18:35,072 - GNN_Pipeline - ERROR - ❌ Step 11/14 (11: 11_llm.py) - FAILED with exit code 2 after 1.7 seconds.
+2025-06-06 12:18:35,072 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:35,072 - GNN_Pipeline - INFO - 🚀 Starting Step 12/14 (12: 12_discopy.py)
+2025-06-06 12:18:35,072 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/12_discopy.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
+2025-06-06 12:18:35,998 - GNN_Pipeline - WARNING -     [STDERR] Failed to import Ty, Word from discopy.monoidal: cannot import name 'Word' from 'discopy.monoidal' (/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/discopy/monoidal.py). They remain placeholders.
+2025-06-06 12:18:35,998 - GNN_Pipeline - WARNING -     [STDERR] WARNING:2025-06-06 12:18:35,841:jax._src.xla_bridge:909: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+2025-06-06 12:18:35,999 - GNN_Pipeline - WARNING -     [STDERR] JAX_AVAILABLE is False. One or more critical components (DisCoPy tensor/matrix/monoidal, JAX core, DisCoPy backend) failed to load.
+2025-06-06 12:18:35,999 - GNN_Pipeline - WARNING -     [STDERR] usage: 12_discopy.py [-h] --gnn-input-dir GNN_INPUT_DIR --output-dir
+2025-06-06 12:18:35,999 - GNN_Pipeline - WARNING -     [STDERR] OUTPUT_DIR [--recursive | --no-recursive]
+2025-06-06 12:18:35,999 - GNN_Pipeline - WARNING -     [STDERR] [--verbose | --no-verbose]
+2025-06-06 12:18:35,999 - GNN_Pipeline - WARNING -     [STDERR] 12_discopy.py: error: the following arguments are required: --gnn-input-dir
+2025-06-06 12:18:35,999 - GNN_Pipeline - ERROR - ❌ Step 12/14 (12: 12_discopy.py) - FAILED with exit code 2 after 0.9 seconds.
+2025-06-06 12:18:35,999 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:35,999 - GNN_Pipeline - INFO - 🚀 Starting Step 13/14 (13: 13_discopy_jax_eval.py)
+2025-06-06 12:18:36,006 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/13_discopy_jax_eval.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --discopy-jax-seed 0
+2025-06-06 12:18:36,948 - GNN_Pipeline - WARNING -     [STDERR] Failed to import Ty, Word from discopy.monoidal: cannot import name 'Word' from 'discopy.monoidal' (/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/discopy/monoidal.py). They remain placeholders.
+2025-06-06 12:18:36,948 - GNN_Pipeline - WARNING -     [STDERR] WARNING:2025-06-06 12:18:36,801:jax._src.xla_bridge:909: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+2025-06-06 12:18:36,948 - GNN_Pipeline - WARNING -     [STDERR] JAX_AVAILABLE is False. One or more critical components (DisCoPy tensor/matrix/monoidal, JAX core, DisCoPy backend) failed to load.
+2025-06-06 12:18:36,948 - GNN_Pipeline - WARNING -     [STDERR] usage: 13_discopy_jax_eval.py [-h] --gnn-input-dir GNN_INPUT_DIR --output-dir
+2025-06-06 12:18:36,948 - GNN_Pipeline - WARNING -     [STDERR] OUTPUT_DIR [--recursive | --no-recursive]
+2025-06-06 12:18:36,948 - GNN_Pipeline - WARNING -     [STDERR] [--jax-seed JAX_SEED] [--verbose | --no-verbose]
+2025-06-06 12:18:36,948 - GNN_Pipeline - WARNING -     [STDERR] 13_discopy_jax_eval.py: error: the following arguments are required: --gnn-input-dir
+2025-06-06 12:18:36,949 - GNN_Pipeline - ERROR - ❌ Step 13/14 (13: 13_discopy_jax_eval.py) - FAILED with exit code 2 after 0.9 seconds.
+2025-06-06 12:18:36,949 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:36,949 - GNN_Pipeline - INFO - 🚀 Starting Step 14/14 (15: 15_site.py)
+2025-06-06 12:18:36,949 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/15_site.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --site-html-filename gnn_pipeline_summary_site.html
+2025-06-06 12:18:37,006 - GNN_Pipeline - WARNING -     [STDERR] usage: 15_site.py [-h] --output-dir OUTPUT_DIR
+2025-06-06 12:18:37,006 - GNN_Pipeline - WARNING -     [STDERR] [--site-html-file SITE_HTML_FILE] [--verbose]
+2025-06-06 12:18:37,006 - GNN_Pipeline - WARNING -     [STDERR] 15_site.py: error: unrecognized arguments: --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --site-html-filename gnn_pipeline_summary_site.html
+2025-06-06 12:18:37,006 - GNN_Pipeline - ERROR - ❌ Step 14/14 (15: 15_site.py) - FAILED with exit code 2 after 0.1 seconds.
+2025-06-06 12:18:37,006 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:37,006 - GNN_Pipeline - INFO - 🏁 Pipeline processing completed. Overall Status: FAILED
+2025-06-06 12:18:37,006 - GNN_Pipeline - INFO - 
+--- Pipeline Execution Summary ---
+2025-06-06 12:18:37,007 - GNN_Pipeline - INFO - 📊 Total Steps Attempted/Processed: 14 / 14
+2025-06-06 12:18:37,007 - GNN_Pipeline - INFO -   ✅ Successful: 5
+2025-06-06 12:18:37,007 - GNN_Pipeline - INFO -   ⚠️ Success with Warnings: 0
+2025-06-06 12:18:37,007 - GNN_Pipeline - INFO -   ❌ Failed/Error: 9
+2025-06-06 12:18:37,007 - GNN_Pipeline - INFO -   ⏭️ Skipped: 0
+2025-06-06 12:18:37,007 - GNN_Pipeline - ERROR - 🛑 PIPELINE FINISHED WITH ERRORS.
+2025-06-06 12:18:37,007 - GNN_Pipeline - INFO - 💾 Detailed pipeline execution summary (JSON) saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/pipeline_execution_summary.json
