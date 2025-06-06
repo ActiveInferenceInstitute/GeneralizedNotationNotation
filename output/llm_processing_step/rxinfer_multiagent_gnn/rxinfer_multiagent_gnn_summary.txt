@@ -1,0 +1,44 @@
+### Summary of the GNN Model: Multi-agent Trajectory Planning
+
+**Model Name:** Multi-agent Trajectory Planning
+
+**Purpose:** 
+The model is designed for simulating and planning the trajectories of multiple agents in a 2D environment while accounting for obstacles, goal-directed behaviors, and inter-agent collision avoidance. It leverages the RxInfer.jl framework to facilitate inference and trajectory planning.
+
+**Key Components:**
+
+1. **State Space Model:**
+   - **Parameters:**
+     - `dt`: Time step for the model.
+     - `gamma`: Constraint parameter for obstacle avoidance.
+     - `nr_steps`: Number of time steps in the simulation.
+     - `nr_iterations`: Number of inference iterations.
+     - `nr_agents`: Number of agents involved.
+   - **Matrices:**
+     - `A`: State transition matrix defining how agents evolve over time.
+     - `B`: Control input matrix influencing the state based on inputs.
+     - `C`: Observation matrix mapping states to observed variables.
+
+2. **Prior Distributions:**
+   - Variances for initial states, control inputs, and goal constraints, along with parameters for Gamma distributions for uncertainty modeling.
+
+3. **Visualization Parameters:**
+   - Settings for plotting trajectories, including boundaries, resolution, and visual properties of agents.
+
+4. **Environment Definitions:**
+   - Specifications for obstacles in various configurations (door, wall, combined) with centers and sizes defined.
+
+5. **Agent Configurations:**
+   - Details for four agents, including their IDs, radii, initial and target positions.
+
+6. **Experiment Configurations:**
+   - Random seeds for reproducibility, results directory, and filenames for visualizations of control signals and obstacles.
+
+**Main Connections:**
+- The model establishes connections between parameters and computations, such as:
+  - State evolution using the state space model and variances for initial states and controls.
+  - Goal-directed behavior derived from agent trajectories and goal constraints.
+  - Obstacle avoidance and collision avoidance mechanisms based on agent positions and defined constraints.
+  - Integration into a complete planning system that synthesizes these components for trajectory planning.
+
+This model provides a comprehensive framework for simulating multi-agent environments with complex interactions and constraints, ensuring effective trajectory planning while avoiding obstacles and collisions.

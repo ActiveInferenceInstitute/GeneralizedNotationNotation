@@ -2078,3 +2078,57 @@
 2025-06-06 13:41:53,690 - GNN_Pipeline - INFO - 
 2025-06-06 13:41:53,690 - GNN_Pipeline - INFO - 🚀 Starting Step 11/13 (11: 11_llm.py)
 2025-06-06 13:41:53,690 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/11_llm.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --llm-tasks all --llm-timeout 60
+2025-06-06 13:43:53,697 - GNN_Pipeline - WARNING - ⚠️ Step 11/13 (11: 11_llm.py) timed out after 120 seconds. Terminating process...
+2025-06-06 13:43:53,712 - GNN_Pipeline - ERROR - ❌ Step 11/13 (11: 11_llm.py) - FAILED due to timeout after 120.0 seconds.
+2025-06-06 13:43:53,712 - GNN_Pipeline - INFO - 
+2025-06-06 13:43:53,712 - GNN_Pipeline - INFO - 🚀 Starting Step 12/13 (12: 12_discopy.py)
+2025-06-06 13:43:53,712 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/12_discopy.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG - --- Output from 12_discopy.py (stdout) ---
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,467 - __main__ - INFO - Starting pipeline step: 12_discopy.py - GNN to DisCoPy Transformation
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,467 - __main__ - INFO - Reading GNN files from: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,467 - __main__ - INFO - DisCoPy outputs will be saved in: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/discopy_gnn
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,468 - __main__ - INFO - Found 2 GNN files to process.
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,468 - __main__ - INFO - Processing GNN file for DisCoPy: pymdp_pomdp_agent.md
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,469 - __main__ - WARNING - No DisCoPy diagram could be generated for pymdp_pomdp_agent.md. Skipping visualization.
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,469 - __main__ - INFO - Processing GNN file for DisCoPy: rxinfer_multiagent_gnn.md
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,471 - __main__ - WARNING - No DisCoPy diagram could be generated for rxinfer_multiagent_gnn.md. Skipping visualization.
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,471 - __main__ - INFO - Finished processing 2 GNN files. 0 diagrams generated successfully.
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,471 - __main__ - WARNING - Some GNN files failed to produce DisCoPy diagrams.
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG - --- End of 12_discopy.py output ---
+2025-06-06 13:43:54,660 - GNN_Pipeline - WARNING - --- Output from 12_discopy.py (stderr) ---
+2025-06-06 13:43:54,660 - GNN_Pipeline - WARNING -     [STDERR] Failed to import Ty, Word from discopy.monoidal: cannot import name 'Word' from 'discopy.monoidal' (/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/discopy/monoidal.py). They remain placeholders.
+2025-06-06 13:43:54,660 - GNN_Pipeline - WARNING -     [STDERR] WARNING:2025-06-06 13:43:54,451:jax._src.xla_bridge:909: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+2025-06-06 13:43:54,660 - GNN_Pipeline - WARNING -     [STDERR] JAX_AVAILABLE is False. One or more critical components (DisCoPy tensor/matrix/monoidal, JAX core, DisCoPy backend) failed to load.
+2025-06-06 13:43:54,660 - GNN_Pipeline - WARNING -     [STDERR] Core DisCoPy components (Diagram, Box, Id, Dim, or Ty) are Placeholders. Cannot create tensor-based DisCoPy diagram. DisCoPy import likely failed.
+2025-06-06 13:43:54,660 - GNN_Pipeline - WARNING -     [STDERR] Could not create a DisCoPy diagram from GNN file: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/pymdp_pomdp_agent.md. Check Connections section.
+2025-06-06 13:43:54,660 - GNN_Pipeline - WARNING -     [STDERR] Core DisCoPy components (Diagram, Box, Id, Dim, or Ty) are Placeholders. Cannot create tensor-based DisCoPy diagram. DisCoPy import likely failed.
+2025-06-06 13:43:54,660 - GNN_Pipeline - WARNING -     [STDERR] Could not create a DisCoPy diagram from GNN file: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_multiagent_gnn.md. Check Connections section.
+2025-06-06 13:43:54,660 - GNN_Pipeline - WARNING - --- End of 12_discopy.py output ---
+2025-06-06 13:43:54,660 - GNN_Pipeline - ERROR - ❌ Step 12/13 (12: 12_discopy.py) - FAILED with exit code 2 after 0.9 seconds.
+2025-06-06 13:43:54,660 - GNN_Pipeline - INFO - 
+2025-06-06 13:43:54,660 - GNN_Pipeline - INFO - 🚀 Starting Step 13/13 (15: 15_site.py)
+2025-06-06 13:43:54,660 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/15_site.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --site-html-filename gnn_pipeline_summary_site.html
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG - --- Output from 15_site.py (stdout) ---
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,713 - __main__ - INFO - Starting pipeline step: 15_site.py - Generate HTML Summary Site
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,713 - __main__ - INFO - Reading from pipeline output directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,713 - __main__ - INFO - Generated site will be saved as: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_pipeline_summary_site.html
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,714 - __main__ - DEBUG - Calling generate_html_report with output_dir='/home/trim/Documents/GitHub/GeneralizedNotationNotation/output' and site_output_file='/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_pipeline_summary_site.html'
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,714 - src.site.generator - INFO - Starting HTML report generation for directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,714 - src.site.generator - INFO - Output HTML will be saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_pipeline_summary_site.html
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,714 - src.site.generator - WARNING - Pipeline summary JSON not found: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/pipeline_execution_summary.json
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,813 - src.site.generator - WARNING - PyMDP Execute Logs directory not found: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_execute_logs
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,815 - src.site.generator - INFO - ✅ HTML report generated successfully: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_pipeline_summary_site.html
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG -     [STDOUT] 2025-06-06 13:43:54,815 - __main__ - INFO - HTML summary site generated successfully: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_pipeline_summary_site.html
+2025-06-06 13:43:54,827 - GNN_Pipeline - DEBUG - --- End of 15_site.py output ---
+2025-06-06 13:43:54,827 - GNN_Pipeline - INFO - ✅ Step 13/13 (15: 15_site.py) - COMPLETED successfully in 0.2 seconds.
+2025-06-06 13:43:54,827 - GNN_Pipeline - INFO - 
+2025-06-06 13:43:54,827 - GNN_Pipeline - INFO - 🏁 Pipeline processing completed. Overall Status: FAILED
+2025-06-06 13:43:54,827 - GNN_Pipeline - INFO - 
+--- Pipeline Execution Summary ---
+2025-06-06 13:43:54,827 - GNN_Pipeline - INFO - 📊 Total Steps Attempted/Processed: 13 / 14
+2025-06-06 13:43:54,827 - GNN_Pipeline - INFO -   ✅ Successful: 10
+2025-06-06 13:43:54,827 - GNN_Pipeline - INFO -   ⚠️ Success with Warnings: 0
+2025-06-06 13:43:54,827 - GNN_Pipeline - INFO -   ❌ Failed/Error: 3
+2025-06-06 13:43:54,827 - GNN_Pipeline - INFO -   ⏭️ Skipped: 0
+2025-06-06 13:43:54,827 - GNN_Pipeline - ERROR - 🛑 PIPELINE FINISHED WITH ERRORS.
+2025-06-06 13:43:54,829 - GNN_Pipeline - INFO - 💾 Detailed pipeline execution summary (JSON) saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/pipeline_execution_summary.json
