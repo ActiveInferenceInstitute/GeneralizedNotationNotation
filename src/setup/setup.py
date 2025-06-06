@@ -15,6 +15,7 @@ from pathlib import Path
 import logging
 import argparse
 import time
+import json
 
 # --- Logger Setup ---
 logger = logging.getLogger(__name__)
@@ -333,12 +334,90 @@ def install_dependencies(verbose: bool = False, dev: bool = False) -> bool:
         duration = time.time() - start_time
         logger.info(f"✅ All dependencies installed successfully (took {duration:.1f}s)")
         sys.stdout.flush()
+        
+        # Report installed package versions
+        get_installed_package_versions(verbose)
+        
         return True
         
     except Exception as e:
         logger.error(f"❌ Error during dependency installation: {e}")
         sys.stdout.flush()
         return False
+
+def get_installed_package_versions(verbose: bool = False) -> dict:
+    """
+    Get a list of all installed packages and their versions in the virtual environment.
+    
+    Args:
+        verbose: If True, logs the full package list.
+        
+    Returns:
+        A dictionary of package names and their versions.
+    """
+    if not VENV_PIP.exists():
+        logger.warning("⚠️ Cannot list packages: pip not found in virtual environment")
+        return {}
+    
+    logger.info("📋 Getting list of installed packages...")
+    sys.stdout.flush()
+    
+    try:
+        # Get list of installed packages
+        list_cmd = [str(VENV_PIP), "list", "--format=json"]
+        result = subprocess.run(
+            list_cmd,
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        
+        if result.returncode != 0:
+            logger.warning(f"⚠️ Failed to get package list (exit code: {result.returncode})")
+            if verbose:
+                logger.warning(f"Error: {result.stderr.strip()}")
+            return {}
+        
+        # Parse JSON output
+        try:
+            packages = json.loads(result.stdout)
+            package_dict = {pkg["name"]: pkg["version"] for pkg in packages}
+            
+            # Count and log summary
+            package_count = len(package_dict)
+            logger.info(f"📦 Found {package_count} installed packages in the virtual environment")
+            
+            # Log all packages if verbose
+            if verbose:
+                logger.info("📋 Installed packages:")
+                for name, version in sorted(package_dict.items()):
+                    logger.info(f"  - {name}: {version}")
+            else:
+                # Log just a few key packages even in non-verbose mode
+                key_packages = ["pip", "pytest", "numpy", "matplotlib", "scipy"]
+                logger.info("📋 Key installed packages:")
+                for pkg in key_packages:
+                    if pkg in package_dict:
+                        logger.info(f"  - {pkg}: {package_dict[pkg]}")
+            
+            # Save package list to a file in the virtual environment directory
+            package_list_file = VENV_PATH / "installed_packages.json"
+            with open(package_list_file, 'w') as f:
+                json.dump(package_dict, f, indent=2, sort_keys=True)
+            logger.info(f"📄 Full package list saved to: {package_list_file}")
+            
+            return package_dict
+            
+        except json.JSONDecodeError:
+            logger.warning("⚠️ Failed to parse package list JSON")
+            if verbose:
+                logger.warning(f"Output: {result.stdout}")
+            return {}
+            
+    except Exception as e:
+        logger.error(f"❌ Error while getting package versions: {e}")
+        return {}
 
 # --- Callable Main Function ---
 def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: bool = False):

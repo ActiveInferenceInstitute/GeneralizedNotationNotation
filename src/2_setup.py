@@ -147,6 +147,82 @@ def verify_directories(target_dir, output_dir, verbose=False):
         logger.error(f"❌ Error creating output directories: {e}")
         return False
 
+def list_installed_packages(verbose: bool = False, output_dir: str = None):
+    """
+    List all installed packages in the virtual environment.
+    
+    Args:
+        verbose: If True, print detailed package information.
+        output_dir: If provided, save the package list to this directory.
+    """
+    logger.info("📋 Generating installed packages report...")
+    sys.stdout.flush()
+    
+    # Check if we're in a virtual environment
+    venv_info = get_venv_info()
+    if not venv_info["is_active"]:
+        logger.warning("⚠️ Not running in a virtual environment, skipping package listing")
+        return
+    
+    # Get pip executable
+    pip_executable = venv_info["pip_executable"]
+    if not pip_executable or not Path(pip_executable).exists():
+        logger.warning(f"⚠️ pip not found at {pip_executable}, skipping package listing")
+        return
+    
+    try:
+        # Run pip list with JSON format
+        logger.debug(f"Running {pip_executable} list --format=json")
+        pip_list_cmd = [pip_executable, "list", "--format=json"]
+        result = subprocess.run(
+            pip_list_cmd,
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        
+        # Parse JSON output
+        packages = json.loads(result.stdout)
+        package_dict = {pkg["name"]: pkg["version"] for pkg in packages}
+        
+        # Print summary
+        logger.info(f"📦 Found {len(package_dict)} installed packages in the virtual environment")
+        
+        # Log packages based on verbosity
+        if verbose:
+            logger.info("Installed packages:")
+            for name, version in sorted(package_dict.items()):
+                logger.info(f"  - {name}: {version}")
+        else:
+            # Show key packages even in non-verbose mode
+            key_packages = ["pip", "pytest", "numpy", "matplotlib", "scipy"]
+            logger.info("Key installed packages:")
+            for pkg in key_packages:
+                if pkg.lower() in package_dict:
+                    logger.info(f"  - {pkg}: {package_dict[pkg.lower()]}")
+        
+        # Save to file if output directory provided
+        if output_dir:
+            output_path = Path(output_dir)
+            if output_path.is_dir():
+                package_file = output_path / "installed_packages.json"
+                with open(package_file, "w") as f:
+                    json.dump(package_dict, f, indent=2, sort_keys=True)
+                logger.info(f"📄 Package list saved to {package_file}")
+            else:
+                logger.warning(f"⚠️ Output directory {output_dir} does not exist, not saving package list")
+    
+    except subprocess.CalledProcessError as e:
+        logger.error(f"❌ Error running pip list: {e}")
+        if e.stderr:
+            logger.error(f"Error details: {e.stderr}")
+    
+    except json.JSONDecodeError:
+        logger.error("❌ Failed to parse pip list output as JSON")
+    
+    except Exception as e:
+        logger.error(f"❌ Unexpected error while listing packages: {e}")
+
 def main(parsed_args: argparse.Namespace):
     """Main function for the setup step (Step 2).
 
@@ -221,6 +297,16 @@ def main(parsed_args: argparse.Namespace):
                 sys.exit(1)
                 
             logger.info("  ✅ Python virtual environment and dependencies setup completed.")
+            sys.stdout.flush()
+            
+            # Generate a separate package listing report
+            logger.info("  Phase 3: Generating installed packages report...")
+            sys.stdout.flush()
+            list_installed_packages(
+                verbose=parsed_args.verbose,
+                output_dir=str(output_dir_abs)
+            )
+            logger.info("  ✅ Package report completed.")
             sys.stdout.flush()
 
         except Exception as e:
