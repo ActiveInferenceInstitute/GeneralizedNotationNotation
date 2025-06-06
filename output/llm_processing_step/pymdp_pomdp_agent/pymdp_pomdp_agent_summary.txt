@@ -1,0 +1,33 @@
+### Summary of the Multifactor PyMDP Agent GNN Model
+
+**Model Name:** Multifactor PyMDP Agent v1
+
+**Purpose:** The model represents a PyMDP (Partially Observable Markov Decision Process) agent that utilizes multiple observation modalities and hidden state factors to make decisions based on observed states and preferences, implemented in the Active Inference framework.
+
+**Key Components:**
+1. **Observation Modalities:**
+   - **State Observation:** 3 outcomes
+   - **Reward:** 3 outcomes
+   - **Decision Proprioceptive:** 3 outcomes
+
+2. **Hidden State Factors:**
+   - **Reward Level:** 2 states
+   - **Decision State:** 3 states
+   - The decision state factor is controllable with 3 possible actions.
+
+3. **State Transition and Observation Likelihood Matrices:**
+   - **A_m0, A_m1, A_m2:** Matrices defining the likelihood of observations given the hidden states for each modality.
+   - **B_f0, B_f1:** Transition matrices for hidden state factors, with B_f0 being uncontrolled and B_f1 being controlled by actions.
+
+4. **Preference Vectors and Priors:**
+   - **C_m0, C_m1, C_m2:** Preference vectors for each modality, influencing the expected free energy.
+   - **D_f0, D_f1:** Priors over the hidden states for each factor, initialized uniformly.
+
+**Main Connections:**
+- The relationships among the hidden states, observations, and control actions are defined through a series of connections:
+  - The priors connect to the hidden states.
+  - Hidden states influence the observation likelihood matrices (A_m).
+  - Observations drive the calculations of expected free energy (G), which in turn influences the policy distribution (π_f1).
+  - The chosen action (u_f1) for the controllable factor is derived from the policy distribution.
+
+This model exemplifies a structured approach to decision-making in environments characterized by uncertainty and multiple simultaneous factors.

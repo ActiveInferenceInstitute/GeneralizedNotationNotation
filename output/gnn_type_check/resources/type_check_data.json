@@ -1,0 +1,21 @@
+{
+  "type_check_results": {
+    "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/pymdp_pomdp_agent.md": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_multiagent_gnn.md": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": []
+    }
+  },
+  "summary": {
+    "total_files": 2,
+    "valid_files": 2,
+    "invalid_files": 0,
+    "total_errors": 0,
+    "total_warnings": 0
+  }
+}
