@@ -276,6 +276,11 @@ if __name__ == "__main__":
     default_output_dir_standalone = project_root_for_defaults / "output"
 
     parser.add_argument(
+        "--target-dir", 
+        type=Path,
+        help="Target directory containing GNN files (ignored for rendering, but included for compatibility with main.py)"
+    )
+    parser.add_argument(
         "--output-dir", 
         default=default_output_dir_standalone, 
         type=Path,

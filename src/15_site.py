@@ -30,17 +30,32 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generates an HTML summary site for GNN pipeline outputs.")
     
     parser.add_argument(
+        "--target-dir",
+        type=Path,
+        help="Target directory containing GNN files (ignored for site generation, but included for compatibility with main.py)"
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         required=True,
         help="The main output directory of the GNN pipeline (e.g., ../output or output/). This script reads from this directory."
     )
-    parser.add_argument(
+    
+    # Add both parameter names in a mutually exclusive group for the HTML filename
+    html_file_group = parser.add_mutually_exclusive_group()
+    html_file_group.add_argument(
         "--site-html-file",
         type=str,
         default="gnn_pipeline_summary_site.html",
         help="Filename for the generated HTML site. This file will be saved inside the --output-dir. Default: gnn_pipeline_summary_site.html"
     )
+    html_file_group.add_argument(
+        "--site-html-filename",
+        type=str,
+        dest="site_html_file",  # Use the same destination as --site-html-file
+        help="Alternative name for --site-html-file (compatible with main.py)"
+    )
+    
     parser.add_argument(
         "--verbose",
         action="store_true",

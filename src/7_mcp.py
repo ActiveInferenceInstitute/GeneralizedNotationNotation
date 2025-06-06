@@ -456,6 +456,11 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument(
+        "--target-dir", 
+        type=str, 
+        help="Target directory containing GNN files (ignored for MCP operations, but included for compatibility with main.py)"
+    )
+    parser.add_argument(
         "--output-dir", 
         type=str, 
         default="output", # Sensible default for standalone

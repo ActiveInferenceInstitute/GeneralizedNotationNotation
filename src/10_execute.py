@@ -220,7 +220,9 @@ if __name__ == '__main__':
                        help="Execute only PyMDP scripts, skipping RxInfer.jl scripts.")
     parser.add_argument("--rxinfer-only", action="store_true",
                        help="Execute only RxInfer.jl scripts, skipping PyMDP scripts.")
-    # Removed --target-dir placeholder as it's not used by this script.
+    # Add target-dir parameter for compatibility with main.py
+    parser.add_argument("--target-dir", type=Path,
+                       help="Target directory containing GNN files (ignored for execution, but included for compatibility with main.py)")
 
     parsed_args = parser.parse_args()
 

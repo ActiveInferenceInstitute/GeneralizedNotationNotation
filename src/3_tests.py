@@ -146,7 +146,7 @@ def main(parsed_args: argparse.Namespace): # Renamed 'cmd_args' and type hinted
 
     Args:
         parsed_args (argparse.Namespace): Pre-parsed command-line arguments.
-            Expected attributes include: output_dir, verbose.
+            Expected attributes include: output_dir, verbose, target_dir (optional).
     """
     log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
     logger.setLevel(log_level)
@@ -181,6 +181,11 @@ if __name__ == "__main__":
     default_output_dir = project_root_for_defaults / "output"
 
     parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 3: Tests (Standalone).")
+    parser.add_argument(
+        "--target-dir",
+        type=Path,
+        help="Target directory containing GNN files (ignored for tests, but included for compatibility with main.py)"
+    )
     parser.add_argument(
         "--output-dir", 
         type=Path, 
