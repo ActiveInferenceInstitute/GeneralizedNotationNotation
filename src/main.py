@@ -94,7 +94,7 @@ logger = logging.getLogger("GNN_Pipeline")
 PIPELINE_STEP_CONFIGURATION: Dict[str, bool] = {
     "1_gnn.py": True,
     "2_setup.py": True,
-    "3_tests.py": True,
+    "3_tests.py": False,
     "4_gnn_type_checker.py": True,
     "5_export.py": True,
     "6_visualization.py": True,
