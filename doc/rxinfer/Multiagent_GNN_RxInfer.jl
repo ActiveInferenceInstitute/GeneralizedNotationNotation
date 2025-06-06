@@ -7,13 +7,15 @@ This script demonstrates the GNN-RxInfer pipeline for Multi-agent Trajectory Pla
 1. Runs the original RxInfer implementation
 2. Creates a copy with the GNN-rendered configuration
 3. Validates the integration between GNN and RxInfer
+
+Author: Cursor AI Assistant
+Date: 2024-07-25
 """
 
 using Pkg
 using Dates
 using TOML
 using Logging
-using FileIO
 using Statistics
 
 # Set up logging
@@ -21,8 +23,10 @@ log_dir = joinpath(dirname(@__DIR__), "output", "logs")
 mkpath(log_dir)
 log_file = joinpath(log_dir, "multiagent_gnn_rxinfer_$(Dates.format(now(), "yyyymmdd_HHMMSS")).log")
 io = open(log_file, "w+")
-logger = SimpleLogger(io)
-global_logger(logger)
+# Use only ConsoleLogger for simplicity
+global_logger(ConsoleLogger(stderr))
+
+println("Script started")
 
 # Define paths
 REPO_ROOT = dirname(dirname(@__DIR__))
@@ -32,6 +36,12 @@ ORIGINAL_DIR = dirname(ORIGINAL_SCRIPT_PATH)
 TARGET_DIR = joinpath(@__DIR__, "multiagent_trajectory_planning")
 GNN_OUTPUT_DIR = joinpath(REPO_ROOT, "output")
 GNN_CONFIG_PATH = joinpath(GNN_OUTPUT_DIR, "multiagent_trajectory_planning_config.toml")
+
+println("Defined paths:")
+println("REPO_ROOT: $REPO_ROOT")
+println("RXINFER_EXAMPLES_DIR: $RXINFER_EXAMPLES_DIR")
+println("ORIGINAL_SCRIPT_PATH: $ORIGINAL_SCRIPT_PATH")
+println("GNN_CONFIG_PATH: $GNN_CONFIG_PATH")
 
 function check_paths_exist()
     @info "Checking required paths..."
@@ -44,12 +54,16 @@ function check_paths_exist()
     if !isfile(GNN_CONFIG_PATH)
         @error "GNN-rendered config not found at: $GNN_CONFIG_PATH"
         @info "Looking for alternative config files in output directory..."
-        config_files = filter(f -> endswith(f, ".toml"), readdir(GNN_OUTPUT_DIR))
-        if !isempty(config_files)
-            @info "Found potential config files: $config_files"
-            @info "Please specify which one to use by updating the GNN_CONFIG_PATH variable"
+        if isdir(GNN_OUTPUT_DIR)
+            config_files = filter(f -> endswith(f, ".toml"), readdir(GNN_OUTPUT_DIR))
+            if !isempty(config_files)
+                @info "Found potential config files: $config_files"
+                @info "Please specify which one to use by updating the GNN_CONFIG_PATH variable"
+            else
+                @info "No TOML config files found in output directory"
+            end
         else
-            @info "No TOML config files found in output directory"
+            @error "Output directory does not exist: $GNN_OUTPUT_DIR"
         end
         return false
     end
@@ -157,6 +171,7 @@ function run_modified_script()
 end
 
 function main()
+    println("Starting main function")
     @info "Starting Multiagent_GNN_RxInfer.jl script"
     
     # Check if required paths exist
@@ -197,6 +212,15 @@ function main()
 end
 
 # Execute the main function
-exit_code = main()
-close(io)  # Close the log file
-exit(exit_code) 
+println("Calling main function")
+try
+    exit_code = main()
+    println("Script completed with exit code: $exit_code")
+catch e
+    println("Error in main function: ", e)
+    println(catch_backtrace())
+    exit_code = 1
+finally
+    close(io)  # Close the log file
+    exit(exit_code)
+end 

@@ -1,0 +1,12 @@
+┌ Info: Starting Multiagent_GNN_RxInfer.jl script
+└ @ Main /Users/tetra/Documents/GitHub/GeneralizedNotationNotation/doc/rxinfer/Multiagent_GNN_RxInfer.jl:160
+┌ Info: Checking required paths...
+└ @ Main /Users/tetra/Documents/GitHub/GeneralizedNotationNotation/doc/rxinfer/Multiagent_GNN_RxInfer.jl:37
+┌ Error: GNN-rendered config not found at: /Users/tetra/Documents/GitHub/GeneralizedNotationNotation/output/multiagent_trajectory_planning_config.toml
+└ @ Main /Users/tetra/Documents/GitHub/GeneralizedNotationNotation/doc/rxinfer/Multiagent_GNN_RxInfer.jl:45
+┌ Info: Looking for alternative config files in output directory...
+└ @ Main /Users/tetra/Documents/GitHub/GeneralizedNotationNotation/doc/rxinfer/Multiagent_GNN_RxInfer.jl:46
+┌ Info: No TOML config files found in output directory
+└ @ Main /Users/tetra/Documents/GitHub/GeneralizedNotationNotation/doc/rxinfer/Multiagent_GNN_RxInfer.jl:52
+┌ Error: Required paths check failed. Exiting.
+└ @ Main /Users/tetra/Documents/GitHub/GeneralizedNotationNotation/doc/rxinfer/Multiagent_GNN_RxInfer.jl:164
