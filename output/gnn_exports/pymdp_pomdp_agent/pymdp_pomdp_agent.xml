@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Multifactor_PyMDP_Agent_v1>
-  <file_path>/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md</file_path>
+  <file_path>/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/pymdp_pomdp_agent.md</file_path>
   <name>Multifactor PyMDP Agent v1</name>
   <metadata>
     <description>This model represents a PyMDP agent with multiple observation modalities and hidden state factors.

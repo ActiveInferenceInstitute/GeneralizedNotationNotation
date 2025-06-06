@@ -1,6 +1,6 @@
 # 📊 GNN Processing Summary
 
-🗓️ Generated: 2025-06-06 12:18:10
+🗓️ Generated: 2025-06-06 12:20:12
 
 ## ⚙️ Processing Configuration
 
@@ -8,11 +8,10 @@
 
 ## 📁 GNN Files Discovered
 
-Found **3** GNN files for processing:
+Found **2** GNN files for processing:
 
+- `src/gnn/examples/pymdp_pomdp_agent.md`
 - `src/gnn/examples/rxinfer_multiagent_gnn.md`
-- `src/gnn/examples/gnn_POMDP_example.md`
-- `src/gnn/examples/gnn_example_pymdp_agent.md`
 
 ## 🔄 Pipeline Execution Status
 
@@ -22,7 +21,7 @@ Pipeline execution data not available.
 
 - **GNN Processing**: 1 files in `gnn_processing_step/`
 - **Type Checking**: 11 files in `gnn_type_check/`
-- **Exports**: 13 files in `gnn_exports/`
+- **Exports**: 9 files in `gnn_exports/`
 - **Visualizations**: 0 files in `gnn_examples_visualization/`
 - **Rendered Simulators**: 0 files in `gnn_rendered_simulators/`
 - **Test Reports**: 0 files in `test_reports/`

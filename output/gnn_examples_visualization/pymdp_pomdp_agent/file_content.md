@@ -1,4 +1,4 @@
-# GNN File: src/gnn/examples/gnn_example_pymdp_agent.md\n\n## Raw File Content\n\n```\n# GNN Example: Multifactor PyMDP Agent
+# GNN File: src/gnn/examples/pymdp_pomdp_agent.md\n\n## Raw File Content\n\n```\n# GNN Example: Multifactor PyMDP Agent
 # Format: Markdown representation of a Multifactor PyMDP model in Active Inference format
 # Version: 1.0
 # This file is machine-readable and attempts to represent a PyMDP agent with multiple observation modalities and hidden state factors.

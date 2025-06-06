@@ -1,5 +1,5 @@
 GNN Model Summary: Multifactor PyMDP Agent v1
-Source File: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md
+Source File: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/pymdp_pomdp_agent.md
 
 Metadata:
   description: This model represents a PyMDP agent with multiple observation modalities and hidden state factors.

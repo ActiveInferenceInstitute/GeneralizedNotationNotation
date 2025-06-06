@@ -1,9 +1,37 @@
 # GNN Resource Estimation Report
 
-Analyzed 3 files
-Average Memory Usage: 0.52 KB
-Average Inference Time: 198.44 units
-Average Storage: 4.86 KB
+Analyzed 2 files
+Average Memory Usage: 0.50 KB
+Average Inference Time: 218.62 units
+Average Storage: 5.29 KB
+
+## pymdp_pomdp_agent.md
+Path: src/gnn/examples/pymdp_pomdp_agent.md
+Memory Estimate: 0.48 KB
+Inference Estimate: 154.07 units
+Storage Estimate: 3.83 KB
+
+### Model Info
+- variables_count: 21
+- edges_count: 2
+- time_spec: Dynamic
+- equation_count: 5
+
+### Complexity Metrics
+- state_space_complexity: 6.9658
+- graph_density: 0.0048
+- avg_in_degree: 1.0000
+- avg_out_degree: 1.0000
+- max_in_degree: 1.0000
+- max_out_degree: 1.0000
+- cyclic_complexity: 0.0000
+- temporal_complexity: 0.0000
+- equation_complexity: 8.7600
+- overall_complexity: 8.7413
+- variable_count: 21.0000
+- edge_count: 2.0000
+- total_state_space_dim: 124.0000
+- max_variable_dim: 27.0000
 
 ## rxinfer_multiagent_gnn.md
 Path: src/gnn/examples/rxinfer_multiagent_gnn.md
@@ -32,62 +60,6 @@ Storage Estimate: 6.76 KB
 - edge_count: 1.0000
 - total_state_space_dim: 112.0000
 - max_variable_dim: 16.0000
-
-## gnn_POMDP_example.md
-Path: src/gnn/examples/gnn_POMDP_example.md
-Memory Estimate: 0.57 KB
-Inference Estimate: 158.10 units
-Storage Estimate: 3.99 KB
-
-### Model Info
-- variables_count: 18
-- edges_count: 0
-- time_spec: Dynamic
-- equation_count: 8
-
-### Complexity Metrics
-- state_space_complexity: 7.1898
-- graph_density: 0.0000
-- avg_in_degree: 0.0000
-- avg_out_degree: 0.0000
-- max_in_degree: 0.0000
-- max_out_degree: 0.0000
-- cyclic_complexity: 0.0000
-- temporal_complexity: 0.0000
-- equation_complexity: 9.4375
-- overall_complexity: 9.2574
-- variable_count: 18.0000
-- edge_count: 0.0000
-- total_state_space_dim: 145.0000
-- max_variable_dim: 54.0000
-
-## gnn_example_pymdp_agent.md
-Path: src/gnn/examples/gnn_example_pymdp_agent.md
-Memory Estimate: 0.48 KB
-Inference Estimate: 154.07 units
-Storage Estimate: 3.83 KB
-
-### Model Info
-- variables_count: 21
-- edges_count: 2
-- time_spec: Dynamic
-- equation_count: 5
-
-### Complexity Metrics
-- state_space_complexity: 6.9658
-- graph_density: 0.0048
-- avg_in_degree: 1.0000
-- avg_out_degree: 1.0000
-- max_in_degree: 1.0000
-- max_out_degree: 1.0000
-- cyclic_complexity: 0.0000
-- temporal_complexity: 0.0000
-- equation_complexity: 8.7600
-- overall_complexity: 8.7413
-- variable_count: 21.0000
-- edge_count: 2.0000
-- total_state_space_dim: 124.0000
-- max_variable_dim: 27.0000
 
 # Metric Definitions
 

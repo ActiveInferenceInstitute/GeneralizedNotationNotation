@@ -1,5 +1,5 @@
 {
-    "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md",
+    "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/pymdp_pomdp_agent.md",
     "name": "Multifactor PyMDP Agent v1",
     "metadata": {
         "description": "This model represents a PyMDP agent with multiple observation modalities and hidden state factors.\n- Observation modalities: \"state_observation\" (3 outcomes), \"reward\" (3 outcomes), \"decision_proprioceptive\" (3 outcomes)\n- Hidden state factors: \"reward_level\" (2 states), \"decision_state\" (3 states)\n- Control: \"decision_state\" factor is controllable with 3 possible actions.\nThe parameterization is derived from a PyMDP Python script example."

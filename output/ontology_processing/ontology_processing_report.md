@@ -2,65 +2,21 @@
 
 ## 📊 Summary of Ontology Processing
 
-- **Files Processed:** 3 / 3
-- **Total Ontological Annotations Found:** 50
-- **Total Annotations Validated:** 50
-  - ✅ Passed: 38
+- **Files Processed:** 2 / 2
+- **Total Ontological Annotations Found:** 32
+- **Total Annotations Validated:** 32
+  - ✅ Passed: 20
   - ❌ Failed: 12
 
 ---
 
-��️ Report Generated: 2025-06-06 12:18:33
+��️ Report Generated: 2025-06-06 12:20:30
 🎯 GNN Source Directory: `src/gnn/examples`
 📖 Ontology Terms Definition: `src/ontology/act_inf_ontology_terms.json` (Loaded: 48 terms)
 
 ---
 
-### Ontological Annotations for `src/gnn/examples/rxinfer_multiagent_gnn.md`
-#### Mappings:
-- `dt` -> `TimeStep` (**INVALID TERM**)
-- `gamma` -> `ConstraintParameter` (**INVALID TERM**)
-- `nr_steps` -> `TrajectoryLength` (**INVALID TERM**)
-- `nr_iterations` -> `InferenceIterations` (**INVALID TERM**)
-- `nr_agents` -> `NumberOfAgents` (**INVALID TERM**)
-- `softmin_temperature` -> `SoftminTemperature` (**INVALID TERM**)
-- `A` -> `StateTransitionMatrix` (**INVALID TERM**)
-- `B` -> `ControlInputMatrix` (**INVALID TERM**)
-- `C` -> `ObservationMatrix` (**INVALID TERM**)
-- `initial_state_variance` -> `InitialStateVariance` (**INVALID TERM**)
-- `control_variance` -> `ControlVariance` (**INVALID TERM**)
-- `goal_constraint_variance` -> `GoalConstraintVariance` (**INVALID TERM**)
-
-**Validation Summary**: 12 unrecognized ontological term(s) found.
-
----
-
-### Ontological Annotations for `src/gnn/examples/gnn_POMDP_example.md`
-#### Mappings:
-- `s_f0` -> `HiddenStateFactor0`
-- `s_f1` -> `HiddenStateFactor1`
-- `o_m0` -> `ObservationModality0`
-- `o_m1` -> `ObservationModality1`
-- `pi_c0` -> `PolicyVector`
-- `pi_c1` -> `PolicyVectorFactor1`
-- `u_c0` -> `Action`
-- `u_c1` -> `ActionFactor1`
-- `A_m0` -> `LikelihoodMatrixModality0`
-- `A_m1` -> `LikelihoodMatrixModality1`
-- `B_f0` -> `TransitionMatrixFactor0`
-- `B_f1` -> `TransitionMatrixFactor1`
-- `C_m0` -> `LogPreferenceVectorModality0`
-- `C_m1` -> `LogPreferenceVectorModality1`
-- `D_f0` -> `PriorOverHiddenStatesFactor0`
-- `D_f1` -> `PriorOverHiddenStatesFactor1`
-- `G` -> `ExpectedFreeEnergy`
-- `t` -> `Time`
-
-**Validation Summary**: All ontological terms are recognized.
-
----
-
-### Ontological Annotations for `src/gnn/examples/gnn_example_pymdp_agent.md`
+### Ontological Annotations for `src/gnn/examples/pymdp_pomdp_agent.md`
 #### Mappings:
 - `A_m0` -> `LikelihoodMatrixModality0`
 - `A_m1` -> `LikelihoodMatrixModality1`
@@ -84,5 +40,24 @@
 - `G` -> `ExpectedFreeEnergy`
 
 **Validation Summary**: All ontological terms are recognized.
+
+---
+
+### Ontological Annotations for `src/gnn/examples/rxinfer_multiagent_gnn.md`
+#### Mappings:
+- `dt` -> `TimeStep` (**INVALID TERM**)
+- `gamma` -> `ConstraintParameter` (**INVALID TERM**)
+- `nr_steps` -> `TrajectoryLength` (**INVALID TERM**)
+- `nr_iterations` -> `InferenceIterations` (**INVALID TERM**)
+- `nr_agents` -> `NumberOfAgents` (**INVALID TERM**)
+- `softmin_temperature` -> `SoftminTemperature` (**INVALID TERM**)
+- `A` -> `StateTransitionMatrix` (**INVALID TERM**)
+- `B` -> `ControlInputMatrix` (**INVALID TERM**)
+- `C` -> `ObservationMatrix` (**INVALID TERM**)
+- `initial_state_variance` -> `InitialStateVariance` (**INVALID TERM**)
+- `control_variance` -> `ControlVariance` (**INVALID TERM**)
+- `goal_constraint_variance` -> `GoalConstraintVariance` (**INVALID TERM**)
+
+**Validation Summary**: 12 unrecognized ontological term(s) found.
 
 ---
