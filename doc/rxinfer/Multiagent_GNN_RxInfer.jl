@@ -34,8 +34,8 @@ RXINFER_EXAMPLES_DIR = joinpath(@__DIR__, "RxInferExamples.jl")
 ORIGINAL_SCRIPT_PATH = joinpath(RXINFER_EXAMPLES_DIR, "scripts", "Advanced Examples", "Multi-agent Trajectory Planning", "Multi-agent Trajectory Planning.jl")
 ORIGINAL_DIR = dirname(ORIGINAL_SCRIPT_PATH)
 TARGET_DIR = joinpath(@__DIR__, "multiagent_trajectory_planning")
-GNN_OUTPUT_DIR = joinpath(REPO_ROOT, "output")
-GNN_CONFIG_PATH = joinpath(GNN_OUTPUT_DIR, "multiagent_trajectory_planning_config.toml")
+GNN_OUTPUT_DIR = joinpath(REPO_ROOT, "output", "gnn_rendered_simulators", "rxinfer_toml", "rxinfer_multiagent_gnn")
+GNN_CONFIG_PATH = joinpath(GNN_OUTPUT_DIR, "Multi-agent Trajectory Planning_config.toml")
 
 println("Defined paths:")
 println("REPO_ROOT: $REPO_ROOT")
@@ -101,7 +101,7 @@ function validate_gnn_config()
         @info "GNN config loaded successfully with $(length(keys(config))) top-level keys"
         
         # Check for essential configuration sections
-        essential_sections = ["dimensions", "initial_parameters", "constraints", "simulation"]
+        essential_sections = ["model", "priors", "visualization", "environments", "agents", "experiments"]
         missing_sections = filter(s -> !haskey(config, s), essential_sections)
         
         if !isempty(missing_sections)
@@ -170,6 +170,59 @@ function run_modified_script()
     return true
 end
 
+function log_summary(original_dir, gnn_dir, original_script_path)
+    println("\n" * "="^25 * " Execution Summary " * "="^25)
+
+    # Helper to format bytes
+    format_bytes(bytes) = bytes < 1024 ? "$bytes B" : bytes < 1024^2 ? "$(round(bytes/1024, digits=2)) KB" : "$(round(bytes/1024^2, digits=2)) MB"
+
+    function print_file_details(path, description)
+        if isfile(path)
+            sz = filesize(path)
+            println("  - $description: $(basename(path)) ($(format_bytes(sz)))")
+        else
+            println("  - $description: $(basename(path)) (Not found)")
+        end
+    end
+
+    function list_output_files(dir_path)
+        results_dir = joinpath(dir_path, "results")
+        println("  Output Location: $results_dir")
+        if !isdir(results_dir)
+            println("    - No output directory found.")
+            return
+        end
+        files = readdir(results_dir)
+        if isempty(files)
+            println("    - Output directory is empty.")
+            return
+        end
+        for file in files
+            path = joinpath(results_dir, file)
+            if isfile(path)
+                sz = filesize(path)
+                println("    - $file ($(format_bytes(sz)))")
+            end
+        end
+    end
+
+    # --- Original Simulation ---
+    println("\n[ Original Simulation ]")
+    println("  Input Location: $original_dir")
+    print_file_details(original_script_path, "Script")
+    print_file_details(joinpath(original_dir, "config.toml"), "Config")
+    list_output_files(original_dir)
+
+    # --- GNN-Configured Simulation ---
+    println("\n[ GNN-Configured Simulation ]")
+    println("  Input Location: $gnn_dir")
+    print_file_details(joinpath(gnn_dir, basename(original_script_path)), "Script")
+    print_file_details(joinpath(gnn_dir, "config.toml"), "GNN Config")
+    list_output_files(gnn_dir)
+
+    println("\n" * "="^70 * "\n")
+end
+
 function main()
     println("Starting main function")
     @info "Starting Multiagent_GNN_RxInfer.jl script"
@@ -208,18 +261,21 @@ function main()
     @info "Original implementation: $ORIGINAL_DIR"
     @info "GNN-based implementation: $TARGET_DIR"
     
+    log_summary(ORIGINAL_DIR, TARGET_DIR, ORIGINAL_SCRIPT_PATH)
+    
     return 0
 end
 
 # Execute the main function
 println("Calling main function")
+exit_code = 1 # Default exit code
 try
-    exit_code = main()
+    global exit_code = main()
     println("Script completed with exit code: $exit_code")
 catch e
     println("Error in main function: ", e)
     println(catch_backtrace())
-    exit_code = 1
+    global exit_code = 1
 finally
     close(io)  # Close the log file
     exit(exit_code)
