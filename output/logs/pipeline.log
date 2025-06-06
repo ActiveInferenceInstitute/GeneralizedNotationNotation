@@ -1,7 +1,7 @@
-2025-06-06 12:02:03,855 - GNN_Pipeline - INFO - File logging configured to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/logs/pipeline.log
-2025-06-06 12:02:03,856 - GNN_Pipeline - DEBUG - Logger level configured based on verbosity.
-2025-06-06 12:02:03,856 - GNN_Pipeline - INFO - 🚀 Initializing GNN Pipeline with Target: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples', Output: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/output'
-2025-06-06 12:02:03,856 - GNN_Pipeline - DEBUG - 🛠️ Effective Arguments (after potential defensive conversion):
+2025-06-06 12:18:06,082 - GNN_Pipeline - DEBUG - File logging configured to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/logs/pipeline.log
+2025-06-06 12:18:06,082 - GNN_Pipeline - DEBUG - Logger level configured based on verbosity.
+2025-06-06 12:18:06,083 - GNN_Pipeline - INFO - 🚀 Initializing GNN Pipeline with Target: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples', Output: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/output'
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - 🛠️ Effective Arguments (after potential defensive conversion):
   --dev: False (Type: bool)
   --discopy-gnn-input-dir: None (Type: NoneType)
   --discopy-jax-gnn-input-dir: None (Type: NoneType)
@@ -20,203 +20,482 @@
   --strict: False (Type: bool)
   --target-dir: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples (Type: PosixPath)
   --verbose: True (Type: bool)
-2025-06-06 12:02:03,856 - GNN_Pipeline - DEBUG - ℹ️ Discovering potential pipeline scripts using pattern: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/*_*.py
-2025-06-06 12:02:03,856 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 7_mcp.py (Number: 7)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 2_setup.py (Number: 2)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 1_gnn.py (Number: 1)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 5_export.py (Number: 5)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 9_render.py (Number: 9)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 6_visualization.py (Number: 6)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 13_discopy_jax_eval.py (Number: 13)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 3_tests.py (Number: 3)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 12_discopy.py (Number: 12)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 15_site.py (Number: 15)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 10_execute.py (Number: 10)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 11_llm.py (Number: 11)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 4_gnn_type_checker.py (Number: 4)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 8_ontology.py (Number: 8)
-2025-06-06 12:02:03,857 - GNN_Pipeline - DEBUG - ℹ️ Found and sorted script basenames: ['1_gnn.py', '2_setup.py', '3_tests.py', '4_gnn_type_checker.py', '5_export.py', '6_visualization.py', '7_mcp.py', '8_ontology.py', '9_render.py', '10_execute.py', '11_llm.py', '12_discopy.py', '13_discopy_jax_eval.py', '15_site.py']
-2025-06-06 12:02:03,857 - GNN_Pipeline - INFO - 📋 Will execute 14 pipeline steps:
-2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   1. 1: 1_gnn.py
-2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   2. 2: 2_setup.py
-2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   3. 3: 3_tests.py
-2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   4. 4: 4_gnn_type_checker.py
-2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   5. 5: 5_export.py
-2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   6. 6: 6_visualization.py
-2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   7. 7: 7_mcp.py
-2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   8. 8: 8_ontology.py
-2025-06-06 12:02:03,857 - GNN_Pipeline - INFO -   9. 9: 9_render.py
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   10. 10: 10_execute.py
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   11. 11: 11_llm.py
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   12. 12: 12_discopy.py
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   13. 13: 13_discopy_jax_eval.py
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   14. 15: 15_site.py
-2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - 🔍 Determining Python executable for subprocess calls...
-2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - 🐍 Found virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
-2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - Found site-packages at: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages
-2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - ✓ Using virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
-2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - 🐍 Selected Python for subprocess calls: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Discovering potential pipeline scripts using pattern: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/*_*.py
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 7_mcp.py (Number: 7)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 2_setup.py (Number: 2)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 1_gnn.py (Number: 1)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 5_export.py (Number: 5)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 9_render.py (Number: 9)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 6_visualization.py (Number: 6)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 13_discopy_jax_eval.py (Number: 13)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 3_tests.py (Number: 3)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 12_discopy.py (Number: 12)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 15_site.py (Number: 15)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 10_execute.py (Number: 10)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 11_llm.py (Number: 11)
+2025-06-06 12:18:06,083 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 4_gnn_type_checker.py (Number: 4)
+2025-06-06 12:18:06,084 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 8_ontology.py (Number: 8)
+2025-06-06 12:18:06,084 - GNN_Pipeline - DEBUG - ℹ️ Found and sorted script basenames: ['1_gnn.py', '2_setup.py', '3_tests.py', '4_gnn_type_checker.py', '5_export.py', '6_visualization.py', '7_mcp.py', '8_ontology.py', '9_render.py', '10_execute.py', '11_llm.py', '12_discopy.py', '13_discopy_jax_eval.py', '15_site.py']
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO - 📋 Will execute 14 pipeline steps:
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   1. 1: 1_gnn.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   2. 2: 2_setup.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   3. 3: 3_tests.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   4. 4: 4_gnn_type_checker.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   5. 5: 5_export.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   6. 6: 6_visualization.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   7. 7: 7_mcp.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   8. 8: 8_ontology.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   9. 9: 9_render.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   10. 10: 10_execute.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   11. 11: 11_llm.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   12. 12: 12_discopy.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   13. 13: 13_discopy_jax_eval.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   14. 15: 15_site.py
+2025-06-06 12:18:06,084 - GNN_Pipeline - DEBUG - 🔍 Determining Python executable for subprocess calls...
+2025-06-06 12:18:06,084 - GNN_Pipeline - DEBUG - 🐍 Found virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-06 12:18:06,084 - GNN_Pipeline - DEBUG - Found site-packages at: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages
+2025-06-06 12:18:06,084 - GNN_Pipeline - DEBUG - ✓ Using virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-06 12:18:06,084 - GNN_Pipeline - DEBUG - 🐍 Selected Python for subprocess calls: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO - 
   ██████╗  ███╗   ██╗ ███╗   ██╗
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   ██╔════╝ ████╗  ██║ ████╗  ██║
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   ██║  ███╗██╔██╗ ██║ ██╔██╗ ██║
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   ██║   ██║██║╚██╗██║ ██║╚██╗██║
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   ╚██████╔╝██║ ╚████║ ██║ ╚████║
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -    ╚═════╝ ╚═╝  ╚═══╝ ╚═╝  ╚═══╝
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO -   Running GNN Processing Pipeline...
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   ██╔════╝ ████╗  ██║ ████╗  ██║
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   ██║  ███╗██╔██╗ ██║ ██╔██╗ ██║
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   ██║   ██║██║╚██╗██║ ██║╚██╗██║
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   ╚██████╔╝██║ ╚████║ ██║ ╚████║
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -    ╚═════╝ ╚═╝  ╚═══╝ ╚═╝  ╚═══╝
+2025-06-06 12:18:06,084 - GNN_Pipeline - INFO -   Running GNN Processing Pipeline...
 
-2025-06-06 12:02:03,858 - GNN_Pipeline - INFO - 🚀 Starting Step 1/14 (1: 1_gnn.py)
-2025-06-06 12:02:03,858 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/1_gnn.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --recursive
-2025-06-06 12:02:03,896 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - DEBUG - Script logger '__main__' level set to DEBUG.
-2025-06-06 12:02:03,909 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - DEBUG - Project root determined for path relativization: /home/trim/Documents/GitHub/GeneralizedNotationNotation
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - GNN Step 1: Target directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - GNN Step 1: Output directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - GNN Step 1: Recursive: True
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - GNN Step 1: Verbose: True
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - Starting GNN file processing for directory: 'src/gnn/examples'
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - INFO - Recursive mode enabled: searching in subdirectories.
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - DEBUG - Ensured output directory exists: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,896 - __main__ - DEBUG - Searching for GNN files matching pattern '**/*.md' in '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples'
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - INFO - Found 3 .md file(s) to process in 'src/gnn/examples'.
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG - Processing file: src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG - Successfully read content from src/gnn/examples/rxinfer_multiagent_gnn.md.
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -     Extracted ModelName: 'Multi-agent Trajectory Planning' from src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -     Content snippet for src/gnn/examples/rxinfer_multiagent_gnn.md (up to 500 chars) where StateSpaceBlock was not found:
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: RxInfer Multi-agent Trajectory Planning
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multi-agent Trajectory Planning model for RxInfer.jl
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and represents the configuration for the RxInfer.jl multi-agent trajectory planning example.
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] RxInferMultiAgentTrajectoryPlanning
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 12:02:03,910 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] Multi-agent Trajectory Planning
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] This model represents a multi-agent trajectory planning scenario i
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -     Content snippet for src/gnn/examples/rxinfer_multiagent_gnn.md (up to 500 chars) where Connections was not found:
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: RxInfer Multi-agent Trajectory Planning
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multi-agent Trajectory Planning model for RxInfer.jl
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and represents the configuration for the RxInfer.jl multi-agent trajectory planning example.
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] RxInferMultiAgentTrajectoryPlanning
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] Multi-agent Trajectory Planning
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] This model represents a multi-agent trajectory planning scenario i
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,897 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/rxinfer_multiagent_gnn.md
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG - Processing file: src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG - Successfully read content from src/gnn/examples/gnn_POMDP_example.md.
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -     Extracted ModelName: 'Standard POMDP Agent v1.0' from src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_POMDP_example.md (up to 500 chars) where StateSpaceBlock was not found:
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # GNN Standard Example: Comprehensive POMDP Agent
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a complex POMDP model for testing GNN features.
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and aims to be a standard for the GNN pipeline.
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,911 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ComprehensivePOMDPAgent
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] Standard POMDP Agent v1.0
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] It includes:
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] - Two hidden state factors: Lo
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_POMDP_example.md (up to 500 chars) where Connections was not found:
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] # GNN Standard Example: Comprehensive POMDP Agent
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a complex POMDP model for testing GNN features.
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and aims to be a standard for the GNN pipeline.
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ComprehensivePOMDPAgent
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] Standard POMDP Agent v1.0
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] It includes:
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] - Two hidden state factors: Lo
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,898 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/gnn_POMDP_example.md
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,900 - __main__ - DEBUG -     Parsed ModelParameter: num_hidden_states_factors = [3, 2]
-2025-06-06 12:02:03,912 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,900 - __main__ - DEBUG -     Parsed ModelParameter: num_obs_modalities = [4, 2]
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Parsed ModelParameter: num_control_factors = [3, 2]
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG - Processing file: src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG - Successfully read content from src/gnn/examples/gnn_example_pymdp_agent.md.
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Extracted ModelName: 'Multifactor PyMDP Agent v1' from src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_example_pymdp_agent.md (up to 500 chars) where StateSpaceBlock was not found:
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: Multifactor PyMDP Agent
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multifactor PyMDP model in Active Inference format
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and attempts to represent a PyMDP agent with multiple observation modalities and hidden state factors.
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] MultifactorPyMDPAgent
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] Multifactor PyMDP Agent v1
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] This model represents a PyMDP agent with multiple observation modalities and hidden state fac
-2025-06-06 12:02:03,913 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_example_pymdp_agent.md (up to 500 chars) where Connections was not found:
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: Multifactor PyMDP Agent
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multifactor PyMDP model in Active Inference format
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and attempts to represent a PyMDP agent with multiple observation modalities and hidden state factors.
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] MultifactorPyMDPAgent
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] Multifactor PyMDP Agent v1
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] This model represents a PyMDP agent with multiple observation modalities and hidden state fac
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/gnn_example_pymdp_agent.md
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Parsed ModelParameter: num_hidden_states_factors = [2, 3]
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Parsed ModelParameter: num_obs_modalities = [3, 3, 3]
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,901 - __main__ - DEBUG -     Parsed ModelParameter: num_control_factors = [1, 3]
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,902 - __main__ - INFO - GNN discovery report saved to: output/gnn_processing_step/1_gnn_discovery_report.md
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,902 - __main__ - INFO - Step 1_gnn completed successfully.
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO - ✅ Step 1/14 (1: 1_gnn.py) - COMPLETED successfully.
-2025-06-06 12:02:03,914 - GNN_Pipeline - INFO - 
-2025-06-06 12:02:03,915 - GNN_Pipeline - INFO - 🚀 Starting Step 2/14 (2: 2_setup.py)
-2025-06-06 12:02:03,915 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/2_setup.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
-2025-06-06 12:02:03,915 - GNN_Pipeline - INFO - ⏳ Setting up environment and dependencies (timeout: 600s). This may take several minutes...
-2025-06-06 12:02:03,915 - GNN_Pipeline - INFO -    The process will display progress logs while running.
-2025-06-06 12:02:03,963 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:02:03,963 - __main__ - DEBUG - Script logger '__main__' level set to DEBUG.
+2025-06-06 12:18:06,085 - GNN_Pipeline - INFO - 🚀 Starting Step 1/14 (1: 1_gnn.py)
+2025-06-06 12:18:06,085 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/1_gnn.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --recursive
+2025-06-06 12:18:06,132 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,132 - __main__ - DEBUG - Script logger '__main__' level set to DEBUG.
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,132 - __main__ - DEBUG - Project root determined for path relativization: /home/trim/Documents/GitHub/GeneralizedNotationNotation
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,132 - __main__ - INFO - GNN Step 1: Target directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,132 - __main__ - INFO - GNN Step 1: Output directory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,132 - __main__ - INFO - GNN Step 1: Recursive: True
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,132 - __main__ - INFO - GNN Step 1: Verbose: True
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,132 - __main__ - INFO - Starting GNN file processing for directory: 'src/gnn/examples'
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,132 - __main__ - INFO - Recursive mode enabled: searching in subdirectories.
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,133 - __main__ - DEBUG - Ensured output directory exists: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,133 - __main__ - DEBUG - Searching for GNN files matching pattern '**/*.md' in '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples'
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,133 - __main__ - INFO - Found 3 .md file(s) to process in 'src/gnn/examples'.
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,133 - __main__ - DEBUG - Processing file: src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,133 - __main__ - DEBUG - Successfully read content from src/gnn/examples/rxinfer_multiagent_gnn.md.
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,133 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,134 - __main__ - DEBUG -     Extracted ModelName: 'Multi-agent Trajectory Planning' from src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,134 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,134 - __main__ - DEBUG -     Content snippet for src/gnn/examples/rxinfer_multiagent_gnn.md (up to 500 chars) where StateSpaceBlock was not found:
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: RxInfer Multi-agent Trajectory Planning
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multi-agent Trajectory Planning model for RxInfer.jl
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and represents the configuration for the RxInfer.jl multi-agent trajectory planning example.
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] RxInferMultiAgentTrajectoryPlanning
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,152 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] Multi-agent Trajectory Planning
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] This model represents a multi-agent trajectory planning scenario i
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,134 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,134 - __main__ - DEBUG -     Content snippet for src/gnn/examples/rxinfer_multiagent_gnn.md (up to 500 chars) where Connections was not found:
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: RxInfer Multi-agent Trajectory Planning
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multi-agent Trajectory Planning model for RxInfer.jl
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and represents the configuration for the RxInfer.jl multi-agent trajectory planning example.
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] RxInferMultiAgentTrajectoryPlanning
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] Multi-agent Trajectory Planning
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] This model represents a multi-agent trajectory planning scenario i
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,134 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,134 - __main__ - DEBUG - Processing file: src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,134 - __main__ - DEBUG - Successfully read content from src/gnn/examples/gnn_POMDP_example.md.
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,134 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,134 - __main__ - DEBUG -     Extracted ModelName: 'Standard POMDP Agent v1.0' from src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,135 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,135 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_POMDP_example.md (up to 500 chars) where StateSpaceBlock was not found:
+2025-06-06 12:18:06,153 - GNN_Pipeline - INFO -     [STDOUT] # GNN Standard Example: Comprehensive POMDP Agent
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a complex POMDP model for testing GNN features.
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and aims to be a standard for the GNN pipeline.
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] ComprehensivePOMDPAgent
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] Standard POMDP Agent v1.0
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] It includes:
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] - Two hidden state factors: Lo
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,135 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,135 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_POMDP_example.md (up to 500 chars) where Connections was not found:
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] # GNN Standard Example: Comprehensive POMDP Agent
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a complex POMDP model for testing GNN features.
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and aims to be a standard for the GNN pipeline.
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] ComprehensivePOMDPAgent
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] Standard POMDP Agent v1.0
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] This model represents a comprehensive Partially Observable Markov Decision Process (POMDP) agent.
+2025-06-06 12:18:06,154 - GNN_Pipeline - INFO -     [STDOUT] It includes:
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] - Two hidden state factors: Lo
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,135 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,137 - __main__ - DEBUG -     Parsed ModelParameter: num_hidden_states_factors = [3, 2]
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,137 - __main__ - DEBUG -     Parsed ModelParameter: num_obs_modalities = [4, 2]
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,137 - __main__ - DEBUG -     Parsed ModelParameter: num_control_factors = [3, 2]
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,137 - __main__ - DEBUG - Processing file: src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,137 - __main__ - DEBUG - Successfully read content from src/gnn/examples/gnn_example_pymdp_agent.md.
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,137 - __main__ - DEBUG -   Found '## ModelName' header in src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,137 - __main__ - DEBUG -     Extracted ModelName: 'Multifactor PyMDP Agent v1' from src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,138 - __main__ - DEBUG -   StateSpaceBlock section not found in src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,138 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_example_pymdp_agent.md (up to 500 chars) where StateSpaceBlock was not found:
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: Multifactor PyMDP Agent
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multifactor PyMDP model in Active Inference format
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and attempts to represent a PyMDP agent with multiple observation modalities and hidden state factors.
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] MultifactorPyMDPAgent
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] Multifactor PyMDP Agent v1
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] This model represents a PyMDP agent with multiple observation modalities and hidden state fac
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,138 - __main__ - DEBUG -   Connections section not found in src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,138 - __main__ - DEBUG -     Content snippet for src/gnn/examples/gnn_example_pymdp_agent.md (up to 500 chars) where Connections was not found:
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] # GNN Example: Multifactor PyMDP Agent
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] # Format: Markdown representation of a Multifactor PyMDP model in Active Inference format
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] # Version: 1.0
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] # This file is machine-readable and attempts to represent a PyMDP agent with multiple observation modalities and hidden state factors.
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] ## GNNSection
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] MultifactorPyMDPAgent
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,155 - GNN_Pipeline - INFO -     [STDOUT] ## GNNVersionAndFlags
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] GNN v1
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] ## ModelName
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] Multifactor PyMDP Agent v1
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] 
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] ## ModelAnnotation
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] This model represents a PyMDP agent with multiple observation modalities and hidden state fac
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,138 - __main__ - DEBUG -   Found ModelParameters section in src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,138 - __main__ - DEBUG -     Parsed ModelParameter: num_hidden_states_factors = [2, 3]
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,138 - __main__ - DEBUG -     Parsed ModelParameter: num_obs_modalities = [3, 3, 3]
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,138 - __main__ - DEBUG -     Parsed ModelParameter: num_control_factors = [1, 3]
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,138 - __main__ - INFO - GNN discovery report saved to: output/gnn_processing_step/1_gnn_discovery_report.md
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,138 - __main__ - INFO - Step 1_gnn completed successfully.
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO - ✅ Step 1/14 (1: 1_gnn.py) - COMPLETED successfully.
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO - 🚀 Starting Step 2/14 (2: 2_setup.py)
+2025-06-06 12:18:06,156 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/2_setup.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO - ⏳ Setting up environment and dependencies (timeout: 1200s). This may take several minutes...
+2025-06-06 12:18:06,156 - GNN_Pipeline - INFO -    The process will display progress logs while running.
+2025-06-06 12:18:06,204 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,204 - __main__ - DEBUG - Script logger '__main__' level set to DEBUG.
+2025-06-06 12:18:08,264 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,204 - __main__ - INFO - ▶️ Starting Step 2: Setup
+2025-06-06 12:18:08,264 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,204 - __main__ - DEBUG -   Parsed arguments for setup: Namespace(target_dir=PosixPath('/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples'), output_dir=PosixPath('/home/trim/Documents/GitHub/GeneralizedNotationNotation/output'), verbose=True, recreate_venv=False, dev=False)
+2025-06-06 12:18:08,264 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,204 - __main__ - INFO - 📊 Gathering environment information...
+2025-06-06 12:18:08,264 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,204 - __main__ - INFO - --- Environment Information ---
+2025-06-06 12:18:08,264 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,204 - __main__ - INFO - Python version: 3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:50:58) [GCC 12.3.0]
+2025-06-06 12:18:08,264 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,204 - __main__ - INFO - Python executable: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-06 12:18:08,264 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,208 - __main__ - INFO - Operating system: Linux-6.12.10-76061203-generic-x86_64-with-glibc2.35
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,208 - __main__ - DEBUG - Checking virtual environment status...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,208 - __main__ - INFO - Virtual environment: Active at /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,208 - __main__ - INFO -   - Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,208 - __main__ - INFO -   - Pip: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/pip
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,208 - __main__ - DEBUG - Checking system dependencies...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,443 - __main__ - INFO - System dependencies:
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,443 - __main__ - INFO -   - pip: ✓ Available
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,443 - __main__ - INFO -   - venv: ✓ Available
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,443 - __main__ - INFO -   - graphviz: ✗ Not found
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,443 - __main__ - INFO - -----------------------------
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,443 - __main__ - DEBUG -   Phase 1: Verifying project directories...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,444 - __main__ - INFO - 🔍 Verifying directories...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,444 - __main__ - DEBUG - Searching for GNN files in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,444 - __main__ - DEBUG -   Found 0 GNN .md files (recursively in target: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples)
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,444 - __main__ - WARNING - ⚠️ Warning: No GNN files found in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples. This might be expected if you're planning to create them later.
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,444 - __main__ - INFO - 📁 Creating output directory structure...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,444 - __main__ - INFO - ✅ Output directory structure verified/created: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - __main__ - DEBUG -   📄 Directory structure info saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/directory_structure.json
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - __main__ - INFO -   ✅ Project directories verified successfully.
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - __main__ - INFO -   Phase 2: Setting up Python virtual environment and dependencies...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - __main__ - INFO -   ⏳ This may take a few minutes, especially if installing dependencies...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - __main__ - DEBUG -   🐍 Calling perform_full_setup from src/setup/setup.py
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - __main__ - INFO -   📦 Setup config: recreate_venv=False, install_dev=False
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - INFO - 🚀 Starting environment setup...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - INFO - 📁 Project root: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - INFO - ⚙️ Configuration: verbose=True, recreate_venv=False, dev=False
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - INFO -
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 📋 Phase 1/3: Checking system requirements...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - INFO - 🔍 Checking system requirements...
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - INFO - ✅ Python version check passed: 3.12.2
+2025-06-06 12:18:08,265 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - DEBUG - Checking pip availability...
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,445 - DEBUG - Running command: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python -m pip --version' in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,599 - DEBUG - Stdout:
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] pip 25.1.1 from /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/pip (python 3.12)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,599 - INFO - ✅ pip is available: pip 25.1.1 from /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.12/site-packages/pip (python 3.12)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,599 - DEBUG - Checking venv module availability...
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,599 - DEBUG - Running command: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python -c import venv' in /home/trim/Documents/GitHub/GeneralizedNotationNotation/src
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,627 - INFO - ✅ venv module is available
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,627 - INFO - ✅ Disk space check passed: 61.49GB free
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,627 - INFO - ✅ System requirements check passed
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,627 - INFO -
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 📋 Phase 2/3: Setting up virtual environment...
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,627 - INFO - ✓ Using existing virtual environment at /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,627 - INFO - ✅ Virtual environment setup completed in 0.0s
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,627 - INFO -
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 📋 Phase 3/3: Installing dependencies...
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,627 - INFO - ⏳ This may take several minutes...
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,627 - INFO - 📦 Installing dependencies from /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt...
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:06,627 - INFO - 📦 Upgrading pip in virtual environment...
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,026 - DEBUG - Requirement already satisfied: pip in ./.venv/lib/python3.12/site-packages (25.1.1)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,392 - INFO - 📦 Installing main dependencies (this may take several minutes)...
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,725 - DEBUG - Requirement already satisfied: graphviz>=0.20.1 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 2)) (0.20.3)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,725 - DEBUG - Requirement already satisfied: matplotlib>=3.7.1 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 3)) (3.10.3)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,725 - DEBUG - Requirement already satisfied: networkx>=3.1 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 4)) (3.5)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,726 - DEBUG - Requirement already satisfied: numpy>=1.24.3 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 5)) (2.2.6)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,726 - DEBUG - Requirement already satisfied: pandas>=2.0.1 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 6)) (2.2.3)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,726 - DEBUG - Requirement already satisfied: pytest>=7.3.1 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 7)) (8.3.5)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,727 - DEBUG - Requirement already satisfied: scipy>=1.10.1 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 8)) (1.15.3)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,727 - DEBUG - Requirement already satisfied: inferactively-pymdp<0.1.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (0.0.7.1)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,727 - DEBUG - Requirement already satisfied: openai>=1.0.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 14)) (1.79.0)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,728 - DEBUG - Requirement already satisfied: python-dotenv>=1.0.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 15)) (1.1.0)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,728 - DEBUG - Requirement already satisfied: Markdown>=3.4.3 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 18)) (3.8)
+2025-06-06 12:18:08,266 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,728 - DEBUG - Requirement already satisfied: httpx>=0.27.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 21)) (0.28.1)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,728 - DEBUG - Requirement already satisfied: altair>=5.0.1 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 24)) (5.5.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,729 - DEBUG - Requirement already satisfied: discopy>=1.0.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 25)) (1.2.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,729 - DEBUG - Requirement already satisfied: jax>=0.4.20 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 28)) (0.6.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,729 - DEBUG - Requirement already satisfied: jaxlib>=0.4.20 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 29)) (0.6.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,730 - DEBUG - Requirement already satisfied: pytest-cov>=4.1.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 33)) (6.1.1)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,730 - DEBUG - Requirement already satisfied: pytest-mock>=3.10.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 34)) (3.14.1)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,730 - DEBUG - Requirement already satisfied: flake8>=6.0.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 37)) (7.2.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,731 - DEBUG - Requirement already satisfied: mypy>=1.3.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 38)) (1.16.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,731 - DEBUG - Requirement already satisfied: black>=23.3.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 39)) (25.1.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,731 - DEBUG - Requirement already satisfied: isort>=5.12.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 40)) (6.0.1)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,731 - DEBUG - Requirement already satisfied: sphinx>=7.0.1 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (8.2.3)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,732 - DEBUG - Requirement already satisfied: sphinx-rtd-theme>=1.2.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 44)) (3.0.2)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,732 - DEBUG - Requirement already satisfied: ipython>=8.13.2 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (9.2.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,732 - DEBUG - Requirement already satisfied: ipdb>=0.13.13 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 48)) (0.13.13)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,733 - DEBUG - Requirement already satisfied: types-requests>=2.30.0.0 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 51)) (2.32.0.20250602)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,733 - DEBUG - Requirement already satisfied: types-Markdown>=3.4.2.9 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 52)) (3.8.0.20250415)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,733 - DEBUG - Requirement already satisfied: py-spy>=0.3.14 in ./.venv/lib/python3.12/site-packages (from -r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 55)) (0.4.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,734 - DEBUG - Requirement already satisfied: attrs>=20.3.0 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (25.3.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,735 - DEBUG - Requirement already satisfied: cycler>=0.10.0 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (0.12.1)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,735 - DEBUG - Requirement already satisfied: iniconfig>=1.1.1 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (2.1.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,736 - DEBUG - Requirement already satisfied: kiwisolver>=1.3.1 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (1.4.8)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,736 - DEBUG - Requirement already satisfied: nose>=1.3.7 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (1.3.7)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,737 - DEBUG - Requirement already satisfied: openpyxl>=3.0.7 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (3.1.5)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,738 - DEBUG - Requirement already satisfied: packaging>=20.8 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (25.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,738 - DEBUG - Requirement already satisfied: Pillow>=8.2.0 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (11.2.1)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,739 - DEBUG - Requirement already satisfied: pluggy>=0.13.1 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (1.6.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,739 - DEBUG - Requirement already satisfied: py>=1.10.0 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (1.11.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,740 - DEBUG - Requirement already satisfied: pyparsing>=2.4.7 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (3.2.3)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,741 - DEBUG - Requirement already satisfied: python-dateutil>=2.8.1 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (2.9.0.post0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,741 - DEBUG - Requirement already satisfied: pytz>=2020.5 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (2025.2)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,742 - DEBUG - Requirement already satisfied: seaborn>=0.11.1 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (0.13.2)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,742 - DEBUG - Requirement already satisfied: six>=1.15.0 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (1.17.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,743 - DEBUG - Requirement already satisfied: toml>=0.10.2 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (0.10.2)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,743 - DEBUG - Requirement already satisfied: typing-extensions>=3.7.4.3 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (4.13.2)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,743 - DEBUG - Requirement already satisfied: xlsxwriter>=1.4.3 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (3.2.3)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,744 - DEBUG - Requirement already satisfied: myst-nb>=0.13.1 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (1.2.0)
+2025-06-06 12:18:08,267 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,745 - DEBUG - Requirement already satisfied: autograd>=1.3 in ./.venv/lib/python3.12/site-packages (from inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (1.8.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,747 - DEBUG - Requirement already satisfied: contourpy>=1.0.1 in ./.venv/lib/python3.12/site-packages (from matplotlib>=3.7.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 3)) (1.3.2)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,748 - DEBUG - Requirement already satisfied: fonttools>=4.22.0 in ./.venv/lib/python3.12/site-packages (from matplotlib>=3.7.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 3)) (4.58.2)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,760 - DEBUG - Requirement already satisfied: tzdata>=2022.7 in ./.venv/lib/python3.12/site-packages (from pandas>=2.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 6)) (2025.2)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,777 - DEBUG - Requirement already satisfied: anyio<5,>=3.5.0 in ./.venv/lib/python3.12/site-packages (from openai>=1.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 14)) (4.9.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,777 - DEBUG - Requirement already satisfied: distro<2,>=1.7.0 in ./.venv/lib/python3.12/site-packages (from openai>=1.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 14)) (1.9.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,778 - DEBUG - Requirement already satisfied: jiter<1,>=0.4.0 in ./.venv/lib/python3.12/site-packages (from openai>=1.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 14)) (0.10.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,778 - DEBUG - Requirement already satisfied: pydantic<3,>=1.9.0 in ./.venv/lib/python3.12/site-packages (from openai>=1.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 14)) (2.11.4)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,779 - DEBUG - Requirement already satisfied: sniffio in ./.venv/lib/python3.12/site-packages (from openai>=1.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 14)) (1.3.1)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,779 - DEBUG - Requirement already satisfied: tqdm>4 in ./.venv/lib/python3.12/site-packages (from openai>=1.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 14)) (4.67.1)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,781 - DEBUG - Requirement already satisfied: certifi in ./.venv/lib/python3.12/site-packages (from httpx>=0.27.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 21)) (2025.4.26)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,781 - DEBUG - Requirement already satisfied: httpcore==1.* in ./.venv/lib/python3.12/site-packages (from httpx>=0.27.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 21)) (1.0.9)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,782 - DEBUG - Requirement already satisfied: idna in ./.venv/lib/python3.12/site-packages (from httpx>=0.27.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 21)) (3.10)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,788 - DEBUG - Requirement already satisfied: h11>=0.16 in ./.venv/lib/python3.12/site-packages (from httpcore==1.*->httpx>=0.27.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 21)) (0.16.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,790 - DEBUG - Requirement already satisfied: annotated-types>=0.6.0 in ./.venv/lib/python3.12/site-packages (from pydantic<3,>=1.9.0->openai>=1.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 14)) (0.7.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,791 - DEBUG - Requirement already satisfied: pydantic-core==2.33.2 in ./.venv/lib/python3.12/site-packages (from pydantic<3,>=1.9.0->openai>=1.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 14)) (2.33.2)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,791 - DEBUG - Requirement already satisfied: typing-inspection>=0.4.0 in ./.venv/lib/python3.12/site-packages (from pydantic<3,>=1.9.0->openai>=1.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 14)) (0.4.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,798 - DEBUG - Requirement already satisfied: jinja2 in ./.venv/lib/python3.12/site-packages (from altair>=5.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 24)) (3.1.6)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,798 - DEBUG - Requirement already satisfied: jsonschema>=3.0 in ./.venv/lib/python3.12/site-packages (from altair>=5.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 24)) (4.23.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,798 - DEBUG - Requirement already satisfied: narwhals>=1.14.2 in ./.venv/lib/python3.12/site-packages (from altair>=5.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 24)) (1.40.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,807 - DEBUG - Requirement already satisfied: ml_dtypes>=0.5.0 in ./.venv/lib/python3.12/site-packages (from jax>=0.4.20->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 28)) (0.5.1)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,808 - DEBUG - Requirement already satisfied: opt_einsum in ./.venv/lib/python3.12/site-packages (from jax>=0.4.20->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 28)) (3.4.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,813 - DEBUG - Requirement already satisfied: coverage>=7.5 in ./.venv/lib/python3.12/site-packages (from coverage[toml]>=7.5->pytest-cov>=4.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 33)) (7.8.2)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,816 - DEBUG - Requirement already satisfied: mccabe<0.8.0,>=0.7.0 in ./.venv/lib/python3.12/site-packages (from flake8>=6.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 37)) (0.7.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,817 - DEBUG - Requirement already satisfied: pycodestyle<2.14.0,>=2.13.0 in ./.venv/lib/python3.12/site-packages (from flake8>=6.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 37)) (2.13.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,817 - DEBUG - Requirement already satisfied: pyflakes<3.4.0,>=3.3.0 in ./.venv/lib/python3.12/site-packages (from flake8>=6.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 37)) (3.3.2)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,822 - DEBUG - Requirement already satisfied: mypy_extensions>=1.0.0 in ./.venv/lib/python3.12/site-packages (from mypy>=1.3.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 38)) (1.1.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,822 - DEBUG - Requirement already satisfied: pathspec>=0.9.0 in ./.venv/lib/python3.12/site-packages (from mypy>=1.3.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 38)) (0.12.1)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,825 - DEBUG - Requirement already satisfied: click>=8.0.0 in ./.venv/lib/python3.12/site-packages (from black>=23.3.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 39)) (8.2.1)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,826 - DEBUG - Requirement already satisfied: platformdirs>=2 in ./.venv/lib/python3.12/site-packages (from black>=23.3.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 39)) (4.3.8)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,830 - DEBUG - Requirement already satisfied: sphinxcontrib-applehelp>=1.0.7 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (2.0.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,830 - DEBUG - Requirement already satisfied: sphinxcontrib-devhelp>=1.0.6 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (2.0.0)
+2025-06-06 12:18:08,268 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,831 - DEBUG - Requirement already satisfied: sphinxcontrib-htmlhelp>=2.0.6 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (2.1.0)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,831 - DEBUG - Requirement already satisfied: sphinxcontrib-jsmath>=1.0.1 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (1.0.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,831 - DEBUG - Requirement already satisfied: sphinxcontrib-qthelp>=1.0.6 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (2.0.0)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,832 - DEBUG - Requirement already satisfied: sphinxcontrib-serializinghtml>=1.1.9 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (2.0.0)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,832 - DEBUG - Requirement already satisfied: Pygments>=2.17 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (2.19.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,833 - DEBUG - Requirement already satisfied: docutils<0.22,>=0.20 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (0.21.2)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,833 - DEBUG - Requirement already satisfied: snowballstemmer>=2.2 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (3.0.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,834 - DEBUG - Requirement already satisfied: babel>=2.13 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (2.17.0)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,834 - DEBUG - Requirement already satisfied: alabaster>=0.7.14 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (1.0.0)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,834 - DEBUG - Requirement already satisfied: imagesize>=1.3 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (1.4.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,835 - DEBUG - Requirement already satisfied: requests>=2.30.0 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (2.32.3)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,835 - DEBUG - Requirement already satisfied: roman-numerals-py>=1.0.0 in ./.venv/lib/python3.12/site-packages (from sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (3.1.0)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,841 - DEBUG - Requirement already satisfied: sphinxcontrib-jquery<5,>=4 in ./.venv/lib/python3.12/site-packages (from sphinx-rtd-theme>=1.2.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 44)) (4.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,844 - DEBUG - Requirement already satisfied: decorator in ./.venv/lib/python3.12/site-packages (from ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (5.2.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,844 - DEBUG - Requirement already satisfied: ipython-pygments-lexers in ./.venv/lib/python3.12/site-packages (from ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (1.1.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,845 - DEBUG - Requirement already satisfied: jedi>=0.16 in ./.venv/lib/python3.12/site-packages (from ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (0.19.2)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,845 - DEBUG - Requirement already satisfied: matplotlib-inline in ./.venv/lib/python3.12/site-packages (from ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (0.1.7)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,845 - DEBUG - Requirement already satisfied: pexpect>4.3 in ./.venv/lib/python3.12/site-packages (from ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (4.9.0)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,846 - DEBUG - Requirement already satisfied: prompt_toolkit<3.1.0,>=3.0.41 in ./.venv/lib/python3.12/site-packages (from ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (3.0.51)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,846 - DEBUG - Requirement already satisfied: stack_data in ./.venv/lib/python3.12/site-packages (from ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (0.6.3)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,847 - DEBUG - Requirement already satisfied: traitlets>=5.13.0 in ./.venv/lib/python3.12/site-packages (from ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (5.14.3)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,850 - DEBUG - Requirement already satisfied: wcwidth in ./.venv/lib/python3.12/site-packages (from prompt_toolkit<3.1.0,>=3.0.41->ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (0.2.13)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,864 - DEBUG - Requirement already satisfied: urllib3>=2 in ./.venv/lib/python3.12/site-packages (from types-requests>=2.30.0.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 51)) (2.4.0)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,899 - DEBUG - Requirement already satisfied: parso<0.9.0,>=0.8.4 in ./.venv/lib/python3.12/site-packages (from jedi>=0.16->ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (0.8.4)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,905 - DEBUG - Requirement already satisfied: MarkupSafe>=2.0 in ./.venv/lib/python3.12/site-packages (from jinja2->altair>=5.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 24)) (3.0.2)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,907 - DEBUG - Requirement already satisfied: jsonschema-specifications>=2023.03.6 in ./.venv/lib/python3.12/site-packages (from jsonschema>=3.0->altair>=5.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 24)) (2025.4.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,907 - DEBUG - Requirement already satisfied: referencing>=0.28.4 in ./.venv/lib/python3.12/site-packages (from jsonschema>=3.0->altair>=5.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 24)) (0.36.2)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,908 - DEBUG - Requirement already satisfied: rpds-py>=0.7.1 in ./.venv/lib/python3.12/site-packages (from jsonschema>=3.0->altair>=5.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 24)) (0.25.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,920 - DEBUG - Requirement already satisfied: importlib_metadata in ./.venv/lib/python3.12/site-packages (from myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (8.7.0)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,921 - DEBUG - Requirement already satisfied: jupyter-cache>=0.5 in ./.venv/lib/python3.12/site-packages (from myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (1.0.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,921 - DEBUG - Requirement already satisfied: nbclient in ./.venv/lib/python3.12/site-packages (from myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (0.10.2)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,921 - DEBUG - Requirement already satisfied: myst-parser>=1.0.0 in ./.venv/lib/python3.12/site-packages (from myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (4.0.1)
+2025-06-06 12:18:08,269 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,922 - DEBUG - Requirement already satisfied: nbformat>=5.0 in ./.venv/lib/python3.12/site-packages (from myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (5.10.4)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,922 - DEBUG - Requirement already satisfied: pyyaml in ./.venv/lib/python3.12/site-packages (from myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (6.0.2)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,923 - DEBUG - Requirement already satisfied: ipykernel in ./.venv/lib/python3.12/site-packages (from myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (6.29.5)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,928 - DEBUG - Requirement already satisfied: sqlalchemy<3,>=1.3.12 in ./.venv/lib/python3.12/site-packages (from jupyter-cache>=0.5->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (2.0.41)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,929 - DEBUG - Requirement already satisfied: tabulate in ./.venv/lib/python3.12/site-packages (from jupyter-cache>=0.5->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (0.9.0)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,932 - DEBUG - Requirement already satisfied: greenlet>=1 in ./.venv/lib/python3.12/site-packages (from sqlalchemy<3,>=1.3.12->jupyter-cache>=0.5->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (3.2.2)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,940 - DEBUG - Requirement already satisfied: markdown-it-py~=3.0 in ./.venv/lib/python3.12/site-packages (from myst-parser>=1.0.0->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (3.0.0)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,940 - DEBUG - Requirement already satisfied: mdit-py-plugins>=0.4.1,~=0.4 in ./.venv/lib/python3.12/site-packages (from myst-parser>=1.0.0->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (0.4.2)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,944 - DEBUG - Requirement already satisfied: mdurl~=0.1 in ./.venv/lib/python3.12/site-packages (from markdown-it-py~=3.0->myst-parser>=1.0.0->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (0.1.2)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,955 - DEBUG - Requirement already satisfied: jupyter-client>=6.1.12 in ./.venv/lib/python3.12/site-packages (from nbclient->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (8.6.3)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,956 - DEBUG - Requirement already satisfied: jupyter-core!=5.0.*,>=4.12 in ./.venv/lib/python3.12/site-packages (from nbclient->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (5.7.2)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,961 - DEBUG - Requirement already satisfied: pyzmq>=23.0 in ./.venv/lib/python3.12/site-packages (from jupyter-client>=6.1.12->nbclient->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (26.4.0)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,961 - DEBUG - Requirement already satisfied: tornado>=6.2 in ./.venv/lib/python3.12/site-packages (from jupyter-client>=6.1.12->nbclient->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (6.5)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,967 - DEBUG - Requirement already satisfied: fastjsonschema>=2.15 in ./.venv/lib/python3.12/site-packages (from nbformat>=5.0->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (2.21.1)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,974 - DEBUG - Requirement already satisfied: et-xmlfile in ./.venv/lib/python3.12/site-packages (from openpyxl>=3.0.7->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (2.0.0)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:07,980 - DEBUG - Requirement already satisfied: ptyprocess>=0.5 in ./.venv/lib/python3.12/site-packages (from pexpect>4.3->ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (0.7.0)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,007 - DEBUG - Requirement already satisfied: charset-normalizer<4,>=2 in ./.venv/lib/python3.12/site-packages (from requests>=2.30.0->sphinx>=7.0.1->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 43)) (3.4.2)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,068 - DEBUG - Requirement already satisfied: zipp>=3.20 in ./.venv/lib/python3.12/site-packages (from importlib_metadata->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (3.21.0)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,077 - DEBUG - Requirement already satisfied: comm>=0.1.1 in ./.venv/lib/python3.12/site-packages (from ipykernel->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (0.2.2)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,078 - DEBUG - Requirement already satisfied: debugpy>=1.6.5 in ./.venv/lib/python3.12/site-packages (from ipykernel->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (1.8.14)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,078 - DEBUG - Requirement already satisfied: nest-asyncio in ./.venv/lib/python3.12/site-packages (from ipykernel->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (1.6.0)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,079 - DEBUG - Requirement already satisfied: psutil in ./.venv/lib/python3.12/site-packages (from ipykernel->myst-nb>=0.13.1->inferactively-pymdp<0.1.0->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 11)) (7.0.0)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,104 - DEBUG - Requirement already satisfied: executing>=1.2.0 in ./.venv/lib/python3.12/site-packages (from stack_data->ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (2.2.0)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,105 - DEBUG - Requirement already satisfied: asttokens>=2.1.0 in ./.venv/lib/python3.12/site-packages (from stack_data->ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (3.0.0)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,105 - DEBUG - Requirement already satisfied: pure-eval in ./.venv/lib/python3.12/site-packages (from stack_data->ipython>=8.13.2->-r /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/requirements.txt (line 47)) (0.2.3)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,258 - INFO - ✅ Dependencies installation completed
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,258 - INFO - ✅ All dependencies installed successfully (took 0.9s)
+2025-06-06 12:18:08,270 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,258 - INFO - ✅ Dependencies installed in 1.6s
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,258 - INFO -
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO -     [STDOUT] 🎉 Setup completed successfully!
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,258 - INFO - ⏱️ Total time: 1.8s
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,258 - INFO -
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO -     [STDOUT] To activate the virtual environment:
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,258 - INFO -   source .venv/bin/activate
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,258 - __main__ - INFO -   ✅ Python virtual environment and dependencies setup completed.
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,258 - __main__ - INFO - ✅ Step 2: Setup complete (took 2.1 seconds)
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO - ✅ Step 2/14 (2: 2_setup.py) - COMPLETED successfully.
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:08,271 - GNN_Pipeline - INFO - 🚀 Starting Step 3/14 (3: 3_tests.py)
+2025-06-06 12:18:08,271 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/3_tests.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
+2025-06-06 12:18:08,322 - GNN_Pipeline - WARNING -     [STDERR] usage: 3_tests.py [-h] [--output-dir OUTPUT_DIR] [--verbose]
+2025-06-06 12:18:08,322 - GNN_Pipeline - WARNING -     [STDERR] 3_tests.py: error: unrecognized arguments: --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:18:08,322 - GNN_Pipeline - ERROR - ❌ Step 3/14 (3: 3_tests.py) - FAILED with exit code 2 after 0.1 seconds.
+2025-06-06 12:18:08,322 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:08,322 - GNN_Pipeline - INFO - 🚀 Starting Step 4/14 (4: 4_gnn_type_checker.py)
+2025-06-06 12:18:08,322 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/4_gnn_type_checker.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose --estimate-resources
+2025-06-06 12:18:08,893 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,893 - __main__ - INFO - ▶️ Starting Step 4: Type Checking (4_gnn_type_checker.py)...
+2025-06-06 12:18:10,379 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,893 - __main__ - DEBUG - Set logger '__main__' to DEBUG within run_type_checker.
+2025-06-06 12:18:10,379 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,893 - __main__ - DEBUG - Set logger 'gnn_type_checker' to INFO.
+2025-06-06 12:18:10,379 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,893 - __main__ - INFO -   🐍 Invoking GNN Type Checker module with arguments: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_type_check --report-file type_check_report.md --project-root /home/trim/Documents/GitHub/GeneralizedNotationNotation --recursive --estimate-resources
+2025-06-06 12:18:10,380 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,893 - __main__ - INFO -   ℹ️ Target GNN files in: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples
+2025-06-06 12:18:10,380 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,893 - __main__ - INFO -   ℹ️ Type checker outputs will be in: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_type_check
+2025-06-06 12:18:10,380 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:08,894 - __main__ - INFO -   📝 Main type check report will be: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_type_check/type_check_report.md
+2025-06-06 12:18:10,380 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,207 - __main__ - INFO - ✅ GNN Type Checker module completed successfully.
+2025-06-06 12:18:10,380 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,207 - __main__ - INFO - ✅ Step 4: Type Checking complete.
+2025-06-06 12:18:10,381 - GNN_Pipeline - INFO - ✅ Step 4/14 (4: 4_gnn_type_checker.py) - COMPLETED successfully.
+2025-06-06 12:18:10,381 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:10,381 - GNN_Pipeline - INFO - 🚀 Starting Step 5/14 (5: 5_export.py)
+2025-06-06 12:18:10,382 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/5_export.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose
+2025-06-06 12:18:10,563 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,563 - __main__ - DEBUG - Script logger '__main__' level set to DEBUG.
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,563 - __main__ - INFO - ▶️ Starting Step 5: Export (5_export.py)
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,563 - __main__ - DEBUG -   Parsed args: Namespace(target_dir=PosixPath('/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples'), output_dir=PosixPath('/home/trim/Documents/GitHub/GeneralizedNotationNotation/output'), recursive=False, formats='json,xml,txt_summary,dsl', verbose=True)
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,563 - __main__ - INFO -   Ensured output directory for exports: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_exports
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,563 - __main__ - INFO -   Selected formats for export: ['json', 'xml', 'txt_summary', 'dsl']
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,563 - __main__ - INFO - Found 3 GNN file(s) to process for export from '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples'.
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,563 - __main__ - INFO -   Processing exports for GNN file: src/gnn/examples/rxinfer_multiagent_gnn.md
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,565 - __main__ - DEBUG -     📤 Ensured export subdirectory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_exports/rxinfer_multiagent_gnn
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,565 - __main__ - DEBUG -       📤 Exporting to JSON -> output/gnn_exports/rxinfer_multiagent_gnn/rxinfer_multiagent_gnn.json
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,566 - __main__ - INFO -       ✅ Successfully exported to rxinfer_multiagent_gnn.json (format: json)
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,566 - __main__ - DEBUG -       📤 Exporting to XML -> output/gnn_exports/rxinfer_multiagent_gnn/rxinfer_multiagent_gnn.xml
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,569 - __main__ - INFO -       ✅ Successfully exported to rxinfer_multiagent_gnn.xml (format: xml)
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,569 - __main__ - DEBUG -       📤 Exporting to TXT_SUMMARY -> output/gnn_exports/rxinfer_multiagent_gnn/rxinfer_multiagent_gnn.txt
+2025-06-06 12:18:10,613 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,570 - __main__ - INFO -       ✅ Successfully exported to rxinfer_multiagent_gnn.txt (format: txt_summary)
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,570 - __main__ - DEBUG -       📤 Exporting to DSL -> output/gnn_exports/rxinfer_multiagent_gnn/rxinfer_multiagent_gnn.gnn
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,570 - __main__ - INFO -       ✅ Successfully exported to rxinfer_multiagent_gnn.gnn (format: dsl)
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,570 - __main__ - INFO -     ✅ All 4 requested exports for src/gnn/examples/rxinfer_multiagent_gnn.md completed successfully.
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,570 - __main__ - INFO -   Processing exports for GNN file: src/gnn/examples/gnn_POMDP_example.md
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,571 - __main__ - DEBUG -     📤 Ensured export subdirectory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_exports/gnn_POMDP_example
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,571 - __main__ - DEBUG -       📤 Exporting to JSON -> output/gnn_exports/gnn_POMDP_example/gnn_POMDP_example.json
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,571 - __main__ - INFO -       ✅ Successfully exported to gnn_POMDP_example.json (format: json)
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,571 - __main__ - DEBUG -       📤 Exporting to XML -> output/gnn_exports/gnn_POMDP_example/gnn_POMDP_example.xml
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,573 - __main__ - INFO -       ✅ Successfully exported to gnn_POMDP_example.xml (format: xml)
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,573 - __main__ - DEBUG -       📤 Exporting to TXT_SUMMARY -> output/gnn_exports/gnn_POMDP_example/gnn_POMDP_example.txt
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,573 - __main__ - INFO -       ✅ Successfully exported to gnn_POMDP_example.txt (format: txt_summary)
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,574 - __main__ - DEBUG -       📤 Exporting to DSL -> output/gnn_exports/gnn_POMDP_example/gnn_POMDP_example.gnn
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,574 - __main__ - INFO -       ✅ Successfully exported to gnn_POMDP_example.gnn (format: dsl)
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,574 - __main__ - INFO -     ✅ All 4 requested exports for src/gnn/examples/gnn_POMDP_example.md completed successfully.
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,574 - __main__ - INFO -   Processing exports for GNN file: src/gnn/examples/gnn_example_pymdp_agent.md
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,575 - __main__ - DEBUG -     📤 Ensured export subdirectory: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_exports/gnn_example_pymdp_agent
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,575 - __main__ - DEBUG -       📤 Exporting to JSON -> output/gnn_exports/gnn_example_pymdp_agent/gnn_example_pymdp_agent.json
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,575 - __main__ - INFO -       ✅ Successfully exported to gnn_example_pymdp_agent.json (format: json)
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,575 - __main__ - DEBUG -       📤 Exporting to XML -> output/gnn_exports/gnn_example_pymdp_agent/gnn_example_pymdp_agent.xml
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,578 - __main__ - INFO -       ✅ Successfully exported to gnn_example_pymdp_agent.xml (format: xml)
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,578 - __main__ - DEBUG -       📤 Exporting to TXT_SUMMARY -> output/gnn_exports/gnn_example_pymdp_agent/gnn_example_pymdp_agent.txt
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,578 - __main__ - INFO -       ✅ Successfully exported to gnn_example_pymdp_agent.txt (format: txt_summary)
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,578 - __main__ - DEBUG -       📤 Exporting to DSL -> output/gnn_exports/gnn_example_pymdp_agent/gnn_example_pymdp_agent.gnn
+2025-06-06 12:18:10,614 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,578 - __main__ - INFO -       ✅ Successfully exported to gnn_example_pymdp_agent.gnn (format: dsl)
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,579 - __main__ - INFO -     ✅ All 4 requested exports for src/gnn/examples/gnn_example_pymdp_agent.md completed successfully.
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,579 - __main__ - INFO - Export processing complete. Files with all formats successful: 3, Files with at least one failure: 0
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,579 - __main__ - INFO - 📄 Generating GNN Export Step Summary Report...
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,579 - __main__ - INFO - 📄 Export step summary report generated: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_exports/5_export_step_report.md
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,579 - __main__ - INFO - 📄 Generating Overall GNN Processing Summary Report...
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,579 - __main__ - DEBUG -   📊 Found 3 .md files for overall summary in '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples'.
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,580 - __main__ - INFO - 📄 Overall pipeline summary report saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_summary.md
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO -     [STDOUT] 2025-06-06 12:18:10,580 - __main__ - INFO - ✅ Step 5: Export operations finished.
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO - ✅ Step 5/14 (5: 5_export.py) - COMPLETED successfully.
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO - 
+2025-06-06 12:18:10,615 - GNN_Pipeline - INFO - 🚀 Starting Step 6/14 (6: 6_visualization.py)
+2025-06-06 12:18:10,615 - GNN_Pipeline - DEBUG - 📋 Executing command: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/6_visualization.py --target-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples --output-dir /home/trim/Documents/GitHub/GeneralizedNotationNotation/output --verbose

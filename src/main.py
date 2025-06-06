@@ -554,8 +554,9 @@ def run_pipeline(args: argparse.Namespace):
         # Currently, only setup.py is considered critical.
         is_critical_step = script_basename == "2_setup.py"
         
-        # Set longer timeout for setup steps (10 minutes) and standard timeout for others (2 minutes)
-        step_timeout = 600 if script_basename == "2_setup.py" else 120
+        # Set longer timeout for setup steps (20 minutes) and standard timeout for others (1 minute)
+        # Setup step timeout increased from 10 to 20 minutes to account for slower connections/machines
+        step_timeout = 1200 if script_basename == "2_setup.py" else 60
         
         step_header = f"Step {idx}/{len(scripts_to_run)} ({script_num}: {script_basename})"
         logger.info(f"🚀 Starting {step_header}")
@@ -591,6 +592,8 @@ def run_pipeline(args: argparse.Namespace):
         if script_basename == "2_setup.py":
             logger.info(f"⏳ Setting up environment and dependencies (timeout: {step_timeout}s). This may take several minutes...")
             logger.info("   The process will display progress logs while running.")
+            # Ensure this gets displayed immediately
+            sys.stdout.flush()
         
         try:
             # Create a process to run the script
@@ -628,8 +631,17 @@ def run_pipeline(args: argparse.Namespace):
                             if not any(x in line for x in ["ERROR", "WARNING", "CRITICAL", "FATAL"]):
                                 should_log_to_console = False
                     
+                    # For setup.py, we want to show important messages regardless of verbose mode
+                    if script_basename == "2_setup.py":
+                        # Important progress indicators
+                        if any(x in line for x in ["Installing", "✅", "Collecting", "Successfully", "pip upgraded"]):
+                            should_log_to_console = True
+                    
                     if should_log_to_console and log_level is not None:
                         logger.log(log_level, f"    [{'STDERR' if is_stderr else 'STDOUT'}] {line}")
+                        # Ensure setup.py output is immediately visible
+                        if script_basename == "2_setup.py":
+                            sys.stdout.flush()
             
             # Track last update time for progress reporting
             last_output_time = time.time()
@@ -799,6 +811,7 @@ def run_pipeline(args: argparse.Namespace):
                     logger.info(f"   ⏳ {script_basename} still running ({elapsed_time:.1f}s) but no recent output. Please wait...")
                     last_progress_report = current_time
                     has_reported_progress = True
+                    sys.stdout.flush()  # Ensure progress is immediately visible
                 # For setup.py, provide even more reassurance with specific task messages
                 elif script_basename == "2_setup.py" and current_time - last_progress_report > 30:
                     # Rotate through different messages to make it clear the process is still running
@@ -814,6 +827,7 @@ def run_pipeline(args: argparse.Namespace):
                     logger.info(f"   ⏳ {messages[message_index]} (elapsed: {elapsed_time:.1f}s)")
                     last_progress_report = current_time
                     has_reported_progress = True
+                    sys.stdout.flush()  # Ensure progress is immediately visible
                 
                 # Small sleep to avoid CPU spinning
                 time.sleep(0.1)
