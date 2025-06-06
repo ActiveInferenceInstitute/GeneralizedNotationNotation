@@ -1,0 +1,43 @@
+### Summary of the GNN Model: Multifactor PyMDP Agent v1
+
+**Model Name:** Multifactor PyMDP Agent v1
+
+**Purpose:** This model represents a multifactor PyMDP (Partially Observable Markov Decision Process) agent designed for active inference, incorporating multiple observation modalities and hidden state factors. It aims to facilitate decision-making and state inference in dynamic environments.
+
+**Key Components:**
+
+1. **Observation Modalities:**
+   - **State Observation:** 3 outcomes
+   - **Reward:** 3 outcomes
+   - **Decision Proprioceptive:** 3 outcomes
+
+2. **Hidden State Factors:**
+   - **Reward Level:** 2 states
+   - **Decision State:** 3 states (controllable with 3 possible actions)
+
+3. **State and Transition Matrices:**
+   - **Likelihood Matrices (A_m):** Define the relationship between observations and hidden states for each modality.
+     - A_m0, A_m1, A_m2 represent the likelihoods for each observation modality respectively.
+   - **Transition Matrices (B_f):** Describe the state transitions for hidden states.
+     - B_f0 for the reward level (uncontrolled).
+     - B_f1 for the decision state (controlled with actions).
+
+4. **Preference and Prior Vectors:**
+   - **Preference Vectors (C_m):** Indicate the preferences for each observation modality.
+   - **Prior Vectors (D_f):** Define the initial assumptions about the hidden states.
+
+5. **Hidden States:**
+   - **s_f0:** Hidden state for the reward level.
+   - **s_f1:** Hidden state for the decision state.
+   - **Next Hidden States:** s_prime_f0, s_prime_f1 represent the next states in the process.
+
+6. **Policy and Control:**
+   - Policy vector (π_f1) for decision-making, which is influenced by the expected free energy (G) and the chosen action (u_f1).
+
+**Main Connections:**
+- Hidden states (s_f0, s_f1) are connected to their respective likelihood matrices (A_m).
+- The likelihood matrices lead to observations (o_m).
+- The control action (u_f1) influences the transition matrix B_f1, while B_f0 remains unaffected.
+- The expected free energy (G) is derived from the preference vectors and influences the policy vector (π_f1).
+
+This model is structured to dynamically infer states, policies, and actions over an unbounded time horizon, reflecting a sophisticated approach to decision-making in environments with partial observability.
