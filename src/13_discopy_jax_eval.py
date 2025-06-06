@@ -164,12 +164,20 @@ exit_code: int = 1
 def parse_arguments() -> argparse.Namespace:
     """Parses command-line arguments for the GNN to DisCoPy JAX evaluation script."""
     parser = argparse.ArgumentParser(description="Transforms GNN models to DisCoPy JAX MatrixDiagrams, evaluates, and saves output visualizations.")
-    parser.add_argument(
+    
+    # Define a mutually exclusive group for input directories
+    input_group = parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument(
         "--gnn-input-dir",
         type=Path,
-        required=True,
         help="Directory containing GNN files (e.g., .gnn.md, .md) to process."
     )
+    input_group.add_argument(
+        "--target-dir",
+        type=Path,
+        help="Alternative name for the directory containing GNN files (compatible with main.py)."
+    )
+    
     parser.add_argument(
         "--output-dir", 
         type=Path,
@@ -194,7 +202,14 @@ def parse_arguments() -> argparse.Namespace:
         default=False,
         help="Enable verbose (DEBUG level) logging for this script and dependent modules. Default: False."
     )
-    return parser.parse_args()
+    
+    args = parser.parse_args()
+    
+    # If target-dir is provided but gnn-input-dir is not, use target-dir as gnn-input-dir
+    if args.target_dir is not None and args.gnn_input_dir is None:
+        args.gnn_input_dir = args.target_dir
+    
+    return args
 
 def process_gnn_file_for_jax_eval(gnn_file_path: Path, eval_output_dir: Path, jax_seed: int, verbose_logging: bool) -> bool:
     """

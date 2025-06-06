@@ -269,8 +269,8 @@ def main(args):
             f"for details."
         )
         logger.warning(f"⚠️ Step 8: {warning_message}")
-        # Return 2 for success with warnings, aligning with main.py expectations
-        return 2 
+        # Return 0 for success with warnings, allowing the pipeline to continue
+        return 0
         
     logger.info(f"✅ Step 8: Ontology Operations ({Path(__file__).name}) - COMPLETED without validation errors.")
     return 0

@@ -420,6 +420,8 @@ but can be run standalone for testing with appropriate arguments.
                         choices=ALL_TASKS + ["all"], # Allow individual tasks or "all"
                         help=f"Specify which LLM tasks to run. Choices: {', '.join(ALL_TASKS)}, or 'all'. "
                              f"Default is 'all'. Can provide multiple space-separated tasks.")
+    parser.add_argument("--llm-timeout", type=int, default=60,
+                        help="Timeout in seconds for LLM API calls. Default is 60 seconds.")
     
     parsed_args = parser.parse_args()
 
