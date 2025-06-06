@@ -1,34 +1,9 @@
 {
   "type_check_results": {
-    "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_simple_discopy_test.md": {
-      "is_valid": false,
-      "errors": [
-        "Missing required section: Footer",
-        "Missing required section: Signature",
-        "Variable 'X' has no dimensions specified",
-        "Variable 'X' has invalid type: A",
-        "Variable 'Y' has no dimensions specified",
-        "Variable 'Y' has invalid type: B",
-        "Variable 'Z' has no dimensions specified",
-        "Variable 'Z' has invalid type: C"
-      ],
-      "warnings": [
-        "Time section not specified"
-      ]
-    },
     "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_POMDP_example.md": {
       "is_valid": true,
       "errors": [],
       "warnings": []
-    },
-    "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_alice_loves_bob.md": {
-      "is_valid": false,
-      "errors": [
-        "Missing required section: Signature"
-      ],
-      "warnings": [
-        "Time section not specified"
-      ]
     },
     "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/gnn_example_pymdp_agent.md": {
       "is_valid": true,
@@ -37,10 +12,10 @@
     }
   },
   "summary": {
-    "total_files": 4,
+    "total_files": 2,
     "valid_files": 2,
-    "invalid_files": 2,
-    "total_errors": 9,
-    "total_warnings": 2
+    "invalid_files": 0,
+    "total_errors": 0,
+    "total_warnings": 0
   }
 }

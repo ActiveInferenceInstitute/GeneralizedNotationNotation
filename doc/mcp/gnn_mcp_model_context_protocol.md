@@ -375,3 +375,259 @@ Citations:
 
 ---
 Answer from Perplexity: pplx.ai/share
+
+## GNN Integration with Model Context Protocol
+
+Generalized Notation Notation (GNN) represents a powerful standardization opportunity when combined with the Model Context Protocol (MCP). This integration creates new possibilities for AI systems to work with formal Active Inference models in standardized, interoperable ways.
+
+### GNN as an MCP Resource Type
+
+GNN files serve as an ideal resource type within the MCP ecosystem for several reasons:
+
+1. **Standardized Structure**: GNN's markdown-based format with defined sections (StateSpaceBlock, Connections, Equations, etc.) provides a machine-readable structure that MCP servers can easily parse and validate
+2. **Formal Model Representation**: GNN encapsulates complete Active Inference models, making it possible for AI systems to reason about model structure, parameters, and behavior
+3. **Cross-Framework Compatibility**: Since GNN can be translated to multiple simulation environments (PyMDP, RxInfer.jl), it serves as a universal interchange format for Active Inference models
+
+MCP servers can expose GNN resources through standard methods like `resources/get` and `resources/list`, enabling AI models to discover and access Active Inference model specifications.
+
+### LLM-GNN Interaction Patterns via MCP
+
+Large Language Models (LLMs) can leverage MCP to work with GNN files in several powerful ways:
+
+#### 1. Model Discovery and Understanding
+
+LLMs can use MCP to:
+- Query available GNN models in a repository
+- Understand model structure, state spaces, and connections
+- Analyze mathematical relationships defined in the Equations section
+- Map model components to Active Inference Ontology terms
+
+For example, an LLM might use an MCP server to find all GNN models related to decision-making processes:
+
+```python
+# MCP client request to discover GNN models by ontology term
+discovery_payload = {
+    "jsonrpc": "2.0",
+    "method": "gnn/findModelsByOntologyTerm",
+    "params": {"term": "decision-making"},
+    "id": 1
+}
+```
+
+#### 2. Model Creation and Modification
+
+Through MCP tools, LLMs can:
+- Generate new GNN models based on natural language descriptions
+- Modify existing models by adding states, connections, or equations
+- Validate changes against GNN syntax and Active Inference constraints
+- Export models to different simulation formats
+
+A typical interaction pattern might involve:
+
+```python
+# MCP client request to create a new GNN model
+create_model_payload = {
+    "jsonrpc": "2.0",
+    "method": "gnn/createModel",
+    "params": {
+        "model_name": "Hierarchical_Perception_Action",
+        "state_factors": [
+            {"name": "s_f0", "dimensions": [3], "type": "categorical"},
+            {"name": "s_f1", "dimensions": [2], "type": "categorical"}
+        ],
+        "observations": [
+            {"name": "o_m0", "dimensions": [4], "type": "categorical"}
+        ],
+        "connections": [
+            {"source": "s_f0", "relation": ">", "target": "o_m0"},
+            {"source": "s_f1", "relation": ">", "target": "s_f0"}
+        ]
+    },
+    "id": 2
+}
+```
+
+#### 3. Simulation and Analysis
+
+LLMs can use MCP to:
+- Request simulations of GNN models in different environments
+- Analyze simulation results and model behavior
+- Compare different models on standardized metrics
+- Generate visualizations of model dynamics
+
+An example MCP request for simulation might look like:
+
+```python
+# MCP client request to simulate a GNN model
+simulation_payload = {
+    "jsonrpc": "2.0",
+    "method": "gnn/simulateModel",
+    "params": {
+        "model_id": "gnn_example_pymdp_agent",
+        "environment": "pymdp",
+        "time_steps": 20,
+        "initial_states": {"s_f0": 0, "s_f1": 1}
+    },
+    "id": 3
+}
+```
+
+### Implementing GNN-MCP Servers
+
+A GNN-MCP server implementation typically provides several core capabilities:
+
+#### 1. GNN File Processing
+
+```python
+from mcp.server import Server
+import mcp.types as types
+import gnn.parser as gnn_parser
+
+app = Server("gnn-model-server")
+
+@app.get_resource()
+async def get_resource(resource_id: str) -> types.Resource:
+    # Load and parse GNN file
+    gnn_content = gnn_parser.load_gnn_file(f"models/{resource_id}.md")
+    parsed_model = gnn_parser.parse_gnn_content(gnn_content)
+    
+    # Return as MCP resource
+    return types.Resource(
+        id=resource_id,
+        type="gnn/model",
+        content=types.TextContent(
+            type="text",
+            text=gnn_content
+        ),
+        metadata={
+            "model_name": parsed_model.get("ModelName"),
+            "state_factors": len(parsed_model.get("StateSpaceBlock", {}).get("factors", [])),
+            "observation_modalities": len(parsed_model.get("StateSpaceBlock", {}).get("observations", [])),
+            "time_type": parsed_model.get("Time", {}).get("type")
+        }
+    )
+```
+
+#### 2. GNN Tool Endpoints
+
+```python
+@app.register_tool("gnn/validateModel")
+async def validate_model(model_content: str) -> dict:
+    # Parse and validate GNN model
+    validation_result = gnn_parser.validate_gnn_content(model_content)
+    
+    return {
+        "is_valid": validation_result["is_valid"],
+        "errors": validation_result.get("errors", []),
+        "warnings": validation_result.get("warnings", []),
+        "resource_estimates": validation_result.get("resource_estimates", {})
+    }
+
+@app.register_tool("gnn/translateToPyMDP")
+async def translate_to_pymdp(model_id: str) -> dict:
+    # Load GNN model and translate to PyMDP code
+    gnn_content = gnn_parser.load_gnn_file(f"models/{model_id}.md")
+    pymdp_code = gnn_renderer.render_pymdp(gnn_content)
+    
+    return {
+        "model_id": model_id,
+        "target_format": "pymdp",
+        "generated_code": pymdp_code
+    }
+```
+
+#### 3. GNN Prompt Templates
+
+```python
+@app.list_prompts()
+async def list_prompts() -> list[types.Prompt]:
+    return [
+        types.Prompt(
+            name="gnn/create-active-inference-model",
+            description="Generate a GNN model specification from a natural language description",
+            arguments=[
+                types.PromptArgument(
+                    name="description",
+                    description="Natural language description of the desired Active Inference model",
+                    required=True
+                ),
+                types.PromptArgument(
+                    name="complexity",
+                    description="Desired model complexity (simple, moderate, complex)",
+                    required=False
+                )
+            ]
+        )
+    ]
+
+@app.get_prompt()
+async def get_prompt(name: str, arguments: dict[str, str]) -> types.GetPromptResult:
+    if name != "gnn/create-active-inference-model":
+        raise ValueError("Unknown prompt")
+    
+    description = arguments.get("description", "")
+    complexity = arguments.get("complexity", "moderate")
+    
+    return types.GetPromptResult(
+        messages=[
+            types.PromptMessage(
+                role="user",
+                content=types.TextContent(
+                    type="text",
+                    text=(f"Create a GNN model specification with {complexity} complexity "
+                          f"for the following system:\n\n{description}\n\n"
+                          "Include appropriate state factors, observation modalities, "
+                          "connections, and initial parameterization.")
+                )
+            )
+        ]
+    )
+```
+
+### Benefits for Scientific Workflows
+
+The integration of GNN with MCP creates several advantages for scientific workflows:
+
+1. **Reproducibility**: By standardizing Active Inference models in GNN and exposing them through MCP, experimental setups become more reproducible across research teams
+
+2. **Collaboration**: MCP provides a universal interface for researchers to share, discover, and build upon each other's Active Inference models
+
+3. **Automation**: AI systems can automatically generate, validate, and explore GNN models, potentially accelerating scientific discovery
+
+4. **Accessibility**: The combination lowers barriers to entry for researchers new to Active Inference by providing standardized tools and interfaces
+
+5. **Knowledge Integration**: LLMs can connect GNN models to relevant scientific literature, datasets, and other resources through MCP's unified interface
+
+### Challenges and Considerations
+
+Several challenges must be addressed when integrating GNN with MCP:
+
+1. **Schema Evolution**: As GNN syntax evolves, MCP servers must maintain compatibility with different versions
+
+2. **Validation Complexity**: Ensuring mathematical consistency and adherence to Active Inference principles requires sophisticated validation logic
+
+3. **Computation Intensity**: Some GNN models may be computationally intensive to simulate, requiring careful resource management in MCP servers
+
+4. **Security Considerations**: Access control for GNN resources and validating model inputs are critical for secure MCP implementations
+
+5. **Interface Design**: Creating intuitive interfaces for LLMs to work with mathematical models requires careful prompt and tool design
+
+### Future Directions
+
+The GNN-MCP integration is poised to evolve in several directions:
+
+1. **Collaborative Model Development**: MCP could enable multiple AI systems to collaboratively develop and refine GNN models
+
+2. **Model Repositories**: Specialized MCP servers could emerge as curated repositories of validated GNN models for specific domains
+
+3. **Automated Scientific Discovery**: AI systems might autonomously explore GNN model spaces to discover novel Active Inference mechanisms
+
+4. **Cross-Disciplinary Applications**: The standardization could facilitate applying Active Inference models across disciplines from neuroscience to robotics
+
+5. **Educational Tools**: MCP-enabled AI tutors could use GNN models to explain Active Inference concepts interactively
+
+### Conclusion
+
+The integration of Generalized Notation Notation with the Model Context Protocol represents a significant advancement for both Active Inference research and AI system capabilities. By providing a standardized way for AI systems to discover, understand, create, and analyze formal Active Inference models, this combination enables more sophisticated scientific workflows and applications.
+
+As both GNN and MCP continue to evolve, their synergy creates opportunities for accelerated scientific discovery, improved collaboration, and more accessible Active Inference modeling across disciplines. This integration exemplifies how standardization efforts in different domains can combine to create capabilities greater than the sum of their parts.

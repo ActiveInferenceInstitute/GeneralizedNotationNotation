@@ -1,37 +1,9 @@
 # GNN Resource Estimation Report
 
-Analyzed 4 files
-Average Memory Usage: 0.29 KB
-Average Inference Time: 94.30 units
-Average Storage: 3.00 KB
-
-## gnn_simple_discopy_test.md
-Path: src/gnn/examples/gnn_simple_discopy_test.md
-Memory Estimate: 0.01 KB
-Inference Estimate: 17.50 units
-Storage Estimate: 1.79 KB
-
-### Model Info
-- variables_count: 3
-- edges_count: 2
-- time_spec: Static
-- equation_count: 1
-
-### Complexity Metrics
-- state_space_complexity: 2.0000
-- graph_density: 0.3333
-- avg_in_degree: 1.0000
-- avg_out_degree: 1.0000
-- max_in_degree: 1.0000
-- max_out_degree: 1.0000
-- cyclic_complexity: 0.0000
-- temporal_complexity: 0.0000
-- equation_complexity: 0.0000
-- overall_complexity: 1.1667
-- variable_count: 3.0000
-- edge_count: 2.0000
-- total_state_space_dim: 3.0000
-- max_variable_dim: 1.0000
+Analyzed 2 files
+Average Memory Usage: 0.53 KB
+Average Inference Time: 156.08 units
+Average Storage: 3.91 KB
 
 ## gnn_POMDP_example.md
 Path: src/gnn/examples/gnn_POMDP_example.md
@@ -60,34 +32,6 @@ Storage Estimate: 3.99 KB
 - edge_count: 0.0000
 - total_state_space_dim: 145.0000
 - max_variable_dim: 54.0000
-
-## gnn_alice_loves_bob.md
-Path: src/gnn/examples/gnn_alice_loves_bob.md
-Memory Estimate: 0.11 KB
-Inference Estimate: 47.53 units
-Storage Estimate: 2.38 KB
-
-### Model Info
-- variables_count: 9
-- edges_count: 2
-- time_spec: Static
-- equation_count: 1
-
-### Complexity Metrics
-- state_space_complexity: 4.9069
-- graph_density: 0.0278
-- avg_in_degree: 1.0000
-- avg_out_degree: 1.0000
-- max_in_degree: 1.0000
-- max_out_degree: 1.0000
-- cyclic_complexity: 0.0000
-- temporal_complexity: 0.0000
-- equation_complexity: 0.0000
-- overall_complexity: 2.4673
-- variable_count: 9.0000
-- edge_count: 2.0000
-- total_state_space_dim: 29.0000
-- max_variable_dim: 16.0000
 
 ## gnn_example_pymdp_agent.md
 Path: src/gnn/examples/gnn_example_pymdp_agent.md
