@@ -728,8 +728,29 @@ Each functional module contains an `mcp.py` file that:
 
 ### Environment Management
 - **Virtual Environment**: `src/.venv/` for isolated dependencies
-- **Requirements**: Managed via `src/requirements.txt`
+- **Requirements**: Managed via `src/requirements.txt` (includes both core and development dependencies)
 - **Automatic Setup**: Handled by `2_setup.py`
+- **Development Flag**: Use `--dev` flag with `main.py` or `2_setup.py` to install development dependencies
+
+### Dependencies
+Core dependencies in `requirements.txt` are organized in categories:
+- Core data processing libraries (numpy, scipy, pandas)
+- Visualization tools (matplotlib, graphviz, networkx)
+- Active Inference ecosystem (inferactively-pymdp)
+- Documentation and utilities (Markdown)
+- HTTP communication (httpx)
+- High-performance computing (JAX, JAXlib)
+- Development tools (marked in the "Development Dependencies" section)
+
+To install only core dependencies:
+```bash
+python 2_setup.py
+```
+
+To install both core and development dependencies:
+```bash
+python 2_setup.py --dev
+```
 
 ## Usage
 

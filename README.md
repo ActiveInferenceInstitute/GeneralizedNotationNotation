@@ -275,6 +275,22 @@ GNN is an evolving standard. Contributions are welcome! Please refer to the guid
 
 This project is licensed under the [MIT License](./LICENSE.md). Please see the `LICENSE.md` file for full details.
 
+## Installation and Setup
+
+For comprehensive setup instructions, dependency information, and troubleshooting, please refer to [SETUP.md](doc/SETUP.md).
+
+Quick start:
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/GeneralizedNotationNotation.git
+cd GeneralizedNotationNotation
+
+# Run the setup script
+cd src
+python3 main.py --only-steps 2_setup --dev
+```
+
 ---
 
 *This README was generated based on documents in the `doc/` folder.*

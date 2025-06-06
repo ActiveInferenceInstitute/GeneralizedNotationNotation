@@ -1,20 +1,58 @@
-graphviz
-matplotlib>=3.0.0
-networkx
-numpy
-pandas
-pytest
-scipy
-inferactively-pymdp
-# Add other project-wide dependencies here
+# Core Dependencies
+graphviz>=0.20.1
+matplotlib>=3.7.1
+networkx>=3.1
+numpy>=1.24.3
+pandas>=2.0.1
+pytest>=7.3.1
+scipy>=1.10.1
+
+# Active Inference Ecosystem
+inferactively-pymdp<0.1.0  # Use the latest available version (0.0.7.1)
+
+# LLM and Environment Management
 openai>=1.0.0
 python-dotenv>=1.0.0
-Markdown
+
+# Documentation and Markdown
+Markdown>=3.4.3
+
+# HTTP and Communication
 httpx>=0.27.0  # For SymPy MCP client HTTP communication
+
 # Visualization and Diagramming
-altair
-discopy[matrix]>=1.0.0
+altair>=5.0.1
+discopy>=1.0.0  # Matrix extras may not be available in all versions
+
+# High-Performance Computing
 jax>=0.4.20  # For DisCoPy's JAX backend and JAX evaluation step
-jaxlib>=0.4.20 # Companion to JAX
-# For site generation (15_site.py)
-markdown>=3.0 
+jaxlib>=0.4.20  # Companion to JAX
+
+# Development Dependencies (optional, install with --dev flag)
+# Testing
+pytest-cov>=4.1.0
+pytest-mock>=3.10.0
+
+# Code Quality
+flake8>=6.0.0
+mypy>=1.3.0
+black>=23.3.0
+isort>=5.12.0
+
+# Documentation
+sphinx>=7.0.1
+sphinx-rtd-theme>=1.2.0
+
+# Debugging
+ipython>=8.13.2
+ipdb>=0.13.13
+
+# Type Stubs for Better IDE Support
+types-requests>=2.30.0.0
+types-Markdown>=3.4.2.9
+
+# Performance Profiling
+py-spy>=0.3.14
+
+# Site Generation
+markdown>=3.4.3 

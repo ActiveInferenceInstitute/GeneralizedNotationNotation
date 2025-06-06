@@ -2,6 +2,7 @@
 Pipeline step for rendering GNN specifications.
 
 This script calls the main rendering logic defined in the src/render/render.py module.
+It handles rendering to various formats including PyMDP and RxInfer.jl.
 """
 
 import argparse
@@ -10,6 +11,7 @@ import sys
 from pathlib import Path
 import glob # Added for file searching
 import os
+import shutil # For file copying
 
 # Attempt to import the new logging utility
 try:
@@ -64,6 +66,8 @@ def main(args: argparse.Namespace) -> int:
             output_dir (PathLike): Main pipeline output directory.
             recursive (bool): Whether to search for GNN spec files recursively.
             verbose (bool): Flag for verbose logging.
+            target_format (str, optional): Specific format to render to. If not provided,
+                will render to all supported formats.
 
     Returns:
         int: 0 for success, 1 for failure.
@@ -101,7 +105,17 @@ def main(args: argparse.Namespace) -> int:
     step_output_dir_name = "gnn_rendered_simulators" # Changed from "gnn_renders" for clarity
     base_output_dir = Path(args.output_dir).resolve() / step_output_dir_name
     
-    supported_formats = ["pymdp", "rxinfer"]
+    # Determine which formats to render to
+    target_format = getattr(args, 'target_format', None)
+    supported_formats = ["pymdp", "rxinfer", "rxinfer_toml"]
+    
+    if target_format and target_format in supported_formats:
+        formats_to_render = [target_format]
+        logger.info(f"Rendering only to specified format: {target_format}")
+    else:
+        formats_to_render = supported_formats
+        logger.info(f"Rendering to all supported formats: {', '.join(supported_formats)}")
+    
     overall_success = True
     files_processed_count = 0
 
@@ -135,7 +149,7 @@ def main(args: argparse.Namespace) -> int:
         
         relative_path_from_base_target = gnn_file_path.relative_to(base_target_dir)
 
-        for target_format in supported_formats:
+        for target_format in formats_to_render:
             logger.info(f"  Rendering to format: {target_format}")
 
             # Construct specific output directory for this file and format
@@ -150,11 +164,14 @@ def main(args: argparse.Namespace) -> int:
             if output_file_stem.endswith(".gnn"): # e.g., my_model.gnn -> my_model
                 output_file_stem = Path(output_file_stem).stem
 
+            # Determine the correct output file extension based on the target format
+            output_extension = ".py" if target_format == "pymdp" else ".toml" if target_format == "rxinfer_toml" else ".jl"
+            
             render_cli_args = [
                 str(gnn_file_path),
                 str(render_output_subdir),
                 target_format,
-                "--output_filename", output_file_stem # Pass the stem, render.py handles adding _rendered.ext
+                "--output_filename", output_file_stem # Pass the stem, render.py handles adding extension
             ]
 
             if args.verbose: # Pass verbose flag from main pipeline args
@@ -166,6 +183,60 @@ def main(args: argparse.Namespace) -> int:
                 render_result = render_module.main(cli_args=render_cli_args)
                 if render_result == 0:
                     logger.info(f"    Successfully rendered {gnn_file_path.name} to {target_format} in {render_output_subdir}")
+                    
+                    # Get the expected output file path
+                    expected_output_file = None
+                    if target_format == "pymdp":
+                        expected_output_file = render_output_subdir / f"{output_file_stem}_pymdp.py"
+                    elif target_format == "rxinfer":
+                        expected_output_file = render_output_subdir / f"{output_file_stem}_rxinfer.jl"
+                    elif target_format == "rxinfer_toml":
+                        expected_output_file = render_output_subdir / f"{output_file_stem}_config.toml"
+                    
+                    # For rxinfer format, also provide a properly named TOML file if needed
+                    if target_format == "rxinfer":
+                        # If we have the Julia file but need a TOML version with the same name
+                        # Check if there's a matching TOML version
+                        toml_output_path = render_output_subdir / f"{output_file_stem}_config.toml"
+                        
+                        # Look for an equivalent TOML file that might have been generated separately
+                        if not toml_output_path.exists():
+                            # Try to find TOML file in the rxinfer_toml output directory
+                            toml_src_dir = base_output_dir / "rxinfer_toml" / relative_path_from_base_target.parent
+                            toml_src_path = toml_src_dir / f"{output_file_stem}_config.toml"
+                            
+                            if toml_src_path.exists():
+                                # Copy the TOML file to the rxinfer directory
+                                shutil.copy2(toml_src_path, toml_output_path)
+                                logger.info(f"    Copied TOML configuration to rxinfer directory: {toml_output_path}")
+                    
+                    # For rxinfer_toml format, ensure the file has the correct extension and location
+                    if target_format == "rxinfer_toml":
+                        # Check if we need to rename the file from .jl to .toml (in case the renderer didn't handle it)
+                        jl_output_path = render_output_subdir / f"{output_file_stem}_rxinfer.jl"
+                        toml_output_path = render_output_subdir / f"{output_file_stem}_config.toml"
+                        
+                        if jl_output_path.exists() and not toml_output_path.exists():
+                            # Rename the file to have .toml extension
+                            jl_output_path.rename(toml_output_path)
+                            logger.info(f"    Renamed {jl_output_path.name} to {toml_output_path.name} for TOML format")
+                        
+                        # Ensure the TOML file exists after potential renaming
+                        if toml_output_path.exists():
+                            # Copy the TOML file to both the rxinfer directory and the rxinfer module directory
+                            # Copy to rxinfer output directory
+                            rxinfer_output_dir = base_output_dir / "rxinfer" / relative_path_from_base_target.parent
+                            rxinfer_output_dir.mkdir(parents=True, exist_ok=True)
+                            rxinfer_toml_path = rxinfer_output_dir / f"{output_file_stem}_config.toml"
+                            shutil.copy2(toml_output_path, rxinfer_toml_path)
+                            logger.info(f"    Copied TOML configuration to rxinfer output directory: {rxinfer_toml_path}")
+                            
+                            # Also copy to the rxinfer module directory for direct use
+                            rxinfer_dir = src_dir / "rxinfer"
+                            if rxinfer_dir.is_dir():
+                                module_toml_path = rxinfer_dir / f"{output_file_stem}_config.toml"
+                                shutil.copy2(toml_output_path, module_toml_path)
+                                logger.info(f"    Also copied TOML configuration to rxinfer module directory: {module_toml_path}")
                 else:
                     logger.error(f"    Failed to render {gnn_file_path.name} to {target_format}. Exit code: {render_result}")
                     overall_success = False
@@ -221,6 +292,11 @@ if __name__ == "__main__":
         action=argparse.BooleanOptionalAction, 
         default=False,
         help="Enable verbose logging for this script."
+    )
+    parser.add_argument(
+        "--target-format",
+        choices=["pymdp", "rxinfer", "rxinfer_toml"],
+        help="Render only to a specific target format. If not specified, renders to all supported formats."
     )
     # Note: The main() function of 9_render.py does not take individual gnn_spec_file, target_format, etc.
     # It orchestrates calls to render_module.main() for files it finds.

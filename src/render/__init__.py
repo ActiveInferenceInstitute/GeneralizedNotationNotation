@@ -1,16 +1,20 @@
 """
-Rendering module for GNN specifications
+Renderers for GNN specifications to various target languages and frameworks.
 
-This module contains the functionality to render GNN specifications into 
-executable formats for various target platforms.
+This package contains modules for rendering GNN specifications to:
+- RxInfer.jl
+- PyMDP
+- Other simulators
 """
 
-# Main entry point
+# Import renderers here to make them available at package level
+# Changed import to use only render_gnn_to_rxinfer_jl
+from .rxinfer import render_gnn_to_rxinfer_jl
+
 from .render import render_gnn_spec, main
 
 # Target-specific renderers
 from .pymdp_renderer import render_gnn_to_pymdp
-from .rxinfer import render_gnn_to_rxinfer_jl
 
 __all__ = [
     'render_gnn_spec',  # Main render function

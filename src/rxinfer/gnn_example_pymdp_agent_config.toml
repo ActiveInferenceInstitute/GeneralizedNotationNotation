@@ -1,0 +1,67 @@
+"# Multi-agent Trajectory Planning Configuration" = ""
+[[agents]]
+id = 1
+radius = 2.5
+initial_position = [ -4.0, 10.0,]
+target_position = [ -10.0, -10.0,]
+
+[[agents]]
+id = 2
+radius = 1.5
+initial_position = [ -10.0, 5.0,]
+target_position = [ 10.0, -15.0,]
+
+[[agents]]
+id = 3
+radius = 1.0
+initial_position = [ -15.0, -10.0,]
+target_position = [ 10.0, 10.0,]
+
+[[agents]]
+id = 4
+radius = 2.5
+initial_position = [ 0.0, -10.0,]
+target_position = [ -10.0, 15.0,]
+
+[model]
+name = "Multifactor PyMDP Agent v1"
+description = "TOML configuration for Multifactor PyMDP Agent v1"
+dt = 1.0
+gamma = 1.0
+nr_steps = 40
+nr_iterations = 350
+nr_agents = 4
+softmin_temperature = 10.0
+intermediate_steps = 10
+save_intermediates = false
+
+[priors]
+initial_state_variance = 100.0
+control_variance = 0.1
+goal_constraint_variance = 1e-5
+gamma_shape = 1.5
+gamma_scale_factor = 0.5
+
+[visualization]
+x_limits = [ -20, 20,]
+y_limits = [ -20, 20,]
+fps = 15
+heatmap_resolution = 100
+plot_width = 800
+plot_height = 400
+agent_alpha = 1.0
+target_alpha = 0.2
+color_palette = "tab10"
+
+[experiments]
+seeds = [ 42, 123,]
+results_dir = "results"
+animation_template = "{environment}_{seed}.gif"
+control_vis_filename = "control_signals.gif"
+obstacle_distance_filename = "obstacle_distance.png"
+path_uncertainty_filename = "path_uncertainty.png"
+convergence_filename = "convergence.png"
+
+[environments.default]
+description = "Default environment"
+obstacles = []

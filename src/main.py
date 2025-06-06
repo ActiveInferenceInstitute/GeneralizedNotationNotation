@@ -50,6 +50,8 @@ Options:
     --discopy-jax-gnn-input-dir DIR
                             Directory containing GNN files for DisCoPy JAX evaluation (13_discopy_jax_eval.py)
     --discopy-jax-seed      Seed for JAX PRNG in 13_discopy_jax_eval.py
+    --recreate-venv         Recreate virtual environment even if it already exists (for 2_setup.py)
+    --dev                   Also install development dependencies from requirements-dev.txt (for 2_setup.py)
 
 """
 
@@ -64,7 +66,22 @@ import traceback
 import re
 import datetime # For pipeline summary timestamp
 import json # For pipeline summary structured data
+import time # For tracking subprocess execution time
+import signal # For timeout handling
 from typing import TypedDict, List, Union, Dict, Any, cast # Add typing for clarity, added cast
+
+# Try to import the centralized logging utilities
+try:
+    from utils.logging_utils import (
+        setup_standalone_logging, 
+        silence_noisy_modules_in_console,
+        set_verbose_mode
+    )
+except ImportError:
+    # If logging_utils is not available, define placeholder functions
+    setup_standalone_logging = None
+    silence_noisy_modules_in_console = None
+    set_verbose_mode = None
 
 # --- Logger Setup ---
 logger = logging.getLogger("GNN_Pipeline")
@@ -86,9 +103,9 @@ PIPELINE_STEP_CONFIGURATION: Dict[str, bool] = {
     "9_render.py": True,
     "10_execute.py": True,
     "11_llm.py": True,
-    "12_discopy.py": True, # Note: 12_site.py was an old name, 12_discopy.py is current
+    "12_discopy.py": True,
     "13_discopy_jax_eval.py": True,
-    "15_site.py": True, # Covers the HTML summary site generation
+    "15_site.py": True, 
     # Add any new [number]_script_name.py here and set to True/False
 }
 # --- End Default Pipeline Step Configuration ---
@@ -216,9 +233,19 @@ def parse_arguments():
         default=0,
         help="Seed for JAX PRNG in 13_discopy_jax_eval.py. Default: 0."
     )
+    parser.add_argument(
+        "--recreate-venv",
+        action="store_true",
+        help="Recreate virtual environment even if it already exists (for 2_setup.py)."
+    )
+    parser.add_argument(
+        "--dev",
+        action="store_true",
+        help="Also install development dependencies from requirements-dev.txt (for 2_setup.py)."
+    )
     return parser.parse_args()
 
-def get_pipeline_scripts(current_dir: Path) -> list[str]:
+def get_pipeline_scripts(current_dir: Path) -> list[dict[str, int | str | Path]]:
     potential_scripts_pattern = current_dir / "*_*.py"
     logger.debug(f"ℹ️ Discovering potential pipeline scripts using pattern: {potential_scripts_pattern}")
     all_candidate_files = glob.glob(str(potential_scripts_pattern))
@@ -240,7 +267,7 @@ def get_pipeline_scripts(current_dir: Path) -> list[str]:
 
     if logger.isEnabledFor(logging.DEBUG): 
         logger.debug(f"ℹ️ Found and sorted script basenames: {sorted_script_basenames}")
-    return sorted_script_basenames
+    return pipeline_scripts_info
 
 def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
     venv_path = script_dir / ".venv"
@@ -276,106 +303,269 @@ def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
     return venv_python_path, site_packages_path
 
 def run_pipeline(args: argparse.Namespace):
-    logger.info("""
-  ██████╗  ███╗   ██╗ ███╗   ██╗   Pipeline Power!
- ██╔════╝  ████╗  ██║ ████╗  ██║   ---------------->
- ██║  ███╗ ██╔██╗ ██║ ██╔██╗ ██║   [Step 1]--[Step 2]--[Step 3] ...
- ██║   ██║ ██║╚██╗██║ ██║╚██╗██║   ---------------->
- ╚██████╔╝ ██║ ╚████║ ██║ ╚████║   Gearing up for GNNs!
-   ╚═════╝  ╚═╝  ╚═══╝ ╚═╝  ╚═══╝
-  +-------------------------------------------------+
-  |   Generalized Notation Notation Processor 3500  |
-  |      "We turn markdown into magic!" ✨          |
-  |      (Or at least, structured data.)            |
-  +-------------------------------------------------+
-  | Status: Awake and slightly mischievous.         |
-  | Mood: Ready to parse! (nom nom nom)             |
-  +-------------------------------------------------+
-
-    Version 0.1.2 ~ May 21, 2025
-
-    Initializing GNN Processing Pipeline...
-    Fasten your seatbelts, we're going on a data adventure!
-    """)
-
-    current_script_dir = Path(__file__).resolve().parent
-    venv_python_path, _venv_site_packages_path_for_subproc = get_venv_python(current_script_dir)
-
-    try:
-        args.output_dir.mkdir(parents=True, exist_ok=True)
-        logger.info(f"✅ Ensured output directory exists: {args.output_dir}")
-    except OSError as e:
-        logger.error(f"❌ Failed to create output directory {args.output_dir}: {e}")
-        # Construct a minimal PipelineRunData for this specific error
-        output_dir_creation_failed_data: PipelineRunData = {
-            "start_time": datetime.datetime.now().isoformat(),
-            "arguments": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
-            "steps": [{
-                "step_number": 0,
-                "script_name": "Pre-check (Output Directory Creation)",
-                "status": "FAILED",
-                "start_time": datetime.datetime.now().isoformat(),
-                "end_time": datetime.datetime.now().isoformat(),
-                "duration_seconds": 0.0,
-                "details": f"Failed to create output directory {args.output_dir}: {e}",
-                "stdout": "",
-                "stderr": str(e)
-            }],
-            "end_time": datetime.datetime.now().isoformat(),
-            "overall_status": "FAILED"
-        }
-        return 1, output_dir_creation_failed_data, [], "FAILED"
-
-    all_scripts = get_pipeline_scripts(current_script_dir)
-    if not all_scripts:
-        logger.error("❌ No pipeline scripts found in src/. Cannot proceed.")
-        # Construct a minimal PipelineRunData for the error case
-        failed_pipeline_data: PipelineRunData = {
-            "start_time": datetime.datetime.now().isoformat(),
-            "arguments": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
-            "steps": [{
-                "step_number": 0,
-                "script_name": "Pre-check",
-                "status": "FAILED",
-                "start_time": datetime.datetime.now().isoformat(),
-                "end_time": datetime.datetime.now().isoformat(),
-                "duration_seconds": 0.0,
-                "details": "No pipeline scripts found.",
-                "stdout": "",
-                "stderr": ""
-            }],
-            "end_time": datetime.datetime.now().isoformat(),
-            "overall_status": "FAILED"
-        }
-        return 1, failed_pipeline_data, [], "FAILED" # Return consistent tuple
+    """
+    Run the full GNN processing pipeline based on the provided arguments.
     
-    logger.info("🚀 Starting GNN Processing Pipeline...")
-    if args.verbose:
-        logger.debug(f"ℹ️ All discovered script modules (basenames): {all_scripts}")
-
-    skip_steps_input = {s.strip() for s in args.skip_steps.split(",") if s.strip()}
-    only_steps_input = {s.strip() for s in args.only_steps.split(",") if s.strip()}
+    This function:
+    1. Discovers all numbered scripts in the src/ directory
+    2. Determines which scripts to run based on skip/only flags
+    3. Runs each script with appropriate arguments
+    4. Generates a structured execution summary
     
-    # Use a standard dict internally for pipeline_run_data
-    _pipeline_run_data_dict: Dict[str, Any] = { 
+    Args:
+        args: The parsed command-line arguments
+        
+    Returns:
+        Tuple of (exit_code, pipeline_run_data, all_scripts, overall_status)
+    """
+    current_dir = Path(__file__).resolve().parent
+    all_scripts = get_pipeline_scripts(current_dir)
+    
+    # Prepare the summary report structure
+    _pipeline_run_data_dict: Dict[str, Any] = {
         "start_time": datetime.datetime.now().isoformat(),
-        "arguments": {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
+        "arguments": vars(args),
         "steps": [],
-        "end_time": None, 
-        "overall_status": "PENDING" 
+        "end_time": None,
+        "overall_status": "SUCCESS"  # Will be updated if any step fails
     }
     
-    overall_status = "SUCCESS" # Will change to FAILED or SUCCESS_WITH_WARNINGS
-
-    for i, script_file_basename in enumerate(all_scripts):
-        script_name_no_ext = Path(script_file_basename).stem
-        step_num_str = script_name_no_ext.split("_")[0]
+    # Parse skip/only steps to determine what to run
+    scripts_to_run = []
+    skip_steps = []
+    only_steps = []
+    
+    if args.skip_steps:
+        skip_steps = args.skip_steps.split(',')
+    
+    if args.only_steps:
+        only_steps = args.only_steps.split(',')
         
-        step_log_data: StepLogData = { # Use the defined TypedDict
-            "step_number": i + 1,
-            "script_name": script_name_no_ext,
-            "status": "SKIPPED",
-            "start_time": None,
+    # Build list of scripts to run
+    for script_info in all_scripts:
+        script_basename = script_info['basename']
+        script_num_str = str(script_info['num'])
+        script_name_no_ext = os.path.splitext(script_basename)[0]
+        
+        # Check if this script is enabled by default
+        is_enabled_by_default = PIPELINE_STEP_CONFIGURATION.get(script_basename, True)
+        
+        # Skip logic: Skip if explicitly listed in skip_steps by number or name
+        should_skip = (
+            script_num_str in skip_steps or
+            script_basename in skip_steps or
+            script_name_no_ext in skip_steps or
+            not is_enabled_by_default
+        )
+        
+        # Only logic: Only run if explicitly listed in only_steps by number or name
+        # If only_steps is empty, this doesn't apply
+        should_only_run = not only_steps or (
+            script_num_str in only_steps or
+            script_basename in only_steps or
+            script_name_no_ext in only_steps
+        )
+        
+        if not should_skip and should_only_run:
+            scripts_to_run.append(script_info)
+    
+    # Check if no scripts are configured to run
+    if not scripts_to_run:
+        if only_steps:
+            logger.warning(f"⚠️ No scripts match the only-steps filter: {args.only_steps}")
+        elif skip_steps:
+            logger.warning(f"⚠️ All scripts were skipped by skip-steps filter: {args.skip_steps}")
+        else:
+            logger.warning("⚠️ No scripts are configured to run in PIPELINE_STEP_CONFIGURATION")
+        
+        # Return with warning status if no scripts run
+        _pipeline_run_data_dict["end_time"] = datetime.datetime.now().isoformat()
+        _pipeline_run_data_dict["overall_status"] = "SUCCESS_WITH_WARNINGS"
+        return 0, cast(PipelineRunData, _pipeline_run_data_dict), all_scripts, "SUCCESS_WITH_WARNINGS"
+    
+    # Log what we're about to run
+    logger.info(f"📋 Will execute {len(scripts_to_run)} pipeline steps:")
+    for idx, script_info in enumerate(scripts_to_run, 1):
+        script_num = script_info['num']
+        script_basename = script_info['basename']
+        logger.info(f"  {idx}. {script_num}: {script_basename}")
+    
+    # Get the Python executable to use for the scripts
+    logger.debug("🔍 Determining Python executable for subprocess calls...")
+    venv_python, venv_python_no_activation = get_venv_python(current_dir)
+    
+    if venv_python:
+        logger.debug(f"✓ Using virtual environment Python: {venv_python}")
+    elif venv_python_no_activation:
+        logger.debug(f"⚠️ Using Python without virtualenv activation: {venv_python_no_activation}")
+    else:
+        logger.debug("⚠️ No specific Python found, will use system default")
+    
+    # Determine which Python to use based on availability
+    python_to_use = venv_python or venv_python_no_activation or "python"
+    logger.debug(f"🐍 Selected Python for subprocess calls: {python_to_use}")
+    
+    # Set up command-line flags to pass to each script
+    base_args = []
+    
+    # Define script-specific argument support
+    script_supported_args = {
+        # Common arguments supported by all scripts
+        "all": ["target-dir", "output-dir", "verbose"],
+        
+        # Script-specific supported arguments 
+        "1_gnn.py": ["recursive"],
+        "4_gnn_type_checker.py": ["strict", "estimate-resources"],
+        "8_ontology.py": ["ontology-terms-file"],
+        "11_llm.py": ["llm-tasks", "llm-timeout"],
+        "12_discopy.py": ["discopy-gnn-input-dir"],
+        "13_discopy_jax_eval.py": ["discopy-jax-gnn-input-dir", "discopy-jax-seed"],
+        "15_site.py": ["site-html-filename"],
+        "2_setup.py": ["recreate-venv", "dev"],
+    }
+    
+    # Map of arguments that support negation (--no-X format)
+    negatable_args = {
+        "recursive": True,
+        "verbose": True,
+        "estimate-resources": True
+    }
+    
+    # These arguments should be passed to all scripts
+    if args.target_dir:
+        base_args.extend(["--target-dir", str(args.target_dir)])
+    
+    if args.output_dir:
+        base_args.extend(["--output-dir", str(args.output_dir)])
+    
+    # Handle verbose flag separately - all scripts support it, but we need to check if they support negation
+    if args.verbose:
+        base_args.append("--verbose")
+    elif hasattr(args, 'verbose') and args.verbose is False:
+        # Only add --no-verbose if we're sure it's supported
+        base_args.append("--verbose")  # Default to plain --verbose flag for compatibility
+    
+    # Map of step script names to their additional args
+    step_specific_args = {}
+    
+    # Helper function to check if script supports an argument
+    def script_supports_arg(script_name, arg_name, include_negated=False):
+        # Check if arg is in common args for all scripts
+        if arg_name in script_supported_args.get("all", []):
+            return True
+        
+        # Check if arg is in script-specific args
+        return arg_name in script_supported_args.get(script_name, [])
+    
+    # For step 1 (gnn)
+    if script_supports_arg("1_gnn.py", "recursive"):
+        if args.recursive:
+            step_specific_args["1_gnn.py"] = ["--recursive"]
+    
+    # For step 4 (gnn_type_checker)
+    gnn_type_checker_args = []
+    if args.strict and script_supports_arg("4_gnn_type_checker.py", "strict"):
+        gnn_type_checker_args.append("--strict")
+    
+    if hasattr(args, 'estimate_resources') and script_supports_arg("4_gnn_type_checker.py", "estimate-resources"):
+        if args.estimate_resources:
+            gnn_type_checker_args.append("--estimate-resources")
+        else:
+            gnn_type_checker_args.append("--no-estimate-resources")
+    
+    if gnn_type_checker_args:
+        step_specific_args["4_gnn_type_checker.py"] = gnn_type_checker_args
+    
+    # For step 8 (ontology)
+    ontology_args = []
+    if args.ontology_terms_file and script_supports_arg("8_ontology.py", "ontology-terms-file"):
+        ontology_args.extend(["--ontology-terms-file", str(args.ontology_terms_file)])
+    
+    if ontology_args:
+        step_specific_args["8_ontology.py"] = ontology_args
+    
+    # For step 11 (llm)
+    llm_args = []
+    if args.llm_tasks and script_supports_arg("11_llm.py", "llm-tasks"):
+        llm_args.extend(["--llm-tasks", args.llm_tasks])
+    
+    if args.llm_timeout and script_supports_arg("11_llm.py", "llm-timeout"):
+        llm_args.extend(["--llm-timeout", str(args.llm_timeout)])
+    
+    if llm_args:
+        step_specific_args["11_llm.py"] = llm_args
+    
+    # For step 12 (discopy)
+    discopy_args = []
+    if args.discopy_gnn_input_dir and script_supports_arg("12_discopy.py", "discopy-gnn-input-dir"):
+        discopy_args.extend(["--discopy-gnn-input-dir", str(args.discopy_gnn_input_dir)])
+    
+    if discopy_args:
+        step_specific_args["12_discopy.py"] = discopy_args
+    
+    # For step 13 (discopy_jax_eval)
+    discopy_jax_args = []
+    if args.discopy_jax_gnn_input_dir and script_supports_arg("13_discopy_jax_eval.py", "discopy-jax-gnn-input-dir"):
+        discopy_jax_args.extend(["--discopy-jax-gnn-input-dir", str(args.discopy_jax_gnn_input_dir)])
+    
+    if hasattr(args, 'discopy_jax_seed') and script_supports_arg("13_discopy_jax_eval.py", "discopy-jax-seed"):
+        discopy_jax_args.extend(["--discopy-jax-seed", str(args.discopy_jax_seed)])
+    
+    if discopy_jax_args:
+        step_specific_args["13_discopy_jax_eval.py"] = discopy_jax_args
+    
+    # For step 15 (site)
+    site_args = []
+    if args.site_html_filename and script_supports_arg("15_site.py", "site-html-filename"):
+        site_args.extend(["--site-html-filename", args.site_html_filename])
+    
+    if site_args:
+        step_specific_args["15_site.py"] = site_args
+    
+    # For step 2 (setup)
+    setup_args = []
+    if args.recreate_venv and script_supports_arg("2_setup.py", "recreate-venv"):
+        setup_args.append("--recreate-venv")
+    
+    if args.dev and script_supports_arg("2_setup.py", "dev"):
+        setup_args.append("--dev")
+    
+    if setup_args:
+        step_specific_args["2_setup.py"] = setup_args
+    
+    # Execute each script
+    overall_status = "SUCCESS"
+    
+    logger.info("\n  ██████╗  ███╗   ██╗ ███╗   ██╗") 
+    logger.info("  ██╔════╝ ████╗  ██║ ████╗  ██║")
+    logger.info("  ██║  ███╗██╔██╗ ██║ ██╔██╗ ██║")
+    logger.info("  ██║   ██║██║╚██╗██║ ██║╚██╗██║")
+    logger.info("  ╚██████╔╝██║ ╚████║ ██║ ╚████║")
+    logger.info("   ╚═════╝ ╚═╝  ╚═══╝ ╚═╝  ╚═══╝")
+    logger.info("  Running GNN Processing Pipeline...\n")
+    
+    for idx, script_info in enumerate(scripts_to_run, 1):
+        script_num = script_info['num']
+        script_basename = script_info['basename']
+        script_path = script_info['path']
+        script_name_no_ext = os.path.splitext(script_basename)[0]
+        
+        # Check if this is a critical script (failure halts pipeline)
+        # Currently, only setup.py is considered critical.
+        is_critical_step = script_basename == "2_setup.py"
+        
+        # Set longer timeout for setup steps (10 minutes) and standard timeout for others (2 minutes)
+        step_timeout = 600 if script_basename == "2_setup.py" else 120
+        
+        step_header = f"Step {idx}/{len(scripts_to_run)} ({script_num}: {script_basename})"
+        logger.info(f"🚀 Starting {step_header}")
+        
+        # Create the log data structure for this step
+        step_log_data: StepLogData = {
+            "step_number": script_num,
+            "script_name": script_basename,
+            "status": "SKIPPED",  # Will be updated after execution
+            "start_time": datetime.datetime.now().isoformat(),
             "end_time": None,
             "duration_seconds": None,
             "details": "",
@@ -383,277 +573,324 @@ def run_pipeline(args: argparse.Namespace):
             "stderr": ""
         }
         
-        step_header = f"Step {i+1}/{len(all_scripts)}: {script_name_no_ext}"
-        is_critical_step = (script_name_no_ext == "2_setup")
-
-        should_skip = False
-        # 1. Check --only-steps first (most restrictive)
-        if only_steps_input:
-            if not (script_name_no_ext in only_steps_input or step_num_str in only_steps_input):
-                should_skip = True
-                step_log_data["details"] = "Skipped due to --only-steps filter."
-        # 2. If not skipped by --only-steps, check --skip-steps
-        elif skip_steps_input:
-            if (script_name_no_ext in skip_steps_input or step_num_str in skip_steps_input):
-                should_skip = True
-                step_log_data["details"] = "Skipped due to --skip-steps filter."
-        # 3. If not skipped by command-line args, check internal PIPELINE_STEP_CONFIGURATION
-        elif not PIPELINE_STEP_CONFIGURATION.get(script_file_basename, True): # Default to True if script not in config (should not happen with good maintenance)
-            should_skip = True
-            step_log_data["details"] = f"Skipped due to internal configuration (PIPELINE_STEP_CONFIGURATION['{script_file_basename}'] = False)."
-            logger.info(f"⏭️ {step_header} - SKIPPED (Internal Configuration)")
-
-        if should_skip:
-            # Ensure logger message reflects the actual reason if already set by CLI options
-            if not step_log_data["details"]: # Should not happen if logic above is correct
-                 step_log_data["details"] = "Skipped (reason not specified, check logic)."
-            logger.info(f"⏭️ {step_header} - SKIPPED ({step_log_data['details']})")
-            _pipeline_run_data_dict["steps"].append(step_log_data)
-            continue
+        # Build the command with script-specific args
+        full_args = base_args.copy()
         
-        logger.info("") # Add spacing before step start
-        logger.info(f"⚙️ {step_header} (from {script_file_basename}) - STARTING")
-        step_log_data["start_time"] = datetime.datetime.now().isoformat()
+        # Add script-specific arguments only if this script supports them
+        if script_basename in step_specific_args:
+            script_args = step_specific_args[script_basename]
+            # Only add the arguments if they're actually in the list
+            if script_args:
+                full_args.extend(script_args)
         
-        script_full_path = current_script_dir / script_file_basename
-        cmd_list = [str(venv_python_path), str(script_full_path)]
-
-        # Common arguments
-        cmd_list.extend(["--output-dir", str(args.output_dir.resolve())])
-        if args.verbose: 
-            cmd_list.append("--verbose")
-        else:
-            cmd_list.append("--no-verbose")
-
-        # Script-specific arguments
-        if script_name_no_ext == "1_gnn":
-            cmd_list.extend(["--target-dir", str(args.target_dir)])
-            if args.recursive: cmd_list.append("--recursive")
-        elif script_name_no_ext == "2_setup":
-            cmd_list.extend(["--target-dir", str(args.target_dir)])
-        elif script_name_no_ext == "3_tests":
-            pass # Uses venv_python_path internally for pytest
-        elif script_name_no_ext == "4_gnn_type_checker":
-            cmd_list.extend(["--target-dir", str(args.target_dir)])
-            if args.recursive:
-                cmd_list.append("--recursive")
-            else:
-                cmd_list.append("--no-recursive")
-            if args.strict: cmd_list.append("--strict")
-            cmd_list.append("--estimate-resources" if args.estimate_resources else "--no-estimate-resources")
-        elif script_name_no_ext == "5_export":
-            cmd_list.extend(["--target-dir", str(args.target_dir)])
-            if args.recursive: cmd_list.append("--recursive")
-        elif script_name_no_ext == "6_visualization":
-            cmd_list.extend(["--target-dir", str(args.target_dir)])
-            if args.recursive: cmd_list.append("--recursive")
-        elif script_name_no_ext == "7_mcp":
-            pass # Common args are sufficient
-        elif script_name_no_ext == "8_ontology":
-            cmd_list.extend(["--target-dir", str(args.target_dir)])
-            if args.recursive: cmd_list.append("--recursive") # Script needs to support this
-            cmd_list.extend(["--ontology-terms-file", str(args.ontology_terms_file)])
-        elif script_name_no_ext == "9_render":
-            if args.recursive: cmd_list.append("--recursive") # Searches in output_dir/gnn_exports
-        elif script_name_no_ext == "10_execute":
-            if args.recursive: cmd_list.append("--recursive") # Searches in output_dir/gnn_rendered_simulators
-        elif script_name_no_ext == "11_llm":
-            cmd_list.extend(["--target-dir", str(args.target_dir)])
-            if args.recursive: cmd_list.append("--recursive")
-            if args.llm_tasks:
-                tasks = [task.strip() for task in args.llm_tasks.split(',') if task.strip()]
-                if tasks:
-                    cmd_list.append("--llm-tasks")
-                    cmd_list.extend(tasks)
-        elif script_name_no_ext == "12_site":
-            # 12_site.py uses --output-dir (where it reads from) 
-            # and --site-html-file (the name of the file it creates within output-dir)
-            cmd_list.extend(["--site-html-file", str(args.site_html_filename)])
-        elif script_name_no_ext == "12_discopy":
-            # Determine the input directory for 12_discopy.py
-            # Priority: --discopy-gnn-input-dir > --target-dir > default (src/gnn/examples)
-            discopy_input_dir_to_use = args.target_dir # Default to the general target_dir
-            if args.discopy_gnn_input_dir is not None:
-                discopy_input_dir_to_use = args.discopy_gnn_input_dir
-            
-            cmd_list.extend(["--gnn-input-dir", str(discopy_input_dir_to_use.resolve())]) # Ensure absolute path
-            # --output-dir is already added as a common argument
-            if args.recursive: # Pass recursive if set for the main pipeline
-                cmd_list.append("--recursive")
-            # Verbosity is also handled by common args
-        elif script_name_no_ext == "13_discopy_jax_eval":
-            discopy_jax_input_dir_to_use = args.target_dir # Default to general target_dir
-            if args.discopy_jax_gnn_input_dir is not None:
-                discopy_jax_input_dir_to_use = args.discopy_jax_gnn_input_dir
-            
-            cmd_list.extend(["--gnn-input-dir", str(discopy_jax_input_dir_to_use.resolve())])
-            cmd_list.extend(["--jax-seed", str(args.discopy_jax_seed)])
-            if args.recursive:
-                cmd_list.append("--recursive")
-        elif script_name_no_ext == "15_site": # Renamed from 12_site / 14_site
-            cmd_list.extend(["--site-html-file", str(args.site_html_filename)])
-
-        step_process_env = os.environ.copy()
-        # Ensure src and venv site-packages are prioritized in PYTHONPATH for subprocesses
-        project_src_dir = str(current_script_dir) # Assuming main.py is in src/
-        paths_to_prepend = []
-
-        if _venv_site_packages_path_for_subproc:
-            paths_to_prepend.append(str(_venv_site_packages_path_for_subproc))
+        # Log the full command for debugging
+        cmd = [str(python_to_use), str(script_path)] + full_args
+        logger.debug(f"📋 Executing command: {' '.join(cmd)}")
         
-        # Always ensure the project's src directory is available for imports within pipeline scripts
-        paths_to_prepend.append(project_src_dir)
-
-        existing_pythonpath = step_process_env.get("PYTHONPATH", "")
-        if existing_pythonpath:
-            # Prepend new paths, then append existing ones to maintain their relative order
-            step_process_env["PYTHONPATH"] = os.pathsep.join(paths_to_prepend + [existing_pythonpath])
-        else:
-            step_process_env["PYTHONPATH"] = os.pathsep.join(paths_to_prepend)
+        # For slow steps, provide more detailed progress tracking
+        if script_basename == "2_setup.py":
+            logger.info(f"⏳ Setting up environment and dependencies (timeout: {step_timeout}s). This may take several minutes...")
+            logger.info("   The process will display progress logs while running.")
         
-        logger.debug(f"  Running command: {' '.join(cmd_list)}")
-        if args.verbose:
-            logger.debug(f"    with PYTHONPATH: {step_process_env['PYTHONPATH']}")
-
         try:
-            return_code = -1 # Default return code
-
-            if args.verbose:
-                logger.debug(f"  Streaming output for command: {' '.join(cmd_list)}")
+            # Create a process to run the script
+            start_time = time.time()
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1  # Line buffered
+            )
+            
+            # Prepare to capture output
+            stdout_lines = []
+            stderr_lines = []
+            
+            # Helper to process a stream and log if needed
+            def process_stream_line(line, is_stderr, record_to, log_level=None):
+                line = line.rstrip('\n')
+                if line:
+                    record_to.append(line)
+                    
+                    # Only log to console if we should show this level of detail
+                    should_log_to_console = True
+                    
+                    # Filter out low-level messages for console output
+                    # For stdout, we only want to show if the user requested verbose
+                    # For stderr, filter in non-verbose mode to only show errors/warnings
+                    if not args.verbose:
+                        if not is_stderr:
+                            # In non-verbose mode, don't show stdout at all
+                            should_log_to_console = False
+                        else:
+                            # For stderr in non-verbose mode, only show ERROR/WARNING/CRITICAL lines
+                            if not any(x in line for x in ["ERROR", "WARNING", "CRITICAL", "FATAL"]):
+                                should_log_to_console = False
+                    
+                    if should_log_to_console and log_level is not None:
+                        logger.log(log_level, f"    [{'STDERR' if is_stderr else 'STDOUT'}] {line}")
+            
+            # Track last update time for progress reporting
+            last_output_time = time.time()
+            last_progress_report = time.time()
+            has_reported_progress = False
+            
+            # Process stdout and stderr streams in real-time
+            while True:
+                # Check for timeout - but only after allowing some startup time
+                current_time = time.time()
+                elapsed_time = current_time - start_time
+                if elapsed_time > step_timeout:
+                    logger.warning(f"⚠️ {step_header} has been running for {elapsed_time:.1f} seconds, exceeding timeout of {step_timeout} seconds.")
+                    logger.warning(f"   Terminating process...")
+                    process.terminate()
+                    time.sleep(0.5)  # Give it a chance to terminate gracefully
+                    if process.poll() is None:
+                        process.kill()  # Force kill if still running
+                    raise subprocess.TimeoutExpired(cmd, step_timeout)
                 
-                current_step_timeout = None
-                if script_name_no_ext == "11_llm":
-                    current_step_timeout = args.llm_timeout
-                    logger.debug(f"  Applying LLM step-specific timeout of {current_step_timeout}s for communicate().")
-
-                process = subprocess.Popen(
-                    cmd_list,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                    env=step_process_env,
-                    cwd=current_script_dir
-                )
+                # For long-running processes, display progress indicators
+                if script_basename == "2_setup.py" and current_time - last_progress_report > 30:
+                    if process.poll() is None:  # Still running
+                        logger.info(f"   ⏳ {script_basename} still running ({elapsed_time:.1f}s)... Please wait.")
+                        last_progress_report = current_time
+                        has_reported_progress = True
+                # For setup.py, provide even more reassurance with specific task messages
+                elif script_basename == "2_setup.py" and current_time - last_progress_report > 30:
+                    # Rotate through different messages to make it clear the process is still running
+                    messages = [
+                        "Setting up virtual environment and dependencies...",
+                        "Installing Python packages (this may take a while)...",
+                        "Resolving dependency conflicts...",
+                        "Building wheels for dependencies...",
+                        "Processing Python packages...",
+                        "Dependency installation ongoing..."
+                    ]
+                    message_index = int((current_time - start_time) / 30) % len(messages)
+                    logger.info(f"   ⏳ {messages[message_index]} (elapsed: {elapsed_time:.1f}s)")
+                    last_progress_report = current_time
+                    has_reported_progress = True
                 
-                try:
-                    # Use communicate with a timeout to prevent hanging on readline
-                    stdout_data, stderr_data = process.communicate(timeout=current_step_timeout)
-                    return_code = process.returncode
-                    step_log_data["stdout"] = stdout_data
-                    step_log_data["stderr"] = stderr_data
+                # Check for stdout data with timeout
+                stdout_ready = process.stdout.readable()
+                if stdout_ready:
+                    stdout_line = process.stdout.readline()
+                    if stdout_line:
+                        # Use the same filtering logic as above
+                        should_log = True
+                        if not args.verbose:
+                            # Default is to show important outputs
+                            should_log = True
+                            
+                            # Filter out specific patterns that are too verbose
+                            if "Content snippet for" in stdout_line or "where StateSpaceBlock was not found" in stdout_line:
+                                should_log = False
+                            elif "Content snippet for" in stdout_line or "where Connections was not found" in stdout_line:
+                                should_log = False
+                            # Filter additional verbose debug messages from setup
+                            elif "Reading metadata" in stdout_line or "removing temporary" in stdout_line:
+                                should_log = False
+                            elif "Building wheel" in stdout_line or "Created wheel" in stdout_line:
+                                should_log = False
+                            # Show high-importance setup messages regardless of verbose mode
+                            elif script_basename == "2_setup.py" and any(x in stdout_line for x in ["Installing", "Still installing", "✅", "Stage", "took", "elapsed", "🎉"]):
+                                should_log = True
+                        
+                        # Process the line based on our should_log decision
+                        if should_log:
+                            logger.info(f"    [STDOUT] {stdout_line.strip()}")
+                        elif args.verbose:
+                            logger.debug(f"    [STDOUT] {stdout_line.strip()}")
+                        
+                        # Always record the line in our captured output, even if not logged to console
+                        stdout_lines.append(stdout_line.strip())
+                        last_output_time = time.time()
 
-                    # Log captured output after communicate has finished
-                    if stdout_data:
-                        for line in stdout_data.splitlines():
-                            if line.strip(): # Avoid logging empty lines
-                                logger.debug(f"    [{script_name_no_ext}-STDOUT] {line.strip()}")
-                    if stderr_data:
-                        for line in stderr_data.splitlines():
-                            if line.strip(): # Avoid logging empty lines
-                                logger.warning(f"    [{script_name_no_ext}-STDERR] {line.strip()}")
+                # Check for stderr data with timeout
+                stderr_ready = process.stderr.readable()
+                if stderr_ready:
+                    stderr_line = process.stderr.readline()
+                    if stderr_line:
+                        # Use the same filtering logic as above
+                        should_log_error = True
+                        if "warn(" in stderr_line and "DeprecationWarning" in stderr_line:
+                            should_log_error = False
+                        elif "pyproject.toml" in stderr_line and "does not comply" in stderr_line:
+                            should_log_error = False
+                        # If it's a setup.py step and contains an error, always show it
+                        elif script_basename == "2_setup.py" and any(x in stderr_line for x in ["ERROR", "Failed", "❌"]):
+                            should_log_error = True
+                            
+                        if should_log_error:
+                            logger.warning(f"    [STDERR] {stderr_line.strip()}")
+                        elif args.verbose:
+                            logger.debug(f"    [STDERR] {stderr_line.strip()}")
+                        
+                        stderr_lines.append(stderr_line.strip())
+                        last_output_time = time.time()
                 
-                except subprocess.TimeoutExpired:
-                    # This block will be entered if communicate() times out.
-                    # The outer `except subprocess.TimeoutExpired:` block will handle logging,
-                    # setting status to FAILED_TIMEOUT, and ensuring the process is killed.
-                    # We just need to re-raise the exception for the outer handler.
-                    logger.warning(f"  Process for {script_name_no_ext} timed out during communicate() after {current_step_timeout}s. Killing process (if not already done by outer handler).")
-                    # Ensure process is killed; Popen.communicate() should do this on timeout,
-                    # but an explicit kill here is safer if we are taking over some handling.
-                    # However, the original design is that the outer handler does the kill.
-                    # Let's stick to that: just re-raise.
-                    raise # Re-raise the TimeoutExpired for the outer handler.
-
-            else:
-                # Original behavior for non-verbose mode
-                # Determine timeout for run() based on the script
-                current_step_timeout_run = None
-                if script_name_no_ext == "11_llm":
-                    current_step_timeout_run = args.llm_timeout
-                    logger.debug(f"  Applying LLM step-specific timeout of {current_step_timeout_run}s for run().")
-
-                step_process_result = subprocess.run(
-                    cmd_list, 
-                    capture_output=True, 
-                    text=True, 
-                    check=False, 
-                    env=step_process_env, 
-                    cwd=current_script_dir,
-                    timeout=current_step_timeout_run
-                )
-                step_log_data["stdout"] = step_process_result.stdout
-                step_log_data["stderr"] = step_process_result.stderr
-                return_code = step_process_result.returncode
-
+                # If process has completed and no more data in pipes, break
+                if process.poll() is not None:
+                    # One last check for any remaining output
+                    while process.stdout.readable():
+                        stdout_line = process.stdout.readline()
+                        if not stdout_line:
+                            break
+                        
+                        # Use the same filtering logic as above
+                        should_log = True
+                        if not args.verbose:
+                            # Default is to show important outputs
+                            should_log = True
+                            
+                            # Filter out specific patterns that are too verbose
+                            if "Content snippet for" in stdout_line or "where StateSpaceBlock was not found" in stdout_line:
+                                should_log = False
+                            elif "Content snippet for" in stdout_line or "where Connections was not found" in stdout_line:
+                                should_log = False
+                            # Filter additional verbose debug messages from setup
+                            elif "Reading metadata" in stdout_line or "removing temporary" in stdout_line:
+                                should_log = False
+                            elif "Building wheel" in stdout_line or "Created wheel" in stdout_line:
+                                should_log = False
+                            # Show high-importance setup messages regardless of verbose mode
+                            elif script_basename == "2_setup.py" and any(x in stdout_line for x in ["Installing", "Still installing", "✅", "Stage", "took", "elapsed", "🎉"]):
+                                should_log = True
+                        
+                        # Process the line based on our should_log decision
+                        if should_log:
+                            logger.info(f"    [STDOUT] {stdout_line.strip()}")
+                        elif args.verbose:
+                            logger.debug(f"    [STDOUT] {stdout_line.strip()}")
+                        
+                        # Always record the line in our captured output, even if not logged to console
+                        stdout_lines.append(stdout_line.strip())
+                    
+                    while process.stderr.readable():
+                        stderr_line = process.stderr.readline()
+                        if not stderr_line:
+                            break
+                        
+                        # Use the same filtering logic as above
+                        should_log_error = True
+                        if "warn(" in stderr_line and "DeprecationWarning" in stderr_line:
+                            should_log_error = False
+                        elif "pyproject.toml" in stderr_line and "does not comply" in stderr_line:
+                            should_log_error = False
+                        # If it's a setup.py step and contains an error, always show it
+                        elif script_basename == "2_setup.py" and any(x in stderr_line for x in ["ERROR", "Failed", "❌"]):
+                            should_log_error = True
+                            
+                        if should_log_error:
+                            logger.warning(f"    [STDERR] {stderr_line.strip()}")
+                        elif args.verbose:
+                            logger.debug(f"    [STDERR] {stderr_line.strip()}")
+                        
+                        stderr_lines.append(stderr_line.strip())
+                    
+                    break
+                
+                # If no output for more than 15 seconds but process is still running,
+                # provide more frequent reassurance messages for long-running steps
+                if (current_time - last_output_time > 15 and 
+                    current_time - last_progress_report > 15 and
+                    script_basename == "2_setup.py"):
+                    logger.info(f"   ⏳ {script_basename} still running ({elapsed_time:.1f}s) but no recent output. Please wait...")
+                    last_progress_report = current_time
+                    has_reported_progress = True
+                # For setup.py, provide even more reassurance with specific task messages
+                elif script_basename == "2_setup.py" and current_time - last_progress_report > 30:
+                    # Rotate through different messages to make it clear the process is still running
+                    messages = [
+                        "Setting up virtual environment and dependencies...",
+                        "Installing Python packages (this may take a while)...",
+                        "Resolving dependency conflicts...",
+                        "Building wheels for dependencies...",
+                        "Processing Python packages...",
+                        "Dependency installation ongoing..."
+                    ]
+                    message_index = int((current_time - start_time) / 30) % len(messages)
+                    logger.info(f"   ⏳ {messages[message_index]} (elapsed: {elapsed_time:.1f}s)")
+                    last_progress_report = current_time
+                    has_reported_progress = True
+                
+                # Small sleep to avoid CPU spinning
+                time.sleep(0.1)
+            
+            # Capture any remaining output - this should be handled by the loop above
+            # but this is a fallback just in case
+            remaining_stdout, remaining_stderr = process.communicate()
+            if remaining_stdout:
+                for line in remaining_stdout.splitlines():
+                    process_stream_line(line, False, stdout_lines, 
+                                        logging.DEBUG if args.verbose else None)
+            
+            if remaining_stderr:
+                for line in remaining_stderr.splitlines():
+                    process_stream_line(line, True, stderr_lines, 
+                                        logging.WARNING)
+            
+            # Update the log data with captured output
+            step_log_data["stdout"] = "\n".join(stdout_lines)
+            step_log_data["stderr"] = "\n".join(stderr_lines)
+            
+            # Get the return code
+            return_code = process.returncode
+            end_time = time.time()
+            duration = end_time - start_time
+            
             if return_code == 0:
                 step_log_data["status"] = "SUCCESS"
-                logger.info(f"✅ {step_header} - COMPLETED successfully.")
+                if has_reported_progress:
+                    logger.info(f"✅ {step_header} - COMPLETED successfully in {duration:.1f} seconds.")
+                else:
+                    logger.info(f"✅ {step_header} - COMPLETED successfully.")
                 logger.info("") # Add spacing after step completion
+                
                 # For non-verbose successful runs, if there's any output, log a summary.
                 # For verbose runs, stdout is already streamed at DEBUG.
-                if not args.verbose and step_log_data["stdout"] and step_log_data["stdout"].strip():
-                    logger.debug(f"   [{script_name_no_ext}-STDOUT] Output captured (see summary JSON for full details). First 200 chars: {step_log_data['stdout'].strip()[:200]}")
-                # If a successful step wrote to stderr (and main is not verbose), log it at WARNING.
-                if step_log_data["stderr"] and step_log_data["stderr"].strip():
-                    stderr_level = logging.WARNING # Default for any stderr from successful/warning step
-                    if not args.verbose:
-                         logger.log(stderr_level, f"   [{script_name_no_ext}-STDERR] Output captured from stderr even on success (see summary JSON). First 200 chars: {step_log_data['stderr'].strip()[:200]}")
-                    # If verbose, it was already streamed line-by-line at WARNING.
-
-            elif return_code == 2: # Special code for success with warnings
-                step_log_data["status"] = "SUCCESS_WITH_WARNINGS"
-                logger.warning(f"⚠️ {step_header} - COMPLETED with warnings (Code 2). Check script output.")
-                logger.info("") # Add spacing after step completion
-                if overall_status == "SUCCESS": overall_status = "SUCCESS_WITH_WARNINGS"
-                # Log stdout/stderr for warnings (if not already streamed in verbose)
-                if not args.verbose:
-                    if step_log_data["stdout"] and step_log_data["stdout"].strip(): 
-                        logger.info(f"   [{script_name_no_ext}-STDOUT] Output for warning step (see summary JSON). First 200 chars: {step_log_data['stdout'].strip()[:200]}")
-                    if step_log_data["stderr"] and step_log_data["stderr"].strip(): 
-                        logger.warning(f"   [{script_name_no_ext}-STDERR] Output for warning step (see summary JSON). First 200 chars: {step_log_data['stderr'].strip()[:200]}")
+                if not args.verbose and stdout_lines:
+                    # Only log the first 2 lines of stdout summary, and only at DEBUG level
+                    summary = stdout_lines[:2]
+                    if len(stdout_lines) > 2:
+                        summary.append(f"... ({len(stdout_lines)-2} more lines, see log file)")
+                    logger.debug(f"   [{script_name_no_ext}-STDOUT] {' | '.join(summary)}")
+                
+                # If a successful step wrote to stderr, log it at WARNING for visibility
+                if stderr_lines:
+                    # Only show serious stderr messages in console for successful steps
+                    # (This is important for keeping console output clean)
+                    error_messages = [line for line in stderr_lines if 
+                                     "ERROR" in line or "CRITICAL" in line or 
+                                     "FATAL" in line or "WARN" in line]
+                    
+                    if error_messages:
+                        logger.warning(f"   [{script_name_no_ext}] Step completed successfully but had {len(error_messages)} error/warning messages in stderr")
+                        for err_msg in error_messages[:3]:  # Show only first 3 errors
+                            logger.warning(f"   [{script_name_no_ext}-STDERR] {err_msg}")
+                        if len(error_messages) > 3:
+                            logger.warning(f"   [{script_name_no_ext}-STDERR] ... ({len(error_messages)-3} more errors/warnings, see log file)")
             else:
-                step_log_data["status"] = "FAILED"
-                step_log_data["details"] = f"Exited with code {return_code}."
-                logger.error(f"❌ {step_header} - FAILED (Code: {return_code}).")
+                step_log_data["status"] = "FAILED_NONZERO_EXIT"
+                step_log_data["details"] = f"Process exited with code {return_code}"
+                logger.error(f"❌ {step_header} - FAILED with exit code {return_code} after {duration:.1f} seconds.")
                 logger.info("") # Add spacing after step completion
                 overall_status = "FAILED"
-                # Log stdout/stderr for failures (if not already streamed in verbose)
-                if not args.verbose:
-                    if step_log_data["stdout"] and step_log_data["stdout"].strip(): 
-                        logger.error(f"   [{script_name_no_ext}-STDOUT] Output from failed step (see summary JSON). Content: {step_log_data['stdout'].strip()}")
-                    if step_log_data["stderr"] and step_log_data["stderr"].strip(): 
-                        logger.error(f"   [{script_name_no_ext}-STDERR] Output from failed step (see summary JSON). Content: {step_log_data['stderr'].strip()}")
                 if is_critical_step:
                     logger.critical(f"🔥 Critical step {script_name_no_ext} failed. Halting pipeline.")
                     step_log_data["details"] += " Critical step failure, pipeline halted."
                     _pipeline_run_data_dict["steps"].append(step_log_data)
-                    break 
+                    break
         
         except subprocess.TimeoutExpired:
+            end_time = time.time()
+            duration = end_time - start_time
             step_log_data["status"] = "FAILED_TIMEOUT"
-            timeout_duration = current_step_timeout if args.verbose else current_step_timeout_run
-            step_log_data["details"] = f"Step timed out after {timeout_duration} seconds."
-            logger.error(f"❌ {step_header} - FAILED due to TIMEOUT after {timeout_duration}s.")
+            step_log_data["details"] = f"Process timed out after {duration:.1f} seconds (limit: {step_timeout}s)"
+            logger.error(f"❌ {step_header} - FAILED due to timeout after {duration:.1f} seconds.")
             logger.info("") # Add spacing after step completion
             overall_status = "FAILED"
-            # Ensure process is killed if it timed out during wait()
-            if args.verbose and process:
-                try:
-                    logger.warning(f"  Attempting to terminate timed-out process for {script_name_no_ext} (PID: {process.pid})")
-                    process.kill() # or process.terminate()
-                    #oudates to captured stdout/stderr might be lost or partial
-                    process.wait() # wait for termination to complete
-                    logger.info(f"  Process {script_name_no_ext} terminated.")
-                except Exception as e_kill:
-                    logger.error(f"  Error trying to terminate process {script_name_no_ext}: {e_kill}")
-            
-            # For non-verbose, subprocess.run() handles termination on timeout.
-            # Capture any output that might have occurred before timeout
-            if args.verbose and process.stdout:
-                 step_log_data["stdout"] = "[TIMEOUT OCCURRED - STDOUT MAY BE INCOMPLETE]" # Simplified
-            if args.verbose and process.stderr:
-                step_log_data["stderr"] = "[TIMEOUT OCCURRED - STDERR MAY BE INCOMPLETE]" # Simplified
-            # For non-verbose, this is already handled by subprocess.run returning the captured output up to timeout.
             
             if is_critical_step:
                 logger.critical(f"🔥 Critical step {script_name_no_ext} timed out. Halting pipeline.")
@@ -662,8 +899,10 @@ def run_pipeline(args: argparse.Namespace):
                 break
 
         except Exception as e:
+            end_time = time.time()
+            duration = end_time - start_time
             step_log_data["status"] = "ERROR_UNHANDLED_EXCEPTION"
-            step_log_data["details"] = f"Unhandled exception: {str(e)}"
+            step_log_data["details"] = f"Unhandled exception after {duration:.1f} seconds: {str(e)}"
             logger.error(f"❌ Unhandled exception in {step_header}: {e}")
             logger.info("") # Add spacing after step completion
             logger.debug(traceback.format_exc())
@@ -694,76 +933,105 @@ def main():
     # so this configuration is for robustness, especially if run in different contexts.
     pipeline_logger = logging.getLogger("GNN_Pipeline") # Use the specific logger
 
-    if not pipeline_logger.hasHandlers() and not logging.getLogger().hasHandlers():
-        logging.basicConfig(
-            level=logging.INFO, # Default level
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            datefmt=None, # Explicitly use default to get milliseconds
-            stream=sys.stdout
-        )
-        pipeline_logger.info("Initialized basic logging config as no handlers were found for GNN_Pipeline or root.")
-
     args = parse_arguments()
 
-    # Quieten noisy dependency loggers (PIL, Matplotlib) unconditionally
-    logging.getLogger('PIL').setLevel(logging.WARNING)
-    logging.getLogger('matplotlib').setLevel(logging.WARNING)
-    # Add other noisy libraries here if needed, e.g.:
-    # logging.getLogger('some_other_library').setLevel(logging.WARNING)
-
-    logger.info("Starting GNN Processing Pipeline...")
-
-    # --- File Handler Setup (after args are parsed) ---
-    # Ensure logs directory exists
+    # --- Central Logging Configuration ---
     log_dir = args.output_dir / "logs"
-    try:
-        log_dir.mkdir(parents=True, exist_ok=True)
-        # Add a file handler to the GNN_Pipeline logger
-        log_file_path = log_dir / "pipeline.log"
-        file_handler = logging.FileHandler(log_file_path, mode='w') # 'w' to overwrite each run
-        # Use the same format as basicConfig, explicitly ensure milliseconds
-        file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt=None)
-        file_handler.setFormatter(file_formatter)
-        # The level of the file_handler will be determined by the pipeline_logger's effective level,
-        # which is set below based on args.verbose.
-        pipeline_logger.addHandler(file_handler)
-        # Log this message *after* the handler is added so it goes to the file too.
-        pipeline_logger.info(f"File logging configured to: {log_file_path}") 
-    except Exception as e:
-        # Log this error to console, as file handler might have failed.
-        temp_error_logger = logging.getLogger("GNN_Pipeline.FileHandlerSetup")
-        # Ensure this specific error message can make it to console/stderr if main logger isn't fully working
-        if not temp_error_logger.handlers:
-            err_handler = logging.StreamHandler(sys.stderr)
-            # Use a more specific format for this temp logger to distinguish its origin
-            err_formatter = logging.Formatter('%(asctime)s - %(name)s - [TEMP_SETUP_ERROR] - %(levelname)s - %(message)s')
-            err_handler.setFormatter(err_formatter)
-            temp_error_logger.addHandler(err_handler)
-            temp_error_logger.propagate = False # Don't double log this specific error message
-        temp_error_logger.error(f"Failed to configure file logging to {log_dir / 'pipeline.log'}: {e}. Continuing with console logging only.")
-    # --- End File Handler Setup ---
-
-    # Configure logger level based on verbose flag AFTER parsing args
-    if args.verbose:
-        pipeline_logger.setLevel(logging.DEBUG)
-        # Propagate level to handlers if they exist and basicConfig wasn't just called
-        handlers_to_update = list(pipeline_logger.handlers) + list(logging.getLogger().handlers)
-        for handler in handlers_to_update:
-            # Only set level if handler's current level is not effectively DEBUG or lower
-            if handler.level == 0 or handler.level > logging.DEBUG: # 0 means NOTSET, effectively inherits.
-                current_level_name = logging.getLevelName(handler.level)
-                logger.debug(f"Updating handler {type(handler).__name__} level from {current_level_name} to DEBUG")
-                handler.setLevel(logging.DEBUG)
-        # For Popen streaming, we use GNN_Pipeline's INFO and ERROR, so DEBUG on GNN_Pipeline is fine.
+    
+    # Setup logging using our new utility if available
+    if setup_standalone_logging:
+        # Ensure logs directory exists
+        try:
+            log_dir.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            print(f"Error creating log directory: {e}", file=sys.stderr)
+            # Fall back to no file logging if directory creation fails
+            log_dir = None
+        
+        # Set up logging with different console/file levels
+        console_level = logging.DEBUG if args.verbose else logging.INFO
+        file_level = logging.DEBUG  # Always log detailed info to file
+        
+        # Configure the GNN_Pipeline logger
+        setup_standalone_logging(
+            level=min(console_level, file_level),
+            logger_name="GNN_Pipeline",
+            output_dir=log_dir,
+            log_filename="pipeline.log",
+            console_level=console_level,
+            file_level=file_level
+        )
+        
+        # Silence noisy modules in console but keep them in the log file
+        if silence_noisy_modules_in_console:
+            silence_noisy_modules_in_console()
+            
     else:
-        pipeline_logger.setLevel(logging.INFO)
-        # Propagate level to handlers
-        handlers_to_update_info = list(pipeline_logger.handlers) + list(logging.getLogger().handlers)
-        for handler in handlers_to_update_info:
-            if handler.level == 0 or handler.level > logging.INFO:
-                current_level_name = logging.getLevelName(handler.level)
-                logger.debug(f"Updating handler {type(handler).__name__} level from {current_level_name} to INFO")
-                handler.setLevel(logging.INFO)
+        # Legacy fallback configuration
+        if not pipeline_logger.hasHandlers() and not logging.getLogger().hasHandlers():
+            logging.basicConfig(
+                level=logging.INFO, # Default level
+                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                datefmt=None, # Explicitly use default to get milliseconds
+                stream=sys.stdout
+            )
+            pipeline_logger.info("Initialized basic logging config as no handlers were found for GNN_Pipeline or root.")
+
+        # Quieten noisy dependency loggers (PIL, Matplotlib) unconditionally
+        logging.getLogger('PIL').setLevel(logging.WARNING)
+        logging.getLogger('matplotlib').setLevel(logging.WARNING)
+        # Add other noisy libraries here if needed, e.g.:
+        # logging.getLogger('some_other_library').setLevel(logging.WARNING)
+
+        # --- Legacy File Handler Setup (after args are parsed) ---
+        try:
+            log_dir.mkdir(parents=True, exist_ok=True)
+            # Add a file handler to the GNN_Pipeline logger
+            log_file_path = log_dir / "pipeline.log"
+            file_handler = logging.FileHandler(log_file_path, mode='w') # 'w' to overwrite each run
+            # Use the same format as basicConfig, explicitly ensure milliseconds
+            file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt=None)
+            file_handler.setFormatter(file_formatter)
+            # The level of the file_handler will be determined by the pipeline_logger's effective level,
+            # which is set below based on args.verbose.
+            pipeline_logger.addHandler(file_handler)
+            # Log this message *after* the handler is added so it goes to the file too.
+            pipeline_logger.info(f"File logging configured to: {log_file_path}") 
+        except Exception as e:
+            # Log this error to console, as file handler might have failed.
+            temp_error_logger = logging.getLogger("GNN_Pipeline.FileHandlerSetup")
+            # Ensure this specific error message can make it to console/stderr if main logger isn't fully working
+            if not temp_error_logger.handlers:
+                err_handler = logging.StreamHandler(sys.stderr)
+                # Use a more specific format for this temp logger to distinguish its origin
+                err_formatter = logging.Formatter('%(asctime)s - %(name)s - [TEMP_SETUP_ERROR] - %(levelname)s - %(message)s')
+                err_handler.setFormatter(err_formatter)
+                temp_error_logger.addHandler(err_handler)
+                temp_error_logger.propagate = False # Don't double log this specific error message
+            temp_error_logger.error(f"Failed to configure file logging to {log_dir / 'pipeline.log'}: {e}. Continuing with console logging only.")
+        # --- End Legacy File Handler Setup ---
+
+        # Configure logger level based on verbose flag AFTER parsing args
+        if args.verbose:
+            pipeline_logger.setLevel(logging.DEBUG)
+            # Propagate level to handlers if they exist and basicConfig wasn't just called
+            handlers_to_update = list(pipeline_logger.handlers) + list(logging.getLogger().handlers)
+            for handler in handlers_to_update:
+                # Only set level if handler's current level is not effectively DEBUG or lower
+                if handler.level == 0 or handler.level > logging.DEBUG: # 0 means NOTSET, effectively inherits.
+                    current_level_name = logging.getLevelName(handler.level)
+                    logger.debug(f"Updating handler {type(handler).__name__} level from {current_level_name} to DEBUG")
+                    handler.setLevel(logging.DEBUG)
+            # For Popen streaming, we use GNN_Pipeline's INFO and ERROR, so DEBUG on GNN_Pipeline is fine.
+        else:
+            pipeline_logger.setLevel(logging.INFO)
+            # Propagate level to handlers
+            handlers_to_update_info = list(pipeline_logger.handlers) + list(logging.getLogger().handlers)
+            for handler in handlers_to_update_info:
+                if handler.level == 0 or handler.level > logging.INFO:
+                    current_level_name = logging.getLevelName(handler.level)
+                    logger.debug(f"Updating handler {type(handler).__name__} level from {current_level_name} to INFO")
+                    handler.setLevel(logging.INFO)
 
     pipeline_logger.debug("Logger level configured based on verbosity.")
 
@@ -844,8 +1112,15 @@ def main():
     # Save detailed summary report
     try:
         args.pipeline_summary_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Convert Path objects to strings for JSON serialization
+        def path_serializer(obj):
+            if isinstance(obj, Path):
+                return str(obj)
+            raise TypeError(f"Type {type(obj)} not serializable")
+        
         with open(args.pipeline_summary_file, 'w') as f_summary:
-            json.dump(pipeline_run_data, f_summary, indent=4)
+            json.dump(pipeline_run_data, f_summary, indent=4, default=path_serializer)
         logger.info(f"💾 Detailed pipeline execution summary (JSON) saved to: {args.pipeline_summary_file}")
     except Exception as e:
         logger.error(f"❌ Error saving pipeline summary report: {e}")

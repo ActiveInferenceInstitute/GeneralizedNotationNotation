@@ -1,7 +1,0 @@
-{
-  "ModelName": "Alice Loves Bob - DisCoPy Quantum NLP Example",
-  "ModelAnnotation": "This GNN file represents the \"Alice loves Bob\" quantum NLP example from DisCoPy.\nIt's designed to be parsed by `discopy_translator_module` and produce a JAX-backed\nDisCoPy diagram that evaluates to the expected amplitude.\nThe target amplitude for \"Alice loves Bob\" is [0.0 - 1.0j].",
-  "GNNVersionAndFlags": "GNN v1\nDisCoPyCompatible",
-  "Time": "",
-  "ActInfOntologyAnnotation": ""
-}
