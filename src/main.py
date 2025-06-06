@@ -94,7 +94,7 @@ logger = logging.getLogger("GNN_Pipeline")
 PIPELINE_STEP_CONFIGURATION: Dict[str, bool] = {
     "1_gnn.py": True,
     "2_setup.py": True,
-    "3_tests.py": False,
+    "3_tests.py": True,
     "4_gnn_type_checker.py": True,
     "5_export.py": True,
     "6_visualization.py": True,
@@ -104,7 +104,7 @@ PIPELINE_STEP_CONFIGURATION: Dict[str, bool] = {
     "10_execute.py": True,
     "11_llm.py": True,
     "12_discopy.py": True,
-    "13_discopy_jax_eval.py": True,
+    "13_discopy_jax_eval.py": False,
     "15_site.py": True, 
     # Add any new [number]_script_name.py here and set to True/False
 }
@@ -566,9 +566,15 @@ def run_pipeline(args: argparse.Namespace):
         # Currently, only setup.py is considered critical.
         is_critical_step = script_basename == "2_setup.py"
         
-        # Set longer timeout for setup steps (20 minutes) and standard timeout for others (1 minute)
+        # Set longer timeout for setup steps (20 minutes) and standard timeout for others (5 minutes)
         # Setup step timeout increased from 10 to 20 minutes to account for slower connections/machines
-        step_timeout = 1200 if script_basename == "2_setup.py" else 60
+        # Test step timeout increased to 5 minutes to allow for longer test runs
+        if script_basename == "2_setup.py":
+            step_timeout = 1200 # 20 minutes
+        elif script_basename == "3_tests.py":
+            step_timeout = 300 # 5 minutes
+        else:
+            step_timeout = 120 # 2 minutes
         
         step_header = f"Step {idx}/{len(scripts_to_run)} ({script_num}: {script_basename})"
         logger.info(f"🚀 Starting {step_header}")
@@ -603,7 +609,6 @@ def run_pipeline(args: argparse.Namespace):
         # For slow steps, provide more detailed progress tracking
         if script_basename == "2_setup.py":
             logger.info(f"⏳ Setting up environment and dependencies (timeout: {step_timeout}s). This may take several minutes...")
-            logger.info("   The process will display progress logs while running.")
             # Ensure this gets displayed immediately
             sys.stdout.flush()
         
@@ -615,251 +620,47 @@ def run_pipeline(args: argparse.Namespace):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                bufsize=1  # Line buffered
+                errors='replace' # More robust than bufsize=1
             )
             
-            # Prepare to capture output
-            stdout_lines = []
-            stderr_lines = []
-            
-            # Helper to process a stream and log if needed
-            def process_stream_line(line, is_stderr, record_to, log_level=None):
-                line = line.rstrip('\n')
-                if line:
-                    record_to.append(line)
-                    
-                    # Only log to console if we should show this level of detail
-                    should_log_to_console = True
-                    
-                    # Filter out low-level messages for console output
-                    # For stdout, we only want to show if the user requested verbose
-                    # For stderr, filter in non-verbose mode to only show errors/warnings
-                    if not args.verbose:
-                        if not is_stderr:
-                            # In non-verbose mode, don't show stdout at all
-                            should_log_to_console = False
-                        else:
-                            # For stderr in non-verbose mode, only show ERROR/WARNING/CRITICAL lines
-                            if not any(x in line for x in ["ERROR", "WARNING", "CRITICAL", "FATAL"]):
-                                should_log_to_console = False
-                    
-                    # For setup.py, we want to show important messages regardless of verbose mode
-                    if script_basename == "2_setup.py":
-                        # Important progress indicators
-                        if any(x in line for x in ["Installing", "✅", "Collecting", "Successfully", "pip upgraded"]):
-                            should_log_to_console = True
-                    
-                    if should_log_to_console and log_level is not None:
-                        logger.log(log_level, f"    [{'STDERR' if is_stderr else 'STDOUT'}] {line}")
-                        # Ensure setup.py output is immediately visible
-                        if script_basename == "2_setup.py":
-                            sys.stdout.flush()
-            
-            # Track last update time for progress reporting
-            last_output_time = time.time()
-            last_progress_report = time.time()
-            has_reported_progress = False
-            
-            # Process stdout and stderr streams in real-time
-            while True:
-                # Check for timeout - but only after allowing some startup time
-                current_time = time.time()
-                elapsed_time = current_time - start_time
-                if elapsed_time > step_timeout:
-                    logger.warning(f"⚠️ {step_header} has been running for {elapsed_time:.1f} seconds, exceeding timeout of {step_timeout} seconds.")
-                    logger.warning(f"   Terminating process...")
-                    process.terminate()
-                    time.sleep(0.5)  # Give it a chance to terminate gracefully
-                    if process.poll() is None:
-                        process.kill()  # Force kill if still running
-                    raise subprocess.TimeoutExpired(cmd, step_timeout)
+            # Use communicate() to safely read all output and wait for process completion.
+            # This is the most robust way to avoid deadlocks from full pipe buffers.
+            # A timeout is passed to communicate() to prevent indefinite hangs.
+            try:
+                stdout_str, stderr_str = process.communicate(timeout=step_timeout)
+            except subprocess.TimeoutExpired as e:
+                logger.warning(f"⚠️ {step_header} timed out after {step_timeout} seconds. Terminating process...")
+                process.terminate()
+                # Attempt to get any final output after terminating. Communicate again with no timeout.
+                final_stdout, final_stderr = process.communicate()
                 
-                # For long-running processes, display progress indicators
-                if script_basename == "2_setup.py" and current_time - last_progress_report > 30:
-                    if process.poll() is None:  # Still running
-                        logger.info(f"   ⏳ {script_basename} still running ({elapsed_time:.1f}s)... Please wait.")
-                        last_progress_report = current_time
-                        has_reported_progress = True
-                # For setup.py, provide even more reassurance with specific task messages
-                elif script_basename == "2_setup.py" and current_time - last_progress_report > 30:
-                    # Rotate through different messages to make it clear the process is still running
-                    messages = [
-                        "Setting up virtual environment and dependencies...",
-                        "Installing Python packages (this may take a while)...",
-                        "Resolving dependency conflicts...",
-                        "Building wheels for dependencies...",
-                        "Processing Python packages...",
-                        "Dependency installation ongoing..."
-                    ]
-                    message_index = int((current_time - start_time) / 30) % len(messages)
-                    logger.info(f"   ⏳ {messages[message_index]} (elapsed: {elapsed_time:.1f}s)")
-                    last_progress_report = current_time
-                    has_reported_progress = True
-                
-                # Check for stdout data with timeout
-                stdout_ready = process.stdout.readable()
-                if stdout_ready:
-                    stdout_line = process.stdout.readline()
-                    if stdout_line:
-                        # Use the same filtering logic as above
-                        should_log = True
-                        if not args.verbose:
-                            # Default is to show important outputs
-                            should_log = True
-                            
-                            # Filter out specific patterns that are too verbose
-                            if "Content snippet for" in stdout_line or "where StateSpaceBlock was not found" in stdout_line:
-                                should_log = False
-                            elif "Content snippet for" in stdout_line or "where Connections was not found" in stdout_line:
-                                should_log = False
-                            # Filter additional verbose debug messages from setup
-                            elif "Reading metadata" in stdout_line or "removing temporary" in stdout_line:
-                                should_log = False
-                            elif "Building wheel" in stdout_line or "Created wheel" in stdout_line:
-                                should_log = False
-                            # Show high-importance setup messages regardless of verbose mode
-                            elif script_basename == "2_setup.py" and any(x in stdout_line for x in ["Installing", "Still installing", "✅", "Stage", "took", "elapsed", "🎉"]):
-                                should_log = True
-                        
-                        # Process the line based on our should_log decision
-                        if should_log:
-                            logger.info(f"    [STDOUT] {stdout_line.strip()}")
-                        elif args.verbose:
-                            logger.debug(f"    [STDOUT] {stdout_line.strip()}")
-                        
-                        # Always record the line in our captured output, even if not logged to console
-                        stdout_lines.append(stdout_line.strip())
-                        last_output_time = time.time()
+                # Combine original output (if any) with final output
+                stdout_from_timeout = e.stdout.decode(errors='replace') if e.stdout else ""
+                stderr_from_timeout = e.stderr.decode(errors='replace') if e.stderr else ""
 
-                # Check for stderr data with timeout
-                stderr_ready = process.stderr.readable()
-                if stderr_ready:
-                    stderr_line = process.stderr.readline()
-                    if stderr_line:
-                        # Use the same filtering logic as above
-                        should_log_error = True
-                        if "warn(" in stderr_line and "DeprecationWarning" in stderr_line:
-                            should_log_error = False
-                        elif "pyproject.toml" in stderr_line and "does not comply" in stderr_line:
-                            should_log_error = False
-                        # If it's a setup.py step and contains an error, always show it
-                        elif script_basename == "2_setup.py" and any(x in stderr_line for x in ["ERROR", "Failed", "❌"]):
-                            should_log_error = True
-                            
-                        if should_log_error:
-                            logger.warning(f"    [STDERR] {stderr_line.strip()}")
-                        elif args.verbose:
-                            logger.debug(f"    [STDERR] {stderr_line.strip()}")
-                        
-                        stderr_lines.append(stderr_line.strip())
-                        last_output_time = time.time()
+                stdout_str = stdout_from_timeout + final_stdout
+                stderr_str = stderr_from_timeout + final_stderr
                 
-                # If process has completed and no more data in pipes, break
-                if process.poll() is not None:
-                    # One last check for any remaining output
-                    while process.stdout.readable():
-                        stdout_line = process.stdout.readline()
-                        if not stdout_line:
-                            break
-                        
-                        # Use the same filtering logic as above
-                        should_log = True
-                        if not args.verbose:
-                            # Default is to show important outputs
-                            should_log = True
-                            
-                            # Filter out specific patterns that are too verbose
-                            if "Content snippet for" in stdout_line or "where StateSpaceBlock was not found" in stdout_line:
-                                should_log = False
-                            elif "Content snippet for" in stdout_line or "where Connections was not found" in stdout_line:
-                                should_log = False
-                            # Filter additional verbose debug messages from setup
-                            elif "Reading metadata" in stdout_line or "removing temporary" in stdout_line:
-                                should_log = False
-                            elif "Building wheel" in stdout_line or "Created wheel" in stdout_line:
-                                should_log = False
-                            # Show high-importance setup messages regardless of verbose mode
-                            elif script_basename == "2_setup.py" and any(x in stdout_line for x in ["Installing", "Still installing", "✅", "Stage", "took", "elapsed", "🎉"]):
-                                should_log = True
-                        
-                        # Process the line based on our should_log decision
-                        if should_log:
-                            logger.info(f"    [STDOUT] {stdout_line.strip()}")
-                        elif args.verbose:
-                            logger.debug(f"    [STDOUT] {stdout_line.strip()}")
-                        
-                        # Always record the line in our captured output, even if not logged to console
-                        stdout_lines.append(stdout_line.strip())
-                    
-                    while process.stderr.readable():
-                        stderr_line = process.stderr.readline()
-                        if not stderr_line:
-                            break
-                        
-                        # Use the same filtering logic as above
-                        should_log_error = True
-                        if "warn(" in stderr_line and "DeprecationWarning" in stderr_line:
-                            should_log_error = False
-                        elif "pyproject.toml" in stderr_line and "does not comply" in stderr_line:
-                            should_log_error = False
-                        # If it's a setup.py step and contains an error, always show it
-                        elif script_basename == "2_setup.py" and any(x in stderr_line for x in ["ERROR", "Failed", "❌"]):
-                            should_log_error = True
-                            
-                        if should_log_error:
-                            logger.warning(f"    [STDERR] {stderr_line.strip()}")
-                        elif args.verbose:
-                            logger.debug(f"    [STDERR] {stderr_line.strip()}")
-                        
-                        stderr_lines.append(stderr_line.strip())
-                    
-                    break
-                
-                # If no output for more than 15 seconds but process is still running,
-                # provide more frequent reassurance messages for long-running steps
-                if (current_time - last_output_time > 15 and 
-                    current_time - last_progress_report > 15 and
-                    script_basename == "2_setup.py"):
-                    logger.info(f"   ⏳ {script_basename} still running ({elapsed_time:.1f}s) but no recent output. Please wait...")
-                    last_progress_report = current_time
-                    has_reported_progress = True
-                    sys.stdout.flush()  # Ensure progress is immediately visible
-                # For setup.py, provide even more reassurance with specific task messages
-                elif script_basename == "2_setup.py" and current_time - last_progress_report > 30:
-                    # Rotate through different messages to make it clear the process is still running
-                    messages = [
-                        "Setting up virtual environment and dependencies...",
-                        "Installing Python packages (this may take a while)...",
-                        "Resolving dependency conflicts...",
-                        "Building wheels for dependencies...",
-                        "Processing Python packages...",
-                        "Dependency installation ongoing..."
-                    ]
-                    message_index = int((current_time - start_time) / 30) % len(messages)
-                    logger.info(f"   ⏳ {messages[message_index]} (elapsed: {elapsed_time:.1f}s)")
-                    last_progress_report = current_time
-                    has_reported_progress = True
-                    sys.stdout.flush()  # Ensure progress is immediately visible
-                
-                # Small sleep to avoid CPU spinning
-                time.sleep(0.1)
-            
-            # Capture any remaining output - this should be handled by the loop above
-            # but this is a fallback just in case
-            remaining_stdout, remaining_stderr = process.communicate()
-            if remaining_stdout:
-                for line in remaining_stdout.splitlines():
-                    process_stream_line(line, False, stdout_lines, 
-                                        logging.DEBUG if args.verbose else None)
-            
-            if remaining_stderr:
-                for line in remaining_stderr.splitlines():
-                    process_stream_line(line, True, stderr_lines, 
-                                        logging.WARNING)
+                # Re-raise a new exception that includes all captured output, so it's logged by the outer block
+                raise subprocess.TimeoutExpired(cmd, step_timeout, output=stdout_str, stderr=stderr_str)
+
+            # Log captured output after the process finishes
+            if stdout_str and args.verbose:
+                logger.debug(f"--- Output from {script_basename} (stdout) ---")
+                for line in stdout_str.strip().split('\n'):
+                    logger.debug(f"    [STDOUT] {line}")
+                logger.debug(f"--- End of {script_basename} output ---")
+
+            if stderr_str:
+                # Log stderr as warning, as it often contains non-fatal warnings
+                logger.warning(f"--- Output from {script_basename} (stderr) ---")
+                for line in stderr_str.strip().split('\n'):
+                    logger.warning(f"    [STDERR] {line}")
+                logger.warning(f"--- End of {script_basename} output ---")
             
             # Update the log data with captured output
-            step_log_data["stdout"] = "\n".join(stdout_lines)
-            step_log_data["stderr"] = "\n".join(stderr_lines)
+            step_log_data["stdout"] = stdout_str
+            step_log_data["stderr"] = stderr_str
             
             # Get the return code
             return_code = process.returncode
@@ -868,39 +669,18 @@ def run_pipeline(args: argparse.Namespace):
             
             if return_code == 0:
                 step_log_data["status"] = "SUCCESS"
-                if has_reported_progress:
-                    logger.info(f"✅ {step_header} - COMPLETED successfully in {duration:.1f} seconds.")
-                else:
-                    logger.info(f"✅ {step_header} - COMPLETED successfully.")
+                logger.info(f"✅ {step_header} - COMPLETED successfully in {duration:.1f} seconds.")
                 logger.info("") # Add spacing after step completion
                 
-                # For non-verbose successful runs, if there's any output, log a summary.
-                # For verbose runs, stdout is already streamed at DEBUG.
-                if not args.verbose and stdout_lines:
-                    # Only log the first 2 lines of stdout summary, and only at DEBUG level
-                    summary = stdout_lines[:2]
-                    if len(stdout_lines) > 2:
-                        summary.append(f"... ({len(stdout_lines)-2} more lines, see log file)")
-                    logger.debug(f"   [{script_name_no_ext}-STDOUT] {' | '.join(summary)}")
-                
                 # If a successful step wrote to stderr, log it at WARNING for visibility
-                if stderr_lines:
-                    # Only show serious stderr messages in console for successful steps
-                    # (This is important for keeping console output clean)
-                    error_messages = [line for line in stderr_lines if 
-                                     "ERROR" in line or "CRITICAL" in line or 
-                                     "FATAL" in line or "WARN" in line]
-                    
-                    if error_messages:
-                        logger.warning(f"   [{script_name_no_ext}] Step completed successfully but had {len(error_messages)} error/warning messages in stderr")
-                        for err_msg in error_messages[:3]:  # Show only first 3 errors
-                            logger.warning(f"   [{script_name_no_ext}-STDERR] {err_msg}")
-                        if len(error_messages) > 3:
-                            logger.warning(f"   [{script_name_no_ext}-STDERR] ... ({len(error_messages)-3} more errors/warnings, see log file)")
+                if stderr_str:
+                    logger.warning(f"   -> Note: {script_basename} completed successfully but wrote to stderr (see details above or in logs).")
+
             else:
                 step_log_data["status"] = "FAILED_NONZERO_EXIT"
                 step_log_data["details"] = f"Process exited with code {return_code}"
                 logger.error(f"❌ {step_header} - FAILED with exit code {return_code} after {duration:.1f} seconds.")
+                # The full stdout/stderr has already been logged above
                 logger.info("") # Add spacing after step completion
                 overall_status = "FAILED"
                 if is_critical_step:
@@ -909,11 +689,16 @@ def run_pipeline(args: argparse.Namespace):
                     _pipeline_run_data_dict["steps"].append(step_log_data)
                     break
         
-        except subprocess.TimeoutExpired:
+        except subprocess.TimeoutExpired as e:
             end_time = time.time()
             duration = end_time - start_time
             step_log_data["status"] = "FAILED_TIMEOUT"
             step_log_data["details"] = f"Process timed out after {duration:.1f} seconds (limit: {step_timeout}s)"
+            # Capture any output that was available in the exception object
+            if e.stdout:
+                step_log_data["stdout"] = e.stdout if isinstance(e.stdout, str) else e.stdout.decode(errors='replace')
+            if e.stderr:
+                step_log_data["stderr"] = e.stderr if isinstance(e.stderr, str) else e.stderr.decode(errors='replace')
             logger.error(f"❌ {step_header} - FAILED due to timeout after {duration:.1f} seconds.")
             logger.info("") # Add spacing after step completion
             overall_status = "FAILED"

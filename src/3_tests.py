@@ -19,6 +19,8 @@ import subprocess
 from pathlib import Path
 import logging # Import logging
 import argparse # Added
+import threading
+import time
 
 # Attempt to import the new logging utility
 try:
@@ -51,7 +53,7 @@ logger = logging.getLogger(__name__)
 # --- End Logger Setup ---
 
 def run_tests(tests_dir: Path, output_dir: Path, verbose: bool = False) -> int:
-    """Run tests using pytest and generate a JUnit XML report.
+    """Run tests using pytest, stream output, and generate a JUnit XML report.
     Returns:
         0 if tests pass or no tests found (or tests_dir missing - considered warning).
         1 if tests fail or pytest cannot be run.
@@ -89,57 +91,41 @@ def run_tests(tests_dir: Path, output_dir: Path, verbose: bool = False) -> int:
         run_cwd = Path(__file__).resolve().parent.parent # Should be project_root / src
         logger.debug(f"  📂 Running tests with CWD: {run_cwd}")
 
-        # PYTHONPATH should be set by main.py for this script's environment.
-        # sys.executable -m pytest will run within that environment.
-        env = os.environ.copy() # Inherit environment from main.py
+        env = os.environ.copy()
 
-        # Add timeout to prevent hanging
-        try:
-            result = subprocess.run(
-                pytest_command, 
-                capture_output=True, 
-                text=True, 
-                check=False, 
-                cwd=run_cwd, 
-                env=env, 
-                errors='replace',
-                timeout=120  # 2-minute timeout
-            )
-            timeout_occurred = False
-        except subprocess.TimeoutExpired:
-            logger.warning("⚠️ Test execution timed out after 120 seconds.")
-            timeout_occurred = True
-            # Create a minimal report to indicate timeout
-            with open(report_xml_path, 'w') as f:
-                f.write('<?xml version="1.0" encoding="utf-8"?>\n')
-                f.write('<testsuites>\n')
-                f.write('  <testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1">\n')
-                f.write('    <testcase classname="timeout" name="test_suite_timeout">\n')
-                f.write('      <error message="Test execution timed out after 120 seconds">Test suite execution exceeded timeout limit</error>\n')
-                f.write('    </testcase>\n')
-                f.write('  </testsuite>\n')
-                f.write('</testsuites>\n')
-            
+        # Use Popen to stream output in real-time, preventing deadlocks from full pipe buffers.
+        process = subprocess.Popen(
+            pytest_command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            cwd=run_cwd,
+            env=env,
+            errors='replace'
+        )
+
+        def log_stream(stream, log_func):
+            if stream:
+                for line in iter(stream.readline, ''):
+                    log_func(f"[pytest] {line.strip()}")
+                stream.close()
+
+        # Use threads to log stdout and stderr concurrently
+        stdout_thread = threading.Thread(target=log_stream, args=(process.stdout, logger.info))
+        stderr_thread = threading.Thread(target=log_stream, args=(process.stderr, logger.error))
+        
+        stdout_thread.start()
+        stderr_thread.start()
+
+        stdout_thread.join()
+        stderr_thread.join()
+
+        process.wait()
+        returncode = process.returncode
+
         # Always log where the report is, even if tests fail, as it might contain info
-        logger.info(f"ℹ️ JUnit XML test report will be at: {report_xml_path}")
-
-        if timeout_occurred:
-            logger.error("❌ Tests timed out. Continuing with pipeline.")
-            return 1  # Timeout is treated as a failure but pipeline continues
-        elif result.returncode != 0:
-            logger.error("--- Test Output (stdout) ---")
-            logger.error(result.stdout.strip() if result.stdout else "<No stdout>")
-            logger.error("--- Test Errors (stderr) ---")
-            logger.error(result.stderr.strip() if result.stderr else "<No stderr>")
-            logger.error("-------------------------")
-        elif verbose:
-            logger.debug("--- Test Output (stdout) ---")
-            logger.debug(result.stdout.strip() if result.stdout else "<No stdout>")
-            if result.stderr.strip(): # Only log stderr if it has content
-                logger.debug("--- Test Errors (stderr) ---")
-                logger.debug(result.stderr.strip())
-            logger.debug("-------------------------")
-
+        logger.info(f"ℹ️ JUnit XML test report is at: {report_xml_path}")
+        
         # Pytest exit codes:
         # 0: all tests passed
         # 1: tests were collected and run but some failed
@@ -148,14 +134,14 @@ def run_tests(tests_dir: Path, output_dir: Path, verbose: bool = False) -> int:
         # 4: pytest command line usage error
         # 5: no tests were collected
 
-        if result.returncode == 0:
+        if returncode == 0:
             logger.info("✅ All tests passed.")
             return 0
-        elif result.returncode == 5:
+        elif returncode == 5:
             logger.warning("⚠️ No tests were collected by pytest. Ensure tests exist and are discoverable.")
             return 2 # Treat as warning, not a hard failure of the test runner
         else:
-            logger.error(f"❌ Some tests failed or pytest reported an error. Pytest exit code: {result.returncode}")
+            logger.error(f"❌ Some tests failed or pytest reported an error. Pytest exit code: {returncode}")
             logger.warning("⚠️ Continuing with pipeline despite test failures.")
             return 1 # Test failures or pytest error
             

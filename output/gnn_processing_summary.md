@@ -1,6 +1,6 @@
 # 📊 GNN Processing Summary
 
-🗓️ Generated: 2025-06-06 13:10:58
+🗓️ Generated: 2025-06-06 13:41:27
 
 ## ⚙️ Processing Configuration
 
@@ -24,10 +24,11 @@ Pipeline execution data not available.
 - **Exports**: 9 files in `gnn_exports/`
 - **Visualizations**: 0 files in `gnn_examples_visualization/`
 - **Rendered Simulators**: 0 files in `gnn_rendered_simulators/`
-- **Test Reports**: 0 files in `test_reports/`
+- **Test Reports**: 1 files in `test_reports/`
 
 ## 🔍 Key Findings
 
+- **Test Results**: 52/80 tests passed (28 failures, 0 errors)
 
 ## 📋 Recommendations
 
