@@ -2,37 +2,40 @@
 
 Welcome to the comprehensive documentation for Generalized Notation Notation (GNN), a standardized text-based language for expressing Active Inference generative models.
 
+> **Important**: For setup and installation instructions, please refer to the [GNN Project Setup Guide](SETUP.md).
+
 ## 🚀 Quick Start
 
 New to GNN? Start here:
 
-1. [**What is GNN?**](about_gnn.md) - Overview and motivation
-2. [**Your First GNN Model**](gnn_examples_doc.md#example-1-static-perception-model) - Simple example walkthrough
-3. [**Basic Syntax Guide**](gnn_syntax.md) - Essential notation rules
-4. [**Tools Setup**](gnn_tools.md#installation) - Get GNN tools running
+1. [**What is GNN?**](gnn/about_gnn.md) - Overview and motivation
+2. [**Quickstart Tutorial**](gnn/quickstart_tutorial.md) - Comprehensive getting started guide
+3. [**Your First GNN Model**](gnn/gnn_examples_doc.md#example-1-static-perception-model) - Simple example walkthrough
+4. [**Basic Syntax Guide**](gnn/gnn_syntax.md) - Essential notation rules
+5. [**Tools Setup**](gnn/gnn_tools.md#installation) - Get GNN tools running
 
 ## 📚 Documentation Structure
 
 ### For Beginners
-- [GNN Overview](gnn_overview.md) - High-level concepts and ecosystem
-- [About GNN](about_gnn.md) - Motivation, goals, and "triple play" approach
-- [Basic Examples](gnn_examples_doc.md) - Step-by-step model development
+- [GNN Overview](gnn/gnn_overview.md) - High-level concepts and ecosystem
+- [About GNN](gnn/about_gnn.md) - Motivation, goals, and "triple play" approach
+- [Basic Examples](gnn/gnn_examples_doc.md) - Step-by-step model development
 
 ### For Practitioners
-- [GNN Syntax Reference](gnn_syntax.md) - Complete notation specification
-- [File Structure Guide](gnn_file_structure_doc.md) - How to organize GNN files
-- [Implementation Guide](gnn_implementation.md) - Best practices for creating models
-- [Tools and Resources](gnn_tools.md) - Available software and utilities
+- [GNN Syntax Reference](gnn/gnn_syntax.md) - Complete notation specification
+- [File Structure Guide](gnn/gnn_file_structure_doc.md) - How to organize GNN files
+- [Implementation Guide](gnn/gnn_implementation.md) - Best practices for creating models
+- [Tools and Resources](gnn/gnn_tools.md) - Available software and utilities
 
 ### For Developers
 - [Integration Guides](#framework-integrations) - Framework-specific documentation
 - [Advanced Topics](#advanced-topics) - Complex modeling patterns
-- [Tool Development](gnn_dsl_manual.md) - Creating GNN-compatible tools
+- [Tool Development](gnn/gnn_dsl_manual.md) - Creating GNN-compatible tools
 
 ### For Researchers
-- [Academic Paper](gnn_paper.md) - Formal specification and theory
-- [Multiagent Systems](gnn_multiagent.md) - Multi-agent modeling approaches
-- [LLM Integration](gnn_llm_neurosymbolic_active_inference.md) - AI-assisted modeling
+- [Academic Paper](gnn/gnn_paper.md) - Formal specification and theory
+- [Multiagent Systems](gnn/gnn_multiagent.md) - Multi-agent modeling approaches
+- [LLM Integration](gnn/gnn_llm_neurosymbolic_active_inference.md) - AI-assisted modeling
 
 ## 🔧 Framework Integrations
 
@@ -64,19 +67,20 @@ Explore increasingly complex GNN models:
 
 ## 🎯 Advanced Topics
 
-- [Ontology System](ontology_system.md) - Active Inference Ontology integration
-- [Resource Metrics](resource_metrics.md) - Computational resource estimation
+- [Advanced Modeling Patterns](gnn/advanced_modeling_patterns.md) - Sophisticated modeling techniques
+- [Ontology System](gnn/ontology_system.md) - Active Inference Ontology integration
+- [Resource Metrics](gnn/resource_metrics.md) - Computational resource estimation
 - [GNN Kit](kit/gnn_kit.md) - Comprehensive toolkit documentation
 - [Cerebrum Integration](cerebrum/gnn_cerebrum.md) - Advanced cognitive architectures
 
 ## 🔍 Quick Reference
 
 ### Common Tasks
-- **Creating your first model**: Start with [Static Perception Example](gnn_examples_doc.md#example-1-static-perception-model)
-- **Understanding syntax**: Check [GNN Syntax Reference](gnn_syntax.md)
-- **Validating models**: Use [Type Checker Guide](gnn_tools.md#validation-tools)
-- **Converting to code**: See [Rendering Documentation](gnn_tools.md#conversion-tools)
-- **Visualizing models**: Follow [Visualization Guide](gnn_tools.md#visualization-tools)
+- **Creating your first model**: Start with [Static Perception Example](gnn/gnn_examples_doc.md#example-1-static-perception-model)
+- **Understanding syntax**: Check [GNN Syntax Reference](gnn/gnn_syntax.md)
+- **Validating models**: Use [Type Checker Guide](gnn/gnn_tools.md#validation-tools)
+- **Converting to code**: See [Rendering Documentation](gnn/gnn_tools.md#conversion-tools)
+- **Visualizing models**: Follow [Visualization Guide](gnn/gnn_tools.md#visualization-tools)
 
 ### File Templates
 - [Basic GNN Template](templates/basic_gnn_template.md) *(to be created)*
@@ -105,5 +109,5 @@ We welcome contributions! See our [Documentation Style Guide](contributing/docum
 
 ---
 
-**Last Updated**: [Current Date]  
+**Last Updated**: 2023-11-15  
 **Documentation Version**: Compatible with GNN v1.x 

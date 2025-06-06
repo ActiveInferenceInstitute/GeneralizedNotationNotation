@@ -2,6 +2,8 @@
 
 This document provides comprehensive instructions for setting up the GNN Processing Pipeline environment, including installation steps, environment variables, and detailed information about dependencies.
 
+> **Note**: For comprehensive documentation on GNN itself, please refer to the [GNN Documentation](gnn/about_gnn.md) in the `doc/gnn/` directory.
+
 ## Quick Start
 
 ```bash
