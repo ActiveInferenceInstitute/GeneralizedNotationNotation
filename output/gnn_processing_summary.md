@@ -1,15 +1,10 @@
 # 📊 GNN Processing Summary
 
-🗓️ Generated: 2025-06-06 12:57:22
+🗓️ Generated: 2025-06-06 13:08:09
 
 ## ⚙️ Processing Configuration
 
-- **Target Directory**: `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples`
-- **Output Directory**: `/home/trim/Documents/GitHub/GeneralizedNotationNotation/output`
-- **Recursive Processing**: True
-- **Verbose Mode**: True
-- **Strict Mode**: False
-- **Resource Estimation**: True
+- Configuration details not available
 
 ## 📁 GNN Files Discovered
 
@@ -20,40 +15,19 @@ Found **2** GNN files for processing:
 
 ## 🔄 Pipeline Execution Status
 
-**Overall Status**: 10/13 steps completed successfully
-
-**Total Execution Time**: 88.80 seconds
-
-### Step-by-Step Results
-
-| Step | Script | Status | Duration (s) | Details |
-|------|--------|--------|--------------|----------|
-| 1 | `1_gnn.py` | ✅ SUCCESS | 0.135 |  |
-| 2 | `2_setup.py` | ✅ SUCCESS | 2.811 |  |
-| 4 | `4_gnn_type_checker.py` | ✅ SUCCESS | 1.885 |  |
-| 5 | `5_export.py` | ✅ SUCCESS | 0.193 |  |
-| 6 | `6_visualization.py` | ✅ SUCCESS | 16.377 |  |
-| 7 | `7_mcp.py` | ✅ SUCCESS | 1.737 |  |
-| 8 | `8_ontology.py` | ✅ SUCCESS | 0.055 |  |
-| 9 | `9_render.py` | ✅ SUCCESS | 1.357 |  |
-| 10 | `10_execute.py` | ✅ SUCCESS | 0.143 |  |
-| 11 | `11_llm.py` | ⚠️ FAILED_TIMEOUT | 62.067 | Process timed out after 62.1 seconds (limit: 60s) |
-| 12 | `12_discopy.py` | ⚠️ FAILED_NONZERO_EXIT | 0.965 | Process exited with code 2 |
-| 13 | `13_discopy_jax_eval.py` | ⚠️ FAILED_NONZERO_EXIT | 0.895 | Process exited with code 2 |
-| 15 | `15_site.py` | ✅ SUCCESS | 0.178 |  |
+Pipeline execution data not available.
 
 ## 📊 Output Summary
 
 - **GNN Processing**: 1 files in `gnn_processing_step/`
 - **Type Checking**: 11 files in `gnn_type_check/`
 - **Exports**: 9 files in `gnn_exports/`
-- **Visualizations**: 52 files in `gnn_examples_visualization/`
+- **Visualizations**: 0 files in `gnn_examples_visualization/`
 - **Rendered Simulators**: 0 files in `gnn_rendered_simulators/`
-- **Test Reports**: 1 files in `test_reports/`
+- **Test Reports**: 0 files in `test_reports/`
 
 ## 🔍 Key Findings
 
-- **Test Results**: 52/80 tests passed (28 failures, 0 errors)
 
 ## 📋 Recommendations
 

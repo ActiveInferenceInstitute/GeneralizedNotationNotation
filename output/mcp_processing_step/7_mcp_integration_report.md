@@ -1,6 +1,6 @@
 # 🤖 MCP Integration and API Report
 
-🗓️ Report Generated: 2025-06-06 12:57:41
+🗓️ Report Generated: 2025-06-06 13:08:27
 
 **MCP Core Directory:** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/mcp`
 **Project Source Root (for modules):** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src`
@@ -207,6 +207,34 @@ This section lists all tools currently registered with the MCP system, along wit
             "description": "Set to true to search recursively. Defaults to false.",
             "optional": true
         }
+    }
+    ```
+- **Tool:** `generate_pipeline_summary_site`
+  - **Defined in Module:** `src.site.mcp`
+  - **Arguments (from signature):** `(output_dir, site_output_filename, verbose)`
+  - **Description:** "Generates a single HTML website summarizing all contents of the GNN pipeline output directory."
+  - **Schema:**
+    ```json
+    {
+        "type": "object",
+        "properties": {
+            "output_dir": {
+                "type": "string",
+                "description": "The main pipeline output directory to scan for results."
+            },
+            "site_output_filename": {
+                "type": "string",
+                "description": "The filename for the output HTML report (e.g., 'summary.html')."
+            },
+            "verbose": {
+                "type": "boolean",
+                "description": "Enable verbose logging for the generator."
+            }
+        },
+        "required": [
+            "output_dir",
+            "site_output_filename"
+        ]
     }
     ```
 - **Tool:** `get_gnn_documentation`

@@ -2,11 +2,9 @@
 
 **Model Name:** Multifactor PyMDP Agent v1
 
-**Purpose:**  
-This model represents a PyMDP (Partially Observable Markov Decision Process) agent designed for active inference with multiple observation modalities and hidden state factors. It aims to facilitate decision-making processes by integrating observations and hidden states to optimize actions based on expected free energy.
+**Purpose:** This model represents a PyMDP (Partially Observable Markov Decision Process) agent that utilizes multiple observation modalities and hidden state factors to facilitate decision-making through active inference. It is designed to capture complex interactions between observations, hidden states, and actions, making it suitable for scenarios where agents must infer their states based on varied inputs.
 
 **Key Components:**
-
 1. **Observation Modalities:**
    - **State Observation:** 3 outcomes
    - **Reward:** 3 outcomes
@@ -16,12 +14,12 @@ This model represents a PyMDP (Partially Observable Markov Decision Process) age
    - **Reward Level:** 2 states
    - **Decision State:** 3 states
 
-3. **Control:**
+3. **Control Mechanism:**
    - The **decision_state** factor is controllable with 3 possible actions.
 
 **Main Connections:**
-- The model connects hidden states (`s_f0`, `s_f1`) to likelihood matrices (`A_m0`, `A_m1`, `A_m2`), which in turn connect to the observations (`o_m0`, `o_m1`, `o_m2`).
-- The hidden states and the action taken (`u_f1`) influence the transition matrices (`B_f0`, `B_f1`), which determine the next hidden states (`s_prime_f0`, `s_prime_f1`).
-- Preferences for observations (`C_m0`, `C_m1`, `C_m2`) contribute to the computation of the expected free energy (`G`), which is used to infer policies (`π_f1`) and actions.
+- **Hidden States to Observations:** The model connects hidden states (s_f0 and s_f1) to the likelihood matrices (A_m0, A_m1, A_m2) that determine the observations.
+- **Actions and State Transitions:** The action taken (u_f1) influences the state transitions (B_f1) specifically for the controllable factor, while another factor (B_f0) remains uncontrolled.
+- **Free Energy and Policy:** The expected free energy (G) is influenced by the preferences (C_m0, C_m1, C_m2) for each modality and directly impacts the policy distribution (π_f1) for the controllable factor.
 
-This model is structured to enable the agent to infer states, determine optimal policies, and sample actions dynamically, reflecting its adaptability and decision-making capabilities in uncertain environments.
+Overall, this GNN model integrates observations from different modalities, manages transitions between hidden states, and utilizes a policy for decision-making, making it a robust framework for active inference in complex environments.
