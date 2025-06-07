@@ -109,6 +109,47 @@ PIPELINE_STEP_CONFIGURATION: Dict[str, bool] = {
 }
 # --- End Default Pipeline Step Configuration ---
 
+# --- Argument Passing Configuration ---
+# Map main script arg 'dest' to its command line flag and type
+# type can be: 'value', 'store_true', 'bool_optional'
+ARG_PROPERTIES = {
+    'target_dir': {'flag': '--target-dir', 'type': 'value'},
+    'output_dir': {'flag': '--output-dir', 'type': 'value'},
+    'recursive': {'flag': '--recursive', 'type': 'bool_optional'},
+    'verbose': {'flag': '--verbose', 'type': 'bool_optional'},
+    'strict': {'flag': '--strict', 'type': 'store_true'},
+    'estimate_resources': {'flag': '--estimate-resources', 'type': 'bool_optional'},
+    'ontology_terms_file': {'flag': '--ontology-terms-file', 'type': 'value'},
+    'llm_tasks': {'flag': '--llm-tasks', 'type': 'value'},
+    'llm_timeout': {'flag': '--llm-timeout', 'type': 'value'},
+    'site_html_filename': {'flag': '--site-html-filename', 'type': 'value'},
+    'discopy_gnn_input_dir': {'flag': '--discopy-gnn-input-dir', 'type': 'value'},
+    'discopy_jax_gnn_input_dir': {'flag': '--discopy-jax-gnn-input-dir', 'type': 'value'},
+    'discopy_jax_seed': {'flag': '--discopy-jax-seed', 'type': 'value'},
+    'recreate_venv': {'flag': '--recreate-venv', 'type': 'store_true'},
+    'dev': {'flag': '--dev', 'type': 'store_true'},
+}
+
+# Define which script supports which argument from `ARG_PROPERTIES` keys
+# This defines the complete set of arguments passed to each script.
+SCRIPT_ARG_SUPPORT = {
+    "1_gnn.py": ["target_dir", "output_dir", "recursive", "verbose"],
+    "2_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
+    "3_tests.py": ["target_dir", "output_dir", "verbose"],
+    "4_gnn_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
+    "5_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
+    "6_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
+    "7_mcp.py": ["target_dir", "output_dir", "verbose"],
+    "8_ontology.py": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
+    "9_render.py": ["output_dir", "recursive", "verbose"],
+    "10_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],
+    "11_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
+    "12_discopy.py": ["target_dir", "output_dir", "verbose", "discopy_gnn_input_dir"],
+    "13_discopy_jax_eval.py": ["target_dir", "output_dir", "verbose", "discopy_jax_gnn_input_dir", "discopy_jax_seed"],
+    "14_site.py": ["target_dir", "output_dir", "verbose", "site_html_filename"],
+}
+# --- End Argument Passing Configuration ---
+
 # Define types for pipeline summary data
 class StepLogData(TypedDict):
     step_number: int
@@ -195,8 +236,8 @@ def parse_arguments():
     parser.add_argument(
         "--llm-timeout",
         type=int,
-        default=60, # Default to 1 minute for the entire LLM script
-        help="Timeout in seconds for the LLM processing step (11_llm.py). Default: 60"
+        default=120, # Default to 2 minutes for the entire LLM script
+        help="Timeout in seconds for the LLM processing step (11_llm.py). Default: 120"
     )
     parser.add_argument(
         "--pipeline-summary-file",
@@ -404,13 +445,6 @@ def run_pipeline(args: argparse.Namespace):
     python_to_use = venv_python or venv_python_no_activation or "python"
     logger.debug(f"🐍 Selected Python for subprocess calls: {python_to_use}")
     
-    # Refactored argument building logic
-    (
-        step_specific_args, 
-        script_supports_arg, 
-        negatable_args
-    ) = _build_script_arguments(args)
-
     # Execute each script
     overall_status = "SUCCESS"
     
@@ -435,7 +469,10 @@ def run_pipeline(args: argparse.Namespace):
         # Set longer timeout for setup steps (20 minutes) and standard timeout for others (5 minutes)
         # Setup step timeout increased from 10 to 20 minutes to account for slower connections/machines
         # Test step timeout increased to 5 minutes to allow for longer test runs
-        if script_basename == "2_setup.py":
+        # LLM timeout is now configurable via command line argument
+        if script_basename == "11_llm.py":
+            step_timeout = args.llm_timeout
+        elif script_basename == "2_setup.py":
             step_timeout = 1200 # 20 minutes
         elif script_basename == "3_tests.py":
             step_timeout = 300 # 5 minutes
@@ -460,30 +497,50 @@ def run_pipeline(args: argparse.Namespace):
         
         # Build the command with script-specific args
         full_args = []
-
-        # Add common arguments that are supported
-        if script_supports_arg(script_basename, "output-dir") and args.output_dir:
-            full_args.extend(["--output-dir", str(args.output_dir)])
+        supported_args = SCRIPT_ARG_SUPPORT.get(script_basename, [])
         
-        if script_supports_arg(script_basename, "verbose"):
-            if args.verbose:
-                full_args.append("--verbose")
-            elif hasattr(args, 'verbose') and args.verbose is False and negatable_args.get("verbose"):
-                full_args.append("--no-verbose")
-        
-        # Add script-specific arguments (which now includes target-dir)
-        if script_basename in step_specific_args:
-            full_args.extend(step_specific_args[script_basename])
+        for arg_key in supported_args:
+            if arg_key not in ARG_PROPERTIES:
+                continue
 
-        # Hotfix for 9_render.py not accepting --target-dir
-        if script_basename == "9_render.py":
-            if "--target-dir" in full_args:
-                try:
-                    idx = full_args.index("--target-dir")
-                    full_args.pop(idx)  # Remove --target-dir
-                    full_args.pop(idx)  # Remove its value
-                except (ValueError, IndexError):
-                    logger.warning(f"Could not cleanly remove --target-dir for {script_basename}. Manual check may be needed.")
+            prop = ARG_PROPERTIES[arg_key]
+            # 'args' is the Namespace object from parse_arguments()
+            if not hasattr(args, arg_key):
+                continue
+            
+            value = getattr(args, arg_key)
+
+            # Special handling for output_dir to route to script-specific subdirectories
+            if arg_key == 'output_dir':
+                output_dir_val = Path(args.output_dir)
+                output_dir_map = {
+                    "4_gnn_type_checker.py": "gnn_type_check",
+                    "5_export.py": "gnn_exports",
+                    "6_visualization.py": "visualization", # Changed as per request
+                    "7_mcp.py": "mcp_processing_step",
+                    "8_ontology.py": "ontology_processing",
+                    "9_render.py": "gnn_rendered_simulators",
+                    "11_llm.py": "llm_processing_step",
+                    "12_discopy.py": "discopy_gnn",
+                    # 14_site.py uses the root output dir, so no entry here
+                }
+                if script_basename in output_dir_map:
+                    output_dir_val = Path(args.output_dir) / output_dir_map[script_basename]
+                
+                full_args.extend([prop['flag'], str(output_dir_val)])
+                continue # Go to next arg
+
+            if prop['type'] == 'store_true':
+                if value:
+                    full_args.append(prop['flag'])
+            elif prop['type'] == 'bool_optional':
+                # For BooleanOptionalAction, value is True/False.
+                # The flag is only added if True.
+                if value is True:
+                    full_args.append(prop['flag'])
+            elif prop['type'] == 'value':
+                if value is not None:
+                    full_args.extend([prop['flag'], str(value)])
 
         # Log the full command for debugging
         cmd = [str(python_to_use), str(script_path)] + full_args
@@ -621,125 +678,6 @@ def run_pipeline(args: argparse.Namespace):
     logger.info(f"🏁 Pipeline processing completed. Overall Status: {overall_status}")
 
     return (0 if overall_status in ["SUCCESS", "SUCCESS_WITH_WARNINGS"] else 1), cast(PipelineRunData, _pipeline_run_data_dict), all_scripts, overall_status
-
-def _build_script_arguments(args: argparse.Namespace):
-    """
-    Builds the dictionary of script-specific arguments based on the main pipeline arguments.
-    This encapsulates the complex argument mapping logic.
-    """
-    script_supported_args = {
-        # Common arguments supported by all scripts
-        "all": ["output-dir", "verbose"],
-        
-        # Script-specific supported arguments 
-        "1_gnn.py": ["recursive", "target-dir"],
-        "4_gnn_type_checker.py": ["strict", "estimate-resources", "recursive", "target-dir"],
-        "5_export.py": ["recursive", "target-dir"],
-        "6_visualization.py": ["recursive", "target-dir"],
-        "7_mcp.py": ["target-dir"],
-        "8_ontology.py": ["ontology-terms-file", "recursive", "target-dir"],
-        "9_render.py": ["recursive"], # Does NOT have "target-dir"
-        "10_execute.py": ["target-dir"],
-        "11_llm.py": ["llm-tasks", "llm-timeout", "recursive", "target-dir"],
-        "12_discopy.py": ["discopy-gnn-input-dir", "target-dir"],
-        "13_discopy_jax_eval.py": ["discopy-jax-gnn-input-dir", "discopy-jax-seed", "target-dir"],
-        "14_site.py": ["site-html-filename", "target-dir"],
-        "2_setup.py": ["recreate-venv", "dev"],
-        "3_tests.py": [],
-    }
-
-    negatable_args = {
-        "recursive": True,
-        "verbose": True,
-        "estimate-resources": True
-    }
-
-    def script_supports_arg(script_name, arg_name):
-        supported = script_supported_args.get(script_name, []) + script_supported_args.get("all", [])
-        return arg_name in supported
-
-    step_specific_args = {}
-
-    # Add target-dir specifically to scripts that support it
-    if args.target_dir:
-        for script_name in script_supported_args:
-            if script_name != "all" and "target-dir" in script_supported_args[script_name]:
-                if script_name not in step_specific_args:
-                    step_specific_args[script_name] = []
-                step_specific_args[script_name].extend(["--target-dir", str(args.target_dir)])
-
-    # For recursive steps
-    recursive_scripts = [k for k,v in script_supported_args.items() if "recursive" in v]
-    for script_name in recursive_scripts:
-        if args.recursive:
-            if script_name not in step_specific_args:
-                step_specific_args[script_name] = []
-            step_specific_args[script_name].append("--recursive")
-
-    # For step 4 (gnn_type_checker)
-    gnn_type_checker_args = []
-    if args.strict and script_supports_arg("4_gnn_type_checker.py", "strict"):
-        gnn_type_checker_args.append("--strict")
-    if hasattr(args, 'estimate_resources') and script_supports_arg("4_gnn_type_checker.py", "estimate-resources"):
-        if args.estimate_resources:
-            gnn_type_checker_args.append("--estimate-resources")
-        else:
-            gnn_type_checker_args.append("--no-estimate-resources")
-    if gnn_type_checker_args:
-        if "4_gnn_type_checker.py" not in step_specific_args:
-            step_specific_args["4_gnn_type_checker.py"] = []
-        step_specific_args["4_gnn_type_checker.py"].extend(gnn_type_checker_args)
-
-    # For step 8 (ontology)
-    if args.ontology_terms_file and script_supports_arg("8_ontology.py", "ontology-terms-file"):
-        if "8_ontology.py" not in step_specific_args:
-            step_specific_args["8_ontology.py"] = []
-        step_specific_args["8_ontology.py"].extend(["--ontology-terms-file", str(args.ontology_terms_file)])
-
-    # For step 11 (llm)
-    llm_args = []
-    if args.llm_tasks and script_supports_arg("11_llm.py", "llm-tasks"):
-        llm_args.extend(["--llm-tasks", args.llm_tasks])
-    if args.llm_timeout and script_supports_arg("11_llm.py", "llm-timeout"):
-        llm_args.extend(["--llm-timeout", str(args.llm_timeout)])
-    if llm_args:
-        if "11_llm.py" not in step_specific_args:
-            step_specific_args["11_llm.py"] = []
-        step_specific_args["11_llm.py"].extend(llm_args)
-
-    # For step 12 (discopy)
-    if args.discopy_gnn_input_dir and script_supports_arg("12_discopy.py", "discopy-gnn-input-dir"):
-        if "12_discopy.py" not in step_specific_args:
-            step_specific_args["12_discopy.py"] = []
-        step_specific_args["12_discopy.py"].extend(["--discopy-gnn-input-dir", str(args.discopy_gnn_input_dir)])
-
-    # For step 13 (discopy_jax_eval)
-    discopy_jax_args = []
-    if args.discopy_jax_gnn_input_dir and script_supports_arg("13_discopy_jax_eval.py", "discopy-jax-gnn-input-dir"):
-        discopy_jax_args.extend(["--discopy-jax-gnn-input-dir", str(args.discopy_jax_gnn_input_dir)])
-    if hasattr(args, 'discopy_jax_seed') and script_supports_arg("13_discopy_jax_eval.py", "discopy-jax-seed"):
-        discopy_jax_args.extend(["--discopy-jax-seed", str(args.discopy_jax_seed)])
-    if discopy_jax_args:
-        if "13_discopy_jax_eval.py" not in step_specific_args:
-            step_specific_args["13_discopy_jax_eval.py"] = []
-        step_specific_args["13_discopy_jax_eval.py"].extend(discopy_jax_args)
-    
-    # For step 14 (site)
-    if args.site_html_filename and script_supports_arg("14_site.py", "site-html-filename"):
-        if "14_site.py" not in step_specific_args:
-            step_specific_args["14_site.py"] = []
-        step_specific_args["14_site.py"].extend(["--site-html-filename", args.site_html_filename])
-
-    # For step 2 (setup)
-    setup_args = []
-    if args.recreate_venv and script_supports_arg("2_setup.py", "recreate-venv"):
-        setup_args.append("--recreate-venv")
-    if args.dev and script_supports_arg("2_setup.py", "dev"):
-        setup_args.append("--dev")
-    if setup_args:
-        step_specific_args["2_setup.py"] = setup_args
-        
-    return step_specific_args, script_supports_arg, negatable_args
 
 def main():
     # Configure logging early. If GNN_Pipeline or root logger has no handlers,

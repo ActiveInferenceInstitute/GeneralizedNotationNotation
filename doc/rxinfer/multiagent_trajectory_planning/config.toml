@@ -1,4 +1,4 @@
-# Multi-agent Trajectory Planning Configuration
+# GNN_Model Configuration
 
 #
 # Model parameters
@@ -14,7 +14,7 @@ gamma = 1.0
 nr_steps = 40
 
 # Number of inference iterations
-nr_iterations = 500
+nr_iterations = 350
 
 # Number of agents in the simulation (currently fixed at 4)
 nr_agents = 4
@@ -65,10 +65,10 @@ C = [
 initial_state_variance = 100.0
 
 # Prior on control inputs
-control_variance = 0.2
+control_variance = 0.1
 
 # Goal constraints variance
-goal_constraint_variance = 1e-4
+goal_constraint_variance = 1.0e-05
 
 # Parameters for GammaShapeRate prior on constraint parameters
 gamma_shape = 1.5  # 3/2
@@ -173,7 +173,7 @@ seeds = [42, 123]
 results_dir = "results"
 
 # Filename templates
-animation_template = "{environment}_{seed}.gif"
+animation_template = "[environment]_[seed].gif"
 control_vis_filename = "control_signals.gif"
 obstacle_distance_filename = "obstacle_distance.png"
 path_uncertainty_filename = "path_uncertainty.png"

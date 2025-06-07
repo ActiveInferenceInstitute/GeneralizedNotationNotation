@@ -1,0 +1,28 @@
+### Summary of the GNN Model: Multifactor PyMDP Agent v1
+
+**Model Name:** Multifactor PyMDP Agent v1
+
+**Purpose:**  
+This model represents a PyMDP agent that utilizes multiple observation modalities and hidden state factors to facilitate active inference. It is designed to help in decision-making processes by integrating various forms of sensory inputs and underlying state estimations.
+
+**Key Components:**
+
+1. **Observation Modalities:**
+   - **State Observation:** 3 outcomes
+   - **Reward:** 3 outcomes
+   - **Decision Proprioceptive:** 3 outcomes
+
+2. **Hidden State Factors:**
+   - **Reward Level:** 2 states
+   - **Decision State:** 3 states
+
+3. **Control Mechanism:**
+   - The decision state factor is controllable, allowing for 3 possible actions.
+
+**Main Connections:**
+- The model defines a structured relationship among its components:
+  - **Hidden States to Observation Likelihoods:** The hidden states (reward level and decision state) influence the observation modalities.
+  - **State Transitions:** The transition dynamics between hidden states are influenced by the actions taken (with a distinction between controlled and uncontrolled transitions).
+  - **Preferences to Expected Free Energy:** The preferences for each observation modality contribute to the calculation of expected free energy, which in turn informs the policy for the controllable decision state.
+
+This multifactor agent framework emphasizes the integration of diverse observational data and the dynamic interaction between hidden states and actions, facilitating robust decision-making in uncertain environments.

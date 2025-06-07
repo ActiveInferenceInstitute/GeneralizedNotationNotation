@@ -83,7 +83,7 @@ def run_visualization(target_dir: str,
         logger.error("❌🎨 Visualization CLI module not loaded. Cannot proceed.") # Changed from print
         return False # Indicate failure
 
-    viz_step_output_dir = Path(pipeline_output_dir) / "gnn_examples_visualization"
+    viz_step_output_dir = Path(pipeline_output_dir) / "visualization"
     
     logger.info("🖼️ Preparing to generate GNN visualizations...") # Was print if verbose
     logger.debug(f"  🎯 Target GNN files in: {Path(target_dir).resolve()}") # Was print if verbose
