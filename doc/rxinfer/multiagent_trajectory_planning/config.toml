@@ -14,7 +14,7 @@ gamma = 1.0
 nr_steps = 40
 
 # Number of inference iterations
-nr_iterations = 350
+nr_iterations = 500
 
 # Number of agents in the simulation (currently fixed at 4)
 nr_agents = 4
@@ -65,10 +65,10 @@ C = [
 initial_state_variance = 100.0
 
 # Prior on control inputs
-control_variance = 0.1
+control_variance = 0.2
 
 # Goal constraints variance
-goal_constraint_variance = 1e-5
+goal_constraint_variance = 1e-4
 
 # Parameters for GammaShapeRate prior on constraint parameters
 gamma_shape = 1.5  # 3/2

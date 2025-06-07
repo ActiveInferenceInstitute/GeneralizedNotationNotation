@@ -46,7 +46,7 @@ class RenderGnnInput(BaseModel):
     gnn_specification: Union[Dict[str, Any], str] = Field(
         description="The GNN specification itself as a dictionary, or a string URI/path to a GNN spec file (e.g., JSON)."
     )
-    target_format: Literal["pymdp", "rxinfer"] = Field(
+    target_format: Literal["pymdp", "rxinfer_toml"] = Field(
         description="The target format to render the GNN specification to."
     )
     output_filename_base: Optional[str] = Field(
@@ -117,7 +117,7 @@ async def handle_render_gnn_spec(input_data: RenderGnnInput) -> RenderGnnOutput:
         filename_base = gnn_spec_dict.get("name", "rendered_gnn_model")
         filename_base = filename_base.replace(" ", "_").lower()
     
-    file_extension = ".py" if input_data.target_format == "pymdp" else ".jl"
+    file_extension = ".py" if input_data.target_format == "pymdp" else ".toml"
     output_script_name = f"{filename_base}{file_extension}"
     temp_output_path = temp_dir / output_script_name
 
@@ -153,7 +153,7 @@ async def handle_render_gnn_spec(input_data: RenderGnnInput) -> RenderGnnOutput:
 async def handle_list_render_targets() -> ListRenderTargetsOutput:
     """Lists the supported rendering target formats."""
     logger.info("MCP Tool: Received request to list render targets.")
-    supported_targets = ["pymdp", "rxinfer"]
+    supported_targets = ["pymdp", "rxinfer_toml"]
     return ListRenderTargetsOutput(targets=supported_targets)
 
 # --- MCP Tool Registration ---
@@ -182,7 +182,7 @@ def register_tools(mcp_instance_param): # Name changed to avoid conflict if mcp_
         name="list_render_targets",
         func=handle_list_render_targets,
         schema=ListRenderTargetsInput.model_json_schema(),
-        description="Lists the available target formats for GNN rendering (e.g., pymdp, rxinfer)."
+        description="Lists the available target formats for GNN rendering (e.g., pymdp, rxinfer_toml)."
     )
     
     logger.info("Render module MCP tools registered.")

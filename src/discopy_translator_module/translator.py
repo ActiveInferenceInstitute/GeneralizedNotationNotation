@@ -96,16 +96,25 @@ discopy_backend = DiscopyBackendPlaceholder()
 # For direct execution/testing of this module, basic logging can be enabled here.
 # We'll rely on the main script's logger for now.
 
-# 2. Try to import discopy.monoidal components (Ty, Word)
+# 2. Try to import discopy.monoidal and discopy.grammar components (Ty, Word)
 try:
-    from discopy.monoidal import Ty as Ty_actual, Word as Word_actual
+    from discopy.monoidal import Ty as Ty_actual
     Ty = Ty_actual
+    logger.info("Successfully imported Ty from discopy.monoidal.")
+except ImportError as e_monoidal_ty:
+    logger.warning(f"Failed to import Ty from discopy.monoidal: {e_monoidal_ty}. Ty remains a placeholder.")
+    # Ty remains TyPlaceholder
+
+try:
+    from discopy.grammar.pregroup import Word as Word_actual
     Word = Word_actual
-    TY_AVAILABLE = True
-    logger.info("Successfully imported Ty, Word from discopy.monoidal.")
-except ImportError as e_monoidal:
-    logger.warning(f"Failed to import Ty, Word from discopy.monoidal: {e_monoidal}. They remain placeholders.")
-    # Ty, Word remain TyPlaceholder, WordPlaceholder
+    logger.info("Successfully imported Word from discopy.grammar.pregroup.")
+except ImportError as e_grammar_word:
+    logger.warning(f"Failed to import Word from discopy.grammar.pregroup: {e_grammar_word}. Word remains a placeholder.")
+    # Word remains WordPlaceholder
+
+# Check for overall availability of Ty and Word
+TY_AVAILABLE = not isinstance(Ty, (TyPlaceholder, PlaceholderBase)) and not isinstance(Word, (WordPlaceholder, PlaceholderBase))
 
 # 3. Try to import discopy.tensor components and discopy.matrix.Matrix
 # These are essential for JAX backend.

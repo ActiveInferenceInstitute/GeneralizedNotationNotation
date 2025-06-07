@@ -11,6 +11,7 @@ import sys
 import toml  # Import toml for TOML file generation
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Tuple
+import traceback
 
 # Ensure that the src directory is in the Python path for importing rxinfer
 src_dir = Path(__file__).parent.parent
@@ -18,310 +19,44 @@ if str(src_dir) not in sys.path:
     sys.path.insert(0, str(src_dir))
 
 from rxinfer.gnn_parser import parse_gnn_file
-from rxinfer.config_generator import generate_rxinfer_config
+from rxinfer.config_generator import generate_rxinfer_config, generate_rxinfer_config_from_spec
 from rxinfer.toml_generator import generate_rxinfer_toml_config  # New import for TOML generation
 
 logger = logging.getLogger(__name__)
 
-def render_gnn_to_rxinfer_jl(
-    gnn_spec: Dict[str, Any],
-    output_script_path: Path,
-    options: Optional[Dict[str, Any]] = None
-) -> Tuple[bool, str, List[str]]:
-    """
-    Renders a GNN specification to a RxInfer.jl configuration file.
-    
-    Args:
-        gnn_spec: Dictionary containing the GNN specification
-        output_script_path: Path to the output configuration file
-        options: Optional additional options for rendering
-        
-    Returns:
-        Tuple containing (success, message, list of artifact URIs)
-    """
-    options = options or {}
-    logger.info(f"Rendering GNN spec to RxInfer.jl configuration '{output_script_path}'.")
-    
-    try:
-        # Ensure the output directory exists
-        output_script_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        # Generate the configuration file
-        success = generate_rxinfer_config(gnn_spec, output_script_path)
-        
-        if success:
-            logger.info(f"Successfully wrote RxInfer.jl configuration to {output_script_path}")
-            # Convert relative path to absolute for URI
-            abs_path = output_script_path.absolute()
-            return True, f"Successfully rendered to RxInfer.jl: {output_script_path.name}", [abs_path.as_uri()]
-        else:
-            logger.error(f"Failed to generate RxInfer.jl configuration")
-            return False, f"Failed to generate RxInfer.jl configuration", []
-    
-    except Exception as e:
-        logger.error(f"Error rendering GNN to RxInfer.jl: {e}", exc_info=True)
-        return False, f"Error rendering to RxInfer.jl: {str(e)}", []
-
 def render_gnn_to_rxinfer_toml(
     gnn_spec: Dict[str, Any],
-    output_config_path: Path,
+    output_path: Path,
     options: Optional[Dict[str, Any]] = None
 ) -> Tuple[bool, str, List[str]]:
     """
-    Renders a GNN specification to a RxInfer TOML configuration file.
-    
-    Args:
-        gnn_spec: Dictionary containing the GNN specification
-        output_config_path: Path to the output TOML configuration file
-        options: Optional additional options for rendering
-        
-    Returns:
-        Tuple containing (success, message, list of artifact URIs)
-    """
-    options = options or {}
-    logger.info(f"Rendering GNN spec to RxInfer TOML configuration '{output_config_path}'.")
-    
-    try:
-        # Ensure the output directory exists
-        output_config_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        # Make sure we're using .toml extension for TOML files
-        if not output_config_path.suffix.lower() == '.toml':
-            original_path = output_config_path
-            output_config_path = output_config_path.with_suffix('.toml')
-            logger.warning(f"Changed output extension from '{original_path.suffix}' to '.toml' for TOML config: {output_config_path}")
-        
-        # Generate the TOML configuration
-        try:
-            # Try to use the dedicated TOML generator function
-            success = generate_rxinfer_toml_config(gnn_spec, output_config_path)
-        except (ImportError, AttributeError):
-            # Fallback to manual TOML generation if the module doesn't exist
-            logger.warning("Could not import generate_rxinfer_toml_config, using fallback TOML generation")
-            success = _fallback_generate_toml(gnn_spec, output_config_path, options)
-        
-        if success:
-            logger.info(f"Successfully wrote RxInfer TOML configuration to {output_config_path}")
-            # Convert relative path to absolute for URI
-            abs_path = output_config_path.absolute()
-            return True, f"Successfully rendered to RxInfer TOML: {output_config_path.name}", [abs_path.as_uri()]
-        else:
-            logger.error(f"Failed to generate RxInfer TOML configuration")
-            return False, f"Failed to generate RxInfer TOML configuration", []
-    
-    except Exception as e:
-        logger.error(f"Error rendering GNN to RxInfer TOML: {e}", exc_info=True)
-        return False, f"Error rendering to RxInfer TOML: {str(e)}", []
+    Renders a GNN specification dictionary to an RxInfer TOML configuration file.
 
-def _fallback_generate_toml(
-    gnn_spec: Dict[str, Any],
-    output_path: Path,
-    options: Dict[str, Any]
-) -> bool:
-    """
-    Fallback function to generate a TOML configuration file from a GNN specification.
-    This is used when the dedicated toml_generator module is not available.
-    
     Args:
-        gnn_spec: Dictionary containing the GNN specification
-        output_path: Path to the output TOML file
-        options: Additional options for rendering
-        
+        gnn_spec (Dict[str, Any]): The GNN specification as a Python dictionary.
+        output_path (Path): The path where the output TOML file should be saved.
+        options (Dict[str, Any], optional): Rendering options. Defaults to None.
+
     Returns:
-        Boolean indicating success
+        Tuple[bool, str, List[str]]: A tuple containing success status, a message, and a list of artifact URIs.
     """
-    try:
-        # Extract model name and description
-        model_name = gnn_spec.get("name", "GNN_Model")
-        model_description = gnn_spec.get("description", f"TOML configuration for {model_name}")
-        
-        # Create a comprehensive TOML structure based on the GNN spec and gold standard structure
-        toml_config = {
-            "model": {
-                "dt": gnn_spec.get("dt", 1.0),
-                "gamma": gnn_spec.get("gamma", 1.0),
-                "nr_steps": gnn_spec.get("time_steps", 40),
-                "nr_iterations": gnn_spec.get("nr_iterations", 350),
-                "nr_agents": gnn_spec.get("nr_agents", 4),
-                "softmin_temperature": gnn_spec.get("softmin_temperature", 10.0),
-                "intermediate_steps": gnn_spec.get("intermediate_steps", 10),
-                "save_intermediates": gnn_spec.get("save_intermediates", False)
-            },
-            "priors": {
-                "initial_state_variance": gnn_spec.get("initial_state_variance", 100.0),
-                "control_variance": gnn_spec.get("control_variance", 0.1),
-                "goal_constraint_variance": gnn_spec.get("goal_constraint_variance", 1e-5),
-                "gamma_shape": gnn_spec.get("gamma_shape", 1.5),
-                "gamma_scale_factor": gnn_spec.get("gamma_scale_factor", 0.5)
-            },
-            "visualization": {
-                "x_limits": gnn_spec.get("x_limits", [-20, 20]),
-                "y_limits": gnn_spec.get("y_limits", [-20, 20]),
-                "fps": gnn_spec.get("fps", 15),
-                "heatmap_resolution": gnn_spec.get("heatmap_resolution", 100),
-                "plot_width": gnn_spec.get("plot_width", 800),
-                "plot_height": gnn_spec.get("plot_height", 400),
-                "agent_alpha": gnn_spec.get("agent_alpha", 1.0),
-                "target_alpha": gnn_spec.get("target_alpha", 0.2),
-                "color_palette": gnn_spec.get("color_palette", "tab10")
-            }
-        }
-        
-        # Add state space matrices if available
-        if "matrices" in gnn_spec:
-            matrices = gnn_spec["matrices"]
-            toml_config["model"]["matrices"] = {
-                "A": matrices.get("A", [
-                    [1.0, 1.0, 0.0, 0.0],
-                    [0.0, 1.0, 0.0, 0.0],
-                    [0.0, 0.0, 1.0, 1.0],
-                    [0.0, 0.0, 0.0, 1.0]
-                ]),
-                "B": matrices.get("B", [
-                    [0.0, 0.0],
-                    [1.0, 0.0],
-                    [0.0, 0.0],
-                    [0.0, 1.0]
-                ]),
-                "C": matrices.get("C", [
-                    [1.0, 0.0, 0.0, 0.0],
-                    [0.0, 0.0, 1.0, 0.0]
-                ])
-            }
-        else:
-            # Add default matrices if not present
-            toml_config["model"]["matrices"] = {
-                "A": [
-                    [1.0, 1.0, 0.0, 0.0],
-                    [0.0, 1.0, 0.0, 0.0],
-                    [0.0, 0.0, 1.0, 1.0],
-                    [0.0, 0.0, 0.0, 1.0]
-                ],
-                "B": [
-                    [0.0, 0.0],
-                    [1.0, 0.0],
-                    [0.0, 0.0],
-                    [0.0, 1.0]
-                ],
-                "C": [
-                    [1.0, 0.0, 0.0, 0.0],
-                    [0.0, 0.0, 1.0, 0.0]
-                ]
-            }
-        
-        # Extract environment definitions
-        toml_config["environments"] = {}
-        
-        # Add standard environment definitions if they aren't in the GNN spec
-        standard_environments = {
-            "door": {
-                "description": "Two parallel walls with a gap between them",
-                "obstacles": [
-                    {"center": [-40.0, 0.0], "size": [70.0, 5.0]},
-                    {"center": [40.0, 0.0], "size": [70.0, 5.0]}
-                ]
-            },
-            "wall": {
-                "description": "A single wall obstacle in the center",
-                "obstacles": [
-                    {"center": [0.0, 0.0], "size": [10.0, 5.0]}
-                ]
-            },
-            "combined": {
-                "description": "A combination of walls and obstacles",
-                "obstacles": [
-                    {"center": [-50.0, 0.0], "size": [70.0, 2.0]},
-                    {"center": [50.0, 0.0], "size": [70.0, 2.0]},
-                    {"center": [5.0, -1.0], "size": [3.0, 10.0]}
-                ]
-            }
-        }
-        
-        # Use environments from GNN spec if available, otherwise use standard ones
-        if "environments" in gnn_spec:
-            for env_name, env_info in gnn_spec["environments"].items():
-                toml_config["environments"][env_name] = {
-                    "description": env_info.get("description", f"Environment {env_name}"),
-                    "obstacles": []
-                }
-                
-                if "obstacles" in env_info:
-                    for obstacle in env_info["obstacles"]:
-                        toml_config["environments"][env_name]["obstacles"].append({
-                            "center": obstacle.get("center", [0.0, 0.0]),
-                            "size": obstacle.get("size", [1.0, 1.0])
-                        })
-        else:
-            # Use standard environments if none provided
-            toml_config["environments"] = standard_environments
-        
-        # Add agent configurations
-        toml_config["agents"] = []
-        
-        # Extract agents if available
-        if "agents" in gnn_spec:
-            for i, agent_info in enumerate(gnn_spec["agents"]):
-                agent_config = {
-                    "id": agent_info.get("id", i + 1),
-                    "radius": agent_info.get("radius", 1.0),
-                    "initial_position": agent_info.get("initial_position", [0.0, 0.0]),
-                    "target_position": agent_info.get("target_position", [0.0, 0.0])
-                }
-                toml_config["agents"].append(agent_config)
-        else:
-            # Add default agents if none provided
-            default_agents = [
-                {
-                    "id": 1,
-                    "radius": 2.5,
-                    "initial_position": [-4.0, 10.0],
-                    "target_position": [-10.0, -10.0]
-                },
-                {
-                    "id": 2,
-                    "radius": 1.5,
-                    "initial_position": [-10.0, 5.0],
-                    "target_position": [10.0, -15.0]
-                },
-                {
-                    "id": 3,
-                    "radius": 1.0,
-                    "initial_position": [-15.0, -10.0],
-                    "target_position": [10.0, 10.0]
-                },
-                {
-                    "id": 4,
-                    "radius": 2.5,
-                    "initial_position": [0.0, -10.0],
-                    "target_position": [-10.0, 15.0]
-                }
-            ]
-            toml_config["agents"] = default_agents
-        
-        # Add experiment configurations
-        toml_config["experiments"] = {
-            "seeds": gnn_spec.get("seeds", [42, 123]),
-            "results_dir": gnn_spec.get("results_dir", "results"),
-            "animation_template": gnn_spec.get("animation_template", "{environment}_{seed}.gif"),
-            "control_vis_filename": gnn_spec.get("control_vis_filename", "control_signals.gif"),
-            "obstacle_distance_filename": gnn_spec.get("obstacle_distance_filename", "obstacle_distance.png"),
-            "path_uncertainty_filename": gnn_spec.get("path_uncertainty_filename", "path_uncertainty.png"),
-            "convergence_filename": gnn_spec.get("convergence_filename", "convergence.png")
-        }
-        
-        # Add a header comment to the file
-        header_comment = f"# {model_name} Configuration\n\n"
-        
-        # Write the TOML configuration to file with header
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write(header_comment)
-            toml.dump(toml_config, f)
-        
-        return True
+    logger = logging.getLogger(__name__)
+    logger.debug(f"Starting rendering of GNN spec to RxInfer TOML config at {output_path}")
     
+    try:
+        config_content = generate_rxinfer_config_from_spec(gnn_spec, logger)
+        
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(config_content)
+        
+        success_msg = f"Successfully wrote RxInfer TOML configuration to {output_path}"
+        logger.info(success_msg)
+        return True, success_msg, [output_path.as_uri()]
+
     except Exception as e:
-        logger.error(f"Error in fallback TOML generation: {e}", exc_info=True)
-        return False
+        error_msg = f"An error occurred during RxInfer TOML generation: {e}"
+        logger.error(error_msg, exc_info=True)
+        return False, error_msg, []
 
 def process_gnn_file(gnn_file_path: Path, output_path: Path, output_format: str = "julia") -> Tuple[bool, str, List[str]]:
     """
@@ -348,7 +83,7 @@ def process_gnn_file(gnn_file_path: Path, output_path: Path, output_format: str 
         if output_format.lower() == "toml":
             return render_gnn_to_rxinfer_toml(parsed_gnn, output_path)
         else:
-            return render_gnn_to_rxinfer_jl(parsed_gnn, output_path)
+            return render_gnn_to_rxinfer_toml(parsed_gnn, output_path)
     
     except Exception as e:
         logger.error(f"Error processing GNN file: {e}", exc_info=True)
@@ -407,9 +142,9 @@ if __name__ == '__main__':
         "calculate_free_energy": True
     }
 
-    success_lr, msg_lr, artifacts_lr = render_gnn_to_rxinfer_jl(
+    success_lr, msg_lr, artifacts_lr = render_gnn_to_rxinfer_toml(
         dummy_gnn_data_linear_regression,
-        output_script_lr, 
+        test_output_dir / "generated_linear_regression_config.toml",
         options=render_options_lr
     )
 
@@ -498,9 +233,9 @@ if __name__ == '__main__':
         "calculate_free_energy": True
     }
 
-    success_hmm_ml, msg_hmm_ml, artifacts_hmm_ml = render_gnn_to_rxinfer_jl(
+    success_hmm_ml, msg_hmm_ml, artifacts_hmm_ml = render_gnn_to_rxinfer_toml(
         dummy_gnn_data_hmm_ml,
-        output_script_hmm_ml,
+        test_output_dir / "generated_hmm_model_logic_config.toml",
         options=render_options_hmm_ml
     )
 

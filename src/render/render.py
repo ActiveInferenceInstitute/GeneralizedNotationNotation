@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Import renderers
 from .pymdp_renderer import render_gnn_to_pymdp
-from .rxinfer import render_gnn_to_rxinfer_jl, render_gnn_to_rxinfer_toml  # Added TOML renderer
+from .rxinfer import render_gnn_to_rxinfer_toml
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ def render_gnn_spec(
     
     Args:
         gnn_spec: Dictionary containing the GNN specification
-        target: Target platform ("pymdp", "rxinfer", "rxinfer_toml", etc.)
+        target: Target platform ("pymdp", "rxinfer_toml", etc.)
         output_directory: Directory for output files
         options: Additional options for the renderer
         
@@ -55,12 +55,6 @@ def render_gnn_spec(
         script_path = output_directory / f"{model_name}_pymdp.py"
         return render_gnn_to_pymdp(gnn_spec, script_path, options)
         
-    elif target.lower() == "rxinfer":
-        # Render to RxInfer.jl
-        model_name = gnn_spec.get("name", "model")
-        script_path = output_directory / f"{model_name}_rxinfer.jl"
-        return render_gnn_to_rxinfer_jl(gnn_spec, script_path, options)
-        
     elif target.lower() == "rxinfer_toml":
         # Render to RxInfer TOML config
         model_name = gnn_spec.get("name", "model")
@@ -77,7 +71,7 @@ def main(cli_args=None):
     parser = argparse.ArgumentParser(description="Render GNN specifications to various target platforms")
     parser.add_argument("gnn_file", help="Path to the GNN specification file")
     parser.add_argument("output_dir", help="Output directory for rendered files")
-    parser.add_argument("target", choices=["pymdp", "rxinfer", "rxinfer_toml"], default="pymdp", help="Target platform")
+    parser.add_argument("target", choices=["pymdp", "rxinfer_toml"], default="pymdp", help="Target platform")
     parser.add_argument("--output_filename", help="Base filename for the output (without extension)")
     parser.add_argument("--debug", "--verbose", action="store_true", help="Enable debug logging")
     
@@ -118,8 +112,6 @@ def main(cli_args=None):
     # Determine output file path based on target and base filename
     if args.target == "pymdp":
         output_path = output_dir / f"{base_filename}_pymdp.py"
-    elif args.target == "rxinfer":
-        output_path = output_dir / f"{base_filename}_rxinfer.jl"
     elif args.target == "rxinfer_toml":
         output_path = output_dir / f"{base_filename}_config.toml"
     

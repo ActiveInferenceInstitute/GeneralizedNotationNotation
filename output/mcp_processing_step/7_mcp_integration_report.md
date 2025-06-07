@@ -1,6 +1,6 @@
 # 🤖 MCP Integration and API Report
 
-🗓️ Report Generated: 2025-06-06 13:41:45
+🗓️ Report Generated: 2025-06-07 08:31:04
 
 **MCP Core Directory:** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/mcp`
 **Project Source Root (for modules):** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/src`
@@ -270,7 +270,7 @@ This section lists all tools currently registered with the MCP system, along wit
 - **Tool:** `list_render_targets`
   - **Defined in Module:** `src.render.mcp`
   - **Arguments (from signature):** `()`
-  - **Description:** "Lists the available target formats for GNN rendering (e.g., pymdp, rxinfer)."
+  - **Description:** "Lists the available target formats for GNN rendering (e.g., pymdp, rxinfer_toml)."
   - **Schema:**
     ```json
     {
@@ -390,7 +390,7 @@ This section lists all tools currently registered with the MCP system, along wit
                 "description": "The target format to render the GNN specification to.",
                 "enum": [
                     "pymdp",
-                    "rxinfer"
+                    "rxinfer_toml"
                 ],
                 "title": "Target Format",
                 "type": "string"

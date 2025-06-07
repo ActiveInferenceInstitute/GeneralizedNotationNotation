@@ -6,6 +6,7 @@ import logging
 import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+import toml
 
 logger = logging.getLogger(__name__)
 
@@ -251,6 +252,43 @@ def generate_rxinfer_config(parsed_gnn: Dict[str, Any], output_path: Path) -> bo
     except Exception as e:
         logger.error(f"Error generating RxInfer.jl configuration: {e}", exc_info=True)
         return False
+
+def generate_rxinfer_config_from_spec(gnn_spec: dict, logger: logging.Logger) -> str:
+    """
+    Generates an RxInfer TOML configuration string from a GNN specification dictionary.
+    This is a simplified version that works on an already-parsed dictionary (spec).
+
+    Args:
+        gnn_spec (dict): The GNN specification as a Python dictionary.
+        logger (logging.Logger): Logger instance.
+
+    Returns:
+        str: A string containing the TOML configuration.
+    """
+    logger.debug("Generating RxInfer TOML config from GNN spec dictionary.")
+    
+    model_name = gnn_spec.get("ModelName", "Unknown GNN Model")
+
+    # This is a placeholder implementation. A proper implementation would
+    # map the gnn_spec dictionary to the TOML structure in a more detailed way,
+    # similar to how generate_rxinfer_config works with the gnn_model object.
+    
+    toml_config = {
+        "model": {
+            "name": model_name,
+            "description": gnn_spec.get("ModelAnnotation", "Configuration generated from GNN specification."),
+            "dt": 1.0,
+            "gamma": 1.0,
+            "nr_steps": 40,
+            "nr_iterations": 500
+        },
+        "priors": {
+            "initial_state_variance": 100.0,
+            "control_variance": 0.2
+        }
+    }
+
+    return toml.dumps(toml_config)
 
 if __name__ == "__main__":
     # Simple test if run directly
