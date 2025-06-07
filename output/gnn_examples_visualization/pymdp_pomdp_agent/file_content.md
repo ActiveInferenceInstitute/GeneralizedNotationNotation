@@ -182,12 +182,6 @@ NA \n```\n\n## Parsed Sections
 # This file is machine-readable and attempts to represent a PyMDP agent with multiple observation modalities and hidden state factors.
 ```
 
-### ModelName
-
-```
-Multifactor PyMDP Agent v1
-```
-
 ### GNNSection
 
 ```
@@ -198,6 +192,12 @@ MultifactorPyMDPAgent
 
 ```
 GNN v1
+```
+
+### ModelName
+
+```
+Multifactor PyMDP Agent v1
 ```
 
 ### ModelAnnotation

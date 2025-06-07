@@ -10,6 +10,9 @@ scipy>=1.10.1
 # Active Inference Ecosystem
 inferactively-pymdp<0.1.0  # Use the latest available version (0.0.7.1)
 
+# Pydantic for data validation (especially for MCP)
+pydantic>=2.0
+
 # LLM and Environment Management
 openai>=1.0.0
 python-dotenv>=1.0.0

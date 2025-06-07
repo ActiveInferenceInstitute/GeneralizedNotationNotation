@@ -2,427 +2,6 @@
 <Multi-agent_Trajectory_Planning>
   <file_path>/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_multiagent_gnn.md</file_path>
   <name>Multi-agent Trajectory Planning</name>
-  <metadata>
-    <description>This model represents a multi-agent trajectory planning scenario in RxInfer.jl.
-It includes:
-- State space model for agents moving in a 2D environment
-- Obstacle avoidance constraints
-- Goal-directed behavior
-- Inter-agent collision avoidance
-The model can be used to simulate trajectory planning in various environments with obstacles.</description>
-  </metadata>
-  <states>
-    <states_item>
-      <id>dt</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>dt</original_id>
-    </states_item>
-    <states_item>
-      <id>gamma</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>gamma</original_id>
-    </states_item>
-    <states_item>
-      <id>nr_steps</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>nr_steps</original_id>
-    </states_item>
-    <states_item>
-      <id>nr_iterations</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>nr_iterations</original_id>
-    </states_item>
-    <states_item>
-      <id>nr_agents</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>nr_agents</original_id>
-    </states_item>
-    <states_item>
-      <id>softmin_temperature</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>softmin_temperature</original_id>
-    </states_item>
-    <states_item>
-      <id>intermediate_steps</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>intermediate_steps</original_id>
-    </states_item>
-    <states_item>
-      <id>save_intermediates</id>
-      <dimensions>1,type=bool</dimensions>
-      <original_id>save_intermediates</original_id>
-    </states_item>
-    <states_item>
-      <id>A</id>
-      <dimensions>4,4,type=float</dimensions>
-      <original_id>A</original_id>
-    </states_item>
-    <states_item>
-      <id>B</id>
-      <dimensions>4,2,type=float</dimensions>
-      <original_id>B</original_id>
-    </states_item>
-    <states_item>
-      <id>C</id>
-      <dimensions>2,4,type=float</dimensions>
-      <original_id>C</original_id>
-    </states_item>
-    <states_item>
-      <id>initial_state_variance</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>initial_state_variance</original_id>
-    </states_item>
-    <states_item>
-      <id>control_variance</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>control_variance</original_id>
-    </states_item>
-    <states_item>
-      <id>goal_constraint_variance</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>goal_constraint_variance</original_id>
-    </states_item>
-    <states_item>
-      <id>gamma_shape</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>gamma_shape</original_id>
-    </states_item>
-    <states_item>
-      <id>gamma_scale_factor</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>gamma_scale_factor</original_id>
-    </states_item>
-    <states_item>
-      <id>x_limits</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>x_limits</original_id>
-    </states_item>
-    <states_item>
-      <id>y_limits</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>y_limits</original_id>
-    </states_item>
-    <states_item>
-      <id>fps</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>fps</original_id>
-    </states_item>
-    <states_item>
-      <id>heatmap_resolution</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>heatmap_resolution</original_id>
-    </states_item>
-    <states_item>
-      <id>plot_width</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>plot_width</original_id>
-    </states_item>
-    <states_item>
-      <id>plot_height</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>plot_height</original_id>
-    </states_item>
-    <states_item>
-      <id>agent_alpha</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>agent_alpha</original_id>
-    </states_item>
-    <states_item>
-      <id>target_alpha</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>target_alpha</original_id>
-    </states_item>
-    <states_item>
-      <id>color_palette</id>
-      <dimensions>1,type=string</dimensions>
-      <original_id>color_palette</original_id>
-    </states_item>
-    <states_item>
-      <id>door_obstacle_center_1</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>door_obstacle_center_1</original_id>
-    </states_item>
-    <states_item>
-      <id>door_obstacle_size_1</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>door_obstacle_size_1</original_id>
-    </states_item>
-    <states_item>
-      <id>door_obstacle_center_2</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>door_obstacle_center_2</original_id>
-    </states_item>
-    <states_item>
-      <id>door_obstacle_size_2</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>door_obstacle_size_2</original_id>
-    </states_item>
-    <states_item>
-      <id>wall_obstacle_center</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>wall_obstacle_center</original_id>
-    </states_item>
-    <states_item>
-      <id>wall_obstacle_size</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>wall_obstacle_size</original_id>
-    </states_item>
-    <states_item>
-      <id>combined_obstacle_center_1</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>combined_obstacle_center_1</original_id>
-    </states_item>
-    <states_item>
-      <id>combined_obstacle_size_1</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>combined_obstacle_size_1</original_id>
-    </states_item>
-    <states_item>
-      <id>combined_obstacle_center_2</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>combined_obstacle_center_2</original_id>
-    </states_item>
-    <states_item>
-      <id>combined_obstacle_size_2</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>combined_obstacle_size_2</original_id>
-    </states_item>
-    <states_item>
-      <id>combined_obstacle_center_3</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>combined_obstacle_center_3</original_id>
-    </states_item>
-    <states_item>
-      <id>combined_obstacle_size_3</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>combined_obstacle_size_3</original_id>
-    </states_item>
-    <states_item>
-      <id>agent1_id</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>agent1_id</original_id>
-    </states_item>
-    <states_item>
-      <id>agent1_radius</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>agent1_radius</original_id>
-    </states_item>
-    <states_item>
-      <id>agent1_initial_position</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>agent1_initial_position</original_id>
-    </states_item>
-    <states_item>
-      <id>agent1_target_position</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>agent1_target_position</original_id>
-    </states_item>
-    <states_item>
-      <id>agent2_id</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>agent2_id</original_id>
-    </states_item>
-    <states_item>
-      <id>agent2_radius</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>agent2_radius</original_id>
-    </states_item>
-    <states_item>
-      <id>agent2_initial_position</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>agent2_initial_position</original_id>
-    </states_item>
-    <states_item>
-      <id>agent2_target_position</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>agent2_target_position</original_id>
-    </states_item>
-    <states_item>
-      <id>agent3_id</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>agent3_id</original_id>
-    </states_item>
-    <states_item>
-      <id>agent3_radius</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>agent3_radius</original_id>
-    </states_item>
-    <states_item>
-      <id>agent3_initial_position</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>agent3_initial_position</original_id>
-    </states_item>
-    <states_item>
-      <id>agent3_target_position</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>agent3_target_position</original_id>
-    </states_item>
-    <states_item>
-      <id>agent4_id</id>
-      <dimensions>1,type=int</dimensions>
-      <original_id>agent4_id</original_id>
-    </states_item>
-    <states_item>
-      <id>agent4_radius</id>
-      <dimensions>1,type=float</dimensions>
-      <original_id>agent4_radius</original_id>
-    </states_item>
-    <states_item>
-      <id>agent4_initial_position</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>agent4_initial_position</original_id>
-    </states_item>
-    <states_item>
-      <id>agent4_target_position</id>
-      <dimensions>2,type=float</dimensions>
-      <original_id>agent4_target_position</original_id>
-    </states_item>
-    <states_item>
-      <id>experiment_seeds</id>
-      <dimensions>2,type=int</dimensions>
-      <original_id>experiment_seeds</original_id>
-    </states_item>
-    <states_item>
-      <id>results_dir</id>
-      <dimensions>1,type=string</dimensions>
-      <original_id>results_dir</original_id>
-    </states_item>
-    <states_item>
-      <id>animation_template</id>
-      <dimensions>1,type=string</dimensions>
-      <original_id>animation_template</original_id>
-    </states_item>
-    <states_item>
-      <id>control_vis_filename</id>
-      <dimensions>1,type=string</dimensions>
-      <original_id>control_vis_filename</original_id>
-    </states_item>
-    <states_item>
-      <id>obstacle_distance_filename</id>
-      <dimensions>1,type=string</dimensions>
-      <original_id>obstacle_distance_filename</original_id>
-    </states_item>
-    <states_item>
-      <id>path_uncertainty_filename</id>
-      <dimensions>1,type=string</dimensions>
-      <original_id>path_uncertainty_filename</original_id>
-    </states_item>
-    <states_item>
-      <id>convergence_filename</id>
-      <dimensions>1,type=string</dimensions>
-      <original_id>convergence_filename</original_id>
-    </states_item>
-  </states>
-  <parameters/>
-  <initial_parameters/>
-  <observations/>
-  <transitions>
-    <transitions_item>
-      <sources>
-        <sources_item>dt</sources_item>
-      </sources>
-      <operator>&gt;</operator>
-      <targets>
-        <targets_item>A</targets_item>
-      </targets>
-      <attributes/>
-    </transitions_item>
-    <transitions_item>
-      <sources>
-        <sources_item>A</sources_item>
-        <sources_item>B</sources_item>
-        <sources_item>C</sources_item>
-      </sources>
-      <operator>&gt;</operator>
-      <targets>
-        <targets_item>state_space_model</targets_item>
-      </targets>
-      <attributes/>
-    </transitions_item>
-    <transitions_item>
-      <sources>
-        <sources_item>state_space_model</sources_item>
-        <sources_item>initial_state_variance</sources_item>
-        <sources_item>control_variance</sources_item>
-      </sources>
-      <operator>&gt;</operator>
-      <targets>
-        <targets_item>agent_trajectories</targets_item>
-      </targets>
-      <attributes/>
-    </transitions_item>
-    <transitions_item>
-      <sources>
-        <sources_item>agent_trajectories</sources_item>
-        <sources_item>goal_constraint_variance</sources_item>
-      </sources>
-      <operator>&gt;</operator>
-      <targets>
-        <targets_item>goal_directed_behavior</targets_item>
-      </targets>
-      <attributes/>
-    </transitions_item>
-    <transitions_item>
-      <sources>
-        <sources_item>agent_trajectories</sources_item>
-        <sources_item>gamma</sources_item>
-        <sources_item>gamma_shape</sources_item>
-        <sources_item>gamma_scale_factor</sources_item>
-      </sources>
-      <operator>&gt;</operator>
-      <targets>
-        <targets_item>obstacle_avoidance</targets_item>
-      </targets>
-      <attributes/>
-    </transitions_item>
-    <transitions_item>
-      <sources>
-        <sources_item>agent_trajectories</sources_item>
-        <sources_item>nr_agents</sources_item>
-      </sources>
-      <operator>&gt;</operator>
-      <targets>
-        <targets_item>collision_avoidance</targets_item>
-      </targets>
-      <attributes/>
-    </transitions_item>
-    <transitions_item>
-      <sources>
-        <sources_item>goal_directed_behavior</sources_item>
-        <sources_item>obstacle_avoidance</sources_item>
-        <sources_item>collision_avoidance</sources_item>
-      </sources>
-      <operator>&gt;</operator>
-      <targets>
-        <targets_item>planning_system</targets_item>
-      </targets>
-      <attributes/>
-    </transitions_item>
-  </transitions>
-  <ontology_annotations>
-    <dt>TimeStep</dt>
-    <gamma>ConstraintParameter</gamma>
-    <nr_steps>TrajectoryLength</nr_steps>
-    <nr_iterations>InferenceIterations</nr_iterations>
-    <nr_agents>NumberOfAgents</nr_agents>
-    <softmin_temperature>SoftminTemperature</softmin_temperature>
-    <A>StateTransitionMatrix</A>
-    <B>ControlInputMatrix</B>
-    <C>ObservationMatrix</C>
-    <initial_state_variance>InitialStateVariance</initial_state_variance>
-    <control_variance>ControlVariance</control_variance>
-    <goal_constraint_variance>GoalConstraintVariance</goal_constraint_variance>
-  </ontology_annotations>
-  <equations_text/>
-  <time_info>
-    <ModelTimeHorizon>nr_steps</ModelTimeHorizon>
-  </time_info>
-  <footer_text/>
-  <signature>
-    <Creator>AI Assistant for GNN</Creator>
-    <Date>2024-07-27</Date>
-    <Status>Example for RxInfer.jl multi-agent trajectory planning</Status>
-  </signature>
   <raw_sections>
     <GNNSection>RxInferMultiAgentTrajectoryPlanning</GNNSection>
     <GNNVersionAndFlags>GNN v1</GNNVersionAndFlags>
@@ -613,89 +192,6 @@ control_vis_filename=&quot;control_signals.gif&quot;
 obstacle_distance_filename=&quot;obstacle_distance.png&quot;
 path_uncertainty_filename=&quot;path_uncertainty.png&quot;
 convergence_filename=&quot;convergence.png&quot;</InitialParameterization>
-    <InitialParameterization_raw_content># Model parameters
-dt=1.0
-gamma=1.0
-nr_steps=40
-nr_iterations=350
-nr_agents=4
-softmin_temperature=10.0
-intermediate_steps=10
-save_intermediates=false
-
-# State space matrices
-# A = [1 dt 0 0; 0 1 0 0; 0 0 1 dt; 0 0 0 1]
-A={(1.0, 1.0, 0.0, 0.0), (0.0, 1.0, 0.0, 0.0), (0.0, 0.0, 1.0, 1.0), (0.0, 0.0, 0.0, 1.0)}
-
-# B = [0 0; dt 0; 0 0; 0 dt]
-B={(0.0, 0.0), (1.0, 0.0), (0.0, 0.0), (0.0, 1.0)}
-
-# C = [1 0 0 0; 0 0 1 0]
-C={(1.0, 0.0, 0.0, 0.0), (0.0, 0.0, 1.0, 0.0)}
-
-# Prior distributions
-initial_state_variance=100.0
-control_variance=0.1
-goal_constraint_variance=0.00001
-gamma_shape=1.5
-gamma_scale_factor=0.5
-
-# Visualization parameters
-x_limits={(-20, 20)}
-y_limits={(-20, 20)}
-fps=15
-heatmap_resolution=100
-plot_width=800
-plot_height=400
-agent_alpha=1.0
-target_alpha=0.2
-color_palette=&quot;tab10&quot;
-
-# Environment definitions
-door_obstacle_center_1={(-40.0, 0.0)}
-door_obstacle_size_1={(70.0, 5.0)}
-door_obstacle_center_2={(40.0, 0.0)}
-door_obstacle_size_2={(70.0, 5.0)}
-
-wall_obstacle_center={(0.0, 0.0)}
-wall_obstacle_size={(10.0, 5.0)}
-
-combined_obstacle_center_1={(-50.0, 0.0)}
-combined_obstacle_size_1={(70.0, 2.0)}
-combined_obstacle_center_2={(50.0, 0.0)}
-combined_obstacle_size_2={(70.0, 2.0)}
-combined_obstacle_center_3={(5.0, -1.0)}
-combined_obstacle_size_3={(3.0, 10.0)}
-
-# Agent configurations
-agent1_id=1
-agent1_radius=2.5
-agent1_initial_position={(-4.0, 10.0)}
-agent1_target_position={(-10.0, -10.0)}
-
-agent2_id=2
-agent2_radius=1.5
-agent2_initial_position={(-10.0, 5.0)}
-agent2_target_position={(10.0, -15.0)}
-
-agent3_id=3
-agent3_radius=1.0
-agent3_initial_position={(-15.0, -10.0)}
-agent3_target_position={(10.0, 10.0)}
-
-agent4_id=4
-agent4_radius=2.5
-agent4_initial_position={(0.0, -10.0)}
-agent4_target_position={(-10.0, 15.0)}
-
-# Experiment configurations
-experiment_seeds={(42, 123)}
-results_dir=&quot;results&quot;
-animation_template=&quot;{environment}_{seed}.gif&quot;
-control_vis_filename=&quot;control_signals.gif&quot;
-obstacle_distance_filename=&quot;obstacle_distance.png&quot;
-path_uncertainty_filename=&quot;path_uncertainty.png&quot;
-convergence_filename=&quot;convergence.png&quot;</InitialParameterization_raw_content>
     <Equations># State space model:
 # x_{t+1} = A * x_t + B * u_t + w_t,  w_t ~ N(0, control_variance)
 # y_t = C * x_t + v_t,                v_t ~ N(0, observation_variance)
@@ -734,24 +230,536 @@ nr_iterations=350</ModelParameters>
 Date: 2024-07-27
 Status: Example for RxInfer.jl multi-agent trajectory planning</Signature>
   </raw_sections>
-  <other_sections/>
-  <gnnsection/>
-  <gnnversionandflags/>
-  <equations># State space model:
-# x_{t+1} = A * x_t + B * u_t + w_t,  w_t ~ N(0, control_variance)
-# y_t = C * x_t + v_t,                v_t ~ N(0, observation_variance)
-#
-# Obstacle avoidance constraint:
-# p(x_t | obstacle) ~ N(d(x_t, obstacle), gamma)
-# where d(x_t, obstacle) is the distance from position x_t to the nearest obstacle
-#
-# Goal constraint:
-# p(x_T | goal) ~ N(goal, goal_constraint_variance)
-# where x_T is the final position
-#
-# Collision avoidance constraint:
-# p(x_i, x_j) ~ N(||x_i - x_j|| - (r_i + r_j), gamma)
-# where x_i, x_j are positions of agents i and j, r_i, r_j are their radii</equations>
-  <ModelParameters/>
-  <footer>Multi-agent Trajectory Planning - GNN Representation for RxInfer.jl</footer>
+  <statespaceblock>
+    <statespaceblock_item>
+      <id>dt</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>dt</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>nr_steps</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>nr_steps</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>nr_iterations</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>nr_iterations</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>nr_agents</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>nr_agents</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>softmin_temperature</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>softmin_temperature</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>intermediate_steps</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>intermediate_steps</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>save_intermediates</id>
+      <dimensions>1,type=bool</dimensions>
+      <original_id>save_intermediates</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>A</id>
+      <dimensions>4,4,type=float</dimensions>
+      <original_id>A</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>B</id>
+      <dimensions>4,2,type=float</dimensions>
+      <original_id>B</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C</id>
+      <dimensions>2,4,type=float</dimensions>
+      <original_id>C</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>initial_state_variance</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>initial_state_variance</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>control_variance</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>control_variance</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>goal_constraint_variance</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>goal_constraint_variance</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma_shape</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma_shape</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma_scale_factor</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma_scale_factor</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>x_limits</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>x_limits</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>y_limits</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>y_limits</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>fps</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>fps</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>heatmap_resolution</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>heatmap_resolution</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>plot_width</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>plot_width</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>plot_height</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>plot_height</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent_alpha</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>agent_alpha</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>target_alpha</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>target_alpha</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>color_palette</id>
+      <dimensions>1,type=string</dimensions>
+      <original_id>color_palette</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>door_obstacle_center_1</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>door_obstacle_center_1</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>door_obstacle_size_1</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>door_obstacle_size_1</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>door_obstacle_center_2</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>door_obstacle_center_2</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>door_obstacle_size_2</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>door_obstacle_size_2</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>wall_obstacle_center</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>wall_obstacle_center</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>wall_obstacle_size</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>wall_obstacle_size</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>combined_obstacle_center_1</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>combined_obstacle_center_1</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>combined_obstacle_size_1</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>combined_obstacle_size_1</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>combined_obstacle_center_2</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>combined_obstacle_center_2</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>combined_obstacle_size_2</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>combined_obstacle_size_2</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>combined_obstacle_center_3</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>combined_obstacle_center_3</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>combined_obstacle_size_3</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>combined_obstacle_size_3</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent1_id</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>agent1_id</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent1_radius</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>agent1_radius</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent1_initial_position</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>agent1_initial_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent1_target_position</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>agent1_target_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent2_id</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>agent2_id</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent2_radius</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>agent2_radius</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent2_initial_position</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>agent2_initial_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent2_target_position</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>agent2_target_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent3_id</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>agent3_id</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent3_radius</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>agent3_radius</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent3_initial_position</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>agent3_initial_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent3_target_position</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>agent3_target_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent4_id</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>agent4_id</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent4_radius</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>agent4_radius</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent4_initial_position</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>agent4_initial_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>agent4_target_position</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>agent4_target_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>experiment_seeds</id>
+      <dimensions>2,type=int</dimensions>
+      <original_id>experiment_seeds</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>results_dir</id>
+      <dimensions>1,type=string</dimensions>
+      <original_id>results_dir</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>animation_template</id>
+      <dimensions>1,type=string</dimensions>
+      <original_id>animation_template</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>control_vis_filename</id>
+      <dimensions>1,type=string</dimensions>
+      <original_id>control_vis_filename</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>obstacle_distance_filename</id>
+      <dimensions>1,type=string</dimensions>
+      <original_id>obstacle_distance_filename</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>path_uncertainty_filename</id>
+      <dimensions>1,type=string</dimensions>
+      <original_id>path_uncertainty_filename</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>convergence_filename</id>
+      <dimensions>1,type=string</dimensions>
+      <original_id>convergence_filename</original_id>
+    </statespaceblock_item>
+  </statespaceblock>
+  <connections>
+    <connections_item>
+      <sources>
+        <sources_item>dt</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>A</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>A</sources_item>
+        <sources_item>B</sources_item>
+        <sources_item>C</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>state_space_model</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>state_space_model</sources_item>
+        <sources_item>initial_state_variance</sources_item>
+        <sources_item>control_variance</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>agent_trajectories</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>agent_trajectories</sources_item>
+        <sources_item>goal_constraint_variance</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>goal_directed_behavior</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>agent_trajectories</sources_item>
+        <sources_item>gamma</sources_item>
+        <sources_item>gamma_shape</sources_item>
+        <sources_item>gamma_scale_factor</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>obstacle_avoidance</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>agent_trajectories</sources_item>
+        <sources_item>nr_agents</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>collision_avoidance</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>goal_directed_behavior</sources_item>
+        <sources_item>obstacle_avoidance</sources_item>
+        <sources_item>collision_avoidance</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>planning_system</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+  </connections>
+  <initialparameterization>
+    <dt>1.0</dt>
+    <gamma>1.0</gamma>
+    <nr_steps>40</nr_steps>
+    <nr_iterations>350</nr_iterations>
+    <nr_agents>4</nr_agents>
+    <softmin_temperature>10.0</softmin_temperature>
+    <intermediate_steps>10</intermediate_steps>
+    <save_intermediates>false
+
+# State space matrices
+# A = [1 dt 0 0; 0 1 0 0; 0 0 1 dt; 0 0 0 1]</save_intermediates>
+    <A>
+      <A_item>(1.0, 1.0, 0.0, 0.0)</A_item>
+      <A_item>(0.0, 1.0, 0.0, 0.0)</A_item>
+      <A_item>(0.0, 0.0, 1.0, 1.0)</A_item>
+      <A_item>(0.0, 0.0, 0.0, 1.0)</A_item>
+    </A>
+    <B>
+      <B_item>(0.0, 0.0)</B_item>
+      <B_item>(1.0, 0.0)</B_item>
+      <B_item>(0.0, 0.0)</B_item>
+      <B_item>(0.0, 1.0)</B_item>
+    </B>
+    <C>
+      <C_item>(1.0, 0.0, 0.0, 0.0)</C_item>
+      <C_item>(0.0, 0.0, 1.0, 0.0)</C_item>
+    </C>
+    <initial_state_variance>100.0</initial_state_variance>
+    <control_variance>0.1</control_variance>
+    <goal_constraint_variance>1e-05</goal_constraint_variance>
+    <gamma_shape>1.5</gamma_shape>
+    <gamma_scale_factor>0.5</gamma_scale_factor>
+    <x_limits>
+      <x_limits_item>-20</x_limits_item>
+      <x_limits_item>20</x_limits_item>
+    </x_limits>
+    <y_limits>
+      <y_limits_item>-20</y_limits_item>
+      <y_limits_item>20</y_limits_item>
+    </y_limits>
+    <fps>15</fps>
+    <heatmap_resolution>100</heatmap_resolution>
+    <plot_width>800</plot_width>
+    <plot_height>400</plot_height>
+    <agent_alpha>1.0</agent_alpha>
+    <target_alpha>0.2</target_alpha>
+    <color_palette>tab10</color_palette>
+    <door_obstacle_center_1>
+      <door_obstacle_center_1_item>-40.0</door_obstacle_center_1_item>
+      <door_obstacle_center_1_item>0.0</door_obstacle_center_1_item>
+    </door_obstacle_center_1>
+    <door_obstacle_size_1>
+      <door_obstacle_size_1_item>70.0</door_obstacle_size_1_item>
+      <door_obstacle_size_1_item>5.0</door_obstacle_size_1_item>
+    </door_obstacle_size_1>
+    <door_obstacle_center_2>
+      <door_obstacle_center_2_item>40.0</door_obstacle_center_2_item>
+      <door_obstacle_center_2_item>0.0</door_obstacle_center_2_item>
+    </door_obstacle_center_2>
+    <door_obstacle_size_2>
+      <door_obstacle_size_2_item>70.0</door_obstacle_size_2_item>
+      <door_obstacle_size_2_item>5.0</door_obstacle_size_2_item>
+    </door_obstacle_size_2>
+    <wall_obstacle_center>
+      <wall_obstacle_center_item>0.0</wall_obstacle_center_item>
+      <wall_obstacle_center_item>0.0</wall_obstacle_center_item>
+    </wall_obstacle_center>
+    <wall_obstacle_size>
+      <wall_obstacle_size_item>10.0</wall_obstacle_size_item>
+      <wall_obstacle_size_item>5.0</wall_obstacle_size_item>
+    </wall_obstacle_size>
+    <combined_obstacle_center_1>
+      <combined_obstacle_center_1_item>-50.0</combined_obstacle_center_1_item>
+      <combined_obstacle_center_1_item>0.0</combined_obstacle_center_1_item>
+    </combined_obstacle_center_1>
+    <combined_obstacle_size_1>
+      <combined_obstacle_size_1_item>70.0</combined_obstacle_size_1_item>
+      <combined_obstacle_size_1_item>2.0</combined_obstacle_size_1_item>
+    </combined_obstacle_size_1>
+    <combined_obstacle_center_2>
+      <combined_obstacle_center_2_item>50.0</combined_obstacle_center_2_item>
+      <combined_obstacle_center_2_item>0.0</combined_obstacle_center_2_item>
+    </combined_obstacle_center_2>
+    <combined_obstacle_size_2>
+      <combined_obstacle_size_2_item>70.0</combined_obstacle_size_2_item>
+      <combined_obstacle_size_2_item>2.0</combined_obstacle_size_2_item>
+    </combined_obstacle_size_2>
+    <combined_obstacle_center_3>
+      <combined_obstacle_center_3_item>5.0</combined_obstacle_center_3_item>
+      <combined_obstacle_center_3_item>-1.0</combined_obstacle_center_3_item>
+    </combined_obstacle_center_3>
+    <combined_obstacle_size_3>
+      <combined_obstacle_size_3_item>3.0</combined_obstacle_size_3_item>
+      <combined_obstacle_size_3_item>10.0</combined_obstacle_size_3_item>
+    </combined_obstacle_size_3>
+    <agent1_id>1</agent1_id>
+    <agent1_radius>2.5</agent1_radius>
+    <agent1_initial_position>
+      <agent1_initial_position_item>-4.0</agent1_initial_position_item>
+      <agent1_initial_position_item>10.0</agent1_initial_position_item>
+    </agent1_initial_position>
+    <agent1_target_position>
+      <agent1_target_position_item>-10.0</agent1_target_position_item>
+      <agent1_target_position_item>-10.0</agent1_target_position_item>
+    </agent1_target_position>
+    <agent2_id>2</agent2_id>
+    <agent2_radius>1.5</agent2_radius>
+    <agent2_initial_position>
+      <agent2_initial_position_item>-10.0</agent2_initial_position_item>
+      <agent2_initial_position_item>5.0</agent2_initial_position_item>
+    </agent2_initial_position>
+    <agent2_target_position>
+      <agent2_target_position_item>10.0</agent2_target_position_item>
+      <agent2_target_position_item>-15.0</agent2_target_position_item>
+    </agent2_target_position>
+    <agent3_id>3</agent3_id>
+    <agent3_radius>1.0</agent3_radius>
+    <agent3_initial_position>
+      <agent3_initial_position_item>-15.0</agent3_initial_position_item>
+      <agent3_initial_position_item>-10.0</agent3_initial_position_item>
+    </agent3_initial_position>
+    <agent3_target_position>
+      <agent3_target_position_item>10.0</agent3_target_position_item>
+      <agent3_target_position_item>10.0</agent3_target_position_item>
+    </agent3_target_position>
+    <agent4_id>4</agent4_id>
+    <agent4_radius>2.5</agent4_radius>
+    <agent4_initial_position>
+      <agent4_initial_position_item>0.0</agent4_initial_position_item>
+      <agent4_initial_position_item>-10.0</agent4_initial_position_item>
+    </agent4_initial_position>
+    <agent4_target_position>
+      <agent4_target_position_item>-10.0</agent4_target_position_item>
+      <agent4_target_position_item>15.0</agent4_target_position_item>
+    </agent4_target_position>
+    <experiment_seeds>
+      <experiment_seeds_item>42</experiment_seeds_item>
+      <experiment_seeds_item>123</experiment_seeds_item>
+    </experiment_seeds>
+    <results_dir>results</results_dir>
+    <animation_template>[environment]_[seed].gif</animation_template>
+    <control_vis_filename>control_signals.gif</control_vis_filename>
+    <obstacle_distance_filename>obstacle_distance.png</obstacle_distance_filename>
+    <path_uncertainty_filename>path_uncertainty.png</path_uncertainty_filename>
+    <convergence_filename>convergence.png</convergence_filename>
+  </initialparameterization>
 </Multi-agent_Trajectory_Planning>

@@ -93,46 +93,34 @@ class GNNParser:
     
     def _parse_markdown_format(self, content: str) -> Dict[str, Any]:
         """Parse GNN file in Markdown format."""
-        lines = content.splitlines()
         sections: Dict[str, Any] = {}
-        current_section_name: str | None = None
-        current_section_content: List[str] = []
         
-        # Preserve header comments (lines starting with # not followed by ##)
-        header_comments = []
-        line_idx = 0
-        while line_idx < len(lines) and lines[line_idx].startswith('#') and not lines[line_idx].startswith('##'):
-            header_comments.append(lines[line_idx])
-            line_idx +=1
-        if header_comments:
-            sections['_HeaderComments'] = "\n".join(header_comments)
-
-        # Heuristic for ModelName and ModelAnnotation if not explicitly sectioned early
-        # This is based on the observation that the first few non-comment, non-section lines might be these.
-        if lines[0].startswith('# ') and not lines[0].startswith('## '):
-            potential_model_name = lines[0][2:].strip()
-            if 'ModelName' not in sections:
-                 sections['ModelName'] = potential_model_name
-
-        for line in lines[line_idx:]:
-            stripped_line = line.strip()
-            if stripped_line.startswith('## '):
-                if current_section_name and current_section_content:
-                    sections[current_section_name] = '\n'.join(current_section_content).strip()
-                
-                current_section_name = stripped_line[3:].strip()
-                current_section_content = []
-                # Handle cases where section name might have a colon (as seen in gnn_file_structure.md)
-                if ':' in current_section_name:
-                    current_section_name = current_section_name.split(':',1)[0].strip()
-
-            elif current_section_name:
-                current_section_content.append(line)
+        # Regex to find all section headers (## SectionName)
+        section_headers = list(re.finditer(r"^##\s+([a-zA-Z0-9_]+)", content, re.MULTILINE))
         
-        # Save the last section
-        if current_section_name and current_section_content:
-            sections[current_section_name] = '\n'.join(current_section_content).strip()
-        
+        # Preserve header comments (lines before the first section header)
+        if section_headers:
+            first_header_start = section_headers[0].start()
+            header_comments_content = content[:first_header_start].strip()
+            if header_comments_content:
+                sections['_HeaderComments'] = header_comments_content
+        else:
+            # If no sections, the whole file might be header comments or unstructured
+            header_comments_content = content.strip()
+            if header_comments_content:
+                sections['_HeaderComments'] = header_comments_content
+
+        for i, header_match in enumerate(section_headers):
+            section_name = header_match.group(1).strip()
+            start_pos = header_match.end()
+            
+            # The end of the section is the start of the next section, or the end of the file
+            end_pos = section_headers[i+1].start() if i + 1 < len(section_headers) else len(content)
+            
+            section_content = content[start_pos:end_pos].strip()
+            
+            sections[section_name] = section_content
+
         # Process specific GNN sections for structured data
         self._process_state_space(sections)
         self._process_connections(sections)

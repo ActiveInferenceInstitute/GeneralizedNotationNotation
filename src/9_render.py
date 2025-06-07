@@ -18,9 +18,8 @@ src_dir = current_script_path.parent
 if str(src_dir) not in sys.path:
     sys.path.insert(0, str(src_dir))
 
-# Import rendering functions directly
-from render.pymdp_renderer import render_gnn_to_pymdp
-from render.rxinfer import render_gnn_to_rxinfer_toml
+# Import rendering functions directly from the render package
+from render import render_gnn_to_pymdp, render_gnn_to_rxinfer_toml
 
 logger = logging.getLogger(__name__)
 
@@ -36,10 +35,11 @@ def main(args: argparse.Namespace) -> int:
         logger.warning(f"GNN export directory not found: {gnn_export_dir}. Skipping render step.")
         return 0
 
-    gnn_files = list(gnn_export_dir.rglob("*.json")) if args.recursive else list(gnn_export_dir.glob("*.json"))
+    # Always search recursively as the export step creates per-model subdirectories.
+    gnn_files = list(gnn_export_dir.rglob("*.json"))
 
     if not gnn_files:
-        logger.warning(f"No GNN JSON files found in {gnn_export_dir}. Nothing to render.")
+        logger.warning(f"No GNN JSON files found in {gnn_export_dir} or its subdirectories. Nothing to render.")
         return 0
 
     logger.info(f"Found {len(gnn_files)} GNN JSON files to render.")

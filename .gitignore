@@ -8,5 +8,6 @@ src/.pytest_cache/
 # Environment variables
 .env
 /doc/rxinfer/RxInferExamples.jl
-*.pyc
-*.pyc
+*.pytest_cache
+*.pyc 
+/src/export/__pycache__

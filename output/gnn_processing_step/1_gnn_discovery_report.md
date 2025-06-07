@@ -1,34 +1,32 @@
 # GNN File Discovery Report
 
-Processed 2 GNN file(s) from directory: `src/gnn/examples`
-Search pattern used: `**/*.md`
+## Summary
 
-## Overall Summary
-
-- GNN files processed: 2
-- Files with ModelName found: 2
-- Files with StateSpaceBlock found: 0
-- Files with Connections section found: 0
+- Total .md files found: 2
+- Files with 'ModelName' found: 2
+- Files with 'StateSpaceBlock' found: 2
+- Files with 'Connections' found: 2
 - Files with processing errors: 0
 
----
 ## Detailed File Analysis
 
-### File: `src/gnn/examples/pymdp_pomdp_agent.md`
+### `src/gnn/examples/pymdp_pomdp_agent.md`
 
-#### Found Sections:
-- ModelName: Found: Multifactor PyMDP Agent v1
-- StateSpaceBlock: Not found
-- Connections: Not found
-- ModelParameters: Found (3 parameters parsed)
-
----
-### File: `src/gnn/examples/rxinfer_multiagent_gnn.md`
-
-#### Found Sections:
-- ModelName: Found: Multi-agent Trajectory Planning
-- StateSpaceBlock: Not found
-- Connections: Not found
-- ModelParameters: Found (section present, but no parameters parsed)
+- **ModelName**: Multifactor PyMDP Agent v1
+- **StateSpaceBlock**: Found
+- **Connections**: Found
+- **ModelParameters**:
+  - `num_hidden_states_factors`: `[2, 3]`
+  - `num_obs_modalities`: `[3, 3, 3]`
+  - `num_control_factors`: `[1, 3]`
 
 ---
+
+### `src/gnn/examples/rxinfer_multiagent_gnn.md`
+
+- **ModelName**: Multi-agent Trajectory Planning
+- **StateSpaceBlock**: Found
+- **Connections**: Found
+
+---
+

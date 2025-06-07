@@ -96,6 +96,26 @@ obstacle_distance_filename[1,type=string] # Filename for obstacle distance plot
 path_uncertainty_filename[1,type=string]  # Filename for path uncertainty plot
 convergence_filename[1,type=string]       # Filename for convergence plot
 
+## Connections
+# Model parameters
+dt > A
+(A, B, C) > state_space_model
+
+# Agent trajectories
+(state_space_model, initial_state_variance, control_variance) > agent_trajectories
+
+# Goal constraints
+(agent_trajectories, goal_constraint_variance) > goal_directed_behavior
+
+# Obstacle avoidance
+(agent_trajectories, gamma, gamma_shape, gamma_scale_factor) > obstacle_avoidance
+
+# Collision avoidance
+(agent_trajectories, nr_agents) > collision_avoidance
+
+# Complete planning system
+(goal_directed_behavior, obstacle_avoidance, collision_avoidance) > planning_system
+
 ## InitialParameterization
 # Model parameters
 dt=1.0
@@ -180,26 +200,6 @@ control_vis_filename="control_signals.gif"
 obstacle_distance_filename="obstacle_distance.png"
 path_uncertainty_filename="path_uncertainty.png"
 convergence_filename="convergence.png"
-
-## Connections
-# Model parameters
-dt > A
-(A, B, C) > state_space_model
-
-# Agent trajectories
-(state_space_model, initial_state_variance, control_variance) > agent_trajectories
-
-# Goal constraints
-(agent_trajectories, goal_constraint_variance) > goal_directed_behavior
-
-# Obstacle avoidance
-(agent_trajectories, gamma, gamma_shape, gamma_scale_factor) > obstacle_avoidance
-
-# Collision avoidance
-(agent_trajectories, nr_agents) > collision_avoidance
-
-# Complete planning system
-(goal_directed_behavior, obstacle_avoidance, collision_avoidance) > planning_system
 
 ## Equations
 # State space model:

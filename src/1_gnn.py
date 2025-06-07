@@ -86,19 +86,6 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Path | 
     else:
         logger.info("Recursive mode disabled: searching in top-level directory only.")
 
-    # Determine project root, assuming this script is in 'src/' subdirectory of project root
-    # This is now passed as an argument, but can be determined as a fallback if not provided.
-    # if not project_root:
-    #     try:
-    #         script_file_path = Path(__file__).resolve()
-    #         project_root_determined = script_file_path.parent.parent
-    #         logger.debug(f"Determined project root internally: {project_root_determined}")
-    #         # No longer setting global _project_root_path_1_gnn
-    #     except Exception as e:
-    #         logger.warning(f"Could not automatically determine project root. File paths in report might be absolute or less standardized: {e}")
-    # else:
-    #     logger.debug(f"Using provided project root: {project_root}")
-
     gnn_target_path_abs = target_dir.resolve()
 
     if not target_dir.is_dir():
@@ -140,13 +127,12 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Path | 
             logger.info(f"Empty report saved to: {_get_relative_path_if_possible(report_file_path_abs, project_root)}")
         except IOError as e:
             logger.error(f"Failed to write empty report to {report_file_path_abs}: {e}")
-            # Decide if this is fatal for the step; for now, non-fatal to allow pipeline progress
-        return 0 # No files found is not an error for the script itself, just an outcome.
+        return 0 
 
     logger.info(f"Found {len(gnn_files)} .md file(s) to process in '{_get_relative_path_if_possible(gnn_target_path_abs, project_root)}'.")
 
     for gnn_file_path_obj in gnn_files:
-        resolved_gnn_file_path = gnn_file_path_obj.resolve() # gnn_file_path_obj is already a Path
+        resolved_gnn_file_path = gnn_file_path_obj.resolve() 
         path_for_report_str = _get_relative_path_if_possible(resolved_gnn_file_path, project_root)
         
         logger.debug(f"Processing file: {path_for_report_str}")
@@ -160,70 +146,58 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Path | 
             "errors": list()
         }
         try:
-            with open(resolved_gnn_file_path, "r", encoding="utf-8") as f: # Use resolved path to open
+            with open(resolved_gnn_file_path, "r", encoding="utf-8") as f:
                 content = f.read()
             logger.debug(f"Successfully read content from {path_for_report_str}.")
             
-            # Basic section parsing
             # ModelName parsing
             model_name_section_header_text = "ModelName"
-            model_name_str = "Not found" # Default status message
-            parsed_model_name = "Not found" # Actual parsed name
+            model_name_str = "Not found" 
+            parsed_model_name = "Not found" 
 
-            # Regex to find the "## ModelName" header, case-insensitive for "ModelName"
-            # It captures the header itself to know its end position.
-            _model_name_regex_string: str = rf"^##\s*{model_name_section_header_text}\s*$\r?"
+            _model_name_regex_string: str = rf"^##\s*{re.escape(model_name_section_header_text)}\s*$\r?"
             model_name_header_pattern: re.Pattern[str] = re.compile(_model_name_regex_string, re.IGNORECASE | re.MULTILINE)
             model_name_header_match = model_name_header_pattern.search(content)
 
             if model_name_header_match:
                 logger.debug(f"  Found '## {model_name_section_header_text}' header in {path_for_report_str}")
-                found_model_name_count += 1 # Count if header is present
+                found_model_name_count += 1
                 
-                # Determine the content region for the model name:
-                # from end of its header to start of the next section or end of file.
                 content_after_header = content[model_name_header_match.end():]
-                next_section_header_match = re.search(r"^##\s+\\w+", content_after_header, re.MULTILINE)
+                next_section_header_match = re.search(r"^##\s+\w+", content_after_header, re.MULTILINE)
                 
                 if next_section_header_match:
                     name_region_content = content_after_header[:next_section_header_match.start()]
                 else:
                     name_region_content = content_after_header
                 
-                # Find the first suitable line in this region
                 extracted_name_candidate = ""
                 for line in name_region_content.splitlines():
                     stripped_line = line.strip()
                     if stripped_line and not stripped_line.startswith("#"):
                         extracted_name_candidate = stripped_line
-                        break # Found the first potential name
+                        break
                 
                 if extracted_name_candidate:
                     parsed_model_name = extracted_name_candidate
-                    model_name_str = f"Found: {parsed_model_name}" # Status message for report
+                    model_name_str = f"Found: {parsed_model_name}"
                     logger.debug(f"    Extracted {model_name_section_header_text}: '{parsed_model_name}' from {path_for_report_str}")
                 else:
-                    # Header was found, but no suitable non-comment/non-empty line followed in its section
                     parsed_model_name = "(Header found, but name line empty or only comments)"
-                    model_name_str = "Found (header only, name line empty/commented)" # Status message
+                    model_name_str = "Found (header only, name line empty/commented)"
                     logger.debug(f"    '## {model_name_section_header_text}' header found, but no suitable name line in {path_for_report_str}")
             else:
-                # '## ModelName' header itself was not found
                 parsed_model_name = "Not found"
-                model_name_str = "Not found" # Status message (already default)
+                model_name_str = "Not found"
                 logger.debug(f"  '## {model_name_section_header_text}' section header not found in {path_for_report_str}")
 
-            file_summary["model_name"] = parsed_model_name # Store the parsed name or status
-            # The sections_found list in the report will use model_name_str for its verbose status.
-            # We need to update how sections_found is populated for ModelName.
-            # First, remove any old ModelName entry from sections_found if it exists from a previous iteration logic.
+            file_summary["model_name"] = parsed_model_name
             file_summary["sections_found"] = [s for s in file_summary["sections_found"] if not s.startswith("ModelName:")]
-            file_summary["sections_found"].insert(0, f"ModelName: {model_name_str}") # Insert at beginning
+            file_summary["sections_found"].insert(0, f"ModelName: {model_name_str}")
 
             # StateSpaceBlock parsing
             statespace_section_header_text = "StateSpaceBlock"
-            # Match if line starts with "## StateSpaceBlock" (case insensitive for "StateSpaceBlock"), allowing only optional comment after.
-            statespace_search_pattern = rf"^##\\s*{re.escape(statespace_section_header_text)}\\s*(?:#.*)?$" 
+            statespace_search_pattern = rf"^##\s*{re.escape(statespace_section_header_text)}\s*(?:#.*)?$"
             statespace_match = re.search(statespace_search_pattern, content, re.MULTILINE | re.IGNORECASE)
             if statespace_match:
                 file_summary["sections_found"].append("StateSpaceBlock: Found")
@@ -237,8 +211,7 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Path | 
 
             # Connections parsing
             connections_section_header_text = "Connections"
-            # Match if line starts with "## Connections" (case insensitive for "Connections"), allowing only optional comment after.
-            connections_search_pattern = rf"^##\\s*{re.escape(connections_section_header_text)}\\s*(?:#.*)?$"
+            connections_search_pattern = rf"^##\s*{re.escape(connections_section_header_text)}\s*(?:#.*)?$"
             connections_match = re.search(connections_search_pattern, content, re.MULTILINE | re.IGNORECASE)
             if connections_match:
                 file_summary["sections_found"].append("Connections: Found")
@@ -251,109 +224,84 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Path | 
                     logger.debug(f"    Content snippet for {path_for_report_str} (up to 500 chars) where {connections_section_header_text} was not found:\n{content[:500]}")
 
             # ModelParameters parsing
-            model_params_section_header_text = "ModelParameters"
-            model_params_search_pattern = rf"^##\s*{re.escape(model_params_section_header_text)}\s*(?:#.*)?$"
-            model_params_match = re.search(model_params_search_pattern, content, re.MULTILINE | re.IGNORECASE)
-            if model_params_match:
-                logger.debug(f"  Found {model_params_section_header_text} section in {path_for_report_str}")
-                section_content_start = model_params_match.end()
-                # Find the next section header or end of file
-                next_section_match = re.search(r"^##\s*\w+", content[section_content_start:], re.MULTILINE)
-                section_content_end = next_section_match.start() + section_content_start if next_section_match else len(content)
+            parameters_section_header_text = "ModelParameters"
+            parameters_search_pattern = rf"^##\s*{re.escape(parameters_section_header_text)}\s*(?:#.*)?$"
+            parameters_match = re.search(parameters_search_pattern, content, re.MULTILINE | re.IGNORECASE)
+            if parameters_match:
+                logger.debug(f"  Found {parameters_section_header_text} section in {path_for_report_str}")
                 
-                params_content = content[section_content_start:section_content_end]
-                parsed_params_count = 0
-                for line in params_content.splitlines():
-                    line = line.strip()
-                    if not line or line.startswith("#"): # Skip empty lines and comments
-                        continue
-                    
-                    match = re.match(r"([\w_]+):\s*(\[.*?\])\s*(?:#.*)?", line) # Capture key and list-like value
+                content_after_header = content[parameters_match.end():]
+                next_section_match = re.search(r"^##\s+\w+", content_after_header, re.MULTILINE)
+                
+                param_region = content_after_header
+                if next_section_match:
+                    param_region = content_after_header[:next_section_match.start()]
+                
+                parsed_params = {}
+                # Regex to capture key: value pairs, ignoring comments
+                param_line_pattern = re.compile(r"^\s*([\w_]+)\s*:\s*(.*?)\s*(?:#.*)?$")
+                for line in param_region.splitlines():
+                    match = param_line_pattern.match(line)
                     if match:
-                        key = match.group(1).strip()
-                        value_str = match.group(2).strip()
-                        try:
-                            # Attempt to evaluate the string as a Python literal (e.g., "[1, 2]" -> [1, 2])
-                            # This is safer than full eval() but still needs caution if input isn't controlled.
-                            # For GNN, we assume parameters are simple lists of numbers.
-                            import ast
-                            value = ast.literal_eval(value_str)
-                            if isinstance(value, list): # Ensure it's a list
-                                file_summary["model_parameters"][key] = value
-                                logger.debug(f"    Parsed ModelParameter: {key} = {value}")
-                                parsed_params_count += 1
-                            else:
-                                logger.warning(f"    ModelParameter '{key}' value '{value_str}' did not evaluate to a list in {path_for_report_str}. Storing as string.")
-                                file_summary["model_parameters"][key] = value_str # Store as string if not a list
-                        except (ValueError, SyntaxError) as e:
-                            logger.warning(f"    Could not parse ModelParameter value for '{key}' ('{value_str}') as list in {path_for_report_str}: {e}. Storing as string.")
-                            file_summary["model_parameters"][key] = value_str # Store as string on error
-                    elif ':' in line: # Fallback for lines that might not be list format but are key:value
-                        key_part, value_part = line.split(":", 1)
-                        key = key_part.strip()
-                        value = value_part.split("#", 1)[0].strip() # Remove comments
-                        file_summary["model_parameters"][key] = value # Store as string
-                        logger.debug(f"    Parsed ModelParameter (as string): {key} = {value}")
-                        parsed_params_count +=1
-
-                if parsed_params_count > 0:
-                    file_summary["sections_found"].append(f"ModelParameters: Found ({parsed_params_count} parameters parsed)")
-                else:
-                    file_summary["sections_found"].append("ModelParameters: Found (section present, but no parameters parsed)")
-            else:
-                file_summary["sections_found"].append("ModelParameters: Not found")
-                logger.debug(f"  {model_params_section_header_text} section not found in {path_for_report_str}")
-
+                        key, value = match.groups()
+                        parsed_params[key] = value.strip()
+                        logger.debug(f"    Parsed ModelParameter: {key} = {value.strip()}")
+                file_summary["model_parameters"] = parsed_params
+            
         except Exception as e:
-            logger.error(f"Error processing file {path_for_report_str}: {e}", exc_info=verbose) # Show traceback if verbose
+            logger.error(f"Error processing file '{path_for_report_str}': {e}", exc_info=verbose)
             file_summary["errors"].append(str(e))
             files_with_errors_count += 1
         
         processed_files_summary.append(file_summary)
 
-    # Generate the report
+    # Now write the report
     try:
         with open(report_file_path, "w", encoding="utf-8") as f_report:
-            f_report.write("# GNN File Discovery Report\n\n") 
-            f_report.write(f"Processed {len(gnn_files)} GNN file(s) from directory: `{_get_relative_path_if_possible(gnn_target_path_abs, project_root)}`\n")
-            f_report.write(f"Search pattern used: `{file_pattern}`\n\n")
-
-            # --- Add Overall Summary ---
-            f_report.write("## Overall Summary\n\n")
-            f_report.write(f"- GNN files processed: {len(gnn_files)}\n")
-            f_report.write(f"- Files with ModelName found: {found_model_name_count}\n")
-            f_report.write(f"- Files with StateSpaceBlock found: {found_statespace_count}\n")
-            f_report.write(f"- Files with Connections section found: {found_connections_count}\n")
+            f_report.write("# GNN File Discovery Report\n\n")
+            f_report.write("## Summary\n\n")
+            f_report.write(f"- Total .md files found: {len(gnn_files)}\n")
+            f_report.write(f"- Files with 'ModelName' found: {found_model_name_count}\n")
+            f_report.write(f"- Files with 'StateSpaceBlock' found: {found_statespace_count}\n")
+            f_report.write(f"- Files with 'Connections' found: {found_connections_count}\n")
             f_report.write(f"- Files with processing errors: {files_with_errors_count}\n\n")
-            f_report.write("---\n") 
-            # --- End Overall Summary ---
-            
             f_report.write("## Detailed File Analysis\n\n")
 
             for summary in processed_files_summary:
-                f_report.write(f"### File: `{summary['path']}`\n\n") 
-                f_report.write("#### Found Sections:\n") 
-                if summary["sections_found"]:
-                    for section_info in summary["sections_found"]:
-                        f_report.write(f"- {section_info}\n")
-                else:
-                    f_report.write("- (No specific sections parsed or found)\n")
+                f_report.write(f"### `{summary['path']}`\n\n")
+                f_report.write(f"- **ModelName**: {summary['model_name']}\n")
+                
+                # Reformat sections_found list for cleaner report output
+                sections_output = []
+                for section in summary['sections_found']:
+                    if section.startswith("ModelName:"): continue # Skip, as it's already displayed
+                    parts = section.split(":", 1)
+                    if len(parts) == 2:
+                        sections_output.append(f"- **{parts[0].strip()}**: {parts[1].strip()}")
+                    else:
+                        sections_output.append(f"- {section}")
+                
+                f_report.write("\n".join(sections_output))
+                f_report.write("\n")
+                
+                if summary["model_parameters"]:
+                    f_report.write("- **ModelParameters**:\n")
+                    for key, val in summary["model_parameters"].items():
+                        f_report.write(f"  - `{key}`: `{val}`\n")
                 
                 if summary["errors"]:
-                    f_report.write("\n#### Errors During Processing:\n") # Changed from H3 to H4 for consistency
+                    f_report.write("- **Errors**:\n")
                     for error in summary["errors"]:
-                        f_report.write(f"- {error}\n")
-                f_report.write("\n---\n")
+                        f_report.write(f"  - `{error}`\n")
+                f_report.write("\n---\n\n")
+        
         logger.info(f"GNN discovery report saved to: {_get_relative_path_if_possible(report_file_path_abs, project_root)}")
     except IOError as e:
         logger.error(f"Failed to write GNN discovery report to {report_file_path_abs}: {e}")
-        return 1 # Failure to write report is an error for this step
-
-    if files_with_errors_count > 0:
-        logger.warning(f"{files_with_errors_count} file(s) encountered errors during processing.")
-        return 2 # Success with warnings
+        return False
     
-    return 0 # Pure success
+    logger.info("Step 1_gnn completed successfully.")
+    return True
 
 def main(parsed_args: argparse.Namespace):
     """Main function to handle argument parsing and call processing logic.
@@ -420,13 +368,11 @@ def main(parsed_args: argparse.Namespace):
         verbose=parsed_args.verbose
     )
     
-    if result_code == 0:
+    if result_code:
         logger.info("Step 1_gnn completed successfully.")
-    elif result_code == 2:
-        logger.warning("Step 1_gnn completed with warnings.")
     else:
         logger.error("Step 1_gnn failed.")
-        sys.exit(result_code)
+        sys.exit(1)
 
 if __name__ == "__main__":
     # When run as a script, create a simple parser for standalone execution
@@ -465,26 +411,4 @@ if __name__ == "__main__":
         logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
 
     # Call the script's main function, passing the parsed args.
-    main(cli_args)
-
-# --- Helper function to simulate main.py args for testing (if needed) ---
-# This is how main.py (subprocess version) would effectively call this script:
-# python 1_gnn.py --target-dir path/to/target --output-dir path/to/output --recursive --verbose
-
-# Example for direct call testing (if you were to import and run main() from another script):
-# class DummyArgs:
-#     def __init__(self):
-#         self.target_dir = Path("../src/gnn/examples").resolve() # Adjust path as needed for testing
-#         self.output_dir = Path("../output").resolve()
-#         self.recursive = True
-#         self.verbose = True # Set to False to test non-verbose
-# test_args = DummyArgs()
-# # If testing standalone, the __main__ block handles logging setup.
-# # If testing main() directly after importing, ensure logging is configured before calling main(test_args).
-# # Example for direct main() call with manual logging setup (mimicking standalone for test):
-# # if setup_standalone_logging:
-# #    setup_standalone_logging(level=logging.DEBUG if test_args.verbose else logging.INFO, logger_name=__name__)
-# # else:
-# #    logging.basicConfig(level=logging.DEBUG if test_args.verbose else logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', stream=sys.stdout)
-# #    logging.getLogger(__name__).setLevel(logging.DEBUG if test_args.verbose else logging.INFO)
-# main(test_args) 
+    main(cli_args) 

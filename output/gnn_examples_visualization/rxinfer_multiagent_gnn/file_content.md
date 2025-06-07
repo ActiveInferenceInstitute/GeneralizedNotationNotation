@@ -264,12 +264,6 @@ Status: Example for RxInfer.jl multi-agent trajectory planning \n```\n\n## Parse
 # This file is machine-readable and represents the configuration for the RxInfer.jl multi-agent trajectory planning example.
 ```
 
-### ModelName
-
-```
-Multi-agent Trajectory Planning
-```
-
 ### GNNSection
 
 ```
@@ -280,6 +274,12 @@ RxInferMultiAgentTrajectoryPlanning
 
 ```
 GNN v1
+```
+
+### ModelName
+
+```
+Multi-agent Trajectory Planning
 ```
 
 ### ModelAnnotation

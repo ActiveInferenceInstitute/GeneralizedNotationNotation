@@ -56,15 +56,22 @@ logger = logging.getLogger(__name__)
 # Attempt to import format exporters. Assumes 'src' is in PYTHONPATH or script is run correctly by main.py
 try:
     from export.format_exporters import (
-        _gnn_model_to_dict, export_to_json_gnn, export_to_xml_gnn,
-        export_to_plaintext_summary, export_to_plaintext_dsl,
-        export_to_gexf, export_to_graphml,
-        export_to_json_adjacency_list, export_to_python_pickle
+        _gnn_model_to_dict,
+        export_to_json_gnn,
+        export_to_xml_gnn,
+        export_to_plaintext_summary,
+        export_to_plaintext_dsl,
+        export_to_gexf,
+        export_to_graphml,
+        export_to_json_adjacency_list,
+        export_to_python_pickle,
+        HAS_NETWORKX
     )
     FORMAT_EXPORTERS_LOADED = True
 except ImportError as e:
     logger.critical(f"CRITICAL: Failed to import format_exporters. Individual GNN export formats will be unavailable. Error: {e}")
     FORMAT_EXPORTERS_LOADED = False
+    HAS_NETWORKX = False
     # Define dummy functions so the script doesn't crash if these are called later
     def _gnn_model_to_dict(*args, **kwargs): raise NotImplementedError("format_exporters not loaded")
     def export_to_json_gnn(*args, **kwargs): logger.error("export_to_json_gnn not available due to import error"); return False
@@ -83,18 +90,19 @@ AVAILABLE_EXPORT_FUNCTIONS = {
     "xml": export_to_xml_gnn,
     "txt_summary": export_to_plaintext_summary,
     "dsl": export_to_plaintext_dsl,
-    "gexf": export_to_gexf,
-    "graphml": export_to_graphml,
-    "json_adj": export_to_json_adjacency_list,
     "pkl": export_to_python_pickle
 } if FORMAT_EXPORTERS_LOADED else {}
 
+if FORMAT_EXPORTERS_LOADED and HAS_NETWORKX:
+    AVAILABLE_EXPORT_FUNCTIONS.update({
+        "gexf": export_to_gexf,
+        "graphml": export_to_graphml,
+        "json_adj": export_to_json_adjacency_list,
+    })
+elif FORMAT_EXPORTERS_LOADED and not HAS_NETWORKX:
+    logger.warning("NetworkX-dependent export formats (gexf, graphml, json_adj) are disabled because networkx is not installed.")
+
 DEFAULT_EXPORT_FORMATS = ["json", "xml", "txt_summary", "dsl"] # A sensible default set
-
-# --- Helper Functions (generate_summary_report, export_gnn_to_all_formats) ---
-# These will be modified to use the formats argument and improve logging/structure
-# (Content of these functions from the previous version will be integrated and refactored below)
-
 
 def _get_relative_path_if_possible(absolute_path_obj: Path, project_root: Path | None) -> str:
     if project_root:
@@ -185,7 +193,16 @@ def export_gnn_file_to_selected_formats(gnn_file_path: Path, base_output_dir: Pa
         try:
             logger.debug(f"      📤 Exporting to {fmt_key.upper()} -> {_get_relative_path_if_possible(output_file, project_root_for_reporting)}")
             export_func(gnn_model_dict, str(output_file)) # Pass the parsed dict
-            logger.info(f"      ✅ Successfully exported to {output_file.name} (format: {fmt_key})")
+            
+            try:
+                file_size_bytes = output_file.stat().st_size
+                file_size_kb = file_size_bytes / 1024
+                size_str = f", size: {file_size_kb:.2f} KB"
+            except Exception as e:
+                logger.debug(f"Could not read file size for {output_file.name}: {e}")
+                size_str = "" # Gracefully handle if size cannot be read
+
+            logger.info(f"      ✅ Successfully exported to {output_file.name} (format: {fmt_key}{size_str})")
             success_count += 1
         except Exception as e:
             logger.error(f"      ❌ Error exporting to {fmt_key.upper()} ({output_file.name}): {e}", exc_info=verbose)
@@ -376,96 +393,104 @@ def generate_overall_pipeline_summary_report(target_dir_abs: Path, output_dir_ab
     logger.info(f"📄 Overall pipeline summary report saved to: {summary_file}")
 
 def main(parsed_args: argparse.Namespace):
-    """Main function for the GNN export step (Step 5).\n
-    Orchestrates the process of finding GNN files, exporting them to selected formats,
-    and generating summary reports.
-
-    Args:
-        parsed_args (argparse.Namespace): Pre-parsed command-line arguments.
-            Expected attributes: target_dir, output_dir, recursive, formats, verbose.
-    """
-    script_file_path = Path(__file__).resolve()
-    project_root = script_file_path.parent.parent # Assuming this script is in src/
-
-    # Configure logger for this script
-    log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
-    logger.setLevel(log_level)
-    logger.debug(f"Script logger '{logger.name}' level set to {logging.getLevelName(log_level)}.")
-    
-    logger.info(f"▶️ Starting Step 5: Export ({script_file_path.name})")
-    logger.debug(f"  Parsed args: {parsed_args}")
-
-    target_dir_abs = parsed_args.target_dir.resolve()
-    output_dir_abs = parsed_args.output_dir.resolve()
-
-    try:
-        output_dir_abs.mkdir(parents=True, exist_ok=True)
-        (output_dir_abs / "gnn_exports").mkdir(parents=True, exist_ok=True)
-        logger.info(f"  Ensured output directory for exports: {output_dir_abs / 'gnn_exports'}")
-    except OSError as e:
-        logger.error(f"  ❌ Failed to create output directories: {e}. Aborting export step.")
-        return 1
-
-    formats_input_str = parsed_args.formats.lower()
-    if "all" in formats_input_str or not formats_input_str.strip():
-        selected_formats = list(AVAILABLE_EXPORT_FUNCTIONS.keys())
-        logger.info(f"  Exporting to all available formats: {selected_formats}")
+    """Main execution function for the export script."""
+    # Setup logger based on verbosity
+    if parsed_args.verbose:
+        logger.setLevel(logging.DEBUG)
     else:
-        requested_formats_list = [f.strip() for f in formats_input_str.split(',') if f.strip()]
-        selected_formats = []
-        for req_f in requested_formats_list:
-            if req_f in AVAILABLE_EXPORT_FUNCTIONS:
-                selected_formats.append(req_f)
+        logger.setLevel(logging.INFO)
+
+    # --- Start of Diagnostic Logging ---
+    logger.info("--- 5_export.py execution started ---")
+    logger.info(f"Received arguments: {parsed_args}")
+    target_dir = parsed_args.target_dir.resolve()
+    logger.info(f"Resolved target directory: {target_dir}")
+    logger.info(f"Checking if target directory exists: {target_dir.exists()}")
+    logger.info(f"Checking if target directory is a directory: {target_dir.is_dir()}")
+    is_recursive = parsed_args.recursive
+    logger.info(f"Recursive mode: {is_recursive}")
+    # --- End of Diagnostic Logging ---
+
+    logger.debug(f"Export script started with arguments: {parsed_args}")
+
+    output_dir = parsed_args.output_dir.resolve()
+    project_root = Path(__file__).resolve().parent.parent
+
+    # Corrected glob_pattern to look for standard markdown files.
+    glob_pattern = "**/*.md" if is_recursive else "*.md"
+    logger.info(f"Using glob pattern: '{glob_pattern}' in directory '{target_dir}'")
+
+    discovered_files = []
+    if target_dir.is_dir():
+        discovered_files = list(target_dir.glob(glob_pattern))
+    
+    logger.info(f"Found {len(discovered_files)} files using glob pattern.")
+    if discovered_files:
+        logger.debug("Discovered files list:")
+        for f in discovered_files:
+            logger.debug(f"  - {f}")
+
+    if not discovered_files:
+        logger.info(f"No GNN markdown files found in '{target_dir}' with pattern '{glob_pattern}'. Nothing to export.")
+        # Generate an empty summary report
+        generate_export_summary_report(
+            str(target_dir), str(output_dir), 0, 0, 0,
+            recursive=parsed_args.recursive, verbose=parsed_args.verbose
+        )
+        return 0
+    
+    logger.info(f"Starting GNN export for {len(discovered_files)} discovered GNN files...")
+
+    # Determine which formats to export
+    formats_to_export_str = parsed_args.formats.lower()
+    if "all" in formats_to_export_str:
+        formats_to_export = list(AVAILABLE_EXPORT_FUNCTIONS.keys())
+    else:
+        formats_to_export = [fmt.strip() for fmt in formats_to_export_str.split(',') if fmt.strip() in AVAILABLE_EXPORT_FUNCTIONS]
+
+    if not formats_to_export:
+        logger.warning("No valid or recognized export formats specified. Nothing will be exported.")
+        return 0
+
+    logger.info(f"Will attempt to export to the following formats: {', '.join(formats_to_export)}")
+    
+    successful_exports = 0
+    failed_exports = 0
+
+    for gnn_file_path in discovered_files:
+        if gnn_file_path.is_file():
+            # The export function handles its own parsing and error logging now
+            was_successful = export_gnn_file_to_selected_formats(
+                gnn_file_path,
+                output_dir,
+                formats_to_export,
+                project_root_for_reporting=project_root,
+                verbose=parsed_args.verbose
+            )
+            if was_successful:
+                successful_exports += 1
             else:
-                logger.warning(f"  ⚠️ Requested export format '{req_f}' is not available/supported. Skipping.")
-        logger.info(f"  Selected formats for export: {selected_formats}")
-
-    if not FORMAT_EXPORTERS_LOADED:
-        logger.critical("CRITICAL: Cannot perform GNN exports because 'format_exporters' module failed to load.")
-        generate_overall_pipeline_summary_report(target_dir_abs, output_dir_abs, project_root, parsed_args.recursive, parsed_args.verbose)
-        return 1
- 
-    overall_export_status_code = 0 # Default to success
-    num_files_processed = 0
-    num_successful_file_exports = 0
-    num_files_with_failures = 0
-
-    if not selected_formats:
-        logger.warning("No valid/available export formats selected. Skipping GNN model exports.")
-    else:
-        glob_pattern = "**/*.md" if parsed_args.recursive else "*.md"
-        gnn_files_to_export = list(target_dir_abs.glob(glob_pattern))
-        num_files_processed = len(gnn_files_to_export)
-
-        if not gnn_files_to_export:
-            logger.info(f"No GNN files (.md) found in '{target_dir_abs}' (pattern: '{glob_pattern}') to export.")
+                failed_exports += 1
         else:
-            logger.info(f"Found {len(gnn_files_to_export)} GNN file(s) to process for export from '{target_dir_abs}'.")
-            for gnn_file in gnn_files_to_export:
-                file_all_formats_succeeded = export_gnn_file_to_selected_formats(
-                    gnn_file,
-                    output_dir_abs, 
-                    selected_formats,
-                    project_root, 
-                    parsed_args.verbose
-                )
-                if file_all_formats_succeeded:
-                    num_successful_file_exports += 1
-                else:
-                    num_files_with_failures += 1
-            
-            logger.info(f"Export processing complete. Files with all formats successful: {num_successful_file_exports}, Files with at least one failure: {num_files_with_failures}")
-            if num_files_with_failures > 0:
-                overall_export_status_code = 1
+            logger.warning(f"  ⚠️ Path listed during discovery is not a file: {gnn_file_path}. Skipping.")
+            failed_exports += 1
     
-    # Generate the export-specific summary report
-    generate_export_summary_report(str(target_dir_abs), str(output_dir_abs), num_files_processed, num_successful_file_exports + num_files_with_failures, num_files_with_failures, parsed_args.recursive, parsed_args.verbose)
+    # Generate summary report
+    generate_export_summary_report(
+        str(target_dir),
+        str(output_dir),
+        num_files_processed=len(discovered_files),
+        num_files_exported=successful_exports,
+        num_export_failures=failed_exports,
+        recursive=parsed_args.recursive,
+        verbose=parsed_args.verbose
+    )
 
-    # Generate the main pipeline summary report (gnn_processing_summary.md)
-    generate_overall_pipeline_summary_report(target_dir_abs, output_dir_abs, project_root, parsed_args.recursive, parsed_args.verbose)
+    logger.info(f"✅ GNN export step finished. {successful_exports} files fully exported, {failed_exports} had issues.")
     
-    logger.info(f"✅ Step 5: Export operations finished.")
-    return overall_export_status_code
+    if failed_exports > 0:
+        return 1  # Indicate partial or total failure
+    return 0
 
 if __name__ == '__main__':
     # Determine project root for default paths

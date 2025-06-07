@@ -50,6 +50,18 @@ u_f1[1,type=int]         # Action taken for controllable factor 1
 G[1,type=float]          # Expected Free Energy (overall, or can be per policy)
 t[1,type=int]            # Time step
 
+## Connections
+(D_f0,D_f1)-(s_f0,s_f1)
+(s_f0,s_f1)-(A_m0,A_m1,A_m2)
+(A_m0,A_m1,A_m2)-(o_m0,o_m1,o_m2)
+(s_f0,s_f1,u_f1)-(B_f0,B_f1) # u_f1 primarily affects B_f1; B_f0 is uncontrolled
+(B_f0,B_f1)-(s_prime_f0,s_prime_f1)
+(C_m0,C_m1,C_m2)>G
+G>π_f1
+π_f1-u_f1
+G=ExpectedFreeEnergy
+t=Time
+
 ## InitialParameterization
 # A_m0: num_obs[0]=3, num_states[0]=2, num_states[1]=3. Format: A[obs_idx][state_f0_idx][state_f1_idx]
 # A[0][:, :, 0] = np.ones((3,2))/3
@@ -110,18 +122,6 @@ D_f0={(0.5,0.5)}
 
 # D_f1: factor 1 (3 states). Uniform prior.
 D_f1={(0.33333,0.33333,0.33333)}
-
-## Connections
-(D_f0,D_f1)-(s_f0,s_f1)
-(s_f0,s_f1)-(A_m0,A_m1,A_m2)
-(A_m0,A_m1,A_m2)-(o_m0,o_m1,o_m2)
-(s_f0,s_f1,u_f1)-(B_f0,B_f1) # u_f1 primarily affects B_f1; B_f0 is uncontrolled
-(B_f0,B_f1)-(s_prime_f0,s_prime_f1)
-(C_m0,C_m1,C_m2)>G
-G>π_f1
-π_f1-u_f1
-G=ExpectedFreeEnergy
-t=Time
 
 ## Equations
 # Standard PyMDP agent equations for state inference (infer_states),
