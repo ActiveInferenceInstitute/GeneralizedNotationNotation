@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Import renderers
-from .pymdp_renderer import render_gnn_to_pymdp
+from .pymdp.pymdp_renderer import render_gnn_to_pymdp
 from .rxinfer import render_gnn_to_rxinfer_toml
 
 logger = logging.getLogger(__name__)

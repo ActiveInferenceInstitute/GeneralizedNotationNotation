@@ -49,7 +49,7 @@ def render_gnn_to_rxinfer_toml(
         
         msg = f"Successfully wrote TOML configuration to {output_path}"
         logger.info(msg)
-        return True, msg, [output_path.as_uri()]
+        return True, msg, [str(output_path.resolve())]
     
     except Exception as e:
         msg = f"Error generating TOML configuration: {e}"

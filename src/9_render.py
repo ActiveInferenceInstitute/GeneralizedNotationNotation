@@ -28,12 +28,16 @@ def main(args: argparse.Namespace) -> int:
     Main function for the GNN rendering pipeline step.
     """
     base_output_dir = Path(args.output_dir)
-    gnn_export_dir = base_output_dir / "gnn_exports"
+    # Fix: Look in the actual export structure created by 5_export.py
+    gnn_export_dir = base_output_dir / "gnn_exports" / "gnn_exports"
     render_output_dir = base_output_dir / "gnn_rendered_simulators"
     
     if not gnn_export_dir.is_dir():
-        logger.warning(f"GNN export directory not found: {gnn_export_dir}. Skipping render step.")
-        return 0
+        # Fallback to the old structure for backward compatibility
+        gnn_export_dir = base_output_dir / "gnn_exports"
+        if not gnn_export_dir.is_dir():
+            logger.warning(f"GNN export directory not found: {gnn_export_dir}. Skipping render step.")
+            return 0
 
     # Always search recursively as the export step creates per-model subdirectories.
     gnn_files = list(gnn_export_dir.rglob("*.json"))

@@ -519,7 +519,7 @@ def run_pipeline(args: argparse.Namespace):
                     "6_visualization.py": "visualization", # Changed as per request
                     "7_mcp.py": "mcp_processing_step",
                     "8_ontology.py": "ontology_processing",
-                    "9_render.py": "gnn_rendered_simulators",
+                    # 9_render.py should use the main output directory, not a subdirectory
                     "11_llm.py": "llm_processing_step",
                     "12_discopy.py": "discopy_gnn",
                     # 14_site.py uses the root output dir, so no entry here

@@ -14,7 +14,7 @@ from .rxinfer import render_gnn_to_rxinfer_toml
 from .render import render_gnn_spec, main
 
 # Target-specific renderers
-from .pymdp_renderer import render_gnn_to_pymdp
+from .pymdp.pymdp_renderer import render_gnn_to_pymdp
 
 __all__ = [
     'render_gnn_spec',  # Main render function

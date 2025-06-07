@@ -25,7 +25,8 @@ import traceback
 
 # --- GNN to PyMDP Conversion Summary ---
 # INFO: Starting GNN data extraction.
-# INFO: StateSpaceBlock not found or empty in GNN spec.
+# INFO: Found StateSpaceBlock data with 60 items.
+# INFO: Parsed ModelParameters from raw text: {}
 # INFO: ModelParameters not found or empty in GNN spec.
 # INFO: Finished GNN data extraction.
 # INFO: Matrix definitions not generated yet. Generating matrices...
@@ -40,9 +41,6 @@ import traceback
 # INFO: Skipping example usage code due to missing modalities or state factors.
 # --- End of GNN to PyMDP Conversion Summary ---
 
-
-control_fac_idx = []
-num_controls = []
 
 A = None
 B = None
