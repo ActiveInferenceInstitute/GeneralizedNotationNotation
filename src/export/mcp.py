@@ -4,30 +4,33 @@ import logging
 from typing import Dict, Any, Callable # Added Callable
 from pathlib import Path # For type hints and potential path ops if needed
 
-# Import from the new specialized exporter modules
-from .structured_data_exporters import (
-    export_to_json_gnn,
-    export_to_xml_gnn,
-    export_to_python_pickle
-)
-from .graph_exporters import (
-    export_to_gexf,
-    export_to_graphml,
-    export_to_json_adjacency_list,
-    HAS_NETWORKX as GRAPH_EXPORTERS_HAVE_NETWORKX # Use this to check for NetworkX availability
-)
-from .text_exporters import (
-    export_to_plaintext_summary,
-    export_to_plaintext_dsl
-)
-
-# The GNN parser is still needed for the _handle_export function
-# Assuming _gnn_model_to_dict is in format_exporters.py in the same directory
+# Import from the consolidated format_exporters module
 try:
-    from .format_exporters import _gnn_model_to_dict
+    from .format_exporters import (
+        _gnn_model_to_dict,
+        export_to_json_gnn,
+        export_to_xml_gnn,
+        export_to_python_pickle,
+        export_to_gexf,
+        export_to_graphml,
+        export_to_json_adjacency_list,
+        export_to_plaintext_summary,
+        export_to_plaintext_dsl,
+        HAS_NETWORKX as GRAPH_EXPORTERS_HAVE_NETWORKX  # NetworkX availability check
+    )
 except ImportError as e:
-    logging.getLogger(__name__).error(f"Could not import _gnn_model_to_dict from .format_exporters: {e}")
-    _gnn_model_to_dict = None # Will cause tools to fail gracefully
+    logging.getLogger(__name__).error(f"Could not import export functions from .format_exporters: {e}")
+    # Set all functions to None to cause tools to fail gracefully
+    _gnn_model_to_dict = None
+    export_to_json_gnn = None
+    export_to_xml_gnn = None
+    export_to_python_pickle = None
+    export_to_gexf = None
+    export_to_graphml = None
+    export_to_json_adjacency_list = None
+    export_to_plaintext_summary = None
+    export_to_plaintext_dsl = None
+    GRAPH_EXPORTERS_HAVE_NETWORKX = False
 
 logger = logging.getLogger(__name__)
 

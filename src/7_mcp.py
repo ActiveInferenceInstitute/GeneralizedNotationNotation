@@ -219,7 +219,10 @@ def process_mcp_operations(src_root_dir_str: str, mcp_base_dir_str: str, output_
                     report_lines.append(f"  - **Description:** \"{description}\"")
                     report_lines.append(f"  - **Schema:**")
                     report_lines.append(f"    ```json")
-                    report_lines.append(f"    {schema_str.replace('\n', '\n    ')}") # Indent schema for markdown
+                    # Fix f-string backslash issue by using a variable
+                    indent_four = '\n    '
+                    indented_schema = schema_str.replace('\n', indent_four)
+                    report_lines.append(f"    {indented_schema}") # Indent schema for markdown
                     report_lines.append(f"    ```")
                 report_lines.append("\n") 
             else:

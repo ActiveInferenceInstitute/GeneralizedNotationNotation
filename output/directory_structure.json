@@ -1,9 +1,0 @@
-{
-  "base": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output",
-  "type_check": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_type_check",
-  "visualization": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_examples_visualization",
-  "exports": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_exports",
-  "rendered": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators",
-  "logs": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/logs",
-  "test_reports": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/test_reports"
-}

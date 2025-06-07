@@ -63,11 +63,27 @@ from pathlib import Path
 import logging
 import traceback
 import re
-import datetime # For pipeline summary timestamp
-import json # For pipeline summary structured data
-import time # For tracking subprocess execution time
-import signal # For timeout handling
-from typing import TypedDict, List, Union, Dict, Any, cast # Add typing for clarity, added cast
+import datetime
+import json
+import time
+import signal
+from typing import TypedDict, List, Union, Dict, Any, cast
+import psutil
+import resource
+
+# Import the centralized pipeline utilities
+from pipeline import (
+    PIPELINE_STEP_CONFIGURATION,
+    ARG_PROPERTIES,
+    SCRIPT_ARG_SUPPORT,
+    get_step_timeout,
+    is_critical_step,
+    get_output_dir_for_script,
+    StepExecutionResult,
+    get_memory_usage_mb,
+    build_command_args,
+    execute_pipeline_step
+)
 
 # Try to import the centralized logging utilities
 try:
@@ -86,70 +102,6 @@ except ImportError:
 logger = logging.getLogger("GNN_Pipeline")
 # --- End Logger Setup ---
 
-# --- Default Pipeline Step Configuration ---
-# This dictionary controls which pipeline steps are enabled by default.
-# Steps are identified by their script basename.
-# Command-line --skip-steps and --only-steps will override these defaults.
-PIPELINE_STEP_CONFIGURATION: Dict[str, bool] = {
-    "1_gnn.py": True,
-    "2_setup.py": True,
-    "3_tests.py": False,
-    "4_gnn_type_checker.py": True,
-    "5_export.py": True,
-    "6_visualization.py": True,
-    "7_mcp.py": True,
-    "8_ontology.py": True,
-    "9_render.py": True,
-    "10_execute.py": True,
-    "11_llm.py": True,
-    "12_discopy.py": True,
-    "13_discopy_jax_eval.py": False,
-    "14_site.py": True, 
-    # Add any new [number]_script_name.py here and set to True/False
-}
-# --- End Default Pipeline Step Configuration ---
-
-# --- Argument Passing Configuration ---
-# Map main script arg 'dest' to its command line flag and type
-# type can be: 'value', 'store_true', 'bool_optional'
-ARG_PROPERTIES = {
-    'target_dir': {'flag': '--target-dir', 'type': 'value'},
-    'output_dir': {'flag': '--output-dir', 'type': 'value'},
-    'recursive': {'flag': '--recursive', 'type': 'bool_optional'},
-    'verbose': {'flag': '--verbose', 'type': 'bool_optional'},
-    'strict': {'flag': '--strict', 'type': 'store_true'},
-    'estimate_resources': {'flag': '--estimate-resources', 'type': 'bool_optional'},
-    'ontology_terms_file': {'flag': '--ontology-terms-file', 'type': 'value'},
-    'llm_tasks': {'flag': '--llm-tasks', 'type': 'value'},
-    'llm_timeout': {'flag': '--llm-timeout', 'type': 'value'},
-    'site_html_filename': {'flag': '--site-html-filename', 'type': 'value'},
-    'discopy_gnn_input_dir': {'flag': '--discopy-gnn-input-dir', 'type': 'value'},
-    'discopy_jax_gnn_input_dir': {'flag': '--discopy-jax-gnn-input-dir', 'type': 'value'},
-    'discopy_jax_seed': {'flag': '--discopy-jax-seed', 'type': 'value'},
-    'recreate_venv': {'flag': '--recreate-venv', 'type': 'store_true'},
-    'dev': {'flag': '--dev', 'type': 'store_true'},
-}
-
-# Define which script supports which argument from `ARG_PROPERTIES` keys
-# This defines the complete set of arguments passed to each script.
-SCRIPT_ARG_SUPPORT = {
-    "1_gnn.py": ["target_dir", "output_dir", "recursive", "verbose"],
-    "2_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
-    "3_tests.py": ["target_dir", "output_dir", "verbose"],
-    "4_gnn_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
-    "5_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
-    "6_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
-    "7_mcp.py": ["target_dir", "output_dir", "verbose"],
-    "8_ontology.py": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
-    "9_render.py": ["output_dir", "recursive", "verbose"],
-    "10_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],
-    "11_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
-    "12_discopy.py": ["target_dir", "output_dir", "verbose", "discopy_gnn_input_dir"],
-    "13_discopy_jax_eval.py": ["target_dir", "output_dir", "verbose", "discopy_jax_gnn_input_dir", "discopy_jax_seed"],
-    "14_site.py": ["target_dir", "output_dir", "verbose", "site_html_filename"],
-}
-# --- End Argument Passing Configuration ---
-
 # Define types for pipeline summary data
 class StepLogData(TypedDict):
     step_number: int
@@ -157,10 +109,14 @@ class StepLogData(TypedDict):
     status: str
     start_time: Union[str, None]
     end_time: Union[str, None]
-    duration_seconds: Union[float, None] # Changed from int | str | None
+    duration_seconds: Union[float, None]
     details: str
     stdout: str
     stderr: str
+    # Enhanced metadata
+    memory_usage_mb: Union[float, None]
+    exit_code: Union[int, None]
+    retry_count: int
 
 class PipelineRunData(TypedDict):
     start_time: str
@@ -168,6 +124,26 @@ class PipelineRunData(TypedDict):
     steps: List[StepLogData]
     end_time: Union[str, None]
     overall_status: str
+    # Enhanced summary
+    total_duration_seconds: Union[float, None]
+    environment_info: Dict[str, Any]
+    performance_summary: Dict[str, Any]
+
+def get_system_info() -> Dict[str, Any]:
+    """Gather comprehensive system information for pipeline tracking."""
+    try:
+        return {
+            "python_version": sys.version,
+            "platform": os.name,
+            "cpu_count": os.cpu_count(),
+            "memory_total_gb": round(psutil.virtual_memory().total / (1024**3), 2),
+            "disk_free_gb": round(psutil.disk_usage('.').free / (1024**3), 2),
+            "working_directory": str(Path.cwd()),
+            "user": os.getenv('USER', 'unknown')
+        }
+    except Exception as e:
+        logger.warning(f"Failed to gather complete system info: {e}")
+        return {"error": str(e)}
 
 def parse_arguments():
     project_root = Path(__file__).resolve().parent.parent
@@ -367,7 +343,15 @@ def run_pipeline(args: argparse.Namespace):
         "arguments": vars(args),
         "steps": [],
         "end_time": None,
-        "overall_status": "SUCCESS"  # Will be updated if any step fails
+        "overall_status": "SUCCESS",  # Will be updated if any step fails
+        "total_duration_seconds": None,
+        "environment_info": get_system_info(),
+        "performance_summary": {
+            "peak_memory_mb": 0.0,
+            "total_steps": 0,
+            "failed_steps": 0,
+            "critical_failures": 0
+        }
     }
     
     # Parse skip/only steps to determine what to run
@@ -457,223 +441,47 @@ def run_pipeline(args: argparse.Namespace):
     logger.info("  Running GNN Processing Pipeline...\n")
     
     for idx, script_info in enumerate(scripts_to_run, 1):
-        script_num = script_info['num']
-        script_basename = script_info['basename']
-        script_path = script_info['path']
-        script_name_no_ext = os.path.splitext(script_basename)[0]
+        # Execute the pipeline step using the centralized execution function
+        result = execute_pipeline_step(
+            script_info, 
+            idx, 
+            len(scripts_to_run),
+            args,
+            str(python_to_use)
+        )
         
-        # Check if this is a critical script (failure halts pipeline)
-        # Currently, only setup.py is considered critical.
-        is_critical_step = script_basename == "2_setup.py"
+        # Update performance summary
+        _pipeline_run_data_dict["performance_summary"]["total_steps"] += 1
         
-        # Set longer timeout for setup steps (20 minutes) and standard timeout for others (5 minutes)
-        # Setup step timeout increased from 10 to 20 minutes to account for slower connections/machines
-        # Test step timeout increased to 5 minutes to allow for longer test runs
-        # LLM timeout is now configurable via command line argument
-        if script_basename == "11_llm.py":
-            step_timeout = args.llm_timeout
-        elif script_basename == "2_setup.py":
-            step_timeout = 1200 # 20 minutes
-        elif script_basename == "3_tests.py":
-            step_timeout = 300 # 5 minutes
-        else:
-            step_timeout = 120 # 2 minutes
-        
-        step_header = f"Step {idx}/{len(scripts_to_run)} ({script_num}: {script_basename})"
-        logger.info(f"🚀 Starting {step_header}")
-        
-        # Create the log data structure for this step
-        step_log_data: StepLogData = {
-            "step_number": script_num,
-            "script_name": script_basename,
-            "status": "SKIPPED",  # Will be updated after execution
-            "start_time": datetime.datetime.now().isoformat(),
-            "end_time": None,
-            "duration_seconds": None,
-            "details": "",
-            "stdout": "",
-            "stderr": ""
-        }
-        
-        # Build the command with script-specific args
-        full_args = []
-        supported_args = SCRIPT_ARG_SUPPORT.get(script_basename, [])
-        
-        for arg_key in supported_args:
-            if arg_key not in ARG_PROPERTIES:
-                continue
-
-            prop = ARG_PROPERTIES[arg_key]
-            # 'args' is the Namespace object from parse_arguments()
-            if not hasattr(args, arg_key):
-                continue
-            
-            value = getattr(args, arg_key)
-
-            # Special handling for output_dir to route to script-specific subdirectories
-            if arg_key == 'output_dir':
-                output_dir_val = Path(args.output_dir)
-                output_dir_map = {
-                    "4_gnn_type_checker.py": "gnn_type_check",
-                    "5_export.py": "gnn_exports",
-                    "6_visualization.py": "visualization", # Changed as per request
-                    "7_mcp.py": "mcp_processing_step",
-                    "8_ontology.py": "ontology_processing",
-                    # 9_render.py should use the main output directory, not a subdirectory
-                    "11_llm.py": "llm_processing_step",
-                    "12_discopy.py": "discopy_gnn",
-                    # 14_site.py uses the root output dir, so no entry here
-                }
-                if script_basename in output_dir_map:
-                    output_dir_val = Path(args.output_dir) / output_dir_map[script_basename]
-                
-                full_args.extend([prop['flag'], str(output_dir_val)])
-                continue # Go to next arg
-
-            if prop['type'] == 'store_true':
-                if value:
-                    full_args.append(prop['flag'])
-            elif prop['type'] == 'bool_optional':
-                # For BooleanOptionalAction, value is True/False.
-                # The flag is only added if True.
-                if value is True:
-                    full_args.append(prop['flag'])
-            elif prop['type'] == 'value':
-                if value is not None:
-                    full_args.extend([prop['flag'], str(value)])
-
-        # Log the full command for debugging
-        cmd = [str(python_to_use), str(script_path)] + full_args
-        logger.debug(f"📋 Executing command: {' '.join(cmd)}")
-        
-        # For slow steps, provide more detailed progress tracking
-        if script_basename == "2_setup.py":
-            logger.info(f"⏳ Setting up environment and dependencies (timeout: {step_timeout}s). This may take several minutes...")
-            # Ensure this gets displayed immediately
-            sys.stdout.flush()
-        
-        try:
-            # Create a process to run the script
-            start_time = time.time()
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                errors='replace' # More robust than bufsize=1
+        if result.memory_usage_mb:
+            _pipeline_run_data_dict["performance_summary"]["peak_memory_mb"] = max(
+                _pipeline_run_data_dict["performance_summary"]["peak_memory_mb"], 
+                result.memory_usage_mb
             )
-            
-            # Use communicate() to safely read all output and wait for process completion.
-            # This is the most robust way to avoid deadlocks from full pipe buffers.
-            # A timeout is passed to communicate() to prevent indefinite hangs.
-            try:
-                stdout_str, stderr_str = process.communicate(timeout=step_timeout)
-            except subprocess.TimeoutExpired as e:
-                logger.warning(f"⚠️ {step_header} timed out after {step_timeout} seconds. Terminating process...")
-                process.terminate()
-                # Attempt to get any final output after terminating. Communicate again with no timeout.
-                final_stdout, final_stderr = process.communicate()
-                
-                # Combine original output (if any) with final output
-                stdout_from_timeout = e.stdout.decode(errors='replace') if e.stdout else ""
-                stderr_from_timeout = e.stderr.decode(errors='replace') if e.stderr else ""
-
-                stdout_str = stdout_from_timeout + final_stdout
-                stderr_str = stderr_from_timeout + final_stderr
-                
-                # Re-raise a new exception that includes all captured output, so it's logged by the outer block
-                raise subprocess.TimeoutExpired(cmd, step_timeout, output=stdout_str, stderr=stderr_str)
-
-            # Log captured output after the process finishes
-            if stdout_str:
-                log_level = logging.INFO if not args.verbose else logging.DEBUG
-                logger.log(log_level, f"--- Output from {script_basename} (stdout) ---")
-                for line in stdout_str.strip().split('\n'):
-                    logger.log(log_level, f"    [STDOUT] {line}")
-                logger.log(log_level, f"--- End of {script_basename} output ---")
-
-            if stderr_str:
-                # Log stderr as warning, as it often contains non-fatal warnings
-                logger.warning(f"--- Output from {script_basename} (stderr) ---")
-                for line in stderr_str.strip().split('\n'):
-                    logger.warning(f"    [STDERR] {line}")
-                logger.warning(f"--- End of {script_basename} output ---")
-            
-            # Update the log data with captured output
-            step_log_data["stdout"] = stdout_str
-            step_log_data["stderr"] = stderr_str
-            
-            # Get the return code
-            return_code = process.returncode
-            end_time = time.time()
-            duration = end_time - start_time
-            
-            if return_code == 0:
-                step_log_data["status"] = "SUCCESS"
-                logger.info(f"✅ {step_header} - COMPLETED successfully in {duration:.1f} seconds.")
-                logger.info("") # Add spacing after step completion
-                
-                # If a successful step wrote to stderr, log it at WARNING for visibility
-                if stderr_str:
-                    logger.warning(f"   -> Note: {script_basename} completed successfully but wrote to stderr (see details above or in logs).")
-
-            else:
-                step_log_data["status"] = "FAILED_NONZERO_EXIT"
-                step_log_data["details"] = f"Process exited with code {return_code}"
-                logger.error(f"❌ {step_header} - FAILED with exit code {return_code} after {duration:.1f} seconds.")
-                # The full stdout/stderr has already been logged above
-                logger.info("") # Add spacing after step completion
-                overall_status = "FAILED"
-                if is_critical_step:
-                    logger.critical(f"🔥 Critical step {script_name_no_ext} failed. Halting pipeline.")
-                    step_log_data["details"] += " Critical step failure, pipeline halted."
-                    _pipeline_run_data_dict["steps"].append(step_log_data)
-                    break
         
-        except subprocess.TimeoutExpired as e:
-            end_time = time.time()
-            duration = end_time - start_time
-            step_log_data["status"] = "FAILED_TIMEOUT"
-            step_log_data["details"] = f"Process timed out after {duration:.1f} seconds (limit: {step_timeout}s)"
-            # Capture any output that was available in the exception object
-            if e.stdout:
-                step_log_data["stdout"] = e.stdout if isinstance(e.stdout, str) else e.stdout.decode(errors='replace')
-            if e.stderr:
-                step_log_data["stderr"] = e.stderr if isinstance(e.stderr, str) else e.stderr.decode(errors='replace')
-            logger.error(f"❌ {step_header} - FAILED due to timeout after {duration:.1f} seconds.")
-            logger.info("") # Add spacing after step completion
+        if result.status != "SUCCESS":
             overall_status = "FAILED"
+            _pipeline_run_data_dict["performance_summary"]["failed_steps"] += 1
             
-            if is_critical_step:
-                logger.critical(f"🔥 Critical step {script_name_no_ext} timed out. Halting pipeline.")
-                step_log_data["details"] += " Critical step timeout, pipeline halted."
-                _pipeline_run_data_dict["steps"].append(step_log_data)
-                break
-
-        except Exception as e:
-            end_time = time.time()
-            duration = end_time - start_time
-            step_log_data["status"] = "ERROR_UNHANDLED_EXCEPTION"
-            step_log_data["details"] = f"Unhandled exception after {duration:.1f} seconds: {str(e)}"
-            logger.error(f"❌ Unhandled exception in {step_header}: {e}")
-            logger.info("") # Add spacing after step completion
-            logger.debug(traceback.format_exc())
-            overall_status = "FAILED"
-            if is_critical_step:
-                logger.critical(f"🔥 Critical step {script_name_no_ext} failed due to unhandled exception. Halting pipeline.")
-                step_log_data["details"] += " Critical step failure, pipeline halted."
-                _pipeline_run_data_dict["steps"].append(step_log_data)
+            # Check if this was a critical step failure
+            if is_critical_step(result.script_name):
+                _pipeline_run_data_dict["performance_summary"]["critical_failures"] += 1
+                logger.critical(f"🔥 Critical step {result.script_name} failed. Halting pipeline.")
+                _pipeline_run_data_dict["steps"].append(result.to_dict())
                 break
         
-        finally:
-            step_log_data["end_time"] = datetime.datetime.now().isoformat()
-            if step_log_data["start_time"]:
-                duration = datetime.datetime.fromisoformat(step_log_data["end_time"]) - datetime.datetime.fromisoformat(step_log_data["start_time"])
-                step_log_data["duration_seconds"] = duration.total_seconds()
-            _pipeline_run_data_dict["steps"].append(step_log_data)
+        # Add step result to summary
+        _pipeline_run_data_dict["steps"].append(result.to_dict())
 
     _pipeline_run_data_dict["end_time"] = datetime.datetime.now().isoformat()
     _pipeline_run_data_dict["overall_status"] = overall_status
+    
+    # Calculate total duration
+    if _pipeline_run_data_dict["start_time"] and _pipeline_run_data_dict["end_time"]:
+        start_dt = datetime.datetime.fromisoformat(_pipeline_run_data_dict["start_time"])
+        end_dt = datetime.datetime.fromisoformat(_pipeline_run_data_dict["end_time"])
+        _pipeline_run_data_dict["total_duration_seconds"] = (end_dt - start_dt).total_seconds()
+    
     # Log a brief summary before returning from run_pipeline
     logger.info(f"🏁 Pipeline processing completed. Overall Status: {overall_status}")
 
@@ -835,7 +643,6 @@ def main():
         for arg, value in sorted(vars(args).items()):
             log_msgs.append(f"  --{arg.replace('_', '-')}: {value} (Type: {type(value).__name__})")
         pipeline_logger.debug('\n'.join(log_msgs))
-
 
     # Call the main pipeline execution function
     exit_code, pipeline_run_data, all_scripts, overall_status = run_pipeline(args)
