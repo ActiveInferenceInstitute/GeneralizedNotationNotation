@@ -1,6 +1,6 @@
 {
-  "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/pymdp_pomdp_agent.md": {
-    "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/pymdp_pomdp_agent.md",
+  "gnn/examples/pymdp_pomdp_agent.md": {
+    "file": "gnn/examples/pymdp_pomdp_agent.md",
     "model_name": "Multifactor PyMDP Agent v1",
     "memory_estimate": 0.484375,
     "inference_estimate": 154.06988264859797,
@@ -71,8 +71,8 @@
       "equation_count": 5
     }
   },
-  "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_multiagent_gnn.md": {
-    "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_multiagent_gnn.md",
+  "gnn/examples/rxinfer_multiagent_gnn.md": {
+    "file": "gnn/examples/rxinfer_multiagent_gnn.md",
     "model_name": "Multi-agent Trajectory Planning",
     "memory_estimate": 0.5166015625,
     "inference_estimate": 283.1611446514433,

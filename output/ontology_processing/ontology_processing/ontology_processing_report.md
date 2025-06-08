@@ -10,8 +10,8 @@
 
 ---
 
-��️ Report Generated: 2025-06-08 11:34:31
-🎯 GNN Source Directory: `src/gnn/examples`
+��️ Report Generated: 2025-06-08 11:53:46
+🎯 GNN Source Directory: `gnn/examples`
 📖 Ontology Terms Definition: `src/ontology/act_inf_ontology_terms.json` (Loaded: 60 terms)
 
 ---

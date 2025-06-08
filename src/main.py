@@ -85,18 +85,13 @@ from pipeline import (
     execute_pipeline_step
 )
 
-# Try to import the centralized logging utilities
+# Import the streamlined utilities
 try:
-    from utils.logging_utils import (
-        setup_standalone_logging, 
-        silence_noisy_modules_in_console,
-        set_verbose_mode
-    )
-except ImportError:
-    # If logging_utils is not available, define placeholder functions
-    setup_standalone_logging = None
-    silence_noisy_modules_in_console = None
-    set_verbose_mode = None
+    from utils.logging_utils import setup_main_logging, PipelineLogger
+    from utils.argument_utils import ArgumentParser, PipelineArguments, build_step_command_args
+except ImportError as e:
+    print(f"Error importing streamlined utilities: {e}", file=sys.stderr)
+    sys.exit(1)
 
 # --- Logger Setup ---
 logger = logging.getLogger("GNN_Pipeline")
@@ -152,126 +147,9 @@ def get_system_info() -> Dict[str, Any]:
         logger.warning(f"Failed to gather complete system info: {e}")
         return {"error": str(e)}
 
-def parse_arguments():
-    project_root = Path(__file__).resolve().parent.parent
-    
-    default_output_dir = project_root / "output"
-    default_target_dir = project_root / "src" / "gnn" / "examples"
-    default_ontology_terms_file = project_root / "src" / "ontology" / "act_inf_ontology_terms.json"
-    default_pipeline_summary_file = default_output_dir / "pipeline_execution_summary.json"
-    default_discopy_gnn_input_dir = default_target_dir # Default discopy input to general target dir
-
-    parser = argparse.ArgumentParser(
-        description="GNN Processing Pipeline: Orchestrates GNN file processing, analysis, and export.",
-        formatter_class=argparse.RawTextHelpFormatter
-    )
-    parser.add_argument(
-        "--target-dir",
-        type=Path,
-        default=default_target_dir,
-        help=(f"Target directory for GNN source files (e.g., .md GNN specifications).\\n"
-              f"Default: {default_target_dir.relative_to(project_root) if default_target_dir.is_relative_to(project_root) else default_target_dir}")
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=default_output_dir,
-        help=(f"Main directory to save all pipeline outputs.\\n"
-              f"Default: {default_output_dir.relative_to(project_root) if default_output_dir.is_relative_to(project_root) else default_output_dir}")
-    )
-    parser.add_argument(
-        "--recursive", default=True, action=argparse.BooleanOptionalAction,
-        help="Recursively process GNN files in the target directory. Enabled by default. Use --no-recursive to disable."
-    )
-    parser.add_argument(
-        "--skip-steps", default="",
-        help='Comma-separated list of step numbers or names to skip (e.g., "1,7_mcp" or "1_gnn,7").'
-    )
-    parser.add_argument(
-        "--only-steps", default="",
-        help='Comma-separated list of step numbers or names to run exclusively (e.g., "4,6_visualization").'
-    )
-    parser.add_argument(
-        "--verbose", 
-        default=True, 
-        action=argparse.BooleanOptionalAction, 
-        help="Enable verbose output for the pipeline and its steps. On by default (use --no-verbose to disable)."
-    )
-    parser.add_argument(
-        "--strict", action="store_true",
-        help="Enable strict type checking mode (passed to 4_gnn_type_checker.py)."
-    )
-    parser.add_argument(
-        "--estimate-resources", default=True, action=argparse.BooleanOptionalAction,
-        help="Estimate computational resources (passed to 4_gnn_type_checker.py). Enabled by default."
-    )
-    parser.add_argument(
-        "--ontology-terms-file",
-        type=Path,
-        default=default_ontology_terms_file,
-        help=(f"Path to a JSON file defining valid ontological terms (for 8_ontology.py).\\n"
-              f"Default: {default_ontology_terms_file.relative_to(project_root) if default_ontology_terms_file.is_relative_to(project_root) else default_ontology_terms_file}")
-    )
-    parser.add_argument(
-        "--llm-tasks", default="all", type=str,
-        help='Comma-separated list of LLM tasks for 11_llm.py (e.g., "overview,purpose,ontology"). Default: "all".'
-    )
-    parser.add_argument(
-        "--llm-timeout",
-        type=int,
-        default=120, # Default to 2 minutes for the entire LLM script
-        help="Timeout in seconds for the LLM processing step (11_llm.py). Default: 120"
-    )
-    parser.add_argument(
-        "--pipeline-summary-file",
-        type=Path,
-        default=default_pipeline_summary_file,
-        help=(f"Path to save the final pipeline summary report.\\n"
-              f"Default: {default_pipeline_summary_file.relative_to(project_root) if default_pipeline_summary_file.is_relative_to(project_root) else default_pipeline_summary_file}")
-    )
-    parser.add_argument(
-        "--site-html-filename",
-        type=str,
-        default="gnn_pipeline_summary_site.html",
-        help=(f"Filename for the generated HTML summary site (for 14_site.py, saved in --output-dir).\\n"
-              f"Default: gnn_pipeline_summary_site.html")
-    )
-    parser.add_argument(
-        "--discopy-gnn-input-dir",
-        type=Path,
-        default=None, # Will be set to default_target_dir or args.target_dir later
-        help=(f"Directory containing GNN files for DisCoPy processing (for 12_discopy.py).\\n"
-              f"Default: Uses --target-dir value ({default_discopy_gnn_input_dir.relative_to(project_root) if default_discopy_gnn_input_dir.is_relative_to(project_root) else default_discopy_gnn_input_dir})")
-    )
-    parser.add_argument(
-        "--discopy-jax-gnn-input-dir",
-        type=Path,
-        default=None, # Will be set to default_target_dir or args.target_dir later
-        help=(f"Directory containing GNN files for DisCoPy JAX evaluation (for 13_discopy_jax_eval.py).\\n"
-              f"Default: Uses --target-dir value ({default_discopy_gnn_input_dir.relative_to(project_root) if default_discopy_gnn_input_dir.is_relative_to(project_root) else default_discopy_gnn_input_dir})")
-    )
-    parser.add_argument(
-        "--discopy-jax-seed",
-        type=int,
-        default=0,
-        help="Seed for JAX PRNG in 13_discopy_jax_eval.py. Default: 0."
-    )
-    parser.add_argument(
-        "--recreate-venv",
-        action="store_true",
-        help="Recreate virtual environment even if it already exists (for 2_setup.py)."
-    )
-    parser.add_argument(
-        "--dev",
-        action="store_true",
-        help="Also install development dependencies from requirements-dev.txt (for 2_setup.py)."
-    )
-    parser.add_argument(
-        "--skip-dependency-validation",
-        action="store_true",
-        help="Skip dependency validation and proceed with pipeline execution."
-    )
-    return parser.parse_args()
+def parse_arguments() -> PipelineArguments:
+    """Parse command line arguments using the streamlined argument parser."""
+    return ArgumentParser.parse_main_arguments()
 
 def get_pipeline_scripts(current_dir: Path) -> list[dict[str, int | str | Path]]:
     potential_scripts_pattern = current_dir / "*_*.py"
@@ -434,7 +312,7 @@ def parse_step_list(step_str: str) -> List[int]:
             steps.append(int(match.group(1)))
     return steps
 
-def run_pipeline(args: argparse.Namespace):
+def run_pipeline(args: PipelineArguments):
     """
     Run the full GNN processing pipeline based on the provided arguments.
     
@@ -606,90 +484,15 @@ def run_pipeline(args: argparse.Namespace):
     return (0 if overall_status in ["SUCCESS", "SUCCESS_WITH_WARNINGS"] else 1), cast(PipelineRunData, _pipeline_run_data_dict), all_scripts, overall_status
 
 def main():
-    # Configure logging early. If GNN_Pipeline or root logger has no handlers,
-    # set up a basic one. The user's traceback suggests handlers are present,
-    # so this configuration is for robustness, especially if run in different contexts.
-    pipeline_logger = logging.getLogger("GNN_Pipeline") # Use the specific logger
-
+    """Main entry point for the GNN Processing Pipeline."""
     args = parse_arguments()
     
-    # --- Central Logging Configuration ---
+    # Set up streamlined logging
     log_dir = args.output_dir / "logs"
+    pipeline_logger = setup_main_logging(log_dir, args.verbose)
     
-    # Setup logging using our new utility if available
-    if setup_standalone_logging:
-        # Ensure logs directory exists
-        try:
-            log_dir.mkdir(parents=True, exist_ok=True)
-        except Exception as e:
-            print(f"Error creating log directory: {e}", file=sys.stderr)
-            # Fall back to no file logging if directory creation fails
-            log_dir = None
-        
-        # Set up logging with different console/file levels
-        console_level = logging.DEBUG if args.verbose else logging.INFO
-        file_level = logging.DEBUG  # Always log detailed info to file
-        
-        # Configure the GNN_Pipeline logger
-        setup_standalone_logging(
-            level=min(console_level, file_level),
-            logger_name="GNN_Pipeline",
-            output_dir=log_dir,
-            log_filename="pipeline.log",
-            console_level=console_level,
-            file_level=file_level
-        )
-        
-        # Silence noisy modules in console but keep them in the log file
-        if silence_noisy_modules_in_console:
-            silence_noisy_modules_in_console()
-            
-    else:
-        # Legacy fallback configuration
-        if not pipeline_logger.hasHandlers() and not logging.getLogger().hasHandlers():
-            logging.basicConfig(
-                level=logging.INFO, # Default level
-                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                datefmt=None, # Explicitly use default to get milliseconds
-                stream=sys.stdout
-            )
-            pipeline_logger.info("Initialized basic logging config as no handlers were found for GNN_Pipeline or root.")
-
-        # Quieten noisy dependency loggers (PIL, Matplotlib) unconditionally
-        logging.getLogger('PIL').setLevel(logging.WARNING)
-        logging.getLogger('matplotlib').setLevel(logging.WARNING)
-
-        # --- Legacy File Handler Setup (after args are parsed) ---
-        try:
-            log_dir.mkdir(parents=True, exist_ok=True)
-            # Add a file handler to the GNN_Pipeline logger
-            log_file_path = log_dir / "pipeline.log"
-            file_handler = logging.FileHandler(log_file_path, mode='w') # 'w' to overwrite each run
-            # Use the same format as basicConfig, explicitly ensure milliseconds
-            file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt=None)
-            file_handler.setFormatter(file_formatter)
-            pipeline_logger.addHandler(file_handler)
-            pipeline_logger.info(f"File logging configured to: {log_file_path}") 
-        except Exception as e:
-            # Log this error to console, as file handler might have failed.
-            temp_error_logger = logging.getLogger("GNN_Pipeline.FileHandlerSetup")
-            # Ensure this specific error message can make it to console/stderr if main logger isn't fully working
-            if not temp_error_logger.handlers:
-                err_handler = logging.StreamHandler(sys.stderr)
-                # Use a more specific format for this temp logger to distinguish its origin
-                err_formatter = logging.Formatter('%(asctime)s - %(name)s - [TEMP_SETUP_ERROR] - %(levelname)s - %(message)s')
-                err_handler.setFormatter(err_formatter)
-                temp_error_logger.addHandler(err_handler)
-                temp_error_logger.propagate = False # Don't double log this specific error message
-            temp_error_logger.error(f"Failed to configure file logging to {log_dir / 'pipeline.log'}: {e}. Continuing with console logging only.")
-
-        # Configure logger level based on verbose flag AFTER parsing args
-        if args.verbose:
-            pipeline_logger.setLevel(logging.DEBUG)
-        else:
-            pipeline_logger.setLevel(logging.INFO)
-
-    pipeline_logger.debug("Logger level configured based on verbosity.")
+    # Set correlation context for main pipeline
+    PipelineLogger.set_correlation_context("main")
 
     # --- Defensive Path Conversion ---
     # Ensure critical path arguments are pathlib.Path objects.

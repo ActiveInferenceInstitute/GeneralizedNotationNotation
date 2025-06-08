@@ -36,21 +36,14 @@ s_slow_f0[30,1,type=categorical]         ### Conceptual knowledge: abstract repr
 s_slow_f1[12,1,type=categorical]         ### Schema structures: organized knowledge frameworks
 s_slow_f2[6,1,type=categorical]          ### Metacognitive knowledge: learning about learning
 
-# Learning control
-s_ctrl_f0[4,1,type=categorical]          ### Learning mode: Passive=0, Active=1, Strategic=2, Metacognitive=3
-s_ctrl_f1[5,1,type=categorical]          ### Exploration-exploitation: Exploit=0, Explore=1, Mixed=2, etc.
-s_ctrl_f2[3,1,type=categorical]          ### Learning effort: Low=0, Medium=1, High=2
-
 ## Observations
 o_m0[20,1,type=categorical]              ### Sensory input: environmental stimuli
 o_m1[10,1,type=categorical]              ### Feedback signals: reward, error, success indicators
 o_m2[8,1,type=categorical]               ### Context cues: situational information
-o_m3[5,1,type=categorical]               ### Social learning: observational learning cues
 
 ## Actions
 u_c0[6,1,type=categorical]               ### Learning actions: Attend=0, Practice=1, Explore=2, etc.
 u_c1[4,1,type=categorical]               ### Information seeking: Query=0, Test=1, Observe=2, Experiment=3
-u_c2[3,1,type=categorical]               ### Learning strategy: Rote=0, Elaborative=1, Strategic=2
 
 ## Connections
 # Bottom-up learning
@@ -58,12 +51,7 @@ s_fast_f0 > s_med_f0                     ### Fast learning feeds into associativ
 s_med_f0 > s_slow_f0                     ### Associations contribute to concept formation
 
 # Top-down guidance
-s_slow_f2 > s_ctrl_f0                    ### Metacognitive knowledge guides learning mode
-s_ctrl_f0 > s_fast_f2                    ### Learning control directs attention
-
-# Cross-level interactions
-s_med_f2 > s_fast_f2                     ### Context sensitivity affects attention
-s_ctrl_f1 > s_med_f1                     ### Exploration affects habit formation
+s_slow_f2 > s_fast_f2                    ### Metacognitive knowledge guides attention
 
 ## InitialParameterization
 # Learning rates (hierarchical)
@@ -76,33 +64,10 @@ perceptual_precision = 2.0               ### High precision for sensory learning
 associative_precision = 1.5              ### Medium precision for associations
 conceptual_precision = 1.0               ### Lower precision allows flexibility
 
-# Exploration parameters
-curiosity_drive = 0.8                    ### Intrinsic motivation for exploration
-uncertainty_tolerance = 0.6              ### Tolerance for uncertain situations
-novelty_preference = 0.7                 ### Preference for novel information
-
-# Forgetting parameters
-fast_decay_rate = 0.1                    ### Rapid decay without reinforcement
-medium_decay_rate = 0.02                 ### Slower decay for habits
-slow_decay_rate = 0.005                  ### Very slow decay for concepts
-
-## Equations
-# Learning rate modulation
-learning_rate(t) = base_rate * attention(t) * surprise(t) * motivation(t)
-
-# Prediction error weighting
-weighted_PE(t) = precision(t) * |prediction(t) - observation(t)|
-
-# Forgetting dynamics
-retention(t+1) = retention(t) * (1 - decay_rate + practice_effect(t))
-
 ## Time
 Dynamic
 DiscreteTime = t
 ModelTimeHorizon = 1000
-FastLearningScale = 1-10 trials
-MediumLearningScale = 10-100 trials
-SlowLearningScale = 100-1000 trials
 
 ## Footer
 This model captures hierarchical learning across multiple timescales and precision levels.

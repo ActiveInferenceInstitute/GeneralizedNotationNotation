@@ -23,31 +23,18 @@ import logging
 import argparse # Added
 from typing import TypedDict, List, Dict, Any # Added for FileSummaryType
 
-# Attempt to import the new logging utility
+# Import streamlined utilities
 try:
-    from utils.logging_utils import setup_standalone_logging
-except ImportError:
-    # Fallback if utils is not in path (e.g. very direct execution or testing)
-    # This assumes utils/ is a sibling to the script's directory if script is in src/
-    # or that src/ is in PYTHONPATH.
-    sys.path.append(str(Path(__file__).resolve().parent.parent))
-    try:
-        from utils.logging_utils import setup_standalone_logging
-    except ImportError:
-        setup_standalone_logging = None # Define it as None if import fails
-        # Log a warning using a temporary basic config if util is missing
-        if not logging.getLogger().hasHandlers():
-            logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
-        logging.getLogger(__name__).warning(
-            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
-        )
+    from utils.logging_utils import setup_step_logging
+    from utils.argument_utils import ArgumentParser
+except ImportError as e:
+    # Fallback for standalone execution or missing utilities
+    print(f"Warning: Could not import streamlined utilities: {e}", file=sys.stderr)
+    setup_step_logging = None
+    ArgumentParser = None
 
 # --- Logger Setup ---
-# Configure logger for this specific script.
-# The main.py script will also configure a root logger, but this allows
-# for script-specific naming if desired.
-logger = logging.getLogger(__name__) # Use module name for logger
-# Logger level will be set in main based on args.verbose
+logger = logging.getLogger(__name__)
 # --- End Logger Setup ---
 
 # --- Global variable to store project_root if determined by main() or process_gnn_folder() ---
@@ -393,22 +380,14 @@ if __name__ == "__main__":
     
     cli_args = parser.parse_args()
 
-    # Setup logging for standalone execution using the utility function
-    log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
-    if setup_standalone_logging:
-        # Pass __name__ so the utility can also set this script's specific logger level
-        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
+    # Setup logging for standalone execution
+    if setup_step_logging:
+        setup_step_logging("1_gnn", cli_args.verbose)
     else:
         # Fallback basic config if utility function couldn't be imported
-        if not logging.getLogger().hasHandlers():
-            logging.basicConfig(
-                level=log_level_to_set,
-                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                stream=sys.stdout
-            )
-        # Ensure this script's logger level is set even in fallback
-        logging.getLogger(__name__).setLevel(log_level_to_set)
-        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+        level = logging.DEBUG if cli_args.verbose else logging.INFO
+        logging.basicConfig(level=level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        logger.setLevel(level)
 
     # Call the script's main function, passing the parsed args.
     main(cli_args) 
