@@ -1,106 +1,200 @@
-# Executive Control and Cognitive Control
+# Executive Control in Active Inference
 
 ## Overview
 
-Executive control encompasses the higher-order cognitive processes that coordinate and control other cognitive functions. In Active Inference, executive control emerges from hierarchical belief updating and precision-weighted prediction error minimization across multiple timescales.
+Executive control in Active Inference emerges from hierarchical precision optimization and policy selection. Rather than being a separate cognitive system, executive control represents the brain's capacity to flexibly allocate precision and select appropriate behavioral policies based on goals, context, and anticipated outcomes.
 
-## Core Components
+## Core Mechanisms
 
-### 1. Cognitive Control Architecture
+### Hierarchical Policy Control
+Executive functions operate through hierarchical control of lower-level cognitive processes by modulating precision weights and biasing policy selection toward goal-relevant actions.
 
-Executive control in Active Inference operates through hierarchical message passing where higher levels set priors for lower levels, implementing top-down control through precision modulation.
+### Context-Sensitive Precision Allocation
+Executive control involves the dynamic allocation of precision (inverse variance) to different aspects of cognition based on task demands, goals, and environmental context.
 
-```gnn
-## ModelName
-ExecutiveControlHierarchy
+### Predictive Resource Management
+Executive control anticipates future cognitive demands and pre-allocates computational resources to optimize performance across multiple timescales and competing objectives.
 
-## ModelAnnotation
-Models executive control as hierarchical precision-weighted belief updating.
-Higher levels modulate precision at lower levels to implement cognitive control.
+## Key Executive Functions
 
-## GNNVersionAndFlags
-GNN_v1.0
-ProcessingFlags: hierarchical_control, precision_modulation
+### Working Memory
+**Function**: Active maintenance and manipulation of information
+**Mechanism**: Sustained high-precision representations resistant to decay and interference
+**Neural Basis**: Prefrontal cortex recurrent networks
+**Disorders**: ADHD, schizophrenia, aging
 
-## StateSpaceBlock
-# Executive level (slow timescale)
-s_exec_f0[4,1,type=categorical]         ### Executive state: Monitor=0, Switch=1, Inhibit=2, Update=3
-s_exec_f1[3,1,type=categorical]         ### Control mode: Proactive=0, Reactive=1, Automatic=2
-s_exec_f2[5,1,type=categorical]         ### Goal hierarchy: Goal_L1=0, Goal_L2=1, Goal_L3=2, Goal_L4=3, No_Goal=4
+### Cognitive Flexibility
+**Function**: Switching between mental sets, tasks, or strategies
+**Mechanism**: Rapid reconfiguration of precision allocation and policy priors
+**Neural Basis**: Anterior cingulate, prefrontal cortex
+**Disorders**: Autism, OCD, frontal lobe lesions
 
-# Cognitive level (medium timescale)
-s_cog_f0[6,1,type=categorical]          ### Cognitive operation: Attend=0, Inhibit=1, Switch=2, Update=3, Monitor=4, Execute=5
-s_cog_f1[4,1,type=categorical]          ### Processing mode: Automatic=0, Controlled=1, Conflict=2, Error=3
-s_cog_f2[3,1,type=categorical]          ### Resource allocation: Low=0, Medium=1, High=2
+### Inhibitory Control
+**Function**: Suppression of inappropriate responses or thoughts
+**Mechanism**: Precision reduction for irrelevant information and competing responses
+**Neural Basis**: Right inferior frontal gyrus, subthalamic nucleus
+**Disorders**: ADHD, impulse control disorders
 
-# Perceptual/Motor level (fast timescale)
-s_perc_f0[8,1,type=categorical]         ### Perceptual features: Feature_A through Feature_H
-s_motor_f0[4,1,type=categorical]        ### Motor preparation: Ready=0, Prepare=1, Execute=2, Complete=3
+### Planning and Decision Making
+**Function**: Sequential action selection to achieve long-term goals
+**Mechanism**: Tree search through policy space using expected free energy
+**Neural Basis**: Prefrontal cortex, basal ganglia
+**Disorders**: Frontal dementia, depression
 
-## Observations
-o_m0[6,1,type=categorical]              ### Task demands: Simple=0, Complex=1, Novel=2, Conflict=3, Switch=4, Error=5
-o_m1[4,1,type=categorical]              ### Performance feedback: Success=0, Error=1, Conflict=2, Slow=3
-o_m2[3,1,type=categorical]              ### Resource demand: Low=0, Medium=1, High=2
+## Computational Models
 
-## Actions
-u_c0[5,1,type=categorical]              ### Executive action: Maintain=0, Switch=1, Inhibit=2, Update=3, Disengage=4
-u_c1[4,1,type=categorical]              ### Precision control: Increase=0, Decrease=1, Maintain=2, Redistribute=3
+### Executive Control as Precision Optimization
+```
+Executive_Control = Hierarchical_Precision_Allocation(Goals, Context, Resources)
+Precision_Allocation = f(Task_Relevance, Goal_Importance, Cognitive_Capacity)
+```
 
-## Connections
-# Hierarchical control
-s_exec_f0 > s_cog_f0                    ### Executive state controls cognitive operations
-s_exec_f1 > s_cog_f1                    ### Control mode influences processing mode
-s_exec_f2 > s_cog_f2                    ### Goal hierarchy determines resource allocation
+### Policy Selection and Control
+```
+Policy_Selection = argmin(Expected_Free_Energy + Control_Cost)
+Expected_Free_Energy = Pragmatic_Value + Epistemic_Value
+Control_Cost = Precision_Cost + Switching_Cost
+```
 
-# Cognitive control
-s_cog_f0 > s_perc_f0                    ### Cognitive operations control perception
-s_cog_f1 > s_motor_f0                   ### Processing mode influences motor preparation
+### Resource Allocation
+```
+Resource_Allocation = Optimize(Performance, Effort, Sustainability)
+Cognitive_Load = sum(Precision_Weights × Processing_Demands)
+```
 
-# Feedback loops
-o_m1 > s_exec_f0                        ### Performance feedback updates executive state
-o_m2 > s_exec_f2                        ### Resource demand updates goal hierarchy
+## Clinical Applications
 
-## InitialParameterization
-# Hierarchical precision parameters
-exec_precision = 2.0                    ### High precision for executive control
-cog_precision = 1.5                     ### Medium precision for cognitive level
-perc_precision = 1.0                    ### Standard precision for perception
+### Attention Deficit Hyperactivity Disorder (ADHD)
+- **Working Memory Deficits**: Reduced capacity for active maintenance
+- **Inhibitory Control**: Difficulty suppressing inappropriate responses
+- **Cognitive Flexibility**: Problems with task switching and adaptation
+- **Model**: Reduced precision control and increased noise in executive networks
 
-# Control strength parameters
-proactive_control_strength = 0.8        ### Strength of proactive control
-reactive_control_strength = 0.6         ### Strength of reactive control
-automatic_processing_weight = 0.3       ### Weight for automatic processing
+### Autism Spectrum Disorders
+- **Cognitive Rigidity**: Difficulty with flexible adaptation to change
+- **Executive Planning**: Challenges with complex, multi-step tasks
+- **Working Memory**: Intact capacity but atypical allocation strategies
+- **Model**: Hyper-precise local processing, reduced global flexibility
 
-# Precision modulation matrices
-precision_modulation = [
-    [2.0, 1.8, 1.6, 1.4],              ### High control: strong precision modulation
-    [1.5, 1.3, 1.1, 0.9],              ### Medium control: moderate modulation
-    [1.0, 1.0, 1.0, 1.0],              ### Low control: minimal modulation
-    [0.8, 0.6, 0.4, 0.2]               ### Inhibited: reduced precision
-]
+### Schizophrenia
+- **Working Memory**: Severe deficits in active maintenance
+- **Cognitive Control**: Impaired goal-directed behavior
+- **Cognitive Flexibility**: Perseveration and set-shifting difficulties
+- **Model**: Dysregulated precision hierarchies and aberrant policy priors
 
-# A matrices with precision-dependent accuracy
-A_m0_exec = [
-    [0.9, 0.05, 0.03, 0.01, 0.005, 0.005],  # High executive control
-    [0.7, 0.1, 0.08, 0.06, 0.04, 0.02],     # Medium executive control
-    [0.5, 0.15, 0.12, 0.1, 0.08, 0.05],     # Low executive control
-    [0.3, 0.2, 0.15, 0.15, 0.1, 0.1]        # Automatic processing
-]
+### Depression
+- **Executive Dysfunction**: Reduced cognitive control and flexibility
+- **Working Memory**: Impaired by rumination and negative thoughts
+- **Decision Making**: Altered reward processing and risk assessment
+- **Model**: Biased precision allocation toward negative information
 
-# Preferences for control and performance
-C_m1 = [2.0, -1.0, -0.5, -1.5]         ### Strong preference for success, avoid errors
+### Aging and Dementia
+- **Processing Speed**: Slowed executive operations
+- **Working Memory**: Reduced capacity and increased interference
+- **Cognitive Flexibility**: Difficulty adapting to novel situations
+- **Model**: Reduced precision control and degraded neural efficiency
 
-## Equations
-# Executive control precision modulation
-γ_cog(t) = γ_base + α_exec * s_exec_precision(t)
+## Measurement and Assessment
 
-# Hierarchical belief updating with precision weighting
-Q(s_cog|π) ∝ exp(γ_cog * ln P(o|s_cog) + ln P(s_cog|s_exec))
+### Neuropsychological Tests
+- **Wisconsin Card Sorting Test**: Cognitive flexibility and set shifting
+- **Stroop Task**: Inhibitory control and conflict resolution
+- **N-back Task**: Working memory capacity and updating
+- **Tower of London**: Planning and problem solving
 
-## Time
-Dynamic
-DiscreteTime = t
-ModelTimeHorizon = 100
+### Computational Approaches
+```python
+def assess_executive_control(behavioral_data):
+    """
+    Assess executive control through computational modeling
+    """
+    parameters = {
+        'working_memory_capacity': estimate_wm_capacity(behavioral_data),
+        'inhibitory_control': estimate_inhibition(behavioral_data),
+        'cognitive_flexibility': estimate_flexibility(behavioral_data),
+        'planning_ability': estimate_planning(behavioral_data)
+    }
+    
+    executive_profile = integrate_executive_functions(parameters)
+    return executive_profile
+```
 
-## Footer
-This model implements hierarchical executive control through Active Inference principles.
+### Advanced Techniques
+- **EEG**: Event-related potentials and oscillatory dynamics
+- **fMRI**: Activation in prefrontal and cingulate cortex
+- **TMS**: Causal manipulation of executive control regions
+- **Pupillometry**: Real-time measurement of cognitive effort
+
+## Developmental Perspectives
+
+### Executive Function Development
+- **Early Childhood**: Basic inhibitory control and working memory
+- **School Age**: Cognitive flexibility and complex planning
+- **Adolescence**: Integration and optimization of executive systems
+- **Adulthood**: Peak performance and strategic control
+
+### Individual Differences
+- **Genetic Factors**: COMT, DRD4, and other executive-relevant polymorphisms
+- **Environmental Influences**: Socioeconomic status, education, training
+- **Cultural Variations**: Different cultural emphases on executive skills
+
+## Therapeutic Applications
+
+### Cognitive Training
+- **Working Memory Training**: Computerized exercises to improve capacity
+- **Inhibitory Control Training**: Practice with conflict resolution tasks
+- **Cognitive Flexibility Training**: Task switching and set shifting exercises
+- **Metacognitive Training**: Learning to monitor and control thinking
+
+### Pharmacological Interventions
+- **Stimulants**: Enhance dopaminergic function in executive circuits
+- **Norepinephrine Reuptake Inhibitors**: Improve attention and working memory
+- **Cholinesterase Inhibitors**: Support cognitive function in dementia
+
+### Behavioral Interventions
+- **Goal Management Training**: Structured approach to planning and execution
+- **Mindfulness Training**: Attention regulation and cognitive flexibility
+- **Cognitive Behavioral Therapy**: Restructuring maladaptive thought patterns
+
+## Neural Mechanisms
+
+### Prefrontal Cortex Networks
+- **Dorsolateral PFC**: Working memory and cognitive control
+- **Ventromedial PFC**: Value-based decision making and emotion regulation
+- **Anterior Cingulate**: Conflict monitoring and performance adjustment
+- **Orbitofrontal Cortex**: Reward processing and behavioral flexibility
+
+### Neurotransmitter Systems
+- **Dopamine**: Reward prediction and motivation
+- **Norepinephrine**: Attention and arousal regulation
+- **Acetylcholine**: Attention and learning modulation
+- **GABA**: Inhibitory control and neural stabilization
+
+### Network Dynamics
+- **Central Executive Network**: Goal-directed cognitive control
+- **Salience Network**: Detection of relevant information
+- **Default Mode Network**: Self-referential and internally directed thinking
+
+## Future Directions
+
+1. **Computational Psychiatry**: Using executive control models for diagnosis and treatment
+2. **Brain-Computer Interfaces**: Direct measurement and augmentation of executive control
+3. **Personalized Interventions**: Tailored treatments based on individual executive profiles
+4. **Artificial Executive Systems**: Implementing executive control in AI architectures
+5. **Lifespan Development**: Understanding executive control across the entire lifespan
+
+## References
+
+### Foundational Works
+- Baddeley, A. (1992). Working memory
+- Diamond, A. (2013). Executive functions
+- Miller, E. K., & Cohen, J. D. (2001). An integrative theory of prefrontal cortex function
+
+### Active Inference Applications
+- Friston, K. J., et al. (2017). Active inference and agency
+- Parr, T., & Friston, K. J. (2019). Attention, precision, and Bayesian inference
+- Sajid, N., et al. (2021). Active inference and executive control
+
+### Clinical Applications
+- Barkley, R. A. (1997). Behavioral inhibition, sustained attention, and executive functions
+- Robbins, T. W., et al. (2012). Neurocognitive endophenotypes of impulsivity and compulsivity

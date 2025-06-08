@@ -1,145 +1,26 @@
 {
-    "model_purpose": "The model represents a multi-agent trajectory planning scenario in a 2D environment using RxInfer.jl. It simulates agents navigating while avoiding obstacles and other agents, aiming to reach designated target positions.",
+    "model_purpose": "The model represents a multi-agent trajectory planning scenario in RxInfer.jl, focusing on agents navigating a 2D environment while avoiding obstacles and each other to reach specific goals.",
     "key_components": {
-        "agents": [
-            {
-                "id": 1,
-                "radius": 2.5,
-                "initial_position": [
-                    -4.0,
-                    10.0
-                ],
-                "target_position": [
-                    -10.0,
-                    -10.0
-                ]
-            },
-            {
-                "id": 2,
-                "radius": 1.5,
-                "initial_position": [
-                    -10.0,
-                    5.0
-                ],
-                "target_position": [
-                    10.0,
-                    -15.0
-                ]
-            },
-            {
-                "id": 3,
-                "radius": 1.0,
-                "initial_position": [
-                    -15.0,
-                    -10.0
-                ],
-                "target_position": [
-                    10.0,
-                    10.0
-                ]
-            },
-            {
-                "id": 4,
-                "radius": 2.5,
-                "initial_position": [
-                    0.0,
-                    -10.0
-                ],
-                "target_position": [
-                    -10.0,
-                    15.0
-                ]
-            }
-        ],
         "state_space_model": {
-            "state_transition_matrix": "A",
-            "control_input_matrix": "B",
-            "observation_matrix": "C"
+            "states": "Agent positions and velocities in a 2D environment.",
+            "observations": "Positions of agents and possibly other environmental features.",
+            "actions": "Control inputs for each agent to adjust their trajectories."
         },
-        "environment": {
-            "obstacles": {
-                "door": [
-                    {
-                        "center": [
-                            -40.0,
-                            0.0
-                        ],
-                        "size": [
-                            70.0,
-                            5.0
-                        ]
-                    },
-                    {
-                        "center": [
-                            40.0,
-                            0.0
-                        ],
-                        "size": [
-                            70.0,
-                            5.0
-                        ]
-                    }
-                ],
-                "wall": {
-                    "center": [
-                        0.0,
-                        0.0
-                    ],
-                    "size": [
-                        10.0,
-                        5.0
-                    ]
-                },
-                "combined": [
-                    {
-                        "center": [
-                            -50.0,
-                            0.0
-                        ],
-                        "size": [
-                            70.0,
-                            2.0
-                        ]
-                    },
-                    {
-                        "center": [
-                            50.0,
-                            0.0
-                        ],
-                        "size": [
-                            70.0,
-                            2.0
-                        ]
-                    },
-                    {
-                        "center": [
-                            5.0,
-                            -1.0
-                        ],
-                        "size": [
-                            3.0,
-                            10.0
-                        ]
-                    }
-                ]
-            }
+        "parameters": {
+            "dt": "Time step for the state space model.",
+            "gamma": "Constraint parameter for obstacle avoidance.",
+            "nr_steps": "Number of time steps to simulate.",
+            "nr_agents": "Total number of agents in the simulation."
         },
-        "visualization_parameters": {
-            "x_limits": [
-                -20,
-                20
-            ],
-            "y_limits": [
-                -20,
-                20
-            ],
-            "fps": 15,
-            "heatmap_resolution": 100,
-            "plot_size": [
-                800,
-                400
-            ],
-            "color_palette": "tab10"
+        "obstacle_definitions": {
+            "obstacle_positions": "Coordinates of obstacles in the environment.",
+            "obstacle_sizes": "Dimensions of the obstacles."
+        },
+        "agent_definitions": {
+            "agent_ids": "Unique identifiers for each agent.",
+            "agent_radius": "Size of each agent for collision avoidance.",
+            "initial_positions": "Starting positions of agents.",
+            "target_positions": "Goal positions for agents."
         }
     },
     "component_interactions": {
@@ -150,18 +31,14 @@
                 "B",
                 "C"
             ],
-            "outputs": [
-                "agent_trajectories"
-            ]
+            "outputs": "Agent trajectories."
         },
-        "goal_directed_behavior": {
+        "goal_constraints": {
             "inputs": [
                 "agent_trajectories",
                 "goal_constraint_variance"
             ],
-            "outputs": [
-                "goal_constraints"
-            ]
+            "outputs": "Goal-directed behavior."
         },
         "obstacle_avoidance": {
             "inputs": [
@@ -170,18 +47,14 @@
                 "gamma_shape",
                 "gamma_scale_factor"
             ],
-            "outputs": [
-                "obstacle_avoidance_constraints"
-            ]
+            "outputs": "Obstacle avoidance behavior."
         },
         "collision_avoidance": {
             "inputs": [
                 "agent_trajectories",
                 "nr_agents"
             ],
-            "outputs": [
-                "collision_constraints"
-            ]
+            "outputs": "Collision avoidance behavior."
         },
         "planning_system": {
             "inputs": [
@@ -189,137 +62,47 @@
                 "obstacle_avoidance",
                 "collision_avoidance"
             ],
-            "outputs": [
-                "complete_planning_output"
-            ]
+            "outputs": "Final trajectory planning outputs."
         }
     },
     "data_types_and_dimensions": {
         "parameters": {
-            "dt": {
-                "type": "float",
-                "dimension": [
-                    1
-                ]
-            },
-            "gamma": {
-                "type": "float",
-                "dimension": [
-                    1
-                ]
-            },
-            "nr_steps": {
-                "type": "int",
-                "dimension": [
-                    1
-                ]
-            },
-            "A": {
-                "type": "float",
-                "dimension": [
-                    4,
-                    4
-                ]
-            },
-            "B": {
-                "type": "float",
-                "dimension": [
-                    4,
-                    2
-                ]
-            },
-            "C": {
-                "type": "float",
-                "dimension": [
-                    2,
-                    4
-                ]
-            },
-            "initial_state_variance": {
-                "type": "float",
-                "dimension": [
-                    1
-                ]
-            },
-            "control_variance": {
-                "type": "float",
-                "dimension": [
-                    1
-                ]
-            },
-            "goal_constraint_variance": {
-                "type": "float",
-                "dimension": [
-                    1
-                ]
-            }
+            "dt": "float",
+            "gamma": "float",
+            "nr_steps": "int",
+            "nr_iterations": "int",
+            "nr_agents": "int",
+            "softmin_temperature": "float"
         },
-        "obstacles": {
-            "door_obstacle": {
-                "type": "float",
-                "dimension": [
-                    2
-                ]
-            },
-            "wall_obstacle": {
-                "type": "float",
-                "dimension": [
-                    2
-                ]
-            },
-            "combined_obstacle": {
-                "type": "float",
-                "dimension": [
-                    3,
-                    2
-                ]
-            }
+        "state_space_matrices": {
+            "A": "4x4 float matrix",
+            "B": "4x2 float matrix",
+            "C": "2x4 float matrix"
+        },
+        "obstacle_definitions": {
+            "center": "2D float array (x, y)",
+            "size": "2D float array (width, height)"
         },
         "agents": {
-            "id": {
-                "type": "int",
-                "dimension": [
-                    4
-                ]
-            },
-            "radius": {
-                "type": "float",
-                "dimension": [
-                    4
-                ]
-            },
-            "initial_position": {
-                "type": "float",
-                "dimension": [
-                    4,
-                    2
-                ]
-            },
-            "target_position": {
-                "type": "float",
-                "dimension": [
-                    4,
-                    2
-                ]
-            }
+            "id": "int",
+            "radius": "float",
+            "initial_position": "2D float array (x, y)",
+            "target_position": "2D float array (x, y)"
         }
     },
-    "potential_applications": "This model can be applied in robotic navigation, autonomous vehicle path planning, and scenarios requiring coordination among multiple agents in complex environments with obstacles.",
-    "limitations_or_ambiguities": "The model assumes a fixed number of agents and a predefined number of obstacles, which may limit adaptability in dynamic environments. Also, the parameters for visualizations and constraints may require tuning for specific scenarios.",
+    "potential_applications": [
+        "Simulation of multi-agent systems in robotics.",
+        "Navigation planning for autonomous vehicles.",
+        "Traffic simulation and management in urban environments.",
+        "Training and testing of algorithms for collaborative robotic teams."
+    ],
+    "limitations_or_ambiguities": [
+        "The exact representation of agents and obstacles may not cover all real-world scenarios.",
+        "Parameter tuning is necessary for different environments and agent behaviors.",
+        "The model may not account for dynamic obstacles or changing environmental conditions."
+    ],
     "ontology_mapping_assessment": {
-        "present_terms": [
-            "dt",
-            "gamma",
-            "nr_steps",
-            "nr_iterations",
-            "softmin_temperature",
-            "A",
-            "B",
-            "C",
-            "initial_state_variance",
-            "control_variance",
-            "goal_constraint_variance"
-        ],
-        "relevance": "The terms are relevant as they provide necessary mappings for understanding the model's dynamics and constraints in the context of the ActInfOntology."
+        "presence_of_terms": true,
+        "relevance": "ActInfOntology terms such as TimeStep, ConstraintParameter, and TrajectoryLength are relevant and appropriately mapped to the model parameters, enhancing clarity and standardization."
     }
 }
