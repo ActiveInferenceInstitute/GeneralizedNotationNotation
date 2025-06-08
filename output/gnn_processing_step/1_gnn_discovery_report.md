@@ -2,10 +2,10 @@
 
 ## Summary
 
-- Total .md files found: 2
-- Files with 'ModelName' found: 2
-- Files with 'StateSpaceBlock' found: 2
-- Files with 'Connections' found: 2
+- Total .md files found: 4
+- Files with 'ModelName' found: 4
+- Files with 'StateSpaceBlock' found: 4
+- Files with 'Connections' found: 4
 - Files with processing errors: 0
 
 ## Detailed File Analysis
@@ -22,9 +22,25 @@
 
 ---
 
+### `src/gnn/examples/self_driving_car_comprehensive.md`
+
+- **ModelName**: Comprehensive Self-Driving Car Agent v1
+- **StateSpaceBlock**: Found
+- **Connections**: Found
+
+---
+
 ### `src/gnn/examples/rxinfer_multiagent_gnn.md`
 
 - **ModelName**: Multi-agent Trajectory Planning
+- **StateSpaceBlock**: Found
+- **Connections**: Found
+
+---
+
+### `src/gnn/examples/rxinfer_hidden_markov_model.md`
+
+- **ModelName**: RxInfer Hidden Markov Model v1
 - **StateSpaceBlock**: Found
 - **Connections**: Found
 

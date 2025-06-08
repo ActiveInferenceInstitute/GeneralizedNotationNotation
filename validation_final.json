@@ -1,0 +1,35 @@
+{
+  "timestamp": 1749423422.2363296,
+  "modules_checked": 15,
+  "modules_with_issues": 0,
+  "output_validation": {
+    "missing": [
+      "7_mcp: mcp_processing_step/",
+      "10_execute: execution_results/",
+      "12_discopy: discopy_gnn/",
+      "13_discopy_jax_eval: discopy_jax_eval/",
+      "14_site: site/"
+    ],
+    "present": [
+      "1_gnn: gnn_processing_step/1_gnn_discovery_report.md",
+      "2_setup: directory_structure.json",
+      "2_setup: setup_artifacts/installed_packages.json",
+      "3_tests: test_reports/pytest_report.xml",
+      "4_gnn_type_checker: gnn_type_check/gnn_type_check/type_check_report.md",
+      "5_export: gnn_exports/",
+      "6_visualization: visualization/",
+      "8_ontology: ontology_processing/",
+      "9_render: gnn_rendered_simulators/",
+      "11_llm: llm_processing_step/"
+    ],
+    "unexpected": []
+  },
+  "module_issues": {},
+  "summary": {
+    "total_modules": 15,
+    "modules_with_issues": 0,
+    "total_import_issues": 0,
+    "missing_outputs": 5,
+    "status": "FAIL"
+  }
+}

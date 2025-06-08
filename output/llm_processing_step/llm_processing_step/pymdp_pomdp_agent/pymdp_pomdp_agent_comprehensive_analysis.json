@@ -1,151 +1,123 @@
 {
-    "model_purpose": "The GNN file describes a Multifactor PyMDP Agent that utilizes multiple observation modalities and hidden state factors in an Active Inference framework. It aims to model a decision-making agent that can infer its states and make choices based on observations and control actions.",
+    "model_purpose": "The GNN file represents a Multifactor PyMDP (Partially Observable Markov Decision Process) agent designed to handle multiple observation modalities and hidden state factors, utilizing Active Inference techniques.",
     "key_components": {
         "states": {
-            "hidden_state_factor_0": {
-                "name": "reward_level",
-                "states": 2
-            },
-            "hidden_state_factor_1": {
-                "name": "decision_state",
-                "states": 3
+            "hidden_state_factors": {
+                "reward_level": {
+                    "states": 2,
+                    "description": "Represents the level of reward (low/high)."
+                },
+                "decision_state": {
+                    "states": 3,
+                    "description": "Represents the current decision-making state (three distinct states)."
+                }
             }
         },
         "observations": {
-            "observation_modality_0": {
-                "name": "state_observation",
-                "outcomes": 3
+            "state_observation": {
+                "outcomes": 3,
+                "description": "Observations related to the current state."
             },
-            "observation_modality_1": {
-                "name": "reward",
-                "outcomes": 3
+            "reward": {
+                "outcomes": 3,
+                "description": "Observations related to the received reward."
             },
-            "observation_modality_2": {
-                "name": "decision_proprioceptive",
-                "outcomes": 3
+            "decision_proprioceptive": {
+                "outcomes": 3,
+                "description": "Observations related to the decision-making process."
             }
         },
         "actions": {
-            "controlled_factor": {
-                "name": "decision_state",
-                "actions": 3
+            "decision_state": {
+                "actions": 3,
+                "description": "Controllable actions affecting the decision state."
             }
+        },
+        "policies": {
+            "policy_distribution": {
+                "description": "Determines the distribution over actions for the controllable decision state."
+            }
+        },
+        "expected_free_energy": {
+            "description": "Quantifies the expected free energy of the system, guiding decision-making."
+        },
+        "time": {
+            "description": "Discrete time representation, indicating the time steps in the model."
         }
     },
     "component_interactions": {
-        "hidden_states": {
-            "D_f0 and D_f1": "Connect to hidden states s_f0 and s_f1",
-            "s_f0 and s_f1": "Influence A_m0, A_m1, A_m2 (likelihood matrices) and are controlled by B_f0 (uncontrolled) and B_f1 (controlled)",
-            "B_f0 and B_f1": "Transition probabilities for the hidden states affecting the next hidden states s_prime_f0 and s_prime_f1"
-        },
-        "observations": {
-            "A_m0, A_m1, A_m2": "Likelihood of observations based on hidden states",
-            "C_m0, C_m1, C_m2": "Preferences that influence the expected free energy G"
-        },
-        "policy and control": {
-            "G": "Expected free energy influences the policy distribution \u03c0_f1 and the chosen action u_f1",
-            "t": "Indicates the time step"
-        }
+        "hidden_states_and_observations": "(D_f0,D_f1)-(s_f0,s_f1) indicates that hidden state factors influence the likelihood of observations.",
+        "observations_and_likelihoods": "(s_f0,s_f1)-(A_m0,A_m1,A_m2) shows that hidden states affect the likelihood matrices for each observation modality.",
+        "actions_and_transitions": "(s_f0,s_f1,u_f1)-(B_f0,B_f1) signifies that the chosen actions impact the transitions of hidden state factors.",
+        "preferences_to_free_energy": "(C_m0,C_m1,C_m2)>G indicates that preferences for observations contribute to the expected free energy.",
+        "policy_and_action": "G>\u03c0_f1 shows that expected free energy influences the policy distribution over actions, and \u03c0_f1-u_f1 represents the action taken based on the policy."
     },
     "data_types_and_dimensions": {
         "A_matrices": {
-            "A_m0": [
-                3,
-                2,
-                3
-            ],
-            "A_m1": [
-                3,
-                2,
-                3
-            ],
-            "A_m2": [
-                3,
-                2,
-                3
-            ]
+            "dimension": "3x2x3",
+            "description": "Likelihood matrices for different observation modalities."
         },
         "B_matrices": {
-            "B_f0": [
-                2,
-                2,
-                1
-            ],
-            "B_f1": [
-                3,
-                3,
-                3
-            ]
+            "B_f0": {
+                "dimension": "2x2x1",
+                "description": "Transition matrix for the reward level factor."
+            },
+            "B_f1": {
+                "dimension": "3x3x3",
+                "description": "Transition matrix for the decision state factor, controlling for 3 actions."
+            }
         },
         "C_vectors": {
-            "C_m0": [
-                3
-            ],
-            "C_m1": [
-                3
-            ],
-            "C_m2": [
-                3
-            ]
+            "dimension": "3",
+            "description": "Preference vectors for each observation modality."
         },
         "D_vectors": {
-            "D_f0": [
-                2
-            ],
-            "D_f1": [
-                3
-            ]
+            "dimension": "2/3",
+            "description": "Prior distributions over hidden states."
         },
         "hidden_states": {
-            "s_f0": [
-                2,
-                1
-            ],
-            "s_f1": [
-                3,
-                1
-            ],
-            "s_prime_f0": [
-                2,
-                1
-            ],
-            "s_prime_f1": [
-                3,
-                1
-            ]
+            "s_f0": {
+                "dimension": "2x1",
+                "description": "Hidden state for reward level."
+            },
+            "s_f1": {
+                "dimension": "3x1",
+                "description": "Hidden state for decision state."
+            }
         },
         "observations": {
-            "o_m0": [
-                3,
-                1
-            ],
-            "o_m1": [
-                3,
-                1
-            ],
-            "o_m2": [
-                3,
-                1
-            ]
+            "o_m0": {
+                "dimension": "3x1",
+                "description": "Observation vector for modality 0."
+            },
+            "o_m1": {
+                "dimension": "3x1",
+                "description": "Observation vector for modality 1."
+            },
+            "o_m2": {
+                "dimension": "3x1",
+                "description": "Observation vector for modality 2."
+            }
         },
         "policy": {
-            "\u03c0_f1": [
-                3
-            ],
-            "u_f1": [
-                1
-            ],
-            "G": [
-                1
-            ],
-            "t": [
-                1
-            ]
+            "\u03c0_f1": {
+                "dimension": "3",
+                "description": "Policy distribution over actions for the decision state."
+            }
+        },
+        "expected_free_energy": {
+            "G": {
+                "dimension": "1",
+                "description": "Overall expected free energy."
+            }
         }
     },
-    "potential_applications": "This model can be utilized in environments requiring decision-making under uncertainty, such as robotics, autonomous agents, and adaptive systems in AI. It leverages multiple modalities for richer state representations and decision-making processes.",
-    "limitations_or_ambiguities": "The model assumes a specific structure and parameterization derived from PyMDP examples, which may not be directly applicable to all contexts. The transition dynamics for uncontrolled factors are simplistic and may not accurately represent complex real-world scenarios. Additionally, the model does not define explicit constraints or boundaries for the time horizon, which might limit its applicability in fixed-time scenarios.",
+    "potential_applications": "This model can be applied in scenarios requiring decision-making under uncertainty, such as robotic control, game AI, and cognitive modeling, where multiple modalities of information need to be integrated for optimal action selection.",
+    "limitations_or_ambiguities": "The model does not specify how the parameters are to be updated over time or how the states are inferred from observations, which could lead to ambiguities in practical implementation. Additionally, the uniform priors may not reflect actual distributions in real-world scenarios.",
     "ontology_mapping_assessment": {
-        "assessment": "The ActInfOntology terms are present and relevant, including mappings for likelihood matrices, transition matrices, preference vectors, and hidden states. These terms help standardize and clarify the components of the model within the active inference framework."
+        "ActInfOntologyTerms": {
+            "present": true,
+            "relevance": "The ActInfOntology terms are relevant and appropriately mapped to the components of the model, enhancing the clarity and interpretability of the model structure."
+        }
     }
 }

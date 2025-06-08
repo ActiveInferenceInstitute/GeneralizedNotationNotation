@@ -1,9 +1,9 @@
 # GNN Resource Estimation Report
 
-Analyzed 2 files
-Average Memory Usage: 0.50 KB
-Average Inference Time: 218.62 units
-Average Storage: 5.29 KB
+Analyzed 4 files
+Average Memory Usage: 38.19 KB
+Average Inference Time: 433.33 units
+Average Storage: 52.24 KB
 
 ## pymdp_pomdp_agent.md
 Path: src/gnn/examples/pymdp_pomdp_agent.md
@@ -33,6 +33,34 @@ Storage Estimate: 3.83 KB
 - total_state_space_dim: 124.0000
 - max_variable_dim: 27.0000
 
+## self_driving_car_comprehensive.md
+Path: src/gnn/examples/self_driving_car_comprehensive.md
+Memory Estimate: 151.46 KB
+Inference Estimate: 1138.25 units
+Storage Estimate: 194.16 KB
+
+### Model Info
+- variables_count: 136
+- edges_count: 0
+- time_spec: Dynamic
+- equation_count: 29
+
+### Complexity Metrics
+- state_space_complexity: 15.2431
+- graph_density: 0.0000
+- avg_in_degree: 0.0000
+- avg_out_degree: 0.0000
+- max_in_degree: 0.0000
+- max_out_degree: 0.0000
+- cyclic_complexity: 0.0000
+- temporal_complexity: 0.0000
+- equation_complexity: 3.1879
+- overall_complexity: 9.5343
+- variable_count: 136.0000
+- edge_count: 0.0000
+- total_state_space_dim: 38780.0000
+- max_variable_dim: 12000.0000
+
 ## rxinfer_multiagent_gnn.md
 Path: src/gnn/examples/rxinfer_multiagent_gnn.md
 Memory Estimate: 0.52 KB
@@ -60,6 +88,34 @@ Storage Estimate: 6.76 KB
 - edge_count: 1.0000
 - total_state_space_dim: 112.0000
 - max_variable_dim: 16.0000
+
+## rxinfer_hidden_markov_model.md
+Path: src/gnn/examples/rxinfer_hidden_markov_model.md
+Memory Estimate: 0.29 KB
+Inference Estimate: 157.83 units
+Storage Estimate: 4.22 KB
+
+### Model Info
+- variables_count: 17
+- edges_count: 7
+- time_spec: Dynamic
+- equation_count: 12
+
+### Complexity Metrics
+- state_space_complexity: 6.3923
+- graph_density: 0.0257
+- avg_in_degree: 1.7500
+- avg_out_degree: 1.1667
+- max_in_degree: 3.0000
+- max_out_degree: 2.0000
+- cyclic_complexity: 0.0000
+- temporal_complexity: 0.0000
+- equation_complexity: 4.7431
+- overall_complexity: 6.0549
+- variable_count: 17.0000
+- edge_count: 7.0000
+- total_state_space_dim: 83.0000
+- max_variable_dim: 9.0000
 
 # Metric Definitions
 

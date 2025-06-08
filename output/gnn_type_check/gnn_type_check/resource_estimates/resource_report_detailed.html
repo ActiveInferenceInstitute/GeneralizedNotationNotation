@@ -28,26 +28,26 @@
 </head>
 <body>
     <h1>GNN Resource Estimation Report</h1>
-    <p>Generated on 2025-06-08 14:17:33</p>
+    <p>Generated on 2025-06-08 15:53:27</p>
     
     <div class="summary">
         <h2>Summary</h2>
-        <p>This report provides detailed resource estimates for 2 GNN models, analyzing their memory usage, computational requirements, and storage needs.</p>
+        <p>This report provides detailed resource estimates for 4 GNN models, analyzing their memory usage, computational requirements, and storage needs.</p>
         
         <div class="metric-container">
             <div class="metric-box">
                 <h3>Average Memory Usage</h3>
-                <div class="metric-value">0.50 KB</div>
+                <div class="metric-value">38.19 KB</div>
                 <p>RAM required to hold model in memory</p>
             </div>
             <div class="metric-box">
                 <h3>Average Inference Time</h3>
-                <div class="metric-value">218.62 units</div>
+                <div class="metric-value">433.33 units</div>
                 <p>Relative computational cost</p>
             </div>
             <div class="metric-box">
                 <h3>Average Storage</h3>
-                <div class="metric-value">5.29 KB</div>
+                <div class="metric-value">52.24 KB</div>
                 <p>Disk space required to store model</p>
             </div>
         </div>
@@ -131,11 +131,25 @@
                 <td>1050</td>
             </tr>
             <tr>
+                <td>rxinfer_hidden_markov_model</td>
+                <td>204</td>
+                <td>12</td>
+                <td>40</td>
+                <td>640</td>
+            </tr>
+            <tr>
                 <td>rxinfer_multiagent_gnn</td>
                 <td>0</td>
                 <td>8</td>
                 <td>0</td>
                 <td>20</td>
+            </tr>
+            <tr>
+                <td>self_driving_car_comprehensive</td>
+                <td>0</td>
+                <td>48</td>
+                <td>0</td>
+                <td>120</td>
             </tr>
         </tbody>
     </table>
@@ -193,6 +207,49 @@
         </div>
 
         <div class="model-card">
+            <h3>rxinfer_hidden_markov_model</h3>
+            <p><strong>Type:</strong> Dynamic model</p>
+            
+            <div class="resource-comparison">
+                <div>
+                    <h4>Memory Usage</h4>
+                    <div class="metric-value">0.29 KB</div>
+                    <p>Variables: 17</p>
+                </div>
+                <div>
+                    <h4>Inference Time</h4>
+                    <div class="metric-value">157.83 units</div>
+                    <p>Edges: 7</p>
+                </div>
+                <div>
+                    <h4>Storage</h4>
+                    <div class="metric-value">4.22 KB</div>
+                    <p>Equations: 12</p>
+                </div>
+            </div>
+            
+            <h4>Complexity Metrics</h4>
+            <table>
+                <tr>
+                    <td>State Space Complexity</td>
+                    <td>6.39</td>
+                    <td>Graph Density</td>
+                    <td>0.03</td>
+                </tr>
+                <tr>
+                    <td>Temporal Complexity</td>
+                    <td>0.00</td>
+                    <td>Equation Complexity</td>
+                    <td>4.74</td>
+                </tr>
+                <tr>
+                    <td>Overall Complexity</td>
+                    <td colspan="3">6.05 / 10.0</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="model-card">
             <h3>rxinfer_multiagent_gnn</h3>
             <p><strong>Type:</strong> Dynamic model</p>
             
@@ -231,6 +288,49 @@
                 <tr>
                     <td>Overall Complexity</td>
                     <td colspan="3">5.36 / 10.0</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="model-card">
+            <h3>self_driving_car_comprehensive</h3>
+            <p><strong>Type:</strong> Dynamic model</p>
+            
+            <div class="resource-comparison">
+                <div>
+                    <h4>Memory Usage</h4>
+                    <div class="metric-value">151.46 KB</div>
+                    <p>Variables: 136</p>
+                </div>
+                <div>
+                    <h4>Inference Time</h4>
+                    <div class="metric-value">1138.25 units</div>
+                    <p>Edges: 0</p>
+                </div>
+                <div>
+                    <h4>Storage</h4>
+                    <div class="metric-value">194.16 KB</div>
+                    <p>Equations: 29</p>
+                </div>
+            </div>
+            
+            <h4>Complexity Metrics</h4>
+            <table>
+                <tr>
+                    <td>State Space Complexity</td>
+                    <td>15.24</td>
+                    <td>Graph Density</td>
+                    <td>0.00</td>
+                </tr>
+                <tr>
+                    <td>Temporal Complexity</td>
+                    <td>0.00</td>
+                    <td>Equation Complexity</td>
+                    <td>3.19</td>
+                </tr>
+                <tr>
+                    <td>Overall Complexity</td>
+                    <td colspan="3">9.53 / 10.0</td>
                 </tr>
             </table>
         </div>
@@ -284,10 +384,10 @@
         new Chart(memoryCtx, {
             type: 'bar',
             data: {
-                labels: ["pymdp_pomdp_agent", "rxinfer_multiagent_gnn"],
+                labels: ["pymdp_pomdp_agent", "rxinfer_hidden_markov_model", "rxinfer_multiagent_gnn", "self_driving_car_comprehensive"],
                 datasets: [{
                     label: 'Memory Usage (KB)',
-                    data: [0.484375, 0.5166015625],
+                    data: [0.484375, 0.28515625, 0.5166015625, 151.4638671875],
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
@@ -322,10 +422,10 @@
         new Chart(inferenceCtx, {
             type: 'bar',
             data: {
-                labels: ["pymdp_pomdp_agent", "rxinfer_multiagent_gnn"],
+                labels: ["pymdp_pomdp_agent", "rxinfer_hidden_markov_model", "rxinfer_multiagent_gnn", "self_driving_car_comprehensive"],
                 datasets: [{
                     label: 'Inference Time (units)',
-                    data: [154.06988264859797, 283.1611446514433],
+                    data: [154.06988264859797, 157.82892142331042, 283.1611446514433, 1138.2515754081774],
                     backgroundColor: 'rgba(153, 102, 255, 0.2)',
                     borderColor: 'rgba(153, 102, 255, 1)',
                     borderWidth: 1
@@ -360,10 +460,10 @@
         new Chart(storageCtx, {
             type: 'bar',
             data: {
-                labels: ["pymdp_pomdp_agent", "rxinfer_multiagent_gnn"],
+                labels: ["pymdp_pomdp_agent", "rxinfer_hidden_markov_model", "rxinfer_multiagent_gnn", "self_driving_car_comprehensive"],
                 datasets: [{
                     label: 'Storage (KB)',
-                    data: [3.82846875, 6.7573515625],
+                    data: [3.82846875, 4.2164921875, 6.7573515625, 194.16008593749999],
                     backgroundColor: 'rgba(255, 159, 64, 0.2)',
                     borderColor: 'rgba(255, 159, 64, 1)',
                     borderWidth: 1
@@ -397,18 +497,18 @@
         const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
         
         // Normalize data
-        const maxMemory = Math.max(...[0.484375, 0.5166015625]);
-        const maxInference = Math.max(...[154.06988264859797, 283.1611446514433]);
-        const maxStorage = Math.max(...[3.82846875, 6.7573515625]);
+        const maxMemory = Math.max(...[0.484375, 0.28515625, 0.5166015625, 151.4638671875]);
+        const maxInference = Math.max(...[154.06988264859797, 157.82892142331042, 283.1611446514433, 1138.2515754081774]);
+        const maxStorage = Math.max(...[3.82846875, 4.2164921875, 6.7573515625, 194.16008593749999]);
         
-        const normMemory = [0.484375, 0.5166015625].map(v => v / maxMemory);
-        const normInference = [154.06988264859797, 283.1611446514433].map(v => v / maxInference);
-        const normStorage = [3.82846875, 6.7573515625].map(v => v / maxStorage);
+        const normMemory = [0.484375, 0.28515625, 0.5166015625, 151.4638671875].map(v => v / maxMemory);
+        const normInference = [154.06988264859797, 157.82892142331042, 283.1611446514433, 1138.2515754081774].map(v => v / maxInference);
+        const normStorage = [3.82846875, 4.2164921875, 6.7573515625, 194.16008593749999].map(v => v / maxStorage);
         
         new Chart(comparisonCtx, {
             type: 'bar',
             data: {
-                labels: ["pymdp_pomdp_agent", "rxinfer_multiagent_gnn"],
+                labels: ["pymdp_pomdp_agent", "rxinfer_hidden_markov_model", "rxinfer_multiagent_gnn", "self_driving_car_comprehensive"],
                 datasets: [
                     {
                         label: 'Memory',
@@ -457,10 +557,10 @@
         new Chart(flopsCtx, {
             type: 'bar',
             data: {
-                labels: ["pymdp_pomdp_agent", "rxinfer_multiagent_gnn"],
+                labels: ["pymdp_pomdp_agent", "rxinfer_hidden_markov_model", "rxinfer_multiagent_gnn", "self_driving_car_comprehensive"],
                 datasets: [{
                     label: 'FLOPS',
-                    data: [1050.0, 20.0],
+                    data: [1050.0, 640.0, 20.0, 120.0],
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1

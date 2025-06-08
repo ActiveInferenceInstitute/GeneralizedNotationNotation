@@ -1,108 +1,180 @@
 {
-    "model_purpose": "The model represents a multi-agent trajectory planning scenario in RxInfer.jl, focusing on agents navigating a 2D environment while avoiding obstacles and each other to reach specific goals.",
+    "model_purpose": "The model is designed for multi-agent trajectory planning in a 2D environment using the RxInfer.jl framework. It incorporates obstacle avoidance, goal-directed behavior, and inter-agent collision avoidance to simulate the movement of multiple agents towards their targets while navigating obstacles.",
     "key_components": {
         "state_space_model": {
-            "states": "Agent positions and velocities in a 2D environment.",
-            "observations": "Positions of agents and possibly other environmental features.",
-            "actions": "Control inputs for each agent to adjust their trajectories."
+            "parameters": [
+                "dt (time step)",
+                "gamma (constraint parameter)",
+                "nr_steps (number of time steps)",
+                "nr_iterations (number of inference iterations)",
+                "nr_agents (number of agents)",
+                "softmin_temperature (temperature for softmin function)",
+                "intermediate_steps (interval for saving results)",
+                "save_intermediates (flag to save intermediate results)"
+            ],
+            "matrices": {
+                "A": "State transition matrix",
+                "B": "Control input matrix",
+                "C": "Observation matrix"
+            },
+            "prior_distributions": [
+                "initial_state_variance",
+                "control_variance",
+                "goal_constraint_variance",
+                "gamma_shape",
+                "gamma_scale_factor"
+            ]
         },
-        "parameters": {
-            "dt": "Time step for the state space model.",
-            "gamma": "Constraint parameter for obstacle avoidance.",
-            "nr_steps": "Number of time steps to simulate.",
-            "nr_agents": "Total number of agents in the simulation."
-        },
-        "obstacle_definitions": {
-            "obstacle_positions": "Coordinates of obstacles in the environment.",
-            "obstacle_sizes": "Dimensions of the obstacles."
-        },
-        "agent_definitions": {
-            "agent_ids": "Unique identifiers for each agent.",
-            "agent_radius": "Size of each agent for collision avoidance.",
-            "initial_positions": "Starting positions of agents.",
-            "target_positions": "Goal positions for agents."
+        "agent_configurations": [
+            {
+                "id": "agent1_id",
+                "radius": "agent1_radius",
+                "initial_position": "agent1_initial_position",
+                "target_position": "agent1_target_position"
+            },
+            {
+                "id": "agent2_id",
+                "radius": "agent2_radius",
+                "initial_position": "agent2_initial_position",
+                "target_position": "agent2_target_position"
+            },
+            {
+                "id": "agent3_id",
+                "radius": "agent3_radius",
+                "initial_position": "agent3_initial_position",
+                "target_position": "agent3_target_position"
+            },
+            {
+                "id": "agent4_id",
+                "radius": "agent4_radius",
+                "initial_position": "agent4_initial_position",
+                "target_position": "agent4_target_position"
+            }
+        ],
+        "obstacles": {
+            "door_obstacles": [
+                {
+                    "center": "door_obstacle_center_1",
+                    "size": "door_obstacle_size_1"
+                },
+                {
+                    "center": "door_obstacle_center_2",
+                    "size": "door_obstacle_size_2"
+                }
+            ],
+            "wall_obstacle": {
+                "center": "wall_obstacle_center",
+                "size": "wall_obstacle_size"
+            },
+            "combined_obstacles": [
+                {
+                    "center": "combined_obstacle_center_1",
+                    "size": "combined_obstacle_size_1"
+                },
+                {
+                    "center": "combined_obstacle_center_2",
+                    "size": "combined_obstacle_size_2"
+                },
+                {
+                    "center": "combined_obstacle_center_3",
+                    "size": "combined_obstacle_size_3"
+                }
+            ]
         }
     },
     "component_interactions": {
         "state_space_model": {
+            "outputs": [
+                "agent_trajectories",
+                "goal_directed_behavior",
+                "obstacle_avoidance",
+                "collision_avoidance"
+            ],
             "inputs": [
                 "dt",
                 "A",
                 "B",
-                "C"
-            ],
-            "outputs": "Agent trajectories."
-        },
-        "goal_constraints": {
-            "inputs": [
-                "agent_trajectories",
-                "goal_constraint_variance"
-            ],
-            "outputs": "Goal-directed behavior."
-        },
-        "obstacle_avoidance": {
-            "inputs": [
-                "agent_trajectories",
+                "C",
+                "initial_state_variance",
+                "control_variance",
+                "goal_constraint_variance",
                 "gamma",
                 "gamma_shape",
-                "gamma_scale_factor"
-            ],
-            "outputs": "Obstacle avoidance behavior."
-        },
-        "collision_avoidance": {
-            "inputs": [
-                "agent_trajectories",
+                "gamma_scale_factor",
                 "nr_agents"
-            ],
-            "outputs": "Collision avoidance behavior."
+            ]
         },
         "planning_system": {
             "inputs": [
                 "goal_directed_behavior",
                 "obstacle_avoidance",
                 "collision_avoidance"
-            ],
-            "outputs": "Final trajectory planning outputs."
+            ]
         }
     },
     "data_types_and_dimensions": {
         "parameters": {
-            "dt": "float",
-            "gamma": "float",
-            "nr_steps": "int",
-            "nr_iterations": "int",
-            "nr_agents": "int",
-            "softmin_temperature": "float"
+            "dt": "float[1]",
+            "gamma": "float[1]",
+            "nr_steps": "int[1]",
+            "nr_iterations": "int[1]",
+            "nr_agents": "int[1]",
+            "softmin_temperature": "float[1]",
+            "intermediate_steps": "int[1]",
+            "save_intermediates": "bool[1]"
         },
-        "state_space_matrices": {
-            "A": "4x4 float matrix",
-            "B": "4x2 float matrix",
-            "C": "2x4 float matrix"
+        "matrices": {
+            "A": "float[4,4]",
+            "B": "float[4,2]",
+            "C": "float[2,4]"
         },
         "obstacle_definitions": {
-            "center": "2D float array (x, y)",
-            "size": "2D float array (width, height)"
+            "door_obstacles": {
+                "center": "float[2]",
+                "size": "float[2]"
+            },
+            "wall_obstacle": {
+                "center": "float[2]",
+                "size": "float[2]"
+            },
+            "combined_obstacles": {
+                "center": "float[2]",
+                "size": "float[2]"
+            }
         },
         "agents": {
-            "id": "int",
-            "radius": "float",
-            "initial_position": "2D float array (x, y)",
-            "target_position": "2D float array (x, y)"
+            "id": "int[1]",
+            "radius": "float[1]",
+            "initial_position": "float[2]",
+            "target_position": "float[2]"
         }
     },
     "potential_applications": [
-        "Simulation of multi-agent systems in robotics.",
-        "Navigation planning for autonomous vehicles.",
-        "Traffic simulation and management in urban environments.",
-        "Training and testing of algorithms for collaborative robotic teams."
+        "Simulation of multi-agent systems in robotics",
+        "Planning trajectories in automated driving systems",
+        "Modeling and analyzing agent interactions in games",
+        "Research in cooperative navigation and intelligent transportation systems"
     ],
     "limitations_or_ambiguities": [
-        "The exact representation of agents and obstacles may not cover all real-world scenarios.",
-        "Parameter tuning is necessary for different environments and agent behaviors.",
-        "The model may not account for dynamic obstacles or changing environmental conditions."
+        "The model may not account for dynamic changes in the environment during simulation.",
+        "The exact nature of the interactions between agents is not fully specified.",
+        "Not all parameters have clear physical interpretations or constraints."
     ],
     "ontology_mapping_assessment": {
-        "presence_of_terms": true,
-        "relevance": "ActInfOntology terms such as TimeStep, ConstraintParameter, and TrajectoryLength are relevant and appropriately mapped to the model parameters, enhancing clarity and standardization."
+        "present_terms": [
+            "TimeStep",
+            "ConstraintParameter",
+            "TrajectoryLength",
+            "InferenceIterations",
+            "NumberOfAgents",
+            "SoftminTemperature",
+            "StateTransitionMatrix",
+            "ControlInputMatrix",
+            "ObservationMatrix",
+            "InitialStateVariance",
+            "ControlVariance",
+            "GoalConstraintVariance"
+        ],
+        "relevance": "The ActInfOntology terms are relevant as they provide a standardized language for describing the model parameters and enhance interoperability within the framework."
     }
 }

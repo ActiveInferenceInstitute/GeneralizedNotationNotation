@@ -1,6 +1,6 @@
 # 📤 GNN Export Step Summary
 
-🗓️ Generated: 2025-06-08 14:17:34
+🗓️ Generated: 2025-06-08 15:53:27
 
 ## ⚙️ Configuration
 - **Source Directory for GNN files:** `src/gnn/examples`
@@ -8,6 +8,6 @@
 - **Recursive Search:** ✅ Enabled
 
 ## 📊 Export Statistics
-- **GNN Files Found/Attempted:** 2
-- **GNN Files with Successful Exports (all selected formats):** 2
+- **GNN Files Found/Attempted:** 4
+- **GNN Files with Successful Exports (all selected formats):** 4
 - **GNN Files with At Least One Export Failure:** 0

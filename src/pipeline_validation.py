@@ -44,7 +44,7 @@ EXPECTED_OUTPUTS = {
         "test_reports/pytest_report.xml"
     ],
     "4_gnn_type_checker": [
-        "gnn_type_check/type_check_report.json"
+        "gnn_type_check/gnn_type_check/type_check_report.md"
     ],
     "5_export": [
         "gnn_exports/"
@@ -53,7 +53,7 @@ EXPECTED_OUTPUTS = {
         "visualization/"
     ],
     "7_mcp": [
-        "mcp_operations/"
+        "mcp_processing_step/"
     ],
     "8_ontology": [
         "ontology_processing/"
@@ -68,10 +68,10 @@ EXPECTED_OUTPUTS = {
         "llm_processing_step/"
     ],
     "12_discopy": [
-        "discopy_processing/"
+        "discopy_gnn/"
     ],
     "13_discopy_jax_eval": [
-        "discopy_jax_evaluation/"
+        "discopy_jax_eval/"
     ],
     "14_site": [
         "site/"

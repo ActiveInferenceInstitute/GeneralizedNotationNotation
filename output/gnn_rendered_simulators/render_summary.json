@@ -1,7 +1,7 @@
 {
-  "total_files": 2,
-  "pymdp_successes": 2,
-  "rxinfer_successes": 2,
+  "total_files": 4,
+  "pymdp_successes": 4,
+  "rxinfer_successes": 4,
   "failures": [],
   "output_directory": "../output/gnn_rendered_simulators"
 }

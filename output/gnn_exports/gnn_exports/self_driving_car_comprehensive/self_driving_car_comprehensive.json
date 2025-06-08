@@ -1,0 +1,1428 @@
+{
+    "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/self_driving_car_comprehensive.md",
+    "name": "Comprehensive Self-Driving Car Agent v1",
+    "raw_sections": {
+        "GNNSection": "ComprehensiveSelfDrivingCarAgent",
+        "GNNVersionAndFlags": "GNN v1",
+        "ModelName": "Comprehensive Self-Driving Car Agent v1",
+        "ModelAnnotation": "This model represents a comprehensive self-driving car agent implementing Active Inference principles.\nThe system includes:\n- Multi-modal sensory perception (Camera, LiDAR, Radar, GPS, IMU, Vehicle Sensors)\n- Vehicle dynamics modeling (position, velocity, acceleration, steering)\n- Environmental state estimation (traffic, weather, road conditions)\n- Multi-agent interaction modeling (other vehicles, pedestrians, cyclists)\n- Safety-critical decision making with hierarchical control\n- Route planning and navigation\n- Regulatory compliance and traffic rule adherence\n- System health monitoring and fault detection\n\nThe model operates at multiple temporal scales:\n- High-frequency vehicle control (100 Hz)\n- Perception and planning (10 Hz) \n- Route planning (1 Hz)\n- System monitoring (0.1 Hz)",
+        "StateSpaceBlock": "### Temporal Parameters\ndt_control[1,type=float]           # Control loop time step (0.01s)\ndt_perception[1,type=float]        # Perception time step (0.1s)\ndt_planning[1,type=float]          # Planning time step (1.0s)\ndt_monitoring[1,type=float]        # System monitoring time step (10.0s)\ntime_horizon_control[1,type=int]   # Control horizon steps\ntime_horizon_planning[1,type=int]  # Planning horizon steps\n\n### Vehicle Dynamics State Variables\n# Vehicle pose and kinematics (6 DOF)\nvehicle_position_x[1,type=float]      # Global X position (m)\nvehicle_position_y[1,type=float]      # Global Y position (m)\nvehicle_heading[1,type=float]         # Vehicle heading angle (rad)\nvehicle_velocity_x[1,type=float]      # Longitudinal velocity (m/s)\nvehicle_velocity_y[1,type=float]      # Lateral velocity (m/s)\nvehicle_angular_velocity[1,type=float] # Yaw rate (rad/s)\n\n# Vehicle control states\nsteering_angle[1,type=float]          # Front wheel steering angle (rad)\nthrottle_position[1,type=float]       # Throttle pedal position (0-1)\nbrake_pressure[1,type=float]          # Brake pressure (Pa)\ngear_state[1,type=int]                # Transmission gear (-1,0,1,2,3,4,5)\n\n# Vehicle dynamics matrices\nA_vehicle[6,6,type=float]             # Vehicle state transition matrix\nB_vehicle[6,3,type=float]             # Vehicle control input matrix\nQ_vehicle[6,6,type=float]             # Vehicle process noise covariance\n\n### Environmental State Factors\n# Traffic conditions\ntraffic_density[1,type=float]         # Local traffic density (vehicles/km)\ntraffic_flow_rate[1,type=float]       # Traffic flow rate (vehicles/hour)\naverage_traffic_speed[1,type=float]   # Average speed of surrounding traffic (m/s)\n\n# Weather and road conditions  \nweather_condition[5,1,type=float]     # Weather state: [clear, rain, fog, snow, ice]\nroad_surface_condition[4,1,type=float] # Road condition: [dry, wet, icy, debris]\nvisibility_range[1,type=float]        # Visibility distance (m)\nroad_friction_coefficient[1,type=float] # Road-tire friction coefficient\n\n# Environmental hazards\nconstruction_zone[1,type=bool]        # Construction zone indicator\nemergency_vehicle_present[1,type=bool] # Emergency vehicle nearby\nschool_zone[1,type=bool]              # School zone indicator\nwork_zone[1,type=bool]                # Work zone indicator\n\n### Multi-Agent Environment State\n# Other vehicles (up to 20 tracked vehicles)\nother_vehicles_positions[20,2,type=float]    # Other vehicle positions\nother_vehicles_velocities[20,2,type=float]   # Other vehicle velocities  \nother_vehicles_headings[20,1,type=float]     # Other vehicle headings\nother_vehicles_intentions[20,4,type=float]   # Vehicle intentions: [straight, left, right, stop]\nother_vehicles_classifications[20,6,type=float] # Vehicle types: [car, truck, bus, motorcycle, bicycle, emergency]\n\n# Pedestrians and cyclists (up to 10 tracked)\npedestrians_positions[10,2,type=float]       # Pedestrian positions\npedestrians_velocities[10,2,type=float]      # Pedestrian velocities\npedestrians_intentions[10,3,type=float]      # Pedestrian intentions: [walking, stopping, crossing]\n\n# Traffic infrastructure\ntraffic_lights_states[8,4,type=float]        # Traffic light states: [red, yellow, green, unknown]\ntraffic_lights_positions[8,2,type=float]     # Traffic light positions\nstop_signs_positions[5,2,type=float]         # Stop sign positions\nspeed_limit_current[1,type=float]            # Current speed limit (m/s)\n\n### Route and Navigation State\n# Current route information\nroute_waypoints[100,2,type=float]            # Route waypoint coordinates\nroute_distances[100,1,type=float]            # Distances to each waypoint\ndestination_position[2,type=float]           # Final destination coordinates\ncurrent_lane_id[1,type=int]                  # Current driving lane ID\ntarget_lane_id[1,type=int]                  # Target lane for maneuvers\n\n# Navigation state\ndistance_to_destination[1,type=float]        # Remaining distance to destination\nestimated_time_arrival[1,type=float]         # Estimated time to arrival\nroute_replanning_needed[1,type=bool]         # Route replanning flag\n\n### Observation Modalities\n# Camera observations (multiple cameras)\ncamera_front_objects[15,8,type=float]        # Front camera detected objects: [x,y,w,h,class,confidence,velocity_x,velocity_y]\ncamera_rear_objects[10,8,type=float]         # Rear camera detected objects\ncamera_left_objects[10,8,type=float]         # Left camera detected objects  \ncamera_right_objects[10,8,type=float]        # Right camera detected objects\ncamera_lane_markings[4,6,type=float]         # Lane markings: [left_outer, left_inner, right_inner, right_outer] x [x1,y1,x2,y2,confidence,type]\n\n# LiDAR observations\nlidar_point_cloud[1000,4,type=float]         # LiDAR point cloud: [x,y,z,intensity]\nlidar_objects[20,7,type=float]               # LiDAR object detections: [x,y,z,w,l,h,class]\nlidar_ground_plane[4,type=float]             # Ground plane equation coefficients\n\n# Radar observations  \nradar_objects[15,6,type=float]               # Radar detections: [range,bearing,doppler,rcs,x,y]\nradar_tracks[15,8,type=float]                # Radar tracks: [x,y,vx,vy,ax,ay,confidence,track_id]\n\n# GPS/GNSS observations\ngps_position[3,type=float]                   # GPS position: [lat,lon,alt]\ngps_velocity[3,type=float]                   # GPS velocity: [vx,vy,vz]  \ngps_accuracy[3,type=float]                   # GPS accuracy: [horizontal,vertical,velocity]\n\n# IMU observations\nimu_acceleration[3,type=float]               # IMU acceleration: [ax,ay,az]\nimu_angular_velocity[3,type=float]           # IMU angular velocity: [wx,wy,wz]\nimu_orientation[4,type=float]                # IMU orientation quaternion: [w,x,y,z]\n\n# Vehicle sensor observations\nwheel_speeds[4,type=float]                   # Individual wheel speeds\nengine_rpm[1,type=float]                     # Engine RPM\nfuel_level[1,type=float]                     # Fuel level (0-1)\nbattery_voltage[1,type=float]                # System battery voltage\noil_pressure[1,type=float]                   # Engine oil pressure\ncoolant_temperature[1,type=float]            # Engine coolant temperature\n\n### Action/Control Variables\n# Primary control actions\naction_steering[1,type=float]                # Steering wheel angle command (rad)\naction_acceleration[1,type=float]            # Acceleration command (m/s²)\naction_braking[1,type=float]                 # Braking force command (N)\n\n# Secondary control actions\naction_turn_signal[3,type=float]             # Turn signal: [off, left, right]\naction_lane_change[3,type=float]             # Lane change intention: [stay, left, right]\naction_horn[1,type=bool]                     # Horn activation\naction_hazard_lights[1,type=bool]            # Hazard lights activation\n\n# High-level behavioral actions\nbehavior_mode[5,type=float]                  # Driving mode: [normal, aggressive, defensive, eco, sport]\nmaneuver_type[6,type=float]                  # Current maneuver: [follow, overtake, change_lane, merge, park, emergency_stop]\n\n### Likelihood Matrices (A matrices)\n# Camera likelihood matrices\nA_camera_front[15,6,20,5,type=float]        # Camera front: [objects, vehicle_state, other_vehicles, weather]\nA_camera_lane[4,6,4,type=float]             # Lane detection: [lane_markings, vehicle_state, road_condition]\n\n# LiDAR likelihood matrices  \nA_lidar_objects[20,6,20,5,type=float]       # LiDAR objects: [detections, vehicle_state, other_vehicles, weather]\nA_lidar_ground[4,6,4,type=float]            # Ground plane: [coefficients, vehicle_state, road_condition]\n\n# Radar likelihood matrices\nA_radar_objects[15,6,20,5,type=float]       # Radar objects: [detections, vehicle_state, other_vehicles, weather]\n\n# GPS likelihood matrix\nA_gps[3,6,type=float]                       # GPS: [position, vehicle_state]\n\n# IMU likelihood matrix  \nA_imu[10,6,type=float]                      # IMU: [measurements, vehicle_state]\n\n# Vehicle sensor likelihood matrices\nA_vehicle_sensors[10,6,3,type=float]        # Vehicle sensors: [measurements, vehicle_state, system_health]\n\n### Transition Matrices (B matrices)\n# Vehicle dynamics transitions\nB_vehicle_dynamics[6,6,3,type=float]        # Vehicle state transitions: [next_state, current_state, control_actions]\n\n# Environmental state transitions\nB_traffic[3,3,1,type=float]                 # Traffic conditions: [next, current, implicit]\nB_weather[5,5,1,type=float]                 # Weather transitions: [next, current, implicit]\nB_other_vehicles[20,20,6,type=float]        # Other vehicle transitions: [next, current, vehicle_actions]\n\n# System state transitions\nB_system_health[3,3,1,type=float]           # System health: [healthy, degraded, failed]\n\n### Preference Matrices (C matrices)  \n# Safety preferences (highest priority)\nC_collision_avoidance[2,type=float]         # Collision preferences: [safe, collision]\nC_lane_keeping[3,type=float]                # Lane keeping: [in_lane, lane_edge, off_road]\nC_speed_compliance[3,type=float]            # Speed compliance: [compliant, over, under]\n\n# Traffic rule compliance\nC_traffic_lights[4,type=float]              # Traffic light compliance: [red_stop, yellow_caution, green_go, unknown]\nC_stop_signs[2,type=float]                  # Stop sign compliance: [stopped, violation]\nC_right_of_way[2,type=float]               # Right of way: [yielded, violation]\n\n# Efficiency and comfort preferences\nC_fuel_efficiency[3,type=float]             # Fuel efficiency: [efficient, moderate, inefficient]\nC_passenger_comfort[3,type=float]           # Comfort: [smooth, moderate, harsh]\nC_time_efficiency[3,type=float]             # Time efficiency: [optimal, acceptable, slow]\n\n# Environmental and social preferences\nC_emissions[3,type=float]                   # Emissions: [low, moderate, high]\nC_noise[3,type=float]                       # Noise: [quiet, moderate, loud]\n\n### Prior Distributions (D matrices)\n# Vehicle state priors\nD_vehicle_position[2,type=float]            # Position prior (known from GPS)\nD_vehicle_velocity[1,type=float]            # Velocity prior \nD_vehicle_heading[1,type=float]             # Heading prior\n\n# Environmental priors\nD_traffic_density[1,type=float]             # Traffic density prior\nD_weather[5,type=float]                     # Weather condition priors\nD_road_condition[4,type=float]              # Road condition priors\n\n# Other agent priors\nD_other_vehicles[20,type=float]             # Other vehicle existence priors\nD_pedestrians[10,type=float]                # Pedestrian existence priors\n\n### Precision and Uncertainty Parameters\n# Sensory precision parameters\ngamma_camera[1,type=float]                  # Camera measurement precision\ngamma_lidar[1,type=float]                   # LiDAR measurement precision  \ngamma_radar[1,type=float]                   # Radar measurement precision\ngamma_gps[1,type=float]                     # GPS measurement precision\ngamma_imu[1,type=float]                     # IMU measurement precision\n\n# Model precision parameters\ngamma_vehicle_dynamics[1,type=float]        # Vehicle model precision\ngamma_other_vehicles[1,type=float]          # Other vehicle model precision\ngamma_environment[1,type=float]             # Environmental model precision\n\n# Policy precision parameters\nalpha_control[1,type=float]                 # Control policy precision\nalpha_behavior[1,type=float]                # Behavioral policy precision\nalpha_maneuver[1,type=float]                # Maneuver policy precision\n\n### System Health and Diagnostics\n# Sensor health states\nsensor_health_camera[4,3,type=float]        # Camera health: [operational, degraded, failed] for each camera\nsensor_health_lidar[1,3,type=float]         # LiDAR health\nsensor_health_radar[1,3,type=float]         # Radar health  \nsensor_health_gps[1,3,type=float]           # GPS health\nsensor_health_imu[1,3,type=float]           # IMU health\n\n# Vehicle system health\nsystem_health_engine[3,type=float]          # Engine health: [healthy, degraded, failed]\nsystem_health_brakes[3,type=float]          # Brake system health\nsystem_health_steering[3,type=float]        # Steering system health\nsystem_health_transmission[3,type=float]    # Transmission health\n\n# Computational system health\ncompute_health_perception[3,type=float]     # Perception module health\ncompute_health_planning[3,type=float]       # Planning module health\ncompute_health_control[3,type=float]        # Control module health",
+        "Connections": "### Primary Perception Connections\n# Multi-modal sensor fusion\n(camera_front_objects, camera_rear_objects, camera_left_objects, camera_right_objects) > visual_object_fusion\n(lidar_point_cloud, lidar_objects) > lidar_perception\n(radar_objects, radar_tracks) > radar_perception\n(visual_object_fusion, lidar_perception, radar_perception) > multi_modal_object_detection\n\n# Localization and mapping\n(gps_position, gps_velocity, imu_acceleration, imu_angular_velocity, camera_lane_markings) > localization_system\n(lidar_point_cloud, localization_system) > simultaneous_localization_mapping\n\n### Vehicle State Estimation\n# Vehicle dynamics\n(vehicle_position_x, vehicle_position_y, vehicle_heading) > vehicle_pose\n(vehicle_velocity_x, vehicle_velocity_y, vehicle_angular_velocity) > vehicle_velocity_state\n(vehicle_pose, vehicle_velocity_state) > vehicle_kinematic_state\n(wheel_speeds, imu_acceleration, steering_angle) > vehicle_dynamic_state\n(vehicle_kinematic_state, vehicle_dynamic_state) > complete_vehicle_state\n\n### Environmental State Estimation  \n# Traffic and road conditions\n(traffic_density, traffic_flow_rate, average_traffic_speed) > traffic_state\n(weather_condition, road_surface_condition, visibility_range) > environmental_conditions\n(traffic_state, environmental_conditions) > driving_context\n\n# Multi-agent environment\n(other_vehicles_positions, other_vehicles_velocities, other_vehicles_intentions) > other_vehicle_states\n(pedestrians_positions, pedestrians_velocities, pedestrians_intentions) > pedestrian_states\n(other_vehicle_states, pedestrian_states) > dynamic_environment\n\n### Hierarchical Planning and Control\n# Route planning layer\n(destination_position, route_waypoints, current_lane_id) > route_planning\n(route_planning, traffic_state, construction_zone) > adaptive_route_planning\n\n# Behavioral planning layer  \n(adaptive_route_planning, driving_context, dynamic_environment) > behavioral_planning\n(behavioral_planning, behavior_mode) > driving_behavior_selection\n\n# Motion planning layer\n(driving_behavior_selection, complete_vehicle_state, multi_modal_object_detection) > motion_planning\n(motion_planning, maneuver_type) > trajectory_generation\n\n# Control layer\n(trajectory_generation, complete_vehicle_state) > vehicle_control\n(vehicle_control) > (action_steering, action_acceleration, action_braking)\n\n### Safety and Monitoring Systems\n# Collision avoidance\n(multi_modal_object_detection, complete_vehicle_state, trajectory_generation) > collision_risk_assessment\n(collision_risk_assessment, C_collision_avoidance) > emergency_intervention\n\n# System monitoring  \n(sensor_health_camera, sensor_health_lidar, sensor_health_radar, sensor_health_gps, sensor_health_imu) > sensor_health_monitoring\n(system_health_engine, system_health_brakes, system_health_steering) > vehicle_health_monitoring\n(compute_health_perception, compute_health_planning, compute_health_control) > computational_health_monitoring\n(sensor_health_monitoring, vehicle_health_monitoring, computational_health_monitoring) > overall_system_health\n\n### Active Inference Integration\n# Expected free energy computation\n(C_collision_avoidance, C_lane_keeping, C_speed_compliance, C_traffic_lights) > safety_preferences\n(C_fuel_efficiency, C_passenger_comfort, C_time_efficiency) > efficiency_preferences  \n(safety_preferences, efficiency_preferences) > integrated_preferences\n\n# Policy evaluation and selection\n(trajectory_generation, integrated_preferences, overall_system_health) > expected_free_energy_computation\n(expected_free_energy_computation) > policy_selection\n(policy_selection) > action_execution",
+        "InitialParameterization": "### Temporal Parameters\ndt_control=0.01\ndt_perception=0.1  \ndt_planning=1.0\ndt_monitoring=10.0\ntime_horizon_control=100\ntime_horizon_planning=30\n\n### Vehicle Dynamics Initialization\n# Vehicle state transition matrix (bicycle model)\nA_vehicle={\n  (1.0, 0.01, 0.0, 0.0, 0.0, 0.0),      # x position\n  (0.0, 1.0, 0.0, 0.01, 0.0, 0.0),      # y position  \n  (0.0, 0.0, 1.0, 0.0, 0.0, 0.01),      # heading\n  (0.0, 0.0, 0.0, 0.95, 0.0, 0.0),      # x velocity\n  (0.0, 0.0, 0.0, 0.0, 0.95, 0.0),      # y velocity\n  (0.0, 0.0, 0.0, 0.0, 0.0, 0.9)        # angular velocity\n}\n\n# Control input matrix\nB_vehicle={\n  (0.0, 0.0, 0.0),                       # x position (no direct control)\n  (0.0, 0.0, 0.0),                       # y position (no direct control)\n  (0.0, 0.0, 0.0),                       # heading (no direct control)\n  (0.01, 0.0, 0.0),                      # x velocity (acceleration control)\n  (0.0, 0.01, 0.0),                      # y velocity (steering influence)\n  (0.0, 0.0, 0.1)                        # angular velocity (steering control)\n}\n\n### Sensory Precision Parameters\ngamma_camera=0.8\ngamma_lidar=0.95\ngamma_radar=0.7\ngamma_gps=0.6\ngamma_imu=0.9\n\ngamma_vehicle_dynamics=0.85\ngamma_other_vehicles=0.6\ngamma_environment=0.5\n\n### Policy Precision Parameters  \nalpha_control=16.0\nalpha_behavior=8.0\nalpha_maneuver=4.0\n\n### Safety Preferences (Highest Priority)\nC_collision_avoidance={(10.0, -100.0)}     # Strong preference to avoid collisions\nC_lane_keeping={(5.0, -2.0, -50.0)}       # Prefer staying in lane\nC_speed_compliance={(2.0, -10.0, -5.0)}   # Prefer speed limit compliance\n\n### Traffic Rule Compliance Preferences\nC_traffic_lights={(-50.0, -20.0, 5.0, 0.0)}  # Strong preference for traffic light compliance\nC_stop_signs={(10.0, -100.0)}                # Strong preference to stop at stop signs\nC_right_of_way={(5.0, -20.0)}               # Prefer yielding right of way\n\n### Efficiency and Comfort Preferences\nC_fuel_efficiency={(3.0, 1.0, -2.0)}      # Prefer fuel efficiency\nC_passenger_comfort={(2.0, 0.0, -5.0)}    # Prefer smooth driving\nC_time_efficiency={(2.0, 0.0, -3.0)}      # Prefer time efficiency\n\n### Environmental Preferences\nC_emissions={(2.0, 0.0, -1.0)}            # Prefer low emissions\nC_noise={(1.0, 0.0, -1.0)}                # Prefer low noise\n\n### Vehicle State Priors\nD_vehicle_position={(0.5, 0.5)}           # Uniform position prior (will be updated by GPS)\nD_vehicle_velocity={1.0}                  # Prior on velocity magnitude\nD_vehicle_heading={1.0}                   # Prior on heading (will be updated)\n\n### Environmental Priors\nD_traffic_density={1.0}                   # Prior traffic density\nD_weather={(0.6, 0.2, 0.1, 0.05, 0.05)}  # Weather priors: [clear, rain, fog, snow, ice]\nD_road_condition={(0.7, 0.2, 0.05, 0.05)} # Road condition priors: [dry, wet, icy, debris]\n\n### Multi-Agent Priors\nD_other_vehicles={(0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05)} # Up to 20 vehicles\nD_pedestrians={(0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05)} # Up to 10 pedestrians\n\n### System Health Initialization\n# All sensors start healthy\nsensor_health_camera={(1.0, 0.0, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0)}\nsensor_health_lidar={(1.0, 0.0, 0.0)}\nsensor_health_radar={(1.0, 0.0, 0.0)}\nsensor_health_gps={(1.0, 0.0, 0.0)}\nsensor_health_imu={(1.0, 0.0, 0.0)}\n\n# All vehicle systems start healthy\nsystem_health_engine={(1.0, 0.0, 0.0)}\nsystem_health_brakes={(1.0, 0.0, 0.0)}\nsystem_health_steering={(1.0, 0.0, 0.0)}\nsystem_health_transmission={(1.0, 0.0, 0.0)}\n\n# All computational modules start healthy\ncompute_health_perception={(1.0, 0.0, 0.0)}\ncompute_health_planning={(1.0, 0.0, 0.0)}\ncompute_health_control={(1.0, 0.0, 0.0)}",
+        "Equations": "# Vehicle Dynamics (Bicycle Model):\n# x_{t+1} = x_t + v_x * cos(θ) * dt - v_y * sin(θ) * dt\n# y_{t+1} = y_t + v_x * sin(θ) * dt + v_y * cos(θ) * dt  \n# θ_{t+1} = θ_t + ω * dt\n# v_x_{t+1} = v_x_t + a_x * dt - f_drag * v_x / m\n# v_y_{t+1} = v_y_t + a_y * dt - f_lateral * v_y / m\n# ω_{t+1} = ω_t + (F_front * l_f - F_rear * l_r) / I_z * dt\n#\n# Multi-Modal Sensor Fusion:\n# P(objects | sensors) = ∏_i P(sensor_i | objects) * P(objects)\n# where sensors ∈ {camera, lidar, radar}\n#\n# Expected Free Energy for Policy π:\n# G(π) = E_Q[ln Q(s,o|π) - ln P(s,o,π)]\n#      = D_KL[Q(o|π)||P(o)] + E_Q[ln Q(s|π) - ln P(s|π)]\n#\n# Safety-Critical Constraints:\n# P(collision) < ε_safety (typically 10^-9 per hour)\n# P(traffic_violation) < ε_compliance (typically 10^-6 per mile)\n#\n# Trajectory Optimization:\n# min_u ∫[0,T] (||x-x_ref||²_Q + ||u||²_R + λ*safety_cost) dt\n# subject to: vehicle dynamics, collision avoidance, traffic rules\n#\n# Hierarchical Decision Making:\n# Level 1 (Route): Minimize travel time + fuel + safety risk\n# Level 2 (Behavior): Select driving mode given context  \n# Level 3 (Motion): Generate collision-free trajectory\n# Level 4 (Control): Track desired trajectory",
+        "Time": "Dynamic\nDiscreteTime\nModelTimeHorizon=time_horizon_planning\nControlFrequency=100Hz\nPerceptionFrequency=10Hz  \nPlanningFrequency=1Hz\nMonitoringFrequency=0.1Hz",
+        "ActInfOntologyAnnotation": "### Core Active Inference Components\nA_camera_front=LikelihoodMatrixCameraFront\nA_lidar_objects=LikelihoodMatrixLiDAR\nA_radar_objects=LikelihoodMatrixRadar\nA_gps=LikelihoodMatrixGPS\nA_imu=LikelihoodMatrixIMU\nB_vehicle_dynamics=TransitionMatrixVehicleDynamics\nB_traffic=TransitionMatrixTrafficConditions\nB_other_vehicles=TransitionMatrixOtherVehicles\nC_collision_avoidance=PreferenceCollisionAvoidance\nC_lane_keeping=PreferenceLaneKeeping\nC_fuel_efficiency=PreferenceFuelEfficiency\nD_vehicle_position=PriorVehiclePosition\nD_weather=PriorWeatherConditions\n\n### Vehicle-Specific Ontology\nvehicle_position_x=VehicleGlobalPositionX\nvehicle_position_y=VehicleGlobalPositionY\nvehicle_heading=VehicleHeading\nvehicle_velocity_x=VehicleLongitudinalVelocity\nvehicle_velocity_y=VehicleLateralVelocity\nsteering_angle=SteeringWheelAngle\nthrottle_position=ThrottlePedalPosition\nbrake_pressure=BrakePedalPressure\n\n### Environmental Ontology\ntraffic_density=TrafficDensity\nweather_condition=WeatherCondition\nroad_surface_condition=RoadSurfaceCondition\nvisibility_range=VisibilityRange\nother_vehicles_positions=OtherVehiclePositions\npedestrians_positions=PedestrianPositions\ntraffic_lights_states=TrafficLightStates\n\n### Control Ontology\naction_steering=SteeringAction\naction_acceleration=AccelerationAction\naction_braking=BrakingAction\nbehavior_mode=DrivingBehaviorMode\nmaneuver_type=ManeuverType\n\n### Safety and Health Ontology\nsensor_health_camera=CameraHealthState\nsystem_health_engine=EngineHealthState\ncollision_risk_assessment=CollisionRiskAssessment\nemergency_intervention=EmergencyInterventionSystem\n\n### Precision Parameters Ontology\ngamma_camera=CameraMeasurementPrecision\ngamma_lidar=LiDARMeasurementPrecision\nalpha_control=ControlPolicyPrecision\nalpha_behavior=BehavioralPolicyPrecision",
+        "ModelParameters": "### Dimensional Parameters\nnum_cameras=4                          # Front, rear, left, right cameras\nmax_tracked_vehicles=20               # Maximum simultaneously tracked vehicles  \nmax_tracked_pedestrians=10            # Maximum simultaneously tracked pedestrians\nmax_traffic_lights=8                  # Maximum relevant traffic lights\nmax_waypoints=100                     # Maximum route waypoints\nlidar_points_max=1000                # Maximum LiDAR points processed\nradar_objects_max=15                 # Maximum radar detections\n\n### Control Parameters  \nmax_steering_angle=0.52              # Maximum steering angle (30 degrees)\nmax_acceleration=3.0                 # Maximum acceleration (m/s²)\nmax_deceleration=8.0                 # Maximum deceleration (m/s²)\nmax_velocity=50.0                    # Maximum allowed velocity (m/s)\n\n### Safety Parameters\ncollision_threshold_distance=2.0      # Minimum safe following distance (m)\nemergency_brake_threshold=1.0         # Emergency braking distance threshold (m)\nlane_departure_threshold=0.5          # Lane departure warning threshold (m)\n\n### Performance Parameters\nplanning_computation_limit=50.0       # Maximum planning computation time (ms)\ncontrol_computation_limit=5.0         # Maximum control computation time (ms)\nsensor_fusion_rate=10.0              # Sensor fusion update rate (Hz)",
+        "Footer": "Comprehensive Self-Driving Car Agent v1 - Complete Active Inference Implementation\nIncludes multi-modal perception, vehicle dynamics, environmental modeling, safety systems,\nhierarchical control, and system health monitoring for autonomous driving applications.",
+        "Signature": "Creator: AI Assistant for GNN\nDate: 2024-01-15\nStatus: Comprehensive self-driving car model with full Active Inference implementation\nVersion: 1.0\nCompliance: ISO 26262 (Automotive Safety), SAE J3016 (Driving Automation Levels)"
+    },
+    "statespaceblock": [
+        {
+            "id": "dt_control",
+            "dimensions": "1,type=float",
+            "original_id": "dt_control"
+        },
+        {
+            "id": "dt_perception",
+            "dimensions": "1,type=float",
+            "original_id": "dt_perception"
+        },
+        {
+            "id": "dt_planning",
+            "dimensions": "1,type=float",
+            "original_id": "dt_planning"
+        },
+        {
+            "id": "dt_monitoring",
+            "dimensions": "1,type=float",
+            "original_id": "dt_monitoring"
+        },
+        {
+            "id": "time_horizon_control",
+            "dimensions": "1,type=int",
+            "original_id": "time_horizon_control"
+        },
+        {
+            "id": "time_horizon_planning",
+            "dimensions": "1,type=int",
+            "original_id": "time_horizon_planning"
+        },
+        {
+            "id": "vehicle_position_x",
+            "dimensions": "1,type=float",
+            "original_id": "vehicle_position_x"
+        },
+        {
+            "id": "vehicle_position_y",
+            "dimensions": "1,type=float",
+            "original_id": "vehicle_position_y"
+        },
+        {
+            "id": "vehicle_heading",
+            "dimensions": "1,type=float",
+            "original_id": "vehicle_heading"
+        },
+        {
+            "id": "vehicle_velocity_x",
+            "dimensions": "1,type=float",
+            "original_id": "vehicle_velocity_x"
+        },
+        {
+            "id": "vehicle_velocity_y",
+            "dimensions": "1,type=float",
+            "original_id": "vehicle_velocity_y"
+        },
+        {
+            "id": "vehicle_angular_velocity",
+            "dimensions": "1,type=float",
+            "original_id": "vehicle_angular_velocity"
+        },
+        {
+            "id": "steering_angle",
+            "dimensions": "1,type=float",
+            "original_id": "steering_angle"
+        },
+        {
+            "id": "throttle_position",
+            "dimensions": "1,type=float",
+            "original_id": "throttle_position"
+        },
+        {
+            "id": "brake_pressure",
+            "dimensions": "1,type=float",
+            "original_id": "brake_pressure"
+        },
+        {
+            "id": "gear_state",
+            "dimensions": "1,type=int",
+            "original_id": "gear_state"
+        },
+        {
+            "id": "A_vehicle",
+            "dimensions": "6,6,type=float",
+            "original_id": "A_vehicle"
+        },
+        {
+            "id": "B_vehicle",
+            "dimensions": "6,3,type=float",
+            "original_id": "B_vehicle"
+        },
+        {
+            "id": "Q_vehicle",
+            "dimensions": "6,6,type=float",
+            "original_id": "Q_vehicle"
+        },
+        {
+            "id": "traffic_density",
+            "dimensions": "1,type=float",
+            "original_id": "traffic_density"
+        },
+        {
+            "id": "traffic_flow_rate",
+            "dimensions": "1,type=float",
+            "original_id": "traffic_flow_rate"
+        },
+        {
+            "id": "average_traffic_speed",
+            "dimensions": "1,type=float",
+            "original_id": "average_traffic_speed"
+        },
+        {
+            "id": "weather_condition",
+            "dimensions": "5,1,type=float",
+            "original_id": "weather_condition"
+        },
+        {
+            "id": "road_surface_condition",
+            "dimensions": "4,1,type=float",
+            "original_id": "road_surface_condition"
+        },
+        {
+            "id": "visibility_range",
+            "dimensions": "1,type=float",
+            "original_id": "visibility_range"
+        },
+        {
+            "id": "road_friction_coefficient",
+            "dimensions": "1,type=float",
+            "original_id": "road_friction_coefficient"
+        },
+        {
+            "id": "construction_zone",
+            "dimensions": "1,type=bool",
+            "original_id": "construction_zone"
+        },
+        {
+            "id": "emergency_vehicle_present",
+            "dimensions": "1,type=bool",
+            "original_id": "emergency_vehicle_present"
+        },
+        {
+            "id": "school_zone",
+            "dimensions": "1,type=bool",
+            "original_id": "school_zone"
+        },
+        {
+            "id": "work_zone",
+            "dimensions": "1,type=bool",
+            "original_id": "work_zone"
+        },
+        {
+            "id": "other_vehicles_positions",
+            "dimensions": "20,2,type=float",
+            "original_id": "other_vehicles_positions"
+        },
+        {
+            "id": "other_vehicles_velocities",
+            "dimensions": "20,2,type=float",
+            "original_id": "other_vehicles_velocities"
+        },
+        {
+            "id": "other_vehicles_headings",
+            "dimensions": "20,1,type=float",
+            "original_id": "other_vehicles_headings"
+        },
+        {
+            "id": "other_vehicles_intentions",
+            "dimensions": "20,4,type=float",
+            "original_id": "other_vehicles_intentions"
+        },
+        {
+            "id": "other_vehicles_classifications",
+            "dimensions": "20,6,type=float",
+            "original_id": "other_vehicles_classifications"
+        },
+        {
+            "id": "pedestrians_positions",
+            "dimensions": "10,2,type=float",
+            "original_id": "pedestrians_positions"
+        },
+        {
+            "id": "pedestrians_velocities",
+            "dimensions": "10,2,type=float",
+            "original_id": "pedestrians_velocities"
+        },
+        {
+            "id": "pedestrians_intentions",
+            "dimensions": "10,3,type=float",
+            "original_id": "pedestrians_intentions"
+        },
+        {
+            "id": "traffic_lights_states",
+            "dimensions": "8,4,type=float",
+            "original_id": "traffic_lights_states"
+        },
+        {
+            "id": "traffic_lights_positions",
+            "dimensions": "8,2,type=float",
+            "original_id": "traffic_lights_positions"
+        },
+        {
+            "id": "stop_signs_positions",
+            "dimensions": "5,2,type=float",
+            "original_id": "stop_signs_positions"
+        },
+        {
+            "id": "speed_limit_current",
+            "dimensions": "1,type=float",
+            "original_id": "speed_limit_current"
+        },
+        {
+            "id": "route_waypoints",
+            "dimensions": "100,2,type=float",
+            "original_id": "route_waypoints"
+        },
+        {
+            "id": "route_distances",
+            "dimensions": "100,1,type=float",
+            "original_id": "route_distances"
+        },
+        {
+            "id": "destination_position",
+            "dimensions": "2,type=float",
+            "original_id": "destination_position"
+        },
+        {
+            "id": "current_lane_id",
+            "dimensions": "1,type=int",
+            "original_id": "current_lane_id"
+        },
+        {
+            "id": "target_lane_id",
+            "dimensions": "1,type=int",
+            "original_id": "target_lane_id"
+        },
+        {
+            "id": "distance_to_destination",
+            "dimensions": "1,type=float",
+            "original_id": "distance_to_destination"
+        },
+        {
+            "id": "estimated_time_arrival",
+            "dimensions": "1,type=float",
+            "original_id": "estimated_time_arrival"
+        },
+        {
+            "id": "route_replanning_needed",
+            "dimensions": "1,type=bool",
+            "original_id": "route_replanning_needed"
+        },
+        {
+            "id": "camera_front_objects",
+            "dimensions": "15,8,type=float",
+            "original_id": "camera_front_objects"
+        },
+        {
+            "id": "camera_rear_objects",
+            "dimensions": "10,8,type=float",
+            "original_id": "camera_rear_objects"
+        },
+        {
+            "id": "camera_left_objects",
+            "dimensions": "10,8,type=float",
+            "original_id": "camera_left_objects"
+        },
+        {
+            "id": "camera_right_objects",
+            "dimensions": "10,8,type=float",
+            "original_id": "camera_right_objects"
+        },
+        {
+            "id": "camera_lane_markings",
+            "dimensions": "4,6,type=float",
+            "original_id": "camera_lane_markings"
+        },
+        {
+            "id": "lidar_point_cloud",
+            "dimensions": "1000,4,type=float",
+            "original_id": "lidar_point_cloud"
+        },
+        {
+            "id": "lidar_objects",
+            "dimensions": "20,7,type=float",
+            "original_id": "lidar_objects"
+        },
+        {
+            "id": "lidar_ground_plane",
+            "dimensions": "4,type=float",
+            "original_id": "lidar_ground_plane"
+        },
+        {
+            "id": "radar_objects",
+            "dimensions": "15,6,type=float",
+            "original_id": "radar_objects"
+        },
+        {
+            "id": "radar_tracks",
+            "dimensions": "15,8,type=float",
+            "original_id": "radar_tracks"
+        },
+        {
+            "id": "gps_position",
+            "dimensions": "3,type=float",
+            "original_id": "gps_position"
+        },
+        {
+            "id": "gps_velocity",
+            "dimensions": "3,type=float",
+            "original_id": "gps_velocity"
+        },
+        {
+            "id": "gps_accuracy",
+            "dimensions": "3,type=float",
+            "original_id": "gps_accuracy"
+        },
+        {
+            "id": "imu_acceleration",
+            "dimensions": "3,type=float",
+            "original_id": "imu_acceleration"
+        },
+        {
+            "id": "imu_angular_velocity",
+            "dimensions": "3,type=float",
+            "original_id": "imu_angular_velocity"
+        },
+        {
+            "id": "imu_orientation",
+            "dimensions": "4,type=float",
+            "original_id": "imu_orientation"
+        },
+        {
+            "id": "wheel_speeds",
+            "dimensions": "4,type=float",
+            "original_id": "wheel_speeds"
+        },
+        {
+            "id": "engine_rpm",
+            "dimensions": "1,type=float",
+            "original_id": "engine_rpm"
+        },
+        {
+            "id": "fuel_level",
+            "dimensions": "1,type=float",
+            "original_id": "fuel_level"
+        },
+        {
+            "id": "battery_voltage",
+            "dimensions": "1,type=float",
+            "original_id": "battery_voltage"
+        },
+        {
+            "id": "oil_pressure",
+            "dimensions": "1,type=float",
+            "original_id": "oil_pressure"
+        },
+        {
+            "id": "coolant_temperature",
+            "dimensions": "1,type=float",
+            "original_id": "coolant_temperature"
+        },
+        {
+            "id": "action_steering",
+            "dimensions": "1,type=float",
+            "original_id": "action_steering"
+        },
+        {
+            "id": "action_acceleration",
+            "dimensions": "1,type=float",
+            "original_id": "action_acceleration"
+        },
+        {
+            "id": "action_braking",
+            "dimensions": "1,type=float",
+            "original_id": "action_braking"
+        },
+        {
+            "id": "action_turn_signal",
+            "dimensions": "3,type=float",
+            "original_id": "action_turn_signal"
+        },
+        {
+            "id": "action_lane_change",
+            "dimensions": "3,type=float",
+            "original_id": "action_lane_change"
+        },
+        {
+            "id": "action_horn",
+            "dimensions": "1,type=bool",
+            "original_id": "action_horn"
+        },
+        {
+            "id": "action_hazard_lights",
+            "dimensions": "1,type=bool",
+            "original_id": "action_hazard_lights"
+        },
+        {
+            "id": "behavior_mode",
+            "dimensions": "5,type=float",
+            "original_id": "behavior_mode"
+        },
+        {
+            "id": "maneuver_type",
+            "dimensions": "6,type=float",
+            "original_id": "maneuver_type"
+        },
+        {
+            "id": "A_camera_front",
+            "dimensions": "15,6,20,5,type=float",
+            "original_id": "A_camera_front"
+        },
+        {
+            "id": "A_camera_lane",
+            "dimensions": "4,6,4,type=float",
+            "original_id": "A_camera_lane"
+        },
+        {
+            "id": "A_lidar_objects",
+            "dimensions": "20,6,20,5,type=float",
+            "original_id": "A_lidar_objects"
+        },
+        {
+            "id": "A_lidar_ground",
+            "dimensions": "4,6,4,type=float",
+            "original_id": "A_lidar_ground"
+        },
+        {
+            "id": "A_radar_objects",
+            "dimensions": "15,6,20,5,type=float",
+            "original_id": "A_radar_objects"
+        },
+        {
+            "id": "A_gps",
+            "dimensions": "3,6,type=float",
+            "original_id": "A_gps"
+        },
+        {
+            "id": "A_imu",
+            "dimensions": "10,6,type=float",
+            "original_id": "A_imu"
+        },
+        {
+            "id": "A_vehicle_sensors",
+            "dimensions": "10,6,3,type=float",
+            "original_id": "A_vehicle_sensors"
+        },
+        {
+            "id": "B_vehicle_dynamics",
+            "dimensions": "6,6,3,type=float",
+            "original_id": "B_vehicle_dynamics"
+        },
+        {
+            "id": "B_traffic",
+            "dimensions": "3,3,1,type=float",
+            "original_id": "B_traffic"
+        },
+        {
+            "id": "B_weather",
+            "dimensions": "5,5,1,type=float",
+            "original_id": "B_weather"
+        },
+        {
+            "id": "B_other_vehicles",
+            "dimensions": "20,20,6,type=float",
+            "original_id": "B_other_vehicles"
+        },
+        {
+            "id": "B_system_health",
+            "dimensions": "3,3,1,type=float",
+            "original_id": "B_system_health"
+        },
+        {
+            "id": "C_collision_avoidance",
+            "dimensions": "2,type=float",
+            "original_id": "C_collision_avoidance"
+        },
+        {
+            "id": "C_lane_keeping",
+            "dimensions": "3,type=float",
+            "original_id": "C_lane_keeping"
+        },
+        {
+            "id": "C_speed_compliance",
+            "dimensions": "3,type=float",
+            "original_id": "C_speed_compliance"
+        },
+        {
+            "id": "C_traffic_lights",
+            "dimensions": "4,type=float",
+            "original_id": "C_traffic_lights"
+        },
+        {
+            "id": "C_stop_signs",
+            "dimensions": "2,type=float",
+            "original_id": "C_stop_signs"
+        },
+        {
+            "id": "C_right_of_way",
+            "dimensions": "2,type=float",
+            "original_id": "C_right_of_way"
+        },
+        {
+            "id": "C_fuel_efficiency",
+            "dimensions": "3,type=float",
+            "original_id": "C_fuel_efficiency"
+        },
+        {
+            "id": "C_passenger_comfort",
+            "dimensions": "3,type=float",
+            "original_id": "C_passenger_comfort"
+        },
+        {
+            "id": "C_time_efficiency",
+            "dimensions": "3,type=float",
+            "original_id": "C_time_efficiency"
+        },
+        {
+            "id": "C_emissions",
+            "dimensions": "3,type=float",
+            "original_id": "C_emissions"
+        },
+        {
+            "id": "C_noise",
+            "dimensions": "3,type=float",
+            "original_id": "C_noise"
+        },
+        {
+            "id": "D_vehicle_position",
+            "dimensions": "2,type=float",
+            "original_id": "D_vehicle_position"
+        },
+        {
+            "id": "D_vehicle_velocity",
+            "dimensions": "1,type=float",
+            "original_id": "D_vehicle_velocity"
+        },
+        {
+            "id": "D_vehicle_heading",
+            "dimensions": "1,type=float",
+            "original_id": "D_vehicle_heading"
+        },
+        {
+            "id": "D_traffic_density",
+            "dimensions": "1,type=float",
+            "original_id": "D_traffic_density"
+        },
+        {
+            "id": "D_weather",
+            "dimensions": "5,type=float",
+            "original_id": "D_weather"
+        },
+        {
+            "id": "D_road_condition",
+            "dimensions": "4,type=float",
+            "original_id": "D_road_condition"
+        },
+        {
+            "id": "D_other_vehicles",
+            "dimensions": "20,type=float",
+            "original_id": "D_other_vehicles"
+        },
+        {
+            "id": "D_pedestrians",
+            "dimensions": "10,type=float",
+            "original_id": "D_pedestrians"
+        },
+        {
+            "id": "gamma_camera",
+            "dimensions": "1,type=float",
+            "original_id": "gamma_camera"
+        },
+        {
+            "id": "gamma_lidar",
+            "dimensions": "1,type=float",
+            "original_id": "gamma_lidar"
+        },
+        {
+            "id": "gamma_radar",
+            "dimensions": "1,type=float",
+            "original_id": "gamma_radar"
+        },
+        {
+            "id": "gamma_gps",
+            "dimensions": "1,type=float",
+            "original_id": "gamma_gps"
+        },
+        {
+            "id": "gamma_imu",
+            "dimensions": "1,type=float",
+            "original_id": "gamma_imu"
+        },
+        {
+            "id": "gamma_vehicle_dynamics",
+            "dimensions": "1,type=float",
+            "original_id": "gamma_vehicle_dynamics"
+        },
+        {
+            "id": "gamma_other_vehicles",
+            "dimensions": "1,type=float",
+            "original_id": "gamma_other_vehicles"
+        },
+        {
+            "id": "gamma_environment",
+            "dimensions": "1,type=float",
+            "original_id": "gamma_environment"
+        },
+        {
+            "id": "alpha_control",
+            "dimensions": "1,type=float",
+            "original_id": "alpha_control"
+        },
+        {
+            "id": "alpha_behavior",
+            "dimensions": "1,type=float",
+            "original_id": "alpha_behavior"
+        },
+        {
+            "id": "alpha_maneuver",
+            "dimensions": "1,type=float",
+            "original_id": "alpha_maneuver"
+        },
+        {
+            "id": "sensor_health_camera",
+            "dimensions": "4,3,type=float",
+            "original_id": "sensor_health_camera"
+        },
+        {
+            "id": "sensor_health_lidar",
+            "dimensions": "1,3,type=float",
+            "original_id": "sensor_health_lidar"
+        },
+        {
+            "id": "sensor_health_radar",
+            "dimensions": "1,3,type=float",
+            "original_id": "sensor_health_radar"
+        },
+        {
+            "id": "sensor_health_gps",
+            "dimensions": "1,3,type=float",
+            "original_id": "sensor_health_gps"
+        },
+        {
+            "id": "sensor_health_imu",
+            "dimensions": "1,3,type=float",
+            "original_id": "sensor_health_imu"
+        },
+        {
+            "id": "system_health_engine",
+            "dimensions": "3,type=float",
+            "original_id": "system_health_engine"
+        },
+        {
+            "id": "system_health_brakes",
+            "dimensions": "3,type=float",
+            "original_id": "system_health_brakes"
+        },
+        {
+            "id": "system_health_steering",
+            "dimensions": "3,type=float",
+            "original_id": "system_health_steering"
+        },
+        {
+            "id": "system_health_transmission",
+            "dimensions": "3,type=float",
+            "original_id": "system_health_transmission"
+        },
+        {
+            "id": "compute_health_perception",
+            "dimensions": "3,type=float",
+            "original_id": "compute_health_perception"
+        },
+        {
+            "id": "compute_health_planning",
+            "dimensions": "3,type=float",
+            "original_id": "compute_health_planning"
+        },
+        {
+            "id": "compute_health_control",
+            "dimensions": "3,type=float",
+            "original_id": "compute_health_control"
+        }
+    ],
+    "connections": [
+        {
+            "sources": [
+                "camera_front_objects",
+                "camera_rear_objects",
+                "camera_left_objects",
+                "camera_right_objects"
+            ],
+            "operator": ">",
+            "targets": [
+                "visual_object_fusion"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "lidar_point_cloud",
+                "lidar_objects"
+            ],
+            "operator": ">",
+            "targets": [
+                "lidar_perception"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "radar_objects",
+                "radar_tracks"
+            ],
+            "operator": ">",
+            "targets": [
+                "radar_perception"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "visual_object_fusion",
+                "lidar_perception",
+                "radar_perception"
+            ],
+            "operator": ">",
+            "targets": [
+                "multi_modal_object_detection"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "gps_position",
+                "gps_velocity",
+                "imu_acceleration",
+                "imu_angular_velocity",
+                "camera_lane_markings"
+            ],
+            "operator": ">",
+            "targets": [
+                "localization_system"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "lidar_point_cloud",
+                "localization_system"
+            ],
+            "operator": ">",
+            "targets": [
+                "simultaneous_localization_mapping"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "vehicle_position_x",
+                "vehicle_position_y",
+                "vehicle_heading"
+            ],
+            "operator": ">",
+            "targets": [
+                "vehicle_pose"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "vehicle_velocity_x",
+                "vehicle_velocity_y",
+                "vehicle_angular_velocity"
+            ],
+            "operator": ">",
+            "targets": [
+                "vehicle_velocity_state"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "vehicle_pose",
+                "vehicle_velocity_state"
+            ],
+            "operator": ">",
+            "targets": [
+                "vehicle_kinematic_state"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "wheel_speeds",
+                "imu_acceleration",
+                "steering_angle"
+            ],
+            "operator": ">",
+            "targets": [
+                "vehicle_dynamic_state"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "vehicle_kinematic_state",
+                "vehicle_dynamic_state"
+            ],
+            "operator": ">",
+            "targets": [
+                "complete_vehicle_state"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "traffic_density",
+                "traffic_flow_rate",
+                "average_traffic_speed"
+            ],
+            "operator": ">",
+            "targets": [
+                "traffic_state"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "weather_condition",
+                "road_surface_condition",
+                "visibility_range"
+            ],
+            "operator": ">",
+            "targets": [
+                "environmental_conditions"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "traffic_state",
+                "environmental_conditions"
+            ],
+            "operator": ">",
+            "targets": [
+                "driving_context"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "other_vehicles_positions",
+                "other_vehicles_velocities",
+                "other_vehicles_intentions"
+            ],
+            "operator": ">",
+            "targets": [
+                "other_vehicle_states"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "pedestrians_positions",
+                "pedestrians_velocities",
+                "pedestrians_intentions"
+            ],
+            "operator": ">",
+            "targets": [
+                "pedestrian_states"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "other_vehicle_states",
+                "pedestrian_states"
+            ],
+            "operator": ">",
+            "targets": [
+                "dynamic_environment"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "destination_position",
+                "route_waypoints",
+                "current_lane_id"
+            ],
+            "operator": ">",
+            "targets": [
+                "route_planning"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "route_planning",
+                "traffic_state",
+                "construction_zone"
+            ],
+            "operator": ">",
+            "targets": [
+                "adaptive_route_planning"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "adaptive_route_planning",
+                "driving_context",
+                "dynamic_environment"
+            ],
+            "operator": ">",
+            "targets": [
+                "behavioral_planning"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "behavioral_planning",
+                "behavior_mode"
+            ],
+            "operator": ">",
+            "targets": [
+                "driving_behavior_selection"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "driving_behavior_selection",
+                "complete_vehicle_state",
+                "multi_modal_object_detection"
+            ],
+            "operator": ">",
+            "targets": [
+                "motion_planning"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "motion_planning",
+                "maneuver_type"
+            ],
+            "operator": ">",
+            "targets": [
+                "trajectory_generation"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "trajectory_generation",
+                "complete_vehicle_state"
+            ],
+            "operator": ">",
+            "targets": [
+                "vehicle_control"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "vehicle_control"
+            ],
+            "operator": ">",
+            "targets": [
+                "action_steering",
+                "action_acceleration",
+                "action_braking"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "multi_modal_object_detection",
+                "complete_vehicle_state",
+                "trajectory_generation"
+            ],
+            "operator": ">",
+            "targets": [
+                "collision_risk_assessment"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "collision_risk_assessment",
+                "C_collision_avoidance"
+            ],
+            "operator": ">",
+            "targets": [
+                "emergency_intervention"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "sensor_health_camera",
+                "sensor_health_lidar",
+                "sensor_health_radar",
+                "sensor_health_gps",
+                "sensor_health_imu"
+            ],
+            "operator": ">",
+            "targets": [
+                "sensor_health_monitoring"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "system_health_engine",
+                "system_health_brakes",
+                "system_health_steering"
+            ],
+            "operator": ">",
+            "targets": [
+                "vehicle_health_monitoring"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "compute_health_perception",
+                "compute_health_planning",
+                "compute_health_control"
+            ],
+            "operator": ">",
+            "targets": [
+                "computational_health_monitoring"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "sensor_health_monitoring",
+                "vehicle_health_monitoring",
+                "computational_health_monitoring"
+            ],
+            "operator": ">",
+            "targets": [
+                "overall_system_health"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "C_collision_avoidance",
+                "C_lane_keeping",
+                "C_speed_compliance",
+                "C_traffic_lights"
+            ],
+            "operator": ">",
+            "targets": [
+                "safety_preferences"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "C_fuel_efficiency",
+                "C_passenger_comfort",
+                "C_time_efficiency"
+            ],
+            "operator": ">",
+            "targets": [
+                "efficiency_preferences"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "safety_preferences",
+                "efficiency_preferences"
+            ],
+            "operator": ">",
+            "targets": [
+                "integrated_preferences"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "trajectory_generation",
+                "integrated_preferences",
+                "overall_system_health"
+            ],
+            "operator": ">",
+            "targets": [
+                "expected_free_energy_computation"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "expected_free_energy_computation"
+            ],
+            "operator": ">",
+            "targets": [
+                "policy_selection"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "policy_selection"
+            ],
+            "operator": ">",
+            "targets": [
+                "action_execution"
+            ],
+            "attributes": {}
+        }
+    ],
+    "initialparameterization": {
+        "dt_control": 0.01,
+        "dt_perception": 0.1,
+        "dt_planning": 1.0,
+        "dt_monitoring": 10.0,
+        "time_horizon_control": 100,
+        "time_horizon_planning": 30,
+        "A_vehicle": [
+            [
+                1.0,
+                0.01,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                1.0,
+                0.0,
+                0.01,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.01
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                0.95,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.95,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.9
+            ]
+        ],
+        "B_vehicle": [
+            [
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.0
+            ],
+            [
+                0.01,
+                0.0,
+                0.0
+            ],
+            [
+                0.0,
+                0.01,
+                0.0
+            ],
+            [
+                0.0,
+                0.0,
+                0.1
+            ]
+        ],
+        "gamma_camera": 0.8,
+        "gamma_lidar": 0.95,
+        "gamma_radar": 0.7,
+        "gamma_gps": 0.6,
+        "gamma_imu": 0.9,
+        "gamma_vehicle_dynamics": 0.85,
+        "gamma_other_vehicles": 0.6,
+        "gamma_environment": 0.5,
+        "alpha_control": 16.0,
+        "alpha_behavior": 8.0,
+        "alpha_maneuver": 4.0,
+        "C_collision_avoidance": [
+            10.0,
+            -100.0
+        ],
+        "C_lane_keeping": [
+            5.0,
+            -2.0,
+            -50.0
+        ],
+        "C_speed_compliance": [
+            2.0,
+            -10.0,
+            -5.0
+        ],
+        "C_traffic_lights": [
+            -50.0,
+            -20.0,
+            5.0,
+            0.0
+        ],
+        "C_stop_signs": [
+            10.0,
+            -100.0
+        ],
+        "C_right_of_way": [
+            5.0,
+            -20.0
+        ],
+        "C_fuel_efficiency": [
+            3.0,
+            1.0,
+            -2.0
+        ],
+        "C_passenger_comfort": [
+            2.0,
+            0.0,
+            -5.0
+        ],
+        "C_time_efficiency": [
+            2.0,
+            0.0,
+            -3.0
+        ],
+        "C_emissions": [
+            2.0,
+            0.0,
+            -1.0
+        ],
+        "C_noise": [
+            1.0,
+            0.0,
+            -1.0
+        ],
+        "D_vehicle_position": [
+            0.5,
+            0.5
+        ],
+        "D_vehicle_velocity": [
+            1.0
+        ],
+        "D_vehicle_heading": [
+            1.0
+        ],
+        "D_traffic_density": [
+            1.0
+        ],
+        "D_weather": [
+            0.6,
+            0.2,
+            0.1,
+            0.05,
+            0.05
+        ],
+        "D_road_condition": [
+            0.7,
+            0.2,
+            0.05,
+            0.05
+        ],
+        "D_other_vehicles": [
+            0.1,
+            0.1,
+            0.1,
+            0.1,
+            0.1,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05
+        ],
+        "D_pedestrians": [
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05,
+            0.05
+        ],
+        "sensor_health_camera": [
+            [
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                1.0,
+                0.0,
+                0.0
+            ],
+            [
+                1.0,
+                0.0,
+                0.0
+            ]
+        ],
+        "sensor_health_lidar": [
+            1.0,
+            0.0,
+            0.0
+        ],
+        "sensor_health_radar": [
+            1.0,
+            0.0,
+            0.0
+        ],
+        "sensor_health_gps": [
+            1.0,
+            0.0,
+            0.0
+        ],
+        "sensor_health_imu": [
+            1.0,
+            0.0,
+            0.0
+        ],
+        "system_health_engine": [
+            1.0,
+            0.0,
+            0.0
+        ],
+        "system_health_brakes": [
+            1.0,
+            0.0,
+            0.0
+        ],
+        "system_health_steering": [
+            1.0,
+            0.0,
+            0.0
+        ],
+        "system_health_transmission": [
+            1.0,
+            0.0,
+            0.0
+        ],
+        "compute_health_perception": [
+            1.0,
+            0.0,
+            0.0
+        ],
+        "compute_health_planning": [
+            1.0,
+            0.0,
+            0.0
+        ],
+        "compute_health_control": [
+            1.0,
+            0.0,
+            0.0
+        ]
+    }
+}

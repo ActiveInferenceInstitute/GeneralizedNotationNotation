@@ -1,0 +1,1870 @@
+<?xml version="1.0" ?>
+<Comprehensive_Self-Driving_Car_Agent_v1>
+  <file_path>/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/self_driving_car_comprehensive.md</file_path>
+  <name>Comprehensive Self-Driving Car Agent v1</name>
+  <raw_sections>
+    <GNNSection>ComprehensiveSelfDrivingCarAgent</GNNSection>
+    <GNNVersionAndFlags>GNN v1</GNNVersionAndFlags>
+    <ModelName>Comprehensive Self-Driving Car Agent v1</ModelName>
+    <ModelAnnotation>This model represents a comprehensive self-driving car agent implementing Active Inference principles.
+The system includes:
+- Multi-modal sensory perception (Camera, LiDAR, Radar, GPS, IMU, Vehicle Sensors)
+- Vehicle dynamics modeling (position, velocity, acceleration, steering)
+- Environmental state estimation (traffic, weather, road conditions)
+- Multi-agent interaction modeling (other vehicles, pedestrians, cyclists)
+- Safety-critical decision making with hierarchical control
+- Route planning and navigation
+- Regulatory compliance and traffic rule adherence
+- System health monitoring and fault detection
+
+The model operates at multiple temporal scales:
+- High-frequency vehicle control (100 Hz)
+- Perception and planning (10 Hz) 
+- Route planning (1 Hz)
+- System monitoring (0.1 Hz)</ModelAnnotation>
+    <StateSpaceBlock>### Temporal Parameters
+dt_control[1,type=float]           # Control loop time step (0.01s)
+dt_perception[1,type=float]        # Perception time step (0.1s)
+dt_planning[1,type=float]          # Planning time step (1.0s)
+dt_monitoring[1,type=float]        # System monitoring time step (10.0s)
+time_horizon_control[1,type=int]   # Control horizon steps
+time_horizon_planning[1,type=int]  # Planning horizon steps
+
+### Vehicle Dynamics State Variables
+# Vehicle pose and kinematics (6 DOF)
+vehicle_position_x[1,type=float]      # Global X position (m)
+vehicle_position_y[1,type=float]      # Global Y position (m)
+vehicle_heading[1,type=float]         # Vehicle heading angle (rad)
+vehicle_velocity_x[1,type=float]      # Longitudinal velocity (m/s)
+vehicle_velocity_y[1,type=float]      # Lateral velocity (m/s)
+vehicle_angular_velocity[1,type=float] # Yaw rate (rad/s)
+
+# Vehicle control states
+steering_angle[1,type=float]          # Front wheel steering angle (rad)
+throttle_position[1,type=float]       # Throttle pedal position (0-1)
+brake_pressure[1,type=float]          # Brake pressure (Pa)
+gear_state[1,type=int]                # Transmission gear (-1,0,1,2,3,4,5)
+
+# Vehicle dynamics matrices
+A_vehicle[6,6,type=float]             # Vehicle state transition matrix
+B_vehicle[6,3,type=float]             # Vehicle control input matrix
+Q_vehicle[6,6,type=float]             # Vehicle process noise covariance
+
+### Environmental State Factors
+# Traffic conditions
+traffic_density[1,type=float]         # Local traffic density (vehicles/km)
+traffic_flow_rate[1,type=float]       # Traffic flow rate (vehicles/hour)
+average_traffic_speed[1,type=float]   # Average speed of surrounding traffic (m/s)
+
+# Weather and road conditions  
+weather_condition[5,1,type=float]     # Weather state: [clear, rain, fog, snow, ice]
+road_surface_condition[4,1,type=float] # Road condition: [dry, wet, icy, debris]
+visibility_range[1,type=float]        # Visibility distance (m)
+road_friction_coefficient[1,type=float] # Road-tire friction coefficient
+
+# Environmental hazards
+construction_zone[1,type=bool]        # Construction zone indicator
+emergency_vehicle_present[1,type=bool] # Emergency vehicle nearby
+school_zone[1,type=bool]              # School zone indicator
+work_zone[1,type=bool]                # Work zone indicator
+
+### Multi-Agent Environment State
+# Other vehicles (up to 20 tracked vehicles)
+other_vehicles_positions[20,2,type=float]    # Other vehicle positions
+other_vehicles_velocities[20,2,type=float]   # Other vehicle velocities  
+other_vehicles_headings[20,1,type=float]     # Other vehicle headings
+other_vehicles_intentions[20,4,type=float]   # Vehicle intentions: [straight, left, right, stop]
+other_vehicles_classifications[20,6,type=float] # Vehicle types: [car, truck, bus, motorcycle, bicycle, emergency]
+
+# Pedestrians and cyclists (up to 10 tracked)
+pedestrians_positions[10,2,type=float]       # Pedestrian positions
+pedestrians_velocities[10,2,type=float]      # Pedestrian velocities
+pedestrians_intentions[10,3,type=float]      # Pedestrian intentions: [walking, stopping, crossing]
+
+# Traffic infrastructure
+traffic_lights_states[8,4,type=float]        # Traffic light states: [red, yellow, green, unknown]
+traffic_lights_positions[8,2,type=float]     # Traffic light positions
+stop_signs_positions[5,2,type=float]         # Stop sign positions
+speed_limit_current[1,type=float]            # Current speed limit (m/s)
+
+### Route and Navigation State
+# Current route information
+route_waypoints[100,2,type=float]            # Route waypoint coordinates
+route_distances[100,1,type=float]            # Distances to each waypoint
+destination_position[2,type=float]           # Final destination coordinates
+current_lane_id[1,type=int]                  # Current driving lane ID
+target_lane_id[1,type=int]                  # Target lane for maneuvers
+
+# Navigation state
+distance_to_destination[1,type=float]        # Remaining distance to destination
+estimated_time_arrival[1,type=float]         # Estimated time to arrival
+route_replanning_needed[1,type=bool]         # Route replanning flag
+
+### Observation Modalities
+# Camera observations (multiple cameras)
+camera_front_objects[15,8,type=float]        # Front camera detected objects: [x,y,w,h,class,confidence,velocity_x,velocity_y]
+camera_rear_objects[10,8,type=float]         # Rear camera detected objects
+camera_left_objects[10,8,type=float]         # Left camera detected objects  
+camera_right_objects[10,8,type=float]        # Right camera detected objects
+camera_lane_markings[4,6,type=float]         # Lane markings: [left_outer, left_inner, right_inner, right_outer] x [x1,y1,x2,y2,confidence,type]
+
+# LiDAR observations
+lidar_point_cloud[1000,4,type=float]         # LiDAR point cloud: [x,y,z,intensity]
+lidar_objects[20,7,type=float]               # LiDAR object detections: [x,y,z,w,l,h,class]
+lidar_ground_plane[4,type=float]             # Ground plane equation coefficients
+
+# Radar observations  
+radar_objects[15,6,type=float]               # Radar detections: [range,bearing,doppler,rcs,x,y]
+radar_tracks[15,8,type=float]                # Radar tracks: [x,y,vx,vy,ax,ay,confidence,track_id]
+
+# GPS/GNSS observations
+gps_position[3,type=float]                   # GPS position: [lat,lon,alt]
+gps_velocity[3,type=float]                   # GPS velocity: [vx,vy,vz]  
+gps_accuracy[3,type=float]                   # GPS accuracy: [horizontal,vertical,velocity]
+
+# IMU observations
+imu_acceleration[3,type=float]               # IMU acceleration: [ax,ay,az]
+imu_angular_velocity[3,type=float]           # IMU angular velocity: [wx,wy,wz]
+imu_orientation[4,type=float]                # IMU orientation quaternion: [w,x,y,z]
+
+# Vehicle sensor observations
+wheel_speeds[4,type=float]                   # Individual wheel speeds
+engine_rpm[1,type=float]                     # Engine RPM
+fuel_level[1,type=float]                     # Fuel level (0-1)
+battery_voltage[1,type=float]                # System battery voltage
+oil_pressure[1,type=float]                   # Engine oil pressure
+coolant_temperature[1,type=float]            # Engine coolant temperature
+
+### Action/Control Variables
+# Primary control actions
+action_steering[1,type=float]                # Steering wheel angle command (rad)
+action_acceleration[1,type=float]            # Acceleration command (m/s²)
+action_braking[1,type=float]                 # Braking force command (N)
+
+# Secondary control actions
+action_turn_signal[3,type=float]             # Turn signal: [off, left, right]
+action_lane_change[3,type=float]             # Lane change intention: [stay, left, right]
+action_horn[1,type=bool]                     # Horn activation
+action_hazard_lights[1,type=bool]            # Hazard lights activation
+
+# High-level behavioral actions
+behavior_mode[5,type=float]                  # Driving mode: [normal, aggressive, defensive, eco, sport]
+maneuver_type[6,type=float]                  # Current maneuver: [follow, overtake, change_lane, merge, park, emergency_stop]
+
+### Likelihood Matrices (A matrices)
+# Camera likelihood matrices
+A_camera_front[15,6,20,5,type=float]        # Camera front: [objects, vehicle_state, other_vehicles, weather]
+A_camera_lane[4,6,4,type=float]             # Lane detection: [lane_markings, vehicle_state, road_condition]
+
+# LiDAR likelihood matrices  
+A_lidar_objects[20,6,20,5,type=float]       # LiDAR objects: [detections, vehicle_state, other_vehicles, weather]
+A_lidar_ground[4,6,4,type=float]            # Ground plane: [coefficients, vehicle_state, road_condition]
+
+# Radar likelihood matrices
+A_radar_objects[15,6,20,5,type=float]       # Radar objects: [detections, vehicle_state, other_vehicles, weather]
+
+# GPS likelihood matrix
+A_gps[3,6,type=float]                       # GPS: [position, vehicle_state]
+
+# IMU likelihood matrix  
+A_imu[10,6,type=float]                      # IMU: [measurements, vehicle_state]
+
+# Vehicle sensor likelihood matrices
+A_vehicle_sensors[10,6,3,type=float]        # Vehicle sensors: [measurements, vehicle_state, system_health]
+
+### Transition Matrices (B matrices)
+# Vehicle dynamics transitions
+B_vehicle_dynamics[6,6,3,type=float]        # Vehicle state transitions: [next_state, current_state, control_actions]
+
+# Environmental state transitions
+B_traffic[3,3,1,type=float]                 # Traffic conditions: [next, current, implicit]
+B_weather[5,5,1,type=float]                 # Weather transitions: [next, current, implicit]
+B_other_vehicles[20,20,6,type=float]        # Other vehicle transitions: [next, current, vehicle_actions]
+
+# System state transitions
+B_system_health[3,3,1,type=float]           # System health: [healthy, degraded, failed]
+
+### Preference Matrices (C matrices)  
+# Safety preferences (highest priority)
+C_collision_avoidance[2,type=float]         # Collision preferences: [safe, collision]
+C_lane_keeping[3,type=float]                # Lane keeping: [in_lane, lane_edge, off_road]
+C_speed_compliance[3,type=float]            # Speed compliance: [compliant, over, under]
+
+# Traffic rule compliance
+C_traffic_lights[4,type=float]              # Traffic light compliance: [red_stop, yellow_caution, green_go, unknown]
+C_stop_signs[2,type=float]                  # Stop sign compliance: [stopped, violation]
+C_right_of_way[2,type=float]               # Right of way: [yielded, violation]
+
+# Efficiency and comfort preferences
+C_fuel_efficiency[3,type=float]             # Fuel efficiency: [efficient, moderate, inefficient]
+C_passenger_comfort[3,type=float]           # Comfort: [smooth, moderate, harsh]
+C_time_efficiency[3,type=float]             # Time efficiency: [optimal, acceptable, slow]
+
+# Environmental and social preferences
+C_emissions[3,type=float]                   # Emissions: [low, moderate, high]
+C_noise[3,type=float]                       # Noise: [quiet, moderate, loud]
+
+### Prior Distributions (D matrices)
+# Vehicle state priors
+D_vehicle_position[2,type=float]            # Position prior (known from GPS)
+D_vehicle_velocity[1,type=float]            # Velocity prior 
+D_vehicle_heading[1,type=float]             # Heading prior
+
+# Environmental priors
+D_traffic_density[1,type=float]             # Traffic density prior
+D_weather[5,type=float]                     # Weather condition priors
+D_road_condition[4,type=float]              # Road condition priors
+
+# Other agent priors
+D_other_vehicles[20,type=float]             # Other vehicle existence priors
+D_pedestrians[10,type=float]                # Pedestrian existence priors
+
+### Precision and Uncertainty Parameters
+# Sensory precision parameters
+gamma_camera[1,type=float]                  # Camera measurement precision
+gamma_lidar[1,type=float]                   # LiDAR measurement precision  
+gamma_radar[1,type=float]                   # Radar measurement precision
+gamma_gps[1,type=float]                     # GPS measurement precision
+gamma_imu[1,type=float]                     # IMU measurement precision
+
+# Model precision parameters
+gamma_vehicle_dynamics[1,type=float]        # Vehicle model precision
+gamma_other_vehicles[1,type=float]          # Other vehicle model precision
+gamma_environment[1,type=float]             # Environmental model precision
+
+# Policy precision parameters
+alpha_control[1,type=float]                 # Control policy precision
+alpha_behavior[1,type=float]                # Behavioral policy precision
+alpha_maneuver[1,type=float]                # Maneuver policy precision
+
+### System Health and Diagnostics
+# Sensor health states
+sensor_health_camera[4,3,type=float]        # Camera health: [operational, degraded, failed] for each camera
+sensor_health_lidar[1,3,type=float]         # LiDAR health
+sensor_health_radar[1,3,type=float]         # Radar health  
+sensor_health_gps[1,3,type=float]           # GPS health
+sensor_health_imu[1,3,type=float]           # IMU health
+
+# Vehicle system health
+system_health_engine[3,type=float]          # Engine health: [healthy, degraded, failed]
+system_health_brakes[3,type=float]          # Brake system health
+system_health_steering[3,type=float]        # Steering system health
+system_health_transmission[3,type=float]    # Transmission health
+
+# Computational system health
+compute_health_perception[3,type=float]     # Perception module health
+compute_health_planning[3,type=float]       # Planning module health
+compute_health_control[3,type=float]        # Control module health</StateSpaceBlock>
+    <Connections>### Primary Perception Connections
+# Multi-modal sensor fusion
+(camera_front_objects, camera_rear_objects, camera_left_objects, camera_right_objects) &gt; visual_object_fusion
+(lidar_point_cloud, lidar_objects) &gt; lidar_perception
+(radar_objects, radar_tracks) &gt; radar_perception
+(visual_object_fusion, lidar_perception, radar_perception) &gt; multi_modal_object_detection
+
+# Localization and mapping
+(gps_position, gps_velocity, imu_acceleration, imu_angular_velocity, camera_lane_markings) &gt; localization_system
+(lidar_point_cloud, localization_system) &gt; simultaneous_localization_mapping
+
+### Vehicle State Estimation
+# Vehicle dynamics
+(vehicle_position_x, vehicle_position_y, vehicle_heading) &gt; vehicle_pose
+(vehicle_velocity_x, vehicle_velocity_y, vehicle_angular_velocity) &gt; vehicle_velocity_state
+(vehicle_pose, vehicle_velocity_state) &gt; vehicle_kinematic_state
+(wheel_speeds, imu_acceleration, steering_angle) &gt; vehicle_dynamic_state
+(vehicle_kinematic_state, vehicle_dynamic_state) &gt; complete_vehicle_state
+
+### Environmental State Estimation  
+# Traffic and road conditions
+(traffic_density, traffic_flow_rate, average_traffic_speed) &gt; traffic_state
+(weather_condition, road_surface_condition, visibility_range) &gt; environmental_conditions
+(traffic_state, environmental_conditions) &gt; driving_context
+
+# Multi-agent environment
+(other_vehicles_positions, other_vehicles_velocities, other_vehicles_intentions) &gt; other_vehicle_states
+(pedestrians_positions, pedestrians_velocities, pedestrians_intentions) &gt; pedestrian_states
+(other_vehicle_states, pedestrian_states) &gt; dynamic_environment
+
+### Hierarchical Planning and Control
+# Route planning layer
+(destination_position, route_waypoints, current_lane_id) &gt; route_planning
+(route_planning, traffic_state, construction_zone) &gt; adaptive_route_planning
+
+# Behavioral planning layer  
+(adaptive_route_planning, driving_context, dynamic_environment) &gt; behavioral_planning
+(behavioral_planning, behavior_mode) &gt; driving_behavior_selection
+
+# Motion planning layer
+(driving_behavior_selection, complete_vehicle_state, multi_modal_object_detection) &gt; motion_planning
+(motion_planning, maneuver_type) &gt; trajectory_generation
+
+# Control layer
+(trajectory_generation, complete_vehicle_state) &gt; vehicle_control
+(vehicle_control) &gt; (action_steering, action_acceleration, action_braking)
+
+### Safety and Monitoring Systems
+# Collision avoidance
+(multi_modal_object_detection, complete_vehicle_state, trajectory_generation) &gt; collision_risk_assessment
+(collision_risk_assessment, C_collision_avoidance) &gt; emergency_intervention
+
+# System monitoring  
+(sensor_health_camera, sensor_health_lidar, sensor_health_radar, sensor_health_gps, sensor_health_imu) &gt; sensor_health_monitoring
+(system_health_engine, system_health_brakes, system_health_steering) &gt; vehicle_health_monitoring
+(compute_health_perception, compute_health_planning, compute_health_control) &gt; computational_health_monitoring
+(sensor_health_monitoring, vehicle_health_monitoring, computational_health_monitoring) &gt; overall_system_health
+
+### Active Inference Integration
+# Expected free energy computation
+(C_collision_avoidance, C_lane_keeping, C_speed_compliance, C_traffic_lights) &gt; safety_preferences
+(C_fuel_efficiency, C_passenger_comfort, C_time_efficiency) &gt; efficiency_preferences  
+(safety_preferences, efficiency_preferences) &gt; integrated_preferences
+
+# Policy evaluation and selection
+(trajectory_generation, integrated_preferences, overall_system_health) &gt; expected_free_energy_computation
+(expected_free_energy_computation) &gt; policy_selection
+(policy_selection) &gt; action_execution</Connections>
+    <InitialParameterization>### Temporal Parameters
+dt_control=0.01
+dt_perception=0.1  
+dt_planning=1.0
+dt_monitoring=10.0
+time_horizon_control=100
+time_horizon_planning=30
+
+### Vehicle Dynamics Initialization
+# Vehicle state transition matrix (bicycle model)
+A_vehicle={
+  (1.0, 0.01, 0.0, 0.0, 0.0, 0.0),      # x position
+  (0.0, 1.0, 0.0, 0.01, 0.0, 0.0),      # y position  
+  (0.0, 0.0, 1.0, 0.0, 0.0, 0.01),      # heading
+  (0.0, 0.0, 0.0, 0.95, 0.0, 0.0),      # x velocity
+  (0.0, 0.0, 0.0, 0.0, 0.95, 0.0),      # y velocity
+  (0.0, 0.0, 0.0, 0.0, 0.0, 0.9)        # angular velocity
+}
+
+# Control input matrix
+B_vehicle={
+  (0.0, 0.0, 0.0),                       # x position (no direct control)
+  (0.0, 0.0, 0.0),                       # y position (no direct control)
+  (0.0, 0.0, 0.0),                       # heading (no direct control)
+  (0.01, 0.0, 0.0),                      # x velocity (acceleration control)
+  (0.0, 0.01, 0.0),                      # y velocity (steering influence)
+  (0.0, 0.0, 0.1)                        # angular velocity (steering control)
+}
+
+### Sensory Precision Parameters
+gamma_camera=0.8
+gamma_lidar=0.95
+gamma_radar=0.7
+gamma_gps=0.6
+gamma_imu=0.9
+
+gamma_vehicle_dynamics=0.85
+gamma_other_vehicles=0.6
+gamma_environment=0.5
+
+### Policy Precision Parameters  
+alpha_control=16.0
+alpha_behavior=8.0
+alpha_maneuver=4.0
+
+### Safety Preferences (Highest Priority)
+C_collision_avoidance={(10.0, -100.0)}     # Strong preference to avoid collisions
+C_lane_keeping={(5.0, -2.0, -50.0)}       # Prefer staying in lane
+C_speed_compliance={(2.0, -10.0, -5.0)}   # Prefer speed limit compliance
+
+### Traffic Rule Compliance Preferences
+C_traffic_lights={(-50.0, -20.0, 5.0, 0.0)}  # Strong preference for traffic light compliance
+C_stop_signs={(10.0, -100.0)}                # Strong preference to stop at stop signs
+C_right_of_way={(5.0, -20.0)}               # Prefer yielding right of way
+
+### Efficiency and Comfort Preferences
+C_fuel_efficiency={(3.0, 1.0, -2.0)}      # Prefer fuel efficiency
+C_passenger_comfort={(2.0, 0.0, -5.0)}    # Prefer smooth driving
+C_time_efficiency={(2.0, 0.0, -3.0)}      # Prefer time efficiency
+
+### Environmental Preferences
+C_emissions={(2.0, 0.0, -1.0)}            # Prefer low emissions
+C_noise={(1.0, 0.0, -1.0)}                # Prefer low noise
+
+### Vehicle State Priors
+D_vehicle_position={(0.5, 0.5)}           # Uniform position prior (will be updated by GPS)
+D_vehicle_velocity={1.0}                  # Prior on velocity magnitude
+D_vehicle_heading={1.0}                   # Prior on heading (will be updated)
+
+### Environmental Priors
+D_traffic_density={1.0}                   # Prior traffic density
+D_weather={(0.6, 0.2, 0.1, 0.05, 0.05)}  # Weather priors: [clear, rain, fog, snow, ice]
+D_road_condition={(0.7, 0.2, 0.05, 0.05)} # Road condition priors: [dry, wet, icy, debris]
+
+### Multi-Agent Priors
+D_other_vehicles={(0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05)} # Up to 20 vehicles
+D_pedestrians={(0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05)} # Up to 10 pedestrians
+
+### System Health Initialization
+# All sensors start healthy
+sensor_health_camera={(1.0, 0.0, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0), (1.0, 0.0, 0.0)}
+sensor_health_lidar={(1.0, 0.0, 0.0)}
+sensor_health_radar={(1.0, 0.0, 0.0)}
+sensor_health_gps={(1.0, 0.0, 0.0)}
+sensor_health_imu={(1.0, 0.0, 0.0)}
+
+# All vehicle systems start healthy
+system_health_engine={(1.0, 0.0, 0.0)}
+system_health_brakes={(1.0, 0.0, 0.0)}
+system_health_steering={(1.0, 0.0, 0.0)}
+system_health_transmission={(1.0, 0.0, 0.0)}
+
+# All computational modules start healthy
+compute_health_perception={(1.0, 0.0, 0.0)}
+compute_health_planning={(1.0, 0.0, 0.0)}
+compute_health_control={(1.0, 0.0, 0.0)}</InitialParameterization>
+    <Equations># Vehicle Dynamics (Bicycle Model):
+# x_{t+1} = x_t + v_x * cos(θ) * dt - v_y * sin(θ) * dt
+# y_{t+1} = y_t + v_x * sin(θ) * dt + v_y * cos(θ) * dt  
+# θ_{t+1} = θ_t + ω * dt
+# v_x_{t+1} = v_x_t + a_x * dt - f_drag * v_x / m
+# v_y_{t+1} = v_y_t + a_y * dt - f_lateral * v_y / m
+# ω_{t+1} = ω_t + (F_front * l_f - F_rear * l_r) / I_z * dt
+#
+# Multi-Modal Sensor Fusion:
+# P(objects | sensors) = ∏_i P(sensor_i | objects) * P(objects)
+# where sensors ∈ {camera, lidar, radar}
+#
+# Expected Free Energy for Policy π:
+# G(π) = E_Q[ln Q(s,o|π) - ln P(s,o,π)]
+#      = D_KL[Q(o|π)||P(o)] + E_Q[ln Q(s|π) - ln P(s|π)]
+#
+# Safety-Critical Constraints:
+# P(collision) &lt; ε_safety (typically 10^-9 per hour)
+# P(traffic_violation) &lt; ε_compliance (typically 10^-6 per mile)
+#
+# Trajectory Optimization:
+# min_u ∫[0,T] (||x-x_ref||²_Q + ||u||²_R + λ*safety_cost) dt
+# subject to: vehicle dynamics, collision avoidance, traffic rules
+#
+# Hierarchical Decision Making:
+# Level 1 (Route): Minimize travel time + fuel + safety risk
+# Level 2 (Behavior): Select driving mode given context  
+# Level 3 (Motion): Generate collision-free trajectory
+# Level 4 (Control): Track desired trajectory</Equations>
+    <Time>Dynamic
+DiscreteTime
+ModelTimeHorizon=time_horizon_planning
+ControlFrequency=100Hz
+PerceptionFrequency=10Hz  
+PlanningFrequency=1Hz
+MonitoringFrequency=0.1Hz</Time>
+    <ActInfOntologyAnnotation>### Core Active Inference Components
+A_camera_front=LikelihoodMatrixCameraFront
+A_lidar_objects=LikelihoodMatrixLiDAR
+A_radar_objects=LikelihoodMatrixRadar
+A_gps=LikelihoodMatrixGPS
+A_imu=LikelihoodMatrixIMU
+B_vehicle_dynamics=TransitionMatrixVehicleDynamics
+B_traffic=TransitionMatrixTrafficConditions
+B_other_vehicles=TransitionMatrixOtherVehicles
+C_collision_avoidance=PreferenceCollisionAvoidance
+C_lane_keeping=PreferenceLaneKeeping
+C_fuel_efficiency=PreferenceFuelEfficiency
+D_vehicle_position=PriorVehiclePosition
+D_weather=PriorWeatherConditions
+
+### Vehicle-Specific Ontology
+vehicle_position_x=VehicleGlobalPositionX
+vehicle_position_y=VehicleGlobalPositionY
+vehicle_heading=VehicleHeading
+vehicle_velocity_x=VehicleLongitudinalVelocity
+vehicle_velocity_y=VehicleLateralVelocity
+steering_angle=SteeringWheelAngle
+throttle_position=ThrottlePedalPosition
+brake_pressure=BrakePedalPressure
+
+### Environmental Ontology
+traffic_density=TrafficDensity
+weather_condition=WeatherCondition
+road_surface_condition=RoadSurfaceCondition
+visibility_range=VisibilityRange
+other_vehicles_positions=OtherVehiclePositions
+pedestrians_positions=PedestrianPositions
+traffic_lights_states=TrafficLightStates
+
+### Control Ontology
+action_steering=SteeringAction
+action_acceleration=AccelerationAction
+action_braking=BrakingAction
+behavior_mode=DrivingBehaviorMode
+maneuver_type=ManeuverType
+
+### Safety and Health Ontology
+sensor_health_camera=CameraHealthState
+system_health_engine=EngineHealthState
+collision_risk_assessment=CollisionRiskAssessment
+emergency_intervention=EmergencyInterventionSystem
+
+### Precision Parameters Ontology
+gamma_camera=CameraMeasurementPrecision
+gamma_lidar=LiDARMeasurementPrecision
+alpha_control=ControlPolicyPrecision
+alpha_behavior=BehavioralPolicyPrecision</ActInfOntologyAnnotation>
+    <ModelParameters>### Dimensional Parameters
+num_cameras=4                          # Front, rear, left, right cameras
+max_tracked_vehicles=20               # Maximum simultaneously tracked vehicles  
+max_tracked_pedestrians=10            # Maximum simultaneously tracked pedestrians
+max_traffic_lights=8                  # Maximum relevant traffic lights
+max_waypoints=100                     # Maximum route waypoints
+lidar_points_max=1000                # Maximum LiDAR points processed
+radar_objects_max=15                 # Maximum radar detections
+
+### Control Parameters  
+max_steering_angle=0.52              # Maximum steering angle (30 degrees)
+max_acceleration=3.0                 # Maximum acceleration (m/s²)
+max_deceleration=8.0                 # Maximum deceleration (m/s²)
+max_velocity=50.0                    # Maximum allowed velocity (m/s)
+
+### Safety Parameters
+collision_threshold_distance=2.0      # Minimum safe following distance (m)
+emergency_brake_threshold=1.0         # Emergency braking distance threshold (m)
+lane_departure_threshold=0.5          # Lane departure warning threshold (m)
+
+### Performance Parameters
+planning_computation_limit=50.0       # Maximum planning computation time (ms)
+control_computation_limit=5.0         # Maximum control computation time (ms)
+sensor_fusion_rate=10.0              # Sensor fusion update rate (Hz)</ModelParameters>
+    <Footer>Comprehensive Self-Driving Car Agent v1 - Complete Active Inference Implementation
+Includes multi-modal perception, vehicle dynamics, environmental modeling, safety systems,
+hierarchical control, and system health monitoring for autonomous driving applications.</Footer>
+    <Signature>Creator: AI Assistant for GNN
+Date: 2024-01-15
+Status: Comprehensive self-driving car model with full Active Inference implementation
+Version: 1.0
+Compliance: ISO 26262 (Automotive Safety), SAE J3016 (Driving Automation Levels)</Signature>
+  </raw_sections>
+  <statespaceblock>
+    <statespaceblock_item>
+      <id>dt_control</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>dt_control</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>dt_perception</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>dt_perception</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>dt_planning</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>dt_planning</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>dt_monitoring</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>dt_monitoring</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>time_horizon_control</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>time_horizon_control</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>time_horizon_planning</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>time_horizon_planning</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>vehicle_position_x</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>vehicle_position_x</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>vehicle_position_y</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>vehicle_position_y</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>vehicle_heading</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>vehicle_heading</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>vehicle_velocity_x</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>vehicle_velocity_x</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>vehicle_velocity_y</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>vehicle_velocity_y</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>vehicle_angular_velocity</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>vehicle_angular_velocity</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>steering_angle</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>steering_angle</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>throttle_position</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>throttle_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>brake_pressure</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>brake_pressure</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gear_state</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>gear_state</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>A_vehicle</id>
+      <dimensions>6,6,type=float</dimensions>
+      <original_id>A_vehicle</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>B_vehicle</id>
+      <dimensions>6,3,type=float</dimensions>
+      <original_id>B_vehicle</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>Q_vehicle</id>
+      <dimensions>6,6,type=float</dimensions>
+      <original_id>Q_vehicle</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>traffic_density</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>traffic_density</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>traffic_flow_rate</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>traffic_flow_rate</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>average_traffic_speed</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>average_traffic_speed</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>weather_condition</id>
+      <dimensions>5,1,type=float</dimensions>
+      <original_id>weather_condition</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>road_surface_condition</id>
+      <dimensions>4,1,type=float</dimensions>
+      <original_id>road_surface_condition</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>visibility_range</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>visibility_range</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>road_friction_coefficient</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>road_friction_coefficient</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>construction_zone</id>
+      <dimensions>1,type=bool</dimensions>
+      <original_id>construction_zone</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>emergency_vehicle_present</id>
+      <dimensions>1,type=bool</dimensions>
+      <original_id>emergency_vehicle_present</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>school_zone</id>
+      <dimensions>1,type=bool</dimensions>
+      <original_id>school_zone</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>work_zone</id>
+      <dimensions>1,type=bool</dimensions>
+      <original_id>work_zone</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>other_vehicles_positions</id>
+      <dimensions>20,2,type=float</dimensions>
+      <original_id>other_vehicles_positions</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>other_vehicles_velocities</id>
+      <dimensions>20,2,type=float</dimensions>
+      <original_id>other_vehicles_velocities</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>other_vehicles_headings</id>
+      <dimensions>20,1,type=float</dimensions>
+      <original_id>other_vehicles_headings</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>other_vehicles_intentions</id>
+      <dimensions>20,4,type=float</dimensions>
+      <original_id>other_vehicles_intentions</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>other_vehicles_classifications</id>
+      <dimensions>20,6,type=float</dimensions>
+      <original_id>other_vehicles_classifications</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>pedestrians_positions</id>
+      <dimensions>10,2,type=float</dimensions>
+      <original_id>pedestrians_positions</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>pedestrians_velocities</id>
+      <dimensions>10,2,type=float</dimensions>
+      <original_id>pedestrians_velocities</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>pedestrians_intentions</id>
+      <dimensions>10,3,type=float</dimensions>
+      <original_id>pedestrians_intentions</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>traffic_lights_states</id>
+      <dimensions>8,4,type=float</dimensions>
+      <original_id>traffic_lights_states</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>traffic_lights_positions</id>
+      <dimensions>8,2,type=float</dimensions>
+      <original_id>traffic_lights_positions</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>stop_signs_positions</id>
+      <dimensions>5,2,type=float</dimensions>
+      <original_id>stop_signs_positions</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>speed_limit_current</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>speed_limit_current</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>route_waypoints</id>
+      <dimensions>100,2,type=float</dimensions>
+      <original_id>route_waypoints</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>route_distances</id>
+      <dimensions>100,1,type=float</dimensions>
+      <original_id>route_distances</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>destination_position</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>destination_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>current_lane_id</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>current_lane_id</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>target_lane_id</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>target_lane_id</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>distance_to_destination</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>distance_to_destination</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>estimated_time_arrival</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>estimated_time_arrival</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>route_replanning_needed</id>
+      <dimensions>1,type=bool</dimensions>
+      <original_id>route_replanning_needed</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>camera_front_objects</id>
+      <dimensions>15,8,type=float</dimensions>
+      <original_id>camera_front_objects</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>camera_rear_objects</id>
+      <dimensions>10,8,type=float</dimensions>
+      <original_id>camera_rear_objects</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>camera_left_objects</id>
+      <dimensions>10,8,type=float</dimensions>
+      <original_id>camera_left_objects</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>camera_right_objects</id>
+      <dimensions>10,8,type=float</dimensions>
+      <original_id>camera_right_objects</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>camera_lane_markings</id>
+      <dimensions>4,6,type=float</dimensions>
+      <original_id>camera_lane_markings</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>lidar_point_cloud</id>
+      <dimensions>1000,4,type=float</dimensions>
+      <original_id>lidar_point_cloud</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>lidar_objects</id>
+      <dimensions>20,7,type=float</dimensions>
+      <original_id>lidar_objects</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>lidar_ground_plane</id>
+      <dimensions>4,type=float</dimensions>
+      <original_id>lidar_ground_plane</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>radar_objects</id>
+      <dimensions>15,6,type=float</dimensions>
+      <original_id>radar_objects</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>radar_tracks</id>
+      <dimensions>15,8,type=float</dimensions>
+      <original_id>radar_tracks</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gps_position</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>gps_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gps_velocity</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>gps_velocity</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gps_accuracy</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>gps_accuracy</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>imu_acceleration</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>imu_acceleration</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>imu_angular_velocity</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>imu_angular_velocity</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>imu_orientation</id>
+      <dimensions>4,type=float</dimensions>
+      <original_id>imu_orientation</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>wheel_speeds</id>
+      <dimensions>4,type=float</dimensions>
+      <original_id>wheel_speeds</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>engine_rpm</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>engine_rpm</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>fuel_level</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>fuel_level</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>battery_voltage</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>battery_voltage</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>oil_pressure</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>oil_pressure</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>coolant_temperature</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>coolant_temperature</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>action_steering</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>action_steering</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>action_acceleration</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>action_acceleration</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>action_braking</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>action_braking</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>action_turn_signal</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>action_turn_signal</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>action_lane_change</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>action_lane_change</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>action_horn</id>
+      <dimensions>1,type=bool</dimensions>
+      <original_id>action_horn</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>action_hazard_lights</id>
+      <dimensions>1,type=bool</dimensions>
+      <original_id>action_hazard_lights</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>behavior_mode</id>
+      <dimensions>5,type=float</dimensions>
+      <original_id>behavior_mode</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>maneuver_type</id>
+      <dimensions>6,type=float</dimensions>
+      <original_id>maneuver_type</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>A_camera_front</id>
+      <dimensions>15,6,20,5,type=float</dimensions>
+      <original_id>A_camera_front</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>A_camera_lane</id>
+      <dimensions>4,6,4,type=float</dimensions>
+      <original_id>A_camera_lane</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>A_lidar_objects</id>
+      <dimensions>20,6,20,5,type=float</dimensions>
+      <original_id>A_lidar_objects</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>A_lidar_ground</id>
+      <dimensions>4,6,4,type=float</dimensions>
+      <original_id>A_lidar_ground</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>A_radar_objects</id>
+      <dimensions>15,6,20,5,type=float</dimensions>
+      <original_id>A_radar_objects</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>A_gps</id>
+      <dimensions>3,6,type=float</dimensions>
+      <original_id>A_gps</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>A_imu</id>
+      <dimensions>10,6,type=float</dimensions>
+      <original_id>A_imu</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>A_vehicle_sensors</id>
+      <dimensions>10,6,3,type=float</dimensions>
+      <original_id>A_vehicle_sensors</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>B_vehicle_dynamics</id>
+      <dimensions>6,6,3,type=float</dimensions>
+      <original_id>B_vehicle_dynamics</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>B_traffic</id>
+      <dimensions>3,3,1,type=float</dimensions>
+      <original_id>B_traffic</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>B_weather</id>
+      <dimensions>5,5,1,type=float</dimensions>
+      <original_id>B_weather</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>B_other_vehicles</id>
+      <dimensions>20,20,6,type=float</dimensions>
+      <original_id>B_other_vehicles</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>B_system_health</id>
+      <dimensions>3,3,1,type=float</dimensions>
+      <original_id>B_system_health</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_collision_avoidance</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>C_collision_avoidance</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_lane_keeping</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>C_lane_keeping</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_speed_compliance</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>C_speed_compliance</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_traffic_lights</id>
+      <dimensions>4,type=float</dimensions>
+      <original_id>C_traffic_lights</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_stop_signs</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>C_stop_signs</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_right_of_way</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>C_right_of_way</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_fuel_efficiency</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>C_fuel_efficiency</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_passenger_comfort</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>C_passenger_comfort</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_time_efficiency</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>C_time_efficiency</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_emissions</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>C_emissions</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C_noise</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>C_noise</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>D_vehicle_position</id>
+      <dimensions>2,type=float</dimensions>
+      <original_id>D_vehicle_position</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>D_vehicle_velocity</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>D_vehicle_velocity</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>D_vehicle_heading</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>D_vehicle_heading</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>D_traffic_density</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>D_traffic_density</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>D_weather</id>
+      <dimensions>5,type=float</dimensions>
+      <original_id>D_weather</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>D_road_condition</id>
+      <dimensions>4,type=float</dimensions>
+      <original_id>D_road_condition</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>D_other_vehicles</id>
+      <dimensions>20,type=float</dimensions>
+      <original_id>D_other_vehicles</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>D_pedestrians</id>
+      <dimensions>10,type=float</dimensions>
+      <original_id>D_pedestrians</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma_camera</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma_camera</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma_lidar</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma_lidar</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma_radar</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma_radar</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma_gps</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma_gps</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma_imu</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma_imu</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma_vehicle_dynamics</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma_vehicle_dynamics</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma_other_vehicles</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma_other_vehicles</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>gamma_environment</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>gamma_environment</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>alpha_control</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>alpha_control</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>alpha_behavior</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>alpha_behavior</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>alpha_maneuver</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>alpha_maneuver</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>sensor_health_camera</id>
+      <dimensions>4,3,type=float</dimensions>
+      <original_id>sensor_health_camera</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>sensor_health_lidar</id>
+      <dimensions>1,3,type=float</dimensions>
+      <original_id>sensor_health_lidar</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>sensor_health_radar</id>
+      <dimensions>1,3,type=float</dimensions>
+      <original_id>sensor_health_radar</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>sensor_health_gps</id>
+      <dimensions>1,3,type=float</dimensions>
+      <original_id>sensor_health_gps</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>sensor_health_imu</id>
+      <dimensions>1,3,type=float</dimensions>
+      <original_id>sensor_health_imu</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>system_health_engine</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>system_health_engine</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>system_health_brakes</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>system_health_brakes</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>system_health_steering</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>system_health_steering</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>system_health_transmission</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>system_health_transmission</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>compute_health_perception</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>compute_health_perception</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>compute_health_planning</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>compute_health_planning</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>compute_health_control</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>compute_health_control</original_id>
+    </statespaceblock_item>
+  </statespaceblock>
+  <connections>
+    <connections_item>
+      <sources>
+        <sources_item>camera_front_objects</sources_item>
+        <sources_item>camera_rear_objects</sources_item>
+        <sources_item>camera_left_objects</sources_item>
+        <sources_item>camera_right_objects</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>visual_object_fusion</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>lidar_point_cloud</sources_item>
+        <sources_item>lidar_objects</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>lidar_perception</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>radar_objects</sources_item>
+        <sources_item>radar_tracks</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>radar_perception</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>visual_object_fusion</sources_item>
+        <sources_item>lidar_perception</sources_item>
+        <sources_item>radar_perception</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>multi_modal_object_detection</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>gps_position</sources_item>
+        <sources_item>gps_velocity</sources_item>
+        <sources_item>imu_acceleration</sources_item>
+        <sources_item>imu_angular_velocity</sources_item>
+        <sources_item>camera_lane_markings</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>localization_system</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>lidar_point_cloud</sources_item>
+        <sources_item>localization_system</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>simultaneous_localization_mapping</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>vehicle_position_x</sources_item>
+        <sources_item>vehicle_position_y</sources_item>
+        <sources_item>vehicle_heading</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>vehicle_pose</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>vehicle_velocity_x</sources_item>
+        <sources_item>vehicle_velocity_y</sources_item>
+        <sources_item>vehicle_angular_velocity</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>vehicle_velocity_state</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>vehicle_pose</sources_item>
+        <sources_item>vehicle_velocity_state</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>vehicle_kinematic_state</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>wheel_speeds</sources_item>
+        <sources_item>imu_acceleration</sources_item>
+        <sources_item>steering_angle</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>vehicle_dynamic_state</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>vehicle_kinematic_state</sources_item>
+        <sources_item>vehicle_dynamic_state</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>complete_vehicle_state</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>traffic_density</sources_item>
+        <sources_item>traffic_flow_rate</sources_item>
+        <sources_item>average_traffic_speed</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>traffic_state</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>weather_condition</sources_item>
+        <sources_item>road_surface_condition</sources_item>
+        <sources_item>visibility_range</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>environmental_conditions</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>traffic_state</sources_item>
+        <sources_item>environmental_conditions</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>driving_context</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>other_vehicles_positions</sources_item>
+        <sources_item>other_vehicles_velocities</sources_item>
+        <sources_item>other_vehicles_intentions</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>other_vehicle_states</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>pedestrians_positions</sources_item>
+        <sources_item>pedestrians_velocities</sources_item>
+        <sources_item>pedestrians_intentions</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>pedestrian_states</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>other_vehicle_states</sources_item>
+        <sources_item>pedestrian_states</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>dynamic_environment</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>destination_position</sources_item>
+        <sources_item>route_waypoints</sources_item>
+        <sources_item>current_lane_id</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>route_planning</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>route_planning</sources_item>
+        <sources_item>traffic_state</sources_item>
+        <sources_item>construction_zone</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>adaptive_route_planning</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>adaptive_route_planning</sources_item>
+        <sources_item>driving_context</sources_item>
+        <sources_item>dynamic_environment</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>behavioral_planning</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>behavioral_planning</sources_item>
+        <sources_item>behavior_mode</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>driving_behavior_selection</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>driving_behavior_selection</sources_item>
+        <sources_item>complete_vehicle_state</sources_item>
+        <sources_item>multi_modal_object_detection</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>motion_planning</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>motion_planning</sources_item>
+        <sources_item>maneuver_type</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>trajectory_generation</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>trajectory_generation</sources_item>
+        <sources_item>complete_vehicle_state</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>vehicle_control</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>vehicle_control</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>action_steering</targets_item>
+        <targets_item>action_acceleration</targets_item>
+        <targets_item>action_braking</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>multi_modal_object_detection</sources_item>
+        <sources_item>complete_vehicle_state</sources_item>
+        <sources_item>trajectory_generation</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>collision_risk_assessment</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>collision_risk_assessment</sources_item>
+        <sources_item>C_collision_avoidance</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>emergency_intervention</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>sensor_health_camera</sources_item>
+        <sources_item>sensor_health_lidar</sources_item>
+        <sources_item>sensor_health_radar</sources_item>
+        <sources_item>sensor_health_gps</sources_item>
+        <sources_item>sensor_health_imu</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>sensor_health_monitoring</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>system_health_engine</sources_item>
+        <sources_item>system_health_brakes</sources_item>
+        <sources_item>system_health_steering</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>vehicle_health_monitoring</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>compute_health_perception</sources_item>
+        <sources_item>compute_health_planning</sources_item>
+        <sources_item>compute_health_control</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>computational_health_monitoring</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>sensor_health_monitoring</sources_item>
+        <sources_item>vehicle_health_monitoring</sources_item>
+        <sources_item>computational_health_monitoring</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>overall_system_health</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>C_collision_avoidance</sources_item>
+        <sources_item>C_lane_keeping</sources_item>
+        <sources_item>C_speed_compliance</sources_item>
+        <sources_item>C_traffic_lights</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>safety_preferences</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>C_fuel_efficiency</sources_item>
+        <sources_item>C_passenger_comfort</sources_item>
+        <sources_item>C_time_efficiency</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>efficiency_preferences</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>safety_preferences</sources_item>
+        <sources_item>efficiency_preferences</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>integrated_preferences</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>trajectory_generation</sources_item>
+        <sources_item>integrated_preferences</sources_item>
+        <sources_item>overall_system_health</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>expected_free_energy_computation</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>expected_free_energy_computation</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>policy_selection</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>policy_selection</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>action_execution</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+  </connections>
+  <initialparameterization>
+    <dt_control>0.01</dt_control>
+    <dt_perception>0.1</dt_perception>
+    <dt_planning>1.0</dt_planning>
+    <dt_monitoring>10.0</dt_monitoring>
+    <time_horizon_control>100</time_horizon_control>
+    <time_horizon_planning>30</time_horizon_planning>
+    <A_vehicle>
+      <A_vehicle_item>(1.0, 0.01, 0.0, 0.0, 0.0, 0.0)</A_vehicle_item>
+      <A_vehicle_item>(0.0, 1.0, 0.0, 0.01, 0.0, 0.0)</A_vehicle_item>
+      <A_vehicle_item>(0.0, 0.0, 1.0, 0.0, 0.0, 0.01)</A_vehicle_item>
+      <A_vehicle_item>(0.0, 0.0, 0.0, 0.95, 0.0, 0.0)</A_vehicle_item>
+      <A_vehicle_item>(0.0, 0.0, 0.0, 0.0, 0.95, 0.0)</A_vehicle_item>
+      <A_vehicle_item>(0.0, 0.0, 0.0, 0.0, 0.0, 0.9)</A_vehicle_item>
+    </A_vehicle>
+    <B_vehicle>
+      <B_vehicle_item>(0.0, 0.0, 0.0)</B_vehicle_item>
+      <B_vehicle_item>(0.0, 0.0, 0.0)</B_vehicle_item>
+      <B_vehicle_item>(0.0, 0.0, 0.0)</B_vehicle_item>
+      <B_vehicle_item>(0.01, 0.0, 0.0)</B_vehicle_item>
+      <B_vehicle_item>(0.0, 0.01, 0.0)</B_vehicle_item>
+      <B_vehicle_item>(0.0, 0.0, 0.1)</B_vehicle_item>
+    </B_vehicle>
+    <gamma_camera>0.8</gamma_camera>
+    <gamma_lidar>0.95</gamma_lidar>
+    <gamma_radar>0.7</gamma_radar>
+    <gamma_gps>0.6</gamma_gps>
+    <gamma_imu>0.9</gamma_imu>
+    <gamma_vehicle_dynamics>0.85</gamma_vehicle_dynamics>
+    <gamma_other_vehicles>0.6</gamma_other_vehicles>
+    <gamma_environment>0.5</gamma_environment>
+    <alpha_control>16.0</alpha_control>
+    <alpha_behavior>8.0</alpha_behavior>
+    <alpha_maneuver>4.0</alpha_maneuver>
+    <C_collision_avoidance>
+      <C_collision_avoidance_item>10.0</C_collision_avoidance_item>
+      <C_collision_avoidance_item>-100.0</C_collision_avoidance_item>
+    </C_collision_avoidance>
+    <C_lane_keeping>
+      <C_lane_keeping_item>5.0</C_lane_keeping_item>
+      <C_lane_keeping_item>-2.0</C_lane_keeping_item>
+      <C_lane_keeping_item>-50.0</C_lane_keeping_item>
+    </C_lane_keeping>
+    <C_speed_compliance>
+      <C_speed_compliance_item>2.0</C_speed_compliance_item>
+      <C_speed_compliance_item>-10.0</C_speed_compliance_item>
+      <C_speed_compliance_item>-5.0</C_speed_compliance_item>
+    </C_speed_compliance>
+    <C_traffic_lights>
+      <C_traffic_lights_item>-50.0</C_traffic_lights_item>
+      <C_traffic_lights_item>-20.0</C_traffic_lights_item>
+      <C_traffic_lights_item>5.0</C_traffic_lights_item>
+      <C_traffic_lights_item>0.0</C_traffic_lights_item>
+    </C_traffic_lights>
+    <C_stop_signs>
+      <C_stop_signs_item>10.0</C_stop_signs_item>
+      <C_stop_signs_item>-100.0</C_stop_signs_item>
+    </C_stop_signs>
+    <C_right_of_way>
+      <C_right_of_way_item>5.0</C_right_of_way_item>
+      <C_right_of_way_item>-20.0</C_right_of_way_item>
+    </C_right_of_way>
+    <C_fuel_efficiency>
+      <C_fuel_efficiency_item>3.0</C_fuel_efficiency_item>
+      <C_fuel_efficiency_item>1.0</C_fuel_efficiency_item>
+      <C_fuel_efficiency_item>-2.0</C_fuel_efficiency_item>
+    </C_fuel_efficiency>
+    <C_passenger_comfort>
+      <C_passenger_comfort_item>2.0</C_passenger_comfort_item>
+      <C_passenger_comfort_item>0.0</C_passenger_comfort_item>
+      <C_passenger_comfort_item>-5.0</C_passenger_comfort_item>
+    </C_passenger_comfort>
+    <C_time_efficiency>
+      <C_time_efficiency_item>2.0</C_time_efficiency_item>
+      <C_time_efficiency_item>0.0</C_time_efficiency_item>
+      <C_time_efficiency_item>-3.0</C_time_efficiency_item>
+    </C_time_efficiency>
+    <C_emissions>
+      <C_emissions_item>2.0</C_emissions_item>
+      <C_emissions_item>0.0</C_emissions_item>
+      <C_emissions_item>-1.0</C_emissions_item>
+    </C_emissions>
+    <C_noise>
+      <C_noise_item>1.0</C_noise_item>
+      <C_noise_item>0.0</C_noise_item>
+      <C_noise_item>-1.0</C_noise_item>
+    </C_noise>
+    <D_vehicle_position>
+      <D_vehicle_position_item>0.5</D_vehicle_position_item>
+      <D_vehicle_position_item>0.5</D_vehicle_position_item>
+    </D_vehicle_position>
+    <D_vehicle_velocity>
+      <D_vehicle_velocity_item>1.0</D_vehicle_velocity_item>
+    </D_vehicle_velocity>
+    <D_vehicle_heading>
+      <D_vehicle_heading_item>1.0</D_vehicle_heading_item>
+    </D_vehicle_heading>
+    <D_traffic_density>
+      <D_traffic_density_item>1.0</D_traffic_density_item>
+    </D_traffic_density>
+    <D_weather>
+      <D_weather_item>0.6</D_weather_item>
+      <D_weather_item>0.2</D_weather_item>
+      <D_weather_item>0.1</D_weather_item>
+      <D_weather_item>0.05</D_weather_item>
+      <D_weather_item>0.05</D_weather_item>
+    </D_weather>
+    <D_road_condition>
+      <D_road_condition_item>0.7</D_road_condition_item>
+      <D_road_condition_item>0.2</D_road_condition_item>
+      <D_road_condition_item>0.05</D_road_condition_item>
+      <D_road_condition_item>0.05</D_road_condition_item>
+    </D_road_condition>
+    <D_other_vehicles>
+      <D_other_vehicles_item>0.1</D_other_vehicles_item>
+      <D_other_vehicles_item>0.1</D_other_vehicles_item>
+      <D_other_vehicles_item>0.1</D_other_vehicles_item>
+      <D_other_vehicles_item>0.1</D_other_vehicles_item>
+      <D_other_vehicles_item>0.1</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+      <D_other_vehicles_item>0.05</D_other_vehicles_item>
+    </D_other_vehicles>
+    <D_pedestrians>
+      <D_pedestrians_item>0.05</D_pedestrians_item>
+      <D_pedestrians_item>0.05</D_pedestrians_item>
+      <D_pedestrians_item>0.05</D_pedestrians_item>
+      <D_pedestrians_item>0.05</D_pedestrians_item>
+      <D_pedestrians_item>0.05</D_pedestrians_item>
+      <D_pedestrians_item>0.05</D_pedestrians_item>
+      <D_pedestrians_item>0.05</D_pedestrians_item>
+      <D_pedestrians_item>0.05</D_pedestrians_item>
+      <D_pedestrians_item>0.05</D_pedestrians_item>
+      <D_pedestrians_item>0.05</D_pedestrians_item>
+    </D_pedestrians>
+    <sensor_health_camera>
+      <sensor_health_camera_item>(1.0, 0.0, 0.0)</sensor_health_camera_item>
+      <sensor_health_camera_item>(1.0, 0.0, 0.0)</sensor_health_camera_item>
+      <sensor_health_camera_item>(1.0, 0.0, 0.0)</sensor_health_camera_item>
+      <sensor_health_camera_item>(1.0, 0.0, 0.0)</sensor_health_camera_item>
+    </sensor_health_camera>
+    <sensor_health_lidar>
+      <sensor_health_lidar_item>1.0</sensor_health_lidar_item>
+      <sensor_health_lidar_item>0.0</sensor_health_lidar_item>
+      <sensor_health_lidar_item>0.0</sensor_health_lidar_item>
+    </sensor_health_lidar>
+    <sensor_health_radar>
+      <sensor_health_radar_item>1.0</sensor_health_radar_item>
+      <sensor_health_radar_item>0.0</sensor_health_radar_item>
+      <sensor_health_radar_item>0.0</sensor_health_radar_item>
+    </sensor_health_radar>
+    <sensor_health_gps>
+      <sensor_health_gps_item>1.0</sensor_health_gps_item>
+      <sensor_health_gps_item>0.0</sensor_health_gps_item>
+      <sensor_health_gps_item>0.0</sensor_health_gps_item>
+    </sensor_health_gps>
+    <sensor_health_imu>
+      <sensor_health_imu_item>1.0</sensor_health_imu_item>
+      <sensor_health_imu_item>0.0</sensor_health_imu_item>
+      <sensor_health_imu_item>0.0</sensor_health_imu_item>
+    </sensor_health_imu>
+    <system_health_engine>
+      <system_health_engine_item>1.0</system_health_engine_item>
+      <system_health_engine_item>0.0</system_health_engine_item>
+      <system_health_engine_item>0.0</system_health_engine_item>
+    </system_health_engine>
+    <system_health_brakes>
+      <system_health_brakes_item>1.0</system_health_brakes_item>
+      <system_health_brakes_item>0.0</system_health_brakes_item>
+      <system_health_brakes_item>0.0</system_health_brakes_item>
+    </system_health_brakes>
+    <system_health_steering>
+      <system_health_steering_item>1.0</system_health_steering_item>
+      <system_health_steering_item>0.0</system_health_steering_item>
+      <system_health_steering_item>0.0</system_health_steering_item>
+    </system_health_steering>
+    <system_health_transmission>
+      <system_health_transmission_item>1.0</system_health_transmission_item>
+      <system_health_transmission_item>0.0</system_health_transmission_item>
+      <system_health_transmission_item>0.0</system_health_transmission_item>
+    </system_health_transmission>
+    <compute_health_perception>
+      <compute_health_perception_item>1.0</compute_health_perception_item>
+      <compute_health_perception_item>0.0</compute_health_perception_item>
+      <compute_health_perception_item>0.0</compute_health_perception_item>
+    </compute_health_perception>
+    <compute_health_planning>
+      <compute_health_planning_item>1.0</compute_health_planning_item>
+      <compute_health_planning_item>0.0</compute_health_planning_item>
+      <compute_health_planning_item>0.0</compute_health_planning_item>
+    </compute_health_planning>
+    <compute_health_control>
+      <compute_health_control_item>1.0</compute_health_control_item>
+      <compute_health_control_item>0.0</compute_health_control_item>
+      <compute_health_control_item>0.0</compute_health_control_item>
+    </compute_health_control>
+  </initialparameterization>
+</Comprehensive_Self-Driving_Car_Agent_v1>

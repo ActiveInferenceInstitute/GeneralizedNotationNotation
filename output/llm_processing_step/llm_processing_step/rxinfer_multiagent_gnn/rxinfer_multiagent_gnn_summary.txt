@@ -1,33 +1,30 @@
-### Summary of the GNN Model: RxInfer Multi-agent Trajectory Planning
+### Summary of GNN Model: RxInfer Multi-agent Trajectory Planning
 
 **Model Name:** Multi-agent Trajectory Planning
 
 **Purpose:**  
-This GNN model is designed for simulating trajectory planning in a multi-agent system within a 2D environment. It emphasizes obstacle avoidance, goal-directed behavior, and inter-agent collision avoidance.
+This model is designed for simulating multi-agent trajectory planning within a 2D environment using the RxInfer.jl framework. It incorporates considerations for obstacle avoidance, goal-directed behavior, and inter-agent collision avoidance, making it suitable for dynamic environments with various obstacles.
 
 **Key Components:**
 
 1. **State Space Model:**
-   - The model utilizes a state space representation to track the positions and movements of multiple agents over discrete time steps.
-   - Key parameters include:
-     - `dt`: Time step for updates
-     - `A`: State transition matrix that governs the evolution of agent states
-     - `B`: Control input matrix for agent controls
-     - `C`: Observation matrix mapping states to observations
+   - **State Transition Matrix (A):** Defines how agents transition between states over discrete time steps.
+   - **Control Input Matrix (B):** Models the influence of control inputs on the agents' states.
+   - **Observation Matrix (C):** Maps the state variables to observable outputs.
+   - **Parameters:** Includes time step (`dt`), variance for initial state and control inputs, and other constraints relevant to the agents' movements.
 
-2. **Primary States/Observations:**
-   - Agents are represented with state variables, including their positions and velocities.
-   - Observations are derived from the state space model, allowing for the monitoring of agent positions relative to goals and obstacles.
-   - Variances are defined for initial states, control inputs, and goal constraints to model uncertainty.
+2. **Agent Configurations:**
+   - Each agent has an ID, radius, initial position, and target position, allowing for individualized planning and pathfinding.
 
-3. **Connections:**
-   - **State Space Model Interactions:**
-     - The state transition and control input matrices (`A`, `B`) feed into the state space model.
-   - **Agent Trajectories:**
-     - The model generates agent trajectories based on state space parameters and variances.
-   - **Behavioral Constraints:**
-     - Goal-directed behavior and obstacle avoidance are modeled using probabilistic constraints, incorporating distances to obstacles and inter-agent dynamics.
-   - **Planning System:**
-     - The final planning system integrates goal-directed behavior, obstacle avoidance, and collision avoidance to produce coherent trajectories for all agents.
+3. **Environment Definitions:**
+   - Specifies multiple obstacles (e.g., doors and walls) with defined positions and sizes to challenge the agents' trajectories.
 
-In summary, the model serves as a framework for planning and simulating the movements of multiple agents in complex environments, ensuring that they reach their goals while avoiding obstacles and collisions with one another.
+4. **Visualization Parameters:**
+   - Parameters for plotting the trajectories, including plot dimensions, resolution, and color palettes to enhance the visualization of agent movements.
+
+**Main Connections:**
+- The state space model outputs are connected to the agent trajectories, which incorporate initial state variance and control variance.
+- The resulting agent trajectories feed into subsystems for goal-directed behavior, obstacle avoidance, and collision avoidance.
+- Ultimately, these components integrate into a complete planning system that coordinates the agents' movements in the presence of obstacles and goals.
+
+This GNN framework provides a comprehensive setup for simulating and analyzing multi-agent interactions in trajectory planning scenarios.
