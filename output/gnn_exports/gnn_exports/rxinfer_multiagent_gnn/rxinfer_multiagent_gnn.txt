@@ -1,0 +1,138 @@
+GNN Model Summary: Multi-agent Trajectory Planning
+
+--- STATESPACEBLOCK ---
+- {'id': 'dt', 'dimensions': '1,type=float', 'original_id': 'dt'}
+- {'id': 'gamma', 'dimensions': '1,type=float', 'original_id': 'gamma'}
+- {'id': 'nr_steps', 'dimensions': '1,type=int', 'original_id': 'nr_steps'}
+- {'id': 'nr_iterations', 'dimensions': '1,type=int', 'original_id': 'nr_iterations'}
+- {'id': 'nr_agents', 'dimensions': '1,type=int', 'original_id': 'nr_agents'}
+- {'id': 'softmin_temperature', 'dimensions': '1,type=float', 'original_id': 'softmin_temperature'}
+- {'id': 'intermediate_steps', 'dimensions': '1,type=int', 'original_id': 'intermediate_steps'}
+- {'id': 'save_intermediates', 'dimensions': '1,type=bool', 'original_id': 'save_intermediates'}
+- {'id': 'A', 'dimensions': '4,4,type=float', 'original_id': 'A'}
+- {'id': 'B', 'dimensions': '4,2,type=float', 'original_id': 'B'}
+- {'id': 'C', 'dimensions': '2,4,type=float', 'original_id': 'C'}
+- {'id': 'initial_state_variance', 'dimensions': '1,type=float', 'original_id': 'initial_state_variance'}
+- {'id': 'control_variance', 'dimensions': '1,type=float', 'original_id': 'control_variance'}
+- {'id': 'goal_constraint_variance', 'dimensions': '1,type=float', 'original_id': 'goal_constraint_variance'}
+- {'id': 'gamma_shape', 'dimensions': '1,type=float', 'original_id': 'gamma_shape'}
+- {'id': 'gamma_scale_factor', 'dimensions': '1,type=float', 'original_id': 'gamma_scale_factor'}
+- {'id': 'x_limits', 'dimensions': '2,type=float', 'original_id': 'x_limits'}
+- {'id': 'y_limits', 'dimensions': '2,type=float', 'original_id': 'y_limits'}
+- {'id': 'fps', 'dimensions': '1,type=int', 'original_id': 'fps'}
+- {'id': 'heatmap_resolution', 'dimensions': '1,type=int', 'original_id': 'heatmap_resolution'}
+- {'id': 'plot_width', 'dimensions': '1,type=int', 'original_id': 'plot_width'}
+- {'id': 'plot_height', 'dimensions': '1,type=int', 'original_id': 'plot_height'}
+- {'id': 'agent_alpha', 'dimensions': '1,type=float', 'original_id': 'agent_alpha'}
+- {'id': 'target_alpha', 'dimensions': '1,type=float', 'original_id': 'target_alpha'}
+- {'id': 'color_palette', 'dimensions': '1,type=string', 'original_id': 'color_palette'}
+- {'id': 'door_obstacle_center_1', 'dimensions': '2,type=float', 'original_id': 'door_obstacle_center_1'}
+- {'id': 'door_obstacle_size_1', 'dimensions': '2,type=float', 'original_id': 'door_obstacle_size_1'}
+- {'id': 'door_obstacle_center_2', 'dimensions': '2,type=float', 'original_id': 'door_obstacle_center_2'}
+- {'id': 'door_obstacle_size_2', 'dimensions': '2,type=float', 'original_id': 'door_obstacle_size_2'}
+- {'id': 'wall_obstacle_center', 'dimensions': '2,type=float', 'original_id': 'wall_obstacle_center'}
+- {'id': 'wall_obstacle_size', 'dimensions': '2,type=float', 'original_id': 'wall_obstacle_size'}
+- {'id': 'combined_obstacle_center_1', 'dimensions': '2,type=float', 'original_id': 'combined_obstacle_center_1'}
+- {'id': 'combined_obstacle_size_1', 'dimensions': '2,type=float', 'original_id': 'combined_obstacle_size_1'}
+- {'id': 'combined_obstacle_center_2', 'dimensions': '2,type=float', 'original_id': 'combined_obstacle_center_2'}
+- {'id': 'combined_obstacle_size_2', 'dimensions': '2,type=float', 'original_id': 'combined_obstacle_size_2'}
+- {'id': 'combined_obstacle_center_3', 'dimensions': '2,type=float', 'original_id': 'combined_obstacle_center_3'}
+- {'id': 'combined_obstacle_size_3', 'dimensions': '2,type=float', 'original_id': 'combined_obstacle_size_3'}
+- {'id': 'agent1_id', 'dimensions': '1,type=int', 'original_id': 'agent1_id'}
+- {'id': 'agent1_radius', 'dimensions': '1,type=float', 'original_id': 'agent1_radius'}
+- {'id': 'agent1_initial_position', 'dimensions': '2,type=float', 'original_id': 'agent1_initial_position'}
+- {'id': 'agent1_target_position', 'dimensions': '2,type=float', 'original_id': 'agent1_target_position'}
+- {'id': 'agent2_id', 'dimensions': '1,type=int', 'original_id': 'agent2_id'}
+- {'id': 'agent2_radius', 'dimensions': '1,type=float', 'original_id': 'agent2_radius'}
+- {'id': 'agent2_initial_position', 'dimensions': '2,type=float', 'original_id': 'agent2_initial_position'}
+- {'id': 'agent2_target_position', 'dimensions': '2,type=float', 'original_id': 'agent2_target_position'}
+- {'id': 'agent3_id', 'dimensions': '1,type=int', 'original_id': 'agent3_id'}
+- {'id': 'agent3_radius', 'dimensions': '1,type=float', 'original_id': 'agent3_radius'}
+- {'id': 'agent3_initial_position', 'dimensions': '2,type=float', 'original_id': 'agent3_initial_position'}
+- {'id': 'agent3_target_position', 'dimensions': '2,type=float', 'original_id': 'agent3_target_position'}
+- {'id': 'agent4_id', 'dimensions': '1,type=int', 'original_id': 'agent4_id'}
+- {'id': 'agent4_radius', 'dimensions': '1,type=float', 'original_id': 'agent4_radius'}
+- {'id': 'agent4_initial_position', 'dimensions': '2,type=float', 'original_id': 'agent4_initial_position'}
+- {'id': 'agent4_target_position', 'dimensions': '2,type=float', 'original_id': 'agent4_target_position'}
+- {'id': 'experiment_seeds', 'dimensions': '2,type=int', 'original_id': 'experiment_seeds'}
+- {'id': 'results_dir', 'dimensions': '1,type=string', 'original_id': 'results_dir'}
+- {'id': 'animation_template', 'dimensions': '1,type=string', 'original_id': 'animation_template'}
+- {'id': 'control_vis_filename', 'dimensions': '1,type=string', 'original_id': 'control_vis_filename'}
+- {'id': 'obstacle_distance_filename', 'dimensions': '1,type=string', 'original_id': 'obstacle_distance_filename'}
+- {'id': 'path_uncertainty_filename', 'dimensions': '1,type=string', 'original_id': 'path_uncertainty_filename'}
+- {'id': 'convergence_filename', 'dimensions': '1,type=string', 'original_id': 'convergence_filename'}
+
+--- CONNECTIONS ---
+- {'sources': ['dt'], 'operator': '>', 'targets': ['A'], 'attributes': {}}
+- {'sources': ['A', 'B', 'C'], 'operator': '>', 'targets': ['state_space_model'], 'attributes': {}}
+- {'sources': ['state_space_model', 'initial_state_variance', 'control_variance'], 'operator': '>', 'targets': ['agent_trajectories'], 'attributes': {}}
+- {'sources': ['agent_trajectories', 'goal_constraint_variance'], 'operator': '>', 'targets': ['goal_directed_behavior'], 'attributes': {}}
+- {'sources': ['agent_trajectories', 'gamma', 'gamma_shape', 'gamma_scale_factor'], 'operator': '>', 'targets': ['obstacle_avoidance'], 'attributes': {}}
+- {'sources': ['agent_trajectories', 'nr_agents'], 'operator': '>', 'targets': ['collision_avoidance'], 'attributes': {}}
+- {'sources': ['goal_directed_behavior', 'obstacle_avoidance', 'collision_avoidance'], 'operator': '>', 'targets': ['planning_system'], 'attributes': {}}
+
+--- INITIALPARAMETERIZATION ---
+- dt: 1.0
+- gamma: 1.0
+- nr_steps: 40
+- nr_iterations: 350
+- nr_agents: 4
+- softmin_temperature: 10.0
+- intermediate_steps: 10
+- save_intermediates: false
+
+# State space matrices
+# A = [1 dt 0 0; 0 1 0 0; 0 0 1 dt; 0 0 0 1]
+- A: [(1.0, 1.0, 0.0, 0.0), (0.0, 1.0, 0.0, 0.0), (0.0, 0.0, 1.0, 1.0), (0.0, 0.0, 0.0, 1.0)]
+- B: [(0.0, 0.0), (1.0, 0.0), (0.0, 0.0), (0.0, 1.0)]
+- C: [(1.0, 0.0, 0.0, 0.0), (0.0, 0.0, 1.0, 0.0)]
+- initial_state_variance: 100.0
+- control_variance: 0.1
+- goal_constraint_variance: 1e-05
+- gamma_shape: 1.5
+- gamma_scale_factor: 0.5
+- x_limits: [-20, 20]
+- y_limits: [-20, 20]
+- fps: 15
+- heatmap_resolution: 100
+- plot_width: 800
+- plot_height: 400
+- agent_alpha: 1.0
+- target_alpha: 0.2
+- color_palette: tab10
+- door_obstacle_center_1: [-40.0, 0.0]
+- door_obstacle_size_1: [70.0, 5.0]
+- door_obstacle_center_2: [40.0, 0.0]
+- door_obstacle_size_2: [70.0, 5.0]
+- wall_obstacle_center: [0.0, 0.0]
+- wall_obstacle_size: [10.0, 5.0]
+- combined_obstacle_center_1: [-50.0, 0.0]
+- combined_obstacle_size_1: [70.0, 2.0]
+- combined_obstacle_center_2: [50.0, 0.0]
+- combined_obstacle_size_2: [70.0, 2.0]
+- combined_obstacle_center_3: [5.0, -1.0]
+- combined_obstacle_size_3: [3.0, 10.0]
+- agent1_id: 1
+- agent1_radius: 2.5
+- agent1_initial_position: [-4.0, 10.0]
+- agent1_target_position: [-10.0, -10.0]
+- agent2_id: 2
+- agent2_radius: 1.5
+- agent2_initial_position: [-10.0, 5.0]
+- agent2_target_position: [10.0, -15.0]
+- agent3_id: 3
+- agent3_radius: 1.0
+- agent3_initial_position: [-15.0, -10.0]
+- agent3_target_position: [10.0, 10.0]
+- agent4_id: 4
+- agent4_radius: 2.5
+- agent4_initial_position: [0.0, -10.0]
+- agent4_target_position: [-10.0, 15.0]
+- experiment_seeds: [42, 123]
+- results_dir: results
+- animation_template: [environment]_[seed].gif
+- control_vis_filename: control_signals.gif
+- obstacle_distance_filename: obstacle_distance.png
+- path_uncertainty_filename: path_uncertainty.png
+- convergence_filename: convergence.png
+

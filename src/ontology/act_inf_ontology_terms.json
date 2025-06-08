@@ -190,5 +190,53 @@
     "ActionFactor1": {
         "description": "Action (u_f) for controllable factor 1. Specialization of Action.",
         "uri": "obo:TEMP_000048"
+    },
+    "TimeStep": {
+        "description": "A discrete temporal increment used in state space models and trajectory planning.",
+        "uri": "obo:TEMP_000049"
+    },
+    "ConstraintParameter": {
+        "description": "A parameter that controls the strength or influence of constraints in optimization or inference problems.",
+        "uri": "obo:TEMP_000050"
+    },
+    "TrajectoryLength": {
+        "description": "The number of time steps or waypoints in a planned trajectory or temporal sequence.",
+        "uri": "obo:TEMP_000051"
+    },
+    "InferenceIterations": {
+        "description": "The number of iterative steps performed during Bayesian inference or optimization procedures.",
+        "uri": "obo:TEMP_000052"
+    },
+    "NumberOfAgents": {
+        "description": "The count of autonomous entities or agents in a multi-agent system or simulation.",
+        "uri": "obo:TEMP_000053"
+    },
+    "SoftminTemperature": {
+        "description": "A temperature parameter that controls the sharpness of the softmin function in probabilistic decision-making.",
+        "uri": "obo:TEMP_000054"
+    },
+    "StateTransitionMatrix": {
+        "description": "A matrix defining the probabilistic dynamics of state evolution over time (e.g., 'A' matrix in state space models).",
+        "uri": "obo:TEMP_000055"
+    },
+    "ControlInputMatrix": {
+        "description": "A matrix that maps control inputs to their effects on state dynamics (e.g., 'B' matrix in control systems).",
+        "uri": "obo:TEMP_000056"
+    },
+    "ObservationMatrix": {
+        "description": "A matrix that maps hidden states to observable outputs (e.g., 'C' matrix in state space models).",
+        "uri": "obo:TEMP_000057"
+    },
+    "InitialStateVariance": {
+        "description": "The variance or uncertainty associated with the initial state distribution in probabilistic models.",
+        "uri": "obo:TEMP_000058"
+    },
+    "ControlVariance": {
+        "description": "The variance or noise level associated with control inputs or process dynamics.",
+        "uri": "obo:TEMP_000059"
+    },
+    "GoalConstraintVariance": {
+        "description": "The variance parameter for goal-directed constraints in trajectory planning and optimization.",
+        "uri": "obo:TEMP_000060"
     }
 } 

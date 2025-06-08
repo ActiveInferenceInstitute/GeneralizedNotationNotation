@@ -24,7 +24,7 @@ def main():
     parser = argparse.ArgumentParser(description='Generate visualizations for GNN examples.')
     parser.add_argument('--input', '-i', type=str, default=str(parent_dir / 'gnn' / 'examples'),
                         help='Directory containing GNN example files')
-    parser.add_argument('--output', '-o', type=str, default=str(parent_dir.parent / 'output' / 'gnn_examples_visualization'),
+    parser.add_argument('--output', '-o', type=str, default=str(parent_dir.parent / 'output' / 'visualization'),
                         help='Directory to save visualizations')
     parser.add_argument('--recursive', '-r', action='store_true',
                         help='Recursively process all subdirectories')

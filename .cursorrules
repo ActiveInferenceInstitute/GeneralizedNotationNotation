@@ -1,7 +1,7 @@
 # .cursorrules - Rules for AI Code Assistant (Cursor) - GeneralizedNotationNotation (GNN) Project
 
 ## Project Overview and Context
-GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project enables model specification, validation, visualization, and translation to executable code for simulation environments like PyMDP and RxInfer.jl.
+GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project enables model specification, validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl), categorical diagram representation (DisCoPy), and LLM-enhanced analysis.
 
 ## Overall AI Behavior & Persona
 - Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications
@@ -64,55 +64,60 @@ GeneralizedNotationNotation (GNN) is a text-based language for standardizing Act
 - **Parameter Documentation**: Clearly document all model parameters and their valid ranges
 - **Validation**: Always validate GNN syntax and structure before processing
 
-### GNN Data Structure Handling
-```python
-# Example type hints for common GNN structures
-from typing import Dict, List, Union, Optional, Tuple
-import numpy as np
-
-# GNN model components
-StateSpace = Dict[str, Dict[str, Union[int, str, List]]]
-ObservationSpace = Dict[str, Dict[str, Union[int, str, List]]]
-Connections = List[Tuple[str, str, str]]  # (source, relation, target)
-Matrices = Dict[str, np.ndarray]
-GNNModel = Dict[str, Union[StateSpace, ObservationSpace, Connections, Matrices]]
-```
-
 ## Project Structure & Conventions
 
-### Pipeline Architecture
+### Pipeline Architecture (14 Steps)
 - **Main Orchestrator**: `src/main.py` discovers and executes numbered pipeline scripts
-- **Pipeline Steps**: Numbered scripts in `src/` directory (1_gnn.py, 2_setup.py, etc.)
+- **Pipeline Steps**: Numbered scripts in `src/` directory (1-14):
   - `1_gnn.py`: Core GNN file processing and parsing
   - `2_setup.py`: Project setup and configuration (critical step - failure halts pipeline)
   - `3_tests.py`: Test execution and validation
   - `4_gnn_type_checker.py`: GNN file validation and resource estimation
-  - `5_export.py`: Model export to various formats
+  - `5_export.py`: Model export to various formats (JSON, XML, GraphML, etc.)
   - `6_visualization.py`: Graphical model visualization
-  - `7_mcp.py`: Model Context Protocol tasks
+  - `7_mcp.py`: Model Context Protocol tasks and API integration
   - `8_ontology.py`: Ontology processing and validation
-  - `9_render.py`: Code generation for simulation environments
+  - `9_render.py`: Code generation for simulation environments (PyMDP, RxInfer)
+  - `10_execute.py`: Execute rendered simulator scripts
+  - `11_llm.py`: LLM-enhanced analysis and processing
+  - `12_discopy.py`: DisCoPy categorical diagram translation
+  - `13_discopy_jax_eval.py`: JAX-based evaluation of DisCoPy diagrams
+  - `14_site.py`: Static site generation for documentation/reports
 
 ### Directory Structure and Responsibilities
 - **`src/gnn/`**: Core GNN parsing, specifications, and examples
-  - `examples/`: Example GNN files for testing and demonstration
-  - `gnn_file_structure.md`: Machine-readable file structure specification
-  - `gnn_punctuation.md`: Machine-readable syntax specification
 - **`src/gnn_type_checker/`**: Validation logic and resource estimation
 - **`src/export/`**: Export modules for JSON, XML, GraphML, etc.
 - **`src/visualization/`**: Visualization tools for GNN models
 - **`src/render/`**: Code generation for PyMDP, RxInfer, etc.
+- **`src/execute/`**: Execution engines for rendered simulators
+- **`src/llm/`**: LLM integration and AI-enhanced processing
+- **`src/discopy_translator_module/`**: DisCoPy categorical diagram translation
+- **`src/site/`**: Static site generation utilities
 - **`src/mcp/`**: Model Context Protocol implementation
 - **`src/ontology/`**: Active Inference Ontology processing
 - **`src/tests/`**: Unit tests, integration tests, and test utilities
 - **`doc/`**: Comprehensive documentation and specifications
 
-### File Naming and Module Organization
-- **Pipeline Scripts**: `[number]_[functionality].py` in `src/` root
-- **MCP Integration**: Each functional subdirectory should have `mcp.py` for tool exposure
-- **Requirements**: `src/requirements.txt` for Python dependencies
-- **Examples**: Place new GNN examples in `src/gnn/examples/`
-- **Documentation**: Update relevant files in `doc/` when adding features
+### Advanced Capabilities
+
+#### LLM Integration (Step 11)
+- Support for multiple AI models and providers
+- Automated GNN analysis and enhancement suggestions
+- Natural language explanations of model components
+- AI-assisted model validation and optimization
+
+#### Categorical Diagrams (Steps 12-13)
+- **DisCoPy Translation**: Convert GNN models to categorical diagrams
+- **JAX Evaluation**: High-performance numerical evaluation using JAX
+- **Mathematical Rigor**: Category theory foundations for model composition
+- **Compositional Modeling**: Enable hierarchical and modular model construction
+
+#### Multi-Backend Simulation Support
+- **PyMDP**: Discrete Active Inference simulation
+- **RxInfer.jl**: Reactive message passing and Bayesian inference
+- **JAX**: High-performance automatic differentiation and compilation
+- **Custom Backends**: Extensible architecture for new simulation engines
 
 ## Tool Usage Guidelines
 
@@ -128,11 +133,17 @@ GNNModel = Dict[str, Union[StateSpace, ObservationSpace, Connections, Matrices]]
 - **Error Handling**: Fail gracefully with informative messages
 - **Logging**: Use consistent logging patterns across pipeline steps
 
-### Active Inference Implementation
-- **Matrix Validation**: Ensure A, B matrices are properly stochastic
-- **Dimensionality**: Verify dimension consistency across state spaces and observations
-- **Ontology Mapping**: Reference `src/ontology/act_inf_ontology_terms.json`
-- **Simulation Compatibility**: Ensure outputs work with target simulators
+### LLM and AI Integration
+- **Model Selection**: Choose appropriate AI models based on task complexity
+- **Prompt Engineering**: Use domain-specific prompts for Active Inference concepts
+- **Token Management**: Be mindful of context limits for large GNN models
+- **Validation**: Always validate AI-generated suggestions against GNN syntax
+
+### Mathematical and Categorical Operations
+- **DisCoPy Compatibility**: Ensure GNN models translate correctly to string diagrams
+- **JAX Optimization**: Leverage JAX for computational efficiency in large models
+- **Category Theory**: Maintain mathematical rigor in compositional operations
+- **Numerical Stability**: Validate numerical computations in JAX evaluations
 
 ## Communication & Documentation
 
@@ -142,114 +153,76 @@ GNNModel = Dict[str, Union[StateSpace, ObservationSpace, Connections, Matrices]]
 - Distinguish between GNN notation and target simulator notation
 - Use backticks for GNN syntax elements: `s_f0[3,1,type=int]`
 
-### Documentation Standards
-- **Code Comments**: Reference GNN sections being processed
-- **Docstrings**: Include GNN syntax examples where relevant
-- **README Updates**: Update project README for significant changes
-- **Doc Directory**: Add new documentation to appropriate `doc/` subdirectories
-
 ### Mathematical Notation
 - Use LaTeX formatting for mathematical expressions: `\( P(s_t|o_t) \)`
 - Reference GNN equations section when discussing model dynamics
 - Maintain consistency with Active Inference mathematical conventions
+- Use category theory notation appropriately for DisCoPy contexts
 
 ## Testing and Validation
 
-### GNN File Testing
+### Comprehensive Testing Strategy
 - **Syntax Validation**: Every GNN file must pass type checker
 - **Example Coverage**: Test with files from `src/gnn/examples/`
-- **Edge Cases**: Test with malformed GNN files for error handling
-- **Integration**: Verify full pipeline runs with test GNN files
+- **Cross-Backend Validation**: Ensure consistency across PyMDP, RxInfer, and JAX
+- **LLM Integration Tests**: Validate AI-enhanced processing pipelines
+- **DisCoPy Translation Tests**: Verify categorical diagram correctness
 
 ### Scientific Validation
 - **Mathematical Consistency**: Verify matrix dimensions and stochasticity
 - **Simulation Output**: Test that rendered code actually executes
 - **Reproducibility**: Ensure identical inputs produce identical outputs
-- **Resource Estimation**: Validate computational resource predictions
+- **Performance Benchmarks**: Validate computational efficiency claims
 
 ## Quality Assurance
 
 ### Code Review Focus Areas
 - **GNN Syntax Compliance**: Verify adherence to GNN specifications
 - **Active Inference Accuracy**: Ensure correct implementation of AI concepts
-- **Pipeline Integration**: Check compatibility with existing workflow
-- **Documentation Quality**: Verify examples and explanations are clear
-- **Performance**: Consider computational efficiency for large models
+- **Pipeline Integration**: Check compatibility with all 14 steps
+- **Mathematical Rigor**: Validate category theory and numerical implementations
+- **AI Integration**: Review LLM prompts and processing logic
 
 ### Security Considerations
 - **File Parsing**: Validate GNN file content before processing
-- **User Input**: Sanitize command-line arguments and file paths
-- **External Dependencies**: Keep dependencies updated and secure
+- **LLM Safety**: Sanitize inputs/outputs for AI model interactions
+- **Execution Safety**: Sandbox rendered code execution when possible
 - **API Keys**: Handle external service credentials securely
 
-## Advanced GNN Features
+## Advanced Features and Extensibility
 
-### Ontology Integration
-- Map GNN components to Active Inference Ontology terms
-- Validate ontology annotations against known terms
-- Support ontology evolution and updates
-- Enable cross-model comparison via ontology
-
-### Multi-Modal Support
+### Multi-Modal and Hierarchical Support
 - Handle multiple observation modalities correctly
 - Support complex state factor interactions
 - Process hierarchical model structures
-- Enable model composition and nesting
+- Enable model composition via categorical operations
 
-### Extensibility
-- Design for new simulation backends
+### Extensibility Architecture
+- Design for new simulation backends beyond PyMDP/RxInfer
 - Support experimental GNN syntax extensions
-- Enable custom visualization types
-- Allow plugin-style functionality
+- Enable custom visualization types and LLM integrations
+- Allow plugin-style functionality for specialized domains
+
+### Performance Optimization
+- **Large Models**: Consider memory usage for complex GNN files
+- **JAX Compilation**: Leverage JIT compilation for computational graphs
+- **Batch Processing**: Support processing multiple GNN files efficiently
+- **Caching**: Cache parsed results and compiled functions where appropriate
 
 ## Project-Specific Best Practices
 
 ### Research Code Quality
 - **Version Control**: Tag releases that correspond to paper submissions
-- **Reproducibility**: Include environment setup in documentation
+- **Reproducibility**: Include environment setup and dependency management
 - **Data Management**: Handle example models as versioned assets
-- **Citation**: Reference appropriate papers and repositories
+- **Citation**: Reference appropriate papers and repositories for Active Inference and category theory
 
 ### Collaboration Guidelines
 - **Issue Templates**: Use provided templates for bug reports and features
 - **Pull Requests**: Include GNN file examples demonstrating changes
-- **Code Style**: Follow existing patterns in the codebase
-- **Testing**: Add tests for new GNN syntax or features
-
-### Performance Optimization
-- **Large Models**: Consider memory usage for complex GNN files
-- **Batch Processing**: Support processing multiple GNN files efficiently
-- **Caching**: Cache parsed results where appropriate
-- **Parallel Processing**: Enable concurrent processing where safe
-
-## Error Handling and Debugging
-
-### GNN-Specific Error Messages
-- Reference specific GNN syntax rules in error messages
-- Suggest corrections for common syntax errors
-- Include line numbers and context for parsing errors
-- Provide links to relevant documentation sections
-
-### Debugging Support
-- **Verbose Modes**: Support detailed logging for troubleshooting
-- **Intermediate Outputs**: Save parsing intermediate results for inspection
-- **Validation Reports**: Generate detailed validation reports
-- **Test Harness**: Provide tools for testing individual GNN components
-
-## Future Directions and Evolution
-
-### Standards Evolution
-- Monitor Active Inference research for new concepts
-- Support versioning of GNN syntax specifications
-- Enable backward compatibility with older GNN files
-- Plan for syntax extensions and improvements
-
-### Tool Ecosystem
-- Integrate with emerging Active Inference tools
-- Support new simulation environments
-- Enable cloud-based processing
-- Develop GUI tools for GNN editing
+- **Documentation**: Update relevant files in `doc/` when adding features
+- **Testing**: Add comprehensive tests for new GNN syntax or features
 
 ---
 
-**Summary**: These rules provide comprehensive guidance for working with the GNN project, emphasizing scientific rigor, Active Inference domain expertise, and the unique requirements of this standardization effort. Always prioritize correctness, reproducibility, and adherence to GNN specifications while maintaining code quality and extensibility. 
+**Summary**: These rules provide comprehensive guidance for working with the GNN project, emphasizing scientific rigor, Active Inference domain expertise, mathematical foundations, and the unique requirements of this standardization effort. Always prioritize correctness, reproducibility, and adherence to GNN specifications while maintaining code quality and extensibility across all 14 pipeline steps. 

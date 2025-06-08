@@ -201,6 +201,8 @@ class GnnToPyMdpConverter:
         if statespace_key:
             self.state_space_data = self.gnn_spec[statespace_key]
             self._add_log(f"Found StateSpaceBlock data with {len(self.state_space_data)} items.")
+            # Extract observation and state information from StateSpaceBlock
+            self._parse_statespace_variables()
         else:
             self._add_log("StateSpaceBlock not found or empty in GNN spec.")
             self.state_space_data = []
@@ -216,8 +218,6 @@ class GnnToPyMdpConverter:
             raw_params = self.gnn_spec["raw_sections"]["ModelParameters"]
             self.model_parameters = self._parse_model_parameters_from_text(raw_params)
             self._add_log(f"Parsed ModelParameters from raw text: {self.model_parameters}")
-        else:
-            self.model_parameters = {}
         
         if model_params_key and not hasattr(self, 'model_parameters'):
             self.model_parameters = self.gnn_spec[model_params_key]
@@ -226,7 +226,209 @@ class GnnToPyMdpConverter:
             self._add_log("ModelParameters not found or empty in GNN spec.")
             self.model_parameters = {}
 
+        # Extract dimensions from ModelParameters if available
+        self._extract_dimensions_from_model_params()
+        
+        # Validate that we have the necessary data
+        if not self.num_modalities or not self.num_factors:
+            self._add_log(f"Warning: Missing required data - modalities: {self.num_modalities}, factors: {self.num_factors}", "WARNING")
+            # Try to infer from InitialParameterization if available
+            self._infer_from_initial_parameterization()
+
         self._add_log("Finished GNN data extraction.")
+
+    def _parse_statespace_variables(self):
+        """Parse StateSpaceBlock to extract observation modalities and state factors."""
+        if not self.state_space_data:
+            return
+        
+        obs_modalities = {}
+        state_factors = {}
+        
+        # Handle both string and list formats for StateSpaceBlock
+        lines_to_parse = []
+        if isinstance(self.state_space_data, str):
+            lines_to_parse = self.state_space_data.strip().split('\n')
+        elif isinstance(self.state_space_data, list):
+            lines_to_parse = self.state_space_data
+        elif isinstance(self.state_space_data, dict):
+            # Handle dictionary format - extract from values or convert to lines
+            for key, value in self.state_space_data.items():
+                if isinstance(value, str):
+                    lines_to_parse.append(value)
+                elif isinstance(value, dict):
+                    # Convert dict representation to line format
+                    # E.g., {'variable': 'A_m0', 'dimensions': [3,2,3], 'type': 'float'}
+                    if 'variable' in value and 'dimensions' in value:
+                        var_name = value['variable']
+                        dims = value['dimensions']
+                        type_info = value.get('type', 'float')
+                        line = f"{var_name}[{','.join(map(str, dims))},type={type_info}]"
+                        lines_to_parse.append(line)
+            if not lines_to_parse:
+                self._add_log("StateSpaceBlock is a dictionary but no parseable content found", "WARNING")
+                return
+        else:
+            self._add_log(f"Unknown StateSpaceBlock format: {type(self.state_space_data)}", "WARNING")
+            return
+        
+        for line in lines_to_parse:
+            # Handle both string and non-string line types
+            if not isinstance(line, str):
+                if isinstance(line, dict):
+                    # Handle individual dict entries
+                    if 'variable' in line and 'dimensions' in line:
+                        var_name = line['variable']
+                        dims = line['dimensions']
+                        self._parse_variable_definition(var_name, dims, obs_modalities, state_factors)
+                continue
+            
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            
+            # Parse variable definitions like A_m0[3,2,3,type=float]
+            import re
+            # Match pattern like A_m0[3,2,3,type=float] or o_m0[3,1,type=float]
+            match = re.match(r'([A-Za-z_]\w*)\[([^\]]+)\]', line)
+            if match:
+                var_name = match.group(1)
+                dims_str = match.group(2)
+                
+                # Parse dimensions
+                dims_parts = [part.strip() for part in dims_str.split(',')]
+                dims = []
+                for part in dims_parts:
+                    if part.startswith('type='):
+                        break
+                    try:
+                        dims.append(int(part))
+                    except ValueError:
+                        continue
+                
+                self._parse_variable_definition(var_name, dims, obs_modalities, state_factors)
+        
+        # Update instance variables
+        if obs_modalities:
+            self.num_modalities = len(obs_modalities)
+            self.num_obs = [obs_modalities[i].get('num_outcomes', 2) for i in range(self.num_modalities)]
+            self.obs_names = [obs_modalities[i].get('name', f'modality_{i}') for i in range(self.num_modalities)]
+            self._add_log(f"Extracted {self.num_modalities} observation modalities: {self.obs_names}")
+        
+        if state_factors:
+            self.num_factors = len(state_factors)
+            self.num_states = [state_factors[i].get('num_states', 2) for i in range(self.num_factors)]
+            self.state_names = [state_factors[i].get('name', f'factor_{i}') for i in range(self.num_factors)]
+            
+            # Determine control factors (those with num_actions > 1)
+            self.control_factor_indices = []
+            for i in range(self.num_factors):
+                num_actions = state_factors[i].get('num_actions', 1)
+                if num_actions > 1:
+                    self.control_factor_indices.append(i)
+                    self.num_actions_per_control_factor[i] = num_actions
+            
+            self._add_log(f"Extracted {self.num_factors} state factors: {self.state_names}")
+            self._add_log(f"Control factors: {self.control_factor_indices}")
+
+    def _parse_variable_definition(self, var_name: str, dims: List[int], obs_modalities: dict, state_factors: dict):
+        """Parse a single variable definition into the appropriate data structure."""
+        # Categorize variables
+        if var_name.startswith('A_m'):
+            # A_m0[3,2,3] means 3 outcomes, 2 states in factor 0, 3 states in factor 1
+            mod_idx = int(var_name[3:]) if var_name[3:].isdigit() else 0
+            if dims:
+                obs_modalities[mod_idx] = {
+                    'name': f'modality_{mod_idx}',
+                    'num_outcomes': dims[0],
+                    'state_dims': dims[1:] if len(dims) > 1 else []
+                }
+        elif var_name.startswith('o_m'):
+            # o_m0[3,1] means 3 outcomes
+            mod_idx = int(var_name[3:]) if var_name[3:].isdigit() else 0
+            if dims:
+                if mod_idx not in obs_modalities:
+                    obs_modalities[mod_idx] = {'name': f'modality_{mod_idx}'}
+                obs_modalities[mod_idx]['num_outcomes'] = dims[0]
+        elif var_name.startswith('B_f'):
+            # B_f0[2,2,1] means 2 states, 2 previous states, 1 action
+            fac_idx = int(var_name[3:]) if var_name[3:].isdigit() else 0
+            if dims and len(dims) >= 2:
+                state_factors[fac_idx] = {
+                    'name': f'factor_{fac_idx}',
+                    'num_states': dims[0],
+                    'num_actions': dims[2] if len(dims) > 2 else 1
+                }
+        elif var_name.startswith('s_f'):
+            # s_f0[2,1] means 2 states
+            fac_idx = int(var_name[3:]) if var_name[3:].isdigit() else 0
+            if dims:
+                if fac_idx not in state_factors:
+                    state_factors[fac_idx] = {'name': f'factor_{fac_idx}'}
+                state_factors[fac_idx]['num_states'] = dims[0]
+
+    def _extract_dimensions_from_model_params(self):
+        """Extract dimensions from ModelParameters section."""
+        if not self.model_parameters:
+            return
+        
+        # Handle num_hidden_states_factors
+        if 'num_hidden_states_factors' in self.model_parameters:
+            states_info = self.model_parameters['num_hidden_states_factors']
+            if isinstance(states_info, list) and not self.num_states:
+                self.num_states = states_info
+                self.num_factors = len(states_info)
+                self.state_names = [f'factor_{i}' for i in range(self.num_factors)]
+                self._add_log(f"Extracted state factors from ModelParameters: {self.num_states}")
+        
+        # Handle num_obs_modalities
+        if 'num_obs_modalities' in self.model_parameters:
+            obs_info = self.model_parameters['num_obs_modalities']
+            if isinstance(obs_info, list) and not self.num_obs:
+                self.num_obs = obs_info
+                self.num_modalities = len(obs_info)
+                self.obs_names = [f'modality_{i}' for i in range(self.num_modalities)]
+                self._add_log(f"Extracted observation modalities from ModelParameters: {self.num_obs}")
+        
+        # Handle num_control_factors
+        if 'num_control_factors' in self.model_parameters:
+            control_info = self.model_parameters['num_control_factors']
+            if isinstance(control_info, list):
+                for i, num_actions in enumerate(control_info):
+                    if num_actions > 1:
+                        if i not in self.control_factor_indices:
+                            self.control_factor_indices.append(i)
+                        self.num_actions_per_control_factor[i] = num_actions
+
+    def _infer_from_initial_parameterization(self):
+        """Try to infer dimensions from InitialParameterization section."""
+        if 'InitialParameterization' not in self.gnn_spec and 'initial_parameterization' not in self.gnn_spec:
+            return
+        
+        # Get the parameterization section
+        param_section = self.gnn_spec.get('InitialParameterization') or self.gnn_spec.get('initial_parameterization', '')
+        
+        if isinstance(param_section, str):
+            # Look for A_m, B_f patterns in the text
+            import re
+            
+            # Find A matrices (observation modalities)
+            a_matches = re.findall(r'A_m(\d+)', param_section)
+            if a_matches and not self.num_modalities:
+                max_mod = max(int(m) for m in a_matches) + 1
+                self.num_modalities = max_mod
+                self.obs_names = [f'modality_{i}' for i in range(max_mod)]
+                self.num_obs = [3] * max_mod  # Default to 3 outcomes
+                self._add_log(f"Inferred {max_mod} observation modalities from InitialParameterization")
+            
+            # Find B matrices (state factors)
+            b_matches = re.findall(r'B_f(\d+)', param_section)
+            if b_matches and not self.num_factors:
+                max_fac = max(int(f) for f in b_matches) + 1
+                self.num_factors = max_fac
+                self.state_names = [f'factor_{i}' for i in range(max_fac)]
+                self.num_states = [2] * max_fac  # Default to 2 states
+                self._add_log(f"Inferred {max_fac} state factors from InitialParameterization")
 
     def _parse_model_parameters_from_text(self, text: str) -> Dict[str, Any]:
         """Parse ModelParameters from raw text format."""

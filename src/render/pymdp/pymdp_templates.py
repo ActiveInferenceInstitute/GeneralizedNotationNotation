@@ -157,6 +157,14 @@ def generate_example_usage_template(
     usage_lines.append(f"{indent}# Initialize agent (already done above)")
     usage_lines.append(f"{indent}# agent = {model_name}  # Agent is already instantiated above as 'agent'")
     usage_lines.append(f"{indent}print(f\"Agent '{model_name}' initialized with {{agent.num_factors if hasattr(agent, 'num_factors') else 'N/A'}} factors and {{agent.num_modalities if hasattr(agent, 'num_modalities') else 'N/A'}} modalities.\")")
+    
+    # Define observation and state names for display
+    usage_lines.append(f"{indent}# Define names for display purposes")
+    usage_lines.append(f"{indent}obs_names = [f'Modality_{{i}}' for i in range({num_modalities})] if {num_modalities} > 0 else []")
+    usage_lines.append(f"{indent}state_names = [f'Factor_{{i}}' for i in range({num_factors})] if {num_factors} > 0 else []")
+    usage_lines.append(f"{indent}num_modalities = {num_modalities}")
+    usage_lines.append(f"{indent}num_factors = {num_factors}")
+    usage_lines.append(f"{indent}control_fac_idx = {control_factor_indices}")
 
     # Initial observation and state
     default_o = [0] * num_modalities if num_modalities > 0 else []

@@ -11,3 +11,5 @@ src/.pytest_cache/
 *.pytest_cache
 *.pyc 
 /src/export/__pycache__
+/src/setup/__pycache__
+/src/utils/__pycache__

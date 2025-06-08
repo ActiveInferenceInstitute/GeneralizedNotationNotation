@@ -398,7 +398,7 @@ def _add_gnn_exports_section(f: IO[str], output_dir: Path):
         f.write("</div>\n")
 
 def _add_visualizations_section(f: IO[str], output_dir: Path):
-    viz_dir = output_dir / "gnn_examples_visualization"
+    viz_dir = output_dir / "visualization"
     if viz_dir.is_dir():
         f.write(f"<div class='section' id='{make_section_id('GNN Visualizations')}'>\n")
         f.write(f"<h2>GNN Visualizations (Step 6)</h2>\n")
@@ -486,7 +486,7 @@ def _add_other_outputs_section(f: IO[str], output_dir: Path, site_output_file: P
     handled_items = {
         "pipeline_execution_summary.json", "gnn_processing_step", "test_reports",
         "gnn_type_check", "gnn_exports", "gnn_processing_summary.md",
-        "gnn_examples_visualization", "mcp_processing_step", "ontology_processing",
+        "visualization", "mcp_processing_step", "ontology_processing",
         "gnn_rendered_simulators", "pymdp_execute_logs", "llm_processing_step", "logs",
         site_output_file.name 
     }

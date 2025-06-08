@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GNN Pipeline Output Summary</title>
+    <style>
+        body {{ font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }}
+        header {{ background-color: #333; color: #fff; padding: 1em 0; text-align: center; }}
+        nav ul {{ list-style-type: none; padding: 0; text-align: center; background-color: #444; margin-bottom: 20px; }}
+        nav ul li {{ display: inline; margin-right: 15px; }}
+        nav ul li a {{ color: #fff; text-decoration: none; padding: 10px 15px; display: inline-block; }}
+        nav ul li a:hover {{ background-color: #555; }}
+        .container {{ background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }}
+        h1, h2, h3 {{ color: #333; }}
+        h1 {{ text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }}
+        h2 {{ border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }}
+        pre {{ background-color: #eee; padding: 10px; border-radius: 4px; overflow-x: auto; }}
+        img, iframe {{ max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; margin-top: 10px; }}
+        .file-link {{ display: inline-block; margin: 5px; padding: 8px 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; }}
+        .file-link:hover {{ background-color: #0056b3; }}
+        .section {{ margin-bottom: 30px; }}
+        .gallery img {{ margin: 5px; max-height: 200px; width: auto; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+        th {{ background-color: #f0f0f0; }}
+        .log-output {{ white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow-y: auto; }}
+        .collapsible {{ background-color: #f9f9f9; color: #444; cursor: pointer; padding: 12px; width: 100%; border: none; text-align: left; outline: none; font-size: 1.1em; margin-top: 10px; border-bottom: 1px solid #ddd; }}
+        .active, .collapsible:hover {{ background-color: #efefef; }}
+        .collapsible-content {{ padding: 0 18px; display: none; overflow: hidden; background-color: white; border: 1px solid #ddd; border-top: none; }}
+        .toc {{ border: 1px solid #ddd; background-color: #f9f9f9; padding: 15px; margin-bottom: 20px; border-radius: 5px; }}
+        .toc ul {{ list-style-type: none; padding-left: 0; }}
+        .toc ul li a {{ text-decoration: none; color: #007bff; }}
+        .toc ul li a:hover {{ text-decoration: underline; }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Generalized Notation Notation (GNN) Pipeline Output Summary</h1>
+    </header>
+    <nav id="navbar">
+        <ul>
+            <!-- Nav links will be injected here -->
+        </ul>
+    </nav>
+    <div class="container">
+        <div id="toc-container" class="toc">
+            <h2>Table of Contents</h2>
+            <ul id="toc-list">
+                <!-- TOC items will be injected here -->
+            </ul>
+        </div>
+<div class='section' id='gnn-discovery'>
+<h2>GNN Discovery (Step 1)</h2>
+<h1>GNN File Discovery Report</h1>
+<h2>Summary</h2>
+<ul>
+<li>Total .md files found: 2</li>
+<li>Files with 'ModelName' found: 2</li>
+<li>Files with 'StateSpaceBlock' found: 2</li>
+<li>Files with 'Connections' found: 2</li>
+<li>Files with processing errors: 0</li>
+</ul>
+<h2>Detailed File Analysis</h2>
+<h3><code>src/gnn/examples/pymdp_pomdp_agent.md</code></h3>
+<ul>
+<li><strong>ModelName</strong>: Multifactor PyMDP Agent v1</li>
+<li><strong>StateSpaceBlock</strong>: Found</li>
+<li><strong>Connections</strong>: Found</li>
+<li><strong>ModelParameters</strong>:</li>
+<li><code>num_hidden_states_factors</code>: <code>[2, 3]</code></li>
+<li><code>num_obs_modalities</code>: <code>[3, 3, 3]</code></li>
+<li><code>num_control_factors</code>: <code>[1, 3]</code></li>
+</ul>
+<hr />
+<h3><code>src/gnn/examples/rxinfer_multiagent_gnn.md</code></h3>
+<ul>
+<li><strong>ModelName</strong>: Multi-agent Trajectory Planning</li>
+<li><strong>StateSpaceBlock</strong>: Found</li>
+<li><strong>Connections</strong>: Found</li>
+</ul>
+<hr /></div>
+<div class='section' id='test-reports'>
+<h2>Test Reports (Step 3)</h2>
+<button type="button" class="collapsible">Pytest Report (pytest_report.xml - partial)</button>
+<div class="collapsible-content" style="display: none;">
+<pre class='log-output'><code><?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="4" time="4.205" timestamp="2025-06-07T16:48:49.543499-07:00" hostname="pop"><testcase classname="src.tests.test_gnn_type_checker.TestGNNTypeChecker" name="test_check_directory" time="0.003" /><testcase classname="src.tests.test_gnn_type_checker.TestGNNTypeChecker" name="test_check_invalid_file" time="0.002" /><testcase classname="src.tests.test_gnn_type_checker.TestGNNTypeChecker" name="test_check_valid_file" time="0.002" /><testcase classname="src.tests.test_gnn_type_checker.TestGNNTypeChecker" name="test_generate_report" time="0.010" /></testsuite></testsuites></code></pre><small>pytest_report.xml</small></div>
+</div>
+<div class='section' id='gnn-type-checker'>
+<h2>GNN Type Checker (Step 4)</h2>
+</div>
+<div class='section' id='gnn-exports'>
+<h2>GNN Exports (Step 5)</h2>
+<div class='section' id='exports-for-gnn_exports-gnn_exports'>
+<h2>Exports for gnn_exports: gnn_exports</h2>
+<h3>Markdown Reports</h3><h4>5_export_step_report.md</h4><h1>📤 GNN Export Step Summary</h1>
+<p>🗓️ Generated: 2025-06-07 16:48:57</p>
+<h2>⚙️ Configuration</h2>
+<ul>
+<li><strong>Source Directory for GNN files:</strong> <code>src/gnn/examples</code></li>
+<li><strong>Base Output for Exports:</strong> <code>output/gnn_exports/gnn_exports</code></li>
+<li><strong>Recursive Search:</strong> ✅ Enabled</li>
+</ul>
+<h2>📊 Export Statistics</h2>
+<ul>
+<li><strong>GNN Files Found/Attempted:</strong> 2</li>
+<li><strong>GNN Files with Successful Exports (all selected formats):</strong> 2</li>
+<li><strong>GNN Files with At Least One Export Failure:</strong> 0</li>
+</ul></div>
+</div>
+<div class='section' id='gnn-visualizations'>
+<h2>GNN Visualizations (Step 6)</h2>
+</div>
+<div class='section' id='rendered-simulators'>
+<h2>Rendered Simulators (Step 9)</h2>
+<div class='section' id='simulators-for-pymdp-pymdp'>
+<h2>Simulators for pymdp: pymdp</h2>
+<h3>Other Files</h3><ul><li><a href="gnn_rendered_simulators/pymdp/pymdp_pomdp_agent_pymdp.py" class="file-link" target="_blank">pymdp_pomdp_agent_pymdp.py</a></li><li><a href="gnn_rendered_simulators/pymdp/rxinfer_multiagent_gnn_pymdp.py" class="file-link" target="_blank">rxinfer_multiagent_gnn_pymdp.py</a></li></ul></div>
+<div class='section' id='simulators-for-rxinfer_toml-rxinfer_toml'>
+<h2>Simulators for rxinfer_toml: rxinfer_toml</h2>
+<h3>Other Files</h3><ul><li><a href="gnn_rendered_simulators/rxinfer_toml/pymdp_pomdp_agent_config.toml" class="file-link" target="_blank">pymdp_pomdp_agent_config.toml</a></li><li><a href="gnn_rendered_simulators/rxinfer_toml/rxinfer_multiagent_gnn_config.toml" class="file-link" target="_blank">rxinfer_multiagent_gnn_config.toml</a></li></ul></div>
+</div>
+<div class='section' id='llm-processing-outputs'>
+<h2>LLM Processing Outputs (Step 11)</h2>
+</div>
+<div class='section' id='pipeline-log'>
+<h2>Pipeline Log</h2>
+<button type="button" class="collapsible">pipeline.log (partial)</button>
+<div class="collapsible-content" style="display: none;">
+<pre class='log-output'><code>2025-06-07 16:48:41,340 - GNN_Pipeline - DEBUG - Logger level configured based on verbosity.
+2025-06-07 16:48:41,340 - GNN_Pipeline - INFO - 🚀 Initializing GNN Pipeline with Target: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples', Output: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/output'
+2025-06-07 16:48:41,340 - GNN_Pipeline - DEBUG - 🛠️ Effective Arguments (after potential defensive conversion):
+  --dev: False (Type: bool)
+  --discopy-gnn-input-dir: None (Type: NoneType)
+  --discopy-jax-gnn-input-dir: None (Type: NoneType)
+  --discopy-jax-seed: 0 (Type: int)
+  --estimate-resources: True (Type: bool)
+  --llm-tasks: all (Type: str)
+  --llm-timeout: 120 (Type: int)
+  --only-steps:  (Type: str)
+  --ontology-terms-file: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json (Type: PosixPath)
+  --output-dir: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output (Type: PosixPath)
+  --pipeline-summary-file: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/pipeline_execution_summary.json (Type: PosixPath)
+  --recreate-venv: False (Type: bool)
+  --recursive: True (Type: bool)
+  --site-html-filename: gnn_pipeline_summary_site.html (Type: str)
+  --skip-dependency-validation: False (Type: bool)
+  --skip-steps:  (Type: str)
+  --strict: False (Type: bool)
+  --target-dir: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples (Type: PosixPath)
+  --verbose: True (Type: bool)
+2025-06-07 16:48:41,340 - GNN_Pipeline - INFO - === DEPENDENCY VALIDATION ===
+2025-06-07 16:48:41,340 - GNN_Pipeline - INFO - Validating dependency groups: ['core', 'export', 'gnn_processing', 'testing', 'visualization']
+2025-06-07 16:48:41,341 - GNN_Pipeline - DEBUG - 🐍 Found virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-07 16:48:41,341 - GNN_Pipeline - DEBUG - Found site-packages at: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.10/site-packages
+2025-06-07 16:48:41,341 - GNN_Pipeline - DEBUG - Using Python for dependency validation: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-07 16:48:43,380 - GNN_Pipeline - INFO - All required dependencies validated successfully.
+2025-06-07 16:48:43,380 - GNN_Pipeline - DEBUG - ℹ️ Discovering potential pipeline scripts using pattern: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/*_*.py
+2025-06-07 16:48:43,380 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 7_mcp.py (Number: 7)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 14_site.py (Number: 14)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 2_setup.py (Number: 2)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 1_gnn.py (Number: 1)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 5_export.py (Number: 5)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 9_render.py (Number: 9)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 6_visualization.py (Number: 6)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 13_discopy_jax_eval.py (Number: 13)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 3_tests.py (Number: 3)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 12_discopy.py (Number: 12)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 10_execute.py (Number: 10)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 11_llm.py (Number: 11)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 4_gnn_type_checker.py (Number: 4)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 8_ontology.py (Number: 8)
+2025-06-07 16:48:43,381 - GNN_Pipeline - DEBUG - ℹ️ Found and sorted script basenames: ['1_gnn.py', '2_setup.py', '3_tests.py', '4_gnn_type_checker.py', '5_export.py', '6_visualization.py', '7_mcp.py', '8_ontology.py', '9_render.py', '10_execute.py', '11_llm.py', '12_discopy.py', '13_discopy_jax_eval.py', '14_site.py']
+2025-06-07 16:48:43,381 - GNN_Pipeline - INFO - 📋 Will execute 13 pipeline steps:
+2025-06-07 16:48:43,381 - GNN_Pipeline - INFO -   1. 1: 1_gnn.py
+2025-06-07 16:48:43,381 - GNN_Pipeline - INFO -   2. 2: 2_setup.py
+2025-06-07 16:48:43,381 - GNN_Pipeline - INFO -   3. 3: 3_tests.py
+2025-06-07 16:48:43,381 - GNN_Pipeline - INFO -   4. 4: 4_gnn_type_checker.py
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   5. 5: 5_export.py
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   6. 6: 6_visualization.py
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   7. 7: 7_mcp.py
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   8. 8: 8_ontology.py
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   9. 9: 9_render.py
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   10. 10: 10_execute.py
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   11. 11: 11_llm.py
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   12. 12: 12_discopy.py
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   13. 14: 14_site.py
+2025-06-07 16:48:43,382 - GNN_Pipeline - DEBUG - 🔍 Determining Python executable for subprocess calls...
+2025-06-07 16:48:43,382 - GNN_Pipeline - DEBUG - 🐍 Found virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-07 16:48:43,382 - GNN_Pipeline - DEBUG - Found site-packages at: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.10/site-packages
+2025-06-07 16:48:43,382 - GNN_Pipeline - DEBUG - ✓ Using virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-07 16:48:43,382 - GNN_Pipeline - DEBUG - 🐍 Selected Python for subprocess calls: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO - 
+  ██████╗ ███╗   ██╗ ███╗   ██╗
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   ██╔════╝ ████╗  ██║ ████╗  ██║
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   ██║  ███╗██╔██╗ ██║ ██╔██╗ ██║
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   ██║   ██║██║╚██╗██║ ██║╚██╗██║
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   ╚██████╔╝██║ ╚████║ ██║ ╚████║
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -    ╚═════╝ ╚═╝  ╚═══╝ ╚═╝  ╚═══╝
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   Generalized Notation Notation
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   Active Inference Institute
+2025-06-07 16:48:43,382 - GNN_Pipeline - INFO -   Pipeline Run: 2025-06-07 16:48:43
+</code></pre><small>pipeline.log</small></div>
+</div>
+<div class='section' id='other-output-files'>
+<h2>Other Output Files/Directories</h2>
+<ul><li><a href="directory_structure.json" class="file-link" target="_blank">directory_structure.json</a></li><li><strong>discopy_gnn/</strong> (Directory - <a href='discopy_gnn' class='file-link' target='_blank'>Browse</a>)</li><li><a href="installed_packages.json" class="file-link" target="_blank">installed_packages.json</a></li></ul></div>
+
+    </div>
+    <script>
+        // Collapsible sections
+        var coll = document.getElementsByClassName("collapsible");
+        for (var i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+
+        // Smooth scroll for TOC links
+        document.querySelectorAll('#toc-list a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Navbar generation from h2 tags
+        const sections = document.querySelectorAll('.container > h2');
+        const navUl = document.querySelector('#navbar ul');
+        const tocUl = document.getElementById('toc-list');
+
+        sections.forEach(section => {
+            const title = section.textContent;
+            const id = section.id;
+            if (id) {
+                // Navbar link
+                const navLi = document.createElement('li');
+                const navA = document.createElement('a');
+                navA.textContent = title;
+                navA.href = `#${id}`;
+                navLi.appendChild(navA);
+                navUl.appendChild(navLi);
+
+                // TOC link
+                const tocLi = document.createElement('li');
+                const tocA = document.createElement('a');
+                tocA.textContent = title;
+                tocA.href = `#${id}`;
+                tocLi.appendChild(tocA);
+                tocUl.appendChild(tocLi);
+            }
+        });
+
+    </script>
+</body>
+</html>

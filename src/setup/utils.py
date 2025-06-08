@@ -143,7 +143,7 @@ def get_output_paths(base_output_dir: Union[str, Path]) -> Dict[str, Path]:
     paths = {
         "base": base_dir,
         "type_check": ensure_directory(base_dir / "gnn_type_check"),
-        "visualization": ensure_directory(base_dir / "gnn_examples_visualization"),
+        "visualization": ensure_directory(base_dir / "visualization"),
         "exports": ensure_directory(base_dir / "gnn_exports"),
         "rendered": ensure_directory(base_dir / "gnn_rendered_simulators"),
         "logs": ensure_directory(base_dir / "logs"),

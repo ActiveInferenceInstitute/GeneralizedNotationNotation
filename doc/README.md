@@ -83,14 +83,35 @@ Explore increasingly complex GNN models:
 - **Visualizing models**: Follow [Visualization Guide](gnn/gnn_tools.md#visualization-tools)
 
 ### File Templates
-- [Basic GNN Template](templates/basic_gnn_template.md) *(to be created)*
+- [Template System Overview](templates/README.md) - Complete template documentation
+- [Basic GNN Template](templates/basic_gnn_template.md) - Simple model starting point
 - [POMDP Template](templates/pomdp_template.md) *(to be created)*
 - [Multi-agent Template](templates/multiagent_template.md) *(to be created)*
+- [Hierarchical Template](templates/hierarchical_template.md) *(to be created)*
 
-### Troubleshooting
+### Pipeline Documentation
+- [Complete Pipeline Guide](pipeline/README.md) - All 14 steps explained
+- [Pipeline Architecture](pipeline/PIPELINE_ARCHITECTURE.md) - Technical architecture
+
+### API Reference & Integration
+- [Complete API Documentation](api/README.md) - All classes, functions, and interfaces
+- [MCP Integration Guide](mcp/README.md) - Model Context Protocol APIs
+- [Tool Development](mcp/README.md#development-guidelines) - Creating new MCP tools
+
+### Learning Resources
+- [Tutorial System](tutorials/README.md) - Step-by-step learning guides from beginner to expert
+- [Configuration Guide](configuration/README.md) - Complete configuration reference
+- [Testing Guide](testing/README.md) - Testing strategies and best practices
+
+### Deployment & Operations
+- [Deployment Guide](deployment/README.md) - Local development to enterprise deployment
+- [Performance Guide](performance/README.md) - Optimization strategies and benchmarking
+- [Development Guide](development/README.md) - Contributing and extending GNN
+
+### Troubleshooting & Support
+- [Troubleshooting Guide](troubleshooting/README.md) - Comprehensive problem-solving guide
 - [Common Errors](troubleshooting/common_errors.md) *(to be created)*
 - [FAQ](troubleshooting/faq.md) *(to be created)*
-- [Performance Tips](troubleshooting/performance.md) *(to be created)*
 
 ## 🤝 Contributing to Documentation
 

@@ -311,7 +311,7 @@ def generate_overall_pipeline_summary_report(target_dir_abs: Path, output_dir_ab
             ("GNN Processing", "gnn_processing_step"),
             ("Type Checking", "gnn_type_check"),
             ("Exports", "gnn_exports"),
-            ("Visualizations", "gnn_examples_visualization"),
+            ("Visualizations", "visualization"),
             ("Rendered Simulators", "gnn_rendered_simulators"),
             ("Test Reports", "test_reports"),
         ]

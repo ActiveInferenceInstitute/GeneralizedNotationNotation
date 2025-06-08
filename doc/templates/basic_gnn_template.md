@@ -1,141 +1,141 @@
 # Basic GNN Model Template
 
-Use this template as a starting point for creating your own GNN models. Replace the placeholder content with your specific model details.
+Copy this template and modify it to create your own GNN models. Replace the placeholders with your specific model details.
 
 ## GNNVersionAndFlags
-GNN v1
+GNN v1.0
+ProcessingFlags: default
 
 ## ModelName
-[Your Model Name] v[Version]
+[YourModelName]
 
 ## ModelAnnotation
-[Describe your model's purpose, key features, and application domain. 
- Explain what problem it solves and what makes it unique.
- Keep this section concise but informative.]
+[Brief description of what your model does and its purpose.
+Include key features, assumptions, and intended use cases.]
 
 ## StateSpaceBlock
-# Hidden State Factors (s_fX[num_states, 1, type=dataType])
-s_f0[X,1,type=int]   # Hidden State Factor 0: [Description] (0:[State0], 1:[State1], ...)
+### Hidden State Factors
+s_f0[2,1,type=categorical]  ### [Description of state factor 0]
+s_f1[3,1,type=categorical]  ### [Description of state factor 1]
 
-# Observation Modalities (o_mX[num_outcomes, 1, type=dataType])
-o_m0[Y,1,type=int]   # Observation Modality 0: [Description] (0:[Outcome0], 1:[Outcome1], ...)
+### Observation Modalities  
+o_m0[2,1,type=categorical]  ### [Description of observation modality 0]
+o_m1[3,1,type=categorical]  ### [Description of observation modality 1]
 
-# Control Factors (if applicable)
-# pi_cX[num_actions, type=float]  # Policy for Control Factor X
-# u_cX[1,type=int]               # Chosen action for Control Factor X
+### Control Factors (if applicable)
+u_c0[2,1,type=categorical]  ### [Description of control factor 0]
 
-# Model Matrices
-A_m0[Y,X,type=float] # Likelihood matrix: P(o_m0 | s_f0)
-B_f0[X,X,type=float] # Transition matrix: P(s_f0' | s_f0) [for dynamic models]
-C_m0[Y,type=float]   # Preferences over o_m0 outcomes
-D_f0[X,type=float]   # Prior beliefs over s_f0 states
-
-# Time (for dynamic models)
-t[1,type=int]        # Time step
+### Policy Factors (if applicable)
+π_c0[2,1,type=categorical]  ### [Description of policy factor 0]
 
 ## Connections
-# Basic connections for perception model
-(D_f0) -> (s_f0)
-(s_f0) -> (A_m0)
-(A_m0) -> (o_m0)
+### Basic Dependencies
+s_f0 > o_m0  ### [Describe this causal relationship]
+s_f1 > o_m1  ### [Describe this causal relationship]
 
-# For dynamic models, add:
-# (s_f0, u_c0) -> (B_f0)  # If actions influence transitions
-# (B_f0) -> s_f0_next
+### Control Dependencies (if applicable)
+u_c0 > s_f0  ### [Describe how control affects states]
 
-# For preference-based models, add:
-# (C_m0, [other relevant variables]) > G  # Expected Free Energy
-# G > pi_c0                               # Policy selection
+### State Interactions (if applicable)
+s_f0 - s_f1  ### [Describe state correlations]
 
 ## InitialParameterization
-# A_m0: Likelihood matrix [describe the mapping logic]
-A_m0={
-  # Example for 2x2 case:
-  # ((P(o=0|s=0), P(o=0|s=1)), (P(o=1|s=0), P(o=1|s=1)))
-  "description": "Replace with actual probability values"
-}
+### Likelihood Matrices (A matrices)
+A_m0 = [[0.8, 0.2], [0.3, 0.7]]  ### P(o_m0|s_f0)
+A_m1 = [[0.9, 0.1, 0.0], [0.2, 0.6, 0.2], [0.1, 0.3, 0.6]]  ### P(o_m1|s_f1)
 
-# B_f0: Transition matrix [for dynamic models]
-B_f0={
-  # Example: 
-  # ((P(s'=0|s=0), P(s'=0|s=1)), (P(s'=1|s=0), P(s'=1|s=1)))
-  "description": "Replace with actual transition probabilities"
-}
+### Transition Matrices (B matrices, for dynamic models)
+B_f0 = [[[0.9, 0.1], [0.2, 0.8]], [[0.1, 0.9], [0.8, 0.2]]]  ### P(s_f0'|s_f0,u_c0)
 
-# C_m0: Preferences [log preferences, higher values = more preferred]
-C_m0={
-  # Example: (log_pref_outcome_0, log_pref_outcome_1, ...)
-  "description": "Replace with actual preference values"
-}
+### Preference Vectors (C vectors)
+C_m0 = [2.0, 0.0]  ### Log preferences over o_m0
+C_m1 = [1.0, 0.5, 0.0]  ### Log preferences over o_m1
 
-# D_f0: Prior beliefs [probability distribution over initial states]
-D_f0={
-  # Example: (P(s=0), P(s=1), ...)
-  "description": "Replace with actual prior probabilities"
-}
+### Prior Beliefs (D vectors)
+D_f0 = [0.5, 0.5]  ### Uniform prior over s_f0
+D_f1 = [0.33, 0.33, 0.34]  ### Uniform prior over s_f1
+
+### Precision Parameters (optional)
+gamma = 1.0  ### Policy precision
+alpha = 1.0  ### Action precision
 
 ## Equations
-# Standard Active Inference equations:
-# For static models:
-# q(s) = σ(ln(D) + ln(A^T o))
+### Expected Free Energy (if applicable)
+G = \sum_{\tau} \mathbb{E}_{Q(s_\tau|o_{1:\tau})} \left[ D_{KL}[Q(o_\tau|s_\tau) || P(o_\tau|s_\tau)] - \mathbb{E}_{Q(o_\tau|s_\tau)}[\ln P(o_\tau)] \right]
 
-# For dynamic models:
-# q(s_t) = σ(ln(D) + ln(B^dagger s_{t+1}) + ln(A^T o_t))
-
-# For models with preferences:
-# G(π) = E_q[ln q(o,s|π) - ln P(o,s|π) - ln C(o)]
-# P(π) = σ(-G(π))
+### Belief Update (if applicable)
+Q(s_t|o_{1:t}) \propto P(o_t|s_t) \sum_{s_{t-1}} Q(s_{t-1}|o_{1:t-1}) P(s_t|s_{t-1}, u_{t-1})
 
 ## Time
-# Choose one:
-Static                    # No time dynamics
-# OR
-Dynamic                   # With time dynamics
-DiscreteTime=t           # Time variable
-ModelTimeHorizon=10      # Planning/simulation horizon
+Static  ### Change to "Dynamic" for temporal models
+### For dynamic models, also specify:
+### DiscreteTime
+### ModelTimeHorizon: [number of time steps]
 
 ## ActInfOntologyAnnotation
-# Map your variables to Active Inference Ontology terms
-s_f0=[OntologyTerm]      # e.g., HiddenState, LocationState, etc.
-o_m0=[OntologyTerm]      # e.g., Observation, VisualObservation, etc.
-A_m0=[OntologyTerm]      # e.g., LikelihoodMatrix, ObservationModel, etc.
-B_f0=[OntologyTerm]      # e.g., TransitionMatrix, DynamicsModel, etc.
-C_m0=[OntologyTerm]      # e.g., PreferenceVector, UtilityFunction, etc.
-D_f0=[OntologyTerm]      # e.g., PriorDistribution, InitialBelief, etc.
-t=[OntologyTerm]         # e.g., TimeStep, TemporalIndex, etc.
-
-## ModelParameters
-num_hidden_state_factors: [X]  # Number of state factors
-num_observation_modalities: [Y] # Number of observation modalities
-num_control_factors: [Z]        # Number of control factors (if applicable)
+### Map to Active Inference Ontology terms
+hasStateSpace: [relevant ontology terms]
+hasObservationSpace: [relevant ontology terms]
+hasActionSpace: [relevant ontology terms]
+implementsProcess: [relevant process terms]
 
 ## Footer
-[Your Model Name] v[Version] - End of Specification
+Created: [Date]
+LastModified: [Date]
+Version: 1.0
 
 ## Signature
-Creator: [Your Name]
-Date: [Date]
-Status: [Development stage, e.g., Draft, Tested, Production]
-Contact: [Email or other contact information]
+ModelCreator: [Your Name]
+Institution: [Your Institution]
+Email: [Your Email]
+License: [License type, e.g., MIT, CC-BY]
 
 ---
 
 ## Usage Instructions
 
-1. **Replace all bracketed placeholders** `[...]` with your specific content
-2. **Define your state spaces** - What states and observations does your model track?
-3. **Specify connections** - How do variables influence each other?
-4. **Set parameters** - Provide concrete probability values and matrices
-5. **Add equations** - Include any custom mathematical relationships
-6. **Map to ontology** - Connect your variables to standard Active Inference terms
-7. **Validate** - Use GNN type checker to ensure correctness
-8. **Test** - Run through the GNN pipeline to verify functionality
+1. **Copy this template** to a new file with a descriptive name (e.g., `my_robot_navigation_model.md`)
 
-## Tips for Success
+2. **Replace all placeholders** (text in square brackets) with your specific model details
 
-- **Start simple** - Begin with basic perception, add complexity incrementally
-- **Check dimensions** - Ensure matrix dimensions are compatible
-- **Normalize probabilities** - All probability distributions must sum to 1
-- **Document thoroughly** - Clear annotations help others understand your model
-- **Use meaningful names** - Choose variable names that reflect their purpose
-- **Reference examples** - Look at similar models in the `doc/archive/` directory 
+3. **Validate your model** using the GNN type checker:
+   ```bash
+   python src/main.py --target-dir path/to/your/model.md --only-steps 4
+   ```
+
+4. **Test your model** by running the full pipeline:
+   ```bash
+   python src/main.py --target-dir path/to/your/model.md
+   ```
+
+## Common Modifications
+
+### For Static Models
+- Remove control factors (u_c0, π_c0) and their connections
+- Remove B matrices (transition dynamics)
+- Keep only A matrices, C vectors, and D vectors
+
+### For Dynamic Models  
+- Change `Time` section to `Dynamic`
+- Add `DiscreteTime` and `ModelTimeHorizon`
+- Include B matrices for state transitions
+- Add control factors and policies if applicable
+
+### For Multi-Modal Models
+- Add more observation modalities (o_m1, o_m2, etc.)
+- Include corresponding A matrices for each modality
+- Consider cross-modal connections
+
+### For Hierarchical Models
+- Use state factors with different levels (s_f0 for low level, s_f1 for high level)
+- Add connections between hierarchical levels
+- Include appropriate precision parameters
+
+## Validation Checklist
+
+- [ ] All variable names follow GNN conventions (s_fX, o_mX, u_cX, π_cX)
+- [ ] Matrix dimensions match variable dimensions
+- [ ] All probability matrices are properly normalized (rows sum to 1)
+- [ ] All required sections are present
+- [ ] Connections reference existing variables
+- [ ] Model validates without errors using type checker 

@@ -102,6 +102,13 @@ except ImportError:
 logger = logging.getLogger("GNN_Pipeline")
 # --- End Logger Setup ---
 
+# Import dependency validation utility
+try:
+    from utils.dependency_validator import validate_pipeline_dependencies
+except ImportError:
+    logger.warning("Dependency validator not available")
+    validate_pipeline_dependencies = None
+
 # Define types for pipeline summary data
 class StepLogData(TypedDict):
     step_number: int
@@ -259,6 +266,11 @@ def parse_arguments():
         action="store_true",
         help="Also install development dependencies from requirements-dev.txt (for 2_setup.py)."
     )
+    parser.add_argument(
+        "--skip-dependency-validation",
+        action="store_true",
+        help="Skip dependency validation and proceed with pipeline execution."
+    )
     return parser.parse_args()
 
 def get_pipeline_scripts(current_dir: Path) -> list[dict[str, int | str | Path]]:
@@ -317,6 +329,110 @@ def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
         venv_python_path = Path(sys.executable) # Fallback to current interpreter
     
     return venv_python_path, site_packages_path
+
+def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> bool:
+    """
+    Validate dependencies if the validator is available.
+    
+    Args:
+        args: Parsed command line arguments
+        
+    Returns:
+        bool: True if validation passed or validator unavailable
+    """
+    if getattr(args, 'skip_dependency_validation', False):
+        logger.info("Dependency validation skipped (--skip-dependency-validation flag)")
+        return True
+        
+    if validate_pipeline_dependencies is None:
+        logger.info("Dependency validation skipped (validator not available)")
+        return True
+        
+    logger.info("=== DEPENDENCY VALIDATION ===")
+    
+    # Determine required steps based on what will run
+    required_steps = ["setup"]  # Always need core dependencies
+    
+    # Check which steps will actually run
+    skip_steps = parse_step_list(args.skip_steps) if args.skip_steps else []
+    only_steps = parse_step_list(args.only_steps) if args.only_steps else []
+    
+    # Map step numbers to dependency groups
+    step_dependency_map = {
+        1: "gnn_processing",    # 1_gnn.py - GNN file processing 
+        2: "core",              # 2_setup.py - Setup step
+        3: "testing",           # 3_tests.py - Testing framework
+        4: "gnn_processing",    # 4_gnn_type_checker.py - GNN validation
+        5: "export",            # 5_export.py - Export formats
+        6: "visualization",     # 6_visualization.py - Visualization
+        7: "core",              # 7_mcp.py - MCP tools
+        8: "gnn_processing",    # 8_ontology.py - Ontology processing
+        9: "core",              # 9_render.py - Rendering
+        10: "core",             # 10_execute.py - Execution
+        11: "core",             # 11_llm.py - LLM processing
+        12: "core",             # 12_discopy.py - DisCoPy processing
+        13: "core",             # 13_discopy_jax_eval.py - JAX evaluation
+        14: "core"              # 14_site.py - Site generation
+    }
+    
+    # Determine which dependency groups we need
+    required_groups = set(["core"])
+    for step_num in range(1, 15):
+        # Skip if in skip list
+        if step_num in skip_steps or f"{step_num}_" in str(skip_steps):
+            continue
+        # Skip if only_steps specified and this step not in it
+        if only_steps and step_num not in only_steps:
+            continue
+        
+        if step_num in step_dependency_map:
+            required_groups.add(step_dependency_map[step_num])
+    
+    logger.info(f"Validating dependency groups: {sorted(required_groups)}")
+    
+    # Get the virtual environment Python path for dependency validation
+    current_dir = Path(__file__).resolve().parent
+    venv_python, _ = get_venv_python(current_dir)
+    python_path = str(venv_python) if venv_python else None
+    
+    if python_path:
+        logger.debug(f"Using Python for dependency validation: {python_path}")
+    else:
+        logger.debug("Using system Python for dependency validation")
+    
+    # Validate dependencies
+    try:
+        is_valid = validate_pipeline_dependencies(list(required_groups), python_path=python_path)
+        
+        if not is_valid:
+            logger.critical("Dependency validation failed. Cannot proceed with pipeline execution.")
+            logger.critical("Please install the missing dependencies and try again.")
+            logger.critical("Alternatively, use --skip-dependency-validation to bypass this check.")
+            return False
+        
+        logger.info("All required dependencies validated successfully.")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error during dependency validation: {e}")
+        logger.critical("Dependency validation encountered an error. Cannot proceed with pipeline execution.")
+        logger.critical("Use --skip-dependency-validation to bypass this check, or fix the validation error.")
+        return False
+
+
+def parse_step_list(step_str: str) -> List[int]:
+    """Parse a comma-separated list of step numbers."""
+    if not step_str:
+        return []
+    
+    steps = []
+    for item in step_str.split(','):
+        item = item.strip()
+        # Extract number from formats like "1", "1_gnn", etc.
+        match = re.match(r'^(\d+)', item)
+        if match:
+            steps.append(int(match.group(1)))
+    return steps
 
 def run_pipeline(args: argparse.Namespace):
     """
@@ -432,13 +548,15 @@ def run_pipeline(args: argparse.Namespace):
     # Execute each script
     overall_status = "SUCCESS"
     
-    logger.info("\n  ██████╗  ███╗   ██╗ ███╗   ██╗") 
+    logger.info("\n  ██████╗ ███╗   ██╗ ███╗   ██╗") 
     logger.info("  ██╔════╝ ████╗  ██║ ████╗  ██║")
     logger.info("  ██║  ███╗██╔██╗ ██║ ██╔██╗ ██║")
     logger.info("  ██║   ██║██║╚██╗██║ ██║╚██╗██║")
     logger.info("  ╚██████╔╝██║ ╚████║ ██║ ╚████║")
     logger.info("   ╚═════╝ ╚═╝  ╚═══╝ ╚═╝  ╚═══╝")
-    logger.info("  Running GNN Processing Pipeline...\n")
+    logger.info("  Generalized Notation Notation")
+    logger.info("  Active Inference Institute")
+    logger.info(f"  Pipeline Run: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     for idx, script_info in enumerate(scripts_to_run, 1):
         # Execute the pipeline step using the centralized execution function
@@ -494,7 +612,7 @@ def main():
     pipeline_logger = logging.getLogger("GNN_Pipeline") # Use the specific logger
 
     args = parse_arguments()
-
+    
     # --- Central Logging Configuration ---
     log_dir = args.output_dir / "logs"
     
@@ -540,8 +658,6 @@ def main():
         # Quieten noisy dependency loggers (PIL, Matplotlib) unconditionally
         logging.getLogger('PIL').setLevel(logging.WARNING)
         logging.getLogger('matplotlib').setLevel(logging.WARNING)
-        # Add other noisy libraries here if needed, e.g.:
-        # logging.getLogger('some_other_library').setLevel(logging.WARNING)
 
         # --- Legacy File Handler Setup (after args are parsed) ---
         try:
@@ -552,10 +668,7 @@ def main():
             # Use the same format as basicConfig, explicitly ensure milliseconds
             file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt=None)
             file_handler.setFormatter(file_formatter)
-            # The level of the file_handler will be determined by the pipeline_logger's effective level,
-            # which is set below based on args.verbose.
             pipeline_logger.addHandler(file_handler)
-            # Log this message *after* the handler is added so it goes to the file too.
             pipeline_logger.info(f"File logging configured to: {log_file_path}") 
         except Exception as e:
             # Log this error to console, as file handler might have failed.
@@ -569,29 +682,12 @@ def main():
                 temp_error_logger.addHandler(err_handler)
                 temp_error_logger.propagate = False # Don't double log this specific error message
             temp_error_logger.error(f"Failed to configure file logging to {log_dir / 'pipeline.log'}: {e}. Continuing with console logging only.")
-        # --- End Legacy File Handler Setup ---
 
         # Configure logger level based on verbose flag AFTER parsing args
         if args.verbose:
             pipeline_logger.setLevel(logging.DEBUG)
-            # Propagate level to handlers if they exist and basicConfig wasn't just called
-            handlers_to_update = list(pipeline_logger.handlers) + list(logging.getLogger().handlers)
-            for handler in handlers_to_update:
-                # Only set level if handler's current level is not effectively DEBUG or lower
-                if handler.level == 0 or handler.level > logging.DEBUG: # 0 means NOTSET, effectively inherits.
-                    current_level_name = logging.getLevelName(handler.level)
-                    logger.debug(f"Updating handler {type(handler).__name__} level from {current_level_name} to DEBUG")
-                    handler.setLevel(logging.DEBUG)
-            # For Popen streaming, we use GNN_Pipeline's INFO and ERROR, so DEBUG on GNN_Pipeline is fine.
         else:
             pipeline_logger.setLevel(logging.INFO)
-            # Propagate level to handlers
-            handlers_to_update_info = list(pipeline_logger.handlers) + list(logging.getLogger().handlers)
-            for handler in handlers_to_update_info:
-                if handler.level == 0 or handler.level > logging.INFO:
-                    current_level_name = logging.getLevelName(handler.level)
-                    logger.debug(f"Updating handler {type(handler).__name__} level from {current_level_name} to INFO")
-                    handler.setLevel(logging.INFO)
 
     pipeline_logger.debug("Logger level configured based on verbosity.")
 
@@ -643,7 +739,12 @@ def main():
         for arg, value in sorted(vars(args).items()):
             log_msgs.append(f"  --{arg.replace('_', '-')}: {value} (Type: {type(value).__name__})")
         pipeline_logger.debug('\n'.join(log_msgs))
-
+    
+    # Validate dependencies before pipeline execution
+    if not validate_pipeline_dependencies_if_available(args):
+        pipeline_logger.critical("Pipeline aborted due to dependency validation failures.")
+        sys.exit(1)
+        
     # Call the main pipeline execution function
     exit_code, pipeline_run_data, all_scripts, overall_status = run_pipeline(args)
 
@@ -683,7 +784,7 @@ def main():
         logger.info(f"💾 Detailed pipeline execution summary (JSON) saved to: {args.pipeline_summary_file}")
     except Exception as e:
         logger.error(f"❌ Error saving pipeline summary report: {e}")
-
+        
     sys.exit(exit_code)
 
 if __name__ == "__main__":

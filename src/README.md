@@ -350,7 +350,7 @@ graph TD
             
             OUT4[gnn_exports/<br/>├── model_name/<br/>│   ├── model.json<br/>│   ├── model.xml<br/>│   └── model.gexf<br/>└── 5_export_step_report.md]
             
-            OUT5[gnn_examples_visualization/<br/>└── model_name/<br/>    ├── graph.png<br/>    └── matrix.png]
+            OUT5[visualization/<br/>└── model_name/<br/>    ├── graph.png<br/>    └── matrix.png]
             
             OUT6[mcp_processing_step/<br/>└── 7_mcp_integration_report.md]
             
@@ -602,9 +602,9 @@ graph TD
 -   **Why:** To help users understand the structure, connections, and dependencies within their GNN models, aiding in debugging, analysis, and communication.
 -   **How:**
     -   Imports and calls the `main()` function from `src/visualization/cli.py`.
-    -   Passes arguments like the target directory/file (`args.target_dir`) and the output directory (`<pipeline_output_dir>/gnn_examples_visualization/`).
+    -   Passes arguments like the target directory/file (`args.target_dir`) and the output directory (`<pipeline_output_dir>/visualization/`).
     -   The `visualization.cli.main()` function uses `GNNVisualizer` and other components from `src/visualization/` to parse GNN files and render various visual outputs (e.g., using Graphviz).
--   **Output:** Image files (e.g., PNG, SVG) and potentially HTML files for each processed GNN model, saved in `<pipeline_output_dir>/gnn_examples_visualization/<model_name_stem>/`.
+-   **Output:** Image files (e.g., PNG, SVG) and potentially HTML files for each processed GNN model, saved in `<pipeline_output_dir>/visualization/<model_name_stem>/`.
 
 ### 7. `7_mcp.py` - MCP Integration Checks
 -   **Folder:** `src/mcp/` (and scans other modules)
@@ -707,7 +707,7 @@ graph TD
 -   **How:**
     -   Imports and calls the `generate_html_report` function from `src/site/generator.py`.
     -   The `generator.py` module scans the entire `args.output_dir` (passed from `main.py`).
-    -   It identifies various file types (Markdown, JSON, text/logs, images, HTML reports) and known directory structures (e.g., `gnn_examples_visualization/`, `llm_processing_step/`, `discopy_gnn/`, `discopy_jax_eval/`).
+    -   It identifies various file types (Markdown, JSON, text/logs, images, HTML reports) and known directory structures (e.g., `visualization/`, `llm_processing_step/`, `discopy_gnn/`, `discopy_jax_eval/`).
     -   It dynamically constructs an HTML page with sections for each major output category or pipeline step.
     -   Content is embedded directly where feasible (e.g., images via base64, Markdown converted to HTML, JSON/text in `<pre>` tags) or linked (especially for complex HTML files or other artifacts).
     -   The script uses the `--output-dir` argument (from `main.py`) to know where to find the pipeline outputs and saves the generated HTML file (e.g., `gnn_pipeline_summary_site.html`) directly into this same `output_dir`.
