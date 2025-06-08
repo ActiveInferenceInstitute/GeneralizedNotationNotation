@@ -1,141 +1,325 @@
 {
-    "model_purpose": "The model represents a multi-agent trajectory planning scenario in a 2D environment using RxInfer.jl. It includes features such as obstacle avoidance, goal-directed behavior, and inter-agent collision avoidance to simulate agents navigating towards their targets while avoiding obstacles and each other.",
+    "model_purpose": "The model represents a multi-agent trajectory planning scenario in a 2D environment using RxInfer.jl. It simulates agents navigating while avoiding obstacles and other agents, aiming to reach designated target positions.",
     "key_components": {
-        "state_space_model": {
-            "states": "Agent positions and velocities in a 2D space.",
-            "observations": "Positions of agents captured in the observation matrix.",
-            "actions": "Control inputs that influence agent movement, represented by the control input matrix."
-        },
-        "parameters": {
-            "dt": "Time step for the model.",
-            "gamma": "Constraint parameter for obstacle avoidance.",
-            "nr_steps": "Total number of time steps for the trajectory planning.",
-            "nr_iterations": "Number of inference iterations.",
-            "nr_agents": "Total number of agents in the simulation."
-        },
-        "obstacles": {
-            "door_obstacles": "Defined centers and sizes for door-shaped obstacles.",
-            "wall_obstacles": "Defined center and size for wall-shaped obstacles.",
-            "combined_obstacles": "Centers and sizes for multiple combined obstacles in the environment."
-        },
-        "agents": {
-            "agent1": {
+        "agents": [
+            {
                 "id": 1,
                 "radius": 2.5,
-                "initial_position": "(-4.0, 10.0)",
-                "target_position": "(-10.0, -10.0)"
+                "initial_position": [
+                    -4.0,
+                    10.0
+                ],
+                "target_position": [
+                    -10.0,
+                    -10.0
+                ]
             },
-            "agent2": {
+            {
                 "id": 2,
                 "radius": 1.5,
-                "initial_position": "(-10.0, 5.0)",
-                "target_position": "(10.0, -15.0)"
+                "initial_position": [
+                    -10.0,
+                    5.0
+                ],
+                "target_position": [
+                    10.0,
+                    -15.0
+                ]
             },
-            "agent3": {
+            {
                 "id": 3,
                 "radius": 1.0,
-                "initial_position": "(-15.0, -10.0)",
-                "target_position": "(10.0, 10.0)"
+                "initial_position": [
+                    -15.0,
+                    -10.0
+                ],
+                "target_position": [
+                    10.0,
+                    10.0
+                ]
             },
-            "agent4": {
+            {
                 "id": 4,
                 "radius": 2.5,
-                "initial_position": "(0.0, -10.0)",
-                "target_position": "(-10.0, 15.0)"
+                "initial_position": [
+                    0.0,
+                    -10.0
+                ],
+                "target_position": [
+                    -10.0,
+                    15.0
+                ]
             }
+        ],
+        "state_space_model": {
+            "state_transition_matrix": "A",
+            "control_input_matrix": "B",
+            "observation_matrix": "C"
+        },
+        "environment": {
+            "obstacles": {
+                "door": [
+                    {
+                        "center": [
+                            -40.0,
+                            0.0
+                        ],
+                        "size": [
+                            70.0,
+                            5.0
+                        ]
+                    },
+                    {
+                        "center": [
+                            40.0,
+                            0.0
+                        ],
+                        "size": [
+                            70.0,
+                            5.0
+                        ]
+                    }
+                ],
+                "wall": {
+                    "center": [
+                        0.0,
+                        0.0
+                    ],
+                    "size": [
+                        10.0,
+                        5.0
+                    ]
+                },
+                "combined": [
+                    {
+                        "center": [
+                            -50.0,
+                            0.0
+                        ],
+                        "size": [
+                            70.0,
+                            2.0
+                        ]
+                    },
+                    {
+                        "center": [
+                            50.0,
+                            0.0
+                        ],
+                        "size": [
+                            70.0,
+                            2.0
+                        ]
+                    },
+                    {
+                        "center": [
+                            5.0,
+                            -1.0
+                        ],
+                        "size": [
+                            3.0,
+                            10.0
+                        ]
+                    }
+                ]
+            }
+        },
+        "visualization_parameters": {
+            "x_limits": [
+                -20,
+                20
+            ],
+            "y_limits": [
+                -20,
+                20
+            ],
+            "fps": 15,
+            "heatmap_resolution": 100,
+            "plot_size": [
+                800,
+                400
+            ],
+            "color_palette": "tab10"
         }
     },
     "component_interactions": {
         "state_space_model": {
-            "dt": "affects state transition matrix A",
-            "A, B, C": "form the state space model",
-            "initial_state_variance": "used to determine agent trajectories"
-        },
-        "agent_trajectories": {
-            "input": "state_space_model, initial_state_variance, control_variance",
-            "output": "determines paths for agents"
+            "inputs": [
+                "dt",
+                "A",
+                "B",
+                "C"
+            ],
+            "outputs": [
+                "agent_trajectories"
+            ]
         },
         "goal_directed_behavior": {
-            "input": "agent trajectories and goal_constraint_variance",
-            "output": "guides agents towards their targets"
+            "inputs": [
+                "agent_trajectories",
+                "goal_constraint_variance"
+            ],
+            "outputs": [
+                "goal_constraints"
+            ]
         },
         "obstacle_avoidance": {
-            "input": "agent trajectories, gamma, gamma_shape, gamma_scale_factor",
-            "output": "ensures agents avoid obstacles"
+            "inputs": [
+                "agent_trajectories",
+                "gamma",
+                "gamma_shape",
+                "gamma_scale_factor"
+            ],
+            "outputs": [
+                "obstacle_avoidance_constraints"
+            ]
         },
         "collision_avoidance": {
-            "input": "agent trajectories and nr_agents",
-            "output": "prevents agents from colliding with each other"
+            "inputs": [
+                "agent_trajectories",
+                "nr_agents"
+            ],
+            "outputs": [
+                "collision_constraints"
+            ]
         },
         "planning_system": {
-            "input": "goal_directed_behavior, obstacle_avoidance, collision_avoidance",
-            "output": "completes the trajectory planning"
+            "inputs": [
+                "goal_directed_behavior",
+                "obstacle_avoidance",
+                "collision_avoidance"
+            ],
+            "outputs": [
+                "complete_planning_output"
+            ]
         }
     },
     "data_types_and_dimensions": {
         "parameters": {
-            "dt": "float",
-            "gamma": "float",
-            "nr_steps": "int",
-            "nr_iterations": "int",
-            "nr_agents": "int",
-            "softmin_temperature": "float"
+            "dt": {
+                "type": "float",
+                "dimension": [
+                    1
+                ]
+            },
+            "gamma": {
+                "type": "float",
+                "dimension": [
+                    1
+                ]
+            },
+            "nr_steps": {
+                "type": "int",
+                "dimension": [
+                    1
+                ]
+            },
+            "A": {
+                "type": "float",
+                "dimension": [
+                    4,
+                    4
+                ]
+            },
+            "B": {
+                "type": "float",
+                "dimension": [
+                    4,
+                    2
+                ]
+            },
+            "C": {
+                "type": "float",
+                "dimension": [
+                    2,
+                    4
+                ]
+            },
+            "initial_state_variance": {
+                "type": "float",
+                "dimension": [
+                    1
+                ]
+            },
+            "control_variance": {
+                "type": "float",
+                "dimension": [
+                    1
+                ]
+            },
+            "goal_constraint_variance": {
+                "type": "float",
+                "dimension": [
+                    1
+                ]
+            }
         },
-        "state_space_matrices": {
-            "A": "4x4 float matrix",
-            "B": "4x2 float matrix",
-            "C": "2x4 float matrix"
+        "obstacles": {
+            "door_obstacle": {
+                "type": "float",
+                "dimension": [
+                    2
+                ]
+            },
+            "wall_obstacle": {
+                "type": "float",
+                "dimension": [
+                    2
+                ]
+            },
+            "combined_obstacle": {
+                "type": "float",
+                "dimension": [
+                    3,
+                    2
+                ]
+            }
         },
-        "initial_conditions": {
-            "initial_state_variance": "float",
-            "control_variance": "float",
-            "goal_constraint_variance": "float"
-        },
-        "obstacle_definitions": {
-            "door_obstacle_center": "2D float array",
-            "door_obstacle_size": "2D float array",
-            "wall_obstacle_center": "2D float array",
-            "wall_obstacle_size": "2D float array",
-            "combined_obstacle_centers": "2D float arrays for multiple obstacles",
-            "combined_obstacle_sizes": "2D float arrays for multiple obstacles"
-        },
-        "agent_configurations": {
-            "agent_id": "int",
-            "agent_radius": "float",
-            "initial_position": "2D float array",
-            "target_position": "2D float array"
-        },
-        "experiment_configurations": {
-            "experiment_seeds": "2D int array",
-            "results_dir": "string",
-            "filenames": "string"
+        "agents": {
+            "id": {
+                "type": "int",
+                "dimension": [
+                    4
+                ]
+            },
+            "radius": {
+                "type": "float",
+                "dimension": [
+                    4
+                ]
+            },
+            "initial_position": {
+                "type": "float",
+                "dimension": [
+                    4,
+                    2
+                ]
+            },
+            "target_position": {
+                "type": "float",
+                "dimension": [
+                    4,
+                    2
+                ]
+            }
         }
     },
-    "potential_applications": [
-        "Robotics: for planning trajectories of multiple robots in environments with obstacles.",
-        "Autonomous Vehicles: for navigating through dynamic environments while avoiding collisions.",
-        "Simulation: for testing algorithms in virtual environments before real-world application."
-    ],
-    "limitations_or_ambiguities": [
-        "The model assumes a fixed number of agents (4), which may limit scalability.",
-        "Obstacle definitions are hardcoded; dynamically generating obstacles may require additional logic.",
-        "Assumptions about agent dynamics may not capture all real-world scenarios."
-    ],
+    "potential_applications": "This model can be applied in robotic navigation, autonomous vehicle path planning, and scenarios requiring coordination among multiple agents in complex environments with obstacles.",
+    "limitations_or_ambiguities": "The model assumes a fixed number of agents and a predefined number of obstacles, which may limit adaptability in dynamic environments. Also, the parameters for visualizations and constraints may require tuning for specific scenarios.",
     "ontology_mapping_assessment": {
-        "terms_present": [
-            "TimeStep",
-            "ConstraintParameter",
-            "TrajectoryLength",
-            "InferenceIterations",
-            "NumberOfAgents",
-            "SoftminTemperature",
-            "StateTransitionMatrix",
-            "ControlInputMatrix",
-            "ObservationMatrix",
-            "InitialStateVariance",
-            "ControlVariance",
-            "GoalConstraintVariance"
+        "present_terms": [
+            "dt",
+            "gamma",
+            "nr_steps",
+            "nr_iterations",
+            "softmin_temperature",
+            "A",
+            "B",
+            "C",
+            "initial_state_variance",
+            "control_variance",
+            "goal_constraint_variance"
         ],
-        "relevance": "The ActInfOntology terms are relevant and appropriately mapped to the model parameters, providing a structured understanding of the model's components and interactions."
+        "relevance": "The terms are relevant as they provide necessary mappings for understanding the model's dynamics and constraints in the context of the ActInfOntology."
     }
 }

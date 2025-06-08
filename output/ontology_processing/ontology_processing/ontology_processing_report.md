@@ -6,7 +6,7 @@
 - **Total Annotations Found:** 32
 - **Validations Passed:** 32
 - **Validations Failed:** 0
-🗓️ Report Generated: 2025-06-08 13:42:44
+🗓️ Report Generated: 2025-06-08 13:58:52
 🎯 GNN Source Directory: `gnn/examples`
 📖 Ontology Terms Definition: `src/ontology/act_inf_ontology_terms.json` (Loaded: 60 terms)
 

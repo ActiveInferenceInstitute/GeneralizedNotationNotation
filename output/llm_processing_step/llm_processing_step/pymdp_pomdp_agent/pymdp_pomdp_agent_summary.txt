@@ -1,23 +1,49 @@
-The **Multifactor PyMDP Agent v1** is a GNN (Generalized Notation Notation) model designed to represent a PyMDP agent that utilizes multiple observation modalities and hidden state factors within an Active Inference framework. 
+### Summary of the GNN Model: Multifactor PyMDP Agent v1
 
-### Key Components:
+**Model Name:** Multifactor PyMDP Agent v1
 
-- **Model Name**: Multifactor PyMDP Agent v1
-- **Observation Modalities**:
-  - **State Observation**: 3 outcomes
-  - **Reward**: 3 outcomes
-  - **Decision Proprioceptive**: 3 outcomes
-- **Hidden State Factors**:
-  - **Reward Level**: 2 states
-  - **Decision State**: 3 states
-- **Control**: The decision state factor is controllable with 3 possible actions.
+**Purpose:** This model represents a PyMDP (Partially Observable Markov Decision Process) agent designed for active inference with multiple observation modalities and hidden state factors. It is structured to facilitate decision-making based on various types of sensory input and internal state representations.
 
-### Main Connections:
-1. The priors for hidden states (D_f0 and D_f1) are linked to the hidden states (s_f0 and s_f1).
-2. The hidden states influence the likelihood matrices (A_m0, A_m1, A_m2) which generate the observations (o_m0, o_m1, o_m2).
-3. The hidden states and the chosen action (u_f1) affect the transition matrices (B_f0 and B_f1) which determine the next hidden states (s_prime_f0 and s_prime_f1).
-4. Preferences (C_m0, C_m1, C_m2) contribute to calculating the Expected Free Energy (G), which further informs the action policy (π_f1).
-5. The expected free energy directly influences the chosen action.
+**Key Components:**
+1. **Observation Modalities:** 
+   - **State Observation:** 3 outcomes
+   - **Reward:** 3 outcomes
+   - **Decision Proprioceptive:** 3 outcomes
 
-### Purpose:
-The model serves to facilitate state inference, policy inference, and action sampling in a multifactor decision-making context, providing a structured approach to understanding the dynamics of an agent's interactions with its environment. The agent operates under a dynamic framework with discrete time steps, aimed at unbounded model time horizons to accommodate extensive simulation scenarios.
+2. **Hidden State Factors:**
+   - **Reward Level:** 2 states
+   - **Decision State:** 3 states
+   - The decision state is controllable, allowing for 3 possible actions.
+
+3. **Matrices and Vectors:**
+   - **A Matrices (Likelihoods):** 
+     - A_m0 for state observations
+     - A_m1 for rewards
+     - A_m2 for decision proprioception
+   - **B Matrices (Transitions):** 
+     - B_f0 for the reward level factor (uncontrolled)
+     - B_f1 for the decision state factor (controlled)
+   - **C Vectors (Preferences):** 
+     - C_m0, C_m1, and C_m2 for each observation modality
+   - **D Vectors (Priors):** 
+     - D_f0 and D_f1 for the hidden state factors
+
+4. **Hidden States:**
+   - s_f0 for "reward_level"
+   - s_f1 for "decision_state"
+   - Next states: s_prime_f0 and s_prime_f1
+
+5. **Observations:**
+   - o_m0, o_m1, and o_m2 corresponding to each modality
+
+6. **Policy and Control:**
+   - π_f1 for the action distribution of the controllable factor
+   - u_f1 for the action taken
+   - G representing the Expected Free Energy
+
+**Main Connections:**
+- The model connects hidden states (s_f0, s_f1) with observation modalities (A_m0, A_m1, A_m2) to facilitate the inference of states based on sensory information.
+- The control dynamics are structured such that actions influence the transitions between states (B_f1), while the reward level transitions (B_f0) remain uncontrolled.
+- The expected free energy (G) is computed based on preferences (C vectors) and informs the policy (π_f1) for decision-making.
+
+This GNN model serves as a foundational representation for implementing a multifactor active inference agent in complex environments, integrating multiple sensory modalities and internal state factors to optimize decision-making processes.

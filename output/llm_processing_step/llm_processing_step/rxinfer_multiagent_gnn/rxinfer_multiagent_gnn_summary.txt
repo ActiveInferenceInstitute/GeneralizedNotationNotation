@@ -1,39 +1,36 @@
-### Summary of the GNN Model: Multi-agent Trajectory Planning
+### Summary of GNN Model: Multi-agent Trajectory Planning
 
 **Model Name:** Multi-agent Trajectory Planning
 
 **Purpose:**  
-The model is designed for simulating trajectory planning in a multi-agent scenario within a 2D environment, accommodating obstacles and ensuring goal-directed behavior as well as collision avoidance among agents.
+The model is designed for simulating trajectory planning for multiple agents in a 2D environment, emphasizing obstacle avoidance, goal-directed behavior, and inter-agent collision avoidance. It serves as a framework for analyzing how agents navigate complex spaces while adhering to various constraints.
 
 **Key Components:**
 
 1. **State Space Model:**
    - **Parameters:**
-     - `dt`: Time step for state updates.
-     - `gamma`: Constraint parameter for obstacle avoidance.
-     - `nr_steps`: Number of time steps in the trajectory.
-     - `nr_agents`: Total number of agents involved.
+     - Time step (`dt`), constraint parameter (`gamma`), number of time steps (`nr_steps`), number of inference iterations (`nr_iterations`), and number of agents (`nr_agents`).
    - **Matrices:**
-     - `A`: State transition matrix.
-     - `B`: Control input matrix.
-     - `C`: Observation matrix.
-   - **Prior Distributions:**
-     - Variances for initial states, control inputs, and goal constraints.
+     - State transition matrix (`A`), control input matrix (`B`), and observation matrix (`C`).
+   - **Distributions:**
+     - Variances for initial state, control inputs, and goal constraints.
 
 2. **Agent Configurations:**
-   - Four agents are defined, each with unique IDs, radii, initial positions, and target positions.
+   - Four agents with unique IDs, radii, initial positions, and target positions are defined.
 
 3. **Environment Definitions:**
-   - Different types of obstacles are defined, including door and wall environments, with specific centers and sizes.
+   - Obstacles are specified for various environments (door, wall, and combined) with defined centers and sizes.
 
 4. **Visualization Parameters:**
-   - Settings for plotting the environment and agent behaviors, including boundaries, resolution, and color palettes.
+   - Parameters for plotting and animation, including boundaries, frame rate, and color palette.
 
 **Main Connections:**
-- **State Space Model to Agent Trajectories:** The state space model informs the initial state variance and control variance for agent trajectories.
-- **Goal Constraints:** Agent trajectories influence their goal-directed behavior, incorporating variances in goal constraints.
-- **Obstacle Avoidance:** The model assesses agent trajectories against obstacles, incorporating the gamma parameter for avoidance.
-- **Collision Avoidance:** Inter-agent trajectories are managed to prevent collisions based on their positions and radii.
-- **Planning System:** Integrates goal-directed behavior, obstacle avoidance, and collision avoidance to create a cohesive trajectory planning framework.
+- The model establishes connections between different components:
+  - **State Space Model**: Links parameters (`dt`, `A`, `B`, `C`) to the overall state space.
+  - **Agent Trajectories**: Connects state space outputs with initial variances and control variances to compute agent trajectories.
+  - **Goal Constraints**: Integrates agent trajectories with goal constraint variances for goal-directed behavior.
+  - **Obstacle Avoidance**: Connects agent trajectories with parameters to manage obstacle avoidance.
+  - **Collision Avoidance**: Ensures agents do not collide by linking trajectories and their respective radii.
+  - **Planning System**: Combines goal-directed behavior, obstacle avoidance, and collision avoidance into a unified planning framework.
 
-This GNN model encapsulates a comprehensive approach to multi-agent navigation in environments with obstacles, focusing on achieving efficient planning and safety through modeled interactions and constraints.
+This GNN model serves as an essential tool for simulating and analyzing multi-agent interactions in complex environments, providing insights into trajectory planning under various constraints.

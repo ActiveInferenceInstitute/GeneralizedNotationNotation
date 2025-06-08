@@ -1,180 +1,121 @@
 {
-    "model_purpose": "The GNN file represents a Multifactor PyMDP agent that utilizes multiple observation modalities and hidden state factors to perform decision-making through Active Inference.",
+    "model_purpose": "The model represents a Multifactor PyMDP agent with multiple observation modalities and hidden state factors, aimed at facilitating decision-making through an Active Inference framework.",
     "key_components": {
-        "observations": {
-            "modalities": [
-                {
-                    "name": "state_observation",
-                    "outcomes": 3
-                },
-                {
-                    "name": "reward",
-                    "outcomes": 3
-                },
-                {
-                    "name": "decision_proprioceptive",
-                    "outcomes": 3
-                }
-            ]
-        },
         "hidden_states": {
-            "factors": [
-                {
-                    "name": "reward_level",
-                    "states": 2
-                },
-                {
-                    "name": "decision_state",
-                    "states": 3
-                }
-            ]
+            "reward_level": {
+                "num_states": 2,
+                "description": "Represents the level of reward, with two possible states."
+            },
+            "decision_state": {
+                "num_states": 3,
+                "description": "Represents the state of decision-making, with three possible states."
+            }
+        },
+        "observations": {
+            "state_observation": {
+                "num_outcomes": 3,
+                "description": "Observations related to the current state of the agent."
+            },
+            "reward": {
+                "num_outcomes": 3,
+                "description": "Observations related to the reward received by the agent."
+            },
+            "decision_proprioceptive": {
+                "num_outcomes": 3,
+                "description": "Observations related to the agent's decision-making process."
+            }
         },
         "actions": {
-            "controllable_factor": "decision_state",
-            "possible_actions": 3
+            "decision_state": {
+                "num_actions": 3,
+                "description": "Three possible actions that can be taken by the agent."
+            }
+        },
+        "policy": {
+            "policy_vector": {
+                "description": "Distribution over actions for the controllable decision state factor."
+            }
+        },
+        "parameters": {
+            "transition_matrices": {
+                "description": "Matrices defining the transitions between hidden states based on actions."
+            },
+            "likelihood_matrices": {
+                "description": "Matrices representing the likelihood of observations given hidden states."
+            },
+            "preferences": {
+                "description": "Vectors representing the preferences for different modalities."
+            },
+            "priors": {
+                "description": "Distributions representing prior beliefs over hidden states."
+            }
         }
     },
     "component_interactions": {
-        "hidden_states": {
-            "D_f0": "Prior over hidden states for reward_level",
-            "D_f1": "Prior over hidden states for decision_state"
-        },
-        "observations": {
-            "A_m0": "Likelihood for modality 0 (state_observation)",
-            "A_m1": "Likelihood for modality 1 (reward)",
-            "A_m2": "Likelihood for modality 2 (decision_proprioceptive)"
-        },
-        "policy_and_control": {
-            "\u03c0_f1": "Policy distribution over actions for decision_state",
-            "u_f1": "Action taken for decision_state"
-        },
-        "free_energy": {
-            "G": "Expected Free Energy, calculated from observations and preferences"
-        }
+        "hidden_states": "Interconnected with likelihood and transition matrices to infer states based on observations.",
+        "observations": "Connected to the likelihood matrices which determine the probability of observations given the states.",
+        "actions": "Influences the transition matrices for the decision state and is derived from the policy vector.",
+        "policy": "Informs the action taken and is influenced by expected free energy, which reflects the agent's goals.",
+        "expected_free_energy": "Derived from preferences and linked to the overall decision-making process and policy."
     },
     "data_types_and_dimensions": {
-        "A_matrices": {
-            "A_m0": {
-                "shape": [
-                    3,
-                    2,
-                    3
-                ],
-                "type": "float"
-            },
-            "A_m1": {
-                "shape": [
-                    3,
-                    2,
-                    3
-                ],
-                "type": "float"
-            },
-            "A_m2": {
-                "shape": [
-                    3,
-                    2,
-                    3
-                ],
-                "type": "float"
-            }
-        },
-        "B_matrices": {
-            "B_f0": {
-                "shape": [
-                    2,
-                    2,
-                    1
-                ],
-                "type": "float"
-            },
-            "B_f1": {
-                "shape": [
-                    3,
-                    3,
-                    3
-                ],
-                "type": "float"
-            }
-        },
-        "C_vectors": {
-            "C_m0": {
-                "shape": [
-                    3
-                ],
-                "type": "float"
-            },
-            "C_m1": {
-                "shape": [
-                    3
-                ],
-                "type": "float"
-            },
-            "C_m2": {
-                "shape": [
-                    3
-                ],
-                "type": "float"
-            }
-        },
-        "D_vectors": {
-            "D_f0": {
-                "shape": [
-                    2
-                ],
-                "type": "float"
-            },
-            "D_f1": {
-                "shape": [
-                    3
-                ],
-                "type": "float"
-            }
-        },
+        "A_matrices": "3D arrays with dimensions [observation_outcomes, state_factor0_states, state_factor1_states]",
+        "B_matrices": "3D arrays with dimensions [states_next, states_previous, actions]",
+        "C_vectors": "1D arrays for preferences, with the length equal to the number of outcomes for each modality.",
+        "D_vectors": "1D arrays for priors over hidden states, with lengths corresponding to the number of states in each factor.",
         "hidden_states": {
-            "s_f0": {
-                "shape": [
-                    2,
-                    1
-                ],
-                "type": "float"
-            },
-            "s_f1": {
-                "shape": [
-                    3,
-                    1
-                ],
-                "type": "float"
-            }
+            "s_f0": "2D array with dimensions [2, 1]",
+            "s_f1": "2D array with dimensions [3, 1]"
         },
         "observations": {
-            "o_m0": {
-                "shape": [
-                    3,
-                    1
-                ],
-                "type": "float"
-            },
-            "o_m1": {
-                "shape": [
-                    3,
-                    1
-                ],
-                "type": "float"
-            },
-            "o_m2": {
-                "shape": [
-                    3,
-                    1
-                ],
-                "type": "float"
-            }
+            "o_m0": "2D array with dimensions [3, 1]",
+            "o_m1": "2D array with dimensions [3, 1]",
+            "o_m2": "2D array with dimensions [3, 1]"
+        },
+        "policy": {
+            "\u03c0_f1": "1D array with length 3.",
+            "u_f1": "1D array with a single integer indicating the action taken."
+        },
+        "expected_free_energy": {
+            "G": "1D array with a single float value."
+        },
+        "time": {
+            "t": "1D array with a single integer indicating the time step."
         }
     },
-    "potential_applications": "This model can be applied in scenarios requiring decision-making in uncertain environments where multiple sources of information (observations) affect the agent's state and actions, such as robotics, autonomous agents, and cognitive modeling.",
-    "limitations_or_ambiguities": "The model's complexity may lead to challenges in parameter estimation and interpretation of the interactions between hidden states and observations. Additionally, the unbounded time horizon may complicate practical applications in finite contexts.",
+    "potential_applications": [
+        "Modeling decision-making processes in artificial intelligence.",
+        "Application in robotics for adaptive behavior based on environmental observations.",
+        "Utilization in cognitive science to simulate human-like decision-making and learning."
+    ],
+    "limitations_or_ambiguities": [
+        "The model is unbounded in its time horizon, which may not be applicable for all real-world scenarios.",
+        "The interaction dynamics between hidden states and observations may not capture all complexities of actual decision-making processes.",
+        "Assumptions of uniform priors for hidden states may not be realistic in practical applications."
+    ],
     "ontology_mapping_assessment": {
-        "presence": true,
-        "relevance": "The ActInfOntology terms are present and accurately describe the components of the model, facilitating a clear mapping between the model elements and the ontology's constructs."
+        "ActInfOntology_terms": [
+            "A_m0",
+            "A_m1",
+            "A_m2",
+            "B_f0",
+            "B_f1",
+            "C_m0",
+            "C_m1",
+            "C_m2",
+            "D_f0",
+            "D_f1",
+            "s_f0",
+            "s_f1",
+            "s_prime_f0",
+            "s_prime_f1",
+            "o_m0",
+            "o_m1",
+            "o_m2",
+            "\u03c0_f1",
+            "u_f1",
+            "G"
+        ],
+        "relevance": "The ActInfOntology terms are relevant and accurately map to the components in the GNN model, providing a structured understanding of the agent's architecture."
     }
 }

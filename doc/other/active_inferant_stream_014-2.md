@@ -44,8 +44,7 @@
 #### 3. **Pipeline Execution Deep Dive**
 
 - **Review:** `pipeline_execution_summary.json` analysis
-- **Walkthrough:** End-to-end GNN processing pipeline
-- **Validation:** Resource estimation and type checking results
+- **Walkthrough:** End-to-end GNN processing pipeline with major changes improvements since #014.1
 - **Documentation:** Explore tutorials and other documentation
 
 #### 4. **The Golden Spike Moment**
