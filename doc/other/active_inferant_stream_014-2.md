@@ -8,8 +8,8 @@
 
 - **Stream:** Active InferAnt Stream #014.2
 - **Presenter:** Daniel Friedman, Active Inference Institute  
-- **Date:** June 7, 2025
-- **Watch Live:** [Stream Link TBD]
+- **Date:** June 8, 2025
+- **Watch Live:** https://www.youtube.com/live/Y3-FMoaEZYE
 - **GitHub Repository:** [GeneralizedNotationNotation](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
 - **RxInfer Project Page:** [Multi-agent Trajectory Planning](https://coda.io/d/RxInfer-jl-Active-Inference-Institute_ddtS-XZ4BJb/Multi-agent-Trajectory-Planning_sutlGFZ9)
 
@@ -19,8 +19,8 @@
 
 - **Cursor IDE:** Version 1.0.1 (!)
 - **Generalized Notation Notation (GNN):** Text-based language for Active Inference models
-- **Large Language Models:** Claude, Gemini, and others
-- **RxInfer.jl:** Julia-based Active Inference simulation framework
+- **Large Language Models:** Claude 4, Gemini 2.5, and others
+- **RxInfer.jl:** Julia-based simulation framework for reactive message passing on factor graphs
 
 ---
 
@@ -28,14 +28,18 @@
 
 #### 1. **Opening & Context Setting**
 
-- Introduction to GNN for generative model supply chains
+- Where we are headed: a robust information supply chain from plaintext configuration to executable simulations
+- Graphical Abstracts (of Graphical Abstraction)
 - Overview of today's "Golden Spike" moment
 
 #### 2. **Demonstration: GNN-Templated Model Synthesis**
 
 - **Goal:** Generate executable RxInfer.jl multiagent trajectory planning models
 - **Process:** From GNN specification to running simulation
-- **Live Coding:** Real-time model development and execution
+- **The Reverse Engineering Process:** Going from RxInfer.jl example, to disassembled configurable form
+- **The Forward Engineering Process:** Going from GNN schema and pipeline, to the needed configuration parameterization
+- **The Golden Spike: GNN-Templated Model Synthesis:** Connecting up the 
+
 
 #### 3. **Pipeline Execution Deep Dive**
 

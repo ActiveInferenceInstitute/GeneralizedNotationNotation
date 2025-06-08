@@ -2,15 +2,11 @@
 
 ## 📊 Summary of Ontology Processing
 
-- **Files Processed:** 2 / 2
-- **Total Ontological Annotations Found:** 32
-- **Total Annotations Validated:** 32
-  - ✅ Passed: 32
-  - ❌ Failed: 0
-
----
-
-��️ Report Generated: 2025-06-08 11:53:46
+- **Files Processed:** 2
+- **Total Annotations Found:** 32
+- **Validations Passed:** 32
+- **Validations Failed:** 0
+🗓️ Report Generated: 2025-06-08 13:42:44
 🎯 GNN Source Directory: `gnn/examples`
 📖 Ontology Terms Definition: `src/ontology/act_inf_ontology_terms.json` (Loaded: 60 terms)
 
@@ -42,6 +38,8 @@
 **Validation Summary**: All ontological terms are recognized.
 
 ---
+
+
 
 ### Ontological Annotations for `src/gnn/examples/rxinfer_multiagent_gnn.md`
 #### Mappings:

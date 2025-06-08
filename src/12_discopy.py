@@ -9,7 +9,9 @@ DisCoPy diagrams, and saves visualizations of these diagrams.
 import argparse
 import logging
 import sys
+import json
 from pathlib import Path
+from typing import Dict, Any, List
 
 # Ensure src directory is in Python path for relative imports
 current_script_path = Path(__file__).resolve()
@@ -26,42 +28,56 @@ if str(project_root / "src") in sys.path:
     sys.path.remove(str(project_root / "src"))
 sys.path.insert(1, str(project_root / "src"))
 
+# Import streamlined utilities and translator
 try:
+    from utils import (
+        setup_step_logging,
+        log_step_start,
+        log_step_success, 
+        log_step_warning,
+        log_step_error,
+        validate_output_directory,
+        UTILS_AVAILABLE
+    )
+    
+    # Initialize logger for this step  
+    logger = setup_step_logging("12_discopy", verbose=False)  # Will be updated based on args
+    
+    # Import translator function
     from src.discopy_translator_module.translator import gnn_file_to_discopy_diagram
-    from src.utils.logging_utils import setup_standalone_logging
+    
 except ImportError as e:
-    logging.basicConfig(level=logging.ERROR)
-    logger_init_fail = logging.getLogger(__name__)
-    logger_init_fail.error(f"Failed to import necessary modules for 12_discopy.py: {e}. Ensure translator.py and logging_utils.py are accessible.")
-    # Define placeholders if imports fail to allow script to load but fail gracefully
-    gnn_file_to_discopy_diagram = None 
-    setup_standalone_logging = None
-
-logger = logging.getLogger(__name__) # GNN_Pipeline.12_discopy or __main__
+    # Fallback to basic logging
+    import logging
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logger = logging.getLogger(__name__)
+    logger.error(f"Failed to import necessary modules for 12_discopy.py: {e}")
+    UTILS_AVAILABLE = False
+    
+    # Define placeholders if imports fail
+    gnn_file_to_discopy_diagram = None
 
 DEFAULT_OUTPUT_SUBDIR = "discopy_gnn"
-
-# Initialize variables for standalone execution context to satisfy linter
-cli_args: argparse.Namespace | None = None
-log_level_to_set: int = logging.INFO
-_log_level_standalone: int = logging.INFO
-exit_code: int = 1
 
 def parse_arguments() -> argparse.Namespace:
     """Parses command-line arguments for the GNN to DisCoPy script."""
     parser = argparse.ArgumentParser(description="Transforms GNN models to DisCoPy diagrams and saves visualizations.")
     
-    # Define a mutually exclusive group for input directories
-    input_group = parser.add_mutually_exclusive_group(required=True)
-    input_group.add_argument(
+    # Input directory arguments (with precedence handling)
+    parser.add_argument(
         "--gnn-input-dir",
         type=Path,
         help="Directory containing GNN files (e.g., .gnn.md, .md) to process."
     )
-    input_group.add_argument(
+    parser.add_argument(
         "--target-dir",
         type=Path,
         help="Alternative name for the directory containing GNN files (compatible with main.py)."
+    )
+    parser.add_argument(
+        "--discopy-gnn-input-dir",
+        type=Path,
+        help="Directory containing GNN files for DisCoPy processing (pipeline compatibility)."
     )
     
     parser.add_argument(
@@ -84,9 +100,14 @@ def parse_arguments() -> argparse.Namespace:
     )
     args = parser.parse_args()
     
-    # If target-dir is provided but gnn-input-dir is not, use target-dir as gnn-input-dir
-    if args.target_dir is not None and args.gnn_input_dir is None:
-        args.gnn_input_dir = args.target_dir
+    # Handle argument mapping with precedence: discopy_gnn_input_dir > gnn_input_dir > target_dir
+    if args.gnn_input_dir is None:
+        if args.discopy_gnn_input_dir is not None:
+            args.gnn_input_dir = args.discopy_gnn_input_dir
+        elif args.target_dir is not None:
+            args.gnn_input_dir = args.target_dir
+        else:
+            parser.error("One of --gnn-input-dir, --target-dir, or --discopy-gnn-input-dir is required")
     
     return args
 
@@ -98,54 +119,51 @@ def process_gnn_file_for_discopy(gnn_file_path: Path, discopy_output_dir: Path, 
     """
     logger.info(f"Processing GNN file for DisCoPy: {gnn_file_path.name}")
     if not gnn_file_to_discopy_diagram:
-        logger.error("DisCoPy GNN translator not available. Skipping file.")
+        log_step_error(logger, "DisCoPy GNN translator not available. Skipping file.")
         return False
 
     try:
         diagram = gnn_file_to_discopy_diagram(gnn_file_path, verbose=verbose_translator)
 
         if diagram is None:
-            logger.warning(f"No DisCoPy diagram could be generated for {gnn_file_path.name}. Skipping visualization.")
-            return False # Indicate that no diagram was made
+            log_step_warning(logger, f"No DisCoPy diagram could be generated for {gnn_file_path.name}. Skipping visualization.")
+            return False
 
         # Save diagram visualization
         output_diagram_image_path = discopy_output_dir / (gnn_file_path.stem + "_diagram.png")
         
-        # Ensure the immediate parent directory for the image exists (might be a subdir if gnn_file_path had parents)
+        # Ensure the immediate parent directory for the image exists
         output_diagram_image_path.parent.mkdir(parents=True, exist_ok=True)
 
         logger.debug(f"Attempting to draw diagram to: {output_diagram_image_path}")
         diagram.draw(path=str(output_diagram_image_path), show_types=True, figsize=(10, 6))
         logger.info(f"Saved DisCoPy diagram visualization to: {output_diagram_image_path}")
-        
-        # Additionally, try to save the equation (text representation)
-        # equation_output_path = discopy_output_dir / (gnn_file_path.stem + "_equation.txt")
-        # with open(equation_output_path, 'w', encoding='utf-8') as f_eq:
-        #     f_eq.write(str(diagram))
-        # logger.info(f"Saved DisCoPy diagram equation to: {equation_output_path}")
 
-        return True # Successfully processed and visualized
+        return True
 
     except ImportError as e_draw:
         if "matplotlib" in str(e_draw).lower():
-            logger.warning(f"Matplotlib not found, cannot draw diagram for {gnn_file_path.name}. Skipping visualization. Error: {e_draw}")
+            log_step_warning(logger, f"Matplotlib not found, cannot draw diagram for {gnn_file_path.name}. Skipping visualization. Error: {e_draw}")
         else:
-            logger.error(f"Missing import for drawing diagram for {gnn_file_path.name}: {e_draw}")
+            log_step_error(logger, f"Missing import for drawing diagram for {gnn_file_path.name}: {e_draw}")
         return False
     except Exception as e:
-        logger.error(f"Failed to process GNN file {gnn_file_path.name} for DisCoPy: {e}", exc_info=True)
+        log_step_error(logger, f"Failed to process GNN file {gnn_file_path.name} for DisCoPy: {e}")
         return False
 
 def main_discopy_step(args: argparse.Namespace) -> int:
     """Main execution function for the 12_discopy.py pipeline step."""
-    # Logger level for this script is set by main.py or standalone __main__ block.
-    # The verbose flag here is passed to the translator and process_gnn_file_for_discopy.
     
-    if not gnn_file_to_discopy_diagram: # Check if imports succeeded
-        logger.critical("Core DisCoPy GNN translator is not available. Aborting 12_discopy.py step.")
-        return 1 # Critical failure
+    # Update logger verbosity based on args
+    if UTILS_AVAILABLE and hasattr(args, 'verbose') and args.verbose:
+        from utils import PipelineLogger
+        PipelineLogger.set_verbosity(True)
 
-    logger.info(f"Starting pipeline step: {Path(__file__).name} - GNN to DisCoPy Transformation")
+    if not gnn_file_to_discopy_diagram:
+        log_step_error(logger, "Core DisCoPy GNN translator is not available. Aborting 12_discopy.py step.")
+        return 1
+
+    log_step_start(logger, f"Starting pipeline step: {Path(__file__).name} - GNN to DisCoPy Transformation")
     logger.info(f"Reading GNN files from: {args.gnn_input_dir.resolve()}")
     
     # Define the specific output directory for this step's artifacts
@@ -154,26 +172,23 @@ def main_discopy_step(args: argparse.Namespace) -> int:
         discopy_step_output_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"DisCoPy outputs will be saved in: {discopy_step_output_dir}")
     except OSError as e:
-        logger.error(f"Failed to create DisCoPy output directory {discopy_step_output_dir}: {e}")
-        return 1 # Cannot proceed without output directory
-
-    if not args.gnn_input_dir.is_dir():
-        logger.error(f"GNN input directory not found: {args.gnn_input_dir.resolve()}")
+        log_step_error(logger, f"Failed to create DisCoPy output directory {discopy_step_output_dir}: {e}")
         return 1
 
-    # Discover GNN files (typically .md or .gnn.md)
+    if not args.gnn_input_dir.is_dir():
+        log_step_error(logger, f"GNN input directory not found: {args.gnn_input_dir.resolve()}")
+        return 1
+
+    # Discover GNN files
     glob_pattern = "**/*.md" if args.recursive else "*.md"
-    # Also consider .gnn.md specifically
-    # More robust discovery might be needed if GNN files have varied extensions.
     gnn_files = list(args.gnn_input_dir.glob(glob_pattern))
-    # Add specific .gnn.md files if recursive is False and they weren't caught by *.md
     if not args.recursive:
         gnn_files.extend(list(args.gnn_input_dir.glob("*.gnn.md")))
-    gnn_files = sorted(list(set(gnn_files))) # Deduplicate and sort
+    gnn_files = sorted(list(set(gnn_files)))
 
     if not gnn_files:
-        logger.warning(f"No GNN files found in {args.gnn_input_dir.resolve()} with pattern '{glob_pattern}'. No diagrams will be generated.")
-        return 0 # Not an error, just no work to do
+        log_step_warning(logger, f"No GNN files found in {args.gnn_input_dir.resolve()} with pattern '{glob_pattern}'. No diagrams will be generated.")
+        return 0
 
     logger.info(f"Found {len(gnn_files)} GNN files to process.")
     
@@ -185,7 +200,7 @@ def main_discopy_step(args: argparse.Namespace) -> int:
         try:
             relative_path = gnn_file.relative_to(args.gnn_input_dir)
             file_specific_output_subdir = discopy_step_output_dir / relative_path.parent
-        except ValueError: # Should not happen if gnn_file is from gnn_input_dir.glob
+        except ValueError:
             file_specific_output_subdir = discopy_step_output_dir
         
         file_specific_output_subdir.mkdir(parents=True, exist_ok=True)
@@ -197,38 +212,19 @@ def main_discopy_step(args: argparse.Namespace) -> int:
     logger.info(f"Finished processing {processed_count} GNN files. {success_count} diagrams generated successfully.")
     
     if processed_count > 0 and success_count < processed_count:
-        logger.warning("Some GNN files failed to produce DisCoPy diagrams.")
+        log_step_warning(logger, f"Some GNN files failed to produce DisCoPy diagrams: {success_count}/{processed_count} successful")
         return 2 # Partial success / warnings
     elif processed_count > 0 and success_count == processed_count:
-        logger.info("All processed GNN files yielded DisCoPy diagrams successfully.")
-        return 0 # Full success
-    elif processed_count == 0: # Should be caught by the earlier check, but for safety
-        return 0 # No files to process is not an error
+        log_step_success(logger, f"All {processed_count} processed GNN files yielded DisCoPy diagrams successfully.")
+        return 0
+    elif processed_count == 0:
+        return 0
     
-    return 0 # Default success if no other condition met
+    return 0
 
 if __name__ == "__main__":
     cli_args = parse_arguments()
 
-    # Initialize variables to satisfy linter - These are now module-level
-    # log_level_to_set = logging.INFO
-    # _log_level_standalone = logging.INFO
-    # exit_code: int = 1
-
-    # Setup logging for standalone execution using the utility function
-    if setup_standalone_logging:
-        log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
-        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
-    else:
-        # Fallback basic config if utility function couldn't be imported
-        _log_level_standalone = logging.DEBUG if cli_args.verbose else logging.INFO
-        logging.basicConfig(level=_log_level_standalone, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
-
-    # Quieten noisy libraries if run standalone
-    logging.getLogger('matplotlib').setLevel(logging.WARNING)
-    logging.getLogger('PIL').setLevel(logging.WARNING)
-    
     # Call the main logic function for this step
     exit_code = main_discopy_step(cli_args)
     sys.exit(exit_code) 

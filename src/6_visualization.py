@@ -2,47 +2,34 @@
 """
 GNN Processing Pipeline - Step 6: Visualization
 
-This script generates visualizations for GNN files by invoking the visualization module:
-- Processes .md files in the target directory.
-- Creates visual representations of the GNN models.
-- Saves visualizations to a dedicated subdirectory within the main output directory.
+This script generates visualization outputs based on the pipeline state:
+- Graph visualizations of GNN models
+- Statistical charts and summary plots
+- Visual documentation of pipeline outputs
 
 Usage:
     python 6_visualization.py [options]
-    
-Options:
-    Same as main.py
+    (Typically called by main.py)
 """
 
+import argparse
+import os
 import sys
 from pathlib import Path
-import logging # Import logging
-import argparse # Ensure imported for __main__
 
-# Attempt to import the new logging utility
-try:
-    from utils.logging_utils import setup_standalone_logging
-except ImportError:
-    sys.path.append(str(Path(__file__).resolve().parent.parent))
-    try:
-        from utils.logging_utils import setup_standalone_logging
-    except ImportError:
-        setup_standalone_logging = None
-        _temp_logger_name = __name__ if __name__ != "__main__" else "src.6_visualization_import_warning"
-        _temp_logger = logging.getLogger(_temp_logger_name)
-        if not _temp_logger.hasHandlers():
-            if not logging.getLogger().hasHandlers():
-                logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
-            else:
-                 _temp_logger.addHandler(logging.StreamHandler(sys.stderr))
-                 _temp_logger.propagate = False
-        _temp_logger.warning(
-            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
-        )
+# Import centralized utilities
+from utils import (
+    setup_step_logging,
+    log_step_start,
+    log_step_success, 
+    log_step_warning,
+    log_step_error,
+    validate_output_directory,
+    UTILS_AVAILABLE
+)
 
-# --- Logger Setup ---
-logger = logging.getLogger(__name__)
-# --- End Logger Setup ---
+# Initialize logger for this step
+logger = setup_step_logging("6_visualization", verbose=False)
 
 # Attempt to import the cli main function from the visualization module
 try:
@@ -53,45 +40,28 @@ except ImportError:
     try:
         from visualization import cli as visualization_cli
     except ImportError as e:
-        logger.error(f"Error: Could not import visualization.cli: {e}") # Changed from print
-        logger.error("Ensure the visualization module is correctly installed or accessible in PYTHONPATH.") # Changed from print
+        log_step_error(logger, f"Could not import visualization.cli: {e}")
+        logger.error("Ensure the visualization module is correctly installed or accessible in PYTHONPATH.")
         visualization_cli = None
 
 def run_visualization(target_dir: str, 
-                        pipeline_output_dir: str, # Main output dir for the whole pipeline 
+                        pipeline_output_dir: str,
                         recursive: bool = False, 
                         verbose: bool = False):
     """Generate visualizations for GNN files using the visualization module."""
-    # Set logging level for this script's logger
-    if verbose:
-        logger.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.INFO)
-
-    # Set logging level for noisy libraries
-    logging.getLogger('PIL').setLevel(logging.WARNING)
-    logging.getLogger('matplotlib').setLevel(logging.WARNING)
-
-    # Configure logging level for the visualization module based on pipeline verbosity
-    viz_module_logger = logging.getLogger("visualization") # Get the parent logger for the module
-    if verbose:
-        viz_module_logger.setLevel(logging.INFO) # Allow its INFO messages if pipeline is verbose
-    else:
-        viz_module_logger.setLevel(logging.WARNING) # Silence its INFO messages by default
+    
+    log_step_start(logger, f"Generating visualizations for {target_dir}")
 
     if not visualization_cli:
-        logger.error("❌🎨 Visualization CLI module not loaded. Cannot proceed.") # Changed from print
-        return False # Indicate failure
+        log_step_error(logger, "Visualization CLI module not loaded. Cannot proceed.")
+        return False
 
     viz_step_output_dir = Path(pipeline_output_dir) / "visualization"
     
-    logger.info("🖼️ Preparing to generate GNN visualizations...") # Was print if verbose
-    logger.debug(f"  🎯 Target GNN files in: {Path(target_dir).resolve()}") # Was print if verbose
-    logger.debug(f"  ել Output visualizations will be in: {viz_step_output_dir.resolve()}") # Was print if verbose
-    if recursive:
-        logger.debug("  🔄 Recursive mode: Enabled") # Was print if verbose
-    else:
-        logger.debug("  ➡️ Recursive mode: Disabled") # Was print if verbose
+    logger.info("Preparing to generate GNN visualizations...")
+    logger.debug(f"Target GNN files in: {Path(target_dir).resolve()}")
+    logger.debug(f"Output visualizations will be in: {viz_step_output_dir.resolve()}")
+    logger.debug(f"Recursive mode: {'Enabled' if recursive else 'Disabled'}")
 
     # Determine project root for relative paths in sub-module reports
     project_root = Path(__file__).resolve().parent.parent
@@ -99,134 +69,106 @@ def run_visualization(target_dir: str,
     cli_args = [
         target_dir, 
         "--output-dir", str(viz_step_output_dir),
-        "--project-root", str(project_root) # Pass project root to the CLI
+        "--project-root", str(project_root)
     ]
     
     if recursive:
         cli_args.append("--recursive")
         
-    logger.debug(f"  🐍 Invoking GNN Visualization module (visualization.cli.main)") # Was print if verbose
-    logger.debug(f"     Arguments: {' '.join(cli_args)}") # Was print if verbose
+    logger.debug(f"Invoking GNN Visualization module (visualization.cli.main)")
+    logger.debug(f"Arguments: {' '.join(cli_args)}")
     
     try:
         exit_code = visualization_cli.main(cli_args)
         
         if exit_code == 0:
-            logger.info("✅ GNN Visualization module completed successfully.") # Was print if verbose
-            logger.debug(f"  🖼️ Visualizations should be available in: {viz_step_output_dir.resolve()}") # Was print if verbose
+            logger.info("GNN Visualization module completed successfully.")
+            logger.debug(f"Visualizations should be available in: {viz_step_output_dir.resolve()}")
+            
             # Check if the directory was created and if it has content
             if viz_step_output_dir.exists() and any(viz_step_output_dir.iterdir()):
-                num_items = len(list(viz_step_output_dir.glob('**/*'))) # Counts files and dirs
-                logger.debug(f"  📊 Found {num_items} items (files/directories) in the output directory.") # Was print if verbose
-            else: # This case was only logged if verbose before, now always if dir is empty
-                logger.warning(f"⚠️ Output directory {viz_step_output_dir.resolve()} is empty or was not created as expected by the visualization module.") # Was print if verbose
+                num_items = len(list(viz_step_output_dir.glob('**/*')))
+                logger.debug(f"Found {num_items} items (files/directories) in the output directory.")
+                log_step_success(logger, f"Successfully generated visualizations with {num_items} output items")
+            else:
+                log_step_warning(logger, f"Output directory {viz_step_output_dir.resolve()} is empty or was not created as expected by the visualization module.")
             return True
         else:
-            logger.error(f"❌🎨 GNN Visualization module (visualization.cli.main) reported errors (exit code: {exit_code}).") # Changed from print
+            log_step_error(logger, f"GNN Visualization module reported errors (exit code: {exit_code})")
             return False
             
     except Exception as e:
-        logger.error(f"❌🎨 An unexpected error occurred while running the GNN Visualization module: {e}", exc_info=verbose) # Changed from print, added exc_info=verbose
-        # if verbose: # Handled by exc_info=verbose
-        #     import traceback
-        #     traceback.print_exc()
+        log_step_error(logger, f"Unexpected error occurred while running the GNN Visualization module: {e}")
+        if verbose:
+            logger.exception("Full traceback:")
         return False
 
 def main(args):
-    """Main function for the visualization step (Step 6).
-
-    This function serves as the entry point when 6_visualization.py is called.
-    It logs the start of the step and invokes the `run_visualization` function
-    with the parsed arguments.
-
-    Args:
-        args (argparse.Namespace): 
-            Parsed command-line arguments from `main.py` or standalone execution.
-            Expected attributes include: target_dir, output_dir, recursive, verbose.
     """
-    # Set this script's logger level based on pipeline's args.verbose
-    # This is typically handled by main.py for child modules, and run_visualization also sets levels.
-    # if args.verbose:
-    #     logger.setLevel(logging.DEBUG)
-    # else:
-    #     logger.setLevel(logging.INFO)
-
-    logger.info(f"▶️ Starting Step 6: Visualization ({Path(__file__).name})") 
-    logger.debug(f"  Parsing options:") # Was print if verbose
-    logger.debug(f"    Target directory/file: {args.target_dir}") # Was print if verbose
-    logger.debug(f"    Pipeline output directory: {args.output_dir}") # Was print if verbose
-    logger.debug(f"    Recursive: {args.recursive}") # Was print if verbose
-    logger.debug(f"    Verbose: {args.verbose}") # Was print if verbose
-
-    if not run_visualization(args.target_dir, 
-                             args.output_dir, 
-                             args.recursive if hasattr(args, 'recursive') else False, 
-                             args.verbose):
-        logger.error(f"❌ Step 6: Visualization ({Path(__file__).name}) FAILED.") # Changed from print
+    Main function for Step 6: Visualization pipeline.
+    
+    Args:
+        args: argparse.Namespace with target_dir, output_dir, recursive, verbose
+    """
+    # Update logger verbosity based on args
+    if args.verbose:
+        import logging
+        logger.setLevel(logging.DEBUG)
+    
+    log_step_start(logger, "Starting Step 6: Visualization")
+    
+    # Validate and create visualization output directory
+    base_output_dir = Path(args.output_dir)
+    if not validate_output_directory(base_output_dir, "visualization"):
+        log_step_error(logger, "Failed to create visualization output directory")
         return 1
     
-    logger.info(f"✅ Step 6: Visualization ({Path(__file__).name}) - COMPLETED") # Was print if verbose
-    return 0
+    # Call the visualization function
+    try:
+        result = run_visualization(
+            target_dir=str(args.target_dir),
+            pipeline_output_dir=str(args.output_dir),
+            recursive=args.recursive,
+            verbose=args.verbose
+        )
+        
+        if result:
+            log_step_success(logger, "Visualization generation completed successfully")
+            return 0
+        else:
+            log_step_warning(logger, "Visualization generation completed with warnings")
+            return 0
+            
+    except Exception as e:
+        log_step_error(logger, f"Visualization generation failed: {e}")
+        if args.verbose:
+            logger.exception("Full traceback:")
+        return 1
+
 
 if __name__ == '__main__':
-    import argparse # Ensure imported
-    # This script is called by main.py with arguments.
-    # Set up argparse to receive these arguments.
-
+    parser = argparse.ArgumentParser(description="Generate visualizations for GNN pipeline")
+    
     # Define defaults for standalone execution
     script_file_path = Path(__file__).resolve()
-    project_root_for_defaults = script_file_path.parent.parent # src/ -> project_root
-    default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
-    default_output_dir = project_root_for_defaults / "output"
+    project_root = script_file_path.parent.parent
+    default_target_dir = project_root / "src" / "gnn" / "examples"
+    default_output_dir = project_root / "output"
 
-    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 6: Visualization (Standalone)")
-    parser.add_argument(
-        "--target-dir",
-        type=str, 
-        default=str(default_target_dir), # Added default for standalone
-        help="Target GNN file or directory for visualization."
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=str, 
-        default=str(default_output_dir), # Added default for standalone
-        help="Main pipeline output directory."
-    )
-    parser.add_argument(
-        "--recursive",
-        action=argparse.BooleanOptionalAction, # Changed to BooleanOptionalAction
-        default=False, # Default False for standalone
-        help="Recursively process subdirectories."
-    )
-    parser.add_argument(
-        "--verbose",
-        action=argparse.BooleanOptionalAction, # Changed to BooleanOptionalAction
-        default=False, # Default False for standalone
-        help="Enable verbose output for this script."
-    )
+    parser.add_argument("--target-dir", type=Path, default=default_target_dir,
+                       help="Target directory containing GNN files")
+    parser.add_argument("--output-dir", type=Path, default=default_output_dir,
+                       help="Main pipeline output directory")
+    parser.add_argument("--recursive", action='store_true',
+                       help="Search for GNN files recursively")
+    parser.add_argument("--verbose", action='store_true',
+                       help="Enable verbose output")
 
-    parsed_script_args = parser.parse_args() # Parses arguments from sys.argv
+    parsed_args = parser.parse_args()
 
-    # Setup logging for standalone execution
-    log_level_to_set = logging.DEBUG if parsed_script_args.verbose else logging.INFO
-    if setup_standalone_logging:
-        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
-    else:
-        if not logging.getLogger().hasHandlers(): # Check root handlers
-            logging.basicConfig(
-                level=log_level_to_set,
-                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                # datefmt="%Y-%m-%d %H:%M:%S", # Use default datefmt for consistency
-                stream=sys.stdout
-            )
-        logging.getLogger(__name__).setLevel(log_level_to_set) # Set this script's logger level
-        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+    # Update logger for standalone execution
+    if parsed_args.verbose:
+        import logging
+        logger.setLevel(logging.DEBUG)
 
-    # Adjust visualization module logger level for standalone verbose runs (run_visualization will also do this)
-    if parsed_script_args.verbose:
-        viz_module_logger_standalone = logging.getLogger("visualization")
-        viz_module_logger_standalone.setLevel(logging.INFO) 
-
-    # Call the script's main logic function with the parsed arguments
-    exit_code = main(parsed_script_args)
-    sys.exit(exit_code) 
+    sys.exit(main(parsed_args)) 

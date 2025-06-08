@@ -23,35 +23,24 @@ import sys
 import datetime
 import shutil
 from pathlib import Path
-import logging
 import re
 import argparse
 import json
+from typing import Dict, Any, List
 
-# Attempt to import the new logging utility
-try:
-    from utils.logging_utils import setup_standalone_logging
-except ImportError:
-    sys.path.append(str(Path(__file__).resolve().parent.parent))
-    try:
-        from utils.logging_utils import setup_standalone_logging
-    except ImportError:
-        setup_standalone_logging = None
-        _temp_logger_name = __name__ if __name__ != "__main__" else "src.5_export_import_warning"
-        _temp_logger = logging.getLogger(_temp_logger_name)
-        if not _temp_logger.hasHandlers():
-            if not logging.getLogger().hasHandlers():
-                logging.basicConfig(level=logging.WARNING, stream=sys.stderr)
-            else:
-                 _temp_logger.addHandler(logging.StreamHandler(sys.stderr))
-                 _temp_logger.propagate = False
-        _temp_logger.warning(
-            "Could not import setup_standalone_logging from utils.logging_utils. Standalone logging might be basic."
-        )
+# Import centralized utilities
+from utils import (
+    setup_step_logging,
+    log_step_start,
+    log_step_success, 
+    log_step_warning,
+    log_step_error,
+    validate_output_directory,
+    UTILS_AVAILABLE
+)
 
-# --- Logger Setup ---
-logger = logging.getLogger(__name__)
-# --- End Logger Setup ---
+# Initialize logger for this step
+logger = setup_step_logging("5_export", verbose=False)
 
 # Attempt to import format exporters. Assumes 'src' is in PYTHONPATH or script is run correctly by main.py
 try:
@@ -69,7 +58,7 @@ try:
     )
     FORMAT_EXPORTERS_LOADED = True
 except ImportError as e:
-    logger.critical(f"CRITICAL: Failed to import format_exporters. Individual GNN export formats will be unavailable. Error: {e}")
+    log_step_error(logger, f"Failed to import format_exporters. Individual GNN export formats will be unavailable. Error: {e}")
     FORMAT_EXPORTERS_LOADED = False
     HAS_NETWORKX = False
     # Define dummy functions so the script doesn't crash if these are called later
@@ -100,7 +89,7 @@ if FORMAT_EXPORTERS_LOADED and HAS_NETWORKX:
         "json_adj": export_to_json_adjacency_list,
     })
 elif FORMAT_EXPORTERS_LOADED and not HAS_NETWORKX:
-    logger.warning("NetworkX-dependent export formats (gexf, graphml, json_adj) are disabled because networkx is not installed.")
+    log_step_warning(logger, "NetworkX-dependent export formats (gexf, graphml, json_adj) are disabled because networkx is not installed.")
 
 DEFAULT_EXPORT_FORMATS = ["json", "xml", "txt_summary", "dsl"] # A sensible default set
 
@@ -114,7 +103,7 @@ def _get_relative_path_if_possible(absolute_path_obj: Path, project_root: Path |
 
 def generate_export_summary_report(target_dir: str, output_dir: str, num_files_processed: int, num_files_exported: int, num_export_failures: int, recursive: bool = False, verbose: bool = False):
     """Generates a summary report specifically for the export step."""
-    logger.info("📄 Generating GNN Export Step Summary Report...")
+    log_step_start(logger, "Generating GNN Export Step Summary Report")
     output_path = Path(output_dir)
     summary_file = output_path / "gnn_exports" / "5_export_step_report.md"
     summary_file.parent.mkdir(parents=True, exist_ok=True)
@@ -134,7 +123,8 @@ def generate_export_summary_report(target_dir: str, output_dir: str, num_files_p
         f.write(f"- **GNN Files Found/Attempted:** {num_files_processed}\n")
         f.write(f"- **GNN Files with Successful Exports (all selected formats):** {num_files_exported - num_export_failures}\n")
         f.write(f"- **GNN Files with At Least One Export Failure:** {num_export_failures}\n")
-    logger.info(f"📄 Export step summary report generated: {summary_file}")
+    
+    log_step_success(logger, f"Export step summary report generated: {summary_file}")
 
 def export_gnn_file_to_selected_formats(gnn_file_path: Path, base_output_dir: Path, formats_to_export: list[str], project_root_for_reporting: Path, verbose: bool = False):
     """
@@ -143,21 +133,21 @@ def export_gnn_file_to_selected_formats(gnn_file_path: Path, base_output_dir: Pa
     Returns True if all selected exports for this file were successful, False otherwise.
     """
     if not FORMAT_EXPORTERS_LOADED:
-        logger.error(f"Skipping export for {_get_relative_path_if_possible(gnn_file_path, project_root_for_reporting)} as format exporters module is not loaded.")
+        log_step_error(logger, f"Skipping export for {_get_relative_path_if_possible(gnn_file_path, project_root_for_reporting)} as format exporters module is not loaded")
         return False
 
     # Use a relative path for logging if possible
     gnn_file_display_name = _get_relative_path_if_possible(gnn_file_path, project_root_for_reporting)
-    logger.info(f"  Processing exports for GNN file: {gnn_file_display_name}")
+    logger.info(f"Processing exports for GNN file: {gnn_file_display_name}")
 
     try:
         # _gnn_model_to_dict expects a string path
         gnn_model_dict = _gnn_model_to_dict(str(gnn_file_path))
     except FileNotFoundError:
-        logger.error(f"    ❌ File not found: {gnn_file_display_name}. Skipping export for this file.")
+        log_step_error(logger, f"File not found: {gnn_file_display_name}. Skipping export for this file.")
         return False
     except Exception as e:
-        logger.error(f"    ❌ Error parsing GNN file {gnn_file_display_name}: {e}. Skipping export for this file.", exc_info=verbose)
+        log_step_error(logger, f"Error parsing GNN file {gnn_file_display_name}: {e}")
         return False
 
     # Create a dedicated output subdirectory for this GNN file's exports
@@ -165,21 +155,21 @@ def export_gnn_file_to_selected_formats(gnn_file_path: Path, base_output_dir: Pa
     file_specific_export_dir = base_output_dir / "gnn_exports" / gnn_file_path.stem
     try:
         file_specific_export_dir.mkdir(parents=True, exist_ok=True)
-        logger.debug(f"    📤 Ensured export subdirectory: {file_specific_export_dir}")
+        logger.debug(f"Ensured export subdirectory: {file_specific_export_dir}")
     except OSError as e:
-        logger.error(f"    ❌ Failed to create export subdirectory {file_specific_export_dir}: {e}. Skipping exports for {gnn_file_display_name}.")
+        log_step_error(logger, f"Failed to create export subdirectory {file_specific_export_dir}: {e}. Skipping exports for {gnn_file_display_name}.")
         return False
 
     success_count = 0
     failure_count = 0
 
     if not formats_to_export:
-        logger.info(f"    ℹ️ No specific formats requested for export for {gnn_file_display_name}. Nothing to do.")
+        logger.info(f"No specific formats requested for export for {gnn_file_display_name}. Nothing to do.")
         return True # No failures if nothing was requested
 
     for fmt_key in formats_to_export:
         if fmt_key not in AVAILABLE_EXPORT_FUNCTIONS:
-            logger.warning(f"    ⚠️ Unknown or unavailable export format '{fmt_key}' requested for {gnn_file_display_name}. Skipping this format.")
+            log_step_warning(logger, f"Unknown or unavailable export format '{fmt_key}' requested for {gnn_file_display_name}. Skipping this format.")
             failure_count += 1
             continue
 
@@ -187,36 +177,30 @@ def export_gnn_file_to_selected_formats(gnn_file_path: Path, base_output_dir: Pa
 
         file_extension = "gnn" if fmt_key == "dsl" else fmt_key
         if fmt_key == "txt_summary": file_extension = "txt"
-        # For json_adj, it will be .json_adj if fmt_key is 'json_adj'
 
         output_file = file_specific_export_dir / f"{gnn_file_path.stem}.{file_extension}"
         try:
-            logger.debug(f"      📤 Exporting to {fmt_key.upper()} -> {_get_relative_path_if_possible(output_file, project_root_for_reporting)}")
-            export_func(gnn_model_dict, str(output_file)) # Pass the parsed dict
+            logger.debug(f"Exporting to {fmt_key.upper()} -> {_get_relative_path_if_possible(output_file, project_root_for_reporting)}")
+            export_func(gnn_model_dict, str(output_file))
             
             try:
                 file_size_bytes = output_file.stat().st_size
                 file_size_kb = file_size_bytes / 1024
                 size_str = f", size: {file_size_kb:.2f} KB"
-            except Exception as e:
-                logger.debug(f"Could not read file size for {output_file.name}: {e}")
-                size_str = "" # Gracefully handle if size cannot be read
-
-            logger.info(f"      ✅ Successfully exported to {output_file.name} (format: {fmt_key}{size_str})")
+            except (OSError, ZeroDivisionError):
+                size_str = ""
+            
+            logger.info(f"✅ Successfully exported to {fmt_key.upper()}{size_str}")
             success_count += 1
+        
         except Exception as e:
-            logger.error(f"      ❌ Error exporting to {fmt_key.upper()} ({output_file.name}): {e}", exc_info=verbose)
+            log_step_error(logger, f"Failed to export {gnn_file_display_name} to {fmt_key.upper()}: {e}")
             failure_count += 1
-            # Optionally, clean up partially written file if necessary, though most write ops are atomic or overwrite.
 
-    if failure_count > 0 and success_count > 0:
-        logger.warning(f"    ⚠️ Partially completed exports for {gnn_file_display_name}: {success_count} succeeded, {failure_count} failed.")
-    elif failure_count > 0 and success_count == 0:
-        logger.error(f"    ❌ Failed all {len(formats_to_export)} requested export(s) for {gnn_file_display_name}.")
-    elif success_count == len(formats_to_export) and success_count > 0:
-        logger.info(f"    ✅ All {success_count} requested exports for {gnn_file_display_name} completed successfully.")
-    # If formats_to_export was empty, this point isn't reached for this file due to early return.
-
+    total_requested = len(formats_to_export)
+    logger.info(f"Export summary for {gnn_file_display_name}: {success_count}/{total_requested} formats successful")
+    
+    # Return True only if all requested formats were successfully exported
     return failure_count == 0
 
 def generate_overall_pipeline_summary_report(target_dir_abs: Path, output_dir_abs: Path, project_root: Path, recursive: bool, verbose: bool):
@@ -396,8 +380,10 @@ def main(parsed_args: argparse.Namespace):
     """Main execution function for the export script."""
     # Setup logger based on verbosity
     if parsed_args.verbose:
+        import logging
         logger.setLevel(logging.DEBUG)
     else:
+        import logging
         logger.setLevel(logging.INFO)
 
     # --- Start of Diagnostic Logging ---
@@ -511,23 +497,10 @@ if __name__ == '__main__':
 
     cli_args = parser.parse_args() # Parses from sys.argv
 
-    # Setup logging for standalone execution
-    log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
-    if setup_standalone_logging:
-        setup_standalone_logging(level=log_level_to_set, logger_name=__name__)
-    else:
-        if not logging.getLogger().hasHandlers():
-            logging.basicConfig(
-                level=log_level_to_set,
-                format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                stream=sys.stdout
-            )
-        logging.getLogger(__name__).setLevel(log_level_to_set)
-        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
-    
-    # Quieten noisy libraries if run standalone
-    logging.getLogger('PIL').setLevel(logging.WARNING)
-    logging.getLogger('matplotlib').setLevel(logging.WARNING)
+    # Update logger for standalone execution
+    if cli_args.verbose:
+        import logging
+        logger.setLevel(logging.DEBUG)
 
     exit_code = main(cli_args) 
     sys.exit(exit_code)

@@ -19,23 +19,22 @@ import os
 import sys
 from pathlib import Path
 import re # For parsing sections
-import logging
 import argparse # Added
 from typing import TypedDict, List, Dict, Any # Added for FileSummaryType
 
-# Import streamlined utilities
-try:
-    from utils.logging_utils import setup_step_logging
-    from utils.argument_utils import ArgumentParser
-except ImportError as e:
-    # Fallback for standalone execution or missing utilities
-    print(f"Warning: Could not import streamlined utilities: {e}", file=sys.stderr)
-    setup_step_logging = None
-    ArgumentParser = None
+# Import centralized utilities
+from utils import (
+    setup_step_logging,
+    log_step_start,
+    log_step_success, 
+    log_step_warning,
+    log_step_error,
+    validate_output_directory,
+    UTILS_AVAILABLE
+)
 
-# --- Logger Setup ---
-logger = logging.getLogger(__name__)
-# --- End Logger Setup ---
+# Initialize logger for this step
+logger = setup_step_logging("1_gnn", verbose=False)  # Will be updated based on args
 
 # --- Global variable to store project_root if determined by main() or process_gnn_folder() ---
 _project_root_path_1_gnn = None
@@ -76,7 +75,7 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Path | 
     gnn_target_path_abs = target_dir.resolve()
 
     if not target_dir.is_dir():
-        logger.warning(f"GNN target directory '{_get_relative_path_if_possible(gnn_target_path_abs, project_root)}' not found or not a directory. Skipping GNN processing for this target.")
+        log_step_warning(logger, f"GNN target directory '{_get_relative_path_if_possible(gnn_target_path_abs, project_root)}' not found or not a directory. Skipping GNN processing for this target.")
         return 2 # Return 2 for warning/non-fatal issue
 
     # Ensure output directory for this step exists
@@ -297,26 +296,12 @@ def main(parsed_args: argparse.Namespace):
         parsed_args (argparse.Namespace): Pre-parsed command-line arguments.
             Expected attributes include: target_dir, output_dir, recursive, verbose.
     """
-    # Setup logging level for this script's logger based on verbosity.
-    # If run standalone, setup_standalone_logging (called in __main__ block) would have already
-    # configured the root logger and potentially this logger's level.
-    # If run as part of a pipeline (main.py), the pipeline's logger is configured,
-    # and this script's logger will inherit. We explicitly set this script's logger level
-    # here to ensure it respects its own verbose flag if the pipeline's verbosity differs
-    # or if setup_standalone_logging didn't target this specific logger name with setLevel.
-    log_level = logging.DEBUG if parsed_args.verbose else logging.INFO
-    logger.setLevel(log_level)
-    # Ensure handlers also respect this level if they were configured higher by a root setup.
-    # This is particularly for the case where main.py sets a global INFO, but this script is --verbose.
-    for handler in logging.getLogger().handlers: # Check root handlers
-        if handler.level > log_level: # only if root handler is less verbose
-            # This is tricky. We don't want to override main.py's console handler level usually.
-            # setup_standalone_logging handles its own logger.setLevel(logger_name) call.
-            # For now, let's assume main.py's verbosity setting for handlers is king if already set.
-            # The script's own logger.setLevel(log_level) above is the main control for this script's messages.
-            pass 
-
-    logger.debug(f"Script logger '{logger.name}' level set to {logging.getLevelName(log_level)}.")
+    # Update logger verbosity based on args
+    if UTILS_AVAILABLE and hasattr(parsed_args, 'verbose') and parsed_args.verbose:
+        from utils import PipelineLogger
+        PipelineLogger.set_verbosity(True)
+    
+    log_step_start(logger, "Starting GNN file discovery and basic parsing")
 
     # Determine project_root for use in process_gnn_folder
     # This assumes the script itself (1_gnn.py) is in a 'src' directory, 
@@ -356,38 +341,37 @@ def main(parsed_args: argparse.Namespace):
     )
     
     if result_code:
-        logger.info("Step 1_gnn completed successfully.")
+        log_step_success(logger, "GNN file discovery and basic parsing completed successfully")
     else:
-        logger.error("Step 1_gnn failed.")
+        log_step_error(logger, "GNN file discovery and basic parsing failed")
         sys.exit(1)
 
 if __name__ == "__main__":
-    # When run as a script, create a simple parser for standalone execution
-    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 1: GNN File Discovery and Basic Parsing (Standalone)")
-    
-    # Determine project root for defaults, assuming script is in src/
-    script_file_path_for_defaults = Path(__file__).resolve()
-    project_root_for_defaults = script_file_path_for_defaults.parent.parent
+    # Use enhanced argument parsing for standalone execution
+    try:
+        if UTILS_AVAILABLE:
+            from utils import EnhancedArgumentParser
+            cli_args = EnhancedArgumentParser.parse_step_arguments("1_gnn")
+        else:
+            # Fallback to basic parser
+            parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 1: GNN File Discovery and Basic Parsing (Standalone)")
+            
+            # Determine project root for defaults, assuming script is in src/
+            script_file_path_for_defaults = Path(__file__).resolve()
+            project_root_for_defaults = script_file_path_for_defaults.parent.parent
 
-    default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
-    default_output_dir = project_root_for_defaults / "output"
+            default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
+            default_output_dir = project_root_for_defaults / "output"
 
-    parser.add_argument("--target-dir", type=Path, default=default_target_dir, help="Target directory for GNN files.")
-    parser.add_argument("--output-dir", type=Path, default=default_output_dir, help="Directory to save outputs.")
-    parser.add_argument("--recursive", action=argparse.BooleanOptionalAction, default=True, help="Recursively search target directory.")
-    # Changed default for --verbose to False for standalone, as main.py controls its default True for pipeline context
-    parser.add_argument("--verbose", action="store_true", default=False, help="Enable verbose (DEBUG level) logging.")
-    
-    cli_args = parser.parse_args()
-
-    # Setup logging for standalone execution
-    if setup_step_logging:
-        setup_step_logging("1_gnn", cli_args.verbose)
-    else:
-        # Fallback basic config if utility function couldn't be imported
-        level = logging.DEBUG if cli_args.verbose else logging.INFO
-        logging.basicConfig(level=level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        logger.setLevel(level)
+            parser.add_argument("--target-dir", type=Path, default=default_target_dir, help="Target directory for GNN files.")
+            parser.add_argument("--output-dir", type=Path, default=default_output_dir, help="Directory to save outputs.")
+            parser.add_argument("--recursive", action=argparse.BooleanOptionalAction, default=True, help="Recursively search target directory.")
+            parser.add_argument("--verbose", action="store_true", default=False, help="Enable verbose (DEBUG level) logging.")
+            
+            cli_args = parser.parse_args()
+    except Exception as e:
+        logger.error(f"Failed to parse arguments: {e}")
+        sys.exit(1)
 
     # Call the script's main function, passing the parsed args.
     main(cli_args) 

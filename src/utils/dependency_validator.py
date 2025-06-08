@@ -14,7 +14,7 @@ from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 import logging
 
-from .logging_utils import GNNLogger
+from .logging_utils import PipelineLogger
 
 
 @dataclass
@@ -33,9 +33,9 @@ class DependencySpec:
 class DependencyValidator:
     """Validates pipeline dependencies before execution."""
     
-    def __init__(self, logger: Optional[GNNLogger] = None, python_path: Optional[str] = None):
+    def __init__(self, logger: Optional[logging.Logger] = None, python_path: Optional[str] = None):
         """Initialize the dependency validator."""
-        self.logger = logger or GNNLogger("dependency_validator")
+        self.logger = logger or PipelineLogger.get_logger("dependency_validator")
         self.python_path = python_path
         self.missing_dependencies: List[DependencySpec] = []
         self.version_conflicts: List[Tuple[DependencySpec, str]] = []
@@ -349,7 +349,7 @@ class DependencyValidator:
 
 
 def validate_pipeline_dependencies(step_names: Optional[List[str]] = None, 
-                                 logger: Optional[GNNLogger] = None,
+                                 logger: Optional[logging.Logger] = None,
                                  python_path: Optional[str] = None) -> bool:
     """
     Validate dependencies for specific pipeline steps.
@@ -409,7 +409,7 @@ if __name__ == "__main__":
     
     # Setup logging
     level = logging.DEBUG if args.verbose else logging.INFO
-    logger = GNNLogger("dependency_validator", level=level)
+    logger = PipelineLogger.get_logger("dependency_validator")
     
     # Create validator and run validation
     validator = DependencyValidator(logger)

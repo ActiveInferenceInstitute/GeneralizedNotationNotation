@@ -81,14 +81,22 @@ from pipeline import (
     get_output_dir_for_script,
     StepExecutionResult,
     get_memory_usage_mb,
-    build_command_args,
     execute_pipeline_step
 )
 
 # Import the streamlined utilities
 try:
-    from utils.logging_utils import setup_main_logging, PipelineLogger
-    from utils.argument_utils import ArgumentParser, PipelineArguments, build_step_command_args
+    from utils import (
+        setup_main_logging, 
+        PipelineLogger,
+        ArgumentParser, 
+        PipelineArguments, 
+        build_enhanced_step_command_args,
+        validate_pipeline_dependencies,
+        UTILS_AVAILABLE
+    )
+    if not UTILS_AVAILABLE:
+        print("Warning: Some utilities may not be fully available", file=sys.stderr)
 except ImportError as e:
     print(f"Error importing streamlined utilities: {e}", file=sys.stderr)
     sys.exit(1)
@@ -97,12 +105,7 @@ except ImportError as e:
 logger = logging.getLogger("GNN_Pipeline")
 # --- End Logger Setup ---
 
-# Import dependency validation utility
-try:
-    from utils.dependency_validator import validate_pipeline_dependencies
-except ImportError:
-    logger.warning("Dependency validator not available")
-    validate_pipeline_dependencies = None
+# Dependency validation is imported above with other utilities
 
 # Define types for pipeline summary data
 class StepLogData(TypedDict):

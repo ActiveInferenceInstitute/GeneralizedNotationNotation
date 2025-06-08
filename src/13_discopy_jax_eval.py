@@ -16,6 +16,20 @@ import numpy
 from typing import Optional, Tuple, List, Dict, Any
 import shutil # For cleaning up output directory
 
+# Import centralized utilities
+from utils import (
+    setup_step_logging,
+    log_step_start,
+    log_step_success, 
+    log_step_warning,
+    log_step_error,
+    validate_output_directory,
+    UTILS_AVAILABLE
+)
+
+# Initialize logger for this step
+logger = setup_step_logging("13_discopy_jax_eval", verbose=False)
+
 # --- Python Path Setup for 'src' imports ---
 # Ensure the script can find other modules in the 'src' directory, especially when run as a subprocess.
 # This makes the script more robust to different execution contexts.
@@ -30,10 +44,6 @@ if str(_generalized_notation_notation_root) not in sys.path:
     sys.path.insert(0, str(_generalized_notation_notation_root))
     # print(f"[13_discopy_jax_eval.py sys.path debug] Added to sys.path: {str(_generalized_notation_notation_root)}", file=sys.stderr)
 # --- End Python Path Setup ---
-
-# --- Set up logging ---
-# Standalone logger for this script - DEFINED EARLY
-logger = logging.getLogger(__name__) # MOVED TO TOP
 
 # --- JAX and DisCoPy Availability Flags & Placeholders (initialized assuming not available) ---
 _JAX_CORE_AVAILABLE_FROM_TRANSLATOR = False
@@ -276,12 +286,13 @@ def process_gnn_file_for_jax_eval(gnn_file_path: Path, eval_output_dir: Path, ja
 def main_discopy_jax_eval_step(args: argparse.Namespace) -> int:
     """Main execution function for the 13_discopy_jax_eval.py pipeline step."""
     
+    log_step_start(logger, "Starting DisCoPy JAX evaluation step")
+    
     if not _JAX_CORE_AVAILABLE_FROM_TRANSLATOR:
-        logger.critical(
-            "Core JAX library (jax, jax.numpy) was not found or could not be imported by the translator module. This step requires JAX. " 
-            "Please install JAX and jaxlib (e.g., 'pip install \"jax[cpu]\") and ensure DisCoPy was " 
-            "installed with matrix support (e.g., 'pip install \"discopy[matrix]\"). Aborting 13_discopy_jax_eval.py step."
-        )
+        error_msg = ("Core JAX library (jax, jax.numpy) was not found or could not be imported by the translator module. This step requires JAX. " 
+                    "Please install JAX and jaxlib (e.g., 'pip install \"jax[cpu]\") and ensure DisCoPy was " 
+                    "installed with matrix support (e.g., 'pip install \"discopy[matrix]\"). Aborting 13_discopy_jax_eval.py step.")
+        log_step_error(logger, error_msg)
         return 1
     
     if not _DISCOPY_MATRIX_COMPONENTS_AVAILABLE_FROM_TRANSLATOR:
@@ -349,12 +360,13 @@ def main_discopy_jax_eval_step(args: argparse.Namespace) -> int:
     logger.info(f"Finished processing {processed_count} GNN files. {success_count} JAX evaluations and visualizations generated successfully.")
     
     if processed_count > 0 and success_count < processed_count:
-        logger.warning("Some GNN files failed JAX evaluation or visualization.")
+        log_step_warning(logger, f"Some GNN files failed JAX evaluation: {processed_count - success_count} failures out of {processed_count} files")
         return 2 # Partial success / warnings
     elif processed_count > 0 and success_count == processed_count:
-        logger.info("All processed GNN files yielded JAX evaluation outputs successfully.")
+        log_step_success(logger, f"All {processed_count} GNN files successfully processed for JAX evaluation")
         return 0 # Full success
     elif processed_count == 0:
+        log_step_warning(logger, "No GNN files found to process")
         return 0
     
     return 0
@@ -362,14 +374,22 @@ def main_discopy_jax_eval_step(args: argparse.Namespace) -> int:
 if __name__ == "__main__":
     cli_args = parse_arguments()
 
-    if setup_standalone_logging:
-        log_level_to_set = logging.DEBUG if cli_args.verbose else logging.INFO
-        # Set logger name specific to this script for clarity if needed, or use __name__
-        setup_standalone_logging(level=log_level_to_set, logger_name=__name__) 
+    # Enhanced logging setup for standalone execution
+    if UTILS_AVAILABLE and cli_args.verbose:
+        logger = setup_step_logging("13_discopy_jax_eval", verbose=True)
+        logger.info(f"Initialized enhanced logging for step: 13_discopy_jax_eval | STRUCTURED_DATA: {{'step_name': '13_discopy_jax_eval', 'verbose': {cli_args.verbose}, 'structured_logging': True}}")
     else:
         _log_level_standalone = logging.DEBUG if cli_args.verbose else logging.INFO
         logging.basicConfig(level=_log_level_standalone, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        logging.getLogger(__name__).warning("Using fallback basic logging due to missing setup_standalone_logging utility.")
+        if not UTILS_AVAILABLE:
+            logger.warning("Enhanced logging not available, using basic logging setup")
+
+    # Set script logger level based on verbose flag
+    if cli_args.verbose:
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Script logger '__main__' level set to DEBUG.")
+    else:
+        logger.setLevel(logging.INFO)
 
     # Quieten noisy libraries if run standalone
     logging.getLogger('matplotlib').setLevel(logging.WARNING) # If matplotlib is very verbose
@@ -377,4 +397,10 @@ if __name__ == "__main__":
         pass # JAX logging is usually not too verbose by default, but can be configured if needed
     
     exit_code = main_discopy_jax_eval_step(cli_args)
+    
+    if exit_code == 0:
+        log_step_success(logger, "Step 13_discopy_jax_eval completed successfully.")
+    else:
+        log_step_error(logger, f"Step 13_discopy_jax_eval completed with exit code {exit_code}.")
+    
     sys.exit(exit_code) 

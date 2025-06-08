@@ -12,67 +12,40 @@ It relies on the llm_operations module.
 """
 
 import argparse
-import logging
 import sys
 from pathlib import Path
 import datetime
 import os
 import json # For saving structured LLM outputs
+import logging  # Added missing import
 
-# Attempt to import the new logging utility (utils.logging_utils.py)
-# This should be tried before other project imports that might depend on logging being set up by it for standalone.
-try:
-    from utils.logging_utils import setup_standalone_logging
-except ImportError:
-    # Fallback for standalone execution or if src is not directly in path
-    _current_script_path_for_util = Path(__file__).resolve()
-    _project_root_for_util = _current_script_path_for_util.parent.parent
-    _paths_to_try_util = [str(_project_root_for_util), str(_project_root_for_util / "src")]
-    _original_sys_path_util = list(sys.path)
-    for _p_try_util in _paths_to_try_util:
-        if _p_try_util not in sys.path:
-            sys.path.insert(0, _p_try_util)
-    try:
-        from utils.logging_utils import setup_standalone_logging
-    except ImportError:
-        setup_standalone_logging = None
-        # Minimal logging for this specific failure, as main logger isn't fully set up yet.
-        _temp_logger_name_util = __name__ if __name__ != "__main__" else "src.11_llm_util_import_warning"
-        _temp_logger_util = logging.getLogger(_temp_logger_name_util)
-        if not _temp_logger_util.hasHandlers() and not logging.getLogger().hasHandlers():
-            logging.basicConfig(level=logging.WARNING, stream=sys.stderr, format='%(levelname)s: %(message)s')
-        _temp_logger_util.warning(
-            "Could not import setup_standalone_logging. Standalone logging will be basic."
-        )
-    finally:
-        sys.path = _original_sys_path_util # Restore original sys.path
+# Import centralized utilities
+from utils import (
+    setup_step_logging,
+    log_step_start,
+    log_step_success, 
+    log_step_warning,
+    log_step_error,
+    validate_output_directory,
+    UTILS_AVAILABLE
+)
 
-# --- Standardized Project Imports ---
-# The goal is to make imports robust whether running as a script or part of a larger package.
-# Assuming this script (11_llm.py) is in src/ and needs to import from src/llm/ and src/mcp/
+# Initialize logger for this step
+logger = setup_step_logging("11_llm", verbose=False)  # Will be updated based on args
 
-# Add project root to sys.path to allow for `from module import ...`
-# This is a common pattern for scripts within a package structure.
-# Path(__file__).resolve() -> /path/to/GeneralizedNotationNotation/src/11_llm.py
-# Path(__file__).resolve().parent -> /path/to/GeneralizedNotationNotation/src
-# Path(__file__).resolve().parent.parent -> /path/to/GeneralizedNotationNotation (project root)
+# Add project root to sys.path for module imports
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
-# --- End Standardized Project Imports ---
-
-logger = logging.getLogger(__name__) # GNN_Pipeline.11_llm or __main__
 
 # Now, attempt to import necessary functions from the llm module
 try:
-    # These imports should now work if src/ (parent of 11_llm.py) is effectively the context
-    # and PROJECT_ROOT is in sys.path.
     from src.llm import llm_operations
     from src.llm import mcp as llm_mcp # To potentially call ensure_llm_tools_registered
     from src.mcp.mcp import mcp_instance # Import for ensuring tools are registered
     logger.info("Successfully imported llm_operations, llm_mcp, and mcp_instance.")
 except ImportError as e_import:
-    logger.critical(f"Failed to import LLM modules or mcp_instance in 11_llm.py: {e_import}", exc_info=True)
+    log_step_error(logger, f"Failed to import LLM modules or mcp_instance in 11_llm.py: {e_import}")
     llm_operations = None
     llm_mcp = None
     mcp_instance = None # Ensure it's None if import fails
@@ -425,26 +398,12 @@ but can be run standalone for testing with appropriate arguments.
     
     parsed_args = parser.parse_args()
 
-    # Setup logging for standalone execution using the utility function
+    # Setup logging for standalone execution 
     log_level_to_set = logging.DEBUG if parsed_args.verbose else logging.INFO
-    if setup_standalone_logging:
-        # Pass __name__ so the utility can also set this script's specific logger level
-        # The utility now handles splitting streams, so no need for fallback basicConfig.
-        setup_standalone_logging(level=log_level_to_set, logger_name=__name__) 
-    else:
-        # This else block might ideally not be needed if setup_standalone_logging is always available.
-        # However, keeping a minimal error message if the import itself failed.
-        # The complex sys.path manipulation at the top aims to prevent this.
-        _fallback_logger = logging.getLogger(__name__) # Use __name__ for this fallback logger
-        if not _fallback_logger.hasHandlers() and not logging.getLogger().hasHandlers():
-            # Minimal config to stderr if utility is completely missing, so errors are seen.
-            logging.basicConfig(level=logging.WARNING, stream=sys.stderr, format='%(levelname)s: %(message)s')
-        _fallback_logger.error(
-            "CRITICAL: setup_standalone_logging utility was not imported. Logging may be incomplete or misdirected. Ensure src/utils is in PYTHONPATH."
-        )
-        # Ensure this script's logger (which is __name__ here) level is set even in this dire fallback
-        # to at least INFO to see basic progress, though it might go to stderr.
-        logging.getLogger(__name__).setLevel(logging.INFO) 
+    # Use the centralized logging setup
+    logger.setLevel(log_level_to_set)
+    if parsed_args.verbose:
+        logger.debug("Verbose mode enabled for standalone execution") 
 
     # Quieten noisy libraries if run standalone, after main logging is set up
     # Example: logging.getLogger('some_noisy_dependency').setLevel(logging.WARNING)
