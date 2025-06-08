@@ -81,3 +81,75 @@
 2025-06-08 11:36:04,578 - GNN_Pipeline - INFO -   ⏭️ Skipped: 0
 2025-06-08 11:36:04,578 - GNN_Pipeline - INFO - 🎉 PIPELINE FINISHED SUCCESSFULLY.
 2025-06-08 11:36:04,580 - GNN_Pipeline - INFO - 💾 Detailed pipeline execution summary (JSON) saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/pipeline_execution_summary.json
+2025-06-08 11:38:21,942 - GNN_Pipeline - DEBUG - Logger level configured based on verbosity.
+2025-06-08 11:38:21,942 - GNN_Pipeline - INFO - 🚀 Initializing GNN Pipeline with Target: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples', Output: '/home/trim/Documents/GitHub/GeneralizedNotationNotation/output'
+2025-06-08 11:38:21,943 - GNN_Pipeline - DEBUG - 🛠️ Effective Arguments (after potential defensive conversion):
+  --dev: False (Type: bool)
+  --discopy-gnn-input-dir: None (Type: NoneType)
+  --discopy-jax-gnn-input-dir: None (Type: NoneType)
+  --discopy-jax-seed: 0 (Type: int)
+  --estimate-resources: True (Type: bool)
+  --llm-tasks: all (Type: str)
+  --llm-timeout: 120 (Type: int)
+  --only-steps: 1,2 (Type: str)
+  --ontology-terms-file: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json (Type: PosixPath)
+  --output-dir: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output (Type: PosixPath)
+  --pipeline-summary-file: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/pipeline_execution_summary.json (Type: PosixPath)
+  --recreate-venv: False (Type: bool)
+  --recursive: True (Type: bool)
+  --site-html-filename: gnn_pipeline_summary_site.html (Type: str)
+  --skip-dependency-validation: False (Type: bool)
+  --skip-steps:  (Type: str)
+  --strict: False (Type: bool)
+  --target-dir: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples (Type: PosixPath)
+  --verbose: True (Type: bool)
+2025-06-08 11:38:21,943 - GNN_Pipeline - INFO - === DEPENDENCY VALIDATION ===
+2025-06-08 11:38:21,943 - GNN_Pipeline - INFO - Validating dependency groups: ['core', 'gnn_processing']
+2025-06-08 11:38:21,944 - GNN_Pipeline - DEBUG - 🐍 Found virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-08 11:38:21,944 - GNN_Pipeline - DEBUG - Found site-packages at: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.10/site-packages
+2025-06-08 11:38:21,944 - GNN_Pipeline - DEBUG - Using Python for dependency validation: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-08 11:38:27,735 - GNN_Pipeline - INFO - All required dependencies validated successfully.
+2025-06-08 11:38:27,735 - GNN_Pipeline - DEBUG - ℹ️ Discovering potential pipeline scripts using pattern: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/*_*.py
+2025-06-08 11:38:27,735 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 7_mcp.py (Number: 7)
+2025-06-08 11:38:27,735 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 14_site.py (Number: 14)
+2025-06-08 11:38:27,735 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 2_setup.py (Number: 2)
+2025-06-08 11:38:27,735 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 1_gnn.py (Number: 1)
+2025-06-08 11:38:27,735 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 5_export.py (Number: 5)
+2025-06-08 11:38:27,735 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 9_render.py (Number: 9)
+2025-06-08 11:38:27,735 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 6_visualization.py (Number: 6)
+2025-06-08 11:38:27,735 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 13_discopy_jax_eval.py (Number: 13)
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 3_tests.py (Number: 3)
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 12_discopy.py (Number: 12)
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 10_execute.py (Number: 10)
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 11_llm.py (Number: 11)
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 4_gnn_type_checker.py (Number: 4)
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - ℹ️ Matched script for pipeline: 8_ontology.py (Number: 8)
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - ℹ️ Found and sorted script basenames: ['1_gnn.py', '2_setup.py', '3_tests.py', '4_gnn_type_checker.py', '5_export.py', '6_visualization.py', '7_mcp.py', '8_ontology.py', '9_render.py', '10_execute.py', '11_llm.py', '12_discopy.py', '13_discopy_jax_eval.py', '14_site.py']
+2025-06-08 11:38:27,736 - GNN_Pipeline - INFO - 📋 Will execute 2 pipeline steps:
+2025-06-08 11:38:27,736 - GNN_Pipeline - INFO -   1. 1: 1_gnn.py
+2025-06-08 11:38:27,736 - GNN_Pipeline - INFO -   2. 2: 2_setup.py
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - 🔍 Determining Python executable for subprocess calls...
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - 🐍 Found virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - Found site-packages at: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/lib/python3.10/site-packages
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - ✓ Using virtual environment Python: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-08 11:38:27,736 - GNN_Pipeline - DEBUG - 🐍 Selected Python for subprocess calls: /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python
+2025-06-08 11:38:27,736 - GNN_Pipeline - INFO - 
+  ██████╗ ███╗   ██╗ ███╗   ██╗
+2025-06-08 11:38:27,736 - GNN_Pipeline - INFO -   ██╔════╝ ████╗  ██║ ████╗  ██║
+2025-06-08 11:38:27,736 - GNN_Pipeline - INFO -   ██║  ███╗██╔██╗ ██║ ██╔██╗ ██║
+2025-06-08 11:38:27,736 - GNN_Pipeline - INFO -   ██║   ██║██║╚██╗██║ ██║╚██╗██║
+2025-06-08 11:38:27,737 - GNN_Pipeline - INFO -   ╚██████╔╝██║ ╚████║ ██║ ╚████║
+2025-06-08 11:38:27,737 - GNN_Pipeline - INFO -    ╚═════╝ ╚═╝  ╚═══╝ ╚═╝  ╚═══╝
+2025-06-08 11:38:27,737 - GNN_Pipeline - INFO -   Generalized Notation Notation
+2025-06-08 11:38:27,737 - GNN_Pipeline - INFO -   Active Inference Institute
+2025-06-08 11:38:27,737 - GNN_Pipeline - INFO -   Pipeline Run: 2025-06-08 11:38:27
+2025-06-08 11:38:32,255 - GNN_Pipeline - INFO - 🏁 Pipeline processing completed. Overall Status: SUCCESS
+2025-06-08 11:38:32,255 - GNN_Pipeline - INFO - 
+--- Pipeline Execution Summary ---
+2025-06-08 11:38:32,255 - GNN_Pipeline - INFO - 📊 Total Steps Attempted/Processed: 2 / 14
+2025-06-08 11:38:32,255 - GNN_Pipeline - INFO -   ✅ Successful: 2
+2025-06-08 11:38:32,255 - GNN_Pipeline - INFO -   ⚠️ Success with Warnings: 0
+2025-06-08 11:38:32,255 - GNN_Pipeline - INFO -   ❌ Failed/Error: 0
+2025-06-08 11:38:32,256 - GNN_Pipeline - INFO -   ⏭️ Skipped: 0
+2025-06-08 11:38:32,256 - GNN_Pipeline - INFO - 🎉 PIPELINE FINISHED SUCCESSFULLY.
+2025-06-08 11:38:32,256 - GNN_Pipeline - INFO - 💾 Detailed pipeline execution summary (JSON) saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/pipeline_execution_summary.json
