@@ -1,189 +1,157 @@
 {
-    "model_purpose": "The purpose of the Multifactor PyMDP Agent model is to represent a PyMDP agent that utilizes multiple observation modalities and hidden state factors in the context of Active Inference. It is designed to infer states, make policy decisions, and sample actions based on observations and hidden states.",
+    "model_purpose": "The GNN file represents a Multifactor PyMDP (Partially Observable Markov Decision Process) agent designed for active inference, incorporating multiple observation modalities and hidden state factors.",
     "key_components": {
-        "hidden_states": {
-            "factors": {
-                "factor_0": {
-                    "name": "reward_level",
-                    "states": 2
-                },
-                "factor_1": {
-                    "name": "decision_state",
-                    "states": 3
-                }
+        "states": {
+            "s_f0": {
+                "description": "Hidden state for the reward level factor",
+                "dimensions": "2 states"
+            },
+            "s_f1": {
+                "description": "Hidden state for the decision state factor",
+                "dimensions": "3 states"
+            },
+            "s_prime_f0": {
+                "description": "Next hidden state for factor 0",
+                "dimensions": "2 states"
+            },
+            "s_prime_f1": {
+                "description": "Next hidden state for factor 1",
+                "dimensions": "3 states"
             }
         },
         "observations": {
-            "modalities": {
-                "modality_0": {
-                    "name": "state_observation",
-                    "outcomes": 3
-                },
-                "modality_1": {
-                    "name": "reward",
-                    "outcomes": 3
-                },
-                "modality_2": {
-                    "name": "decision_proprioceptive",
-                    "outcomes": 3
-                }
+            "o_m0": {
+                "description": "Observation for modality 0 (state observation)",
+                "dimensions": "3 outcomes"
+            },
+            "o_m1": {
+                "description": "Observation for modality 1 (reward)",
+                "dimensions": "3 outcomes"
+            },
+            "o_m2": {
+                "description": "Observation for modality 2 (decision proprioceptive)",
+                "dimensions": "3 outcomes"
             }
         },
         "actions": {
-            "control": {
-                "factor_1": {
-                    "actions": 3
-                },
-                "factor_0": {
-                    "actions": 1,
-                    "uncontrolled": true
-                }
+            "u_f1": {
+                "description": "Action taken for the controllable decision state factor",
+                "dimensions": "1 action"
+            },
+            "\u03c0_f1": {
+                "description": "Policy distribution over actions for the controllable decision state",
+                "dimensions": "3 actions"
             }
         },
         "parameters": {
-            "A_matrices": 3,
-            "B_matrices": 2,
-            "C_vectors": 3,
-            "D_vectors": 2
+            "A_m": {
+                "description": "Likelihood matrices for different observation modalities",
+                "dimensions": "3 modalities"
+            },
+            "B_f": {
+                "description": "Transition matrices for hidden state factors",
+                "dimensions": "2 factors"
+            },
+            "C_m": {
+                "description": "Preference vectors for observations",
+                "dimensions": "3 modalities"
+            },
+            "D_f": {
+                "description": "Prior distributions over hidden states",
+                "dimensions": "2 factors"
+            }
         }
     },
     "component_interactions": {
         "connections": [
-            "D_f0 and D_f1 influence hidden states s_f0 and s_f1",
-            "Hidden states s_f0 and s_f1 influence likelihood matrices A_m0, A_m1, and A_m2",
-            "Likelihood matrices A_m0, A_m1, and A_m2 generate observations o_m0, o_m1, and o_m2",
-            "Hidden states s_f0, s_f1, and action u_f1 influence transition matrices B_f0 and B_f1",
-            "Transition matrices B_f0 and B_f1 determine next hidden states s_prime_f0 and s_prime_f1",
-            "Log preference vectors C_m0, C_m1, and C_m2 contribute to the expected free energy G",
-            "Expected free energy G influences the policy vector \u03c0_f1",
-            "Policy vector \u03c0_f1 determines the action u_f1"
+            "(D_f0,D_f1)-(s_f0,s_f1)",
+            "(s_f0,s_f1)-(A_m0,A_m1,A_m2)",
+            "(A_m0,A_m1,A_m2)-(o_m0,o_m1,o_m2)",
+            "(s_f0,s_f1,u_f1)-(B_f0,B_f1)",
+            "(B_f0,B_f1)-(s_prime_f0,s_prime_f1)",
+            "(C_m0,C_m1,C_m2)>G",
+            "G>\u03c0_f1",
+            "\u03c0_f1-u_f1"
+        ],
+        "descriptions": [
+            "Hidden states influence observations through likelihood matrices.",
+            "Actions affect the transition dynamics of the hidden states.",
+            "Preferences and prior distributions affect expected free energy and policy decisions."
         ]
     },
     "data_types_and_dimensions": {
-        "A_matrices": [
-            {
-                "dimensions": "[3, 2, 3]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[3, 2, 3]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[3, 2, 3]",
-                "type": "float"
-            }
-        ],
-        "B_matrices": [
-            {
-                "dimensions": "[2, 2, 1]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[3, 3, 3]",
-                "type": "float"
-            }
-        ],
-        "C_vectors": [
-            {
-                "dimensions": "[3]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[3]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[3]",
-                "type": "float"
-            }
-        ],
-        "D_vectors": [
-            {
-                "dimensions": "[2]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[3]",
-                "type": "float"
-            }
-        ],
-        "hidden_states": [
-            {
-                "dimensions": "[2, 1]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[3, 1]",
-                "type": "float"
-            }
-        ],
-        "observations": [
-            {
-                "dimensions": "[3, 1]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[3, 1]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[3, 1]",
-                "type": "float"
-            }
-        ],
-        "policy_and_control": [
-            {
-                "dimensions": "[3]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[1]",
-                "type": "int"
-            },
-            {
-                "dimensions": "[1]",
-                "type": "float"
-            },
-            {
-                "dimensions": "[1]",
-                "type": "int"
-            }
-        ]
+        "A_m": {
+            "type": "Likelihood matrices",
+            "dimensions": [
+                {
+                    "observation_outcomes": 3,
+                    "state_factor0_states": 2,
+                    "state_factor1_states": 3
+                },
+                {
+                    "observation_outcomes": 3,
+                    "state_factor0_states": 2,
+                    "state_factor1_states": 3
+                },
+                {
+                    "observation_outcomes": 3,
+                    "state_factor0_states": 2,
+                    "state_factor1_states": 3
+                }
+            ]
+        },
+        "B_f": {
+            "type": "Transition matrices",
+            "dimensions": [
+                {
+                    "states_next": 2,
+                    "states_previous": 2,
+                    "actions": 1
+                },
+                {
+                    "states_next": 3,
+                    "states_previous": 3,
+                    "actions": 3
+                }
+            ]
+        },
+        "C_m": {
+            "type": "Preference vectors",
+            "dimensions": [
+                {
+                    "observation_outcomes": 3
+                },
+                {
+                    "observation_outcomes": 3
+                },
+                {
+                    "observation_outcomes": 3
+                }
+            ]
+        },
+        "D_f": {
+            "type": "Prior distributions",
+            "dimensions": [
+                {
+                    "states": 2
+                },
+                {
+                    "states": 3
+                }
+            ]
+        }
     },
     "potential_applications": [
-        "Modeling decision-making processes in artificial intelligence and robotics",
-        "Simulating adaptive behaviors in uncertain environments",
-        "Developing algorithms for reinforcement learning and active inference"
+        "Modeling complex decision-making processes in environments with uncertainty.",
+        "Applications in robotics for active perception and action selection.",
+        "AI systems requiring active inference to adapt to dynamic inputs and states."
     ],
     "limitations_or_ambiguities": [
-        "The control factor for B_f0 is specified as uncontrolled, potentially limiting the agent's adaptability.",
-        "The initial parameterization is derived from a specific Python script example, which may not generalize well to other contexts.",
-        "Certain matrix dimensions and their initialization values may require further clarifications to ensure proper implementation."
+        "The model assumes a specific parameterization that may not generalize to all scenarios.",
+        "Dynamic behavior is described as unbounded, which may not be practical in real-world applications.",
+        "Certain actions and states are described as uncontrolled, which could limit the agent's adaptability."
     ],
     "ontology_mapping_assessment": {
-        "present_terms": [
-            "LikelihoodMatrixModality0",
-            "LikelihoodMatrixModality1",
-            "LikelihoodMatrixModality2",
-            "TransitionMatrixFactor0",
-            "TransitionMatrixFactor1",
-            "LogPreferenceVectorModality0",
-            "LogPreferenceVectorModality1",
-            "LogPreferenceVectorModality2",
-            "PriorOverHiddenStatesFactor0",
-            "PriorOverHiddenStatesFactor1",
-            "HiddenStateFactor0",
-            "HiddenStateFactor1",
-            "NextHiddenStateFactor0",
-            "NextHiddenStateFactor1",
-            "ObservationModality0",
-            "ObservationModality1",
-            "ObservationModality2",
-            "PolicyVectorFactor1",
-            "ActionFactor1",
-            "ExpectedFreeEnergy"
-        ],
-        "relevance": "All terms are relevant as they accurately describe the model's components and their relationships within the context of active inference and PyMDP modeling."
+        "assessment": "The ActInfOntology terms are present and relevant, aligning with the defined components such as likelihood matrices, transition matrices, preference vectors, and hidden states. This enhances the model's interpretability within the active inference framework."
     }
 }

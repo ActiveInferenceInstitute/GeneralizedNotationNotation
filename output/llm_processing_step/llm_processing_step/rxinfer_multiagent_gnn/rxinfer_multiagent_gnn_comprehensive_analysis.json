@@ -1,131 +1,99 @@
 {
-    "model_purpose": "The model represents a multi-agent trajectory planning scenario in a 2D environment using RxInfer.jl. It aims to simulate agents' movement while considering obstacle avoidance, goal-directed behavior, and inter-agent collision avoidance.",
+    "model_purpose": "The GNN file represents a multi-agent trajectory planning model for RxInfer.jl, which is designed to simulate and plan the trajectories of multiple agents in a 2D environment while considering obstacles and collision avoidance.",
     "key_components": {
-        "agents": {
-            "count": 4,
-            "parameters": {
-                "id": "Unique identifier for each agent",
-                "radius": "Physical size of each agent",
-                "initial_position": "Starting coordinates in 2D space",
-                "target_position": "Desired destination coordinates in 2D space"
-            }
-        },
         "state_space_model": {
+            "description": "A model that describes the states of the agents over time, including their positions and dynamics.",
             "parameters": {
-                "dt": "Time step for the model",
+                "dt": "Time step for the state space model",
                 "A": "State transition matrix",
                 "B": "Control input matrix",
                 "C": "Observation matrix"
-            },
-            "state_variables": "Position and velocity of agents"
+            }
         },
-        "control_inputs": "Inputs that dictate the agents' movements and actions.",
-        "observations": "Measurements related to agent positions and potential obstacles."
+        "agents": {
+            "description": "Four agents with unique IDs, radii, initial positions, and target positions.",
+            "agent_count": 4,
+            "agent_properties": [
+                "id",
+                "radius",
+                "initial_position",
+                "target_position"
+            ]
+        },
+        "obstacle_definitions": {
+            "description": "Definitions of various obstacles in the environment that agents must navigate around.",
+            "types": [
+                "door_obstacles",
+                "wall_obstacles",
+                "combined_obstacles"
+            ]
+        },
+        "goal_constraints": {
+            "description": "Constraints that guide agents towards their respective goals with associated variances."
+        },
+        "visualization_parameters": {
+            "description": "Parameters for visualizing the agents' trajectories, including plot dimensions and colors."
+        }
     },
     "component_interactions": {
-        "state_space_model": [
-            "Receives time step (dt) and matrices (A, B, C) for state updates.",
-            "Outputs estimated agent trajectories."
-        ],
-        "agent_trajectories": [
-            "Informed by the state space model and variances for initial state and control.",
-            "Feeds into goal-directed behavior and collision avoidance constraints."
-        ],
-        "goal_directed_behavior": [
-            "Utilizes agent trajectories and goal constraint variance to guide agents.",
-            "Informs the planning system on how to reach targets."
-        ],
-        "obstacle_avoidance": [
-            "Uses agent trajectories and parameters to ensure agents avoid obstacles.",
-            "Contributes to the overall planning system."
-        ],
-        "collision_avoidance": [
-            "Ensures agents maintain safe distances based on their trajectories and sizes.",
-            "Part of the planning system."
-        ],
-        "planning_system": [
-            "Integrates goal-directed behavior, obstacle avoidance, and collision avoidance for comprehensive trajectory planning."
-        ]
+        "state_transition": "The model parameters (dt, A, B, C) define the state space model, which produces agent trajectories.",
+        "goal_constraints": "Agent trajectories are influenced by goal constraints and associated variances.",
+        "obstacle_avoidance": "Agent trajectories are modified based on proximity to obstacles, ensuring avoidance behavior.",
+        "collision_avoidance": "Agents interact to prevent collisions by considering their respective positions and radii."
     },
     "data_types_and_dimensions": {
         "parameters": {
-            "float": [
-                "dt",
-                "gamma",
-                "softmin_temperature",
-                "initial_state_variance",
-                "control_variance",
-                "goal_constraint_variance",
-                "gamma_shape",
-                "gamma_scale_factor",
-                "agent_alpha",
-                "target_alpha"
-            ],
-            "int": [
-                "nr_steps",
-                "nr_iterations",
-                "nr_agents",
-                "intermediate_steps",
-                "fps",
-                "heatmap_resolution",
-                "plot_width",
-                "plot_height"
-            ],
-            "bool": [
-                "save_intermediates"
-            ],
-            "string": [
-                "color_palette",
-                "results_dir",
-                "animation_template",
-                "control_vis_filename",
-                "obstacle_distance_filename",
-                "path_uncertainty_filename",
-                "convergence_filename"
-            ]
+            "dt": "float",
+            "gamma": "float",
+            "nr_steps": "int",
+            "nr_iterations": "int",
+            "nr_agents": "int",
+            "softmin_temperature": "float",
+            "intermediate_steps": "int",
+            "save_intermediates": "bool"
         },
         "matrices": {
             "A": "4x4 float matrix",
             "B": "4x2 float matrix",
             "C": "2x4 float matrix"
         },
-        "obstacles": {
-            "center": "2D float coordinates",
-            "size": "2D float dimensions"
+        "initial_conditions": {
+            "initial_state_variance": "float",
+            "control_variance": "float",
+            "goal_constraint_variance": "float"
+        },
+        "obstacle_definitions": {
+            "obstacle_centers": "2D float array",
+            "obstacle_sizes": "2D float array"
         },
         "agents": {
-            "id": "integer",
-            "radius": "float",
-            "initial_position": "2D float coordinates",
-            "target_position": "2D float coordinates"
-        },
-        "experiment_configs": {
-            "seeds": "Tuple of integers",
-            "results_dir": "string"
+            "agent_id": "int",
+            "agent_radius": "float",
+            "initial_position": "2D float array",
+            "target_position": "2D float array"
         }
     },
     "potential_applications": [
-        "Simulating robotic multi-agent systems in navigation scenarios.",
-        "Planning paths in dynamic environments with obstacles.",
-        "Testing collision avoidance algorithms in multi-agent settings."
+        "Simulating multi-agent systems in robotics.",
+        "Planning trajectories in autonomous vehicle navigation.",
+        "Researching cooperative strategies in multi-agent environments."
     ],
     "limitations_or_ambiguities": [
-        "The model's performance may vary with different agent configurations and obstacle placements.",
-        "Limited to 2D environments without consideration for dynamic changes in obstacles.",
-        "The influence of parameters like control variance and gamma on the results needs further empirical validation."
+        "The model assumes a discrete time step, which may not accurately represent continuous dynamics.",
+        "The impact of the softmin temperature parameter is not clearly defined in terms of its effect on agent behavior."
     ],
     "ontology_mapping_assessment": {
-        "terms_present": {
-            "dt": "TimeStep",
-            "gamma": "ConstraintParameter",
-            "nr_steps": "TrajectoryLength",
-            "nr_iterations": "InferenceIterations",
-            "nr_agents": "NumberOfAgents",
-            "softmin_temperature": "SoftminTemperature",
-            "A": "StateTransitionMatrix",
-            "B": "ControlInputMatrix",
-            "C": "ObservationMatrix"
-        },
-        "relevance": "The ActInfOntology terms are well-integrated and relevant, providing a clear mapping for the model's parameters and enhancing understanding of their roles."
+        "terms_present": [
+            "TimeStep",
+            "ConstraintParameter",
+            "TrajectoryLength",
+            "InferenceIterations",
+            "NumberOfAgents",
+            "SoftminTemperature",
+            "StateTransitionMatrix",
+            "ControlInputMatrix",
+            "ObservationMatrix"
+        ],
+        "relevance": "The ActInfOntology terms are relevant and effectively map to the parameters used in the model, providing a clear structure for understanding the definitions and roles of various components."
     }
 }
