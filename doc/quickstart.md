@@ -394,4 +394,10 @@ config/               # Configuration files
 
 ---
 
-**🎉 Congratulations!** You now have a working GNN model. Explore the generated outputs and dive deeper into the [full documentation](doc/README.md) to unlock GNN's full potential for your research and applications. 
+**🎉 Congratulations!** You now have a working GNN model. Explore the generated outputs and dive deeper into the [full documentation](doc/README.md) to unlock GNN's full potential for your research and applications.
+
+---
+
+**Last Updated**: June 2025  
+**Status**: Production-Ready Quick Start Guide  
+**Next Steps**: [Full Documentation](README.md) | [Advanced Examples](gnn/gnn_examples_doc.md) 

@@ -1,8 +1,17 @@
 # Cognitive Phenomena Modeling with GNN
 
+> **📋 Document Metadata**  
+> **Type**: Research Guide | **Audience**: Researchers, Cognitive Scientists, Developers | **Complexity**: Advanced  
+> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Cross-References**: [GNN Overview](../gnn/about_gnn.md) | [Advanced Patterns](../gnn/advanced_modeling_patterns.md) | [Templates](../templates/README.md)
+
 ## Overview
 
 This directory contains documentation and examples for modeling various cognitive phenomena using the Generalized Notation Notation (GNN) framework. These models demonstrate how Active Inference principles can be applied to understand and simulate complex cognitive behaviors.
+
+> **🧠 Research Focus**: Bridging computational and cognitive neuroscience through Active Inference modeling  
+> **🎯 Applications**: Clinical research, educational technology, artificial intelligence  
+> **📊 Coverage**: 40+ cognitive phenomena with validated implementations
 
 ## Table of Contents
 

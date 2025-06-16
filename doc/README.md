@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Navigation Hub | **Audience**: All Users | **Complexity**: Beginner  
-> **Last Updated**: January 2025 | **Status**: Production-Ready  
+> **Last Updated**: June 2025 | **Status**: Production-Ready  
 > **Cross-References**: [Setup Guide](SETUP.md) | [Contributing](../CONTRIBUTING.md) | [Documentation Status](DOCUMENTATION_STATUS.md)
 
 Welcome to the comprehensive documentation for Generalized Notation Notation (GNN), a standardized text-based language for expressing Active Inference generative models.
@@ -219,6 +219,37 @@ New to GNN? Start here:
   - *Pipeline*: [Step 3 Testing](pipeline/README.md#step-3-test-execution)
   - *Quality*: [Documentation Maintenance](DOCUMENTATION_MAINTENANCE_PLAN.md)
 
+### Security & Compliance
+> **🔒 Enterprise Security** | **📊 Production-Ready**
+
+- **[Security Guide](security/README.md)** - Comprehensive security documentation
+  - *LLM Security*: Prompt injection prevention and API security
+  - *MCP Security*: Model Context Protocol security measures
+  - *Production Security*: Deployment and infrastructure security
+  - *Development Security*: Secure coding practices and testing
+
+### Release Management
+> **🚀 Professional Release Process** | **📋 Version Control**
+
+- **[Release Management](releases/README.md)** - Complete release process documentation
+  - *Versioning*: Semantic versioning strategy and guidelines
+  - *Release Cycles*: Regular and emergency release procedures
+  - *Quality Assurance*: Testing and validation requirements
+  - *Security Releases*: Critical vulnerability response process
+- **[Changelog](../CHANGELOG.md)** - Complete project change history
+  - *Current Version*: v1.1.0 with comprehensive feature additions
+  - *Version History*: Detailed change tracking since project inception
+  - *Upgrade Guides*: Migration assistance between major versions
+
+### Documentation Standards
+> **📝 Contribution Guidelines** | **✅ Quality Assurance**
+
+- **[Documentation Style Guide](style_guide.md)** - Comprehensive writing and formatting standards
+  - *Writing Standards*: Voice, tone, and clarity guidelines
+  - *Technical Guidelines*: Code examples, mathematical notation, GNN syntax
+  - *Quality Assurance*: Review processes and automated validation
+  - *Content Guidelines*: Structure, cross-references, and accessibility
+
 ### Deployment & Operations
 > **🚀 Production Deployment** | **📊 46KB Operational Documentation**
 
@@ -308,7 +339,7 @@ quality_level: gold_standard
 
 ---
 
-**Last Updated**: January 2025  
+**Last Updated**: June 2025  
 **Documentation Version**: Compatible with GNN v1.x  
 **Status**: Comprehensive and Production-Ready  
 **Cross-Reference Network**: ✅ [Fully Integrated](CROSS_REFERENCE_INDEX.md) 

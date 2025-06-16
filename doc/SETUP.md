@@ -1,8 +1,15 @@
 # GNN Project Setup Guide
 
-This document provides comprehensive instructions for setting up the GNN Processing Pipeline environment, including installation steps, environment variables, and detailed information about dependencies.
+> **📋 Document Metadata**  
+> **Type**: Setup Guide | **Audience**: All Users | **Complexity**: Beginner  
+> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Cross-References**: [Quickstart Guide](quickstart.md) | [Main Documentation](README.md) | [Troubleshooting](troubleshooting/README.md)
 
-> **Note**: For comprehensive documentation on GNN itself, please refer to the [GNN Documentation](gnn/about_gnn.md) in the `doc/gnn/` directory.
+This document provides comprehensive instructions for setting up the GNN (Generalized Notation Notation) Processing Pipeline environment, including installation steps, environment variables, and detailed information about dependencies.
+
+> **🎯 Quick Start**: For immediate setup, run `cd src && python3 main.py --only-steps 2_setup --dev`
+
+> **📖 Complete Guide**: For comprehensive documentation on GNN itself, please refer to the [GNN Documentation](gnn/about_gnn.md) in the `doc/gnn/` directory.
 
 ## Quick Start
 
@@ -213,10 +220,130 @@ docker build -t gnn-project .
 docker run -it gnn-project
 ```
 
+## Security Considerations
+
+### **Environment Security**
+- Store API keys securely (use environment variables or secret management)
+- Validate GNN file inputs in production environments
+- Review [Security Guide](security/README.md) for comprehensive security practices
+
+### **LLM Integration Security**
+- **API Key Protection**: Never commit API keys to version control
+- **Prompt Injection Prevention**: GNN includes built-in prompt sanitization
+- **Output Validation**: All LLM outputs are validated before execution
+
+## Performance Optimization
+
+### **System Requirements for Optimal Performance**
+```yaml
+recommended_specs:
+  memory: ">= 8GB RAM"
+  storage: ">= 5GB SSD space"
+  cpu: "Multi-core processor (4+ cores recommended)"
+  python: "3.10 or 3.11 (optimal performance)"
+```
+
+### **Large Model Processing**
+For processing large GNN models (>50MB):
+```bash
+# Increase memory limits and enable caching
+export GNN_CACHE_DIR="/path/to/fast/storage"
+export GNN_MAX_MEMORY="4GB"
+python3 main.py --memory-efficient
+```
+
+## Integration with Development Tools
+
+### **VS Code Integration**
+For the best development experience:
+```bash
+# Install recommended VS Code extensions
+code --install-extension ms-python.python
+code --install-extension davidanson.vscode-markdownlint
+code --install-extension ms-toolsai.jupyter
+```
+
+### **Jupyter Notebook Support**
+GNN includes Jupyter notebook integration:
+```bash
+# Install Jupyter support
+pip install jupyter ipykernel
+python -m ipykernel install --user --name gnn
+
+# Launch Jupyter with GNN kernel
+jupyter notebook
+```
+
+## Continuous Integration Setup
+
+### **GitHub Actions**
+For automated testing and validation:
+```yaml
+# .github/workflows/gnn-test.yml
+name: GNN Pipeline Test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup GNN
+      run: |
+        cd src
+        python3 main.py --only-steps 2_setup
+    - name: Run Tests
+      run: |
+        cd src
+        python3 3_tests.py
+```
+
+## Version Management
+
+### **Multiple GNN Versions**
+To work with multiple GNN versions:
+```bash
+# Use virtual environments for version isolation
+python3 -m venv gnn-v1.1.0
+source gnn-v1.1.0/bin/activate
+cd src && python3 main.py --only-steps 2_setup
+
+# Create another environment for development
+python3 -m venv gnn-dev
+source gnn-dev/bin/activate
+cd src && python3 main.py --only-steps 2_setup --dev
+```
+
+### **Upgrade Process**
+When upgrading GNN versions:
+1. **Backup**: Save current models and configurations
+2. **Test**: Validate with existing models using new version
+3. **Migrate**: Follow version-specific upgrade guides in [Changelog](../CHANGELOG.md)
+4. **Verify**: Run comprehensive tests on upgraded installation
+
 ## Need Help?
 
+### **Common Setup Issues**
+- **Python Version**: Ensure Python 3.9+ is installed and active
+- **Virtual Environment**: Always use virtual environments for isolation
+- **Dependencies**: Check [Common Errors](troubleshooting/common_errors.md) for dependency issues
+- **Permissions**: Ensure write access to project directory
+
+### **Getting Support**
 If you encounter issues during setup:
 
-1. Check the logs in `output/logs/` directory
-2. Refer to this guide's troubleshooting section
-3. Open an issue on GitHub with the error details 
+1. **Check Documentation**: [Troubleshooting Guide](troubleshooting/README.md)
+2. **Review Logs**: Check `output/logs/` directory for detailed error information
+3. **Search Issues**: Look through [GitHub Issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
+4. **Create Issue**: Open a new issue with setup error details and system information
+
+### **Community Resources**
+- **[GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)**: Community Q&A
+- **[Active Inference Institute](https://activeinference.org)**: Research community and resources
+- **[Documentation](README.md)**: Comprehensive project documentation
+
+---
+
+**Last Updated**: June 2025  
+**Setup Guide Version**: 2.0  
+**Compatible GNN Versions**: v1.1.0+  
+**Next Review**: September 2025 
