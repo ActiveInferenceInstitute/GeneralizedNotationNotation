@@ -1,6 +1,6 @@
 {
   "type_check_results": {
-    "gnn/examples/pymdp_pomdp_agent.md": {
+    "gnn/examples/rxinfer_multiagent_gnn.md": {
       "is_valid": true,
       "errors": [],
       "warnings": []
@@ -10,16 +10,16 @@
       "errors": [],
       "warnings": []
     },
-    "gnn/examples/rxinfer_multiagent_gnn.md": {
-      "is_valid": true,
-      "errors": [],
-      "warnings": []
-    },
     "gnn/examples/rxinfer_hidden_markov_model.md": {
       "is_valid": false,
       "errors": [
         "Time variable t not defined in StateSpaceBlock"
       ],
+      "warnings": []
+    },
+    "gnn/examples/pymdp_pomdp_agent.md": {
+      "is_valid": true,
+      "errors": [],
       "warnings": []
     }
   },

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Multi-agent_Trajectory_Planning>
-  <file_path>/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_multiagent_gnn.md</file_path>
+  <file_path>/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_multiagent_gnn.md</file_path>
   <name>Multi-agent Trajectory Planning</name>
   <raw_sections>
     <GNNSection>RxInferMultiAgentTrajectoryPlanning</GNNSection>
@@ -145,7 +145,7 @@ plot_width=800
 plot_height=400
 agent_alpha=1.0
 target_alpha=0.2
-color_palette=&quot;tab10&quot;
+color_palette="tab10"
 
 # Environment definitions
 door_obstacle_center_1={(-40.0, 0.0)}
@@ -186,12 +186,12 @@ agent4_target_position={(-10.0, 15.0)}
 
 # Experiment configurations
 experiment_seeds={(42, 123)}
-results_dir=&quot;results&quot;
-animation_template=&quot;{environment}_{seed}.gif&quot;
-control_vis_filename=&quot;control_signals.gif&quot;
-obstacle_distance_filename=&quot;obstacle_distance.png&quot;
-path_uncertainty_filename=&quot;path_uncertainty.png&quot;
-convergence_filename=&quot;convergence.png&quot;</InitialParameterization>
+results_dir="results"
+animation_template="{environment}_{seed}.gif"
+control_vis_filename="control_signals.gif"
+obstacle_distance_filename="obstacle_distance.png"
+path_uncertainty_filename="path_uncertainty.png"
+convergence_filename="convergence.png"</InitialParameterization>
     <Equations># State space model:
 # x_{t+1} = A * x_t + B * u_t + w_t,  w_t ~ N(0, control_variance)
 # y_t = C * x_t + v_t,                v_t ~ N(0, observation_variance)

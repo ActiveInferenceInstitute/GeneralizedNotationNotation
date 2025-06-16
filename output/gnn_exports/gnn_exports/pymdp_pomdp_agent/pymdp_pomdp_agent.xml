@@ -1,24 +1,24 @@
 <?xml version="1.0" ?>
 <Multifactor_PyMDP_Agent_v1>
-  <file_path>/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/pymdp_pomdp_agent.md</file_path>
+  <file_path>/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/pymdp_pomdp_agent.md</file_path>
   <name>Multifactor PyMDP Agent v1</name>
   <raw_sections>
     <GNNSection>MultifactorPyMDPAgent</GNNSection>
     <GNNVersionAndFlags>GNN v1</GNNVersionAndFlags>
     <ModelName>Multifactor PyMDP Agent v1</ModelName>
     <ModelAnnotation>This model represents a PyMDP agent with multiple observation modalities and hidden state factors.
-- Observation modalities: &quot;state_observation&quot; (3 outcomes), &quot;reward&quot; (3 outcomes), &quot;decision_proprioceptive&quot; (3 outcomes)
-- Hidden state factors: &quot;reward_level&quot; (2 states), &quot;decision_state&quot; (3 states)
-- Control: &quot;decision_state&quot; factor is controllable with 3 possible actions.
+- Observation modalities: "state_observation" (3 outcomes), "reward" (3 outcomes), "decision_proprioceptive" (3 outcomes)
+- Hidden state factors: "reward_level" (2 states), "decision_state" (3 states)
+- Control: "decision_state" factor is controllable with 3 possible actions.
 The parameterization is derived from a PyMDP Python script example.</ModelAnnotation>
     <StateSpaceBlock># A_matrices are defined per modality: A_m[observation_outcomes, state_factor0_states, state_factor1_states]
-A_m0[3,2,3,type=float]   # Likelihood for modality 0 (&quot;state_observation&quot;)
-A_m1[3,2,3,type=float]   # Likelihood for modality 1 (&quot;reward&quot;)
-A_m2[3,2,3,type=float]   # Likelihood for modality 2 (&quot;decision_proprioceptive&quot;)
+A_m0[3,2,3,type=float]   # Likelihood for modality 0 ("state_observation")
+A_m1[3,2,3,type=float]   # Likelihood for modality 1 ("reward")
+A_m2[3,2,3,type=float]   # Likelihood for modality 2 ("decision_proprioceptive")
 
 # B_matrices are defined per hidden state factor: B_f[states_next, states_previous, actions]
-B_f0[2,2,1,type=float]   # Transitions for factor 0 (&quot;reward_level&quot;), 1 implicit action (uncontrolled)
-B_f1[3,3,3,type=float]   # Transitions for factor 1 (&quot;decision_state&quot;), 3 actions
+B_f0[2,2,1,type=float]   # Transitions for factor 0 ("reward_level"), 1 implicit action (uncontrolled)
+B_f1[3,3,3,type=float]   # Transitions for factor 1 ("decision_state"), 3 actions
 
 # C_vectors are defined per modality: C_m[observation_outcomes]
 C_m0[3,type=float]       # Preferences for modality 0
@@ -30,8 +30,8 @@ D_f0[2,type=float]       # Prior for factor 0
 D_f1[3,type=float]       # Prior for factor 1
 
 # Hidden States
-s_f0[2,1,type=float]     # Hidden state for factor 0 (&quot;reward_level&quot;)
-s_f1[3,1,type=float]     # Hidden state for factor 1 (&quot;decision_state&quot;)
+s_f0[2,1,type=float]     # Hidden state for factor 0 ("reward_level")
+s_f1[3,1,type=float]     # Hidden state for factor 1 ("decision_state")
 s_prime_f0[2,1,type=float] # Next hidden state for factor 0
 s_prime_f1[3,1,type=float] # Next hidden state for factor 1
 

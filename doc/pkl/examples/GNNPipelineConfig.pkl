@@ -1,0 +1,153 @@
+/// GNN Pipeline Configuration
+/// Demonstrates dynamic configuration and late binding
+
+// Pipeline steps configuration schema
+stepConfigSchema = new {
+  enabled = true
+  timeoutSeconds = 30
+  retries = 3
+  priority = "medium"
+}
+
+// Export target schema
+exportTargetSchema = new {
+  format = "json"
+  pretty = true
+  validate = true
+  outputPath = ""
+}
+
+// Main pipeline configuration
+inputFormats = List("pkl", "markdown", "json")
+
+// Pipeline steps configuration
+steps = new {
+  gnn_parse = new {
+    enabled = true
+    timeoutSeconds = 30
+    retries = 3
+    priority = "high"
+  }
+  validation = new {
+    enabled = true
+    timeoutSeconds = 60
+    retries = 2
+    priority = "high"
+  }
+  export = new {
+    enabled = true
+    timeoutSeconds = 45
+    retries = 1
+    priority = "medium"
+  }
+  render = new {
+    enabled = true
+    timeoutSeconds = 90
+    retries = 2
+    priority = "medium"
+  }
+  visualization = new {
+    enabled = true
+    timeoutSeconds = 120
+    retries = 1
+    priority = "low"
+  }
+}
+
+// Export targets configuration
+exportTargets = new {
+  json = new {
+    format = "json"
+    pretty = true
+    outputPath = "output/model.json"
+  }
+  yaml = new {
+    format = "yaml"
+    pretty = true
+    outputPath = "output/model.yaml"
+  }
+  xml = new {
+    format = "xml"
+    validate = true
+    outputPath = "output/model.xml"
+  }
+  graphml = new {
+    format = "graphml"
+    outputPath = "output/model.graphml"
+  }
+}
+
+// Rendering engines configuration
+renderingEngines = new {
+  pymdp = new {
+    target = "pymdp"
+    optimizationLevel = 2
+    includeComments = true
+    typeHints = true
+  }
+  rxinfer = new {
+    target = "rxinfer"
+    optimizationLevel = 3
+    includeComments = false
+    typeHints = true
+  }
+  jax = new {
+    target = "jax"
+    optimizationLevel = 3
+    includeComments = false
+    typeHints = true
+  }
+}
+
+// LLM enhancement configuration
+llmConfig = new {
+  provider = "openai"
+  model = "gpt-4"
+  temperature = 0.1
+  maxTokens = 4000
+  enhancementTasks = List(
+    "model_analysis",
+    "parameter_optimization", 
+    "documentation_generation"
+  )
+}
+
+// Resource constraints
+resourceConstraints = new {
+  maxMemoryMB = 1024
+  maxExecutionTimeMin = 30
+  parallelWorkers = 4
+  tempDiskSpaceMB = 2048
+}
+
+// Validation rules
+validationRules = new {
+  strictTypeChecking = true
+  allowExperimentalFeatures = false
+  requireDocumentation = true
+  enforceNamingConventions = true
+  validateMathematicalConstraints = true
+}
+
+// Security configuration
+securityConfig = new {
+  sandboxExecution = true
+  allowNetworkAccess = false
+  allowFileWrite = true
+  maxFileSize = "10MB"
+  allowedFileTypes = List("pkl", "json", "yaml", "md")
+}
+
+// Performance optimization settings
+performanceConfig = new {
+  enableCaching = true
+  cacheDirectory = ".pkl-cache"
+  parallelProcessing = true
+  lazyEvaluation = true
+  memoryOptimization = true
+}
+
+// Output configuration
+output {
+  renderer = new YamlRenderer {}
+}

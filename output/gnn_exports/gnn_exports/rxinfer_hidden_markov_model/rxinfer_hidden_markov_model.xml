@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <RxInfer_Hidden_Markov_Model_v1>
-  <file_path>/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_hidden_markov_model.md</file_path>
+  <file_path>/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/gnn/examples/rxinfer_hidden_markov_model.md</file_path>
   <name>RxInfer Hidden Markov Model v1</name>
   <raw_sections>
     <GNNSection>RxInferHiddenMarkovModel</GNNSection>
     <GNNVersionAndFlags>GNN v1</GNNVersionAndFlags>
     <ModelName>RxInfer Hidden Markov Model v1</ModelName>
     <ModelAnnotation>This model represents a Hidden Markov Model with 3 hidden states and 3 observation categories for RxInfer.jl.
-- Hidden states: &quot;Bedroom&quot; (state 1), &quot;Living room&quot; (state 2), &quot;Bathroom&quot; (state 3)
+- Hidden states: "Bedroom" (state 1), "Living room" (state 2), "Bathroom" (state 3)
 - Observations: 3 categorical outcomes corresponding to noisy observations of the true state
 - Transition matrix A: Controls state-to-state transitions over time
 - Observation matrix B: Controls emission probabilities from hidden states to observations
@@ -149,9 +149,9 @@ n_iterations=InferenceIterations</ActInfOntologyAnnotation>
     <ModelParameters>n_states=3              # Hidden states: Bedroom, Living room, Bathroom
 n_obs=3                 # Observation categories: 3 discrete outcomes
 n_iterations=20         # Variational inference iterations
-model_type=&quot;HMM&quot;        # Hidden Markov Model
-inference_method=&quot;variational_message_passing&quot;
-backend=&quot;RxInfer.jl&quot;</ModelParameters>
+model_type="HMM"        # Hidden Markov Model
+inference_method="variational_message_passing"
+backend="RxInfer.jl"</ModelParameters>
     <Footer>RxInfer Hidden Markov Model v1 - GNN Representation</Footer>
     <Signature>Creator: AI Assistant for GNN
 Date: 2024-12-19

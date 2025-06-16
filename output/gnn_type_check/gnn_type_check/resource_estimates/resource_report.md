@@ -5,33 +5,33 @@ Average Memory Usage: 38.19 KB
 Average Inference Time: 433.33 units
 Average Storage: 52.24 KB
 
-## pymdp_pomdp_agent.md
-Path: src/gnn/examples/pymdp_pomdp_agent.md
-Memory Estimate: 0.48 KB
-Inference Estimate: 154.07 units
-Storage Estimate: 3.83 KB
+## rxinfer_multiagent_gnn.md
+Path: src/gnn/examples/rxinfer_multiagent_gnn.md
+Memory Estimate: 0.52 KB
+Inference Estimate: 283.16 units
+Storage Estimate: 6.76 KB
 
 ### Model Info
-- variables_count: 21
-- edges_count: 2
+- variables_count: 60
+- edges_count: 1
 - time_spec: Dynamic
-- equation_count: 5
+- equation_count: 15
 
 ### Complexity Metrics
-- state_space_complexity: 6.9658
-- graph_density: 0.0048
+- state_space_complexity: 6.8202
+- graph_density: 0.0003
 - avg_in_degree: 1.0000
 - avg_out_degree: 1.0000
 - max_in_degree: 1.0000
 - max_out_degree: 1.0000
 - cyclic_complexity: 0.0000
 - temporal_complexity: 0.0000
-- equation_complexity: 8.7600
-- overall_complexity: 8.7413
-- variable_count: 21.0000
-- edge_count: 2.0000
-- total_state_space_dim: 124.0000
-- max_variable_dim: 27.0000
+- equation_complexity: 3.2578
+- overall_complexity: 5.3649
+- variable_count: 60.0000
+- edge_count: 1.0000
+- total_state_space_dim: 112.0000
+- max_variable_dim: 16.0000
 
 ## self_driving_car_comprehensive.md
 Path: src/gnn/examples/self_driving_car_comprehensive.md
@@ -61,34 +61,6 @@ Storage Estimate: 194.16 KB
 - total_state_space_dim: 38780.0000
 - max_variable_dim: 12000.0000
 
-## rxinfer_multiagent_gnn.md
-Path: src/gnn/examples/rxinfer_multiagent_gnn.md
-Memory Estimate: 0.52 KB
-Inference Estimate: 283.16 units
-Storage Estimate: 6.76 KB
-
-### Model Info
-- variables_count: 60
-- edges_count: 1
-- time_spec: Dynamic
-- equation_count: 15
-
-### Complexity Metrics
-- state_space_complexity: 6.8202
-- graph_density: 0.0003
-- avg_in_degree: 1.0000
-- avg_out_degree: 1.0000
-- max_in_degree: 1.0000
-- max_out_degree: 1.0000
-- cyclic_complexity: 0.0000
-- temporal_complexity: 0.0000
-- equation_complexity: 3.2578
-- overall_complexity: 5.3649
-- variable_count: 60.0000
-- edge_count: 1.0000
-- total_state_space_dim: 112.0000
-- max_variable_dim: 16.0000
-
 ## rxinfer_hidden_markov_model.md
 Path: src/gnn/examples/rxinfer_hidden_markov_model.md
 Memory Estimate: 0.29 KB
@@ -116,6 +88,34 @@ Storage Estimate: 4.22 KB
 - edge_count: 7.0000
 - total_state_space_dim: 83.0000
 - max_variable_dim: 9.0000
+
+## pymdp_pomdp_agent.md
+Path: src/gnn/examples/pymdp_pomdp_agent.md
+Memory Estimate: 0.48 KB
+Inference Estimate: 154.07 units
+Storage Estimate: 3.83 KB
+
+### Model Info
+- variables_count: 21
+- edges_count: 2
+- time_spec: Dynamic
+- equation_count: 5
+
+### Complexity Metrics
+- state_space_complexity: 6.9658
+- graph_density: 0.0048
+- avg_in_degree: 1.0000
+- avg_out_degree: 1.0000
+- max_in_degree: 1.0000
+- max_out_degree: 1.0000
+- cyclic_complexity: 0.0000
+- temporal_complexity: 0.0000
+- equation_complexity: 8.7600
+- overall_complexity: 8.7413
+- variable_count: 21.0000
+- edge_count: 2.0000
+- total_state_space_dim: 124.0000
+- max_variable_dim: 27.0000
 
 # Metric Definitions
 

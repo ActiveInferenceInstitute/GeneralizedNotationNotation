@@ -14,7 +14,11 @@ import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple, Any, Optional, Union
 
-import psutil
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
 
 from .config import (
     get_step_timeout, 
@@ -62,6 +66,9 @@ class StepExecutionResult:
 
 def get_memory_usage_mb() -> float:
     """Get current memory usage in MB."""
+    if not PSUTIL_AVAILABLE:
+        return 0.0
+    
     try:
         process = psutil.Process()
         return round(process.memory_info().rss / (1024 * 1024), 2)

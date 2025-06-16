@@ -1,0 +1,124 @@
+/// Base Active Inference Model Template
+/// Provides foundational structure for all Active Inference models
+
+// Model metadata
+modelName = "BaseActiveInferenceModel"
+modelVersion = "1.0.0"
+modelAnnotation = "Foundation template for Active Inference models"
+
+// GNN version and processing flags
+gnnVersion = "2.0"
+processingFlags = new {
+  enableValidation = true
+  strictMode = false
+}
+
+// Active Inference Ontology mapping
+actInfOntology = new {
+  hasStateSpace = "true"
+  hasObservationModel = "true"
+  hasPriors = "true"
+}
+
+// State variable structure
+stateVariableSchema = new {
+  namePattern = "(s_f|o_m|u_c)[0-9]+"
+  maxDimensions = 4
+  maxSize = 1000
+  allowedTypes = List("categorical", "continuous", "binary")
+}
+
+// Hidden states (internal model states)
+hiddenStates = new {
+  s_f0 = new {
+    name = "s_f0"
+    dimensions = List(4, 1)
+    variableType = "categorical" 
+    description = "Location factor"
+  }
+}
+
+// Observations (observable outcomes)
+observations = new {
+  o_m0 = new {
+    name = "o_m0"
+    dimensions = List(4, 1)
+    variableType = "categorical"
+    description = "Visual observations"
+  }
+}
+
+// Actions/Control variables
+actions = new {
+  u_c0 = new {
+    name = "u_c0"
+    dimensions = List(4, 1)
+    variableType = "categorical"
+    description = "Movement actions"
+  }
+}
+
+// Likelihood matrix A: P(o|s)
+A = new {
+  name = "A"
+  dimensions = List(4, 4)
+  matrixType = "likelihood"
+  modality = "m0"
+  factor = "f0"
+  description = "Observation model mapping states to observations"
+}
+
+// Transition matrix B: P(s'|s,u) 
+B = new {
+  name = "B"
+  dimensions = List(4, 4, 4)
+  matrixType = "transition"
+  factor = "f0"
+  description = "Transition dynamics"
+}
+
+// Preference vector C: log preferences
+C = new {
+  name = "C"
+  dimensions = List(4)
+  matrixType = "preferences"
+  modality = "m0"
+  description = "Goal preferences"
+}
+
+// Prior vector D: initial state priors
+D = new {
+  name = "D"
+  dimensions = List(4)
+  matrixType = "priors"
+  factor = "f0"
+  description = "Initial state distribution"
+}
+
+// Time configuration
+timeSettings = new {
+  modelType = "Dynamic"
+  timeDiscretization = "DiscreteTime"
+  timeHorizon = 10
+}
+
+// Model structure validation
+validationRules = new {
+  requiredMatrices = List("A", "B")
+  optionalMatrices = List("C", "D")
+  namingConvention = "GNN_v2"
+  enforceStochasticity = true
+}
+
+// Default simulation configuration
+simulationConfig = new {
+  trials = 10
+  learningRate = 0.01
+  precision = 1.0
+  policyDepth = 1
+}
+
+// Export configuration
+output {
+  renderer = new YamlRenderer {}
+}

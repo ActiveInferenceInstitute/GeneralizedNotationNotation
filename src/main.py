@@ -68,7 +68,11 @@ import json
 import time
 import signal
 from typing import TypedDict, List, Union, Dict, Any, cast
-import psutil
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
 import resource
 
 # Import the centralized pipeline utilities
@@ -103,6 +107,10 @@ except ImportError as e:
 
 # --- Logger Setup ---
 logger = logging.getLogger("GNN_Pipeline")
+
+# Log psutil availability status after logger is available
+if not PSUTIL_AVAILABLE:
+    logger.warning("psutil not available - system memory and disk information will be limited")
 # --- End Logger Setup ---
 
 # Dependency validation is imported above with other utilities
@@ -137,15 +145,27 @@ class PipelineRunData(TypedDict):
 def get_system_info() -> Dict[str, Any]:
     """Gather comprehensive system information for pipeline tracking."""
     try:
-        return {
+        base_info = {
             "python_version": sys.version,
             "platform": os.name,
             "cpu_count": os.cpu_count(),
-            "memory_total_gb": round(psutil.virtual_memory().total / (1024**3), 2),
-            "disk_free_gb": round(psutil.disk_usage('.').free / (1024**3), 2),
             "working_directory": str(Path.cwd()),
             "user": os.getenv('USER', 'unknown')
         }
+        
+        # Add psutil-dependent info if available
+        if PSUTIL_AVAILABLE:
+            base_info.update({
+                "memory_total_gb": round(psutil.virtual_memory().total / (1024**3), 2),
+                "disk_free_gb": round(psutil.disk_usage('.').free / (1024**3), 2)
+            })
+        else:
+            base_info.update({
+                "memory_total_gb": "unavailable (psutil not installed)",
+                "disk_free_gb": "unavailable (psutil not installed)"
+            })
+        
+        return base_info
     except Exception as e:
         logger.warning(f"Failed to gather complete system info: {e}")
         return {"error": str(e)}
@@ -179,31 +199,58 @@ def get_pipeline_scripts(current_dir: Path) -> list[dict[str, int | str | Path]]
     return pipeline_scripts_info
 
 def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
-    venv_path = script_dir / ".venv"
+    """
+    Find the virtual environment Python executable and site-packages path.
+    
+    Args:
+        script_dir: The directory where the script is located (typically src/)
+        
+    Returns:
+        Tuple of (venv_python_path, site_packages_path)
+    """
     venv_python_path = None
     site_packages_path = None
-
-    if venv_path.is_dir():
-        potential_python_executables = [
-            venv_path / "bin" / "python",
-            venv_path / "bin" / "python3",
-            venv_path / "Scripts" / "python.exe", # Windows
-        ]
-        for py_exec in potential_python_executables:
-            if py_exec.exists() and py_exec.is_file():
-                venv_python_path = py_exec
-                logger.debug(f"🐍 Found virtual environment Python: {venv_python_path}")
-                break
+    
+    # Try multiple common virtual environment locations
+    venv_candidates = [
+        script_dir / ".venv",  # Standard .venv in script directory
+        script_dir.parent / "venv",  # venv in parent directory (our case)
+        script_dir.parent / ".venv",  # .venv in parent directory
+    ]
+    
+    for venv_path in venv_candidates:
+        logger.debug(f"🔍 Checking for virtual environment at: {venv_path}")
         
-        lib_path = venv_path / "lib"
-        if lib_path.is_dir():
-            for python_version_dir in lib_path.iterdir():
-                if python_version_dir.is_dir() and python_version_dir.name.startswith("python"):
-                    current_site_packages = python_version_dir / "site-packages"
-                    if current_site_packages.is_dir():
-                        site_packages_path = current_site_packages
-                        logger.debug(f"Found site-packages at: {site_packages_path}")
-                        break
+        if venv_path.is_dir():
+            logger.debug(f"✓ Found virtual environment directory: {venv_path}")
+            
+            potential_python_executables = [
+                venv_path / "bin" / "python",
+                venv_path / "bin" / "python3",
+                venv_path / "Scripts" / "python.exe", # Windows
+            ]
+            
+            for py_exec in potential_python_executables:
+                if py_exec.exists() and py_exec.is_file():
+                    venv_python_path = py_exec
+                    logger.debug(f"🐍 Found virtual environment Python: {venv_python_path}")
+                    break
+            
+            # Find site-packages path
+            lib_path = venv_path / "lib"
+            if lib_path.is_dir():
+                for python_version_dir in lib_path.iterdir():
+                    if python_version_dir.is_dir() and python_version_dir.name.startswith("python"):
+                        current_site_packages = python_version_dir / "site-packages"
+                        if current_site_packages.is_dir():
+                            site_packages_path = current_site_packages
+                            logger.debug(f"📦 Found site-packages at: {site_packages_path}")
+                            break
+            
+            # If we found a Python executable, break out of the loop
+            if venv_python_path:
+                logger.info(f"✅ Using virtual environment: {venv_path}")
+                break
     
     if not venv_python_path:
         logger.warning("⚠️ Virtual environment Python not found. Using system Python. This may lead to issues if dependencies are not globally available.")
@@ -413,18 +460,24 @@ def run_pipeline(args: PipelineArguments):
     
     # Get the Python executable to use for the scripts
     logger.debug("🔍 Determining Python executable for subprocess calls...")
-    venv_python, venv_python_no_activation = get_venv_python(current_dir)
+    venv_python, venv_site_packages = get_venv_python(current_dir)
     
-    if venv_python:
-        logger.debug(f"✓ Using virtual environment Python: {venv_python}")
-    elif venv_python_no_activation:
-        logger.debug(f"⚠️ Using Python without virtualenv activation: {venv_python_no_activation}")
+    if venv_python and venv_python != Path(sys.executable):
+        logger.info(f"✅ Using virtual environment Python: {venv_python}")
+    elif venv_python:
+        logger.debug(f"✓ Using current Python interpreter: {venv_python}")
     else:
-        logger.debug("⚠️ No specific Python found, will use system default")
+        logger.warning("⚠️ No specific Python found, will use system default")
     
     # Determine which Python to use based on availability
-    python_to_use = venv_python or venv_python_no_activation or "python"
+    python_to_use = venv_python or Path(sys.executable)
     logger.debug(f"🐍 Selected Python for subprocess calls: {python_to_use}")
+    
+    # Verify the selected Python executable exists and is executable
+    if not python_to_use.exists():
+        logger.error(f"❌ Selected Python executable does not exist: {python_to_use}")
+        logger.critical("Cannot proceed without a valid Python executable.")
+        sys.exit(1)
     
     # Execute each script
     overall_status = "SUCCESS"

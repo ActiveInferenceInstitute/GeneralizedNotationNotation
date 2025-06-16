@@ -1,9 +1,9 @@
 {
-  "base": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output",
-  "type_check": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_type_check",
-  "visualization": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/visualization",
-  "exports": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_exports",
-  "rendered": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators",
-  "logs": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/logs",
-  "test_reports": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/test_reports"
+  "base": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output",
+  "type_check": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_type_check",
+  "visualization": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/visualization",
+  "exports": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_exports",
+  "rendered": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators",
+  "logs": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/logs",
+  "test_reports": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports"
 }
