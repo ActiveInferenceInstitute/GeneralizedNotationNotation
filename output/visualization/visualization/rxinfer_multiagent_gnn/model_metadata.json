@@ -1,7 +1,0 @@
-{
-  "ModelName": "Multi-agent Trajectory Planning",
-  "ModelAnnotation": "This model represents a multi-agent trajectory planning scenario in RxInfer.jl.\nIt includes:\n- State space model for agents moving in a 2D environment\n- Obstacle avoidance constraints\n- Goal-directed behavior\n- Inter-agent collision avoidance\nThe model can be used to simulate trajectory planning in various environments with obstacles.",
-  "GNNVersionAndFlags": "GNN v1",
-  "Time": "Dynamic\nDiscreteTime\nModelTimeHorizon=nr_steps",
-  "ActInfOntologyAnnotation": "dt=TimeStep\ngamma=ConstraintParameter\nnr_steps=TrajectoryLength\nnr_iterations=InferenceIterations\nnr_agents=NumberOfAgents\nsoftmin_temperature=SoftminTemperature\nA=StateTransitionMatrix\nB=ControlInputMatrix\nC=ObservationMatrix\ninitial_state_variance=InitialStateVariance\ncontrol_variance=ControlVariance\ngoal_constraint_variance=GoalConstraintVariance"
-}

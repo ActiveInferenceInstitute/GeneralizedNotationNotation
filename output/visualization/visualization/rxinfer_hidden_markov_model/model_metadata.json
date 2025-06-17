@@ -1,7 +1,0 @@
-{
-  "ModelName": "RxInfer Hidden Markov Model v1",
-  "ModelAnnotation": "This model represents a Hidden Markov Model with 3 hidden states and 3 observation categories for RxInfer.jl.\n- Hidden states: \"Bedroom\" (state 1), \"Living room\" (state 2), \"Bathroom\" (state 3)\n- Observations: 3 categorical outcomes corresponding to noisy observations of the true state\n- Transition matrix A: Controls state-to-state transitions over time\n- Observation matrix B: Controls emission probabilities from hidden states to observations\n- The model uses Dirichlet priors on both A and B matrices for Bayesian learning\n- Initial state distribution is uniform over the 3 states",
-  "GNNVersionAndFlags": "GNN v1",
-  "Time": "Dynamic\nDiscreteTime=t\nModelTimeHorizon=T",
-  "ActInfOntologyAnnotation": "A=StateTransitionMatrix\nB=ObservationMatrix\nA_prior=TransitionMatrixPrior\nB_prior=ObservationMatrixPrior\ns_0=InitialStateDistribution\ns=HiddenStateSequence\nx=ObservationSequence\nq_A=PosteriorTransitionMatrix\nq_B=PosteriorObservationMatrix  \nq_s=PosteriorHiddenStates\nfree_energy=VariationalFreeEnergy\nT=TimeHorizon\nn_states=NumberOfHiddenStates\nn_obs=NumberOfObservationCategories\nn_iterations=InferenceIterations"
-}

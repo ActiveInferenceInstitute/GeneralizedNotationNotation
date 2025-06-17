@@ -1,7 +1,0 @@
-{
-  "ModelName": "Multifactor PyMDP Agent v1",
-  "ModelAnnotation": "This model represents a PyMDP agent with multiple observation modalities and hidden state factors.\n- Observation modalities: \"state_observation\" (3 outcomes), \"reward\" (3 outcomes), \"decision_proprioceptive\" (3 outcomes)\n- Hidden state factors: \"reward_level\" (2 states), \"decision_state\" (3 states)\n- Control: \"decision_state\" factor is controllable with 3 possible actions.\nThe parameterization is derived from a PyMDP Python script example.",
-  "GNNVersionAndFlags": "GNN v1",
-  "Time": "Dynamic\nDiscreteTime=t\nModelTimeHorizon=Unbounded # Agent definition is generally unbounded, specific simulation runs have a horizon.",
-  "ActInfOntologyAnnotation": "A_m0=LikelihoodMatrixModality0\nA_m1=LikelihoodMatrixModality1\nA_m2=LikelihoodMatrixModality2\nB_f0=TransitionMatrixFactor0\nB_f1=TransitionMatrixFactor1\nC_m0=LogPreferenceVectorModality0\nC_m1=LogPreferenceVectorModality1\nC_m2=LogPreferenceVectorModality2\nD_f0=PriorOverHiddenStatesFactor0\nD_f1=PriorOverHiddenStatesFactor1\ns_f0=HiddenStateFactor0\ns_f1=HiddenStateFactor1\ns_prime_f0=NextHiddenStateFactor0\ns_prime_f1=NextHiddenStateFactor1\no_m0=ObservationModality0\no_m1=ObservationModality1\no_m2=ObservationModality2\n\u03c0_f1=PolicyVectorFactor1 # Distribution over actions for factor 1\nu_f1=ActionFactor1       # Chosen action for factor 1\nG=ExpectedFreeEnergy"
-}

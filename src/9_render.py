@@ -33,7 +33,9 @@ if str(src_dir) not in sys.path:
 
 # Import rendering functions from the render package
 try:
-    from render import render_gnn_to_pymdp, render_gnn_to_rxinfer_toml
+    from render.pymdp.pymdp_renderer import render_gnn_to_pymdp
+    from render.rxinfer import render_gnn_to_rxinfer_toml
+    logger.info("Successfully imported render functions")
 except ImportError as e:
     log_step_error(logger, f"Failed to import render functions: {e}")
     render_gnn_to_pymdp = None
