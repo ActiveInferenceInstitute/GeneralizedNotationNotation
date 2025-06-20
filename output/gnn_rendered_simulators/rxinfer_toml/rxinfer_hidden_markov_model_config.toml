@@ -1,0 +1,147 @@
+# GNN_Model Configuration
+
+#
+# Model parameters
+#
+[model]
+# Time step for the state space model
+dt = 1.0
+
+# Constraint parameter for the Halfspace node
+gamma = 1.0
+
+# Number of time steps in the trajectory
+nr_steps = 40
+
+# Number of inference iterations
+nr_iterations = 350
+
+# Number of agents in the simulation (currently fixed at 4)
+nr_agents = 4
+
+# Temperature parameter for the softmin function
+softmin_temperature = 10.0
+
+# Intermediate results saving interval (every N iterations)
+intermediate_steps = 10
+
+# Whether to save intermediate results
+save_intermediates = false
+
+#
+# State Space Matrices
+#
+[model.matrices]
+# State transition matrix
+# [1 dt 0 0; 0 1 0 0; 0 0 1 dt; 0 0 0 1]
+A = [
+    [1.0, 1.0, 0.0, 0.0],
+    [0.0, 1.0, 0.0, 0.0],
+    [0.0, 0.0, 1.0, 1.0],
+    [0.0, 0.0, 0.0, 1.0]
+]
+
+# Control input matrix
+# [0 0; dt 0; 0 0; 0 dt]
+B = [
+    [0.0, 0.0],
+    [1.0, 0.0],
+    [0.0, 0.0],
+    [0.0, 1.0]
+]
+
+# Observation matrix
+# [1 0 0 0; 0 0 1 0]
+C = [
+    [1.0, 0.0, 0.0, 0.0],
+    [0.0, 0.0, 1.0, 0.0]
+]
+
+#
+# Prior distributions
+#
+[priors]
+# Prior on initial state
+initial_state_variance = 100.0
+
+# Prior on control inputs
+control_variance = 0.1
+
+# Goal constraints variance
+goal_constraint_variance = 1.0e-05
+
+# Parameters for GammaShapeRate prior on constraint parameters
+gamma_shape = 1.5  # 3/2
+gamma_scale_factor = 0.5  # γ^2/2
+
+#
+# Visualization parameters
+#
+[visualization]
+# Plot boundaries
+x_limits = [-20, 20]
+y_limits = [-20, 20]
+
+# Animation frames per second
+fps = 15
+
+# Heatmap resolution
+heatmap_resolution = 100
+
+# Plot size
+plot_width = 800
+plot_height = 400
+
+# Visualization alpha values
+agent_alpha = 1.0
+target_alpha = 0.2
+
+# Color palette
+color_palette = "tab10"
+
+#
+# Environment definitions
+#
+#
+# Agent configurations
+#
+[[agents]]
+id = 1
+radius = 2.5
+initial_position = [-4.0, 10.0]
+target_position = [-10.0, -10.0]
+
+[[agents]]
+id = 2
+radius = 1.5
+initial_position = [-10.0, 5.0]
+target_position = [10.0, -15.0]
+
+[[agents]]
+id = 3
+radius = 1.0
+initial_position = [-15.0, -10.0]
+target_position = [10.0, 10.0]
+
+[[agents]]
+id = 4
+radius = 2.5
+initial_position = [0.0, -10.0]
+target_position = [-10.0, 15.0]
+
+#
+# Experiment configurations
+#
+[experiments]
+# Random seeds for reproducibility
+seeds = [42, 123]
+
+# Base directory for results
+results_dir = "results"
+
+# Filename templates
+animation_template = "{environment}_{seed}.gif"
+control_vis_filename = "control_signals.gif"
+obstacle_distance_filename = "obstacle_distance.png"
+path_uncertainty_filename = "path_uncertainty.png"
+convergence_filename = "convergence.png" 

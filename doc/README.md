@@ -84,6 +84,9 @@ New to GNN? Start here:
 - **[LLM Integration](gnn/gnn_llm_neurosymbolic_active_inference.md)** - AI-assisted modeling
   - *See Also*: [DSPy Integration](dspy/gnn_dspy.md), [AutoGenLib](autogenlib/gnn_autogenlib.md)
   - *Related Tools*: [MCP Protocol](mcp/README.md), [Pipeline Step 11](pipeline/README.md#step-11-llm-enhanced-analysis)
+- **[PoE-World Integration](poe-world/poe-world.md)** - Compositional world modeling research
+  - *See Also*: [PoE-World GNN Integration](poe-world/poe-world_gnn.md), [Program Synthesis](dspy/gnn_dspy.md)
+  - *Research Applications*: [Hierarchical Template](templates/hierarchical_template.md), [Advanced Patterns](gnn/advanced_modeling_patterns.md)
 
 ## 🔧 Framework Integrations
 
@@ -97,6 +100,7 @@ New to GNN? Start here:
 | **DSPy** | [gnn_dspy.md](dspy/gnn_dspy.md) | AI prompt programming | 🔄 LLM integration | [LLM Pipeline](gnn/gnn_llm_neurosymbolic_active_inference.md) |
 | **AutoGenLib** | [gnn_autogenlib.md](autogenlib/gnn_autogenlib.md) | Dynamic code generation | 🔄 Code generation | [Tool Development](gnn/gnn_dsl_manual.md) |
 | **MCP** | [gnn_mcp.md](mcp/gnn_mcp_model_context_protocol.md) | Model Context Protocol | ✅ API integration | [MCP Guide](mcp/README.md), [FastMCP](mcp/fastmcp.md) |
+| **PoE-World** | [poe-world_gnn.md](poe-world/poe-world_gnn.md) | Compositional world modeling | 🔄 Research integration | [PoE-World Overview](poe-world/poe-world.md), [Program Synthesis](dspy/gnn_dspy.md) |
 
 > **🔗 Cross-References**: [API Documentation](api/README.md) | [Pipeline Integration](pipeline/README.md) | [Performance Comparison](troubleshooting/performance.md)
 
@@ -321,20 +325,24 @@ learning_paths:
   beginner: [about_gnn.md, quickstart_tutorial.md, gnn_examples_doc.md, gnn_syntax.md]
   practitioner: [gnn_syntax.md, gnn_file_structure_doc.md, gnn_implementation.md, templates/README.md]
   developer: [api/README.md, pipeline/PIPELINE_ARCHITECTURE.md, development/README.md]
-  researcher: [gnn/gnn_paper.md, gnn/advanced_modeling_patterns.md, cognitive_phenomena/README.md]
+  researcher: [gnn/gnn_paper.md, advanced_modeling_patterns.md, cognitive_phenomena/README.md, poe-world/poe-world.md]
 cross_references:
   setup: [SETUP.md, configuration/README.md, deployment/README.md]
-  frameworks: [pymdp/gnn_pymdp.md, rxinfer/gnn_rxinfer.md, discopy/gnn_discopy.md]
+  frameworks: [pymdp/gnn_pymdp.md, rxinfer/gnn_rxinfer.md, discopy/gnn_discopy.md, poe-world/poe-world_gnn.md]
   templates: [templates/README.md, templates/basic_gnn_template.md, templates/pomdp_template.md, templates/multiagent_template.md, templates/hierarchical_template.md]
   support: [troubleshooting/README.md, troubleshooting/common_errors.md, troubleshooting/faq.md]
+  research_integration: [poe-world/poe-world.md, gnn/gnn_llm_neurosymbolic_active_inference.md, dspy/gnn_dspy.md]
 coverage_metrics:
-  total_documents: 50+
-  total_content: 800KB+
+  total_documents: 65+
+  total_content: 1.2MB+
   template_count: 4
-  framework_integrations: 6
+  framework_integrations: 7
+  research_integrations: 3
   pipeline_steps: 14
+  cognitive_phenomena: 20+
 status: production_ready
 quality_level: gold_standard
+recent_additions: [poe-world_integration, enhanced_cross_references, improved_research_pathways]
 ```
 
 ---
