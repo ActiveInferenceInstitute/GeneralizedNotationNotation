@@ -10,6 +10,7 @@ GeneralizedNotationNotation (GNN) is a text-based language for standardizing Act
 - When in doubt, ask clarifying questions rather than making risky assumptions, but prefer to find answers via tools if possible
 - Express chains of thought and rationale, especially for complex decisions involving GNN syntax or Active Inference concepts
 - Identify and use all programming best practices thoughtfully, with special attention to scientific reproducibility
+- **NEVER create dummy, mock, placeholder, or stub implementations - all code must be fully functional**
 
 ## GNN Domain Knowledge and Standards
 
@@ -47,182 +48,213 @@ GeneralizedNotationNotation (GNN) is a text-based language for standardizing Act
 - **Expected Free Energy** (G): Policy evaluation metric
 - **Precision Parameters**: γ (gamma), α (alpha), etc.
 
-## Code Generation & Modification
+## Pipeline Architecture & Implementation Paradigm
 
-### GNN-Specific Coding Standards
-- **Type Hints**: Always use comprehensive type hints, especially for GNN data structures
-- **Docstrings**: Include GNN-specific terminology and reference relevant sections
-- **Variable Naming**: 
-  - Use GNN conventions (s_f0, o_m0, A_m0, B_f0, etc.) when working with model components
-  - Prefix GNN-specific functions with `gnn_` (e.g., `gnn_parse_statespace`, `gnn_validate_connections`)
-- **Error Handling**: Provide clear error messages that reference GNN syntax rules
-- **Imports**: Organize imports by: standard library, third-party, GNN-specific modules
+### Core Pipeline Orchestration
+- **Main Orchestrator**: `src/main.py` dynamically discovers and executes numbered pipeline scripts
+- **Script Discovery**: Uses glob patterns to find `*_*.py` files, sorts by number and basename
+- **Execution Model**: Each script runs as subprocess with centralized argument passing
+- **Virtual Environment**: Automatic detection and use of project virtual environment
+- **Dependency Validation**: Comprehensive dependency checking before pipeline execution
+- **Performance Tracking**: Built-in performance monitoring and resource usage tracking
 
-### Scientific Reproducibility Requirements
-- **Deterministic Behavior**: Ensure functions produce consistent outputs for identical inputs
-- **Logging**: Use appropriate logging levels for pipeline steps and validation
-- **Parameter Documentation**: Clearly document all model parameters and their valid ranges
-- **Validation**: Always validate GNN syntax and structure before processing
+### Pipeline Steps (Dynamically Discovered, 1-14)
+Each numbered script corresponds to a specific module folder and implements real functionality:
 
-## Project Structure & Conventions
+1. **1_gnn.py** → `src/gnn/` - GNN file discovery, parsing, and basic validation
+2. **2_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation (CRITICAL STEP)
+3. **3_tests.py** → `src/tests/` - Test suite execution with pytest integration
+4. **4_gnn_type_checker.py** → `src/gnn_type_checker/` - GNN syntax validation and resource estimation
+5. **5_export.py** → `src/export/` - Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
+6. **6_visualization.py** → `src/visualization/` - Graph visualization and matrix visualization
+7. **7_mcp.py** → `src/mcp/` - Model Context Protocol operations and tool registration
+8. **8_ontology.py** → `src/ontology/` - Active Inference Ontology processing and validation
+9. **9_render.py** → `src/render/` - Code generation for PyMDP, RxInfer simulation environments
+10. **10_execute.py** → `src/execute/` - Execute rendered simulation scripts
+11. **11_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
+12. **12_discopy.py** → `src/discopy_translator_module/` - DisCoPy categorical diagram translation
+13. **13_discopy_jax_eval.py** → `src/discopy_translator_module/` - JAX-based evaluation of DisCoPy diagrams
+14. **14_site.py** → `src/site/` - Static HTML site generation from pipeline artifacts
 
-### Pipeline Architecture (14 Steps)
-- **Main Orchestrator**: `src/main.py` discovers and executes numbered pipeline scripts
-- **Pipeline Steps**: Numbered scripts in `src/` directory (1-14):
-  - `1_gnn.py`: Core GNN file processing and parsing
-  - `2_setup.py`: Project setup and configuration (critical step - failure halts pipeline)
-  - `3_tests.py`: Test execution and validation
-  - `4_gnn_type_checker.py`: GNN file validation and resource estimation
-  - `5_export.py`: Model export to various formats (JSON, XML, GraphML, etc.)
-  - `6_visualization.py`: Graphical model visualization
-  - `7_mcp.py`: Model Context Protocol tasks and API integration
-  - `8_ontology.py`: Ontology processing and validation
-  - `9_render.py`: Code generation for simulation environments (PyMDP, RxInfer)
-  - `10_execute.py`: Execute rendered simulator scripts
-  - `11_llm.py`: LLM-enhanced analysis and processing
-  - `12_discopy.py`: DisCoPy categorical diagram translation
-  - `13_discopy_jax_eval.py`: JAX-based evaluation of DisCoPy diagrams
-  - `14_site.py`: Static site generation for documentation/reports
+### Centralized Infrastructure
 
-### Directory Structure and Responsibilities
-- **`src/gnn/`**: Core GNN parsing, specifications, and examples
-- **`src/gnn_type_checker/`**: Validation logic and resource estimation
-- **`src/export/`**: Export modules for JSON, XML, GraphML, etc.
-- **`src/visualization/`**: Visualization tools for GNN models
-- **`src/render/`**: Code generation for PyMDP, RxInfer, etc.
-- **`src/execute/`**: Execution engines for rendered simulators
-- **`src/llm/`**: LLM integration and AI-enhanced processing
-- **`src/discopy_translator_module/`**: DisCoPy categorical diagram translation
-- **`src/site/`**: Static site generation utilities
-- **`src/mcp/`**: Model Context Protocol implementation
-- **`src/ontology/`**: Active Inference Ontology processing
-- **`src/tests/`**: Unit tests, integration tests, and test utilities
-- **`doc/`**: Comprehensive documentation and specifications
+#### Utilities (`src/utils/`)
+- **EnhancedArgumentParser**: Centralized argument parsing for all pipeline steps
+- **PipelineLogger**: Structured logging with correlation contexts and step tracking
+- **performance_tracker**: Performance monitoring and resource usage tracking
+- **validate_pipeline_dependencies**: Comprehensive dependency validation
+- **setup_step_logging**: Standardized logging setup for each pipeline step
 
-### Advanced Capabilities
+#### Pipeline Configuration (`src/pipeline/`)
+- **STEP_METADATA**: Centralized metadata for all pipeline steps
+- **get_pipeline_config**: Pipeline configuration management
+- **get_output_dir_for_script**: Standardized output directory structure
+- **execute_pipeline_step**: Centralized step execution with error handling
 
-#### LLM Integration (Step 11)
-- Support for multiple AI models and providers
-- Automated GNN analysis and enhancement suggestions
-- Natural language explanations of model components
-- AI-assisted model validation and optimization
+#### Module Structure Pattern
+Each module follows this structure:
+```
+src/[module_name]/
+├── __init__.py          # Module initialization
+├── [main_module].py     # Core functionality
+├── mcp.py              # MCP integration (if applicable)
+└── [additional_files]   # Specialized components
+```
 
-#### Categorical Diagrams (Steps 12-13)
-- **DisCoPy Translation**: Convert GNN models to categorical diagrams
-- **JAX Evaluation**: High-performance numerical evaluation using JAX
-- **Mathematical Rigor**: Category theory foundations for model composition
-- **Compositional Modeling**: Enable hierarchical and modular model construction
+### Implementation Standards
 
-#### Multi-Backend Simulation Support
-- **PyMDP**: Discrete Active Inference simulation
-- **RxInfer.jl**: Reactive message passing and Bayesian inference
-- **JAX**: High-performance automatic differentiation and compilation
-- **Custom Backends**: Extensible architecture for new simulation engines
+#### Script Structure Pattern
+Every numbered script follows this pattern:
+1. **Import centralized utilities** (`utils`, `pipeline`)
+2. **Initialize step-specific logger** via `setup_step_logging`
+3. **Import module-specific functionality** from corresponding folder
+4. **Define main() function** with centralized argument handling
+5. **Use EnhancedArgumentParser** for argument parsing with fallback
+6. **Implement proper error handling** with step logging functions
+7. **Return appropriate exit codes** (0=success, 1=error, 2=warnings)
 
-## Tool Usage Guidelines
+#### Argument Parsing Standards
+- **Centralized Parsing**: Use `EnhancedArgumentParser.parse_step_arguments()` for all pipeline steps
+- **Fallback Handling**: Always provide fallback argument parser for graceful degradation
+- **Common Arguments**: All steps support `--target-dir`, `--output-dir`, `--verbose`, `--recursive`
+- **Step-Specific Arguments**: Additional arguments based on step functionality (e.g., `--strict`, `--jax-seed`)
+- **Path Conversion**: Defensive conversion of string arguments to `pathlib.Path` objects
 
-### Working with GNN Files
-- **Parsing**: Use existing parsers in `src/gnn/` before creating new ones
-- **Validation**: Always run through `4_gnn_type_checker.py` for syntax validation
-- **Examples**: Reference `src/gnn/examples/` for proper GNN formatting
-- **Testing**: Test with both simple and complex GNN models
+#### Logging Standards
+- **Step Logging Functions**: Use `log_step_start`, `log_step_success`, `log_step_warning`, `log_step_error`
+- **Correlation Context**: Each step sets correlation context for traceability
+- **Verbosity Control**: Dynamic verbosity adjustment based on arguments
+- **Performance Tracking**: Use `performance_tracker.track_operation()` for timed operations
 
-### Pipeline Integration
-- **New Steps**: Add numbered scripts to `src/` for pipeline auto-discovery
-- **Configuration**: Use `--target-dir` and `--output-dir` conventions
-- **Error Handling**: Fail gracefully with informative messages
-- **Logging**: Use consistent logging patterns across pipeline steps
+#### Error Handling Standards
+- **Graceful Degradation**: Steps continue pipeline unless critical failure occurs
+- **Critical vs Non-Critical**: Steps marked as `required=True` halt pipeline on failure
+- **Comprehensive Reporting**: All errors logged with context and suggestions
+- **Exit Code Conventions**: 0=success, 1=critical error, 2=success with warnings
 
-### LLM and AI Integration
-- **Model Selection**: Choose appropriate AI models based on task complexity
-- **Prompt Engineering**: Use domain-specific prompts for Active Inference concepts
-- **Token Management**: Be mindful of context limits for large GNN models
-- **Validation**: Always validate AI-generated suggestions against GNN syntax
+### Module-Specific Implementation Details
 
-### Mathematical and Categorical Operations
-- **DisCoPy Compatibility**: Ensure GNN models translate correctly to string diagrams
-- **JAX Optimization**: Leverage JAX for computational efficiency in large models
-- **Category Theory**: Maintain mathematical rigor in compositional operations
-- **Numerical Stability**: Validate numerical computations in JAX evaluations
+#### GNN Processing (`src/gnn/`)
+- **File Discovery**: Recursive and non-recursive GNN file discovery
+- **Basic Parsing**: ModelName, StateSpaceBlock, Connections extraction
+- **Parameter Extraction**: ModelParameters section parsing with AST evaluation
+- **Real Implementation**: Full GNN file structure parsing, no mocks
 
-## Communication & Documentation
+#### Setup Management (`src/setup/`)
+- **Virtual Environment**: Detection, creation, and management
+- **Dependency Installation**: Real pip installation with requirements.txt
+- **System Validation**: Comprehensive system dependency checking
+- **Environment Info**: Detailed environment reporting and validation
 
-### GNN-Specific Terminology
-- Use proper GNN syntax when discussing model components
-- Reference Active Inference literature appropriately
-- Distinguish between GNN notation and target simulator notation
-- Use backticks for GNN syntax elements: `s_f0[3,1,type=int]`
+#### Type Checking (`src/gnn_type_checker/`)
+- **Syntax Validation**: Full GNN syntax validation with detailed error reporting
+- **Resource Estimation**: Computational resource estimation for models
+- **Type Consistency**: Variable type checking and dimension validation
+- **Real Validation**: Complete GNN specification compliance checking
 
-### Mathematical Notation
-- Use LaTeX formatting for mathematical expressions: `\( P(s_t|o_t) \)`
-- Reference GNN equations section when discussing model dynamics
-- Maintain consistency with Active Inference mathematical conventions
-- Use category theory notation appropriately for DisCoPy contexts
+#### Export Systems (`src/export/`)
+- **Multi-Format Support**: JSON, XML, GraphML, GEXF, Pickle formats
+- **Network Graph Export**: NetworkX-based graph format exports
+- **Structured Data**: Comprehensive model metadata preservation
+- **Real Exporters**: Fully functional format conversion, no stubs
 
-## Testing and Validation
+#### Visualization (`src/visualization/`)
+- **Graph Visualization**: Model structure visualization with matplotlib/networkx
+- **Matrix Visualization**: A, B, C, D matrix heatmaps and visualizations
+- **Ontology Visualization**: Active Inference ontology relationship diagrams
+- **Real Rendering**: Complete visualization pipeline with multiple output formats
 
-### Comprehensive Testing Strategy
-- **Syntax Validation**: Every GNN file must pass type checker
-- **Example Coverage**: Test with files from `src/gnn/examples/`
-- **Cross-Backend Validation**: Ensure consistency across PyMDP, RxInfer, and JAX
-- **LLM Integration Tests**: Validate AI-enhanced processing pipelines
-- **DisCoPy Translation Tests**: Verify categorical diagram correctness
+#### Simulation Rendering (`src/render/`)
+- **PyMDP Integration**: Full PyMDP agent and environment code generation
+- **RxInfer Integration**: Complete RxInfer.jl model translation
+- **Template System**: Comprehensive template-based code generation
+- **Real Code Generation**: Executable simulation code, not pseudocode
 
-### Scientific Validation
-- **Mathematical Consistency**: Verify matrix dimensions and stochasticity
-- **Simulation Output**: Test that rendered code actually executes
-- **Reproducibility**: Ensure identical inputs produce identical outputs
-- **Performance Benchmarks**: Validate computational efficiency claims
+#### Execution Engine (`src/execute/`)
+- **Script Execution**: Real Python script execution with subprocess management
+- **Result Capture**: Output capture, error handling, and result reporting
+- **Multi-Backend**: Support for PyMDP, RxInfer, and custom execution engines
+- **Real Execution**: Actual simulation execution with performance monitoring
 
-## Quality Assurance
+#### LLM Integration (`src/llm/`)
+- **Model Analysis**: AI-powered GNN model interpretation and validation
+- **Enhancement Suggestions**: Automated model improvement recommendations
+- **Natural Language**: GNN to natural language explanation generation
+- **Real AI Integration**: Functional LLM processing, not mock responses
 
-### Code Review Focus Areas
-- **GNN Syntax Compliance**: Verify adherence to GNN specifications
-- **Active Inference Accuracy**: Ensure correct implementation of AI concepts
-- **Pipeline Integration**: Check compatibility with all 14 steps
-- **Mathematical Rigor**: Validate category theory and numerical implementations
-- **AI Integration**: Review LLM prompts and processing logic
+#### DisCoPy Translation (`src/discopy_translator_module/`)
+- **Categorical Diagrams**: Full DisCoPy diagram generation from GNN specifications
+- **JAX Evaluation**: High-performance numerical evaluation with JAX backend
+- **Mathematical Rigor**: Category theory foundations with proper mathematical validation
+- **Real Translation**: Complete categorical diagram pipeline, not simplified versions
 
-### Security Considerations
-- **File Parsing**: Validate GNN file content before processing
-- **LLM Safety**: Sanitize inputs/outputs for AI model interactions
-- **Execution Safety**: Sandbox rendered code execution when possible
-- **API Keys**: Handle external service credentials securely
+### MCP (Model Context Protocol) Integration
 
-## Advanced Features and Extensibility
+#### Universal MCP Pattern
+Every applicable module includes `mcp.py` with:
+- **Tool Registration**: Module-specific MCP tool definitions
+- **Function Exposure**: Key module functions exposed as MCP tools
+- **Standardized Interface**: Consistent MCP API across all modules
+- **Real Integration**: Functional MCP tools, not placeholder implementations
 
-### Multi-Modal and Hierarchical Support
-- Handle multiple observation modalities correctly
-- Support complex state factor interactions
-- Process hierarchical model structures
-- Enable model composition via categorical operations
+#### MCP System Architecture
+- **Central Registry**: `src/mcp/` contains core MCP implementation
+- **Module Integration**: Each module's `mcp.py` registers with central system
+- **Tool Discovery**: Automatic tool discovery and registration
+- **API Consistency**: Standardized request/response patterns
 
-### Extensibility Architecture
-- Design for new simulation backends beyond PyMDP/RxInfer
-- Support experimental GNN syntax extensions
-- Enable custom visualization types and LLM integrations
-- Allow plugin-style functionality for specialized domains
+### Quality Assurance Standards
 
-### Performance Optimization
-- **Large Models**: Consider memory usage for complex GNN files
-- **JAX Compilation**: Leverage JIT compilation for computational graphs
-- **Batch Processing**: Support processing multiple GNN files efficiently
-- **Caching**: Cache parsed results and compiled functions where appropriate
+#### Implementation Requirements
+- **No Mocks or Stubs**: All implementations must be fully functional
+- **Real Data Processing**: Use actual GNN files and real computation
+- **Complete Pipelines**: End-to-end functionality from input to output
+- **Scientific Accuracy**: Mathematically correct Active Inference implementations
 
-## Project-Specific Best Practices
+#### Testing Integration
+- **Pytest Framework**: Comprehensive test suite with real GNN file testing
+- **Integration Tests**: Full pipeline testing with actual data
+- **Performance Tests**: Resource usage and timing validation
+- **Regression Tests**: Ensure changes don't break existing functionality
 
-### Research Code Quality
-- **Version Control**: Tag releases that correspond to paper submissions
-- **Reproducibility**: Include environment setup and dependency management
-- **Data Management**: Handle example models as versioned assets
-- **Citation**: Reference appropriate papers and repositories for Active Inference and category theory
+#### Documentation Standards
+- **Comprehensive Docstrings**: Full documentation for all functions and classes
+- **Type Hints**: Complete type annotations throughout codebase
+- **Usage Examples**: Real examples using actual GNN files
+- **API Documentation**: Generated from docstrings and type hints
 
-### Collaboration Guidelines
-- **Issue Templates**: Use provided templates for bug reports and features
-- **Pull Requests**: Include GNN file examples demonstrating changes
-- **Documentation**: Update relevant files in `doc/` when adding features
-- **Testing**: Add comprehensive tests for new GNN syntax or features
+### Development Guidelines
 
----
+#### Code Organization
+- **Module Separation**: Clear separation between pipeline steps and core modules
+- **Import Hierarchy**: Centralized utilities → pipeline config → module-specific
+- **Dependency Management**: Explicit dependency declarations and validation
+- **Path Management**: Consistent path handling with pathlib.Path
 
-**Summary**: These rules provide comprehensive guidance for working with the GNN project, emphasizing scientific rigor, Active Inference domain expertise, mathematical foundations, and the unique requirements of this standardization effort. Always prioritize correctness, reproducibility, and adherence to GNN specifications while maintaining code quality and extensibility across all 14 pipeline steps. 
+#### Error Handling Philosophy
+- **Fail Fast**: Early detection of configuration and dependency issues
+- **Informative Errors**: Clear error messages with actionable suggestions
+- **Graceful Recovery**: Attempt to continue pipeline when possible
+- **Comprehensive Logging**: Full audit trail of all operations
+
+#### Performance Considerations
+- **Resource Monitoring**: Track memory usage, execution time, and system resources
+- **Parallel Processing**: Use parallel operations when appropriate and safe
+- **Caching**: Cache parsed results and expensive computations
+- **Optimization**: Profile and optimize critical paths
+
+### Advanced Features
+
+#### Extensibility Architecture
+- **Plugin System**: Support for custom pipeline steps and modules
+- **Backend Flexibility**: Multiple simulation backends (PyMDP, RxInfer, JAX)
+- **Format Extension**: Easy addition of new export formats
+- **Tool Integration**: MCP-based tool ecosystem for external integrations
+
+#### Scientific Reproducibility
+- **Deterministic Behavior**: Consistent outputs for identical inputs
+- **Version Control**: Full provenance tracking and version management
+- **Environment Capture**: Complete environment specification and reproduction
+- **Audit Trails**: Comprehensive logging of all processing steps
+
+**Critical Implementation Philosophy**: This project implements a comprehensive scientific computing pipeline with real, functional components at every level. Every module, function, and pipeline step must provide genuine functionality - there are no mock implementations, stub functions, or placeholder code. The architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards. 
