@@ -1,0 +1,161 @@
+(* 
+ * Extended Backus-Naur Form (EBNF) Grammar for GNN (Generalized Notation Notation)
+ * Version: 1.0  
+ * 
+ * This grammar defines the complete syntax for GNN model specification files.
+ * It covers variable definitions, connections, parameterization, and all GNN constructs.
+ *)
+
+(* Root grammar rule - a complete GNN file *)
+gnn_file = gnn_header, 
+           gnn_version_section,
+           model_name_section,
+           model_annotation_section,
+           state_space_section,
+           connections_section,
+           parameterization_section,
+           [equations_section],
+           time_section,
+           [ontology_section],
+           [model_parameters_section],
+           footer_section,
+           [signature_section];
+
+(* File structure sections *)
+gnn_header = "## GNNSection", newline, identifier, newline;
+gnn_version_section = "## GNNVersionAndFlags", newline, version_spec, newline;
+model_name_section = "## ModelName", newline, model_name, newline;
+model_annotation_section = "## ModelAnnotation", newline, annotation_text, newline;
+state_space_section = "## StateSpaceBlock", newline, {variable_definition | comment}, newline;
+connections_section = "## Connections", newline, {connection_definition | comment}, newline;
+parameterization_section = "## InitialParameterization", newline, {parameter_assignment | comment}, newline;
+equations_section = "## Equations", newline, {equation_definition | comment}, newline;
+time_section = "## Time", newline, time_specification, newline;
+ontology_section = "## ActInfOntologyAnnotation", newline, {ontology_mapping | comment}, newline;
+model_parameters_section = "## ModelParameters", newline, {parameter_definition | comment}, newline;
+footer_section = "## Footer", newline, footer_text, newline;
+signature_section = "## Signature", newline, signature_text, newline;
+
+(* Version specification *)
+version_spec = "GNN v", version_number, [version_flags];
+version_number = digit, {digit}, [".", digit, {digit}];
+version_flags = " ", flag_list;
+flag_list = flag, {",", flag};
+flag = "strict_validation" | "experimental_features" | "extended_syntax";
+
+(* Variable definitions in StateSpaceBlock *)
+variable_definition = variable_name, dimension_spec, [type_spec], [variable_comment], newline;
+variable_name = identifier;
+dimension_spec = "[", dimension_list, "]";
+dimension_list = dimension, {",", dimension};
+dimension = positive_integer | identifier;
+type_spec = ",type=", data_type;
+data_type = "float" | "int" | "bool" | "string" | "categorical";
+variable_comment = whitespace, comment_text;
+
+(* Connection definitions *)
+connection_definition = connection_expr, [connection_comment], newline;
+connection_expr = variable_group, connection_operator, variable_group |
+                  "(" variable_group ")", connection_operator, variable_group |
+                  variable_group, connection_operator, "(" variable_group ")";
+variable_group = variable_ref | "(" variable_list ")";
+variable_list = variable_ref, {",", variable_ref};
+variable_ref = identifier, [subscript], [time_index];
+connection_operator = ">" | "-" | "->" | "|";
+subscript = "_", (identifier | integer);
+time_index = "[", (identifier | integer), "]";
+
+(* Parameter assignments *)
+parameter_assignment = parameter_name, "=", parameter_value, [parameter_comment], newline;
+parameter_name = identifier;
+parameter_value = scalar_value | matrix_value | tuple_value | reference_value;
+scalar_value = number | boolean | string_literal;
+matrix_value = "{", matrix_row, {"," matrix_row}, "}";
+matrix_row = "(", number_list, ")";  
+tuple_value = "(", value_list, ")";
+value_list = parameter_value, {",", parameter_value};
+number_list = number, {",", number};
+reference_value = identifier;
+
+(* Equation definitions *)
+equation_definition = [equation_label, ":"], latex_equation, [equation_comment], newline;
+equation_label = identifier;
+latex_equation = ? LaTeX mathematical expression ?;
+
+(* Time specification *)
+time_specification = time_type, [time_settings];
+time_type = "Static" | "Dynamic";
+time_settings = newline, {time_setting, newline};
+time_setting = discrete_time_spec | continuous_time_spec | horizon_spec | frequency_spec;
+discrete_time_spec = "DiscreteTime=", identifier;
+continuous_time_spec = "ContinuousTime=", identifier;
+horizon_spec = "ModelTimeHorizon=", (positive_integer | "Unbounded" | "Infinite" | identifier);
+frequency_spec = frequency_type, "=", frequency_value;
+frequency_type = "ControlFrequency" | "PerceptionFrequency" | "PlanningFrequency";
+frequency_value = number, frequency_unit;
+frequency_unit = "Hz" | "kHz" | "MHz";
+
+(* Ontology mappings *)
+ontology_mapping = variable_name, "=", ontology_term, [ontology_comment], newline;
+ontology_term = identifier;
+
+(* Parameter definitions *)
+parameter_definition = parameter_name, ":", parameter_spec, [parameter_comment], newline;
+parameter_spec = data_type | constraint_spec | list_spec;
+constraint_spec = data_type, "(", constraint_list, ")";
+constraint_list = constraint, {",", constraint};
+constraint = "min=" number | "max=" number | "values=" value_list;
+list_spec = "[", data_type, "]";
+
+(* Basic tokens and literals *)
+identifier = letter, {letter | digit | "_"};
+positive_integer = non_zero_digit, {digit};
+integer = ["-"], positive_integer | "0";
+number = integer | float_number;
+float_number = integer, ".", {digit} | ".", digit, {digit};
+boolean = "true" | "false" | "True" | "False";
+string_literal = '"', {string_char}, '"';
+string_char = ? any character except '"' ?;
+
+(* Structural elements *)
+comment = "###", comment_text, newline;
+comment_text = ? any text until newline ?;
+annotation_text = ? multi-line text until next section ?;
+footer_text = ? multi-line text until next section ?;
+signature_text = ? multi-line text until end of file ?;
+model_name = ? single line text ?;
+
+(* Character classes *)
+letter = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" |
+         "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" |
+         "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" |
+         "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z";
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+non_zero_digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+whitespace = " " | "\t";
+newline = "\n" | "\r\n" | "\r";
+
+(* Advanced GNN constructs *)
+superscript_expr = "^", (identifier | "(" expression ")");
+subscript_expr = "_", (identifier | integer | "(" expression ")");
+expression = term, {("+" | "-"), term};
+term = factor, {("*" | "/"), term};
+factor = identifier | number | "(" expression ")" | subscript_expr | superscript_expr;
+
+(* Matrix and tensor notation *)
+matrix_notation = identifier, "[", dimension_list, "]", [type_spec];
+tensor_slice = identifier, "[", slice_list, "]";
+slice_list = slice_expr, {",", slice_expr};
+slice_expr = index_range | single_index;
+index_range = integer, ":", integer;
+single_index = integer | identifier;
+
+(* Conditional probability notation *)
+conditional_prob = "P(", prob_expr, "|", prob_expr, ")";
+prob_expr = identifier | prob_conjunction;
+prob_conjunction = identifier, {",", identifier};
+
+(* Special GNN operators and functions *)
+grouping_expr = "(" expression ")";
+exact_value = "{" value_list "}";
+range_spec = "[" integer "," integer "]"; 

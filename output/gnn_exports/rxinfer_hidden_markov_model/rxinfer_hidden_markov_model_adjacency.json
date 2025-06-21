@@ -1,0 +1,12 @@
+{
+    "directed": true,
+    "multigraph": false,
+    "graph": [
+        [
+            "name",
+            "RxInfer Hidden Markov Model v1"
+        ]
+    ],
+    "nodes": [],
+    "adjacency": []
+}

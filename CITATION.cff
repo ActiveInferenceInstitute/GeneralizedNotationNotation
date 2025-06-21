@@ -23,43 +23,28 @@ keywords:
   - "reproducibility"
   - "computational neuroscience"
   - "bayesian inference"
+  - "notation system"
+  - "standards"
+  - "gnn"
   - "python"
 
 license: MIT
 
 repository-code: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
-url: "https://activeinference.institute/" # General URL for the project or institute
+url: "https://activeinference.institute/" # General URL for the institute
 
-# Optional: Add reference to the GNN paper if it's a primary citation for the software itself
 references:
   - type: article
     authors:
       - family-names: "Smékal"
         given-names: "Jakub"
-        # orcid: "[SMEKAL ORCID]"
+        # orcid: "0000-0003-4989-4968"
       - family-names: "Friedman"
         given-names: "Daniel Ari"
-        # orcid: "[FRIEDMAN ORCID]"
+        # orcid: "0000-0001-6232-9096"
     title: "Generalized Notation Notation for Active Inference Models"
     journal: "Active Inference Journal"
     year: 2023
-    # volume: X
-    # issue: Y
-    # start-page: Z
-    # end-page: W
     doi: "10.5281/zenodo.7803328"
     url: "https://zenodo.org/records/7803328"
     notes: "Initial publication describing the GNN framework."
-
-# Preferred citation string (optional, but can be helpful)
-# preferred-citation:
-#   type: software
-#   title: "GeneralizedNotationNotation (GNN)"
-#   authors:
-#     - family-names: "Friedman"
-#       given-names: "Daniel Ari"
-#     - name: "The GeneralizedNotationNotation Community Contributors"
-#   version: 0.1.0 # Match current version
-#   date-released: YYYY-MM-DD # Match current release date
-#   repository-code: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
-#   license: MIT 

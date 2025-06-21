@@ -1,24 +1,21 @@
 #!/usr/bin/env python3
 
 """
-GNN Processing Pipeline - Step 4: Type Checking and Validation
+GNN Processing Pipeline - Step 4: GNN Type Checker
 
-This script performs comprehensive type checking and validation of GNN files:
-- Validates GNN syntax and structure
-- Checks type consistency
-- Estimates computational resource requirements
-- Generates validation reports
+This script validates GNN files for syntax correctness and type consistency.
 
 Usage:
     python 4_gnn_type_checker.py [options]
     (Typically called by main.py)
 """
 
-import argparse
 import sys
 from pathlib import Path
+import argparse
+import logging
 
-# Import centralized utilities
+# Import centralized utilities and configuration
 from utils import (
     setup_step_logging,
     log_step_start,
@@ -26,164 +23,136 @@ from utils import (
     log_step_warning,
     log_step_error,
     validate_output_directory,
+    EnhancedArgumentParser,
     UTILS_AVAILABLE
+)
+
+from pipeline import (
+    STEP_METADATA,
+    get_output_dir_for_script
 )
 
 # Initialize logger for this step
 logger = setup_step_logging("4_gnn_type_checker", verbose=False)
 
-# Attempt to import the cli main function from the gnn_type_checker module
+# Import type checker functionality
 try:
-    from gnn_type_checker import cli as gnn_type_checker_cli
-except ImportError:
-    # Add src to path if running in a context where it's not found (e.g. direct execution from src/)
-    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    try:
-        from gnn_type_checker import cli as gnn_type_checker_cli
-    except ImportError as e:
-        log_step_error(logger, f"Could not import gnn_type_checker.cli: {e}")
-        logger.error("Ensure the gnn_type_checker module is correctly installed or accessible in PYTHONPATH.")
-        gnn_type_checker_cli = None
+    from gnn_type_checker import checker
+    from gnn_type_checker.resource_estimator import GNNResourceEstimator as ResourceEstimator
+    logger.debug("Successfully imported GNN type checker modules")
+except ImportError as e:
+    log_step_error(logger, f"Could not import GNN type checker: {e}")
+    checker = None
+    ResourceEstimator = None
 
-
-def run_type_checker(target_dir: str, 
-                     pipeline_output_dir: str, # Main output dir for the whole pipeline
-                     recursive: bool = False, 
-                     strict: bool = False, 
-                     estimate_resources: bool = False, 
-                     verbose: bool = False):
-    """
-    Run type checking on GNN files in the target directory using the gnn_type_checker module.
-    """
-    log_step_start(logger, f"Running type checking on {target_dir}")
-
-    if not gnn_type_checker_cli:
-        log_step_error(logger, "GNN Type Checker CLI module not loaded. Cannot proceed.")
-        return False # Indicate failure
-
-    # Define the specific output directory for this step's artifacts
-    type_checker_step_output_dir = Path(pipeline_output_dir) / "gnn_type_check"
-    type_checker_step_output_dir.mkdir(parents=True, exist_ok=True)
+def run_type_checking(target_dir: Path, output_dir: Path, recursive: bool = False, 
+                     strict: bool = False, estimate_resources: bool = False):
+    """Run GNN type checking and validation."""
+    log_step_start(logger, f"Running GNN type checking on: {target_dir}")
     
-    # The main markdown report filename for the type checker
-    report_filename = "type_check_report.md"
-
-    # Determine project root for relative paths in sub-module reports
-    project_root = Path(__file__).resolve().parent.parent
-
-    # Prepare arguments for the gnn_type_checker.cli.main() function
-    cli_args = [
-        str(target_dir), # input_path, ensure it's a string
-        "--output-dir", str(type_checker_step_output_dir),
-        "--report-file", report_filename, # This filename will be created inside type_checker_step_output_dir
-        "--project-root", str(project_root) # Pass project root to the CLI
-    ]
-    
-    if recursive:
-        cli_args.append("--recursive")
-    if strict:
-        cli_args.append("--strict")
-    if estimate_resources:
-        cli_args.append("--estimate-resources")
-
-    if verbose:
-        logger.info(f"Invoking GNN Type Checker module with arguments: {' '.join(cli_args)}")
-        logger.info(f"Target GNN files in: {target_dir}")
-        logger.info(f"Type checker outputs will be in: {type_checker_step_output_dir}")
-        logger.info(f"Main type check report will be: {type_checker_step_output_dir / report_filename}")
-
-    try:
-        # Call the main function of the type checker's CLI
-        type_checker_cli_exit_code = gnn_type_checker_cli.main(cli_args)
-        
-        type_checker_successful = (type_checker_cli_exit_code == 0)
-
-        if type_checker_successful:
-            log_step_success(logger, "GNN Type Checker module completed successfully")
-        else:
-            log_step_error(logger, f"GNN Type Checker module reported errors (exit code: {type_checker_cli_exit_code})")
-            logger.error(f"Check logs and reports in {type_checker_step_output_dir} for details.")
-
-        return type_checker_successful
-            
-    except Exception as e:
-        log_step_error(logger, f"Unexpected error occurred while running the GNN Type Checker module: {e}")
-        if verbose:
-            logger.exception("Full traceback:")
+    if not checker:
+        log_step_error(logger, "GNN type checker not available")
         return False
-
-def main(args):
-    """
-    Main function for Step 4: Type Checking pipeline.
     
-    Args:
-        args: argparse.Namespace with target_dir, output_dir, recursive, verbose, etc.
-    """
-    # Update logger verbosity based on args
-    if args.verbose:
-        import logging
-        logger.setLevel(logging.DEBUG)
+    # Use centralized output directory configuration
+    type_check_output_dir = get_output_dir_for_script("4_gnn_type_checker.py", output_dir)
     
-    log_step_start(logger, "Starting Step 4: Type Checking")
-    
-    # Validate and create type checker output directory
-    base_output_dir = Path(args.output_dir)
-    if not validate_output_directory(base_output_dir, "gnn_type_check"):
-        log_step_error(logger, "Failed to create type check output directory")
-        return 1
-    
-    # Call the type checking function
     try:
-        result = run_type_checker(
-            target_dir=str(args.target_dir),
-            pipeline_output_dir=str(args.output_dir),
-            recursive=args.recursive,
-            strict=getattr(args, 'strict', False),
-            estimate_resources=getattr(args, 'estimate_resources', False),
-            verbose=args.verbose
+        # Create type checker instance
+        type_checker = checker.GNNTypeChecker(strict_mode=strict)
+        
+        # Run type checking
+        results = type_checker.check_directory(
+            dir_path=str(target_dir),
+            recursive=recursive
         )
         
-        if result:
-            log_step_success(logger, "Type checking completed successfully")
-            return 0
+        # Run resource estimation if requested
+        if estimate_resources and ResourceEstimator:
+            try:
+                estimator = ResourceEstimator()
+                resource_results = estimator.estimate_from_directory(
+                    dir_path=str(target_dir),
+                    recursive=recursive
+                )
+                logger.debug(f"Resource estimation completed for {len(resource_results)} files")
+                log_step_success(logger, "Resource estimation completed")
+            except Exception as e:
+                log_step_warning(logger, f"Resource estimation failed: {e}")
+        
+        # Generate reports
+        try:
+            report_path = type_checker.generate_report(
+                results=results,
+                output_dir_base=type_check_output_dir,
+                project_root_path=target_dir
+            )
+            logger.info(f"Type checking report generated: {report_path}")
+        except Exception as e:
+            log_step_warning(logger, f"Report generation failed: {e}")
+        
+        # Log results summary
+        files_checked = len(results)
+        valid_files = sum(1 for result in results.values() if result.get('is_valid', False))
+        
+        if valid_files == files_checked:
+            log_step_success(logger, f"Type checking completed successfully. Files checked: {files_checked}, All valid: {valid_files}")
+            return True
         else:
-            log_step_warning(logger, "Type checking completed with warnings")
-            return 0
-            
+            log_step_warning(logger, f"Type checking completed with issues. Files checked: {files_checked}, Valid: {valid_files}")
+            return files_checked > 0  # Consider success if we processed files, even with issues
+        
     except Exception as e:
         log_step_error(logger, f"Type checking failed: {e}")
-        if args.verbose:
-            logger.exception("Full traceback:")
+        return False
+
+def main(parsed_args: argparse.Namespace):
+    """Main function for GNN type checking."""
+    
+    # Log step metadata from centralized configuration
+    step_info = STEP_METADATA.get("4_gnn_type_checker.py", {})
+    log_step_start(logger, f"{step_info.get('description', 'GNN syntax and type validation')}")
+    
+    # Update logger verbosity if needed
+    if parsed_args.verbose:
+        logger.setLevel(logging.DEBUG)
+    
+    # Run type checking
+    success = run_type_checking(
+        target_dir=Path(parsed_args.target_dir),
+        output_dir=Path(parsed_args.output_dir),
+        recursive=getattr(parsed_args, 'recursive', False),
+        strict=getattr(parsed_args, 'strict', False),
+        estimate_resources=getattr(parsed_args, 'estimate_resources', False)
+    )
+    
+    if success:
+        log_step_success(logger, "GNN type checking completed successfully")
+        return 0
+    else:
+        log_step_error(logger, "GNN type checking failed")
         return 1
 
-
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Type check and validate GNN files")
+    # Use centralized argument parsing
+    if UTILS_AVAILABLE:
+        parsed_args = EnhancedArgumentParser.parse_step_arguments("4_gnn_type_checker")
+    else:
+        # Fallback argument parsing
+        parser = argparse.ArgumentParser(description="GNN syntax and type validation")
+        parser.add_argument("--target-dir", type=Path, required=True,
+                          help="Target directory containing GNN files")
+        parser.add_argument("--output-dir", type=Path, required=True,
+                          help="Output directory for generated artifacts")
+        parser.add_argument("--recursive", action="store_true",
+                          help="Search recursively in subdirectories")
+        parser.add_argument("--verbose", action="store_true",
+                          help="Enable verbose output")
+        parser.add_argument("--strict", action="store_true",
+                          help="Enable strict validation mode")
+        parser.add_argument("--estimate-resources", action="store_true",
+                          help="Estimate computational resources")
+        parsed_args = parser.parse_args()
     
-    # Define defaults for standalone execution
-    script_file_path = Path(__file__).resolve()
-    project_root = script_file_path.parent.parent
-    default_target_dir = project_root / "src" / "gnn" / "examples"
-    default_output_dir = project_root / "output"
-
-    parser.add_argument("--target-dir", type=Path, default=default_target_dir,
-                       help="Target directory containing GNN files")
-    parser.add_argument("--output-dir", type=Path, default=default_output_dir,
-                       help="Main pipeline output directory")
-    parser.add_argument("--recursive", action='store_true',
-                       help="Search for GNN files recursively")
-    parser.add_argument("--strict", action='store_true',
-                       help="Enable strict type checking")
-    parser.add_argument("--estimate-resources", action='store_true',
-                       help="Enable resource estimation")
-    parser.add_argument("--verbose", action='store_true',
-                       help="Enable verbose output")
-
-    parsed_args = parser.parse_args()
-
-    # Update logger for standalone execution
-    if parsed_args.verbose:
-        import logging
-        logger.setLevel(logging.DEBUG)
-
-    sys.exit(main(parsed_args)) 
+    exit_code = main(parsed_args)
+    sys.exit(exit_code) 

@@ -224,15 +224,13 @@ def validate_configuration_consistency() -> Dict[str, List[str]]:
     issues = {"errors": [], "warnings": [], "suggestions": []}
     
     try:
-        from pipeline.config import (
-            PIPELINE_STEP_CONFIGURATION, 
-            STEP_METADATA, 
-            STEP_DEPENDENCIES,
-            SCRIPT_ARG_SUPPORT
-        )
+        from pipeline.config import get_pipeline_config, STEP_METADATA
+        
+        # Get the centralized configuration
+        config = get_pipeline_config()
         
         # Check that all configured steps have metadata
-        configured_steps = set(PIPELINE_STEP_CONFIGURATION.keys())
+        configured_steps = set(config.steps.keys())
         metadata_steps = set(STEP_METADATA.keys())
         
         missing_metadata = configured_steps - metadata_steps
@@ -244,18 +242,18 @@ def validate_configuration_consistency() -> Dict[str, List[str]]:
             issues["warnings"].append(f"Metadata for unconfigured steps: {', '.join(extra_metadata)}")
         
         # Check dependency consistency
-        for step, deps in STEP_DEPENDENCIES.items():
-            for dep in deps:
+        for step_name, step_config in config.steps.items():
+            for dep in step_config.dependencies:
                 if dep not in configured_steps:
-                    issues["errors"].append(f"Step {step} depends on unconfigured step {dep}")
-                if not PIPELINE_STEP_CONFIGURATION.get(dep, False):
-                    issues["warnings"].append(f"Step {step} depends on disabled step {dep}")
+                    issues["errors"].append(f"Step {step_name} depends on unconfigured step {dep}")
+                dep_config = config.get_step_config(dep)
+                if dep_config and not dep_config.required:
+                    issues["warnings"].append(f"Step {step_name} depends on optional step {dep}")
         
-        # Check argument support coverage
-        arg_support_steps = set(SCRIPT_ARG_SUPPORT.keys())
-        unsupported_steps = configured_steps - arg_support_steps
-        if unsupported_steps:
-            issues["warnings"].append(f"Steps without argument support configuration: {', '.join(unsupported_steps)}")
+        # Validate configuration consistency
+        for step_name, step_config in config.steps.items():
+            if not step_config.output_subdir:
+                issues["suggestions"].append(f"Step {step_name} has no output subdirectory configured")
             
     except ImportError as e:
         issues["errors"].append(f"Cannot import pipeline configuration: {e}")

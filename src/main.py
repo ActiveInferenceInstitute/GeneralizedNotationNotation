@@ -77,33 +77,27 @@ import resource
 
 # Import the centralized pipeline utilities
 from pipeline import (
-    PIPELINE_STEP_CONFIGURATION,
-    ARG_PROPERTIES,
-    SCRIPT_ARG_SUPPORT,
-    get_step_timeout,
-    is_critical_step,
-    get_output_dir_for_script,
-    StepExecutionResult,
-    get_memory_usage_mb,
-    execute_pipeline_step
+    get_pipeline_config,
+    STEP_METADATA,
+    get_output_dir_for_script
 )
+from pipeline.execution import execute_pipeline_step
 
 # Import the streamlined utilities
-try:
-    from utils import (
-        setup_main_logging, 
-        PipelineLogger,
-        ArgumentParser, 
-        PipelineArguments, 
-        build_enhanced_step_command_args,
-        validate_pipeline_dependencies,
-        UTILS_AVAILABLE
-    )
-    if not UTILS_AVAILABLE:
-        print("Warning: Some utilities may not be fully available", file=sys.stderr)
-except ImportError as e:
-    print(f"Error importing streamlined utilities: {e}", file=sys.stderr)
-    sys.exit(1)
+from utils import (
+    setup_main_logging,
+    log_step_start,
+    log_step_success, 
+    log_step_warning,
+    log_step_error,
+    validate_output_directory,
+    EnhancedArgumentParser,
+    PipelineArguments,
+    PipelineLogger,
+    performance_tracker,
+    validate_pipeline_dependencies,
+    UTILS_AVAILABLE
+)
 
 # --- Logger Setup ---
 logger = logging.getLogger("GNN_Pipeline")
@@ -172,7 +166,7 @@ def get_system_info() -> Dict[str, Any]:
 
 def parse_arguments() -> PipelineArguments:
     """Parse command line arguments using the streamlined argument parser."""
-    return ArgumentParser.parse_main_arguments()
+    return EnhancedArgumentParser.parse_main_arguments()
 
 def get_pipeline_scripts(current_dir: Path) -> list[dict[str, int | str | Path]]:
     potential_scripts_pattern = current_dir / "*_*.py"
@@ -415,15 +409,13 @@ def run_pipeline(args: PipelineArguments):
         script_num_str = str(script_info['num'])
         script_name_no_ext = os.path.splitext(script_basename)[0]
         
-        # Check if this script is enabled by default
-        is_enabled_by_default = PIPELINE_STEP_CONFIGURATION.get(script_basename, True)
-        
         # Skip logic: Skip if explicitly listed in skip_steps by number or name
+        # Note: We removed the "not is_enabled_by_default" check to run ALL discovered steps
+        # Only critical failures (required=True steps) will halt the pipeline
         should_skip = (
             script_num_str in skip_steps or
             script_basename in skip_steps or
-            script_name_no_ext in skip_steps or
-            not is_enabled_by_default
+            script_name_no_ext in skip_steps
         )
         
         # Only logic: Only run if explicitly listed in only_steps by number or name
@@ -444,7 +436,7 @@ def run_pipeline(args: PipelineArguments):
         elif skip_steps:
             logger.warning(f"⚠️ All scripts were skipped by skip-steps filter: {args.skip_steps}")
         else:
-            logger.warning("⚠️ No scripts are configured to run in PIPELINE_STEP_CONFIGURATION")
+            logger.warning("⚠️ No scripts are configured to run in pipeline configuration")
         
         # Return with warning status if no scripts run
         _pipeline_run_data_dict["end_time"] = datetime.datetime.now().isoformat()
@@ -495,35 +487,47 @@ def run_pipeline(args: PipelineArguments):
     for idx, script_info in enumerate(scripts_to_run, 1):
         # Execute the pipeline step using the centralized execution function
         result = execute_pipeline_step(
-            script_info, 
+            script_info['basename'], 
             idx, 
             len(scripts_to_run),
+            str(python_to_use),
+            args.target_dir,
+            args.output_dir,
             args,
-            str(python_to_use)
+            logger
         )
         
         # Update performance summary
         _pipeline_run_data_dict["performance_summary"]["total_steps"] += 1
         
-        if result.memory_usage_mb:
+        if result.get("memory_usage_mb"):
             _pipeline_run_data_dict["performance_summary"]["peak_memory_mb"] = max(
                 _pipeline_run_data_dict["performance_summary"]["peak_memory_mb"], 
-                result.memory_usage_mb
+                result["memory_usage_mb"]
             )
         
-        if result.status != "SUCCESS":
+        # Handle different step result statuses
+        if result["status"] in ["FAILED", "ERROR", "TIMEOUT", "FAILED_NONZERO_EXIT"]:
             overall_status = "FAILED"
             _pipeline_run_data_dict["performance_summary"]["failed_steps"] += 1
             
             # Check if this was a critical step failure
-            if is_critical_step(result.script_name):
+            config = get_pipeline_config()
+            step_config = config.get_step_config(result["script_name"])
+            is_critical = step_config.required if step_config else True
+            
+            if is_critical:
                 _pipeline_run_data_dict["performance_summary"]["critical_failures"] += 1
-                logger.critical(f"🔥 Critical step {result.script_name} failed. Halting pipeline.")
-                _pipeline_run_data_dict["steps"].append(result.to_dict())
+                logger.critical(f"🔥 Critical step {result['script_name']} failed. Halting pipeline.")
+                _pipeline_run_data_dict["steps"].append(result)
                 break
+        elif result["status"] == "SUCCESS_WITH_WARNINGS":
+            # Update overall status to warnings if not already failed
+            if overall_status == "SUCCESS":
+                overall_status = "SUCCESS_WITH_WARNINGS"
         
         # Add step result to summary
-        _pipeline_run_data_dict["steps"].append(result.to_dict())
+        _pipeline_run_data_dict["steps"].append(result)
 
     _pipeline_run_data_dict["end_time"] = datetime.datetime.now().isoformat()
     _pipeline_run_data_dict["overall_status"] = overall_status

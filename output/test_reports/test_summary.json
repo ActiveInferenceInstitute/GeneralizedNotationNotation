@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-06-21 12:45:12",
+  "exit_code": 0,
+  "success": true,
+  "stdout": "============================= test session starts ==============================\nplatform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /Users/4d/Documents/GitHub/GeneralizedNotationNotation\nplugins: anyio-4.9.0, cov-6.2.1, mock-3.14.1\ncollecting ... collected 4 items\n\nsrc/tests/test_gnn_type_checker.py::TestGNNTypeChecker::test_check_directory PASSED [ 25%]\nsrc/tests/test_gnn_type_checker.py::TestGNNTypeChecker::test_check_invalid_file PASSED [ 50%]\nsrc/tests/test_gnn_type_checker.py::TestGNNTypeChecker::test_check_valid_file PASSED [ 75%]\nsrc/tests/test_gnn_type_checker.py::TestGNNTypeChecker::test_generate_report PASSED [100%]\n\n- generated xml file: /Users/4d/Documents/GitHub/output/test_reports/pytest_report.xml -\n============================== 4 passed in 0.37s ===============================\n",
+  "stderr": "",
+  "xml_report": null,
+  "json_report": null
+}

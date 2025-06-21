@@ -1,0 +1,449 @@
+///
+/// GNN (Generalized Notation Notation) Schema Definition in Apple's Pkl
+/// This file provides a complete formal specification of GNN models using Pkl's
+/// configuration-as-code paradigm with type safety and validation.
+///
+
+@ModuleInfo { minPklVersion = "0.25.0" }
+
+/// Base validation constraint for mathematical objects
+abstract class MathematicalConstraint {
+  name: String
+  description: String
+  validate(value: Any): Boolean
+}
+
+/// Stochasticity constraint for probability matrices
+class StochasticityConstraint extends MathematicalConstraint {
+  name = "stochasticity"
+  description = "Rows must sum to 1.0 (probability distributions)"
+  tolerance: Float = 1e-10
+  
+  function validate(value: Any): Boolean =
+    if (value is List<List<Float>>) {
+      value.every { row -> 
+        (row.sum() - 1.0).abs() <= tolerance
+      }
+    } else false
+}
+
+/// Non-negativity constraint for probability values
+class NonNegativityConstraint extends MathematicalConstraint {
+  name = "non_negativity"
+  description = "All values must be non-negative"
+  
+  function validate(value: Any): Boolean =
+    if (value is List<List<Float>>) {
+      value.every { row -> row.every { it >= 0.0 } }
+    } else if (value is List<Float>) {
+      value.every { it >= 0.0 }
+    } else false
+}
+
+/// Dimension consistency constraint
+class DimensionConsistencyConstraint extends MathematicalConstraint {
+  name = "dimension_consistency"
+  description = "Matrix dimensions must be consistent with variable declarations"
+  expectedShape: List<Int>
+  
+  function validate(value: Any): Boolean =
+    if (value is List<List<Any>>) {
+      value.length == expectedShape[0] &&
+      value.every { row -> row.length == expectedShape[1] }
+    } else false
+}
+
+/// GNN Version specification
+class GNNVersion {
+  major: Int(isBetween(1, 10))
+  minor: Int(isBetween(0, 99))
+  patch: Int(isBetween(0, 999))
+  
+  function toString(): String = "\(major).\(minor).\(patch)"
+}
+
+/// Processing flags for GNN interpretation
+class ProcessingFlags {
+  strictValidation: Boolean = true
+  allowExperimentalFeatures: Boolean = false
+  enableOptimizations: Boolean = true
+  debugMode: Boolean = false
+  verboseLogging: Boolean = false
+}
+
+/// Dimension specification for variables
+class VariableDimensions {
+  shape: List<Int>(every { it > 0 })
+  
+  /// Total number of elements
+  function totalElements(): Int = shape.fold(1, (acc, dim) -> acc * dim)
+  
+  /// Check if dimensions are compatible for matrix operations
+  function isCompatibleWith(other: VariableDimensions): Boolean =
+    shape.length == other.shape.length &&
+    shape.zip(other.shape).every { (a, b) -> a == b }
+}
+
+/// Data types supported in GNN
+typealias GNNDataType = "categorical" | "continuous" | "binary" | "integer" | "float" | "complex"
+
+/// Variable definition in GNN state space
+class StateVariable {
+  name: String(!isEmpty && matches(Regex("^[a-zA-Z_][a-zA-Z0-9_]*$")))
+  dimensions: VariableDimensions
+  dataType: GNNDataType = "categorical"
+  description: String?
+  constraints: List<MathematicalConstraint> = List()
+  
+  /// Validate variable definition
+  function isValid(): Boolean =
+    name.startsWith("s_f") || name.startsWith("o_m") || name.startsWith("u_c") ||
+    name.startsWith("pi_c") || name.startsWith("A_") || name.startsWith("B_") ||
+    name.startsWith("C_") || name.startsWith("D_")
+}
+
+/// Observation variable (observable outcomes)
+class ObservationVariable extends StateVariable {
+  modality: String? // e.g., "visual", "auditory", "proprioceptive"
+  
+  function isValid(): Boolean = name.startsWith("o_m")
+}
+
+/// Action/Control variable
+class ActionVariable extends StateVariable {
+  controlType: "discrete" | "continuous" = "discrete"
+  
+  function isValid(): Boolean = name.startsWith("u_c") || name.startsWith("pi_c")
+}
+
+/// Connection types in GNN
+typealias ConnectionType = "directed" | "undirected" | "conditional" | "bidirectional"
+
+/// Connection between variables
+class Connection {
+  source: List<String>(!isEmpty)
+  target: List<String>(!isEmpty)
+  connectionType: ConnectionType
+  symbol: ">" | "->" | "-" | "|" | "<->"
+  description: String?
+  weight: Float? // Optional connection weight
+  
+  /// Validate connection syntax
+  function isValid(): Boolean =
+    source.every { it.matches(Regex("^[a-zA-Z_][a-zA-Z0-9_]*$")) } &&
+    target.every { it.matches(Regex("^[a-zA-Z_][a-zA-Z0-9_]*$")) } &&
+    (connectionType == "directed" && (symbol == ">" || symbol == "->")) ||
+    (connectionType == "undirected" && symbol == "-") ||
+    (connectionType == "conditional" && symbol == "|") ||
+    (connectionType == "bidirectional" && symbol == "<->")
+}
+
+/// Matrix representation for Active Inference
+class ActiveInferenceMatrix {
+  name: String
+  dimensions: VariableDimensions
+  values: List<List<Float>>?
+  constraints: List<MathematicalConstraint> = List()
+  
+  /// Validate matrix against constraints
+  function isValid(): Boolean =
+    constraints.every { constraint -> constraint.validate(values) }
+}
+
+/// Likelihood matrix A: P(o|s)
+class LikelihoodMatrix extends ActiveInferenceMatrix {
+  name = "A"
+  constraints = List(
+    new StochasticityConstraint {},
+    new NonNegativityConstraint {}
+  )
+}
+
+/// Transition matrix B: P(s'|s,u)
+class TransitionMatrix extends ActiveInferenceMatrix {
+  name = "B"
+  constraints = List(
+    new StochasticityConstraint {},
+    new NonNegativityConstraint {}
+  )
+}
+
+/// Preference vector C: log preferences
+class PreferenceVector {
+  name: String = "C"
+  dimensions: VariableDimensions
+  values: List<Float>?
+  
+  /// Preferences can be any real number (log space)
+  function isValid(): Boolean = true
+}
+
+/// Prior vector D: initial state priors
+class PriorVector {
+  name: String = "D"
+  dimensions: VariableDimensions
+  values: List<Float>?
+  constraints: List<MathematicalConstraint> = List(
+    new StochasticityConstraint {},
+    new NonNegativityConstraint {}
+  )
+  
+  function isValid(): Boolean =
+    constraints.every { constraint -> constraint.validate(values) }
+}
+
+/// Mathematical equation representation
+class Equation {
+  latex: String(!isEmpty)
+  plaintext: String?
+  variables: List<String> = List()
+  description: String?
+  
+  /// Extract variables from LaTeX (simplified)
+  function extractVariables(): List<String> =
+    latex.matches(Regex("\\\\[a-zA-Z_][a-zA-Z0-9_]*")).toList()
+}
+
+/// Time configuration for models
+class TimeConfiguration {
+  type: "Static" | "Dynamic" = "Dynamic"
+  discretization: "DiscreteTime" | "ContinuousTime" = "DiscreteTime"
+  horizon: Int(isBetween(1, 10000)) = 10
+  timeStep: Float(isPositive) = 1.0
+  
+  function isValid(): Boolean =
+    (type == "Static" && horizon == 1) ||
+    (type == "Dynamic" && horizon > 1)
+}
+
+/// Ontology mapping to Active Inference terms
+class OntologyMapping {
+  variable: String
+  ontologyTerm: String
+  namespace: String = "ActInfOntology"
+  confidence: Float(isBetween(0.0, 1.0)) = 1.0
+  
+  function isValid(): Boolean =
+    variable.matches(Regex("^[a-zA-Z_][a-zA-Z0-9_]*$")) &&
+    ontologyTerm.matches(Regex("^[a-zA-Z_][a-zA-Z0-9_]*$"))
+}
+
+/// Complete GNN model specification
+class GNNModel {
+  /// Required sections
+  gnnSection: String = "GNN"
+  version: GNNVersion
+  processingFlags: ProcessingFlags = new ProcessingFlags {}
+  modelName: String(!isEmpty)
+  modelAnnotation: String(!isEmpty)
+  
+  /// Core model components
+  stateVariables: Mapping<String, StateVariable>
+  observationVariables: Mapping<String, ObservationVariable> = new Mapping {}
+  actionVariables: Mapping<String, ActionVariable> = new Mapping {}
+  connections: List<Connection>
+  
+  /// Active Inference matrices
+  likelihoodMatrices: Mapping<String, LikelihoodMatrix> = new Mapping {}
+  transitionMatrices: Mapping<String, TransitionMatrix> = new Mapping {}
+  preferenceVectors: Mapping<String, PreferenceVector> = new Mapping {}
+  priorVectors: Mapping<String, PriorVector> = new Mapping {}
+  
+  /// Additional components
+  equations: List<Equation> = List()
+  timeConfiguration: TimeConfiguration
+  ontologyMappings: List<OntologyMapping> = List()
+  modelParameters: Mapping<String, Any> = new Mapping {}
+  
+  /// Metadata
+  footer: String?
+  signature: Mapping<String, String>?
+  
+  /// Comprehensive validation
+  function isValid(): Boolean =
+    stateVariables.values.every { it.isValid() } &&
+    observationVariables.values.every { it.isValid() } &&
+    actionVariables.values.every { it.isValid() } &&
+    connections.every { it.isValid() } &&
+    likelihoodMatrices.values.every { it.isValid() } &&
+    transitionMatrices.values.every { it.isValid() } &&
+    priorVectors.values.every { it.isValid() } &&
+    ontologyMappings.every { it.isValid() } &&
+    timeConfiguration.isValid()
+  
+  /// Generate variable summary
+  function getVariableSummary(): Mapping<String, Int> = new Mapping {
+    ["stateVariables"] = stateVariables.length
+    ["observationVariables"] = observationVariables.length
+    ["actionVariables"] = actionVariables.length
+    ["totalConnections"] = connections.length
+    ["totalParameters"] = modelParameters.length
+  }
+  
+  /// Estimate computational complexity
+  function estimateComplexity(): Mapping<String, Any> {
+    let totalStateDimensions = stateVariables.values
+      .map { it.dimensions.totalElements() }
+      .fold(0, (acc, dim) -> acc + dim)
+    
+    let totalObservationDimensions = observationVariables.values
+      .map { it.dimensions.totalElements() }
+      .fold(0, (acc, dim) -> acc + dim)
+    
+    new Mapping {
+      ["stateDimensions"] = totalStateDimensions
+      ["observationDimensions"] = totalObservationDimensions
+      ["complexityOrder"] = totalStateDimensions * totalObservationDimensions * timeConfiguration.horizon
+      ["memoryEstimate"] = (totalStateDimensions * totalObservationDimensions * 8).mb
+    }
+  }
+}
+
+/// Export configuration for multi-format output
+class ExportConfiguration {
+  formats: List<"json" | "xml" | "yaml" | "graphml" | "pickle"> = List("json")
+  includeMetadata: Boolean = true
+  prettify: Boolean = true
+  compression: Boolean = false
+  
+  /// Format-specific options
+  jsonOptions: Mapping<String, Any> = new Mapping {
+    ["indent"] = 2
+    ["sortKeys"] = true
+    ["ensureAscii"] = false
+  }
+  
+  xmlOptions: Mapping<String, Any> = new Mapping {
+    ["encoding"] = "UTF-8"
+    ["standalone"] = true
+    ["prettyPrint"] = true
+  }
+  
+  yamlOptions: Mapping<String, Any> = new Mapping {
+    ["defaultFlowStyle"] = false
+    ["indentSize"] = 2
+    ["lineWidth"] = 120
+  }
+}
+
+/// Validation configuration
+class ValidationConfiguration {
+  level: "basic" | "standard" | "strict" | "research" = "standard"
+  enableMathematicalValidation: Boolean = true
+  enableOntologyValidation: Boolean = true
+  enableDimensionValidation: Boolean = true
+  customConstraints: List<MathematicalConstraint> = List()
+  
+  /// Tolerance levels for numerical validation
+  tolerances: Mapping<String, Float> = new Mapping {
+    ["stochasticity"] = 1e-10
+    ["symmetry"] = 1e-12
+    ["orthogonality"] = 1e-8
+  }
+}
+
+/// Complete GNN processing pipeline configuration
+class GNNPipelineConfiguration {
+  inputFile: String
+  outputDirectory: String = "output"
+  
+  /// Core configurations
+  model: GNNModel
+  validation: ValidationConfiguration = new ValidationConfiguration {}
+  export: ExportConfiguration = new ExportConfiguration {}
+  
+  /// Processing options
+  parallelProcessing: Boolean = true
+  maxWorkers: Int = Runtime.availableProcessors()
+  cacheResults: Boolean = true
+  
+  /// Performance monitoring
+  performanceTracking: Boolean = true
+  memoryProfiling: Boolean = false
+  
+  /// Output artifacts
+  generateVisualization: Boolean = true
+  generateDocumentation: Boolean = true
+  generateTestCases: Boolean = false
+  
+  function isValid(): Boolean =
+    model.isValid() &&
+    inputFile.endsWith(".pkl") || inputFile.endsWith(".gnn") &&
+    outputDirectory.matches(Regex("^[a-zA-Z0-9_./\\-]+$"))
+}
+
+/// Example GNN model configuration
+local exampleModel = new GNNModel {
+  version = new GNNVersion { major = 2; minor = 0; patch = 0 }
+  modelName = "Example Active Inference Model"
+  modelAnnotation = "Demonstration of GNN Pkl schema capabilities"
+  
+  stateVariables = new Mapping {
+    ["s_f0"] = new StateVariable {
+      name = "s_f0"
+      dimensions = new VariableDimensions { shape = List(4, 1) }
+      dataType = "categorical"
+      description = "Location factor"
+    }
+    ["s_f1"] = new StateVariable {
+      name = "s_f1"
+      dimensions = new VariableDimensions { shape = List(2, 1) }
+      dataType = "categorical"
+      description = "Context factor"
+    }
+  }
+  
+  observationVariables = new Mapping {
+    ["o_m0"] = new ObservationVariable {
+      name = "o_m0"
+      dimensions = new VariableDimensions { shape = List(4, 1) }
+      dataType = "categorical"
+      modality = "visual"
+      description = "Visual observations"
+    }
+  }
+  
+  connections = List(
+    new Connection {
+      source = List("s_f0", "s_f1")
+      target = List("o_m0")
+      connectionType = "directed"
+      symbol = ">"
+      description = "Hidden states generate observations"
+    }
+  )
+  
+  timeConfiguration = new TimeConfiguration {
+    type = "Dynamic"
+    discretization = "DiscreteTime"
+    horizon = 10
+  }
+  
+  ontologyMappings = List(
+    new OntologyMapping {
+      variable = "s_f0"
+      ontologyTerm = "HiddenStateFactor"
+    },
+    new OntologyMapping {
+      variable = "o_m0"
+      ontologyTerm = "ObservationModality"
+    }
+  )
+}
+
+/// Complete pipeline configuration example
+output {
+  value = new GNNPipelineConfiguration {
+    inputFile = "example_model.pkl"
+    model = exampleModel
+    validation = new ValidationConfiguration {
+      level = "strict"
+      enableMathematicalValidation = true
+    }
+    export = new ExportConfiguration {
+      formats = List("json", "xml", "yaml", "graphml")
+      includeMetadata = true
+      prettify = true
+    }
+  }
+} 

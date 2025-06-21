@@ -257,20 +257,21 @@ class ArgumentParser:
     
     # Define which arguments each step supports
     STEP_ARGUMENTS = {
-        "1_gnn": ["target_dir", "output_dir", "recursive", "verbose"],
-        "2_setup": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
-        "3_tests": ["target_dir", "output_dir", "verbose"],
-        "4_gnn_type_checker": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
-        "5_export": ["target_dir", "output_dir", "recursive", "verbose"],
-        "6_visualization": ["target_dir", "output_dir", "recursive", "verbose"],
-        "7_mcp": ["target_dir", "output_dir", "verbose"],
-        "8_ontology": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
-        "9_render": ["output_dir", "recursive", "verbose"],
-        "10_execute": ["target_dir", "output_dir", "recursive", "verbose"],
-        "11_llm": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
-        "12_discopy": ["target_dir", "output_dir", "verbose", "discopy_gnn_input_dir"],
-        "13_discopy_jax_eval": ["target_dir", "output_dir", "verbose", "discopy_jax_gnn_input_dir", "discopy_jax_seed"],
-        "14_site": ["target_dir", "output_dir", "verbose", "site_html_filename"],
+        "1_gnn.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "2_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
+        "3_tests.py": ["target_dir", "output_dir", "verbose"],
+        "4_gnn_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
+        "5_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "6_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "7_mcp.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "8_ontology.py": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
+        "9_render.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "10_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "11_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
+        "12_discopy.py": ["target_dir", "output_dir", "recursive", "verbose", "discopy_gnn_input_dir"],
+        "13_discopy_jax_eval.py": ["target_dir", "output_dir", "recursive", "verbose", "discopy_jax_gnn_input_dir", "discopy_jax_seed"],
+        "14_site.py": ["target_dir", "output_dir", "verbose", "site_html_filename"],
+        "main.py": list(ARGUMENT_DEFINITIONS.keys())
     }
     
     @classmethod
@@ -334,9 +335,76 @@ class ArgumentParser:
     
     @classmethod
     def parse_step_arguments(cls, step_name: str, args: Optional[List[str]] = None) -> argparse.Namespace:
-        """Parse arguments for a specific pipeline step."""
+        """Parse arguments for a specific step with guaranteed attribute availability."""
         parser = cls.create_step_parser(step_name)
-        return parser.parse_args(args)
+        
+        try:
+            parsed_args = parser.parse_args(args)
+            
+            # CRITICAL FIX: Ensure all expected attributes exist with proper defaults
+            # This addresses the 'recursive' attribute missing issue in step 13
+            step_supported_args = cls.STEP_ARGUMENTS.get(step_name, [])
+            
+            for arg_name in step_supported_args:
+                if not hasattr(parsed_args, arg_name):
+                    # Set appropriate default values
+                    if arg_name == 'recursive':
+                        setattr(parsed_args, arg_name, True)
+                    elif arg_name == 'verbose':
+                        setattr(parsed_args, arg_name, False)
+                    elif arg_name == 'strict':
+                        setattr(parsed_args, arg_name, False)
+                    elif arg_name == 'estimate_resources':
+                        setattr(parsed_args, arg_name, True)
+                    elif arg_name.endswith('_dir'):
+                        setattr(parsed_args, arg_name, Path("output") if "output" in arg_name else Path("src/gnn/examples"))
+                    elif arg_name == 'discopy_jax_seed':
+                        setattr(parsed_args, arg_name, 0)
+                    elif arg_name == 'llm_timeout':
+                        setattr(parsed_args, arg_name, 360)
+                    elif arg_name == 'llm_tasks':
+                        setattr(parsed_args, arg_name, "all")
+                    elif arg_name == 'site_html_filename':
+                        setattr(parsed_args, arg_name, "gnn_pipeline_summary_site.html")
+                    elif arg_name in ['recreate_venv', 'dev']:
+                        setattr(parsed_args, arg_name, False)
+                    else:
+                        setattr(parsed_args, arg_name, None)
+                    
+            return parsed_args
+            
+        except SystemExit as e:
+            # Handle argument parsing errors gracefully
+            logger.error(f"Argument parsing failed for step {step_name}: {e}")
+            # Return a namespace with all required attributes set to defaults
+            fallback_args = argparse.Namespace()
+            step_supported_args = cls.STEP_ARGUMENTS.get(step_name, [])
+            
+            for arg_name in step_supported_args:
+                if arg_name == 'recursive':
+                    setattr(fallback_args, arg_name, True)
+                elif arg_name == 'verbose':
+                    setattr(fallback_args, arg_name, False)
+                elif arg_name == 'strict':
+                    setattr(fallback_args, arg_name, False)
+                elif arg_name == 'estimate_resources':
+                    setattr(fallback_args, arg_name, True)
+                elif arg_name.endswith('_dir'):
+                    setattr(fallback_args, arg_name, Path("output") if "output" in arg_name else Path("src/gnn/examples"))
+                elif arg_name == 'discopy_jax_seed':
+                    setattr(fallback_args, arg_name, 0)
+                elif arg_name == 'llm_timeout':
+                    setattr(fallback_args, arg_name, 360)
+                elif arg_name == 'llm_tasks':
+                    setattr(fallback_args, arg_name, "all")
+                elif arg_name == 'site_html_filename':
+                    setattr(fallback_args, arg_name, "gnn_pipeline_summary_site.html")
+                elif arg_name in ['recreate_venv', 'dev']:
+                    setattr(fallback_args, arg_name, False)
+                else:
+                    setattr(fallback_args, arg_name, None)
+                
+            return fallback_args
 
 def build_step_command_args(step_name: str, pipeline_args: PipelineArguments, 
                            python_executable: str, script_path: Path) -> List[str]:
@@ -355,7 +423,7 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
     cmd = [python_executable, str(script_path)]
     
     # Get supported arguments for this step
-    supported_args = ArgumentParser.STEP_ARGUMENTS.get(step_name, [])
+    supported_args = cls.STEP_ARGUMENTS.get(step_name, [])
     
     # Build arguments
     for arg_name in supported_args:
@@ -366,7 +434,7 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
         if value is None:
             continue
             
-        arg_def = ArgumentParser.ARGUMENT_DEFINITIONS.get(arg_name)
+        arg_def = cls.ARGUMENT_DEFINITIONS.get(arg_name)
         if not arg_def:
             continue
             
@@ -547,7 +615,9 @@ class EnhancedArgumentParser(ArgumentParser):
     @classmethod
     def create_step_parser(cls, step_name: str, description: str = None) -> argparse.ArgumentParser:
         """Create an enhanced parser for a specific pipeline step."""
-        config = StepConfiguration.get_step_config(step_name)
+        # Remove .py extension for config lookup if present
+        config_key = step_name.replace('.py', '') if step_name.endswith('.py') else step_name
+        config = StepConfiguration.get_step_config(config_key)
         
         if description is None:
             description = config.get("description", f"GNN Processing Pipeline - {step_name}")
@@ -569,7 +639,9 @@ Examples:
         )
         
         # Add arguments supported by this step
-        supported_args = cls.STEP_ARGUMENTS.get(step_name, [])
+        # Check both with and without .py extension for STEP_ARGUMENTS lookup
+        step_args_key = step_name if step_name in cls.STEP_ARGUMENTS else f"{step_name}.py"
+        supported_args = cls.STEP_ARGUMENTS.get(step_args_key, [])
         for arg_name in supported_args:
             if arg_name in cls.ARGUMENT_DEFINITIONS:
                 # Get step-specific default if available
@@ -602,7 +674,8 @@ Examples:
         parsed_args = parser.parse_args(args)
         
         # Validate step-specific requirements
-        validation_errors = StepConfiguration.validate_step_args(step_name, parsed_args)
+        config_key = step_name.replace('.py', '') if step_name.endswith('.py') else step_name
+        validation_errors = StepConfiguration.validate_step_args(config_key, parsed_args)
         if validation_errors:
             logger.error(f"Argument validation failed for {step_name}:")
             for error in validation_errors:
@@ -614,7 +687,8 @@ Examples:
     @classmethod
     def get_step_help(cls, step_name: str) -> str:
         """Get help text for a specific step."""
-        config = StepConfiguration.get_step_config(step_name)
+        config_key = step_name.replace('.py', '') if step_name.endswith('.py') else step_name
+        config = StepConfiguration.get_step_config(config_key)
         if not config:
             return f"Unknown step: {step_name}"
         
@@ -660,7 +734,8 @@ def build_enhanced_step_command_args(step_name: str, pipeline_args: PipelineArgu
         ValueError: If step configuration is invalid
     """
     # Validate step exists
-    config = StepConfiguration.get_step_config(step_name)
+    config_key = step_name.replace('.py', '') if step_name.endswith('.py') else step_name
+    config = StepConfiguration.get_step_config(config_key)
     if not config:
         raise ValueError(f"Unknown pipeline step: {step_name}")
     

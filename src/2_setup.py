@@ -22,8 +22,9 @@ import subprocess
 import shutil
 import json
 import time
+import logging
 
-# Import centralized utilities
+# Import centralized utilities and configuration
 from utils import (
     setup_step_logging,
     log_step_start,
@@ -31,11 +32,17 @@ from utils import (
     log_step_warning,
     log_step_error,
     validate_output_directory,
+    EnhancedArgumentParser,
     UTILS_AVAILABLE
 )
 
+from pipeline import (
+    STEP_METADATA,
+    get_output_dir_for_script
+)
+
 # Initialize logger for this step  
-logger = setup_step_logging("2_setup", verbose=False)  # Will be updated based on args
+logger = setup_step_logging("2_setup", verbose=False)
 
 # Import setup module for environment setup
 try:
@@ -44,18 +51,10 @@ try:
     from setup.utils import is_venv_active, get_venv_info, check_system_dependencies
     logger.debug("Successfully imported setup modules")
 except ImportError as e:
-    # Fallback if the script is run in a context where src/setup is not directly importable
-    sys.path.append(str(Path(__file__).parent.resolve())) # Ensure src/ is in path
-    try:
-        from setup import setup as project_env_setup
-        from setup.utils import ensure_directory, find_gnn_files, get_output_paths
-        from setup.utils import is_venv_active, get_venv_info, check_system_dependencies
-        logger.debug("Successfully imported setup modules via alternate path")
-    except ImportError as e2:
-        log_step_error(logger, f"Could not import setup modules from src/setup/: {e2}")
-        logger.error("Ensure src/setup/setup.py exists and src/ is in your PYTHONPATH or accessible.")
-        project_env_setup = None
-        sys.exit(1)
+    log_step_error(logger, f"Could not import setup modules from src/setup/: {e}")
+    logger.error("Ensure src/setup/setup.py exists and src/ is in your PYTHONPATH or accessible.")
+    project_env_setup = None
+    sys.exit(1)
 
 def log_environment_info():
     """Log detailed information about the current environment."""
@@ -109,7 +108,7 @@ def verify_directories(target_dir, output_dir, verbose=False):
     except Exception as e:
         log_step_error(logger, f"Error scanning for GNN files in {target_path}: {e}")
     
-    # Create output directory structure
+    # Create output directory structure using centralized configuration
     try:
         logger.info("Creating output directory structure...")
         
@@ -184,7 +183,7 @@ def list_installed_packages(verbose: bool = False, output_dir: str = None):
         
         # Save detailed package list to file if output_dir is provided
         if output_dir:
-            setup_dir = Path(output_dir) / "setup_artifacts"
+            setup_dir = get_output_dir_for_script("2_setup.py", Path(output_dir))
             setup_dir.mkdir(parents=True, exist_ok=True)
             packages_file = setup_dir / "installed_packages.json"
             
@@ -205,17 +204,18 @@ def list_installed_packages(verbose: bool = False, output_dir: str = None):
     except json.JSONDecodeError as e:
         log_step_error(logger, f"Failed to parse pip list JSON output: {e}")
     except Exception as e:
-        log_step_error(logger, f"Unexpected error during package listing: {e}")
+        log_step_error(logger, f"Unexpected error listing packages: {e}")
 
 def main(parsed_args: argparse.Namespace):
-    """Main function for the setup step (Step 2)."""
+    """Main function for setup operations."""
     
-    # Update logger verbosity based on args
-    if UTILS_AVAILABLE and hasattr(parsed_args, 'verbose') and parsed_args.verbose:
-        from utils import PipelineLogger
-        PipelineLogger.set_verbosity(True)
+    # Log step metadata from centralized configuration
+    step_info = STEP_METADATA.get("2_setup.py", {})
+    log_step_start(logger, f"{step_info.get('description', 'Environment setup and dependency installation')}")
     
-    log_step_start(logger, "Starting Step 2: Project Setup")
+    # Update logger verbosity if needed
+    if parsed_args.verbose:
+        logger.setLevel(logging.DEBUG)
     
     # Log environment information
     log_environment_info()
@@ -223,77 +223,50 @@ def main(parsed_args: argparse.Namespace):
     # Verify directories
     if not verify_directories(parsed_args.target_dir, parsed_args.output_dir, parsed_args.verbose):
         log_step_error(logger, "Directory verification failed")
-        sys.exit(1)
+        return 1
     
-    # Perform full setup
+    # Perform full environment setup
     logger.info("Performing full environment setup...")
-    try:
-        exit_code = project_env_setup.perform_full_setup(
-            recreate_venv=getattr(parsed_args, 'recreate_venv', False),
-            dev=getattr(parsed_args, 'dev', False),
-            verbose=parsed_args.verbose
-        )
-        success = (exit_code == 0)
-        
-        if not success:
-            log_step_error(logger, "Environment setup failed")
-            sys.exit(1)
-            
-        log_step_success(logger, "Environment setup completed successfully")
-        
-    except Exception as e:
-        log_step_error(logger, f"Unexpected error during setup: {e}")
-        sys.exit(1)
+    if project_env_setup:
+        try:
+            exit_code = project_env_setup.perform_full_setup(
+                verbose=parsed_args.verbose,
+                recreate_venv=getattr(parsed_args, 'recreate_venv', False),
+                dev=getattr(parsed_args, 'dev', False)
+            )
+            if exit_code != 0:
+                log_step_error(logger, "Environment setup failed")
+                return 1
+        except Exception as e:
+            log_step_error(logger, f"Environment setup failed with exception: {e}")
+            return 1
+    else:
+        log_step_warning(logger, "Project environment setup not available, skipping")
     
     # List installed packages
-    list_installed_packages(parsed_args.verbose, parsed_args.output_dir)
+    list_installed_packages(verbose=parsed_args.verbose, output_dir=parsed_args.output_dir)
     
-    # Test PyMDP availability
-    try:
-        import pymdp
-        from pymdp.agent import Agent
-        logger.info("✅ PyMDP is available and importable")
-        log_step_success(logger, "PyMDP availability confirmed")
-    except ImportError as e:
-        log_step_warning(logger, f"PyMDP not available: {e}")
+    log_step_success(logger, "Setup completed successfully")
+    return 0
+
+if __name__ == '__main__':
+    # Use centralized argument parsing
+    if UTILS_AVAILABLE:
+        parsed_args = EnhancedArgumentParser.parse_step_arguments("2_setup")
+    else:
+        # Fallback argument parsing
+        parser = argparse.ArgumentParser(description="Environment setup and dependency installation")
+        parser.add_argument("--target-dir", type=Path, required=True,
+                          help="Target directory containing GNN files")
+        parser.add_argument("--output-dir", type=Path, required=True,
+                          help="Output directory for generated artifacts")
+        parser.add_argument("--verbose", action="store_true",
+                          help="Enable verbose output")
+        parser.add_argument("--recreate-venv", action="store_true",
+                          help="Recreate virtual environment")
+        parser.add_argument("--dev", action="store_true",
+                          help="Install development dependencies")
+        parsed_args = parser.parse_args()
     
-    log_step_success(logger, "Step 2: Project Setup completed successfully")
-
-if __name__ == "__main__":
-    script_file_path = Path(__file__).resolve()
-    project_root_for_defaults = script_file_path.parent.parent
-    default_target_dir = project_root_for_defaults / "src" / "gnn" / "examples"
-    default_output_dir = project_root_for_defaults / "output"
-
-    parser = argparse.ArgumentParser(description="GNN Processing Pipeline - Step 2: Setup (Standalone)." )
-    parser.add_argument(
-        "--target-dir", 
-        type=Path, 
-        default=default_target_dir,
-        help=f"Target directory for GNN source files (used for verification, default: {default_target_dir.relative_to(project_root_for_defaults) if default_target_dir.is_relative_to(project_root_for_defaults) else default_target_dir})"
-    )
-    parser.add_argument(
-        "--output-dir", 
-        type=Path, 
-        default=default_output_dir,
-        help=f"Main directory to save outputs (default: {default_output_dir.relative_to(project_root_for_defaults) if default_output_dir.is_relative_to(project_root_for_defaults) else default_output_dir})"
-    )
-    parser.add_argument(
-        "--verbose", 
-        action="store_true", 
-        default=False, # Default to False for standalone, main.py controls for pipeline
-        help="Enable verbose (DEBUG level) logging."
-    )
-    parser.add_argument(
-        "--recreate-venv", 
-        action="store_true", 
-        help="Recreate virtual environment even if it already exists."
-    )
-    parser.add_argument(
-        "--dev", 
-        action="store_true", 
-        help="Also install development dependencies from requirements-dev.txt."
-    )
-    cli_args = parser.parse_args()
-
-    main(cli_args) 
+    exit_code = main(parsed_args)
+    sys.exit(exit_code) 

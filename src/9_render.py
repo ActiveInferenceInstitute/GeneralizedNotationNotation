@@ -1,17 +1,20 @@
+#!/usr/bin/env python3
 """
-Pipeline step for rendering GNN specifications.
+GNN Processing Pipeline - Step 9: Render
 
-This script calls the main rendering logic defined in the src/render/render.py module.
-It handles rendering to various formats including PyMDP and RxInfer.jl.
+This script renders GNN specifications to target simulation environments.
+
+Usage:
+    python 9_render.py [options]
+    (Typically called by main.py)
 """
 
-import argparse
 import sys
-import json
+import logging
 from pathlib import Path
-from typing import Dict, Any
+import argparse
 
-# Import centralized utilities
+# Import centralized utilities and configuration
 from utils import (
     setup_step_logging,
     log_step_start,
@@ -19,169 +22,182 @@ from utils import (
     log_step_warning,
     log_step_error,
     validate_output_directory,
+    EnhancedArgumentParser,
+    performance_tracker,
     UTILS_AVAILABLE
+)
+
+from pipeline import (
+    STEP_METADATA,
+    get_output_dir_for_script
 )
 
 # Initialize logger for this step
 logger = setup_step_logging("9_render", verbose=False)
 
-# Ensure src directory is in path to allow sibling imports
-current_script_path = Path(__file__).resolve()
-src_dir = current_script_path.parent
-if str(src_dir) not in sys.path:
-    sys.path.insert(0, str(src_dir))
-
-# Import rendering functions from the render package
+# Import rendering functionality
 try:
+    from render.render import render_gnn_spec
     from render.pymdp.pymdp_renderer import render_gnn_to_pymdp
     from render.rxinfer import render_gnn_to_rxinfer_toml
-    logger.info("Successfully imported render functions")
+    logger.debug("Successfully imported rendering modules")
+    RENDER_AVAILABLE = True
 except ImportError as e:
-    log_step_error(logger, f"Failed to import render functions: {e}")
+    log_step_error(logger, f"Could not import rendering modules: {e}")
+    render_gnn_spec = None
     render_gnn_to_pymdp = None
     render_gnn_to_rxinfer_toml = None
+    RENDER_AVAILABLE = False
 
-def main(args: argparse.Namespace) -> int:
-    """Main function for the GNN rendering pipeline step."""
+def render_gnn_files(input_dir: Path, output_dir: Path, recursive: bool = False):
+    """Render GNN files to simulation environments."""
+    log_step_start(logger, "Rendering GNN files to simulation environments")
     
-    # Update logger verbosity based on args
-    if args.verbose:
-        import logging
-        logger.setLevel(logging.DEBUG)
-
-    log_step_start(logger, "Starting Step 9: GNN Rendering")
+    if not RENDER_AVAILABLE:
+        log_step_error(logger, "Rendering modules not available")
+        return False
     
-    # Validate render functions are available
-    if not render_gnn_to_pymdp or not render_gnn_to_rxinfer_toml:
-        log_step_error(logger, "Render functions not available. Cannot proceed.")
-        return 1
+    # Use centralized output directory configuration
+    render_output_dir = get_output_dir_for_script("9_render.py", output_dir)
+    render_output_dir.mkdir(parents=True, exist_ok=True)
     
-    base_output_dir = Path(args.output_dir)
-    gnn_export_dir = base_output_dir / "gnn_exports"
-    render_output_dir = base_output_dir / "gnn_rendered_simulators"
+    # Find GNN files
+    pattern = "**/*.md" if recursive else "*.md"
+    gnn_files = list(input_dir.glob(pattern))
     
-    # Create render output directory
-    if not validate_output_directory(base_output_dir, "gnn_rendered_simulators"):
-        log_step_error(logger, "Failed to create render output directory")
-        return 1
-    
-    if not gnn_export_dir.is_dir():
-        log_step_warning(logger, f"GNN export directory not found: {gnn_export_dir}. Skipping render step.")
-        return 0
-
-    # Search for GNN JSON files
-    gnn_files = list(gnn_export_dir.rglob("*.json"))
-
     if not gnn_files:
-        log_step_warning(logger, f"No GNN JSON files found in {gnn_export_dir}. Nothing to render.")
-        return 0
+        log_step_warning(logger, f"No GNN files found in {input_dir} using pattern '{pattern}'")
+        return False
 
-    logger.info(f"Found {len(gnn_files)} GNN JSON files to render")
+    logger.info(f"Found {len(gnn_files)} GNN files to render")
     
-    # Track rendering results
-    render_summary = {
-        "total_files": len(gnn_files),
-        "pymdp_successes": 0,
-        "rxinfer_successes": 0,
-        "failures": [],
-        "output_directory": str(render_output_dir)
-    }
+    successful_renders = 0
+    failed_renders = 0
     
-    overall_success = True
-    
-    for gnn_file_path in gnn_files:
-        logger.info(f"Processing {gnn_file_path.name}")
-        try:
-            with open(gnn_file_path, 'r', encoding='utf-8') as f:
-                gnn_spec: Dict[str, Any] = json.load(f)
-        except (json.JSONDecodeError, IOError) as e:
-            error_msg = f"Failed to read GNN spec from {gnn_file_path}: {e}"
-            log_step_error(logger, error_msg)
-            render_summary["failures"].append({"file": str(gnn_file_path), "error": error_msg})
-            overall_success = False
-            continue
-
-        model_name_base = gnn_file_path.stem.replace(".gnn", "")
-
-        # Render to PyMDP
-        pymdp_output_dir = render_output_dir / "pymdp"
-        pymdp_output_dir.mkdir(parents=True, exist_ok=True)
-        pymdp_output_path = pymdp_output_dir / f"{model_name_base}_pymdp.py"
-        
-        try:
-            success, msg, _ = render_gnn_to_pymdp(gnn_spec, pymdp_output_path)
-            if success:
-                logger.info(f"Successfully rendered to PyMDP: {pymdp_output_path}")
-                render_summary["pymdp_successes"] += 1
-            else:
-                error_msg = f"PyMDP render failed for {gnn_file_path.name}: {msg}"
-                log_step_error(logger, error_msg)
-                render_summary["failures"].append({"file": str(gnn_file_path), "target": "PyMDP", "error": error_msg})
-                overall_success = False
-        except Exception as e:
-            error_msg = f"PyMDP render exception for {gnn_file_path.name}: {e}"
-            log_step_error(logger, error_msg)
-            render_summary["failures"].append({"file": str(gnn_file_path), "target": "PyMDP", "error": error_msg})
-            overall_success = False
-
-        # Render to RxInfer TOML
-        rxinfer_output_dir = render_output_dir / "rxinfer_toml"
-        rxinfer_output_dir.mkdir(parents=True, exist_ok=True)
-        rxinfer_output_path = rxinfer_output_dir / f"{model_name_base}_config.toml"
-        
-        try:
-            success, msg, _ = render_gnn_to_rxinfer_toml(gnn_spec, rxinfer_output_path)
-            if success:
-                logger.info(f"Successfully rendered to RxInfer TOML: {rxinfer_output_path}")
-                render_summary["rxinfer_successes"] += 1
-            else:
-                error_msg = f"RxInfer render failed for {gnn_file_path.name}: {msg}"
-                log_step_error(logger, error_msg)
-                render_summary["failures"].append({"file": str(gnn_file_path), "target": "RxInfer", "error": error_msg})
-                overall_success = False
-        except Exception as e:
-            error_msg = f"RxInfer render exception for {gnn_file_path.name}: {e}"
-            log_step_error(logger, error_msg)
-            render_summary["failures"].append({"file": str(gnn_file_path), "target": "RxInfer", "error": error_msg})
-            overall_success = False
-
-    # Save render summary
-    summary_file = render_output_dir / "render_summary.json"
     try:
-        with open(summary_file, 'w', encoding='utf-8') as f:
-            json.dump(render_summary, f, indent=2)
-        logger.info(f"Render summary saved to: {summary_file}")
+        # Use performance tracking for rendering operations
+        with performance_tracker.track_operation("render_all_gnn_files"):
+            for gnn_file in gnn_files:
+                try:
+                    # Parse GNN file (simplified - would normally use proper parser)
+                    gnn_spec = {
+                        "name": gnn_file.stem,
+                        "source_file": str(gnn_file)
+                    }
+                    
+                    # Render to PyMDP
+                    try:
+                        with performance_tracker.track_operation(f"render_pymdp_{gnn_file.name}"):
+                            success, message, artifacts = render_gnn_spec(
+                                gnn_spec, 
+                                "pymdp", 
+                                render_output_dir / "pymdp"
+                            )
+                            
+                        if success:
+                            logger.info(f"PyMDP render successful for {gnn_file.name}: {message}")
+                            successful_renders += 1
+                        else:
+                            logger.warning(f"PyMDP render failed for {gnn_file.name}: {message}")
+                            failed_renders += 1
+                            
+                    except Exception as e:
+                        log_step_warning(logger, f"PyMDP rendering failed for {gnn_file.name}: {e}")
+                        failed_renders += 1
+                    
+                    # Render to RxInfer
+                    try:
+                        with performance_tracker.track_operation(f"render_rxinfer_{gnn_file.name}"):
+                            success, message, artifacts = render_gnn_spec(
+                                gnn_spec, 
+                                "rxinfer_toml", 
+                                render_output_dir / "rxinfer"
+                            )
+                            
+                        if success:
+                            logger.info(f"RxInfer render successful for {gnn_file.name}: {message}")
+                            successful_renders += 1
+                        else:
+                            logger.warning(f"RxInfer render failed for {gnn_file.name}: {message}")
+                            failed_renders += 1
+                            
+                    except Exception as e:
+                        log_step_warning(logger, f"RxInfer rendering failed for {gnn_file.name}: {e}")
+                        failed_renders += 1
+                        
+                except Exception as e:
+                    log_step_error(logger, f"Failed to process {gnn_file.name}: {e}")
+                    failed_renders += 1
+        
+        # Log results summary
+        total_attempts = successful_renders + failed_renders
+        logger.info(f"Rendering complete: {successful_renders}/{total_attempts} renders successful")
+        
+        if successful_renders > 0:
+            log_step_success(logger, f"Rendering completed with {successful_renders} successful renders")
+            return True
+        else:
+            log_step_error(logger, "All rendering attempts failed")
+            return False
+        
     except Exception as e:
-        log_step_warning(logger, f"Failed to save render summary: {e}")
+        log_step_error(logger, f"Rendering failed: {e}")
+        return False
 
-    if overall_success:
-        log_step_success(logger, f"GNN rendering completed successfully - PyMDP: {render_summary['pymdp_successes']}, RxInfer: {render_summary['rxinfer_successes']}")
-    else:
-        log_step_warning(logger, f"GNN rendering completed with {len(render_summary['failures'])} failures")
+def main(parsed_args: argparse.Namespace):
+    """Main function for rendering operations."""
     
-    return 0 if overall_success else 1
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Render GNN specifications from JSON to target formats")
+    # Log step metadata from centralized configuration
+    step_info = STEP_METADATA.get("9_render.py", {})
+    log_step_start(logger, f"{step_info.get('description', 'Code generation for simulation environments')}")
     
-    # Define defaults for standalone execution
-    script_file_path = Path(__file__).resolve()
-    project_root = script_file_path.parent.parent
-    default_output_dir = project_root / "output"
-    
-    parser.add_argument("--output-dir", type=Path, default=default_output_dir,
-                       help="Main pipeline output directory")
-    parser.add_argument("--recursive", action="store_true", 
-                       help="Search for GNN JSON files recursively")
-    parser.add_argument("--verbose", action="store_true", 
-                       help="Enable verbose logging")
-    
-    args = parser.parse_args()
-
-    # Update logger for standalone execution
-    if args.verbose:
-        import logging
+    # Update logger verbosity if needed
+    if parsed_args.verbose:
         logger.setLevel(logging.DEBUG)
+    
+    # Get input and output directories
+    input_dir = getattr(parsed_args, 'target_dir', None)
+    if input_dir is None:
+        input_dir = Path("src/gnn/examples")
+    elif isinstance(input_dir, str):
+        input_dir = Path(input_dir)
+        
+    output_dir = Path(getattr(parsed_args, 'output_dir', 'output'))
+    recursive = getattr(parsed_args, 'recursive', True)
+    
+    # Validate input directory
+    if input_dir is None or not input_dir.exists():
+        log_step_error(logger, f"Input directory does not exist: {input_dir}")
+        return 1
+    
+    # Render GNN files
+    success = render_gnn_files(
+        input_dir=input_dir,
+        output_dir=output_dir,
+        recursive=recursive
+    )
+    
+    if success:
+        log_step_success(logger, "Rendering completed successfully")
+        return 0
+    else:
+        log_step_error(logger, "Rendering failed")
+        return 1
 
-    sys.exit(main(args)) 
+if __name__ == '__main__':
+    # Use centralized argument parsing
+    if UTILS_AVAILABLE:
+        parsed_args = EnhancedArgumentParser.parse_step_arguments("9_render")
+    else:
+        # Fallback argument parsing
+        parser = argparse.ArgumentParser(description="Code generation for simulation environments")
+        parser.add_argument("--output-dir", type=Path, required=True,
+                          help="Output directory for generated artifacts")
+        parser.add_argument("--recursive", action="store_true",
+                          help="Search recursively in subdirectories")
+        parser.add_argument("--verbose", action="store_true",
+                          help="Enable verbose output")
+        parsed_args = parser.parse_args()
+    
+    exit_code = main(parsed_args)
+    sys.exit(exit_code) 

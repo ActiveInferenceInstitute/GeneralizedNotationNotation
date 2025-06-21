@@ -1,227 +1,320 @@
+#!/usr/bin/env python3
 """
-Pipeline Configuration Module
+Centralized Pipeline Configuration
 
-Centralizes all pipeline configuration including step definitions,
-timeouts, argument mappings, and default settings.
+This module provides unified configuration management for the entire GNN pipeline.
 """
 
 import os
-from typing import Dict, List, Any, Optional
+import json
 from pathlib import Path
+from typing import Dict, Any, Optional, List
+from dataclasses import dataclass, field
 
-# Environment-based configuration overrides
-def get_env_override(key: str, default: Any, type_func=str) -> Any:
-    """Get configuration value from environment with fallback to default."""
-    env_value = os.getenv(f"GNN_PIPELINE_{key.upper()}")
-    if env_value is not None:
-        try:
-            return type_func(env_value)
-        except (ValueError, TypeError):
-            pass
-    return default
+@dataclass
+class StepConfig:
+    """Configuration for a single pipeline step."""
+    name: str
+    description: str
+    module_path: str
+    dependencies: List[str] = field(default_factory=list)
+    output_subdir: str = ""
+    timeout: Optional[int] = None
+    required: bool = True
+    performance_tracking: bool = False
 
-# Dynamic path resolution
-def get_project_root() -> Path:
-    """Get project root directory dynamically."""
-    current_file = Path(__file__).resolve()
-    # Assuming config.py is in src/pipeline/, project root is 2 levels up
-    return current_file.parent.parent.parent
+@dataclass
+class PipelineConfig:
+    """Complete pipeline configuration."""
+    project_name: str = "GeneralizedNotationNotation"
+    version: str = "1.0.0"
+    base_output_dir: Path = Path("output")
+    base_target_dir: Path = Path("src/gnn/examples")
+    log_level: str = "INFO"
+    correlation_id_length: int = 8
+    
+    # Environment variable overrides
+    env_prefix: str = "GNN_PIPELINE_"
+    
+    # Step configurations
+    steps: Dict[str, StepConfig] = field(default_factory=dict)
+    
+    def __post_init__(self):
+        """Initialize step configurations and apply environment overrides."""
+        self._initialize_step_configs()
+        self._apply_environment_overrides()
+    
+    def _initialize_step_configs(self):
+        """Initialize default step configurations."""
+        self.steps = {
+            "1_gnn.py": StepConfig(
+                name="gnn_processing",
+                description="GNN file discovery and parsing",
+                module_path="1_gnn.py",
+                output_subdir="gnn_processing_step",
+                performance_tracking=True,
+                required=True  # GNN processing is critical for the pipeline
+            ),
+            "2_setup.py": StepConfig(
+                name="setup",
+                description="Project setup and environment validation",
+                module_path="2_setup.py",
+                output_subdir="setup_artifacts",
+                timeout=300,
+                required=True  # Setup is critical for the pipeline
+            ),
+            "3_tests.py": StepConfig(
+                name="tests",
+                description="Test suite execution",
+                module_path="3_tests.py",
+                output_subdir="test_reports",
+                dependencies=["2_setup.py"],
+                timeout=600,
+                required=False  # Tests can fail without stopping pipeline
+            ),
+            "4_gnn_type_checker.py": StepConfig(
+                name="type_checking",
+                description="GNN syntax and type validation",
+                module_path="4_gnn_type_checker.py",
+                output_subdir="gnn_type_check",
+                dependencies=["1_gnn.py"],
+                performance_tracking=True,
+                required=False  # Type checking can fail without stopping pipeline
+            ),
+            "5_export.py": StepConfig(
+                name="export",
+                description="Multi-format export generation",
+                module_path="5_export.py",
+                output_subdir="gnn_exports",
+                dependencies=["4_gnn_type_checker.py"],
+                performance_tracking=True,
+                required=False  # Export can fail without stopping pipeline
+            ),
+            "6_visualization.py": StepConfig(
+                name="visualization",
+                description="Graph visualization generation",
+                module_path="6_visualization.py",
+                output_subdir="visualization",
+                dependencies=["5_export.py"],
+                performance_tracking=True,
+                required=False  # Visualization can fail without stopping pipeline
+            ),
+            "7_mcp.py": StepConfig(
+                name="mcp",
+                description="Model Context Protocol operations",
+                module_path="7_mcp.py",
+                output_subdir="mcp_processing_step",
+                required=False  # MCP can fail without stopping pipeline
+            ),
+            "8_ontology.py": StepConfig(
+                name="ontology",
+                description="Ontology processing and validation",
+                module_path="8_ontology.py",
+                output_subdir="ontology_processing",
+                dependencies=["5_export.py"],
+                required=False  # Ontology can fail without stopping pipeline
+            ),
+            "9_render.py": StepConfig(
+                name="render",
+                description="Code generation for simulation environments",
+                module_path="9_render.py",
+                output_subdir="gnn_rendered_simulators",
+                dependencies=["5_export.py"],
+                performance_tracking=True,
+                required=False  # Rendering can fail without stopping pipeline
+            ),
+            "10_execute.py": StepConfig(
+                name="execute",
+                description="Execute rendered simulators",
+                module_path="10_execute.py",
+                output_subdir="execution_results",
+                dependencies=["9_render.py"],
+                performance_tracking=True,
+                required=False  # Execution can fail without stopping pipeline
+            ),
+            "11_llm.py": StepConfig(
+                name="llm",
+                description="LLM-enhanced analysis and processing",
+                module_path="11_llm.py",
+                output_subdir="llm_processing_step",
+                dependencies=["5_export.py"],
+                performance_tracking=True,
+                required=False  # LLM can fail without stopping pipeline
+            ),
+            "12_discopy.py": StepConfig(
+                name="discopy",
+                description="DisCoPy categorical diagram translation",
+                module_path="12_discopy.py",
+                output_subdir="discopy_gnn",
+                dependencies=["5_export.py"],
+                required=False  # DisCoPy can fail without stopping pipeline
+            ),
+            "13_discopy_jax_eval.py": StepConfig(
+                name="discopy_jax_eval",
+                description="JAX-based evaluation of DisCoPy diagrams",
+                module_path="13_discopy_jax_eval.py",
+                output_subdir="discopy_jax_eval",
+                dependencies=["12_discopy.py"],
+                required=False  # JAX eval can fail without stopping pipeline
+            ),
+            "14_site.py": StepConfig(
+                name="site",
+                description="Static site generation",
+                module_path="14_site.py",
+                output_subdir="site",
+                dependencies=["6_visualization.py", "8_ontology.py"],
+                required=False  # Site generation can fail without stopping pipeline
+            ),
+            "main.py": StepConfig(
+                name="main",
+                description="Main pipeline orchestrator",
+                module_path="main.py",
+                output_subdir="pipeline_logs"
+            )
+        }
+    
+    def _apply_environment_overrides(self):
+        """Apply environment variable overrides."""
+        # Override base directories
+        if env_output_dir := os.getenv(f"{self.env_prefix}OUTPUT_DIR"):
+            self.base_output_dir = Path(env_output_dir)
+        
+        if env_target_dir := os.getenv(f"{self.env_prefix}TARGET_DIR"):
+            self.base_target_dir = Path(env_target_dir)
+        
+        # Override log level
+        if env_log_level := os.getenv(f"{self.env_prefix}LOG_LEVEL"):
+            self.log_level = env_log_level.upper()
+        
+        # Override verbosity
+        if os.getenv(f"{self.env_prefix}VERBOSE", "").lower() in ("true", "1", "yes"):
+            self.log_level = "DEBUG"
+    
+    def get_step_config(self, step_name: str) -> Optional[StepConfig]:
+        """Get configuration for a specific step."""
+        return self.steps.get(step_name)
+    
+    def get_output_dir_for_step(self, step_name: str, base_output_dir: Optional[Path] = None) -> Path:
+        """Get the output directory for a specific step."""
+        output_dir = base_output_dir or self.base_output_dir
+        step_config = self.get_step_config(step_name)
+        
+        if step_config and step_config.output_subdir:
+            return output_dir / step_config.output_subdir
+        else:
+            # Fallback to step name without extension
+            step_base = step_name.replace(".py", "").replace("_", "-")
+            return output_dir / step_base
+    
+    def get_step_dependencies(self, step_name: str) -> List[str]:
+        """Get dependencies for a specific step."""
+        step_config = self.get_step_config(step_name)
+        return step_config.dependencies if step_config else []
+    
+    def is_performance_tracking_enabled(self, step_name: str) -> bool:
+        """Check if performance tracking is enabled for a step."""
+        step_config = self.get_step_config(step_name)
+        return step_config.performance_tracking if step_config else False
+    
+    def get_step_timeout(self, step_name: str) -> Optional[int]:
+        """Get timeout for a specific step."""
+        step_config = self.get_step_config(step_name)
+        return step_config.timeout if step_config else None
+    
+    def is_step_required(self, step_name: str) -> bool:
+        """Check if a step is required for pipeline completion."""
+        step_config = self.get_step_config(step_name)
+        return step_config.required if step_config else True
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert configuration to dictionary."""
+        return {
+            "project_name": self.project_name,
+            "version": self.version,
+            "base_output_dir": str(self.base_output_dir),
+            "base_target_dir": str(self.base_target_dir),
+            "log_level": self.log_level,
+            "correlation_id_length": self.correlation_id_length,
+            "env_prefix": self.env_prefix,
+            "steps": {
+                name: {
+                    "name": step.name,
+                    "description": step.description,
+                    "module_path": step.module_path,
+                    "dependencies": step.dependencies,
+                    "output_subdir": step.output_subdir,
+                    "timeout": step.timeout,
+                    "required": step.required,
+                    "performance_tracking": step.performance_tracking
+                }
+                for name, step in self.steps.items()
+            }
+        }
+    
+    def save_to_file(self, file_path: Path):
+        """Save configuration to a JSON file."""
+        with open(file_path, 'w') as f:
+            json.dump(self.to_dict(), f, indent=2)
+    
+    @classmethod
+    def load_from_file(cls, file_path: Path) -> 'PipelineConfig':
+        """Load configuration from a JSON file."""
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+        
+        config = cls()
+        config.project_name = data.get("project_name", config.project_name)
+        config.version = data.get("version", config.version)
+        config.base_output_dir = Path(data.get("base_output_dir", config.base_output_dir))
+        config.base_target_dir = Path(data.get("base_target_dir", config.base_target_dir))
+        config.log_level = data.get("log_level", config.log_level)
+        config.correlation_id_length = data.get("correlation_id_length", config.correlation_id_length)
+        config.env_prefix = data.get("env_prefix", config.env_prefix)
+        
+        # Load step configurations
+        if "steps" in data:
+            for step_name, step_data in data["steps"].items():
+                config.steps[step_name] = StepConfig(
+                    name=step_data["name"],
+                    description=step_data["description"],
+                    module_path=step_data["module_path"],
+                    dependencies=step_data.get("dependencies", []),
+                    output_subdir=step_data.get("output_subdir", ""),
+                    timeout=step_data.get("timeout"),
+                    required=step_data.get("required", True),
+                    performance_tracking=step_data.get("performance_tracking", False)
+                )
+        
+        return config
 
-# Default paths configuration
-PROJECT_ROOT = get_project_root()
-DEFAULT_PATHS = {
-    "target_dir": PROJECT_ROOT / "src" / "gnn" / "examples",
-    "output_dir": PROJECT_ROOT / "output",
-    "logs_dir": PROJECT_ROOT / "logs",
-    "temp_dir": PROJECT_ROOT / "temp",
-    "venv_dir": PROJECT_ROOT / "venv"
-}
+# Global pipeline configuration instance
+_pipeline_config = None
 
-# Step dependencies (steps that must succeed before others can run)
-STEP_DEPENDENCIES = {
-    "3_tests.py": ["2_setup.py"],
-    "4_gnn_type_checker.py": ["1_gnn.py"],
-    "5_export.py": ["1_gnn.py"],
-    "6_visualization.py": ["5_export.py"],
-    "9_render.py": ["5_export.py"],
-    "10_execute.py": ["9_render.py"],
-    "11_llm.py": ["5_export.py"],
-    "12_discopy.py": ["5_export.py"],
-    "13_discopy_jax_eval.py": ["12_discopy.py"],
-    "14_site.py": ["1_gnn.py"]
-}
+def get_pipeline_config() -> PipelineConfig:
+    """Get the global pipeline configuration instance."""
+    global _pipeline_config
+    if _pipeline_config is None:
+        _pipeline_config = PipelineConfig()
+    return _pipeline_config
 
-# Enhanced step configuration with metadata
-STEP_METADATA = {
-    "1_gnn.py": {
-        "description": "GNN file discovery and basic parsing",
-        "category": "input_processing",
-        "required_for": ["4_gnn_type_checker.py", "5_export.py"]
-    },
-    "2_setup.py": {
-        "description": "Environment setup and dependency installation", 
-        "category": "infrastructure",
-        "required_for": ["3_tests.py"]
-    },
-    "3_tests.py": {
-        "description": "Test suite execution",
-        "category": "validation", 
-        "optional": get_env_override("skip_tests", False, bool)
-    },
-    "4_gnn_type_checker.py": {
-        "description": "GNN syntax and type validation",
-        "category": "validation"
-    },
-    "5_export.py": {
-        "description": "Multi-format export generation",
-        "category": "transformation",
-        "required_for": ["6_visualization.py", "9_render.py", "11_llm.py", "12_discopy.py"]
-    },
-    "6_visualization.py": {
-        "description": "Graph visualization generation",
-        "category": "output"
-    },
-    "7_mcp.py": {
-        "description": "Model Context Protocol operations",
-        "category": "integration"
-    },
-    "8_ontology.py": {
-        "description": "Ontology processing and validation",
-        "category": "semantic"
-    },
-    "9_render.py": {
-        "description": "Code generation for simulation environments",
-        "category": "transformation",
-        "required_for": ["10_execute.py"]
-    },
-    "10_execute.py": {
-        "description": "Execute rendered simulators",
-        "category": "execution"
-    },
-    "11_llm.py": {
-        "description": "LLM-enhanced analysis and processing",
-        "category": "ai_enhancement"
-    },
-    "12_discopy.py": {
-        "description": "DisCoPy categorical diagram translation",
-        "category": "mathematical",
-        "required_for": ["13_discopy_jax_eval.py"]
-    },
-    "13_discopy_jax_eval.py": {
-        "description": "JAX-based evaluation of DisCoPy diagrams",
-        "category": "mathematical",
-        "experimental": True
-    },
-    "14_site.py": {
-        "description": "Static site generation for documentation",
-        "category": "output"
-    }
-}
+def set_pipeline_config(config: PipelineConfig):
+    """Set the global pipeline configuration instance."""
+    global _pipeline_config
+    _pipeline_config = config
 
-# Pipeline Step Configuration
-# This dictionary controls which pipeline steps are enabled by default.
-# Steps are identified by their script basename.
-PIPELINE_STEP_CONFIGURATION: Dict[str, bool] = {
-    "1_gnn.py": True,
-    "2_setup.py": True,
-    "3_tests.py": True, 
-    "4_gnn_type_checker.py": True,
-    "5_export.py": True,
-    "6_visualization.py": True,
-    "7_mcp.py": True,
-    "8_ontology.py": True,
-    "9_render.py": True,
-    "10_execute.py": True,
-    "11_llm.py": True,
-    "12_discopy.py": True,
-    "13_discopy_jax_eval.py": False,  # Disabled by default - experimental
-    "14_site.py": True,
-}
-
-# Enhanced timeout configuration with environment overrides
-STEP_TIMEOUTS: Dict[str, int] = {
-    "1_gnn.py": get_env_override("timeout_1_gnn", 120, int),
-    "2_setup.py": get_env_override("timeout_2_setup", 1200, int),
-    "3_tests.py": get_env_override("timeout_3_tests", 300, int),
-    "4_gnn_type_checker.py": get_env_override("timeout_4_type_checker", 120, int),
-    "5_export.py": get_env_override("timeout_5_export", 120, int),
-    "6_visualization.py": get_env_override("timeout_6_visualization", 300, int),
-    "7_mcp.py": get_env_override("timeout_7_mcp", 120, int),
-    "8_ontology.py": get_env_override("timeout_8_ontology", 120, int),
-    "9_render.py": get_env_override("timeout_9_render", 120, int),
-    "10_execute.py": get_env_override("timeout_10_execute", 300, int),
-    "11_llm.py": None,  # Uses --llm-timeout argument
-    "12_discopy.py": get_env_override("timeout_12_discopy", 120, int),
-    "13_discopy_jax_eval.py": get_env_override("timeout_13_jax", 300, int),
-    "14_site.py": get_env_override("timeout_14_site", 120, int),
-}
-
-# Critical Steps (pipeline halts if these fail)
-CRITICAL_STEPS = {"2_setup.py"}
-
-# Argument Properties Configuration
-ARG_PROPERTIES = {
-    'target_dir': {'flag': '--target-dir', 'type': 'value'},
-    'output_dir': {'flag': '--output-dir', 'type': 'value'},
-    'recursive': {'flag': '--recursive', 'type': 'bool_optional'},
-    'verbose': {'flag': '--verbose', 'type': 'bool_optional'},
-    'strict': {'flag': '--strict', 'type': 'store_true'},
-    'estimate_resources': {'flag': '--estimate-resources', 'type': 'bool_optional'},
-    'ontology_terms_file': {'flag': '--ontology-terms-file', 'type': 'value'},
-    'llm_tasks': {'flag': '--llm-tasks', 'type': 'value'},
-    'llm_timeout': {'flag': '--llm-timeout', 'type': 'value'},
-    'site_html_filename': {'flag': '--site-html-filename', 'type': 'value'},
-    'discopy_gnn_input_dir': {'flag': '--discopy-gnn-input-dir', 'type': 'value'},
-    'discopy_jax_gnn_input_dir': {'flag': '--discopy-jax-gnn-input-dir', 'type': 'value'},
-    'discopy_jax_seed': {'flag': '--discopy-jax-seed', 'type': 'value'},
-    'recreate_venv': {'flag': '--recreate-venv', 'type': 'store_true'},
-    'dev': {'flag': '--dev', 'type': 'store_true'},
-}
-
-# Script Argument Support Matrix
-# Defines which arguments are passed to each pipeline script
-SCRIPT_ARG_SUPPORT = {
-    "1_gnn.py": ["target_dir", "output_dir", "recursive", "verbose"],
-    "2_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
-    "3_tests.py": ["target_dir", "output_dir", "verbose"],
-    "4_gnn_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
-    "5_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
-    "6_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
-    "7_mcp.py": ["target_dir", "output_dir", "verbose"],
-    "8_ontology.py": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
-    "9_render.py": ["output_dir", "recursive", "verbose"],
-    "10_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],
-    "11_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
-    "12_discopy.py": ["target_dir", "output_dir", "verbose", "discopy_gnn_input_dir"],
-    "13_discopy_jax_eval.py": ["target_dir", "output_dir", "verbose", "discopy_jax_gnn_input_dir", "discopy_jax_seed"],
-    "14_site.py": ["target_dir", "output_dir", "verbose", "site_html_filename"],
-}
-
-# Output Directory Mapping
-# Maps scripts to their specific output subdirectories
-OUTPUT_DIR_MAPPING = {
-    "4_gnn_type_checker.py": "gnn_type_check",
-    "5_export.py": "gnn_exports",
-    "6_visualization.py": "visualization",
-    "7_mcp.py": "mcp_processing_step",
-    "8_ontology.py": "ontology_processing",
-    "11_llm.py": "llm_processing_step",
-    "12_discopy.py": "discopy_gnn",
-    # Scripts not listed use the main output directory
-}
-
-def get_step_timeout(script_name: str, args) -> int:
-    """Get timeout for a specific step, considering special cases."""
-    if script_name == "11_llm.py":
-        return getattr(args, 'llm_timeout', 120)
-    return STEP_TIMEOUTS.get(script_name, 120)
-
-def is_critical_step(script_name: str) -> bool:
-    """Check if a step is critical (pipeline halts on failure)."""
-    return script_name in CRITICAL_STEPS
-
+# Convenience functions for backward compatibility
 def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
-    """Get the appropriate output directory for a script."""
-    if script_name in OUTPUT_DIR_MAPPING:
-        return base_output_dir / OUTPUT_DIR_MAPPING[script_name]
-    return base_output_dir 
+    """Get output directory for a script (backward compatibility)."""
+    config = get_pipeline_config()
+    return config.get_output_dir_for_step(script_name, base_output_dir)
+
+# Step metadata for backward compatibility
+STEP_METADATA = {
+    step_name: {
+        "name": step_config.name,
+        "description": step_config.description,
+        "dependencies": step_config.dependencies,
+        "performance_tracking": step_config.performance_tracking
+    }
+    for step_name, step_config in get_pipeline_config().steps.items()
+} 

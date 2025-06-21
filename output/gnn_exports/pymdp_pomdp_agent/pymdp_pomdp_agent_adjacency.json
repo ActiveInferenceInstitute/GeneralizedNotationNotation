@@ -1,0 +1,12 @@
+{
+    "directed": true,
+    "multigraph": false,
+    "graph": [
+        [
+            "name",
+            "Multifactor PyMDP Agent v1"
+        ]
+    ],
+    "nodes": [],
+    "adjacency": []
+}

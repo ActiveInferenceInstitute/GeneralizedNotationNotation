@@ -1,0 +1,177 @@
+-- GNN (Generalized Notation Notation) ASN.1 Schema Definition
+-- This file provides an ASN.1 specification for GNN models, enabling
+-- standardized encoding/decoding and interoperability with telecom systems
+
+GNN-Schema DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+-- Version information
+GNNVersion ::= SEQUENCE {
+    major       INTEGER (1..10),
+    minor       INTEGER (0..99), 
+    patch       INTEGER (0..999),
+    prerelease  UTF8String OPTIONAL
+}
+
+-- Processing flags for GNN interpretation
+ProcessingFlags ::= SEQUENCE {
+    strictValidation        BOOLEAN DEFAULT TRUE,
+    allowExperimental       BOOLEAN DEFAULT FALSE,
+    enableOptimizations     BOOLEAN DEFAULT TRUE,
+    debugMode              BOOLEAN DEFAULT FALSE,
+    verboseLogging         BOOLEAN DEFAULT FALSE
+}
+
+-- Data types supported in GNN
+DataType ::= ENUMERATED {
+    categorical(0),
+    continuous(1),
+    binary(2),
+    integer(3),
+    float(4),
+    complex(5)
+}
+
+-- Variable types in Active Inference
+VariableType ::= CHOICE {
+    hiddenState     [0] INTEGER (0..MAX),
+    observation     [1] INTEGER (0..MAX),
+    action          [2] INTEGER (0..MAX),
+    policy          [3] INTEGER (0..MAX)
+}
+
+-- Dimension specification
+Dimensions ::= SEQUENCE OF INTEGER (1..MAX)
+
+-- Variable definition
+Variable ::= SEQUENCE {
+    name            UTF8String (SIZE(1..256)),
+    variableType    VariableType,
+    dimensions      Dimensions,
+    dataType        DataType DEFAULT categorical,
+    description     UTF8String OPTIONAL
+}
+
+-- Connection types between variables
+ConnectionType ::= ENUMERATED {
+    directed(0),
+    undirected(1),
+    conditional(2),
+    bidirectional(3)
+}
+
+-- Connection between variables
+Connection ::= SEQUENCE {
+    sourceVariables     SEQUENCE OF UTF8String,
+    targetVariables     SEQUENCE OF UTF8String,
+    connectionType      ConnectionType,
+    symbol             UTF8String (SIZE(1..5)),
+    description        UTF8String OPTIONAL,
+    weight             REAL OPTIONAL
+}
+
+-- Mathematical constraints
+Constraint ::= ENUMERATED {
+    stochastic(0),
+    nonNegative(1),
+    symmetric(2),
+    orthogonal(3),
+    unitary(4),
+    normalized(5)
+}
+
+-- Parameter value types
+ParameterValue ::= CHOICE {
+    scalarReal      [0] REAL,
+    scalarInteger   [1] INTEGER,
+    scalarBoolean   [2] BOOLEAN,
+    scalarString    [3] UTF8String,
+    vectorReal      [4] SEQUENCE OF REAL,
+    vectorInteger   [5] SEQUENCE OF INTEGER,
+    matrixReal      [6] SEQUENCE OF SEQUENCE OF REAL,
+    matrixInteger   [7] SEQUENCE OF SEQUENCE OF INTEGER,
+    tupleValues     [8] SEQUENCE OF ParameterValue
+}
+
+-- Parameter assignment
+ParameterAssignment ::= SEQUENCE {
+    name        UTF8String (SIZE(1..256)),
+    value       ParameterValue,
+    constraints SEQUENCE OF Constraint OPTIONAL,
+    description UTF8String OPTIONAL
+}
+
+-- Mathematical equation representation
+Equation ::= SEQUENCE {
+    latexExpression     UTF8String (SIZE(1..4096)),
+    plaintextForm      UTF8String OPTIONAL,
+    variables          SEQUENCE OF UTF8String,
+    description        UTF8String OPTIONAL
+}
+
+-- Time configuration
+TimeConfiguration ::= SEQUENCE {
+    timeType            ENUMERATED { static(0), dynamic(1) } DEFAULT dynamic,
+    discretization      ENUMERATED { discrete(0), continuous(1) } DEFAULT discrete,
+    horizon            INTEGER (1..10000) DEFAULT 10,
+    timeStep           REAL DEFAULT 1.0
+}
+
+-- Ontology mapping
+OntologyMapping ::= SEQUENCE {
+    variable        UTF8String (SIZE(1..256)),
+    ontologyTerm    UTF8String (SIZE(1..256)),
+    namespace       UTF8String DEFAULT "ActInfOntology",
+    confidence      REAL (0.0..1.0) DEFAULT 1.0
+}
+
+-- State space definition
+StateSpace ::= SEQUENCE {
+    factors         SEQUENCE OF Variable,
+    jointDimension  INTEGER (1..MAX),
+    description     UTF8String OPTIONAL
+}
+
+-- Observation space definition
+ObservationSpace ::= SEQUENCE {
+    modalities      SEQUENCE OF Variable,
+    jointDimension  INTEGER (1..MAX),
+    description     UTF8String OPTIONAL
+}
+
+-- Action space definition
+ActionSpace ::= SEQUENCE {
+    controls        SEQUENCE OF Variable,
+    jointDimension  INTEGER (1..MAX),
+    description     UTF8String OPTIONAL
+}
+
+-- Complete GNN model specification
+GNNModel ::= SEQUENCE {
+    -- Required sections
+    gnnSection          UTF8String DEFAULT "GNN",
+    version            GNNVersion,
+    processingFlags    ProcessingFlags DEFAULT {},
+    modelName          UTF8String (SIZE(1..512)),
+    modelAnnotation    UTF8String (SIZE(1..4096)),
+    
+    -- Core model components
+    variables          SEQUENCE OF Variable,
+    connections        SEQUENCE OF Connection,
+    stateSpace         StateSpace,
+    observationSpace   ObservationSpace,
+    actionSpace        ActionSpace OPTIONAL,
+    
+    -- Mathematical and temporal components
+    equations          SEQUENCE OF Equation OPTIONAL,
+    timeConfiguration  TimeConfiguration,
+    
+    -- Parameters and mappings
+    initialParameters  SEQUENCE OF ParameterAssignment OPTIONAL,
+    modelParameters    SEQUENCE OF ParameterAssignment OPTIONAL,
+    ontologyMappings   SEQUENCE OF OntologyMapping OPTIONAL,
+    
+    -- Metadata and provenance
+    footer             UTF8String OPTIONAL
+}
+
+END -- GNN-Schema 

@@ -6,7 +6,6 @@ This script takes GNN model specifications as input, translates them into
 DisCoPy diagrams, and saves visualizations of these diagrams.
 """
 
-import argparse
 import logging
 import sys
 import json
@@ -37,6 +36,8 @@ try:
         log_step_warning,
         log_step_error,
         validate_output_directory,
+        EnhancedArgumentParser,
+        PipelineLogger,
         UTILS_AVAILABLE
     )
     
@@ -58,58 +59,6 @@ except ImportError as e:
     gnn_file_to_discopy_diagram = None
 
 DEFAULT_OUTPUT_SUBDIR = "discopy_gnn"
-
-def parse_arguments() -> argparse.Namespace:
-    """Parses command-line arguments for the GNN to DisCoPy script."""
-    parser = argparse.ArgumentParser(description="Transforms GNN models to DisCoPy diagrams and saves visualizations.")
-    
-    # Input directory arguments (with precedence handling)
-    parser.add_argument(
-        "--gnn-input-dir",
-        type=Path,
-        help="Directory containing GNN files (e.g., .gnn.md, .md) to process."
-    )
-    parser.add_argument(
-        "--target-dir",
-        type=Path,
-        help="Alternative name for the directory containing GNN files (compatible with main.py)."
-    )
-    parser.add_argument(
-        "--discopy-gnn-input-dir",
-        type=Path,
-        help="Directory containing GNN files for DisCoPy processing (pipeline compatibility)."
-    )
-    
-    parser.add_argument(
-        "--output-dir", # This is the main pipeline output directory
-        type=Path,
-        required=True,
-        help=f"Main pipeline output directory. DisCoPy diagrams will be saved in a '{DEFAULT_OUTPUT_SUBDIR}' subdirectory here."
-    )
-    parser.add_argument(
-        "--recursive",
-        action=argparse.BooleanOptionalAction,
-        default=True,
-        help="Recursively search for GNN files in the gnn-input-dir. Default: True."
-    )
-    parser.add_argument(
-        "--verbose",
-        action=argparse.BooleanOptionalAction,
-        default=False,
-        help="Enable verbose (DEBUG level) logging for this script and the translator. Default: False."
-    )
-    args = parser.parse_args()
-    
-    # Handle argument mapping with precedence: discopy_gnn_input_dir > gnn_input_dir > target_dir
-    if args.gnn_input_dir is None:
-        if args.discopy_gnn_input_dir is not None:
-            args.gnn_input_dir = args.discopy_gnn_input_dir
-        elif args.target_dir is not None:
-            args.gnn_input_dir = args.target_dir
-        else:
-            parser.error("One of --gnn-input-dir, --target-dir, or --discopy-gnn-input-dir is required")
-    
-    return args
 
 def process_gnn_file_for_discopy(gnn_file_path: Path, discopy_output_dir: Path, verbose_translator: bool):
     """
@@ -151,12 +100,11 @@ def process_gnn_file_for_discopy(gnn_file_path: Path, discopy_output_dir: Path, 
         log_step_error(logger, f"Failed to process GNN file {gnn_file_path.name} for DisCoPy: {e}")
         return False
 
-def main_discopy_step(args: argparse.Namespace) -> int:
+def main(args) -> int:
     """Main execution function for the 12_discopy.py pipeline step."""
     
     # Update logger verbosity based on args
     if UTILS_AVAILABLE and hasattr(args, 'verbose') and args.verbose:
-        from utils import PipelineLogger
         PipelineLogger.set_verbosity(True)
 
     if not gnn_file_to_discopy_diagram:
@@ -223,8 +171,127 @@ def main_discopy_step(args: argparse.Namespace) -> int:
     return 0
 
 if __name__ == "__main__":
-    cli_args = parse_arguments()
+    # Enhanced argument parsing with fallback
+    if UTILS_AVAILABLE:
+        try:
+            cli_args = EnhancedArgumentParser.parse_step_arguments("12_discopy")
+            # Handle argument mapping if needed by the enhanced parser
+            if not hasattr(cli_args, 'gnn_input_dir') or cli_args.gnn_input_dir is None:
+                if hasattr(cli_args, 'discopy_gnn_input_dir') and cli_args.discopy_gnn_input_dir is not None:
+                    cli_args.gnn_input_dir = cli_args.discopy_gnn_input_dir
+                elif hasattr(cli_args, 'target_dir') and cli_args.target_dir is not None:
+                    cli_args.gnn_input_dir = cli_args.target_dir
+            # Ensure recursive attribute exists
+            if not hasattr(cli_args, 'recursive'):
+                cli_args.recursive = True
+        except Exception as e:
+            log_step_error(logger, f"Failed to parse arguments with enhanced parser: {e}")
+            # Fallback to basic parser
+            import argparse
+            parser = argparse.ArgumentParser(description="Transforms GNN models to DisCoPy diagrams and saves visualizations.")
+            
+            # Input directory arguments (with precedence handling)
+            parser.add_argument(
+                "--gnn-input-dir",
+                type=Path,
+                help="Directory containing GNN files (e.g., .gnn.md, .md) to process."
+            )
+            parser.add_argument(
+                "--target-dir",
+                type=Path,
+                help="Alternative name for the directory containing GNN files (compatible with main.py)."
+            )
+            parser.add_argument(
+                "--discopy-gnn-input-dir",
+                type=Path,
+                help="Directory containing GNN files for DisCoPy processing (pipeline compatibility)."
+            )
+            
+            parser.add_argument(
+                "--output-dir", # This is the main pipeline output directory
+                type=Path,
+                required=True,
+                help=f"Main pipeline output directory. DisCoPy diagrams will be saved in a '{DEFAULT_OUTPUT_SUBDIR}' subdirectory here."
+            )
+            parser.add_argument(
+                "--recursive",
+                action="store_true",
+                default=True,
+                help="Recursively search for GNN files in the gnn-input-dir. Default: True."
+            )
+            parser.add_argument(
+                "--verbose",
+                action="store_true",
+                default=False,
+                help="Enable verbose (DEBUG level) logging for this script and the translator. Default: False."
+            )
+            
+            cli_args = parser.parse_args()
+            
+            # Handle argument mapping with precedence: discopy_gnn_input_dir > gnn_input_dir > target_dir
+            if cli_args.gnn_input_dir is None:
+                if cli_args.discopy_gnn_input_dir is not None:
+                    cli_args.gnn_input_dir = cli_args.discopy_gnn_input_dir
+                elif cli_args.target_dir is not None:
+                    cli_args.gnn_input_dir = cli_args.target_dir
+                else:
+                    parser.error("One of --gnn-input-dir, --target-dir, or --discopy-gnn-input-dir is required")
+    else:
+        # Fallback to basic parser
+        import argparse
+        parser = argparse.ArgumentParser(description="Transforms GNN models to DisCoPy diagrams and saves visualizations.")
+        
+        # Input directory arguments (with precedence handling)
+        parser.add_argument(
+            "--gnn-input-dir",
+            type=Path,
+            help="Directory containing GNN files (e.g., .gnn.md, .md) to process."
+        )
+        parser.add_argument(
+            "--target-dir",
+            type=Path,
+            help="Alternative name for the directory containing GNN files (compatible with main.py)."
+        )
+        parser.add_argument(
+            "--discopy-gnn-input-dir",
+            type=Path,
+            help="Directory containing GNN files for DisCoPy processing (pipeline compatibility)."
+        )
+        
+        parser.add_argument(
+            "--output-dir", # This is the main pipeline output directory
+            type=Path,
+            required=True,
+            help=f"Main pipeline output directory. DisCoPy diagrams will be saved in a '{DEFAULT_OUTPUT_SUBDIR}' subdirectory here."
+        )
+        parser.add_argument(
+            "--recursive",
+            action="store_true",
+            default=True,
+            help="Recursively search for GNN files in the gnn-input-dir. Default: True."
+        )
+        parser.add_argument(
+            "--verbose",
+            action="store_true",
+            default=False,
+            help="Enable verbose (DEBUG level) logging for this script and the translator. Default: False."
+        )
+        
+        cli_args = parser.parse_args()
+        
+        # Handle argument mapping with precedence: discopy_gnn_input_dir > gnn_input_dir > target_dir
+        if cli_args.gnn_input_dir is None:
+            if cli_args.discopy_gnn_input_dir is not None:
+                cli_args.gnn_input_dir = cli_args.discopy_gnn_input_dir
+            elif cli_args.target_dir is not None:
+                cli_args.gnn_input_dir = cli_args.target_dir
+            else:
+                parser.error("One of --gnn-input-dir, --target-dir, or --discopy-gnn-input-dir is required")
+
+    # Update logger for standalone execution
+    if cli_args.verbose:
+        PipelineLogger.set_verbosity(True)
 
     # Call the main logic function for this step
-    exit_code = main_discopy_step(cli_args)
+    exit_code = main(cli_args)
     sys.exit(exit_code) 

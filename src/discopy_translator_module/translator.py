@@ -646,7 +646,7 @@ def gnn_connections_to_discopy_matrix_diagram(
     
     # Also ensure Diagram, Box, Id, Dim, Matrix, discopy_backend are not placeholders
     if any(isinstance(comp, PlaceholderBase) for comp in [Diagram, Box, Id, Dim, Matrix]) or \
-       isinstance(discopy_backend, PlaceholderBackend) or \
+       isinstance(discopy_backend, DiscopyBackendPlaceholder) or \
        jax is None or jnp is None: # jax and jnp should be non-None if JAX_AVAILABLE is True
         logger.error("Critical JAX/DisCoPy components (Diagram, Box, Id, Dim, Matrix, jax, jnp, backend) are placeholders or None. Cannot create MatrixDiagram.")
         return None
@@ -1085,7 +1085,7 @@ def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = Fals
                     logger.info(f"  First box data type: {type(first_box_data)}")
                 
                 # Evaluation test
-                if discopy_backend and not isinstance(discopy_backend, PlaceholderBackend):
+                if discopy_backend and not isinstance(discopy_backend, DiscopyBackendPlaceholder):
                     backend_context = discopy_backend('jax')
                     if backend_context:
                         with backend_context:
@@ -1241,7 +1241,7 @@ B > C
             f_dummy_matrix.write(test_gnn_matrix_content)
 
         logger.info(f"--- Testing gnn_file_to_discopy_matrix_diagram on {dummy_matrix_gnn_path} ---")
-        if JAX_AVAILABLE and DISCOPY_MATRIX_MODULE_AVAILABLE and discopy_backend and not isinstance(discopy_backend, PlaceholderBackend): # Ensure backend is available for the context manager
+        if JAX_AVAILABLE and DISCOPY_MATRIX_MODULE_AVAILABLE and discopy_backend and not isinstance(discopy_backend, DiscopyBackendPlaceholder): # Ensure backend is available for the context manager
             matrix_diagram = gnn_file_to_discopy_matrix_diagram(dummy_matrix_gnn_path, verbose=True, jax_seed=42)
             if matrix_diagram:
                 logger.info(f"MatrixDiagram created: dom={matrix_diagram.dom}, cod={matrix_diagram.cod}, boxes: {len(matrix_diagram.boxes) if hasattr(matrix_diagram, 'boxes') else 'N/A'}")
@@ -1258,7 +1258,7 @@ B > C
                         logger.info(f"  First box data type: {type(first_box_data)}")
                 
                 # Evaluation test
-                if discopy_backend and not isinstance(discopy_backend, PlaceholderBackend):
+                if discopy_backend and not isinstance(discopy_backend, DiscopyBackendPlaceholder):
                     backend_context = discopy_backend('jax')
                     if backend_context:
                         with backend_context:

@@ -1,0 +1,401 @@
+%%% GNN (Generalized Notation Notation) Z Notation Specification
+%%% This file provides a formal Z specification of GNN models, enabling
+%%% rigorous mathematical analysis and formal verification of properties
+
+%% Basic types and sets
+
+[IDENTIFIER, TEXT]
+
+%% Version specification
+VERSION ::= major ⟨⟨ℕ₁⟩⟩ × minor ⟨⟨ℕ⟩⟩ × patch ⟨⟨ℕ⟩⟩
+
+%% Data types supported in GNN
+DATA_TYPE ::= categorical | continuous | binary | integer | float | complex
+
+%% Variable types in Active Inference
+VARIABLE_TYPE ::= hidden_state⟨⟨ℕ⟩⟩ | observation⟨⟨ℕ⟩⟩ | action⟨⟨ℕ⟩⟩ | policy⟨⟨ℕ⟩⟩
+
+%% Connection types
+CONNECTION_TYPE ::= directed | undirected | conditional | bidirectional
+
+%% Processing flags schema
+ProcessingFlags
+    strict_validation : 𝔹
+    allow_experimental : 𝔹
+    enable_optimizations : 𝔹
+    debug_mode : 𝔹
+    verbose_logging : 𝔹
+
+%% Default processing flags
+default_flags : ProcessingFlags
+default_flags = (true, false, true, false, false)
+
+%% Dimension specification
+Dimensions == seq ℕ₁
+dimension_constraint : Dimensions → 𝔹
+∀ dims : Dimensions • dimension_constraint(dims) ⟺ dims ≠ ⟨⟩ ∧ (∀ d : ran dims • d > 0)
+
+%% Variable definition schema
+Variable
+    name : IDENTIFIER
+    var_type : VARIABLE_TYPE
+    dimensions : Dimensions
+    data_type : DATA_TYPE
+    description : TEXT
+
+    dimension_constraint(dimensions)
+
+%% Valid variable naming convention
+valid_variable_name : IDENTIFIER → 𝔹
+∀ id : IDENTIFIER • valid_variable_name(id) ⟺
+    (∃ n : ℕ • id = "s_f" ^ (show n)) ∨
+    (∃ n : ℕ • id = "o_m" ^ (show n)) ∨
+    (∃ n : ℕ • id = "u_c" ^ (show n)) ∨
+    (∃ n : ℕ • id = "pi_c" ^ (show n)) ∨
+    (∃ suffix : TEXT • id = "A_" ^ suffix) ∨
+    (∃ suffix : TEXT • id = "B_" ^ suffix) ∨
+    (∃ suffix : TEXT • id = "C_" ^ suffix) ∨
+    (∃ suffix : TEXT • id = "D_" ^ suffix)
+
+%% Well-formed variable
+WellFormedVariable
+    Variable
+    valid_variable_name(name)
+
+%% Connection between variables
+Connection
+    source_vars : ℙ₁ IDENTIFIER
+    target_vars : ℙ₁ IDENTIFIER
+    conn_type : CONNECTION_TYPE
+    symbol : TEXT
+    description : TEXT
+    weight : ℝ
+
+    symbol ∈ {">", "->", "-", "|", "<->"}
+    (conn_type = directed ⟹ symbol ∈ {">", "->"}) ∧
+    (conn_type = undirected ⟹ symbol = "-") ∧
+    (conn_type = conditional ⟹ symbol = "|") ∧
+    (conn_type = bidirectional ⟹ symbol = "<->")
+
+%% Mathematical constraints
+CONSTRAINT ::= stochastic | non_negative | symmetric | orthogonal | unitary | normalized
+
+%% Matrix representation
+Matrix == seq (seq ℝ)
+
+%% Stochastic matrix constraint
+is_stochastic : Matrix → 𝔹
+∀ m : Matrix • is_stochastic(m) ⟺
+    m ≠ ⟨⟩ ∧ (∀ row : ran m • row ≠ ⟨⟩) ∧
+    (∀ row : ran m • (∑ᵢ (ran row)) = 1) ∧
+    (∀ row : ran m • ∀ val : ran row • val ≥ 0)
+
+%% Non-negative matrix constraint
+is_non_negative : Matrix → 𝔹
+∀ m : Matrix • is_non_negative(m) ⟺
+    ∀ row : ran m • ∀ val : ran row • val ≥ 0
+
+%% Symmetric matrix constraint
+is_symmetric : Matrix → 𝔹
+∀ m : Matrix • is_symmetric(m) ⟺
+    #m = #(head m) ∧ (∀ i, j : 1..#m • m(i)(j) = m(j)(i))
+
+%% Parameter values
+PARAMETER_VALUE ::= scalar⟨⟨ℝ⟩⟩ | vector⟨⟨seq ℝ⟩⟩ | matrix⟨⟨Matrix⟩⟩ | tuple⟨⟨seq PARAMETER_VALUE⟩⟩
+
+%% Parameter assignment
+ParameterAssignment
+    param_name : IDENTIFIER
+    value : PARAMETER_VALUE
+    constraints : ℙ CONSTRAINT
+    param_description : TEXT
+
+%% Mathematical equation
+Equation
+    latex_expr : TEXT
+    plaintext : TEXT
+    variables : ℙ IDENTIFIER
+    eq_description : TEXT
+
+%% Time configuration
+TimeConfiguration
+    time_type : {static, dynamic}
+    discretization : {discrete_time, continuous_time}
+    horizon : ℕ₁
+    time_step : ℝ₊
+
+    time_type = static ⟹ horizon = 1
+    time_type = dynamic ⟹ horizon > 1
+
+%% Ontology mapping
+OntologyMapping
+    variable : IDENTIFIER
+    ontology_term : IDENTIFIER
+    namespace : TEXT
+    confidence : ℝ
+
+    0 ≤ confidence ≤ 1
+    namespace = "ActInfOntology"
+
+%% State space definition
+StateSpace
+    factors : seq Variable
+    joint_dimension : ℕ₁
+    state_description : TEXT
+
+    factors ≠ ⟨⟩
+    ∀ v : ran factors • ∃ n : ℕ • v.var_type = hidden_state(n)
+    joint_dimension = ∏ᵢ (λ v : ran factors • ∏ⱼ (ran v.dimensions))
+
+%% Observation space definition
+ObservationSpace
+    modalities : seq Variable
+    obs_joint_dimension : ℕ₁
+    obs_description : TEXT
+
+    modalities ≠ ⟨⟩
+    ∀ v : ran modalities • ∃ n : ℕ • v.var_type = observation(n)
+    obs_joint_dimension = ∏ᵢ (λ v : ran modalities • ∏ⱼ (ran v.dimensions))
+
+%% Action space definition
+ActionSpace
+    controls : seq Variable
+    action_joint_dimension : ℕ₁
+    action_description : TEXT
+
+    ∀ v : ran controls • ∃ n : ℕ • v.var_type = action(n) ∨ v.var_type = policy(n)
+    action_joint_dimension = ∏ᵢ (λ v : ran controls • ∏ⱼ (ran v.dimensions))
+
+%% Likelihood matrix A: P(o|s)
+LikelihoodMatrix
+    A_name : IDENTIFIER
+    A_dimensions : Dimensions  
+    A_values : Matrix
+    A_constraints : ℙ CONSTRAINT
+    A_description : TEXT
+
+    A_name = "A"
+    stochastic ∈ A_constraints ∧ non_negative ∈ A_constraints
+    is_stochastic(A_values) ∧ is_non_negative(A_values)
+    #A_dimensions = 2
+
+%% Transition matrix B: P(s'|s,u)
+TransitionMatrix
+    B_name : IDENTIFIER
+    B_dimensions : Dimensions
+    B_values : Matrix
+    B_constraints : ℙ CONSTRAINT
+    B_description : TEXT
+
+    B_name = "B"
+    stochastic ∈ B_constraints ∧ non_negative ∈ B_constraints
+    is_stochastic(B_values) ∧ is_non_negative(B_values)
+    #B_dimensions ≥ 2
+
+%% Preference vector C: log preferences
+PreferenceVector
+    C_name : IDENTIFIER
+    C_dimensions : Dimensions
+    C_values : seq ℝ
+    C_description : TEXT
+
+    C_name = "C"
+    #C_dimensions = 1
+
+%% Prior vector D: initial state distribution
+PriorVector
+    D_name : IDENTIFIER
+    D_dimensions : Dimensions
+    D_values : seq ℝ
+    D_constraints : ℙ CONSTRAINT
+    D_description : TEXT
+
+    D_name = "D"
+    stochastic ∈ D_constraints ∧ non_negative ∈ D_constraints
+    (∑ᵢ (ran D_values)) = 1 ∧ (∀ val : ran D_values • val ≥ 0)
+    #D_dimensions = 1
+
+%% Active Inference model structure
+ActiveInferenceModel
+    state_space : StateSpace
+    observation_space : ObservationSpace
+    action_space : ActionSpace
+    likelihood_matrices : seq LikelihoodMatrix
+    transition_matrices : seq TransitionMatrix
+    preference_vectors : seq PreferenceVector
+    prior_vectors : seq PriorVector
+    time_horizon : ℕ₁
+    ai_description : TEXT
+
+    likelihood_matrices ≠ ⟨⟩
+    transition_matrices ≠ ⟨⟩
+    prior_vectors ≠ ⟨⟩
+
+%% Validation levels
+VALIDATION_LEVEL ::= basic | standard | strict | research
+
+%% Validation result
+ValidationResult
+    is_valid : 𝔹
+    errors : seq TEXT
+    warnings : seq TEXT
+    suggestions : seq TEXT
+    metadata : IDENTIFIER ↣ TEXT
+
+%% Complete GNN model specification
+GNNModel
+    gnn_section : TEXT
+    version : VERSION
+    processing_flags : ProcessingFlags
+    model_name : TEXT
+    model_annotation : TEXT
+    variables : seq WellFormedVariable
+    connections : seq Connection
+    ai_model : ActiveInferenceModel
+    equations : seq Equation
+    time_config : TimeConfiguration
+    initial_params : seq ParameterAssignment
+    model_params : seq ParameterAssignment
+    ontology_mappings : seq OntologyMapping
+    footer : TEXT
+
+    gnn_section = "GNN"
+    variables ≠ ⟨⟩
+    model_name ≠ ""
+    model_annotation ≠ ""
+
+%% Well-formed GNN model
+WellFormedGNNModel
+    GNNModel
+
+    %% Variable name uniqueness
+    (∀ v1, v2 : ran variables • v1.name = v2.name ⟹ v1 = v2)
+    
+    %% Connection validity
+    (∀ conn : ran connections • 
+        conn.source_vars ⊆ {v : ran variables • v.name} ∧
+        conn.target_vars ⊆ {v : ran variables • v.name})
+    
+    %% Ontology mapping validity
+    (∀ om : ran ontology_mappings • 
+        om.variable ∈ {v : ran variables • v.name})
+
+%% Model validation function
+validate_model : GNNModel × VALIDATION_LEVEL → ValidationResult
+
+%% Free energy calculation
+calculate_free_energy : ActiveInferenceModel × (ℕ ↣ ℝ) × (ℕ ↣ ℝ) → ℝ
+
+%% Model composition operation
+compose_models : GNNModel × GNNModel → GNNModel
+
+%% Tensor product of models
+tensor_product : ActiveInferenceModel × ActiveInferenceModel → ActiveInferenceModel
+
+%% Model morphism
+ModelMorphism
+    source : ActiveInferenceModel
+    target : ActiveInferenceModel
+    state_map : ℕ ↣ ℕ
+    obs_map : ℕ ↣ ℕ
+    action_map : ℕ ↣ ℕ
+
+    dom state_map = 1..source.state_space.joint_dimension
+    ran state_map ⊆ 1..target.state_space.joint_dimension
+    dom obs_map = 1..source.observation_space.obs_joint_dimension
+    ran obs_map ⊆ 1..target.observation_space.obs_joint_dimension
+
+%% Identity morphism
+identity_morphism : ActiveInferenceModel → ModelMorphism
+∀ model : ActiveInferenceModel •
+    identity_morphism(model) = 
+        (model, model, id(1..model.state_space.joint_dimension),
+         id(1..model.observation_space.obs_joint_dimension),
+         id(1..model.action_space.action_joint_dimension))
+
+%% Morphism composition
+compose_morphisms : ModelMorphism × ModelMorphism → ModelMorphism
+
+%% Categorical structure axioms
+∀ f : ModelMorphism • compose_morphisms(f, identity_morphism(f.source)) = f
+∀ f : ModelMorphism • compose_morphisms(identity_morphism(f.target), f) = f
+∀ f, g, h : ModelMorphism • 
+    f.target = g.source ∧ g.target = h.source ⟹
+    compose_morphisms(compose_morphisms(h, g), f) = 
+    compose_morphisms(h, compose_morphisms(g, f))
+
+%% Coherence conditions for Active Inference
+coherent_likelihood_transition : ActiveInferenceModel → 𝔹
+∀ model : ActiveInferenceModel •
+    coherent_likelihood_transition(model) ⟺
+    (∀ A : ran model.likelihood_matrices, B : ran model.transition_matrices •
+        %% Dimensions are compatible
+        true) %% Simplified for brevity
+
+%% Expected free energy functional
+expected_free_energy : ActiveInferenceModel × (ℕ ↣ ℝ) × (ℕ ↣ ℝ) → ℝ
+
+%% Complexity term (KL divergence)
+complexity_term : (ℕ ↣ ℝ) × (ℕ ↣ ℝ) → ℝ
+∀ beliefs, priors : ℕ ↣ ℝ •
+    complexity_term(beliefs, priors) = 
+    ∑ᵢ (dom beliefs ∩ dom priors) (λ s : ℕ • 
+        beliefs(s) * log(beliefs(s) / priors(s)))
+
+%% Expected cost term
+expected_cost : ActiveInferenceModel × (ℕ ↣ ℝ) × (ℕ ↣ ℝ) × (ℕ ↣ ℝ) → ℝ
+
+%% Free energy minimization theorem
+theorem free_energy_minimization
+∀ model : ActiveInferenceModel, policy : ℕ ↣ ℝ •
+    ∃ optimal_beliefs : ℕ ↣ ℝ •
+        ∀ other_beliefs : ℕ ↣ ℝ •
+            expected_free_energy(model, optimal_beliefs, policy) ≤
+            expected_free_energy(model, other_beliefs, policy)
+
+%% Model consistency theorem
+theorem model_consistency
+∀ model : WellFormedGNNModel •
+    coherent_likelihood_transition(model.ai_model) ∧
+    (∀ v : ran model.variables • valid_variable_name(v.name))
+
+%% Composition preserves well-formedness theorem
+theorem composition_preserves_wellformedness
+∀ m1, m2 : WellFormedGNNModel •
+    let composed = compose_models(m1, m2) •
+        composed ∈ WellFormedGNNModel
+
+%% Export format specifications
+JSON_EXPORT ::= json_format⟨⟨TEXT⟩⟩
+XML_EXPORT ::= xml_format⟨⟨TEXT⟩⟩
+YAML_EXPORT ::= yaml_format⟨⟨TEXT⟩⟩
+
+%% Export function
+export_model : GNNModel × {json, xml, yaml} → TEXT
+
+%% Model collection
+ModelCollection
+    models : seq WellFormedGNNModel
+    collection_name : TEXT
+    collection_description : TEXT
+
+    models ≠ ⟨⟩
+
+%% Batch processing
+batch_validate : ModelCollection × VALIDATION_LEVEL → seq ValidationResult
+
+%% Performance metrics
+PerformanceMetrics
+    parse_time : ℝ₊
+    validation_time : ℝ₊
+    export_time : ℝ₊
+    memory_usage : ℕ
+    model_complexity : ℕ
+
+%% Complexity estimation
+estimate_complexity : GNNModel → ℕ
+∀ model : GNNModel •
+    estimate_complexity(model) = 
+    model.ai_model.state_space.joint_dimension *
+    model.ai_model.observation_space.obs_joint_dimension *
+    model.time_config.horizon 

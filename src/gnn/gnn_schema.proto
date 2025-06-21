@@ -1,0 +1,368 @@
+// Protocol Buffers Schema for GNN (Generalized Notation Notation)
+// Version: 1.0
+//
+// This .proto file defines GNN models for use with Protocol Buffers,
+// enabling efficient serialization and cross-language compatibility.
+
+syntax = "proto3";
+
+package gnn;
+
+option java_package = "org.activeinference.gnn";
+option java_outer_classname = "GNNProtos";
+option csharp_namespace = "ActiveInference.GNN";
+option go_package = "github.com/ActiveInferenceInstitute/gnn/proto";
+
+// Root message for a complete GNN model
+message GNNModel {
+  string gnn_section = 1;
+  GNNVersionAndFlags gnn_version_and_flags = 2;
+  string model_name = 3;
+  string model_annotation = 4;
+  StateSpaceBlock state_space_block = 5;
+  Connections connections = 6;
+  InitialParameterization initial_parameterization = 7;
+  optional Equations equations = 8;
+  Time time = 9;
+  optional ActInfOntologyAnnotation act_inf_ontology_annotation = 10;
+  optional ModelParameters model_parameters = 11;
+  string footer = 12;
+  optional Signature signature = 13;
+}
+
+// GNN version and processing flags
+message GNNVersionAndFlags {
+  string version = 1;
+  repeated ProcessingFlag flags = 2;
+}
+
+enum ProcessingFlag {
+  PROCESSING_FLAG_UNSPECIFIED = 0;
+  PROCESSING_FLAG_STRICT_VALIDATION = 1;
+  PROCESSING_FLAG_EXPERIMENTAL_FEATURES = 2;
+  PROCESSING_FLAG_EXTENDED_SYNTAX = 3;
+}
+
+// State space variable definitions
+message StateSpaceBlock {
+  repeated Variable variables = 1;
+}
+
+message Variable {
+  string name = 1;
+  repeated Dimension dimensions = 2;
+  DataType data_type = 3;
+  optional string description = 4;
+  optional VariableConstraints constraints = 5;
+  optional uint32 line_number = 6;
+}
+
+message Dimension {
+  oneof dimension_value {
+    uint32 integer = 1;
+    string identifier = 2;
+  }
+}
+
+enum DataType {
+  DATA_TYPE_UNSPECIFIED = 0;
+  DATA_TYPE_FLOAT = 1;
+  DATA_TYPE_INT = 2;
+  DATA_TYPE_BOOL = 3;
+  DATA_TYPE_STRING = 4;
+  DATA_TYPE_CATEGORICAL = 5;
+}
+
+message VariableConstraints {
+  optional double min_value = 1;
+  optional double max_value = 2;
+  repeated string allowed_values = 3;
+  optional string constraint_expression = 4;
+}
+
+// Connection definitions between variables
+message Connections {
+  repeated Connection connections = 1;
+}
+
+message Connection {
+  VariableGroup source = 1;
+  VariableGroup target = 2;
+  ConnectionOperator operator = 3;
+  optional string description = 4;
+  optional uint32 line_number = 5;
+}
+
+message VariableGroup {
+  oneof group_type {
+    VariableReference single_variable = 1;
+    VariableList variable_list = 2;
+  }
+}
+
+message VariableReference {
+  string name = 1;
+  optional string subscript = 2;
+  optional string time_index = 3;
+}
+
+message VariableList {
+  repeated VariableReference variables = 1;
+}
+
+enum ConnectionOperator {
+  CONNECTION_OPERATOR_UNSPECIFIED = 0;
+  CONNECTION_OPERATOR_DIRECTED = 1;           // >
+  CONNECTION_OPERATOR_ARROW = 2;              // ->
+  CONNECTION_OPERATOR_UNDIRECTED = 3;         // -
+  CONNECTION_OPERATOR_CONDITIONAL = 4;        // |
+}
+
+// Parameter initialization values
+message InitialParameterization {
+  repeated Parameter parameters = 1;
+}
+
+message Parameter {
+  string name = 1;
+  ParameterValue value = 2;
+  optional string description = 3;
+}
+
+message ParameterValue {
+  oneof value_type {
+    ScalarValue scalar = 1;
+    MatrixValue matrix = 2;
+    TupleValue tuple = 3;
+    string reference = 4;
+  }
+}
+
+message ScalarValue {
+  oneof scalar_type {
+    double number = 1;
+    bool boolean = 2;
+    string string_value = 3;
+  }
+}
+
+message MatrixValue {
+  repeated MatrixRow rows = 1;
+  optional uint32 num_rows = 2;
+  optional uint32 num_cols = 3;
+}
+
+message MatrixRow {
+  repeated double values = 1;
+}
+
+message TupleValue {
+  repeated ParameterValue values = 1;
+}
+
+// Mathematical equations in LaTeX format
+message Equations {
+  repeated Equation equations = 1;
+}
+
+message Equation {
+  optional string label = 1;
+  string latex = 2;
+  optional string description = 3;
+}
+
+// Time configuration
+message Time {
+  TimeType type = 1;
+  optional string discrete_time_variable = 2;
+  optional string continuous_time_variable = 3;
+  optional string model_time_horizon = 4;
+}
+
+enum TimeType {
+  TIME_TYPE_UNSPECIFIED = 0;
+  TIME_TYPE_STATIC = 1;
+  TIME_TYPE_DYNAMIC = 2;
+}
+
+// Active Inference ontology mappings
+message ActInfOntologyAnnotation {
+  repeated OntologyMapping mappings = 1;
+}
+
+message OntologyMapping {
+  string variable_name = 1;
+  string ontology_term = 2;
+  optional string description = 3;
+}
+
+// Model-specific parameters
+message ModelParameters {
+  repeated ModelParameter parameters = 1;
+}
+
+message ModelParameter {
+  string name = 1;
+  string value = 2;
+  optional string description = 3;
+}
+
+// Signature for provenance and verification
+message Signature {
+  optional string creator = 1;
+  optional string date = 2;  // ISO 8601 format
+  optional string version = 3;
+  optional string status = 4;
+  repeated string compliance_standards = 5;
+  optional string checksum = 6;
+  optional string digital_signature = 7;
+}
+
+// Metadata for the GNN model
+message Metadata {
+  string schema_version = 1;
+  int64 creation_timestamp = 2;
+  int64 modification_timestamp = 3;
+  string source_file = 4;
+  repeated string tags = 5;
+}
+
+// Validation result for quality assurance
+message ValidationResult {
+  bool is_valid = 1;
+  repeated ValidationError errors = 2;
+  repeated ValidationWarning warnings = 3;
+  repeated ValidationSuggestion suggestions = 4;
+  ValidationLevel level = 5;
+}
+
+message ValidationError {
+  string message = 1;
+  optional uint32 line_number = 2;
+  optional uint32 column_number = 3;
+  string error_code = 4;
+}
+
+message ValidationWarning {
+  string message = 1;
+  optional uint32 line_number = 2;
+  string warning_code = 3;
+}
+
+message ValidationSuggestion {
+  string message = 1;
+  string suggestion_code = 2;
+}
+
+enum ValidationLevel {
+  VALIDATION_LEVEL_UNSPECIFIED = 0;
+  VALIDATION_LEVEL_BASIC = 1;
+  VALIDATION_LEVEL_STANDARD = 2;
+  VALIDATION_LEVEL_STRICT = 3;
+  VALIDATION_LEVEL_RESEARCH = 4;
+}
+
+// Extended GNN model with metadata and validation
+message GNNModelExtended {
+  GNNModel model = 1;
+  Metadata metadata = 2;
+  optional ValidationResult validation_result = 3;
+}
+
+// Active Inference specific structures
+message ActiveInferenceModel {
+  repeated Matrix a_matrices = 1;  // Likelihood matrices
+  repeated Matrix b_matrices = 2;  // Transition matrices
+  repeated Vector c_vectors = 3;   // Preference vectors
+  repeated Vector d_vectors = 4;   // Prior beliefs
+  repeated HiddenState hidden_states = 5;
+  repeated Observation observations = 6;
+  repeated Action actions = 7;
+  repeated Policy policies = 8;
+  optional ExpectedFreeEnergy expected_free_energy = 9;
+}
+
+message Matrix {
+  string name = 1;
+  repeated MatrixRow rows = 2;
+  MatrixType type = 3;
+  repeated uint32 dimensions = 4;
+}
+
+message Vector {
+  string name = 1;
+  repeated double values = 2;
+  VectorType type = 3;
+  uint32 dimension = 4;
+}
+
+enum MatrixType {
+  MATRIX_TYPE_UNSPECIFIED = 0;
+  MATRIX_TYPE_LIKELIHOOD = 1;     // A matrix
+  MATRIX_TYPE_TRANSITION = 2;     // B matrix
+  MATRIX_TYPE_PRECISION = 3;      // Precision matrix
+}
+
+enum VectorType {
+  VECTOR_TYPE_UNSPECIFIED = 0;
+  VECTOR_TYPE_PREFERENCE = 1;     // C vector
+  VECTOR_TYPE_PRIOR = 2;          // D vector
+  VECTOR_TYPE_BELIEF = 3;         // Belief state
+}
+
+message HiddenState {
+  string name = 1;
+  uint32 factor_index = 2;
+  uint32 num_states = 3;
+  repeated double belief_state = 4;
+}
+
+message Observation {
+  string name = 1;
+  uint32 modality_index = 2;
+  uint32 num_outcomes = 3;
+  repeated double observation_vector = 4;
+}
+
+message Action {
+  string name = 1;
+  uint32 control_factor_index = 2;
+  uint32 num_actions = 3;
+  optional uint32 selected_action = 4;
+}
+
+message Policy {
+  string name = 1;
+  repeated Action actions = 2;
+  optional double probability = 3;
+  optional double expected_free_energy = 4;
+}
+
+message ExpectedFreeEnergy {
+  repeated double values = 1;
+  optional double total = 2;
+  optional uint32 selected_policy_index = 3;
+}
+
+// Batch processing support
+message GNNModelBatch {
+  repeated GNNModelExtended models = 1;
+  BatchMetadata batch_metadata = 2;
+}
+
+message BatchMetadata {
+  uint32 batch_size = 1;
+  string batch_id = 2;
+  int64 processing_timestamp = 3;
+  repeated string source_files = 4;
+}
+
+// Performance monitoring
+message PerformanceMetrics {
+  double parsing_time_ms = 1;
+  double validation_time_ms = 2;
+  uint64 memory_usage_bytes = 3;
+  uint32 variable_count = 4;
+  uint32 connection_count = 5;
+  uint32 parameter_count = 6;
+} 

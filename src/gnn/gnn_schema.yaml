@@ -1,0 +1,336 @@
+# GNN (Generalized Notation Notation) Schema Definition
+# Version: 1.0
+# Description: Formal schema for Active Inference model specifications in GNN format
+
+schema_info:
+  title: "Generalized Notation Notation (GNN) Schema"
+  version: "1.0"
+  description: "Schema for validating GNN model files in Active Inference format"
+  specification_url: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
+  license: "MIT"
+
+# Required sections in GNN files (order matters)
+required_sections:
+  - GNNSection
+  - GNNVersionAndFlags
+  - ModelName
+  - ModelAnnotation
+  - StateSpaceBlock
+  - Connections
+  - InitialParameterization
+  - Time
+  - Footer
+
+# Optional sections
+optional_sections:
+  - ImageFromPaper
+  - Equations
+  - ActInfOntologyAnnotation
+  - ModelParameters
+  - Signature
+
+# Section definitions
+sections:
+  GNNSection:
+    description: "Unique identifier for the GNN model section"
+    content_type: "single_line"
+    format: "identifier"
+    validation:
+      pattern: "^[A-Za-z][A-Za-z0-9_]*$"
+      max_length: 100
+
+  GNNVersionAndFlags:
+    description: "GNN specification version and processing flags"
+    content_type: "single_line"
+    format: "version_spec"
+    validation:
+      pattern: '^GNN v[0-9]+(\.[0-9]+)?( .+)?$'
+    examples:
+      - "GNN v1"
+      - "GNN v1.0"
+      - "GNN v1 strict_validation"
+
+  ModelName:
+    description: "Descriptive identifier for the model"
+    content_type: "single_line"
+    format: "text"
+    validation:
+      min_length: 1
+      max_length: 200
+
+  ModelAnnotation:
+    description: "Free-text explanation of model purpose and features"
+    content_type: "multi_line"
+    format: "text"
+    validation:
+      min_length: 10
+
+  StateSpaceBlock:
+    description: "Variable definitions with dimensions and types"
+    content_type: "structured"
+    format: "variable_definitions"
+    syntax:
+      variable_definition: "variable_name[dimensions,type=data_type] ### optional_comment"
+      dimensions: "comma-separated list of positive integers or identifiers"
+      data_types:
+        - "float"
+        - "int" 
+        - "bool"
+        - "string"
+        - "categorical"
+    validation:
+      variable_name_pattern: '^[a-zA-Z_][a-zA-Z0-9_]*$'
+      dimension_pattern: '^[0-9]+$|^[a-zA-Z_][a-zA-Z0-9_]*$'
+    examples:
+      - "A[3,3,type=float]           # Transition matrix"
+      - "s_f0[2,1,type=float]        # Hidden state factor 0"
+      - "o_m0[3,1,type=int]          # Observation modality 0"
+
+  Connections:
+    description: "Directed and undirected edges showing dependencies"
+    content_type: "structured"
+    format: "connection_definitions"
+    syntax:
+      operators:
+        ">": "directed edge (causal influence)"
+        "->": "directed edge (explicit arrow)"
+        "-": "undirected edge (association)"
+        "|": "conditional dependency"
+      grouping: "Use parentheses for multiple variables: (A,B)>C"
+    validation:
+      connection_pattern: '^.+\s*[>\-|]+\s*.+$'
+    examples:
+      - "A>B                        # A influences B"
+      - "(A,B)-C                    # A and B are associated with C"
+      - "X|Y                        # X conditional on Y"
+
+  InitialParameterization:
+    description: "Starting values, matrices, and priors"
+    content_type: "structured"
+    format: "parameter_assignments"
+    syntax:
+      assignment: "parameter_name=value ### optional_comment"
+      value_types:
+        scalar: "number, boolean, or string"
+        matrix: "{(row1), (row2), ...}"
+        tuple: "(value1, value2, ...)"
+        reference: "identifier referring to another parameter"
+    examples:
+      - "A={(1.0, 0.0), (0.0, 1.0)}  # Identity matrix"
+      - "learning_rate=0.01           # Scalar parameter"
+      - "enabled=true                 # Boolean parameter"
+
+  Equations:
+    description: "LaTeX-rendered mathematical relationships"
+    content_type: "structured"
+    format: "latex_equations"
+    syntax:
+      equation: "LaTeX mathematical expression"
+      comment: "### Description of equation"
+    examples:
+      - 's_{t+1} = A \cdot s_t + B \cdot u_t'
+      - "### State transition equation"
+
+  Time:
+    description: "Temporal settings and configuration"
+    content_type: "structured"
+    format: "time_specification"
+    syntax:
+      time_type:
+        - "Static"
+        - "Dynamic"
+      settings:
+        - "DiscreteTime=variable_name"
+        - "ContinuousTime=variable_name"
+        - "ModelTimeHorizon=value"
+        - "ControlFrequency=valueHz"
+    examples:
+      - "Dynamic"
+      - "DiscreteTime=t"
+      - "ModelTimeHorizon=100"
+      - "ControlFrequency=10Hz"
+
+  ActInfOntologyAnnotation:
+    description: "Mapping to Active Inference Ontology terms"
+    content_type: "structured"
+    format: "ontology_mappings"
+    syntax:
+      mapping: "variable_name=ontology_term ### optional_comment"
+    validation:
+      ontology_term_pattern: '^[A-Za-z][A-Za-z0-9_]*$'
+    examples:
+      - "A=LikelihoodMatrix            # A matrix maps to likelihood"
+      - "B=TransitionMatrix            # B matrix maps to transitions"
+      - "C=PreferenceVector           # C vector maps to preferences"
+
+  ModelParameters:
+    description: "Model-specific parameters and metadata"
+    content_type: "structured"
+    format: "parameter_definitions"
+    common_parameters:
+      - "num_hidden_states_factors: [int, ...]"
+      - "num_obs_modalities: [int, ...]"
+      - "num_control_factors: [int, ...]"
+      - "backend: PyMDP|RxInfer.jl|JAX|TensorFlow|PyTorch|Custom"
+      - "inference_method: variational_message_passing|belief_propagation|monte_carlo"
+
+  Footer:
+    description: "Closes the file and provides final metadata"
+    content_type: "multi_line"
+    format: "text"
+    validation:
+      min_length: 1
+
+  Signature:
+    description: "Provenance and verification information"
+    content_type: "structured"
+    format: "signature_fields"
+    fields:
+      - "Creator: string"
+      - "Date: YYYY-MM-DD"
+      - "Version: string"
+      - "Status: string"
+      - "Compliance: [standard, ...]"
+      - "Checksum: string"
+      - "Digital Signature: string"
+
+# GNN Syntax Rules
+syntax_rules:
+  identifiers:
+    pattern: '^[a-zA-Z_][a-zA-Z0-9_]*$'
+    description: "Variable and parameter names"
+    
+  subscripts:
+    syntax: "variable_underscore_index"
+    examples: ["X_2", "s_f0", "A_m1"]
+    
+  superscripts:
+    syntax: "variable_caret_power"
+    examples: ["X^Y", "A^(n+1)"]
+    
+  dimensions:
+    syntax: "variable[dim1,dim2,...]"
+    examples: ["A[3,3]", "s[2,1]", "matrix[N,M]"]
+    
+  types:
+    syntax: "variable[dims,type=datatype]"
+    examples: ["A[3,3,type=float]", "flag[1,type=bool]"]
+    
+  comments:
+    syntax: "### comment_text"
+    description: "Comments use triple hashtags"
+    
+  exact_values:
+    syntax: "variable{exact_value}"
+    examples: ["X{1}", "flag{true}"]
+    
+  mathematical_operations:
+    operators: ["+", "-", "*", "/", "|"]
+    examples: ["X+Y", "P(A|B)", "X*Y/Z"]
+
+# Active Inference Specific Patterns
+active_inference:
+  standard_matrices:
+    A_matrices:
+      description: "Likelihood/observation matrices P(o|s)"
+      naming_pattern: "A_m[0-9]+ or A[dimensions]"
+      dimensions: "[num_observations, num_states, ...]"
+      
+    B_matrices:
+      description: "Transition dynamics P(s'|s,u)"
+      naming_pattern: "B_f[0-9]+ or B[dimensions]"
+      dimensions: "[num_states_next, num_states_prev, num_actions]"
+      
+    C_vectors:
+      description: "Preferences/goals (log preferences over observations)"
+      naming_pattern: "C_m[0-9]+ or C[dimensions]"
+      dimensions: "[num_observations]"
+      
+    D_vectors:
+      description: "Priors over initial states"
+      naming_pattern: "D_f[0-9]+ or D[dimensions]"
+      dimensions: "[num_states]"
+
+  standard_variables:
+    hidden_states:
+      pattern: "s_f[0-9]+"
+      description: "Hidden state factors"
+      
+    observations:
+      pattern: "o_m[0-9]+"
+      description: "Observation modalities"
+      
+    actions:
+      pattern: "u_c[0-9]+"
+      description: "Control/action factors"
+      
+    policies:
+      pattern: "π_c[0-9]+"
+      description: "Policy distributions"
+
+# Validation Levels
+validation_levels:
+  basic:
+    description: "Check file structure and required sections"
+    checks:
+      - "required_sections_present"
+      - "basic_syntax_valid"
+      
+  standard:
+    description: "Standard validation for practical use"
+    checks:
+      - "basic"
+      - "variable_definitions_valid"
+      - "connections_reference_existing_variables"
+      - "parameters_properly_formatted"
+      
+  strict:
+    description: "Strict validation for research applications"
+    checks:
+      - "standard"
+      - "all_variables_parameterized"
+      - "ontology_mappings_present"
+      - "equations_mathematically_consistent"
+      
+  research:
+    description: "Research-grade validation with Active Inference compliance"
+    checks:
+      - "strict"
+      - "active_inference_compliance"
+      - "scientific_reproducibility"
+      - "complete_provenance"
+
+# Common Validation Errors and Solutions
+validation_guidance:
+  common_errors:
+    missing_required_section:
+      error: "Required section missing: {section_name}"
+      solution: "Add the missing section header: ## {section_name}"
+      
+    invalid_variable_name:
+      error: "Invalid variable name format: {name}"
+      solution: "Variable names must start with letter/underscore, contain only alphanumeric characters and underscores"
+      
+    undefined_variable_in_connection:
+      error: "Connection references undefined variable: {variable}"
+      solution: "Define the variable in StateSpaceBlock before referencing it in Connections"
+      
+    invalid_dimension_specification:
+      error: "Invalid dimension specification: {spec}"
+      solution: "Dimensions must be positive integers or valid identifiers"
+
+  best_practices:
+    - "Use descriptive variable names that reflect their meaning"
+    - "Include comments (###) to explain complex variables and connections"
+    - "Follow Active Inference naming conventions (A, B, C, D matrices)"
+    - "Provide ontology mappings for better interoperability"
+    - "Include equations to clarify mathematical relationships"
+    - "Use consistent indentation and formatting"
+    - "Validate files before sharing or publication"
+
+# File Extension and MIME Type
+file_format:
+  extensions: [".md", ".gnn"]
+  mime_type: "text/x-gnn"
+  encoding: "UTF-8"
+  line_endings: "Unix (LF) preferred, but CR+LF acceptable" 

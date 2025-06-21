@@ -1,0 +1,383 @@
+# GNN (Generalized Notation Notation) BNF Grammar
+# This file provides a Backus-Naur Form specification of the GNN language
+# for parser generators that prefer BNF over EBNF format.
+
+# Top-level GNN model structure
+<gnn_model> ::= <gnn_section> <version_section> <model_name_section> <annotation_section> 
+                <state_space_section> <connections_section> <parameters_section>
+                <equations_section> <time_section> <ontology_section> <model_params_section>
+                <footer_section> <signature_section>
+
+# Core sections (required)
+<gnn_section> ::= "## GNNSection" <newline> <text_content>
+
+<version_section> ::= "## GNNVersionAndFlags" <newline> <version_spec> <flags_spec>
+
+<model_name_section> ::= "## ModelName" <newline> <model_name>
+
+<annotation_section> ::= "## ModelAnnotation" <newline> <annotation_text>
+
+<state_space_section> ::= "## StateSpaceBlock" <newline> <variable_list>
+
+<connections_section> ::= "## Connections" <newline> <connection_list>
+
+<parameters_section> ::= "## InitialParameterization" <newline> <parameter_list>
+
+<equations_section> ::= "## Equations" <newline> <equation_list>
+
+<time_section> ::= "## Time" <newline> <time_specification>
+
+<ontology_section> ::= "## ActInfOntologyAnnotation" <newline> <ontology_mapping_list>
+
+<model_params_section> ::= "## ModelParameters" <newline> <parameter_list>
+
+<footer_section> ::= "## Footer" <newline> <footer_text>
+
+<signature_section> ::= "## Signature" <newline> <signature_content>
+
+# Version and flags specification
+<version_spec> ::= <version_number> <newline>
+
+<version_number> ::= <digit> "." <digit> "." <digit>
+
+<flags_spec> ::= <flag_list> | <empty>
+
+<flag_list> ::= <flag> | <flag> <newline> <flag_list>
+
+<flag> ::= "strict_validation" | "allow_experimental" | "enable_optimizations" | 
+           "debug_mode" | "verbose_logging"
+
+# Variable definitions
+<variable_list> ::= <variable_definition> | <variable_definition> <newline> <variable_list>
+
+<variable_definition> ::= <variable_name> <dimensions> <type_annotation> <comment>
+
+<variable_name> ::= <identifier>
+
+<dimensions> ::= "[" <dimension_list> "]"
+
+<dimension_list> ::= <dimension> | <dimension> "," <dimension_list>
+
+<dimension> ::= <integer> | <identifier>
+
+<type_annotation> ::= ",type=" <data_type> | <empty>
+
+<data_type> ::= "categorical" | "continuous" | "binary" | "integer" | "float" | "complex"
+
+<comment> ::= "###" <comment_text> | <empty>
+
+# Connections between variables
+<connection_list> ::= <connection> | <connection> <newline> <connection_list>
+
+<connection> ::= <source_vars> <connection_symbol> <target_vars> <comment>
+
+<source_vars> ::= <variable_group>
+
+<target_vars> ::= <variable_group>
+
+<variable_group> ::= <variable_name> | "(" <variable_name_list> ")"
+
+<variable_name_list> ::= <variable_name> | <variable_name> "," <variable_name_list>
+
+<connection_symbol> ::= ">" | "->" | "-" | "|" | "<->"
+
+# Parameters and matrices
+<parameter_list> ::= <parameter_assignment> | <parameter_assignment> <newline> <parameter_list>
+
+<parameter_assignment> ::= <parameter_name> "=" <parameter_value> <comment>
+
+<parameter_name> ::= <identifier>
+
+<parameter_value> ::= <scalar_value> | <vector_value> | <matrix_value> | <tuple_value>
+
+<scalar_value> ::= <number> | <boolean> | <string>
+
+<vector_value> ::= "[" <number_list> "]"
+
+<matrix_value> ::= "{" <matrix_rows> "}"
+
+<matrix_rows> ::= <matrix_row> | <matrix_row> ";" <matrix_rows>
+
+<matrix_row> ::= <number_list>
+
+<tuple_value> ::= "(" <value_list> ")"
+
+<value_list> ::= <parameter_value> | <parameter_value> "," <value_list>
+
+<number_list> ::= <number> | <number> "," <number_list>
+
+# Mathematical equations
+<equation_list> ::= <equation> | <equation> <newline> <equation_list>
+
+<equation> ::= <latex_expression> <comment>
+
+<latex_expression> ::= <latex_string>
+
+# Time specification
+<time_specification> ::= <time_type> <newline> <time_properties>
+
+<time_type> ::= "Static" | "Dynamic"
+
+<time_properties> ::= <time_property> | <time_property> <newline> <time_properties>
+
+<time_property> ::= <time_discretization> | <time_horizon> | <time_step>
+
+<time_discretization> ::= "DiscreteTime" | "ContinuousTime"
+
+<time_horizon> ::= "ModelTimeHorizon=" <integer>
+
+<time_step> ::= "TimeStep=" <number>
+
+# Ontology mappings
+<ontology_mapping_list> ::= <ontology_mapping> | <ontology_mapping> <newline> <ontology_mapping_list>
+
+<ontology_mapping> ::= <variable_name> "=" <ontology_term> <comment>
+
+<ontology_term> ::= <identifier>
+
+# Basic lexical elements
+<identifier> ::= <letter> <identifier_rest>
+
+<identifier_rest> ::= <empty> | <alphanumeric> <identifier_rest>
+
+<alphanumeric> ::= <letter> | <digit> | "_"
+
+<letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" |
+             "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" |
+             "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" |
+             "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+<number> ::= <integer> | <float> | <scientific>
+
+<integer> ::= <sign> <digit_sequence>
+
+<float> ::= <sign> <digit_sequence> "." <digit_sequence>
+
+<scientific> ::= <float> <exponent> | <integer> <exponent>
+
+<exponent> ::= "e" <sign> <digit_sequence> | "E" <sign> <digit_sequence>
+
+<sign> ::= "+" | "-" | <empty>
+
+<digit_sequence> ::= <digit> | <digit> <digit_sequence>
+
+<boolean> ::= "true" | "false" | "True" | "False"
+
+<string> ::= "\"" <string_content> "\""
+
+<string_content> ::= <string_char> | <string_char> <string_content>
+
+<string_char> ::= <letter> | <digit> | <special_char>
+
+<special_char> ::= " " | "!" | "@" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")" |
+                   "_" | "+" | "=" | "{" | "}" | "[" | "]" | "\\" | "|" | ";" | ":" |
+                   "'" | "<" | ">" | "?" | "," | "." | "/" | "~" | "`"
+
+# Text content for annotations and descriptions
+<text_content> ::= <text_line> | <text_line> <newline> <text_content>
+
+<text_line> ::= <printable_char_sequence>
+
+<printable_char_sequence> ::= <printable_char> | <printable_char> <printable_char_sequence>
+
+<printable_char> ::= <letter> | <digit> | <special_char>
+
+<model_name> ::= <text_line>
+
+<annotation_text> ::= <text_content>
+
+<comment_text> ::= <text_line>
+
+<footer_text> ::= <text_content>
+
+<latex_string> ::= <latex_char_sequence>
+
+<latex_char_sequence> ::= <latex_char> | <latex_char> <latex_char_sequence>
+
+<latex_char> ::= <letter> | <digit> | <latex_special>
+
+<latex_special> ::= " " | "\\" | "{" | "}" | "_" | "^" | "$" | "&" | "%" | "#" |
+                    "+" | "-" | "*" | "/" | "=" | "(" | ")" | "[" | "]" | "|" |
+                    "<" | ">" | "!" | "?" | "," | "." | ";" | ":" | "'"
+
+# Signature content
+<signature_content> ::= <signature_entry> | <signature_entry> <newline> <signature_content>
+
+<signature_entry> ::= <signature_key> ":" <signature_value>
+
+<signature_key> ::= <identifier>
+
+<signature_value> ::= <string> | <text_line>
+
+# Whitespace and structural elements
+<newline> ::= "\n" | "\r\n"
+
+<whitespace> ::= " " | "\t"
+
+<empty> ::= ""
+
+# Active Inference specific patterns
+<state_variable> ::= "s_f" <digit_sequence>
+
+<observation_variable> ::= "o_m" <digit_sequence>
+
+<action_variable> ::= "u_c" <digit_sequence>
+
+<policy_variable> ::= "pi_c" <digit_sequence>
+
+<matrix_variable> ::= <matrix_prefix> <matrix_suffix>
+
+<matrix_prefix> ::= "A_" | "B_" | "C_" | "D_"
+
+<matrix_suffix> ::= <identifier>
+
+# Complex mathematical expressions
+<mathematical_expression> ::= <simple_expression> | <complex_expression>
+
+<simple_expression> ::= <variable_name> | <number> | <function_call>
+
+<complex_expression> ::= <binary_operation> | <unary_operation> | <parenthesized_expression>
+
+<binary_operation> ::= <mathematical_expression> <binary_operator> <mathematical_expression>
+
+<binary_operator> ::= "+" | "-" | "*" | "/" | "^" | "|" | "&"
+
+<unary_operation> ::= <unary_operator> <mathematical_expression>
+
+<unary_operator> ::= "-" | "+" | "!" | "~"
+
+<parenthesized_expression> ::= "(" <mathematical_expression> ")"
+
+<function_call> ::= <function_name> "(" <argument_list> ")"
+
+<function_name> ::= <identifier>
+
+<argument_list> ::= <mathematical_expression> | <mathematical_expression> "," <argument_list>
+
+# Conditional probability expressions
+<probability_expression> ::= "P" "(" <probability_args> ")"
+
+<probability_args> ::= <probability_event> | <conditional_probability>
+
+<conditional_probability> ::= <probability_event> "|" <probability_event>
+
+<probability_event> ::= <variable_name> | <variable_assignment>
+
+<variable_assignment> ::= <variable_name> "=" <value>
+
+<value> ::= <number> | <identifier>
+
+# Advanced data structures
+<tensor_specification> ::= <variable_name> <tensor_dimensions>
+
+<tensor_dimensions> ::= "[" <tensor_dim_list> "]"
+
+<tensor_dim_list> ::= <tensor_dimension> | <tensor_dimension> "," <tensor_dim_list>
+
+<tensor_dimension> ::= <integer> | <dimension_expression>
+
+<dimension_expression> ::= <mathematical_expression>
+
+# Constraint specifications
+<constraint_list> ::= <constraint> | <constraint> "," <constraint_list>
+
+<constraint> ::= <stochastic_constraint> | <non_negative_constraint> | 
+                 <symmetric_constraint> | <orthogonal_constraint>
+
+<stochastic_constraint> ::= "stochastic"
+
+<non_negative_constraint> ::= "non_negative"
+
+<symmetric_constraint> ::= "symmetric"
+
+<orthogonal_constraint> ::= "orthogonal"
+
+# Error handling and recovery
+<error_marker> ::= "ERROR:" <error_description>
+
+<error_description> ::= <text_line>
+
+<warning_marker> ::= "WARNING:" <warning_description>
+
+<warning_description> ::= <text_line>
+
+# Extension points for future features
+<extension_section> ::= "## Extension" <extension_name> <newline> <extension_content>
+
+<extension_name> ::= <identifier>
+
+<extension_content> ::= <text_content>
+
+# Metadata and provenance
+<metadata_section> ::= "## Metadata" <newline> <metadata_list>
+
+<metadata_list> ::= <metadata_entry> | <metadata_entry> <newline> <metadata_list>
+
+<metadata_entry> ::= <metadata_key> ":" <metadata_value>
+
+<metadata_key> ::= <identifier>
+
+<metadata_value> ::= <string> | <number> | <boolean>
+
+# Validation and type checking hints
+<type_hint> ::= "::" <type_specification>
+
+<type_specification> ::= <simple_type> | <complex_type>
+
+<simple_type> ::= "Int" | "Float" | "Bool" | "String" | "Matrix" | "Vector"
+
+<complex_type> ::= <parameterized_type> | <function_type>
+
+<parameterized_type> ::= <simple_type> "<" <type_parameter_list> ">"
+
+<type_parameter_list> ::= <type_specification> | <type_specification> "," <type_parameter_list>
+
+<function_type> ::= <type_specification> "->" <type_specification>
+
+# Comments and documentation
+<block_comment> ::= "/*" <block_comment_content> "*/"
+
+<block_comment_content> ::= <comment_char_sequence>
+
+<comment_char_sequence> ::= <comment_char> | <comment_char> <comment_char_sequence>
+
+<comment_char> ::= <letter> | <digit> | <special_char> | <newline>
+
+<line_comment> ::= "//" <comment_text> <newline> | "###" <comment_text> <newline>
+
+# Optional sections for advanced features
+<optimization_section> ::= "## Optimization" <newline> <optimization_spec>
+
+<optimization_spec> ::= <optimization_directive> | <optimization_directive> <newline> <optimization_spec>
+
+<optimization_directive> ::= <optimization_type> "=" <optimization_value>
+
+<optimization_type> ::= "method" | "tolerance" | "max_iterations" | "learning_rate"
+
+<optimization_value> ::= <string> | <number>
+
+<compilation_section> ::= "## Compilation" <newline> <compilation_spec>
+
+<compilation_spec> ::= <compilation_directive> | <compilation_directive> <newline> <compilation_spec>
+
+<compilation_directive> ::= <compilation_option> "=" <compilation_value>
+
+<compilation_option> ::= "target" | "backend" | "precision" | "parallel"
+
+<compilation_value> ::= <string> | <boolean>
+
+# Import and module system
+<import_section> ::= "## Imports" <newline> <import_list>
+
+<import_list> ::= <import_statement> | <import_statement> <newline> <import_list>
+
+<import_statement> ::= "import" <module_name> | "from" <module_name> "import" <import_items>
+
+<module_name> ::= <identifier> | <identifier> "." <module_name>
+
+<import_items> ::= <identifier> | <identifier> "," <import_items>
+
+# Complete grammar entry point
+<gnn_file> ::= <optional_imports> <gnn_model> <optional_extensions> 

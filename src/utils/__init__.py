@@ -16,7 +16,7 @@ All pipeline modules should import from this package for consistency.
 
 import logging
 from pathlib import Path
-from typing import Optional, Any, Tuple, Dict
+from typing import Optional, Any, Tuple, Dict, List
 
 # Import and expose the main classes and functions for easy access
 try:
@@ -178,6 +178,100 @@ def validate_output_directory(output_dir: Path, step_name: str) -> bool:
     except Exception:
         return False
 
+def execute_pipeline_step_template(
+    step_name: str,
+    step_description: str,
+    main_function,
+    import_dependencies: Optional[List[str]] = None
+):
+    """
+    Standardized template for executing pipeline steps with consistent error handling.
+    
+    This function provides a uniform execution pattern for all pipeline steps:
+    - Standardized argument parsing with fallback
+    - Consistent logging setup
+    - Error handling with proper exit codes
+    - Performance tracking when available
+    - Dependency validation
+    
+    Args:
+        step_name: Name of the step (e.g., "1_gnn.py")
+        step_description: Description of what the step does
+        main_function: Function to execute the step logic
+        import_dependencies: List of module names to validate before execution
+        
+    Returns:
+        Exit code (0=success, 1=error, 2=warnings)
+    """
+    import sys
+    import logging
+    
+    # Initialize logger first
+    logger = setup_step_logging(step_name.replace('.py', ''), verbose=False)
+    
+    try:
+        # Parse arguments with guaranteed attribute availability
+        if UTILS_AVAILABLE:
+            parsed_args = EnhancedArgumentParser.parse_step_arguments(step_name)
+        else:
+            # Fallback argument parsing
+            import argparse
+            parser = argparse.ArgumentParser(description=step_description)
+            parser.add_argument("--target-dir", type=Path, default=Path("src/gnn/examples"),
+                              help="Target directory for processing")
+            parser.add_argument("--output-dir", type=Path, default=Path("output"),
+                              help="Output directory for results")
+            parser.add_argument("--recursive", action="store_true", default=True,
+                              help="Process directories recursively")
+            parser.add_argument("--verbose", action="store_true",
+                              help="Enable verbose output")
+            parsed_args = parser.parse_args()
+            
+            # Ensure all expected attributes exist
+            if not hasattr(parsed_args, 'recursive'):
+                parsed_args.recursive = True
+        
+        # Update logger verbosity
+        if parsed_args.verbose:
+            logger.setLevel(logging.DEBUG)
+        
+        # Validate dependencies if specified
+        if import_dependencies:
+            missing_deps = []
+            for dep in import_dependencies:
+                try:
+                    __import__(dep)
+                except ImportError:
+                    missing_deps.append(dep)
+            
+            if missing_deps:
+                log_step_warning(logger, f"Missing dependencies: {', '.join(missing_deps)}. Some functionality may be limited.")
+        
+        # Execute the main function with performance tracking
+        log_step_start(logger, step_description)
+        
+        if UTILS_AVAILABLE and hasattr(globals(), 'performance_tracker'):
+            with performance_tracker.track_operation(f"step_{step_name}"):
+                result = main_function(parsed_args)
+        else:
+            result = main_function(parsed_args)
+        
+        # Handle result and exit
+        if result == 0:
+            log_step_success(logger, f"{step_description} completed successfully")
+            return 0
+        elif result == 2:
+            log_step_warning(logger, f"{step_description} completed with warnings")
+            return 2
+        else:
+            log_step_error(logger, f"{step_description} failed")
+            return 1
+            
+    except Exception as e:
+        log_step_error(logger, f"Unexpected error in {step_name}: {e}")
+        logger.debug(f"Stack trace: {e}", exc_info=True)
+        return 1
+
 # Export commonly used items at package level
 __all__ = [
     'PipelineLogger',
@@ -197,5 +291,6 @@ __all__ = [
     'get_pipeline_utilities',
     'validate_output_directory',
     'get_performance_summary',
+    'execute_pipeline_step_template',
     'UTILS_AVAILABLE'
 ] 

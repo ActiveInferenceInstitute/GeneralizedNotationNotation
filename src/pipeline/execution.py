@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 """
 Pipeline Execution Utilities
 
 Handles the core execution logic for running pipeline steps,
-monitoring performance, and managing subprocess execution.
+monitoring performance, and managing subprocess execution with enhanced visual logging.
 """
 
 import os
@@ -13,6 +14,7 @@ import logging
 import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple, Any, Optional, Union
+import argparse
 
 try:
     import psutil
@@ -21,11 +23,14 @@ except ImportError:
     PSUTIL_AVAILABLE = False
 
 from .config import (
-    get_step_timeout, 
-    is_critical_step, 
-    get_output_dir_for_script,
-    ARG_PROPERTIES,
-    SCRIPT_ARG_SUPPORT
+    get_pipeline_config,
+    get_output_dir_for_script
+)
+
+from utils.logging_utils import (
+    log_step_start, log_step_success, log_step_warning, log_step_error,
+    log_pipeline_summary, reset_progress_tracker, get_progress_summary,
+    VisualLoggingEnhancer, performance_tracker, EnhancedPipelineLogger
 )
 
 logger = logging.getLogger(__name__)
@@ -78,174 +83,450 @@ def get_memory_usage_mb() -> float:
 def build_command_args(script_name: str, script_path: Path, args, python_executable: str) -> List[str]:
     """Build command line arguments for a pipeline step."""
     full_args = []
-    supported_args = SCRIPT_ARG_SUPPORT.get(script_name, [])
     
-    for arg_key in supported_args:
-        if arg_key not in ARG_PROPERTIES:
-            continue
-
-        prop = ARG_PROPERTIES[arg_key]
-        if not hasattr(args, arg_key):
-            continue
-        
-        value = getattr(args, arg_key)
-
-        # Special handling for output_dir to route to script-specific subdirectories
-        if arg_key == 'output_dir':
-            output_dir_val = get_output_dir_for_script(script_name, Path(args.output_dir))
-            full_args.extend([prop['flag'], str(output_dir_val)])
-            continue
-
-        if prop['type'] == 'store_true':
-            if value:
-                full_args.append(prop['flag'])
-        elif prop['type'] == 'bool_optional':
-            if value is True:
-                full_args.append(prop['flag'])
-        elif prop['type'] == 'value':
-            if value is not None:
-                full_args.extend([prop['flag'], str(value)])
+    # Scripts that don't accept --target-dir
+    no_target_dir_scripts = []  # All scripts now accept --target-dir
+    
+    # Build common arguments based on script compatibility
+    common_args = []
+    
+    # --target-dir (not supported by all scripts)
+    if script_name not in no_target_dir_scripts:
+        target_dir = getattr(args, 'target_dir', None)
+        if target_dir is not None:
+            common_args.append(('--target-dir', target_dir))
+    
+    # --output-dir (supported by all scripts)
+    output_dir = getattr(args, 'output_dir', None)
+    if output_dir is not None:
+        common_args.append(('--output-dir', output_dir))
+    
+    # --verbose (supported by all scripts)
+    verbose = getattr(args, 'verbose', False)
+    if verbose:
+        common_args.append(('--verbose', verbose))
+    
+    # --recursive (supported by most scripts, with special handling for step 13)
+    if hasattr(args, 'recursive') and script_name not in ['2_setup.py', '3_tests.py']:
+        recursive = getattr(args, 'recursive', True)  # Default to True
+        if recursive:
+            common_args.append(('--recursive', recursive))
+    
+    for flag, value in common_args:
+        if value is not None:
+            if isinstance(value, bool):
+                if value:
+                    full_args.append(flag)
+            else:
+                full_args.extend([flag, str(value)])
+    
+    # Add step-specific arguments based on script name
+    if script_name in ['1_gnn.py']:
+        # GNN processing step supports recursive (already handled above)
+        pass
+    
+    if 'type_checker' in script_name:
+        # Already handled recursive above
+        if getattr(args, 'strict', False):
+            full_args.append('--strict')
+        if getattr(args, 'estimate_resources', True):
+            full_args.append('--estimate-resources')
+    
+    if 'ontology' in script_name:
+        ontology_file = getattr(args, 'ontology_terms_file', None)
+        if ontology_file:
+            full_args.extend(['--ontology-terms-file', str(ontology_file)])
+    
+    if 'llm' in script_name:
+        llm_tasks = getattr(args, 'llm_tasks', None)
+        if llm_tasks:
+            full_args.extend(['--llm-tasks', str(llm_tasks)])
+        llm_timeout = getattr(args, 'llm_timeout', None)
+        if llm_timeout:
+            full_args.extend(['--llm-timeout', str(llm_timeout)])
+    
+    if 'discopy' in script_name:
+        if 'jax' in script_name:
+            # Special handling for 13_discopy_jax_eval.py - ensure recursive is passed
+            jax_seed = getattr(args, 'discopy_jax_seed', None)
+            if jax_seed is not None:
+                full_args.extend(['--discopy-jax-seed', str(jax_seed)])
+            jax_input_dir = getattr(args, 'discopy_jax_gnn_input_dir', None)
+            if jax_input_dir:
+                full_args.extend(['--discopy-jax-gnn-input-dir', str(jax_input_dir)])
+        else:
+            discopy_input_dir = getattr(args, 'discopy_gnn_input_dir', None)
+            if discopy_input_dir:
+                full_args.extend(['--discopy-gnn-input-dir', str(discopy_input_dir)])
+    
+    if 'setup' in script_name:
+        if getattr(args, 'recreate_venv', False):
+            full_args.append('--recreate-venv')
+        if getattr(args, 'dev', False):
+            full_args.append('--dev')
 
     return [python_executable, str(script_path)] + full_args
 
-def execute_pipeline_step(
-    step_info: Dict[str, Union[int, str, Path]], 
-    step_index: int, 
-    total_steps: int,
-    args,
-    python_executable: str
-) -> StepExecutionResult:
-    """Execute a single pipeline step and return detailed results."""
+def validate_step_dependencies(step_name: str) -> Tuple[bool, List[str]]:
+    """
+    Validate that a step's dependencies are available before execution.
     
-    script_num = step_info['num']
-    script_name = str(step_info['basename'])
-    script_path = step_info['path']
+    Returns:
+        Tuple of (is_valid, missing_dependencies)
+    """
+    missing_deps = []
     
-    result = StepExecutionResult(script_num, script_name)
-    step_timeout = get_step_timeout(script_name, args)
-    is_critical = is_critical_step(script_name)
+    # Define step-specific dependency requirements
+    step_dependencies = {
+        "9_render.py": ["render", "render.pymdp.pymdp_renderer", "render.rxinfer.gnn_parser"],
+        "10_execute.py": ["execute", "execute.pymdp_runner"],
+        "11_llm.py": ["llm", "llm.providers"],
+        "12_discopy.py": ["discopy_translator_module", "discopy_translator_module.translator"],
+        "13_discopy_jax_eval.py": ["discopy_translator_module.translator", "discopy_translator_module.visualize_jax_output"],
+        "14_site.py": []  # Site generator dependency handled internally
+    }
     
-    step_header = f"Step {step_index}/{total_steps} ({script_num}: {script_name})"
-    logger.info(f"🚀 Starting {step_header}")
+    required_deps = step_dependencies.get(step_name, [])
     
-    # Build command
-    cmd = build_command_args(script_name, script_path, args, python_executable)
-    logger.debug(f"📋 Executing command: {' '.join(cmd)}")
+    for dep in required_deps:
+        try:
+            __import__(dep)
+        except ImportError as e:
+            missing_deps.append(f"{dep}: {e}")
     
-    # Performance monitoring setup
+    return len(missing_deps) == 0, missing_deps
+
+def execute_pipeline_step(script_name: str, step_number: int, total_steps: int,
+                         python_executable: str, target_dir: Path, output_dir: Path,
+                         args: argparse.Namespace, logger: logging.Logger) -> Dict[str, Any]:
+    """
+    Execute a single pipeline step with enhanced visual feedback and error handling.
+    
+    Args:
+        script_name: Name of the script to execute
+        step_number: Current step number (1-based)
+        total_steps: Total number of steps in pipeline
+        python_executable: Python executable to use
+        target_dir: Target directory for processing
+        output_dir: Output directory for results
+        args: Parsed command-line arguments
+        logger: Logger instance for output
+        
+    Returns:
+        Dictionary containing execution results and metadata
+    """
     start_time = time.time()
-    result.start_time = datetime.datetime.now().isoformat()
     initial_memory = get_memory_usage_mb()
     
-    # Provide user feedback for slow steps
-    if script_name == "2_setup.py":
-        logger.info(f"⏳ Setting up environment and dependencies (timeout: {step_timeout}s). This may take several minutes...")
-        sys.stdout.flush()
+    # Create execution result tracker
+    result = StepExecutionResult(step_number, script_name)
+    result.start_time = datetime.datetime.now().isoformat()
+    
+    # Get pipeline configuration for this step
+    pipeline_config = get_pipeline_config()
+    step_config = pipeline_config.get_step_config(script_name)
+    is_required = step_config.required if step_config else True
+    step_timeout = step_config.timeout if step_config else None
+    
+    # Enhanced step start logging with visual progress
+    log_step_start(
+        logger, 
+        f"Starting {step_config.description if step_config else script_name}",
+        step_number=step_number,
+        total_steps=total_steps,
+        script_name=script_name,
+        is_required=is_required,
+        timeout=step_timeout
+    )
     
     try:
-        # Execute subprocess
-        process = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            errors='replace'
+        # Validate step dependencies with enhanced feedback
+        is_valid, missing_deps = validate_step_dependencies(script_name)
+        if not is_valid:
+            EnhancedPipelineLogger.log_structured(
+                logger, logging.WARNING,
+                f"⚠️ Step {step_number}/{total_steps} ({script_name}) has missing dependencies",
+                step_number=step_number,
+                missing_dependencies=missing_deps,
+                event_type="dependency_warning"
+            )
+            
+            for dep in missing_deps:
+                logger.warning(f"   - {dep}")
+            
+            if is_required:
+                result.status = "FAILED_DEPENDENCIES"
+                result.details = f"Missing required dependencies: {'; '.join(missing_deps)}"
+                log_step_error(
+                    logger,
+                    f"Required step {script_name} cannot proceed due to missing dependencies",
+                    step_number=step_number,
+                    dependencies=missing_deps
+                )
+                return result.to_dict()
+            else:
+                logger.info(f"⏭️ Step {step_number}/{total_steps} ({script_name}) has missing dependencies but is non-critical, continuing with limited functionality")
+        
+        # Build command with enhanced argument handling
+        script_path = Path(__file__).parent.parent / script_name
+        command = build_command_args(script_name, script_path, args, python_executable)
+        
+        # Log command execution with enhanced formatting
+        command_display = ' '.join(command)
+        if len(command_display) > 100:
+            command_display = command_display[:97] + "..."
+        
+        EnhancedPipelineLogger.log_structured(
+            logger, logging.DEBUG,
+            f"📋 Executing command: {command_display}",
+            step_number=step_number,
+            script_name=script_name,
+            command=command,
+            timeout=step_timeout,
+            event_type="command_start"
         )
         
-        try:
-            stdout_data, stderr_data = process.communicate(timeout=step_timeout)
-        except subprocess.TimeoutExpired as e:
-            logger.warning(f"⚠️ {step_header} timed out after {step_timeout} seconds. Terminating process...")
-            process.terminate()
-            final_stdout, final_stderr = process.communicate()
+        # Special handling for long-running steps
+        if step_timeout and step_timeout > 60:
+            logger.info(f"⏳ {step_config.description if step_config else 'Processing'} (timeout: {step_timeout}s). This may take several minutes...")
+        
+        # Execute subprocess with enhanced monitoring
+        with performance_tracker.track_operation(f"step_{step_number}_{script_name}", 
+                                                {"step_number": step_number, "script_name": script_name}):
             
-            # Combine output
-            stdout_from_timeout = e.stdout.decode(errors='replace') if e.stdout else ""
-            stderr_from_timeout = e.stderr.decode(errors='replace') if e.stderr else ""
-            stdout_data = stdout_from_timeout + final_stdout
-            stderr_data = stderr_from_timeout + final_stderr
+            process = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                timeout=step_timeout,
+                cwd=Path(__file__).parent.parent  # Run from src directory
+            )
             
-            raise subprocess.TimeoutExpired(cmd, step_timeout, output=stdout_data, stderr=stderr_data)
-
-        # Log captured output
-        if stdout_data:
-            log_level = logging.INFO if not args.verbose else logging.DEBUG
-            logger.log(log_level, f"--- Output from {script_name} (stdout) ---")
-            for line in stdout_data.strip().split('\n'):
-                if line.strip():  # Skip empty lines
-                    logger.log(log_level, f"    [STDOUT] {line}")
-            logger.log(log_level, f"--- End of {script_name} output ---")
-
-        if stderr_data:
-            logger.warning(f"--- Output from {script_name} (stderr) ---")
-            for line in stderr_data.strip().split('\n'):
-                if line.strip():  # Skip empty lines
-                    logger.warning(f"    [STDERR] {line}")
-            logger.warning(f"--- End of {script_name} output ---")
-        
-        # Record results
-        result.stdout = stdout_data
-        result.stderr = stderr_data
-        result.exit_code = process.returncode
-        
-        # Performance metrics
-        final_memory = get_memory_usage_mb()
-        memory_delta = final_memory - initial_memory
-        result.memory_usage_mb = memory_delta
-        
-        end_time = time.time()
-        duration = end_time - start_time
-        
-        if process.returncode == 0:
-            result.status = "SUCCESS"
-            logger.info(f"✅ {step_header} - COMPLETED successfully in {duration:.1f} seconds.")
+            # Calculate execution metrics
+            duration = time.time() - start_time
+            final_memory = get_memory_usage_mb()
+            memory_delta = final_memory - initial_memory
             
-            if stderr_data:
-                logger.warning(f"   -> Note: {script_name} completed successfully but wrote to stderr (see details above or in logs).")
-        else:
-            result.status = "FAILED_NONZERO_EXIT"
-            result.details = f"Process exited with code {process.returncode}"
-            logger.error(f"❌ {step_header} - FAILED with exit code {process.returncode} after {duration:.1f} seconds.")
+            # Store results
+            result.duration_seconds = duration
+            result.memory_usage_mb = final_memory
+            result.exit_code = process.returncode
+            result.stdout = process.stdout
+            result.stderr = process.stderr
+            result.end_time = datetime.datetime.now().isoformat()
             
-            if is_critical:
-                logger.critical(f"🔥 Critical step {script_name} failed with exit code {process.returncode}. Pipeline should halt.")
-                result.details += " Critical step failure."
-        
+            # Enhanced result processing based on exit code
+            if process.returncode == 0:
+                result.status = "SUCCESS"
+                result.details = f"Completed successfully in {VisualLoggingEnhancer.format_duration(duration)}"
+                
+                log_step_success(
+                    logger,
+                    f"Step {step_number}/{total_steps} ({script_name}) completed successfully",
+                    step_number=step_number,
+                    duration=duration,
+                    memory_mb=final_memory,
+                    memory_delta_mb=memory_delta,
+                    exit_code=process.returncode
+                )
+                
+            elif process.returncode == 2:
+                # Exit code 2 typically indicates success with warnings
+                result.status = "SUCCESS_WITH_WARNINGS"
+                result.details = f"Completed with warnings in {VisualLoggingEnhancer.format_duration(duration)}"
+                
+                log_step_warning(
+                    logger,
+                    f"Step {step_number}/{total_steps} ({script_name}) completed with warnings",
+                    step_number=step_number,
+                    duration=duration,
+                    memory_mb=final_memory,
+                    exit_code=process.returncode
+                )
+                
+            else:
+                # Non-zero exit code indicates failure
+                result.status = "FAILED" if is_required else "FAILED_NON_CRITICAL"
+                error_preview = process.stderr[:200] + "..." if len(process.stderr) > 200 else process.stderr
+                result.details = f"Failed with exit code {process.returncode}: {error_preview}"
+                
+                if is_required:
+                    log_step_error(
+                        logger,
+                        f"Critical step {step_number}/{total_steps} ({script_name}) failed",
+                        step_number=step_number,
+                        duration=duration,
+                        exit_code=process.returncode,
+                        error_preview=error_preview
+                    )
+                else:
+                    log_step_warning(
+                        logger,
+                        f"Step {step_number}/{total_steps} ({script_name}) failed but is non-critical",
+                        step_number=step_number,
+                        duration=duration,
+                        exit_code=process.returncode
+                    )
+    
     except subprocess.TimeoutExpired as e:
-        end_time = time.time()
-        duration = end_time - start_time
-        result.status = "FAILED_TIMEOUT"
-        result.details = f"Process timed out after {duration:.1f} seconds (limit: {step_timeout}s)"
-        
-        if e.stdout:
-            result.stdout = e.stdout if isinstance(e.stdout, str) else e.stdout.decode(errors='replace')
-        if e.stderr:
-            result.stderr = e.stderr if isinstance(e.stderr, str) else e.stderr.decode(errors='replace')
-            
-        logger.error(f"❌ {step_header} - FAILED due to timeout after {duration:.1f} seconds.")
-        
-        if is_critical:
-            logger.critical(f"🔥 Critical step {script_name} timed out. Pipeline should halt.")
-            result.details += " Critical step timeout."
-
-    except Exception as e:
-        end_time = time.time()
-        duration = end_time - start_time
-        result.status = "ERROR_UNHANDLED_EXCEPTION"
-        result.details = f"Unhandled exception after {duration:.1f} seconds: {str(e)}"
-        logger.error(f"❌ Unhandled exception in {step_header}: {e}")
-        logger.debug("Full exception details:", exc_info=True)
-        
-        if is_critical:
-            logger.critical(f"🔥 Critical step {script_name} failed due to unhandled exception. Pipeline should halt.")
-            result.details += " Critical step failure."
-    
-    finally:
+        duration = time.time() - start_time
+        result.duration_seconds = duration
+        result.status = "TIMEOUT"
+        result.details = f"Timed out after {step_timeout}s"
         result.end_time = datetime.datetime.now().isoformat()
-        if result.start_time:
-            duration_obj = datetime.datetime.fromisoformat(result.end_time) - datetime.datetime.fromisoformat(result.start_time)
-            result.duration_seconds = duration_obj.total_seconds()
         
-        logger.info("")  # Add spacing after step completion
+        log_step_error(
+            logger,
+            f"Step {step_number}/{total_steps} ({script_name}) timed out",
+            step_number=step_number,
+            duration=duration,
+            timeout=step_timeout,
+            event_type="timeout_error"
+        )
+        
+    except Exception as e:
+        duration = time.time() - start_time
+        result.duration_seconds = duration
+        result.status = "ERROR"
+        result.details = f"Unexpected error: {str(e)}"
+        result.end_time = datetime.datetime.now().isoformat()
+        
+        log_step_error(
+            logger,
+            f"Step {step_number}/{total_steps} ({script_name}) encountered unexpected error",
+            step_number=step_number,
+            duration=duration,
+            error=str(e),
+            error_type=type(e).__name__,
+            event_type="execution_error"
+        )
     
-    return result 
+    # Return comprehensive execution results
+    return result.to_dict()
+
+def execute_pipeline_steps(scripts: List[Tuple[int, str]], python_executable: str, 
+                          target_dir: Path, output_dir: Path, args: argparse.Namespace,
+                          logger: logging.Logger) -> Dict[str, Any]:
+    """
+    Execute multiple pipeline steps with enhanced progress tracking and visual feedback.
+    
+    Args:
+        scripts: List of (step_number, script_name) tuples
+        python_executable: Python executable to use
+        target_dir: Target directory for processing
+        output_dir: Output directory for results
+        args: Parsed command-line arguments
+        logger: Logger instance
+        
+    Returns:
+        Dictionary containing overall execution results and statistics
+    """
+    # Reset progress tracker for new pipeline run
+    reset_progress_tracker()
+    
+    # Initialize execution tracking
+    total_steps = len(scripts)
+    pipeline_start_time = time.time()
+    initial_memory = get_memory_usage_mb()
+    
+    results = []
+    success_count = 0
+    warning_count = 0
+    failure_count = 0
+    critical_failure = False
+    
+    # Enhanced pipeline start logging
+    EnhancedPipelineLogger.log_structured(
+        logger, logging.INFO,
+        f"🚀 Starting pipeline execution: {total_steps} steps",
+        total_steps=total_steps,
+        target_dir=str(target_dir),
+        output_dir=str(output_dir),
+        python_executable=python_executable,
+        event_type="pipeline_start"
+    )
+    
+    # Execute each step with enhanced feedback
+    for step_number, script_name in scripts:
+        step_result = execute_pipeline_step(
+            script_name, step_number, total_steps,
+            python_executable, target_dir, output_dir, args, logger
+        )
+        
+        results.append(step_result)
+        
+        # Update counters based on step result
+        status = step_result.get('status', 'UNKNOWN')
+        if status == 'SUCCESS':
+            success_count += 1
+        elif 'WARNING' in status:
+            warning_count += 1
+        elif 'FAILED' in status:
+            failure_count += 1
+            
+            # Check if this was a critical failure
+            pipeline_config = get_pipeline_config()
+            step_config = pipeline_config.get_step_config(script_name)
+            if step_config and step_config.required:
+                critical_failure = True
+                EnhancedPipelineLogger.log_structured(
+                    logger, logging.ERROR,
+                    f"💥 Critical step failure: {script_name}",
+                    step_number=step_number,
+                    script_name=script_name,
+                    status=status,
+                    event_type="critical_failure"
+                )
+                break  # Stop pipeline on critical failure
+    
+    # Calculate final metrics
+    pipeline_duration = time.time() - pipeline_start_time
+    final_memory = get_memory_usage_mb()
+    memory_delta = final_memory - initial_memory
+    
+    # Determine overall pipeline status
+    if critical_failure:
+        overall_status = "FAILED"
+    elif failure_count > 0:
+        overall_status = "COMPLETED_WITH_ERRORS"
+    elif warning_count > 0:
+        overall_status = "COMPLETED_WITH_WARNINGS"
+    else:
+        overall_status = "SUCCESS"
+    
+    # Create comprehensive summary
+    summary = {
+        "status": overall_status,
+        "total_steps": total_steps,
+        "executed_steps": len(results),
+        "success_count": success_count,
+        "warning_count": warning_count,
+        "failure_count": failure_count,
+        "critical_failure": critical_failure,
+        "total_duration_seconds": pipeline_duration,
+        "memory_usage_mb": final_memory,
+        "memory_delta_mb": memory_delta,
+        "start_time": datetime.datetime.fromtimestamp(pipeline_start_time).isoformat(),
+        "end_time": datetime.datetime.now().isoformat(),
+        "steps": results,
+        "performance_summary": performance_tracker.get_summary()
+    }
+    
+    # Log enhanced pipeline summary
+    log_pipeline_summary(logger, summary)
+    
+    # Final status message with enhanced formatting
+    status_icon = "✅" if overall_status == "SUCCESS" else "⚠️" if "WARNING" in overall_status else "❌"
+    status_color = "GREEN" if overall_status == "SUCCESS" else "YELLOW" if "WARNING" in overall_status else "RED"
+    
+    final_message = f"{status_icon} Pipeline execution {overall_status.lower().replace('_', ' ')}"
+    final_message_colored = VisualLoggingEnhancer.colorize(final_message, status_color, True)
+    
+    EnhancedPipelineLogger.log_structured(
+        logger, logging.INFO if overall_status == "SUCCESS" else logging.WARNING if "WARNING" in overall_status else logging.ERROR,
+        final_message_colored,
+        **summary,
+        event_type="pipeline_complete"
+    )
+    
+    return summary 

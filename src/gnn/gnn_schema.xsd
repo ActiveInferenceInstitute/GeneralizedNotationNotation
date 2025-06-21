@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/schemas/gnn-v1"
+           xmlns:gnn="https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/schemas/gnn-v1"
+           elementFormDefault="qualified">
+
+  <!-- 
+    XML Schema Definition (XSD) for GNN (Generalized Notation Notation)
+    Version: 1.0
+    
+    This schema defines the structure for GNN models when represented in XML format.
+    It provides an alternative to the JSON Schema for systems that prefer XML validation.
+  -->
+
+  <!-- Root element for GNN model -->
+  <xs:element name="gnn_model">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="gnn:gnn_section"/>
+        <xs:element ref="gnn:gnn_version_and_flags"/>
+        <xs:element ref="gnn:model_name"/>
+        <xs:element ref="gnn:model_annotation"/>
+        <xs:element ref="gnn:state_space_block"/>
+        <xs:element ref="gnn:connections"/>
+        <xs:element ref="gnn:initial_parameterization"/>
+        <xs:element ref="gnn:equations" minOccurs="0"/>
+        <xs:element ref="gnn:time"/>
+        <xs:element ref="gnn:act_inf_ontology_annotation" minOccurs="0"/>
+        <xs:element ref="gnn:model_parameters" minOccurs="0"/>
+        <xs:element ref="gnn:footer"/>
+        <xs:element ref="gnn:signature" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- GNN Section -->
+  <xs:element name="gnn_section">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:pattern value="[A-Za-z][A-Za-z0-9_]*"/>
+        <xs:maxLength value="100"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+
+  <!-- GNN Version and Flags -->
+  <xs:element name="gnn_version_and_flags">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="version" type="gnn:version_type"/>
+        <xs:element name="flags" type="gnn:flags_type" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="version_type">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="GNN v[0-9]+(\.[0-9]+)?"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="flags_type">
+    <xs:sequence>
+      <xs:element name="flag" type="gnn:flag_enum" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="flag_enum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="strict_validation"/>
+      <xs:enumeration value="experimental_features"/>
+      <xs:enumeration value="extended_syntax"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Model Name -->
+  <xs:element name="model_name">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:minLength value="1"/>
+        <xs:maxLength value="200"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+
+  <!-- Model Annotation -->
+  <xs:element name="model_annotation">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:minLength value="1"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+
+  <!-- State Space Block -->
+  <xs:element name="state_space_block">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="variable" type="gnn:variable_type" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="variable_type">
+    <xs:sequence>
+      <xs:element name="name" type="gnn:variable_name_type"/>
+      <xs:element name="dimensions" type="gnn:dimensions_type"/>
+      <xs:element name="data_type" type="gnn:data_type_enum"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="variable_name_type">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z_][a-zA-Z0-9_]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="dimensions_type">
+    <xs:sequence>
+      <xs:element name="dimension" maxOccurs="unbounded">
+        <xs:simpleType>
+          <xs:union memberTypes="xs:positiveInteger gnn:identifier_type"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="identifier_type">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z_][a-zA-Z0-9_]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="data_type_enum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="float"/>
+      <xs:enumeration value="int"/>
+      <xs:enumeration value="bool"/>
+      <xs:enumeration value="string"/>
+      <xs:enumeration value="categorical"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Connections -->
+  <xs:element name="connections">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="connection" type="gnn:connection_type" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="connection_type">
+    <xs:sequence>
+      <xs:element name="source" type="gnn:variable_group_type"/>
+      <xs:element name="target" type="gnn:variable_group_type"/>
+      <xs:element name="connection_operator" type="gnn:connection_operator_enum"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="variable_group_type">
+    <xs:choice>
+      <xs:element name="single_variable" type="gnn:variable_reference_type"/>
+      <xs:element name="variable_list">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="variable" type="gnn:variable_reference_type" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="variable_reference_type">
+    <xs:sequence>
+      <xs:element name="name" type="gnn:identifier_type"/>
+      <xs:element name="subscript" type="xs:string" minOccurs="0"/>
+      <xs:element name="time_index" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="connection_operator_enum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value=">"/>
+      <xs:enumeration value="->"/>
+      <xs:enumeration value="-"/>
+      <xs:enumeration value="|"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Initial Parameterization -->
+  <xs:element name="initial_parameterization">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="parameter" type="gnn:parameter_type" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="parameter_type">
+    <xs:sequence>
+      <xs:element name="name" type="gnn:identifier_type"/>
+      <xs:element name="value" type="gnn:parameter_value_type"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="parameter_value_type">
+    <xs:choice>
+      <xs:element name="scalar" type="gnn:scalar_value_type"/>
+      <xs:element name="matrix" type="gnn:matrix_value_type"/>
+      <xs:element name="tuple" type="gnn:tuple_value_type"/>
+      <xs:element name="reference" type="gnn:identifier_type"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="scalar_value_type">
+    <xs:choice>
+      <xs:element name="number" type="xs:double"/>
+      <xs:element name="boolean" type="xs:boolean"/>
+      <xs:element name="string" type="xs:string"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="matrix_value_type">
+    <xs:sequence>
+      <xs:element name="row" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="value" type="xs:double" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="tuple_value_type">
+    <xs:sequence>
+      <xs:element name="value" type="gnn:parameter_value_type" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Equations -->
+  <xs:element name="equations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="equation" type="gnn:equation_type" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="equation_type">
+    <xs:sequence>
+      <xs:element name="label" type="gnn:identifier_type" minOccurs="0"/>
+      <xs:element name="latex" type="xs:string"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Time -->
+  <xs:element name="time">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="type" type="gnn:time_type_enum"/>
+        <xs:element name="discrete_time_variable" type="gnn:identifier_type" minOccurs="0"/>
+        <xs:element name="continuous_time_variable" type="gnn:identifier_type" minOccurs="0"/>
+        <xs:element name="model_time_horizon" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="time_type_enum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Static"/>
+      <xs:enumeration value="Dynamic"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Active Inference Ontology Annotation -->
+  <xs:element name="act_inf_ontology_annotation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="mapping" type="gnn:ontology_mapping_type" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="ontology_mapping_type">
+    <xs:sequence>
+      <xs:element name="variable_name" type="gnn:identifier_type"/>
+      <xs:element name="ontology_term" type="gnn:identifier_type"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Model Parameters -->
+  <xs:element name="model_parameters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="parameter" type="gnn:model_parameter_type" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="model_parameter_type">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="value" type="xs:string"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Footer -->
+  <xs:element name="footer">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:minLength value="1"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+
+  <!-- Signature -->
+  <xs:element name="signature">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="creator" type="xs:string" minOccurs="0"/>
+        <xs:element name="date" type="xs:date" minOccurs="0"/>
+        <xs:element name="version" type="xs:string" minOccurs="0"/>
+        <xs:element name="status" type="xs:string" minOccurs="0"/>
+        <xs:element name="compliance" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="checksum" type="xs:string" minOccurs="0"/>
+        <xs:element name="digital_signature" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Active Inference specific enumerations -->
+  <xs:simpleType name="active_inference_matrix_type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="A_matrix"/>  <!-- Likelihood matrix -->
+      <xs:enumeration value="B_matrix"/>  <!-- Transition matrix -->
+      <xs:enumeration value="C_vector"/>  <!-- Preference vector -->
+      <xs:enumeration value="D_vector"/>  <!-- Prior beliefs -->
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="active_inference_variable_type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="hidden_state"/>
+      <xs:enumeration value="observation"/>
+      <xs:enumeration value="action"/>
+      <xs:enumeration value="policy"/>
+      <xs:enumeration value="expected_free_energy"/>
+      <xs:enumeration value="precision"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema> 

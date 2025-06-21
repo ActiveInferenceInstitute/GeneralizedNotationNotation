@@ -36,6 +36,120 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+class PyMDPRenderer:
+    """
+    PyMDP Renderer for converting GNN specifications to PyMDP Python scripts.
+    
+    This class provides a standardized interface for rendering GNN models
+    to PyMDP-compatible simulation code.
+    """
+    
+    def __init__(self, options: Optional[Dict[str, Any]] = None):
+        """
+        Initialize the PyMDP renderer.
+        
+        Args:
+            options: Dictionary of rendering options
+        """
+        self.options = options or {}
+        self.logger = logging.getLogger(f"{__name__}.PyMDPRenderer")
+        
+    def render_file(self, gnn_file_path: Path, output_path: Path) -> Tuple[bool, str]:
+        """
+        Render a single GNN file to PyMDP format.
+        
+        Args:
+            gnn_file_path: Path to the GNN specification file
+            output_path: Path where the rendered output should be saved
+            
+        Returns:
+            Tuple of (success: bool, message: str)
+        """
+        try:
+            # Load GNN specification (assuming JSON format for now)
+            import json
+            with open(gnn_file_path, 'r', encoding='utf-8') as f:
+                if gnn_file_path.suffix.lower() == '.json':
+                    gnn_spec = json.load(f)
+                else:
+                    # For .md files, we'd need a parser here
+                    # For now, return a placeholder
+                    self.logger.warning(f"Markdown parsing not implemented for {gnn_file_path}")
+                    return False, f"Markdown parsing not yet implemented for {gnn_file_path}"
+            
+            # Use the existing render function
+            success, message, artifacts = render_gnn_to_pymdp(gnn_spec, output_path, self.options)
+            return success, message
+            
+        except Exception as e:
+            error_msg = f"Failed to render {gnn_file_path}: {e}"
+            self.logger.error(error_msg)
+            return False, error_msg
+    
+    def render_directory(self, output_dir: Path, input_dir: Optional[Path] = None) -> Dict[str, Any]:
+        """
+        Render all GNN files in a directory to PyMDP format.
+        
+        Args:
+            output_dir: Directory where rendered files should be saved
+            input_dir: Directory to search for GNN files (optional)
+            
+        Returns:
+            Dictionary with rendering results
+        """
+        results = {
+            'success': True,
+            'files_rendered': 0,
+            'files_failed': 0,
+            'messages': []
+        }
+        
+        try:
+            output_dir.mkdir(parents=True, exist_ok=True)
+            
+            # If no input directory specified, look for processed files
+            if input_dir is None:
+                # Look for already processed GNN files in common output locations
+                search_paths = [
+                    Path("../output/gnn_exports"),
+                    Path("output/gnn_exports"),
+                ]
+                
+                gnn_files = []
+                for search_path in search_paths:
+                    if search_path.exists():
+                        gnn_files.extend(search_path.glob("**/*.json"))
+                        break
+            else:
+                # Search input directory for GNN files
+                gnn_files = list(input_dir.glob("**/*.json"))
+                gnn_files.extend(input_dir.glob("**/*.md"))
+            
+            if not gnn_files:
+                results['messages'].append("No GNN files found to render")
+                return results
+            
+            for gnn_file in gnn_files:
+                output_file = output_dir / f"{gnn_file.stem}_pymdp.py"
+                success, message = self.render_file(gnn_file, output_file)
+                
+                if success:
+                    results['files_rendered'] += 1
+                    results['messages'].append(f"✅ Rendered {gnn_file.name} -> {output_file.name}")
+                else:
+                    results['files_failed'] += 1
+                    results['success'] = False
+                    results['messages'].append(f"❌ Failed to render {gnn_file.name}: {message}")
+            
+            return results
+            
+        except Exception as e:
+            error_msg = f"Failed to render directory: {e}"
+            self.logger.error(error_msg)
+            results['success'] = False
+            results['messages'].append(error_msg)
+            return results
+
 def render_gnn_to_pymdp(
     gnn_spec: Dict[str, Any],
     output_script_path: Path,

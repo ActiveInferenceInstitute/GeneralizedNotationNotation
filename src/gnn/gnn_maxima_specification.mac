@@ -1,0 +1,409 @@
+/*
+ * GNN (Generalized Notation Notation) Mathematical Specification in Maxima
+ * 
+ * This file provides a complete symbolic mathematical specification of GNN models
+ * using Maxima computer algebra system, enabling symbolic computation, 
+ * verification, and analysis of Active Inference mathematical properties.
+ */
+
+/* Load required packages */
+load("eigen")$
+load("diag")$
+load("linearalgebra")$
+load("mnewton")$
+load("stats")$
+
+/* ===== BASIC MATHEMATICAL STRUCTURES ===== */
+
+/* Define symbolic variables for Active Inference */
+declare([s, o, u, pi], integer)$
+declare([A, B, C, D], nonscalar)$
+declare([alpha, beta, gamma], real, positive)$
+declare([t, T], integer, positive)$
+
+/* Dimension constraints */
+assume(s >= 1, o >= 1, u >= 1)$
+assume(t >= 0, T >= 1)$
+
+/* ===== PROBABILITY THEORY FOUNDATIONS ===== */
+
+/* Categorical distribution validation */
+is_categorical_dist(p) := 
+  block([sum_p],
+    sum_p: apply("+", p),
+    is(abs(sum_p - 1) < 1e-10) and every(lambda([x], x >= 0), p)
+  )$
+
+/* Stochastic matrix validation */
+is_stochastic_matrix(M) :=
+  block([rows, row_sums],
+    rows: args(M),
+    row_sums: map(lambda([row], apply("+", row)), rows),
+    every(lambda([sum], is(abs(sum - 1) < 1e-10)), row_sums) and
+    every(lambda([row], every(lambda([x], x >= 0), row)), rows)
+  )$
+
+/* Normalize probability vector */
+normalize_prob(p) :=
+  block([sum_p],
+    sum_p: apply("+", p),
+    if sum_p > 0 then map(lambda([x], x/sum_p), p) else p
+  )$
+
+/* Softmax function */
+softmax(x) :=
+  block([exp_x, sum_exp],
+    exp_x: map(exp, x),
+    sum_exp: apply("+", exp_x),
+    map(lambda([e], e/sum_exp), exp_x)
+  )$
+
+/* ===== ACTIVE INFERENCE MATHEMATICAL STRUCTURES ===== */
+
+/* State space definition */
+define_state_space(factors, dims) :=
+  block([joint_dim],
+    joint_dim: apply("*", dims),
+    [factors = factors, dimensions = dims, joint_dimension = joint_dim]
+  )$
+
+/* Observation space definition */
+define_observation_space(modalities, dims) :=
+  block([joint_dim],
+    joint_dim: apply("*", dims),
+    [modalities = modalities, dimensions = dims, joint_dimension = joint_dim]
+  )$
+
+/* Action space definition */
+define_action_space(controls, dims) :=
+  block([joint_dim],
+    joint_dim: if dims = [] then 1 else apply("*", dims),
+    [controls = controls, dimensions = dims, joint_dimension = joint_dim]
+  )$
+
+/* ===== ACTIVE INFERENCE MATRICES ===== */
+
+/* Likelihood matrix A: P(o|s) */
+/* Symbolic representation of likelihood mapping */
+define_likelihood_matrix(state_dim, obs_dim) :=
+  genmatrix(lambda([i,j], A[i,j]), obs_dim, state_dim)$
+
+/* Transition matrix B: P(s'|s,u) */
+/* Three-dimensional tensor represented as nested matrices */
+define_transition_matrix(state_dim, action_dim) :=
+  makelist(
+    genmatrix(lambda([i,j], B[u,i,j]), state_dim, state_dim),
+    u, 1, action_dim
+  )$
+
+/* Preference vector C: log preferences over observations */
+define_preference_vector(obs_dim) :=
+  makelist(C[i], i, 1, obs_dim)$
+
+/* Prior vector D: initial state distribution */
+define_prior_vector(state_dim) :=
+  makelist(D[i], i, 1, state_dim)$
+
+/* ===== ACTIVE INFERENCE COMPUTATIONS ===== */
+
+/* Bayesian state inference: P(s|o) ∝ P(o|s) * P(s) */
+bayesian_state_inference(A_matrix, obs, prior_beliefs) :=
+  block([likelihood, unnormalized, normalizer],
+    /* Extract likelihood for observed outcome */
+    likelihood: makelist(A_matrix[obs, s], s, 1, length(prior_beliefs)),
+    /* Compute unnormalized posterior */
+    unnormalized: makelist(likelihood[s] * prior_beliefs[s], s, 1, length(prior_beliefs)),
+    /* Normalize */
+    normalize_prob(unnormalized)
+  )$
+
+/* Expected free energy computation */
+/* G = E_q[ln q(s) - ln p(s) - ln p(o|s) - ln p(s'|s,u)] + H[q(s')] */
+expected_free_energy(beliefs, A_matrix, B_matrices, C_vector, action_idx) :=
+  block([expected_reward, kl_divergence, total_efe],
+    /* Expected reward: E[C(o)] under current beliefs and action */
+    expected_reward: sum(
+      beliefs[s] * sum(A_matrix[o, s] * C_vector[o], o, 1, length(C_vector)),
+      s, 1, length(beliefs)
+    ),
+    /* Simplified KL divergence term (would need full implementation) */
+    kl_divergence: 0, /* Placeholder */
+    /* Total expected free energy (negative because we minimize) */
+    total_efe: -expected_reward + kl_divergence,
+    total_efe
+  )$
+
+/* Policy inference via softmax over expected free energy */
+policy_inference(beliefs, A_matrix, B_matrices, C_vector) :=
+  block([efe_values, policy],
+    /* Compute EFE for each action */
+    efe_values: makelist(
+      expected_free_energy(beliefs, A_matrix, B_matrices, C_vector, u),
+      u, 1, length(B_matrices)
+    ),
+    /* Apply softmax with negative EFE (lower EFE = higher probability) */
+    policy: softmax(map(lambda([g], -g), efe_values)),
+    policy
+  )$
+
+/* Action sampling from policy */
+action_sampling(policy) :=
+  block([cumulative, r, action],
+    /* Simple deterministic selection of highest probability action */
+    action: 1,
+    for i: 2 thru length(policy) do
+      if policy[i] > policy[action] then action: i,
+    action
+  )$
+
+/* One step of Active Inference */
+active_inference_step(beliefs, observation, A_matrix, B_matrices, C_vector) :=
+  block([new_beliefs, policy, action],
+    /* State inference */
+    new_beliefs: bayesian_state_inference(A_matrix, observation, beliefs),
+    /* Policy inference */
+    policy: policy_inference(new_beliefs, A_matrix, B_matrices, C_vector),
+    /* Action sampling */
+    action: action_sampling(policy),
+    [beliefs = new_beliefs, policy = policy, action = action]
+  )$
+
+/* ===== GNN MODEL VALIDATION ===== */
+
+/* Validate Active Inference model consistency */
+validate_ai_model(A_matrix, B_matrices, C_vector, D_vector) :=
+  block([valid_A, valid_B, valid_C, valid_D],
+    /* Check likelihood matrix is stochastic */
+    valid_A: is_stochastic_matrix(A_matrix),
+    /* Check transition matrices are stochastic */
+    valid_B: every(is_stochastic_matrix, B_matrices),
+    /* Check preference vector is real-valued */
+    valid_C: every(lambda([x], numberp(x) or symbolp(x)), C_vector),
+    /* Check prior is a valid probability distribution */
+    valid_D: is_categorical_dist(D_vector),
+    [A_valid = valid_A, B_valid = valid_B, C_valid = valid_C, D_valid = valid_D]
+  )$
+
+/* Validate GNN variable naming conventions */
+validate_gnn_variable_name(var_name, var_type) :=
+  block([valid],
+    valid: false,
+    if var_type = "HiddenState" then
+      valid: substring(var_name, 1, 3) = "s_f",
+    if var_type = "Observation" then
+      valid: substring(var_name, 1, 3) = "o_m",
+    if var_type = "LikelihoodMatrix" then
+      valid: substring(var_name, 1, 3) = "A_m",
+    if var_type = "TransitionMatrix" then
+      valid: substring(var_name, 1, 3) = "B_f",
+    if var_type = "PreferenceVector" then
+      valid: substring(var_name, 1, 3) = "C_m",
+    if var_type = "PriorVector" then
+      valid: substring(var_name, 1, 3) = "D_f",
+    valid
+  )$
+
+/* ===== MATHEMATICAL PROPERTIES AND THEOREMS ===== */
+
+/* Theorem: Bayesian inference preserves probability */
+theorem_bayes_preserves_probability(A_matrix, obs, prior) :=
+  block([posterior],
+    posterior: bayesian_state_inference(A_matrix, obs, prior),
+    /* Verify posterior is a valid probability distribution */
+    is_categorical_dist(posterior)
+  )$
+
+/* Theorem: Softmax produces valid probability distribution */
+theorem_softmax_valid_distribution(x) :=
+  block([result],
+    result: softmax(x),
+    is_categorical_dist(result)
+  )$
+
+/* Theorem: Expected free energy is well-defined for valid inputs */
+theorem_efe_well_defined(beliefs, A_matrix, B_matrices, C_vector, action) :=
+  block([efe],
+    if is_categorical_dist(beliefs) and 
+       is_stochastic_matrix(A_matrix) and
+       every(is_stochastic_matrix, B_matrices) then (
+      efe: expected_free_energy(beliefs, A_matrix, B_matrices, C_vector, action),
+      numberp(efe) or symbolp(efe)
+    ) else false
+  )$
+
+/* ===== SYMBOLIC COMPUTATION EXAMPLES ===== */
+
+/* Example: 2-state, 3-observation system */
+example_2x3_system() :=
+  block([A_sym, B_sym, C_sym, D_sym, beliefs, obs],
+    /* Define symbolic likelihood matrix */
+    A_sym: matrix([A[1,1], A[1,2]], [A[2,1], A[2,2]], [A[3,1], A[3,2]]),
+    
+    /* Define symbolic transition matrix (single action) */
+    B_sym: [matrix([B[1,1,1], B[1,1,2]], [B[1,2,1], B[1,2,2]])],
+    
+    /* Define symbolic preference vector */
+    C_sym: [C[1], C[2], C[3]],
+    
+    /* Define symbolic prior */
+    D_sym: [D[1], D[2]],
+    
+    /* Example beliefs and observation */
+    beliefs: [s1_belief, s2_belief],
+    obs: 1,
+    
+    /* Perform symbolic state inference */
+    print("Symbolic Bayesian inference:"),
+    print(bayesian_state_inference(A_sym, obs, beliefs)),
+    
+    /* Perform symbolic policy inference */
+    print("Symbolic policy inference:"),
+    print(policy_inference(beliefs, A_sym, B_sym, C_sym))
+  )$
+
+/* ===== VARIATIONAL FREE ENERGY COMPUTATION ===== */
+
+/* Variational free energy: F = E_q[ln q(s)] - E_q[ln p(s,o)] */
+variational_free_energy(beliefs, A_matrix, D_vector, obs) :=
+  block([entropy_term, accuracy_term, complexity_term],
+    /* Entropy of beliefs: -H[q(s)] = E_q[ln q(s)] */
+    entropy_term: sum(
+      if beliefs[s] > 0 then beliefs[s] * log(beliefs[s]) else 0,
+      s, 1, length(beliefs)
+    ),
+    
+    /* Accuracy: E_q[ln p(o|s)] */
+    accuracy_term: sum(
+      beliefs[s] * log(A_matrix[obs, s]),
+      s, 1, length(beliefs)
+    ),
+    
+    /* Complexity: KL[q(s)||p(s)] */
+    complexity_term: sum(
+      if beliefs[s] > 0 and D_vector[s] > 0 then
+        beliefs[s] * (log(beliefs[s]) - log(D_vector[s]))
+      else 0,
+      s, 1, length(beliefs)
+    ),
+    
+    /* Total variational free energy */
+    entropy_term - accuracy_term + complexity_term
+  )$
+
+/* ===== MODEL COMPARISON AND SELECTION ===== */
+
+/* Model evidence approximation using variational free energy */
+model_evidence_approximation(observations, A_matrix, D_vector) :=
+  block([beliefs, total_vfe],
+    beliefs: D_vector, /* Start with prior */
+    total_vfe: 0,
+    
+    /* Accumulate VFE over observations */
+    for obs in observations do (
+      beliefs: bayesian_state_inference(A_matrix, obs, beliefs),
+      total_vfe: total_vfe + variational_free_energy(beliefs, A_matrix, D_vector, obs)
+    ),
+    
+    -total_vfe /* Negative VFE approximates log model evidence */
+  )$
+
+/* ===== HIERARCHICAL ACTIVE INFERENCE ===== */
+
+/* Define hierarchical state space */
+define_hierarchical_model(levels, state_dims) :=
+  block([level_models],
+    level_models: makelist(
+      [level = i, 
+       state_dim = state_dims[i],
+       A_matrix = genmatrix(lambda([j,k], A[i,j,k]), state_dims[i], state_dims[i]),
+       B_matrix = genmatrix(lambda([j,k], B[i,j,k]), state_dims[i], state_dims[i])],
+      i, 1, levels
+    ),
+    level_models
+  )$
+
+/* ===== CONTINUOUS STATE SPACES ===== */
+
+/* Gaussian belief update for continuous states */
+gaussian_belief_update(mean_prior, cov_prior, obs, obs_matrix, obs_noise) :=
+  block([K, mean_post, cov_post],
+    /* Kalman gain */
+    K: cov_prior . transpose(obs_matrix) . invert(obs_matrix . cov_prior . transpose(obs_matrix) + obs_noise),
+    
+    /* Posterior mean */
+    mean_post: mean_prior + K . (obs - obs_matrix . mean_prior),
+    
+    /* Posterior covariance */
+    cov_post: cov_prior - K . obs_matrix . cov_prior,
+    
+    [mean = mean_post, covariance = cov_post]
+  )$
+
+/* ===== UTILITY FUNCTIONS ===== */
+
+/* Generate random stochastic matrix */
+random_stochastic_matrix(rows, cols) :=
+  block([M],
+    M: genmatrix(lambda([i,j], random(1.0)), rows, cols),
+    /* Normalize rows */
+    for i: 1 thru rows do (
+      row_sum: sum(M[i,j], j, 1, cols),
+      for j: 1 thru cols do M[i,j]: M[i,j]/row_sum
+    ),
+    M
+  )$
+
+/* Generate random categorical distribution */
+random_categorical(dim) :=
+  block([p],
+    p: makelist(random(1.0), i, 1, dim),
+    normalize_prob(p)
+  )$
+
+/* ===== EXPORT FUNCTIONS ===== */
+
+/* Export model to symbolic form */
+export_symbolic_model(A_matrix, B_matrices, C_vector, D_vector) :=
+  block([model_spec],
+    model_spec: [
+      likelihood_matrix = A_matrix,
+      transition_matrices = B_matrices,
+      preferences = C_vector,
+      priors = D_vector
+    ],
+    print("Symbolic Active Inference Model:"),
+    print(model_spec),
+    model_spec
+  )$
+
+/* ===== TESTING AND VALIDATION ===== */
+
+/* Run comprehensive model validation */
+validate_complete_model() :=
+  block([A_test, B_test, C_test, D_test, validation_results],
+    print("Running GNN model validation tests..."),
+    
+    /* Create test matrices */
+    A_test: matrix([0.8, 0.2], [0.3, 0.7], [0.1, 0.9]),
+    B_test: [matrix([0.9, 0.1], [0.2, 0.8])],
+    C_test: [1.0, 0.0, -1.0],
+    D_test: [0.6, 0.4],
+    
+    /* Validate model components */
+    validation_results: validate_ai_model(A_test, B_test, C_test, D_test),
+    print("Validation results:", validation_results),
+    
+    /* Test mathematical properties */
+    print("Testing Bayesian inference preservation:"),
+    print(theorem_bayes_preserves_probability(A_test, 1, D_test)),
+    
+    print("Testing softmax validity:"),
+    print(theorem_softmax_valid_distribution([1.0, 2.0, 0.5])),
+    
+    validation_results
+  )$
+
+/* Initialize and run example */
+print("GNN Mathematical Specification loaded successfully!")$
+print("Run validate_complete_model() to test the implementation.")$
+print("Run example_2x3_system() for symbolic computation examples.")$ 

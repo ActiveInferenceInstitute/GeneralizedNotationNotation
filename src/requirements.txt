@@ -23,6 +23,10 @@ Markdown>=3.4.3
 
 # HTTP and Communication
 httpx>=0.27.0  # For SymPy MCP client HTTP communication
+aiohttp>=3.9.0  # For async HTTP requests and LLM processing
+
+# Configuration and Serialization
+toml>=0.10.2  # For TOML configuration files (render step)
 
 # Visualization and Diagramming
 altair>=5.0.1

@@ -1,0 +1,308 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/schemas/gnn-v1.json",
+  "title": "Generalized Notation Notation (GNN) Schema",
+  "description": "JSON Schema for validating GNN (Generalized Notation Notation) model files in Active Inference format",
+  "version": "1.0",
+  "type": "object",
+  "required": [
+    "gnn_section",
+    "gnn_version_and_flags", 
+    "model_name",
+    "model_annotation",
+    "state_space_block",
+    "connections",
+    "initial_parameterization",
+    "time",
+    "footer"
+  ],
+  "properties": {
+    "gnn_section": {
+      "type": "string",
+      "description": "Unique identifier for the GNN model section",
+      "pattern": "^[A-Za-z][A-Za-z0-9_]*$"
+    },
+    "gnn_version_and_flags": {
+      "type": "object",
+      "description": "GNN specification version and processing flags",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "GNN specification version",
+          "pattern": "^GNN v[0-9]+\\.[0-9]+$|^GNN v[0-9]+$"
+        },
+        "flags": {
+          "type": "array",
+          "description": "Optional processing flags",
+          "items": {
+            "type": "string",
+            "enum": ["strict_validation", "experimental_features", "extended_syntax"]
+          }
+        }
+      }
+    },
+    "model_name": {
+      "type": "string",
+      "description": "Descriptive identifier for the model",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "model_annotation": {
+      "type": "string",
+      "description": "Free-text explanation of model purpose and features",
+      "minLength": 1
+    },
+    "state_space_block": {
+      "type": "object", 
+      "description": "Variable definitions with dimensions and types",
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "type": "object",
+          "description": "Variable definition",
+          "required": ["dimensions", "type"],
+          "properties": {
+            "dimensions": {
+              "type": "array",
+              "description": "Variable dimensions",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "minItems": 1
+            },
+            "type": {
+              "type": "string",
+              "description": "Variable data type",
+              "enum": ["float", "int", "bool", "string", "categorical"]
+            },
+            "description": {
+              "type": "string",
+              "description": "Optional variable description"
+            },
+            "constraints": {
+              "type": "object",
+              "description": "Optional variable constraints",
+              "properties": {
+                "min": {"type": "number"},
+                "max": {"type": "number"},
+                "values": {"type": "array"}
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "connections": {
+      "type": "array",
+      "description": "Directed and undirected edges showing dependencies",
+      "items": {
+        "type": "object",
+        "required": ["source", "target", "type"],
+        "properties": {
+          "source": {
+            "oneOf": [
+              {"type": "string"},
+              {"type": "array", "items": {"type": "string"}}
+            ],
+            "description": "Source variable(s) in connection"
+          },
+          "target": {
+            "oneOf": [
+              {"type": "string"},
+              {"type": "array", "items": {"type": "string"}}
+            ],
+            "description": "Target variable(s) in connection"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["directed", "undirected", "conditional"],
+            "description": "Type of connection"
+          },
+          "symbol": {
+            "type": "string",
+            "enum": [">", "-", "->", "|"],
+            "description": "GNN symbol representation"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional connection description"
+          }
+        }
+      }
+    },
+    "initial_parameterization": {
+      "type": "object",
+      "description": "Starting values, matrices, and priors",
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "oneOf": [
+            {"type": "number"},
+            {"type": "string"},
+            {"type": "boolean"},
+            {"type": "array"},
+            {"type": "object"}
+          ],
+          "description": "Parameter initial value"
+        }
+      }
+    },
+    "equations": {
+      "type": "array",
+      "description": "LaTeX-rendered mathematical relationships",
+      "items": {
+        "type": "object",
+        "required": ["latex"],
+        "properties": {
+          "latex": {
+            "type": "string",
+            "description": "LaTeX equation string"
+          },
+          "description": {
+            "type": "string", 
+            "description": "Human-readable equation description"
+          },
+          "variables": {
+            "type": "array",
+            "description": "Variables involved in equation",
+            "items": {"type": "string"}
+          }
+        }
+      }
+    },
+    "time": {
+      "type": "object",
+      "description": "Temporal settings and configuration",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Static", "Dynamic"],
+          "description": "Static or dynamic model"
+        },
+        "discrete_time": {
+          "type": "string",
+          "description": "Temporal variable for discrete time models",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+        },
+        "continuous_time": {
+          "type": "string", 
+          "description": "Temporal variable for continuous time models",
+          "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+        },
+        "model_time_horizon": {
+          "oneOf": [
+            {"type": "string", "enum": ["Unbounded", "Infinite"]},
+            {"type": "integer", "minimum": 1},
+            {"type": "string", "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"}
+          ],
+          "description": "Time horizon specification"
+        },
+        "control_frequency": {
+          "type": "string",
+          "description": "Control loop frequency (e.g., '100Hz')",
+          "pattern": "^[0-9]+(\\.[0-9]+)?(Hz|kHz|MHz)$"
+        },
+        "perception_frequency": {
+          "type": "string",
+          "description": "Perception update frequency",
+          "pattern": "^[0-9]+(\\.[0-9]+)?(Hz|kHz|MHz)$"
+        }
+      }
+    },
+    "act_inf_ontology_annotation": {
+      "type": "object",
+      "description": "Mapping to Active Inference Ontology terms",
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "type": "string",
+          "description": "Active Inference Ontology term",
+          "pattern": "^[A-Za-z][A-Za-z0-9_]*$"
+        }
+      }
+    },
+    "model_parameters": {
+      "type": "object",
+      "description": "Model-specific parameters and metadata",
+      "properties": {
+        "num_hidden_states_factors": {
+          "type": "array",
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "num_obs_modalities": {
+          "type": "array", 
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "num_control_factors": {
+          "type": "array",
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "backend": {
+          "type": "string",
+          "enum": ["PyMDP", "RxInfer.jl", "JAX", "TensorFlow", "PyTorch", "Custom"]
+        },
+        "inference_method": {
+          "type": "string",
+          "enum": ["variational_message_passing", "belief_propagation", "monte_carlo", "laplace_approximation"]
+        }
+      }
+    },
+    "footer": {
+      "type": "string",
+      "description": "Closes the file and provides final metadata",
+      "minLength": 1
+    },
+    "signature": {
+      "type": "object",
+      "description": "Provenance and verification information",
+      "properties": {
+        "creator": {"type": "string"},
+        "date": {"type": "string", "format": "date"},
+        "version": {"type": "string"},
+        "status": {"type": "string"},
+        "compliance": {"type": "array", "items": {"type": "string"}},
+        "checksum": {"type": "string"},
+        "digital_signature": {"type": "string"}
+      }
+    }
+  },
+  "definitions": {
+    "variable_reference": {
+      "type": "string",
+      "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+      "description": "Reference to a variable defined in StateSpaceBlock"
+    },
+    "matrix_notation": {
+      "type": "string",
+      "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*\\[[0-9]+(,[0-9]+)*\\]$",
+      "description": "Matrix notation like A[3,3] for dimensions"
+    },
+    "active_inference_matrices": {
+      "type": "object",
+      "description": "Standard Active Inference matrix types",
+      "properties": {
+        "A_matrices": {
+          "type": "array",
+          "description": "Likelihood/observation matrices P(o|s)",
+          "items": {"type": "array"}
+        },
+        "B_matrices": {
+          "type": "array", 
+          "description": "Transition dynamics P(s'|s,u)",
+          "items": {"type": "array"}
+        },
+        "C_vectors": {
+          "type": "array",
+          "description": "Preferences/goals (log preferences over observations)",
+          "items": {"type": "array"}
+        },
+        "D_vectors": {
+          "type": "array",
+          "description": "Priors over initial states",
+          "items": {"type": "array"}
+        }
+      }
+    }
+  }
+} 
