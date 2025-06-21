@@ -8,11 +8,18 @@ OpenAI, Anthropic, Google, Meta, and other providers.
 """
 
 import os
-import aiohttp
 import asyncio
 import json
 from typing import List, Dict, Any, Optional, AsyncGenerator
 import logging
+
+try:
+    import aiohttp
+    AIOHTTP_AVAILABLE = True
+except ImportError as e:
+    AIOHTTP_AVAILABLE = False
+    AIOHTTP_IMPORT_ERROR = str(e)
+    # Let aiohttp remain undefined - we'll check AIOHTTP_AVAILABLE before using it
 
 from .base_provider import (
     BaseLLMProvider, 
@@ -94,6 +101,11 @@ class OpenRouterProvider(BaseLLMProvider):
         Returns:
             True if initialization successful, False otherwise
         """
+        if not AIOHTTP_AVAILABLE:
+            logger.error(f"Cannot initialize OpenRouter provider: aiohttp is not available ({AIOHTTP_IMPORT_ERROR})")
+            logger.error("Install aiohttp with: pip install aiohttp>=3.9.0")
+            return False
+            
         if not self.api_key:
             logger.error("OpenRouter API key not provided")
             return False
@@ -106,6 +118,9 @@ class OpenRouterProvider(BaseLLMProvider):
                 "HTTP-Referer": self.site_url,
                 "X-Title": self.site_name
             }
+            
+            if not AIOHTTP_AVAILABLE:
+                raise ImportError(f"aiohttp is required but not available: {AIOHTTP_IMPORT_ERROR}")
             
             connector = aiohttp.TCPConnector(limit=100, limit_per_host=30)
             timeout = aiohttp.ClientTimeout(total=300)  # 5 minute timeout
@@ -238,14 +253,12 @@ class OpenRouterProvider(BaseLLMProvider):
                     }
                 )
                 
-        except aiohttp.ClientError as e:
-            logger.error(f"OpenRouter API call failed: {e}")
-            raise
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse OpenRouter response: {e}")
-            raise
         except Exception as e:
-            logger.error(f"Unexpected error in OpenRouter API call: {e}")
+            # Handle both aiohttp.ClientError and other exceptions  
+            if AIOHTTP_AVAILABLE and hasattr(e, '__module__') and 'aiohttp' in e.__module__:
+                logger.error(f"OpenRouter API call failed: {e}")
+            else:
+                logger.error(f"OpenRouter API call failed: {e}")
             raise
     
     async def generate_stream(

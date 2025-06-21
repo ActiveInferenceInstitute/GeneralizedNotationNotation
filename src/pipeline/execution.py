@@ -170,6 +170,7 @@ def build_command_args(script_name: str, script_path: Path, args, python_executa
 def validate_step_dependencies(step_name: str) -> Tuple[bool, List[str]]:
     """
     Validate that a step's dependencies are available before execution.
+    Uses subprocess validation to ensure we're checking the correct Python environment.
     
     Returns:
         Tuple of (is_valid, missing_dependencies)
@@ -188,11 +189,44 @@ def validate_step_dependencies(step_name: str) -> Tuple[bool, List[str]]:
     
     required_deps = step_dependencies.get(step_name, [])
     
+    # Get the Python executable that will be used for pipeline execution
+    import sys
+    from pathlib import Path
+    
+    # Try to find virtual environment Python (same logic as main.py)
+    current_dir = Path(__file__).resolve().parent.parent
+    venv_candidates = [
+        current_dir / ".venv" / "bin" / "python",
+        current_dir.parent / "venv" / "bin" / "python", 
+        current_dir.parent / ".venv" / "bin" / "python",
+    ]
+    
+    python_executable = sys.executable  # Default fallback
+    for venv_path in venv_candidates:
+        if venv_path.exists():
+            python_executable = str(venv_path)
+            break
+    
+    # Use subprocess to check dependencies in the target environment
+    import subprocess
     for dep in required_deps:
         try:
-            __import__(dep)
-        except ImportError as e:
-            missing_deps.append(f"{dep}: {e}")
+            result = subprocess.run(
+                [python_executable, "-c", f"import {dep}"],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=10
+            )
+            
+            if result.returncode != 0:
+                error_msg = result.stderr.strip() if result.stderr else "Import failed"
+                missing_deps.append(f"{dep}: {error_msg}")
+                
+        except subprocess.TimeoutExpired:
+            missing_deps.append(f"{dep}: Import check timed out")
+        except Exception as e:
+            missing_deps.append(f"{dep}: Validation error - {e}")
     
     return len(missing_deps) == 0, missing_deps
 

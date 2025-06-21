@@ -68,6 +68,19 @@ class DependencyValidator:
                     module_name="re",
                     description="Regular expressions (built-in)"
                 ),
+                # HTTP and async communication
+                DependencySpec(
+                    name="aiohttp",
+                    version_min="3.9.0",
+                    install_command="pip install aiohttp>=3.9.0",
+                    description="Async HTTP client/server for LLM providers"
+                ),
+                DependencySpec(
+                    name="httpx",
+                    version_min="0.27.0", 
+                    install_command="pip install httpx>=0.27.0",
+                    description="HTTP client library"
+                ),
             ],
             "gnn_processing": [
                 DependencySpec(
