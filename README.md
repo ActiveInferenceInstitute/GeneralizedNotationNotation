@@ -2,9 +2,13 @@
 
 <div align="center">
 
-Intial publication:
-Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Journal. https://doi.org/10.5281/zenodo.7803328
-https://zenodo.org/records/7803328 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
+[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-14-blue.svg)](#%EF%B8%8F-processing-pipeline)
+[![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-4-green.svg)](#-key-features)
+[![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
 **A standardized text-based language for Active Inference generative models**
 
