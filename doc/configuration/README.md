@@ -78,7 +78,7 @@ setup:
   # Dependencies
   install_deps: true
   upgrade_deps: false
-  requirements_file: "src/requirements.txt"
+  requirements_file: "requirements.txt"
   extra_packages: []
   
   # External tools

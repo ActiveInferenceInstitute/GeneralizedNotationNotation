@@ -26,10 +26,10 @@ VENV_DIR = ".venv"  # Name of the virtual environment directory
 REQUIREMENTS_FILE = "requirements.txt"
 REQUIREMENTS_DEV_FILE = "requirements-dev.txt"
 
-# PROJECT_ROOT should be the 'src/' directory.
+# PROJECT_ROOT should be the repository root directory.
 # Since this script is in 'src/setup/', Path(__file__).parent is 'src/setup'.
-# So, Path(__file__).parent.parent is 'src/'.
-PROJECT_ROOT = Path(__file__).parent.parent.resolve()
+# So, Path(__file__).parent.parent.parent is the repo root.
+PROJECT_ROOT = Path(__file__).parent.parent.parent.resolve()
 
 VENV_PATH = PROJECT_ROOT / VENV_DIR
 REQUIREMENTS_PATH = PROJECT_ROOT / REQUIREMENTS_FILE

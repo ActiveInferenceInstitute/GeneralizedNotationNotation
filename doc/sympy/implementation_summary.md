@@ -23,7 +23,7 @@ The GNN (Generalized Notation Notation) project now includes complete integratio
 - ✅ `src/mcp/sympy_mcp_client.py` (502 lines) - SymPy MCP HTTP client with async support
 - ✅ `src/mcp/sympy_mcp.py` (474 lines) - MCP tool registration and integration layer
 - ✅ `src/mcp/mcp.py` - Enhanced with SymPy tool discovery
-- ✅ `src/requirements.txt` - Added httpx dependency
+- ✅ `requirements.txt` - Added httpx dependency
 
 ## 🛠️ Technical Implementation Details
 

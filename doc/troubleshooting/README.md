@@ -266,7 +266,7 @@ find . -name "*.py" -exec chmod +x {} \;
 
 # Clean install
 pip uninstall -y $(pip list --format=freeze | cut -d= -f1)
-pip install -r src/requirements.txt
+pip install -r requirements.txt
 
 # Minimal test
 python src/main.py --target-dir src/gnn/examples/basic/ --only-steps 1,4

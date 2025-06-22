@@ -25,7 +25,7 @@ git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotatio
 cd GeneralizedNotationNotation
 
 # Install dependencies
-pip install -r src/requirements.txt
+pip install -r requirements.txt
 
 # Verify installation
 python src/main.py --help
