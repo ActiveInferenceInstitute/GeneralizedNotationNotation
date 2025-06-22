@@ -1,296 +1,710 @@
 # GeneralizedNotationNotation (GNN)
 
-Generalized Notation Notation (GNN) is a text-based language designed to standardize the representation and communication of Active Inference generative models. It aims to enhance clarity, reproducibility, and interoperability in the field of Active Inference and cognitive modeling. 
+<div align="center">
 
 Intial publication:
 Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Journal. https://doi.org/10.5281/zenodo.7803328
 https://zenodo.org/records/7803328 
 
-## Overview
+**A standardized text-based language for Active Inference generative models**
+
+[🚀 Quick Start](#-quick-start) •
+[📖 Documentation](#-documentation) •
+[🎯 Examples](#-examples) •
+[🛠️ Tools](#%EF%B8%8F-tools-and-utilities) •
+[🤝 Contributing](#-contributing)
+
+</div>
+
+---
+
+## 📋 Table of Contents
+
+- [🌟 Overview](#-overview)
+- [🎯 Motivation and Goals](#-motivation-and-goals)
+- [✨ Key Features](#-key-features)
+- [🏗️ Project Architecture](#%EF%B8%8F-project-architecture)
+- [⚙️ Processing Pipeline](#%EF%B8%8F-processing-pipeline)
+- [🛠️ Tools and Utilities](#%EF%B8%8F-tools-and-utilities)
+- [🚀 Quick Start](#-quick-start)
+- [📖 Documentation](#-documentation)
+- [🎯 Examples](#-examples)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+
+---
+
+## 🌟 Overview
+
+**Generalized Notation Notation (GNN)** is a text-based language designed to standardize the representation and communication of [Active Inference](https://activeinference.org/) generative models. It aims to enhance clarity, reproducibility, and interoperability in the field of Active Inference and cognitive modeling.
+
+### 📚 Initial Publication
+
+**Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
+📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
+📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
+
+### 🎯 Core Design Principles
 
 GNN provides a structured and standardized way to describe complex cognitive models. It is designed to be:
 
-- **Human-readable**: Easy to understand and use for researchers from diverse backgrounds.
-- **Machine-parsable**: Can be processed by software tools for analysis, visualization, and code generation.
-- **Interoperable**: Facilitates the exchange and reuse of models across different platforms and research groups.
-- **Reproducible**: Enables precise replication of model specifications.
+- **🧑‍💻 Human-readable**: Easy to understand and use for researchers from diverse backgrounds
+- **🤖 Machine-parsable**: Can be processed by software tools for analysis, visualization, and code generation
+- **🔄 Interoperable**: Facilitates the exchange and reuse of models across different platforms and research groups
+- **🔬 Reproducible**: Enables precise replication of model specifications
 
 GNN addresses the challenge of communicating Active Inference models, which are often described using a mix of natural language, mathematical equations, diagrams, and code. By offering a unified notation, GNN aims to streamline collaboration, improve model understanding, and accelerate research.
 
-## Motivation and Goals
+---
+
+## 🎯 Motivation and Goals
+
+### 🚫 Current Challenges
 
 The primary motivation behind GNN is to overcome the limitations arising from the lack of a standardized notation for Active Inference models. This fragmentation can lead to difficulties in:
 
-- **Effective Communication**: Making complex models hard to explain and understand.
-- **Reproducibility**: Hindering the ability to replicate research findings.
-- **Consistent Implementation**: Leading to variations when translating models into code.
-- **Systematic Comparison**: Making it challenging to compare different models.
+- **💬 Effective Communication**: Making complex models hard to explain and understand
+- **🔄 Reproducibility**: Hindering the ability to replicate research findings  
+- **⚙️ Consistent Implementation**: Leading to variations when translating models into code
+- **📊 Systematic Comparison**: Making it challenging to compare different models
+
+### 🎯 Our Goals
 
 The goals of GNN are to:
 
-- Facilitate clear communication and understanding of Active Inference models.
-- Promote collaboration among researchers.
-- Enable the development of tools for model validation, visualization, and automated code generation.
-- Support the creation of a shared repository of Active Inference models.
-- Bridge the gap between theoretical concepts and practical implementations.
+- ✅ Facilitate clear communication and understanding of Active Inference models
+- ✅ Promote collaboration among researchers
+- ✅ Enable the development of tools for model validation, visualization, and automated code generation
+- ✅ Support the creation of a shared repository of Active Inference models
+- ✅ Bridge the gap between theoretical concepts and practical implementations
 
-## Key Features
+---
 
-### The Triple Play Approach
+## ✨ Key Features
 
-GNN supports three complementary modalities for model representation, known as the "Triple Play":
+### 🎭 The Triple Play Approach
 
-1.  **Text-Based Models**: GNN files are plain text and can be rendered into mathematical notation, pseudocode, or natural language descriptions. This forms the core representation.
-2.  **Graphical Models**: The structure defined in GNN (variables and their connections) can be visualized as graphical models (e.g., factor graphs), clarifying dependencies and model architecture.
-3.  **Executable Cognitive Models**: GNN specifications can serve as a high-level blueprint or pseudocode for implementing executable simulations in various programming environments. This ensures consistency and aids in the translation from theory to practice.
+GNN supports three complementary modalities for model representation, known as the **"Triple Play"**:
 
-### Structured File Format
+```mermaid
+graph LR
+    subgraph "🎭 Triple Play Approach"
+        A["📝 Text-Based Models<br/>• GNN Markdown files<br/>• Human-readable syntax<br/>• Mathematical notation<br/>• Natural language descriptions"]
+        
+        B["📊 Graphical Models<br/>• Factor graphs<br/>• Network visualizations<br/>• Dependency diagrams<br/>• Interactive visualizations"]
+        
+        C["⚙️ Executable Models<br/>• PyMDP simulations<br/>• RxInfer.jl implementations<br/>• JAX computations<br/>• DisCoPy diagrams"]
+    end
+    
+    A -->|Parse & Extract| B
+    A -->|Generate Code| C
+    B -->|Validate Structure| C
+    C -->|Simulate & Test| A
+    B -->|Visual Feedback| A
+    C -->|Results Analysis| B
+    
+    style A fill:#e8f5e8,stroke:#4caf50
+    style B fill:#e3f2fd,stroke:#2196f3
+    style C fill:#fff3e0,stroke:#ff9800
+```
+
+1. **📝 Text-Based Models**: GNN files are plain text and can be rendered into mathematical notation, pseudocode, or natural language descriptions. This forms the core representation.
+
+2. **📊 Graphical Models**: The structure defined in GNN (variables and their connections) can be visualized as graphical models (e.g., factor graphs), clarifying dependencies and model architecture.
+
+3. **⚙️ Executable Cognitive Models**: GNN specifications can serve as a high-level blueprint or pseudocode for implementing executable simulations in various programming environments. This ensures consistency and aids in the translation from theory to practice.
+
+### 📋 Structured File Format
 
 GNN defines a specific file structure, typically using Markdown, to organize model components. This includes sections for:
-- Model metadata (name, version, annotations)
-- State space (variable definitions)
-- Connections (relationships between variables)
-- Initial parameterization
-- Equations
-- Time settings (for dynamic models)
-- Mapping to Active Inference Ontology terms
 
-## Project Structure
+- 🏷️ Model metadata (name, version, annotations)
+- 🌐 State space (variable definitions)  
+- 🔗 Connections (relationships between variables)
+- ⚙️ Initial parameterization
+- 📐 Equations
+- ⏰ Time settings (for dynamic models)
+- 🧠 Mapping to Active Inference Ontology terms
 
-This project is organized into several key directories. The primary ones are `src/` for all source code and `doc/` for all documentation.
+---
 
-### `src/` Directory Structure
+## 🏗️ Project Architecture
+
+```mermaid
+graph TB
+    subgraph "🏗️ GNN Project Architecture"
+        subgraph "📁 Source Code (src/)"
+            A[⚙️ Pipeline Scripts<br/>1_gnn.py → 14_site.py]
+            B[🧠 Core Modules<br/>gnn/, render/, llm/]
+            C[🔧 Utilities<br/>utils/, pipeline/]
+            D[🧪 Testing<br/>tests/]
+        end
+        
+        subgraph "📚 Documentation (doc/)"
+            E[📖 Core Docs<br/>gnn/, syntax, examples]
+            F[🎯 Specialized<br/>pymdp/, rxinfer/, mcp/]
+            G[🧩 Applications<br/>cognitive_phenomena/]
+        end
+        
+        subgraph "🎯 Outputs (output/)"
+            H[📊 Reports<br/>Type checking, analysis]
+            I[🎨 Visualizations<br/>Graphs, matrices]
+            J[💻 Generated Code<br/>PyMDP, RxInfer]
+            K[🌐 Static Site<br/>HTML summaries]
+        end
+    end
+    
+    A --> H
+    B --> I
+    B --> J
+    E --> A
+    F --> B
+    G --> B
+    
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
+    style E fill:#e8f5e8
+    style H fill:#fff3e0
+```
+
+### 📁 Directory Structure
+
+<details>
+<summary><strong>📂 src/ Directory Structure</strong></summary>
 
 The `src/` directory contains all the Python scripts and modules that constitute the GNN processing pipeline and related tools.
 
 ```
 src/
-├── .pytest_cache/
-├── .venv/
-├── export/
-│   └── (contents related to exporting GNN models)
-├── gnn/
-│   └── examples/
-│       └── archive/
-│           └── (archived GNN examples)
-├── gnn_type_checker/
-│   └── (contents for the GNN type checker)
-├── mcp/
-│   └── (contents for Model Context Protocol)
-├── ontology/
-│   └── (contents related to ontology processing)
-├── render/
-│   └── (contents related to rendering GNN models)
-├── setup/
-│   └── (contents for project setup and configuration)
-├── tests/
-│   └── (test scripts)
-├── visualization/
-│   └── bin/
-│       └── (binaries or scripts for visualization)
-├── __pycache__/
-├── 1_gnn.py
-├── 2_setup.py
-├── 3_tests.py
-├── 4_gnn_type_checker.py
-├── 5_export.py
-├── 6_visualization.py
-├── 7_mcp.py
-├── 8_ontology.py
-├── 9_render.py
-├── main.py
-├── README.md
-└── requirements.txt
+├── 📜 Pipeline Scripts (1-14)
+│   ├── 1_gnn.py                    # GNN Discovery & Parsing
+│   ├── 2_setup.py                  # Setup & Dependencies ⚠️ Critical
+│   ├── 3_tests.py                  # Test Suite Execution
+│   ├── 4_gnn_type_checker.py      # Type Checking & Validation
+│   ├── 5_export.py                # Multi-Format Export
+│   ├── 6_visualization.py         # Visualization Generation
+│   ├── 7_mcp.py                   # Model Context Protocol
+│   ├── 8_ontology.py              # Ontology Processing
+│   ├── 9_render.py                # Code Rendering
+│   ├── 10_execute.py              # Simulation Execution
+│   ├── 11_llm.py                  # LLM Analysis
+│   ├── 12_discopy.py              # DisCoPy Translation
+│   ├── 13_discopy_jax_eval.py     # DisCoPy JAX Evaluation
+│   └── 14_site.py                 # Static Site Generation
+├── 🧠 Core Modules
+│   ├── gnn/                       # GNN processing core
+│   ├── render/                    # Code generation
+│   ├── llm/                       # AI analysis
+│   └── discopy_translator_module/ # Category theory
+├── 🔧 Infrastructure
+│   ├── utils/                     # Shared utilities
+│   ├── pipeline/                  # Pipeline orchestration
+│   └── tests/                     # Test suite
+└── 📋 Configuration
+    ├── main.py                    # Main pipeline orchestrator
+    └── requirements.txt           # Dependencies
 ```
 
-### `doc/` Directory Structure
+</details>
+
+<details>
+<summary><strong>📂 doc/ Directory Structure</strong></summary>
 
 The `doc/` directory contains all supplementary documentation, including conceptual explanations, syntax guides, and examples.
 
 ```
 doc/
-├── cerebrum/
-│   └── (contents related to the Cerebrum project integration if any)
-├── about_gnn.md
-├── gnn_examples_doc.md
-├── gnn_file_structure_doc.md
-├── gnn_implementation.md
-├── gnn_llm_neurosymbolic_active_inference.md
-├── gnn_overview.md
-├── gnn_paper.md
-├── gnn_syntax.md
-└── gnn_tools.md
+├── 📖 Core Documentation
+│   ├── gnn/                       # GNN specifications
+│   ├── quickstart.md             # Getting started guide
+│   ├── SETUP.md                  # Installation instructions
+│   └── README.md                 # Documentation overview
+├── 🎯 Domain Applications
+│   ├── cognitive_phenomena/       # Cognitive modeling examples
+│   ├── pymdp/                    # PyMDP integration
+│   ├── rxinfer/                  # RxInfer.jl integration
+│   └── templates/                # Model templates
+├── 🛠️ Technical Integration
+│   ├── mcp/                      # Model Context Protocol
+│   ├── llm/                      # LLM integration
+│   ├── discopy/                  # DisCoPy categorical diagrams
+│   └── sympy/                    # SymPy mathematical processing
+└── 📚 Resources
+    ├── troubleshooting/          # Common issues & solutions
+    ├── testing/                  # Testing documentation
+    └── security/                 # Security guidelines
 ```
 
-## Processing Pipeline Orchestration
+</details>
 
-The primary way to process GNN files and run various associated tasks (like type checking, visualization, etc.) is through the main pipeline script `src/main.py`. This script discovers and executes a series of numbered Python scripts located in the `src/` directory, each corresponding to a specific stage of the GNN processing workflow.
+---
 
-**Pipeline Stages (Dynamically Discovered and Ordered):**
+## ⚙️ Processing Pipeline
 
-The `main.py` script will automatically find and run scripts in `src/` that follow the pattern `[number]_*.py`. Based on the current project structure, these include:
+The GNN processing pipeline consists of **14 dynamically discovered stages**, each handling a specific aspect of model processing from parsing to final site generation.
 
-*   `1_gnn.py`: Core GNN file processing (details specific to `gnn/` folder tasks).
-*   `2_setup.py`: Project setup and configuration tasks (details specific to `setup/` folder tasks). This is a critical step; if it fails, the pipeline halts.
-*   `3_tests.py`: Execution of tests (details specific to `tests/` folder tasks).
-*   `4_gnn_type_checker.py`: Performs type checking and optionally, resource estimation for GNN files (details specific to `gnn_type_checker/` folder tasks).
-*   `5_export.py`: Handles exporting GNN models or related data (details specific to `export/` folder tasks).
-*   `6_visualization.py`: Generates visualizations from GNN files (details specific to `visualization/` folder tasks).
-*   `7_mcp.py`: Meta-Circular Processing tasks (details specific to `mcp/` folder tasks).
-*   `8_ontology.py`: Ontology-related processing (details specific to `ontology/` folder tasks).
-*   `9_render.py`: Handles rendering GNN files into different formats (details specific to `render/` folder tasks).
+```mermaid
+flowchart TD
+    A["🚀 Start Pipeline"] --> B["1️⃣ GNN Discovery & Parsing<br/>src/gnn/"]
+    B --> C["2️⃣ Setup & Dependencies<br/>src/setup/<br/>⚠️ Critical Step"]
+    C --> D["3️⃣ Test Suite Execution<br/>src/tests/"]
+    D --> E["4️⃣ Type Checking & Validation<br/>src/gnn_type_checker/"]
+    E --> F["5️⃣ Multi-Format Export<br/>src/export/"]
+    F --> G["6️⃣ Visualization Generation<br/>src/visualization/"]
+    G --> H["7️⃣ Model Context Protocol<br/>src/mcp/"]
+    H --> I["8️⃣ Ontology Processing<br/>src/ontology/"]
+    I --> J["9️⃣ Code Rendering<br/>src/render/"]
+    J --> K["🔟 Simulation Execution<br/>src/execute/"]
+    K --> L["1️⃣1️⃣ LLM Analysis<br/>src/llm/"]
+    L --> M["1️⃣2️⃣ DisCoPy Translation<br/>src/discopy_translator_module/"]
+    M --> N["1️⃣3️⃣ DisCoPy JAX Evaluation<br/>src/discopy_translator_module/"]
+    N --> O["1️⃣4️⃣ Static Site Generation<br/>src/site/"]
+    O --> P["✅ Pipeline Complete<br/>📊 Summary Generated"]
+    
+    C -->|❌ Failure| Q["🛑 Pipeline Halted<br/>Setup Required"]
+    
+    style A fill:#e1f5fe
+    style C fill:#fff3e0,stroke:#ff9800,stroke-width:3px
+    style Q fill:#ffebee,stroke:#f44336
+    style P fill:#e8f5e8,stroke:#4caf50
+```
 
-**Running the Pipeline:**
+### 🎯 GNN Processing Workflow
 
-To execute the pipeline, navigate to the project's root directory and run:
+```mermaid
+flowchart TD
+    subgraph "🧠 GNN Processing Workflow"
+        A["📄 GNN File Input<br/>.md format"] --> B["🔍 Discovery & Parsing<br/>Extract sections"]
+        B --> C["✅ Type Checking<br/>Validate syntax & structure"]
+        C --> D["📊 Multi-Format Export<br/>JSON, XML, GraphML, Pickle"]
+        
+        C --> E["🎨 Visualization<br/>Generate graphs & matrices"]
+        C --> F["🔄 Code Generation<br/>PyMDP & RxInfer templates"]
+        
+        F --> G["▶️ Simulation Execution<br/>Run generated code"]
+        E --> H["🧠 LLM Analysis<br/>AI-powered insights"]
+        
+        D --> I["📚 Ontology Mapping<br/>Active Inference terms"]
+        G --> J["📈 Results Analysis<br/>Performance metrics"]
+        H --> K["🌐 Site Generation<br/>Static HTML reports"]
+        
+        I --> K
+        J --> K
+        
+        K --> L["✨ Complete Analysis<br/>Multi-modal outputs"]
+    end
+    
+    style A fill:#e1f5fe,stroke:#0277bd
+    style C fill:#fff3e0,stroke:#f57c00
+    style L fill:#e8f5e8,stroke:#388e3c
+```
+
+### 🚀 Running the Pipeline
+
+Navigate to the project's root directory and execute:
 
 ```bash
 python src/main.py [options]
 ```
 
-**Key `main.py` Options:**
+#### 🛠️ Key Pipeline Options
 
-*   `--target-dir DIR`: Specifies the target directory for GNN files (default: `gnn/examples`). Note that individual scripts might have their own specific target folders (e.g., `src/mcp`).
-*   `--output-dir DIR`: Sets the directory where all outputs will be saved (default: `output/`).
-*   `--recursive`: Enables recursive processing of directories, passed to relevant pipeline steps.
-*   `--skip-steps LIST`: A comma-separated list of step numbers or script names to exclude from the run (e.g., "1,7" or "1_gnn,7_mcp").
-*   `--only-steps LIST`: A comma-separated list of step numbers or script names to exclusively run (e.g., "4,6" or "4_gnn_type_checker,6_visualization").
-*   `--verbose`: Enables detailed logging output for the pipeline and its steps.
-*   `--strict`: Enables strict type checking mode (specifically for the `4_gnn_type_checker` step).
-*   `--estimate-resources`: Activates computational resource estimation (specifically for the `4_gnn_type_checker` step).
-*   `--ontology-terms-file FILE`: Specifies the path to an ontology terms file (e.g., `ontology/terms.json`), used by the `8_ontology.py` step.
-*   `--type-checker-report-name NAME`: Specifies the filename for the main Markdown report generated by the type checker (step 4). Defaults to `type_check_report.md`.
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--target-dir DIR` | Target directory for GNN files | `src/gnn/examples` |
+| `--output-dir DIR` | Directory to save outputs | `output/` |
+| `--recursive` | Recursively process directories | `True` |
+| `--skip-steps LIST` | Skip specific steps (e.g., "1,7") | None |
+| `--only-steps LIST` | Run only specific steps | None |
+| `--verbose` | Enable detailed logging | `False` |
+| `--strict` | Enable strict type checking | `False` |
+| `--estimate-resources` | Estimate computational resources | `True` |
 
-Refer to the `src/main.py --help` command or the script's docstring for a full list of options and their descriptions.
-More details on the source code can be found in the [`src/` Directory Structure](#src-directory-structure) section.
-
-## Tools and Utilities
-
-The GNN ecosystem includes several tools to aid in model development, validation, and understanding. These tools are now primarily invoked through the `src/main.py` pipeline script.
-
-### Type Checker and Resource Estimator
-
-The GNN Type Checker (part of the `4_gnn_type_checker.py` step in the main pipeline) helps validate GNN files and can also estimate computational resources.
-
-**Using via `main.py`:**
-
-To run the type checker and resource estimator using the main pipeline, navigate to the project's root directory.
-
-*   **To run only the type checker:**
-    ```bash
-    python src/main.py --only-steps 4_gnn_type_checker --target-dir path/to/your/gnn_files
-    ```
-    (Or use step number: `python src/main.py --only-steps 4 ...`)
-
-*   **To include resource estimation with the type checker:**
-    ```bash
-    python src/main.py --only-steps 4_gnn_type_checker --estimate-resources --target-dir path/to/your/gnn_files
-    ```
-
-*   **To run the full pipeline**
-    ```bash
-    python src/main.py --target-dir path/to/your/gnn_files
-    ```
-
-**Options (passed through `main.py`):**
-
-*   `--target-dir <input_path>`: (Required for the step, can be set globally for `main.py`) Path to the GNN file (`.md`) or a directory containing GNN files.
-*   `--output-dir <dir_path>`: (Set globally for `main.py`) Specifies the base directory where all output files will be saved. The type checker step will typically save its specific outputs in a subdirectory like `output/gnn_type_check/`.
-*   `--report-file <file_name_or_path>`: (Handled internally by the `4_gnn_type_checker.py` step. The main report is typically `type_check_report.md` within the step's output directory.)
-*   `--recursive`: (Set globally for `main.py`) Enables recursive processing.
-*   `--strict`: (Set globally for `main.py`) Enables strict type checking mode.
-*   `--estimate-resources`: (Set globally for `main.py`) Activates the computational resource estimator.
-
-**Examples (run from the project root directory):**
-
-1.  **Check a single GNN file using the pipeline and save reports to the default output directory (`output/`):**
-    ```bash
-    python src/main.py --only-steps 4 --target-dir doc/gnn_examples_doc.md 
-    ```
-    *(Note: Adjust path to an actual GNN example file. The output for this step will be within the global output directory, e.g., `output/gnn_type_check/`)*
-
-2.  **Check all GNN files in a directory recursively via the pipeline and save reports to a custom global output directory:**
-    ```bash
-    python src/main.py --only-steps 4 --target-dir src/gnn/examples --recursive -o custom_output/my_check_results
-    ```
-
-3.  **Check files, estimate resources via the pipeline, and save all outputs to a specific global directory:**
-    ```bash
-    python src/main.py --only-steps 4 --target-dir src/gnn/examples --recursive --estimate-resources -o custom_output/full_analysis
-    ```
-
-**Output Structure (when `4_gnn_type_checker` step runs):**
-
-When the `4_gnn_type_checker.py` step is executed via `main.py` with `--output-dir <path>`, it will create its specific output structure within a subdirectory of `<path>` (e.g., `<path>/gnn_type_check/`). This typically includes:
-*   `type_check_report.md`: Main Markdown report from the type checker.
-*   `html_vis/type_checker_visualization_report.html`: HTML report with visualizations for type checking.
-*   `resources/type_check_data.json`: JSON data generated by the type checker.
-
-Features of the type checker include:
-- Validation of required sections and structure
-- Type checking of variables and dimensions
-- Verification of connections and references
-- Detailed error reports with suggestions for fixes
-
-### Visualization
-
-GNN files can be visualized to create graphical representations of models. This functionality is handled by the `6_visualization.py` step in the main pipeline.
-
-**Using via `main.py`:**
+<details>
+<summary><strong>📋 View All Pipeline Options</strong></summary>
 
 ```bash
-# From the project root directory
-python src/main.py --only-steps 6_visualization --target-dir path/to/gnn_file.md
+python src/main.py --help
 ```
-(Or use step number: `python src/main.py --only-steps 6 ...`)
 
-The `6_visualization.py` script will process the specified GNN file (or files in the target directory if it supports directory processing) and save the visualizations in the designated output directory (e.g., `output/6_visualization_outputs/`).
+**Additional specialized options:**
+- `--ontology-terms-file FILE`: Path to ontology terms file
+- `--llm-tasks LIST`: Comma-separated LLM tasks
+- `--llm-timeout`: LLM processing timeout
+- `--pipeline-summary-file FILE`: Pipeline summary report path
+- `--site-html-filename NAME`: Generated HTML site filename
+- `--discopy-*`: DisCoPy-specific options
+- `--recreate-venv`: Recreate virtual environment
+- `--dev`: Install development dependencies
 
-## Getting Started
-
--   **Learn the Syntax**: Familiarize yourself with GNN syntax and structure. See `doc/gnn_syntax.md` and `doc/gnn_file_structure_doc.md`.
--   **Explore Examples**: Check out example GNN files in `doc/gnn_examples_doc.md` and `src/gnn/examples/`.
--   **Read the Paper**: For a detailed introduction, refer to "Generalized Notation Notation for Active Inference Models" (see [`doc/gnn_paper.md`](./doc/gnn_paper.md) for details and links).
--   **GitHub Repository**: [https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
-
-## Documentation
-
-Comprehensive documentation can be found in the `doc/` directory. See the [`doc/` Directory Structure](#doc-directory-structure) section above for a detailed file listing. Key documents include:
-
--   [`doc/about_gnn.md`](./doc/about_gnn.md): General information about GNN.
--   [`doc/gnn_overview.md`](./doc/gnn_overview.md): A high-level overview of GNN.
--   [`doc/gnn_syntax.md`](./doc/gnn_syntax.md): Detailed specification of GNN syntax and punctuation.
--   [`doc/gnn_file_structure_doc.md`](./doc/gnn_file_structure_doc.md): Description of the GNN file organization.
--   [`doc/gnn_examples_doc.md`](./doc/gnn_examples_doc.md): Examples and use cases.
--   [`doc/gnn_implementation.md`](./doc/gnn_implementation.md): Guidelines for implementing GNN.
--   [`doc/gnn_tools.md`](./doc/gnn_tools.md): Information on tools and resources.
--   [`doc/gnn_paper.md`](./doc/gnn_paper.md): Details about the GNN academic paper.
--   [`doc/gnn_llm_neurosymbolic_active_inference.md`](./doc/gnn_llm_neurosymbolic_active_inference.md): Information on LLM and Neurosymbolic Active Inference.
-
-## Contributing
-
-GNN is an evolving standard. Contributions are welcome! Please refer to the guidelines on the [GitHub repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation) or open an issue to discuss potential changes or improvements.
-
-## License
-
-This project is licensed under the [MIT License](./LICENSE.md). Please see the `LICENSE.md` file for full details.
-
-## Installation and Setup
-
-For comprehensive setup instructions, dependency information, and troubleshooting, please refer to [SETUP.md](doc/SETUP.md).
-
-Quick start:
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
-
-# Run the setup script
-cd src
-python3 main.py --only-steps 2_setup --dev
-```
+</details>
 
 ---
 
-*This README was generated based on documents in the `doc/` folder.*
+## 🛠️ Tools and Utilities
+
+The GNN ecosystem includes several sophisticated tools to aid in model development, validation, and understanding. These tools are primarily invoked through the `src/main.py` pipeline script.
+
+### ✅ Type Checker and Resource Estimator
+
+The **GNN Type Checker** (pipeline step 4) helps validate GNN files and estimates computational resources.
+
+#### 🎯 Quick Usage
+
+```bash
+# Run only type checker
+python src/main.py --only-steps 4 --target-dir path/to/gnn_files
+
+# Include resource estimation
+python src/main.py --only-steps 4 --estimate-resources --target-dir path/to/gnn_files
+
+# Run full pipeline
+python src/main.py --target-dir path/to/gnn_files
+```
+
+#### 📊 Features
+
+- ✅ Validation of required sections and structure
+- 🔍 Type checking of variables and dimensions  
+- 🔗 Verification of connections and references
+- 📋 Detailed error reports with suggestions for fixes
+- 💾 Resource usage estimation and optimization recommendations
+
+#### 📁 Output Structure
+
+When executed, the type checker creates outputs in `output/gnn_type_check/`:
+
+```
+output/gnn_type_check/
+├── type_check_report.md                    # Main Markdown report
+├── html_vis/
+│   └── type_checker_visualization_report.html  # HTML visualizations
+└── resources/
+    └── type_check_data.json               # JSON data for analysis
+```
+
+### 🎨 Visualization
+
+GNN files can be visualized to create comprehensive graphical representations of models (pipeline step 6).
+
+#### 🎯 Usage
+
+```bash
+# Generate visualizations
+python src/main.py --only-steps 6 --target-dir path/to/gnn_file.md
+```
+
+#### 🖼️ Visualization Types
+
+- 📊 **Network Graphs**: Model structure and dependencies
+- 🎨 **Matrix Heatmaps**: A, B, C, D matrix visualizations  
+- 🧠 **Ontology Diagrams**: Active Inference relationship maps
+- 📈 **Performance Plots**: Resource usage and timing analysis
+
+---
+
+## 🚀 Quick Start
+
+Follow these steps to get up and running with GNN:
+
+### 1️⃣ Prerequisites
+
+Ensure you have **Python 3.8+** installed:
+
+```bash
+python --version  # Should show 3.8 or higher
+```
+
+### 2️⃣ Clone Repository
+
+```bash
+git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
+cd GeneralizedNotationNotation
+```
+
+### 3️⃣ Setup Environment
+
+Run the setup pipeline step to configure dependencies:
+
+```bash
+python src/main.py --only-steps 2 --dev
+```
+
+This will:
+- ✅ Create and configure virtual environment
+- 📦 Install all required dependencies
+- 🧪 Install development dependencies (with `--dev`)
+- ✅ Validate system requirements
+
+### 4️⃣ Run Your First Pipeline
+
+Process the example GNN files:
+
+```bash
+python src/main.py --target-dir src/gnn/examples --verbose
+```
+
+### 5️⃣ Explore Results
+
+Check the generated outputs in the `output/` directory:
+
+```bash
+ls -la output/
+# View the generated site
+open output/gnn_pipeline_summary_site.html  # macOS
+# or
+xdg-open output/gnn_pipeline_summary_site.html  # Linux
+```
+
+### 🆘 Need Help?
+
+<details>
+<summary><strong>🔍 Common Issues & Solutions</strong></summary>
+
+**🐍 Python Version Issues**
+```bash
+# Check Python version
+python --version
+# If < 3.8, install Python 3.8+ from python.org
+```
+
+**📦 Dependency Issues**
+```bash
+# Force reinstall dependencies
+python src/main.py --only-steps 2 --recreate-venv --dev
+```
+
+**🔧 Pipeline Failures**
+```bash
+# Run with verbose logging
+python src/main.py --verbose
+# Check specific step
+python src/main.py --only-steps 4 --verbose
+```
+
+**💾 Disk Space Issues**
+```bash
+# Check available space
+df -h
+# Clean output directory
+rm -rf output/*
+```
+
+</details>
+
+**🔗 Get Support:**
+- 📖 **Documentation**: See [Documentation](#-documentation) section below
+- 🐛 **Known Issues**: Check [troubleshooting guide](./doc/troubleshooting/)
+- 💬 **Community**: Open an issue on [GitHub](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
+- 🚀 **Quick Fix**: Try `python src/main.py --only-steps 2 --dev` first
+
+---
+
+## 📖 Documentation
+
+Comprehensive documentation is organized in the `doc/` directory. Here are the key resources:
+
+### 📚 Core Documentation
+
+| Document | Description |
+|----------|-------------|
+| [**GNN Overview**](./doc/gnn/gnn_overview.md) | High-level introduction to GNN |
+| [**Syntax Guide**](./doc/gnn/gnn_syntax.md) | Detailed GNN syntax specification |
+| [**File Structure**](./doc/gnn/gnn_file_structure_doc.md) | GNN file organization guide |
+| [**Quick Start Tutorial**](./doc/gnn/quickstart_tutorial.md) | Step-by-step beginner guide |
+
+### 🎯 Specialized Guides
+
+| Topic | Documentation |
+|-------|---------------|
+| **🧠 Active Inference** | [About GNN](./doc/gnn/about_gnn.md) |
+| **🤖 LLM Integration** | [LLM & Neurosymbolic AI](./doc/gnn/gnn_llm_neurosymbolic_active_inference.md) |
+| **📊 Implementation** | [Implementation Guide](./doc/gnn/gnn_implementation.md) |
+| **🛠️ Tools** | [Tools & Resources](./doc/gnn/gnn_tools.md) |
+| **📄 Research Paper** | [Academic Paper Details](./doc/gnn/gnn_paper.md) |
+
+### 🎯 Integration Guides
+
+| Platform | Documentation |
+|----------|---------------|
+| **🐍 PyMDP** | [PyMDP Integration](./doc/pymdp/) |
+| **🔬 RxInfer.jl** | [RxInfer Integration](./doc/rxinfer/) |
+| **📡 MCP** | [Model Context Protocol](./doc/mcp/) |
+| **🧮 SymPy** | [Mathematical Processing](./doc/sympy/) |
+| **🔄 DisCoPy** | [Categorical Diagrams](./doc/discopy/) |
+
+### 🧩 Application Examples
+
+| Domain | Examples |
+|--------|----------|
+| **🧠 Cognitive Phenomena** | [Cognitive Models](./doc/cognitive_phenomena/) |
+| **🎯 Templates** | [Model Templates](./doc/templates/) |
+| **📋 Configuration** | [Configuration Examples](./doc/configuration/) |
+
+---
+
+## 🎯 Examples
+
+Explore practical GNN implementations and use cases:
+
+### 📂 Example Files Location
+
+- **📁 Primary Examples**: [`src/gnn/examples/`](./src/gnn/examples/)
+- **📁 Cognitive Models**: [`doc/cognitive_phenomena/`](./doc/cognitive_phenomena/)
+- **📁 Templates**: [`doc/templates/`](./doc/templates/)
+
+### 🔥 Featured Examples
+
+| Example | Description | Location |
+|---------|-------------|----------|
+| **🎯 PyMDP POMDP Agent** | Complete POMDP implementation | [`src/gnn/examples/pymdp_pomdp_agent.md`](./src/gnn/examples/pymdp_pomdp_agent.md) |
+| **🔬 RxInfer Hidden Markov Model** | Probabilistic sequence modeling | [`src/gnn/examples/rxinfer_hidden_markov_model.md`](./src/gnn/examples/rxinfer_hidden_markov_model.md) |
+| **🤝 Multi-Agent System** | Collaborative agent modeling | [`src/gnn/examples/rxinfer_multiagent_gnn.md`](./src/gnn/examples/rxinfer_multiagent_gnn.md) |
+
+### 🧠 Cognitive Phenomena Examples
+
+| Phenomenon | Model | Documentation |
+|------------|-------|---------------|
+| **🎯 Attention** | Attention mechanisms | [`doc/cognitive_phenomena/attention/`](./doc/cognitive_phenomena/attention/) |
+| **🧠 Consciousness** | Global workspace theory | [`doc/cognitive_phenomena/consciousness/`](./doc/cognitive_phenomena/consciousness/) |
+| **💪 Cognitive Effort** | Effort and control | [`doc/cognitive_phenomena/effort/`](./doc/cognitive_phenomena/effort/) |
+| **❤️ Emotion & Affect** | Interoceptive emotion | [`doc/cognitive_phenomena/emotion_affect/`](./doc/cognitive_phenomena/emotion_affect/) |
+| **🎮 Executive Control** | Task switching | [`doc/cognitive_phenomena/executive_control/`](./doc/cognitive_phenomena/executive_control/) |
+
+### 🏃‍♂️ Running Examples
+
+```bash
+# Process all examples
+python src/main.py --target-dir src/gnn/examples
+
+# Process specific example
+python src/main.py --target-dir src/gnn/examples/pymdp_pomdp_agent.md
+
+# Process with full analysis
+python src/main.py --target-dir src/gnn/examples --estimate-resources --verbose
+```
+
+### ⚡ Power User Tips
+
+<details>
+<summary><strong>🚀 Advanced Usage Patterns</strong></summary>
+
+**🔥 Quick Commands**
+```bash
+# Full pipeline with all features
+python src/main.py --verbose --estimate-resources --dev
+
+# Type check only (fastest validation)  
+python src/main.py --only-steps 4 --strict
+
+# Visualization only (quick preview)
+python src/main.py --only-steps 6
+
+# Complete analysis for single file
+python src/main.py --target-dir path/to/file.md --verbose
+```
+
+**🎯 Pipeline Optimization**
+```bash
+# Skip time-consuming steps for quick iteration
+python src/main.py --skip-steps "11,12,13"
+
+# Focus on core processing
+python src/main.py --only-steps "1,4,5,6"
+
+# Development workflow
+python src/main.py --only-steps "2,3" --dev
+```
+
+**📊 Output Management**
+```bash
+# Custom output directory
+python src/main.py -o /path/to/custom/output
+
+# Timestamped outputs
+python src/main.py -o "output/run_$(date +%Y%m%d_%H%M%S)"
+```
+
+</details>
+
+---
+
+## 🤝 Contributing
+
+GNN is an evolving standard, and **contributions are welcome**! Here's how you can get involved:
+
+### 🎯 Ways to Contribute
+
+- 🐛 **Report Issues**: Found a bug? [Open an issue](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
+- 💡 **Suggest Features**: Have ideas? [Start a discussion](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)  
+- 📝 **Improve Documentation**: Help make our docs better
+- 🧪 **Add Examples**: Share your GNN models
+- 🔧 **Code Contributions**: Submit pull requests
+
+### 📋 Contribution Guidelines
+
+1. **🍴 Fork** the repository
+2. **🌿 Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **✅ Test** your changes thoroughly
+4. **📝 Document** your changes
+5. **💾 Commit** with clear messages (`git commit -m 'Add amazing feature'`)
+6. **📤 Push** to your branch (`git push origin feature/amazing-feature`)
+7. **🔄 Submit** a Pull Request
+
+### 🛡️ Code of Conduct
+
+Please read our [Code of Conduct](./CODE_OF_CONDUCT.md) to understand the standards we maintain for our community.
+
+### 📞 Getting Help
+
+- 📖 **Documentation**: Check the [docs](./doc/) first
+- 💬 **Discussions**: Use [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
+- 🐛 **Issues**: For bugs, use [GitHub Issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
+- 📧 **Contact**: Reach out to the maintainers
+
+### 🙌 Recognition
+
+All contributors will be recognized in our [contributors list](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/graphs/contributors) and release notes.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**. See the [LICENSE.md](./LICENSE.md) file for full details.
+
+### 📋 License Summary
+
+- ✅ **Commercial use** permitted
+- ✅ **Modification** permitted  
+- ✅ **Distribution** permitted
+- ✅ **Private use** permitted
+- ❗ **License and copyright notice** required
+
+---
+
+## 🔗 External Resources & Links
+
+### 🌐 Active Inference Community
+
+- 🏠 **Active Inference Institute**: [activeinference.institute](https://activeinference.institute/)
+- 💬 **Community Discussions**: [Active Inference Discord](https://discord.activeinference.institute/)
+
+### 🛠️ Technical Resources
+
+- 🐍 **PyMDP Framework**: [github.com/infer-actively/pymdp](https://github.com/infer-actively/pymdp)
+- 🔬 **RxInfer.jl**: [github.com/biaslab/RxInfer.jl](https://github.com/biaslab/RxInfer.jl)
+- 📊 **DisCoPy**: [github.com/oxford-quantum-group/discopy](https://github.com/oxford-quantum-group/discopy)
+- 📚 **Research Papers**: [Active Inference on arXiv](https://arxiv.org/search/?query=active+inference&searchtype=all)
+
+<div align="center">
+j
+
+---
+
+**Built with ❤️ by the Active Inference community**
+
+[⬆️ Back to top](#generalizednotationnotation-gnn)
+
+</div>
+
+---
