@@ -1,0 +1,22 @@
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | Simulation logger initialized: meta_aware_sim_20250623_144221
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | SimulationRunner initialized with config: config/meta_awareness_gnn.toml
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | Output directory: output
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | Starting complete meta-awareness analysis pipeline
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | Running simulation mode: figure_7
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | Starting simulation in mode: figure_7
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | Model configured: meta_awareness_active_inference (3 levels, 100 steps, mode: figure_7)
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | ============================================================
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | SIMULATION STARTED
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | ============================================================
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | Simulation ID: meta_aware_sim_20250623_144221
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | Start time: 2025-06-23 14:42:21.660328
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO | Configuration summary:
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO |   model_name: meta_awareness_active_inference
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO |   num_levels: 3
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO |   time_steps: 100
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO |   simulation_mode: figure_7
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO |   level_names: list with 3 items
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO |   state_dimensions: dict with 3 items
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | INFO |   random_seed: None
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | ERROR | Error during simulation: 'meta_awareness'
+2025-06-23 14:42:21 | meta_aware.meta_aware_sim_20250623_144221 | ERROR | Error in complete analysis pipeline: 'meta_awareness'

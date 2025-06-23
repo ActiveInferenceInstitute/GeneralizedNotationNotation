@@ -1,0 +1,30 @@
+2025-06-23 14:40:23 | meta_aware.error.meta_aware_sim_20250623_144023 | ERROR | Exception: Error during simulation: list index out of range
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/execution/simulation_runner.py", line 201, in run_simulation
+    results = self.model.run_simulation(simulation_mode)
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 271, in run_simulation
+    self._update_beliefs(t, simulation_mode)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 333, in _update_beliefs
+    self._update_three_level_beliefs(t, simulation_mode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 393, in _update_three_level_beliefs
+    perception_level = self.level_names[0]    # e.g., "perception"
+                       ~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+2025-06-23 14:40:23 | meta_aware.error.meta_aware_sim_20250623_144023 | ERROR | Exception: Error in complete analysis pipeline: list index out of range
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/execution/simulation_runner.py", line 123, in run_complete_analysis
+    results = self.run_simulation(mode)
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/execution/simulation_runner.py", line 201, in run_simulation
+    results = self.model.run_simulation(simulation_mode)
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 271, in run_simulation
+    self._update_beliefs(t, simulation_mode)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 333, in _update_beliefs
+    self._update_three_level_beliefs(t, simulation_mode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 393, in _update_three_level_beliefs
+    perception_level = self.level_names[0]    # e.g., "perception"
+                       ~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range

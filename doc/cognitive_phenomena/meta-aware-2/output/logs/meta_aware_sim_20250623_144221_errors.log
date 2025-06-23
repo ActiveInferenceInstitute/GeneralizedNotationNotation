@@ -1,0 +1,30 @@
+2025-06-23 14:42:21 | meta_aware.error.meta_aware_sim_20250623_144221 | ERROR | Exception: Error during simulation: 'meta_awareness'
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/execution/simulation_runner.py", line 201, in run_simulation
+    results = self.model.run_simulation(simulation_mode)
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 271, in run_simulation
+    self._update_beliefs(t, simulation_mode)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 333, in _update_beliefs
+    self._update_three_level_beliefs(t, simulation_mode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 400, in _update_three_level_beliefs
+    A3_matrix = self.A_matrices[meta_level]
+                ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'meta_awareness'
+2025-06-23 14:42:21 | meta_aware.error.meta_aware_sim_20250623_144221 | ERROR | Exception: Error in complete analysis pipeline: 'meta_awareness'
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/execution/simulation_runner.py", line 123, in run_complete_analysis
+    results = self.run_simulation(mode)
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/execution/simulation_runner.py", line 201, in run_simulation
+    results = self.model.run_simulation(simulation_mode)
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 271, in run_simulation
+    self._update_beliefs(t, simulation_mode)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 333, in _update_beliefs
+    self._update_three_level_beliefs(t, simulation_mode)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/cognitive_phenomena/meta-aware-2/core/meta_awareness_model.py", line 400, in _update_three_level_beliefs
+    A3_matrix = self.A_matrices[meta_level]
+                ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'meta_awareness'

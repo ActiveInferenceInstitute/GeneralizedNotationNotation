@@ -1,0 +1,74 @@
+# GNN Configuration for Meta-Awareness Active Inference Model
+# Sandved-Smith et al. (2021) "Computational Phenomenology of Mental Action"
+# Generalized Notation Notation (GNN) Specification
+
+[model]
+name = "meta_awareness_active_inference"
+description = "Hierarchical active inference model for meta-awareness and attentional control"
+num_levels = 3
+level_names = ["perception", "attention", "meta_awareness"]
+time_steps = 100
+oddball_pattern = "default"
+oddball_times = [20, 40, 60, 80]
+
+[levels.perception]
+state_dim = 2
+obs_dim = 2
+action_dim = 0
+state_labels = ["standard", "deviant"]
+obs_labels = ["standard_obs", "deviant_obs"]
+
+[levels.attention]
+state_dim = 2
+obs_dim = 2
+action_dim = 2
+state_labels = ["focused", "distracted"] 
+obs_labels = ["focused_obs", "distracted_obs"]
+action_labels = ["stay", "switch"]
+
+[levels.meta_awareness]
+state_dim = 2
+obs_dim = 2
+action_dim = 0
+state_labels = ["high_meta_awareness", "low_meta_awareness"]
+obs_labels = ["high_meta_obs", "low_meta_obs"]
+
+[precision_bounds]
+perception = [0.5, 2.0]
+attention = [0.5, 2.0]
+meta_awareness = [1.0, 4.0]
+
+[policy_precision]
+2_level = 2.0
+3_level = 4.0
+
+[policy_preferences]
+attention = [2.0, -2.0]
+
+[policy_priors]
+attention = [0.5, 0.5]
+
+[simulation_modes]
+default = "natural_dynamics"
+figure_7 = "fixed_attention_schedule"
+figure_10 = "two_level_mind_wandering"
+figure_11 = "three_level_meta_awareness"
+
+[simulation_schedules]
+figure_7_attention = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
+figure_11_meta_awareness = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
+
+[validation_config]
+check_matrix_dimensions = true
+check_probability_normalization = true
+tolerance = 1e-10
+
+[logging_config]
+level = "INFO"
+output_dir = "logs"
+
+[visualization_config]
+generate_figures = true
+figure_format = "png"
+figure_dpi = 300
+output_dir = "figures" 
