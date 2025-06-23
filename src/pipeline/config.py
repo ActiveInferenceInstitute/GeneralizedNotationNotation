@@ -165,6 +165,15 @@ class PipelineConfig:
                 dependencies=["6_visualization.py", "8_ontology.py"],
                 required=False  # Site generation can fail without stopping pipeline
             ),
+            "15_sapf.py": StepConfig(
+                name="sapf",
+                description="SAPF audio generation for GNN models",
+                module_path="15_sapf.py",
+                output_subdir="sapf_processing_step",
+                dependencies=["1_gnn.py"],
+                performance_tracking=True,
+                required=False  # SAPF can fail without stopping pipeline
+            ),
             "main.py": StepConfig(
                 name="main",
                 description="Main pipeline orchestrator",

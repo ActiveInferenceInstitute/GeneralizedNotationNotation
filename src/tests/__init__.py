@@ -169,6 +169,7 @@ PYTEST_MARKERS = {
     "execution": "Tests for script execution and coordination",
     "ontology": "Tests for ontology processing",
     "rendering": "Tests for code generation and rendering",
+    "sapf": "Tests for SAPF (Sound As Pure Form) audio generation functionality",
     
     # Quality and behavior markers
     "regression": "Regression tests to prevent breaking changes",

@@ -1,0 +1,12 @@
+{
+    "directed": true,
+    "multigraph": false,
+    "graph": [
+        [
+            "name",
+            "Baseball Game Active Inference Model"
+        ]
+    ],
+    "nodes": [],
+    "adjacency": []
+}

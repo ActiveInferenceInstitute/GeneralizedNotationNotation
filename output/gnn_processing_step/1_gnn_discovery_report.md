@@ -28,23 +28,15 @@
 - `nr_steps`: 40
 - `nr_iterations`: 350
 
-### rxinfer_hidden_markov_model.md
+### baseball_game_active_inference.md
 
-**Path:** `src/gnn/examples/rxinfer_hidden_markov_model.md`
-**Model Name:** RxInfer Hidden Markov Model v1
+**Path:** `src/gnn/examples/baseball_game_active_inference.md`
+**Model Name:** Baseball Game Active Inference Model
 
 **Sections Found:**
-- ModelName: Found: RxInfer Hidden Markov Model v1
+- ModelName: Found: Baseball Game Active Inference Model
 - StateSpaceBlock: Found
 - Connections: Found
-
-**Model Parameters:**
-- `n_states`: 3
-- `n_obs`: 3
-- `n_iterations`: 20
-- `model_type`: HMM
-- `inference_method`: variational_message_passing
-- `backend`: RxInfer.jl
 
 ### pymdp_pomdp_agent.md
 

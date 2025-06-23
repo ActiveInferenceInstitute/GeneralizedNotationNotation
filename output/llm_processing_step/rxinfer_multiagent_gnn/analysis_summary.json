@@ -6,42 +6,42 @@
       "success": true,
       "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/summarize_content_analysis.md",
       "provider": "openai",
-      "content_length": 2554,
+      "content_length": 2404,
       "tokens_used": null
     },
     "explain_model": {
       "success": true,
       "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/explain_model_analysis.md",
       "provider": "openai",
-      "content_length": 4827,
+      "content_length": 4436,
       "tokens_used": null
     },
     "identify_components": {
       "success": true,
       "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/identify_components_analysis.md",
       "provider": "openai",
-      "content_length": 5445,
+      "content_length": 4940,
       "tokens_used": null
     },
     "analyze_structure": {
       "success": true,
       "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/analyze_structure_analysis.md",
       "provider": "openai",
-      "content_length": 6151,
+      "content_length": 5763,
       "tokens_used": null
     },
     "extract_parameters": {
       "success": true,
       "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/extract_parameters_analysis.md",
       "provider": "openai",
-      "content_length": 4515,
+      "content_length": 4162,
       "tokens_used": null
     },
     "practical_applications": {
       "success": true,
       "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/practical_applications_analysis.md",
       "provider": "openai",
-      "content_length": 5361,
+      "content_length": 5703,
       "tokens_used": null
     }
   },

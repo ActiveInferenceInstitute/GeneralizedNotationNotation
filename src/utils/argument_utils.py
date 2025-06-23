@@ -89,6 +89,9 @@ class PipelineArguments:
     recreate_venv: bool = False
     dev: bool = False
     
+    # Duration for SAPF generation
+    duration: float = 30.0
+    
     def __post_init__(self):
         """Post-initialization validation and path resolution."""
         # Ensure Path objects
@@ -252,6 +255,12 @@ class ArgumentParser:
             flag='--dev',
             action='store_true', 
             help_text='Install development dependencies'
+        ),
+        'duration': ArgumentDefinition(
+            flag='--duration',
+            arg_type=float,
+            default=30.0,
+            help_text='Audio duration in seconds for SAPF generation'
         )
     }
     
@@ -271,6 +280,7 @@ class ArgumentParser:
         "12_discopy.py": ["target_dir", "output_dir", "recursive", "verbose", "discopy_gnn_input_dir"],
         "13_discopy_jax_eval.py": ["target_dir", "output_dir", "recursive", "verbose", "discopy_jax_gnn_input_dir", "discopy_jax_seed"],
         "14_site.py": ["target_dir", "output_dir", "verbose", "site_html_filename"],
+        "15_sapf.py": ["target_dir", "output_dir", "recursive", "verbose", "duration"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys())
     }
     
@@ -368,6 +378,8 @@ class ArgumentParser:
                         setattr(parsed_args, arg_name, "gnn_pipeline_summary_site.html")
                     elif arg_name in ['recreate_venv', 'dev']:
                         setattr(parsed_args, arg_name, False)
+                    elif arg_name == 'duration':
+                        setattr(parsed_args, arg_name, 30.0)
                     else:
                         setattr(parsed_args, arg_name, None)
                     
@@ -401,6 +413,8 @@ class ArgumentParser:
                     setattr(fallback_args, arg_name, "gnn_pipeline_summary_site.html")
                 elif arg_name in ['recreate_venv', 'dev']:
                     setattr(fallback_args, arg_name, False)
+                elif arg_name == 'duration':
+                    setattr(fallback_args, arg_name, 30.0)
                 else:
                     setattr(fallback_args, arg_name, None)
                 
@@ -573,6 +587,12 @@ class StepConfiguration:
             "optional_args": ["verbose", "site_html_filename"],
             "defaults": {"verbose": False, "site_html_filename": "gnn_pipeline_summary_site.html"},
             "description": "HTML Site Generation"
+        },
+        "15_sapf": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose", "duration"],
+            "defaults": {"recursive": True, "verbose": False, "duration": 30.0},
+            "description": "SAPF Audio Generation for GNN Models"
         }
     }
     

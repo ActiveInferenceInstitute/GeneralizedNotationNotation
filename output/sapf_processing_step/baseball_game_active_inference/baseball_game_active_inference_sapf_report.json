@@ -1,0 +1,9 @@
+{
+  "model_name": "baseball_game_active_inference",
+  "input_file": "gnn/examples/baseball_game_active_inference.md",
+  "sapf_file": "../output/sapf_processing_step/baseball_game_active_inference/baseball_game_active_inference.sapf",
+  "audio_file": "../output/sapf_processing_step/baseball_game_active_inference/baseball_game_active_inference_audio.wav",
+  "audio_duration": 30.0,
+  "sapf_code_lines": 179,
+  "processing_successful": true
+}

@@ -1,0 +1,197 @@
+GNN Model Summary: Baseball Game Active Inference Model
+
+--- STATESPACEBLOCK ---
+- {'id': 'A_batting_performance', 'dimensions': '9,5,4,type=float', 'original_id': 'A_batting_performance'}
+- {'id': 'A_pitching_effectiveness', 'dimensions': '7,6,3,type=float', 'original_id': 'A_pitching_effectiveness'}
+- {'id': 'A_fielding_success', 'dimensions': '9,8,5,type=float', 'original_id': 'A_fielding_success'}
+- {'id': 'A_crowd_response', 'dimensions': '5,7,3,type=float', 'original_id': 'A_crowd_response'}
+- {'id': 'A_weather_impact', 'dimensions': '4,3,6,type=float', 'original_id': 'A_weather_impact'}
+- {'id': 'A_strategic_success', 'dimensions': '8,4,5,type=float', 'original_id': 'A_strategic_success'}
+- {'id': 'A_injury_probability', 'dimensions': '9,3,4,type=float', 'original_id': 'A_injury_probability'}
+- {'id': 'A_momentum_shift', 'dimensions': '6,5,3,type=float', 'original_id': 'A_momentum_shift'}
+- {'id': 'A_umpire_decisions', 'dimensions': '4,8,3,type=float', 'original_id': 'A_umpire_decisions'}
+- {'id': 'A_ballpark_acoustics', 'dimensions': '12,6,4,type=float', 'original_id': 'A_ballpark_acoustics'}
+- {'id': 'A_broadcast_excitement', 'dimensions': '8,5,7,type=float', 'original_id': 'A_broadcast_excitement'}
+- {'id': 'A_player_chemistry', 'dimensions': '9,9,4,type=float', 'original_id': 'A_player_chemistry'}
+- {'id': 'A_seasonal_performance', 'dimensions': '12,8,3,type=float', 'original_id': 'A_seasonal_performance'}
+- {'id': 'A_historical_matchups', 'dimensions': '15,10,5,type=float', 'original_id': 'A_historical_matchups'}
+- {'id': 'A_fan_loyalty', 'dimensions': '7,4,6,type=float', 'original_id': 'A_fan_loyalty'}
+- {'id': 'A_media_coverage', 'dimensions': '6,8,4,type=float', 'original_id': 'A_media_coverage'}
+- {'id': 'B_game_state', 'dimensions': '25,25,12,type=float', 'original_id': 'B_game_state'}
+- {'id': 'B_inning_progression', 'dimensions': '9,9,3,type=float', 'original_id': 'B_inning_progression'}
+- {'id': 'B_player_fatigue', 'dimensions': '5,5,8,type=float', 'original_id': 'B_player_fatigue'}
+- {'id': 'B_score_evolution', 'dimensions': '21,21,15,type=float', 'original_id': 'B_score_evolution'}
+- {'id': 'B_strategic_adaptation', 'dimensions': '6,6,9,type=float', 'original_id': 'B_strategic_adaptation'}
+- {'id': 'B_crowd_energy', 'dimensions': '7,7,4,type=float', 'original_id': 'B_crowd_energy'}
+- {'id': 'B_weather_changes', 'dimensions': '4,4,2,type=float', 'original_id': 'B_weather_changes'}
+- {'id': 'B_performance_trends', 'dimensions': '8,8,5,type=float', 'original_id': 'B_performance_trends'}
+- {'id': 'B_dramatic_tension', 'dimensions': '10,10,6,type=float', 'original_id': 'B_dramatic_tension'}
+- {'id': 'B_rhythm_dynamics', 'dimensions': '16,16,8,type=float', 'original_id': 'B_rhythm_dynamics'}
+- {'id': 'B_harmonic_evolution', 'dimensions': '12,12,9,type=float', 'original_id': 'B_harmonic_evolution'}
+- {'id': 'B_textural_layers', 'dimensions': '8,8,12,type=float', 'original_id': 'B_textural_layers'}
+- {'id': 'B_emotional_arc', 'dimensions': '15,15,7,type=float', 'original_id': 'B_emotional_arc'}
+- {'id': 'B_sonic_complexity', 'dimensions': '20,20,10,type=float', 'original_id': 'B_sonic_complexity'}
+- {'id': 'B_audience_engagement', 'dimensions': '6,6,8,type=float', 'original_id': 'B_audience_engagement'}
+- {'id': 'B_broadcast_narrative', 'dimensions': '10,10,5,type=float', 'original_id': 'B_broadcast_narrative'}
+- {'id': 'C_winning_preference', 'dimensions': '3,type=float', 'original_id': 'C_winning_preference'}
+- {'id': 'C_entertainment_value', 'dimensions': '7,type=float', 'original_id': 'C_entertainment_value'}
+- {'id': 'C_player_safety', 'dimensions': '5,type=float', 'original_id': 'C_player_safety'}
+- {'id': 'C_game_pace', 'dimensions': '4,type=float', 'original_id': 'C_game_pace'}
+- {'id': 'C_strategic_variety', 'dimensions': '6,type=float', 'original_id': 'C_strategic_variety'}
+- {'id': 'C_performance_consistency', 'dimensions': '8,type=float', 'original_id': 'C_performance_consistency'}
+- {'id': 'C_weather_comfort', 'dimensions': '4,type=float', 'original_id': 'C_weather_comfort'}
+- {'id': 'C_home_advantage', 'dimensions': '3,type=float', 'original_id': 'C_home_advantage'}
+- {'id': 'C_sonic_richness', 'dimensions': '12,type=float', 'original_id': 'C_sonic_richness'}
+- {'id': 'C_dramatic_climax', 'dimensions': '9,type=float', 'original_id': 'C_dramatic_climax'}
+- {'id': 'C_rhythmic_variation', 'dimensions': '8,type=float', 'original_id': 'C_rhythmic_variation'}
+- {'id': 'C_harmonic_resolution', 'dimensions': '6,type=float', 'original_id': 'C_harmonic_resolution'}
+- {'id': 'C_crowd_participation', 'dimensions': '5,type=float', 'original_id': 'C_crowd_participation'}
+- {'id': 'C_broadcast_quality', 'dimensions': '7,type=float', 'original_id': 'C_broadcast_quality'}
+- {'id': 'C_historical_significance', 'dimensions': '4,type=float', 'original_id': 'C_historical_significance'}
+- {'id': 'C_emotional_intensity', 'dimensions': '10,type=float', 'original_id': 'C_emotional_intensity'}
+- {'id': 'D_game_start_state', 'dimensions': '25,type=float', 'original_id': 'D_game_start_state'}
+- {'id': 'D_player_abilities', 'dimensions': '9,type=float', 'original_id': 'D_player_abilities'}
+- {'id': 'D_weather_conditions', 'dimensions': '4,type=float', 'original_id': 'D_weather_conditions'}
+- {'id': 'D_crowd_mood', 'dimensions': '7,type=float', 'original_id': 'D_crowd_mood'}
+- {'id': 'D_strategic_tendencies', 'dimensions': '6,type=float', 'original_id': 'D_strategic_tendencies'}
+- {'id': 'D_field_conditions', 'dimensions': '5,type=float', 'original_id': 'D_field_conditions'}
+- {'id': 'D_umpire_tendencies', 'dimensions': '8,type=float', 'original_id': 'D_umpire_tendencies'}
+- {'id': 'D_seasonal_factors', 'dimensions': '12,type=float', 'original_id': 'D_seasonal_factors'}
+- {'id': 's_game_state', 'dimensions': '25,type=continuous', 'original_id': 's_game_state'}
+- {'id': 's_player_fatigue', 'dimensions': '9,type=continuous', 'original_id': 's_player_fatigue'}
+- {'id': 's_team_morale', 'dimensions': '2,type=continuous', 'original_id': 's_team_morale'}
+- {'id': 's_crowd_energy', 'dimensions': '7,type=continuous', 'original_id': 's_crowd_energy'}
+- {'id': 's_weather_state', 'dimensions': '4,type=continuous', 'original_id': 's_weather_state'}
+- {'id': 's_strategic_focus', 'dimensions': '6,type=continuous', 'original_id': 's_strategic_focus'}
+- {'id': 's_momentum', 'dimensions': '3,type=continuous', 'original_id': 's_momentum'}
+- {'id': 's_pressure_level', 'dimensions': '5,type=continuous', 'original_id': 's_pressure_level'}
+- {'id': 's_field_conditions', 'dimensions': '5,type=continuous', 'original_id': 's_field_conditions'}
+- {'id': 's_umpire_mood', 'dimensions': '3,type=continuous', 'original_id': 's_umpire_mood'}
+- {'id': 's_injury_risk', 'dimensions': '9,type=continuous', 'original_id': 's_injury_risk'}
+- {'id': 's_performance_rhythm', 'dimensions': '8,type=continuous', 'original_id': 's_performance_rhythm'}
+- {'id': 's_sonic_atmosphere', 'dimensions': '15,type=continuous', 'original_id': 's_sonic_atmosphere'}
+- {'id': 's_musical_tension', 'dimensions': '12,type=continuous', 'original_id': 's_musical_tension'}
+- {'id': 's_harmonic_complexity', 'dimensions': '10,type=continuous', 'original_id': 's_harmonic_complexity'}
+- {'id': 's_rhythmic_pulse', 'dimensions': '16,type=continuous', 'original_id': 's_rhythmic_pulse'}
+- {'id': 's_emotional_narrative', 'dimensions': '9,type=continuous', 'original_id': 's_emotional_narrative'}
+- {'id': 's_dramatic_buildup', 'dimensions': '8,type=continuous', 'original_id': 's_dramatic_buildup'}
+- {'id': 's_audience_connection', 'dimensions': '6,type=continuous', 'original_id': 's_audience_connection'}
+- {'id': 's_broadcast_energy', 'dimensions': '7,type=continuous', 'original_id': 's_broadcast_energy'}
+- {'id': 's_historical_echoes', 'dimensions': '5,type=continuous', 'original_id': 's_historical_echoes'}
+- {'id': 's_stadium_resonance', 'dimensions': '11,type=continuous', 'original_id': 's_stadium_resonance'}
+- {'id': 'o_scoreboard', 'dimensions': '21,type=discrete', 'original_id': 'o_scoreboard'}
+- {'id': 'o_inning_display', 'dimensions': '9,type=discrete', 'original_id': 'o_inning_display'}
+- {'id': 'o_player_positions', 'dimensions': '9,type=discrete', 'original_id': 'o_player_positions'}
+- {'id': 'o_crowd_noise', 'dimensions': '7,type=discrete', 'original_id': 'o_crowd_noise'}
+- {'id': 'o_weather_visible', 'dimensions': '4,type=discrete', 'original_id': 'o_weather_visible'}
+- {'id': 'o_pitch_outcome', 'dimensions': '8,type=discrete', 'original_id': 'o_pitch_outcome'}
+- {'id': 'o_batting_result', 'dimensions': '12,type=discrete', 'original_id': 'o_batting_result'}
+- {'id': 'o_fielding_action', 'dimensions': '15,type=discrete', 'original_id': 'o_fielding_action'}
+- {'id': 'o_strategic_signals', 'dimensions': '6,type=discrete', 'original_id': 'o_strategic_signals'}
+- {'id': 'o_player_expressions', 'dimensions': '5,type=discrete', 'original_id': 'o_player_expressions'}
+- {'id': 'o_umpire_calls', 'dimensions': '10,type=discrete', 'original_id': 'o_umpire_calls'}
+- {'id': 'o_ballpark_atmosphere', 'dimensions': '8,type=discrete', 'original_id': 'o_ballpark_atmosphere'}
+- {'id': 'o_audio_cues', 'dimensions': '16,type=discrete', 'original_id': 'o_audio_cues'}
+- {'id': 'o_broadcast_graphics', 'dimensions': '12,type=discrete', 'original_id': 'o_broadcast_graphics'}
+- {'id': 'o_fan_reactions', 'dimensions': '14,type=discrete', 'original_id': 'o_fan_reactions'}
+- {'id': 'o_dugout_activity', 'dimensions': '8,type=discrete', 'original_id': 'o_dugout_activity'}
+- {'id': 'o_media_presence', 'dimensions': '6,type=discrete', 'original_id': 'o_media_presence'}
+- {'id': 'o_ceremonial_elements', 'dimensions': '5,type=discrete', 'original_id': 'o_ceremonial_elements'}
+- {'id': 'o_vendor_activity', 'dimensions': '4,type=discrete', 'original_id': 'o_vendor_activity'}
+- {'id': 'o_security_alerts', 'dimensions': '3,type=discrete', 'original_id': 'o_security_alerts'}
+- {'id': 'o_weather_changes', 'dimensions': '7,type=discrete', 'original_id': 'o_weather_changes'}
+- {'id': 'o_field_maintenance', 'dimensions': '6,type=discrete', 'original_id': 'o_field_maintenance'}
+- {'id': 'u_pitch_selection', 'dimensions': '8,type=int', 'original_id': 'u_pitch_selection'}
+- {'id': 'u_batting_approach', 'dimensions': '6,type=int', 'original_id': 'u_batting_approach'}
+- {'id': 'u_fielding_shift', 'dimensions': '9,type=int', 'original_id': 'u_fielding_shift'}
+- {'id': 'u_base_steal_attempt', 'dimensions': '4,type=int', 'original_id': 'u_base_steal_attempt'}
+- {'id': 'u_substitution_made', 'dimensions': '7,type=int', 'original_id': 'u_substitution_made'}
+- {'id': 'u_timeout_called', 'dimensions': '3,type=int', 'original_id': 'u_timeout_called'}
+- {'id': 'u_crowd_wave_initiation', 'dimensions': '5,type=int', 'original_id': 'u_crowd_wave_initiation'}
+- {'id': 'u_anthem_performance', 'dimensions': '4,type=int', 'original_id': 'u_anthem_performance'}
+- {'id': 'u_between_innings_show', 'dimensions': '6,type=int', 'original_id': 'u_between_innings_show'}
+- {'id': 'u_replay_review', 'dimensions': '7,type=int', 'original_id': 'u_replay_review'}
+- {'id': 'u_ceremonial_pitch', 'dimensions': '3,type=int', 'original_id': 'u_ceremonial_pitch'}
+- {'id': 'u_stadium_lighting', 'dimensions': '8,type=int', 'original_id': 'u_stadium_lighting'}
+- {'id': 'harmonic_resonance', 'dimensions': '12,8,type=float', 'original_id': 'harmonic_resonance'}
+- {'id': 'rhythmic_patterns', 'dimensions': '16,4,type=float', 'original_id': 'rhythmic_patterns'}
+- {'id': 'melodic_progressions', 'dimensions': '24,6,type=float', 'original_id': 'melodic_progressions'}
+- {'id': 'textural_layers', 'dimensions': '8,8,8,type=float', 'original_id': 'textural_layers'}
+- {'id': 'dynamic_contrasts', 'dimensions': '10,5,type=float', 'original_id': 'dynamic_contrasts'}
+- {'id': 'sonic_atmospheres', 'dimensions': '15,7,type=float', 'original_id': 'sonic_atmospheres'}
+- {'id': 'temporal_structures', 'dimensions': '20,3,type=float', 'original_id': 'temporal_structures'}
+- {'id': 'orchestral_sections', 'dimensions': '9,12,6,type=float', 'original_id': 'orchestral_sections'}
+- {'id': 'polyrhythmic_layers', 'dimensions': '8,16,4,type=float', 'original_id': 'polyrhythmic_layers'}
+- {'id': 'ambient_textures', 'dimensions': '20,8,5,type=float', 'original_id': 'ambient_textures'}
+- {'id': 'crescendo_dynamics', 'dimensions': '15,10,type=float', 'original_id': 'crescendo_dynamics'}
+- {'id': 'call_response_patterns', 'dimensions': '12,8,type=float', 'original_id': 'call_response_patterns'}
+- {'id': 'leitmotif_themes', 'dimensions': '6,20,8,type=float', 'original_id': 'leitmotif_themes'}
+- {'id': 'counterpoint_voices', 'dimensions': '8,12,6,type=float', 'original_id': 'counterpoint_voices'}
+- {'id': 'modulation_sequences', 'dimensions': '16,8,type=float', 'original_id': 'modulation_sequences'}
+- {'id': 'percussion_ensembles', 'dimensions': '10,16,8,type=float', 'original_id': 'percussion_ensembles'}
+- {'id': 'string_arrangements', 'dimensions': '12,8,10,type=float', 'original_id': 'string_arrangements'}
+- {'id': 'wind_harmonies', 'dimensions': '8,10,6,type=float', 'original_id': 'wind_harmonies'}
+- {'id': 'brass_fanfares', 'dimensions': '6,12,4,type=float', 'original_id': 'brass_fanfares'}
+- {'id': 'vocal_choruses', 'dimensions': '16,6,8,type=float', 'original_id': 'vocal_choruses'}
+
+--- CONNECTIONS ---
+- {'sources': ['D_game_start_state', 'D_player_abilities', 'D_weather_conditions'], 'operator': '>', 'targets': ['s_game_state'], 'attributes': {}}
+- {'sources': ['s_game_state'], 'operator': '>', 'targets': ['A_batting_performance', 'A_pitching_effectiveness', 'A_fielding_success'], 'attributes': {}}
+- {'sources': ['s_player_fatigue', 's_team_morale'], 'operator': '>', 'targets': ['A_batting_performance', 'A_pitching_effectiveness'], 'attributes': {}}
+- {'sources': ['s_performance_rhythm'], 'operator': '>', 'targets': ['A_batting_performance', 'A_pitching_effectiveness', 'A_fielding_success'], 'attributes': {}}
+- {'sources': ['s_weather_state', 's_field_conditions'], 'operator': '>', 'targets': ['A_weather_impact', 'A_fielding_success'], 'attributes': {}}
+- {'sources': ['s_crowd_energy'], 'operator': '>', 'targets': ['A_crowd_response', 's_team_morale', 's_pressure_level'], 'attributes': {}}
+- {'sources': ['π_batting_strategy'], 'operator': '>', 'targets': ['u_batting_approach'], 'attributes': {}}
+- {'sources': ['π_pitching_strategy'], 'operator': '>', 'targets': ['u_pitch_selection'], 'attributes': {}}
+- {'sources': ['π_fielding_positioning'], 'operator': '>', 'targets': ['u_fielding_shift'], 'attributes': {}}
+- {'sources': ['π_substitution_timing', 's_player_fatigue'], 'operator': '>', 'targets': ['u_substitution_made'], 'attributes': {}}
+- {'sources': ['s_game_state', 'u_pitch_selection', 'u_batting_approach'], 'operator': '>', 'targets': ['B_game_state'], 'attributes': {}}
+- {'sources': ['s_player_fatigue', 'o_pitch_outcome'], 'operator': '>', 'targets': ['B_player_fatigue'], 'attributes': {}}
+- {'sources': ['s_crowd_energy', 'o_batting_result'], 'operator': '>', 'targets': ['B_crowd_energy'], 'attributes': {}}
+- {'sources': ['s_strategic_focus', 'o_strategic_signals'], 'operator': '>', 'targets': ['B_strategic_adaptation'], 'attributes': {}}
+- {'sources': ['A_batting_performance', 's_game_state'], 'operator': '>', 'targets': ['o_batting_result'], 'attributes': {}}
+- {'sources': ['A_pitching_effectiveness', 's_weather_state'], 'operator': '>', 'targets': ['o_pitch_outcome'], 'attributes': {}}
+- {'sources': ['A_fielding_success', 's_field_conditions'], 'operator': '>', 'targets': ['o_fielding_action'], 'attributes': {}}
+- {'sources': ['A_crowd_response', 's_crowd_energy'], 'operator': '>', 'targets': ['o_crowd_noise'], 'attributes': {}}
+- {'sources': ['s_scoreboard_state'], 'operator': '>', 'targets': ['o_scoreboard'], 'attributes': {}}
+- {'sources': ['o_crowd_noise', 'o_batting_result'], 'operator': '>', 'targets': ['s_momentum'], 'attributes': {}}
+- {'sources': ['s_momentum'], 'operator': '>', 'targets': ['C_winning_preference', 's_team_morale'], 'attributes': {}}
+- {'sources': ['o_umpire_calls', 's_pressure_level'], 'operator': '>', 'targets': ['s_umpire_mood'], 'attributes': {}}
+- {'sources': ['harmonic_resonance'], 'operator': '>', 'targets': ['melodic_progressions', 'textural_layers', 'orchestral_sections'], 'attributes': {}}
+- {'sources': ['rhythmic_patterns'], 'operator': '>', 'targets': ['temporal_structures', 'polyrhythmic_layers', 'percussion_ensembles'], 'attributes': {}}
+- {'sources': ['dynamic_contrasts', 'sonic_atmospheres'], 'operator': '>', 'targets': ['textural_layers', 'ambient_textures', 'crescendo_dynamics'], 'attributes': {}}
+- {'sources': ['s_crowd_energy', 's_momentum'], 'operator': '>', 'targets': ['dynamic_contrasts', 'call_response_patterns'], 'attributes': {}}
+- {'sources': ['s_musical_tension', 's_harmonic_complexity'], 'operator': '>', 'targets': ['leitmotif_themes', 'counterpoint_voices'], 'attributes': {}}
+- {'sources': ['s_rhythmic_pulse', 's_dramatic_buildup'], 'operator': '>', 'targets': ['modulation_sequences', 'brass_fanfares'], 'attributes': {}}
+- {'sources': ['s_emotional_narrative', 's_audience_connection'], 'operator': '>', 'targets': ['string_arrangements', 'vocal_choruses'], 'attributes': {}}
+- {'sources': ['s_stadium_resonance', 's_sonic_atmosphere'], 'operator': '>', 'targets': ['wind_harmonies', 'ambient_textures'], 'attributes': {}}
+- {'sources': ['temporal_structures'], 'operator': '>', 'targets': ['B_rhythm_dynamics', 'B_harmonic_evolution', 'B_emotional_arc'], 'attributes': {}}
+- {'sources': ['orchestral_sections'], 'operator': '>', 'targets': ['A_ballpark_acoustics', 'A_broadcast_excitement'], 'attributes': {}}
+- {'sources': ['polyrhythmic_layers'], 'operator': '>', 'targets': ['B_dramatic_tension', 'B_sonic_complexity'], 'attributes': {}}
+- {'sources': ['crescendo_dynamics'], 'operator': '>', 'targets': ['π_musical_dynamics', 'π_dramatic_timing'], 'attributes': {}}
+- {'sources': ['leitmotif_themes'], 'operator': '>', 'targets': ['A_historical_matchups', 'A_seasonal_performance'], 'attributes': {}}
+- {'sources': ['modulation_sequences'], 'operator': '>', 'targets': ['B_textural_layers', 'B_audience_engagement'], 'attributes': {}}
+- {'sources': ['vocal_choruses'], 'operator': '>', 'targets': ['A_crowd_response', 'A_fan_loyalty'], 'attributes': {}}
+- {'sources': ['o_audio_cues', 'o_broadcast_graphics'], 'operator': '>', 'targets': ['s_broadcast_energy', 'π_crowd_engagement'], 'attributes': {}}
+- {'sources': ['u_crowd_wave_initiation', 'u_between_innings_show'], 'operator': '>', 'targets': ['s_audience_connection', 'A_crowd_response'], 'attributes': {}}
+- {'sources': ['π_sonic_layering', 'π_emotional_arc'], 'operator': '>', 'targets': ['s_musical_tension', 's_harmonic_complexity'], 'attributes': {}}
+- {'sources': ['counterpoint_voices', 'brass_fanfares'], 'operator': '>', 'targets': ['B_broadcast_narrative', 'C_sonic_richness'], 'attributes': {}}
+- {'sources': ['percussion_ensembles', 'string_arrangements'], 'operator': '>', 'targets': ['s_dramatic_buildup', 'C_dramatic_climax'], 'attributes': {}}
+- {'sources': ['wind_harmonies', 'ambient_textures'], 'operator': '>', 'targets': ['s_stadium_resonance', 'C_harmonic_resolution'], 'attributes': {}}
+
+--- INITIALPARAMETERIZATION ---
+- game_duration: 9
+- players_per_team: 9
+- max_score_differential: 15
+- weather_stability: 0.8
+- A_batting_performance: [((0.25, 0.3, 0.2, 0.15), (0.2, 0.25, 0.3, 0.25), (0.3, 0.2, 0.25, 0.25), (0.15, 0.25, 0.35, 0.25), (0.22, 0.28, 0.25, 0.25)), ((0.28, 0.32, 0.22, 0.18), (0.22, 0.27, 0.32, 0.27), (0.32, 0.22, 0.27, 0.27), (0.17, 0.27, 0.37, 0.27), (0.24, 0.3, 0.27, 0.27)), ((0.26, 0.31, 0.21, 0.16), (0.21, 0.26, 0.31, 0.26), (0.31, 0.21, 0.26, 0.26), (0.16, 0.26, 0.36, 0.26), (0.23, 0.29, 0.26, 0.26)), ((0.24, 0.29, 0.19, 0.14), (0.19, 0.24, 0.29, 0.24), (0.29, 0.19, 0.24, 0.24), (0.14, 0.24, 0.34, 0.24), (0.21, 0.27, 0.24, 0.24)), ((0.27, 0.33, 0.23, 0.17), (0.23, 0.28, 0.33, 0.28), (0.33, 0.23, 0.28, 0.28), (0.18, 0.28, 0.38, 0.28), (0.25, 0.31, 0.28, 0.28)), ((0.29, 0.34, 0.24, 0.19), (0.24, 0.29, 0.34, 0.29), (0.34, 0.24, 0.29, 0.29), (0.19, 0.29, 0.39, 0.29), (0.26, 0.32, 0.29, 0.29)), ((0.23, 0.28, 0.18, 0.13), (0.18, 0.23, 0.28, 0.23), (0.28, 0.18, 0.23, 0.23), (0.13, 0.23, 0.33, 0.23), (0.2, 0.26, 0.23, 0.23)), ((0.25, 0.3, 0.2, 0.15), (0.2, 0.25, 0.3, 0.25), (0.3, 0.2, 0.25, 0.25), (0.15, 0.25, 0.35, 0.25), (0.22, 0.28, 0.25, 0.25)), ((0.22, 0.27, 0.17, 0.12), (0.17, 0.22, 0.27, 0.22), (0.27, 0.17, 0.22, 0.22), (0.12, 0.22, 0.32, 0.22), (0.19, 0.25, 0.22, 0.22))]
+- C_winning_preference: [0.8, 0.1, 0.1]
+- C_entertainment_value: [0.6, 0.8, 0.9, 0.7, 0.5, 0.3, 0.4]
+- C_player_safety: [0.9, 0.8, 0.7, 0.6, 0.5]
+- C_game_pace: [0.3, 0.7, 0.6, 0.4]
+- D_game_start_state: [0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04]
+- D_player_abilities: [0.15, 0.12, 0.1, 0.08, 0.12, 0.13, 0.09, 0.11, 0.1]
+- D_weather_conditions: [0.4, 0.3, 0.2, 0.1]
+- harmonic_resonance: [((0.1, 0.2, 0.15, 0.25, 0.1, 0.05, 0.15), (0.08, 0.18, 0.12, 0.22, 0.08, 0.04, 0.12)), ((0.12, 0.22, 0.17, 0.27, 0.12, 0.07, 0.17), (0.1, 0.2, 0.14, 0.24, 0.1, 0.06, 0.14)), ((0.09, 0.19, 0.14, 0.24, 0.09, 0.04, 0.14), (0.07, 0.17, 0.11, 0.21, 0.07, 0.03, 0.11)), ((0.11, 0.21, 0.16, 0.26, 0.11, 0.06, 0.16), (0.09, 0.19, 0.13, 0.23, 0.09, 0.05, 0.13)), ((0.13, 0.23, 0.18, 0.28, 0.13, 0.08, 0.18), (0.11, 0.21, 0.15, 0.25, 0.11, 0.07, 0.15)), ((0.08, 0.18, 0.13, 0.23, 0.08, 0.03, 0.13), (0.06, 0.16, 0.1, 0.2, 0.06, 0.02, 0.1)), ((0.1, 0.2, 0.15, 0.25, 0.1, 0.05, 0.15), (0.08, 0.18, 0.12, 0.22, 0.08, 0.04, 0.12)), ((0.14, 0.24, 0.19, 0.29, 0.14, 0.09, 0.19), (0.12, 0.22, 0.16, 0.26, 0.12, 0.08, 0.16)), ((0.07, 0.17, 0.12, 0.22, 0.07, 0.02, 0.12), (0.05, 0.15, 0.09, 0.19, 0.05, 0.01, 0.09)), ((0.15, 0.25, 0.2, 0.3, 0.15, 0.1, 0.2), (0.13, 0.23, 0.17, 0.27, 0.13, 0.09, 0.17)), ((0.06, 0.16, 0.11, 0.21, 0.06, 0.01, 0.11), (0.04, 0.14, 0.08, 0.18, 0.04, 0.0, 0.08)), ((0.16, 0.26, 0.21, 0.31, 0.16, 0.11, 0.21), (0.14, 0.24, 0.18, 0.28, 0.14, 0.1, 0.18))]
+- rhythmic_patterns: [((0.25, 0.5, 0.75, 1.0), (0.33, 0.66, 1.0, 0.5), (0.2, 0.4, 0.6, 0.8), (0.125, 0.25, 0.375, 0.5)), ((0.3, 0.6, 0.9, 1.2), (0.4, 0.8, 1.2, 0.6), (0.24, 0.48, 0.72, 0.96), (0.15, 0.3, 0.45, 0.6)), ((0.35, 0.7, 1.05, 1.4), (0.45, 0.9, 1.35, 0.7), (0.28, 0.56, 0.84, 1.12), (0.175, 0.35, 0.525, 0.7))]
+

@@ -1,0 +1,1864 @@
+{
+    "file_path": "gnn/examples/baseball_game_active_inference.md",
+    "name": "Baseball Game Active Inference Model",
+    "raw_sections": {
+        "GNNSection": "BaseballGameActiveInference",
+        "GNNVersionAndFlags": "GNN v1",
+        "ModelName": "Baseball Game Active Inference Model",
+        "ModelAnnotation": "This model represents a comprehensive Active Inference framework for baseball game simulation.\nIt models the dynamic interactions between players, game state, environmental conditions, and strategic decisions.\nThe model includes:\n- Multi-agent player behaviors (batters, pitchers, fielders)\n- Game state evolution (innings, scores, outs)\n- Environmental factors (weather, crowd, field conditions)\n- Strategic decision making (play calling, substitutions)\n- Performance prediction and adaptation\n- Crowd dynamics and emotional responses\nThis rich model structure is designed to demonstrate diverse sonic phenomena through SAPF audio generation.",
+        "StateSpaceBlock": "# Likelihood Matrices - A matrices (Echo effects, sine waves, harmonic series)\nA_batting_performance[9,5,4,type=float]     # Batting likelihood per position, situation, weather\nA_pitching_effectiveness[7,6,3,type=float]  # Pitching likelihood per pitch type, count, batter stance\nA_fielding_success[9,8,5,type=float]        # Fielding likelihood per position, ball type, difficulty\nA_crowd_response[5,7,3,type=float]          # Crowd reaction likelihood per game event, score difference, inning\nA_weather_impact[4,3,6,type=float]          # Weather impact on game events\nA_strategic_success[8,4,5,type=float]       # Strategic decision effectiveness\nA_injury_probability[9,3,4,type=float]      # Player injury likelihood per position, fatigue, conditions\nA_momentum_shift[6,5,3,type=float]          # Game momentum likelihood changes\nA_umpire_decisions[4,8,3,type=float]        # Umpire call likelihood per situation\nA_ballpark_acoustics[12,6,4,type=float]     # Stadium acoustic response patterns\nA_broadcast_excitement[8,5,7,type=float]    # Broadcast commentary intensity\nA_player_chemistry[9,9,4,type=float]        # Team chemistry interaction matrix\nA_seasonal_performance[12,8,3,type=float]   # Season-long performance patterns\nA_historical_matchups[15,10,5,type=float]   # Historical team vs team patterns\nA_fan_loyalty[7,4,6,type=float]             # Fan base loyalty response patterns\nA_media_coverage[6,8,4,type=float]          # Media attention impact patterns\n\n# Transition Matrices - B matrices (Clean processing, high amplitude, rhythmic patterns)\nB_game_state[25,25,12,type=float]           # Game state transitions per possible actions\nB_inning_progression[9,9,3,type=float]      # Inning progression dynamics\nB_player_fatigue[5,5,8,type=float]          # Player fatigue evolution per position\nB_score_evolution[21,21,15,type=float]      # Score progression dynamics\nB_strategic_adaptation[6,6,9,type=float]    # Team strategy evolution\nB_crowd_energy[7,7,4,type=float]            # Crowd energy level transitions\nB_weather_changes[4,4,2,type=float]         # Weather condition evolution\nB_performance_trends[8,8,5,type=float]      # Player performance trend evolution\nB_dramatic_tension[10,10,6,type=float]      # Game drama tension evolution\nB_rhythm_dynamics[16,16,8,type=float]       # Musical rhythm progression patterns\nB_harmonic_evolution[12,12,9,type=float]    # Harmonic complexity development\nB_textural_layers[8,8,12,type=float]        # Audio texture layer transitions\nB_emotional_arc[15,15,7,type=float]         # Emotional narrative progression\nB_sonic_complexity[20,20,10,type=float]     # Overall sonic complexity evolution\nB_audience_engagement[6,6,8,type=float]     # Audience engagement dynamics\nB_broadcast_narrative[10,10,5,type=float]   # Broadcast story development\n\n# Preference Vectors - C matrices (Noise modulation for uncertainty, dynamic preferences)\nC_winning_preference[3,type=float]          # Team preference for winning outcomes\nC_entertainment_value[7,type=float]         # Crowd preference for exciting plays\nC_player_safety[5,type=float]               # Preference for player safety outcomes\nC_game_pace[4,type=float]                   # Preference for game pacing\nC_strategic_variety[6,type=float]           # Preference for strategic diversity\nC_performance_consistency[8,type=float]     # Preference for consistent performance\nC_weather_comfort[4,type=float]             # Preference for comfortable conditions\nC_home_advantage[3,type=float]              # Home team advantage preferences\nC_sonic_richness[12,type=float]             # Preference for audio complexity layers\nC_dramatic_climax[9,type=float]             # Preference for dramatic peak moments\nC_rhythmic_variation[8,type=float]          # Preference for rhythmic diversity\nC_harmonic_resolution[6,type=float]         # Preference for musical resolution\nC_crowd_participation[5,type=float]         # Preference for audience interaction\nC_broadcast_quality[7,type=float]           # Preference for broadcast entertainment\nC_historical_significance[4,type=float]     # Preference for memorable moments\nC_emotional_intensity[10,type=float]        # Preference for emotional engagement\n\n# Prior Vectors - D matrices (Prior distributions)\nD_game_start_state[25,type=float]           # Prior over initial game conditions\nD_player_abilities[9,type=float]            # Prior over player skill distributions\nD_weather_conditions[4,type=float]          # Prior over weather at game start\nD_crowd_mood[7,type=float]                  # Prior over initial crowd enthusiasm\nD_strategic_tendencies[6,type=float]        # Prior over team strategic preferences\nD_field_conditions[5,type=float]            # Prior over field quality and conditions\nD_umpire_tendencies[8,type=float]           # Prior over umpire decision patterns\nD_seasonal_factors[12,type=float]           # Prior over seasonal performance factors\n\n# Hidden States - s variables (Subtle delay effects for mystery, temporal depth)\ns_game_state[25,type=continuous]            # Current overall game state\ns_player_fatigue[9,type=continuous]         # Fatigue levels for all players\ns_team_morale[2,type=continuous]            # Morale for home and away teams\ns_crowd_energy[7,type=continuous]           # Current crowd energy level\ns_weather_state[4,type=continuous]          # Current weather conditions\ns_strategic_focus[6,type=continuous]        # Current strategic emphasis\ns_momentum[3,type=continuous]               # Game momentum (home/neutral/away)\ns_pressure_level[5,type=continuous]         # Psychological pressure levels\ns_field_conditions[5,type=continuous]       # Current field condition state\ns_umpire_mood[3,type=continuous]            # Umpire decision tendencies\ns_injury_risk[9,type=continuous]            # Current injury risk per player\ns_performance_rhythm[8,type=continuous]     # Player performance rhythm states\ns_sonic_atmosphere[15,type=continuous]      # Ambient audio atmosphere state\ns_musical_tension[12,type=continuous]       # Musical tension development state\ns_harmonic_complexity[10,type=continuous]   # Current harmonic complexity level\ns_rhythmic_pulse[16,type=continuous]        # Underlying rhythmic pulse state\ns_emotional_narrative[9,type=continuous]    # Emotional story progression state\ns_dramatic_buildup[8,type=continuous]       # Dramatic tension accumulation\ns_audience_connection[6,type=continuous]    # Audience emotional connection state\ns_broadcast_energy[7,type=continuous]       # Broadcast excitement level\ns_historical_echoes[5,type=continuous]      # Historical resonance patterns\ns_stadium_resonance[11,type=continuous]     # Stadium acoustic resonance state\n\n# Observations - o variables (Square waves + lowpass filtering, percussive elements)\no_scoreboard[21,type=discrete]              # Observable score state\no_inning_display[9,type=discrete]           # Current inning and half\no_player_positions[9,type=discrete]         # Visible player positions\no_crowd_noise[7,type=discrete]              # Audible crowd noise level\no_weather_visible[4,type=discrete]          # Visible weather conditions\no_pitch_outcome[8,type=discrete]            # Observable pitch results\no_batting_result[12,type=discrete]          # Observable batting outcomes\no_fielding_action[15,type=discrete]         # Observable fielding plays\no_strategic_signals[6,type=discrete]        # Visible strategic communications\no_player_expressions[5,type=discrete]       # Observable player emotional states\no_umpire_calls[10,type=discrete]            # Umpire decision outcomes\no_ballpark_atmosphere[8,type=discrete]      # Overall ballpark atmosphere\no_audio_cues[16,type=discrete]              # Stadium audio system cues\no_broadcast_graphics[12,type=discrete]      # Broadcast visual elements\no_fan_reactions[14,type=discrete]           # Observable fan reactions\no_dugout_activity[8,type=discrete]          # Visible dugout communications\no_media_presence[6,type=discrete]           # Media coverage intensity\no_ceremonial_elements[5,type=discrete]      # Ceremonial game elements\no_vendor_activity[4,type=discrete]          # Stadium vendor activity\no_security_alerts[3,type=discrete]          # Security-related observations\no_weather_changes[7,type=discrete]          # Observable weather transitions\no_field_maintenance[6,type=discrete]        # Field maintenance activities\n\n# Policy and Control - π and u variables (Pulse waves with noise, rhythmic complexity)\nπ_batting_strategy[6,type=discrete]         # Batting approach policy\nπ_pitching_strategy[8,type=discrete]        # Pitching strategy policy\nπ_fielding_positioning[9,type=discrete]     # Fielding position policy\nπ_base_running[4,type=discrete]             # Base running strategy policy\nπ_substitution_timing[7,type=discrete]      # Player substitution policy\nπ_strategic_calls[10,type=discrete]         # Strategic play calling policy\nπ_crowd_engagement[8,type=discrete]         # Crowd interaction policy\nπ_broadcast_direction[6,type=discrete]      # Broadcast focus policy\nπ_musical_dynamics[12,type=discrete]        # Musical progression policy\nπ_sonic_layering[10,type=discrete]          # Audio layering strategy\nπ_dramatic_timing[9,type=discrete]          # Dramatic moment timing policy\nπ_emotional_arc[7,type=discrete]            # Emotional progression policy\nu_pitch_selection[8,type=int]               # Actual pitch chosen\nu_batting_approach[6,type=int]              # Actual batting approach\nu_fielding_shift[9,type=int]                # Actual fielding positioning\nu_base_steal_attempt[4,type=int]            # Base stealing action\nu_substitution_made[7,type=int]             # Player substitution action\nu_timeout_called[3,type=int]                # Timeout/conference action\nu_crowd_wave_initiation[5,type=int]         # Crowd wave timing action\nu_anthem_performance[4,type=int]            # National anthem execution\nu_between_innings_show[6,type=int]          # Between-innings entertainment\nu_replay_review[7,type=int]                 # Video replay decision action\nu_ceremonial_pitch[3,type=int]              # Ceremonial first pitch action\nu_stadium_lighting[8,type=int]              # Stadium lighting control action\n\n# Advanced SAPF Audio Generation Variables (Extended composition features)\nharmonic_resonance[12,8,type=float]         # Complex harmonic structures\nrhythmic_patterns[16,4,type=float]          # Rhythmic timing patterns\nmelodic_progressions[24,6,type=float]       # Melodic development structures\ntextural_layers[8,8,8,type=float]           # Multi-dimensional textural complexity\ndynamic_contrasts[10,5,type=float]          # Dynamic range variations\nsonic_atmospheres[15,7,type=float]          # Atmospheric sound generation\ntemporal_structures[20,3,type=float]        # Time-based structural elements\norchestral_sections[9,12,6,type=float]     # Full orchestral arrangement patterns\npolyrhythmic_layers[8,16,4,type=float]     # Complex polyrhythmic structures\nambient_textures[20,8,5,type=float]        # Extended ambient soundscape layers\ncrescendo_dynamics[15,10,type=float]       # Musical crescendo and diminuendo patterns\ncall_response_patterns[12,8,type=float]    # Musical call and response structures\nleitmotif_themes[6,20,8,type=float]        # Recurring thematic musical elements\ncounterpoint_voices[8,12,6,type=float]     # Contrapuntal musical voice patterns\nmodulation_sequences[16,8,type=float]      # Key and mode modulation patterns\npercussion_ensembles[10,16,8,type=float]   # Complex percussion arrangements\nstring_arrangements[12,8,10,type=float]    # String section orchestration\nwind_harmonies[8,10,6,type=float]          # Wind instrument harmony patterns\nbrass_fanfares[6,12,4,type=float]          # Brass section fanfare patterns\nvocal_choruses[16,6,8,type=float]          # Choral arrangement patterns",
+        "Connections": "# Primary game flow\n(D_game_start_state, D_player_abilities, D_weather_conditions) > s_game_state\ns_game_state > (A_batting_performance, A_pitching_effectiveness, A_fielding_success)\n\n# Player dynamics\n(s_player_fatigue, s_team_morale) > (A_batting_performance, A_pitching_effectiveness)\ns_performance_rhythm > (A_batting_performance, A_pitching_effectiveness, A_fielding_success)\n\n# Environmental influences\n(s_weather_state, s_field_conditions) > (A_weather_impact, A_fielding_success)\ns_crowd_energy > (A_crowd_response, s_team_morale, s_pressure_level)\n\n# Strategic interactions\nπ_batting_strategy > u_batting_approach\nπ_pitching_strategy > u_pitch_selection\nπ_fielding_positioning > u_fielding_shift\n(π_substitution_timing, s_player_fatigue) > u_substitution_made\n\n# State evolution\n(s_game_state, u_pitch_selection, u_batting_approach) > B_game_state\n(s_player_fatigue, o_pitch_outcome) > B_player_fatigue\n(s_crowd_energy, o_batting_result) > B_crowd_energy\n(s_strategic_focus, o_strategic_signals) > B_strategic_adaptation\n\n# Observations generation\n(A_batting_performance, s_game_state) > o_batting_result\n(A_pitching_effectiveness, s_weather_state) > o_pitch_outcome\n(A_fielding_success, s_field_conditions) > o_fielding_action\n(A_crowd_response, s_crowd_energy) > o_crowd_noise\ns_scoreboard_state > o_scoreboard\n\n# Feedback loops\n(o_crowd_noise, o_batting_result) > s_momentum\ns_momentum > (C_winning_preference, s_team_morale)\n(o_umpire_calls, s_pressure_level) > s_umpire_mood\n\n# Advanced SAPF Audio Routing and Temporal Development\nharmonic_resonance > (melodic_progressions, textural_layers, orchestral_sections)\nrhythmic_patterns > (temporal_structures, polyrhythmic_layers, percussion_ensembles)\n(dynamic_contrasts, sonic_atmospheres) > (textural_layers, ambient_textures, crescendo_dynamics)\n(s_crowd_energy, s_momentum) > (dynamic_contrasts, call_response_patterns)\n(s_musical_tension, s_harmonic_complexity) > (leitmotif_themes, counterpoint_voices)\n(s_rhythmic_pulse, s_dramatic_buildup) > (modulation_sequences, brass_fanfares)\n(s_emotional_narrative, s_audience_connection) > (string_arrangements, vocal_choruses)\n(s_stadium_resonance, s_sonic_atmosphere) > (wind_harmonies, ambient_textures)\n\n# Extended temporal connections for longer compositions\ntemporal_structures > (B_rhythm_dynamics, B_harmonic_evolution, B_emotional_arc)\norchestral_sections > (A_ballpark_acoustics, A_broadcast_excitement)\npolyrhythmic_layers > (B_dramatic_tension, B_sonic_complexity)\ncrescendo_dynamics > (π_musical_dynamics, π_dramatic_timing)\nleitmotif_themes > (A_historical_matchups, A_seasonal_performance)\nmodulation_sequences > (B_textural_layers, B_audience_engagement)\nvocal_choruses > (A_crowd_response, A_fan_loyalty)\n\n# Multi-layered feedback loops for complex audio evolution\n(o_audio_cues, o_broadcast_graphics) > (s_broadcast_energy, π_crowd_engagement)\n(u_crowd_wave_initiation, u_between_innings_show) > (s_audience_connection, A_crowd_response)\n(π_sonic_layering, π_emotional_arc) > (s_musical_tension, s_harmonic_complexity)\n(counterpoint_voices, brass_fanfares) > (B_broadcast_narrative, C_sonic_richness)\n(percussion_ensembles, string_arrangements) > (s_dramatic_buildup, C_dramatic_climax)\n(wind_harmonies, ambient_textures) > (s_stadium_resonance, C_harmonic_resolution)",
+        "InitialParameterization": "# Game setup parameters\ngame_duration=9  # Standard 9 innings\nplayers_per_team=9\nmax_score_differential=15\nweather_stability=0.8\n\n# Batting performance matrix (position x situation x weather)\nA_batting_performance={\n  ((0.25, 0.30, 0.20, 0.15), (0.20, 0.25, 0.30, 0.25), (0.30, 0.20, 0.25, 0.25), (0.15, 0.25, 0.35, 0.25), (0.22, 0.28, 0.25, 0.25)),\n  ((0.28, 0.32, 0.22, 0.18), (0.22, 0.27, 0.32, 0.27), (0.32, 0.22, 0.27, 0.27), (0.17, 0.27, 0.37, 0.27), (0.24, 0.30, 0.27, 0.27)),\n  ((0.26, 0.31, 0.21, 0.16), (0.21, 0.26, 0.31, 0.26), (0.31, 0.21, 0.26, 0.26), (0.16, 0.26, 0.36, 0.26), (0.23, 0.29, 0.26, 0.26)),\n  ((0.24, 0.29, 0.19, 0.14), (0.19, 0.24, 0.29, 0.24), (0.29, 0.19, 0.24, 0.24), (0.14, 0.24, 0.34, 0.24), (0.21, 0.27, 0.24, 0.24)),\n  ((0.27, 0.33, 0.23, 0.17), (0.23, 0.28, 0.33, 0.28), (0.33, 0.23, 0.28, 0.28), (0.18, 0.28, 0.38, 0.28), (0.25, 0.31, 0.28, 0.28)),\n  ((0.29, 0.34, 0.24, 0.19), (0.24, 0.29, 0.34, 0.29), (0.34, 0.24, 0.29, 0.29), (0.19, 0.29, 0.39, 0.29), (0.26, 0.32, 0.29, 0.29)),\n  ((0.23, 0.28, 0.18, 0.13), (0.18, 0.23, 0.28, 0.23), (0.28, 0.18, 0.23, 0.23), (0.13, 0.23, 0.33, 0.23), (0.20, 0.26, 0.23, 0.23)),\n  ((0.25, 0.30, 0.20, 0.15), (0.20, 0.25, 0.30, 0.25), (0.30, 0.20, 0.25, 0.25), (0.15, 0.25, 0.35, 0.25), (0.22, 0.28, 0.25, 0.25)),\n  ((0.22, 0.27, 0.17, 0.12), (0.17, 0.22, 0.27, 0.22), (0.27, 0.17, 0.22, 0.22), (0.12, 0.22, 0.32, 0.22), (0.19, 0.25, 0.22, 0.22))\n}\n\n# Preference vectors\nC_winning_preference={(0.8, 0.1, 0.1)}\nC_entertainment_value={(0.6, 0.8, 0.9, 0.7, 0.5, 0.3, 0.4)}\nC_player_safety={(0.9, 0.8, 0.7, 0.6, 0.5)}\nC_game_pace={(0.3, 0.7, 0.6, 0.4)}\n\n# Prior distributions\nD_game_start_state={(0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04)}\nD_player_abilities={(0.15, 0.12, 0.10, 0.08, 0.12, 0.13, 0.09, 0.11, 0.10)}\nD_weather_conditions={(0.4, 0.3, 0.2, 0.1)}\n\n# Sonic demonstration parameters\nharmonic_resonance={\n  ((0.1, 0.2, 0.15, 0.25, 0.1, 0.05, 0.15), (0.08, 0.18, 0.12, 0.22, 0.08, 0.04, 0.12)),\n  ((0.12, 0.22, 0.17, 0.27, 0.12, 0.07, 0.17), (0.10, 0.20, 0.14, 0.24, 0.10, 0.06, 0.14)),\n  ((0.09, 0.19, 0.14, 0.24, 0.09, 0.04, 0.14), (0.07, 0.17, 0.11, 0.21, 0.07, 0.03, 0.11)),\n  ((0.11, 0.21, 0.16, 0.26, 0.11, 0.06, 0.16), (0.09, 0.19, 0.13, 0.23, 0.09, 0.05, 0.13)),\n  ((0.13, 0.23, 0.18, 0.28, 0.13, 0.08, 0.18), (0.11, 0.21, 0.15, 0.25, 0.11, 0.07, 0.15)),\n  ((0.08, 0.18, 0.13, 0.23, 0.08, 0.03, 0.13), (0.06, 0.16, 0.10, 0.20, 0.06, 0.02, 0.10)),\n  ((0.10, 0.20, 0.15, 0.25, 0.10, 0.05, 0.15), (0.08, 0.18, 0.12, 0.22, 0.08, 0.04, 0.12)),\n  ((0.14, 0.24, 0.19, 0.29, 0.14, 0.09, 0.19), (0.12, 0.22, 0.16, 0.26, 0.12, 0.08, 0.16)),\n  ((0.07, 0.17, 0.12, 0.22, 0.07, 0.02, 0.12), (0.05, 0.15, 0.09, 0.19, 0.05, 0.01, 0.09)),\n  ((0.15, 0.25, 0.20, 0.30, 0.15, 0.10, 0.20), (0.13, 0.23, 0.17, 0.27, 0.13, 0.09, 0.17)),\n  ((0.06, 0.16, 0.11, 0.21, 0.06, 0.01, 0.11), (0.04, 0.14, 0.08, 0.18, 0.04, 0.00, 0.08)),\n  ((0.16, 0.26, 0.21, 0.31, 0.16, 0.11, 0.21), (0.14, 0.24, 0.18, 0.28, 0.14, 0.10, 0.18))\n}\n\nrhythmic_patterns={\n  ((0.25, 0.5, 0.75, 1.0), (0.33, 0.66, 1.0, 0.5), (0.2, 0.4, 0.6, 0.8), (0.125, 0.25, 0.375, 0.5)),\n  ((0.3, 0.6, 0.9, 1.2), (0.4, 0.8, 1.2, 0.6), (0.24, 0.48, 0.72, 0.96), (0.15, 0.3, 0.45, 0.6)),\n  ((0.35, 0.7, 1.05, 1.4), (0.45, 0.9, 1.35, 0.7), (0.28, 0.56, 0.84, 1.12), (0.175, 0.35, 0.525, 0.7))\n}",
+        "Equations": "# Baseball Active Inference Equations:\n#\n# Game State Evolution:\n# s_t+1 = f(s_t, u_t, ε_t) where ε_t ~ N(0, Σ_process)\n# \n# Observation Model:\n# o_t = g(s_t, η_t) where η_t ~ N(0, Σ_obs)\n#\n# Policy Optimization:\n# π*(a|s) = softmax(Q(s,a) / τ)\n# where Q(s,a) = E[R(s,a)] - KL[q(s'|s,a) || p(s'|s,a)]\n#\n# Expected Free Energy:\n# G(π) = E_q[ln q(s) - ln p(s,o)]\n#      = E_q[ln q(s)] - E_q[ln p(s)] - E_q[ln p(o|s)]\n#      = Complexity - Accuracy\n#\n# Batting Success Probability:\n# P(hit | pitcher_type, count, weather) = σ(w^T φ(pitcher, count, weather))\n#\n# Crowd Energy Dynamics:\n# E_crowd(t+1) = α * E_crowd(t) + β * excitement(play_t) + γ * momentum(t)\n#\n# Strategic Decision Making:\n# π_strategy(t) = argmax_a E[U(outcome) | s(t), a]\n# where U incorporates winning probability and entertainment value",
+        "Time": "Dynamic\nDiscreteTime=inning_progression\nModelTimeHorizon=27  # Extended for 3x longer compositions (27 half-innings + extra time + ceremonies)\nTemporalLayers=9     # Multiple temporal scales for complex musical development\nSonicDuration=180    # Target 3-minute audio compositions\nMusicalMovements=7   # Pre-game, 9 innings progression, post-game celebration",
+        "ActInfOntologyAnnotation": "A_batting_performance=LikelihoodMatrixBattingPerformance\nA_pitching_effectiveness=LikelihoodMatrixPitchingEffectiveness\nA_fielding_success=LikelihoodMatrixFieldingSuccess\nA_crowd_response=LikelihoodMatrixCrowdResponse\nB_game_state=TransitionMatrixGameState\nB_inning_progression=TransitionMatrixInningProgression\nB_player_fatigue=TransitionMatrixPlayerFatigue\nB_score_evolution=TransitionMatrixScoreEvolution\nC_winning_preference=PreferenceVectorWinning\nC_entertainment_value=PreferenceVectorEntertainment\nC_player_safety=PreferenceVectorSafety\nD_game_start_state=PriorGameStartState\nD_player_abilities=PriorPlayerAbilities\ns_game_state=HiddenStateGameCondition\ns_player_fatigue=HiddenStatePlayerFatigue\ns_team_morale=HiddenStateTeamMorale\ns_crowd_energy=HiddenStateCrowdEnergy\no_scoreboard=ObservationScoreboard\no_crowd_noise=ObservationCrowdNoise\no_pitch_outcome=ObservationPitchOutcome\nπ_batting_strategy=PolicyBattingStrategy\nπ_pitching_strategy=PolicyPitchingStrategy\nu_pitch_selection=ActionPitchSelection\nu_batting_approach=ActionBattingApproach\nharmonic_resonance=SonicHarmonicResonance\nrhythmic_patterns=SonicRhythmicPatterns\nmelodic_progressions=SonicMelodicProgressions\ntextural_layers=SonicTexturalLayers",
+        "ModelParameters": "total_innings: 9\nplayers_per_team: 9\nmax_game_duration_minutes: 240\nweather_conditions: 4\ncrowd_capacity: 45000\nstrategic_options: 6\nsonic_complexity_layers: 20        # Increased for richer audio textures\naudio_oscillator_count: 45         # Total oscillators for complex harmonies\nmusical_movements: 7               # Structured musical progression\nharmonic_layers: 12                # Multiple harmonic complexity levels\nrhythmic_subdivisions: 16          # Complex polyrhythmic patterns\norchestral_sections: 9             # Full orchestral arrangement capability\ntemporal_resolution: 180           # High temporal resolution for detailed evolution\ndynamic_range_layers: 10           # Extended dynamic range capabilities\ntonal_palette_size: 24             # Extended tonal color palette\nsonic_architecture_depth: 8        # Multi-dimensional sonic architecture",
+        "Footer": "Baseball Game Active Inference Model - Advanced SAPF Audio Generation Framework\nExtended Composition Architecture for Complex, Long-Duration Musical Narratives",
+        "Signature": "Creator: AI Assistant for GNN-SAPF Integration\nDate: 2024-06-23\nPurpose: Advanced demonstration of SAPF sonic phenomena through comprehensive baseball game modeling\nComplexity: Ultra-High (100+ variables, 45+ oscillators, 180-second target duration)\nAudio Features: Orchestral arrangements, polyrhythmic layers, harmonic evolution, dramatic arcs\nMusical Architecture: 7-movement composition with extended temporal development\nSAPF Integration: Maximized variable diversity for richest possible audio generation"
+    },
+    "statespaceblock": [
+        {
+            "id": "A_batting_performance",
+            "dimensions": "9,5,4,type=float",
+            "original_id": "A_batting_performance"
+        },
+        {
+            "id": "A_pitching_effectiveness",
+            "dimensions": "7,6,3,type=float",
+            "original_id": "A_pitching_effectiveness"
+        },
+        {
+            "id": "A_fielding_success",
+            "dimensions": "9,8,5,type=float",
+            "original_id": "A_fielding_success"
+        },
+        {
+            "id": "A_crowd_response",
+            "dimensions": "5,7,3,type=float",
+            "original_id": "A_crowd_response"
+        },
+        {
+            "id": "A_weather_impact",
+            "dimensions": "4,3,6,type=float",
+            "original_id": "A_weather_impact"
+        },
+        {
+            "id": "A_strategic_success",
+            "dimensions": "8,4,5,type=float",
+            "original_id": "A_strategic_success"
+        },
+        {
+            "id": "A_injury_probability",
+            "dimensions": "9,3,4,type=float",
+            "original_id": "A_injury_probability"
+        },
+        {
+            "id": "A_momentum_shift",
+            "dimensions": "6,5,3,type=float",
+            "original_id": "A_momentum_shift"
+        },
+        {
+            "id": "A_umpire_decisions",
+            "dimensions": "4,8,3,type=float",
+            "original_id": "A_umpire_decisions"
+        },
+        {
+            "id": "A_ballpark_acoustics",
+            "dimensions": "12,6,4,type=float",
+            "original_id": "A_ballpark_acoustics"
+        },
+        {
+            "id": "A_broadcast_excitement",
+            "dimensions": "8,5,7,type=float",
+            "original_id": "A_broadcast_excitement"
+        },
+        {
+            "id": "A_player_chemistry",
+            "dimensions": "9,9,4,type=float",
+            "original_id": "A_player_chemistry"
+        },
+        {
+            "id": "A_seasonal_performance",
+            "dimensions": "12,8,3,type=float",
+            "original_id": "A_seasonal_performance"
+        },
+        {
+            "id": "A_historical_matchups",
+            "dimensions": "15,10,5,type=float",
+            "original_id": "A_historical_matchups"
+        },
+        {
+            "id": "A_fan_loyalty",
+            "dimensions": "7,4,6,type=float",
+            "original_id": "A_fan_loyalty"
+        },
+        {
+            "id": "A_media_coverage",
+            "dimensions": "6,8,4,type=float",
+            "original_id": "A_media_coverage"
+        },
+        {
+            "id": "B_game_state",
+            "dimensions": "25,25,12,type=float",
+            "original_id": "B_game_state"
+        },
+        {
+            "id": "B_inning_progression",
+            "dimensions": "9,9,3,type=float",
+            "original_id": "B_inning_progression"
+        },
+        {
+            "id": "B_player_fatigue",
+            "dimensions": "5,5,8,type=float",
+            "original_id": "B_player_fatigue"
+        },
+        {
+            "id": "B_score_evolution",
+            "dimensions": "21,21,15,type=float",
+            "original_id": "B_score_evolution"
+        },
+        {
+            "id": "B_strategic_adaptation",
+            "dimensions": "6,6,9,type=float",
+            "original_id": "B_strategic_adaptation"
+        },
+        {
+            "id": "B_crowd_energy",
+            "dimensions": "7,7,4,type=float",
+            "original_id": "B_crowd_energy"
+        },
+        {
+            "id": "B_weather_changes",
+            "dimensions": "4,4,2,type=float",
+            "original_id": "B_weather_changes"
+        },
+        {
+            "id": "B_performance_trends",
+            "dimensions": "8,8,5,type=float",
+            "original_id": "B_performance_trends"
+        },
+        {
+            "id": "B_dramatic_tension",
+            "dimensions": "10,10,6,type=float",
+            "original_id": "B_dramatic_tension"
+        },
+        {
+            "id": "B_rhythm_dynamics",
+            "dimensions": "16,16,8,type=float",
+            "original_id": "B_rhythm_dynamics"
+        },
+        {
+            "id": "B_harmonic_evolution",
+            "dimensions": "12,12,9,type=float",
+            "original_id": "B_harmonic_evolution"
+        },
+        {
+            "id": "B_textural_layers",
+            "dimensions": "8,8,12,type=float",
+            "original_id": "B_textural_layers"
+        },
+        {
+            "id": "B_emotional_arc",
+            "dimensions": "15,15,7,type=float",
+            "original_id": "B_emotional_arc"
+        },
+        {
+            "id": "B_sonic_complexity",
+            "dimensions": "20,20,10,type=float",
+            "original_id": "B_sonic_complexity"
+        },
+        {
+            "id": "B_audience_engagement",
+            "dimensions": "6,6,8,type=float",
+            "original_id": "B_audience_engagement"
+        },
+        {
+            "id": "B_broadcast_narrative",
+            "dimensions": "10,10,5,type=float",
+            "original_id": "B_broadcast_narrative"
+        },
+        {
+            "id": "C_winning_preference",
+            "dimensions": "3,type=float",
+            "original_id": "C_winning_preference"
+        },
+        {
+            "id": "C_entertainment_value",
+            "dimensions": "7,type=float",
+            "original_id": "C_entertainment_value"
+        },
+        {
+            "id": "C_player_safety",
+            "dimensions": "5,type=float",
+            "original_id": "C_player_safety"
+        },
+        {
+            "id": "C_game_pace",
+            "dimensions": "4,type=float",
+            "original_id": "C_game_pace"
+        },
+        {
+            "id": "C_strategic_variety",
+            "dimensions": "6,type=float",
+            "original_id": "C_strategic_variety"
+        },
+        {
+            "id": "C_performance_consistency",
+            "dimensions": "8,type=float",
+            "original_id": "C_performance_consistency"
+        },
+        {
+            "id": "C_weather_comfort",
+            "dimensions": "4,type=float",
+            "original_id": "C_weather_comfort"
+        },
+        {
+            "id": "C_home_advantage",
+            "dimensions": "3,type=float",
+            "original_id": "C_home_advantage"
+        },
+        {
+            "id": "C_sonic_richness",
+            "dimensions": "12,type=float",
+            "original_id": "C_sonic_richness"
+        },
+        {
+            "id": "C_dramatic_climax",
+            "dimensions": "9,type=float",
+            "original_id": "C_dramatic_climax"
+        },
+        {
+            "id": "C_rhythmic_variation",
+            "dimensions": "8,type=float",
+            "original_id": "C_rhythmic_variation"
+        },
+        {
+            "id": "C_harmonic_resolution",
+            "dimensions": "6,type=float",
+            "original_id": "C_harmonic_resolution"
+        },
+        {
+            "id": "C_crowd_participation",
+            "dimensions": "5,type=float",
+            "original_id": "C_crowd_participation"
+        },
+        {
+            "id": "C_broadcast_quality",
+            "dimensions": "7,type=float",
+            "original_id": "C_broadcast_quality"
+        },
+        {
+            "id": "C_historical_significance",
+            "dimensions": "4,type=float",
+            "original_id": "C_historical_significance"
+        },
+        {
+            "id": "C_emotional_intensity",
+            "dimensions": "10,type=float",
+            "original_id": "C_emotional_intensity"
+        },
+        {
+            "id": "D_game_start_state",
+            "dimensions": "25,type=float",
+            "original_id": "D_game_start_state"
+        },
+        {
+            "id": "D_player_abilities",
+            "dimensions": "9,type=float",
+            "original_id": "D_player_abilities"
+        },
+        {
+            "id": "D_weather_conditions",
+            "dimensions": "4,type=float",
+            "original_id": "D_weather_conditions"
+        },
+        {
+            "id": "D_crowd_mood",
+            "dimensions": "7,type=float",
+            "original_id": "D_crowd_mood"
+        },
+        {
+            "id": "D_strategic_tendencies",
+            "dimensions": "6,type=float",
+            "original_id": "D_strategic_tendencies"
+        },
+        {
+            "id": "D_field_conditions",
+            "dimensions": "5,type=float",
+            "original_id": "D_field_conditions"
+        },
+        {
+            "id": "D_umpire_tendencies",
+            "dimensions": "8,type=float",
+            "original_id": "D_umpire_tendencies"
+        },
+        {
+            "id": "D_seasonal_factors",
+            "dimensions": "12,type=float",
+            "original_id": "D_seasonal_factors"
+        },
+        {
+            "id": "s_game_state",
+            "dimensions": "25,type=continuous",
+            "original_id": "s_game_state"
+        },
+        {
+            "id": "s_player_fatigue",
+            "dimensions": "9,type=continuous",
+            "original_id": "s_player_fatigue"
+        },
+        {
+            "id": "s_team_morale",
+            "dimensions": "2,type=continuous",
+            "original_id": "s_team_morale"
+        },
+        {
+            "id": "s_crowd_energy",
+            "dimensions": "7,type=continuous",
+            "original_id": "s_crowd_energy"
+        },
+        {
+            "id": "s_weather_state",
+            "dimensions": "4,type=continuous",
+            "original_id": "s_weather_state"
+        },
+        {
+            "id": "s_strategic_focus",
+            "dimensions": "6,type=continuous",
+            "original_id": "s_strategic_focus"
+        },
+        {
+            "id": "s_momentum",
+            "dimensions": "3,type=continuous",
+            "original_id": "s_momentum"
+        },
+        {
+            "id": "s_pressure_level",
+            "dimensions": "5,type=continuous",
+            "original_id": "s_pressure_level"
+        },
+        {
+            "id": "s_field_conditions",
+            "dimensions": "5,type=continuous",
+            "original_id": "s_field_conditions"
+        },
+        {
+            "id": "s_umpire_mood",
+            "dimensions": "3,type=continuous",
+            "original_id": "s_umpire_mood"
+        },
+        {
+            "id": "s_injury_risk",
+            "dimensions": "9,type=continuous",
+            "original_id": "s_injury_risk"
+        },
+        {
+            "id": "s_performance_rhythm",
+            "dimensions": "8,type=continuous",
+            "original_id": "s_performance_rhythm"
+        },
+        {
+            "id": "s_sonic_atmosphere",
+            "dimensions": "15,type=continuous",
+            "original_id": "s_sonic_atmosphere"
+        },
+        {
+            "id": "s_musical_tension",
+            "dimensions": "12,type=continuous",
+            "original_id": "s_musical_tension"
+        },
+        {
+            "id": "s_harmonic_complexity",
+            "dimensions": "10,type=continuous",
+            "original_id": "s_harmonic_complexity"
+        },
+        {
+            "id": "s_rhythmic_pulse",
+            "dimensions": "16,type=continuous",
+            "original_id": "s_rhythmic_pulse"
+        },
+        {
+            "id": "s_emotional_narrative",
+            "dimensions": "9,type=continuous",
+            "original_id": "s_emotional_narrative"
+        },
+        {
+            "id": "s_dramatic_buildup",
+            "dimensions": "8,type=continuous",
+            "original_id": "s_dramatic_buildup"
+        },
+        {
+            "id": "s_audience_connection",
+            "dimensions": "6,type=continuous",
+            "original_id": "s_audience_connection"
+        },
+        {
+            "id": "s_broadcast_energy",
+            "dimensions": "7,type=continuous",
+            "original_id": "s_broadcast_energy"
+        },
+        {
+            "id": "s_historical_echoes",
+            "dimensions": "5,type=continuous",
+            "original_id": "s_historical_echoes"
+        },
+        {
+            "id": "s_stadium_resonance",
+            "dimensions": "11,type=continuous",
+            "original_id": "s_stadium_resonance"
+        },
+        {
+            "id": "o_scoreboard",
+            "dimensions": "21,type=discrete",
+            "original_id": "o_scoreboard"
+        },
+        {
+            "id": "o_inning_display",
+            "dimensions": "9,type=discrete",
+            "original_id": "o_inning_display"
+        },
+        {
+            "id": "o_player_positions",
+            "dimensions": "9,type=discrete",
+            "original_id": "o_player_positions"
+        },
+        {
+            "id": "o_crowd_noise",
+            "dimensions": "7,type=discrete",
+            "original_id": "o_crowd_noise"
+        },
+        {
+            "id": "o_weather_visible",
+            "dimensions": "4,type=discrete",
+            "original_id": "o_weather_visible"
+        },
+        {
+            "id": "o_pitch_outcome",
+            "dimensions": "8,type=discrete",
+            "original_id": "o_pitch_outcome"
+        },
+        {
+            "id": "o_batting_result",
+            "dimensions": "12,type=discrete",
+            "original_id": "o_batting_result"
+        },
+        {
+            "id": "o_fielding_action",
+            "dimensions": "15,type=discrete",
+            "original_id": "o_fielding_action"
+        },
+        {
+            "id": "o_strategic_signals",
+            "dimensions": "6,type=discrete",
+            "original_id": "o_strategic_signals"
+        },
+        {
+            "id": "o_player_expressions",
+            "dimensions": "5,type=discrete",
+            "original_id": "o_player_expressions"
+        },
+        {
+            "id": "o_umpire_calls",
+            "dimensions": "10,type=discrete",
+            "original_id": "o_umpire_calls"
+        },
+        {
+            "id": "o_ballpark_atmosphere",
+            "dimensions": "8,type=discrete",
+            "original_id": "o_ballpark_atmosphere"
+        },
+        {
+            "id": "o_audio_cues",
+            "dimensions": "16,type=discrete",
+            "original_id": "o_audio_cues"
+        },
+        {
+            "id": "o_broadcast_graphics",
+            "dimensions": "12,type=discrete",
+            "original_id": "o_broadcast_graphics"
+        },
+        {
+            "id": "o_fan_reactions",
+            "dimensions": "14,type=discrete",
+            "original_id": "o_fan_reactions"
+        },
+        {
+            "id": "o_dugout_activity",
+            "dimensions": "8,type=discrete",
+            "original_id": "o_dugout_activity"
+        },
+        {
+            "id": "o_media_presence",
+            "dimensions": "6,type=discrete",
+            "original_id": "o_media_presence"
+        },
+        {
+            "id": "o_ceremonial_elements",
+            "dimensions": "5,type=discrete",
+            "original_id": "o_ceremonial_elements"
+        },
+        {
+            "id": "o_vendor_activity",
+            "dimensions": "4,type=discrete",
+            "original_id": "o_vendor_activity"
+        },
+        {
+            "id": "o_security_alerts",
+            "dimensions": "3,type=discrete",
+            "original_id": "o_security_alerts"
+        },
+        {
+            "id": "o_weather_changes",
+            "dimensions": "7,type=discrete",
+            "original_id": "o_weather_changes"
+        },
+        {
+            "id": "o_field_maintenance",
+            "dimensions": "6,type=discrete",
+            "original_id": "o_field_maintenance"
+        },
+        {
+            "id": "u_pitch_selection",
+            "dimensions": "8,type=int",
+            "original_id": "u_pitch_selection"
+        },
+        {
+            "id": "u_batting_approach",
+            "dimensions": "6,type=int",
+            "original_id": "u_batting_approach"
+        },
+        {
+            "id": "u_fielding_shift",
+            "dimensions": "9,type=int",
+            "original_id": "u_fielding_shift"
+        },
+        {
+            "id": "u_base_steal_attempt",
+            "dimensions": "4,type=int",
+            "original_id": "u_base_steal_attempt"
+        },
+        {
+            "id": "u_substitution_made",
+            "dimensions": "7,type=int",
+            "original_id": "u_substitution_made"
+        },
+        {
+            "id": "u_timeout_called",
+            "dimensions": "3,type=int",
+            "original_id": "u_timeout_called"
+        },
+        {
+            "id": "u_crowd_wave_initiation",
+            "dimensions": "5,type=int",
+            "original_id": "u_crowd_wave_initiation"
+        },
+        {
+            "id": "u_anthem_performance",
+            "dimensions": "4,type=int",
+            "original_id": "u_anthem_performance"
+        },
+        {
+            "id": "u_between_innings_show",
+            "dimensions": "6,type=int",
+            "original_id": "u_between_innings_show"
+        },
+        {
+            "id": "u_replay_review",
+            "dimensions": "7,type=int",
+            "original_id": "u_replay_review"
+        },
+        {
+            "id": "u_ceremonial_pitch",
+            "dimensions": "3,type=int",
+            "original_id": "u_ceremonial_pitch"
+        },
+        {
+            "id": "u_stadium_lighting",
+            "dimensions": "8,type=int",
+            "original_id": "u_stadium_lighting"
+        },
+        {
+            "id": "harmonic_resonance",
+            "dimensions": "12,8,type=float",
+            "original_id": "harmonic_resonance"
+        },
+        {
+            "id": "rhythmic_patterns",
+            "dimensions": "16,4,type=float",
+            "original_id": "rhythmic_patterns"
+        },
+        {
+            "id": "melodic_progressions",
+            "dimensions": "24,6,type=float",
+            "original_id": "melodic_progressions"
+        },
+        {
+            "id": "textural_layers",
+            "dimensions": "8,8,8,type=float",
+            "original_id": "textural_layers"
+        },
+        {
+            "id": "dynamic_contrasts",
+            "dimensions": "10,5,type=float",
+            "original_id": "dynamic_contrasts"
+        },
+        {
+            "id": "sonic_atmospheres",
+            "dimensions": "15,7,type=float",
+            "original_id": "sonic_atmospheres"
+        },
+        {
+            "id": "temporal_structures",
+            "dimensions": "20,3,type=float",
+            "original_id": "temporal_structures"
+        },
+        {
+            "id": "orchestral_sections",
+            "dimensions": "9,12,6,type=float",
+            "original_id": "orchestral_sections"
+        },
+        {
+            "id": "polyrhythmic_layers",
+            "dimensions": "8,16,4,type=float",
+            "original_id": "polyrhythmic_layers"
+        },
+        {
+            "id": "ambient_textures",
+            "dimensions": "20,8,5,type=float",
+            "original_id": "ambient_textures"
+        },
+        {
+            "id": "crescendo_dynamics",
+            "dimensions": "15,10,type=float",
+            "original_id": "crescendo_dynamics"
+        },
+        {
+            "id": "call_response_patterns",
+            "dimensions": "12,8,type=float",
+            "original_id": "call_response_patterns"
+        },
+        {
+            "id": "leitmotif_themes",
+            "dimensions": "6,20,8,type=float",
+            "original_id": "leitmotif_themes"
+        },
+        {
+            "id": "counterpoint_voices",
+            "dimensions": "8,12,6,type=float",
+            "original_id": "counterpoint_voices"
+        },
+        {
+            "id": "modulation_sequences",
+            "dimensions": "16,8,type=float",
+            "original_id": "modulation_sequences"
+        },
+        {
+            "id": "percussion_ensembles",
+            "dimensions": "10,16,8,type=float",
+            "original_id": "percussion_ensembles"
+        },
+        {
+            "id": "string_arrangements",
+            "dimensions": "12,8,10,type=float",
+            "original_id": "string_arrangements"
+        },
+        {
+            "id": "wind_harmonies",
+            "dimensions": "8,10,6,type=float",
+            "original_id": "wind_harmonies"
+        },
+        {
+            "id": "brass_fanfares",
+            "dimensions": "6,12,4,type=float",
+            "original_id": "brass_fanfares"
+        },
+        {
+            "id": "vocal_choruses",
+            "dimensions": "16,6,8,type=float",
+            "original_id": "vocal_choruses"
+        }
+    ],
+    "connections": [
+        {
+            "sources": [
+                "D_game_start_state",
+                "D_player_abilities",
+                "D_weather_conditions"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_game_state"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_game_state"
+            ],
+            "operator": ">",
+            "targets": [
+                "A_batting_performance",
+                "A_pitching_effectiveness",
+                "A_fielding_success"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_player_fatigue",
+                "s_team_morale"
+            ],
+            "operator": ">",
+            "targets": [
+                "A_batting_performance",
+                "A_pitching_effectiveness"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_performance_rhythm"
+            ],
+            "operator": ">",
+            "targets": [
+                "A_batting_performance",
+                "A_pitching_effectiveness",
+                "A_fielding_success"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_weather_state",
+                "s_field_conditions"
+            ],
+            "operator": ">",
+            "targets": [
+                "A_weather_impact",
+                "A_fielding_success"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_crowd_energy"
+            ],
+            "operator": ">",
+            "targets": [
+                "A_crowd_response",
+                "s_team_morale",
+                "s_pressure_level"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "π_batting_strategy"
+            ],
+            "operator": ">",
+            "targets": [
+                "u_batting_approach"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "π_pitching_strategy"
+            ],
+            "operator": ">",
+            "targets": [
+                "u_pitch_selection"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "π_fielding_positioning"
+            ],
+            "operator": ">",
+            "targets": [
+                "u_fielding_shift"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "π_substitution_timing",
+                "s_player_fatigue"
+            ],
+            "operator": ">",
+            "targets": [
+                "u_substitution_made"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_game_state",
+                "u_pitch_selection",
+                "u_batting_approach"
+            ],
+            "operator": ">",
+            "targets": [
+                "B_game_state"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_player_fatigue",
+                "o_pitch_outcome"
+            ],
+            "operator": ">",
+            "targets": [
+                "B_player_fatigue"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_crowd_energy",
+                "o_batting_result"
+            ],
+            "operator": ">",
+            "targets": [
+                "B_crowd_energy"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_strategic_focus",
+                "o_strategic_signals"
+            ],
+            "operator": ">",
+            "targets": [
+                "B_strategic_adaptation"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "A_batting_performance",
+                "s_game_state"
+            ],
+            "operator": ">",
+            "targets": [
+                "o_batting_result"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "A_pitching_effectiveness",
+                "s_weather_state"
+            ],
+            "operator": ">",
+            "targets": [
+                "o_pitch_outcome"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "A_fielding_success",
+                "s_field_conditions"
+            ],
+            "operator": ">",
+            "targets": [
+                "o_fielding_action"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "A_crowd_response",
+                "s_crowd_energy"
+            ],
+            "operator": ">",
+            "targets": [
+                "o_crowd_noise"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_scoreboard_state"
+            ],
+            "operator": ">",
+            "targets": [
+                "o_scoreboard"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "o_crowd_noise",
+                "o_batting_result"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_momentum"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_momentum"
+            ],
+            "operator": ">",
+            "targets": [
+                "C_winning_preference",
+                "s_team_morale"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "o_umpire_calls",
+                "s_pressure_level"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_umpire_mood"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "harmonic_resonance"
+            ],
+            "operator": ">",
+            "targets": [
+                "melodic_progressions",
+                "textural_layers",
+                "orchestral_sections"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "rhythmic_patterns"
+            ],
+            "operator": ">",
+            "targets": [
+                "temporal_structures",
+                "polyrhythmic_layers",
+                "percussion_ensembles"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "dynamic_contrasts",
+                "sonic_atmospheres"
+            ],
+            "operator": ">",
+            "targets": [
+                "textural_layers",
+                "ambient_textures",
+                "crescendo_dynamics"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_crowd_energy",
+                "s_momentum"
+            ],
+            "operator": ">",
+            "targets": [
+                "dynamic_contrasts",
+                "call_response_patterns"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_musical_tension",
+                "s_harmonic_complexity"
+            ],
+            "operator": ">",
+            "targets": [
+                "leitmotif_themes",
+                "counterpoint_voices"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_rhythmic_pulse",
+                "s_dramatic_buildup"
+            ],
+            "operator": ">",
+            "targets": [
+                "modulation_sequences",
+                "brass_fanfares"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_emotional_narrative",
+                "s_audience_connection"
+            ],
+            "operator": ">",
+            "targets": [
+                "string_arrangements",
+                "vocal_choruses"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_stadium_resonance",
+                "s_sonic_atmosphere"
+            ],
+            "operator": ">",
+            "targets": [
+                "wind_harmonies",
+                "ambient_textures"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "temporal_structures"
+            ],
+            "operator": ">",
+            "targets": [
+                "B_rhythm_dynamics",
+                "B_harmonic_evolution",
+                "B_emotional_arc"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "orchestral_sections"
+            ],
+            "operator": ">",
+            "targets": [
+                "A_ballpark_acoustics",
+                "A_broadcast_excitement"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "polyrhythmic_layers"
+            ],
+            "operator": ">",
+            "targets": [
+                "B_dramatic_tension",
+                "B_sonic_complexity"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "crescendo_dynamics"
+            ],
+            "operator": ">",
+            "targets": [
+                "π_musical_dynamics",
+                "π_dramatic_timing"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "leitmotif_themes"
+            ],
+            "operator": ">",
+            "targets": [
+                "A_historical_matchups",
+                "A_seasonal_performance"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "modulation_sequences"
+            ],
+            "operator": ">",
+            "targets": [
+                "B_textural_layers",
+                "B_audience_engagement"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "vocal_choruses"
+            ],
+            "operator": ">",
+            "targets": [
+                "A_crowd_response",
+                "A_fan_loyalty"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "o_audio_cues",
+                "o_broadcast_graphics"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_broadcast_energy",
+                "π_crowd_engagement"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "u_crowd_wave_initiation",
+                "u_between_innings_show"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_audience_connection",
+                "A_crowd_response"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "π_sonic_layering",
+                "π_emotional_arc"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_musical_tension",
+                "s_harmonic_complexity"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "counterpoint_voices",
+                "brass_fanfares"
+            ],
+            "operator": ">",
+            "targets": [
+                "B_broadcast_narrative",
+                "C_sonic_richness"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "percussion_ensembles",
+                "string_arrangements"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_dramatic_buildup",
+                "C_dramatic_climax"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "wind_harmonies",
+                "ambient_textures"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_stadium_resonance",
+                "C_harmonic_resolution"
+            ],
+            "attributes": {}
+        }
+    ],
+    "initialparameterization": {
+        "game_duration": 9,
+        "players_per_team": 9,
+        "max_score_differential": 15,
+        "weather_stability": 0.8,
+        "A_batting_performance": [
+            [
+                [
+                    0.25,
+                    0.3,
+                    0.2,
+                    0.15
+                ],
+                [
+                    0.2,
+                    0.25,
+                    0.3,
+                    0.25
+                ],
+                [
+                    0.3,
+                    0.2,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.15,
+                    0.25,
+                    0.35,
+                    0.25
+                ],
+                [
+                    0.22,
+                    0.28,
+                    0.25,
+                    0.25
+                ]
+            ],
+            [
+                [
+                    0.28,
+                    0.32,
+                    0.22,
+                    0.18
+                ],
+                [
+                    0.22,
+                    0.27,
+                    0.32,
+                    0.27
+                ],
+                [
+                    0.32,
+                    0.22,
+                    0.27,
+                    0.27
+                ],
+                [
+                    0.17,
+                    0.27,
+                    0.37,
+                    0.27
+                ],
+                [
+                    0.24,
+                    0.3,
+                    0.27,
+                    0.27
+                ]
+            ],
+            [
+                [
+                    0.26,
+                    0.31,
+                    0.21,
+                    0.16
+                ],
+                [
+                    0.21,
+                    0.26,
+                    0.31,
+                    0.26
+                ],
+                [
+                    0.31,
+                    0.21,
+                    0.26,
+                    0.26
+                ],
+                [
+                    0.16,
+                    0.26,
+                    0.36,
+                    0.26
+                ],
+                [
+                    0.23,
+                    0.29,
+                    0.26,
+                    0.26
+                ]
+            ],
+            [
+                [
+                    0.24,
+                    0.29,
+                    0.19,
+                    0.14
+                ],
+                [
+                    0.19,
+                    0.24,
+                    0.29,
+                    0.24
+                ],
+                [
+                    0.29,
+                    0.19,
+                    0.24,
+                    0.24
+                ],
+                [
+                    0.14,
+                    0.24,
+                    0.34,
+                    0.24
+                ],
+                [
+                    0.21,
+                    0.27,
+                    0.24,
+                    0.24
+                ]
+            ],
+            [
+                [
+                    0.27,
+                    0.33,
+                    0.23,
+                    0.17
+                ],
+                [
+                    0.23,
+                    0.28,
+                    0.33,
+                    0.28
+                ],
+                [
+                    0.33,
+                    0.23,
+                    0.28,
+                    0.28
+                ],
+                [
+                    0.18,
+                    0.28,
+                    0.38,
+                    0.28
+                ],
+                [
+                    0.25,
+                    0.31,
+                    0.28,
+                    0.28
+                ]
+            ],
+            [
+                [
+                    0.29,
+                    0.34,
+                    0.24,
+                    0.19
+                ],
+                [
+                    0.24,
+                    0.29,
+                    0.34,
+                    0.29
+                ],
+                [
+                    0.34,
+                    0.24,
+                    0.29,
+                    0.29
+                ],
+                [
+                    0.19,
+                    0.29,
+                    0.39,
+                    0.29
+                ],
+                [
+                    0.26,
+                    0.32,
+                    0.29,
+                    0.29
+                ]
+            ],
+            [
+                [
+                    0.23,
+                    0.28,
+                    0.18,
+                    0.13
+                ],
+                [
+                    0.18,
+                    0.23,
+                    0.28,
+                    0.23
+                ],
+                [
+                    0.28,
+                    0.18,
+                    0.23,
+                    0.23
+                ],
+                [
+                    0.13,
+                    0.23,
+                    0.33,
+                    0.23
+                ],
+                [
+                    0.2,
+                    0.26,
+                    0.23,
+                    0.23
+                ]
+            ],
+            [
+                [
+                    0.25,
+                    0.3,
+                    0.2,
+                    0.15
+                ],
+                [
+                    0.2,
+                    0.25,
+                    0.3,
+                    0.25
+                ],
+                [
+                    0.3,
+                    0.2,
+                    0.25,
+                    0.25
+                ],
+                [
+                    0.15,
+                    0.25,
+                    0.35,
+                    0.25
+                ],
+                [
+                    0.22,
+                    0.28,
+                    0.25,
+                    0.25
+                ]
+            ],
+            [
+                [
+                    0.22,
+                    0.27,
+                    0.17,
+                    0.12
+                ],
+                [
+                    0.17,
+                    0.22,
+                    0.27,
+                    0.22
+                ],
+                [
+                    0.27,
+                    0.17,
+                    0.22,
+                    0.22
+                ],
+                [
+                    0.12,
+                    0.22,
+                    0.32,
+                    0.22
+                ],
+                [
+                    0.19,
+                    0.25,
+                    0.22,
+                    0.22
+                ]
+            ]
+        ],
+        "C_winning_preference": [
+            0.8,
+            0.1,
+            0.1
+        ],
+        "C_entertainment_value": [
+            0.6,
+            0.8,
+            0.9,
+            0.7,
+            0.5,
+            0.3,
+            0.4
+        ],
+        "C_player_safety": [
+            0.9,
+            0.8,
+            0.7,
+            0.6,
+            0.5
+        ],
+        "C_game_pace": [
+            0.3,
+            0.7,
+            0.6,
+            0.4
+        ],
+        "D_game_start_state": [
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04,
+            0.04
+        ],
+        "D_player_abilities": [
+            0.15,
+            0.12,
+            0.1,
+            0.08,
+            0.12,
+            0.13,
+            0.09,
+            0.11,
+            0.1
+        ],
+        "D_weather_conditions": [
+            0.4,
+            0.3,
+            0.2,
+            0.1
+        ],
+        "harmonic_resonance": [
+            [
+                [
+                    0.1,
+                    0.2,
+                    0.15,
+                    0.25,
+                    0.1,
+                    0.05,
+                    0.15
+                ],
+                [
+                    0.08,
+                    0.18,
+                    0.12,
+                    0.22,
+                    0.08,
+                    0.04,
+                    0.12
+                ]
+            ],
+            [
+                [
+                    0.12,
+                    0.22,
+                    0.17,
+                    0.27,
+                    0.12,
+                    0.07,
+                    0.17
+                ],
+                [
+                    0.1,
+                    0.2,
+                    0.14,
+                    0.24,
+                    0.1,
+                    0.06,
+                    0.14
+                ]
+            ],
+            [
+                [
+                    0.09,
+                    0.19,
+                    0.14,
+                    0.24,
+                    0.09,
+                    0.04,
+                    0.14
+                ],
+                [
+                    0.07,
+                    0.17,
+                    0.11,
+                    0.21,
+                    0.07,
+                    0.03,
+                    0.11
+                ]
+            ],
+            [
+                [
+                    0.11,
+                    0.21,
+                    0.16,
+                    0.26,
+                    0.11,
+                    0.06,
+                    0.16
+                ],
+                [
+                    0.09,
+                    0.19,
+                    0.13,
+                    0.23,
+                    0.09,
+                    0.05,
+                    0.13
+                ]
+            ],
+            [
+                [
+                    0.13,
+                    0.23,
+                    0.18,
+                    0.28,
+                    0.13,
+                    0.08,
+                    0.18
+                ],
+                [
+                    0.11,
+                    0.21,
+                    0.15,
+                    0.25,
+                    0.11,
+                    0.07,
+                    0.15
+                ]
+            ],
+            [
+                [
+                    0.08,
+                    0.18,
+                    0.13,
+                    0.23,
+                    0.08,
+                    0.03,
+                    0.13
+                ],
+                [
+                    0.06,
+                    0.16,
+                    0.1,
+                    0.2,
+                    0.06,
+                    0.02,
+                    0.1
+                ]
+            ],
+            [
+                [
+                    0.1,
+                    0.2,
+                    0.15,
+                    0.25,
+                    0.1,
+                    0.05,
+                    0.15
+                ],
+                [
+                    0.08,
+                    0.18,
+                    0.12,
+                    0.22,
+                    0.08,
+                    0.04,
+                    0.12
+                ]
+            ],
+            [
+                [
+                    0.14,
+                    0.24,
+                    0.19,
+                    0.29,
+                    0.14,
+                    0.09,
+                    0.19
+                ],
+                [
+                    0.12,
+                    0.22,
+                    0.16,
+                    0.26,
+                    0.12,
+                    0.08,
+                    0.16
+                ]
+            ],
+            [
+                [
+                    0.07,
+                    0.17,
+                    0.12,
+                    0.22,
+                    0.07,
+                    0.02,
+                    0.12
+                ],
+                [
+                    0.05,
+                    0.15,
+                    0.09,
+                    0.19,
+                    0.05,
+                    0.01,
+                    0.09
+                ]
+            ],
+            [
+                [
+                    0.15,
+                    0.25,
+                    0.2,
+                    0.3,
+                    0.15,
+                    0.1,
+                    0.2
+                ],
+                [
+                    0.13,
+                    0.23,
+                    0.17,
+                    0.27,
+                    0.13,
+                    0.09,
+                    0.17
+                ]
+            ],
+            [
+                [
+                    0.06,
+                    0.16,
+                    0.11,
+                    0.21,
+                    0.06,
+                    0.01,
+                    0.11
+                ],
+                [
+                    0.04,
+                    0.14,
+                    0.08,
+                    0.18,
+                    0.04,
+                    0.0,
+                    0.08
+                ]
+            ],
+            [
+                [
+                    0.16,
+                    0.26,
+                    0.21,
+                    0.31,
+                    0.16,
+                    0.11,
+                    0.21
+                ],
+                [
+                    0.14,
+                    0.24,
+                    0.18,
+                    0.28,
+                    0.14,
+                    0.1,
+                    0.18
+                ]
+            ]
+        ],
+        "rhythmic_patterns": [
+            [
+                [
+                    0.25,
+                    0.5,
+                    0.75,
+                    1.0
+                ],
+                [
+                    0.33,
+                    0.66,
+                    1.0,
+                    0.5
+                ],
+                [
+                    0.2,
+                    0.4,
+                    0.6,
+                    0.8
+                ],
+                [
+                    0.125,
+                    0.25,
+                    0.375,
+                    0.5
+                ]
+            ],
+            [
+                [
+                    0.3,
+                    0.6,
+                    0.9,
+                    1.2
+                ],
+                [
+                    0.4,
+                    0.8,
+                    1.2,
+                    0.6
+                ],
+                [
+                    0.24,
+                    0.48,
+                    0.72,
+                    0.96
+                ],
+                [
+                    0.15,
+                    0.3,
+                    0.45,
+                    0.6
+                ]
+            ],
+            [
+                [
+                    0.35,
+                    0.7,
+                    1.05,
+                    1.4
+                ],
+                [
+                    0.45,
+                    0.9,
+                    1.35,
+                    0.7
+                ],
+                [
+                    0.28,
+                    0.56,
+                    0.84,
+                    1.12
+                ],
+                [
+                    0.175,
+                    0.35,
+                    0.525,
+                    0.7
+                ]
+            ]
+        ]
+    }
+}

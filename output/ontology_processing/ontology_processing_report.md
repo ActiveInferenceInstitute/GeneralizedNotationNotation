@@ -1,6 +1,6 @@
 # Ontology Processing Report
 
-**Generated:** 2025-06-22T14:22:11.116467
+**Generated:** 2025-06-23T10:57:04.123179
 **Target Directory:** gnn/examples
 **Files Processed:** 3
 **Ontology Terms Loaded:** 60
@@ -12,8 +12,8 @@
 - **Terms Matched:** 0
 - **Terms Missing:** 0
 
-### rxinfer_hidden_markov_model.md
-- **Annotations Found:** 15
+### baseball_game_active_inference.md
+- **Annotations Found:** 28
 - **Terms Matched:** 0
 - **Terms Missing:** 0
 

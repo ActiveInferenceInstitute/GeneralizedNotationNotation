@@ -13,42 +13,42 @@
           "success": true,
           "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/summarize_content_analysis.md",
           "provider": "openai",
-          "content_length": 2554,
+          "content_length": 2404,
           "tokens_used": null
         },
         "explain_model": {
           "success": true,
           "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/explain_model_analysis.md",
           "provider": "openai",
-          "content_length": 4827,
+          "content_length": 4436,
           "tokens_used": null
         },
         "identify_components": {
           "success": true,
           "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/identify_components_analysis.md",
           "provider": "openai",
-          "content_length": 5445,
+          "content_length": 4940,
           "tokens_used": null
         },
         "analyze_structure": {
           "success": true,
           "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/analyze_structure_analysis.md",
           "provider": "openai",
-          "content_length": 6151,
+          "content_length": 5763,
           "tokens_used": null
         },
         "extract_parameters": {
           "success": true,
           "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/extract_parameters_analysis.md",
           "provider": "openai",
-          "content_length": 4515,
+          "content_length": 4162,
           "tokens_used": null
         },
         "practical_applications": {
           "success": true,
           "file": "../output/llm_processing_step/rxinfer_multiagent_gnn/practical_applications_analysis.md",
           "provider": "openai",
-          "content_length": 5361,
+          "content_length": 5703,
           "tokens_used": null
         }
       },
@@ -56,50 +56,50 @@
       "success_count": 6,
       "total_tasks": 6
     },
-    "rxinfer_hidden_markov_model": {
-      "file": "gnn/examples/rxinfer_hidden_markov_model.md",
-      "file_name": "rxinfer_hidden_markov_model",
+    "baseball_game_active_inference": {
+      "file": "gnn/examples/baseball_game_active_inference.md",
+      "file_name": "baseball_game_active_inference",
       "analyses": {
         "summarize_content": {
           "success": true,
-          "file": "../output/llm_processing_step/rxinfer_hidden_markov_model/summarize_content_analysis.md",
+          "file": "../output/llm_processing_step/baseball_game_active_inference/summarize_content_analysis.md",
           "provider": "openai",
-          "content_length": 2861,
+          "content_length": 3869,
           "tokens_used": null
         },
         "explain_model": {
           "success": true,
-          "file": "../output/llm_processing_step/rxinfer_hidden_markov_model/explain_model_analysis.md",
+          "file": "../output/llm_processing_step/baseball_game_active_inference/explain_model_analysis.md",
           "provider": "openai",
-          "content_length": 4586,
+          "content_length": 9330,
           "tokens_used": null
         },
         "identify_components": {
           "success": true,
-          "file": "../output/llm_processing_step/rxinfer_hidden_markov_model/identify_components_analysis.md",
+          "file": "../output/llm_processing_step/baseball_game_active_inference/identify_components_analysis.md",
           "provider": "openai",
-          "content_length": 5028,
+          "content_length": 6256,
           "tokens_used": null
         },
         "analyze_structure": {
           "success": true,
-          "file": "../output/llm_processing_step/rxinfer_hidden_markov_model/analyze_structure_analysis.md",
+          "file": "../output/llm_processing_step/baseball_game_active_inference/analyze_structure_analysis.md",
           "provider": "openai",
-          "content_length": 5865,
+          "content_length": 6427,
           "tokens_used": null
         },
         "extract_parameters": {
           "success": true,
-          "file": "../output/llm_processing_step/rxinfer_hidden_markov_model/extract_parameters_analysis.md",
+          "file": "../output/llm_processing_step/baseball_game_active_inference/extract_parameters_analysis.md",
           "provider": "openai",
-          "content_length": 4487,
+          "content_length": 5211,
           "tokens_used": null
         },
         "practical_applications": {
           "success": true,
-          "file": "../output/llm_processing_step/rxinfer_hidden_markov_model/practical_applications_analysis.md",
+          "file": "../output/llm_processing_step/baseball_game_active_inference/practical_applications_analysis.md",
           "provider": "openai",
-          "content_length": 6256,
+          "content_length": 6699,
           "tokens_used": null
         }
       },
@@ -115,42 +115,42 @@
           "success": true,
           "file": "../output/llm_processing_step/pymdp_pomdp_agent/summarize_content_analysis.md",
           "provider": "openai",
-          "content_length": 3053,
+          "content_length": 3101,
           "tokens_used": null
         },
         "explain_model": {
           "success": true,
           "file": "../output/llm_processing_step/pymdp_pomdp_agent/explain_model_analysis.md",
           "provider": "openai",
-          "content_length": 4573,
+          "content_length": 5000,
           "tokens_used": null
         },
         "identify_components": {
           "success": true,
           "file": "../output/llm_processing_step/pymdp_pomdp_agent/identify_components_analysis.md",
           "provider": "openai",
-          "content_length": 4408,
+          "content_length": 4808,
           "tokens_used": null
         },
         "analyze_structure": {
           "success": true,
           "file": "../output/llm_processing_step/pymdp_pomdp_agent/analyze_structure_analysis.md",
           "provider": "openai",
-          "content_length": 6275,
+          "content_length": 6412,
           "tokens_used": null
         },
         "extract_parameters": {
           "success": true,
           "file": "../output/llm_processing_step/pymdp_pomdp_agent/extract_parameters_analysis.md",
           "provider": "openai",
-          "content_length": 5327,
+          "content_length": 5363,
           "tokens_used": null
         },
         "practical_applications": {
           "success": true,
           "file": "../output/llm_processing_step/pymdp_pomdp_agent/practical_applications_analysis.md",
           "provider": "openai",
-          "content_length": 6269,
+          "content_length": 5832,
           "tokens_used": null
         }
       },
