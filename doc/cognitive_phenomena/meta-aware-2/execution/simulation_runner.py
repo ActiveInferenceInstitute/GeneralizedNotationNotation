@@ -182,8 +182,8 @@ class SimulationRunner:
         )
         
         try:
-            # Initialize model
-            self.model = MetaAwarenessModel(self.config, self.random_seed)
+            # Initialize model with logger for performance tracking
+            self.model = MetaAwarenessModel(self.config, self.random_seed, self.logger)
             
             # Log simulation start
             config_summary = {

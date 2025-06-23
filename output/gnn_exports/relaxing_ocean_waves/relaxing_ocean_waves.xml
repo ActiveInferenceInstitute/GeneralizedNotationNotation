@@ -1,0 +1,738 @@
+<?xml version="1.0" ?>
+<Infinite_Ocean_Wave_Dynamics_with_Marine_Ecosystem_Consciousness>
+  <file_path>gnn/examples/relaxing_ocean_waves.md</file_path>
+  <name>Infinite Ocean Wave Dynamics with Marine Ecosystem Consciousness</name>
+  <raw_sections>
+    <GNNSection>RelaxingOceanWaves</GNNSection>
+    <GNNVersionAndFlags>GNN v1</GNNVersionAndFlags>
+    <ModelName>Infinite Ocean Wave Dynamics with Marine Ecosystem Consciousness</ModelName>
+    <ModelAnnotation>This model represents a comprehensive ocean wave experience featuring:
+- Wave propagation dynamics with realistic frequency spectra and amplitude modulation
+- Tidal influences with lunar and solar gravitational effects on wave patterns
+- Marine ecosystem interactions including whale songs, dolphin communication, and seabird calls
+- Atmospheric pressure variations affecting wave formation and coastal reflection
+- Underwater current systems creating complex interference patterns
+- Coastal erosion and sand movement dynamics influenced by wave action
+- Wind-wave coupling with realistic energy transfer mechanisms
+- Deep ocean thermal currents affecting surface wave characteristics
+- Seasonal variations in wave patterns and marine activity
+
+The model enables peaceful ocean experiences with natural AI dynamics that can:
+- Generate authentic wave sounds based on realistic oceanic physics
+- Adapt to changing weather patterns and atmospheric conditions
+- Create immersive soundscapes through believable marine ecosystem interactions
+- Balance predictable tidal rhythms with chaotic wave interference patterns
+- Generate therapeutic relaxation through natural harmonic resonance</ModelAnnotation>
+    <StateSpaceBlock># === WAVE DYNAMICS ===
+surface_wave_amplitude[8,type=continuous]       # Wave height variations across frequency spectrum
+wave_frequency_spectrum[12,type=continuous]     # Dominant wave periods from deep ocean swells
+wave_phase_relationships[6,type=continuous]     # Phase synchronization between wave components
+wave_propagation_velocity[4,type=continuous]    # Wave speed variations with depth and frequency
+foam_bubble_density[3,type=continuous]          # White foam creation and dissipation
+breaking_wave_intensity[2,type=continuous]      # Shore break energy and impact force
+
+# === TIDAL DYNAMICS ===
+tidal_height[1,type=continuous]                 # Current tidal elevation relative to mean sea level
+lunar_gravitational_influence[2,type=continuous] # Moon phase and distance effects on tides
+solar_gravitational_influence[1,type=continuous] # Sun position effects on tidal amplitude
+tidal_velocity[1,type=continuous]               # Rate of tidal change (rising/falling)
+
+# === ATMOSPHERIC CONDITIONS ===
+wind_speed[3,type=continuous]                   # Surface wind velocity affecting wave generation
+atmospheric_pressure[1,type=continuous]         # Barometric pressure influencing wave formation
+humidity_level[1,type=continuous]               # Air moisture content affecting sound propagation
+temperature_gradient[2,type=continuous]         # Air-sea temperature difference
+
+# === MARINE ECOSYSTEM ===
+whale_song_presence[4,type=continuous]          # Humpback whale vocalizations
+dolphin_communication[3,type=continuous]        # Dolphin clicks and whistles
+seabird_calls[5,type=continuous]                # Gull, tern, and pelican vocalizations
+fish_movement_patterns[2,type=continuous]       # Schooling fish creating subsurface disturbances
+
+# === UNDERWATER DYNAMICS ===
+current_systems[6,type=continuous]              # Deep and surface ocean currents
+water_temperature_layers[4,type=continuous]     # Thermal stratification affecting wave behavior
+salinity_gradients[2,type=continuous]           # Salt concentration variations
+underwater_topography[3,type=continuous]        # Seafloor features affecting wave reflection
+
+# === COASTAL INTERACTIONS ===
+shoreline_reflection[4,type=continuous]         # Wave energy reflection from beaches and rocks
+sand_movement[2,type=continuous]                # Sediment transport and beach reshaping
+tide_pool_activity[3,type=continuous]           # Intertidal ecosystem dynamics
+coastal_erosion_rate[1,type=continuous]         # Long-term shoreline changes
+
+# === OBSERVATION MODALITIES ===
+# Auditory ocean sounds
+auditory_wave_crashes[6,type=continuous]        # Shore break audio characteristics
+auditory_water_movement[4,type=continuous]      # Gentle lapping and flowing sounds
+auditory_marine_life[8,type=continuous]         # Whale songs and dolphin calls
+auditory_wind_water[3,type=continuous]          # Wind-generated water sounds
+auditory_foam_bubbles[2,type=continuous]        # Bubble formation and popping sounds
+
+# Environmental sounds
+environmental_wind[4,type=continuous]           # Wind through air and over water
+environmental_seabirds[5,type=continuous]       # Bird calls and wing flapping
+environmental_atmospheric[2,type=continuous]    # Atmospheric pressure changes
+
+# Tactile sensations
+tactile_water_temperature[2,type=continuous]    # Felt water warmth variations
+tactile_wave_pressure[3,type=continuous]        # Physical pressure from wave impacts
+tactile_mist_spray[2,type=continuous]           # Salt spray and mist sensations</StateSpaceBlock>
+    <Connections># Wave dynamics
+(wave_frequency_spectrum, surface_wave_amplitude) &gt; wave_propagation_velocity
+(wave_phase_relationships, breaking_wave_intensity) &gt; foam_bubble_density
+(surface_wave_amplitude, wave_propagation_velocity) &gt; auditory_wave_crashes
+
+# Tidal influences
+(lunar_gravitational_influence, solar_gravitational_influence) &gt; tidal_height
+(tidal_height, tidal_velocity) &gt; wave_amplitude
+(tidal_velocity, current_systems) &gt; underwater_dynamics
+
+# Atmospheric coupling
+(wind_speed, atmospheric_pressure) &gt; surface_wave_amplitude
+(temperature_gradient, humidity_level) &gt; environmental_wind
+(atmospheric_pressure, wind_speed) &gt; wave_frequency_spectrum
+
+# Marine ecosystem
+(whale_song_presence, dolphin_communication) &gt; auditory_marine_life
+(current_systems, fish_movement_patterns) &gt; marine_ecosystem_activity
+(water_temperature_layers, marine_ecosystem) &gt; ecosystem_vocalizations
+
+# Coastal interactions
+(breaking_wave_intensity, shoreline_reflection) &gt; sand_movement
+(wave_propagation_velocity, underwater_topography) &gt; shoreline_reflection
+(foam_bubble_density, coastal_interactions) &gt; auditory_foam_bubbles
+
+# Sound generation
+(auditory_wave_crashes, auditory_water_movement) &gt; primary_ocean_sounds
+(auditory_marine_life, environmental_seabirds) &gt; biological_sounds
+(environmental_wind, environmental_atmospheric) &gt; ambient_sounds
+
+# Tactile experiences
+(breaking_wave_intensity, water_temperature_layers) &gt; tactile_wave_pressure
+(foam_bubble_density, atmospheric_pressure) &gt; tactile_mist_spray
+(current_systems, temperature_gradient) &gt; tactile_water_temperature</Connections>
+    <InitialParameterization># Wave dynamics initialization
+surface_wave_amplitude={(0.5,0.7,0.3,0.8,0.4,0.6,0.2,0.9)}
+wave_frequency_spectrum={(0.1,0.15,0.2,0.25,0.18,0.12,0.08,0.3,0.22,0.14,0.16,0.28)}
+wave_phase_relationships={(0.3,0.7,0.5,0.8,0.4,0.6)}
+wave_propagation_velocity={(1.2,1.5,1.8,1.3)}
+foam_bubble_density={(0.2,0.4,0.3)}
+breaking_wave_intensity={(0.6,0.8)}
+
+# Tidal dynamics initialization
+tidal_height=0.3
+lunar_gravitational_influence={(0.7,0.5)}
+solar_gravitational_influence=0.2
+tidal_velocity=0.1
+
+# Atmospheric conditions initialization
+wind_speed={(0.3,0.5,0.4)}
+atmospheric_pressure=1.0
+humidity_level=0.8
+temperature_gradient={(0.2,0.3)}
+
+# Marine ecosystem initialization
+whale_song_presence={(0.1,0.05,0.02,0.08)}
+dolphin_communication={(0.03,0.05,0.02)}
+seabird_calls={(0.2,0.15,0.3,0.1,0.25)}
+fish_movement_patterns={(0.1,0.15)}
+
+# Underwater dynamics initialization
+current_systems={(0.4,0.3,0.5,0.2,0.6,0.35)}
+water_temperature_layers={(0.6,0.7,0.5,0.8)}
+salinity_gradients={(0.5,0.6)}
+underwater_topography={(0.4,0.7,0.3)}
+
+# Coastal interactions initialization
+shoreline_reflection={(0.3,0.5,0.4,0.6)}
+sand_movement={(0.2,0.3)}
+tide_pool_activity={(0.4,0.3,0.5)}
+coastal_erosion_rate=0.01</InitialParameterization>
+    <Equations># Wave amplitude evolution:
+# surface_wave_amplitude_t+1 = wind_coupling + tidal_modulation + deep_ocean_swells
+
+# Tidal height dynamics:
+# tidal_height_t+1 = lunar_influence * cos(lunar_phase) + solar_influence * cos(solar_phase)
+
+# Wave-atmosphere coupling:
+# wave_generation = wind_speed^2 * atmospheric_pressure_gradient
+
+# Marine ecosystem activity:
+# ecosystem_vocalizations = seasonal_patterns * water_temperature * current_activity
+
+# Coastal reflection:
+# reflected_wave_energy = incident_wave_energy * shoreline_absorption_coefficient</Equations>
+    <Time>Dynamic
+DiscreteTime
+ModelTimeHorizon=60
+TemporalDepth=4</Time>
+    <ActInfOntologyAnnotation>surface_wave_amplitude=OceanWaveAmplitudeState
+tidal_height=TidalElevationState
+wind_speed=AtmosphericWindState
+whale_song_presence=MarineEcosystemVocalizationState
+auditory_wave_crashes=OceanAudioObservationModality
+environmental_wind=AtmosphericAudioModality
+tactile_wave_pressure=HydraulicTactileModality</ActInfOntologyAnnotation>
+    <ModelParameters>wave_frequency_bands: 12
+tidal_harmonics: 4
+marine_species: 4
+atmospheric_layers: 3
+coastal_reflection_points: 4
+underwater_current_systems: 6
+temporal_ocean_horizon: 60</ModelParameters>
+    <Footer>Relaxing Ocean Waves Experience - Natural Ocean Wave Dynamics Model</Footer>
+    <Signature>Creator: AI Assistant for GNN
+Date: 2024-12-28
+Source: Comprehensive Ocean Wave Dynamics Architecture
+Status: Research implementation for natural ocean soundscape generation and therapeutic relaxation</Signature>
+  </raw_sections>
+  <statespaceblock>
+    <statespaceblock_item>
+      <id>surface_wave_amplitude</id>
+      <dimensions>8,type=continuous</dimensions>
+      <original_id>surface_wave_amplitude</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>wave_frequency_spectrum</id>
+      <dimensions>12,type=continuous</dimensions>
+      <original_id>wave_frequency_spectrum</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>wave_phase_relationships</id>
+      <dimensions>6,type=continuous</dimensions>
+      <original_id>wave_phase_relationships</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>wave_propagation_velocity</id>
+      <dimensions>4,type=continuous</dimensions>
+      <original_id>wave_propagation_velocity</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>foam_bubble_density</id>
+      <dimensions>3,type=continuous</dimensions>
+      <original_id>foam_bubble_density</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>breaking_wave_intensity</id>
+      <dimensions>2,type=continuous</dimensions>
+      <original_id>breaking_wave_intensity</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>tidal_height</id>
+      <dimensions>1,type=continuous</dimensions>
+      <original_id>tidal_height</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>lunar_gravitational_influence</id>
+      <dimensions>2,type=continuous</dimensions>
+      <original_id>lunar_gravitational_influence</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>solar_gravitational_influence</id>
+      <dimensions>1,type=continuous</dimensions>
+      <original_id>solar_gravitational_influence</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>tidal_velocity</id>
+      <dimensions>1,type=continuous</dimensions>
+      <original_id>tidal_velocity</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>wind_speed</id>
+      <dimensions>3,type=continuous</dimensions>
+      <original_id>wind_speed</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>atmospheric_pressure</id>
+      <dimensions>1,type=continuous</dimensions>
+      <original_id>atmospheric_pressure</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>humidity_level</id>
+      <dimensions>1,type=continuous</dimensions>
+      <original_id>humidity_level</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>temperature_gradient</id>
+      <dimensions>2,type=continuous</dimensions>
+      <original_id>temperature_gradient</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>whale_song_presence</id>
+      <dimensions>4,type=continuous</dimensions>
+      <original_id>whale_song_presence</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>dolphin_communication</id>
+      <dimensions>3,type=continuous</dimensions>
+      <original_id>dolphin_communication</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>seabird_calls</id>
+      <dimensions>5,type=continuous</dimensions>
+      <original_id>seabird_calls</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>fish_movement_patterns</id>
+      <dimensions>2,type=continuous</dimensions>
+      <original_id>fish_movement_patterns</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>current_systems</id>
+      <dimensions>6,type=continuous</dimensions>
+      <original_id>current_systems</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>water_temperature_layers</id>
+      <dimensions>4,type=continuous</dimensions>
+      <original_id>water_temperature_layers</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>salinity_gradients</id>
+      <dimensions>2,type=continuous</dimensions>
+      <original_id>salinity_gradients</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>underwater_topography</id>
+      <dimensions>3,type=continuous</dimensions>
+      <original_id>underwater_topography</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>shoreline_reflection</id>
+      <dimensions>4,type=continuous</dimensions>
+      <original_id>shoreline_reflection</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>sand_movement</id>
+      <dimensions>2,type=continuous</dimensions>
+      <original_id>sand_movement</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>tide_pool_activity</id>
+      <dimensions>3,type=continuous</dimensions>
+      <original_id>tide_pool_activity</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>coastal_erosion_rate</id>
+      <dimensions>1,type=continuous</dimensions>
+      <original_id>coastal_erosion_rate</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>auditory_wave_crashes</id>
+      <dimensions>6,type=continuous</dimensions>
+      <original_id>auditory_wave_crashes</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>auditory_water_movement</id>
+      <dimensions>4,type=continuous</dimensions>
+      <original_id>auditory_water_movement</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>auditory_marine_life</id>
+      <dimensions>8,type=continuous</dimensions>
+      <original_id>auditory_marine_life</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>auditory_wind_water</id>
+      <dimensions>3,type=continuous</dimensions>
+      <original_id>auditory_wind_water</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>auditory_foam_bubbles</id>
+      <dimensions>2,type=continuous</dimensions>
+      <original_id>auditory_foam_bubbles</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>environmental_wind</id>
+      <dimensions>4,type=continuous</dimensions>
+      <original_id>environmental_wind</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>environmental_seabirds</id>
+      <dimensions>5,type=continuous</dimensions>
+      <original_id>environmental_seabirds</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>environmental_atmospheric</id>
+      <dimensions>2,type=continuous</dimensions>
+      <original_id>environmental_atmospheric</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>tactile_water_temperature</id>
+      <dimensions>2,type=continuous</dimensions>
+      <original_id>tactile_water_temperature</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>tactile_wave_pressure</id>
+      <dimensions>3,type=continuous</dimensions>
+      <original_id>tactile_wave_pressure</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>tactile_mist_spray</id>
+      <dimensions>2,type=continuous</dimensions>
+      <original_id>tactile_mist_spray</original_id>
+    </statespaceblock_item>
+  </statespaceblock>
+  <connections>
+    <connections_item>
+      <sources>
+        <sources_item>wave_frequency_spectrum</sources_item>
+        <sources_item>surface_wave_amplitude</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>wave_propagation_velocity</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>wave_phase_relationships</sources_item>
+        <sources_item>breaking_wave_intensity</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>foam_bubble_density</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>surface_wave_amplitude</sources_item>
+        <sources_item>wave_propagation_velocity</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>auditory_wave_crashes</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>lunar_gravitational_influence</sources_item>
+        <sources_item>solar_gravitational_influence</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>tidal_height</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>tidal_height</sources_item>
+        <sources_item>tidal_velocity</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>wave_amplitude</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>tidal_velocity</sources_item>
+        <sources_item>current_systems</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>underwater_dynamics</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>wind_speed</sources_item>
+        <sources_item>atmospheric_pressure</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>surface_wave_amplitude</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>temperature_gradient</sources_item>
+        <sources_item>humidity_level</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>environmental_wind</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>atmospheric_pressure</sources_item>
+        <sources_item>wind_speed</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>wave_frequency_spectrum</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>whale_song_presence</sources_item>
+        <sources_item>dolphin_communication</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>auditory_marine_life</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>current_systems</sources_item>
+        <sources_item>fish_movement_patterns</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>marine_ecosystem_activity</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>water_temperature_layers</sources_item>
+        <sources_item>marine_ecosystem</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>ecosystem_vocalizations</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>breaking_wave_intensity</sources_item>
+        <sources_item>shoreline_reflection</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>sand_movement</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>wave_propagation_velocity</sources_item>
+        <sources_item>underwater_topography</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>shoreline_reflection</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>foam_bubble_density</sources_item>
+        <sources_item>coastal_interactions</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>auditory_foam_bubbles</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>auditory_wave_crashes</sources_item>
+        <sources_item>auditory_water_movement</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>primary_ocean_sounds</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>auditory_marine_life</sources_item>
+        <sources_item>environmental_seabirds</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>biological_sounds</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>environmental_wind</sources_item>
+        <sources_item>environmental_atmospheric</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>ambient_sounds</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>breaking_wave_intensity</sources_item>
+        <sources_item>water_temperature_layers</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>tactile_wave_pressure</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>foam_bubble_density</sources_item>
+        <sources_item>atmospheric_pressure</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>tactile_mist_spray</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>current_systems</sources_item>
+        <sources_item>temperature_gradient</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>tactile_water_temperature</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+  </connections>
+  <initialparameterization>
+    <surface_wave_amplitude>
+      <surface_wave_amplitude_item>0.5</surface_wave_amplitude_item>
+      <surface_wave_amplitude_item>0.7</surface_wave_amplitude_item>
+      <surface_wave_amplitude_item>0.3</surface_wave_amplitude_item>
+      <surface_wave_amplitude_item>0.8</surface_wave_amplitude_item>
+      <surface_wave_amplitude_item>0.4</surface_wave_amplitude_item>
+      <surface_wave_amplitude_item>0.6</surface_wave_amplitude_item>
+      <surface_wave_amplitude_item>0.2</surface_wave_amplitude_item>
+      <surface_wave_amplitude_item>0.9</surface_wave_amplitude_item>
+    </surface_wave_amplitude>
+    <wave_frequency_spectrum>
+      <wave_frequency_spectrum_item>0.1</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.15</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.2</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.25</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.18</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.12</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.08</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.3</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.22</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.14</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.16</wave_frequency_spectrum_item>
+      <wave_frequency_spectrum_item>0.28</wave_frequency_spectrum_item>
+    </wave_frequency_spectrum>
+    <wave_phase_relationships>
+      <wave_phase_relationships_item>0.3</wave_phase_relationships_item>
+      <wave_phase_relationships_item>0.7</wave_phase_relationships_item>
+      <wave_phase_relationships_item>0.5</wave_phase_relationships_item>
+      <wave_phase_relationships_item>0.8</wave_phase_relationships_item>
+      <wave_phase_relationships_item>0.4</wave_phase_relationships_item>
+      <wave_phase_relationships_item>0.6</wave_phase_relationships_item>
+    </wave_phase_relationships>
+    <wave_propagation_velocity>
+      <wave_propagation_velocity_item>1.2</wave_propagation_velocity_item>
+      <wave_propagation_velocity_item>1.5</wave_propagation_velocity_item>
+      <wave_propagation_velocity_item>1.8</wave_propagation_velocity_item>
+      <wave_propagation_velocity_item>1.3</wave_propagation_velocity_item>
+    </wave_propagation_velocity>
+    <foam_bubble_density>
+      <foam_bubble_density_item>0.2</foam_bubble_density_item>
+      <foam_bubble_density_item>0.4</foam_bubble_density_item>
+      <foam_bubble_density_item>0.3</foam_bubble_density_item>
+    </foam_bubble_density>
+    <breaking_wave_intensity>
+      <breaking_wave_intensity_item>0.6</breaking_wave_intensity_item>
+      <breaking_wave_intensity_item>0.8</breaking_wave_intensity_item>
+    </breaking_wave_intensity>
+    <tidal_height>0.3</tidal_height>
+    <lunar_gravitational_influence>
+      <lunar_gravitational_influence_item>0.7</lunar_gravitational_influence_item>
+      <lunar_gravitational_influence_item>0.5</lunar_gravitational_influence_item>
+    </lunar_gravitational_influence>
+    <solar_gravitational_influence>0.2</solar_gravitational_influence>
+    <tidal_velocity>0.1</tidal_velocity>
+    <wind_speed>
+      <wind_speed_item>0.3</wind_speed_item>
+      <wind_speed_item>0.5</wind_speed_item>
+      <wind_speed_item>0.4</wind_speed_item>
+    </wind_speed>
+    <atmospheric_pressure>1.0</atmospheric_pressure>
+    <humidity_level>0.8</humidity_level>
+    <temperature_gradient>
+      <temperature_gradient_item>0.2</temperature_gradient_item>
+      <temperature_gradient_item>0.3</temperature_gradient_item>
+    </temperature_gradient>
+    <whale_song_presence>
+      <whale_song_presence_item>0.1</whale_song_presence_item>
+      <whale_song_presence_item>0.05</whale_song_presence_item>
+      <whale_song_presence_item>0.02</whale_song_presence_item>
+      <whale_song_presence_item>0.08</whale_song_presence_item>
+    </whale_song_presence>
+    <dolphin_communication>
+      <dolphin_communication_item>0.03</dolphin_communication_item>
+      <dolphin_communication_item>0.05</dolphin_communication_item>
+      <dolphin_communication_item>0.02</dolphin_communication_item>
+    </dolphin_communication>
+    <seabird_calls>
+      <seabird_calls_item>0.2</seabird_calls_item>
+      <seabird_calls_item>0.15</seabird_calls_item>
+      <seabird_calls_item>0.3</seabird_calls_item>
+      <seabird_calls_item>0.1</seabird_calls_item>
+      <seabird_calls_item>0.25</seabird_calls_item>
+    </seabird_calls>
+    <fish_movement_patterns>
+      <fish_movement_patterns_item>0.1</fish_movement_patterns_item>
+      <fish_movement_patterns_item>0.15</fish_movement_patterns_item>
+    </fish_movement_patterns>
+    <current_systems>
+      <current_systems_item>0.4</current_systems_item>
+      <current_systems_item>0.3</current_systems_item>
+      <current_systems_item>0.5</current_systems_item>
+      <current_systems_item>0.2</current_systems_item>
+      <current_systems_item>0.6</current_systems_item>
+      <current_systems_item>0.35</current_systems_item>
+    </current_systems>
+    <water_temperature_layers>
+      <water_temperature_layers_item>0.6</water_temperature_layers_item>
+      <water_temperature_layers_item>0.7</water_temperature_layers_item>
+      <water_temperature_layers_item>0.5</water_temperature_layers_item>
+      <water_temperature_layers_item>0.8</water_temperature_layers_item>
+    </water_temperature_layers>
+    <salinity_gradients>
+      <salinity_gradients_item>0.5</salinity_gradients_item>
+      <salinity_gradients_item>0.6</salinity_gradients_item>
+    </salinity_gradients>
+    <underwater_topography>
+      <underwater_topography_item>0.4</underwater_topography_item>
+      <underwater_topography_item>0.7</underwater_topography_item>
+      <underwater_topography_item>0.3</underwater_topography_item>
+    </underwater_topography>
+    <shoreline_reflection>
+      <shoreline_reflection_item>0.3</shoreline_reflection_item>
+      <shoreline_reflection_item>0.5</shoreline_reflection_item>
+      <shoreline_reflection_item>0.4</shoreline_reflection_item>
+      <shoreline_reflection_item>0.6</shoreline_reflection_item>
+    </shoreline_reflection>
+    <sand_movement>
+      <sand_movement_item>0.2</sand_movement_item>
+      <sand_movement_item>0.3</sand_movement_item>
+    </sand_movement>
+    <tide_pool_activity>
+      <tide_pool_activity_item>0.4</tide_pool_activity_item>
+      <tide_pool_activity_item>0.3</tide_pool_activity_item>
+      <tide_pool_activity_item>0.5</tide_pool_activity_item>
+    </tide_pool_activity>
+    <coastal_erosion_rate>0.01</coastal_erosion_rate>
+  </initialparameterization>
+</Infinite_Ocean_Wave_Dynamics_with_Marine_Ecosystem_Consciousness>

@@ -1,35 +1,48 @@
 {
-  "timestamp": "2025-06-23T15:03:35.115219",
+  "timestamp": "2025-06-23T15:29:08.948979",
   "target_directory": "gnn/examples",
-  "files_processed": 1,
+  "files_processed": 3,
   "ontology_terms_loaded": 60,
   "files": [
     {
-      "file": "rpg_dungeon_crawl.md",
+      "file": "meta_livestream_consciousness.md",
       "annotations": {
-        "fighter_health": "CharacterHealthFighter",
-        "mage_mana": "SpellcastingResource",
-        "rogue_stealth": "StealthState",
-        "cleric_divine_power": "DivineResource",
-        "dungeon_layout": "EnvironmentalState",
-        "lighting_conditions": "PerceptualContext",
-        "trap_states": "HiddenEnvironmentalThreats",
-        "monster_positions": "DynamicEnvironmentalActors",
-        "visual_fighter": "VisualObservationModalityFighter",
-        "tactical_health": "TacticalInformationModality",
-        "social_dm_descriptions": "NarrativeObservationModality",
-        "magical_auras": "ArcaneSensoryModality",
-        "fighter_combat": "CombatActionSpace",
-        "mage_spells": "SpellcastingActionSpace",
-        "rogue_exploration": "ExplorationActionSpace",
-        "cleric_healing": "HealingActionSpace",
-        "dm_environmental": "EnvironmentalControlActionSpace",
-        "party_coordination": "CollaborativePolicySpace",
-        "individual_policies": "IndividualPolicyBeliefs",
-        "expected_free_energy": "ExpectedFreeEnergyEstimates",
-        "collaborative_efe": "JointExpectedFreeEnergy",
-        "game_turn": "DiscreteTimeStep",
-        "narrative_pacing": "StoryProgressionRate"
+        "self_awareness_level": "MetaCognitiveConsciousnessState",
+        "gnn_structure_introspection": "SelfReferentialModelIntrospection",
+        "viewer_count": "DigitalAudienceEngagementMetric",
+        "chat_message_rate": "SocialInteractionDynamics",
+        "compression_artifacts": "DigitalArtifactGenerationState",
+        "gnn_variable_mutation": "SelfModifyingCodePattern",
+        "trending_topic_awareness": "CulturalZeitgeistConsciousness",
+        "sapf_frequency_commentary": "RealTimeAudioSelfCommentary",
+        "variable_monitoring": "LiveDebuggingState",
+        "meta_meta_consciousness": "RecursiveMetaCognition"
+      },
+      "terms_matched": [],
+      "terms_missing": []
+    },
+    {
+      "file": "relaxing_ocean_waves.md",
+      "annotations": {
+        "surface_wave_amplitude": "OceanWaveAmplitudeState",
+        "tidal_height": "TidalElevationState",
+        "wind_speed": "AtmosphericWindState",
+        "whale_song_presence": "MarineEcosystemVocalizationState",
+        "auditory_wave_crashes": "OceanAudioObservationModality",
+        "environmental_wind": "AtmosphericAudioModality",
+        "tactile_wave_pressure": "HydraulicTactileModality"
+      },
+      "terms_matched": [],
+      "terms_missing": []
+    },
+    {
+      "file": "grateful_dead_concert.md",
+      "annotations": {
+        "jerry_guitar_resonance": "GuitarStringResonanceStates",
+        "audience_energy_level": "CollectiveAudienceEnergyState",
+        "acoustic_resonance": "VenueAcousticResponse",
+        "musical_telepathy": "InterPersonalMusicalCommunication",
+        "cosmic_radio_signals": "TranscendentMusicalReception"
       },
       "terms_matched": [],
       "terms_missing": []

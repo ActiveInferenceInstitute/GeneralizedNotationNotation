@@ -1,0 +1,951 @@
+{
+    "file_path": "gnn/examples/grateful_dead_concert.md",
+    "name": "Psychedelic Concert Experience with Emergent Musical Consciousness",
+    "raw_sections": {
+        "GNNSection": "GratefulDeadConcert",
+        "GNNVersionAndFlags": "GNN v1",
+        "ModelName": "Psychedelic Concert Experience with Emergent Musical Consciousness",
+        "ModelAnnotation": "This model represents a comprehensive Grateful Dead concert experience featuring:\n- Multiple band members (Jerry Garcia, Bob Weir, Phil Lesh, Bill Kreutzmann, Mickey Hart, Ron McKernan) with distinct musical personalities and instruments\n- Dynamic audience consciousness with collective emotional states and participatory feedback\n- Stage environment with lighting, sound systems, and psychedelic visual effects\n- Musical improvisation networks with real-time jam evolution and creative emergence\n- Lyrical consciousness streams and narrative emergence through collective storytelling\n- Acoustic propagation through venue spaces with natural reverb and sound reflection\n- Temporal musical structures spanning verses, choruses, jams, and extended explorations\n- Consciousness-altering substance influences on perception and creative expression\n- Inter-dimensional musical communication and transcendent experience states\n- Emergent group mind phenomena and collective musical consciousness\n\nThe model enables rich psychedelic musical experiences with adaptive AI agents that can:\n- Generate spontaneous musical improvisations based on group dynamics and audience energy\n- Adapt to changing emotional and consciousness states of performers and audience\n- Create emergent musical narratives through believable artistic interactions\n- Balance individual expression with collective musical consciousness\n- Generate transcendent experiences through synchronized creative emergence",
+        "StateSpaceBlock": "# === JERRY GARCIA CONSCIOUSNESS ===\njerry_guitar_resonance[12,type=continuous]      # Guitar string resonances across chromatic scale\njerry_musical_intuition[8,type=float]           # Melodic inspiration and harmonic awareness\njerry_consciousness_level[3,type=float]         # Ordinary/Expanded/Transcendent awareness states\njerry_finger_positions[24,type=discrete]        # Fretboard position states across neck\njerry_emotional_expression[6,type=float]        # Joy/Sorrow/Peace/Intensity/Wonder/Love\njerry_improvisation_flow[10,type=continuous]    # Real-time creative emergence patterns\njerry_audience_connection[5,type=float]         # Empathic connection to crowd energy\njerry_band_synchrony[5,type=float]             # Musical alignment with other band members\njerry_lyrical_inspiration[15,type=float]       # Poetic consciousness and narrative emergence\njerry_spiritual_channeling[4,type=float]       # Connection to transcendent musical sources\n\n# === BOB WEIR RHYTHM CONSCIOUSNESS ===\nbob_rhythm_patterns[16,type=discrete]          # Complex polyrhythmic pattern states\nbob_chord_progressions[20,type=discrete]       # Harmonic movement possibilities\nbob_vocal_harmonies[12,type=continuous]        # Vocal frequency relationships\nbob_stage_presence[8,type=float]              # Physical and energetic stage manifestation\nbob_musical_counterpoint[10,type=float]        # Complementary musical relationship to Jerry\nbob_cowboy_mysticism[6,type=float]            # Western/spiritual consciousness integration\nbob_rhythmic_telepathy[7,type=float]          # Non-verbal rhythmic communication with drums\n\n# === PHIL LESH BASS CONSCIOUSNESS ===\nphil_bass_frequencies[8,type=continuous]       # Low-frequency harmonic foundations\nphil_harmonic_exploration[12,type=float]       # Jazz-influenced harmonic adventure\nphil_mathematical_music[10,type=float]         # Algorithmic and structural musical thinking\nphil_sonic_architecture[15,type=float]        # Three-dimensional sound space construction\nphil_classical_integration[8,type=float]      # Bach/Mozart consciousness in rock context\nphil_audience_foundation[6,type=float]        # Providing sonic grounding for crowd experience\n\n# === AUDIENCE COLLECTIVE CONSCIOUSNESS ===\naudience_size[1,type=int]                     # Number of conscious participants\naudience_energy_level[10,type=float]          # Collective excitement and engagement states\naudience_consciousness_state[5,type=float]    # Ordinary/Elevated/Ecstatic/Transcendent/Unity\naudience_musical_participation[12,type=discrete] # Singing/Dancing/Clapping/Swaying patterns\naudience_emotional_resonance[8,type=float]    # Collective emotional state alignment\naudience_psychedelic_experience[15,type=float] # Altered consciousness and perception states\naudience_group_mind[6,type=float]            # Collective consciousness emergence\naudience_temporal_perception[4,type=float]    # Time dilation and flow state experiences\n\n# === VENUE ENVIRONMENT CONSCIOUSNESS ===\nacoustic_resonance[50,50,type=continuous]    # 2D acoustic space with frequency propagation\nstage_lighting[30,type=discrete]             # Dynamic lighting states and color palettes\nsound_system_response[24,type=continuous]    # Audio frequency response across venue\natmospheric_pressure[1,type=float]           # Environmental influence on sound propagation\npsychedelic_visuals[40,type=discrete]        # Visual effect states and projections\nvenue_architecture[20,type=discrete]         # Physical space characteristics affecting sound\n\n# === MUSICAL STRUCTURE CONSCIOUSNESS ===\nsong_structure_state[8,type=discrete]        # Verse/Chorus/Bridge/Jam/Solo/Outro/Silence/Transition\nharmonic_progression[24,type=discrete]       # Chord sequence evolution through musical space\nrhythmic_complexity[12,type=float]          # Polyrhythmic density and sophistication\nmelodic_emergence[20,type=continuous]       # Real-time melody creation and evolution\nlyrical_narrative[30,type=discrete]         # Story and meaning emergence through improvisation\nmusical_intensity[10,type=float]            # Dynamic range from whisper to thunderous\ntemporal_stretching[6,type=float]           # Time perception manipulation through music\nharmonic_dissonance[8,type=float]          # Creative tension and resolution patterns\nimprovisation_coherence[12,type=float]     # Balance between freedom and musical structure\ntranscendent_moments[5,type=discrete]      # Peak experience emergence states\n\n# === CONSCIOUSNESS-ALTERING INFLUENCES ===\npsychedelic_compounds[8,type=float]         # Various consciousness-expanding substance effects\ncannabis_consciousness[6,type=float]       # Herb-influenced perception and creativity\ncollective_trance[7,type=float]           # Group-induced altered consciousness\nspiritual_opening[8,type=float]           # Connection to transcendent consciousness\n\n# === INTER-DIMENSIONAL MUSICAL COMMUNICATION ===\ncosmic_radio_signals[12,type=continuous]   # Reception of universal musical transmissions\nmusical_telepathy[20,type=float]          # Non-verbal creative communication between minds\ngalactic_rhythm_sync[6,type=float]        # Alignment with cosmic rhythmic cycles",
+        "Connections": "# Jerry Garcia musical consciousness flow\n(jerry_consciousness_level, jerry_guitar_resonance) > jerry_improvisation_flow\n(jerry_emotional_expression, jerry_audience_connection) > jerry_musical_intuition\n(jerry_spiritual_channeling, jerry_lyrical_inspiration) > cosmic_radio_signals\n\n# Cross-band musical telepathy\n(jerry_improvisation_flow, bob_musical_counterpoint) > harmonic_progression\n(bob_rhythm_patterns, phil_harmonic_exploration) > rhythmic_complexity\n(phil_sonic_architecture, acoustic_resonance) > sound_system_response\n\n# Audience-performer consciousness feedback\n(audience_energy_level, jerry_audience_connection) > jerry_emotional_expression\n(audience_musical_participation, musical_intensity) > stage_lighting\n(audience_consciousness_state, collective_trance) > transcendent_moments\n\n# Environmental consciousness integration\n(acoustic_resonance, sound_system_response) > venue_architecture\n(stage_lighting, psychedelic_visuals) > audience_psychedelic_experience\n(atmospheric_pressure, venue_architecture) > acoustic_resonance\n\n# Musical structure emergence\n(harmonic_progression, melodic_emergence) > song_structure_state\n(rhythmic_complexity, improvisation_coherence) > temporal_stretching\n(lyrical_narrative, transcendent_moments) > spiritual_opening\n\n# Consciousness-altering influence integration\n(psychedelic_compounds, audience_consciousness_state) > audience_group_mind\n(cannabis_consciousness, jerry_consciousness_level) > jerry_spiritual_channeling\n(collective_trance, audience_group_mind) > audience_emotional_resonance\n\n# Inter-dimensional musical communication\n(cosmic_radio_signals, jerry_spiritual_channeling) > jerry_lyrical_inspiration\n(musical_telepathy, bob_rhythmic_telepathy) > bob_rhythm_patterns\n(galactic_rhythm_sync, temporal_stretching) > improvisation_coherence",
+        "InitialParameterization": "# Jerry Garcia initialization\njerry_guitar_resonance={(0.8,0.6,0.7,0.9,0.5,0.8,0.7,0.6,0.9,0.8,0.7,0.6)}\njerry_consciousness_level={(0.3,0.5,0.2)}\njerry_emotional_expression={(0.8,0.3,0.7,0.9,0.6,0.9)}\njerry_improvisation_flow={(0.9,0.8,0.7,0.9,0.8,0.9,0.7,0.8,0.9,0.8)}\n\n# Bob Weir initialization\nbob_rhythm_patterns={(1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,0)}\nbob_chord_progressions={(0.8,0.7,0.9,0.6,0.8,0.7,0.9,0.8,0.7,0.6,0.8,0.9,0.7,0.8,0.6,0.9,0.8,0.7,0.8,0.9)}\nbob_vocal_harmonies={(0.6,0.7,0.8,0.5,0.7,0.9,0.6,0.8,0.7,0.6,0.8,0.7)}\n\n# Phil Lesh initialization\nphil_bass_frequencies={(55.0,73.4,98.0,130.8,174.6,220.0,293.7,369.9)}\nphil_harmonic_exploration={(0.9,0.8,0.9,0.7,0.8,0.9,0.8,0.9,0.7,0.8,0.9,0.8)}\nphil_sonic_architecture={(0.9,0.8,0.9,0.8,0.7,0.9,0.8,0.9,0.7,0.8,0.9,0.8,0.7,0.9,0.8)}\n\n# Audience initialization\naudience_size=15000\naudience_energy_level={(0.7,0.8,0.9,0.8,0.7,0.9,0.8,0.9,0.8,0.7)}\naudience_consciousness_state={(0.5,0.3,0.1,0.05,0.05)}\naudience_psychedelic_experience={(0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5)}\n\n# Venue initialization\nacoustic_resonance=0.6\nstage_lighting={(1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,0,1,1,0,1,1,0,1,0,1,1,0)}\nsound_system_response={(0.8,0.9,0.7,0.8,0.9,0.8,0.7,0.9,0.8,0.7,0.8,0.9,0.7,0.8,0.9,0.8,0.7,0.9,0.8,0.7,0.8,0.9,0.7,0.8)}\npsychedelic_visuals={(1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0)}\n\n# Musical structure initialization\nsong_structure_state={(1,0,0,0,0,0,0,0)}\nharmonic_progression={(1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1)}\nrhythmic_complexity={(0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8)}\nmelodic_emergence={(0.5,0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5)}\n\n# Consciousness-altering initialization\npsychedelic_compounds={(0.4,0.3,0.2,0.5,0.3,0.4,0.2,0.5)}\ncannabis_consciousness={(0.6,0.7,0.5,0.8,0.6,0.7)}\ncollective_trance={(0.3,0.4,0.2,0.5,0.3,0.4,0.2)}\nspiritual_opening={(0.5,0.6,0.4,0.7,0.5,0.6,0.4,0.7)}\n\n# Inter-dimensional initialization\ncosmic_radio_signals={(0.2,0.3,0.1,0.4,0.2,0.3,0.1,0.4,0.2,0.3,0.1,0.4)}\nmusical_telepathy={(0.7,0.8,0.6,0.9,0.7,0.8,0.6,0.9,0.7,0.8,0.6,0.9,0.7,0.8,0.6,0.9,0.7,0.8,0.6,0.9)}\ngalactic_rhythm_sync={(0.1,0.2,0.1,0.3,0.1,0.2)}",
+        "Equations": "# Jerry Garcia consciousness emergence:\n# jerry_improvisation_flow_t+1 = jerry_consciousness_level * jerry_musical_intuition + cosmic_radio_signals\n\n# Collective musical consciousness:\n# transcendent_moments = Σ(individual_consciousness_states) / N + musical_telepathy_sync\n\n# Audience-performer feedback loop:\n# audience_energy_t+1 = audience_energy_t + performer_emotional_expression\n\n# Musical structure emergence:\n# harmonic_progression_t+1 = current_harmonic_state + individual_contributions",
+        "Time": "Dynamic\nDiscreteTime\nModelTimeHorizon=120\nTemporalDepth=8",
+        "ActInfOntologyAnnotation": "jerry_guitar_resonance=GuitarStringResonanceStates\naudience_energy_level=CollectiveAudienceEnergyState\nacoustic_resonance=VenueAcousticResponse\nmusical_telepathy=InterPersonalMusicalCommunication\ncosmic_radio_signals=TranscendentMusicalReception",
+        "ModelParameters": "num_band_members: 6\nnum_audience_consciousness_units: 15000\nvenue_acoustic_complexity: 50\nconsciousness_levels: 5\nimprovisation_depth: 10\npsychedelic_influence_factors: 8\ninter_dimensional_channels: 12\ntemporal_musical_horizon: 120",
+        "Footer": "Grateful Dead Concert Experience - Comprehensive Psychedelic Musical Consciousness Model",
+        "Signature": "Creator: AI Assistant for GNN\nDate: 2024-12-28\nSource: Comprehensive Psychedelic Musical Consciousness Architecture\nStatus: Research implementation for emergent musical consciousness and collective transcendent experiences"
+    },
+    "statespaceblock": [
+        {
+            "id": "jerry_guitar_resonance",
+            "dimensions": "12,type=continuous",
+            "original_id": "jerry_guitar_resonance"
+        },
+        {
+            "id": "jerry_musical_intuition",
+            "dimensions": "8,type=float",
+            "original_id": "jerry_musical_intuition"
+        },
+        {
+            "id": "jerry_consciousness_level",
+            "dimensions": "3,type=float",
+            "original_id": "jerry_consciousness_level"
+        },
+        {
+            "id": "jerry_finger_positions",
+            "dimensions": "24,type=discrete",
+            "original_id": "jerry_finger_positions"
+        },
+        {
+            "id": "jerry_emotional_expression",
+            "dimensions": "6,type=float",
+            "original_id": "jerry_emotional_expression"
+        },
+        {
+            "id": "jerry_improvisation_flow",
+            "dimensions": "10,type=continuous",
+            "original_id": "jerry_improvisation_flow"
+        },
+        {
+            "id": "jerry_audience_connection",
+            "dimensions": "5,type=float",
+            "original_id": "jerry_audience_connection"
+        },
+        {
+            "id": "jerry_band_synchrony",
+            "dimensions": "5,type=float",
+            "original_id": "jerry_band_synchrony"
+        },
+        {
+            "id": "jerry_lyrical_inspiration",
+            "dimensions": "15,type=float",
+            "original_id": "jerry_lyrical_inspiration"
+        },
+        {
+            "id": "jerry_spiritual_channeling",
+            "dimensions": "4,type=float",
+            "original_id": "jerry_spiritual_channeling"
+        },
+        {
+            "id": "bob_rhythm_patterns",
+            "dimensions": "16,type=discrete",
+            "original_id": "bob_rhythm_patterns"
+        },
+        {
+            "id": "bob_chord_progressions",
+            "dimensions": "20,type=discrete",
+            "original_id": "bob_chord_progressions"
+        },
+        {
+            "id": "bob_vocal_harmonies",
+            "dimensions": "12,type=continuous",
+            "original_id": "bob_vocal_harmonies"
+        },
+        {
+            "id": "bob_stage_presence",
+            "dimensions": "8,type=float",
+            "original_id": "bob_stage_presence"
+        },
+        {
+            "id": "bob_musical_counterpoint",
+            "dimensions": "10,type=float",
+            "original_id": "bob_musical_counterpoint"
+        },
+        {
+            "id": "bob_cowboy_mysticism",
+            "dimensions": "6,type=float",
+            "original_id": "bob_cowboy_mysticism"
+        },
+        {
+            "id": "bob_rhythmic_telepathy",
+            "dimensions": "7,type=float",
+            "original_id": "bob_rhythmic_telepathy"
+        },
+        {
+            "id": "phil_bass_frequencies",
+            "dimensions": "8,type=continuous",
+            "original_id": "phil_bass_frequencies"
+        },
+        {
+            "id": "phil_harmonic_exploration",
+            "dimensions": "12,type=float",
+            "original_id": "phil_harmonic_exploration"
+        },
+        {
+            "id": "phil_mathematical_music",
+            "dimensions": "10,type=float",
+            "original_id": "phil_mathematical_music"
+        },
+        {
+            "id": "phil_sonic_architecture",
+            "dimensions": "15,type=float",
+            "original_id": "phil_sonic_architecture"
+        },
+        {
+            "id": "phil_classical_integration",
+            "dimensions": "8,type=float",
+            "original_id": "phil_classical_integration"
+        },
+        {
+            "id": "phil_audience_foundation",
+            "dimensions": "6,type=float",
+            "original_id": "phil_audience_foundation"
+        },
+        {
+            "id": "audience_size",
+            "dimensions": "1,type=int",
+            "original_id": "audience_size"
+        },
+        {
+            "id": "audience_energy_level",
+            "dimensions": "10,type=float",
+            "original_id": "audience_energy_level"
+        },
+        {
+            "id": "audience_consciousness_state",
+            "dimensions": "5,type=float",
+            "original_id": "audience_consciousness_state"
+        },
+        {
+            "id": "audience_musical_participation",
+            "dimensions": "12,type=discrete",
+            "original_id": "audience_musical_participation"
+        },
+        {
+            "id": "audience_emotional_resonance",
+            "dimensions": "8,type=float",
+            "original_id": "audience_emotional_resonance"
+        },
+        {
+            "id": "audience_psychedelic_experience",
+            "dimensions": "15,type=float",
+            "original_id": "audience_psychedelic_experience"
+        },
+        {
+            "id": "audience_group_mind",
+            "dimensions": "6,type=float",
+            "original_id": "audience_group_mind"
+        },
+        {
+            "id": "audience_temporal_perception",
+            "dimensions": "4,type=float",
+            "original_id": "audience_temporal_perception"
+        },
+        {
+            "id": "acoustic_resonance",
+            "dimensions": "50,50,type=continuous",
+            "original_id": "acoustic_resonance"
+        },
+        {
+            "id": "stage_lighting",
+            "dimensions": "30,type=discrete",
+            "original_id": "stage_lighting"
+        },
+        {
+            "id": "sound_system_response",
+            "dimensions": "24,type=continuous",
+            "original_id": "sound_system_response"
+        },
+        {
+            "id": "atmospheric_pressure",
+            "dimensions": "1,type=float",
+            "original_id": "atmospheric_pressure"
+        },
+        {
+            "id": "psychedelic_visuals",
+            "dimensions": "40,type=discrete",
+            "original_id": "psychedelic_visuals"
+        },
+        {
+            "id": "venue_architecture",
+            "dimensions": "20,type=discrete",
+            "original_id": "venue_architecture"
+        },
+        {
+            "id": "song_structure_state",
+            "dimensions": "8,type=discrete",
+            "original_id": "song_structure_state"
+        },
+        {
+            "id": "harmonic_progression",
+            "dimensions": "24,type=discrete",
+            "original_id": "harmonic_progression"
+        },
+        {
+            "id": "rhythmic_complexity",
+            "dimensions": "12,type=float",
+            "original_id": "rhythmic_complexity"
+        },
+        {
+            "id": "melodic_emergence",
+            "dimensions": "20,type=continuous",
+            "original_id": "melodic_emergence"
+        },
+        {
+            "id": "lyrical_narrative",
+            "dimensions": "30,type=discrete",
+            "original_id": "lyrical_narrative"
+        },
+        {
+            "id": "musical_intensity",
+            "dimensions": "10,type=float",
+            "original_id": "musical_intensity"
+        },
+        {
+            "id": "temporal_stretching",
+            "dimensions": "6,type=float",
+            "original_id": "temporal_stretching"
+        },
+        {
+            "id": "harmonic_dissonance",
+            "dimensions": "8,type=float",
+            "original_id": "harmonic_dissonance"
+        },
+        {
+            "id": "improvisation_coherence",
+            "dimensions": "12,type=float",
+            "original_id": "improvisation_coherence"
+        },
+        {
+            "id": "transcendent_moments",
+            "dimensions": "5,type=discrete",
+            "original_id": "transcendent_moments"
+        },
+        {
+            "id": "psychedelic_compounds",
+            "dimensions": "8,type=float",
+            "original_id": "psychedelic_compounds"
+        },
+        {
+            "id": "cannabis_consciousness",
+            "dimensions": "6,type=float",
+            "original_id": "cannabis_consciousness"
+        },
+        {
+            "id": "collective_trance",
+            "dimensions": "7,type=float",
+            "original_id": "collective_trance"
+        },
+        {
+            "id": "spiritual_opening",
+            "dimensions": "8,type=float",
+            "original_id": "spiritual_opening"
+        },
+        {
+            "id": "cosmic_radio_signals",
+            "dimensions": "12,type=continuous",
+            "original_id": "cosmic_radio_signals"
+        },
+        {
+            "id": "musical_telepathy",
+            "dimensions": "20,type=float",
+            "original_id": "musical_telepathy"
+        },
+        {
+            "id": "galactic_rhythm_sync",
+            "dimensions": "6,type=float",
+            "original_id": "galactic_rhythm_sync"
+        }
+    ],
+    "connections": [
+        {
+            "sources": [
+                "jerry_consciousness_level",
+                "jerry_guitar_resonance"
+            ],
+            "operator": ">",
+            "targets": [
+                "jerry_improvisation_flow"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "jerry_emotional_expression",
+                "jerry_audience_connection"
+            ],
+            "operator": ">",
+            "targets": [
+                "jerry_musical_intuition"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "jerry_spiritual_channeling",
+                "jerry_lyrical_inspiration"
+            ],
+            "operator": ">",
+            "targets": [
+                "cosmic_radio_signals"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "jerry_improvisation_flow",
+                "bob_musical_counterpoint"
+            ],
+            "operator": ">",
+            "targets": [
+                "harmonic_progression"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "bob_rhythm_patterns",
+                "phil_harmonic_exploration"
+            ],
+            "operator": ">",
+            "targets": [
+                "rhythmic_complexity"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "phil_sonic_architecture",
+                "acoustic_resonance"
+            ],
+            "operator": ">",
+            "targets": [
+                "sound_system_response"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "audience_energy_level",
+                "jerry_audience_connection"
+            ],
+            "operator": ">",
+            "targets": [
+                "jerry_emotional_expression"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "audience_musical_participation",
+                "musical_intensity"
+            ],
+            "operator": ">",
+            "targets": [
+                "stage_lighting"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "audience_consciousness_state",
+                "collective_trance"
+            ],
+            "operator": ">",
+            "targets": [
+                "transcendent_moments"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "acoustic_resonance",
+                "sound_system_response"
+            ],
+            "operator": ">",
+            "targets": [
+                "venue_architecture"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "stage_lighting",
+                "psychedelic_visuals"
+            ],
+            "operator": ">",
+            "targets": [
+                "audience_psychedelic_experience"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "atmospheric_pressure",
+                "venue_architecture"
+            ],
+            "operator": ">",
+            "targets": [
+                "acoustic_resonance"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "harmonic_progression",
+                "melodic_emergence"
+            ],
+            "operator": ">",
+            "targets": [
+                "song_structure_state"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "rhythmic_complexity",
+                "improvisation_coherence"
+            ],
+            "operator": ">",
+            "targets": [
+                "temporal_stretching"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "lyrical_narrative",
+                "transcendent_moments"
+            ],
+            "operator": ">",
+            "targets": [
+                "spiritual_opening"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "psychedelic_compounds",
+                "audience_consciousness_state"
+            ],
+            "operator": ">",
+            "targets": [
+                "audience_group_mind"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "cannabis_consciousness",
+                "jerry_consciousness_level"
+            ],
+            "operator": ">",
+            "targets": [
+                "jerry_spiritual_channeling"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "collective_trance",
+                "audience_group_mind"
+            ],
+            "operator": ">",
+            "targets": [
+                "audience_emotional_resonance"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "cosmic_radio_signals",
+                "jerry_spiritual_channeling"
+            ],
+            "operator": ">",
+            "targets": [
+                "jerry_lyrical_inspiration"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "musical_telepathy",
+                "bob_rhythmic_telepathy"
+            ],
+            "operator": ">",
+            "targets": [
+                "bob_rhythm_patterns"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "galactic_rhythm_sync",
+                "temporal_stretching"
+            ],
+            "operator": ">",
+            "targets": [
+                "improvisation_coherence"
+            ],
+            "attributes": {}
+        }
+    ],
+    "initialparameterization": {
+        "jerry_guitar_resonance": [
+            0.8,
+            0.6,
+            0.7,
+            0.9,
+            0.5,
+            0.8,
+            0.7,
+            0.6,
+            0.9,
+            0.8,
+            0.7,
+            0.6
+        ],
+        "jerry_consciousness_level": [
+            0.3,
+            0.5,
+            0.2
+        ],
+        "jerry_emotional_expression": [
+            0.8,
+            0.3,
+            0.7,
+            0.9,
+            0.6,
+            0.9
+        ],
+        "jerry_improvisation_flow": [
+            0.9,
+            0.8,
+            0.7,
+            0.9,
+            0.8,
+            0.9,
+            0.7,
+            0.8,
+            0.9,
+            0.8
+        ],
+        "bob_rhythm_patterns": [
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0
+        ],
+        "bob_chord_progressions": [
+            0.8,
+            0.7,
+            0.9,
+            0.6,
+            0.8,
+            0.7,
+            0.9,
+            0.8,
+            0.7,
+            0.6,
+            0.8,
+            0.9,
+            0.7,
+            0.8,
+            0.6,
+            0.9,
+            0.8,
+            0.7,
+            0.8,
+            0.9
+        ],
+        "bob_vocal_harmonies": [
+            0.6,
+            0.7,
+            0.8,
+            0.5,
+            0.7,
+            0.9,
+            0.6,
+            0.8,
+            0.7,
+            0.6,
+            0.8,
+            0.7
+        ],
+        "phil_bass_frequencies": [
+            55.0,
+            73.4,
+            98.0,
+            130.8,
+            174.6,
+            220.0,
+            293.7,
+            369.9
+        ],
+        "phil_harmonic_exploration": [
+            0.9,
+            0.8,
+            0.9,
+            0.7,
+            0.8,
+            0.9,
+            0.8,
+            0.9,
+            0.7,
+            0.8,
+            0.9,
+            0.8
+        ],
+        "phil_sonic_architecture": [
+            0.9,
+            0.8,
+            0.9,
+            0.8,
+            0.7,
+            0.9,
+            0.8,
+            0.9,
+            0.7,
+            0.8,
+            0.9,
+            0.8,
+            0.7,
+            0.9,
+            0.8
+        ],
+        "audience_size": 15000,
+        "audience_energy_level": [
+            0.7,
+            0.8,
+            0.9,
+            0.8,
+            0.7,
+            0.9,
+            0.8,
+            0.9,
+            0.8,
+            0.7
+        ],
+        "audience_consciousness_state": [
+            0.5,
+            0.3,
+            0.1,
+            0.05,
+            0.05
+        ],
+        "audience_psychedelic_experience": [
+            0.6,
+            0.7,
+            0.5,
+            0.8,
+            0.6,
+            0.7,
+            0.5,
+            0.8,
+            0.6,
+            0.7,
+            0.5,
+            0.8,
+            0.6,
+            0.7,
+            0.5
+        ],
+        "acoustic_resonance": 0.6,
+        "stage_lighting": [
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0
+        ],
+        "sound_system_response": [
+            0.8,
+            0.9,
+            0.7,
+            0.8,
+            0.9,
+            0.8,
+            0.7,
+            0.9,
+            0.8,
+            0.7,
+            0.8,
+            0.9,
+            0.7,
+            0.8,
+            0.9,
+            0.8,
+            0.7,
+            0.9,
+            0.8,
+            0.7,
+            0.8,
+            0.9,
+            0.7,
+            0.8
+        ],
+        "psychedelic_visuals": [
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0
+        ],
+        "song_structure_state": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "harmonic_progression": [
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1
+        ],
+        "rhythmic_complexity": [
+            0.6,
+            0.7,
+            0.5,
+            0.8,
+            0.6,
+            0.7,
+            0.5,
+            0.8,
+            0.6,
+            0.7,
+            0.5,
+            0.8
+        ],
+        "melodic_emergence": [
+            0.5,
+            0.6,
+            0.7,
+            0.5,
+            0.8,
+            0.6,
+            0.7,
+            0.5,
+            0.8,
+            0.6,
+            0.7,
+            0.5,
+            0.8,
+            0.6,
+            0.7,
+            0.5,
+            0.8,
+            0.6,
+            0.7,
+            0.5
+        ],
+        "psychedelic_compounds": [
+            0.4,
+            0.3,
+            0.2,
+            0.5,
+            0.3,
+            0.4,
+            0.2,
+            0.5
+        ],
+        "cannabis_consciousness": [
+            0.6,
+            0.7,
+            0.5,
+            0.8,
+            0.6,
+            0.7
+        ],
+        "collective_trance": [
+            0.3,
+            0.4,
+            0.2,
+            0.5,
+            0.3,
+            0.4,
+            0.2
+        ],
+        "spiritual_opening": [
+            0.5,
+            0.6,
+            0.4,
+            0.7,
+            0.5,
+            0.6,
+            0.4,
+            0.7
+        ],
+        "cosmic_radio_signals": [
+            0.2,
+            0.3,
+            0.1,
+            0.4,
+            0.2,
+            0.3,
+            0.1,
+            0.4,
+            0.2,
+            0.3,
+            0.1,
+            0.4
+        ],
+        "musical_telepathy": [
+            0.7,
+            0.8,
+            0.6,
+            0.9,
+            0.7,
+            0.8,
+            0.6,
+            0.9,
+            0.7,
+            0.8,
+            0.6,
+            0.9,
+            0.7,
+            0.8,
+            0.6,
+            0.9,
+            0.7,
+            0.8,
+            0.6,
+            0.9
+        ],
+        "galactic_rhythm_sync": [
+            0.1,
+            0.2,
+            0.1,
+            0.3,
+            0.1,
+            0.2
+        ]
+    }
+}

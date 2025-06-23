@@ -1,0 +1,51 @@
+{
+  "file": "gnn/examples/grateful_dead_concert.md",
+  "file_name": "grateful_dead_concert",
+  "analyses": {
+    "summarize_content": {
+      "success": true,
+      "file": "../output/llm_processing_step/grateful_dead_concert/summarize_content_analysis.md",
+      "provider": "openai",
+      "content_length": 3476,
+      "tokens_used": null
+    },
+    "explain_model": {
+      "success": true,
+      "file": "../output/llm_processing_step/grateful_dead_concert/explain_model_analysis.md",
+      "provider": "openai",
+      "content_length": 5188,
+      "tokens_used": null
+    },
+    "identify_components": {
+      "success": true,
+      "file": "../output/llm_processing_step/grateful_dead_concert/identify_components_analysis.md",
+      "provider": "openai",
+      "content_length": 6813,
+      "tokens_used": null
+    },
+    "analyze_structure": {
+      "success": true,
+      "file": "../output/llm_processing_step/grateful_dead_concert/analyze_structure_analysis.md",
+      "provider": "openai",
+      "content_length": 5101,
+      "tokens_used": null
+    },
+    "extract_parameters": {
+      "success": true,
+      "file": "../output/llm_processing_step/grateful_dead_concert/extract_parameters_analysis.md",
+      "provider": "openai",
+      "content_length": 6157,
+      "tokens_used": null
+    },
+    "practical_applications": {
+      "success": true,
+      "file": "../output/llm_processing_step/grateful_dead_concert/practical_applications_analysis.md",
+      "provider": "openai",
+      "content_length": 6238,
+      "tokens_used": null
+    }
+  },
+  "errors": [],
+  "success_count": 6,
+  "total_tasks": 6
+}

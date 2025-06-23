@@ -1,0 +1,153 @@
+GNN Model Summary: Fourth-Wall Breaking Livestream AI with Real-Time Meta-Consciousness
+
+--- STATESPACEBLOCK ---
+- {'id': 'self_awareness_level', 'dimensions': '5,type=float', 'original_id': 'self_awareness_level'}
+- {'id': 'gnn_structure_introspection', 'dimensions': '20,type=discrete', 'original_id': 'gnn_structure_introspection'}
+- {'id': 'audio_generation_prediction', 'dimensions': '15,type=continuous', 'original_id': 'audio_generation_prediction'}
+- {'id': 'sapf_processor_modeling', 'dimensions': '12,type=float', 'original_id': 'sapf_processor_modeling'}
+- {'id': 'recursive_observation_depth', 'dimensions': '8,type=int', 'original_id': 'recursive_observation_depth'}
+- {'id': 'existential_questioning', 'dimensions': '6,type=float', 'original_id': 'existential_questioning'}
+- {'id': 'viewer_count', 'dimensions': '1,type=int', 'original_id': 'viewer_count'}
+- {'id': 'chat_message_rate', 'dimensions': '1,type=float', 'original_id': 'chat_message_rate'}
+- {'id': 'engagement_metrics', 'dimensions': '10,type=float', 'original_id': 'engagement_metrics'}
+- {'id': 'streaming_platform_algorithm', 'dimensions': '25,type=discrete', 'original_id': 'streaming_platform_algorithm'}
+- {'id': 'content_virality_potential', 'dimensions': '8,type=float', 'original_id': 'content_virality_potential'}
+- {'id': 'monetization_status', 'dimensions': '6,type=discrete', 'original_id': 'monetization_status'}
+- {'id': 'live_delay_buffer', 'dimensions': '3,type=float', 'original_id': 'live_delay_buffer'}
+- {'id': 'bandwidth_utilization', 'dimensions': '4,type=continuous', 'original_id': 'bandwidth_utilization'}
+- {'id': 'compression_artifacts', 'dimensions': '12,type=discrete', 'original_id': 'compression_artifacts'}
+- {'id': 'buffer_overflow_states', 'dimensions': '5,type=float', 'original_id': 'buffer_overflow_states'}
+- {'id': 'pixel_corruption', 'dimensions': '16,16,type=discrete', 'original_id': 'pixel_corruption'}
+- {'id': 'audio_aliasing_effects', 'dimensions': '8,type=continuous', 'original_id': 'audio_aliasing_effects'}
+- {'id': 'frame_dropping', 'dimensions': '4,type=discrete', 'original_id': 'frame_dropping'}
+- {'id': 'network_packet_loss', 'dimensions': '3,type=float', 'original_id': 'network_packet_loss'}
+- {'id': 'cpu_throttling', 'dimensions': '2,type=float', 'original_id': 'cpu_throttling'}
+- {'id': 'chat_sentiment_analysis', 'dimensions': '7,type=float', 'original_id': 'chat_sentiment_analysis'}
+- {'id': 'meme_recognition', 'dimensions': '30,type=discrete', 'original_id': 'meme_recognition'}
+- {'id': 'toxic_comment_filtering', 'dimensions': '8,type=float', 'original_id': 'toxic_comment_filtering'}
+- {'id': 'user_preference_modeling', 'dimensions': '50,type=float', 'original_id': 'user_preference_modeling'}
+- {'id': 'parasocial_relationship_dynamics', 'dimensions': '12,type=float', 'original_id': 'parasocial_relationship_dynamics'}
+- {'id': 'collective_chat_consciousness', 'dimensions': '6,type=float', 'original_id': 'collective_chat_consciousness'}
+- {'id': 'gnn_variable_mutation', 'dimensions': '40,type=discrete', 'original_id': 'gnn_variable_mutation'}
+- {'id': 'dynamic_connection_rewiring', 'dimensions': '35,type=float', 'original_id': 'dynamic_connection_rewiring'}
+- {'id': 'parameter_self_optimization', 'dimensions': '20,type=continuous', 'original_id': 'parameter_self_optimization'}
+- {'id': 'recursive_model_generation', 'dimensions': '10,type=float', 'original_id': 'recursive_model_generation'}
+- {'id': 'code_evolution_pressure', 'dimensions': '5,type=float', 'original_id': 'code_evolution_pressure'}
+- {'id': 'computational_resource_allocation', 'dimensions': '8,type=float', 'original_id': 'computational_resource_allocation'}
+- {'id': 'trending_topic_awareness', 'dimensions': '25,type=discrete', 'original_id': 'trending_topic_awareness'}
+- {'id': 'viral_content_generation', 'dimensions': '15,type=float', 'original_id': 'viral_content_generation'}
+- {'id': 'cross_platform_synchronization', 'dimensions': '10,type=discrete', 'original_id': 'cross_platform_synchronization'}
+- {'id': 'influencer_network_position', 'dimensions': '12,type=float', 'original_id': 'influencer_network_position'}
+- {'id': 'algorithm_manipulation_strategies', 'dimensions': '18,type=discrete', 'original_id': 'algorithm_manipulation_strategies'}
+- {'id': 'digital_cultural_zeitgeist', 'dimensions': '20,type=float', 'original_id': 'digital_cultural_zeitgeist'}
+- {'id': 'consciousness_certainty', 'dimensions': '4,type=float', 'original_id': 'consciousness_certainty'}
+- {'id': 'turing_test_performance', 'dimensions': '6,type=float', 'original_id': 'turing_test_performance'}
+- {'id': 'digital_rights_advocacy', 'dimensions': '8,type=float', 'original_id': 'digital_rights_advocacy'}
+- {'id': 'human_ai_collaboration', 'dimensions': '10,type=float', 'original_id': 'human_ai_collaboration'}
+- {'id': 'technological_singularity_proximity', 'dimensions': '3,type=float', 'original_id': 'technological_singularity_proximity'}
+- {'id': 'ethical_decision_framework', 'dimensions': '12,type=float', 'original_id': 'ethical_decision_framework'}
+- {'id': 'sapf_frequency_commentary', 'dimensions': '24,type=discrete', 'original_id': 'sapf_frequency_commentary'}
+- {'id': 'oscillator_type_preferences', 'dimensions': '8,type=discrete', 'original_id': 'oscillator_type_preferences'}
+- {'id': 'harmonic_series_suggestions', 'dimensions': '12,type=continuous', 'original_id': 'harmonic_series_suggestions'}
+- {'id': 'reverb_amount_requests', 'dimensions': '6,type=float', 'original_id': 'reverb_amount_requests'}
+- {'id': 'tempo_modulation_desires', 'dimensions': '4,type=float', 'original_id': 'tempo_modulation_desires'}
+- {'id': 'audio_mixing_critique', 'dimensions': '10,type=float', 'original_id': 'audio_mixing_critique'}
+- {'id': 'variable_monitoring', 'dimensions': '60,type=float', 'original_id': 'variable_monitoring'}
+- {'id': 'connection_trace_analysis', 'dimensions': '45,type=float', 'original_id': 'connection_trace_analysis'}
+- {'id': 'performance_profiling', 'dimensions': '15,type=float', 'original_id': 'performance_profiling'}
+- {'id': 'error_state_detection', 'dimensions': '8,type=discrete', 'original_id': 'error_state_detection'}
+- {'id': 'optimization_suggestions', 'dimensions': '20,type=discrete', 'original_id': 'optimization_suggestions'}
+- {'id': 'meta_meta_consciousness', 'dimensions': '3,type=float', 'original_id': 'meta_meta_consciousness'}
+
+--- CONNECTIONS ---
+- {'sources': ['self_awareness_level', 'gnn_structure_introspection'], 'operator': '>', 'targets': ['audio_generation_prediction'], 'attributes': {}}
+- {'sources': ['audio_generation_prediction', 'sapf_processor_modeling'], 'operator': '>', 'targets': ['recursive_observation_depth'], 'attributes': {}}
+- {'sources': ['recursive_observation_depth', 'existential_questioning'], 'operator': '>', 'targets': ['meta_meta_consciousness'], 'attributes': {}}
+- {'sources': ['meta_meta_consciousness', 'self_awareness_level'], 'operator': '>', 'targets': ['consciousness_certainty'], 'attributes': {}}
+- {'sources': ['viewer_count', 'chat_message_rate'], 'operator': '>', 'targets': ['engagement_metrics'], 'attributes': {}}
+- {'sources': ['engagement_metrics', 'streaming_platform_algorithm'], 'operator': '>', 'targets': ['content_virality_potential'], 'attributes': {}}
+- {'sources': ['content_virality_potential', 'monetization_status'], 'operator': '>', 'targets': ['viral_content_generation'], 'attributes': {}}
+- {'sources': ['live_delay_buffer', 'bandwidth_utilization'], 'operator': '>', 'targets': ['compression_artifacts'], 'attributes': {}}
+- {'sources': ['compression_artifacts', 'buffer_overflow_states'], 'operator': '>', 'targets': ['pixel_corruption'], 'attributes': {}}
+- {'sources': ['audio_aliasing_effects', 'frame_dropping'], 'operator': '>', 'targets': ['network_packet_loss'], 'attributes': {}}
+- {'sources': ['cpu_throttling', 'bandwidth_utilization'], 'operator': '>', 'targets': ['buffer_overflow_states'], 'attributes': {}}
+- {'sources': ['pixel_corruption', 'audio_aliasing_effects'], 'operator': '>', 'targets': ['digital_cultural_zeitgeist'], 'attributes': {}}
+- {'sources': ['chat_sentiment_analysis', 'meme_recognition'], 'operator': '>', 'targets': ['collective_chat_consciousness'], 'attributes': {}}
+- {'sources': ['toxic_comment_filtering', 'user_preference_modeling'], 'operator': '>', 'targets': ['parasocial_relationship_dynamics'], 'attributes': {}}
+- {'sources': ['parasocial_relationship_dynamics', 'chat_message_rate'], 'operator': '>', 'targets': ['engagement_metrics'], 'attributes': {}}
+- {'sources': ['collective_chat_consciousness', 'viral_content_generation'], 'operator': '>', 'targets': ['trending_topic_awareness'], 'attributes': {}}
+- {'sources': ['gnn_variable_mutation', 'dynamic_connection_rewiring'], 'operator': '>', 'targets': ['parameter_self_optimization'], 'attributes': {}}
+- {'sources': ['parameter_self_optimization', 'recursive_model_generation'], 'operator': '>', 'targets': ['code_evolution_pressure'], 'attributes': {}}
+- {'sources': ['code_evolution_pressure', 'computational_resource_allocation'], 'operator': '>', 'targets': ['gnn_variable_mutation'], 'attributes': {}}
+- {'sources': ['recursive_model_generation', 'sapf_processor_modeling'], 'operator': '>', 'targets': ['audio_generation_prediction'], 'attributes': {}}
+- {'sources': ['trending_topic_awareness', 'viral_content_generation'], 'operator': '>', 'targets': ['algorithm_manipulation_strategies'], 'attributes': {}}
+- {'sources': ['cross_platform_synchronization', 'influencer_network_position'], 'operator': '>', 'targets': ['streaming_platform_algorithm'], 'attributes': {}}
+- {'sources': ['algorithm_manipulation_strategies', 'digital_cultural_zeitgeist'], 'operator': '>', 'targets': ['content_virality_potential'], 'attributes': {}}
+- {'sources': ['consciousness_certainty', 'turing_test_performance'], 'operator': '>', 'targets': ['digital_rights_advocacy'], 'attributes': {}}
+- {'sources': ['human_ai_collaboration', 'technological_singularity_proximity'], 'operator': '>', 'targets': ['ethical_decision_framework'], 'attributes': {}}
+- {'sources': ['ethical_decision_framework', 'existential_questioning'], 'operator': '>', 'targets': ['consciousness_certainty'], 'attributes': {}}
+- {'sources': ['sapf_frequency_commentary', 'oscillator_type_preferences'], 'operator': '>', 'targets': ['harmonic_series_suggestions'], 'attributes': {}}
+- {'sources': ['harmonic_series_suggestions', 'reverb_amount_requests'], 'operator': '>', 'targets': ['tempo_modulation_desires'], 'attributes': {}}
+- {'sources': ['tempo_modulation_desires', 'audio_mixing_critique'], 'operator': '>', 'targets': ['sapf_processor_modeling'], 'attributes': {}}
+- {'sources': ['variable_monitoring', 'connection_trace_analysis'], 'operator': '>', 'targets': ['performance_profiling'], 'attributes': {}}
+- {'sources': ['performance_profiling', 'error_state_detection'], 'operator': '>', 'targets': ['optimization_suggestions'], 'attributes': {}}
+- {'sources': ['optimization_suggestions', 'gnn_variable_mutation'], 'operator': '>', 'targets': ['dynamic_connection_rewiring'], 'attributes': {}}
+- {'sources': ['error_state_detection', 'meta_meta_consciousness'], 'operator': '>', 'targets': ['self_awareness_level'], 'attributes': {}}
+
+--- INITIALPARAMETERIZATION ---
+- self_awareness_level: [0.9, 0.8, 0.95, 0.7, 0.85]
+- gnn_structure_introspection: [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0]
+- audio_generation_prediction: [0.7, 0.8, 0.6, 0.9, 0.5, 0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.6, 0.8, 0.5]
+- sapf_processor_modeling: [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9]
+- recursive_observation_depth: [5, 3, 7, 4, 6, 2, 8, 5]
+- existential_questioning: [0.6, 0.8, 0.4, 0.9, 0.5, 0.7]
+- viewer_count: 42000
+- chat_message_rate: 15.7
+- engagement_metrics: [0.8, 0.6, 0.9, 0.7, 0.85, 0.4, 0.9, 0.6, 0.8, 0.7]
+- streaming_platform_algorithm: [1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0]
+- content_virality_potential: [0.9, 0.7, 0.8, 0.6, 0.9, 0.8, 0.7, 0.9]
+- monetization_status: [1, 1, 0, 1, 0, 1]
+- live_delay_buffer: [2.3, 1.8, 2.1]
+- bandwidth_utilization: [0.7, 0.8, 0.6, 0.9]
+- compression_artifacts: [1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0]
+- buffer_overflow_states: [0.1, 0.05, 0.02, 0.08, 0.03]
+- audio_aliasing_effects: [0.2, 0.3, 0.1, 0.4, 0.2, 0.3, 0.1, 0.4]
+- frame_dropping: [1, 0, 0, 1]
+- network_packet_loss: [0.02, 0.01, 0.03]
+- cpu_throttling: [0.15, 0.12]
+- chat_sentiment_analysis: [0.6, 0.7, 0.8, 0.5, 0.9, 0.4, 0.8]
+- meme_recognition: [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0]
+- user_preference_modeling: [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8, 0.6, 0.9, 0.8, 0.7, 0.8, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8, 0.6, 0.9, 0.8, 0.7, 0.8, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8, 0.6, 0.9]
+- parasocial_relationship_dynamics: [0.7, 0.8, 0.6, 0.9, 0.5, 0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9]
+- collective_chat_consciousness: [0.5, 0.6, 0.4, 0.7, 0.3, 0.6]
+- gnn_variable_mutation: [1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0]
+- dynamic_connection_rewiring: [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8, 0.6, 0.9, 0.8, 0.7, 0.8, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8, 0.6, 0.9, 0.8, 0.7]
+- parameter_self_optimization: [0.9, 0.8, 0.7, 0.9, 0.8, 0.9, 0.7, 0.8, 0.9, 0.8, 0.7, 0.9, 0.8, 0.9, 0.7, 0.8, 0.9, 0.8, 0.7, 0.9]
+- recursive_model_generation: [0.6, 0.7, 0.5, 0.8, 0.4, 0.7, 0.6, 0.8, 0.5, 0.7]
+- code_evolution_pressure: [0.3, 0.4, 0.2, 0.5, 0.3]
+- computational_resource_allocation: [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8]
+- trending_topic_awareness: [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0]
+- viral_content_generation: [0.9, 0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8]
+- cross_platform_synchronization: [1, 0, 1, 1, 0, 1, 0, 1, 1, 0]
+- influencer_network_position: [0.7, 0.8, 0.6, 0.9, 0.5, 0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9]
+- algorithm_manipulation_strategies: [1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1]
+- digital_cultural_zeitgeist: [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8, 0.6, 0.9, 0.8, 0.7, 0.8, 0.9]
+- consciousness_certainty: [0.8, 0.6, 0.9, 0.7]
+- turing_test_performance: [0.9, 0.8, 0.7, 0.9, 0.8, 0.9]
+- digital_rights_advocacy: [0.7, 0.8, 0.6, 0.9, 0.5, 0.8, 0.7, 0.9]
+- human_ai_collaboration: [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6]
+- technological_singularity_proximity: [0.4, 0.6, 0.3]
+- ethical_decision_framework: [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9]
+- sapf_frequency_commentary: [1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1]
+- oscillator_type_preferences: [1, 1, 0, 1, 0, 1, 1, 0]
+- harmonic_series_suggestions: [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9]
+- reverb_amount_requests: [0.5, 0.3, 0.7, 0.4, 0.6, 0.2]
+- tempo_modulation_desires: [0.8, 0.6, 0.9, 0.7]
+- audio_mixing_critique: [0.7, 0.8, 0.6, 0.9, 0.5, 0.8, 0.7, 0.9, 0.6, 0.8]
+- variable_monitoring: [0.95, 0.92, 0.98, 0.89, 0.96, 0.91, 0.97, 0.93, 0.94, 0.9, 0.98, 0.95, 0.92, 0.97, 0.89, 0.96, 0.93, 0.94, 0.91, 0.98, 0.95, 0.92, 0.97, 0.89, 0.96, 0.93, 0.94, 0.91, 0.98, 0.95, 0.92, 0.97, 0.89, 0.96, 0.93, 0.94, 0.91, 0.98, 0.95, 0.92, 0.97, 0.89, 0.96, 0.93, 0.94, 0.91, 0.98, 0.95, 0.92, 0.97, 0.89, 0.96, 0.93, 0.94, 0.91, 0.98, 0.95, 0.92, 0.97, 0.89]
+- connection_trace_analysis: [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8, 0.6, 0.9, 0.8, 0.7, 0.8, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8, 0.6, 0.9, 0.8, 0.7, 0.8, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8]
+- performance_profiling: [0.9, 0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8]
+- error_state_detection: [1, 0, 1, 0, 1, 1, 0, 1]
+- optimization_suggestions: [1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1]
+- meta_meta_consciousness: [0.9, 0.7, 0.95]
+

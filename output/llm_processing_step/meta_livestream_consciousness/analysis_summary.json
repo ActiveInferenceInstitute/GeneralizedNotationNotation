@@ -1,0 +1,51 @@
+{
+  "file": "gnn/examples/meta_livestream_consciousness.md",
+  "file_name": "meta_livestream_consciousness",
+  "analyses": {
+    "summarize_content": {
+      "success": true,
+      "file": "../output/llm_processing_step/meta_livestream_consciousness/summarize_content_analysis.md",
+      "provider": "openai",
+      "content_length": 3785,
+      "tokens_used": null
+    },
+    "explain_model": {
+      "success": true,
+      "file": "../output/llm_processing_step/meta_livestream_consciousness/explain_model_analysis.md",
+      "provider": "openai",
+      "content_length": 5162,
+      "tokens_used": null
+    },
+    "identify_components": {
+      "success": true,
+      "file": "../output/llm_processing_step/meta_livestream_consciousness/identify_components_analysis.md",
+      "provider": "openai",
+      "content_length": 6605,
+      "tokens_used": null
+    },
+    "analyze_structure": {
+      "success": true,
+      "file": "../output/llm_processing_step/meta_livestream_consciousness/analyze_structure_analysis.md",
+      "provider": "openai",
+      "content_length": 5716,
+      "tokens_used": null
+    },
+    "extract_parameters": {
+      "success": true,
+      "file": "../output/llm_processing_step/meta_livestream_consciousness/extract_parameters_analysis.md",
+      "provider": "openai",
+      "content_length": 5529,
+      "tokens_used": null
+    },
+    "practical_applications": {
+      "success": true,
+      "file": "../output/llm_processing_step/meta_livestream_consciousness/practical_applications_analysis.md",
+      "provider": "openai",
+      "content_length": 6783,
+      "tokens_used": null
+    }
+  },
+  "errors": [],
+  "success_count": 6,
+  "total_tasks": 6
+}

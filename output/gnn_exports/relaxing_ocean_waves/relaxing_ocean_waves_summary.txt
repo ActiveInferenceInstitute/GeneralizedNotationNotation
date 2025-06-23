@@ -1,0 +1,92 @@
+GNN Model Summary: Infinite Ocean Wave Dynamics with Marine Ecosystem Consciousness
+
+--- STATESPACEBLOCK ---
+- {'id': 'surface_wave_amplitude', 'dimensions': '8,type=continuous', 'original_id': 'surface_wave_amplitude'}
+- {'id': 'wave_frequency_spectrum', 'dimensions': '12,type=continuous', 'original_id': 'wave_frequency_spectrum'}
+- {'id': 'wave_phase_relationships', 'dimensions': '6,type=continuous', 'original_id': 'wave_phase_relationships'}
+- {'id': 'wave_propagation_velocity', 'dimensions': '4,type=continuous', 'original_id': 'wave_propagation_velocity'}
+- {'id': 'foam_bubble_density', 'dimensions': '3,type=continuous', 'original_id': 'foam_bubble_density'}
+- {'id': 'breaking_wave_intensity', 'dimensions': '2,type=continuous', 'original_id': 'breaking_wave_intensity'}
+- {'id': 'tidal_height', 'dimensions': '1,type=continuous', 'original_id': 'tidal_height'}
+- {'id': 'lunar_gravitational_influence', 'dimensions': '2,type=continuous', 'original_id': 'lunar_gravitational_influence'}
+- {'id': 'solar_gravitational_influence', 'dimensions': '1,type=continuous', 'original_id': 'solar_gravitational_influence'}
+- {'id': 'tidal_velocity', 'dimensions': '1,type=continuous', 'original_id': 'tidal_velocity'}
+- {'id': 'wind_speed', 'dimensions': '3,type=continuous', 'original_id': 'wind_speed'}
+- {'id': 'atmospheric_pressure', 'dimensions': '1,type=continuous', 'original_id': 'atmospheric_pressure'}
+- {'id': 'humidity_level', 'dimensions': '1,type=continuous', 'original_id': 'humidity_level'}
+- {'id': 'temperature_gradient', 'dimensions': '2,type=continuous', 'original_id': 'temperature_gradient'}
+- {'id': 'whale_song_presence', 'dimensions': '4,type=continuous', 'original_id': 'whale_song_presence'}
+- {'id': 'dolphin_communication', 'dimensions': '3,type=continuous', 'original_id': 'dolphin_communication'}
+- {'id': 'seabird_calls', 'dimensions': '5,type=continuous', 'original_id': 'seabird_calls'}
+- {'id': 'fish_movement_patterns', 'dimensions': '2,type=continuous', 'original_id': 'fish_movement_patterns'}
+- {'id': 'current_systems', 'dimensions': '6,type=continuous', 'original_id': 'current_systems'}
+- {'id': 'water_temperature_layers', 'dimensions': '4,type=continuous', 'original_id': 'water_temperature_layers'}
+- {'id': 'salinity_gradients', 'dimensions': '2,type=continuous', 'original_id': 'salinity_gradients'}
+- {'id': 'underwater_topography', 'dimensions': '3,type=continuous', 'original_id': 'underwater_topography'}
+- {'id': 'shoreline_reflection', 'dimensions': '4,type=continuous', 'original_id': 'shoreline_reflection'}
+- {'id': 'sand_movement', 'dimensions': '2,type=continuous', 'original_id': 'sand_movement'}
+- {'id': 'tide_pool_activity', 'dimensions': '3,type=continuous', 'original_id': 'tide_pool_activity'}
+- {'id': 'coastal_erosion_rate', 'dimensions': '1,type=continuous', 'original_id': 'coastal_erosion_rate'}
+- {'id': 'auditory_wave_crashes', 'dimensions': '6,type=continuous', 'original_id': 'auditory_wave_crashes'}
+- {'id': 'auditory_water_movement', 'dimensions': '4,type=continuous', 'original_id': 'auditory_water_movement'}
+- {'id': 'auditory_marine_life', 'dimensions': '8,type=continuous', 'original_id': 'auditory_marine_life'}
+- {'id': 'auditory_wind_water', 'dimensions': '3,type=continuous', 'original_id': 'auditory_wind_water'}
+- {'id': 'auditory_foam_bubbles', 'dimensions': '2,type=continuous', 'original_id': 'auditory_foam_bubbles'}
+- {'id': 'environmental_wind', 'dimensions': '4,type=continuous', 'original_id': 'environmental_wind'}
+- {'id': 'environmental_seabirds', 'dimensions': '5,type=continuous', 'original_id': 'environmental_seabirds'}
+- {'id': 'environmental_atmospheric', 'dimensions': '2,type=continuous', 'original_id': 'environmental_atmospheric'}
+- {'id': 'tactile_water_temperature', 'dimensions': '2,type=continuous', 'original_id': 'tactile_water_temperature'}
+- {'id': 'tactile_wave_pressure', 'dimensions': '3,type=continuous', 'original_id': 'tactile_wave_pressure'}
+- {'id': 'tactile_mist_spray', 'dimensions': '2,type=continuous', 'original_id': 'tactile_mist_spray'}
+
+--- CONNECTIONS ---
+- {'sources': ['wave_frequency_spectrum', 'surface_wave_amplitude'], 'operator': '>', 'targets': ['wave_propagation_velocity'], 'attributes': {}}
+- {'sources': ['wave_phase_relationships', 'breaking_wave_intensity'], 'operator': '>', 'targets': ['foam_bubble_density'], 'attributes': {}}
+- {'sources': ['surface_wave_amplitude', 'wave_propagation_velocity'], 'operator': '>', 'targets': ['auditory_wave_crashes'], 'attributes': {}}
+- {'sources': ['lunar_gravitational_influence', 'solar_gravitational_influence'], 'operator': '>', 'targets': ['tidal_height'], 'attributes': {}}
+- {'sources': ['tidal_height', 'tidal_velocity'], 'operator': '>', 'targets': ['wave_amplitude'], 'attributes': {}}
+- {'sources': ['tidal_velocity', 'current_systems'], 'operator': '>', 'targets': ['underwater_dynamics'], 'attributes': {}}
+- {'sources': ['wind_speed', 'atmospheric_pressure'], 'operator': '>', 'targets': ['surface_wave_amplitude'], 'attributes': {}}
+- {'sources': ['temperature_gradient', 'humidity_level'], 'operator': '>', 'targets': ['environmental_wind'], 'attributes': {}}
+- {'sources': ['atmospheric_pressure', 'wind_speed'], 'operator': '>', 'targets': ['wave_frequency_spectrum'], 'attributes': {}}
+- {'sources': ['whale_song_presence', 'dolphin_communication'], 'operator': '>', 'targets': ['auditory_marine_life'], 'attributes': {}}
+- {'sources': ['current_systems', 'fish_movement_patterns'], 'operator': '>', 'targets': ['marine_ecosystem_activity'], 'attributes': {}}
+- {'sources': ['water_temperature_layers', 'marine_ecosystem'], 'operator': '>', 'targets': ['ecosystem_vocalizations'], 'attributes': {}}
+- {'sources': ['breaking_wave_intensity', 'shoreline_reflection'], 'operator': '>', 'targets': ['sand_movement'], 'attributes': {}}
+- {'sources': ['wave_propagation_velocity', 'underwater_topography'], 'operator': '>', 'targets': ['shoreline_reflection'], 'attributes': {}}
+- {'sources': ['foam_bubble_density', 'coastal_interactions'], 'operator': '>', 'targets': ['auditory_foam_bubbles'], 'attributes': {}}
+- {'sources': ['auditory_wave_crashes', 'auditory_water_movement'], 'operator': '>', 'targets': ['primary_ocean_sounds'], 'attributes': {}}
+- {'sources': ['auditory_marine_life', 'environmental_seabirds'], 'operator': '>', 'targets': ['biological_sounds'], 'attributes': {}}
+- {'sources': ['environmental_wind', 'environmental_atmospheric'], 'operator': '>', 'targets': ['ambient_sounds'], 'attributes': {}}
+- {'sources': ['breaking_wave_intensity', 'water_temperature_layers'], 'operator': '>', 'targets': ['tactile_wave_pressure'], 'attributes': {}}
+- {'sources': ['foam_bubble_density', 'atmospheric_pressure'], 'operator': '>', 'targets': ['tactile_mist_spray'], 'attributes': {}}
+- {'sources': ['current_systems', 'temperature_gradient'], 'operator': '>', 'targets': ['tactile_water_temperature'], 'attributes': {}}
+
+--- INITIALPARAMETERIZATION ---
+- surface_wave_amplitude: [0.5, 0.7, 0.3, 0.8, 0.4, 0.6, 0.2, 0.9]
+- wave_frequency_spectrum: [0.1, 0.15, 0.2, 0.25, 0.18, 0.12, 0.08, 0.3, 0.22, 0.14, 0.16, 0.28]
+- wave_phase_relationships: [0.3, 0.7, 0.5, 0.8, 0.4, 0.6]
+- wave_propagation_velocity: [1.2, 1.5, 1.8, 1.3]
+- foam_bubble_density: [0.2, 0.4, 0.3]
+- breaking_wave_intensity: [0.6, 0.8]
+- tidal_height: 0.3
+- lunar_gravitational_influence: [0.7, 0.5]
+- solar_gravitational_influence: 0.2
+- tidal_velocity: 0.1
+- wind_speed: [0.3, 0.5, 0.4]
+- atmospheric_pressure: 1.0
+- humidity_level: 0.8
+- temperature_gradient: [0.2, 0.3]
+- whale_song_presence: [0.1, 0.05, 0.02, 0.08]
+- dolphin_communication: [0.03, 0.05, 0.02]
+- seabird_calls: [0.2, 0.15, 0.3, 0.1, 0.25]
+- fish_movement_patterns: [0.1, 0.15]
+- current_systems: [0.4, 0.3, 0.5, 0.2, 0.6, 0.35]
+- water_temperature_layers: [0.6, 0.7, 0.5, 0.8]
+- salinity_gradients: [0.5, 0.6]
+- underwater_topography: [0.4, 0.7, 0.3]
+- shoreline_reflection: [0.3, 0.5, 0.4, 0.6]
+- sand_movement: [0.2, 0.3]
+- tide_pool_activity: [0.4, 0.3, 0.5]
+- coastal_erosion_rate: 0.01
+

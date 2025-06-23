@@ -1,0 +1,9 @@
+{
+  "model_name": "grateful_dead_concert",
+  "input_file": "gnn/examples/grateful_dead_concert.md",
+  "sapf_file": "../output/sapf_processing_step/grateful_dead_concert/grateful_dead_concert.sapf",
+  "audio_file": "../output/sapf_processing_step/grateful_dead_concert/grateful_dead_concert_audio.wav",
+  "audio_duration": 30.0,
+  "sapf_code_lines": 121,
+  "processing_successful": true
+}

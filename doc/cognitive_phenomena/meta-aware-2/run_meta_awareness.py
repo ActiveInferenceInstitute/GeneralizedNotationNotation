@@ -13,6 +13,7 @@ Part of the GeneralizedNotationNotation (GNN) project.
 import sys
 import argparse
 import traceback
+import time
 from pathlib import Path
 from typing import Optional, List
 
@@ -20,6 +21,8 @@ from typing import Optional, List
 sys.path.append(str(Path(__file__).parent))
 
 from execution.simulation_runner import run_simulation_from_config, SimulationRunner
+from config.gnn_parser import load_gnn_config
+from simulation_logging.simulation_logger import create_logger
 
 def main():
     """Main entry point for meta-awareness simulation."""
@@ -40,13 +43,18 @@ Examples:
   
   # Show configuration and exit
   python run_meta_awareness.py config/meta_awareness_gnn.toml --show-config
+  
+  # Test logging system
+  python run_meta_awareness.py --test-logging
         """
     )
     
-    # Required arguments
+    # Required arguments (optional for some commands)
     parser.add_argument(
         "config", 
-        help="Path to GNN configuration file (TOML format)"
+        nargs='?',
+        default="config/meta_awareness_gnn.toml",
+        help="Path to GNN configuration file (TOML format, default: config/meta_awareness_gnn.toml)"
     )
     
     # Optional arguments
@@ -87,6 +95,12 @@ Examples:
         version="Meta-Aware-2 v1.0.0 (GNN-Configurable Meta-Awareness Simulation)"
     )
     
+    parser.add_argument(
+        "--test-logging",
+        action="store_true",
+        help="Test the logging system and exit"
+    )
+    
     args = parser.parse_args()
     
     # Handle special modes
@@ -96,6 +110,10 @@ Examples:
     
     if args.show_config:
         show_configuration(args.config)
+        return
+    
+    if args.test_logging:
+        test_logging_system()
         return
     
     # Run main simulation
@@ -147,13 +165,11 @@ Examples:
 def show_configuration(config_path: str):
     """Show configuration details and exit."""
     try:
-        from config.gnn_parser import load_gnn_config
+        config = load_gnn_config(config_path)
         
         print("=" * 60)
         print("GNN Configuration Summary")
         print("=" * 60)
-        
-        config = load_gnn_config(config_path)
         
         print(f"Model Name: {config.name}")
         print(f"Description: {config.description}")
@@ -249,6 +265,114 @@ def print_results_summary(results: dict):
     print()
     print("✓ Meta-awareness computational phenomenology simulation complete!")
     print("  Check figures/, results/, and logs/ directories for outputs.")
+
+def test_logging_system():
+    """Test the logging system to ensure all components work correctly."""
+    print("=" * 60)
+    print("Testing Logging System")
+    print("=" * 60)
+    
+    # Create test logger
+    test_dir = Path("test_logs")
+    test_dir.mkdir(exist_ok=True)
+    
+    logger = create_logger(test_dir, level="DEBUG")
+    
+    print(f"Created logger with ID: {logger.simulation_id}")
+    print(f"Log directory: {test_dir}")
+    
+    # Test basic logging
+    print("\n1. Testing basic logging levels...")
+    logger.info("This is an info message")
+    logger.debug("This is a debug message")
+    logger.warning("This is a warning message")
+    
+    # Test performance logging
+    print("\n2. Testing performance logging...")
+    logger.log_memory_usage(1, 100.5)
+    logger.log_matrix_operation(
+        operation="test_operation",
+        matrix_name="test_matrix",
+        input_shape=(10, 10),
+        output_shape=(10, 5),
+        computation_time=0.001
+    )
+    
+    # Test custom metrics
+    print("\n3. Testing custom metrics...")
+    logger.log_custom_metric("test_metric", 42.0)
+    logger.log_custom_metric("another_metric", "test_value")
+    
+    # Test error logging (intentional)
+    print("\n4. Testing error logging...")
+    try:
+        raise ValueError("This is a test error for logging verification")
+    except Exception as e:
+        logger.error("Test error caught", exception=e)
+    
+    # Test step logging
+    print("\n5. Testing step logging...")
+    for step in range(5):
+        logger.log_step_start(step, 5)
+        time.sleep(0.01)  # Simulate work
+        logger.log_step_end(step, {'test_data': step * 2})
+    
+    # Test simulation start/end
+    print("\n6. Testing simulation lifecycle...")
+    test_config = {
+        'model_name': 'test_model',
+        'num_levels': 3,
+        'time_steps': 100,
+        'simulation_mode': 'test'
+    }
+    
+    logger.set_model_info("test_model", 3, 100, "test")
+    logger.log_simulation_start(test_config)
+    
+    test_results = {
+        'state_posteriors': {'level1': [1, 2, 3]},
+        'precision_values': {'level1': [0.5, 0.6, 0.7]},
+        'num_levels': 3
+    }
+    logger.log_simulation_end(test_results)
+    
+    # Check log files
+    print("\n7. Checking generated log files...")
+    log_files = logger.get_log_files()
+    
+    for log_type, log_path in log_files.items():
+        if log_path.exists():
+            size = log_path.stat().st_size
+            print(f"  ✅ {log_type}: {log_path} ({size} bytes)")
+            
+            # Check if file has content
+            if size == 0:
+                print(f"      ⚠️  Warning: {log_type} is empty")
+            else:
+                print(f"      📝 {log_type} has content")
+        else:
+            print(f"  ❌ {log_type}: {log_path} (missing)")
+    
+    print("\n8. Testing memory and performance tracking...")
+    import psutil
+    import os
+    process = psutil.Process(os.getpid())
+    memory_mb = process.memory_info().rss / 1024 / 1024
+    print(f"Current memory usage: {memory_mb:.2f} MB")
+    
+    # Test numerical issue logging
+    print("\n9. Testing numerical issue logging...")
+    logger.log_numerical_issue("test_underflow", {
+        'location': 'test_function',
+        'value': 1e-20,
+        'expected_range': [1e-10, 1e10]
+    }, step=42)
+    
+    print("\n" + "=" * 60)
+    print("Logging system test completed!")
+    print("Check the generated log files in the test_logs directory.")
+    print("All logs should have content if the system is working correctly.")
+    print("=" * 60)
 
 if __name__ == "__main__":
     main() 

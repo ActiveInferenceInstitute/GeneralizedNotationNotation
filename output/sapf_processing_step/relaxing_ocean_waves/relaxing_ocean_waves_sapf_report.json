@@ -1,0 +1,9 @@
+{
+  "model_name": "relaxing_ocean_waves",
+  "input_file": "gnn/examples/relaxing_ocean_waves.md",
+  "sapf_file": "../output/sapf_processing_step/relaxing_ocean_waves/relaxing_ocean_waves.sapf",
+  "audio_file": "../output/sapf_processing_step/relaxing_ocean_waves/relaxing_ocean_waves_audio.wav",
+  "audio_duration": 30.0,
+  "sapf_code_lines": 97,
+  "processing_successful": true
+}

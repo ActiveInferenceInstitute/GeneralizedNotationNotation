@@ -1,0 +1,1140 @@
+<?xml version="1.0" ?>
+<Psychedelic_Concert_Experience_with_Emergent_Musical_Consciousness>
+  <file_path>gnn/examples/grateful_dead_concert.md</file_path>
+  <name>Psychedelic Concert Experience with Emergent Musical Consciousness</name>
+  <raw_sections>
+    <GNNSection>GratefulDeadConcert</GNNSection>
+    <GNNVersionAndFlags>GNN v1</GNNVersionAndFlags>
+    <ModelName>Psychedelic Concert Experience with Emergent Musical Consciousness</ModelName>
+    <ModelAnnotation>This model represents a comprehensive Grateful Dead concert experience featuring:
+- Multiple band members (Jerry Garcia, Bob Weir, Phil Lesh, Bill Kreutzmann, Mickey Hart, Ron McKernan) with distinct musical personalities and instruments
+- Dynamic audience consciousness with collective emotional states and participatory feedback
+- Stage environment with lighting, sound systems, and psychedelic visual effects
+- Musical improvisation networks with real-time jam evolution and creative emergence
+- Lyrical consciousness streams and narrative emergence through collective storytelling
+- Acoustic propagation through venue spaces with natural reverb and sound reflection
+- Temporal musical structures spanning verses, choruses, jams, and extended explorations
+- Consciousness-altering substance influences on perception and creative expression
+- Inter-dimensional musical communication and transcendent experience states
+- Emergent group mind phenomena and collective musical consciousness
+
+The model enables rich psychedelic musical experiences with adaptive AI agents that can:
+- Generate spontaneous musical improvisations based on group dynamics and audience energy
+- Adapt to changing emotional and consciousness states of performers and audience
+- Create emergent musical narratives through believable artistic interactions
+- Balance individual expression with collective musical consciousness
+- Generate transcendent experiences through synchronized creative emergence</ModelAnnotation>
+    <StateSpaceBlock># === JERRY GARCIA CONSCIOUSNESS ===
+jerry_guitar_resonance[12,type=continuous]      # Guitar string resonances across chromatic scale
+jerry_musical_intuition[8,type=float]           # Melodic inspiration and harmonic awareness
+jerry_consciousness_level[3,type=float]         # Ordinary/Expanded/Transcendent awareness states
+jerry_finger_positions[24,type=discrete]        # Fretboard position states across neck
+jerry_emotional_expression[6,type=float]        # Joy/Sorrow/Peace/Intensity/Wonder/Love
+jerry_improvisation_flow[10,type=continuous]    # Real-time creative emergence patterns
+jerry_audience_connection[5,type=float]         # Empathic connection to crowd energy
+jerry_band_synchrony[5,type=float]             # Musical alignment with other band members
+jerry_lyrical_inspiration[15,type=float]       # Poetic consciousness and narrative emergence
+jerry_spiritual_channeling[4,type=float]       # Connection to transcendent musical sources
+
+# === BOB WEIR RHYTHM CONSCIOUSNESS ===
+bob_rhythm_patterns[16,type=discrete]          # Complex polyrhythmic pattern states
+bob_chord_progressions[20,type=discrete]       # Harmonic movement possibilities
+bob_vocal_harmonies[12,type=continuous]        # Vocal frequency relationships
+bob_stage_presence[8,type=float]              # Physical and energetic stage manifestation
+bob_musical_counterpoint[10,type=float]        # Complementary musical relationship to Jerry
+bob_cowboy_mysticism[6,type=float]            # Western/spiritual consciousness integration
+bob_rhythmic_telepathy[7,type=float]          # Non-verbal rhythmic communication with drums
+
+# === PHIL LESH BASS CONSCIOUSNESS ===
+phil_bass_frequencies[8,type=continuous]       # Low-frequency harmonic foundations
+phil_harmonic_exploration[12,type=float]       # Jazz-influenced harmonic adventure
+phil_mathematical_music[10,type=float]         # Algorithmic and structural musical thinking
+phil_sonic_architecture[15,type=float]        # Three-dimensional sound space construction
+phil_classical_integration[8,type=float]      # Bach/Mozart consciousness in rock context
+phil_audience_foundation[6,type=float]        # Providing sonic grounding for crowd experience
+
+# === AUDIENCE COLLECTIVE CONSCIOUSNESS ===
+audience_size[1,type=int]                     # Number of conscious participants
+audience_energy_level[10,type=float]          # Collective excitement and engagement states
+audience_consciousness_state[5,type=float]    # Ordinary/Elevated/Ecstatic/Transcendent/Unity
+audience_musical_participation[12,type=discrete] # Singing/Dancing/Clapping/Swaying patterns
+audience_emotional_resonance[8,type=float]    # Collective emotional state alignment
+audience_psychedelic_experience[15,type=float] # Altered consciousness and perception states
+audience_group_mind[6,type=float]            # Collective consciousness emergence
+audience_temporal_perception[4,type=float]    # Time dilation and flow state experiences
+
+# === VENUE ENVIRONMENT CONSCIOUSNESS ===
+acoustic_resonance[50,50,type=continuous]    # 2D acoustic space with frequency propagation
+stage_lighting[30,type=discrete]             # Dynamic lighting states and color palettes
+sound_system_response[24,type=continuous]    # Audio frequency response across venue
+atmospheric_pressure[1,type=float]           # Environmental influence on sound propagation
+psychedelic_visuals[40,type=discrete]        # Visual effect states and projections
+venue_architecture[20,type=discrete]         # Physical space characteristics affecting sound
+
+# === MUSICAL STRUCTURE CONSCIOUSNESS ===
+song_structure_state[8,type=discrete]        # Verse/Chorus/Bridge/Jam/Solo/Outro/Silence/Transition
+harmonic_progression[24,type=discrete]       # Chord sequence evolution through musical space
+rhythmic_complexity[12,type=float]          # Polyrhythmic density and sophistication
+melodic_emergence[20,type=continuous]       # Real-time melody creation and evolution
+lyrical_narrative[30,type=discrete]         # Story and meaning emergence through improvisation
+musical_intensity[10,type=float]            # Dynamic range from whisper to thunderous
+temporal_stretching[6,type=float]           # Time perception manipulation through music
+harmonic_dissonance[8,type=float]          # Creative tension and resolution patterns
+improvisation_coherence[12,type=float]     # Balance between freedom and musical structure
+transcendent_moments[5,type=discrete]      # Peak experience emergence states
+
+# === CONSCIOUSNESS-ALTERING INFLUENCES ===
+psychedelic_compounds[8,type=float]         # Various consciousness-expanding substance effects
+cannabis_consciousness[6,type=float]       # Herb-influenced perception and creativity
+collective_trance[7,type=float]           # Group-induced altered consciousness
+spiritual_opening[8,type=float]           # Connection to transcendent consciousness
+
+# === INTER-DIMENSIONAL MUSICAL COMMUNICATION ===
+cosmic_radio_signals[12,type=continuous]   # Reception of universal musical transmissions
+musical_telepathy[20,type=float]          # Non-verbal creative communication between minds
+galactic_rhythm_sync[6,type=float]        # Alignment with cosmic rhythmic cycles</StateSpaceBlock>
+    <Connections># Jerry Garcia musical consciousness flow
+(jerry_consciousness_level, jerry_guitar_resonance) &gt; jerry_improvisation_flow
+(jerry_emotional_expression, jerry_audience_connection) &gt; jerry_musical_intuition
+(jerry_spiritual_channeling, jerry_lyrical_inspiration) &gt; cosmic_radio_signals
+
+# Cross-band musical telepathy
+(jerry_improvisation_flow, bob_musical_counterpoint) &gt; harmonic_progression
+(bob_rhythm_patterns, phil_harmonic_exploration) &gt; rhythmic_complexity
+(phil_sonic_architecture, acoustic_resonance) &gt; sound_system_response
+
+# Audience-performer consciousness feedback
+(audience_energy_level, jerry_audience_connection) &gt; jerry_emotional_expression
+(audience_musical_participation, musical_intensity) &gt; stage_lighting
+(audience_consciousness_state, collective_trance) &gt; transcendent_moments
+
+# Environmental consciousness integration
+(acoustic_resonance, sound_system_response) &gt; venue_architecture
+(stage_lighting, psychedelic_visuals) &gt; audience_psychedelic_experience
+(atmospheric_pressure, venue_architecture) &gt; acoustic_resonance
+
+# Musical structure emergence
+(harmonic_progression, melodic_emergence) &gt; song_structure_state
+(rhythmic_complexity, improvisation_coherence) &gt; temporal_stretching
+(lyrical_narrative, transcendent_moments) &gt; spiritual_opening
+
+# Consciousness-altering influence integration
+(psychedelic_compounds, audience_consciousness_state) &gt; audience_group_mind
+(cannabis_consciousness, jerry_consciousness_level) &gt; jerry_spiritual_channeling
+(collective_trance, audience_group_mind) &gt; audience_emotional_resonance
+
+# Inter-dimensional musical communication
+(cosmic_radio_signals, jerry_spiritual_channeling) &gt; jerry_lyrical_inspiration
+(musical_telepathy, bob_rhythmic_telepathy) &gt; bob_rhythm_patterns
+(galactic_rhythm_sync, temporal_stretching) &gt; improvisation_coherence</Connections>
+    <InitialParameterization># Jerry Garcia initialization
+jerry_guitar_resonance={(0.8,0.6,0.7,0.9,0.5,0.8,0.7,0.6,0.9,0.8,0.7,0.6)}
+jerry_consciousness_level={(0.3,0.5,0.2)}
+jerry_emotional_expression={(0.8,0.3,0.7,0.9,0.6,0.9)}
+jerry_improvisation_flow={(0.9,0.8,0.7,0.9,0.8,0.9,0.7,0.8,0.9,0.8)}
+
+# Bob Weir initialization
+bob_rhythm_patterns={(1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,0)}
+bob_chord_progressions={(0.8,0.7,0.9,0.6,0.8,0.7,0.9,0.8,0.7,0.6,0.8,0.9,0.7,0.8,0.6,0.9,0.8,0.7,0.8,0.9)}
+bob_vocal_harmonies={(0.6,0.7,0.8,0.5,0.7,0.9,0.6,0.8,0.7,0.6,0.8,0.7)}
+
+# Phil Lesh initialization
+phil_bass_frequencies={(55.0,73.4,98.0,130.8,174.6,220.0,293.7,369.9)}
+phil_harmonic_exploration={(0.9,0.8,0.9,0.7,0.8,0.9,0.8,0.9,0.7,0.8,0.9,0.8)}
+phil_sonic_architecture={(0.9,0.8,0.9,0.8,0.7,0.9,0.8,0.9,0.7,0.8,0.9,0.8,0.7,0.9,0.8)}
+
+# Audience initialization
+audience_size=15000
+audience_energy_level={(0.7,0.8,0.9,0.8,0.7,0.9,0.8,0.9,0.8,0.7)}
+audience_consciousness_state={(0.5,0.3,0.1,0.05,0.05)}
+audience_psychedelic_experience={(0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5)}
+
+# Venue initialization
+acoustic_resonance=0.6
+stage_lighting={(1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,0,1,1,0,1,1,0,1,0,1,1,0)}
+sound_system_response={(0.8,0.9,0.7,0.8,0.9,0.8,0.7,0.9,0.8,0.7,0.8,0.9,0.7,0.8,0.9,0.8,0.7,0.9,0.8,0.7,0.8,0.9,0.7,0.8)}
+psychedelic_visuals={(1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0,1,1,0,1,0)}
+
+# Musical structure initialization
+song_structure_state={(1,0,0,0,0,0,0,0)}
+harmonic_progression={(1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,1)}
+rhythmic_complexity={(0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8)}
+melodic_emergence={(0.5,0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5,0.8,0.6,0.7,0.5)}
+
+# Consciousness-altering initialization
+psychedelic_compounds={(0.4,0.3,0.2,0.5,0.3,0.4,0.2,0.5)}
+cannabis_consciousness={(0.6,0.7,0.5,0.8,0.6,0.7)}
+collective_trance={(0.3,0.4,0.2,0.5,0.3,0.4,0.2)}
+spiritual_opening={(0.5,0.6,0.4,0.7,0.5,0.6,0.4,0.7)}
+
+# Inter-dimensional initialization
+cosmic_radio_signals={(0.2,0.3,0.1,0.4,0.2,0.3,0.1,0.4,0.2,0.3,0.1,0.4)}
+musical_telepathy={(0.7,0.8,0.6,0.9,0.7,0.8,0.6,0.9,0.7,0.8,0.6,0.9,0.7,0.8,0.6,0.9,0.7,0.8,0.6,0.9)}
+galactic_rhythm_sync={(0.1,0.2,0.1,0.3,0.1,0.2)}</InitialParameterization>
+    <Equations># Jerry Garcia consciousness emergence:
+# jerry_improvisation_flow_t+1 = jerry_consciousness_level * jerry_musical_intuition + cosmic_radio_signals
+
+# Collective musical consciousness:
+# transcendent_moments = Σ(individual_consciousness_states) / N + musical_telepathy_sync
+
+# Audience-performer feedback loop:
+# audience_energy_t+1 = audience_energy_t + performer_emotional_expression
+
+# Musical structure emergence:
+# harmonic_progression_t+1 = current_harmonic_state + individual_contributions</Equations>
+    <Time>Dynamic
+DiscreteTime
+ModelTimeHorizon=120
+TemporalDepth=8</Time>
+    <ActInfOntologyAnnotation>jerry_guitar_resonance=GuitarStringResonanceStates
+audience_energy_level=CollectiveAudienceEnergyState
+acoustic_resonance=VenueAcousticResponse
+musical_telepathy=InterPersonalMusicalCommunication
+cosmic_radio_signals=TranscendentMusicalReception</ActInfOntologyAnnotation>
+    <ModelParameters>num_band_members: 6
+num_audience_consciousness_units: 15000
+venue_acoustic_complexity: 50
+consciousness_levels: 5
+improvisation_depth: 10
+psychedelic_influence_factors: 8
+inter_dimensional_channels: 12
+temporal_musical_horizon: 120</ModelParameters>
+    <Footer>Grateful Dead Concert Experience - Comprehensive Psychedelic Musical Consciousness Model</Footer>
+    <Signature>Creator: AI Assistant for GNN
+Date: 2024-12-28
+Source: Comprehensive Psychedelic Musical Consciousness Architecture
+Status: Research implementation for emergent musical consciousness and collective transcendent experiences</Signature>
+  </raw_sections>
+  <statespaceblock>
+    <statespaceblock_item>
+      <id>jerry_guitar_resonance</id>
+      <dimensions>12,type=continuous</dimensions>
+      <original_id>jerry_guitar_resonance</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>jerry_musical_intuition</id>
+      <dimensions>8,type=float</dimensions>
+      <original_id>jerry_musical_intuition</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>jerry_consciousness_level</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>jerry_consciousness_level</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>jerry_finger_positions</id>
+      <dimensions>24,type=discrete</dimensions>
+      <original_id>jerry_finger_positions</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>jerry_emotional_expression</id>
+      <dimensions>6,type=float</dimensions>
+      <original_id>jerry_emotional_expression</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>jerry_improvisation_flow</id>
+      <dimensions>10,type=continuous</dimensions>
+      <original_id>jerry_improvisation_flow</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>jerry_audience_connection</id>
+      <dimensions>5,type=float</dimensions>
+      <original_id>jerry_audience_connection</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>jerry_band_synchrony</id>
+      <dimensions>5,type=float</dimensions>
+      <original_id>jerry_band_synchrony</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>jerry_lyrical_inspiration</id>
+      <dimensions>15,type=float</dimensions>
+      <original_id>jerry_lyrical_inspiration</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>jerry_spiritual_channeling</id>
+      <dimensions>4,type=float</dimensions>
+      <original_id>jerry_spiritual_channeling</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>bob_rhythm_patterns</id>
+      <dimensions>16,type=discrete</dimensions>
+      <original_id>bob_rhythm_patterns</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>bob_chord_progressions</id>
+      <dimensions>20,type=discrete</dimensions>
+      <original_id>bob_chord_progressions</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>bob_vocal_harmonies</id>
+      <dimensions>12,type=continuous</dimensions>
+      <original_id>bob_vocal_harmonies</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>bob_stage_presence</id>
+      <dimensions>8,type=float</dimensions>
+      <original_id>bob_stage_presence</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>bob_musical_counterpoint</id>
+      <dimensions>10,type=float</dimensions>
+      <original_id>bob_musical_counterpoint</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>bob_cowboy_mysticism</id>
+      <dimensions>6,type=float</dimensions>
+      <original_id>bob_cowboy_mysticism</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>bob_rhythmic_telepathy</id>
+      <dimensions>7,type=float</dimensions>
+      <original_id>bob_rhythmic_telepathy</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>phil_bass_frequencies</id>
+      <dimensions>8,type=continuous</dimensions>
+      <original_id>phil_bass_frequencies</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>phil_harmonic_exploration</id>
+      <dimensions>12,type=float</dimensions>
+      <original_id>phil_harmonic_exploration</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>phil_mathematical_music</id>
+      <dimensions>10,type=float</dimensions>
+      <original_id>phil_mathematical_music</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>phil_sonic_architecture</id>
+      <dimensions>15,type=float</dimensions>
+      <original_id>phil_sonic_architecture</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>phil_classical_integration</id>
+      <dimensions>8,type=float</dimensions>
+      <original_id>phil_classical_integration</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>phil_audience_foundation</id>
+      <dimensions>6,type=float</dimensions>
+      <original_id>phil_audience_foundation</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>audience_size</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>audience_size</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>audience_energy_level</id>
+      <dimensions>10,type=float</dimensions>
+      <original_id>audience_energy_level</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>audience_consciousness_state</id>
+      <dimensions>5,type=float</dimensions>
+      <original_id>audience_consciousness_state</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>audience_musical_participation</id>
+      <dimensions>12,type=discrete</dimensions>
+      <original_id>audience_musical_participation</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>audience_emotional_resonance</id>
+      <dimensions>8,type=float</dimensions>
+      <original_id>audience_emotional_resonance</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>audience_psychedelic_experience</id>
+      <dimensions>15,type=float</dimensions>
+      <original_id>audience_psychedelic_experience</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>audience_group_mind</id>
+      <dimensions>6,type=float</dimensions>
+      <original_id>audience_group_mind</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>audience_temporal_perception</id>
+      <dimensions>4,type=float</dimensions>
+      <original_id>audience_temporal_perception</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>acoustic_resonance</id>
+      <dimensions>50,50,type=continuous</dimensions>
+      <original_id>acoustic_resonance</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>stage_lighting</id>
+      <dimensions>30,type=discrete</dimensions>
+      <original_id>stage_lighting</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>sound_system_response</id>
+      <dimensions>24,type=continuous</dimensions>
+      <original_id>sound_system_response</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>atmospheric_pressure</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>atmospheric_pressure</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>psychedelic_visuals</id>
+      <dimensions>40,type=discrete</dimensions>
+      <original_id>psychedelic_visuals</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>venue_architecture</id>
+      <dimensions>20,type=discrete</dimensions>
+      <original_id>venue_architecture</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>song_structure_state</id>
+      <dimensions>8,type=discrete</dimensions>
+      <original_id>song_structure_state</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>harmonic_progression</id>
+      <dimensions>24,type=discrete</dimensions>
+      <original_id>harmonic_progression</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>rhythmic_complexity</id>
+      <dimensions>12,type=float</dimensions>
+      <original_id>rhythmic_complexity</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>melodic_emergence</id>
+      <dimensions>20,type=continuous</dimensions>
+      <original_id>melodic_emergence</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>lyrical_narrative</id>
+      <dimensions>30,type=discrete</dimensions>
+      <original_id>lyrical_narrative</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>musical_intensity</id>
+      <dimensions>10,type=float</dimensions>
+      <original_id>musical_intensity</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>temporal_stretching</id>
+      <dimensions>6,type=float</dimensions>
+      <original_id>temporal_stretching</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>harmonic_dissonance</id>
+      <dimensions>8,type=float</dimensions>
+      <original_id>harmonic_dissonance</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>improvisation_coherence</id>
+      <dimensions>12,type=float</dimensions>
+      <original_id>improvisation_coherence</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>transcendent_moments</id>
+      <dimensions>5,type=discrete</dimensions>
+      <original_id>transcendent_moments</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>psychedelic_compounds</id>
+      <dimensions>8,type=float</dimensions>
+      <original_id>psychedelic_compounds</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>cannabis_consciousness</id>
+      <dimensions>6,type=float</dimensions>
+      <original_id>cannabis_consciousness</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>collective_trance</id>
+      <dimensions>7,type=float</dimensions>
+      <original_id>collective_trance</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>spiritual_opening</id>
+      <dimensions>8,type=float</dimensions>
+      <original_id>spiritual_opening</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>cosmic_radio_signals</id>
+      <dimensions>12,type=continuous</dimensions>
+      <original_id>cosmic_radio_signals</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>musical_telepathy</id>
+      <dimensions>20,type=float</dimensions>
+      <original_id>musical_telepathy</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>galactic_rhythm_sync</id>
+      <dimensions>6,type=float</dimensions>
+      <original_id>galactic_rhythm_sync</original_id>
+    </statespaceblock_item>
+  </statespaceblock>
+  <connections>
+    <connections_item>
+      <sources>
+        <sources_item>jerry_consciousness_level</sources_item>
+        <sources_item>jerry_guitar_resonance</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>jerry_improvisation_flow</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>jerry_emotional_expression</sources_item>
+        <sources_item>jerry_audience_connection</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>jerry_musical_intuition</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>jerry_spiritual_channeling</sources_item>
+        <sources_item>jerry_lyrical_inspiration</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>cosmic_radio_signals</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>jerry_improvisation_flow</sources_item>
+        <sources_item>bob_musical_counterpoint</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>harmonic_progression</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>bob_rhythm_patterns</sources_item>
+        <sources_item>phil_harmonic_exploration</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>rhythmic_complexity</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>phil_sonic_architecture</sources_item>
+        <sources_item>acoustic_resonance</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>sound_system_response</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>audience_energy_level</sources_item>
+        <sources_item>jerry_audience_connection</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>jerry_emotional_expression</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>audience_musical_participation</sources_item>
+        <sources_item>musical_intensity</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>stage_lighting</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>audience_consciousness_state</sources_item>
+        <sources_item>collective_trance</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>transcendent_moments</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>acoustic_resonance</sources_item>
+        <sources_item>sound_system_response</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>venue_architecture</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>stage_lighting</sources_item>
+        <sources_item>psychedelic_visuals</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>audience_psychedelic_experience</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>atmospheric_pressure</sources_item>
+        <sources_item>venue_architecture</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>acoustic_resonance</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>harmonic_progression</sources_item>
+        <sources_item>melodic_emergence</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>song_structure_state</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>rhythmic_complexity</sources_item>
+        <sources_item>improvisation_coherence</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>temporal_stretching</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>lyrical_narrative</sources_item>
+        <sources_item>transcendent_moments</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>spiritual_opening</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>psychedelic_compounds</sources_item>
+        <sources_item>audience_consciousness_state</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>audience_group_mind</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>cannabis_consciousness</sources_item>
+        <sources_item>jerry_consciousness_level</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>jerry_spiritual_channeling</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>collective_trance</sources_item>
+        <sources_item>audience_group_mind</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>audience_emotional_resonance</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>cosmic_radio_signals</sources_item>
+        <sources_item>jerry_spiritual_channeling</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>jerry_lyrical_inspiration</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>musical_telepathy</sources_item>
+        <sources_item>bob_rhythmic_telepathy</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>bob_rhythm_patterns</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>galactic_rhythm_sync</sources_item>
+        <sources_item>temporal_stretching</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>improvisation_coherence</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+  </connections>
+  <initialparameterization>
+    <jerry_guitar_resonance>
+      <jerry_guitar_resonance_item>0.8</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.6</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.7</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.9</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.5</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.8</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.7</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.6</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.9</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.8</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.7</jerry_guitar_resonance_item>
+      <jerry_guitar_resonance_item>0.6</jerry_guitar_resonance_item>
+    </jerry_guitar_resonance>
+    <jerry_consciousness_level>
+      <jerry_consciousness_level_item>0.3</jerry_consciousness_level_item>
+      <jerry_consciousness_level_item>0.5</jerry_consciousness_level_item>
+      <jerry_consciousness_level_item>0.2</jerry_consciousness_level_item>
+    </jerry_consciousness_level>
+    <jerry_emotional_expression>
+      <jerry_emotional_expression_item>0.8</jerry_emotional_expression_item>
+      <jerry_emotional_expression_item>0.3</jerry_emotional_expression_item>
+      <jerry_emotional_expression_item>0.7</jerry_emotional_expression_item>
+      <jerry_emotional_expression_item>0.9</jerry_emotional_expression_item>
+      <jerry_emotional_expression_item>0.6</jerry_emotional_expression_item>
+      <jerry_emotional_expression_item>0.9</jerry_emotional_expression_item>
+    </jerry_emotional_expression>
+    <jerry_improvisation_flow>
+      <jerry_improvisation_flow_item>0.9</jerry_improvisation_flow_item>
+      <jerry_improvisation_flow_item>0.8</jerry_improvisation_flow_item>
+      <jerry_improvisation_flow_item>0.7</jerry_improvisation_flow_item>
+      <jerry_improvisation_flow_item>0.9</jerry_improvisation_flow_item>
+      <jerry_improvisation_flow_item>0.8</jerry_improvisation_flow_item>
+      <jerry_improvisation_flow_item>0.9</jerry_improvisation_flow_item>
+      <jerry_improvisation_flow_item>0.7</jerry_improvisation_flow_item>
+      <jerry_improvisation_flow_item>0.8</jerry_improvisation_flow_item>
+      <jerry_improvisation_flow_item>0.9</jerry_improvisation_flow_item>
+      <jerry_improvisation_flow_item>0.8</jerry_improvisation_flow_item>
+    </jerry_improvisation_flow>
+    <bob_rhythm_patterns>
+      <bob_rhythm_patterns_item>1</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>0</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>1</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>0</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>1</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>1</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>0</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>1</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>0</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>1</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>1</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>0</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>1</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>0</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>1</bob_rhythm_patterns_item>
+      <bob_rhythm_patterns_item>0</bob_rhythm_patterns_item>
+    </bob_rhythm_patterns>
+    <bob_chord_progressions>
+      <bob_chord_progressions_item>0.8</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.7</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.9</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.6</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.8</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.7</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.9</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.8</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.7</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.6</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.8</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.9</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.7</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.8</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.6</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.9</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.8</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.7</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.8</bob_chord_progressions_item>
+      <bob_chord_progressions_item>0.9</bob_chord_progressions_item>
+    </bob_chord_progressions>
+    <bob_vocal_harmonies>
+      <bob_vocal_harmonies_item>0.6</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.7</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.8</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.5</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.7</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.9</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.6</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.8</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.7</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.6</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.8</bob_vocal_harmonies_item>
+      <bob_vocal_harmonies_item>0.7</bob_vocal_harmonies_item>
+    </bob_vocal_harmonies>
+    <phil_bass_frequencies>
+      <phil_bass_frequencies_item>55.0</phil_bass_frequencies_item>
+      <phil_bass_frequencies_item>73.4</phil_bass_frequencies_item>
+      <phil_bass_frequencies_item>98.0</phil_bass_frequencies_item>
+      <phil_bass_frequencies_item>130.8</phil_bass_frequencies_item>
+      <phil_bass_frequencies_item>174.6</phil_bass_frequencies_item>
+      <phil_bass_frequencies_item>220.0</phil_bass_frequencies_item>
+      <phil_bass_frequencies_item>293.7</phil_bass_frequencies_item>
+      <phil_bass_frequencies_item>369.9</phil_bass_frequencies_item>
+    </phil_bass_frequencies>
+    <phil_harmonic_exploration>
+      <phil_harmonic_exploration_item>0.9</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.8</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.9</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.7</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.8</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.9</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.8</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.9</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.7</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.8</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.9</phil_harmonic_exploration_item>
+      <phil_harmonic_exploration_item>0.8</phil_harmonic_exploration_item>
+    </phil_harmonic_exploration>
+    <phil_sonic_architecture>
+      <phil_sonic_architecture_item>0.9</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.8</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.9</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.8</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.7</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.9</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.8</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.9</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.7</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.8</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.9</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.8</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.7</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.9</phil_sonic_architecture_item>
+      <phil_sonic_architecture_item>0.8</phil_sonic_architecture_item>
+    </phil_sonic_architecture>
+    <audience_size>15000</audience_size>
+    <audience_energy_level>
+      <audience_energy_level_item>0.7</audience_energy_level_item>
+      <audience_energy_level_item>0.8</audience_energy_level_item>
+      <audience_energy_level_item>0.9</audience_energy_level_item>
+      <audience_energy_level_item>0.8</audience_energy_level_item>
+      <audience_energy_level_item>0.7</audience_energy_level_item>
+      <audience_energy_level_item>0.9</audience_energy_level_item>
+      <audience_energy_level_item>0.8</audience_energy_level_item>
+      <audience_energy_level_item>0.9</audience_energy_level_item>
+      <audience_energy_level_item>0.8</audience_energy_level_item>
+      <audience_energy_level_item>0.7</audience_energy_level_item>
+    </audience_energy_level>
+    <audience_consciousness_state>
+      <audience_consciousness_state_item>0.5</audience_consciousness_state_item>
+      <audience_consciousness_state_item>0.3</audience_consciousness_state_item>
+      <audience_consciousness_state_item>0.1</audience_consciousness_state_item>
+      <audience_consciousness_state_item>0.05</audience_consciousness_state_item>
+      <audience_consciousness_state_item>0.05</audience_consciousness_state_item>
+    </audience_consciousness_state>
+    <audience_psychedelic_experience>
+      <audience_psychedelic_experience_item>0.6</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.7</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.5</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.8</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.6</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.7</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.5</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.8</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.6</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.7</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.5</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.8</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.6</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.7</audience_psychedelic_experience_item>
+      <audience_psychedelic_experience_item>0.5</audience_psychedelic_experience_item>
+    </audience_psychedelic_experience>
+    <acoustic_resonance>0.6</acoustic_resonance>
+    <stage_lighting>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>1</stage_lighting_item>
+      <stage_lighting_item>0</stage_lighting_item>
+    </stage_lighting>
+    <sound_system_response>
+      <sound_system_response_item>0.8</sound_system_response_item>
+      <sound_system_response_item>0.9</sound_system_response_item>
+      <sound_system_response_item>0.7</sound_system_response_item>
+      <sound_system_response_item>0.8</sound_system_response_item>
+      <sound_system_response_item>0.9</sound_system_response_item>
+      <sound_system_response_item>0.8</sound_system_response_item>
+      <sound_system_response_item>0.7</sound_system_response_item>
+      <sound_system_response_item>0.9</sound_system_response_item>
+      <sound_system_response_item>0.8</sound_system_response_item>
+      <sound_system_response_item>0.7</sound_system_response_item>
+      <sound_system_response_item>0.8</sound_system_response_item>
+      <sound_system_response_item>0.9</sound_system_response_item>
+      <sound_system_response_item>0.7</sound_system_response_item>
+      <sound_system_response_item>0.8</sound_system_response_item>
+      <sound_system_response_item>0.9</sound_system_response_item>
+      <sound_system_response_item>0.8</sound_system_response_item>
+      <sound_system_response_item>0.7</sound_system_response_item>
+      <sound_system_response_item>0.9</sound_system_response_item>
+      <sound_system_response_item>0.8</sound_system_response_item>
+      <sound_system_response_item>0.7</sound_system_response_item>
+      <sound_system_response_item>0.8</sound_system_response_item>
+      <sound_system_response_item>0.9</sound_system_response_item>
+      <sound_system_response_item>0.7</sound_system_response_item>
+      <sound_system_response_item>0.8</sound_system_response_item>
+    </sound_system_response>
+    <psychedelic_visuals>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+      <psychedelic_visuals_item>1</psychedelic_visuals_item>
+      <psychedelic_visuals_item>0</psychedelic_visuals_item>
+    </psychedelic_visuals>
+    <song_structure_state>
+      <song_structure_state_item>1</song_structure_state_item>
+      <song_structure_state_item>0</song_structure_state_item>
+      <song_structure_state_item>0</song_structure_state_item>
+      <song_structure_state_item>0</song_structure_state_item>
+      <song_structure_state_item>0</song_structure_state_item>
+      <song_structure_state_item>0</song_structure_state_item>
+      <song_structure_state_item>0</song_structure_state_item>
+      <song_structure_state_item>0</song_structure_state_item>
+    </song_structure_state>
+    <harmonic_progression>
+      <harmonic_progression_item>1</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>1</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>1</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>1</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>1</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>1</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>1</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>1</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>1</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>0</harmonic_progression_item>
+      <harmonic_progression_item>1</harmonic_progression_item>
+    </harmonic_progression>
+    <rhythmic_complexity>
+      <rhythmic_complexity_item>0.6</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.7</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.5</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.8</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.6</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.7</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.5</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.8</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.6</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.7</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.5</rhythmic_complexity_item>
+      <rhythmic_complexity_item>0.8</rhythmic_complexity_item>
+    </rhythmic_complexity>
+    <melodic_emergence>
+      <melodic_emergence_item>0.5</melodic_emergence_item>
+      <melodic_emergence_item>0.6</melodic_emergence_item>
+      <melodic_emergence_item>0.7</melodic_emergence_item>
+      <melodic_emergence_item>0.5</melodic_emergence_item>
+      <melodic_emergence_item>0.8</melodic_emergence_item>
+      <melodic_emergence_item>0.6</melodic_emergence_item>
+      <melodic_emergence_item>0.7</melodic_emergence_item>
+      <melodic_emergence_item>0.5</melodic_emergence_item>
+      <melodic_emergence_item>0.8</melodic_emergence_item>
+      <melodic_emergence_item>0.6</melodic_emergence_item>
+      <melodic_emergence_item>0.7</melodic_emergence_item>
+      <melodic_emergence_item>0.5</melodic_emergence_item>
+      <melodic_emergence_item>0.8</melodic_emergence_item>
+      <melodic_emergence_item>0.6</melodic_emergence_item>
+      <melodic_emergence_item>0.7</melodic_emergence_item>
+      <melodic_emergence_item>0.5</melodic_emergence_item>
+      <melodic_emergence_item>0.8</melodic_emergence_item>
+      <melodic_emergence_item>0.6</melodic_emergence_item>
+      <melodic_emergence_item>0.7</melodic_emergence_item>
+      <melodic_emergence_item>0.5</melodic_emergence_item>
+    </melodic_emergence>
+    <psychedelic_compounds>
+      <psychedelic_compounds_item>0.4</psychedelic_compounds_item>
+      <psychedelic_compounds_item>0.3</psychedelic_compounds_item>
+      <psychedelic_compounds_item>0.2</psychedelic_compounds_item>
+      <psychedelic_compounds_item>0.5</psychedelic_compounds_item>
+      <psychedelic_compounds_item>0.3</psychedelic_compounds_item>
+      <psychedelic_compounds_item>0.4</psychedelic_compounds_item>
+      <psychedelic_compounds_item>0.2</psychedelic_compounds_item>
+      <psychedelic_compounds_item>0.5</psychedelic_compounds_item>
+    </psychedelic_compounds>
+    <cannabis_consciousness>
+      <cannabis_consciousness_item>0.6</cannabis_consciousness_item>
+      <cannabis_consciousness_item>0.7</cannabis_consciousness_item>
+      <cannabis_consciousness_item>0.5</cannabis_consciousness_item>
+      <cannabis_consciousness_item>0.8</cannabis_consciousness_item>
+      <cannabis_consciousness_item>0.6</cannabis_consciousness_item>
+      <cannabis_consciousness_item>0.7</cannabis_consciousness_item>
+    </cannabis_consciousness>
+    <collective_trance>
+      <collective_trance_item>0.3</collective_trance_item>
+      <collective_trance_item>0.4</collective_trance_item>
+      <collective_trance_item>0.2</collective_trance_item>
+      <collective_trance_item>0.5</collective_trance_item>
+      <collective_trance_item>0.3</collective_trance_item>
+      <collective_trance_item>0.4</collective_trance_item>
+      <collective_trance_item>0.2</collective_trance_item>
+    </collective_trance>
+    <spiritual_opening>
+      <spiritual_opening_item>0.5</spiritual_opening_item>
+      <spiritual_opening_item>0.6</spiritual_opening_item>
+      <spiritual_opening_item>0.4</spiritual_opening_item>
+      <spiritual_opening_item>0.7</spiritual_opening_item>
+      <spiritual_opening_item>0.5</spiritual_opening_item>
+      <spiritual_opening_item>0.6</spiritual_opening_item>
+      <spiritual_opening_item>0.4</spiritual_opening_item>
+      <spiritual_opening_item>0.7</spiritual_opening_item>
+    </spiritual_opening>
+    <cosmic_radio_signals>
+      <cosmic_radio_signals_item>0.2</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.3</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.1</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.4</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.2</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.3</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.1</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.4</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.2</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.3</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.1</cosmic_radio_signals_item>
+      <cosmic_radio_signals_item>0.4</cosmic_radio_signals_item>
+    </cosmic_radio_signals>
+    <musical_telepathy>
+      <musical_telepathy_item>0.7</musical_telepathy_item>
+      <musical_telepathy_item>0.8</musical_telepathy_item>
+      <musical_telepathy_item>0.6</musical_telepathy_item>
+      <musical_telepathy_item>0.9</musical_telepathy_item>
+      <musical_telepathy_item>0.7</musical_telepathy_item>
+      <musical_telepathy_item>0.8</musical_telepathy_item>
+      <musical_telepathy_item>0.6</musical_telepathy_item>
+      <musical_telepathy_item>0.9</musical_telepathy_item>
+      <musical_telepathy_item>0.7</musical_telepathy_item>
+      <musical_telepathy_item>0.8</musical_telepathy_item>
+      <musical_telepathy_item>0.6</musical_telepathy_item>
+      <musical_telepathy_item>0.9</musical_telepathy_item>
+      <musical_telepathy_item>0.7</musical_telepathy_item>
+      <musical_telepathy_item>0.8</musical_telepathy_item>
+      <musical_telepathy_item>0.6</musical_telepathy_item>
+      <musical_telepathy_item>0.9</musical_telepathy_item>
+      <musical_telepathy_item>0.7</musical_telepathy_item>
+      <musical_telepathy_item>0.8</musical_telepathy_item>
+      <musical_telepathy_item>0.6</musical_telepathy_item>
+      <musical_telepathy_item>0.9</musical_telepathy_item>
+    </musical_telepathy>
+    <galactic_rhythm_sync>
+      <galactic_rhythm_sync_item>0.1</galactic_rhythm_sync_item>
+      <galactic_rhythm_sync_item>0.2</galactic_rhythm_sync_item>
+      <galactic_rhythm_sync_item>0.1</galactic_rhythm_sync_item>
+      <galactic_rhythm_sync_item>0.3</galactic_rhythm_sync_item>
+      <galactic_rhythm_sync_item>0.1</galactic_rhythm_sync_item>
+      <galactic_rhythm_sync_item>0.2</galactic_rhythm_sync_item>
+    </galactic_rhythm_sync>
+  </initialparameterization>
+</Psychedelic_Concert_Experience_with_Emergent_Musical_Consciousness>

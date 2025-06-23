@@ -11,6 +11,9 @@ Part of the meta-aware-2 "golden spike" GNN-specified executable implementation.
 """
 
 import numpy as np
+import time
+import psutil
+import os
 from typing import Dict, Any, List, Tuple, Optional, Union
 from dataclasses import dataclass, field
 import logging
@@ -67,16 +70,23 @@ class MetaAwarenessModel:
     based on GNN configuration specifications.
     """
     
-    def __init__(self, config: ModelConfig, random_seed: Optional[int] = None):
+    def __init__(self, config: ModelConfig, random_seed: Optional[int] = None, logger=None):
         """
         Initialize model with GNN configuration.
         
         Args:
             config: Parsed GNN model configuration
             random_seed: Optional random seed for reproducibility
+            logger: Optional simulation logger for performance tracking
         """
         self.config = config
         self.math_utils = MathUtils()
+        self.sim_logger = logger  # Store reference to simulation logger for performance tracking
+        
+        # Performance tracking
+        self.process = psutil.Process(os.getpid())
+        self.step_times = []
+        self.operation_times = {}
         
         if random_seed is not None:
             np.random.seed(random_seed)
@@ -89,8 +99,35 @@ class MetaAwarenessModel:
         
         logger.info(f"Initialized {config.name} with {config.num_levels} levels")
     
+    def _log_performance(self, operation: str, duration: float, details: Dict[str, Any] = None):
+        """Log performance metrics for operations."""
+        if self.sim_logger:
+            # Track operation time
+            if operation not in self.operation_times:
+                self.operation_times[operation] = []
+            self.operation_times[operation].append(duration)
+            
+            # Log memory usage periodically
+            memory_mb = self.process.memory_info().rss / 1024 / 1024
+            step = self.state.current_time if hasattr(self, 'state') else 0
+            
+            if step % 10 == 0:  # Log every 10 steps
+                self.sim_logger.log_memory_usage(step, memory_mb)
+            
+            # Log matrix operation details
+            if details:
+                self.sim_logger.log_matrix_operation(
+                    operation=operation,
+                    matrix_name=details.get('matrix_name', 'unknown'),
+                    input_shape=details.get('input_shape', ()),
+                    output_shape=details.get('output_shape', ()),
+                    computation_time=duration
+                )
+    
     def _setup_matrices(self):
         """Set up all model matrices from configuration."""
+        start_time = time.time()
+        
         # Store matrices for easy access
         self.A_matrices = self.config.likelihood_matrices.copy()
         self.B_matrices = self.config.transition_matrices.copy()
@@ -101,6 +138,13 @@ class MetaAwarenessModel:
         
         # Compute derived quantities
         self._compute_entropy_terms()
+        
+        duration = time.time() - start_time
+        self._log_performance("setup_matrices", duration, {
+            'matrix_name': 'all_matrices',
+            'input_shape': (len(self.A_matrices), len(self.B_matrices)),
+            'output_shape': (len(self.entropy_terms),)
+        })
         
         logger.debug("Model matrices initialized from GNN configuration")
     
@@ -134,6 +178,8 @@ class MetaAwarenessModel:
     
     def _initialize_simulation_state(self):
         """Initialize simulation state with proper arrays and beliefs."""
+        start_time = time.time()
+        
         # Initialize SimulationState object first
         T = self.config.time_steps
         self.state = SimulationState(max_time=T)
@@ -181,6 +227,13 @@ class MetaAwarenessModel:
         
         # Set initial states and beliefs
         self._set_initial_states()
+        
+        duration = time.time() - start_time
+        self._log_performance("initialize_state", duration, {
+            'matrix_name': 'state_arrays',
+            'input_shape': (len(self.levels), self.config.time_steps),
+            'output_shape': (len(self.state.state_priors), self.config.time_steps)
+        })
         
         logger.debug("Simulation state initialized with proper observation posteriors")
     
@@ -269,6 +322,7 @@ class MetaAwarenessModel:
         Returns:
             Dictionary containing all simulation results
         """
+        simulation_start = time.time()
         logger.info(f"Starting simulation in mode: {simulation_mode}")
         
         # Set up simulation based on mode
@@ -276,20 +330,71 @@ class MetaAwarenessModel:
         
         # Main simulation loop
         for t in range(self.config.time_steps):
+            step_start = time.time()
             self.state.current_time = t
             
             # Update beliefs for all levels
+            belief_start = time.time()
             self._update_beliefs(t, simulation_mode)
+            belief_duration = time.time() - belief_start
+            self._log_performance("belief_update", belief_duration, {
+                'matrix_name': f'beliefs_step_{t}',
+                'input_shape': (self.num_levels,),
+                'output_shape': (self.num_levels,)
+            })
             
             # Policy selection (for levels with actions)
             if t < self.config.time_steps - 1:
+                policy_start = time.time()
                 self._policy_selection(t)
+                policy_duration = time.time() - policy_start
+                self._log_performance("policy_selection", policy_duration, {
+                    'matrix_name': f'policy_step_{t}',
+                    'input_shape': (len([l for l in self.levels.values() if l.action_dim > 0]),),
+                    'output_shape': (len([l for l in self.levels.values() if l.action_dim > 0]),)
+                })
                 
                 # Update generative process
+                gen_start = time.time()
                 self._update_generative_process(t, simulation_mode)
+                gen_duration = time.time() - gen_start
+                self._log_performance("generative_update", gen_duration, {
+                    'matrix_name': f'generative_step_{t}',
+                    'input_shape': (self.num_levels,),
+                    'output_shape': (self.num_levels,)
+                })
+            
+            step_duration = time.time() - step_start
+            self.step_times.append(step_duration)
+            
+            # Log step timing periodically
+            if self.sim_logger and t % 20 == 0:
+                self.sim_logger.log_step_start(t, self.config.time_steps)
+                self.sim_logger.log_step_end(t, {'step_duration': step_duration})
         
         # Compute final quantities
+        final_start = time.time()
         self._compute_final_quantities()
+        final_duration = time.time() - final_start
+        self._log_performance("final_computation", final_duration, {
+            'matrix_name': 'final_quantities',
+            'input_shape': (self.config.time_steps,),
+            'output_shape': (1,)
+        })
+        
+        total_duration = time.time() - simulation_start
+        if self.sim_logger:
+            # Log performance summary
+            self.sim_logger.log_custom_metric('total_simulation_time', total_duration)
+            self.sim_logger.log_custom_metric('avg_step_time', np.mean(self.step_times))
+            self.sim_logger.log_custom_metric('max_step_time', np.max(self.step_times))
+            self.sim_logger.log_custom_metric('min_step_time', np.min(self.step_times))
+            
+            # Log operation timing summaries
+            for operation, times in self.operation_times.items():
+                self.sim_logger.log_custom_metric(f'{operation}_total_time', sum(times))
+                self.sim_logger.log_custom_metric(f'{operation}_avg_time', np.mean(times))
+                self.sim_logger.log_custom_metric(f'{operation}_count', len(times))
         
         logger.info("Simulation completed successfully")
         return self._collect_results()

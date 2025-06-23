@@ -1,0 +1,112 @@
+GNN Model Summary: Psychedelic Concert Experience with Emergent Musical Consciousness
+
+--- STATESPACEBLOCK ---
+- {'id': 'jerry_guitar_resonance', 'dimensions': '12,type=continuous', 'original_id': 'jerry_guitar_resonance'}
+- {'id': 'jerry_musical_intuition', 'dimensions': '8,type=float', 'original_id': 'jerry_musical_intuition'}
+- {'id': 'jerry_consciousness_level', 'dimensions': '3,type=float', 'original_id': 'jerry_consciousness_level'}
+- {'id': 'jerry_finger_positions', 'dimensions': '24,type=discrete', 'original_id': 'jerry_finger_positions'}
+- {'id': 'jerry_emotional_expression', 'dimensions': '6,type=float', 'original_id': 'jerry_emotional_expression'}
+- {'id': 'jerry_improvisation_flow', 'dimensions': '10,type=continuous', 'original_id': 'jerry_improvisation_flow'}
+- {'id': 'jerry_audience_connection', 'dimensions': '5,type=float', 'original_id': 'jerry_audience_connection'}
+- {'id': 'jerry_band_synchrony', 'dimensions': '5,type=float', 'original_id': 'jerry_band_synchrony'}
+- {'id': 'jerry_lyrical_inspiration', 'dimensions': '15,type=float', 'original_id': 'jerry_lyrical_inspiration'}
+- {'id': 'jerry_spiritual_channeling', 'dimensions': '4,type=float', 'original_id': 'jerry_spiritual_channeling'}
+- {'id': 'bob_rhythm_patterns', 'dimensions': '16,type=discrete', 'original_id': 'bob_rhythm_patterns'}
+- {'id': 'bob_chord_progressions', 'dimensions': '20,type=discrete', 'original_id': 'bob_chord_progressions'}
+- {'id': 'bob_vocal_harmonies', 'dimensions': '12,type=continuous', 'original_id': 'bob_vocal_harmonies'}
+- {'id': 'bob_stage_presence', 'dimensions': '8,type=float', 'original_id': 'bob_stage_presence'}
+- {'id': 'bob_musical_counterpoint', 'dimensions': '10,type=float', 'original_id': 'bob_musical_counterpoint'}
+- {'id': 'bob_cowboy_mysticism', 'dimensions': '6,type=float', 'original_id': 'bob_cowboy_mysticism'}
+- {'id': 'bob_rhythmic_telepathy', 'dimensions': '7,type=float', 'original_id': 'bob_rhythmic_telepathy'}
+- {'id': 'phil_bass_frequencies', 'dimensions': '8,type=continuous', 'original_id': 'phil_bass_frequencies'}
+- {'id': 'phil_harmonic_exploration', 'dimensions': '12,type=float', 'original_id': 'phil_harmonic_exploration'}
+- {'id': 'phil_mathematical_music', 'dimensions': '10,type=float', 'original_id': 'phil_mathematical_music'}
+- {'id': 'phil_sonic_architecture', 'dimensions': '15,type=float', 'original_id': 'phil_sonic_architecture'}
+- {'id': 'phil_classical_integration', 'dimensions': '8,type=float', 'original_id': 'phil_classical_integration'}
+- {'id': 'phil_audience_foundation', 'dimensions': '6,type=float', 'original_id': 'phil_audience_foundation'}
+- {'id': 'audience_size', 'dimensions': '1,type=int', 'original_id': 'audience_size'}
+- {'id': 'audience_energy_level', 'dimensions': '10,type=float', 'original_id': 'audience_energy_level'}
+- {'id': 'audience_consciousness_state', 'dimensions': '5,type=float', 'original_id': 'audience_consciousness_state'}
+- {'id': 'audience_musical_participation', 'dimensions': '12,type=discrete', 'original_id': 'audience_musical_participation'}
+- {'id': 'audience_emotional_resonance', 'dimensions': '8,type=float', 'original_id': 'audience_emotional_resonance'}
+- {'id': 'audience_psychedelic_experience', 'dimensions': '15,type=float', 'original_id': 'audience_psychedelic_experience'}
+- {'id': 'audience_group_mind', 'dimensions': '6,type=float', 'original_id': 'audience_group_mind'}
+- {'id': 'audience_temporal_perception', 'dimensions': '4,type=float', 'original_id': 'audience_temporal_perception'}
+- {'id': 'acoustic_resonance', 'dimensions': '50,50,type=continuous', 'original_id': 'acoustic_resonance'}
+- {'id': 'stage_lighting', 'dimensions': '30,type=discrete', 'original_id': 'stage_lighting'}
+- {'id': 'sound_system_response', 'dimensions': '24,type=continuous', 'original_id': 'sound_system_response'}
+- {'id': 'atmospheric_pressure', 'dimensions': '1,type=float', 'original_id': 'atmospheric_pressure'}
+- {'id': 'psychedelic_visuals', 'dimensions': '40,type=discrete', 'original_id': 'psychedelic_visuals'}
+- {'id': 'venue_architecture', 'dimensions': '20,type=discrete', 'original_id': 'venue_architecture'}
+- {'id': 'song_structure_state', 'dimensions': '8,type=discrete', 'original_id': 'song_structure_state'}
+- {'id': 'harmonic_progression', 'dimensions': '24,type=discrete', 'original_id': 'harmonic_progression'}
+- {'id': 'rhythmic_complexity', 'dimensions': '12,type=float', 'original_id': 'rhythmic_complexity'}
+- {'id': 'melodic_emergence', 'dimensions': '20,type=continuous', 'original_id': 'melodic_emergence'}
+- {'id': 'lyrical_narrative', 'dimensions': '30,type=discrete', 'original_id': 'lyrical_narrative'}
+- {'id': 'musical_intensity', 'dimensions': '10,type=float', 'original_id': 'musical_intensity'}
+- {'id': 'temporal_stretching', 'dimensions': '6,type=float', 'original_id': 'temporal_stretching'}
+- {'id': 'harmonic_dissonance', 'dimensions': '8,type=float', 'original_id': 'harmonic_dissonance'}
+- {'id': 'improvisation_coherence', 'dimensions': '12,type=float', 'original_id': 'improvisation_coherence'}
+- {'id': 'transcendent_moments', 'dimensions': '5,type=discrete', 'original_id': 'transcendent_moments'}
+- {'id': 'psychedelic_compounds', 'dimensions': '8,type=float', 'original_id': 'psychedelic_compounds'}
+- {'id': 'cannabis_consciousness', 'dimensions': '6,type=float', 'original_id': 'cannabis_consciousness'}
+- {'id': 'collective_trance', 'dimensions': '7,type=float', 'original_id': 'collective_trance'}
+- {'id': 'spiritual_opening', 'dimensions': '8,type=float', 'original_id': 'spiritual_opening'}
+- {'id': 'cosmic_radio_signals', 'dimensions': '12,type=continuous', 'original_id': 'cosmic_radio_signals'}
+- {'id': 'musical_telepathy', 'dimensions': '20,type=float', 'original_id': 'musical_telepathy'}
+- {'id': 'galactic_rhythm_sync', 'dimensions': '6,type=float', 'original_id': 'galactic_rhythm_sync'}
+
+--- CONNECTIONS ---
+- {'sources': ['jerry_consciousness_level', 'jerry_guitar_resonance'], 'operator': '>', 'targets': ['jerry_improvisation_flow'], 'attributes': {}}
+- {'sources': ['jerry_emotional_expression', 'jerry_audience_connection'], 'operator': '>', 'targets': ['jerry_musical_intuition'], 'attributes': {}}
+- {'sources': ['jerry_spiritual_channeling', 'jerry_lyrical_inspiration'], 'operator': '>', 'targets': ['cosmic_radio_signals'], 'attributes': {}}
+- {'sources': ['jerry_improvisation_flow', 'bob_musical_counterpoint'], 'operator': '>', 'targets': ['harmonic_progression'], 'attributes': {}}
+- {'sources': ['bob_rhythm_patterns', 'phil_harmonic_exploration'], 'operator': '>', 'targets': ['rhythmic_complexity'], 'attributes': {}}
+- {'sources': ['phil_sonic_architecture', 'acoustic_resonance'], 'operator': '>', 'targets': ['sound_system_response'], 'attributes': {}}
+- {'sources': ['audience_energy_level', 'jerry_audience_connection'], 'operator': '>', 'targets': ['jerry_emotional_expression'], 'attributes': {}}
+- {'sources': ['audience_musical_participation', 'musical_intensity'], 'operator': '>', 'targets': ['stage_lighting'], 'attributes': {}}
+- {'sources': ['audience_consciousness_state', 'collective_trance'], 'operator': '>', 'targets': ['transcendent_moments'], 'attributes': {}}
+- {'sources': ['acoustic_resonance', 'sound_system_response'], 'operator': '>', 'targets': ['venue_architecture'], 'attributes': {}}
+- {'sources': ['stage_lighting', 'psychedelic_visuals'], 'operator': '>', 'targets': ['audience_psychedelic_experience'], 'attributes': {}}
+- {'sources': ['atmospheric_pressure', 'venue_architecture'], 'operator': '>', 'targets': ['acoustic_resonance'], 'attributes': {}}
+- {'sources': ['harmonic_progression', 'melodic_emergence'], 'operator': '>', 'targets': ['song_structure_state'], 'attributes': {}}
+- {'sources': ['rhythmic_complexity', 'improvisation_coherence'], 'operator': '>', 'targets': ['temporal_stretching'], 'attributes': {}}
+- {'sources': ['lyrical_narrative', 'transcendent_moments'], 'operator': '>', 'targets': ['spiritual_opening'], 'attributes': {}}
+- {'sources': ['psychedelic_compounds', 'audience_consciousness_state'], 'operator': '>', 'targets': ['audience_group_mind'], 'attributes': {}}
+- {'sources': ['cannabis_consciousness', 'jerry_consciousness_level'], 'operator': '>', 'targets': ['jerry_spiritual_channeling'], 'attributes': {}}
+- {'sources': ['collective_trance', 'audience_group_mind'], 'operator': '>', 'targets': ['audience_emotional_resonance'], 'attributes': {}}
+- {'sources': ['cosmic_radio_signals', 'jerry_spiritual_channeling'], 'operator': '>', 'targets': ['jerry_lyrical_inspiration'], 'attributes': {}}
+- {'sources': ['musical_telepathy', 'bob_rhythmic_telepathy'], 'operator': '>', 'targets': ['bob_rhythm_patterns'], 'attributes': {}}
+- {'sources': ['galactic_rhythm_sync', 'temporal_stretching'], 'operator': '>', 'targets': ['improvisation_coherence'], 'attributes': {}}
+
+--- INITIALPARAMETERIZATION ---
+- jerry_guitar_resonance: [0.8, 0.6, 0.7, 0.9, 0.5, 0.8, 0.7, 0.6, 0.9, 0.8, 0.7, 0.6]
+- jerry_consciousness_level: [0.3, 0.5, 0.2]
+- jerry_emotional_expression: [0.8, 0.3, 0.7, 0.9, 0.6, 0.9]
+- jerry_improvisation_flow: [0.9, 0.8, 0.7, 0.9, 0.8, 0.9, 0.7, 0.8, 0.9, 0.8]
+- bob_rhythm_patterns: [1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0]
+- bob_chord_progressions: [0.8, 0.7, 0.9, 0.6, 0.8, 0.7, 0.9, 0.8, 0.7, 0.6, 0.8, 0.9, 0.7, 0.8, 0.6, 0.9, 0.8, 0.7, 0.8, 0.9]
+- bob_vocal_harmonies: [0.6, 0.7, 0.8, 0.5, 0.7, 0.9, 0.6, 0.8, 0.7, 0.6, 0.8, 0.7]
+- phil_bass_frequencies: [55.0, 73.4, 98.0, 130.8, 174.6, 220.0, 293.7, 369.9]
+- phil_harmonic_exploration: [0.9, 0.8, 0.9, 0.7, 0.8, 0.9, 0.8, 0.9, 0.7, 0.8, 0.9, 0.8]
+- phil_sonic_architecture: [0.9, 0.8, 0.9, 0.8, 0.7, 0.9, 0.8, 0.9, 0.7, 0.8, 0.9, 0.8, 0.7, 0.9, 0.8]
+- audience_size: 15000
+- audience_energy_level: [0.7, 0.8, 0.9, 0.8, 0.7, 0.9, 0.8, 0.9, 0.8, 0.7]
+- audience_consciousness_state: [0.5, 0.3, 0.1, 0.05, 0.05]
+- audience_psychedelic_experience: [0.6, 0.7, 0.5, 0.8, 0.6, 0.7, 0.5, 0.8, 0.6, 0.7, 0.5, 0.8, 0.6, 0.7, 0.5]
+- acoustic_resonance: 0.6
+- stage_lighting: [1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0]
+- sound_system_response: [0.8, 0.9, 0.7, 0.8, 0.9, 0.8, 0.7, 0.9, 0.8, 0.7, 0.8, 0.9, 0.7, 0.8, 0.9, 0.8, 0.7, 0.9, 0.8, 0.7, 0.8, 0.9, 0.7, 0.8]
+- psychedelic_visuals: [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0]
+- song_structure_state: [1, 0, 0, 0, 0, 0, 0, 0]
+- harmonic_progression: [1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1]
+- rhythmic_complexity: [0.6, 0.7, 0.5, 0.8, 0.6, 0.7, 0.5, 0.8, 0.6, 0.7, 0.5, 0.8]
+- melodic_emergence: [0.5, 0.6, 0.7, 0.5, 0.8, 0.6, 0.7, 0.5, 0.8, 0.6, 0.7, 0.5, 0.8, 0.6, 0.7, 0.5, 0.8, 0.6, 0.7, 0.5]
+- psychedelic_compounds: [0.4, 0.3, 0.2, 0.5, 0.3, 0.4, 0.2, 0.5]
+- cannabis_consciousness: [0.6, 0.7, 0.5, 0.8, 0.6, 0.7]
+- collective_trance: [0.3, 0.4, 0.2, 0.5, 0.3, 0.4, 0.2]
+- spiritual_opening: [0.5, 0.6, 0.4, 0.7, 0.5, 0.6, 0.4, 0.7]
+- cosmic_radio_signals: [0.2, 0.3, 0.1, 0.4, 0.2, 0.3, 0.1, 0.4, 0.2, 0.3, 0.1, 0.4]
+- musical_telepathy: [0.7, 0.8, 0.6, 0.9, 0.7, 0.8, 0.6, 0.9, 0.7, 0.8, 0.6, 0.9, 0.7, 0.8, 0.6, 0.9, 0.7, 0.8, 0.6, 0.9]
+- galactic_rhythm_sync: [0.1, 0.2, 0.1, 0.3, 0.1, 0.2]
+

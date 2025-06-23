@@ -21,6 +21,7 @@ from config.gnn_parser import load_gnn_config
 from core.meta_awareness_model import MetaAwarenessModel
 from execution.simulation_runner import SimulationRunner
 from utils.math_utils import MathUtils
+from simulation_logging.simulation_logger import create_logger
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +48,11 @@ class PaperVerification:
         self.config = load_gnn_config(config_path)
         self.math_utils = MathUtils()
         self.verification_results = {}
+    
+    def _create_model(self, random_seed: int) -> MetaAwarenessModel:
+        """Create a model instance with proper logger setup."""
+        verification_logger = create_logger(f"verification_{random_seed}")
+        return MetaAwarenessModel(self.config, random_seed=random_seed, logger=verification_logger)
         
     def verify_paper_parameters(self) -> Dict[str, Any]:
         """
@@ -141,7 +147,7 @@ class PaperVerification:
         
         if self.config.oddball_pattern == "default":
             # Generate stimulus sequence to check
-            model = MetaAwarenessModel(self.config, random_seed=42)
+            model = self._create_model(random_seed=42)
             stimulus = model.state.stimulus_sequence
             oddball_times = np.where(stimulus == 1)[0].tolist()
             results['default_oddball_timing'] = oddball_times == expected_times
@@ -349,7 +355,7 @@ class PaperVerification:
         }
         
         for trial in range(num_trials):
-            model = MetaAwarenessModel(self.config, random_seed=trial)
+            model = self._create_model(random_seed=trial)
             simulation_results = model.run_simulation("default")
             
             # Analyze behavioral patterns
@@ -424,7 +430,7 @@ class PaperVerification:
         # Test each figure mode
         for mode in ['figure_7', 'figure_10', 'figure_11']:
             try:
-                model = MetaAwarenessModel(self.config, random_seed=42)
+                model = self._create_model(random_seed=42)
                 simulation_results = model.run_simulation(mode)
                 
                 results[mode] = {
@@ -509,7 +515,7 @@ class PaperVerification:
         
         for mode in modes:
             try:
-                model = MetaAwarenessModel(self.config, random_seed=42)
+                model = self._create_model(random_seed=42)
                 simulation_results = model.run_simulation(mode)
                 
                 # Check basic consistency
@@ -525,7 +531,7 @@ class PaperVerification:
     def _test_parameter_sensitivity(self) -> Dict[str, float]:
         """Test sensitivity to parameter changes."""
         # Run baseline simulation
-        model_baseline = MetaAwarenessModel(self.config, random_seed=42)
+        model_baseline = self._create_model(random_seed=42)
         baseline_results = model_baseline.run_simulation("default")
         baseline_mw = self._analyze_mind_wandering(baseline_results)
         
@@ -543,10 +549,10 @@ class PaperVerification:
         seed = 42
         
         # Run same simulation twice
-        model1 = MetaAwarenessModel(self.config, random_seed=seed)
+        model1 = self._create_model(random_seed=seed)
         results1 = model1.run_simulation("default")
         
-        model2 = MetaAwarenessModel(self.config, random_seed=seed)
+        model2 = self._create_model(random_seed=seed)
         results2 = model2.run_simulation("default")
         
         # Compare key results
