@@ -21,6 +21,7 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 12_discopy.py (Corresponds to discopy_translator_module/ folder, generates DisCoPy diagrams from GNN)
 - 13_discopy_jax_eval.py (Corresponds to discopy_translator_module/ folder, generates DisCoPy diagrams from GNN using JAX)
 - 14_site.py (Corresponds to site/ folder, generates HTML summary site)
+- 15_sapf.py (Corresponds to sapf/ folder, generates SAPF (Sound As Pure Form) audio representations and sonifications of GNN models)
 
 
 Usage:
@@ -49,6 +50,7 @@ Options:
     --discopy-jax-gnn-input-dir DIR
                             Directory containing GNN files for DisCoPy JAX evaluation (13_discopy_jax_eval.py)
     --discopy-jax-seed      Seed for JAX PRNG in 13_discopy_jax_eval.py
+    --duration              Audio duration in seconds for SAPF generation (for 15_sapf.py, default: 30.0)
     --recreate-venv         Recreate virtual environment even if it already exists (for 2_setup.py)
     --dev                   Also install development dependencies from requirements-dev.txt (for 2_setup.py)
 
@@ -294,12 +296,13 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
         11: "core",             # 11_llm.py - LLM processing
         12: "core",             # 12_discopy.py - DisCoPy processing
         13: "core",             # 13_discopy_jax_eval.py - JAX evaluation
-        14: "core"              # 14_site.py - Site generation
+        14: "core",             # 14_site.py - Site generation
+        15: "core"              # 15_sapf.py - SAPF audio generation
     }
     
     # Determine which dependency groups we need
     required_groups = set(["core"])
-    for step_num in range(1, 15):
+    for step_num in range(1, 16):  # Updated to include step 15
         # Skip if in skip list
         if step_num in skip_steps or f"{step_num}_" in str(skip_steps):
             continue

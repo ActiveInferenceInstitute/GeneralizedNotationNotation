@@ -2,17 +2,27 @@
 
 ## Overview
 
-The GNN (Generalized Notation Notation) Processing Pipeline is a sophisticated, modular system for processing Active Inference generative models. This pipeline consists of 14 numbered steps that transform GNN specifications into various formats and provide comprehensive analysis.
+The GNN (Generalized Notation Notation) Processing Pipeline is a sophisticated, modular system for processing Active Inference generative models. This pipeline consists of 15 numbered steps that transform GNN specifications into various formats and provide comprehensive analysis, including cutting-edge audio representations through SAPF (Sound As Pure Form).
+
+### Pipeline Flow
+
+The pipeline processes GNN models through a systematic workflow:
+
+1. **Discovery & Parsing** (Steps 1-4): Find and validate GNN files
+2. **Export & Visualization** (Steps 5-6): Generate multiple output formats and visualizations  
+3. **Integration & Analysis** (Steps 7-8): MCP tools and ontology processing
+4. **Execution & Enhancement** (Steps 9-11): Code generation, simulation, and LLM analysis
+5. **Advanced Representations** (Steps 12-15): Categorical diagrams, JAX evaluation, site generation, and audio sonification
 
 ## Pipeline Architecture
 
 ### Core Components
 
-- **Main Orchestrator**: `main.py` - Discovers and executes numbered pipeline scripts (1-14)
+- **Main Orchestrator**: `main.py` - Discovers and executes numbered pipeline scripts (1-15)
 - **Centralized Utilities**: `utils/` package providing logging, argument parsing, and validation
 - **Pipeline Validation**: `pipeline_validation.py` - Validates consistency and functionality
 
-### 14-Step Pipeline
+### 15-Step Pipeline
 
 | Step | Script | Purpose | Status | Output Directory |
 |------|--------|---------|--------|------------------|
@@ -30,13 +40,16 @@ The GNN (Generalized Notation Notation) Processing Pipeline is a sophisticated, 
 | 12 | `12_discopy.py` | DisCoPy categorical diagrams | ⚠️ NEEDS_DEPS | `discopy_gnn/` |
 | 13 | `13_discopy_jax_eval.py` | JAX evaluation of diagrams | ⚠️ NEEDS_DEPS | `discopy_jax_eval/` |
 | 14 | `14_site.py` | HTML site generation | ⚠️ PARTIAL | `site/` |
+| 15 | `15_sapf.py` | SAPF audio generation | ✅ WORKING | `sapf_processing_step/` |
+
+**Note**: The pipeline is designed to be fully extensible, with each step building upon previous outputs while remaining independently executable for targeted processing.
 
 ## Functional Status Analysis
 
-### ✅ Fully Functional (10/14 steps)
-Scripts 1-6, 8-9, and 11 are fully operational with proper logging, error handling, and output generation.
+### ✅ Fully Functional (11/15 steps)
+Scripts 1-6, 8-9, 11, and 15 are fully operational with proper logging, error handling, and output generation.
 
-### ⚠️ Partially Functional (4/14 steps)
+### ⚠️ Partially Functional (4/15 steps)
 - **Step 7 (MCP)**: Core functionality works but may need MCP system initialization
 - **Step 10 (Execute)**: Depends on PyMDP/RxInfer availability
 - **Step 12 (DisCoPy)**: Needs DisCoPy library installation
@@ -106,6 +119,7 @@ output/
 ├── discopy_gnn/                  # Step 12: DisCoPy diagrams
 ├── discopy_jax_eval/             # Step 13: JAX evaluations
 ├── site/                         # Step 14: HTML documentation
+├── sapf_processing_step/         # Step 15: SAPF audio generation
 └── logs/                         # Pipeline execution logs
 ```
 
@@ -133,7 +147,7 @@ python3 src/main.py --target-dir src/gnn/examples --output-dir output --verbose
 python3 src/main.py --only-steps 1,2,3 --target-dir src/gnn/examples --output-dir output
 
 # Skip problematic steps
-python3 src/main.py --skip-steps 10,12,13 --target-dir src/gnn/examples --output-dir output
+python3 src/main.py --skip-steps 10,12,13,15 --target-dir src/gnn/examples --output-dir output
 ```
 
 ### Individual Step Execution
@@ -148,7 +162,10 @@ python3 src/1_gnn.py --target-dir src/gnn/examples --output-dir output --verbose
 python3 src/4_gnn_type_checker.py --target-dir src/gnn/examples --output-dir output --strict
 
 # Generate exports
-python3 src/5_export.py --target-dir src/gnn/examples --output-dir output --formats json,xml
+python3 src/5_export.py --target-dir src/gnn/examples --output-dir output
+
+# Generate SAPF audio representations
+python3 src/15_sapf.py --target-dir src/gnn/examples --output-dir output --duration 30
 ```
 
 ### Validation
@@ -177,6 +194,7 @@ python3 src/pipeline_validation.py --output-dir custom_output --save-report cust
 - **Step 12**: DisCoPy
 - **Step 13**: JAX, DisCoPy[matrix]
 - **Step 14**: Jinja2 or similar templating (for advanced site generation)
+- **Step 15**: SAPF binary (optional), numpy, wave (for audio generation)
 
 ## Error Handling and Recovery
 
@@ -199,6 +217,7 @@ Bottlenecks typically occur in:
 - Step 11 (LLM API calls)
 - Step 12-13 (DisCoPy/JAX computation)
 - Step 10 (Simulation execution)
+- Step 15 (Audio generation for large models)
 
 ## Future Enhancements
 
@@ -233,11 +252,12 @@ This captures all debug output including correlation IDs for tracing issues acro
 
 When adding new pipeline steps:
 
-1. Follow the numbered naming convention (`15_new_step.py`)
+1. Follow the numbered naming convention (`16_new_step.py`)
 2. Use centralized utilities from `utils/` package
 3. Implement proper error handling and logging
 4. Add output validation to `pipeline_validation.py`
-5. Update this documentation
+5. Update this documentation and main.py
 6. Include unit tests
+7. Update step dependency mapping in main.py
 
 The pipeline is designed to be extensible while maintaining consistency and reliability across all components. 

@@ -1,0 +1,9 @@
+{
+  "model_name": "federated_inference_friston2023",
+  "input_file": "gnn/examples/federated_inference_friston2023.md",
+  "sapf_file": "../output/sapf_processing_step/federated_inference_friston2023/federated_inference_friston2023.sapf",
+  "audio_file": "../output/sapf_processing_step/federated_inference_friston2023/federated_inference_friston2023_audio.wav",
+  "audio_duration": 30.0,
+  "sapf_code_lines": 79,
+  "processing_successful": true
+}

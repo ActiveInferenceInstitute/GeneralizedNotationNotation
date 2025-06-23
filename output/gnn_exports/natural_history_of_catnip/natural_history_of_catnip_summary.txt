@@ -1,0 +1,89 @@
+GNN Model Summary: The Natural History of Catnip: A Feline-Optimized Generative Model
+
+--- STATESPACEBLOCK ---
+- {'id': 'A_m0', 'dimensions': '7,5,4,4,6,type=float', 'original_id': 'A_m0'}
+- {'id': 'A_m1', 'dimensions': '5,5,4,4,6,type=float', 'original_id': 'A_m1'}
+- {'id': 'A_m2', 'dimensions': '4,5,4,4,6,type=float', 'original_id': 'A_m2'}
+- {'id': 'A_m3', 'dimensions': '8,5,4,4,6,type=float', 'original_id': 'A_m3'}
+- {'id': 'B_f0', 'dimensions': '5,5,3,type=float', 'original_id': 'B_f0'}
+- {'id': 'B_f1', 'dimensions': '4,4,2,type=float', 'original_id': 'B_f1'}
+- {'id': 'B_f2', 'dimensions': '4,4,1,type=float', 'original_id': 'B_f2'}
+- {'id': 'B_f3', 'dimensions': '6,6,4,type=float', 'original_id': 'B_f3'}
+- {'id': 'C_m0', 'dimensions': '7,type=float', 'original_id': 'C_m0'}
+- {'id': 'C_m1', 'dimensions': '5,type=float', 'original_id': 'C_m1'}
+- {'id': 'C_m2', 'dimensions': '4,type=float', 'original_id': 'C_m2'}
+- {'id': 'C_m3', 'dimensions': '8,type=float', 'original_id': 'C_m3'}
+- {'id': 'D_f0', 'dimensions': '5,type=float', 'original_id': 'D_f0'}
+- {'id': 'D_f1', 'dimensions': '4,type=float', 'original_id': 'D_f1'}
+- {'id': 'D_f2', 'dimensions': '4,type=float', 'original_id': 'D_f2'}
+- {'id': 'D_f3', 'dimensions': '6,type=float', 'original_id': 'D_f3'}
+- {'id': 's_f0', 'dimensions': '5,1,type=float', 'original_id': 's_f0'}
+- {'id': 's_f1', 'dimensions': '4,1,type=float', 'original_id': 's_f1'}
+- {'id': 's_f2', 'dimensions': '4,1,type=float', 'original_id': 's_f2'}
+- {'id': 's_f3', 'dimensions': '6,1,type=float', 'original_id': 's_f3'}
+- {'id': 's_prime_f0', 'dimensions': '5,1,type=float', 'original_id': 's_prime_f0'}
+- {'id': 's_prime_f1', 'dimensions': '4,1,type=float', 'original_id': 's_prime_f1'}
+- {'id': 's_prime_f2', 'dimensions': '4,1,type=float', 'original_id': 's_prime_f2'}
+- {'id': 's_prime_f3', 'dimensions': '6,1,type=float', 'original_id': 's_prime_f3'}
+- {'id': 'o_m0', 'dimensions': '7,1,type=float', 'original_id': 'o_m0'}
+- {'id': 'o_m1', 'dimensions': '5,1,type=float', 'original_id': 'o_m1'}
+- {'id': 'o_m2', 'dimensions': '4,1,type=float', 'original_id': 'o_m2'}
+- {'id': 'o_m3', 'dimensions': '8,1,type=float', 'original_id': 'o_m3'}
+- {'id': 'u_f0', 'dimensions': '1,type=int', 'original_id': 'u_f0'}
+- {'id': 'u_f1', 'dimensions': '1,type=int', 'original_id': 'u_f1'}
+- {'id': 'u_f3', 'dimensions': '1,type=int', 'original_id': 'u_f3'}
+- {'id': 'base_frequency', 'dimensions': '1,type=float', 'original_id': 'base_frequency'}
+- {'id': 'harmonic_ratios', 'dimensions': '12,type=float', 'original_id': 'harmonic_ratios'}
+- {'id': 'purr_frequency', 'dimensions': '1,type=float', 'original_id': 'purr_frequency'}
+- {'id': 'catnip_resonance', 'dimensions': '1,type=float', 'original_id': 'catnip_resonance'}
+- {'id': 'circadian_phase', 'dimensions': '1,type=float', 'original_id': 'circadian_phase'}
+- {'id': 'lunar_phase', 'dimensions': '1,type=float', 'original_id': 'lunar_phase'}
+- {'id': 'seasonal_amplitude', 'dimensions': '1,type=float', 'original_id': 'seasonal_amplitude'}
+- {'id': 'cat_attention_span', 'dimensions': '1,type=float', 'original_id': 'cat_attention_span'}
+- {'id': 'G', 'dimensions': '1,type=float', 'original_id': 'G'}
+- {'id': 'G_harmony', 'dimensions': '1,type=float', 'original_id': 'G_harmony'}
+- {'id': 'G_feline', 'dimensions': '1,type=float', 'original_id': 'G_feline'}
+- {'id': 't', 'dimensions': '1,type=int', 'original_id': 't'}
+- {'id': 't_continuous', 'dimensions': '1,type=float', 'original_id': 't_continuous'}
+
+--- CONNECTIONS ---
+- {'sources': ['D_f0', 'D_f1', 'D_f2', 'D_f3'], 'operator': '>', 'targets': ['s_f0', 's_f1', 's_f2', 's_f3'], 'attributes': {}}
+- {'sources': ['s_f0', 's_f1', 's_f2', 's_f3'], 'operator': '>', 'targets': ['A_m0', 'A_m1', 'A_m2', 'A_m3'], 'attributes': {}}
+- {'sources': ['A_m0', 'A_m1', 'A_m2', 'A_m3'], 'operator': '>', 'targets': ['o_m0', 'o_m1', 'o_m2', 'o_m3'], 'attributes': {}}
+- {'sources': ['s_f0', 's_f1', 's_f2', 's_f3', 'u_f0', 'u_f1', 'u_f3'], 'operator': '>', 'targets': ['B_f0', 'B_f1', 'B_f2', 'B_f3'], 'attributes': {}}
+- {'sources': ['B_f0', 'B_f1', 'B_f2', 'B_f3'], 'operator': '>', 'targets': ['s_prime_f0', 's_prime_f1', 's_prime_f2', 's_prime_f3'], 'attributes': {}}
+- {'sources': ['C_m0', 'C_m1', 'C_m2', 'C_m3'], 'operator': '>', 'targets': ['G', 'G_harmony', 'G_feline'], 'attributes': {}}
+- {'sources': ['G', 'G_harmony', 'G_feline'], 'operator': '>', 'targets': ['π_f0', 'π_f1', 'π_f3'], 'attributes': {}}
+- {'sources': ['π_f0', 'π_f1', 'π_f3'], 'operator': '>', 'targets': ['u_f0', 'u_f1', 'u_f3'], 'attributes': {}}
+- {'sources': ['s_f1'], 'operator': '>', 'targets': ['nepetalactone_resonance'], 'attributes': {}}
+- {'sources': ['s_f3'], 'operator': '>', 'targets': ['feline_frequency_response'], 'attributes': {}}
+- {'sources': ['s_f2'], 'operator': '>', 'targets': ['seasonal_harmonic_shift'], 'attributes': {}}
+- {'sources': ['circadian_phase', 'lunar_phase'], 'operator': '>', 'targets': ['temporal_modulation'], 'attributes': {}}
+- {'sources': ['s_f3'], 'operator': '>', 'targets': ['cat_attention_span'], 'attributes': {}}
+- {'sources': ['s_f0', 's_f2'], 'operator': '>', 'targets': ['seasonal_amplitude'], 'attributes': {}}
+
+--- INITIALPARAMETERIZATION ---
+- base_frequency: 261.63
+- harmonic_ratios: [1.0, 1.618, 2.0, 2.618, 3.236, 4.0, 4.854, 6.472, 8.0, 9.708, 12.944, 16.0]
+- purr_frequency: 25.0
+- catnip_resonance: 440.0
+- circadian_phase: 0.0
+- lunar_phase: 0.5
+- seasonal_amplitude: 1.0
+- cat_attention_span: 7.5
+- B_f0: [((0.9, 0.6, 0.8), (0.1, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0)), ((0.1, 0.4, 0.2), (0.8, 0.9, 0.9), (0.1, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0)), ((0.0, 0.0, 0.0), (0.1, 0.1, 0.1), (0.7, 0.8, 0.9), (0.2, 0.1, 0.0), (0.0, 0.0, 0.0)), ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.2, 0.2, 0.1), (0.7, 0.8, 0.9), (0.1, 0.1, 0.1)), ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.1, 0.1, 0.1), (0.9, 0.9, 0.9))]
+- B_f1: [((0.8, 0.6), (0.2, 0.4), (0.0, 0.0), (0.0, 0.0)), ((0.2, 0.3), (0.6, 0.4), (0.2, 0.3), (0.0, 0.0)), ((0.0, 0.1), (0.2, 0.2), (0.6, 0.5), (0.4, 0.6)), ((0.0, 0.0), (0.0, 0.0), (0.2, 0.2), (0.6, 0.4))]
+- B_f2: [(0.8, 0.0, 0.0, 0.2), (0.2, 0.8, 0.0, 0.0), (0.0, 0.2, 0.8, 0.0), (0.0, 0.0, 0.2, 0.8)]
+- B_f3: [((0.9, 0.7, 0.4, 0.1), (0.1, 0.2, 0.2, 0.1), (0.0, 0.1, 0.2, 0.2), (0.0, 0.0, 0.1, 0.2), (0.0, 0.0, 0.1, 0.2), (0.0, 0.0, 0.0, 0.2)), ((0.1, 0.3, 0.3, 0.2), (0.7, 0.6, 0.4, 0.2), (0.2, 0.3, 0.3, 0.2), (0.0, 0.0, 0.0, 0.2), (0.0, 0.0, 0.0, 0.2), (0.0, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.2, 0.3), (0.2, 0.2, 0.3, 0.3), (0.6, 0.5, 0.3, 0.2), (0.2, 0.3, 0.2, 0.2), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.1, 0.2), (0.0, 0.0, 0.1, 0.2), (0.2, 0.1, 0.2, 0.2), (0.6, 0.6, 0.5, 0.3), (0.2, 0.3, 0.2, 0.1), (0.0, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.0, 0.1), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.2), (0.2, 0.1, 0.2, 0.2), (0.6, 0.5, 0.6, 0.4), (0.2, 0.4, 0.2, 0.1)), ((0.0, 0.0, 0.0, 0.1), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.1, 0.1), (0.2, 0.2, 0.1, 0.3), (0.8, 0.6, 0.8, 0.8))]
+- A_m0: [((0.9, 0.1, 0.0, 0.0), (0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)), ((0.1, 0.8, 0.1, 0.0), (0.8, 0.2, 0.0, 0.0), (0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)), ((0.0, 0.1, 0.7, 0.2), (0.1, 0.7, 0.3, 0.1), (0.8, 0.2, 0.0, 0.0), (0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.2, 0.6), (0.0, 0.1, 0.5, 0.8), (0.1, 0.8, 0.5, 0.1), (0.8, 0.1, 0.0, 0.0), (0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.0, 0.2), (0.0, 0.0, 0.2, 0.1), (0.0, 0.0, 0.5, 0.0), (0.1, 0.8, 0.5, 0.2), (0.8, 0.2, 0.0, 0.7), (0.1, 0.0, 0.0, 0.1)), ((0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.1, 0.0, 0.8), (0.1, 0.8, 1.0, 0.3), (0.9, 0.1, 0.0, 0.0)), ((0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.9, 0.0, 0.0))]
+- A_m1: [((1.0, 0.8, 0.1, 0.0), (0.0, 0.2, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)), ((0.0, 0.2, 0.7, 0.1), (0.8, 0.6, 0.2, 0.0), (0.2, 0.2, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.2, 0.5), (0.2, 0.2, 0.6, 0.3), (0.6, 0.6, 0.3, 0.2), (0.2, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.0, 0.3), (0.0, 0.0, 0.2, 0.5), (0.2, 0.2, 0.5, 0.6), (0.6, 0.8, 0.5, 0.5), (0.2, 0.2, 0.5, 0.5), (0.0, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.0, 0.1), (0.0, 0.0, 0.0, 0.2), (0.0, 0.0, 0.2, 0.2), (0.2, 0.2, 0.5, 0.5), (0.8, 0.8, 0.5, 0.5), (1.0, 1.0, 1.0, 1.0))]
+- A_m3: [((1.0, 0.1, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)), ((0.0, 0.7, 0.2, 0.0, 0.0, 0.0), (0.8, 0.6, 0.1, 0.0, 0.0, 0.0), (0.2, 0.4, 0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)), ((0.0, 0.2, 0.6, 0.1, 0.0, 0.0), (0.2, 0.4, 0.7, 0.2, 0.0, 0.0), (0.6, 0.6, 0.8, 0.3, 0.0, 0.0), (0.2, 0.0, 0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.2, 0.6, 0.1, 0.0), (0.0, 0.0, 0.2, 0.6, 0.2, 0.0), (0.2, 0.0, 0.1, 0.5, 0.3, 0.1), (0.6, 0.8, 0.6, 0.5, 0.2, 0.0), (0.2, 0.2, 0.3, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.0, 0.2, 0.6, 0.1), (0.0, 0.0, 0.0, 0.2, 0.6, 0.2), (0.0, 0.0, 0.0, 0.2, 0.5, 0.3), (0.2, 0.2, 0.3, 0.3, 0.6, 0.4), (0.6, 0.6, 0.5, 0.5, 0.2, 0.2), (0.2, 0.2, 0.2, 0.0, 0.0, 0.0)), ((0.0, 0.0, 0.0, 0.0, 0.2, 0.6), (0.0, 0.0, 0.0, 0.0, 0.2, 0.6), (0.0, 0.0, 0.0, 0.0, 0.2, 0.4), (0.0, 0.0, 0.0, 0.2, 0.2, 0.4), (0.2, 0.2, 0.2, 0.5, 0.6, 0.6), (0.8, 0.8, 0.8, 0.8, 0.8, 0.4)), ((0.0, 0.0, 0.0, 0.0, 0.1, 0.2), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.2, 0.8), (0.0, 0.0, 0.0, 0.2, 0.8, 0.6)), ((0.0, 0.0, 0.0, 0.0, 0.0, 0.1), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.2), (0.0, 0.0, 0.0, 0.0, 0.2, 0.8))]
+- C_m0: [0.0, 0.2, 0.5, 0.8, 1.0, 1.618, 0.618]
+- C_m1: [0.0, 0.3, 0.7, 1.0, 1.2]
+- C_m2: [0.2, 0.6, 0.9, 0.4]
+- C_m3: [-0.5, 0.1, 0.4, 0.7, 0.9, 1.0, 1.2, 0.8]
+- D_f0: [0.4, 0.3, 0.2, 0.08, 0.02]
+- D_f1: [0.5, 0.3, 0.15, 0.05]
+- D_f2: [0.25, 0.25, 0.25, 0.25]
+- D_f3: [0.3, 0.25, 0.2, 0.15, 0.08, 0.02]
+

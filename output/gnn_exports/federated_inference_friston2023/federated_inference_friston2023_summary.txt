@@ -1,0 +1,208 @@
+GNN Model Summary: Federated Inference Multi-Agent Belief Sharing Model v1
+
+--- STATESPACEBLOCK ---
+- {'id': 's_location', 'dimensions': '9,1,type=float', 'original_id': 's_location'}
+- {'id': 's_proximity', 'dimensions': '2,1,type=float', 'original_id': 's_proximity'}
+- {'id': 's_pose', 'dimensions': '2,1,type=float', 'original_id': 's_pose'}
+- {'id': 's_gaze_a1', 'dimensions': '3,1,type=float', 'original_id': 's_gaze_a1'}
+- {'id': 's_gaze_a2', 'dimensions': '3,1,type=float', 'original_id': 's_gaze_a2'}
+- {'id': 's_gaze_a3', 'dimensions': '3,1,type=float', 'original_id': 's_gaze_a3'}
+- {'id': 's_prime_location', 'dimensions': '9,1,type=float', 'original_id': 's_prime_location'}
+- {'id': 's_prime_proximity', 'dimensions': '2,1,type=float', 'original_id': 's_prime_proximity'}
+- {'id': 's_prime_pose', 'dimensions': '2,1,type=float', 'original_id': 's_prime_pose'}
+- {'id': 's_prime_gaze_a1', 'dimensions': '3,1,type=float', 'original_id': 's_prime_gaze_a1'}
+- {'id': 's_prime_gaze_a2', 'dimensions': '3,1,type=float', 'original_id': 's_prime_gaze_a2'}
+- {'id': 's_prime_gaze_a3', 'dimensions': '3,1,type=float', 'original_id': 's_prime_gaze_a3'}
+- {'id': 'A_vis_subject_a1', 'dimensions': '6,9,2,2,3,type=float', 'original_id': 'A_vis_subject_a1'}
+- {'id': 'A_vis_center_a1', 'dimensions': '3,9,2,2,3,type=float', 'original_id': 'A_vis_center_a1'}
+- {'id': 'A_vis_left_a1', 'dimensions': '3,9,2,2,3,type=float', 'original_id': 'A_vis_left_a1'}
+- {'id': 'A_vis_right_a1', 'dimensions': '3,9,2,2,3,type=float', 'original_id': 'A_vis_right_a1'}
+- {'id': 'A_proprioceptive_a1', 'dimensions': '3,3,type=float', 'original_id': 'A_proprioceptive_a1'}
+- {'id': 'A_vis_subject_a2', 'dimensions': '6,9,2,2,3,type=float', 'original_id': 'A_vis_subject_a2'}
+- {'id': 'A_vis_center_a2', 'dimensions': '3,9,2,2,3,type=float', 'original_id': 'A_vis_center_a2'}
+- {'id': 'A_vis_left_a2', 'dimensions': '3,9,2,2,3,type=float', 'original_id': 'A_vis_left_a2'}
+- {'id': 'A_vis_right_a2', 'dimensions': '3,9,2,2,3,type=float', 'original_id': 'A_vis_right_a2'}
+- {'id': 'A_proprioceptive_a2', 'dimensions': '3,3,type=float', 'original_id': 'A_proprioceptive_a2'}
+- {'id': 'A_vis_subject_a3', 'dimensions': '6,9,2,2,3,type=float', 'original_id': 'A_vis_subject_a3'}
+- {'id': 'A_vis_center_a3', 'dimensions': '3,9,2,2,3,type=float', 'original_id': 'A_vis_center_a3'}
+- {'id': 'A_vis_left_a3', 'dimensions': '3,9,2,2,3,type=float', 'original_id': 'A_vis_left_a3'}
+- {'id': 'A_vis_right_a3', 'dimensions': '3,9,2,2,3,type=float', 'original_id': 'A_vis_right_a3'}
+- {'id': 'A_proprioceptive_a3', 'dimensions': '3,3,type=float', 'original_id': 'A_proprioceptive_a3'}
+- {'id': 'A_comm_location', 'dimensions': '9,9,type=float', 'original_id': 'A_comm_location'}
+- {'id': 'A_comm_proximity', 'dimensions': '2,2,type=float', 'original_id': 'A_comm_proximity'}
+- {'id': 'A_comm_pose', 'dimensions': '2,2,type=float', 'original_id': 'A_comm_pose'}
+- {'id': 'B_location', 'dimensions': '9,9,3,type=float', 'original_id': 'B_location'}
+- {'id': 'B_proximity', 'dimensions': '2,2,1,type=float', 'original_id': 'B_proximity'}
+- {'id': 'B_pose', 'dimensions': '2,2,1,type=float', 'original_id': 'B_pose'}
+- {'id': 'B_gaze_a1', 'dimensions': '3,3,3,type=float', 'original_id': 'B_gaze_a1'}
+- {'id': 'B_gaze_a2', 'dimensions': '3,3,3,type=float', 'original_id': 'B_gaze_a2'}
+- {'id': 'B_gaze_a3', 'dimensions': '3,3,3,type=float', 'original_id': 'B_gaze_a3'}
+- {'id': 'C_vis_foveal', 'dimensions': '3,type=float', 'original_id': 'C_vis_foveal'}
+- {'id': 'C_vis_contrast', 'dimensions': '3,type=float', 'original_id': 'C_vis_contrast'}
+- {'id': 'C_comm_location', 'dimensions': '9,type=float', 'original_id': 'C_comm_location'}
+- {'id': 'C_comm_proximity', 'dimensions': '2,type=float', 'original_id': 'C_comm_proximity'}
+- {'id': 'C_comm_pose', 'dimensions': '2,type=float', 'original_id': 'C_comm_pose'}
+- {'id': 'C_proprioceptive', 'dimensions': '3,type=float', 'original_id': 'C_proprioceptive'}
+- {'id': 'D_location', 'dimensions': '9,type=float', 'original_id': 'D_location'}
+- {'id': 'D_proximity', 'dimensions': '2,type=float', 'original_id': 'D_proximity'}
+- {'id': 'D_pose', 'dimensions': '2,type=float', 'original_id': 'D_pose'}
+- {'id': 'D_gaze_a1', 'dimensions': '3,type=float', 'original_id': 'D_gaze_a1'}
+- {'id': 'D_gaze_a2', 'dimensions': '3,type=float', 'original_id': 'D_gaze_a2'}
+- {'id': 'D_gaze_a3', 'dimensions': '3,type=float', 'original_id': 'D_gaze_a3'}
+- {'id': 'o_vis_subject_a1', 'dimensions': '6,1,type=float', 'original_id': 'o_vis_subject_a1'}
+- {'id': 'o_vis_center_a1', 'dimensions': '3,1,type=float', 'original_id': 'o_vis_center_a1'}
+- {'id': 'o_vis_left_a1', 'dimensions': '3,1,type=float', 'original_id': 'o_vis_left_a1'}
+- {'id': 'o_vis_right_a1', 'dimensions': '3,1,type=float', 'original_id': 'o_vis_right_a1'}
+- {'id': 'o_proprioceptive_a1', 'dimensions': '3,1,type=float', 'original_id': 'o_proprioceptive_a1'}
+- {'id': 'o_vis_subject_a2', 'dimensions': '6,1,type=float', 'original_id': 'o_vis_subject_a2'}
+- {'id': 'o_vis_center_a2', 'dimensions': '3,1,type=float', 'original_id': 'o_vis_center_a2'}
+- {'id': 'o_vis_left_a2', 'dimensions': '3,1,type=float', 'original_id': 'o_vis_left_a2'}
+- {'id': 'o_vis_right_a2', 'dimensions': '3,1,type=float', 'original_id': 'o_vis_right_a2'}
+- {'id': 'o_proprioceptive_a2', 'dimensions': '3,1,type=float', 'original_id': 'o_proprioceptive_a2'}
+- {'id': 'o_vis_subject_a3', 'dimensions': '6,1,type=float', 'original_id': 'o_vis_subject_a3'}
+- {'id': 'o_vis_center_a3', 'dimensions': '3,1,type=float', 'original_id': 'o_vis_center_a3'}
+- {'id': 'o_vis_left_a3', 'dimensions': '3,1,type=float', 'original_id': 'o_vis_left_a3'}
+- {'id': 'o_vis_right_a3', 'dimensions': '3,1,type=float', 'original_id': 'o_vis_right_a3'}
+- {'id': 'o_proprioceptive_a3', 'dimensions': '3,1,type=float', 'original_id': 'o_proprioceptive_a3'}
+- {'id': 'o_comm_location_a1', 'dimensions': '9,1,type=float', 'original_id': 'o_comm_location_a1'}
+- {'id': 'o_comm_location_a2', 'dimensions': '9,1,type=float', 'original_id': 'o_comm_location_a2'}
+- {'id': 'o_comm_location_a3', 'dimensions': '9,1,type=float', 'original_id': 'o_comm_location_a3'}
+- {'id': 'o_comm_proximity_a1', 'dimensions': '2,1,type=float', 'original_id': 'o_comm_proximity_a1'}
+- {'id': 'o_comm_proximity_a2', 'dimensions': '2,1,type=float', 'original_id': 'o_comm_proximity_a2'}
+- {'id': 'o_comm_proximity_a3', 'dimensions': '2,1,type=float', 'original_id': 'o_comm_proximity_a3'}
+- {'id': 'o_comm_pose_a1', 'dimensions': '2,1,type=float', 'original_id': 'o_comm_pose_a1'}
+- {'id': 'o_comm_pose_a2', 'dimensions': '2,1,type=float', 'original_id': 'o_comm_pose_a2'}
+- {'id': 'o_comm_pose_a3', 'dimensions': '2,1,type=float', 'original_id': 'o_comm_pose_a3'}
+- {'id': 'u_gaze_a1', 'dimensions': '1,type=int', 'original_id': 'u_gaze_a1'}
+- {'id': 'u_gaze_a2', 'dimensions': '1,type=int', 'original_id': 'u_gaze_a2'}
+- {'id': 'u_gaze_a3', 'dimensions': '1,type=int', 'original_id': 'u_gaze_a3'}
+- {'id': 'G_a1', 'dimensions': '1,type=float', 'original_id': 'G_a1'}
+- {'id': 'G_a2', 'dimensions': '1,type=float', 'original_id': 'G_a2'}
+- {'id': 'G_a3', 'dimensions': '1,type=float', 'original_id': 'G_a3'}
+- {'id': 'G_joint', 'dimensions': '1,type=float', 'original_id': 'G_joint'}
+- {'id': 'F_a1', 'dimensions': '1,type=float', 'original_id': 'F_a1'}
+- {'id': 'F_a2', 'dimensions': '1,type=float', 'original_id': 'F_a2'}
+- {'id': 'F_a3', 'dimensions': '1,type=float', 'original_id': 'F_a3'}
+- {'id': 'F_joint', 'dimensions': '1,type=float', 'original_id': 'F_joint'}
+- {'id': 'q_location', 'dimensions': '9,type=float', 'original_id': 'q_location'}
+- {'id': 'q_proximity', 'dimensions': '2,type=float', 'original_id': 'q_proximity'}
+- {'id': 'q_pose', 'dimensions': '2,type=float', 'original_id': 'q_pose'}
+- {'id': 'q_gaze_a1', 'dimensions': '3,type=float', 'original_id': 'q_gaze_a1'}
+- {'id': 'q_gaze_a2', 'dimensions': '3,type=float', 'original_id': 'q_gaze_a2'}
+- {'id': 'q_gaze_a3', 'dimensions': '3,type=float', 'original_id': 'q_gaze_a3'}
+- {'id': 't', 'dimensions': '1,type=int', 'original_id': 't'}
+
+--- CONNECTIONS ---
+- {'sources': ['D_location', 'D_proximity', 'D_pose'], 'operator': '-', 'targets': ['s_location', 's_proximity', 's_pose'], 'attributes': {}}
+- {'sources': ['D_gaze_a1', 'D_gaze_a2', 'D_gaze_a3'], 'operator': '-', 'targets': ['s_gaze_a1', 's_gaze_a2', 's_gaze_a3'], 'attributes': {}}
+- {'sources': ['s_location', 's_proximity', 's_pose', 's_gaze_a1'], 'operator': '-', 'targets': ['A_vis_foveal_a1', 'A_vis_center_a1', 'A_vis_left_a1', 'A_vis_right_a1'], 'attributes': {}}
+- {'sources': ['A_vis_foveal_a1'], 'operator': '-', 'targets': ['o_vis_foveal_a1'], 'attributes': {}}
+- {'sources': ['A_vis_center_a1'], 'operator': '-', 'targets': ['o_vis_center_a1'], 'attributes': {}}
+- {'sources': ['A_vis_left_a1'], 'operator': '-', 'targets': ['o_vis_left_a1'], 'attributes': {}}
+- {'sources': ['A_vis_right_a1'], 'operator': '-', 'targets': ['o_vis_right_a1'], 'attributes': {}}
+- {'sources': ['s_location', 's_proximity', 's_pose', 's_gaze_a2'], 'operator': '-', 'targets': ['A_vis_foveal_a2', 'A_vis_center_a2', 'A_vis_left_a2', 'A_vis_right_a2'], 'attributes': {}}
+- {'sources': ['A_vis_foveal_a2'], 'operator': '-', 'targets': ['o_vis_foveal_a2'], 'attributes': {}}
+- {'sources': ['A_vis_center_a2'], 'operator': '-', 'targets': ['o_vis_center_a2'], 'attributes': {}}
+- {'sources': ['A_vis_left_a2'], 'operator': '-', 'targets': ['o_vis_left_a2'], 'attributes': {}}
+- {'sources': ['A_vis_right_a2'], 'operator': '-', 'targets': ['o_vis_right_a2'], 'attributes': {}}
+- {'sources': ['s_location', 's_proximity', 's_pose', 's_gaze_a3'], 'operator': '-', 'targets': ['A_vis_foveal_a3', 'A_vis_center_a3', 'A_vis_left_a3', 'A_vis_right_a3'], 'attributes': {}}
+- {'sources': ['A_vis_foveal_a3'], 'operator': '-', 'targets': ['o_vis_foveal_a3'], 'attributes': {}}
+- {'sources': ['A_vis_center_a3'], 'operator': '-', 'targets': ['o_vis_center_a3'], 'attributes': {}}
+- {'sources': ['A_vis_left_a3'], 'operator': '-', 'targets': ['o_vis_left_a3'], 'attributes': {}}
+- {'sources': ['A_vis_right_a3'], 'operator': '-', 'targets': ['o_vis_right_a3'], 'attributes': {}}
+- {'sources': ['s_gaze_a1'], 'operator': '-', 'targets': ['A_proprioceptive_a1)-(o_proprioceptive_a1'], 'attributes': {}}
+- {'sources': ['s_gaze_a2'], 'operator': '-', 'targets': ['A_proprioceptive_a2)-(o_proprioceptive_a2'], 'attributes': {}}
+- {'sources': ['s_gaze_a3'], 'operator': '-', 'targets': ['A_proprioceptive_a3)-(o_proprioceptive_a3'], 'attributes': {}}
+- {'sources': ['q_location'], 'operator': '-', 'targets': ['A_comm_location)-(o_comm_location_a1', 'o_comm_location_a2', 'o_comm_location_a3'], 'attributes': {}}
+- {'sources': ['q_proximity'], 'operator': '-', 'targets': ['A_comm_proximity)-(o_comm_proximity_a1', 'o_comm_proximity_a2', 'o_comm_proximity_a3'], 'attributes': {}}
+- {'sources': ['q_pose'], 'operator': '-', 'targets': ['A_comm_pose)-(o_comm_pose_a1', 'o_comm_pose_a2', 'o_comm_pose_a3'], 'attributes': {}}
+- {'sources': ['s_location', 'u_subject'], 'operator': '-', 'targets': ['B_location)-(s_prime_location'], 'attributes': {}}
+- {'sources': ['s_proximity'], 'operator': '-', 'targets': ['B_proximity)-(s_prime_proximity'], 'attributes': {}}
+- {'sources': ['s_pose'], 'operator': '-', 'targets': ['B_pose)-(s_prime_pose'], 'attributes': {}}
+- {'sources': ['s_gaze_a1', 'u_gaze_a1'], 'operator': '-', 'targets': ['B_gaze_a1)-(s_prime_gaze_a1'], 'attributes': {}}
+- {'sources': ['s_gaze_a2', 'u_gaze_a2'], 'operator': '-', 'targets': ['B_gaze_a2)-(s_prime_gaze_a2'], 'attributes': {}}
+- {'sources': ['s_gaze_a3', 'u_gaze_a3'], 'operator': '-', 'targets': ['B_gaze_a3)-(s_prime_gaze_a3'], 'attributes': {}}
+- {'sources': ['C_vis_foveal', 'C_vis_contrast', 'C_comm_location', 'C_comm_proximity', 'C_comm_pose'], 'operator': '>', 'targets': ['G_a1'], 'attributes': {}}
+- {'sources': ['C_vis_foveal', 'C_vis_contrast', 'C_comm_location', 'C_comm_proximity', 'C_comm_pose'], 'operator': '>', 'targets': ['G_a2'], 'attributes': {}}
+- {'sources': ['C_vis_foveal', 'C_vis_contrast', 'C_comm_location', 'C_comm_proximity', 'C_comm_pose'], 'operator': '>', 'targets': ['G_a3'], 'attributes': {}}
+- {'sources': ['G_a1'], 'operator': '>', 'targets': ['π_gaze_a1'], 'attributes': {}}
+- {'sources': ['G_a2'], 'operator': '>', 'targets': ['π_gaze_a2'], 'attributes': {}}
+- {'sources': ['G_a3'], 'operator': '>', 'targets': ['π_gaze_a3'], 'attributes': {}}
+- {'sources': ['π_gaze_a1'], 'operator': '-', 'targets': ['u_gaze_a1'], 'attributes': {}}
+- {'sources': ['π_gaze_a2'], 'operator': '-', 'targets': ['u_gaze_a2'], 'attributes': {}}
+- {'sources': ['π_gaze_a3'], 'operator': '-', 'targets': ['u_gaze_a3'], 'attributes': {}}
+- {'sources': ['G_a1', 'G_a2', 'G_a3'], 'operator': '>', 'targets': ['G_joint'], 'attributes': {}}
+- {'sources': ['F_a1', 'F_a2', 'F_a3'], 'operator': '>', 'targets': ['F_joint'], 'attributes': {}}
+- {'sources': ['o_vis_foveal_a1', 'o_vis_center_a1', 'o_vis_left_a1', 'o_vis_right_a1', 'o_proprioceptive_a1', 'o_comm_location_a2', 'o_comm_location_a3', 'o_comm_proximity_a2', 'o_comm_proximity_a3', 'o_comm_pose_a2', 'o_comm_pose_a3'], 'operator': '>', 'targets': ['q_location', 'q_proximity', 'q_pose', 'q_gaze_a1'], 'attributes': {}}
+- {'sources': ['o_vis_foveal_a2', 'o_vis_center_a2', 'o_vis_left_a2', 'o_vis_right_a2', 'o_proprioceptive_a2', 'o_comm_location_a1', 'o_comm_location_a3', 'o_comm_proximity_a1', 'o_comm_proximity_a3', 'o_comm_pose_a1', 'o_comm_pose_a3'], 'operator': '>', 'targets': ['q_location', 'q_proximity', 'q_pose', 'q_gaze_a2'], 'attributes': {}}
+- {'sources': ['o_vis_foveal_a3', 'o_vis_center_a3', 'o_vis_left_a3', 'o_vis_right_a3', 'o_proprioceptive_a3', 'o_comm_location_a1', 'o_comm_location_a2', 'o_comm_proximity_a1', 'o_comm_proximity_a2', 'o_comm_pose_a1', 'o_comm_pose_a2'], 'operator': '>', 'targets': ['q_location', 'q_proximity', 'q_pose', 'q_gaze_a3'], 'attributes': {}}
+
+--- INITIALPARAMETERIZATION ---
+- B_location: {
+  still: eye(9),           # u=0: No movement
+  left: circ_shift(eye(9), -1),   # u=1: Counter-clockwise 
+  right: circ_shift(eye(9), 1)    # u=2: Clockwise
+}
+
+# B{2} Proximity transitions (uncontrolled environmental dynamics)
+# B{2} = eye(2,2) + 1/4;
+- B_proximity: [((0.9, 0.1), (0.1, 0.9))]
+- B_pose: [((0.95, 0.05), (0.05, 0.95))]
+- B_gaze_a1: {
+  center: ((1,0,0),(0,0,0),(0,0,0)),   # u=1: Look center
+  left: ((0,0,0),(0,1,0),(0,0,0)),     # u=2: Look left  
+  right: ((0,0,0),(0,0,0),(0,0,1))     # u=3: Look right
+}
+- B_gaze_a2: B_gaze_a1  # Same gaze control structure for all agents
+- B_gaze_a3: B_gaze_a1
+
+### Visual Likelihood Matrix Specifications (from diagram)
+# A{1} Subject attributes with line of sight (LOS) constraints
+# % subject attributes
+# A{1}(1,:,1,2,s4) = 1; % if there is someone in the line of sight (LOS)
+# A{1}(1,:,1,1,s4) = -4; % LOS = -4
+# % proximity s{2} & pose s{3}
+# if s{2} = 1 && s{3} = 1 % close foe
+#   elseif s{2}(s2) = 1 && s{3}(s3) = 1  
+#   o = 2; % close foe
+# if s{2} = 1  
+#   o = 2; % close foe  
+# o = 3; % for person
+# o = 4; % nothing to see
+# else
+- A_vis_subject_a1: {
+  # Complex LOS mapping based on agent field of view, proximity, and pose
+  # This would require detailed field-of-view calculations per agent
+  subject_detection_mapping: "agent_specific_visual_field_implementation"
+}
+
+# A{2}, A{3}, A{4} Contrast energy detection
+# % contrast energy: close, near or nothing
+- A_vis_contrast: {
+  contrast_energy_mapping: "location_proximity_gaze_dependent_contrast_detection"
+}
+
+# A{6}, A{7}, A{8} Communication Likelihood Matrices (identity mappings)
+- A_comm_location: eye(9)    # A{6}: Perfect identity for location communication
+- A_comm_proximity: eye(2)   # A{7}: Perfect identity for proximity communication
+- A_comm_pose: eye(2)       # A{8}: Perfect identity for pose communication
+
+### Prior Preferences (epistemic drive and risk aversion)
+- C_vis_foveal: [0.0, 1.0, -2.0]
+- C_vis_contrast: [0.0, 0.5, 1.0]
+- C_comm_location: [-0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1]
+- C_comm_proximity: [0.0, -0.5]
+- C_comm_pose: [1.0, 0.0]
+- C_proprioceptive: [0.0, 0.0, 0.0]
+- D_location: [0.111, 0.111, 0.111, 0.111, 0.111, 0.111, 0.111, 0.111, 0.111]
+- D_proximity: [0.5, 0.5]
+- D_pose: [0.5, 0.5]
+- D_gaze_a1: [0.33, 0.34, 0.33]
+- D_gaze_a2: [0.33, 0.34, 0.33]
+- D_gaze_a3: {(0.33, 0.34, 0.33)}
+
+### Learning and Precision Parameters
+τ_learning=32.0         # Forgetting timescale (32 experiences retained)
+η_precision=4.0         # Precision of belief sharing communication
+γ_attention=2.0         # Attentional precision for epistemic foraging
+

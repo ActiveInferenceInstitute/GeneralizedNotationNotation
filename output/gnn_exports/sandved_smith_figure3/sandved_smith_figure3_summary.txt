@@ -1,0 +1,65 @@
+GNN Model Summary: Deep Generative Model for Policy Selection with Meta-Awareness
+
+--- STATESPACEBLOCK ---
+- {'id': 'A', 'dimensions': '2,2,type=float', 'original_id': 'A'}
+- {'id': 'B', 'dimensions': '2,2,1,type=float', 'original_id': 'B'}
+- {'id': 'B_pi', 'dimensions': '2,2,2,type=float', 'original_id': 'B_pi'}
+- {'id': 'C', 'dimensions': '2,type=float', 'original_id': 'C'}
+- {'id': 'D', 'dimensions': '2,type=float', 'original_id': 'D'}
+- {'id': 'E', 'dimensions': '2,type=float', 'original_id': 'E'}
+- {'id': 'G', 'dimensions': '2,type=float', 'original_id': 'G'}
+- {'id': 's', 'dimensions': '2,1,type=continuous', 'original_id': 's'}
+- {'id': 's_prev', 'dimensions': '2,1,type=continuous', 'original_id': 's_prev'}
+- {'id': 's_next', 'dimensions': '2,1,type=continuous', 'original_id': 's_next'}
+- {'id': 's_bar', 'dimensions': '2,1,type=continuous', 'original_id': 's_bar'}
+- {'id': 'o', 'dimensions': '2,1,type=discrete', 'original_id': 'o'}
+- {'id': 'o_bar', 'dimensions': '2,1,type=continuous', 'original_id': 'o_bar'}
+- {'id': 'o_pred', 'dimensions': '2,1,type=continuous', 'original_id': 'o_pred'}
+- {'id': 'u', 'dimensions': '1,type=int', 'original_id': 'u'}
+- {'id': 'F_', 'original_id': 'F_'}
+- {'id': 'E_', 'original_id': 'E_'}
+- {'id': 't', 'dimensions': '1,type=int', 'original_id': 't'}
+
+--- CONNECTIONS ---
+- {'sources': ['D'], 'operator': '>', 'targets': ['s'], 'attributes': {}}
+- {'sources': ['E'], 'operator': '>', 'targets': ['π'], 'attributes': {}}
+- {'sources': ['s', 'γ_A'], 'operator': '>', 'targets': ['A'], 'attributes': {}}
+- {'sources': ['A'], 'operator': '>', 'targets': ['o_pred'], 'attributes': {}}
+- {'sources': ['A', 's_bar'], 'operator': '>', 'targets': ['o_bar'], 'attributes': {}}
+- {'sources': ['s', 'π'], 'operator': '>', 'targets': ['B_pi'], 'attributes': {}}
+- {'sources': ['B_pi'], 'operator': '>', 'targets': ['s_next'], 'attributes': {}}
+- {'sources': ['s_prev', 'B_pi'], 'operator': '>', 'targets': ['s'], 'attributes': {}}
+- {'sources': ['G', 'E_π', 'F_π'], 'operator': '>', 'targets': ['π_bar'], 'attributes': {}}
+- {'sources': ['π_bar'], 'operator': '>', 'targets': ['u'], 'attributes': {}}
+- {'sources': ['γ_A'], 'operator': '>', 'targets': ['A'], 'attributes': {}}
+- {'sources': ['β_A'], 'operator': '>', 'targets': ['γ_A'], 'attributes': {}}
+- {'sources': ['β_A_bar'], 'operator': '>', 'targets': ['β_A'], 'attributes': {}}
+- {'sources': ['A', 'o', 'B_pi'], 'operator': '>', 'targets': ['s_bar'], 'attributes': {}}
+- {'sources': ['s_bar', 'C'], 'operator': '>', 'targets': ['F_π'], 'attributes': {}}
+- {'sources': ['F_π'], 'operator': '>', 'targets': ['π'], 'attributes': {}}
+- {'sources': ['C', 'o_pred', 's_bar'], 'operator': '>', 'targets': ['G'], 'attributes': {}}
+- {'sources': ['G'], 'operator': '>', 'targets': ['π'], 'attributes': {}}
+- {'sources': ['s'], 'operator': '>', 'targets': ['s_next'], 'attributes': {}}
+- {'sources': ['s_prev'], 'operator': '>', 'targets': ['s'], 'attributes': {}}
+- {'sources': ['t'], 'operator': '>', 'targets': ['s', 'o', 'π'], 'attributes': {}}
+
+--- INITIALPARAMETERIZATION ---
+- A: [((0.9, 0.1), (0.1, 0.9))]
+- B: [((0.8, 0.2), (0.2, 0.8))]
+- B_pi: [((0.9, 0.1), (0.1, 0.9)), ((0.3, 0.7), (0.7, 0.3))]
+- C: [0.0, 1.0]
+- D: [0.5, 0.5]
+- E: {(0.5, 0.5)}  # Uniform prior over policies
+
+# Precision parameters
+γ_A=2.0         # Moderate precision on likelihood mapping
+β_A=0.5         # Inverse precision (1/γ_A)
+
+# Initial states
+- s: [0.5, 0.5]
+- o: {(1.0, 0.0)}           # Initial observation (outcome 0)
+π={(0.5, 0.5)}           # Initial policy uncertainty
+
+# Time
+- t: 0
+

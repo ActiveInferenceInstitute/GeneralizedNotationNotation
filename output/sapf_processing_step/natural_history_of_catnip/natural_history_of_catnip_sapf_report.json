@@ -1,0 +1,9 @@
+{
+  "model_name": "natural_history_of_catnip",
+  "input_file": "gnn/examples/natural_history_of_catnip.md",
+  "sapf_file": "../output/sapf_processing_step/natural_history_of_catnip/natural_history_of_catnip.sapf",
+  "audio_file": "../output/sapf_processing_step/natural_history_of_catnip/natural_history_of_catnip_audio.wav",
+  "audio_duration": 30.0,
+  "sapf_code_lines": 95,
+  "processing_successful": true
+}

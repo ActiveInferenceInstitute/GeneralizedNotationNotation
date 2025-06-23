@@ -2,49 +2,34 @@
 
 **Target Directory:** `src/gnn/examples`
 **Search Pattern:** `**/*.md`
-**Files Found:** 3
+**Files Found:** 2
 
 ## Summary Statistics
 
-- Files with ModelName section: 3
-- Files with StateSpaceBlock section: 3
-- Files with Connections section: 3
+- Files with ModelName section: 2
+- Files with StateSpaceBlock section: 2
+- Files with Connections section: 2
 - Files with processing errors: 0
 
 ## File Details
 
-### rxinfer_multiagent_gnn.md
+### federated_inference_friston2023.md
 
-**Path:** `src/gnn/examples/rxinfer_multiagent_gnn.md`
-**Model Name:** Multi-agent Trajectory Planning
+**Path:** `src/gnn/examples/federated_inference_friston2023.md`
+**Model Name:** Federated Inference Multi-Agent Belief Sharing Model v1
 
 **Sections Found:**
-- ModelName: Found: Multi-agent Trajectory Planning
+- ModelName: Found: Federated Inference Multi-Agent Belief Sharing Model v1
 - StateSpaceBlock: Found
 - Connections: Found
 
-**Model Parameters:**
-- `nr_agents`: 4
-- `nr_steps`: 40
-- `nr_iterations`: 350
+### natural_history_of_catnip.md
 
-### baseball_game_active_inference.md
-
-**Path:** `src/gnn/examples/baseball_game_active_inference.md`
-**Model Name:** Baseball Game Active Inference Model
+**Path:** `src/gnn/examples/natural_history_of_catnip.md`
+**Model Name:** The Natural History of Catnip: A Feline-Optimized Generative Model
 
 **Sections Found:**
-- ModelName: Found: Baseball Game Active Inference Model
-- StateSpaceBlock: Found
-- Connections: Found
-
-### pymdp_pomdp_agent.md
-
-**Path:** `src/gnn/examples/pymdp_pomdp_agent.md`
-**Model Name:** Multifactor PyMDP Agent v1
-
-**Sections Found:**
-- ModelName: Found: Multifactor PyMDP Agent v1
+- ModelName: Found: The Natural History of Catnip: A Feline-Optimized Generative Model
 - StateSpaceBlock: Found
 - Connections: Found
 

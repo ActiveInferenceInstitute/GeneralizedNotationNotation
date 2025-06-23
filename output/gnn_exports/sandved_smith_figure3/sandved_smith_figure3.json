@@ -1,0 +1,397 @@
+{
+    "file_path": "gnn/examples/sandved_smith_figure3.md",
+    "name": "Deep Generative Model for Policy Selection with Meta-Awareness",
+    "raw_sections": {
+        "GNNSection": "SandvedSmithFigure3",
+        "GNNVersionAndFlags": "GNN v1",
+        "ModelName": "Deep Generative Model for Policy Selection with Meta-Awareness",
+        "ModelAnnotation": "This model represents a deep parametric active inference architecture for modeling meta-awareness and attentional control.\nBased on Sandved-Smith et al. (2021) \"Towards a computational phenomenology of mental action: modelling meta-awareness and attentional control with deep parametric active inference.\"\n\nThe model includes:\n- Single hidden state factor relating to observable modality\n- Policy selection over cognitive states through hierarchical inference\n- Precision control for attentional modulation\n- Meta-awareness states that modulate confidence in lower-level mappings\n- Dynamic perception and action in a unified framework\n\nThis architecture enables the emergence of opacity-transparency dynamics characteristic of conscious experience and deliberate cognitive control.",
+        "StateSpaceBlock": "# Likelihood matrices - A matrices (observation models)\nA[2,2,type=float]                    # Likelihood mapping from hidden states to observations P(o|s)\n\n# Transition matrices - B matrices (dynamics models)  \nB[2,2,1,type=float]                  # Transition dynamics P(s'|s,π) conditioned on policy\nB_pi[2,2,2,type=float]               # Policy-dependent transition matrices\n\n# Preference vectors - C matrices (prior preferences)\nC[2,type=float]                      # Prior preferences over observations P(o)\n\n# Prior state distributions - D matrices\nD[2,type=float]                      # Prior beliefs over initial states P(s_0)\n\n# Policy priors - E matrices\nE[2,type=float]                      # Prior beliefs over policies P(π)\n\n# Expected free energy - G\nG[2,type=float]                      # Expected free energy for each policy G_π\n\n# Hidden states\ns[2,1,type=continuous]               # Hidden state beliefs at current time\ns_prev[2,1,type=continuous]          # Hidden state beliefs at previous time  \ns_next[2,1,type=continuous]          # Hidden state beliefs at next time\ns_bar[2,1,type=continuous]           # Posterior hidden state beliefs\n\n# Observations\no[2,1,type=discrete]                 # Current observations\no_bar[2,1,type=continuous]           # Posterior observation beliefs\no_pred[2,1,type=continuous]          # Predicted observations\n\n# Policies and actions\nπ[2,type=continuous]                 # Policy beliefs (posterior over policies)\nπ_bar[2,type=continuous]             # Updated policy posterior\nu[1,type=int]                        # Selected action\n\n# Precision parameters\nγ_A[1,type=float]                    # Precision (inverse variance) of likelihood mapping\nβ_A[1,type=float]                    # Inverse precision parameter (β_A = 1/γ_A)\nβ_A_bar[1,type=float]                # Updated inverse precision\n\n# Free energy components\nF_π[2,type=float]                    # Variational free energy per policy\nE_π[2,type=float]                    # Complexity term per policy\n\n# Time indexing\nt[1,type=int]                        # Current time step",
+        "Connections": "# Prior connections\nD > s\nE > π\n\n# Observation model connections  \n(s, γ_A) > A\nA > o_pred\n(A, s_bar) > o_bar\n\n# Transition model connections\n(s, π) > B_pi\nB_pi > s_next\n(s_prev, B_pi) > s\n\n# Policy selection connections\n(G, E_π, F_π) > π_bar\nπ_bar > u\n\n# Precision control connections\nγ_A > A\nβ_A > γ_A\nβ_A_bar > β_A\n\n# State inference connections\n(A, o, B_pi) > s_bar\n(s_bar, C) > F_π\nF_π > π\n\n# Expected free energy computation\n(C, o_pred, s_bar) > G\nG > π\n\n# Temporal connections\ns > s_next\ns_prev > s\nt > (s, o, π)",
+        "InitialParameterization": "# Likelihood matrix A: P(o|s)\n# Simple 2x2 mapping between states and observations\nA={\n  ((0.9, 0.1), (0.1, 0.9))  # High confidence mapping with some noise\n}\n\n# Transition matrix B: P(s'|s) for baseline (no action)\nB={\n  ((0.8, 0.2), (0.2, 0.8))  # Tendency to stay in current state\n}\n\n# Policy-dependent transitions B_π\nB_pi={\n  ((0.9, 0.1), (0.1, 0.9)),  # Policy 0: stay in current state\n  ((0.3, 0.7), (0.7, 0.3))   # Policy 1: switch states\n}\n\n# Prior preferences C\nC={(0.0, 1.0)}  # Preference for observing outcome 1\n\n# Prior state beliefs D  \nD={(0.5, 0.5)}  # Uniform prior over initial states\n\n# Prior policy beliefs E\nE={(0.5, 0.5)}  # Uniform prior over policies\n\n# Precision parameters\nγ_A=2.0         # Moderate precision on likelihood mapping\nβ_A=0.5         # Inverse precision (1/γ_A)\n\n# Initial states\ns={(0.5, 0.5)}           # Uncertain initial state\no={(1.0, 0.0)}           # Initial observation (outcome 0)\nπ={(0.5, 0.5)}           # Initial policy uncertainty\n\n# Time\nt=0",
+        "Equations": "# Policy posterior (softmax of negative expected free energy):\n# π̄ = σ(-E_π - G_π)\n# where σ is the softmax function\n\n# State transition dynamics:\n# s_{t+1} = B_π * s_t\n# where B_π is the policy-dependent transition matrix\n\n# Precision relationship:\n# γ_A = 1/β_A\n\n# Expected free energy per policy:\n# G_π = Σ_t [o_{π,t} · (ln(o_{π,t}) - C) - diag(A · ln(A)) · s̄_{π,t}]\n# where · denotes element-wise multiplication\n\n# Variational free energy per policy:\n# F_π = Σ_t [s̄_{π,t} · (ln(s̄_{π,t}) - ln(A) · o_t - 0.5 * ln(B_{t-1} * s̄_{π,t-1}) - 0.5 * ln(B_{t+1} * s̄_{π,t+1}))]\n\n# Complete policy posterior:\n# π̄ = σ(-E_π - G_π - F_π)\n\n# State inference (posterior beliefs):\n# s̄_{π,t} = σ(ln(B_{π,t-1} * s_{t-1}) + ln(Ā · ō_t) + ln(B_{π,t} * s_{t+1}))\n\n# Precision update:\n# β̄_A = β_A - Σ_t(ln(A) · (ō_t * s_t - Ā * s_t))\n\n# Observation posterior:\n# ō_t = δ(o_t)\n# where δ is the Kronecker delta function",
+        "Time": "Dynamic\nDiscreteTime=t\nModelTimeHorizon=Unbounded\nTemporalDepth=3  # Past, present, future dependencies",
+        "ActInfOntologyAnnotation": "A=LikelihoodMapping\nB=TransitionDynamics\nB_pi=PolicyDependentTransitions\nC=PriorPreferences\nD=PriorStateBeliefs\nE=PriorPolicyBeliefs\nG=ExpectedFreeEnergy\nF_π=VariationalFreeEnergy\ns=HiddenStates\ns_bar=PosteriorHiddenStates\no=Observations\no_bar=PosteriorObservations\nπ=PolicyBeliefs\nπ_bar=PosteriorPolicyBeliefs\nu=SelectedAction\nγ_A=LikelihoodPrecision\nβ_A=InversePrecision\nt=TimeStep",
+        "ModelParameters": "num_states: 2              # Binary state space\nnum_observations: 2        # Binary observation space  \nnum_policies: 2           # Two available policies\ntemporal_horizon: 3        # Past, present, future\nprecision_dynamics: true   # Enable precision learning\npolicy_selection: true     # Enable active policy selection",
+        "Footer": "Deep Generative Model for Policy Selection - Sandved-Smith et al. (2021) Figure 3\nComputational Phenomenology of Mental Action and Meta-Awareness",
+        "Signature": "Creator: AI Assistant for GNN\nDate: 2024-12-28\nSource: Sandved-Smith, L., Hesp, C., Mattout, J., Friston, K., Lutz, A., & Ramstead, M. J. D. (2021)\nPaper: \"Towards a computational phenomenology of mental action: modelling meta-awareness and attentional control with deep parametric active inference\"\nJournal: Neuroscience of Consciousness, 2021(1), niab018\nStatus: Research implementation of deep parametric active inference for cognitive control"
+    },
+    "statespaceblock": [
+        {
+            "id": "A",
+            "dimensions": "2,2,type=float",
+            "original_id": "A"
+        },
+        {
+            "id": "B",
+            "dimensions": "2,2,1,type=float",
+            "original_id": "B"
+        },
+        {
+            "id": "B_pi",
+            "dimensions": "2,2,2,type=float",
+            "original_id": "B_pi"
+        },
+        {
+            "id": "C",
+            "dimensions": "2,type=float",
+            "original_id": "C"
+        },
+        {
+            "id": "D",
+            "dimensions": "2,type=float",
+            "original_id": "D"
+        },
+        {
+            "id": "E",
+            "dimensions": "2,type=float",
+            "original_id": "E"
+        },
+        {
+            "id": "G",
+            "dimensions": "2,type=float",
+            "original_id": "G"
+        },
+        {
+            "id": "s",
+            "dimensions": "2,1,type=continuous",
+            "original_id": "s"
+        },
+        {
+            "id": "s_prev",
+            "dimensions": "2,1,type=continuous",
+            "original_id": "s_prev"
+        },
+        {
+            "id": "s_next",
+            "dimensions": "2,1,type=continuous",
+            "original_id": "s_next"
+        },
+        {
+            "id": "s_bar",
+            "dimensions": "2,1,type=continuous",
+            "original_id": "s_bar"
+        },
+        {
+            "id": "o",
+            "dimensions": "2,1,type=discrete",
+            "original_id": "o"
+        },
+        {
+            "id": "o_bar",
+            "dimensions": "2,1,type=continuous",
+            "original_id": "o_bar"
+        },
+        {
+            "id": "o_pred",
+            "dimensions": "2,1,type=continuous",
+            "original_id": "o_pred"
+        },
+        {
+            "id": "u",
+            "dimensions": "1,type=int",
+            "original_id": "u"
+        },
+        {
+            "id": "F_",
+            "original_id": "F_"
+        },
+        {
+            "id": "E_",
+            "original_id": "E_"
+        },
+        {
+            "id": "t",
+            "dimensions": "1,type=int",
+            "original_id": "t"
+        }
+    ],
+    "connections": [
+        {
+            "sources": [
+                "D"
+            ],
+            "operator": ">",
+            "targets": [
+                "s"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "E"
+            ],
+            "operator": ">",
+            "targets": [
+                "π"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s",
+                "γ_A"
+            ],
+            "operator": ">",
+            "targets": [
+                "A"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "A"
+            ],
+            "operator": ">",
+            "targets": [
+                "o_pred"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "A",
+                "s_bar"
+            ],
+            "operator": ">",
+            "targets": [
+                "o_bar"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s",
+                "π"
+            ],
+            "operator": ">",
+            "targets": [
+                "B_pi"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "B_pi"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_next"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_prev",
+                "B_pi"
+            ],
+            "operator": ">",
+            "targets": [
+                "s"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "G",
+                "E_π",
+                "F_π"
+            ],
+            "operator": ">",
+            "targets": [
+                "π_bar"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "π_bar"
+            ],
+            "operator": ">",
+            "targets": [
+                "u"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "γ_A"
+            ],
+            "operator": ">",
+            "targets": [
+                "A"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "β_A"
+            ],
+            "operator": ">",
+            "targets": [
+                "γ_A"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "β_A_bar"
+            ],
+            "operator": ">",
+            "targets": [
+                "β_A"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "A",
+                "o",
+                "B_pi"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_bar"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_bar",
+                "C"
+            ],
+            "operator": ">",
+            "targets": [
+                "F_π"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "F_π"
+            ],
+            "operator": ">",
+            "targets": [
+                "π"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "C",
+                "o_pred",
+                "s_bar"
+            ],
+            "operator": ">",
+            "targets": [
+                "G"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "G"
+            ],
+            "operator": ">",
+            "targets": [
+                "π"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s"
+            ],
+            "operator": ">",
+            "targets": [
+                "s_next"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "s_prev"
+            ],
+            "operator": ">",
+            "targets": [
+                "s"
+            ],
+            "attributes": {}
+        },
+        {
+            "sources": [
+                "t"
+            ],
+            "operator": ">",
+            "targets": [
+                "s",
+                "o",
+                "π"
+            ],
+            "attributes": {}
+        }
+    ],
+    "initialparameterization": {
+        "A": [
+            [
+                [
+                    0.9,
+                    0.1
+                ],
+                [
+                    0.1,
+                    0.9
+                ]
+            ]
+        ],
+        "B": [
+            [
+                [
+                    0.8,
+                    0.2
+                ],
+                [
+                    0.2,
+                    0.8
+                ]
+            ]
+        ],
+        "B_pi": [
+            [
+                [
+                    0.9,
+                    0.1
+                ],
+                [
+                    0.1,
+                    0.9
+                ]
+            ],
+            [
+                [
+                    0.3,
+                    0.7
+                ],
+                [
+                    0.7,
+                    0.3
+                ]
+            ]
+        ],
+        "C": [
+            0.0,
+            1.0
+        ],
+        "D": [
+            0.5,
+            0.5
+        ],
+        "E": "{(0.5, 0.5)}  # Uniform prior over policies\n\n# Precision parameters\nγ_A=2.0         # Moderate precision on likelihood mapping\nβ_A=0.5         # Inverse precision (1/γ_A)\n\n# Initial states",
+        "s": [
+            0.5,
+            0.5
+        ],
+        "o": "{(1.0, 0.0)}           # Initial observation (outcome 0)\nπ={(0.5, 0.5)}           # Initial policy uncertainty\n\n# Time",
+        "t": 0
+    }
+}
