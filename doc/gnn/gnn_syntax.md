@@ -233,7 +233,7 @@ P(s_{t+1}|s_t,u_t) = \text{Cat}(B_{f0}[:,:,u_t] s_t)
 4. **Reference literature**: Cite relevant papers
 
 **Cross-References**: 
-- *Documentation Standards*: [Contributing Guide](../../CONTRIBUTING.md) | [Style Guide](../DOCUMENTATION_MAINTENANCE_PLAN.md#writing-standards)
+- *Documentation Standards*: [Contributing Guide](../../CONTRIBUTING.md) | [Style Guide](../style_guide.md)
 
 ## File Organization
 

@@ -86,7 +86,7 @@ See the **[Testing Guide](doc/testing/README.md)** for comprehensive testing str
 - Use the **[API Reference](doc/api/README.md)** for consistent function signatures
 
 #### **Documentation Contributions**
-- Follow the **[Documentation Maintenance Plan](doc/DOCUMENTATION_MAINTENANCE_PLAN.md)**
+- Follow the **[Documentation Style Guide](doc/style_guide.md)**
 - Use existing templates and maintain consistency with current documentation structure
 - Ensure cross-references between related documents
 
@@ -109,7 +109,7 @@ See the **[Testing Guide](doc/testing/README.md)** for comprehensive testing str
 
 ## Code Review
 
-- A project maintainer will review your PR using the **[Quality Assurance Framework](doc/DOCUMENTATION_MAINTENANCE_PLAN.md#quality-assurance-framework)**.
+- A project maintainer will review your PR using the **[Quality Assurance Framework](doc/style_guide.md#quality-assurance)**.
 - Be prepared to make changes based on the feedback received.
 - Ensure your contribution aligns with **[GNN Standards](.cursorrules)** and **[Testing Requirements](doc/testing/README.md)**.
 - Once your PR is approved, it will be merged into the main codebase.
@@ -118,7 +118,7 @@ See the **[Testing Guide](doc/testing/README.md)** for comprehensive testing str
 
 - **Issues**: Use GitHub Issues to report bugs, request features, or discuss potential changes. Reference the **[Troubleshooting Guide](doc/troubleshooting/README.md)** for common issues.
 - **Pull Requests**: Ensure PRs are focused on a single issue or feature. Avoid mixing multiple unrelated changes in one PR.
-- **Documentation Issues**: Use documentation-specific labels and reference the **[Documentation Status](doc/DOCUMENTATION_STATUS.md)** for current coverage.
+- **Documentation Issues**: Use documentation-specific labels and reference the **[Documentation Style Guide](doc/style_guide.md)** for standards.
 
 ## 🎯 Specialized Contribution Areas
 
@@ -133,8 +133,8 @@ See the **[Testing Guide](doc/testing/README.md)** for comprehensive testing str
 - **Configuration**: Use the **[Configuration Guide](doc/configuration/README.md)** for proper parameter handling
 
 ### **Documentation Contributions**
-- **Maintenance**: Follow the **[Documentation Maintenance Plan](doc/DOCUMENTATION_MAINTENANCE_PLAN.md)**
-- **Quality Standards**: Maintain the **[Gold Standard Documentation](doc/DOCUMENTATION_STATUS.md)** quality
+- **Maintenance**: Follow the **[Documentation Style Guide](doc/style_guide.md)**
+- **Quality Standards**: Maintain professional documentation quality per the style guide
 - **Template Creation**: Use the **[Template System](doc/templates/README.md)** for consistent formatting
 
 ## Community

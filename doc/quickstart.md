@@ -1,6 +1,121 @@
 # GNN Quick Start Guide
 
-Get up and running with Generalized Notation Notation (GNN) in 10 minutes.
+> **📋 Document Metadata**  
+> **Type**: Quick Start Guide | **Audience**: All Users | **Complexity**: Beginner  
+> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Cross-References**: [Learning Paths](learning_paths.md) | [Main Documentation](README.md) | [Setup Guide](SETUP.md)
+
+## ⚡ 5-Minute Demo
+
+**Experience GNN instantly without installation!**
+
+### **🎯 What You'll See**
+- A working Active Inference agent in action
+- Real-time model visualization
+- Code generation across multiple frameworks
+- Interactive model exploration
+
+### **🚀 Option 1: Online Demo (Recommended)**
+```bash
+# Use our pre-configured cloud environment
+curl -s https://demo.gnn-ai.org/quick-demo | bash
+
+# Or via web interface:
+# Visit: https://demo.gnn-ai.org/interactive
+```
+
+### **🖥️ Option 2: Local Quick Demo**
+```bash
+# One-command demo (no installation required)
+docker run --rm -it gnn-ai/quickdemo:latest
+
+# Or with existing Python:
+curl -s https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/scripts/quick_demo.py | python3
+```
+
+### **📊 What the Demo Shows**
+
+#### **Model Creation (30 seconds)**
+Watch as we create a simple navigation agent:
+```gnn
+## ModelName
+NavigationAgent
+
+## StateSpaceBlock
+s_f0[2,1,type=categorical]  # Position: [left, right]
+o_m0[2,1,type=categorical]  # Observation: [wall, open]
+u_c0[2,1,type=categorical]  # Action: [left, right]
+
+## Connections
+s_f0 > o_m0                 # Position determines observation
+s_f0, u_c0 > s_f0           # Position and action determine next position
+```
+
+#### **Real-Time Processing (2 minutes)**
+See the GNN pipeline in action:
+1. **✅ Parsing**: Extract model structure
+2. **✅ Validation**: Check syntax and semantics  
+3. **✅ Visualization**: Generate interactive diagrams
+4. **✅ Code Generation**: Create PyMDP and RxInfer implementations
+5. **✅ Simulation**: Run the agent and see results
+
+#### **Results Exploration (2.5 minutes)**
+Interactive exploration of outputs:
+- **📊 Model Visualization**: Click-through network diagrams
+- **🐍 Generated Python Code**: Working PyMDP implementation
+- **🔢 Julia Code**: RxInfer.jl probabilistic programming
+- **📈 Simulation Results**: Agent behavior over time
+- **🎯 Performance Metrics**: Computational requirements
+
+### **🎮 Interactive Features**
+
+**Model Modifications**: Try these instant edits:
+- Change preferences: `C_m0 = [1.0, 0.0]` → `C_m0 = [0.0, 1.0]`
+- Add uncertainty: `A_m0 = [[1.0, 0.0], [0.0, 1.0]]` → `A_m0 = [[0.9, 0.1], [0.1, 0.9]]`
+- Increase complexity: Add third position with `s_f0[3,1,type=categorical]`
+
+**Real-Time Updates**: Watch how changes affect:
+- Agent behavior patterns
+- Computational complexity
+- Generated code structure
+
+### **📋 Demo Checklist**
+
+After the 5-minute demo, you'll have seen:
+- [ ] ✅ **GNN Syntax**: How models are specified
+- [ ] ✅ **Validation**: Automatic error checking  
+- [ ] ✅ **Multi-Framework**: Code for PyMDP, RxInfer, DisCoPy
+- [ ] ✅ **Visualization**: Network diagrams and matrix heatmaps
+- [ ] ✅ **Simulation**: Working Active Inference agent
+- [ ] ✅ **Performance**: Resource estimation and optimization
+
+### **🎯 Choose Your Next Step**
+
+Based on what interested you most:
+
+**🔬 "I want to understand the theory"** → [Research Learning Path](learning_paths.md#research-focused-path)
+- Deep dive into Active Inference mathematics
+- Explore cognitive modeling applications
+- Review research methodology integration
+
+**💻 "I want to build something"** → [Developer Learning Path](learning_paths.md#developer-focused-path)  
+- Technical setup and integration
+- Production deployment patterns
+- Custom framework development
+
+**🎓 "I want structured learning"** → [Academic Learning Path](learning_paths.md#academic-learning-path)
+- Comprehensive curriculum
+- Hands-on exercises and assessments
+- Progressive skill building
+
+**⚡ "I want to explore more examples"** → [Quick Exploration Path](learning_paths.md#quick-exploration-path)
+- Gallery of pre-built models
+- Interactive model browser
+- Comparison with other approaches
+
+---
+
+## Get up and running with Generalized Notation Notation (GNN) in 10 minutes.
 
 ## What is GNN?
 
@@ -398,6 +513,6 @@ config/               # Configuration files
 
 ---
 
-**Last Updated**: June 2025  
+**Last Updated**: June 23, 2025  
 **Status**: Production-Ready Quick Start Guide  
-**Next Steps**: [Full Documentation](README.md) | [Advanced Examples](gnn/gnn_examples_doc.md) 
+**Next Steps**: [Full Documentation](README.md) | [Learning Paths](learning_paths.md) 

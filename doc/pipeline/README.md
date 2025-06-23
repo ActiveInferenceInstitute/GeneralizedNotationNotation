@@ -1,5 +1,10 @@
 # GNN Pipeline Documentation
 
+> **📋 Document Metadata**  
+> **Type**: Technical Guide | **Audience**: Developers, Users | **Complexity**: Intermediate  
+> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Cross-References**: [Main Documentation](../README.md) | [API Reference](../api/README.md)
+
 ## Overview
 The GNN Processing Pipeline is a comprehensive 14-step system for processing Generalized Notation Notation files from parsing through execution and analysis.
 

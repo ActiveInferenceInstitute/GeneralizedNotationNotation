@@ -3,7 +3,7 @@
 > **📋 Document Metadata**  
 > **Type**: Navigation Hub | **Audience**: All Users | **Complexity**: Beginner  
 > **Last Updated**: June 2025 | **Status**: Production-Ready  
-> **Cross-References**: [Setup Guide](SETUP.md) | [Contributing](../CONTRIBUTING.md) | [Documentation Status](DOCUMENTATION_STATUS.md)
+> **Cross-References**: [Setup Guide](SETUP.md) | [Contributing](../CONTRIBUTING.md)
 
 Welcome to the comprehensive documentation for Generalized Notation Notation (GNN), a standardized text-based language for expressing Active Inference generative models.
 
@@ -28,7 +28,7 @@ New to GNN? Start here:
 
 ## 📚 Documentation Structure
 
-> **🧭 Navigation by User Type** | **🔗 Related**: [User Experience Assessment](DOCUMENTATION_STATUS.md#user-experience-assessment)
+> **🧭 Navigation by User Type** | **🔗 Related**: Comprehensive cross-reference system
 
 ### For Beginners
 > **📖 Learning Path**: Concepts → Syntax → Examples → Practice
@@ -90,7 +90,7 @@ New to GNN? Start here:
 
 ## 🔧 Framework Integrations
 
-> **🔗 Cross-Platform Compatibility** | **📊 Coverage**: [Framework Integration Assessment](DOCUMENTATION_STATUS.md#framework-integration-guides-excellent-coverage)
+> **🔗 Cross-Platform Compatibility** | **📊 Coverage**: Complete framework integration guides
 
 | Framework | Documentation | Description | Template Compatibility | Examples |
 |-----------|---------------|-------------|----------------------|----------|
@@ -221,7 +221,7 @@ New to GNN? Start here:
   - *Deployment*: [Deployment Guide](deployment/README.md)
 - **[Testing Guide](testing/README.md)** - Testing strategies and best practices
   - *Pipeline*: [Step 3 Testing](pipeline/README.md#step-3-test-execution)
-  - *Quality*: [Documentation Maintenance](DOCUMENTATION_MAINTENANCE_PLAN.md)
+  - *Quality*: [Style Guide](style_guide.md) and [Testing Guide](testing/README.md)
 
 ### Security & Compliance
 > **🔒 Enterprise Security** | **📊 Production-Ready**
@@ -284,11 +284,11 @@ New to GNN? Start here:
 
 > **📝 Community Contributions Welcome** | **📋 Standards & Guidelines**
 
-We welcome contributions! See our **[Contributing Guide](../CONTRIBUTING.md)** and **[Documentation Maintenance Plan](DOCUMENTATION_MAINTENANCE_PLAN.md)** for:
+We welcome contributions! See our **[Contributing Guide](../CONTRIBUTING.md)** and **[Documentation Style Guide](style_guide.md)** for:
 
 - **Writing standards and conventions**
-  - *Style*: [Documentation Status](DOCUMENTATION_STATUS.md)
-  - *Quality*: [Maintenance Plan](DOCUMENTATION_MAINTENANCE_PLAN.md#quality-assurance-framework)
+      - *Style*: [Style Guide](style_guide.md)
+  - *Quality*: [Style Guide](style_guide.md) and [Testing Guide](testing/README.md)
 - **Documentation templates and examples**  
   - *Templates*: [Template System](templates/README.md)
   - *Examples*: [Example Gallery](#-example-gallery)

@@ -409,9 +409,20 @@ python src/main.py --only-steps 6 --target-dir path/to/gnn_file.md
 
 ## 🚀 Quick Start
 
-Follow these steps to get up and running with GNN:
+**New to GNN?** Choose your learning path:
 
-### 1️⃣ Prerequisites
+### 🎯 **Choose Your Journey**
+
+- **⚡ Quick Demo (5 min)**: See GNN in action → [5-Minute Demo](doc/quickstart.md#5-minute-demo)
+- **🔬 I'm a Researcher**: Theory-first approach → [Research Path](doc/learning_paths.md#research-focused-path)  
+- **💻 I'm a Developer**: Code-first approach → [Developer Path](doc/learning_paths.md#developer-focused-path)
+- **🎓 I'm Learning**: Structured curriculum → [Academic Path](doc/learning_paths.md#academic-learning-path)
+
+**📚 Need guidance choosing?** → [Complete Learning Paths Guide](doc/learning_paths.md)
+
+### 🛠️ **Direct Installation** (if you know what you want)
+
+**1️⃣ Prerequisites**
 
 Ensure you have **Python 3.8+** installed:
 
@@ -419,14 +430,14 @@ Ensure you have **Python 3.8+** installed:
 python --version  # Should show 3.8 or higher
 ```
 
-### 2️⃣ Clone Repository
+**2️⃣ Clone Repository**
 
 ```bash
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 ```
 
-### 3️⃣ Setup Environment
+**3️⃣ Setup Environment**
 
 Run the setup pipeline step to configure dependencies:
 
@@ -440,7 +451,7 @@ This will:
 - 🧪 Install development dependencies (with `--dev`)
 - ✅ Validate system requirements
 
-### 4️⃣ Run Your First Pipeline
+**4️⃣ Run Your First Pipeline**
 
 Process the example GNN files:
 
@@ -448,7 +459,7 @@ Process the example GNN files:
 python src/main.py --target-dir src/gnn/examples --verbose
 ```
 
-### 5️⃣ Explore Results
+**5️⃣ Explore Results**
 
 Check the generated outputs in the `output/` directory:
 
