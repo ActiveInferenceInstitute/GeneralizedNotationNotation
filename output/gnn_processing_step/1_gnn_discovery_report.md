@@ -2,34 +2,24 @@
 
 **Target Directory:** `src/gnn/examples`
 **Search Pattern:** `**/*.md`
-**Files Found:** 2
+**Files Found:** 1
 
 ## Summary Statistics
 
-- Files with ModelName section: 2
-- Files with StateSpaceBlock section: 2
-- Files with Connections section: 2
+- Files with ModelName section: 1
+- Files with StateSpaceBlock section: 1
+- Files with Connections section: 1
 - Files with processing errors: 0
 
 ## File Details
 
-### federated_inference_friston2023.md
+### rpg_dungeon_crawl.md
 
-**Path:** `src/gnn/examples/federated_inference_friston2023.md`
-**Model Name:** Federated Inference Multi-Agent Belief Sharing Model v1
-
-**Sections Found:**
-- ModelName: Found: Federated Inference Multi-Agent Belief Sharing Model v1
-- StateSpaceBlock: Found
-- Connections: Found
-
-### natural_history_of_catnip.md
-
-**Path:** `src/gnn/examples/natural_history_of_catnip.md`
-**Model Name:** The Natural History of Catnip: A Feline-Optimized Generative Model
+**Path:** `src/gnn/examples/rpg_dungeon_crawl.md`
+**Model Name:** Collaborative Role Playing Game with Active Inference Agents
 
 **Sections Found:**
-- ModelName: Found: The Natural History of Catnip: A Feline-Optimized Generative Model
+- ModelName: Found: Collaborative Role Playing Game with Active Inference Agents
 - StateSpaceBlock: Found
 - Connections: Found
 

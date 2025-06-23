@@ -1,19 +1,14 @@
 # Ontology Processing Report
 
-**Generated:** 2025-06-23T14:05:30.055091
+**Generated:** 2025-06-23T15:03:35.115219
 **Target Directory:** gnn/examples
-**Files Processed:** 2
+**Files Processed:** 1
 **Ontology Terms Loaded:** 60
 
 ## File Details
 
-### federated_inference_friston2023.md
-- **Annotations Found:** 63
-- **Terms Matched:** 0
-- **Terms Missing:** 0
-
-### natural_history_of_catnip.md
-- **Annotations Found:** 26
+### rpg_dungeon_crawl.md
+- **Annotations Found:** 23
 - **Terms Matched:** 0
 - **Terms Missing:** 0
 

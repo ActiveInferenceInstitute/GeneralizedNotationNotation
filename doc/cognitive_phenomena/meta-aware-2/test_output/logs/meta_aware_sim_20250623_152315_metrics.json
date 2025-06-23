@@ -1,0 +1,26 @@
+{
+  "simulation_id": "meta_aware_sim_20250623_152315",
+  "model_name": "meta_awareness_active_inference",
+  "start_time": "2025-06-23T15:23:15.671762",
+  "end_time": "2025-06-23T15:23:15.682223",
+  "total_duration": 0.010461,
+  "memory_usage_mb": 0.0,
+  "cpu_time_seconds": 0.0,
+  "num_levels": 3,
+  "time_steps": 100,
+  "simulation_mode": "default",
+  "convergence_achieved": false,
+  "numerical_stability": true,
+  "error_count": 0,
+  "warning_count": 0,
+  "custom_metrics": {
+    "mind_wandering_percentage": 48.0,
+    "attention_transitions": "21",
+    "perception_precision_mean": 1.28,
+    "perception_precision_variability": 0.5854685623498499,
+    "attention_precision_mean": 1.46,
+    "attention_precision_variability": 0.49315068493150693,
+    "meta_awareness_precision_mean": 0.0,
+    "meta_awareness_precision_variability": 0
+  }
+}

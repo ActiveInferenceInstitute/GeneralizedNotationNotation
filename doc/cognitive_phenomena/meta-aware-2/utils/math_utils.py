@@ -451,6 +451,122 @@ class MathUtils:
         
         return matrix
 
+    @staticmethod
+    def generate_oddball_sequence(T: int, oddball_times: List[int] = None) -> np.ndarray:
+        """
+        Generate oddball stimulus sequence matching original implementation.
+        
+        Args:
+            T: Total time steps
+            oddball_times: List of time points for oddball stimuli
+            
+        Returns:
+            Binary sequence (0=standard, 1=oddball/deviant)
+        """
+        sequence = np.zeros(T, dtype=int)
+        
+        if oddball_times is None:
+            # Default pattern: at 1/5, 2/5, 3/5, 4/5 of trial
+            oddball_times = [int(T/5), int(2*T/5), int(3*T/5), int(4*T/5)]
+        
+        for t in oddball_times:
+            if 0 <= t < T:
+                sequence[t] = 1
+                
+        return sequence
+    
+    @staticmethod
+    def setup_transition_matrices() -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Set up standard transition matrices matching original implementation.
+        
+        Returns:
+            Tuple of (B_perception, B_attention_stay, B_attention_switch, B_meta)
+        """
+        # Perception transitions (2x2) - persistent
+        B_perception = np.array([[0.9, 0.1],
+                               [0.1, 0.9]])
+        
+        # Attention "stay" policy (2x2) - high persistence
+        B_attention_stay = np.array([[0.9, 0.1],
+                                   [0.1, 0.9]])
+        
+        # Attention "switch" policy (2x2) - promotes switching
+        B_attention_switch = np.array([[0.3, 0.7],
+                                     [0.7, 0.3]])
+        
+        # Meta-awareness transitions (2x2) - very persistent
+        B_meta = np.array([[0.95, 0.05],
+                         [0.05, 0.95]])
+        
+        return B_perception, B_attention_stay, B_attention_switch, B_meta
+    
+    @staticmethod
+    def setup_likelihood_matrices() -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Set up standard likelihood matrices matching original implementation.
+        
+        Returns:
+            Tuple of (A_perception, A_attention, A_meta)
+        """
+        # Perception likelihood (2x2) - moderate accuracy
+        A_perception = np.array([[0.8, 0.2],
+                               [0.2, 0.8]])
+        
+        # Attention likelihood (2x2) - good accuracy
+        A_attention = np.array([[0.85, 0.15],
+                              [0.15, 0.85]])
+        
+        # Meta-awareness likelihood (2x2) - high accuracy
+        A_meta = np.array([[0.9, 0.1],
+                         [0.1, 0.9]])
+        
+        return A_perception, A_attention, A_meta
+    
+    @staticmethod
+    def compute_entropy_terms(A: np.ndarray) -> np.ndarray:
+        """
+        Compute entropy terms for each column of likelihood matrix.
+        
+        Args:
+            A: Likelihood matrix
+            
+        Returns:
+            Entropy values for each state
+        """
+        entropies = np.zeros(A.shape[1])
+        for j in range(A.shape[1]):
+            entropies[j] = MathUtils.compute_entropy(A[:, j])
+        return entropies
+    
+    @staticmethod
+    def softmax_dim2(X: np.ndarray) -> np.ndarray:
+        """
+        Convert matrix of log probabilities to matrix of normalized probabilities.
+        Normalizes along axis 0 (columns) to match original implementation.
+        
+        Args:
+            X: Matrix of log probabilities
+            
+        Returns:
+            Matrix of normalized probabilities
+        """
+        return MathUtils.softmax(X, axis=0)
+    
+    @staticmethod
+    def normalise(X: np.ndarray) -> np.ndarray:
+        """
+        Normalize a matrix of probabilities along columns (axis 0).
+        Alternative spelling to match original implementation.
+        
+        Args:
+            X: Matrix of probabilities
+            
+        Returns:
+            Column-normalized matrix
+        """
+        return MathUtils.normalize(X, axis=0)
+
 # Convenience functions for common operations
 def softmax(x, axis=0, temperature=1.0):
     """Convenience wrapper for softmax."""
@@ -467,6 +583,62 @@ def entropy(p, axis=0):
 def kl_div(p, q, axis=0):
     """Convenience wrapper for KL divergence."""
     return MathUtils.compute_kl_divergence(p, q, axis)
+
+def softmax_dim2(X):
+    """Convenience wrapper for matrix softmax (matches original naming)."""
+    return MathUtils.softmax_dim2(X)
+
+def normalise(X):
+    """Convenience wrapper for normalization (matches original naming)."""
+    return MathUtils.normalise(X)
+
+def precision_weighted_likelihood(A, gamma):
+    """Convenience wrapper for precision-weighted likelihood."""
+    return MathUtils.precision_weighted_likelihood(A, gamma)
+
+def bayesian_model_average(values, weights, A_matrix=None):
+    """Convenience wrapper for Bayesian model averaging."""
+    return MathUtils.bayesian_model_average(values, weights, A_matrix)
+
+def compute_attentional_charge(O_bar, A_bar, X_bar, A_orig):
+    """Convenience wrapper for attentional charge computation."""
+    return MathUtils.compute_attentional_charge(O_bar, A_bar, X_bar, A_orig)
+
+def expected_free_energy(O_pred, C, X_pred, H):
+    """Convenience wrapper for expected free energy."""
+    return MathUtils.expected_free_energy(O_pred, C, X_pred, H)
+
+def variational_free_energy(X_bar, X_pred, A, obs_idx):
+    """Convenience wrapper for variational free energy."""
+    return MathUtils.variational_free_energy(X_bar, X_pred, A, obs_idx)
+
+def update_precision_beliefs(beta_prior, charge, bounds):
+    """Convenience wrapper for precision belief updates."""
+    return MathUtils.update_precision_beliefs(beta_prior, charge, bounds)
+
+def policy_posterior(log_prior, expected_free_energy, variational_free_energy=None, gamma_G=1.0):
+    """Convenience wrapper for policy posterior computation."""
+    return MathUtils.policy_posterior(log_prior, expected_free_energy, variational_free_energy, gamma_G)
+
+def discrete_choice(probabilities, method='deterministic'):
+    """Convenience wrapper for discrete choice."""
+    return MathUtils.discrete_choice(probabilities, method)
+
+def generate_oddball_sequence(T, oddball_times=None):
+    """Convenience wrapper for oddball sequence generation."""
+    return MathUtils.generate_oddball_sequence(T, oddball_times)
+
+def setup_transition_matrices():
+    """Convenience wrapper for transition matrix setup."""
+    return MathUtils.setup_transition_matrices()
+
+def setup_likelihood_matrices():
+    """Convenience wrapper for likelihood matrix setup."""
+    return MathUtils.setup_likelihood_matrices()
+
+def compute_entropy_terms(A):
+    """Convenience wrapper for entropy terms computation."""
+    return MathUtils.compute_entropy_terms(A)
 
 # Test functions
 def test_math_utils():

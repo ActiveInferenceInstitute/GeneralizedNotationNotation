@@ -82,8 +82,8 @@ class MetaAwarenessModel:
             np.random.seed(random_seed)
             
         # Initialize model components
-        self._setup_matrices()
         self._setup_state_spaces()
+        self._setup_matrices()
         self._setup_precision_parameters()
         self._initialize_simulation_state()
         
@@ -133,45 +133,56 @@ class MetaAwarenessModel:
         logger.debug(f"Precision parameters initialized: {self.current_precision}")
     
     def _initialize_simulation_state(self):
-        """Initialize simulation state variables."""
+        """Initialize simulation state with proper arrays and beliefs."""
+        # Initialize SimulationState object first
         T = self.config.time_steps
-        
         self.state = SimulationState(max_time=T)
+        
+        # Time and basic info
+        self.state.current_time = 0
+        self.state.max_time = self.config.time_steps
         
         # Initialize arrays for each level
         for level_name, level_config in self.levels.items():
             state_dim = level_config.state_dim
             obs_dim = level_config.obs_dim
-            action_dim = level_config.action_dim
             
-            # State arrays
-            self.state.state_priors[level_name] = np.zeros((state_dim, T))
-            self.state.state_posteriors[level_name] = np.zeros((state_dim, T))
-            self.state.true_states[level_name] = np.zeros(T, dtype=int)
+            # State beliefs (priors and posteriors)
+            self.state.state_priors[level_name] = np.zeros((state_dim, self.config.time_steps))
+            self.state.state_posteriors[level_name] = np.zeros((state_dim, self.config.time_steps))
             
-            # Observation arrays
-            self.state.obs_priors[level_name] = np.zeros((obs_dim, T))
-            self.state.obs_posteriors[level_name] = np.zeros((obs_dim, T))
-            self.state.true_observations[level_name] = np.zeros(T, dtype=int)
+            # Observation beliefs
+            self.state.obs_priors[level_name] = np.zeros((obs_dim, self.config.time_steps))
+            self.state.obs_posteriors[level_name] = np.zeros((obs_dim, self.config.time_steps))
             
-            # Action arrays (if applicable)
-            if action_dim > 0:
-                self.state.policy_priors[level_name] = np.zeros((action_dim, T))
-                self.state.policy_posteriors[level_name] = np.zeros((action_dim, T))
-                self.state.selected_actions[level_name] = np.zeros(T, dtype=int)
-                self.state.expected_free_energy[level_name] = np.zeros((action_dim, T))
-                self.state.variational_free_energy[level_name] = np.zeros((action_dim, T))
+            # True states
+            self.state.true_states[level_name] = np.zeros(self.config.time_steps, dtype=int)
+            self.state.true_observations[level_name] = np.zeros(self.config.time_steps, dtype=int)
             
-            # Precision arrays
-            self.state.precision_values[level_name] = np.zeros(T)
+            # Precision values
+            self.state.precision_values[level_name] = np.zeros(self.config.time_steps)
+            
+            # Policy-related arrays (for levels with actions)
+            if level_config.action_dim > 0:
+                self.state.policy_priors[level_name] = np.zeros((level_config.action_dim, self.config.time_steps))
+                self.state.policy_posteriors[level_name] = np.zeros((level_config.action_dim, self.config.time_steps))
+                self.state.selected_actions[level_name] = np.zeros(self.config.time_steps, dtype=int)
+                self.state.expected_free_energy[level_name] = np.zeros((level_config.action_dim, self.config.time_steps))
+                self.state.variational_free_energy[level_name] = np.zeros((level_config.action_dim, self.config.time_steps))
         
-        # Initialize stimulus sequence
+        # Generate stimulus sequence
         self._generate_stimulus_sequence()
         
-        # Set initial states
+        # Set up observation posteriors for stimulus (critical for perceptual updating)
+        perception_level = self.level_names[0]
+        for t in range(self.config.time_steps):
+            obs_idx = int(self.state.stimulus_sequence[t])
+            self.state.obs_posteriors[perception_level][obs_idx, t] = 1.0
+        
+        # Set initial states and beliefs
         self._set_initial_states()
         
-        logger.debug("Simulation state initialized")
+        logger.debug("Simulation state initialized with proper observation posteriors")
     
     def _generate_stimulus_sequence(self):
         """Generate stimulus sequence based on configuration."""
@@ -342,35 +353,50 @@ class MetaAwarenessModel:
         
         # Get current state beliefs
         X2_t = self.state.state_priors[attention_level][:, t]
+        X1_t = self.state.state_priors[perception_level][:, t]
         
         # Compute precision using Bayesian model average
-        beta_values = np.array(self.precision_bounds[perception_level])
+        beta_A1_values = np.array(self.precision_bounds[perception_level])
         A2_matrix = self.A_matrices[attention_level]
         
-        beta_A1 = self.math_utils.bayesian_model_average(beta_values, X2_t, A2_matrix)
+        # Use fixed precision-weighted A2 for two-level model (like original)
+        gamma_A2_fixed = 1.0
+        A2_bar_fixed = self.math_utils.precision_weighted_likelihood(A2_matrix, gamma_A2_fixed)
+        
+        beta_A1 = self.math_utils.bayesian_model_average(beta_A1_values, X2_t, A2_bar_fixed)
         
         # True precision based on generative process
-        true_state_idx = self.state.true_states[attention_level][t]
-        self.state.precision_values[perception_level][t] = 1.0 / beta_values[true_state_idx]
-        
-        # Precision-weighted likelihood
-        A1_matrix = self.A_matrices[perception_level]
+        true_att_state = self.state.true_states[attention_level][t]
+        self.state.precision_values[perception_level][t] = 1.0 / beta_A1_values[true_att_state]
         gamma_A1 = self.state.precision_values[perception_level][t]
+        
+        # Precision-weighted likelihood for perception
+        A1_matrix = self.A_matrices[perception_level]
         A1_bar = self.math_utils.precision_weighted_likelihood(A1_matrix, gamma_A1)
         
         # Observation prior (predictive)
-        X1_t = self.state.state_priors[perception_level][:, t]
         self.state.obs_priors[perception_level][:, t] = np.dot(A1_bar, X1_t)
         
-        # Perceptual state posterior
+        # Perceptual state posterior (CORRECTED: using moderated precision for realistic updating)
         obs_idx = int(self.state.stimulus_sequence[t])
-        log_likelihood = gamma_A1 * np.log(np.maximum(A1_matrix[obs_idx, :], 1e-16))
+        
+        # Compute prediction error for adaptive precision
+        predicted_obs = np.dot(A1_bar, X1_t)
+        actual_obs = np.zeros(A1_matrix.shape[0])
+        actual_obs[obs_idx] = 1.0
+        prediction_error = np.linalg.norm(predicted_obs - actual_obs)
+        
+        # Use adaptive precision: higher precision when prediction error is large
+        adaptive_precision = gamma_A1 * (0.15 + 0.25 * prediction_error)
+        adaptive_precision = np.minimum(adaptive_precision, gamma_A1 * 0.5)  # Cap at 50% of full precision
+        
+        log_likelihood = adaptive_precision * np.log(np.maximum(A1_matrix[obs_idx, :], 1e-16))
         log_posterior = np.log(np.maximum(X1_t, 1e-16)) + log_likelihood
         self.state.state_posteriors[perception_level][:, t] = self.math_utils.softmax(log_posterior)
         
-        # Compute attentional charge
-        O1_bar = np.zeros(A1_matrix.shape[0])
-        O1_bar[obs_idx] = 1.0
+        # Compute attentional charge using observation posterior (not prior)
+        O1_bar = self.state.obs_posteriors[perception_level][:, t]  # Use actual observation
+        O1_pred = self.state.obs_priors[perception_level][:, t]     # Predicted observation
         
         AtC = self.math_utils.compute_attentional_charge(
             O1_bar, A1_bar, 
@@ -378,12 +404,16 @@ class MetaAwarenessModel:
             A1_matrix
         )
         
-        # Update attentional beliefs
+        # Clamp charge for numerical stability
+        if AtC > beta_A1_values[0]:
+            AtC = beta_A1_values[0] - 1e-5
+        
+        # Update attentional beliefs with charge
         beta_A1_bar = beta_A1 - AtC
         beta_A1_bar = np.maximum(beta_A1_bar, self.precision_bounds[perception_level][0])
         
-        precision_ratio = (beta_values - AtC) / beta_values * beta_A1 / beta_A1_bar
-        log_precision_evidence = -np.log(np.maximum(precision_ratio, 1e-16))
+        precision_ratio = (beta_A1_values - AtC) / beta_A1_values * beta_A1 / beta_A1_bar
+        log_precision_evidence = -1.0 * np.log(np.maximum(precision_ratio, 1e-16))
         log_att_posterior = np.log(np.maximum(X2_t, 1e-16)) + log_precision_evidence
         self.state.state_posteriors[attention_level][:, t] = self.math_utils.softmax(log_att_posterior)
     
@@ -394,8 +424,12 @@ class MetaAwarenessModel:
         attention_level = self.level_names[1]     # e.g., "attention"
         meta_level = self.level_names[2]          # e.g., "meta_awareness"
         
-        # Meta-awareness level (Level 3)
+        # Get current state beliefs
         X3_t = self.state.state_priors[meta_level][:, t]
+        X2_t = self.state.state_priors[attention_level][:, t]
+        X1_t = self.state.state_priors[perception_level][:, t]
+        
+        # Meta-awareness level (Level 3) - compute precision for level 2
         beta_A2_values = np.array(self.precision_bounds[attention_level])
         A3_matrix = self.A_matrices[meta_level]
         
@@ -403,44 +437,51 @@ class MetaAwarenessModel:
         
         true_meta_state = self.state.true_states[meta_level][t]
         self.state.precision_values[attention_level][t] = 1.0 / beta_A2_values[true_meta_state]
+        gamma_A2 = self.state.precision_values[attention_level][t]
         
         A2_bar = self.math_utils.precision_weighted_likelihood(
-            self.A_matrices[attention_level], 
-            self.state.precision_values[attention_level][t]
+            self.A_matrices[attention_level], gamma_A2
         )
         
-        # Set observations at level 2 (true attentional states)
-        O2_bar = np.zeros(self.A_matrices[attention_level].shape[0])
+        # Set observations at level 2 (true attentional states as observations)
         true_att_state = self.state.true_states[attention_level][t]
-        O2_bar[true_att_state] = 1.0
+        self.state.obs_posteriors[attention_level][:, t] = 0.0
+        self.state.obs_posteriors[attention_level][true_att_state, t] = 1.0
         
-        # Attentional level (Level 2)
-        X2_t = self.state.state_priors[attention_level][:, t]
+        # Attentional level (Level 2) - compute precision for level 1
         beta_A1_values = np.array(self.precision_bounds[perception_level])
         
         beta_A1 = self.math_utils.bayesian_model_average(beta_A1_values, X2_t, A2_bar)
         
         true_att_state = self.state.true_states[attention_level][t]
         self.state.precision_values[perception_level][t] = 1.0 / beta_A1_values[true_att_state]
+        gamma_A1 = self.state.precision_values[perception_level][t]
         
         A1_bar = self.math_utils.precision_weighted_likelihood(
-            self.A_matrices[perception_level], 
-            self.state.precision_values[perception_level][t]
+            self.A_matrices[perception_level], gamma_A1
         )
         
-        # Perceptual level (Level 1)
-        X1_t = self.state.state_priors[perception_level][:, t]
+        # Perceptual level (Level 1) - update based on actual stimulus (CORRECTED: adaptive precision)
         self.state.obs_priors[perception_level][:, t] = np.dot(A1_bar, X1_t)
         
         obs_idx = int(self.state.stimulus_sequence[t])
-        gamma_A1 = self.state.precision_values[perception_level][t]
-        log_likelihood = gamma_A1 * np.log(np.maximum(self.A_matrices[perception_level][obs_idx, :], 1e-16))
+        
+        # Compute prediction error for adaptive precision
+        predicted_obs = np.dot(A1_bar, X1_t)
+        actual_obs = np.zeros(self.A_matrices[perception_level].shape[0])
+        actual_obs[obs_idx] = 1.0
+        prediction_error = np.linalg.norm(predicted_obs - actual_obs)
+        
+        # Use adaptive precision: higher precision when prediction error is large
+        adaptive_precision = gamma_A1 * (0.15 + 0.25 * prediction_error)
+        adaptive_precision = np.minimum(adaptive_precision, gamma_A1 * 0.5)  # Cap at 50% of full precision
+        
+        log_likelihood = adaptive_precision * np.log(np.maximum(self.A_matrices[perception_level][obs_idx, :], 1e-16))
         log_posterior = np.log(np.maximum(X1_t, 1e-16)) + log_likelihood
         self.state.state_posteriors[perception_level][:, t] = self.math_utils.softmax(log_posterior)
         
         # Compute charges and update higher-level beliefs
-        O1_bar = np.zeros(self.A_matrices[perception_level].shape[0])
-        O1_bar[obs_idx] = 1.0
+        O1_bar = self.state.obs_posteriors[perception_level][:, t]  # Actual observation
         
         # Level 1 -> Level 2 charge
         AtC1 = self.math_utils.compute_attentional_charge(
@@ -449,29 +490,47 @@ class MetaAwarenessModel:
             self.A_matrices[perception_level]
         )
         
-        # Update level 2 beliefs
+        # Clamp charge for numerical stability
+        if AtC1 > beta_A1_values[0]:
+            AtC1 = beta_A1_values[0] - 1e-5
+        
+        # Update level 2 beliefs with both ascending evidence AND direct observation
         beta_A1_bar = beta_A1 - AtC1
         beta_A1_bar = np.maximum(beta_A1_bar, self.precision_bounds[perception_level][0])
         
         precision_ratio = (beta_A1_values - AtC1) / beta_A1_values * beta_A1 / beta_A1_bar
-        log_precision_evidence = -np.log(np.maximum(precision_ratio, 1e-16))
-        log_att_posterior = np.log(np.maximum(X2_t, 1e-16)) + log_precision_evidence
+        log_precision_evidence = -1.0 * np.log(np.maximum(precision_ratio, 1e-16))
+        
+        # Add direct observation evidence (critical for proper updating)
+        direct_observation = gamma_A2 * np.log(np.maximum(self.A_matrices[attention_level][true_att_state, :], 1e-16))
+        
+        log_att_posterior = np.log(np.maximum(X2_t, 1e-16)) + direct_observation + log_precision_evidence
         self.state.state_posteriors[attention_level][:, t] = self.math_utils.softmax(log_att_posterior)
         
         # Level 2 -> Level 3 charge
+        O2_bar = self.state.obs_posteriors[attention_level][:, t]  # Actual attention observation
+        
         AtC2 = self.math_utils.compute_attentional_charge(
             O2_bar, A2_bar,
             self.state.state_posteriors[attention_level][:, t],
             self.A_matrices[attention_level]
         )
         
-        # Update level 3 beliefs
+        # Clamp charge for numerical stability
+        if AtC2 > beta_A2_values[0]:
+            AtC2 = beta_A2_values[0] - 1e-5
+        
+        # Update level 3 beliefs with both ascending evidence AND direct observation
         beta_A2_bar = beta_A2 - AtC2
         beta_A2_bar = np.maximum(beta_A2_bar, self.precision_bounds[attention_level][0])
         
         precision_ratio_3 = (beta_A2_values - AtC2) / beta_A2_values * beta_A2 / beta_A2_bar
-        log_precision_evidence_3 = -np.log(np.maximum(precision_ratio_3, 1e-16))
-        log_meta_posterior = np.log(np.maximum(X3_t, 1e-16)) + log_precision_evidence_3
+        log_precision_evidence_3 = -1.0 * np.log(np.maximum(precision_ratio_3, 1e-16))
+        
+        # Add weaker direct observation evidence for meta-awareness (allows more switching)
+        direct_observation_3 = 0.1 * np.log(np.maximum(A3_matrix[true_meta_state, :], 1e-16))
+        
+        log_meta_posterior = np.log(np.maximum(X3_t, 1e-16)) + direct_observation_3 + log_precision_evidence_3
         self.state.state_posteriors[meta_level][:, t] = self.math_utils.softmax(log_meta_posterior)
     
     def _policy_selection(self, t: int):
@@ -606,6 +665,22 @@ class MetaAwarenessModel:
                     transition_probs = B_matrix[:, current_state]
                     next_state = np.random.choice(len(transition_probs), p=transition_probs)
                     self.state.true_states[level_name][t + 1] = next_state
+        
+        # Update meta-awareness states for 3-level model (without actions)
+        if len(self.level_names) >= 3:
+            meta_level = self.level_names[2]
+            meta_config = self.levels[meta_level]
+            
+            if meta_config.action_dim == 0 and t + 1 < self.config.time_steps:
+                # Use meta-awareness transition matrix
+                if 'meta_awareness' in self.B_matrices:
+                    B_meta = self.B_matrices['meta_awareness']
+                    current_meta_state = self.state.true_states[meta_level][t]
+                    
+                    # Sample next meta state from transition probabilities
+                    transition_probs = B_meta[:, current_meta_state]
+                    next_meta_state = np.random.choice(len(transition_probs), p=transition_probs)
+                    self.state.true_states[meta_level][t + 1] = next_meta_state
     
     def _update_state_priors(self, t: int):
         """Update state priors for next time step."""

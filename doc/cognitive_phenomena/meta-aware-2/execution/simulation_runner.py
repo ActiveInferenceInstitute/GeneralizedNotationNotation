@@ -33,7 +33,7 @@ class SimulationRunner:
     
     def __init__(self, 
                  config_path: Union[str, Path],
-                 output_dir: Union[str, Path] = "./output",
+                 output_dir: Union[str, Path] = ".",
                  log_level: str = "INFO",
                  random_seed: Optional[int] = None):
         """
@@ -41,7 +41,7 @@ class SimulationRunner:
         
         Args:
             config_path: Path to GNN configuration file
-            output_dir: Base output directory for results
+            output_dir: Base output directory for results (default: current directory)
             log_level: Logging level
             random_seed: Random seed for reproducibility
         """
@@ -49,7 +49,7 @@ class SimulationRunner:
         self.output_dir = Path(output_dir)
         self.random_seed = random_seed
         
-        # Create output subdirectories
+        # Create output subdirectories (simple structure)
         self.results_dir = self.output_dir / "results"
         self.figures_dir = self.output_dir / "figures"
         self.logs_dir = self.output_dir / "logs"
@@ -576,7 +576,7 @@ class SimulationRunner:
         return summary
 
 def run_simulation_from_config(config_path: Union[str, Path],
-                             output_dir: Union[str, Path] = "./output",
+                             output_dir: Union[str, Path] = ".",
                              simulation_modes: Optional[List[str]] = None,
                              random_seed: Optional[int] = None,
                              log_level: str = "INFO") -> Dict[str, Any]:

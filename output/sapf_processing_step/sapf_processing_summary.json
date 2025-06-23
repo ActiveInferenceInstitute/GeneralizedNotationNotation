@@ -1,7 +1,7 @@
 {
   "step_name": "15_sapf",
-  "total_files": 2,
-  "successful_files": 2,
+  "total_files": 1,
+  "successful_files": 1,
   "failed_files": 0,
   "processing_options": {
     "verbose": true,

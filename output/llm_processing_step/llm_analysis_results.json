@@ -1,105 +1,54 @@
 {
   "success": true,
-  "files_processed": 2,
-  "total_files": 2,
-  "total_analyses": 12,
-  "successful_analyses": 12,
+  "files_processed": 1,
+  "total_files": 1,
+  "total_analyses": 6,
+  "successful_analyses": 6,
   "files": {
-    "federated_inference_friston2023": {
-      "file": "gnn/examples/federated_inference_friston2023.md",
-      "file_name": "federated_inference_friston2023",
+    "rpg_dungeon_crawl": {
+      "file": "gnn/examples/rpg_dungeon_crawl.md",
+      "file_name": "rpg_dungeon_crawl",
       "analyses": {
         "summarize_content": {
           "success": true,
-          "file": "../output/llm_processing_step/federated_inference_friston2023/summarize_content_analysis.md",
+          "file": "../output/llm_processing_step/rpg_dungeon_crawl/summarize_content_analysis.md",
           "provider": "openai",
-          "content_length": 3466,
+          "content_length": 3556,
           "tokens_used": null
         },
         "explain_model": {
           "success": true,
-          "file": "../output/llm_processing_step/federated_inference_friston2023/explain_model_analysis.md",
+          "file": "../output/llm_processing_step/rpg_dungeon_crawl/explain_model_analysis.md",
           "provider": "openai",
-          "content_length": 5312,
+          "content_length": 5470,
           "tokens_used": null
         },
         "identify_components": {
           "success": true,
-          "file": "../output/llm_processing_step/federated_inference_friston2023/identify_components_analysis.md",
+          "file": "../output/llm_processing_step/rpg_dungeon_crawl/identify_components_analysis.md",
           "provider": "openai",
-          "content_length": 5328,
+          "content_length": 6387,
           "tokens_used": null
         },
         "analyze_structure": {
           "success": true,
-          "file": "../output/llm_processing_step/federated_inference_friston2023/analyze_structure_analysis.md",
+          "file": "../output/llm_processing_step/rpg_dungeon_crawl/analyze_structure_analysis.md",
           "provider": "openai",
-          "content_length": 5985,
+          "content_length": 7256,
           "tokens_used": null
         },
         "extract_parameters": {
           "success": true,
-          "file": "../output/llm_processing_step/federated_inference_friston2023/extract_parameters_analysis.md",
+          "file": "../output/llm_processing_step/rpg_dungeon_crawl/extract_parameters_analysis.md",
           "provider": "openai",
-          "content_length": 4886,
+          "content_length": 5228,
           "tokens_used": null
         },
         "practical_applications": {
           "success": true,
-          "file": "../output/llm_processing_step/federated_inference_friston2023/practical_applications_analysis.md",
+          "file": "../output/llm_processing_step/rpg_dungeon_crawl/practical_applications_analysis.md",
           "provider": "openai",
-          "content_length": 6021,
-          "tokens_used": null
-        }
-      },
-      "errors": [],
-      "success_count": 6,
-      "total_tasks": 6
-    },
-    "natural_history_of_catnip": {
-      "file": "gnn/examples/natural_history_of_catnip.md",
-      "file_name": "natural_history_of_catnip",
-      "analyses": {
-        "summarize_content": {
-          "success": true,
-          "file": "../output/llm_processing_step/natural_history_of_catnip/summarize_content_analysis.md",
-          "provider": "openai",
-          "content_length": 4220,
-          "tokens_used": null
-        },
-        "explain_model": {
-          "success": true,
-          "file": "../output/llm_processing_step/natural_history_of_catnip/explain_model_analysis.md",
-          "provider": "openai",
-          "content_length": 4994,
-          "tokens_used": null
-        },
-        "identify_components": {
-          "success": true,
-          "file": "../output/llm_processing_step/natural_history_of_catnip/identify_components_analysis.md",
-          "provider": "openai",
-          "content_length": 5217,
-          "tokens_used": null
-        },
-        "analyze_structure": {
-          "success": true,
-          "file": "../output/llm_processing_step/natural_history_of_catnip/analyze_structure_analysis.md",
-          "provider": "openai",
-          "content_length": 5870,
-          "tokens_used": null
-        },
-        "extract_parameters": {
-          "success": true,
-          "file": "../output/llm_processing_step/natural_history_of_catnip/extract_parameters_analysis.md",
-          "provider": "openai",
-          "content_length": 5509,
-          "tokens_used": null
-        },
-        "practical_applications": {
-          "success": true,
-          "file": "../output/llm_processing_step/natural_history_of_catnip/practical_applications_analysis.md",
-          "provider": "openai",
-          "content_length": 5562,
+          "content_length": 5522,
           "tokens_used": null
         }
       },

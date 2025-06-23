@@ -1,0 +1,9 @@
+{
+  "model_name": "rpg_dungeon_crawl",
+  "input_file": "gnn/examples/rpg_dungeon_crawl.md",
+  "sapf_file": "../output/sapf_processing_step/rpg_dungeon_crawl/rpg_dungeon_crawl.sapf",
+  "audio_file": "../output/sapf_processing_step/rpg_dungeon_crawl/rpg_dungeon_crawl_audio.wav",
+  "audio_duration": 30.0,
+  "sapf_code_lines": 67,
+  "processing_successful": true
+}

@@ -1,0 +1,49 @@
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Simulation logger initialized: meta_aware_sim_20250623_152315
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | SimulationRunner initialized with config: config/meta_awareness_gnn.toml
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Output directory: test_output
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Starting simulation in mode: default
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Model configured: meta_awareness_active_inference (3 levels, 100 steps, mode: default)
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | ============================================================
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | SIMULATION STARTED
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | ============================================================
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Simulation ID: meta_aware_sim_20250623_152315
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Start time: 2025-06-23 15:23:15.671762
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Configuration summary:
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   model_name: meta_awareness_active_inference
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   num_levels: 3
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   time_steps: 100
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   simulation_mode: default
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   level_names: list with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   state_dimensions: dict with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   random_seed: 42
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Additional analysis completed
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | ============================================================
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | SIMULATION COMPLETED
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | ============================================================
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | End time: 2025-06-23 15:23:15.682223
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Duration: 0.01 seconds
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Results summary:
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   model_name: str
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   num_levels: int
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   level_names: list with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   time_steps: int
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   state_priors: dict with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   state_posteriors: dict with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   true_states: dict with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   obs_priors: dict with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   obs_posteriors: dict with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   true_observations: dict with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   policy_priors: dict with 1 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   policy_posteriors: dict with 1 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   selected_actions: dict with 1 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   precision_values: dict with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   expected_free_energy: dict with 1 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   variational_free_energy: dict with 1 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   stimulus_sequence: array (100,) (int64)
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   config: ModelConfig
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   execution_metadata: dict with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   mind_wandering_analysis: dict with 9 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   precision_analysis: dict with 3 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   free_energy_analysis: dict with 2 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO |   behavioral_patterns: dict with 1 items
+2025-06-23 15:23:15 | meta_aware.meta_aware_sim_20250623_152315 | INFO | Metrics saved to: test_output/logs/meta_aware_sim_20250623_152315_metrics.json

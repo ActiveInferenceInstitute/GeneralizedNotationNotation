@@ -1,0 +1,12 @@
+{
+    "directed": true,
+    "multigraph": false,
+    "graph": [
+        [
+            "name",
+            "Collaborative Role Playing Game with Active Inference Agents"
+        ]
+    ],
+    "nodes": [],
+    "adjacency": []
+}

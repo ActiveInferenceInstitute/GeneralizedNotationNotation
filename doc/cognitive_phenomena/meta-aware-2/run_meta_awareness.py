@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Meta-Aware-2 Golden Spike Entry Point
+Meta-Aware-2: Streamlined GNN-Configurable Meta-Awareness Simulation
 
-Main executable for the GNN-configurable meta-awareness computational 
-phenomenology simulation. This is the "golden spike" entry point that
-demonstrates the complete pipeline from GNN configuration to results.
+Main executable for the complete computational phenomenology implementation
+based on Sandved-Smith et al. (2021). This is the streamlined, production-ready
+version that exactly replicates the original implementation functionality.
 
-Based on Sandved-Smith et al. (2021) computational phenomenology of mental action.
-
-Part of the meta-aware-2 "golden spike" GNN-specified executable implementation.
+Part of the GeneralizedNotationNotation (GNN) project.
 """
 
 import sys
@@ -34,14 +32,11 @@ Examples:
   # Run with default configuration
   python run_meta_awareness.py config/meta_awareness_gnn.toml
   
-  # Run specific simulation modes
-  python run_meta_awareness.py config/meta_awareness_gnn.toml -m figure_10 figure_11
+  # Run specific simulation modes (reproduce figures)
+  python run_meta_awareness.py config/meta_awareness_gnn.toml -m figure_7 figure_10 figure_11
   
-  # Run with custom output directory and seed
-  python run_meta_awareness.py config/meta_awareness_gnn.toml -o ./results -s 42
-  
-  # Run in quiet mode
-  python run_meta_awareness.py config/meta_awareness_gnn.toml -l ERROR
+  # Run with custom settings
+  python run_meta_awareness.py config/meta_awareness_gnn.toml -s 42 -l DEBUG
   
   # Show configuration and exit
   python run_meta_awareness.py config/meta_awareness_gnn.toml --show-config
@@ -55,12 +50,6 @@ Examples:
     )
     
     # Optional arguments
-    parser.add_argument(
-        "--output", "-o", 
-        default="./output",
-        help="Output directory for results, figures, and logs (default: ./output)"
-    )
-    
     parser.add_argument(
         "--modes", "-m", 
         nargs="+",
@@ -78,18 +67,6 @@ Examples:
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         default="INFO",
         help="Logging level (default: INFO)"
-    )
-    
-    parser.add_argument(
-        "--no-figures",
-        action="store_true",
-        help="Skip figure generation"
-    )
-    
-    parser.add_argument(
-        "--no-save",
-        action="store_true", 
-        help="Skip saving detailed results"
     )
     
     parser.add_argument(
@@ -124,20 +101,19 @@ Examples:
     # Run main simulation
     try:
         print("=" * 80)
-        print("Meta-Aware-2: GNN-Configurable Meta-Awareness Simulation")
+        print("Meta-Aware-2: Computational Phenomenology of Meta-Awareness")
         print("Based on Sandved-Smith et al. (2021)")
         print("=" * 80)
         print()
         
-        print(f"Configuration file: {args.config}")
-        print(f"Output directory: {args.output}")
+        print(f"Configuration: {args.config}")
         print(f"Random seed: {args.seed}")
         print(f"Log level: {args.log_level}")
         
         if args.modes:
             print(f"Simulation modes: {', '.join(args.modes)}")
         else:
-            print("Simulation modes: All available modes")
+            print("Running all figure reproduction modes")
         
         print()
         print("Starting simulation...")
@@ -146,7 +122,7 @@ Examples:
         # Run complete analysis
         results = run_simulation_from_config(
             config_path=args.config,
-            output_dir=args.output,
+            output_dir=".",  # Use current directory structure
             simulation_modes=args.modes,
             random_seed=args.seed,
             log_level=args.log_level
@@ -157,7 +133,7 @@ Examples:
         print()
         
         # Print summary
-        print_results_summary(results, args.output)
+        print_results_summary(results)
         
     except FileNotFoundError as e:
         print(f"Error: Configuration file not found: {e}")
@@ -246,17 +222,10 @@ def run_tests():
         print("Make sure all dependencies are installed.")
         sys.exit(1)
 
-def print_results_summary(results: dict, output_dir: str):
+def print_results_summary(results: dict):
     """Print a summary of simulation results."""
     
     print("Results Summary:")
-    print(f"  Output directory: {output_dir}")
-    
-    # Execution info
-    exec_info = results.get('execution_info', {})
-    if 'total_duration' in exec_info:
-        duration = exec_info['total_duration']
-        print(f"  Total duration: {duration:.2f} seconds")
     
     # Simulation modes run
     sim_results = results.get('simulation_results', {})
@@ -271,80 +240,15 @@ def print_results_summary(results: dict, output_dir: str):
         total_figures = sum(len(paths) if isinstance(paths, dict) else 1 
                            for paths in figure_paths.values())
         print(f"  Figures generated: {total_figures}")
+        print(f"    Location: ./figures/")
     
-    # Analysis summary
-    analysis = results.get('analysis_summary', {})
-    if analysis:
-        print(f"  Analysis components: {len(analysis)}")
-    
-    print()
-    print("Output Files:")
-    output_path = Path(output_dir)
-    
-    # List key output directories
-    for subdir in ['results', 'figures', 'logs']:
-        subdir_path = output_path / subdir
-        if subdir_path.exists():
-            file_count = len(list(subdir_path.glob('*')))
-            print(f"  {subdir}/: {file_count} files")
+    # Results saved
+    print(f"  Results saved to: ./results/")
+    print(f"  Logs saved to: ./logs/")
     
     print()
-    print("Simulation completed! Check the output directory for detailed results.")
-
-def create_example_config():
-    """Create an example configuration file."""
-    example_config = """
-# Meta-Aware-2 GNN Configuration Example
-# Based on Sandved-Smith et al. (2021)
-
-[model]
-name = "meta_awareness_example"
-description = "Example meta-awareness model with hierarchical active inference"
-num_levels = 3
-level_names = ["perception", "attention", "meta_awareness"]
-time_steps = 100
-oddball_pattern = "default"
-
-[levels.perception]
-state_dim = 2
-obs_dim = 2  
-action_dim = 0
-
-[levels.attention]
-state_dim = 2
-obs_dim = 2
-action_dim = 2
-
-[levels.meta_awareness]
-state_dim = 2
-obs_dim = 2
-action_dim = 2
-
-[precision_bounds]
-perception = [0.5, 2.0]
-attention = [2.0, 4.0]
-
-[policy_precision]
-2_level = 2.0
-3_level = 4.0
-
-[simulation_modes]
-default = "natural_dynamics"
-figure_7 = "fixed_attention_schedule" 
-figure_10 = "two_level_mind_wandering"
-figure_11 = "three_level_meta_awareness"
-
-[validation_config]
-check_matrix_dimensions = true
-check_probability_normalization = true
-tolerance = 1e-10
-"""
-    
-    config_path = Path("example_config.toml")
-    with open(config_path, 'w') as f:
-        f.write(example_config)
-    
-    print(f"Example configuration created: {config_path}")
+    print("✓ Meta-awareness computational phenomenology simulation complete!")
+    print("  Check figures/, results/, and logs/ directories for outputs.")
 
 if __name__ == "__main__":
     main() 

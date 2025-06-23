@@ -1,0 +1,51 @@
+{
+  "file": "gnn/examples/rpg_dungeon_crawl.md",
+  "file_name": "rpg_dungeon_crawl",
+  "analyses": {
+    "summarize_content": {
+      "success": true,
+      "file": "../output/llm_processing_step/rpg_dungeon_crawl/summarize_content_analysis.md",
+      "provider": "openai",
+      "content_length": 3556,
+      "tokens_used": null
+    },
+    "explain_model": {
+      "success": true,
+      "file": "../output/llm_processing_step/rpg_dungeon_crawl/explain_model_analysis.md",
+      "provider": "openai",
+      "content_length": 5470,
+      "tokens_used": null
+    },
+    "identify_components": {
+      "success": true,
+      "file": "../output/llm_processing_step/rpg_dungeon_crawl/identify_components_analysis.md",
+      "provider": "openai",
+      "content_length": 6387,
+      "tokens_used": null
+    },
+    "analyze_structure": {
+      "success": true,
+      "file": "../output/llm_processing_step/rpg_dungeon_crawl/analyze_structure_analysis.md",
+      "provider": "openai",
+      "content_length": 7256,
+      "tokens_used": null
+    },
+    "extract_parameters": {
+      "success": true,
+      "file": "../output/llm_processing_step/rpg_dungeon_crawl/extract_parameters_analysis.md",
+      "provider": "openai",
+      "content_length": 5228,
+      "tokens_used": null
+    },
+    "practical_applications": {
+      "success": true,
+      "file": "../output/llm_processing_step/rpg_dungeon_crawl/practical_applications_analysis.md",
+      "provider": "openai",
+      "content_length": 5522,
+      "tokens_used": null
+    }
+  },
+  "errors": [],
+  "success_count": 6,
+  "total_tasks": 6
+}

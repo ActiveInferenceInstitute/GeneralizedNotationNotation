@@ -33,6 +33,84 @@ action_dim = 0
 state_labels = ["high_meta_awareness", "low_meta_awareness"]
 obs_labels = ["high_meta_obs", "low_meta_obs"]
 
+# Likelihood Matrices A[obs, state] - P(observation | state)
+[likelihood_matrices]
+
+# A1: Perceptual likelihood mapping - how states generate observations
+[likelihood_matrices.perception]
+matrix = [
+    [0.8, 0.2],  # P(standard_obs | standard_state), P(standard_obs | deviant_state)
+    [0.2, 0.8]   # P(deviant_obs | standard_state), P(deviant_obs | deviant_state)
+]
+description = "Perceptual likelihood: observations given hidden states"
+
+# A2: Attentional likelihood mapping 
+[likelihood_matrices.attention]
+matrix = [
+    [0.9, 0.1],  # P(focused_obs | focused_state), P(focused_obs | distracted_state)
+    [0.1, 0.9]   # P(distracted_obs | focused_state), P(distracted_obs | distracted_state)
+]
+description = "Attentional likelihood: attentional observations given attentional states"
+
+# A3: Meta-awareness likelihood mapping
+[likelihood_matrices.meta_awareness]
+matrix = [
+    [0.85, 0.15],  # P(high_meta_obs | high_meta_state), P(high_meta_obs | low_meta_state)
+    [0.15, 0.85]   # P(low_meta_obs | high_meta_state), P(low_meta_obs | low_meta_state)
+]
+description = "Meta-awareness likelihood: meta-cognitive observations given meta-awareness states"
+
+# Transition Matrices B[state', state] - P(next_state | current_state, action)
+[transition_matrices]
+
+# B1: Perceptual state transitions (passive, no actions)
+[transition_matrices.perception]
+matrix = [
+    [0.95, 0.05],  # P(standard' | standard), P(standard' | deviant)
+    [0.05, 0.95]   # P(deviant' | standard), P(deviant' | deviant)
+]
+description = "Perceptual state transitions (passive dynamics)"
+
+# B2a: Attentional transitions under "stay" policy
+[transition_matrices.attention_stay]
+matrix = [
+    [0.8, 0.2],   # P(focused' | focused, stay), P(focused' | distracted, stay)
+    [0.2, 0.8]    # P(distracted' | focused, stay), P(distracted' | distracted, stay)
+]
+description = "Attentional state transitions under 'stay' policy"
+
+# B2b: Attentional transitions under "switch" policy
+[transition_matrices.attention_switch]
+matrix = [
+    [0.3, 0.7],   # P(focused' | focused, switch), P(focused' | distracted, switch)
+    [0.7, 0.3]    # P(distracted' | focused, switch), P(distracted' | distracted, switch)
+]
+description = "Attentional state transitions under 'switch' policy"
+
+# B3: Meta-awareness state transitions
+[transition_matrices.meta_awareness]
+matrix = [
+    [0.9, 0.1],   # P(high_meta' | high_meta), P(high_meta' | low_meta)
+    [0.1, 0.9]    # P(low_meta' | high_meta), P(low_meta' | low_meta)
+]
+description = "Meta-awareness state transitions"
+
+# Prior State Beliefs D[state] - P(initial_state)
+[prior_beliefs]
+
+[prior_beliefs.perception]
+vector = [0.5, 0.5]
+description = "Initial perceptual state beliefs (uniform)"
+
+[prior_beliefs.attention]
+vector = [0.8, 0.2]
+description = "Initial attentional state beliefs (start focused)"
+
+[prior_beliefs.meta_awareness]
+vector = [1.0, 0.0]
+description = "Initial meta-awareness beliefs (start with high meta-awareness)"
+
+# Precision Parameters
 [precision_bounds]
 perception = [0.5, 2.0]
 attention = [0.5, 2.0]
@@ -42,31 +120,37 @@ meta_awareness = [1.0, 4.0]
 2_level = 2.0
 3_level = 4.0
 
+# Policy Configuration
 [policy_preferences]
-attention = [2.0, -2.0]
+attention = [2.0, -2.0]  # Prefer focused attention (positive), avoid distraction (negative)
 
 [policy_priors]
-attention = [0.5, 0.5]
+attention = [0.5, 0.5]   # Uniform prior over stay/switch policies
 
+# Simulation Modes
 [simulation_modes]
 default = "natural_dynamics"
 figure_7 = "fixed_attention_schedule"
 figure_10 = "two_level_mind_wandering"
 figure_11 = "three_level_meta_awareness"
 
+# Fixed Schedules for Figure Reproduction
 [simulation_schedules]
 figure_7_attention = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
 figure_11_meta_awareness = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
 
+# Validation Configuration
 [validation_config]
 check_matrix_dimensions = true
 check_probability_normalization = true
 tolerance = 1e-10
 
+# Logging Configuration
 [logging_config]
 level = "INFO"
 output_dir = "logs"
 
+# Visualization Configuration
 [visualization_config]
 generate_figures = true
 figure_format = "png"
