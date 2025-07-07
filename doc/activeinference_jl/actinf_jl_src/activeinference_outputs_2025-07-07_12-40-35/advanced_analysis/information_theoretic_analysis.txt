@@ -1,0 +1,7 @@
+Information-Theoretic Analysis
+========================================
+Initial belief entropy: 0.39
+Final belief entropy: 0.5264
+Entropy reduction: -0.1365
+Mean information gain per step: -0.001786
+Total information gain: -0.0339

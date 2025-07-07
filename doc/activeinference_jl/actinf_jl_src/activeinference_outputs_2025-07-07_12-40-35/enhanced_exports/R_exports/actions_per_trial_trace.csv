@@ -1,0 +1,8 @@
+# ActiveInference.jl Data Export
+# Variable: actions_per_trial_trace
+# Exported: 2025-07-07T12:44:11.680
+time,actions_per_trial_trace
+1.0,1.0
+2.0,1.0
+3.0,2.0
+4.0,1.0

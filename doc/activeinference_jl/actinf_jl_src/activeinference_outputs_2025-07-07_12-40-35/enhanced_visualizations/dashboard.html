@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ActiveInference.jl Enhanced Visualization Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin-bottom: 30px; border: 1px solid #ccc; padding: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        img { max-width: 100%; height: auto; }
+        h1, h2 { color: #333; }
+        .metrics { background-color: #f5f5f5; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>ActiveInference.jl Enhanced Visualization Dashboard</h1>
+    <p>Generated on: 2025-07-07 12:44:04</p>
+    
+    <div class="section">
+        <h2>📊 Interactive Time Series</h2>
+        <p>Interactive plots with zoom and pan capabilities.</p>
+        <a href="interactive/interactive_timeseries.html">Open Interactive Dashboard</a>
+    </div>
+    
+    <div class="section">
+        <h2>🌐 3D Visualizations</h2>
+        <div class="grid">
+            <div>
+                <h3>Belief Trajectory</h3>
+                <img src="3d/belief_trajectory_3d.png" alt="3D Belief Trajectory" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>🔲 Matrix Analysis</h2>
+        <div class="grid">
+            <div>
+                <h3>Observation Model (A Matrix)</h3>
+                <img src="matrices/A_matrix_heatmap.png" alt="A Matrix Heatmap" />
+            </div>
+            <div>
+                <h3>Transition Models (B Matrices)</h3>
+                <img src="matrices/B_matrices_combined.png" alt="B Matrices Combined" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>📈 Statistical Distributions</h2>
+        <div class="grid">
+            <div>
+                <h3>Distribution Analysis</h3>
+                <img src="distributions/distributions_combined.png" alt="Distributions" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>🎬 Animations</h2>
+        <div>
+            <h3>Belief Evolution</h3>
+            <img src="animations/belief_evolution.gif" alt="Belief Evolution Animation" />
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>🕸️ Network Analysis</h2>
+        <div class="grid">
+            <div>
+                <h3>Belief Flow Diagram</h3>
+                <img src="networks/belief_flow_diagram.png" alt="Belief Flow" />
+            </div>
+        </div>
+    </div>
+</body>
+</html>

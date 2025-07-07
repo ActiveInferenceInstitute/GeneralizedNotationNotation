@@ -1,0 +1,7 @@
+# ActiveInference.jl Data Export
+# Generated: 2025-07-07T12:41:08.163
+# Script Version: 1.0.0
+# description: Columns 1-2: Learned A matrix, Columns 3-4: True A matrix
+# Data begins below:
+0.5476226087743747,0.45235896751498217,0.9,0.1
+0.4523773912256252,0.5476410324850178,0.1,0.9

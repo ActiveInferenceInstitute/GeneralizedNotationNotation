@@ -1,0 +1,10 @@
+# ActiveInference.jl Trace Data Export
+# Generated: 2025-07-07T12:41:04.987
+# Script Version: 1.0.0
+# Data columns: actions, per, trial
+# Data begins below:
+actions,per,trial
+1,1
+2,1
+3,2
+4,1

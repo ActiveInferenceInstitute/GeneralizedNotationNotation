@@ -1,0 +1,13 @@
+Policy Performance Analysis
+========================================
+Action diversity: 0.1
+Reward per action: 0.25
+Action consistency: 0.947
+Exploration ratio: 0.3
+Exploitation ratio: 0.7
+
+Regret Analysis:
+Total regret: 15.0
+Final average regret: 0.75
+Regret growth exponent: 0.927
+Sublinear regret: true

@@ -1,0 +1,388 @@
+┌ Info: ActiveInference.jl Consolidated Runner Started
+│   version = 1.0.0
+│   timestamp = 2025-07-07T12:40:35.291
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:75
+┌ Info: Output directory: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:76
+┌ Info: Setting up Julia environment for ActiveInference.jl
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:118
+┌ Info: Installing/updating required packages...
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:121
+┌ Info: Installing ActiveInference...
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:124
+┌ Info: Installing Distributions...
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:124
+┌ Info: Installing LinearAlgebra...
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:124
+┌ Info: Installing Random...
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:124
+┌ Info: Required packages already loaded
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:132
+┌ Info: Environment setup complete
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:134
+┌ Info: Environment setup successful
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:694
+┌ Info: Running Basic POMDP Example
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:141
+┌ Info: Creating generative model
+│   n_states = [2]
+│   n_observations = [2]
+│   n_controls = [2]
+│   policy_length = 1
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:150
+┌ Info: Matrix templates created successfully
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:168
+┌ Info: A matrix size: (2, 2)
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:169
+┌ Info: B matrix size: (2, 2, 2)
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:170
+┌ Info: Data saved: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/models/basic_model_structure.csv
+│   rows = 5
+│   cols = 3
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:100
+┌ Info: Initializing AIF agent
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:203
+┌ Info: Agent initialization successful
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:205
+┌ Info: Running simulation steps
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:208
+┌ Info: Step 5
+│   observation = 1
+│   action = 2
+│   belief = 0.614
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:240
+┌ Info: Step 10
+│   observation = 1
+│   action = 2
+│   belief = 0.607
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:240
+┌ Info: Step 15
+│   observation = 2
+│   action = 1
+│   belief = 0.279
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:240
+┌ Info: Step 20
+│   observation = 2
+│   action = 1
+│   belief = 0.322
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:240
+┌ Info: Data saved: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/simulation_results/basic_simulation.csv
+│   rows = 20
+│   cols = 4
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:100
+┌ Info: Basic example completed successfully
+│   n_steps = 20
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:305
+┌ Info: Running Parameter Learning Example
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:316
+┌ Info: Creating learning model
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:325
+┌ Info: Initializing learning agent
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:355
+┌ Info: Running learning episodes
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:359
+┌ Info: Initial A matrix:
+│   A_matrix = [0.6 0.4; 0.4 0.6]
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:368
+┌ Info: Learning episode 10
+│   error = 1.329
+│   A_matrix = [0.513 0.377; 0.487 0.623]
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:397
+┌ Info: Learning episode 20
+│   error = 1.3789
+│   A_matrix = [0.555 0.445; 0.445 0.555]
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:397
+┌ Info: Learning episode 30
+│   error = 1.4095
+│   A_matrix = [0.548 0.452; 0.452 0.548]
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:397
+┌ Info: Data saved: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/parameters/learning_progress.csv
+│   rows = 150
+│   cols = 1
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:100
+┌ Info: Data saved: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/parameters/learned_vs_true.csv
+│   rows = 2
+│   cols = 4
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:100
+┌ Info: Learning example completed successfully
+│   final_error = 1.409472717481215
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:422
+┌ Info: Running Multi-Step Planning Example
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:433
+┌ Info: Creating multi-step planning model
+│   policy_length = 3
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:442
+┌ Info: Initializing planning agent
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:469
+┌ Info: Running planning simulation
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:473
+┌ Info: Trial 1, Step 1
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 1, Step 2
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 1, Step 3
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 1, Step 4
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 1, Step 5
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 2, Step 1
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 2, Step 2
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 2, Step 3
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 2, Step 4
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 2, Step 5
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 3, Step 1
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 3, Step 2
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 3, Step 3
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 3, Step 4
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 3, Step 5
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 4, Step 1
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 4, Step 2
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 4, Step 3
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 4, Step 4
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 4, Step 5
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 5, Step 1
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 5, Step 2
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 5, Step 3
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 5, Step 4
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 5, Step 5
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 6, Step 1
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 6, Step 2
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 6, Step 3
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 6, Step 4
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 6, Step 5
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 7, Step 1
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 7, Step 2
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 7, Step 3
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 7, Step 4
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 7, Step 5
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 8, Step 1
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 8, Step 2
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 8, Step 3
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 8, Step 4
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 8, Step 5
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 9, Step 1
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 9, Step 2
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 9, Step 3
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 9, Step 4
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 9, Step 5
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 10, Step 1
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 10, Step 2
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 10, Step 3
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 10, Step 4
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Trial 10, Step 5
+│   state = 3
+│   action = 3
+│   reward = 2.0
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:508
+┌ Info: Data saved: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/simulation_results/planning_summary.csv
+│   rows = 30
+│   cols = 1
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:100
+┌ Info: Multi-step planning example completed successfully
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:541
+┌ Info: Creating analysis summary
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:552
+┌ Info: Analysis summary created successfully
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:603
+┌ Info: Running visualizations
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:615
+┌ Info: Visualization analysis and plots generated successfully
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:625
+┌ Info: Running Enhanced Analysis Suite
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:644
+┌ Info: Starting enhanced analysis suite for maximum POMDP understanding
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:651
+┌ Info: Enhanced analysis suite completed successfully
+└ @ Main /Users/4d/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/activeinference_runner.jl:654
