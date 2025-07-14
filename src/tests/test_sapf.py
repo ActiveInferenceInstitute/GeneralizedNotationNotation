@@ -822,7 +822,7 @@ class TestSAPFIntegration:
         except ImportError:
             pytest.skip("SAPF processor not available")
         
-        examples_dir = SRC_DIR / "gnn" / "examples"
+        examples_dir = PROJECT_ROOT / "input" / "gnn_files"
         
         if not examples_dir.exists():
             pytest.skip("GNN examples directory not found")

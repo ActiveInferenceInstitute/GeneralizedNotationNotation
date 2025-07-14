@@ -22,7 +22,7 @@ from visualization import GNNVisualizer
 def main():
     """Run the visualization on GNN examples."""
     parser = argparse.ArgumentParser(description='Generate visualizations for GNN examples.')
-    parser.add_argument('--input', '-i', type=str, default=str(parent_dir / 'gnn' / 'examples'),
+    parser.add_argument('--input', '-i', type=str, default=str(parent_dir.parent / 'input' / 'gnn_files'),
                         help='Directory containing GNN example files')
     parser.add_argument('--output', '-o', type=str, default=str(parent_dir.parent / 'output' / 'visualization'),
                         help='Directory to save visualizations')

@@ -240,13 +240,39 @@ def export_to_python_pickle(gnn_model: dict, output_file_path: str):
 def _build_networkx_graph(gnn_model: dict) -> 'Optional[nx.DiGraph]':
     if not HAS_NETWORKX: return None
     graph = nx.DiGraph(name=gnn_model.get('name', 'GNN_Model'))
-    for node_type in ['states', 'observations']:
-        for node_data in gnn_model.get(node_type, []):
-            if 'id' in node_data: graph.add_node(node_data['id'], **{k: v for k, v in node_data.items() if k != 'id'})
-    for edge_data in gnn_model.get('transitions', []):
-        for source in edge_data.get('sources', []):
-            for target in edge_data.get('targets', []):
-                graph.add_edge(source, target, **edge_data.get('attributes', {}))
+    
+    # Add nodes from StateSpaceBlock (contains all variables including states, observations, etc.)
+    statespace_data = gnn_model.get('statespaceblock', [])
+    for node_data in statespace_data:
+        if 'id' in node_data:
+            # Extract node attributes
+            attributes = {k: v for k, v in node_data.items() if k != 'id'}
+            graph.add_node(node_data['id'], **attributes)
+    
+    # Add edges from Connections
+    connections_data = gnn_model.get('connections', [])
+    for edge_data in connections_data:
+        sources = edge_data.get('sources', [])
+        targets = edge_data.get('targets', [])
+        operator = edge_data.get('operator', '-')
+        attributes = edge_data.get('attributes', {})
+        
+        # Add operator information to edge attributes
+        edge_attrs = attributes.copy()
+        edge_attrs['operator'] = operator
+        
+        # Create edges from all sources to all targets
+        for source in sources:
+            for target in targets:
+                # Ensure nodes exist (add them if they don't)
+                if not graph.has_node(source):
+                    graph.add_node(source, label=source)
+                if not graph.has_node(target):
+                    graph.add_node(target, label=target)
+                
+                # Add the edge
+                graph.add_edge(source, target, **edge_attrs)
+    
     return graph
 
 def export_to_gexf(gnn_model: dict, output_file_path: str):

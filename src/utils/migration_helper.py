@@ -145,7 +145,7 @@ class PipelineMigrationHelper:
         hardcoded_patterns = [
             (r'Path\(["\']src/', "Hardcoded 'src/' path"),
             (r'Path\(["\']output/', "Hardcoded 'output/' path"),
-            (r'["\']src/gnn/examples["\']', "Hardcoded examples path"),
+            (r'["\']input/gnn_files["\']', "Hardcoded input GNN files path"),
             (r'project_root / ["\']src["\'] / ["\']gnn["\']', "Could use DEFAULT_PATHS")
         ]
         
@@ -198,7 +198,7 @@ class PipelineMigrationHelper:
         """Fix simple hardcoded path patterns."""
         changes = []
         
-        # Replace hardcoded src/gnn/examples with DEFAULT_PATHS reference
+        # Replace hardcoded input/gnn_files with DEFAULT_PATHS reference
         if 'src" / "gnn" / "examples"' in content and "DEFAULT_PATHS" not in content:
             changes.append("💡 Consider using DEFAULT_PATHS['target_dir'] instead of hardcoded paths")
         

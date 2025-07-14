@@ -149,7 +149,7 @@ def main(parsed_args: argparse.Namespace):
     # Get input and output directories
     input_dir = getattr(parsed_args, 'target_dir', None)
     if input_dir is None:
-        input_dir = Path("src/gnn/examples")
+        input_dir = Path("input/gnn_files")
     elif isinstance(input_dir, str):
         input_dir = Path(input_dir)
         

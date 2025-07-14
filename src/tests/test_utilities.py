@@ -57,7 +57,7 @@ except ImportError:
         "mock_external_deps": True,
         "timeout_seconds": 30,
         "temp_output_dir": str(TEST_DIR / "temp"),
-        "sample_gnn_dir": str(SRC_DIR / "gnn" / "examples"),
+        "sample_gnn_dir": str(PROJECT_ROOT / "input" / "gnn_files"),
         "test_data_dir": str(TEST_DIR / "data")
     }
     

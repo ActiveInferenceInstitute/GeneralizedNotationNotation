@@ -24,7 +24,7 @@ src/gnn/
 ├── gnn_grammar.ebnf           # Formal grammar specification
 ├── gnn_file_structure.md      # File structure documentation
 ├── gnn_punctuation.md         # Syntax punctuation guide
-└── examples/                  # Example GNN files
+└── input/gnn_files/           # Example GNN files
     ├── pymdp_pomdp_agent.md
     ├── rxinfer_hidden_markov_model.md
     ├── rxinfer_multiagent_gnn.md
@@ -223,7 +223,7 @@ register_tools(mcp_server)
 
 ## Examples
 
-The `examples/` directory contains complete GNN files demonstrating:
+The `input/gnn_files/` directory contains complete GNN files demonstrating:
 
 - **PyMDP POMDP Agent**: Multi-factor agent with observation modalities
 - **RxInfer Hidden Markov Model**: Basic HMM for RxInfer.jl

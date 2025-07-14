@@ -132,17 +132,13 @@ The `pipeline_validation.py` script provides comprehensive validation:
 ### Basic Pipeline Execution
 
 ```bash
-# Run full pipeline
-python3 src/main.py --target-dir src/gnn/examples --output-dir output
+python3 src/main.py --target-dir input/gnn_files --output-dir output
 
-# Run with verbose logging
-python3 src/main.py --target-dir src/gnn/examples --output-dir output --verbose
+python3 src/main.py --target-dir input/gnn_files --output-dir output --verbose
 
-# Run specific steps only
-python3 src/main.py --only-steps 1,2,3 --target-dir src/gnn/examples --output-dir output
+python3 src/main.py --only-steps 1,2,3 --target-dir input/gnn_files --output-dir output
 
-# Skip problematic steps
-python3 src/main.py --skip-steps 10,12,13 --target-dir src/gnn/examples --output-dir output
+python3 src/main.py --skip-steps 10,12,13 --target-dir input/gnn_files --output-dir output
 ```
 
 ### Individual Step Execution
@@ -150,27 +146,19 @@ python3 src/main.py --skip-steps 10,12,13 --target-dir src/gnn/examples --output
 Each step can be run independently:
 
 ```bash
-# Run GNN discovery
-python3 src/1_gnn.py --target-dir src/gnn/examples --output-dir output --verbose
+python3 src/1_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 
-# Run type checking
-python3 src/4_type_checker.py --target-dir src/gnn/examples --output-dir output --strict
+python3 src/4_type_checker.py --target-dir input/gnn_files --output-dir output --strict
 
-# Generate exports
-python3 src/5_export.py --target-dir src/gnn/examples --output-dir output
+python3 src/5_export.py --target-dir input/gnn_files --output-dir output
 
-# Generate SAPF audio representations
-python3 src/13_sapf.py --target-dir src/gnn/examples --output-dir output --duration 30
+python3 src/13_sapf.py --target-dir input/gnn_files --output-dir output --duration 30
 ```
 
 ### Validation
 
 ```bash
-# Validate pipeline consistency
-python3 src/pipeline_validation.py --save-report validation_report.json
-
-# Check specific output directory
-python3 src/pipeline_validation.py --output-dir custom_output --save-report custom_validation.json
+python3 src/main.py --target-dir input/gnn_files --estimate-resources --verbose
 ```
 
 ## Dependencies

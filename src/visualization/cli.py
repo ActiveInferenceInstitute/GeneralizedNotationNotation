@@ -23,7 +23,7 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     # Input options
     parser.add_argument(
         'input',
-        help='Path to a GNN file or directory containing GNN files'
+        help='Path to a GNN file or directory containing GNN files (e.g., input/gnn_files)'
     )
     
     # Output directory

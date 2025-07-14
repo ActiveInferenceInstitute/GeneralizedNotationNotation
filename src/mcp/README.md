@@ -1,113 +1,390 @@
-# Model Context Protocol (MCP) Integration in GNN
+# Model Context Protocol (MCP) Implementation
 
-This document provides a comprehensive overview of how the Model Context Protocol (MCP) is integrated and utilized within the Generalized Notation Notation (GNN) project. MCP serves as a standardized communication layer, enabling AI models, IDEs, and other software systems to interact with the GNN toolkit's diverse functionalities as callable "tools."
+This directory contains the comprehensive Model Context Protocol (MCP) implementation for the GeneralizedNotationNotation (GNN) project. The MCP server exposes all GNN functionalities as standardized tools that can be accessed by MCP-compatible clients.
 
-## 1. Purpose of MCP in the GNN Project
+## Overview
 
-The primary goal of integrating MCP into the GNN project is to expose its rich set of functionalities—such as parsing, type checking, resource estimation, exporting, and rendering GNN files—in a standardized, programmatic way. This allows various MCP "hosts" (e.g., AI assistants, integrated development environments, automated research pipelines) to:
+The GNN MCP implementation provides:
+- **Core MCP Server**: JSON-RPC 2.0 compliant server with tool and resource management
+- **Multiple Transport Layers**: stdio and HTTP transport support
+- **Comprehensive Tool Ecosystem**: Tools from all GNN modules (gnn, type_checker, export, visualization, etc.)
+- **Meta-Tools**: Server introspection and diagnostic capabilities
+- **CLI Interface**: Command-line access to all MCP functionality
+- **Extensible Architecture**: Easy addition of new tools and resources
 
-*   Programmatically access and utilize GNN's capabilities.
-*   Automate workflows involving GNN model definition, analysis, and transformation.
-*   Integrate GNN functionalities into larger AI systems and research environments.
-*   Enhance interoperability with other MCP-compatible tools and platforms.
+## Architecture
 
-## 2. Core MCP Concepts Leveraged
+```
+src/mcp/
+├── mcp.py                 # Core MCP server implementation
+├── server_stdio.py        # stdio transport server
+├── server_http.py         # HTTP transport server
+├── cli.py                 # Command-line interface
+├── meta_mcp.py           # Meta-tools for server introspection
+├── sympy_mcp.py          # SymPy integration tools
+├── sympy_mcp_client.py   # SymPy MCP client
+├── npx_inspector.py      # NPX inspector utilities
+├── README.md             # This documentation
+└── *.md                  # Additional documentation files
+```
 
-The GNN project primarily leverages the following MCP concepts, as detailed in the general MCP specification (`model_context_protocol.md` or `doc/mcp/gnn_mcp_model_context_protocol.md`):
+## Core Components
 
-*   **MCP Server**: The GNN project implements an MCP server that listens for requests from MCP clients.
-*   **MCP Tools**: GNN's core functionalities (e.g., `export_gnn_to_json`, `render_gnn_to_pymdp`, `type_check_gnn_file`) are exposed as "tools" that MCP clients can invoke. Each tool has a defined schema specifying its inputs and outputs.
-*   **MCP Resources**: GNN files themselves, adhering to the GNN DSL specification (`doc/gnn_dsl_manual.md`), are the primary "resources" upon which these tools operate. Tool invocations typically reference these GNN files by their path.
-*   **JSON-RPC 2.0**: This is the underlying protocol used for communication between MCP clients and the GNN MCP server.
+### 1. MCP Server (`mcp.py`)
 
-## 3. Overview of GNN's MCP Implementation
+The central MCP server implementation that:
+- Manages tool and resource registration
+- Handles JSON-RPC 2.0 requests
+- Provides module discovery and loading
+- Implements error handling and logging
+- Tracks performance metrics
 
-The MCP implementation within the GNN project is primarily located in the `src/mcp/` directory, with extensions in various functional subdirectories.
+**Key Features:**
+- Dynamic module loading
+- Tool and resource registration
+- Performance tracking
+- Error handling with custom MCP error codes
+- Server status monitoring
 
-*   **Central MCP Server Logic (`src/mcp/`)**:
-    *   `mcp.py`: Defines the core `MCP` class, responsible for discovering and registering tools from different GNN modules, and dispatching incoming requests to the appropriate tool handlers.
-    *   `server_http.py`: Implements an HTTP-based MCP server, allowing clients to communicate with GNN tools over HTTP.
-    *   `server_stdio.py`: Implements an MCP server that communicates over standard input/output, suitable for direct integration with command-line tools or tightly coupled processes.
-    *   `cli.py`: Provides a command-line interface for interacting with the GNN MCP server, allowing users to list available tools, execute them, or start the server.
-    *   `meta_mcp.py`: Exposes MCP tools related to the MCP server itself (e.g., status, capabilities).
+### 2. Transport Servers
 
-*   **Exposing GNN Functionalities as MCP Tools**:
-    Various GNN functionalities are wrapped and exposed as MCP tools through dedicated `mcp.py` files in their respective modules:
-    *   `src/export/mcp.py`: Registers tools for exporting GNN files to different formats (JSON, XML, GraphML, etc.).
-    *   `src/render/mcp.py`: Registers tools for rendering GNN models into executable formats (e.g., PyMDP, RxInfer).
-    *   `src/type_checker/mcp.py`: Registers tools for validating GNN file syntax and structure, and for estimating computational resources.
-    *   `src/visualization/mcp.py` (if present, or logic integrated elsewhere): Would register tools for generating visualizations from GNN files.
-    *   `src/ontology/mcp.py`: Registers tools for processing and validating GNN ontology annotations.
+#### stdio Server (`server_stdio.py`)
+- Reads JSON-RPC requests from stdin
+- Writes responses to stdout
+- Multi-threaded architecture for concurrent processing
+- Ideal for local process communication
 
-    Each of these modules contains a `register_tools(mcp_instance)` function, which is called by the main `MCP` class in `src/mcp/mcp.py` during initialization to make all GNN tools discoverable and callable.
+#### HTTP Server (`server_http.py`)
+- HTTP-based JSON-RPC server
+- Supports both GET and POST requests
+- Configurable host and port
+- Suitable for network-based access
 
-## 4. Benefits of MCP Integration for GNN
+### 3. Command Line Interface (`cli.py`)
 
-Integrating MCP provides several key advantages:
+Comprehensive CLI for MCP operations:
+```bash
+# List all capabilities
+python -m src.mcp.cli list
 
-*   **Standardization & Interoperability**: Adheres to an open standard, allowing any MCP-compatible client to interact with GNN.
-*   **Programmatic Access & Automation**: Enables scripts, AI agents, and other programs to use GNN functionalities as part of automated workflows.
-*   **Modularity & Extensibility**: GNN tools are organized modularly. New functionalities can be added and exposed as new MCP tools without altering the core MCP server logic.
-*   **Support for Advanced AI Systems**: Facilitates the development of sophisticated AI agents (e.g., LLM-based agents as described in `doc/gnn_llm_neurosymbolic_active_inference.md`) that can reason about, manipulate, and utilize GNN models by calling upon GNN tools.
-*   **Decoupling**: The GNN core logic is decoupled from the way it's accessed, allowing for different communication protocols (HTTP, stdio) and potential future protocols.
+# Execute a tool
+python -m src.mcp.cli execute get_gnn_files --params '{"target_dir": "doc"}'
 
-## 5. Typical Workflow Example
+# Get server status
+python -m src.mcp.cli status
 
-A common interaction between an MCP Host (e.g., an AI assistant or an IDE plugin) and the GNN MCP Server might proceed as follows:
+# Start server
+python -m src.mcp.cli server --transport stdio
+python -m src.mcp.cli server --transport http --host 0.0.0.0 --port 8080
+```
 
-1.  **Initialization**: The GNN MCP Server is started (e.g., via `python -m src.mcp.cli start_server http`). It discovers and registers all available GNN tools.
-2.  **Tool Discovery (Optional)**: The MCP Host can send a `mcp/discover` request (or a similar capabilities request) to the GNN MCP Server to get a list of available tools and their JSON schemas. This allows the host to understand how to call each tool.
-3.  **Tool Invocation**:
-    *   The MCP Host wishes to validate a GNN file named `example.gnn`.
-    *   It constructs a JSON-RPC request:
-        ```json
-        {
-            "jsonrpc": "2.0",
-            "method": "type_checker.type_check_gnn_file",
-            "params": {"file_path": "path/to/example.gnn"},
-            "id": "request-123"
-        }
-        ```
-    *   This request is sent to the GNN MCP Server (e.g., via HTTP POST).
-4.  **Server-Side Processing**:
-    *   The GNN MCP Server receives the request.
-    *   The `MCP` class in `src/mcp/mcp.py` routes the request to the `type_check_gnn_file_mcp` tool handler, which is defined in `src/type_checker/mcp.py`.
-    *   The tool handler executes the GNN type-checking logic on `example.gnn`.
-5.  **Response**:
-    *   The GNN MCP Server sends a JSON-RPC response back to the Host:
-        ```json
-        {
-            "jsonrpc": "2.0",
-            "result": {
-                "file_path": "path/to/example.gnn",
-                "is_valid": true,
-                "errors": [],
-                "warnings": [],
-                "resource_estimates": {
-                    "memory_estimate_kb": 10.5,
-                    "inference_estimate_units": 150
-                }
+### 4. Meta-Tools (`meta_mcp.py`)
+
+Server introspection and diagnostic tools:
+- `get_mcp_server_capabilities`: Full server capabilities
+- `get_mcp_server_status`: Operational status and metrics
+- `get_mcp_server_auth_status`: Authentication configuration
+- `get_mcp_server_encryption_status`: Encryption status
+- `get_mcp_module_info`: Detailed module information
+- `get_mcp_tool_categories`: Tools organized by category
+- `get_mcp_performance_metrics`: Performance statistics
+
+## Available Tools by Module
+
+### GNN Module (`src/gnn/mcp.py`)
+- GNN file discovery and parsing
+- Model structure analysis
+- Parameter extraction and validation
+
+### Type Checker (`src/type_checker/mcp.py`)
+- GNN syntax validation
+- Resource estimation
+- Type consistency checking
+
+### Export (`src/export/mcp.py`)
+- Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
+- Network graph export
+- Structured data preservation
+
+### Visualization (`src/visualization/mcp.py`)
+- Graph visualization
+- Matrix visualization
+- Ontology relationship diagrams
+
+### Render (`src/render/mcp.py`)
+- PyMDP code generation
+- RxInfer.jl model translation
+- Template-based code generation
+
+### Execute (`src/execute/mcp.py`)
+- Script execution
+- Result capture and reporting
+- Multi-backend support
+
+### LLM (`src/llm/mcp.py`)
+- AI-powered model analysis
+- Enhancement suggestions
+- Natural language explanations
+
+### Site (`src/site/mcp.py`)
+- HTML site generation
+- Report aggregation
+- Interactive elements
+
+### SAPF (`src/sapf/mcp.py`)
+- Audio generation and sonification
+- Model sonification
+- Real-time audio processing
+
+### Pipeline (`src/pipeline/mcp.py`)
+- Pipeline step discovery
+- Execution monitoring
+- Configuration management
+
+### Utils (`src/utils/mcp.py`)
+- System diagnostics
+- File operations
+- Environment validation
+
+## Usage Examples
+
+### 1. Starting the MCP Server
+
+#### stdio Transport (Recommended for local use)
+```bash
+python -m src.mcp.cli server --transport stdio
+```
+
+#### HTTP Transport (For network access)
+```bash
+python -m src.mcp.cli server --transport http --host 0.0.0.0 --port 8080
+```
+
+### 2. Using the CLI
+
+#### List all available tools
+```bash
+python -m src.mcp.cli list --format human
+```
+
+#### Execute a GNN tool
+```bash
+python -m src.mcp.cli execute get_gnn_files --params '{"target_dir": "doc", "recursive": true}'
+```
+
+#### Get server status
+```bash
+python -m src.mcp.cli status --format json
+```
+
+### 3. JSON-RPC API Usage
+
+#### Get server capabilities
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "mcp.capabilities",
+  "params": {}
+}
+```
+
+#### Execute a tool
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "mcp.tool.execute",
+  "params": {
+    "name": "get_gnn_files",
+    "params": {
+      "target_dir": "doc",
+      "recursive": true
+    }
+  }
+}
+```
+
+#### Direct tool invocation
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "get_gnn_files",
+  "params": {
+    "target_dir": "doc",
+    "recursive": true
+  }
+}
+```
+
+## Error Handling
+
+The MCP implementation provides comprehensive error handling:
+
+### Standard JSON-RPC Error Codes
+- `-32700`: Parse error
+- `-32600`: Invalid Request
+- `-32601`: Method not found
+- `-32602`: Invalid params
+- `-32603`: Internal error
+
+### Custom MCP Error Codes
+- `-32000`: MCP-specific errors
+- `-32001`: Tool execution errors
+- `-32002`: Resource retrieval errors
+- `-32003`: Module loading errors
+
+### Error Response Format
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32001,
+    "message": "Tool execution failed",
+    "data": {
+      "tool": "get_gnn_files",
+      "details": "Target directory not found"
+    }
+  }
+}
+```
+
+## Performance Monitoring
+
+The MCP server tracks various performance metrics:
+- Request count and error rates
+- Average execution times per tool
+- Module loading statistics
+- Server uptime and activity
+
+Access performance data via:
+```bash
+python -m src.mcp.cli execute get_mcp_performance_metrics
+```
+
+## Security Considerations
+
+### Transport Security
+- **stdio**: Local process only, high security
+- **HTTP**: Network accessible, consider HTTPS for production
+
+### Authentication
+- No built-in authentication (relies on transport security)
+- Implement authentication for network deployments
+- Use stdio transport for maximum security
+
+### Recommendations
+1. Use stdio transport for local-only access
+2. Configure HTTPS for HTTP transport if needed
+3. Implement authentication for untrusted networks
+4. Monitor access logs and performance metrics
+
+## Development and Extension
+
+### Adding New Tools
+
+1. Create or update the module's `mcp.py` file
+2. Implement tool functions with proper error handling
+3. Register tools using `mcp_instance.register_tool()`
+4. Add comprehensive documentation and schemas
+
+### Example Tool Registration
+```python
+def register_tools(mcp_instance):
+    mcp_instance.register_tool(
+        name="my_tool",
+        func=my_tool_function,
+        schema={
+            "type": "object",
+            "properties": {
+                "param1": {"type": "string"}
             },
-            "id": "request-123"
-        }
-        ```
-6.  **Host Processing**: The MCP Host receives the response and can then use the validation results and resource estimates.
+            "required": ["param1"]
+        },
+        description="Description of my tool",
+        module="my_module",
+        category="My Category",
+        version="1.0.0"
+    )
+```
 
-## 6. Relationship to GNN Documentation
+### Testing MCP Tools
 
-*   **GNN Language and Structure**: Documents like `doc/gnn_dsl_manual.md`, `doc/gnn_file_structure_doc.md`, and `doc/gnn_syntax.md` define the GNN "language" that the MCP tools operate on. The GNN files are the primary "resources."
-*   **GNN Tool Functionality**: The specific actions performed by the MCP tools (e.g., export formats, rendering targets, type-checking rules, resource metrics) are implicitly described by the GNN project's overall documentation (`doc/about_gnn.md`, `doc/gnn_implementation.md`, `doc/resource_metrics.md`, etc.).
-*   **Active Inference Context**: The broader purpose and application of GNN models, which these tools help manage, are detailed in documents like `doc/gnn_overview.md`, `doc/gnn_paper.md`, and `doc/gnn_llm_neurosymbolic_active_inference.md`.
+Use the CLI to test tools:
+```bash
+# Test tool execution
+python -m src.mcp.cli execute my_tool --params '{"param1": "value"}'
 
-## 7. Key Files and Directories in `src/mcp/`
+# Test tool info
+python -m src.mcp.cli info my_tool
+```
 
-*   `README.md` (this file): Overview of MCP integration.
-*   `mcp.py`: Core MCP server class, tool registration, request dispatching.
-*   `cli.py`: Command-line interface for MCP server and tools.
-*   `server_http.py`: HTTP server implementation for MCP.
-*   `server_stdio.py`: Standard I/O server implementation for MCP.
-*   `meta_mcp.py`: MCP tools for MCP server introspection.
-*   `model_context_protocol.md`: A copy or link to the general MCP specification document.
-*   `test_mcp.py`: Unit and integration tests for the MCP components.
+## Integration with External Clients
 
-By leveraging MCP, the GNN project significantly enhances its usability, interoperability, and potential for integration into sophisticated AI-driven research and development workflows. 
+### Claude Desktop
+Configure Claude Desktop to use the GNN MCP server:
+```json
+{
+  "mcpServers": {
+    "gnn": {
+      "command": "python",
+      "args": ["-m", "src.mcp.cli", "server", "--transport", "stdio"]
+    }
+  }
+}
+```
+
+### Other MCP Clients
+The server is compatible with any JSON-RPC 2.0 MCP client. Use the HTTP transport for network-based clients or stdio for local integration.
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Module Import Errors**
+   - Ensure all dependencies are installed
+   - Check Python path configuration
+   - Verify module structure
+
+2. **Tool Execution Failures**
+   - Check tool parameters and schemas
+   - Review error messages and logs
+   - Validate input data
+
+3. **Server Connection Issues**
+   - Verify transport configuration
+   - Check firewall settings for HTTP transport
+   - Ensure proper permissions
+
+### Debug Mode
+
+Enable verbose logging:
+```bash
+python -m src.mcp.cli --verbose list
+```
+
+### Log Files
+
+Check log files in the output directory:
+```bash
+ls -la output/logs/
+```
+
+## Contributing
+
+When contributing to the MCP implementation:
+
+1. Follow the established patterns for tool registration
+2. Add comprehensive error handling
+3. Include proper documentation and schemas
+4. Test with both stdio and HTTP transports
+5. Update this README for new features
+
+## References
+
+- [Model Context Protocol Specification](https://modelcontextprotocol.io/)
+- [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
+- [GNN Project Documentation](../doc/)
+- [MCP Integration Guide](../doc/mcp/gnn_mcp_model_context_protocol.md) 

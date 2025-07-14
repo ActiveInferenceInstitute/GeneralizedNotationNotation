@@ -29,7 +29,7 @@ class PipelineConfig:
     project_name: str = "GeneralizedNotationNotation"
     version: str = "1.0.0"
     base_output_dir: Path = Path("output")
-    base_target_dir: Path = Path("src/gnn/examples")
+    base_target_dir: Path = Path("input/gnn_files")
     log_level: str = "INFO"
     correlation_id_length: int = 8
     

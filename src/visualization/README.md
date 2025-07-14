@@ -33,7 +33,7 @@ python -m gnn.visualization path/to/gnn_file.md
 Process all GNN files in a directory:
 
 ```bash
-python -m gnn.visualization path/to/gnn_examples/
+python -m gnn.visualization input/gnn_files/
 ```
 
 Specify an output directory:

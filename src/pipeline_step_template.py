@@ -140,7 +140,7 @@ def main(parsed_args) -> int:
     step_config = config.get_step_config("X_step_name.py")  # TODO: Update step name
     
     # Set up paths
-    input_dir = getattr(parsed_args, 'target_dir', Path("src/gnn/examples"))
+    input_dir = getattr(parsed_args, 'target_dir', Path("input/gnn_files"))
     if isinstance(input_dir, str):
         input_dir = Path(input_dir)
     

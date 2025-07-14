@@ -21,7 +21,7 @@ The module provides a command-line interface for type checking GNN files:
 python -m type_checker path/to/gnn_file.md
 
 # Check all files in a directory
-python -m type_checker path/to/directory
+python -m type_checker input/gnn_files/
 
 # Recursively check all files in a directory and its subdirectories
 python -m type_checker path/to/directory --recursive

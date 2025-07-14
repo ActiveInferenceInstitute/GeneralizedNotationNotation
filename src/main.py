@@ -22,7 +22,7 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 13_sapf.py (Corresponds to sapf/ folder, generates SAPF (Sound As Pure Form) audio representations and sonifications of GNN models)
 
 Configuration:
-The pipeline uses a YAML configuration file located at input/config.yaml to configure
+The pipelinew uses a YAML configuration file located at input/config.yaml to configure
 all aspects of the pipeline execution. The input directory structure is:
 
 input/
@@ -274,9 +274,11 @@ def parse_arguments() -> PipelineArguments:
     
     # Resolve relative paths relative to input directory
     input_dir = Path("input")
-    # If target_dir is relative, make it relative to input directory
+    # If target_dir is relative, make it relative to input directory, but avoid double prefixing
     if not pipeline_args.target_dir.is_absolute():
-        pipeline_args.target_dir = input_dir / pipeline_args.target_dir
+        target_str = str(pipeline_args.target_dir)
+        if not target_str.startswith("input/"):
+            pipeline_args.target_dir = input_dir / pipeline_args.target_dir
     
     return pipeline_args
 

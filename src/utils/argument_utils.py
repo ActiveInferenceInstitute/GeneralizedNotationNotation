@@ -334,7 +334,7 @@ class ArgumentParser:
                     elif arg_name == 'estimate_resources':
                         setattr(parsed_args, arg_name, True)
                     elif arg_name.endswith('_dir'):
-                        setattr(parsed_args, arg_name, Path("output") if "output" in arg_name else Path("src/gnn/examples"))
+                        setattr(parsed_args, arg_name, Path("output") if "output" in arg_name else Path("input/gnn_files"))
                     elif arg_name == 'llm_timeout':
                         setattr(parsed_args, arg_name, 360)
                     elif arg_name == 'llm_tasks':
@@ -367,7 +367,7 @@ class ArgumentParser:
                 elif arg_name == 'estimate_resources':
                     setattr(fallback_args, arg_name, True)
                 elif arg_name.endswith('_dir'):
-                    setattr(fallback_args, arg_name, Path("output") if "output" in arg_name else Path("src/gnn/examples"))
+                    setattr(fallback_args, arg_name, Path("output") if "output" in arg_name else Path("input/gnn_files"))
                 elif arg_name == 'llm_timeout':
                     setattr(fallback_args, arg_name, 360)
                 elif arg_name == 'llm_tasks':
