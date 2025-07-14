@@ -33,7 +33,6 @@ The GNN team and community take all security vulnerabilities seriously. We appre
 **Primary Contact:**
 - **Email**: Send an email to `blanket@activeinference.institute`
 - **Subject Line**: Use "Security Vulnerability in GNN Project"
-- **Response Time**: Within 48 hours for initial acknowledgment
 
 **GitHub Security:**
 - **Platform**: [GitHub Security Advisories](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability)

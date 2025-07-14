@@ -53,6 +53,7 @@ t[1,type=int]         # Time step
 ## Connections
 D-s
 s-A
+s-s_prime
 A-o
 (s,u)-B
 B-s_prime
@@ -60,8 +61,6 @@ C>G
 E>π
 G>π
 π-u
-G=ExpectedFreeEnergy
-t=Time
 
 ## InitialParameterization
 # A: 3 observations x 3 hidden states. Identity mapping (each state deterministically produces a unique observation).
@@ -85,7 +84,7 @@ C={(0.0, 0.0, 1.0)}
 D={(0.33333, 0.33333, 0.33333)}
 
 # E: 3 actions. Uniform habit (no initial preference for any action).
-E={(0.0, 0.0, 0.0)}
+E={(0.33333, 0.33333, 0.33333)}
 
 ## Equations
 # Standard Active Inference update equations for POMDPs:
@@ -109,7 +108,9 @@ s_prime=NextHiddenState
 o=Observation
 π=PolicyVector # Distribution over actions
 u=Action       # Chosen action
+F=VariationalFreeEnergy
 G=ExpectedFreeEnergy
+t=Time
 
 ## ModelParameters
 num_hidden_states: 3  # s[3]

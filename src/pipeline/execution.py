@@ -9,29 +9,62 @@ monitoring performance, and managing subprocess execution with enhanced visual l
 import os
 import sys
 import subprocess
-import time
-import logging
-import datetime
-from pathlib import Path
-from typing import Dict, List, Tuple, Any, Optional, Union
 import argparse
-
+import logging
+import traceback
+import re
+import datetime
+import json
+import time
+import signal
+from pathlib import Path
+from typing import TypedDict, List, Union, Dict, Any, cast, Optional, Tuple
 try:
     import psutil
     PSUTIL_AVAILABLE = True
 except ImportError:
     PSUTIL_AVAILABLE = False
+import resource
+
+# Fix relative import issue by adding src to path if needed
+current_dir = Path(__file__).resolve().parent
+src_dir = current_dir.parent
+if str(src_dir) not in sys.path:
+    sys.path.insert(0, str(src_dir))
 
 from .config import (
     get_pipeline_config,
     get_output_dir_for_script
 )
 
-from ..utils.logging_utils import (
-    log_step_start, log_step_success, log_step_warning, log_step_error,
-    log_pipeline_summary, reset_progress_tracker, get_progress_summary,
-    VisualLoggingEnhancer, performance_tracker, EnhancedPipelineLogger
-)
+# Now import from utils with proper path handling
+try:
+    from utils.logging_utils import (
+        log_step_start, log_step_success, log_step_warning, log_step_error,
+        log_pipeline_summary, reset_progress_tracker, get_progress_summary,
+        VisualLoggingEnhancer, performance_tracker, EnhancedPipelineLogger
+    )
+except ImportError:
+    # Fallback for when utils is not available
+    def log_step_start(*args, **kwargs):
+        pass
+    def log_step_success(*args, **kwargs):
+        pass
+    def log_step_warning(*args, **kwargs):
+        pass
+    def log_step_error(*args, **kwargs):
+        pass
+    def log_pipeline_summary(*args, **kwargs):
+        pass
+    def reset_progress_tracker(*args, **kwargs):
+        pass
+    def get_progress_summary(*args, **kwargs):
+        return {}
+    class VisualLoggingEnhancer:
+        pass
+    class EnhancedPipelineLogger:
+        pass
+    performance_tracker = None
 
 logger = logging.getLogger(__name__)
 

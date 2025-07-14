@@ -81,32 +81,48 @@ except ImportError:
     PSUTIL_AVAILABLE = False
 import resource
 
+# Fix import path issues by ensuring src directory is in Python path
+current_file = Path(__file__).resolve()
+current_dir = current_file.parent
+if str(current_dir) not in sys.path:
+    sys.path.insert(0, str(current_dir))
+
 # Import the centralized pipeline utilities
-from pipeline import (
-    get_pipeline_config,
-    STEP_METADATA,
-    get_output_dir_for_script
-)
-from pipeline.execution import execute_pipeline_step
+try:
+    from pipeline import (
+        get_pipeline_config,
+        STEP_METADATA,
+        get_output_dir_for_script
+    )
+    from pipeline.execution import execute_pipeline_step
+except ImportError as e:
+    print(f"Error importing pipeline modules: {e}")
+    print("Please ensure you're running from the project root directory.")
+    sys.exit(1)
 
 # Import the streamlined utilities
-from utils import (
-    setup_main_logging,
-    log_step_start,
-    log_step_success, 
-    log_step_warning,
-    log_step_error,
-    validate_output_directory,
-    EnhancedArgumentParser,
-    PipelineArguments,
-    PipelineLogger,
-    performance_tracker,
-    validate_pipeline_dependencies,
-    UTILS_AVAILABLE,
-    load_config,
-    GNNPipelineConfig
-)
-from utils.argument_utils import build_enhanced_step_command_args
+try:
+    from utils import (
+        setup_main_logging,
+        log_step_start,
+        log_step_success, 
+        log_step_warning,
+        log_step_error,
+        validate_output_directory,
+        EnhancedArgumentParser,
+        PipelineArguments,
+        PipelineLogger,
+        performance_tracker,
+        validate_pipeline_dependencies,
+        UTILS_AVAILABLE,
+        load_config,
+        GNNPipelineConfig
+    )
+    from utils.argument_utils import build_enhanced_step_command_args
+except ImportError as e:
+    print(f"Error importing utility modules: {e}")
+    print("Please ensure you're running from the project root directory.")
+    sys.exit(1)
 
 # --- Logger Setup ---
 logger = logging.getLogger("GNN_Pipeline")
