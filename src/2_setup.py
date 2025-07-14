@@ -187,13 +187,16 @@ def list_installed_packages(verbose: bool = False, output_dir: str = None):
             setup_dir.mkdir(parents=True, exist_ok=True)
             packages_file = setup_dir / "installed_packages.json"
             
+            # Convert Path objects to strings for JSON serialization
+            json_data = {
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "virtual_env": str(venv_info["venv_path"]) if venv_info["venv_path"] else None,
+                "python_executable": str(venv_info["python_executable"]) if venv_info["python_executable"] else None,
+                "packages": package_dict
+            }
+            
             with open(packages_file, 'w') as f:
-                json.dump({
-                    "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                    "virtual_env": venv_info["venv_path"],
-                    "python_executable": venv_info["python_executable"],
-                    "packages": package_dict
-                }, f, indent=2)
+                json.dump(json_data, f, indent=2)
             
             logger.debug(f"Package list saved to: {packages_file}")
         

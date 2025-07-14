@@ -29,7 +29,11 @@ class GNNExecutor:
         Args:
             output_dir: Directory for execution outputs
         """
-        self.output_dir = Path(output_dir) if output_dir else Path.cwd() / "execution_results"
+        if output_dir:
+            self.output_dir = Path(output_dir)
+        else:
+            # Default to a subdirectory within the current working directory
+            self.output_dir = Path.cwd() / "output" / "execution_results"
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.execution_log = []
     

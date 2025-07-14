@@ -5,12 +5,14 @@ This module provides the core functionality for validating GNN files
 to ensure they adhere to the specification and are correctly typed.
 """
 
-import os
 import re
-from pathlib import Path
-from typing import Dict, List, Set, Tuple, Any, Optional, Union
 import logging
-import argparse
+import json
+import time
+from pathlib import Path
+from typing import Dict, List, Any, Optional, Union, Tuple
+from datetime import datetime
+import traceback
 
 # Configure logging to avoid format string issues
 logging.basicConfig(
@@ -19,7 +21,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
-from src.visualization.parser import GNNParser
+# Import the GNN parser for file parsing
+from visualization.parser import GNNParser
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)
@@ -132,11 +135,12 @@ class GNNTypeChecker:
             file_count += 1
             file_str = str(file_path)
             logger.debug(f"Processing file in directory: {file_str}")
-            is_valid, errors, warnings = self.check_file(file_str)
+            is_valid, errors, warnings, details = self.check_file(file_str)
             results[file_str] = {
                 "is_valid": is_valid,
                 "errors": errors,
-                "warnings": warnings
+                "warnings": warnings,
+                "details": details
             }
         logger.info(f"Finished checking directory {dir_path}. Processed {file_count} files.")
         return results
@@ -547,14 +551,23 @@ class GNNTypeChecker:
         """
         logger.info(f"Generating type check report: {report_md_filename} in {output_dir_base}")
         report_parts = ["# GNN Type Checker Report"]
+        report_parts.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        report_parts.append("")
+        
         valid_count = 0
         invalid_count = 0
+        total_errors = 0
+        total_warnings = 0
 
         # Resolve project_root once
         actual_project_root = None
         if project_root_path:
             actual_project_root = Path(project_root_path).resolve()
 
+        # Summary section
+        report_parts.append("## 📊 Summary")
+        report_parts.append("")
+        
         for file_path_str, result in results.items():
             file_path_obj = Path(file_path_str).resolve()
             display_path = file_path_str # Default to original string if not made relative
@@ -566,29 +579,102 @@ class GNNTypeChecker:
             
             if result["is_valid"]:
                 valid_count += 1
-                report_parts.append(f"## {file_path_obj.name}: ✅ VALID")
-                report_parts.append(f"Path: {display_path}")
-                if result.get("warnings"):
-                    report_parts.append("Warnings:")
-                    for warning in result["warnings"]:
-                        report_parts.append(f"  - {warning}")
             else:
                 invalid_count += 1
-                report_parts.append(f"## {file_path_obj.name}: ❌ INVALID")
-                report_parts.append(f"Path: {display_path}")
-                if result.get("errors"):
-                    report_parts.append("Errors:")
-                    for error in result["errors"]:
-                        report_parts.append(f"  - {error}")
+                total_errors += len(result.get("errors", []))
+            
+            total_warnings += len(result.get("warnings", []))
+        
+        report_parts.append(f"- **Total Files Checked:** {len(results)}")
+        report_parts.append(f"- **Valid Files:** {valid_count} ✅")
+        report_parts.append(f"- **Invalid Files:** {invalid_count} ❌")
+        report_parts.append(f"- **Total Errors:** {total_errors}")
+        report_parts.append(f"- **Total Warnings:** {total_warnings}")
+        report_parts.append(f"- **Success Rate:** {(valid_count/len(results)*100):.1f}%")
+        report_parts.append("")
+        
+        # Detailed file analysis
+        report_parts.append("## 📁 File Analysis")
+        report_parts.append("")
+
+        for file_path_str, result in results.items():
+            file_path_obj = Path(file_path_str).resolve()
+            display_path = file_path_str # Default to original string if not made relative
+            if actual_project_root:
+                try:
+                    display_path = str(file_path_obj.relative_to(actual_project_root))
+                except ValueError:
+                    display_path = file_path_obj.name # Fallback to filename if not in project root
+            
+            if result["is_valid"]:
+                report_parts.append(f"### {file_path_obj.name}: ✅ VALID")
+                report_parts.append(f"**Path:** `{display_path}`")
+                
+                # Add detailed analysis if available
+                if "details" in result and result["details"]:
+                    details = result["details"]
+                    
+                    # Variable analysis
+                    if "variable_analysis" in details:
+                        var_analysis = details["variable_analysis"]
+                        report_parts.append(f"**Variables:** {var_analysis.get('variable_count', 0)}")
+                        if var_analysis.get('type_distribution'):
+                            report_parts.append("**Type Distribution:**")
+                            for var_type, count in var_analysis['type_distribution'].items():
+                                report_parts.append(f"  - {var_type}: {count}")
+                    
+                    # Connection analysis
+                    if "connection_analysis" in details:
+                        conn_analysis = details["connection_analysis"]
+                        report_parts.append(f"**Connections:** {conn_analysis.get('total_connections', 0)}")
+                        if conn_analysis.get('connection_types'):
+                            report_parts.append("**Connection Types:**")
+                            for conn_type, count in conn_analysis['connection_types'].items():
+                                report_parts.append(f"  - {conn_type}: {count}")
+                    
+                    # Model complexity
+                    if "model_complexity" in details:
+                        complexity = details["model_complexity"]
+                        report_parts.append(f"**Model Complexity:**")
+                        report_parts.append(f"  - Total Parameters: {complexity.get('total_parameters', 'N/A')}")
+                        report_parts.append(f"  - Computational Complexity: {complexity.get('computational_complexity', 'N/A')}")
+                
                 if result.get("warnings"):
-                    report_parts.append("Warnings:")
+                    report_parts.append("**Warnings:**")
                     for warning in result["warnings"]:
-                        report_parts.append(f"  - {warning}")
+                        report_parts.append(f"  - ⚠️ {warning}")
+            else:
+                report_parts.append(f"### {file_path_obj.name}: ❌ INVALID")
+                report_parts.append(f"**Path:** `{display_path}`")
+                if result.get("errors"):
+                    report_parts.append("**Errors:**")
+                    for error in result["errors"]:
+                        report_parts.append(f"  - ❌ {error}")
+                if result.get("warnings"):
+                    report_parts.append("**Warnings:**")
+                    for warning in result["warnings"]:
+                        report_parts.append(f"  - ⚠️ {warning}")
+            
             report_parts.append("")  # Add a blank line for spacing
 
-        summary = f"Checked {len(results)} files, {valid_count} valid, {invalid_count} invalid"
-        report_parts.append(summary)
+        # Overall summary
+        report_parts.append("## 🎯 Overall Assessment")
         report_parts.append("")
+        
+        if valid_count == len(results):
+            report_parts.append("🎉 **All files passed validation successfully!**")
+        elif valid_count > 0:
+            report_parts.append(f"✅ **{valid_count} files are valid**")
+            report_parts.append(f"❌ **{invalid_count} files have issues**")
+        else:
+            report_parts.append("❌ **All files have validation issues**")
+        
+        if total_warnings > 0:
+            report_parts.append(f"⚠️ **{total_warnings} warnings found** - Review recommended")
+        
+        report_parts.append("")
+        report_parts.append("---")
+        report_parts.append(f"*Report generated by GNN Type Checker v1.0*")
 
         full_report_str = "\n".join(report_parts)
         
