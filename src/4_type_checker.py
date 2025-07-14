@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 """
-GNN Processing Pipeline - Step 4: GNN Type Checker
+GNN Processing Pipeline - Step 4: Type Checker
 
 This script validates GNN files for syntax correctness and type consistency.
 
 Usage:
-    python 4_gnn_type_checker.py [options]
+    python 4_type_checker.py [options]
     (Typically called by main.py)
 """
 
@@ -33,29 +33,29 @@ from pipeline import (
 )
 
 # Initialize logger for this step
-logger = setup_step_logging("4_gnn_type_checker", verbose=False)
+logger = setup_step_logging("4_type_checker", verbose=False)
 
 # Import type checker functionality
 try:
-    from gnn_type_checker import checker
-    from gnn_type_checker.resource_estimator import GNNResourceEstimator as ResourceEstimator
-    logger.debug("Successfully imported GNN type checker modules")
+    from type_checker import checker
+    from type_checker.resource_estimator import GNNResourceEstimator as ResourceEstimator
+    logger.debug("Successfully imported type checker modules")
 except ImportError as e:
-    log_step_error(logger, f"Could not import GNN type checker: {e}")
+    log_step_error(logger, f"Could not import type checker: {e}")
     checker = None
     ResourceEstimator = None
 
 def run_type_checking(target_dir: Path, output_dir: Path, recursive: bool = False, 
                      strict: bool = False, estimate_resources: bool = False):
-    """Run GNN type checking and validation."""
-    log_step_start(logger, f"Running GNN type checking on: {target_dir}")
+    """Run type checking and validation."""
+    log_step_start(logger, f"Running type checking on: {target_dir}")
     
     if not checker:
-        log_step_error(logger, "GNN type checker not available")
+        log_step_error(logger, "Type checker not available")
         return False
     
     # Use centralized output directory configuration
-    type_check_output_dir = get_output_dir_for_script("4_gnn_type_checker.py", output_dir)
+    type_check_output_dir = get_output_dir_for_script("4_type_checker.py", output_dir)
     
     try:
         # Create type checker instance
@@ -107,10 +107,10 @@ def run_type_checking(target_dir: Path, output_dir: Path, recursive: bool = Fals
         return False
 
 def main(parsed_args: argparse.Namespace):
-    """Main function for GNN type checking."""
+    """Main function for type checking."""
     
     # Log step metadata from centralized configuration
-    step_info = STEP_METADATA.get("4_gnn_type_checker.py", {})
+    step_info = STEP_METADATA.get("4_type_checker.py", {})
     log_step_start(logger, f"{step_info.get('description', 'GNN syntax and type validation')}")
     
     # Update logger verbosity if needed
@@ -127,16 +127,16 @@ def main(parsed_args: argparse.Namespace):
     )
     
     if success:
-        log_step_success(logger, "GNN type checking completed successfully")
+        log_step_success(logger, "Type checking completed successfully")
         return 0
     else:
-        log_step_error(logger, "GNN type checking failed")
+        log_step_error(logger, "Type checking failed")
         return 1
 
 if __name__ == '__main__':
     # Use centralized argument parsing
     if UTILS_AVAILABLE:
-        parsed_args = EnhancedArgumentParser.parse_step_arguments("4_gnn_type_checker")
+        parsed_args = EnhancedArgumentParser.parse_step_arguments("4_type_checker")
     else:
         # Fallback argument parsing
         parser = argparse.ArgumentParser(description="GNN syntax and type validation")

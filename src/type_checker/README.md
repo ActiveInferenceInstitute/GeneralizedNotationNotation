@@ -1,4 +1,4 @@
-# GNN Type Checker
+# Type Checker
 
 This module provides functionality for type checking and validating GNN files against the GNN specification.
 
@@ -18,19 +18,19 @@ The module provides a command-line interface for type checking GNN files:
 
 ```bash
 # Check a single file
-python -m gnn_type_checker path/to/gnn_file.md
+python -m type_checker path/to/gnn_file.md
 
 # Check all files in a directory
-python -m gnn_type_checker path/to/directory
+python -m type_checker path/to/directory
 
 # Recursively check all files in a directory and its subdirectories
-python -m gnn_type_checker path/to/directory --recursive
+python -m type_checker path/to/directory --recursive
 
 # Enable strict type checking mode
-python -m gnn_type_checker path/to/gnn_file.md --strict
+python -m type_checker path/to/gnn_file.md --strict
 
 # Save report to a file
-python -m gnn_type_checker path/to/gnn_file.md -o report.md
+python -m type_checker path/to/gnn_file.md -o report.md
 ```
 
 ### Programmatic Usage
@@ -38,7 +38,7 @@ python -m gnn_type_checker path/to/gnn_file.md -o report.md
 The module can also be used programmatically:
 
 ```python
-from gnn_type_checker import GNNTypeChecker
+from type_checker import GNNTypeChecker
 
 # Create a type checker
 checker = GNNTypeChecker(strict_mode=True)

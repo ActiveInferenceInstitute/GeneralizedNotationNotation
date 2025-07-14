@@ -88,6 +88,13 @@ def render_gnn_spec(
         # Render to multiple ActiveInference.jl scripts with analysis suite
         return render_gnn_to_activeinference_combined(gnn_spec, output_directory, options)
         
+    elif target == "jax":
+        from .jax import render_gnn_to_jax
+        return render_gnn_to_jax(gnn_spec, Path(output_directory) / "jax_model.py", options)
+    elif target == "jax_pomdp":
+        from .jax import render_gnn_to_jax_pomdp
+        return render_gnn_to_jax_pomdp(gnn_spec, Path(output_directory) / "jax_pomdp.py", options)
+        
     else:
         error_msg = f"Unsupported target platform: {target}"
         logger.error(error_msg)
@@ -98,7 +105,7 @@ def main(cli_args=None):
     parser = argparse.ArgumentParser(description="Render GNN specifications to various target platforms")
     parser.add_argument("gnn_file", help="Path to the GNN specification file")
     parser.add_argument("output_dir", help="Output directory for rendered files")
-    parser.add_argument("target", choices=["pymdp", "rxinfer_toml", "discopy", "discopy_jax", "discopy_combined", "activeinference_jl", "activeinference_combined"], 
+    parser.add_argument("target", choices=["pymdp", "rxinfer_toml", "discopy", "discopy_jax", "discopy_combined", "activeinference_jl", "activeinference_combined", "jax", "jax_pomdp"], 
                        default="pymdp", help="Target platform")
     parser.add_argument("--output_filename", help="Base filename for the output (without extension)")
     parser.add_argument("--debug", "--verbose", action="store_true", help="Enable debug logging")

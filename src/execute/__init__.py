@@ -13,10 +13,14 @@ from . import pymdp
 from . import rxinfer
 from . import discopy
 from . import activeinference_jl
+from . import jax
 
 __all__ = [
     'pymdp',
     'rxinfer', 
     'discopy',
     'activeinference_jl'
+]
+__all__ += [
+    'jax'
 ] 

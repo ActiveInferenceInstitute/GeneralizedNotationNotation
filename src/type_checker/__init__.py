@@ -1,5 +1,5 @@
 """
-GNN Type Checker Module
+Type Checker Module
 
 This module provides functionality for validating GNN files to ensure 
 they adhere to the specification and are correctly typed.

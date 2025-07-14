@@ -419,6 +419,77 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
         logger.error(f"❌ Error while getting package versions: {e}")
         return {}
 
+def install_jax_and_test(verbose: bool = False) -> bool:
+    """
+    Ensure JAX, Optax, and Flax are installed and working. Detect hardware and install the correct JAX version if needed.
+    After install, run a self-test: import JAX, print device info, check Optax/Flax, log results, and raise errors if not successful.
+    """
+    import importlib.util
+    import platform
+    import sys
+    import subprocess
+    import logging
+    logger = logging.getLogger(__name__)
+    try:
+        import jax
+        import optax
+        import flax
+        logger.info(f"JAX version: {jax.__version__}")
+        logger.info(f"Optax version: {optax.__version__}")
+        logger.info(f"Flax version: {flax.__version__}")
+        devices = jax.devices()
+        logger.info(f"JAX devices: {[str(d) for d in devices]}")
+        return True
+    except ImportError:
+        logger.info("JAX/Optax/Flax not found, attempting installation...")
+        # Detect hardware
+        cuda = False
+        tpu = False
+        try:
+            import torch
+            cuda = torch.cuda.is_available()
+        except ImportError:
+            pass
+        # Try to detect NVIDIA GPU via nvidia-smi
+        if not cuda:
+            try:
+                result = subprocess.run(["nvidia-smi"], capture_output=True, text=True)
+                if result.returncode == 0:
+                    cuda = True
+            except Exception:
+                pass
+        # Install JAX for the right platform
+        pip = sys.executable + " -m pip"
+        if tpu:
+            jax_cmd = f'{pip} install --upgrade "jax[tpu]" -f https://storage.googleapis.com/jax-releases/libtpu_releases.html'
+        elif cuda:
+            jax_cmd = f'{pip} install --upgrade "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html'
+        else:
+            jax_cmd = f'{pip} install --upgrade "jax[cpu]"'
+        optax_cmd = f'{pip} install --upgrade optax>=0.1.7'
+        flax_cmd = f'{pip} install --upgrade flax>=0.7.0'
+        scipy_cmd = f'{pip} install --upgrade scipy>=1.10.0'
+        for cmd in [jax_cmd, optax_cmd, flax_cmd, scipy_cmd]:
+            logger.info(f"Running: {cmd}")
+            subprocess.run(cmd, shell=True, check=True)
+        # Try again
+        try:
+            import jax
+            import optax
+            import flax
+            logger.info(f"JAX version: {jax.__version__}")
+            logger.info(f"Optax version: {optax.__version__}")
+            logger.info(f"Flax version: {flax.__version__}")
+            devices = jax.devices()
+            logger.info(f"JAX devices: {[str(d) for d in devices]}")
+            return True
+        except Exception as e:
+            logger.error(f"JAX/Optax/Flax install failed: {e}")
+            return False
+    except Exception as e:
+        logger.error(f"JAX/Optax/Flax check failed: {e}")
+        return False
+
 # --- Callable Main Function ---
 def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: bool = False):
     """
@@ -487,6 +558,11 @@ def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: 
         deps_duration = time.time() - deps_start
         logger.info(f"✅ Dependencies installed in {deps_duration:.1f}s")
         sys.stdout.flush()
+        
+        # After dependency install, ensure JAX/Optax/Flax are present and working
+        if not install_jax_and_test(verbose=verbose):
+            logger.error("JAX/Optax/Flax installation or self-test failed. Aborting setup.")
+            raise RuntimeError("JAX/Optax/Flax installation or self-test failed.")
         
         total_duration = time.time() - start_time
         logger.info("\n🎉 Setup completed successfully!")

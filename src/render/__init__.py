@@ -36,6 +36,13 @@ except ImportError:
     render_gnn_to_activeinference_jl = None
     render_gnn_to_activeinference_combined = None
 
+try:
+    from .jax import render_gnn_to_jax, render_gnn_to_jax_pomdp, render_gnn_to_jax_combined
+except ImportError:
+    render_gnn_to_jax = None
+    render_gnn_to_jax_pomdp = None
+    render_gnn_to_jax_combined = None
+
 __all__ = [
     'render_gnn_spec',  # Main render function
     'main',             # CLI entry point
@@ -46,4 +53,9 @@ __all__ = [
     'render_gnn_to_discopy_combined',  # Combined DisCoPy renderer
     'render_gnn_to_activeinference_jl',  # ActiveInference.jl renderer
     'render_gnn_to_activeinference_combined'  # Combined ActiveInference.jl renderer
+]
+__all__ += [
+    'render_gnn_to_jax',
+    'render_gnn_to_jax_pomdp',
+    'render_gnn_to_jax_combined'
 ] 
