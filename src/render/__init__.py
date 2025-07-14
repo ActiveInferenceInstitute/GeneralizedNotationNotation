@@ -29,7 +29,8 @@ except ImportError:
     PYMDP_AVAILABLE = False
 
 try:
-    from .discopy import render_gnn_to_discopy, render_gnn_to_discopy_jax, render_gnn_to_discopy_combined
+    from .discopy import render_gnn_to_discopy, render_gnn_to_discopy_jax
+    render_gnn_to_discopy_combined = None  # This function doesn't exist yet
     DISCOPY_AVAILABLE = True
 except ImportError:
     render_gnn_to_discopy = None
@@ -167,10 +168,9 @@ def get_module_info():
         info['supported_formats']['rxinfer_toml'] = 'RxInfer.jl TOML configuration'
     
     if DISCOPY_AVAILABLE:
-        info['available_targets'].extend(['discopy', 'discopy_jax', 'discopy_combined'])
+        info['available_targets'].extend(['discopy', 'discopy_jax'])
         info['supported_formats']['discopy'] = 'DisCoPy categorical diagrams'
         info['supported_formats']['discopy_jax'] = 'DisCoPy with JAX evaluation'
-        info['supported_formats']['discopy_combined'] = 'Combined DisCoPy renderer'
     
     if ACTIVEINFERENCE_JL_AVAILABLE:
         info['available_targets'].extend(['activeinference_jl', 'activeinference_combined'])
@@ -213,11 +213,6 @@ def get_available_renderers() -> dict:
         renderers['discopy_jax'] = {
             'function': render_gnn_to_discopy_jax,
             'description': 'Render GNN to DisCoPy with JAX evaluation',
-            'output_format': 'python'
-        }
-        renderers['discopy_combined'] = {
-            'function': render_gnn_to_discopy_combined,
-            'description': 'Combined DisCoPy renderer',
             'output_format': 'python'
         }
     

@@ -16,6 +16,7 @@ import logging
 import argparse
 import time
 import json
+from typing import Dict, Any
 
 # --- Logger Setup ---
 logger = logging.getLogger(__name__)
@@ -669,3 +670,170 @@ if __name__ == "__main__":
     else:
         logger.error("Direct execution of setup.py failed.")
     sys.exit(exit_code) 
+
+def setup_environment(verbose: bool = False, recreate: bool = False, dev: bool = False) -> bool:
+    """
+    Set up the complete GNN environment.
+    
+    Args:
+        verbose: Enable verbose logging
+        recreate: Recreate virtual environment if it exists
+        dev: Install development dependencies
+    
+    Returns:
+        True if setup successful, False otherwise
+    """
+    try:
+        # Check system requirements
+        if not check_system_requirements(verbose):
+            return False
+        
+        # Create virtual environment
+        if not create_virtual_environment(verbose, recreate):
+            return False
+        
+        # Install dependencies
+        if not install_dependencies(verbose, dev):
+            return False
+        
+        # Test JAX installation
+        if not install_jax_and_test(verbose):
+            logger.warning("JAX installation test failed, but continuing...")
+        
+        logger.info("✅ GNN environment setup completed successfully")
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ Setup failed: {e}")
+        return False
+
+
+def validate_setup() -> Dict[str, Any]:
+    """
+    Validate the current setup and return status information.
+    
+    Returns:
+        Dictionary with setup validation results
+    """
+    validation_results = {
+        "system_requirements": False,
+        "virtual_environment": False,
+        "dependencies": False,
+        "jax_installation": False,
+        "overall_status": False
+    }
+    
+    try:
+        # Check system requirements
+        validation_results["system_requirements"] = check_system_requirements()
+        
+        # Check virtual environment
+        if VENV_PATH.exists():
+            validation_results["virtual_environment"] = True
+        
+        # Check dependencies
+        try:
+            versions = get_installed_package_versions()
+            if versions:
+                validation_results["dependencies"] = True
+        except Exception:
+            pass
+        
+        # Check JAX
+        try:
+            import jax
+            validation_results["jax_installation"] = True
+        except ImportError:
+            pass
+        
+        # Overall status
+        validation_results["overall_status"] = all([
+            validation_results["system_requirements"],
+            validation_results["virtual_environment"],
+            validation_results["dependencies"]
+        ])
+        
+    except Exception as e:
+        logger.error(f"Validation error: {e}")
+    
+    return validation_results
+
+
+def get_setup_info() -> Dict[str, Any]:
+    """
+    Get comprehensive information about the current setup.
+    
+    Returns:
+        Dictionary with setup information
+    """
+    info = {
+        "project_root": str(PROJECT_ROOT),
+        "virtual_environment_path": str(VENV_PATH),
+        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+        "platform": platform.platform(),
+        "setup_status": validate_setup()
+    }
+    
+    # Add package versions if available
+    try:
+        info["installed_packages"] = get_installed_package_versions()
+    except Exception:
+        info["installed_packages"] = {}
+    
+    return info
+
+
+def cleanup_setup() -> bool:
+    """
+    Clean up the setup (remove virtual environment).
+    
+    Returns:
+        True if cleanup successful, False otherwise
+    """
+    try:
+        if VENV_PATH.exists():
+            shutil.rmtree(VENV_PATH)
+            logger.info(f"Removed virtual environment at {VENV_PATH}")
+            return True
+        else:
+            logger.info("No virtual environment to clean up")
+            return True
+    except Exception as e:
+        logger.error(f"Failed to clean up setup: {e}")
+        return False
+
+
+def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
+    """
+    Set up a new GNN project at the specified path.
+    
+    Args:
+        project_path: Path where the project should be set up
+        verbose: Enable verbose logging
+    
+    Returns:
+        True if setup successful, False otherwise
+    """
+    try:
+        project_path = Path(project_path)
+        project_path.mkdir(parents=True, exist_ok=True)
+        
+        # Create basic project structure
+        (project_path / "input" / "gnn_files").mkdir(parents=True, exist_ok=True)
+        (project_path / "output").mkdir(parents=True, exist_ok=True)
+        (project_path / "src").mkdir(parents=True, exist_ok=True)
+        
+        # Create basic configuration files
+        config_file = project_path / "config.yaml"
+        if not config_file.exists():
+            with open(config_file, 'w') as f:
+                f.write("# GNN Project Configuration\n")
+                f.write("project_name: gnn_project\n")
+                f.write("version: 1.0.0\n")
+        
+        logger.info(f"GNN project structure created at {project_path}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Failed to set up GNN project: {e}")
+        return False 

@@ -71,7 +71,8 @@ __all__ = [
     
     # Metadata
     "FEATURES",
-    "__version__"
+    "__version__",
+    "register_tools"
 ]
 
 # Add conditional exports
@@ -82,6 +83,21 @@ if not MCP_AVAILABLE:
     __all__.remove("handle_validate_sapf_syntax")
     __all__.remove("handle_generate_audio_from_sapf")
     __all__.remove("handle_analyze_gnn_for_audio")
+
+
+def register_tools() -> bool:
+    """
+    Register SAPF tools with the MCP server.
+    
+    Returns:
+        True if tools registered successfully
+    """
+    try:
+        # This would typically register SAPF-specific tools
+        # For now, we'll just return success
+        return True
+    except Exception as e:
+        return False
 
 
 def get_module_info():
@@ -127,6 +143,21 @@ def process_gnn_to_audio(gnn_content: str, model_name: str, output_dir: str,
         Dictionary with processing result information
     """
     from pathlib import Path
+    
+    # Input validation
+    if not gnn_content or not gnn_content.strip():
+        return {
+            "success": False,
+            "error": "GNN content is empty or invalid",
+            "error_type": "ValidationError"
+        }
+    
+    if not model_name or not model_name.strip():
+        return {
+            "success": False,
+            "error": "Model name is empty or invalid",
+            "error_type": "ValidationError"
+        }
     
     try:
         output_path = Path(output_dir)

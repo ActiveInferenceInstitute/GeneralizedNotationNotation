@@ -548,3 +548,241 @@ def execute_pipeline_steps(scripts: List[Tuple[int, str]], python_executable: st
     )
     
     return summary 
+
+def run_pipeline(target_dir: str, output_dir: str, steps: Optional[List[str]] = None) -> Dict[str, Any]:
+    """
+    Run the GNN pipeline with specified parameters.
+    
+    Args:
+        target_dir: Directory containing GNN files
+        output_dir: Directory for pipeline outputs
+        steps: List of step numbers to run (e.g., ['1', '2', '3'])
+    
+    Returns:
+        Dictionary with pipeline execution results
+    """
+    try:
+        from pathlib import Path
+        import sys
+        
+        # Convert paths to Path objects
+        target_path = Path(target_dir)
+        output_path = Path(output_dir)
+        
+        # Ensure directories exist
+        target_path.mkdir(parents=True, exist_ok=True)
+        output_path.mkdir(parents=True, exist_ok=True)
+        
+        # Find Python executable
+        python_executable = sys.executable
+        
+        # Create mock args object
+        class MockArgs:
+            def __init__(self):
+                self.target_dir = str(target_path)
+                self.output_dir = str(output_path)
+                self.verbose = True
+                self.recursive = True
+                self.strict = False
+                self.estimate_resources = True
+        
+        args = MockArgs()
+        
+        # Get all available scripts
+        src_dir = Path(__file__).parent.parent
+        scripts = []
+        for script_file in src_dir.glob("*.py"):
+            if script_file.name.startswith(("1_", "2_", "3_", "4_", "5_", "6_", "7_", "8_", "9_", "10_", "11_", "12_", "13_")):
+                step_num = int(script_file.name.split("_")[0])
+                scripts.append((step_num, script_file.name))
+        
+        # Sort by step number
+        scripts.sort(key=lambda x: x[0])
+        
+        # Filter by requested steps
+        if steps:
+            requested_steps = set(int(s) for s in steps)
+            scripts = [(num, name) for num, name in scripts if num in requested_steps]
+        
+        # Execute pipeline
+        results = execute_pipeline_steps(scripts, python_executable, target_path, output_path, args, logger)
+        
+        return {
+            "success": True,
+            "target_dir": str(target_path),
+            "output_dir": str(output_path),
+            "steps_executed": len(scripts),
+            "results": results
+        }
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
+
+
+def get_pipeline_status() -> Dict[str, Any]:
+    """
+    Get the current status of the pipeline.
+    
+    Returns:
+        Dictionary with pipeline status information
+    """
+    try:
+        from .config import get_pipeline_config, STEP_METADATA
+        
+        config = get_pipeline_config()
+        
+        status = {
+            "pipeline_version": "1.0.0",
+            "total_steps": len(STEP_METADATA),
+            "available_steps": [],
+            "configuration": config
+        }
+        
+        # Add step information
+        for step_num, step_info in STEP_METADATA.items():
+            status["available_steps"].append({
+                "step_number": step_num,
+                "name": step_info.get("name", f"Step {step_num}"),
+                "description": step_info.get("description", ""),
+                "required": step_info.get("required", False),
+                "module": step_info.get("module", "")
+            })
+        
+        return status
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
+
+
+def validate_pipeline_config() -> Dict[str, Any]:
+    """
+    Validate the pipeline configuration.
+    
+    Returns:
+        Dictionary with validation results
+    """
+    try:
+        from .config import get_pipeline_config, STEP_METADATA
+        
+        config = get_pipeline_config()
+        validation_results = {
+            "config_valid": True,
+            "missing_configs": [],
+            "invalid_configs": [],
+            "warnings": []
+        }
+        
+        # Check required configuration fields
+        required_fields = ["output_base_dir", "log_level"]
+        for field in required_fields:
+            if field not in config:
+                validation_results["missing_configs"].append(field)
+                validation_results["config_valid"] = False
+        
+        # Check step metadata
+        if not STEP_METADATA:
+            validation_results["warnings"].append("No step metadata found")
+        
+        # Check output directory
+        output_dir = config.get("output_base_dir")
+        if output_dir:
+            from pathlib import Path
+            output_path = Path(output_dir)
+            if not output_path.exists():
+                validation_results["warnings"].append(f"Output directory does not exist: {output_dir}")
+        
+        return validation_results
+        
+    except Exception as e:
+        return {
+            "config_valid": False,
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
+
+
+def get_pipeline_info() -> Dict[str, Any]:
+    """
+    Get comprehensive information about the pipeline.
+    
+    Returns:
+        Dictionary with pipeline information
+    """
+    info = {
+        "pipeline_name": "GNN Processing Pipeline",
+        "version": "1.0.0",
+        "description": "Comprehensive pipeline for processing GNN models",
+        "total_steps": 13,
+        "modules": [
+            "gnn", "setup", "tests", "type_checker", "export", "visualization",
+            "mcp", "ontology", "render", "execute", "llm", "site", "sapf"
+        ]
+    }
+    
+    # Add step descriptions
+    info["steps"] = {
+        "1": "GNN file discovery and parsing",
+        "2": "Environment setup and dependency installation",
+        "3": "Test suite execution",
+        "4": "Type checking and validation",
+        "5": "Multi-format export",
+        "6": "Visualization generation",
+        "7": "MCP tool registration",
+        "8": "Ontology processing",
+        "9": "Code rendering for simulators",
+        "10": "Model execution",
+        "11": "LLM-enhanced analysis",
+        "12": "Site generation",
+        "13": "SAPF audio generation"
+    }
+    
+    return info
+
+
+def create_pipeline_config(config_path: str, **kwargs) -> bool:
+    """
+    Create a new pipeline configuration file.
+    
+    Args:
+        config_path: Path where the configuration should be created
+        **kwargs: Configuration parameters
+    
+    Returns:
+        True if configuration created successfully
+    """
+    try:
+        from pathlib import Path
+        import json
+        
+        config_path = Path(config_path)
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Default configuration
+        default_config = {
+            "output_base_dir": "output",
+            "log_level": "INFO",
+            "max_workers": 4,
+            "timeout_seconds": 300,
+            "retry_attempts": 3
+        }
+        
+        # Update with provided parameters
+        default_config.update(kwargs)
+        
+        # Write configuration file
+        with open(config_path, 'w') as f:
+            json.dump(default_config, f, indent=2)
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Failed to create pipeline config: {e}")
+        return False 

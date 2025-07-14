@@ -567,3 +567,286 @@ async def close_global_processor():
     if _global_processor:
         await _global_processor.close()
         _global_processor = None 
+
+class GNNLLMProcessor:
+    """
+    Specialized LLM processor for GNN model analysis and enhancement.
+    
+    This class provides GNN-specific analysis capabilities including
+    model interpretation, validation, enhancement suggestions, and
+    natural language explanations.
+    """
+    
+    def __init__(self, base_processor: Optional[LLMProcessor] = None):
+        """
+        Initialize the GNN LLM processor.
+        
+        Args:
+            base_processor: Base LLM processor to use for operations
+        """
+        self.base_processor = base_processor or LLMProcessor()
+        self.initialized = False
+    
+    async def initialize(self) -> bool:
+        """
+        Initialize the GNN LLM processor.
+        
+        Returns:
+            True if initialization successful
+        """
+        try:
+            self.initialized = await self.base_processor.initialize()
+            return self.initialized
+        except Exception as e:
+            logger.error(f"Failed to initialize GNN LLM processor: {e}")
+            return False
+    
+    async def analyze_gnn_model(self, gnn_content: str, analysis_type: str = "summary") -> Dict[str, Any]:
+        """
+        Analyze a GNN model using LLM capabilities.
+        
+        Args:
+            gnn_content: GNN model content as string
+            analysis_type: Type of analysis to perform
+        
+        Returns:
+            Dictionary with analysis results
+        """
+        if not self.initialized:
+            return {
+                "success": False,
+                "error": "GNN LLM processor not initialized"
+            }
+        
+        try:
+            # Map analysis type to AnalysisType enum
+            analysis_enum = AnalysisType.SUMMARY
+            if analysis_type == "structure":
+                analysis_enum = AnalysisType.STRUCTURE
+            elif analysis_type == "enhancement":
+                analysis_enum = AnalysisType.ENHANCEMENT
+            elif analysis_type == "validation":
+                analysis_enum = AnalysisType.VALIDATION
+            elif analysis_type == "comparison":
+                analysis_enum = AnalysisType.COMPARISON
+            
+            response = await self.base_processor.analyze_gnn(gnn_content, analysis_enum)
+            
+            return {
+                "success": True,
+                "analysis_type": analysis_type,
+                "response": response.content,
+                "provider": response.provider.value if response.provider else "unknown",
+                "model": response.model,
+                "usage": response.usage
+            }
+            
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "error_type": type(e).__name__
+            }
+    
+    async def generate_model_explanation(self, gnn_content: str) -> Dict[str, Any]:
+        """
+        Generate a natural language explanation of a GNN model.
+        
+        Args:
+            gnn_content: GNN model content as string
+        
+        Returns:
+            Dictionary with explanation results
+        """
+        return await self.analyze_gnn_model(gnn_content, "summary")
+    
+    async def suggest_enhancements(self, gnn_content: str) -> Dict[str, Any]:
+        """
+        Suggest enhancements for a GNN model.
+        
+        Args:
+            gnn_content: GNN model content as string
+        
+        Returns:
+            Dictionary with enhancement suggestions
+        """
+        return await self.analyze_gnn_model(gnn_content, "enhancement")
+    
+    async def validate_model(self, gnn_content: str) -> Dict[str, Any]:
+        """
+        Validate a GNN model using LLM analysis.
+        
+        Args:
+            gnn_content: GNN model content as string
+        
+        Returns:
+            Dictionary with validation results
+        """
+        return await self.analyze_gnn_model(gnn_content, "validation")
+    
+    async def compare_models(self, gnn_content_1: str, gnn_content_2: str) -> Dict[str, Any]:
+        """
+        Compare two GNN models.
+        
+        Args:
+            gnn_content_1: First GNN model content
+            gnn_content_2: Second GNN model content
+        
+        Returns:
+            Dictionary with comparison results
+        """
+        if not self.initialized:
+            return {
+                "success": False,
+                "error": "GNN LLM processor not initialized"
+            }
+        
+        try:
+            # Create a combined analysis request
+            combined_content = f"Model 1:\n{gnn_content_1}\n\nModel 2:\n{gnn_content_2}"
+            response = await self.base_processor.analyze_gnn(combined_content, AnalysisType.COMPARISON)
+            
+            return {
+                "success": True,
+                "analysis_type": "comparison",
+                "response": response.content,
+                "provider": response.provider.value if response.provider else "unknown",
+                "model": response.model,
+                "usage": response.usage
+            }
+            
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "error_type": type(e).__name__
+            }
+    
+    async def close(self):
+        """Close the GNN LLM processor."""
+        if self.base_processor:
+            await self.base_processor.close()
+        self.initialized = False
+
+
+def create_gnn_llm_processor() -> GNNLLMProcessor:
+    """
+    Create a GNN LLM processor with default configuration.
+    
+    Returns:
+        GNNLLMProcessor instance
+    """
+    return GNNLLMProcessor()
+
+
+async def analyze_gnn_with_llm(gnn_content: str, analysis_type: str = "summary") -> Dict[str, Any]:
+    """
+    Convenience function to analyze GNN content with LLM.
+    
+    Args:
+        gnn_content: GNN model content as string
+        analysis_type: Type of analysis to perform
+    
+    Returns:
+        Dictionary with analysis results
+    """
+    processor = create_gnn_llm_processor()
+    
+    try:
+        await processor.initialize()
+        result = await processor.analyze_gnn_model(gnn_content, analysis_type)
+        return result
+    finally:
+        await processor.close()
+
+
+async def explain_gnn_model(gnn_content: str) -> Dict[str, Any]:
+    """
+    Convenience function to explain a GNN model.
+    
+    Args:
+        gnn_content: GNN model content as string
+    
+    Returns:
+        Dictionary with explanation results
+    """
+    return await analyze_gnn_with_llm(gnn_content, "summary") 
+
+def analyze_gnn_model(gnn_content: str, analysis_type: str = "summary") -> Dict[str, Any]:
+    """
+    Analyze a GNN model using LLM capabilities.
+    
+    Args:
+        gnn_content: GNN model content as string
+        analysis_type: Type of analysis to perform
+    
+    Returns:
+        Dictionary with analysis results
+    """
+    import asyncio
+    
+    try:
+        # Create a new event loop if one doesn't exist
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        
+        # Run the async function
+        result = loop.run_until_complete(analyze_gnn_with_llm(gnn_content, analysis_type))
+        return result
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__
+        } 
+
+def generate_explanation(gnn_content: str) -> dict:
+    """
+    Generate a natural language explanation for a GNN model.
+    
+    Args:
+        gnn_content: GNN model content as string
+    
+    Returns:
+        Dictionary with explanation results
+    """
+    import asyncio
+    try:
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        result = loop.run_until_complete(explain_gnn_model(gnn_content))
+        return result
+    except Exception as e:
+        return {"success": False, "error": str(e), "error_type": type(e).__name__} 
+
+def enhance_model(gnn_content: str) -> dict:
+    """
+    Suggest enhancements for a GNN model using LLM.
+    
+    Args:
+        gnn_content: GNN model content as string
+    
+    Returns:
+        Dictionary with enhancement suggestions
+    """
+    import asyncio
+    try:
+        processor = GNNLLMProcessor()
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        loop.run_until_complete(processor.initialize())
+        result = loop.run_until_complete(processor.suggest_enhancements(gnn_content))
+        loop.run_until_complete(processor.close())
+        return result
+    except Exception as e:
+        return {"success": False, "error": str(e), "error_type": type(e).__name__} 

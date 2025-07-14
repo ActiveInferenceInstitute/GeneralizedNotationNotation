@@ -763,3 +763,128 @@ class GNNTypeChecker:
         with open(output_file, 'w') as f:
             json.dump(json_data, f, indent=2)
         logger.info(f"Successfully wrote JSON data to: {output_file}") 
+
+
+class TypeCheckResult:
+    """
+    Structured result type for GNN type checking operations.
+    """
+    
+    def __init__(self, is_valid: bool, errors: List[str], warnings: List[str], details: Dict[str, Any]):
+        """
+        Initialize a TypeCheckResult.
+        
+        Args:
+            is_valid: Whether the GNN file passed all type checks
+            errors: List of error messages
+            warnings: List of warning messages
+            details: Additional details about the check
+        """
+        self.is_valid = is_valid
+        self.errors = errors
+        self.warnings = warnings
+        self.details = details
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert the result to a dictionary."""
+        return {
+            'is_valid': self.is_valid,
+            'errors': self.errors,
+            'warnings': self.warnings,
+            'details': self.details
+        }
+    
+    def __str__(self) -> str:
+        """String representation of the result."""
+        status = "VALID" if self.is_valid else "INVALID"
+        return f"TypeCheckResult({status}, {len(self.errors)} errors, {len(self.warnings)} warnings)"
+    
+    def __repr__(self) -> str:
+        """Detailed string representation."""
+        return f"TypeCheckResult(is_valid={self.is_valid}, errors={len(self.errors)}, warnings={len(self.warnings)})"
+
+
+def check_gnn_file(file_path: str, strict_mode: bool = False) -> TypeCheckResult:
+    """
+    Convenience function to check a single GNN file.
+    
+    Args:
+        file_path: Path to the GNN file to check
+        strict_mode: Whether to enforce strict type checking rules
+    
+    Returns:
+        TypeCheckResult with the check results
+    """
+    checker = GNNTypeChecker(strict_mode=strict_mode)
+    is_valid, errors, warnings, details = checker.check_file(file_path)
+    return TypeCheckResult(is_valid, errors, warnings, details)
+
+
+def validate_syntax(gnn_content: str, strict_mode: bool = False) -> TypeCheckResult:
+    """
+    Validate GNN syntax from content string.
+    
+    Args:
+        gnn_content: GNN content as string
+        strict_mode: Whether to enforce strict type checking rules
+    
+    Returns:
+        TypeCheckResult with the validation results
+    """
+    import tempfile
+    
+    checker = GNNTypeChecker(strict_mode=strict_mode)
+    
+    # Create temporary file for parsing
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+        f.write(gnn_content)
+        temp_path = f.name
+    
+    try:
+        is_valid, errors, warnings, details = checker.check_file(temp_path)
+        return TypeCheckResult(is_valid, errors, warnings, details)
+    finally:
+        # Clean up temporary file
+        os.unlink(temp_path)
+
+
+def estimate_resources(gnn_content: str) -> Dict[str, Any]:
+    """
+    Estimate computational resources needed for a GNN model.
+    
+    Args:
+        gnn_content: GNN content as string
+    
+    Returns:
+        Dictionary with resource estimates
+    """
+    import tempfile
+    
+    # Create temporary file for parsing
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+        f.write(gnn_content)
+        temp_path = f.name
+    
+    try:
+        checker = GNNTypeChecker()
+        is_valid, errors, warnings, details = checker.check_file(temp_path)
+        
+        if not is_valid:
+            return {
+                "error": "Cannot estimate resources for invalid GNN model",
+                "errors": errors
+            }
+        
+        # Extract resource estimation from details
+        resource_estimates = {
+            "total_variables": details.get("total_variables", 0),
+            "total_connections": details.get("total_connections", 0),
+            "model_complexity": details.get("model_complexity", "unknown"),
+            "estimated_memory_mb": details.get("estimated_memory_mb", 0),
+            "estimated_computation_time": details.get("estimated_computation_time", "unknown")
+        }
+        
+        return resource_estimates
+    finally:
+        # Clean up temporary file
+        os.unlink(temp_path) 

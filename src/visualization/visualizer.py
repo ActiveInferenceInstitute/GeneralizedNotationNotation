@@ -504,3 +504,107 @@ class GNNVisualizer:
             # Remove Markdown formatting and clean up
             return parsed_data['ModelName'].replace('#', '').strip()
         return "GNN Model" 
+
+
+def generate_graph_visualization(gnn_data: Dict[str, Any], output_path: str) -> bool:
+    """
+    Generate a graph visualization from GNN data.
+    
+    Args:
+        gnn_data: Parsed GNN data dictionary
+        output_path: Path where the visualization should be saved
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        visualizer = GNNVisualizer()
+        visualizer._visualize_connections(gnn_data, Path(output_path).parent)
+        return True
+    except Exception as e:
+        print(f"Error generating graph visualization: {e}")
+        return False
+
+
+def generate_matrix_visualization(gnn_data: Dict[str, Any], output_path: str) -> bool:
+    """
+    Generate matrix visualizations from GNN data.
+    
+    Args:
+        gnn_data: Parsed GNN data dictionary
+        output_path: Path where the visualization should be saved
+    
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        visualizer = GNNVisualizer()
+        visualizer.matrix_visualizer.visualize_all_matrices(gnn_data, Path(output_path).parent)
+        return True
+    except Exception as e:
+        print(f"Error generating matrix visualization: {e}")
+        return False
+
+
+def create_visualization_report(gnn_file_path: str, output_dir: str) -> str:
+    """
+    Create a comprehensive visualization report for a GNN file.
+    
+    Args:
+        gnn_file_path: Path to the GNN file
+        output_dir: Output directory for visualizations
+    
+    Returns:
+        Path to the generated report
+    """
+    try:
+        visualizer = GNNVisualizer(output_dir=output_dir)
+        result_path = visualizer.visualize_file(gnn_file_path)
+        return result_path
+    except Exception as e:
+        print(f"Error creating visualization report: {e}")
+        return ""
+
+
+def visualize_gnn_model(gnn_content: str, model_name: str, output_dir: str) -> dict:
+    """
+    Visualize a GNN model from content string.
+    
+    Args:
+        gnn_content: GNN model content as string
+        model_name: Name of the model
+        output_dir: Output directory for visualizations
+    
+    Returns:
+        Dictionary with visualization result information
+    """
+    import tempfile
+    
+    try:
+        # Create temporary file for parsing
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+            f.write(gnn_content)
+            temp_path = f.name
+        
+        # Create visualizations
+        visualizer = GNNVisualizer(output_dir=output_dir)
+        result_path = visualizer.visualize_file(temp_path)
+        
+        return {
+            "success": True,
+            "model_name": model_name,
+            "output_directory": result_path,
+            "message": "Visualization generated successfully"
+        }
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "model_name": model_name,
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
+    finally:
+        # Clean up temporary file
+        if 'temp_path' in locals():
+            os.unlink(temp_path) 

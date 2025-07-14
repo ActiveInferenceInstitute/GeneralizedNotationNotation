@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 # Import renderers
 from .pymdp.pymdp_renderer import render_gnn_to_pymdp
 from .rxinfer import render_gnn_to_rxinfer_toml
-from .discopy import render_gnn_to_discopy, render_gnn_to_discopy_jax, render_gnn_to_discopy_combined
+from .discopy import render_gnn_to_discopy, render_gnn_to_discopy_jax
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,10 @@ def render_gnn_spec(
         
     elif target.lower() == "discopy_combined":
         # Render to both DisCoPy diagram and JAX evaluation
-        return render_gnn_to_discopy_combined(gnn_spec, output_directory, options)
+        # TODO: Implement combined renderer
+        error_msg = "discopy_combined renderer not yet implemented"
+        logger.error(error_msg)
+        return False, error_msg, []
         
     elif target.lower() == "activeinference_jl":
         # Render to ActiveInference.jl script

@@ -6,6 +6,7 @@ This package contains modules for executing:
 - RxInfer.jl configurations
 - DisCoPy diagrams
 - ActiveInference.jl scripts
+- JAX implementations
 """
 
 # Import from submodules
@@ -15,12 +16,98 @@ from . import discopy
 from . import activeinference_jl
 from . import jax
 
+# Import from executor module
+from .executor import (
+    GNNExecutor,
+    execute_gnn_model,
+    run_simulation,
+    generate_execution_report
+)
+
+# Module metadata
+__version__ = "1.0.0"
+__author__ = "Active Inference Institute"
+__description__ = "GNN model execution and simulation"
+
+# Feature availability flags
+FEATURES = {
+    'pymdp_execution': True,
+    'rxinfer_execution': True,
+    'discopy_execution': True,
+    'activeinference_jl_execution': True,
+    'jax_execution': True,
+    'simulation_management': True,
+    'report_generation': True
+}
+
+# Main API functions
 __all__ = [
+    # Submodules
     'pymdp',
     'rxinfer', 
     'discopy',
-    'activeinference_jl'
+    'activeinference_jl',
+    'jax',
+    
+    # Executor functions
+    'GNNExecutor',
+    'execute_gnn_model',
+    'run_simulation',
+    'generate_execution_report',
+    
+    # Metadata
+    'FEATURES',
+    '__version__'
 ]
-__all__ += [
-    'jax'
-] 
+
+
+def get_module_info():
+    """Get comprehensive information about the execute module and its capabilities."""
+    info = {
+        'version': __version__,
+        'description': __description__,
+        'features': FEATURES,
+        'execution_types': [],
+        'supported_backends': []
+    }
+    
+    # Execution types
+    info['execution_types'].extend([
+        'PyMDP script execution',
+        'RxInfer.jl configuration execution',
+        'DisCoPy diagram execution',
+        'ActiveInference.jl script execution',
+        'JAX implementation execution'
+    ])
+    
+    # Supported backends
+    info['supported_backends'].extend(['Python', 'Julia', 'JAX'])
+    
+    return info
+
+
+def get_execution_options() -> dict:
+    """Get information about available execution options."""
+    return {
+        'execution_modes': {
+            'synchronous': 'Synchronous execution with blocking',
+            'asynchronous': 'Asynchronous execution with callbacks',
+            'batch': 'Batch execution of multiple models'
+        },
+        'timeout_options': {
+            'short': 'Short timeout (30 seconds)',
+            'medium': 'Medium timeout (5 minutes)',
+            'long': 'Long timeout (30 minutes)',
+            'unlimited': 'No timeout'
+        },
+        'output_formats': {
+            'json': 'JSON structured output',
+            'text': 'Plain text output',
+            'binary': 'Binary output for large datasets'
+        },
+        'monitoring_options': {
+            'basic': 'Basic execution monitoring',
+            'detailed': 'Detailed execution monitoring',
+            'profiling': 'Performance profiling'
+        }
+    } 

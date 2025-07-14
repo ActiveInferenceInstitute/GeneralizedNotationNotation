@@ -15,14 +15,12 @@ from .jax_runner import (
     run_jax_scripts,
     execute_jax_script,
     find_jax_scripts,
-    is_jax_available,
-    get_jax_device_info
+    is_jax_available
 )
 
 __all__ = [
     'run_jax_scripts',
     'execute_jax_script', 
     'find_jax_scripts',
-    'is_jax_available',
-    'get_jax_device_info'
+    'is_jax_available'
 ] 
