@@ -1,0 +1,16 @@
+{
+  "type_check_results": {
+    "../input/gnn_files/actinf_pomdp_agent.md": {
+      "is_valid": true,
+      "errors": [],
+      "warnings": []
+    }
+  },
+  "summary": {
+    "total_files": 1,
+    "valid_files": 1,
+    "invalid_files": 0,
+    "total_errors": 0,
+    "total_warnings": 0
+  }
+}

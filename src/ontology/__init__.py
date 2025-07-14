@@ -44,6 +44,10 @@ __all__ = [
     'validate_annotations',
     'generate_ontology_report_for_file',
     'get_mcp_interface',
+    'process_ontology',
+    'validate_ontology_terms',
+    'map_gnn_to_ontology',
+    'generate_ontology_report',
     
     # MCP integration (if available)
     'register_tools',
@@ -176,4 +180,22 @@ def get_ontology_processing_options() -> dict:
             'summary': 'Summary validation reports',
             'minimal': 'Minimal validation reports'
         }
-    } 
+    }
+
+
+# Test-compatible function alias
+def process_ontology(gnn_file_path, **kwargs):
+    """Process ontology (test-compatible alias)."""
+    return process_gnn_ontology(gnn_file_path, **kwargs)
+
+def validate_ontology_terms(annotations, defined_terms):
+    """Validate ontology terms (test-compatible alias)."""
+    return validate_annotations(annotations, defined_terms)
+
+def map_gnn_to_ontology(gnn_file_path, ontology_terms_path=None, **kwargs):
+    """Map GNN to ontology (test-compatible alias)."""
+    return process_gnn_ontology(gnn_file_path, ontology_terms_path, **kwargs)
+
+def generate_ontology_report(gnn_file_path, ontology_terms_path=None, **kwargs):
+    """Generate ontology report (test-compatible alias)."""
+    return generate_ontology_report_for_file(gnn_file_path, ontology_terms_path, **kwargs) 

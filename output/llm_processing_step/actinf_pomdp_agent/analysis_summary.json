@@ -1,0 +1,51 @@
+{
+  "file": "../input/gnn_files/actinf_pomdp_agent.md",
+  "file_name": "actinf_pomdp_agent",
+  "analyses": {
+    "summarize_content": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/summarize_content_analysis.md",
+      "provider": "openrouter",
+      "content_length": 2791,
+      "tokens_used": null
+    },
+    "explain_model": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/explain_model_analysis.md",
+      "provider": "openrouter",
+      "content_length": 5000,
+      "tokens_used": null
+    },
+    "identify_components": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/identify_components_analysis.md",
+      "provider": "openrouter",
+      "content_length": 4566,
+      "tokens_used": null
+    },
+    "analyze_structure": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/analyze_structure_analysis.md",
+      "provider": "openrouter",
+      "content_length": 5933,
+      "tokens_used": null
+    },
+    "extract_parameters": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/extract_parameters_analysis.md",
+      "provider": "openrouter",
+      "content_length": 4415,
+      "tokens_used": null
+    },
+    "practical_applications": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/practical_applications_analysis.md",
+      "provider": "openrouter",
+      "content_length": 4931,
+      "tokens_used": null
+    }
+  },
+  "errors": [],
+  "success_count": 6,
+  "total_tasks": 6
+}

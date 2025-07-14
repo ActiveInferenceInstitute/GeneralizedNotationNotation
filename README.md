@@ -291,7 +291,7 @@ flowchart TD
         C --> D["📊 Multi-Format Export<br/>JSON, XML, GraphML, Pickle"]
         
         C --> E["🎨 Visualization<br/>Generate graphs & matrices"]
-        C --> F["🔄 Code Generation<br/>PyMDP & RxInfer templates"]
+        C --> F["🔄 Code Generation<br/>PyMDP, RxInfer & ActiveInference.jl templates"]
         
         F --> G["▶️ Simulation Execution<br/>Run generated code"]
         E --> H["🧠 LLM Analysis<br/>AI-powered insights"]
@@ -552,6 +552,7 @@ Comprehensive documentation is organized in the `doc/` directory. Here are the k
 |----------|---------------|
 | **🐍 PyMDP** | [PyMDP Integration](./doc/pymdp/) |
 | **🔬 RxInfer.jl** | [RxInfer Integration](./doc/rxinfer/) |
+| **🧠 ActiveInference.jl** | [ActiveInference.jl Integration](./doc/activeinference_jl/) |
 | **📡 MCP** | [Model Context Protocol](./doc/mcp/) |
 | **🧮 SymPy** | [Mathematical Processing](./doc/sympy/) |
 | **🔄 DisCoPy** | [Categorical Diagrams](./doc/discopy/) |
@@ -582,6 +583,7 @@ Explore practical GNN implementations and use cases:
 |---------|-------------|----------|
 | **🎯 PyMDP POMDP Agent** | Complete POMDP implementation | [`src/gnn/examples/actinf_pomdp_agent.md`](src/gnn/examples/actinf_pomdp_agent.md) |
 | **🔬 RxInfer Hidden Markov Model** | Probabilistic sequence modeling | [`doc/archive/rxinfer_hidden_markov_model.md`](doc/archive/rxinfer_hidden_markov_model.md) |
+| **🧠 ActiveInference.jl Examples** | Julia-based Active Inference models | [`doc/activeinference_jl/actinf_jl_src/`](doc/activeinference_jl/actinf_jl_src/) |
 | **🤝 Multi-Agent System** | Collaborative agent modeling | [`doc/archive/rxinfer_multiagent_gnn.md`](doc/archive/rxinfer_multiagent_gnn.md) |
 
 ### 🧠 Cognitive Phenomena Examples
@@ -716,6 +718,7 @@ This project is licensed under the **MIT License**. See the [LICENSE.md](./LICEN
 
 - 🐍 **PyMDP Framework**: [github.com/infer-actively/pymdp](https://github.com/infer-actively/pymdp)
 - 🔬 **RxInfer.jl**: [github.com/biaslab/RxInfer.jl](https://github.com/biaslab/RxInfer.jl)
+- 🧠 **ActiveInference.jl**: [github.com/ComputationalPsychiatry/ActiveInference.jl](https://github.com/ComputationalPsychiatry/ActiveInference.jl)
 - 📊 **DisCoPy**: [github.com/oxford-quantum-group/discopy](https://github.com/oxford-quantum-group/discopy)
 - 📚 **Research Papers**: [Active Inference on arXiv](https://arxiv.org/search/?query=active+inference&searchtype=all)
 

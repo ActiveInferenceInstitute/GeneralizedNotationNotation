@@ -9,7 +9,7 @@ The GNN pipeline consists of 13 steps:
 1-4: Discovery & Parsing
 5-6: Export & Visualization  
 7-8: Integration & Analysis
-9-11: Execution & Enhancement (including DisCoPy rendering/analysis)
+9-11: Execution & Enhancement (PyMDP, RxInfer.jl, ActiveInference.jl)
 12-13: Advanced Representations
 
 Usage:
@@ -23,7 +23,6 @@ from typing import Optional, List, Any
 
 # Standard imports for all pipeline steps
 from utils import (
-    execute_pipeline_step_template,
     setup_step_logging,
     log_step_start,
     log_step_success, 

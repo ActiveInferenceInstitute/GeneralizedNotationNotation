@@ -80,6 +80,10 @@ __all__ = [
     'analyze_gnn_model',
     'generate_explanation',
     'enhance_model',
+    'generate_model_description',
+    'validate_model_structure',
+    'enhance_model_parameters',
+    'generate_llm_report',
     
     # Utility functions
     'load_api_keys_from_env',
@@ -161,4 +165,38 @@ def get_analysis_options() -> dict:
             'asynchronous': 'Asynchronous processing',
             'streaming': 'Streaming responses'
         }
-    } 
+    }
+
+
+# Test-compatible function alias
+def generate_model_description(gnn_file_path, **kwargs):
+    """Generate a description of a GNN model (test-compatible alias)."""
+    return explain_gnn_model(gnn_file_path, **kwargs)
+
+def validate_model_structure(gnn_file_path, **kwargs):
+    """Validate model structure (test-compatible alias)."""
+    return analyze_gnn_model(gnn_file_path, **kwargs)
+
+def enhance_model_parameters(gnn_file_path, **kwargs):
+    """Enhance model parameters (test-compatible alias)."""
+    return enhance_model(gnn_file_path, **kwargs)
+
+def generate_llm_report(llm_results, output_path=None):
+    """Generate LLM report (test-compatible alias)."""
+    import json
+    from datetime import datetime
+    
+    report = {
+        "timestamp": datetime.now().isoformat(),
+        "llm_results": llm_results,
+        "summary": {
+            "total_analyses": len(llm_results) if isinstance(llm_results, list) else 1,
+            "successful_analyses": sum(1 for r in llm_results if r.get('success', False)) if isinstance(llm_results, list) else (1 if llm_results.get('success', False) else 0)
+        }
+    }
+    
+    if output_path:
+        with open(output_path, 'w') as f:
+            json.dump(report, f, indent=2)
+    
+    return report 

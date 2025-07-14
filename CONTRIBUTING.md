@@ -21,10 +21,10 @@ There are many ways you can contribute to the GNN project:
 GNN has comprehensive documentation to help you understand the project:
 
 - **[Documentation Overview](doc/README.md)**: Complete guide to all documentation
-- **[Development Guide](doc/development/README.md)**: Detailed developer documentation (14KB)
-- **[API Reference](doc/api/README.md)**: Complete API documentation (11KB, 457 functions)
-- **[Testing Guide](doc/testing/README.md)**: Testing strategies and framework (18KB)
-- **[Template System](doc/templates/README.md)**: 4 production-ready templates for common patterns
+- **[Development Guide](doc/development/README.md)**: Detailed developer documentation
+- **[API Reference](doc/api/README.md)**: Complete API documentation
+- **[Testing Guide](doc/testing/README.md)**: Testing strategies and framework
+- **[Template System](doc/templates/README.md)**: Production-ready templates for common patterns
 - **[Pipeline Architecture](doc/pipeline/PIPELINE_ARCHITECTURE.md)**: Technical architecture overview
 
 ## Getting Started
@@ -59,15 +59,15 @@ GNN has comprehensive documentation to help you understand the project:
 ### 🧪 Testing Requirements
 
 - **Comprehensive Testing**: If you add new features, please include corresponding tests in the `src/tests/` directory. 
-- **14-Step Pipeline Testing**: Ensure all tests pass before submitting your changes:
+- **13-Step Pipeline Testing**: Ensure all tests pass before submitting your changes:
     ```bash
-    python src/main.py --only-steps 3_tests
+    python src/main.py --only-steps 3
     ```
 - **Template Testing**: If you modify templates, test them with the validation pipeline:
     ```bash
-    python src/main.py --only-steps 4_gnn_type_checker
+    python src/main.py --only-steps 4
     ```
-- **Framework Integration**: Test integration with PyMDP, RxInfer, or DisCoPy if your changes affect framework compatibility.
+- **Framework Integration**: Test integration with PyMDP, RxInfer.jl, ActiveInference.jl, or other frameworks if your changes affect framework compatibility.
 
 See the **[Testing Guide](doc/testing/README.md)** for comprehensive testing strategies.
 
@@ -123,12 +123,13 @@ See the **[Testing Guide](doc/testing/README.md)** for comprehensive testing str
 ## 🎯 Specialized Contribution Areas
 
 ### **Framework Integration**
-- **PyMDP**: See **[PyMDP Integration Guide](doc/pymdp/gnn_pymdp.md)** (13KB, comprehensive examples)
-- **RxInfer**: See **[RxInfer Integration Guide](doc/rxinfer/gnn_rxinfer.md)** (39KB, extensive documentation)
+- **PyMDP**: See **[PyMDP Integration Guide](doc/pymdp/gnn_pymdp.md)** (comprehensive examples)
+- **RxInfer.jl**: See **[RxInfer Integration Guide](doc/rxinfer/gnn_rxinfer.md)** (extensive documentation)
+- **ActiveInference.jl**: See **[ActiveInference.jl Integration Guide](doc/activeinference_jl/activeinference-jl.md)** (Julia-based implementation)
 - **DisCoPy**: Reference **[DisCoPy documentation](doc/discopy/)** for categorical diagram contributions
 
 ### **Pipeline Development**
-- **14-Step Pipeline**: Understand the **[Pipeline Architecture](doc/pipeline/PIPELINE_ARCHITECTURE.md)**
+- **13-Step Pipeline**: Understand the **[Pipeline Architecture](doc/pipeline/PIPELINE_ARCHITECTURE.md)**
 - **New Pipeline Steps**: Follow the **[Development Guide](doc/development/README.md)** for adding new numbered scripts
 - **Configuration**: Use the **[Configuration Guide](doc/configuration/README.md)** for proper parameter handling
 

@@ -53,6 +53,9 @@ def pytest_configure(config):
             "markers", f"{marker_name}: {marker_description}"
         )
     
+    # Add missing markers that tests use
+    config.addinivalue_line("markers", "core: Core module tests")
+    
     # Verify we're in safe mode before running tests
     if not is_safe_mode():
         logging.warning("Tests not running in safe mode! This may be dangerous.")

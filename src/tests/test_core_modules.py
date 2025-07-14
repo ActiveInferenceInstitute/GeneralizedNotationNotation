@@ -162,19 +162,16 @@ class TestRenderModuleComprehensive:
         """Test that render module can be imported and has expected structure."""
         try:
             from render import (
-                render_pymdp_code, render_rxinfer_code, render_discopy_code,
-                render_jax_code, generate_render_report
+                render_gnn_to_pymdp, render_gnn_to_rxinfer_toml, render_gnn_to_discopy,
+                render_gnn_to_jax, get_available_renderers
             )
-            
             # Test that functions are callable
-            assert callable(render_pymdp_code), "render_pymdp_code should be callable"
-            assert callable(render_rxinfer_code), "render_rxinfer_code should be callable"
-            assert callable(render_discopy_code), "render_discopy_code should be callable"
-            assert callable(render_jax_code), "render_jax_code should be callable"
-            assert callable(generate_render_report), "generate_render_report should be callable"
-            
+            assert callable(render_gnn_to_pymdp), "render_gnn_to_pymdp should be callable"
+            assert callable(render_gnn_to_rxinfer_toml), "render_gnn_to_rxinfer_toml should be callable"
+            assert callable(render_gnn_to_discopy), "render_gnn_to_discopy should be callable"
+            assert callable(render_gnn_to_jax), "render_gnn_to_jax should be callable"
+            assert callable(get_available_renderers), "get_available_renderers should be callable"
             logging.info("Render module imports validated")
-            
         except ImportError as e:
             pytest.fail(f"Failed to import render module: {e}")
     
@@ -182,23 +179,15 @@ class TestRenderModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_pymdp_rendering(self, sample_gnn_files, isolated_temp_dir):
         """Test PyMDP code rendering."""
-        from render import render_pymdp_code
-        
+        from render import render_gnn_to_pymdp
         output_path = isolated_temp_dir / "test_pymdp.py"
-        
         try:
-            render_pymdp_code(sample_gnn_files, output_path)
-            
-            # Check that output file was created
+            render_gnn_to_pymdp(sample_gnn_files, output_path)
             assert output_path.exists(), "PyMDP output file should be created"
-            
-            # Check file content
             content = output_path.read_text()
             assert len(content) > 0, "PyMDP output should not be empty"
             assert "import" in content, "PyMDP output should contain imports"
-            
             logging.info("PyMDP rendering validated")
-            
         except Exception as e:
             logging.warning(f"PyMDP rendering failed: {e}")
     
@@ -206,22 +195,14 @@ class TestRenderModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_rxinfer_rendering(self, sample_gnn_files, isolated_temp_dir):
         """Test RxInfer code rendering."""
-        from render import render_rxinfer_code
-        
+        from render import render_gnn_to_rxinfer_toml
         output_path = isolated_temp_dir / "test_rxinfer.jl"
-        
         try:
-            render_rxinfer_code(sample_gnn_files, output_path)
-            
-            # Check that output file was created
+            render_gnn_to_rxinfer_toml(sample_gnn_files, output_path)
             assert output_path.exists(), "RxInfer output file should be created"
-            
-            # Check file content
             content = output_path.read_text()
             assert len(content) > 0, "RxInfer output should not be empty"
-            
             logging.info("RxInfer rendering validated")
-            
         except Exception as e:
             logging.warning(f"RxInfer rendering failed: {e}")
     
@@ -528,7 +509,7 @@ class TestSiteModuleComprehensive:
     def test_site_module_imports(self):
         """Test that site module can be imported and has expected structure."""
         try:
-            from site import (
+            from src.site import (
                 generate_site, create_html_report, generate_site_index,
                 create_site_navigation, generate_site_report
             )
@@ -549,7 +530,7 @@ class TestSiteModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_site_generation(self, isolated_temp_dir):
         """Test site generation."""
-        from site import generate_site
+        from src.site import generate_site
         
         site_data = {
             "title": "Test Site",
@@ -577,7 +558,7 @@ class TestSiteModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_html_report_creation(self, isolated_temp_dir):
         """Test HTML report creation."""
-        from site import create_html_report
+        from src.site import create_html_report
         
         report_data = {
             "title": "Test Report",
@@ -675,25 +656,15 @@ class TestCoreModuleIntegration:
     def test_module_coordination(self, sample_gnn_files, isolated_temp_dir):
         """Test coordination between core modules."""
         try:
-            # Test GNN -> Render -> Execute pipeline
             from gnn import parse_gnn_file
-            from render import render_pymdp_code
-            from execute import execute_script_safely
-            
-            # Parse GNN file
+            from render import render_gnn_to_pymdp
+            from execute import execute_gnn_model
             gnn_data = parse_gnn_file(list(sample_gnn_files.values())[0])
-            
-            # Render PyMDP code
             pymdp_path = isolated_temp_dir / "test_pymdp.py"
-            render_pymdp_code({list(sample_gnn_files.values())[0]: gnn_data}, pymdp_path)
-            
-            # Execute script
-            result = execute_script_safely(f"python {pymdp_path}", timeout=10)
-            
+            render_gnn_to_pymdp({list(sample_gnn_files.values())[0]: gnn_data}, pymdp_path)
+            result = execute_gnn_model(f"python {pymdp_path}", timeout=10)
             assert isinstance(result, dict), "Execution result should be a dictionary"
-            
             logging.info("Core module coordination validated")
-            
         except Exception as e:
             logging.warning(f"Core module coordination failed: {e}")
     
@@ -702,25 +673,15 @@ class TestCoreModuleIntegration:
     def test_module_data_flow(self, sample_gnn_files, isolated_temp_dir):
         """Test data flow between modules."""
         try:
-            # Test data flow: GNN -> LLM -> Site
             from gnn import parse_gnn_file
             from llm import analyze_gnn_model
-            from site import create_html_report
-            
-            # Parse GNN file
+            from src.site import generate_html_report
             gnn_data = parse_gnn_file(list(sample_gnn_files.values())[0])
-            
-            # Analyze with LLM
             analysis = analyze_gnn_model(gnn_data)
-            
-            # Create HTML report
             report_path = isolated_temp_dir / "test_report.html"
-            create_html_report(analysis, report_path)
-            
+            generate_html_report(analysis, report_path)
             assert report_path.exists(), "Report should be created"
-            
             logging.info("Module data flow validated")
-            
         except Exception as e:
             logging.warning(f"Module data flow failed: {e}")
 

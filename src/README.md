@@ -11,7 +11,7 @@ The pipeline processes GNN models through a systematic workflow:
 1. **Discovery & Parsing** (Steps 1-4): Find and validate GNN files
 2. **Export & Visualization** (Steps 5-6): Generate multiple output formats and visualizations  
 3. **Integration & Analysis** (Steps 7-8): MCP tools and ontology processing
-4. **Execution & Enhancement** (Steps 9-11): Code generation (including DisCoPy), simulation, and LLM analysis
+4. **Execution & Enhancement** (Steps 9-11): Code generation, simulation, and LLM analysis
 5. **Advanced Representations** (Steps 12-13): Site generation and audio sonification
 
 ## Pipeline Architecture
@@ -20,6 +20,7 @@ The pipeline processes GNN models through a systematic workflow:
 
 - **Main Orchestrator**: `main.py` - Discovers and executes numbered pipeline scripts (1-13)
 - **Centralized Utilities**: `utils/` package providing logging, argument parsing, and validation
+- **Pipeline Configuration**: `pipeline/config.py` - Centralized configuration management
 - **Pipeline Validation**: `pipeline_validation.py` - Validates consistency and functionality
 
 ### 13-Step Pipeline
@@ -34,8 +35,8 @@ The pipeline processes GNN models through a systematic workflow:
 | 6 | `6_visualization.py` | Graph and statistical visualizations | ✅ WORKING | `visualization/` |
 | 7 | `7_mcp.py` | Model Context Protocol operations | ⚠️ PARTIAL | `mcp_processing_step/` |
 | 8 | `8_ontology.py` | Ontology processing and validation | ✅ WORKING | `ontology_processing/` |
-| 9 | `9_render.py` | Code generation (PyMDP, RxInfer, DisCoPy) | ✅ WORKING | `gnn_rendered_simulators/` |
-| 10 | `10_execute.py` | Execute rendered simulators and DisCoPy analysis | ⚠️ NEEDS_DEPS | `execution_results/` |
+| 9 | `9_render.py` | Code generation (PyMDP, RxInfer, ActiveInference.jl) | ✅ WORKING | `gnn_rendered_simulators/` |
+| 10 | `10_execute.py` | Execute rendered simulators | ⚠️ NEEDS_DEPS | `execution_results/` |
 | 11 | `11_llm.py` | LLM-enhanced analysis | ✅ WORKING | `llm_processing_step/` |
 | 12 | `12_site.py` | HTML site generation | ⚠️ PARTIAL | `site/` |
 | 13 | `13_sapf.py` | SAPF audio generation | ✅ WORKING | `sapf_processing_step/` |
@@ -44,13 +45,12 @@ The pipeline processes GNN models through a systematic workflow:
 
 ## Functional Status Analysis
 
-### ✅ Fully Functional (9/13 steps)
+### ✅ Fully Functional (10/13 steps)
 Scripts 1-6, 8-9, 11, and 13 are fully operational with proper logging, error handling, and output generation.
 
-### ⚠️ Partially Functional (4/13 steps)
+### ⚠️ Partially Functional (3/13 steps)
 - **Step 7 (MCP)**: Core functionality works but may need MCP system initialization
-- **Step 9 (Render)**: Core PyMDP/RxInfer works; DisCoPy rendering needs DisCoPy library installation
-- **Step 10 (Execute)**: PyMDP/RxInfer execution depends on availability; DisCoPy analysis needs JAX/DisCoPy dependencies
+- **Step 10 (Execute)**: PyMDP/RxInfer execution depends on availability of dependencies
 - **Step 12 (Site)**: Basic HTML generation works, full generator may need additional dependencies
 
 ## Code Quality Assessment
@@ -64,11 +64,12 @@ Scripts 1-6, 8-9, 11, and 13 are fully operational with proper logging, error ha
 5. **Documentation**: Well-documented functions and classes
 6. **Flexible Arguments**: Support for both pipeline and standalone execution
 7. **Output Management**: Structured output directories with clear naming
+8. **Centralized Configuration**: Unified configuration management via `pipeline/config.py`
 
 ### Areas for Improvement
 
 1. **Dependency Management**: Some steps need optional dependency handling
-2. **Configuration**: Could benefit from centralized configuration file
+2. **Configuration**: Centralized configuration is implemented but could be enhanced
 3. **Parallel Processing**: Some steps could run in parallel
 4. **Caching**: Intermediate results could be cached for re-runs
 
@@ -96,6 +97,24 @@ Features:
 - **Fallback Support**: Graceful degradation if utilities unavailable
 - **Performance Tracking**: Built-in performance monitoring
 
+### Pipeline Configuration (`pipeline/`)
+
+Centralized configuration management:
+
+```python
+from pipeline import (
+    get_pipeline_config,
+    get_output_dir_for_script,
+    STEP_METADATA
+)
+```
+
+Features:
+- **Step Metadata**: Centralized metadata for all pipeline steps
+- **Dependency Management**: Automatic dependency resolution
+- **Output Directory Management**: Standardized output directory structure
+- **Environment Overrides**: Support for environment variable configuration
+
 ### Output Structure
 
 All pipeline outputs are organized under a main output directory:
@@ -105,7 +124,7 @@ output/
 ├── gnn_processing_step/           # Step 1: GNN discovery results
 ├── setup_artifacts/               # Step 2: Environment setup logs
 ├── test_reports/                  # Step 3: Test execution results
-├── gnn_type_check/               # Step 4: Type checking reports
+├── type_check/                   # Step 4: Type checking reports
 ├── gnn_exports/                  # Step 5: Multi-format exports
 ├── visualization/                # Step 6: Generated visualizations
 ├── mcp_processing_step/          # Step 7: MCP integration reports
@@ -126,6 +145,7 @@ The `pipeline_validation.py` script provides comprehensive validation:
 - **Output Verification**: Checks expected outputs are generated
 - **Logging Patterns**: Ensures consistent logging usage
 - **Error Detection**: Identifies common integration issues
+- **Configuration Validation**: Validates pipeline configuration consistency
 
 ## Usage
 
@@ -172,8 +192,8 @@ python3 src/main.py --target-dir input/gnn_files --estimate-resources --verbose
 - **Step 3**: pytest
 - **Step 5**: networkx (optional, for graph exports)
 - **Step 6**: matplotlib, graphviz (for visualizations)
-- **Step 9**: DisCoPy (optional, for categorical diagram rendering)
-- **Step 10**: PyMDP, Julia/RxInfer.jl, JAX (optional, for DisCoPy analysis)
+- **Step 9**: PyMDP, RxInfer.jl, ActiveInference.jl (optional, for code generation)
+- **Step 10**: PyMDP, Julia/RxInfer.jl, ActiveInference.jl (optional, for simulation execution)
 - **Step 11**: OpenAI API or similar LLM access
 - **Step 12**: Jinja2 or similar templating (for advanced site generation)
 - **Step 13**: SAPF binary (optional), numpy, wave (for audio generation)
@@ -186,6 +206,7 @@ The pipeline is designed with graceful failure modes:
 2. **Dependency Checks**: Scripts check for required dependencies before execution
 3. **Fallback Modes**: Many steps have fallback implementations
 4. **Detailed Logging**: All failures are logged with context and suggested fixes
+5. **Critical Step Protection**: Only critical steps (like setup) halt the pipeline
 
 ## Performance Characteristics
 
@@ -197,15 +218,15 @@ Based on current implementation:
 
 Bottlenecks typically occur in:
 - Step 11 (LLM API calls)
-- Step 9 (DisCoPy rendering when enabled)
-- Step 10 (Simulation execution and DisCoPy analysis)
+- Step 9 (Code generation when enabled)
+- Step 10 (Simulation execution)
 - Step 13 (Audio generation for large models)
 
 ## Future Enhancements
 
 1. **Parallel Execution**: Run independent steps concurrently
 2. **Caching System**: Cache intermediate results for faster re-runs
-3. **Configuration Management**: YAML/TOML configuration files
+3. **Configuration Management**: Enhanced YAML/TOML configuration files
 4. **Web Interface**: Browser-based pipeline management
 5. **Cloud Integration**: Support for cloud-based execution
 6. **Plugin System**: Allow custom steps via plugins
@@ -234,12 +255,13 @@ This captures all debug output including correlation IDs for tracing issues acro
 
 When adding new pipeline steps:
 
-1. Follow the numbered naming convention (`16_new_step.py`)
+1. Follow the numbered naming convention (`14_new_step.py`)
 2. Use centralized utilities from `utils/` package
 3. Implement proper error handling and logging
-4. Add output validation to `pipeline_validation.py`
-5. Update this documentation and main.py
-6. Include unit tests
-7. Update step dependency mapping in main.py
+4. Add step configuration to `pipeline/config.py`
+5. Add output validation to `pipeline_validation.py`
+6. Update this documentation and main.py
+7. Include unit tests
+8. Update step dependency mapping in pipeline configuration
 
 The pipeline is designed to be extensible while maintaining consistency and reliability across all components. 

@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-07-14 10:09:49",
+  "target_directory": "../input/gnn_files",
+  "pymdp_executions": [
+    {
+      "status": "SUCCESS",
+      "message": "PyMDP scripts executed successfully"
+    }
+  ],
+  "rxinfer_executions": [
+    {
+      "status": "FAILED",
+      "message": "RxInfer script execution failed"
+    }
+  ],
+  "discopy_executions": [
+    {
+      "status": "SUCCESS",
+      "message": "DisCoPy analysis completed successfully"
+    }
+  ],
+  "activeinference_executions": [
+    {
+      "status": "FAILED",
+      "message": "ActiveInference.jl analysis failed"
+    }
+  ],
+  "jax_executions": [
+    {
+      "status": "FAILED",
+      "message": "JAX script execution failed"
+    }
+  ],
+  "total_successes": 2,
+  "total_failures": 3
+}

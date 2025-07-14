@@ -7,6 +7,7 @@ This script validates that all pipeline steps are:
 2. Producing expected outputs  
 3. Handling arguments correctly
 4. Following the established patterns
+5. Using centralized configuration properly
 
 Usage:
     python pipeline_validation.py [--fix-issues]
@@ -37,14 +38,13 @@ EXPECTED_OUTPUTS = {
         "gnn_processing_step/1_gnn_discovery_report.md"
     ],
     "2_setup": [
-        "directory_structure.json",
         "setup_artifacts/installed_packages.json"
     ],
     "3_tests": [
         "test_reports/pytest_report.xml"
     ],
-            "4_type_checker": [
-        "type_check/type_check/type_check_report.md"
+    "4_type_checker": [
+        "type_check/type_check_report.md"
     ],
     "5_export": [
         "gnn_exports/"
@@ -59,10 +59,10 @@ EXPECTED_OUTPUTS = {
         "ontology_processing/"
     ],
     "9_render": [
-        "gnn_rendered_simulators/"
+        "gnn_rendered_simulators/"  # PyMDP, RxInfer.jl, ActiveInference.jl code
     ],
     "10_execute": [
-        "execution_results/"
+        "execution_results/"  # PyMDP, RxInfer.jl, ActiveInference.jl results
     ],
     "11_llm": [
         "llm_processing_step/"
@@ -178,7 +178,7 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
                 issues["warnings"].append(f"Missing recommended imports: {', '.join(missing_imports)}")
         
         # Check for pipeline configuration usage
-        if module_path.name.startswith(('1_', '2_', '3_', '4_', '5_', '6_', '7_', '8_', '9_', '10_', '11_', '12_', '13_', '14_')):
+        if module_path.name.startswith(('1_', '2_', '3_', '4_', '5_', '6_', '7_', '8_', '9_', '10_', '11_', '12_', '13_')):
             if "from pipeline" not in content and "pipeline" not in content:
                 issues["suggestions"].append("Consider using centralized pipeline configuration")
         
@@ -207,7 +207,7 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
                 issues["suggestions"].append("Consider using EnhancedArgumentParser.parse_step_arguments for consistency")
         
         # Check for performance tracking usage
-        if module_path.name in ['5_export.py', '6_visualization.py', '9_render.py', '10_execute.py', '11_llm.py']:
+        if module_path.name in ['5_export.py', '6_visualization.py', '9_render.py', '10_execute.py', '11_llm.py', '13_sapf.py']:
             if "performance_tracker" not in content:
                 issues["suggestions"].append("Consider adding performance tracking for this compute-intensive step")
                 
@@ -228,7 +228,7 @@ def validate_configuration_consistency() -> Dict[str, List[str]]:
         
         # Check that all configured steps have metadata
         configured_steps = set(config.steps.keys())
-        metadata_steps = set(STEP_METADATA.keys())
+        metadata_steps = set(STEP_METADATA.keys()) if STEP_METADATA else set()
         
         missing_metadata = configured_steps - metadata_steps
         if missing_metadata:
@@ -273,7 +273,7 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
         
         if error_modules > 0:
             recommendations.append(f"🔴 **Critical**: Fix import errors in {error_modules} modules")
-            recommendations.append("   - Use the template in `src/utils/pipeline_template.py` as a reference")
+            recommendations.append("   - Use the template in `src/pipeline_step_template.py` as a reference")
             recommendations.append("   - Ensure all modules import from the centralized `utils` package")
         
         if warning_modules > 0:
@@ -309,7 +309,7 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
         "",
         "📋 **General Improvements:**",
         "   1. Use environment variables for configuration overrides (GNN_PIPELINE_*)",
-        "   2. Implement the standardized import pattern from pipeline_template.py",
+        "   2. Implement the standardized import pattern from pipeline_step_template.py",
         "   3. Add correlation IDs to logs for better debugging",
         "   4. Use centralized argument parsing where possible",
         "   5. Consider adding retry logic for network-dependent steps",

@@ -91,7 +91,14 @@ __all__ = [
     'render_gnn_spec',
     'main',
     
-    # Target-specific renderers
+    # Target-specific renderers (test-compatible names)
+    'render_pymdp_code',
+    'render_rxinfer_code', 
+    'render_discopy_code',
+    'render_jax_code',
+    'generate_render_report',
+    
+    # Target-specific renderers (actual names)
     'render_gnn_to_pymdp',
     'render_gnn_to_rxinfer_toml',
     'render_gnn_to_discopy',
@@ -245,4 +252,50 @@ def get_available_renderers() -> dict:
             'output_format': 'python'
         }
     
-    return renderers 
+    return renderers
+
+
+# Test-compatible function aliases
+def render_pymdp_code(gnn_file_path, output_dir=None):
+    """Render GNN to PyMDP code (test-compatible alias)."""
+    if not PYMDP_AVAILABLE:
+        raise ImportError("PyMDP renderer not available")
+    return render_gnn_to_pymdp(gnn_file_path, output_dir)
+
+def render_rxinfer_code(gnn_file_path, output_dir=None):
+    """Render GNN to RxInfer code (test-compatible alias)."""
+    if not RXINFER_AVAILABLE:
+        raise ImportError("RxInfer renderer not available")
+    return render_gnn_to_rxinfer_toml(gnn_file_path, output_dir)
+
+def render_discopy_code(gnn_file_path, output_dir=None):
+    """Render GNN to DisCoPy code (test-compatible alias)."""
+    if not DISCOPY_AVAILABLE:
+        raise ImportError("DisCoPy renderer not available")
+    return render_gnn_to_discopy(gnn_file_path, output_dir)
+
+def render_jax_code(gnn_file_path, output_dir=None):
+    """Render GNN to JAX code (test-compatible alias)."""
+    if not JAX_AVAILABLE:
+        raise ImportError("JAX renderer not available")
+    return render_gnn_to_jax(gnn_file_path, output_dir)
+
+def generate_render_report(render_results, output_path=None):
+    """Generate a report from render results (test-compatible alias)."""
+    import json
+    from datetime import datetime
+    
+    report = {
+        "timestamp": datetime.now().isoformat(),
+        "results": render_results,
+        "summary": {
+            "total_renders": len(render_results) if isinstance(render_results, list) else 1,
+            "successful_renders": sum(1 for r in render_results if r.get('success', False)) if isinstance(render_results, list) else (1 if render_results.get('success', False) else 0)
+        }
+    }
+    
+    if output_path:
+        with open(output_path, 'w') as f:
+            json.dump(report, f, indent=2)
+    
+    return report 

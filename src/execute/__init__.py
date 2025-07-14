@@ -55,6 +55,12 @@ __all__ = [
     'run_simulation',
     'generate_execution_report',
     
+    # Test-compatible functions
+    'execute_script_safely',
+    'validate_execution_environment',
+    'run_pymdp_simulation',
+    'run_rxinfer_simulation',
+    
     # Metadata
     'FEATURES',
     '__version__'
@@ -110,4 +116,26 @@ def get_execution_options() -> dict:
             'detailed': 'Detailed execution monitoring',
             'profiling': 'Performance profiling'
         }
-    } 
+    }
+
+
+# Test-compatible function aliases
+def execute_script_safely(script_path, timeout=300, **kwargs):
+    """Execute a script safely with timeout and error handling (test-compatible alias)."""
+    executor = GNNExecutor()
+    return executor.execute_script(script_path, timeout=timeout, **kwargs)
+
+def validate_execution_environment():
+    """Validate the execution environment (test-compatible alias)."""
+    executor = GNNExecutor()
+    return executor.validate_environment()
+
+def run_pymdp_simulation(script_path, **kwargs):
+    """Run a PyMDP simulation (test-compatible alias)."""
+    executor = GNNExecutor()
+    return executor.execute_script(script_path, **kwargs)
+
+def run_rxinfer_simulation(script_path, **kwargs):
+    """Run an RxInfer simulation (test-compatible alias)."""
+    executor = GNNExecutor()
+    return executor.execute_script(script_path, **kwargs) 

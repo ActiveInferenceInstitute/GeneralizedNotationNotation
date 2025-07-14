@@ -761,6 +761,34 @@ def get_pipeline_step_info() -> Dict[str, Any]:
     return step_info
 
 # Validation utility for the entire pipeline
+def parse_step_arguments(step_name: str, args: Optional[List[str]] = None) -> argparse.Namespace:
+    """Parse arguments for a specific pipeline step (standalone function)."""
+    return EnhancedArgumentParser.parse_step_arguments(step_name, args)
+
+def validate_arguments(args: argparse.Namespace) -> List[str]:
+    """Validate parsed arguments and return list of errors."""
+    errors = []
+    
+    # Basic validation
+    if hasattr(args, 'target_dir') and args.target_dir:
+        if not Path(args.target_dir).exists():
+            errors.append(f"Target directory does not exist: {args.target_dir}")
+    
+    if hasattr(args, 'output_dir') and args.output_dir:
+        # Output directory can be created if it doesn't exist
+        pass
+    
+    return errors
+
+def convert_path_arguments(args: argparse.Namespace) -> argparse.Namespace:
+    """Convert string paths to Path objects in parsed arguments."""
+    for attr_name in dir(args):
+        if not attr_name.startswith('_'):
+            attr_value = getattr(args, attr_name)
+            if isinstance(attr_value, str) and ('dir' in attr_name or 'path' in attr_name or 'file' in attr_name):
+                setattr(args, attr_name, Path(attr_value))
+    return args
+
 def validate_pipeline_configuration(pipeline_args: PipelineArguments) -> Dict[str, List[str]]:
     """
     Validate pipeline configuration against all step requirements.

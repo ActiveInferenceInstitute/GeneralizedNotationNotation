@@ -1,0 +1,9 @@
+File,Source,Target,Type,Temporal
+actinf_pomdp_agent.md,D,s,directed,No
+actinf_pomdp_agent.md,s,A,directed,No
+actinf_pomdp_agent.md,A,o,directed,No
+actinf_pomdp_agent.md,B,s_prime,directed,No
+actinf_pomdp_agent.md,C,G,directed,No
+actinf_pomdp_agent.md,E,π,directed,No
+actinf_pomdp_agent.md,G,π,directed,No
+actinf_pomdp_agent.md,π,u,directed,No

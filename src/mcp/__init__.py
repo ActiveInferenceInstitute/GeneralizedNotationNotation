@@ -15,7 +15,8 @@ from .mcp import (
     MCPServer,
     create_mcp_server,
     start_mcp_server,
-    register_tools
+    register_tools,
+    get_mcp_instance
 )
 
 # Module metadata
@@ -47,6 +48,8 @@ __all__ = [
     'start_mcp_server',
     'register_tools',
     'register_module_tools',
+    'handle_mcp_request',
+    'generate_mcp_report',
     'FEATURES',
     '__version__',
     'get_available_tools'
@@ -131,4 +134,34 @@ def get_mcp_options() -> dict:
 def get_available_tools() -> list:
     """Return a list of available MCP tools."""
     from .mcp import get_available_tools as _get_available_tools
-    return _get_available_tools() 
+    return _get_available_tools()
+
+
+# Test-compatible function alias
+def handle_mcp_request(request_data):
+    """Handle an MCP request (test-compatible alias)."""
+    try:
+        mcp = get_mcp_instance()
+        return mcp.handle_request(request_data)
+    except Exception as e:
+        return {"error": str(e)}
+
+def generate_mcp_report(mcp_data, output_path=None):
+    """Generate an MCP report (test-compatible alias)."""
+    import json
+    from datetime import datetime
+    
+    report = {
+        "timestamp": datetime.now().isoformat(),
+        "mcp_data": mcp_data,
+        "summary": {
+            "tools_available": len(mcp_data.get('tools', [])),
+            "resources_available": len(mcp_data.get('resources', []))
+        }
+    }
+    
+    if output_path:
+        with open(output_path, 'w') as f:
+            json.dump(report, f, indent=2)
+    
+    return report 

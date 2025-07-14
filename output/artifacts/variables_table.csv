@@ -1,0 +1,13 @@
+File,Variable,Type,Dimensions
+actinf_pomdp_agent.md,A,float,"[3, 3]"
+actinf_pomdp_agent.md,B,float,"[3, 3, 3]"
+actinf_pomdp_agent.md,C,float,[3]
+actinf_pomdp_agent.md,D,float,[3]
+actinf_pomdp_agent.md,E,float,[3]
+actinf_pomdp_agent.md,s,float,"[3, 1]"
+actinf_pomdp_agent.md,s_prime,float,"[3, 1]"
+actinf_pomdp_agent.md,o,float,"[3, 1]"
+actinf_pomdp_agent.md,π,float,[3]
+actinf_pomdp_agent.md,u,int,[1]
+actinf_pomdp_agent.md,G,float,[1]
+actinf_pomdp_agent.md,t,int,[1]

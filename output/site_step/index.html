@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>GNN Pipeline Results</title>
+<style>body{font-family:sans-serif;margin:40px;}nav{margin-bottom:30px;}nav ul{list-style:none;padding:0;}nav ul li{display:inline;margin-right:15px;}section{margin-bottom:40px;}h1{color:#333;}h2{color:#666;}pre{background:#f4f4f4;padding:10px;border-radius:4px;overflow-x:auto;}img{max-height:200px;margin:5px;}table{border-collapse:collapse;}th,td{border:1px solid #ccc;padding:4px;}</style>
+</head>
+<body>
+<h1>GNN Pipeline Results</h1>
+<p><em>Generated: 2025-07-14 10:11:55</em></p>
+<nav><ul>
+<li><a href='#pipeline_summary'>Pipeline Summary</a></li>
+<li><a href='#gnn_discovery'>Gnn Discovery</a></li>
+<li><a href='#test_reports'>Test Reports</a></li>
+<li><a href='#gnn_exports'>Gnn Exports</a></li>
+<li><a href='#visualizations'>Visualizations</a></li>
+<li><a href='#ontology_reports'>Ontology Reports</a></li>
+<li><a href='#llm_outputs'>Llm Outputs</a></li>
+<li><a href='#other'>Other</a></li>
+</ul></nav>
+<section id='summary'><h2>Summary</h2>
+<p>Total artifact categories: 8</p>
+</section>
+<section id='pipeline_summary'><h2>Pipeline Summary</h2>
+<p>JSON file not found: ../output/pipeline_execution_summary.json</p>
+</section>
+<section id='gnn_discovery'><h2>Gnn Discovery</h2>
+<h1>GNN File Discovery Report</h1>
+<p><strong>Target Directory:</strong> <code>input/gnn_files</code>
+<strong>Search Pattern:</strong> <code>**/*.md</code>
+<strong>Files Found:</strong> 1</p>
+<h2>Summary Statistics</h2>
+<ul>
+<li>Files with ModelName section: 1</li>
+<li>Files with StateSpaceBlock section: 1</li>
+<li>Files with Connections section: 1</li>
+<li>Files with processing errors: 0</li>
+</ul>
+<h2>File Details</h2>
+<h3>actinf_pomdp_agent.md</h3>
+<p><strong>Path:</strong> <code>input/gnn_files/actinf_pomdp_agent.md</code>
+<strong>Model Name:</strong> Classic Active Inference POMDP Agent v1</p>
+<p><strong>Sections Found:</strong>
+- ModelName: Found: Classic Active Inference POMDP Agent v1
+- StateSpaceBlock: Found
+- Connections: Found</p>
+</section>
+<section id='test_reports'><h2>Test Reports</h2>
+<a href='../output/test_reports/pytest_report.xml' target='_blank'>pytest_report.xml</a><br>
+</section>
+<section id='gnn_exports'><h2>Gnn Exports</h2>
+<a href='../output/gnn_exports/actinf_pomdp_agent' target='_blank'>actinf_pomdp_agent</a><br>
+<a href='../output/gnn_exports/actinf_pomdp_agent/actinf_pomdp_agent.gexf' target='_blank'>actinf_pomdp_agent.gexf</a><br>
+<pre>{
+  "file_path": "../input/gnn_files/actinf_pomdp_agent.md",
+  "name": "Classic Active Inference POMDP Agent v1",
+  "raw_sections": {
+    "GNNSection": "ClassicPOMDPAgent",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Classic Active Inference POMDP Agent v1",
+    "ModelAnnotation": "This model describes a classic Active Inference agent for a discrete POMDP:\n- One observation modality (\"state_observation\") with 3 possible outcomes.\n- One hidden state factor (\"location\") with 3 possible states.\n- The hidden state is fully controllable via 3 discrete actions.\n- The agent's preferences are encoded as log-probabilities over observations.\n- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.\n- All parameterizations are explicit and suitable for translation to code or simulation in any Active Inference framework.",
+    "StateSpaceBlock": "# Likelihood matrix: A[observation_outcomes, hidden_states]\nA[3,3,type=float]   # Likelihood mapping hidden states to observations\n\n# Transition matrix: B[states_next, states_previous, actions]\nB[3,3,3,type=float]   # State transitions given previous state and action\n\n# Preference vector: C[observation_outcomes]\nC[3,type=float]       # Log-preferences over observations\n\n# Prior vector: D[states]\nD[3,type=float]       # Prior over initial hidden states\n\n# Habit vector: E[actions]\nE[3,type=float]       # Initial policy prior (habit) over actions\n\n# Hidden State\ns[3,1,type=float]     # Current hidden state distribution\ns_prime[3,1,type=float] # Next hidden state distribution\n\n# Observation\no[3,1,type=float]     # Current observation\n\n# Policy and Control\n\u03c0[3,type=float]       # Policy (distribution over actions)\nu[1,type=int]         # Action taken\nG[1,type=float]       # Expected Free Energy (scalar or per policy)\nt[1,type=int]         # Time step",
+    "Connections": "D-s\ns-A\nA-o\n(s,u)-B\nB-s_prime\nC>G\nE>\u03c0\nG>\u03c0\n\u03c0-u\nG=ExpectedFreeEne
+... (truncated)</pre>
+<pre>{
+  "directed": true,
+  "multigraph": false,
+  "graph": [
+    [
+      "name",
+      "Classic Active Inference POMDP Agent v1"
+    ]
+  ],
+  "nodes": [
+    {
+      "dimensions": "3,3,type=float",
+      "original_id": "A",
+      "id": "A"
+    },
+    {
+      "dimensions": "3,3,3,type=float",
+      "original_id": "B",
+      "id": "B"
+    },
+    {
+      "dimensions": "3,type=float",
+      "original_id": "C",
+      "id": "C"
+    },
+    {
+      "dimensions": "3,type=float",
+      "original_id": "D",
+      "id": "D"
+    },
+    {
+      "dimensions": "3,type=float",
+      "original_id": "E",
+      "id": "E"
+    },
+    {
+      "dimensions": "3,1,type=float",
+      "original_id": "s",
+      "id": "s"
+    },
+    {
+      "dimensions": "3,1,type=float",
+      "original_id": "s_prime",
+      "id": "s_prime"
+    },
+    {
+      "dimensions": "3,1,type=float",
+      "original_id": "o",
+      "id": "o"
+    },
+    {
+      "dimensions": "1,type=int",
+      "original_id": "u",
+      "id": "u"
+    },
+    {
+      "dimensions": "1,type=float",
+      "original_id": "G",
+      "id": "G"
+    },
+    {
+      "dimensions": "1,type=int",
+      "original_id": "t",
+      "id": "t"
+    },
+    {
+      "label": "\u03c0",
+      "id": "\u03c0"
+    }
+  ],
+  "adjacency": [
+    [
+      {
+        "operator": "-",
+        "id": "o"
+      }
+    ],
+    [
+      {
+        "operator": "-",
+        "id": "s_prime"
+      }
+    ],
+    [
+      {
+        "operator": ">",
+        "id": "G"
+      }
+    ],
+    [
+      {
+        "operator": "-",
+        "id": "s"
+      }
+    ],
+    [
+      {
+        "operator": ">",
+        "id": "\u03c0"
+      }
+    ],
+    [
+      {
+        "operator": "-",
+        "id": "A"
+      },
+      {
+        "operator": "-",
+        "id": "B"
+      }
+    ],
+    [],
+    [],
+    [
+      {
+        "operator": "-",
+        "id": "B"
+      }
+    ],
+    [
+      {
+        "operator": ">",
+        "id": "\u03c0"
+      }
+    ],
+    [],
+    [
+      {
+        "operator": "-",
+        "id": "u"
+      }
+    ]
+  
+... (truncated)</pre>
+<pre>## GNNSection
+ClassicPOMDPAgent
+
+## GNNVersionAndFlags
+GNN v1
+
+## ModelName
+Classic Active Inference POMDP Agent v1
+
+## ModelAnnotation
+This model describes a classic Active Inference agent for a discrete POMDP:
+- One observation modality ("state_observation") with 3 possible outcomes.
+- One hidden state factor ("location") with 3 possible states.
+- The hidden state is fully controllable via 3 discrete actions.
+- The agent's preferences are encoded as log-probabilities over observations.
+- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.
+- All parameterizations are explicit and suitable for translation to code or simulation in any Active Inference framework.
+
+## StateSpaceBlock
+# Likelihood matrix: A[observation_outcomes, hidden_states]
+A[3,3,type=float]   # Likelihood mapping hidden states to observations
+
+# Transition matrix: B[states_next, states_previous, actions]
+B[3,3,3,type=float]   # State transitions given previous state and action
+
+# Preference vector: C[observation_outcomes]
+C[3,type=float]       # Log-preferences over observations
+
+# Prior vector: D[states]
+D[3,type=float]       # Prior over initial hidden states
+
+# Habit vector: E[actions]
+E[3,type=float]       # Initial policy prior (habit) over actions
+
+# Hidden State
+s[3,1,type=float]     # Current hidden state distribution
+s_prime[3,1,type=float] # Next hidden state distribution
+
+# Observation
+o[3,1,type=float]     # Current observation
+
+... (truncated, 119 total lines)</pre>
+<a href='../output/gnn_exports/actinf_pomdp_agent/actinf_pomdp_agent.graphml' target='_blank'>actinf_pomdp_agent.graphml</a><br>
+<a href='../output/gnn_exports/actinf_pomdp_agent/actinf_pomdp_agent.pkl' target='_blank'>actinf_pomdp_agent.pkl</a><br>
+<a href='../output/gnn_exports/actinf_pomdp_agent/actinf_pomdp_agent.xml' target='_blank'>actinf_pomdp_agent.xml</a><br>
+<pre>GNN Model Summary: Classic Active Inference POMDP Agent v1
+
+--- STATESPACEBLOCK ---
+- {'id': 'A', 'dimensions': '3,3,type=float', 'original_id': 'A'}
+- {'id': 'B', 'dimensions': '3,3,3,type=float', 'original_id': 'B'}
+- {'id': 'C', 'dimensions': '3,type=float', 'original_id': 'C'}
+- {'id': 'D', 'dimensions': '3,type=float', 'original_id': 'D'}
+- {'id': 'E', 'dimensions': '3,type=float', 'original_id': 'E'}
+- {'id': 's', 'dimensions': '3,1,type=float', 'original_id': 's'}
+- {'id': 's_prime', 'dimensions': '3,1,type=float', 'original_id': 's_prime'}
+- {'id': 'o', 'dimensions': '3,1,type=float', 'original_id': 'o'}
+- {'id': 'u', 'dimensions': '1,type=int', 'original_id': 'u'}
+- {'id': 'G', 'dimensions': '1,type=float', 'original_id': 'G'}
+- {'id': 't', 'dimensions': '1,type=int', 'original_id': 't'}
+
+--- CONNECTIONS ---
+- {'sources': ['D'], 'operator': '-', 'targets': ['s'], 'attributes': {}}
+- {'sources': ['s'], 'operator': '-', 'targets': ['A'], 'attributes': {}}
+- {'sources': ['A'], 'operator': '-', 'targets': ['o'], 'attributes': {}}
+- {'sources': ['s', 'u'], 'operator': '-', 'targets': ['B'], 'attributes': {}}
+- {'sources': ['B'], 'operator': '-', 'targets': ['s_prime'], 'attributes': {}}
+- {'sources': ['C'], 'operator': '>', 'targets': ['G'], 'attributes': {}}
+- {'sources': ['E'], 'operator': '>', 'targets': ['π'], 'attributes': {}}
+- {'sources': ['G'], 'operator': '>', 'targets': ['π'], 'attributes': {}}
+- {'sources': ['π'], 'operator': '-', 'targets': ['u'], 'attributes': {}}
+
+--- INITIALPARAMETERIZATION ---
+- A: [(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)]
+- B: [((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)), ((0.0, 1.0, 0.0), (1.0, 0.0, 0.0), (0.0, 0.0, 1.0)), ((0.0, 0.0, 1.0), (0.0, 1.0, 0.0), (1.0, 0.0, 0.0))]
+- C: [0.0, 0.0, 1.0]
+- D: [0.33333, 0.33333, 0.33333]
+- E: [0.0, 0.0, 0.0]
+
+</pre>
+</section>
+<section id='visualizations'><h2>Visualizations</h2>
+<img src="matrix_E.png" alt="matrix_E.png" style="max-height:200px; margin:5px;" loading="lazy"><br><small>matrix_E.png</small>
+<img src="matrix_D.png" alt="matrix_D.png" style="max-height:200px; margin:5px;" loading="lazy"><br><small>matrix_D.png</small>
+<img src="connections.png" alt="connections.png" style="max-height:200px; margin:5px;" loading="lazy"><br><small>connections.png</small>
+<img src="matrix_C.png" alt="matrix_C.png" style="max-height:200px; margin:5px;" loading="lazy"><br><small>matrix_C.png</small>
+<img src="matrix_B.png" alt="matrix_B.png" style="max-height:200px; margin:5px;" loading="lazy"><br><small>matrix_B.png</small>
+<img src="ontology_annotations.png" alt="ontology_annotations.png" style="max-height:200px; margin:5px;" loading="lazy"><br><small>ontology_annotations.png</small>
+<img src="matrix_A.png" alt="matrix_A.png" style="max-height:200px; margin:5px;" loading="lazy"><br><small>matrix_A.png</small>
+<img src="combined_visualization.png" alt="combined_visualization.png" style="max-height:200px; margin:5px;" loading="lazy"><br><small>combined_visualization.png</small>
+<img src="state_space.png" alt="state_space.png" style="max-height:200px; margin:5px;" loading="lazy"><br><small>state_space.png</small>
+<img src="combined_matrices.png" alt="combined_matrices.png" style="max-height:200px; margin:5px;" loading="lazy"><br><small>combined_matrices.png</small>
+</section>
+<section id='ontology_reports'><h2>Ontology Reports</h2>
+<h1>Ontology Processing Report</h1>
+<p><strong>Generated:</strong> 2025-07-14T10:09:48.464574
+<strong>Target Directory:</strong> ../input/gnn_files
+<strong>Files Processed:</strong> 1
+<strong>Ontology Terms Loaded:</strong> 60</p>
+<h2>File Details</h2>
+<h3>actinf_pomdp_agent.md</h3>
+<ul>
+<li><strong>Annotations Found:</strong> 11</li>
+<li><strong>Terms Matched:</strong> 0</li>
+<li><strong>Terms Missing:</strong> 0</li>
+</ul>
+</section>
+<section id='llm_outputs'><h2>Llm Outputs</h2>
+<pre>{
+  "success": true,
+  "files_processed": 1,
+  "total_files": 1,
+  "total_analyses": 6,
+  "successful_analyses": 6,
+  "files": {
+    "actinf_pomdp_agent": {
+      "file": "../input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent",
+      "analyses": {
+        "summarize_content": {
+          "success": true,
+          "file": "../output/llm_processing_step/actinf_pomdp_agent/summarize_content_analysis.md",
+          "provider": "openrouter",
+          "content_length": 2791,
+          "tokens_used": null
+        },
+        "explain_model": {
+          "success": true,
+          "file": "../output/llm_processing_step/actinf_pomdp_agent/explain_model_analysis.md",
+          "provider": "openrouter",
+          "content_length": 5000,
+          "tokens_used": null
+        },
+        "identify_components": {
+          "success": true,
+          "file": "../output/llm_processing_step/actinf_pomdp_agent/identify_components_analysis.md",
+          "provider": "openrouter",
+          "content_length": 4566,
+          "tokens_used": null
+        },
+        "analyze_structure": {
+          "success": true,
+          "file": "../output/llm_processing_step/actinf_pomdp_agent/analyze_structure_analysis.md",
+          "provider": "openrouter",
+          "content_length": 5933,
+          "tokens_used": null
+        },
+        "extract_parameters": {
+          "success": true,
+          "file": "../output/llm_processing_step/actinf_pomdp_agent/extract_parameters_analysis.md",
+          "provider": "openrouter",
+          "content_length": 4415,
+          "tokens_used": null
+        },
+        "practical_applications": {
+          "success": true,
+          "file": "../output/llm_processing_step/actinf_pomdp_agent/practical_applications_analysis.md",
+          "provider": "openrouter",
+          "content_length": 4931,
+          "tokens_used": null
+        }
+      },
+      "errors": [],
+      "success_count": 6,
+      "total_tasks": 6
+    }
+  }
+}</pre>
+<a href='../output/llm_processing_step/actinf_pomdp_agent' target='_blank'>actinf_pomdp_agent</a><br>
+<h1>Structural Analysis and Graph Properties</h1>
+<p><strong>File:</strong> actinf_pomdp_agent.md</p>
+<p><strong>Analysis Type:</strong> analyze_structure</p>
+<p><strong>Generated:</strong> 2025-07-14T10:11:20.003922</p>
+<hr />
+<h3>1. Graph Structure</h3>
+<p><strong>Number of Variables and Their Types:</strong>
+- The GNN specification includes the following variables:
+  - <strong>Hidden State (<code>s</code>)</strong>: 3-dimensional continuous variable representing the current hidden state distribution.
+  - <strong>Next Hidden State (<code>s_prime</code>)</strong>: 3-dimensional continuous variable representing the next hidden state distribution.
+  - <strong>Observation (<code>o</code>)</strong>: 3-dimensional continuous variable representing the current observation.
+  - <strong>Policy (<code>π</code>)</strong>: 3-dimensional continuous variable representing the distribution over actions.
+  - <strong>Action (<code>u</code>)</strong>: 1-dimensional discrete variable representing the chosen action.
+  - <strong>Expected Free Energy (<code>G</code>)</strong>: 1-dimensional continuous variable representing the expected free energy.
+  - <strong>Time (<code>t</code>)</strong>: 1-dimensional discrete variable representing the time step.
+  - <strong>Likelihood matrix (<code>A</code>)</strong>: 3x3 matrix mapping hidden states to observations.
+  - <strong>Transition matrix (<code>B</code>)</strong>: 3x3x3 matrix representing state transitions given previous states and actions.
+  - <strong>Preference vector (<code>C</code>)</strong>: 3-dimensional continuous variable representing log-preferences over observations.
+  - <strong>Prior vector (<code>D</code>)</strong>: 3-dimensional continuous variable representing the prior over initial hidden states.
+  - <strong>Habit vector (<code>E</code>)</strong>: 3-dimensional continuous variable representing the initial policy prior (habit).</p>
+<p><strong>Connection Patterns:</strong>
+- The connections are directed, indicating a flow of information from one variable to another. For example:
+  - <code>D</code> influences <code>s</code>, which influences <code>A</code>, leading to <code>o</code>.
+  - The action <code>u</code> influences the transition matrix <code>B</code>, which updates the next hidden state <code>s_prime</code>.
+  - The expected free energy <code>G</code> is influenced by both the preference vector <code>C</code> and the policy <code>π</code>.</p>
+<p><strong>Graph Topology:</strong>
+- The graph exhibits a hierarchical structure where the hidden states and observations form the foundational layer, while actions and expected free energy are derived from these foundational variables. This structure resembles a directed acyclic graph (DAG), where information flows from parameters to states and observations without cycles.</p>
+<h3>2. Variable Analysis</h3>
+<p><strong>State Space Dimensionality for Each Variable:</strong>
+- Hidden State (<code>s</code>): 3 dimensions (representing 3 possible hidden states).
+- Next Hidden State (<code>s_prime</code>): 3 dimensions.
+- Observation (<code>o</code>): 3 dimensions (representing 3 possible outcomes).
+- Policy (<code>π</code>): 3 dimensions (distribution over actions).
+- Action (<code>u</code>): 1 dimension (discrete action).
+- Expected Free Energy (<code>G</code>): 1 dimension.
+- Time (<code>t</code>): 1 dimension.</p>
+<p><strong>Dependencies and Conditional Relationships:</strong>
+- The hidden state <code>s</code> is conditioned on the prior <code>D</code> and influences the likelihood <code>A</code> and the next hidden state <code>s_prime</code> through the action <code>u</code>.
+- The observation <code>o</code> is dependent on the hidden state <code>s</code> via the likelihood matrix <code>A</code>.
+- The expected free energy <code>G</code> depends on the preferences <code>C</code> and the policy <code>π</code>.</p>
+<p><strong>Temporal vs. Static Variables:</strong>
+- Temporal variables: <code>s</code>, <code>s_prime</code>, <code>o</code>, <code>π</code>, <code>u</code>, <code>G</code>, and <code>t</code> evolve over time.
+- Static variables: <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, and <code>E</code> are fixed parameters that define the model structure.</p>
+<h3>3. Mathematical Structure</h3>
+<p><strong>Matrix Dimensions and Compatibility:</strong>
+- Likelihood matrix <code>A</code>: 3x3 (observations x hidden states).
+- Transition matrix <code>B</code>: 3x3x3 (next states x previous states x actions).
+- Preference vector <code>C</code>: 3 (observations).
+- Prior vector <code>D</code>: 3 (hidden states).
+- Habit vector <code>E</code>: 3 (actions).</p>
+<p><strong>Parameter Structure and Organization:</strong>
+- The parameters are organized into matrices and vectors that clearly delineate their roles in the model. The likelihood and transition matrices are structured to facilitate direct mapping between states and observations, while preference and prior vectors encode agent preferences and beliefs.</p>
+<p><strong>Symmetries or Special Properties:</strong>
+- The likelihood matrix <code>A</code> is structured as an identity matrix, indicating deterministic observation outcomes based on hidden states. This symmetry simplifies inference as each state directly maps to a unique observation.</p>
+<h3>4. Complexity Assessment</h3>
+<p><strong>Computational Complexity Indicators:</strong>
+- The computational complexity is primarily driven by the matrix operations involved in state inference and policy evaluation. The dimensionality of matrices (3x3) suggests that operations are manageable in terms of computational load, typically O(n^3) for matrix multiplication.</p>
+<p><strong>Model Scalability Considerations:</strong>
+- The model is designed for a fixed number of states, observations, and actions. While this allows for efficient computation, scalability may be limited if the number of states or actions increases significantly, as the size of matrices would grow cubically.</p>
+<p><strong>Potential Bottlenecks or Challenges:</strong>
+- The deterministic nature of the matrices may limit the model's ability to capture more complex dynamics, potentially requiring a more sophisticated representation for environments with stochastic elements.</p>
+<h3>5. Design Patterns</h3>
+<p><strong>Modeling Patterns or Templates:</strong>
+- The GNN follows a classic POMDP structure, where observations, states, and actions are clearly delineated. This reflects a typical Active Inference framework where the agent infers hidden states from observations and updates its beliefs based on actions taken.</p>
+<p><strong>Reflection of the Domain Being Modeled:</strong>
+- The structure captures the essence of Active Inference, emphasizing the role of beliefs (hidden states) and actions in minimizing expected free energy. The explicit parameterization allows for straightforward implementation in simulation environments, aligning with the principles of probabilistic graphical models and decision-making under uncertainty.</p>
+<p>In summary, this GNN specification effectively encapsulates the principles of Active Inference within a POMDP framework, providing a clear and structured representation suitable for further analysis and implementation.</p>
+<hr />
+<p><em>Analysis generated using LLM provider: openrouter</em></p>
+<h1>Parameter Extraction and Configuration</h1>
+<p><strong>File:</strong> actinf_pomdp_agent.md</p>
+<p><strong>Analysis Type:</strong> extract_parameters</p>
+<p><strong>Generated:</strong> 2025-07-14T10:11:39.564330</p>
+<hr />
+<p>Here is a systematic breakdown of the parameters extracted from the provided GNN specification for the Classic Active Inference POMDP Agent:</p>
+<h3>1. Model Matrices</h3>
+<h4>A Matrices (Likelihood Matrix)</h4>
+<ul>
+<li><strong>Dimensions</strong>: (3 \times 3)</li>
+<li><strong>Structure</strong>: </li>
+<li>Each row corresponds to an observation outcome.</li>
+<li>Each column corresponds to a hidden state.</li>
+<li><strong>Interpretation</strong>: </li>
+<li>The likelihood matrix (A) defines the probability of observing a specific outcome given the hidden state. In this case, each hidden state deterministically maps to a unique observation outcome.</li>
+</ul>
+<h4>B Matrices (Transition Matrix)</h4>
+<ul>
+<li><strong>Dimensions</strong>: (3 \times 3 \times 3)</li>
+<li><strong>Structure</strong>: </li>
+<li>The first dimension corresponds to the next hidden state.</li>
+<li>The second dimension corresponds to the previous hidden states.</li>
+<li>The third dimension corresponds to the actions taken.</li>
+<li><strong>Interpretation</strong>: </li>
+<li>The transition matrix (B) specifies the probabilities of transitioning to a new hidden state based on the previous state and the action taken. Each action deterministically leads to a specific next state.</li>
+</ul>
+<h4>C Matrices (Log Preference Vector)</h4>
+<ul>
+<li><strong>Dimensions</strong>: (3)</li>
+<li><strong>Structure</strong>: </li>
+<li>A vector of log-probabilities over the observation outcomes.</li>
+<li><strong>Interpretation</strong>: </li>
+<li>The log preference vector (C) encodes the agent's preferences for different observations. In this case, the agent has a preference for observing the third state.</li>
+</ul>
+<h4>D Matrices (Prior Vector)</h4>
+<ul>
+<li><strong>Dimensions</strong>: (3)</li>
+<li><strong>Structure</strong>: </li>
+<li>A vector representing the prior beliefs over the hidden states.</li>
+<li><strong>Interpretation</strong>: </li>
+<li>The prior vector (D) indicates uniform prior beliefs across the three hidden states, suggesting no initial bias towards any state.</li>
+</ul>
+<h3>2. Precision Parameters</h3>
+<ul>
+<li><strong>γ (Gamma)</strong>: </li>
+<li>
+<p>Not explicitly defined in the GNN specification, but typically represents the precision of beliefs or confidence in the model parameters.</p>
+</li>
+<li>
+<p><strong>α (Alpha)</strong>: </p>
+</li>
+<li>
+<p>Not explicitly defined in the GNN specification, but generally refers to learning rates or adaptation parameters that influence how quickly the agent updates its beliefs based on new observations.</p>
+</li>
+<li>
+<p><strong>Other Precision/Confidence Parameters</strong>: </p>
+</li>
+<li>Not specified in the document, but could include parameters that control the noise in observations or the uncertainty in state transitions.</li>
+</ul>
+<h3>3. Dimensional Parameters</h3>
+<ul>
+<li><strong>State Space Dimensions</strong>: </li>
+<li>
+<p>Number of hidden states: (3) (as indicated by (s[3,1])).</p>
+</li>
+<li>
+<p><strong>Observation Space Dimensions</strong>: </p>
+</li>
+<li>
+<p>Number of observations: (3) (as indicated by (o[3,1])).</p>
+</li>
+<li>
+<p><strong>Action Space Dimensions</strong>: </p>
+</li>
+<li>Number of actions: (3) (as indicated by (B) and (π[3])).</li>
+</ul>
+<h3>4. Temporal Parameters</h3>
+<ul>
+<li><strong>Time Horizons (T)</strong>: </li>
+<li>
+<p>Defined as unbounded, indicating that the agent can operate indefinitely without a fixed endpoint.</p>
+</li>
+<li>
+<p><strong>Temporal Dependencies and Windows</strong>: </p>
+</li>
+<li>
+<p>Not explicitly defined, but the model operates in discrete time steps as indicated by (t[1]).</p>
+</li>
+<li>
+<p><strong>Update Frequencies and Timescales</strong>: </p>
+</li>
+<li>Not specified, but typically, updates occur at each time step based on new observations.</li>
+</ul>
+<h3>5. Initial Conditions</h3>
+<ul>
+<li><strong>Prior Beliefs Over Initial States</strong>: </li>
+<li>
+<p>Uniform prior over hidden states defined in vector (D) as ((0.33333, 0.33333, 0.33333)).</p>
+</li>
+<li>
+<p><strong>Initial Parameter Values</strong>: </p>
+</li>
+<li>
+<p>Defined explicitly in the (A), (B), (C), (D), and (E) matrices.</p>
+</li>
+<li>
+<p><strong>Initialization Strategies</strong>: </p>
+</li>
+<li>Not explicitly mentioned, but the uniform priors suggest a non-informative initialization strategy.</li>
+</ul>
+<h3>6. Configuration Summary</h3>
+<ul>
+<li><strong>Parameter File Format Recommendations</strong>: </li>
+<li>
+<p>The GNN specification is already structured in a machine-readable format, suitable for translation into code or simulation.</p>
+</li>
+<li>
+<p><strong>Tunable vs. Fixed Parameters</strong>: </p>
+</li>
+<li>
+<p>Tunable parameters include the entries in matrices (A), (B), (C), (D), and (E), while the dimensions and structure of the matrices are fixed.</p>
+</li>
+<li>
+<p><strong>Sensitivity Analysis Priorities</strong>: </p>
+</li>
+<li>Important parameters for sensitivity analysis would include the likelihood matrix (A), transition matrix (B), and preference vector (C), as they directly influence the agent's behavior and performance in the POMDP framework.</li>
+</ul>
+<p>This breakdown provides a comprehensive overview of the parameters and their implications in the context of Active Inference and POMDPs, facilitating a deeper understanding of the model's structure and functionality.</p>
+<hr />
+<p><em>Analysis generated using LLM provider: openrouter</em></p>
+<h1>Component Identification and Classification</h1>
+<p><strong>File:</strong> actinf_pomdp_agent.md</p>
+<p><strong>Analysis Type:</strong> identify_components</p>
+<p><strong>Generated:</strong> 2025-07-14T10:10:47.473133</p>
+<hr />
+<p>Here is a systematic breakdown of the provided GNN specification for the Classic Active Inference POMDP Agent:</p>
+<h3>1. State Variables (Hidden States)</h3>
+<ul>
+<li><strong>Variable Names and Dimensions</strong>:</li>
+<li><code>s[3,1,type=float]</code>: Current hidden state distribution.</li>
+<li>
+<p><code>s_prime[3,1,type=float]</code>: Next hidden state distribution.</p>
+</li>
+<li>
+<p><strong>Conceptual Representation</strong>:</p>
+</li>
+<li><code>s</code>: Represents the current belief about the hidden state of the environment, which in this case is the "location" of the agent.</li>
+<li>
+<p><code>s_prime</code>: Represents the belief about the next hidden state after taking an action.</p>
+</li>
+<li>
+<p><strong>State Space Structure</strong>:</p>
+</li>
+<li>The hidden states are discrete and finite, with 3 possible states. This means the agent can be in one of three distinct locations at any given time.</li>
+</ul>
+<h3>2. Observation Variables</h3>
+<ul>
+<li><strong>Observation Modalities and Meanings</strong>:</li>
+<li>
+<p><code>o[3,1,type=float]</code>: Current observation, which can take one of three outcomes corresponding to the hidden states.</p>
+</li>
+<li>
+<p><strong>Sensor/Measurement Interpretations</strong>:</p>
+</li>
+<li>
+<p>The observations are directly linked to the hidden states via the likelihood matrix <code>A</code>. Each hidden state deterministically produces a unique observation.</p>
+</li>
+<li>
+<p><strong>Noise Models or Uncertainty Characterization</strong>:</p>
+</li>
+<li>The model does not explicitly mention noise; however, since the likelihood matrix is deterministic (identity mapping), it implies that there is no uncertainty in the observation given the hidden state.</li>
+</ul>
+<h3>3. Action/Control Variables</h3>
+<ul>
+<li><strong>Available Actions and Their Effects</strong>:</li>
+<li>
+<p><code>u[1,type=int]</code>: Represents the action taken by the agent. There are 3 discrete actions available, which correspond to transitions between hidden states.</p>
+</li>
+<li>
+<p><strong>Control Policies and Decision Variables</strong>:</p>
+</li>
+<li>
+<p><code>π[3,type=float]</code>: The policy vector, representing the distribution over the available actions. This is influenced by the expected free energy <code>G</code>.</p>
+</li>
+<li>
+<p><strong>Action Space Properties</strong>:</p>
+</li>
+<li>The action space is discrete and finite, with 3 possible actions that the agent can choose from to influence its hidden state.</li>
+</ul>
+<h3>4. Model Matrices</h3>
+<ul>
+<li><strong>A Matrices: Observation Models P(o|s)</strong>:</li>
+<li>
+<p><code>A[3,3,type=float]</code>: Likelihood mapping from hidden states to observations. Each hidden state deterministically produces a unique observation.</p>
+</li>
+<li>
+<p><strong>B Matrices: Transition Dynamics P(s'|s,u)</strong>:</p>
+</li>
+<li>
+<p><code>B[3,3,3,type=float]</code>: State transition matrix that defines how the hidden state changes given the previous state and the action taken. Each action deterministically leads to a new state based on the current state.</p>
+</li>
+<li>
+<p><strong>C Matrices: Preferences/Goals</strong>:</p>
+</li>
+<li>
+<p><code>C[3,type=float]</code>: Log-preferences over observations, indicating the agent's preference for observing certain states (in this case, a preference for observing state 2).</p>
+</li>
+<li>
+<p><strong>D Matrices: Prior Beliefs Over Initial States</strong>:</p>
+</li>
+<li><code>D[3,type=float]</code>: Prior distribution over the initial hidden states, which is uniform in this case.</li>
+</ul>
+<h3>5. Parameters and Hyperparameters</h3>
+<ul>
+<li><strong>Precision Parameters (γ, α, etc.)</strong>:</li>
+<li>
+<p>The specification does not explicitly mention precision parameters, but these could be inferred from the learning dynamics in a broader implementation context.</p>
+</li>
+<li>
+<p><strong>Learning Rates and Adaptation Parameters</strong>:</p>
+</li>
+<li>
+<p>The model does not specify learning rates, indicating that it may be designed for a static analysis rather than an adaptive learning scenario.</p>
+</li>
+<li>
+<p><strong>Fixed vs. Learnable Parameters</strong>:</p>
+</li>
+<li>The matrices <code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, and <code>E</code> are fixed parameters in this specification, with no indication of learnable parameters.</li>
+</ul>
+<h3>6. Temporal Structure</h3>
+<ul>
+<li><strong>Time Horizons and Temporal Dependencies</strong>:</li>
+<li>
+<p>The model is defined for an unbounded time horizon, allowing for continuous interaction with the environment without a predefined endpoint.</p>
+</li>
+<li>
+<p><strong>Dynamic vs. Static Components</strong>:</p>
+</li>
+<li>The model is dynamic, as it incorporates state transitions and observations that evolve over time based on the agent's actions. The time step <code>t</code> is discrete, indicating that the agent updates its beliefs and policies at each time step.</li>
+</ul>
+<h3>Summary</h3>
+<p>This GNN specification outlines a classic Active Inference POMDP agent with a clear structure for state, observation, and action variables, along with well-defined matrices for likelihoods, transitions, preferences, and priors. The model is designed for discrete states and actions, with a focus on deterministic mappings and uniform distributions, suitable for simulation and inference in Active Inference frameworks. The temporal structure allows for ongoing interaction with the environment, making it a robust framework for modeling decision-making processes in uncertain environments.</p>
+<hr />
+<p><em>Analysis generated using LLM provider: openrouter</em></p>
+<h1>Practical Applications and Use Cases</h1>
+<p><strong>File:</strong> actinf_pomdp_agent.md</p>
+<p><strong>Analysis Type:</strong> practical_applications</p>
+<p><strong>Generated:</strong> 2025-07-14T10:11:55.057902</p>
+<hr />
+<p>The provided GNN model represents a classic Active Inference agent operating within a Partially Observable Markov Decision Process (POMDP) framework. Below is a detailed analysis of its practical applications, implementation considerations, performance expectations, deployment scenarios, benefits, and challenges.</p>
+<h3>1. Real-World Applications</h3>
+<h4>Domains:</h4>
+<ul>
+<li><strong>Robotics</strong>: The model can be used in robotic navigation tasks where the robot must infer its location based on sensor observations and take actions to reach a target location.</li>
+<li><strong>Autonomous Vehicles</strong>: Similar to robotics, this model can help vehicles make decisions based on limited observations of their environment.</li>
+<li><strong>Healthcare</strong>: In medical diagnostics, the agent can infer patient conditions based on observed symptoms and recommend treatments.</li>
+<li><strong>Finance</strong>: The model can be applied to algorithmic trading, where it infers market states from price movements and selects trading actions accordingly.</li>
+</ul>
+<h4>Specific Use Cases:</h4>
+<ul>
+<li><strong>Navigation Systems</strong>: Implementing this model in GPS systems to dynamically adjust routes based on real-time traffic data.</li>
+<li><strong>Game AI</strong>: Developing intelligent non-player characters (NPCs) that adapt their strategies based on player actions and game state observations.</li>
+<li><strong>Smart Home Systems</strong>: Automating home devices based on user behavior patterns inferred from sensor data.</li>
+</ul>
+<h3>2. Implementation Considerations</h3>
+<h4>Computational Requirements:</h4>
+<ul>
+<li>The model's computational load is manageable due to its discrete state and action space, making it suitable for real-time applications. However, the complexity can increase with the addition of more states or actions.</li>
+</ul>
+<h4>Data Requirements:</h4>
+<ul>
+<li>The model requires a dataset that captures the relationship between hidden states and observations. This data can be collected through simulations or real-world experiments.</li>
+</ul>
+<h4>Integration:</h4>
+<ul>
+<li>The model can be integrated into existing systems using APIs or middleware that facilitate communication between the Active Inference agent and other software components.</li>
+</ul>
+<h3>3. Performance Expectations</h3>
+<h4>Expected Performance:</h4>
+<ul>
+<li>The model is expected to perform well in environments where the state transitions and observations are relatively stable and predictable. It can efficiently infer hidden states and select actions that minimize expected free energy.</li>
+</ul>
+<h4>Evaluation Metrics:</h4>
+<ul>
+<li>Performance can be evaluated using metrics such as cumulative reward, accuracy of state inference, and convergence speed of the policy.</li>
+</ul>
+<h4>Limitations:</h4>
+<ul>
+<li>The model may struggle in highly dynamic environments where the relationships between states and observations change frequently, leading to potential misinference.</li>
+</ul>
+<h3>4. Deployment Scenarios</h3>
+<h4>Online vs. Offline Processing:</h4>
+<ul>
+<li>The model is designed for online processing, allowing it to adapt in real-time to new observations and changing environments.</li>
+</ul>
+<h4>Real-Time Constraints:</h4>
+<ul>
+<li>The discrete nature of the model allows for quick decision-making, but real-time performance may depend on the computational resources available.</li>
+</ul>
+<h4>Hardware and Software Dependencies:</h4>
+<ul>
+<li>The model can be implemented on standard computing hardware but may benefit from parallel processing capabilities for scaling.</li>
+</ul>
+<h3>5. Benefits and Advantages</h3>
+<h4>Problem-Solving Capabilities:</h4>
+<ul>
+<li>The model excels in scenarios requiring adaptive decision-making under uncertainty, leveraging its ability to infer hidden states and optimize actions.</li>
+</ul>
+<h4>Unique Features:</h4>
+<ul>
+<li>The explicit representation of preferences and habits allows for nuanced behavior modeling, making it adaptable to various contexts.</li>
+</ul>
+<h4>Comparison to Alternatives:</h4>
+<ul>
+<li>Compared to traditional rule-based systems, this model offers a more flexible and adaptive approach, capable of learning from experience and adjusting to new information.</li>
+</ul>
+<h3>6. Challenges and Considerations</h3>
+<h4>Implementation Difficulties:</h4>
+<ul>
+<li>Tuning the model parameters (likelihoods, transition probabilities) can be challenging, especially in complex environments where data is scarce.</li>
+</ul>
+<h4>Optimization Requirements:</h4>
+<ul>
+<li>The model may require optimization techniques to ensure efficient convergence of policies, particularly in high-dimensional state spaces.</li>
+</ul>
+<h4>Maintenance Needs:</h4>
+<ul>
+<li>Continuous monitoring is necessary to ensure that the model remains effective as the environment changes. Regular updates to the model parameters may be needed based on new data.</li>
+</ul>
+<h3>Conclusion</h3>
+<p>The Classic Active Inference POMDP Agent model provides a robust framework for decision-making under uncertainty across various domains. Its adaptability, combined with the ability to infer hidden states and optimize actions, makes it a valuable tool in fields ranging from robotics to finance. However, successful implementation requires careful consideration of computational resources, data collection strategies, and ongoing maintenance to ensure optimal performance.</p>
+<hr />
+<p><em>Analysis generated using LLM provider: openrouter</em></p>
+<h1>Content Summary and Key Points</h1>
+<p><strong>File:</strong> actinf_pomdp_agent.md</p>
+<p><strong>Analysis Type:</strong> summarize_content</p>
+<p><strong>Generated:</strong> 2025-07-14T10:10:03.402628</p>
+<hr />
+<h1>Summary of Classic Active Inference POMDP Agent GNN Specification</h1>
+<h2>Model Overview</h2>
+<p>The Classic Active Inference POMDP Agent is a discrete Partially Observable Markov Decision Process (POMDP) model designed for a single modality and single factor of hidden states. It operates by inferring hidden states based on observations and selecting actions to minimize expected free energy, facilitating decision-making in uncertain environments.</p>
+<h2>Key Variables</h2>
+<ul>
+<li><strong>Hidden States</strong>:</li>
+<li>
+<p><code>location</code>: Represents the agent's position, with three possible states (0, 1, 2).</p>
+</li>
+<li>
+<p><strong>Observations</strong>:</p>
+</li>
+<li>
+<p><code>state_observation</code>: The outcomes of the agent's observations, with three possible outcomes (0, 1, 2), where each observation corresponds to a specific hidden state.</p>
+</li>
+<li>
+<p><strong>Actions/Controls</strong>:</p>
+</li>
+<li><code>u</code>: The action taken by the agent, selected from three discrete actions that control the transition between hidden states.</li>
+<li><code>π</code>: The policy vector representing the distribution over possible actions, guiding the agent's decision-making process.</li>
+</ul>
+<h2>Critical Parameters</h2>
+<ul>
+<li><strong>Matrices</strong>:</li>
+<li><strong>A (Likelihood Matrix)</strong>: A[3,3] that maps hidden states to observations, indicating that each hidden state deterministically produces a unique observation.</li>
+<li><strong>B (Transition Matrix)</strong>: B[3,3,3] that defines state transitions based on previous states and actions, where each action deterministically leads to a new state.</li>
+<li><strong>C (Log Preference Vector)</strong>: C[3] that encodes the agent's preferences over observations, with a preference for observing state 2.</li>
+<li>
+<p><strong>D (Prior Vector)</strong>: D[3] representing a uniform prior distribution over the initial hidden states.</p>
+</li>
+<li>
+<p><strong>Key Hyperparameters</strong>:</p>
+</li>
+<li><code>num_hidden_states</code>: 3 (indicating three possible hidden states).</li>
+<li><code>num_obs</code>: 3 (indicating three possible observations).</li>
+<li><code>num_actions</code>: 3 (indicating three possible actions).</li>
+</ul>
+<h2>Notable Features</h2>
+<ul>
+<li>The model is designed for a discrete time framework with an unbounded time horizon, allowing for continuous operation without a predefined endpoint.</li>
+<li>The initial policy prior (habit) is uniform, indicating no initial preference for any action, which can be useful for exploratory behavior in uncertain environments.</li>
+<li>The model's structure is explicitly parameterized, facilitating easy translation into code or simulation frameworks for Active Inference.</li>
+</ul>
+<h2>Use Cases</h2>
+<p>This model can be applied in scenarios where an agent must make decisions based on incomplete information about its environment, such as robotics, autonomous navigation, and interactive AI systems that require adaptive behavior in dynamic settings. It is particularly useful for tasks involving exploration and exploitation in uncertain environments, where the agent needs to infer hidden states and optimize its actions accordingly.</p>
+<hr />
+<p><em>Analysis generated using LLM provider: openrouter</em></p>
+<pre>{
+  "file": "../input/gnn_files/actinf_pomdp_agent.md",
+  "file_name": "actinf_pomdp_agent",
+  "analyses": {
+    "summarize_content": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/summarize_content_analysis.md",
+      "provider": "openrouter",
+      "content_length": 2791,
+      "tokens_used": null
+    },
+    "explain_model": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/explain_model_analysis.md",
+      "provider": "openrouter",
+      "content_length": 5000,
+      "tokens_used": null
+    },
+    "identify_components": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/identify_components_analysis.md",
+      "provider": "openrouter",
+      "content_length": 4566,
+      "tokens_used": null
+    },
+    "analyze_structure": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/analyze_structure_analysis.md",
+      "provider": "openrouter",
+      "content_length": 5933,
+      "tokens_used": null
+    },
+    "extract_parameters": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/extract_parameters_analysis.md",
+      "provider": "openrouter",
+      "content_length": 4415,
+      "tokens_used": null
+    },
+    "practical_applications": {
+      "success": true,
+      "file": "../output/llm_processing_step/actinf_pomdp_agent/practical_applications_analysis.md",
+      "provider": "openrouter",
+      "content_length": 4931,
+      "tokens_used": null
+    }
+  },
+  "errors": [],
+  "success_count": 6,
+  "total_tasks": 6
+}</pre>
+<h1>Model Explanation and Overview</h1>
+<p><strong>File:</strong> actinf_pomdp_agent.md</p>
+<p><strong>Analysis Type:</strong> explain_model</p>
+<p><strong>Generated:</strong> 2025-07-14T10:10:24.087204</p>
+<hr />
+<h3>Comprehensive Explanation of the Classic Active Inference POMDP Agent Model</h3>
+<h4>1. Model Purpose</h4>
+<p>The Classic Active Inference POMDP (Partially Observable Markov Decision Process) Agent is designed to represent and simulate decision-making processes in environments where an agent must infer hidden states based on partial observations. This model is particularly relevant in cognitive science and robotics, where agents (human or artificial) must navigate uncertain environments, make predictions, and take actions to minimize surprise or maximize expected utility. It captures the dynamics of how agents learn from their interactions with the environment and adjust their behavior based on prior experiences and preferences.</p>
+<h4>2. Core Components</h4>
+<ul>
+<li>
+<p><strong>Hidden States (s)</strong>: The model has three hidden states represented as <code>s[3,1]</code>, which correspond to different "locations" the agent can occupy. These states are not directly observable but can be inferred from the observations. For example, the states could represent distinct areas in a room or different positions on a map.</p>
+</li>
+<li>
+<p><strong>Observations (o)</strong>: The observations are represented as <code>o[3,1]</code> and correspond to three possible outcomes (<code>state_observation</code>). These observations are the information the agent receives from the environment, which allows it to infer its current hidden state. In this model, each hidden state deterministically produces a unique observation, meaning that the agent can directly map its location to a specific observation.</p>
+</li>
+<li>
+<p><strong>Actions/Controls (u, π)</strong>: The model provides three discrete actions (<code>u[1]</code> and <code>π[3]</code>). These actions are the choices available to the agent to transition between hidden states. The policy vector <code>π</code> represents the distribution over these actions, guiding the agent's decision-making process. The actions could represent movements in the environment, such as "move left," "move right," or "stay."</p>
+</li>
+</ul>
+<h4>3. Model Dynamics</h4>
+<p>The model evolves over time through a series of updates based on the agent's observations and actions. The key relationships include:</p>
+<ul>
+<li>
+<p><strong>State Inference</strong>: The agent infers its current hidden state (<code>s</code>) based on the received observation (<code>o</code>) using the likelihood matrix <code>A</code>. This matrix defines how likely each observation is given each hidden state.</p>
+</li>
+<li>
+<p><strong>State Transition</strong>: The transition matrix <code>B</code> governs how the agent moves between hidden states based on its chosen action. Each action deterministically leads to a new state, reflecting the agent's control over its movement.</p>
+</li>
+<li>
+<p><strong>Preference and Prior Updates</strong>: The agent has a preference vector <code>C</code> that encodes its desires regarding observations, influencing its actions. The prior vector <code>D</code> represents the agent's beliefs about its initial hidden state distribution.</p>
+</li>
+<li>
+<p><strong>Expected Free Energy</strong>: The agent calculates the expected free energy (<code>G</code>) based on its current beliefs and preferences, guiding its action selection process. The goal is to minimize expected free energy, which corresponds to reducing uncertainty and aligning with its preferences.</p>
+</li>
+</ul>
+<h4>4. Active Inference Context</h4>
+<p>This model implements Active Inference principles by continuously updating beliefs about hidden states and selecting actions that minimize expected free energy. The core beliefs being updated include:</p>
+<ul>
+<li>
+<p><strong>Hidden State Beliefs</strong>: The agent updates its belief about its current hidden state based on observations using the likelihood matrix <code>A</code>.</p>
+</li>
+<li>
+<p><strong>Policy Beliefs</strong>: The agent evaluates its policy (<code>π</code>) based on the expected outcomes of its actions, which are influenced by the preference vector <code>C</code> and the prior vector <code>D</code>.</p>
+</li>
+<li>
+<p><strong>Action Selection</strong>: The agent samples an action based on its policy, which is informed by its beliefs about the hidden states and the expected free energy.</p>
+</li>
+</ul>
+<p>This process embodies the Active Inference framework, where the agent actively seeks to reduce uncertainty and achieve its goals through a cycle of perception, action, and belief updating.</p>
+<h4>5. Practical Implications</h4>
+<p>Using this model, one can predict how an agent will behave in a given environment based on its initial beliefs, preferences, and the dynamics of the hidden states. The model can inform decisions such as:</p>
+<ul>
+<li>
+<p><strong>Optimal Action Selection</strong>: By simulating the agent's behavior, one can determine which actions lead to the most preferred outcomes based on the agent's preferences.</p>
+</li>
+<li>
+<p><strong>Learning and Adaptation</strong>: The model can be used to study how agents adapt their beliefs and actions over time in response to changing environments or new information.</p>
+</li>
+<li>
+<p><strong>Cognitive Modeling</strong>: Insights gained from this model can inform theories of human cognition, particularly how individuals make decisions under uncertainty and how they learn from their experiences.</p>
+</li>
+</ul>
+<p>In summary, the Classic Active Inference POMDP Agent serves as a powerful framework for understanding decision-making processes in uncertain environments, with broad applications in cognitive science, robotics, and artificial intelligence.</p>
+<hr />
+<p><em>Analysis generated using LLM provider: openrouter</em></p>
+</section>
+<section id='other'><h2>Other</h2>
+<a href='../output/artifacts' target='_blank'>artifacts</a><br>
+<pre>{
+  "base": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output",
+  "type_check": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/type_check",
+  "visualization": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/visualization",
+  "exports": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_exports",
+  "rendered": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators",
+  "logs": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/logs",
+  "test_reports": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports"
+}</pre>
+<a href='../output/resources' target='_blank'>resources</a><br>
+<a href='../output/execution_results' target='_blank'>execution_results</a><br>
+<a href='../output/resource_estimates' target='_blank'>resource_estimates</a><br>
+<a href='../output/setup_artifacts' target='_blank'>setup_artifacts</a><br>
+<a href='../output/summary' target='_blank'>summary</a><br>
+<a href='../output/reports' target='_blank'>reports</a><br>
+<h1>GNN Type Checker Report</h1>
+<p>Generated: 2025-07-14 10:09:40</p>
+<h2>📊 Summary</h2>
+<ul>
+<li><strong>Total Files Checked:</strong> 1</li>
+<li><strong>Valid Files:</strong> 1 ✅</li>
+<li><strong>Invalid Files:</strong> 0 ❌</li>
+<li><strong>Total Errors:</strong> 0</li>
+<li><strong>Total Warnings:</strong> 0</li>
+<li><strong>Success Rate:</strong> 100.0%</li>
+</ul>
+<h2>📁 File Analysis</h2>
+<h3>actinf_pomdp_agent.md: ✅ VALID</h3>
+<p><strong>Path:</strong> <code>../input/gnn_files/actinf_pomdp_agent.md</code></p>
+<h2>🎯 Overall Assessment</h2>
+<p>🎉 <strong>All files passed validation successfully!</strong></p>
+<hr />
+<p><em>Report generated by GNN Type Checker v1.0</em></p>
+</section>
+</body></html>

@@ -66,7 +66,7 @@ When reporting a vulnerability, please provide:
 - Unsafe resource access patterns
 - Data leakage through model context
 
-**Pipeline Security** (All 14 Steps):
+**Pipeline Security** (All 13 Steps):
 - Code injection through GNN file parsing
 - Unsafe file operations in output generation
 - Privilege escalation in execution steps
@@ -151,10 +151,15 @@ Once a security vulnerability is reported, we commit to:
 - Sanitize numerical inputs for stability
 - Monitor memory usage for large state spaces
 
-**RxInfer Security:**  
+**RxInfer.jl Security:**  
 - Validate Julia code generation outputs
 - Secure inter-process communication with Julia
 - Monitor computational resource usage
+
+**ActiveInference.jl Security:**
+- Validate Julia ActiveInference.jl code generation outputs
+- Secure inter-process communication with Julia
+- Monitor computational resource usage for ActiveInference.jl simulations
 
 **LLM Integration Security:**
 - Never include sensitive data in prompts
@@ -165,13 +170,14 @@ Once a security vulnerability is reported, we commit to:
 ## 📚 Security Resources
 
 ### Comprehensive Guides
-- **[Complete Security Framework](doc/security/README.md)** - 15KB comprehensive security guide
+- **[Complete Security Framework](doc/security/README.md)** - Comprehensive security guide
 - **[Deployment Security](doc/deployment/README.md)** - Production security configurations
 - **[MCP Security](doc/mcp/README.md)** - Model Context Protocol security measures
 
 ### Framework Security
 - **[PyMDP Security](doc/pymdp/gnn_pymdp.md#security-considerations)** - PyMDP-specific security
-- **[RxInfer Security](doc/rxinfer/gnn_rxinfer.md#security-considerations)** - Julia integration security
+- **[RxInfer.jl Security](doc/rxinfer/gnn_rxinfer.md#security-considerations)** - Julia integration security
+- **[ActiveInference.jl Security](doc/activeinference_jl/activeinference-jl.md#security-considerations)** - ActiveInference.jl integration security
 - **[LLM Security](doc/llm/security_guidelines.md)** - AI integration security practices
 
 ### Incident Response

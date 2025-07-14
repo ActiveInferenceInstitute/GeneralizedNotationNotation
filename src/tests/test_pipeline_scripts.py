@@ -412,20 +412,18 @@ class TestStep9RenderComprehensive:
     @pytest.mark.safe_to_fail
     def test_step9_code_rendering(self, sample_gnn_files, isolated_temp_dir):
         """Test code rendering functionality."""
-        from render import render_pymdp_code, render_rxinfer_code
-        
+        from render import render_gnn_to_pymdp, render_gnn_to_rxinfer_toml
         # Test PyMDP rendering
         try:
             pymdp_path = isolated_temp_dir / "test_pymdp.py"
-            render_pymdp_code(sample_gnn_files, pymdp_path)
+            render_gnn_to_pymdp(sample_gnn_files, pymdp_path)
             logging.info("PyMDP rendering test completed")
         except Exception as e:
             logging.warning(f"PyMDP rendering test failed: {e}")
-        
         # Test RxInfer rendering
         try:
             rxinfer_path = isolated_temp_dir / "test_rxinfer.jl"
-            render_rxinfer_code(sample_gnn_files, rxinfer_path)
+            render_gnn_to_rxinfer_toml(sample_gnn_files, rxinfer_path)
             logging.info("RxInfer rendering test completed")
         except Exception as e:
             logging.warning(f"RxInfer rendering test failed: {e}")
@@ -487,20 +485,18 @@ class TestStep12SiteComprehensive:
     @pytest.mark.safe_to_fail
     def test_step12_site_generation(self, isolated_temp_dir):
         """Test site generation functionality."""
-        from site import generate_site, create_html_report
-        
+        from src.site import generate_site_from_pipeline_output, generate_html_report
         # Test site generation
         try:
             site_path = isolated_temp_dir / "test_site"
-            generate_site({"test": "data"}, site_path)
+            generate_site_from_pipeline_output({"test": "data"}, site_path)
             logging.info("Site generation test completed")
         except Exception as e:
             logging.warning(f"Site generation test failed: {e}")
-        
         # Test HTML report creation
         try:
             html_path = isolated_temp_dir / "test_report.html"
-            create_html_report({"test": "data"}, html_path)
+            generate_html_report({"test": "data"}, html_path)
             logging.info("HTML report creation test completed")
         except Exception as e:
             logging.warning(f"HTML report creation test failed: {e}")

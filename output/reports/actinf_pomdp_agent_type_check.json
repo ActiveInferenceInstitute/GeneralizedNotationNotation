@@ -1,0 +1,257 @@
+{
+  "sections": {
+    "GNNSection": true,
+    "GNNVersionAndFlags": true,
+    "ModelName": true,
+    "ModelAnnotation": true,
+    "StateSpaceBlock": true,
+    "Connections": true,
+    "InitialParameterization": true,
+    "Equations": true,
+    "Time": true,
+    "ActInfOntologyAnnotation": true,
+    "ModelParameters": true,
+    "Footer": true,
+    "Signature": true
+  },
+  "section_content_lengths": {
+    "GNNSection": 17,
+    "GNNVersionAndFlags": 6,
+    "ModelName": 39,
+    "ModelAnnotation": 570,
+    "StateSpaceBlock": 959,
+    "Connections": 73,
+    "InitialParameterization": 753,
+    "Equations": 197,
+    "Time": 149,
+    "ActInfOntologyAnnotation": 238,
+    "ModelParameters": 113,
+    "Footer": 60,
+    "Signature": 2
+  },
+  "required_sections_present": 7,
+  "optional_sections_present": 6,
+  "variables": [
+    {
+      "name": "A",
+      "type": "float",
+      "dimensions": [
+        3,
+        3
+      ],
+      "dimension_count": 2,
+      "total_elements": 9
+    },
+    {
+      "name": "B",
+      "type": "float",
+      "dimensions": [
+        3,
+        3,
+        3
+      ],
+      "dimension_count": 3,
+      "total_elements": 27
+    },
+    {
+      "name": "C",
+      "type": "float",
+      "dimensions": [
+        3
+      ],
+      "dimension_count": 1,
+      "total_elements": 3
+    },
+    {
+      "name": "D",
+      "type": "float",
+      "dimensions": [
+        3
+      ],
+      "dimension_count": 1,
+      "total_elements": 3
+    },
+    {
+      "name": "E",
+      "type": "float",
+      "dimensions": [
+        3
+      ],
+      "dimension_count": 1,
+      "total_elements": 3
+    },
+    {
+      "name": "s",
+      "type": "float",
+      "dimensions": [
+        3,
+        1
+      ],
+      "dimension_count": 2,
+      "total_elements": 3
+    },
+    {
+      "name": "s_prime",
+      "type": "float",
+      "dimensions": [
+        3,
+        1
+      ],
+      "dimension_count": 2,
+      "total_elements": 3
+    },
+    {
+      "name": "o",
+      "type": "float",
+      "dimensions": [
+        3,
+        1
+      ],
+      "dimension_count": 2,
+      "total_elements": 3
+    },
+    {
+      "name": "\u03c0",
+      "type": "float",
+      "dimensions": [
+        3
+      ],
+      "dimension_count": 1,
+      "total_elements": 3
+    },
+    {
+      "name": "u",
+      "type": "int",
+      "dimensions": [
+        1
+      ],
+      "dimension_count": 1,
+      "total_elements": 1
+    },
+    {
+      "name": "G",
+      "type": "float",
+      "dimensions": [
+        1
+      ],
+      "dimension_count": 1,
+      "total_elements": 1
+    },
+    {
+      "name": "t",
+      "type": "int",
+      "dimensions": [
+        1
+      ],
+      "dimension_count": 1,
+      "total_elements": 1
+    }
+  ],
+  "variable_count": 12,
+  "type_distribution": {
+    "float": 10,
+    "int": 2
+  },
+  "dimension_analysis": {
+    "scalar_vars": 0,
+    "vector_vars": 7,
+    "matrix_vars": 4,
+    "tensor_vars": 1,
+    "max_dimensions": 3
+  },
+  "connections": [
+    {
+      "source": "D",
+      "target": "s",
+      "type": "directed",
+      "is_temporal": false
+    },
+    {
+      "source": "s",
+      "target": "A",
+      "type": "directed",
+      "is_temporal": false
+    },
+    {
+      "source": "A",
+      "target": "o",
+      "type": "directed",
+      "is_temporal": false
+    },
+    {
+      "source": "B",
+      "target": "s_prime",
+      "type": "directed",
+      "is_temporal": false
+    },
+    {
+      "source": "C",
+      "target": "G",
+      "type": "directed",
+      "is_temporal": false
+    },
+    {
+      "source": "E",
+      "target": "\u03c0",
+      "type": "directed",
+      "is_temporal": false
+    },
+    {
+      "source": "G",
+      "target": "\u03c0",
+      "type": "directed",
+      "is_temporal": false
+    },
+    {
+      "source": "\u03c0",
+      "target": "u",
+      "type": "directed",
+      "is_temporal": false
+    }
+  ],
+  "connection_count": 8,
+  "connection_types": {
+    "directed": 8,
+    "undirected": 0,
+    "temporal": 0
+  },
+  "variable_connectivity": {
+    "D": 1,
+    "s": 2,
+    "A": 2,
+    "o": 1,
+    "B": 1,
+    "s_prime": 1,
+    "C": 1,
+    "G": 2,
+    "E": 1,
+    "\u03c0": 3,
+    "u": 1
+  },
+  "connection_patterns": [],
+  "model_complexity": {
+    "variable_complexity": 12,
+    "connection_complexity": 8,
+    "equation_complexity": 4,
+    "overall_complexity": 8.0
+  },
+  "model_type": "Dynamic",
+  "time_dynamics": {
+    "is_dynamic": true,
+    "time_variables": [],
+    "temporal_connections": 0
+  },
+  "parameterization": {
+    "has_initial_params": true,
+    "parameter_count": 17,
+    "parameter_types": {},
+    "matrix_parameters": [],
+    "vector_parameters": [],
+    "scalar_parameters": []
+  },
+  "is_valid": true,
+  "errors": [],
+  "warnings": [],
+  "file_path": "../input/gnn_files/actinf_pomdp_agent.md",
+  "file_name": "actinf_pomdp_agent.md"
+}

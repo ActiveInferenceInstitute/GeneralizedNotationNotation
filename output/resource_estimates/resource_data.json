@@ -1,0 +1,74 @@
+{
+  "../input/gnn_files/actinf_pomdp_agent.md": {
+    "file": "../input/gnn_files/actinf_pomdp_agent.md",
+    "model_name": "Classic Active Inference POMDP Agent v1",
+    "memory_estimate": 0.234375,
+    "inference_estimate": 95.82320754236243,
+    "storage_estimate": 3.4511015625,
+    "flops_estimate": {
+      "total_flops": 135.0,
+      "matrix_operations": 54,
+      "element_operations": 0,
+      "nonlinear_operations": 0
+    },
+    "inference_time_estimate": {
+      "cpu_time_seconds": 2.7e-09,
+      "cpu_time_ms": 2.7e-06,
+      "cpu_time_us": 0.0027
+    },
+    "batched_inference_estimate": {
+      "batch_1": {
+        "flops": 135.0,
+        "time_seconds": 2.7e-09,
+        "throughput_per_second": 370370370.3703703
+      },
+      "batch_8": {
+        "flops": 858.210620078576,
+        "time_seconds": 1.716421240157152e-08,
+        "throughput_per_second": 466086052.3531821
+      },
+      "batch_32": {
+        "flops": 3280.9188626690466,
+        "time_seconds": 6.561837725338094e-08,
+        "throughput_per_second": 487668262.1460473
+      },
+      "batch_128": {
+        "flops": 12835.385532823817,
+        "time_seconds": 2.5670771065647635e-07,
+        "throughput_per_second": 498621563.3050785
+      },
+      "batch_512": {
+        "flops": 50687.279581336785,
+        "time_seconds": 1.0137455916267358e-06,
+        "throughput_per_second": 505057683.33690566
+      }
+    },
+    "model_overhead": {
+      "compilation_ms": 62,
+      "optimization_ms": 92.0,
+      "memory_overhead_kb": 2.2109375
+    },
+    "complexity": {
+      "state_space_complexity": 5.930737337562887,
+      "graph_density": 0.06060606060606061,
+      "avg_in_degree": 1.1428571428571428,
+      "avg_out_degree": 1.0,
+      "max_in_degree": 2,
+      "max_out_degree": 1,
+      "cyclic_complexity": 0,
+      "temporal_complexity": 0.0,
+      "equation_complexity": 12.875,
+      "overall_complexity": 10,
+      "variable_count": 12,
+      "edge_count": 8,
+      "total_state_space_dim": 60,
+      "max_variable_dim": 27
+    },
+    "model_info": {
+      "variables_count": 12,
+      "edges_count": 8,
+      "time_spec": "Dynamic",
+      "equation_count": 4
+    }
+  }
+}
