@@ -501,7 +501,9 @@ def run_pipeline(args: PipelineArguments):
             "peak_memory_mb": 0.0,
             "total_steps": 0,
             "failed_steps": 0,
-            "critical_failures": 0
+            "critical_failures": 0,
+            "successful_steps": 0,
+            "warnings": 0
         }
     }
     
@@ -561,7 +563,11 @@ def run_pipeline(args: PipelineArguments):
     for idx, script_info in enumerate(scripts_to_run, 1):
         script_num = script_info['num']
         script_basename = script_info['basename']
-        logger.info(f"  {idx}. {script_num}: {script_basename}")
+        config = get_pipeline_config()
+        step_config = config.get_step_config(script_basename)
+        is_critical = step_config.required if step_config else True
+        critical_indicator = " 🔥" if is_critical else ""
+        logger.info(f"  {idx}. {script_num}: {script_basename}{critical_indicator}")
     
     # Get the Python executable to use for the scripts
     logger.debug("🔍 Determining Python executable for subprocess calls...")
@@ -596,6 +602,9 @@ def run_pipeline(args: PipelineArguments):
 
     # Execute each script
     overall_status = "SUCCESS"
+    critical_failures = 0
+    non_critical_failures = 0
+    successful_steps = 0
 
     logger.info("\n")
     logger.info("  ╔══════════════════════════════════════════════════════════════════════════════╗")
@@ -619,12 +628,49 @@ def run_pipeline(args: PipelineArguments):
     logger.info("  ╚══════════════════════════════════════════════════════════════════════════════╝")
     logger.info("")
     
+    # Track execution progress
+    logger.info("🔄 Starting pipeline execution...")
+    logger.info("─" * 80)
+    
+    # Show pipeline overview
+    logger.info(f"📋 Pipeline Overview:")
+    logger.info(f"   • Total Steps: {len(scripts_to_run)}")
+    critical_steps = sum(1 for s in scripts_to_run if get_pipeline_config().get_step_config(s['basename']).required)
+    optional_steps = len(scripts_to_run) - critical_steps
+    logger.info(f"   • Critical Steps: {critical_steps}")
+    logger.info(f"   • Optional Steps: {optional_steps}")
+    logger.info(f"   • Target Directory: {args.target_dir}")
+    logger.info(f"   • Output Directory: {args.output_dir}")
+    logger.info("─" * 80)
+    
     for idx, script_info in enumerate(scripts_to_run, 1):
+        script_basename = script_info['basename']
+        script_num = script_info['num']
+        
+        # Get step configuration
+        config = get_pipeline_config()
+        step_config = config.get_step_config(script_basename)
+        is_critical = step_config.required if step_config else True
+        step_description = step_config.description if step_config else "Unknown step"
+        
+        # Log step start with clear indication of criticality and progress
+        critical_indicator = "🔥 CRITICAL" if is_critical else "⚙️  OPTIONAL"
+        progress_indicator = f"[{idx}/{len(scripts_to_run)}]"
+        logger.info(f"")
+        logger.info(f"🔄 {progress_indicator} Starting: {script_basename}")
+        logger.info(f"   📝 {step_description}")
+        logger.info(f"   🔥 {critical_indicator}")
+        logger.info(f"   ⏱️  Executing...")
+        
         # Build the command line for the step using the enhanced argument builder
         step_cmd = build_enhanced_step_command_args(
-            script_info['basename'], args, str(python_to_use), script_info['path']
+            script_basename, args, str(python_to_use), script_info['path']
         )
-        logger.debug(f"📋 Executing command: {' '.join(map(str, step_cmd))}")
+        logger.debug(f"🔧 Command: {' '.join(map(str, step_cmd))}")
+        
+        # Track step execution time
+        step_start_time = datetime.datetime.now()
+        
         try:
             result = subprocess.run(
                 step_cmd,
@@ -632,14 +678,18 @@ def run_pipeline(args: PipelineArguments):
                 text=True,
                 check=False
             )
+            
+            step_end_time = datetime.datetime.now()
+            step_duration = (step_end_time - step_start_time).total_seconds()
+            
             step_status = "SUCCESS" if result.returncode == 0 else "FAILED"
             step_log = {
                 "step_number": idx,
-                "script_name": script_info['basename'],
+                "script_name": script_basename,
                 "status": step_status,
-                "start_time": None,
-                "end_time": None,
-                "duration_seconds": None,
+                "start_time": step_start_time.isoformat(),
+                "end_time": step_end_time.isoformat(),
+                "duration_seconds": step_duration,
                 "details": "",
                 "stdout": result.stdout,
                 "stderr": result.stderr,
@@ -647,27 +697,73 @@ def run_pipeline(args: PipelineArguments):
                 "exit_code": result.returncode,
                 "retry_count": 0
             }
-            if step_status == "FAILED":
-                overall_status = "FAILED"
+            
+            # Log step completion with detailed status and visual indicators
+            if step_status == "SUCCESS":
+                successful_steps += 1
+                _pipeline_run_data_dict["performance_summary"]["successful_steps"] += 1
+                logger.info(f"✅ {progress_indicator} COMPLETED: {script_basename}")
+                logger.info(f"   ⏱️  Duration: {step_duration:.2f}s")
+                logger.info(f"   📊 Progress: {successful_steps}/{len(scripts_to_run)} steps successful")
+                
+                # Log any stdout if verbose
+                if args.verbose and result.stdout.strip():
+                    logger.debug(f"📤 Step output:\n{result.stdout.strip()}")
+                    
+            else:  # FAILED
                 _pipeline_run_data_dict["performance_summary"]["failed_steps"] += 1
-                config = get_pipeline_config()
-                step_config = config.get_step_config(script_info['basename'])
-                is_critical = step_config.required if step_config else True
+                
                 if is_critical:
+                    critical_failures += 1
                     _pipeline_run_data_dict["performance_summary"]["critical_failures"] += 1
-                    logger.critical(f"🔥 Critical step {script_info['basename']} failed. Halting pipeline.")
+                    logger.error(f"🔥 {progress_indicator} CRITICAL FAILURE: {script_basename}")
+                    logger.error(f"   ⏱️  Duration: {step_duration:.2f}s")
+                    logger.error(f"   🚫 Exit Code: {result.returncode}")
+                    
+                    # Log error details
+                    if result.stderr.strip():
+                        logger.error(f"❌ Error output:\n{result.stderr.strip()}")
+                    if result.stdout.strip():
+                        logger.debug(f"📤 Standard output:\n{result.stdout.strip()}")
+                    
+                    logger.critical(f"🛑 Pipeline halted due to critical step failure: {script_basename}")
                     _pipeline_run_data_dict["steps"].append(step_log)
+                    overall_status = "FAILED"
                     break
+                else:
+                    non_critical_failures += 1
+                    logger.warning(f"⚠️  {progress_indicator} NON-CRITICAL FAILURE: {script_basename}")
+                    logger.warning(f"   ⏱️  Duration: {step_duration:.2f}s")
+                    logger.warning(f"   🚫 Exit Code: {result.returncode}")
+                    logger.warning(f"   🔄 Continuing pipeline execution...")
+                    
+                    # Log error details for non-critical failures
+                    if result.stderr.strip():
+                        logger.warning(f"❌ Error output:\n{result.stderr.strip()}")
+                    if result.stdout.strip():
+                        logger.debug(f"📤 Standard output:\n{result.stdout.strip()}")
+                    
+                    # Update overall status to indicate warnings but continue
+                    if overall_status == "SUCCESS":
+                        overall_status = "SUCCESS_WITH_WARNINGS"
+            
             _pipeline_run_data_dict["steps"].append(step_log)
+            
         except Exception as e:
-            logger.error(f"Exception running step {script_info['basename']}: {e}")
+            step_end_time = datetime.datetime.now()
+            step_duration = (step_end_time - step_start_time).total_seconds()
+            
+            logger.error(f"💥 {progress_indicator} EXCEPTION: {script_basename}")
+            logger.error(f"   ⏱️  Duration: {step_duration:.2f}s")
+            logger.error(f"   🚫 Exception: {e}")
+            
             step_log = {
                 "step_number": idx,
-                "script_name": script_info['basename'],
+                "script_name": script_basename,
                 "status": "ERROR",
-                "start_time": None,
-                "end_time": None,
-                "duration_seconds": None,
+                "start_time": step_start_time.isoformat(),
+                "end_time": step_end_time.isoformat(),
+                "duration_seconds": step_duration,
                 "details": str(e),
                 "stdout": "",
                 "stderr": str(e),
@@ -676,8 +772,46 @@ def run_pipeline(args: PipelineArguments):
                 "retry_count": 0
             }
             _pipeline_run_data_dict["steps"].append(step_log)
-            overall_status = "FAILED"
-            break
+            
+            if is_critical:
+                critical_failures += 1
+                _pipeline_run_data_dict["performance_summary"]["critical_failures"] += 1
+                logger.critical(f"🛑 Pipeline halted due to critical step exception: {script_basename}")
+                overall_status = "FAILED"
+                break
+            else:
+                non_critical_failures += 1
+                logger.warning(f"🔄 Continuing pipeline execution despite exception...")
+                if overall_status == "SUCCESS":
+                    overall_status = "SUCCESS_WITH_WARNINGS"
+
+    # Final execution summary
+    logger.info("")
+    logger.info("─" * 80)
+    logger.info("🏁 Pipeline execution completed!")
+    
+    # Calculate final statistics
+    total_executed = len(_pipeline_run_data_dict["steps"])
+    _pipeline_run_data_dict["performance_summary"]["total_steps"] = total_executed
+    
+    # Determine final status
+    if critical_failures > 0:
+        overall_status = "FAILED"
+        logger.error(f"🛑 Pipeline failed with {critical_failures} critical failure(s)")
+    elif non_critical_failures > 0:
+        overall_status = "SUCCESS_WITH_WARNINGS"
+        logger.warning(f"⚠️  Pipeline completed with {non_critical_failures} non-critical failure(s)")
+    else:
+        overall_status = "SUCCESS"
+        logger.info(f"🎉 Pipeline completed successfully!")
+    
+    # Log comprehensive summary
+    logger.info(f"📊 Execution Summary:")
+    logger.info(f"   • Total steps executed: {total_executed}")
+    logger.info(f"   • Successful steps: {successful_steps}")
+    logger.info(f"   • Critical failures: {critical_failures}")
+    logger.info(f"   • Non-critical failures: {non_critical_failures}")
+    logger.info(f"   • Overall status: {overall_status}")
 
     _pipeline_run_data_dict["end_time"] = datetime.datetime.now().isoformat()
     _pipeline_run_data_dict["overall_status"] = overall_status
@@ -687,11 +821,17 @@ def run_pipeline(args: PipelineArguments):
         start_dt = datetime.datetime.fromisoformat(_pipeline_run_data_dict["start_time"])
         end_dt = datetime.datetime.fromisoformat(_pipeline_run_data_dict["end_time"])
         _pipeline_run_data_dict["total_duration_seconds"] = (end_dt - start_dt).total_seconds()
-    
-    # Log a brief summary before returning from run_pipeline
-    logger.info(f"🏁 Pipeline processing completed. Overall Status: {overall_status}")
+        logger.info(f"⏱️  Total pipeline duration: {_pipeline_run_data_dict['total_duration_seconds']:.2f}s")
 
-    return (0 if overall_status in ["SUCCESS", "SUCCESS_WITH_WARNINGS"] else 1), cast(PipelineRunData, _pipeline_run_data_dict), all_scripts, overall_status
+    # Return appropriate exit code based on final status
+    if overall_status == "SUCCESS":
+        exit_code = 0
+    elif overall_status == "SUCCESS_WITH_WARNINGS":
+        exit_code = 0  # Still consider this a success
+    else:  # FAILED
+        exit_code = 1
+
+    return exit_code, cast(PipelineRunData, _pipeline_run_data_dict), all_scripts, overall_status
 
 def main():
     """Main entry point for the GNN Processing Pipeline."""
@@ -762,25 +902,85 @@ def main():
     exit_code, pipeline_run_data, all_scripts, overall_status = run_pipeline(args)
 
     # --- Pipeline Summary Report ---
-    logger.info("\n--- Pipeline Execution Summary ---")
+    logger.info("\n")
+    logger.info("╔══════════════════════════════════════════════════════════════════════════════╗")
+    logger.info("║                           PIPELINE EXECUTION SUMMARY                        ║")
+    logger.info("╚══════════════════════════════════════════════════════════════════════════════╝")
+    
     num_total = len(pipeline_run_data["steps"])
     num_success = len([s for s in pipeline_run_data["steps"] if s["status"] == "SUCCESS"])
     num_warn = len([s for s in pipeline_run_data["steps"] if s["status"] == "SUCCESS_WITH_WARNINGS"])
     num_failed = len([s for s in pipeline_run_data["steps"] if "FAILED" in s["status"] or "ERROR" in s["status"]])
     num_skipped = len([s for s in pipeline_run_data["steps"] if s["status"] == "SKIPPED"])
 
-    logger.info(f"📊 Total Steps Attempted/Processed: {num_total - num_skipped} / {len(all_scripts)}")
-    logger.info(f"  ✅ Successful: {num_success}")
-    logger.info(f"  ⚠️ Success with Warnings: {num_warn}")
-    logger.info(f"  ❌ Failed/Error: {num_failed}")
-    logger.info(f"  ⏭️ Skipped: {num_skipped}")
+    # Calculate success rate
+    total_executed = num_total - num_skipped
+    success_rate = (num_success / total_executed * 100) if total_executed > 0 else 0
 
+    logger.info(f"📊 EXECUTION STATISTICS:")
+    logger.info(f"   • Total Steps Available: {len(all_scripts)}")
+    logger.info(f"   • Steps Executed: {total_executed}")
+    logger.info(f"   • Steps Skipped: {num_skipped}")
+    logger.info(f"")
+    logger.info(f"📈 RESULTS:")
+    logger.info(f"   ✅ Successful: {num_success}")
+    logger.info(f"   ⚠️  Success with Warnings: {num_warn}")
+    logger.info(f"   ❌ Failed/Error: {num_failed}")
+    logger.info(f"   📊 Success Rate: {success_rate:.1f}%")
+    
+    # Show detailed step results if there are failures
+    if num_failed > 0:
+        logger.info(f"")
+        logger.info(f"🔍 FAILED STEPS DETAILS:")
+        for step in pipeline_run_data["steps"]:
+            if "FAILED" in step["status"] or "ERROR" in step["status"]:
+                step_name = step["script_name"]
+                exit_code = step.get("exit_code", "unknown")
+                duration = step.get("duration_seconds", 0)
+                config = get_pipeline_config()
+                step_config = config.get_step_config(step_name)
+                is_critical = step_config.required if step_config else True
+                critical_indicator = "🔥 CRITICAL" if is_critical else "⚙️  OPTIONAL"
+                
+                logger.info(f"   • {step_name} ({critical_indicator}) - Exit: {exit_code}, Duration: {duration:.2f}s")
+                if step.get("stderr", "").strip():
+                    # Show first line of error for context
+                    error_lines = step["stderr"].strip().split('\n')
+                    first_error = error_lines[0][:80] + "..." if len(error_lines[0]) > 80 else error_lines[0]
+                    logger.info(f"     Error: {first_error}")
+
+    # Performance summary
+    if pipeline_run_data.get("total_duration_seconds"):
+        total_duration = pipeline_run_data["total_duration_seconds"]
+        logger.info(f"")
+        logger.info(f"⏱️  PERFORMANCE:")
+        logger.info(f"   • Total Duration: {total_duration:.2f} seconds")
+        if total_executed > 0:
+            avg_duration = total_duration / total_executed
+            logger.info(f"   • Average Step Duration: {avg_duration:.2f} seconds")
+
+    # Final status message with appropriate tone
+    logger.info(f"")
     if overall_status == "SUCCESS":
-        logger.info("🎉 PIPELINE FINISHED SUCCESSFULLY.")
+        logger.info("🎉 PIPELINE COMPLETED SUCCESSFULLY!")
+        logger.info("   All critical steps completed without errors.")
     elif overall_status == "SUCCESS_WITH_WARNINGS":
-        logger.warning("🎉 PIPELINE FINISHED, but with warnings from some steps.")
-    else: # FAILED
-        logger.error("🛑 PIPELINE FINISHED WITH ERRORS.")
+        logger.info("🎉 PIPELINE COMPLETED WITH WARNINGS!")
+        logger.info("   All critical steps completed successfully.")
+        logger.info("   Some optional steps failed, but this does not affect core functionality.")
+        logger.info("   Check the detailed logs for specific issues.")
+    else:  # FAILED
+        logger.info("🛑 PIPELINE COMPLETED WITH CRITICAL ERRORS!")
+        logger.info("   One or more critical steps failed.")
+        logger.info("   Check the detailed logs above for specific error information.")
+        logger.info("   Consider addressing the critical failures before re-running.")
+
+    # Output location information
+    logger.info(f"")
+    logger.info(f"📁 OUTPUT LOCATIONS:")
+    logger.info(f"   • Pipeline Summary: {args.pipeline_summary_file}")
+    logger.info(f"   • Log Files: {args.output_dir}/logs/")
+    logger.info(f"   • Step Outputs: {args.output_dir}/")
 
     # Save detailed summary report
     try:
@@ -798,6 +998,12 @@ def main():
     except Exception as e:
         logger.error(f"❌ Error saving pipeline summary report: {e}")
         
+    # Final positive message regardless of status
+    logger.info(f"")
+    logger.info("╔══════════════════════════════════════════════════════════════════════════════╗")
+    logger.info("║                              PIPELINE FINISHED                              ║")
+    logger.info("╚══════════════════════════════════════════════════════════════════════════════╝")
+    
     sys.exit(exit_code)
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ This model describes a classic Active Inference agent for a discrete POMDP:
 - One hidden state factor ("location") with 3 possible states.
 - The hidden state is fully controllable via 3 discrete actions.
 - The agent's preferences are encoded as log-probabilities over observations.
+- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.
 - All parameterizations are explicit and suitable for translation to code or simulation in any Active Inference framework.
 
 ## StateSpaceBlock
@@ -32,6 +33,9 @@ C[3,type=float]       # Log-preferences over observations
 
 # Prior vector: D[states]
 D[3,type=float]       # Prior over initial hidden states
+
+# Habit vector: E[actions]
+E[3,type=float]       # Initial policy prior (habit) over actions
 
 # Hidden State
 s[3,1,type=float]     # Current hidden state distribution
@@ -53,6 +57,7 @@ A-o
 (s,u)-B
 B-s_prime
 C>G
+E>π
 G>π
 π-u
 G=ExpectedFreeEnergy
@@ -79,6 +84,9 @@ C={(0.0, 0.0, 1.0)}
 # D: 3 states. Uniform prior.
 D={(0.33333, 0.33333, 0.33333)}
 
+# E: 3 actions. Uniform habit (no initial preference for any action).
+E={(0.0, 0.0, 0.0)}
+
 ## Equations
 # Standard Active Inference update equations for POMDPs:
 # - State inference: qs = infer_states(o)
@@ -95,6 +103,7 @@ A=LikelihoodMatrix
 B=TransitionMatrix
 C=LogPreferenceVector
 D=PriorOverHiddenStates
+E=Habit
 s=HiddenState
 s_prime=NextHiddenState
 o=Observation
