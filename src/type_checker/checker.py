@@ -12,7 +12,14 @@ from typing import Dict, List, Set, Tuple, Any, Optional, Union
 import logging
 import argparse
 
-from visualization.parser import GNNParser
+# Configure logging to avoid format string issues
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+from src.visualization.parser import GNNParser
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)
@@ -63,56 +70,44 @@ class GNNTypeChecker:
         self.warnings = []
         logger.info(f"GNNTypeChecker initialized. Strict mode: {strict_mode}")
         
-    def check_file(self, file_path: str) -> Tuple[bool, List[str], List[str]]:
+    def check_file(self, file_path: str) -> Tuple[bool, List[str], List[str], Dict[str, Any]]:
         """
         Check a GNN file for type and structure validity.
-        
-        Args:
-            file_path: Path to the GNN file to check
-            
-        Returns:
-            Tuple of (is_valid, errors, warnings)
+        Returns: (is_valid, errors, warnings, details_dict)
         """
         logger.info(f"Starting GNN check for file: {file_path}")
         self.errors = []
         self.warnings = []
-        
+        details = {}
         try:
-            # Parse the file
             parsed_content = self.parser.parse_file(file_path)
             logger.debug(f"Successfully parsed file: {file_path}")
-            
-            # Check required sections
             self._check_required_sections(parsed_content)
-            
-            # Check state space variables and types
             self._check_state_space(parsed_content)
-            
-            # Check connections for consistency
             self._check_connections(parsed_content)
-            
-            # Check time specification
             self._check_time_specification(parsed_content)
-            
-            # Check equations
             self._check_equations(parsed_content)
-            
-            # Check version and flags
             self._check_version_and_flags(parsed_content)
+            
+            # Enhanced analysis data collection
+            details.update(self._collect_section_analysis(parsed_content))
+            details.update(self._collect_variable_analysis(parsed_content))
+            details.update(self._collect_connection_analysis(parsed_content))
+            details.update(self._collect_model_complexity(parsed_content))
+            details.update(self._collect_parameterization_analysis(parsed_content))
             
         except Exception as e:
             logger.error(f"Failed to parse or check file {file_path}: {str(e)}", exc_info=True)
             self.errors.append(f"Failed to parse or check file: {str(e)}")
         
-        # Log final errors and warnings for the file
-        if self.errors:
-            logger.warning(f"File {file_path} has {len(self.errors)} errors: {self.errors}")
-        if self.warnings:
-            logger.info(f"File {file_path} has {len(self.warnings)} warnings: {self.warnings}")
-            
         is_valid = len(self.errors) == 0
         logger.info(f"Finished GNN check for file: {file_path}. Valid: {is_valid}")
-        return is_valid, self.errors, self.warnings
+        details['is_valid'] = is_valid
+        details['errors'] = list(self.errors)
+        details['warnings'] = list(self.warnings)
+        details['file_path'] = file_path
+        details['file_name'] = Path(file_path).name
+        return is_valid, self.errors, self.warnings, details
     
     def check_directory(self, dir_path: str, recursive: bool = False) -> Dict[str, Dict[str, Any]]:
         """
@@ -316,6 +311,223 @@ class GNNTypeChecker:
     def _is_common_math_function(self, name: str) -> bool:
         # Basic check for common math functions to avoid false positives
         return name.lower() in ['ln', 'log', 'exp', 'sin', 'cos', 'tan', 'sqrt', 'softmax', 'sigmoid']
+
+    def _collect_section_analysis(self, parsed_content: Dict[str, Any]) -> Dict[str, Any]:
+        """Collect comprehensive section presence and content analysis."""
+        all_sections = [
+            'GNNSection', 'GNNVersionAndFlags', 'ModelName', 'ModelAnnotation',
+            'StateSpaceBlock', 'Connections', 'InitialParameterization',
+            'Equations', 'Time', 'ActInfOntologyAnnotation', 'ModelParameters',
+            'Footer', 'Signature'
+        ]
+        
+        sections_data = {
+            'sections': {s: s in parsed_content for s in all_sections},
+            'section_content_lengths': {},
+            'required_sections_present': 0,
+            'optional_sections_present': 0
+        }
+        
+        required_sections = self.REQUIRED_SECTIONS
+        for section in all_sections:
+            if section in parsed_content:
+                content = parsed_content[section]
+                sections_data['section_content_lengths'][section] = len(str(content))
+                if section in required_sections:
+                    sections_data['required_sections_present'] += 1
+                else:
+                    sections_data['optional_sections_present'] += 1
+        
+        return sections_data
+
+    def _collect_variable_analysis(self, parsed_content: Dict[str, Any]) -> Dict[str, Any]:
+        """Collect comprehensive variable analysis."""
+        variables_data = {
+            'variables': [],
+            'variable_count': 0,
+            'type_distribution': {},
+            'dimension_analysis': {
+                'scalar_vars': 0,
+                'vector_vars': 0,
+                'matrix_vars': 0,
+                'tensor_vars': 0,
+                'max_dimensions': 0
+            }
+        }
+        
+        if 'Variables' in parsed_content:
+            variables = parsed_content['Variables']
+            variables_data['variable_count'] = len(variables)
+            
+            for vname, vinfo in variables.items():
+                var_type = vinfo.get('type', 'unknown')
+                dims = vinfo.get('dimensions', [])
+                
+                # Type distribution
+                variables_data['type_distribution'][var_type] = variables_data['type_distribution'].get(var_type, 0) + 1
+                
+                # Dimension analysis
+                dim_count = len(dims)
+                variables_data['dimension_analysis']['max_dimensions'] = max(
+                    variables_data['dimension_analysis']['max_dimensions'], dim_count
+                )
+                
+                if dim_count == 0:
+                    variables_data['dimension_analysis']['scalar_vars'] += 1
+                elif dim_count == 1:
+                    variables_data['dimension_analysis']['vector_vars'] += 1
+                elif dim_count == 2:
+                    variables_data['dimension_analysis']['matrix_vars'] += 1
+                else:
+                    variables_data['dimension_analysis']['tensor_vars'] += 1
+                
+                variables_data['variables'].append({
+                    'name': vname,
+                    'type': var_type,
+                    'dimensions': dims,
+                    'dimension_count': dim_count,
+                    'total_elements': self._calculate_total_elements(dims)
+                })
+        
+        return variables_data
+
+    def _collect_connection_analysis(self, parsed_content: Dict[str, Any]) -> Dict[str, Any]:
+        """Collect comprehensive connection analysis."""
+        connections_data = {
+            'connections': [],
+            'connection_count': 0,
+            'connection_types': {
+                'directed': 0,
+                'undirected': 0,
+                'temporal': 0
+            },
+            'variable_connectivity': {},
+            'connection_patterns': []
+        }
+        
+        if 'Edges' in parsed_content:
+            edges = parsed_content['Edges']
+            connections_data['connection_count'] = len(edges)
+            
+            # Track variable connectivity
+            for edge in edges:
+                source = edge.get('source', '')
+                target = edge.get('target', '')
+                edge_type = edge.get('type', 'directed')
+                
+                # Count connection types
+                if edge_type == 'directed':
+                    connections_data['connection_types']['directed'] += 1
+                elif edge_type == 'undirected':
+                    connections_data['connection_types']['undirected'] += 1
+                
+                # Check for temporal connections
+                if '+' in source or '+' in target:
+                    connections_data['connection_types']['temporal'] += 1
+                
+                # Track variable connectivity
+                source_base = source.split('+')[0] if '+' in source else source
+                target_base = target.split('+')[0] if '+' in target else target
+                
+                connections_data['variable_connectivity'][source_base] = connections_data['variable_connectivity'].get(source_base, 0) + 1
+                connections_data['variable_connectivity'][target_base] = connections_data['variable_connectivity'].get(target_base, 0) + 1
+                
+                connections_data['connections'].append({
+                    'source': source,
+                    'target': target,
+                    'type': edge_type,
+                    'is_temporal': '+' in source or '+' in target
+                })
+        
+        return connections_data
+
+    def _collect_model_complexity(self, parsed_content: Dict[str, Any]) -> Dict[str, Any]:
+        """Collect model complexity metrics."""
+        complexity_data = {
+            'model_complexity': {
+                'variable_complexity': 0,
+                'connection_complexity': 0,
+                'equation_complexity': 0,
+                'overall_complexity': 0
+            },
+            'model_type': 'Static',
+            'time_dynamics': {
+                'is_dynamic': False,
+                'time_variables': [],
+                'temporal_connections': 0
+            }
+        }
+        
+        # Determine model type
+        if 'Time' in parsed_content:
+            time_spec = str(parsed_content['Time'])
+            logger.debug(f"Time specification content: {repr(time_spec)}")
+            # Check for Dynamic in the time specification
+            if 'Dynamic' in time_spec:
+                complexity_data['model_type'] = 'Dynamic'
+                complexity_data['time_dynamics']['is_dynamic'] = True
+                logger.debug("Detected Dynamic model")
+            elif 'Static' in time_spec:
+                complexity_data['model_type'] = 'Static'
+                complexity_data['time_dynamics']['is_dynamic'] = False
+                logger.debug("Detected Static model")
+            else:
+                logger.debug(f"Could not determine model type from time spec: {time_spec}")
+        
+        # Calculate complexity metrics
+        var_count = len(parsed_content.get('Variables', {}))
+        edge_count = len(parsed_content.get('Edges', []))
+        equations = parsed_content.get('Equations', '')
+        equation_lines = [line.strip() for line in equations.split('\n') if line.strip()]
+        equation_count = len(equation_lines)
+        
+        complexity_data['model_complexity']['variable_complexity'] = var_count
+        complexity_data['model_complexity']['connection_complexity'] = edge_count
+        complexity_data['model_complexity']['equation_complexity'] = equation_count
+        
+        # Overall complexity (weighted combination)
+        complexity_data['model_complexity']['overall_complexity'] = (
+            var_count * 0.3 + edge_count * 0.4 + equation_count * 0.3
+        )
+        
+        return complexity_data
+
+    def _collect_parameterization_analysis(self, parsed_content: Dict[str, Any]) -> Dict[str, Any]:
+        """Collect parameterization analysis."""
+        param_data = {
+            'parameterization': {
+                'has_initial_params': False,
+                'parameter_count': 0,
+                'parameter_types': {},
+                'matrix_parameters': [],
+                'vector_parameters': [],
+                'scalar_parameters': []
+            }
+        }
+        
+        if 'InitialParameterization' in parsed_content:
+            param_data['parameterization']['has_initial_params'] = True
+            # Basic parameter counting - could be enhanced with actual parsing
+            param_content = str(parsed_content['InitialParameterization'])
+            param_data['parameterization']['parameter_count'] = param_content.count('=') + param_content.count(':')
+        
+        return param_data
+
+    def _calculate_total_elements(self, dimensions: List[Any]) -> int:
+        """Calculate total number of elements for given dimensions."""
+        try:
+            total = 1
+            for dim in dimensions:
+                if isinstance(dim, (int, float)):
+                    total *= int(dim)
+                elif isinstance(dim, str) and dim.isdigit():
+                    total *= int(dim)
+                else:
+                    # For symbolic dimensions, estimate
+                    total *= 2
+            return total
+        except:
+            return 1
 
     def generate_report(self, results: Dict[str, Dict[str, Any]], 
                         output_dir_base: Path, 

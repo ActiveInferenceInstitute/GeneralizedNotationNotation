@@ -13,6 +13,13 @@ import logging
 
 from .checker import GNNTypeChecker
 from .resource_estimator import GNNResourceEstimator
+from .output_utils import (
+    write_markdown, write_json, write_csv,
+    per_file_markdown_report, per_file_json_report,
+    summary_markdown_report, summary_json_report,
+    variables_table_csv, section_presence_matrix_csv,
+    connections_table_csv, complexity_analysis_csv, type_distribution_csv
+)
 
 logger = logging.getLogger(__name__)
 
@@ -62,19 +69,67 @@ def main(cmd_args=None):
     checker = GNNTypeChecker(strict_mode=parsed_args.strict)
     input_path_obj = Path(parsed_args.input_path)
     results = {}
-    
+    details_dict = {}
     try:
         if input_path_obj.is_file():
-            is_valid, errors, warnings = checker.check_file(str(input_path_obj))
+            is_valid, errors, warnings, details = checker.check_file(str(input_path_obj))
             results = {str(input_path_obj): {"is_valid": is_valid, "errors": errors, "warnings": warnings}}
+            details_dict = {str(input_path_obj): details}
         elif input_path_obj.is_dir():
-            results = checker.check_directory(str(input_path_obj), recursive=parsed_args.recursive)
+            # For each file, collect details
+            results = {}
+            details_dict = {}
+            for file_path in input_path_obj.glob("**/*.md" if parsed_args.recursive else "*.md"):
+                is_valid, errors, warnings, details = checker.check_file(str(file_path))
+                results[str(file_path)] = {"is_valid": is_valid, "errors": errors, "warnings": warnings}
+                details_dict[str(file_path)] = details
         else:
             logger.error(f"Input path {parsed_args.input_path} is not a valid file or directory.")
             return 1
     except Exception as e_check:
         logger.error(f"An error occurred during GNN checking phase: {e_check}", exc_info=True)
         return 1
+
+    # --- Output improved reports and artifacts ---
+    output_base = actual_output_dir
+    reports_dir = output_base / "reports"
+    summary_dir = output_base / "summary"
+    artifacts_dir = output_base / "artifacts"
+
+    # Per-file reports
+    for fname, details in details_dict.items():
+        base = Path(fname).stem
+        md_path = reports_dir / f"{base}_type_check.md"
+        json_path = reports_dir / f"{base}_type_check.json"
+        write_markdown(md_path, per_file_markdown_report(base, details))
+        write_json(json_path, per_file_json_report(base, details))
+
+    # Summary reports
+    write_markdown(summary_dir / "type_check_summary.md", summary_markdown_report(details_dict))
+    write_json(summary_dir / "type_check_summary.json", summary_json_report(details_dict))
+    # CSV summary
+    write_csv(summary_dir / "type_check_summary.csv",
+              [[k, v['is_valid'], len(v.get('errors', [])), len(v.get('warnings', []))] for k, v in details_dict.items()],
+              header=["File", "Valid", "#Errors", "#Warnings"])
+
+    # Artifacts: variables table and section presence
+    all_sections = [
+        'GNNSection', 'GNNVersionAndFlags', 'ModelName', 'ModelAnnotation',
+        'StateSpaceBlock', 'Connections', 'InitialParameterization',
+        'Equations', 'Time', 'ActInfOntologyAnnotation', 'ModelParameters',
+        'Footer', 'Signature'
+    ]
+    write_csv(artifacts_dir / "variables_table.csv", variables_table_csv(details_dict),
+              header=["File", "Variable", "Type", "Dimensions"])
+    write_csv(artifacts_dir / "section_presence_matrix.csv", section_presence_matrix_csv(details_dict, all_sections))
+    
+    # Additional artifacts
+    write_csv(artifacts_dir / "connections_table.csv", connections_table_csv(details_dict),
+              header=["File", "Source", "Target", "Type", "Temporal"])
+    write_csv(artifacts_dir / "complexity_analysis.csv", complexity_analysis_csv(details_dict),
+              header=["File", "Variables", "Connections", "Equations", "Complexity", "Model_Type", "Is_Dynamic"])
+    write_csv(artifacts_dir / "type_distribution.csv", type_distribution_csv(details_dict),
+              header=["File", "Type", "Count"])
 
     try:
         report_summary_text = checker.generate_report(results, actual_output_dir, report_md_filename=markdown_report_name, project_root_path=parsed_args.project_root)
