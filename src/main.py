@@ -15,37 +15,48 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 6_visualization.py (Corresponds to visualization/ folder, uses visualize_gnn.py)
 - 7_mcp.py (Corresponds to mcp/ folder)
 - 8_ontology.py (Corresponds to ontology/ folder)
-- 9_render.py (Corresponds to render/ folder, includes PyMDP, RxInfer, and DisCoPy rendering)
-- 10_execute.py (Corresponds to execute/ folder, includes PyMDP, RxInfer, and DisCoPy execution)
+- 9_render.py (Corresponds to render/ folder, includes PyMDP, RxInfer, DisCoPy, and JAX rendering)
+- 10_execute.py (Corresponds to execute/ folder, includes PyMDP, RxInfer, DisCoPy, and JAX execution)
 - 11_llm.py (Corresponds to llm/ folder)
 - 12_site.py (Corresponds to site/ folder, generates HTML summary site)
 - 13_sapf.py (Corresponds to sapf/ folder, generates SAPF (Sound As Pure Form) audio representations and sonifications of GNN models)
 
+Configuration:
+The pipeline uses a YAML configuration file located at input/config.yaml to configure
+all aspects of the pipeline execution. The input directory structure is:
+
+input/
+├── config.yaml              # Pipeline configuration
+└── gnn_files/               # GNN files to process
+    ├── model1.md
+    ├── model2.md
+    └── ...
 
 Usage:
     python main.py [options]
     
 Options:
-    --target-dir DIR        Target directory for GNN files (default: src/gnn/examples)
-    --output-dir DIR        Directory to save outputs (default: ../output)
-    --recursive / --no-recursive    Recursively process directories (default: --recursive)
-    --skip-steps LIST       Comma-separated list of steps to skip (e.g., "1_gnn,7_mcp" or "1,7")
-    --only-steps LIST       Comma-separated list of steps to run (e.g., "4_type_checker,6_visualization")
-    --verbose               Enable verbose output
-    --strict                Enable strict type checking mode (for 4_type_checker)
+    --config-file FILE       Path to configuration file (default: input/config.yaml)
+    --target-dir DIR         Target directory for GNN files (overrides config)
+    --output-dir DIR         Directory to save outputs (overrides config)
+    --recursive / --no-recursive    Recursively process directories (overrides config)
+    --skip-steps LIST        Comma-separated list of steps to skip (overrides config)
+    --only-steps LIST        Comma-separated list of steps to run (overrides config)
+    --verbose                Enable verbose output (overrides config)
+    --strict                 Enable strict type checking mode (for 4_type_checker)
     --estimate-resources / --no-estimate-resources 
-                            Estimate computational resources (for 4_type_checker) (default: --estimate-resources)
-    --ontology-terms-file   Path to the ontology terms file (default: src/ontology/act_inf_ontology_terms.json)
-    --llm-tasks LIST        Comma-separated list of LLM tasks to run for 11_llm.py 
-                            (e.g., "summarize,explain_structure")
-    --llm-timeout           Timeout in seconds for the LLM processing step (11_llm.py)
+                             Estimate computational resources (for 4_type_checker) (default: --estimate-resources)
+    --ontology-terms-file    Path to the ontology terms file (overrides config)
+    --llm-tasks LIST         Comma-separated list of LLM tasks to run for 11_llm.py 
+                             (e.g., "summarize,explain_structure")
+    --llm-timeout            Timeout in seconds for the LLM processing step (11_llm.py)
     --pipeline-summary-file FILE
-                            Path to save the final pipeline summary report (default: output/pipeline_execution_summary.json)
+                             Path to save the final pipeline summary report (overrides config)
     --site-html-filename NAME
-                            Filename for the generated HTML summary site (for 12_site.py, saved in output-dir, default: gnn_pipeline_summary_site.html)
-    --duration              Audio duration in seconds for SAPF generation (for 13_sapf.py, default: 30.0)
-    --recreate-venv         Recreate virtual environment even if it already exists (for 2_setup.py)
-    --dev                   Also install development dependencies from requirements-dev.txt (for 2_setup.py)
+                             Filename for the generated HTML summary site (for 12_site.py, saved in output-dir, default: gnn_pipeline_summary_site.html)
+    --duration               Audio duration in seconds for SAPF generation (for 13_sapf.py, default: 30.0)
+    --recreate-venv          Recreate virtual environment even if it already exists (for 2_setup.py)
+    --dev                    Also install development dependencies from requirements-dev.txt (for 2_setup.py)
 
 """
 
@@ -91,8 +102,11 @@ from utils import (
     PipelineLogger,
     performance_tracker,
     validate_pipeline_dependencies,
-    UTILS_AVAILABLE
+    UTILS_AVAILABLE,
+    load_config,
+    GNNPipelineConfig
 )
+from utils.argument_utils import build_enhanced_step_command_args
 
 # --- Logger Setup ---
 logger = logging.getLogger("GNN_Pipeline")
@@ -160,8 +174,111 @@ def get_system_info() -> Dict[str, Any]:
         return {"error": str(e)}
 
 def parse_arguments() -> PipelineArguments:
-    """Parse command line arguments using the streamlined argument parser."""
-    return EnhancedArgumentParser.parse_main_arguments()
+    """Parse command line arguments and load configuration."""
+    # Create argument parser for command line options
+    parser = argparse.ArgumentParser(
+        description="GNN Processing Pipeline with YAML configuration support",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__
+    )
+    
+    # Add configuration file option
+    parser.add_argument(
+        '--config-file',
+        type=Path,
+        default=Path("input/config.yaml"),
+        help='Path to configuration file (default: input/config.yaml)'
+    )
+    
+    # Add all other options that can override config
+    parser.add_argument('--target-dir', type=Path, help='Target directory for GNN files (overrides config)')
+    parser.add_argument('--output-dir', type=Path, help='Directory to save outputs (overrides config)')
+    parser.add_argument('--recursive', action=argparse.BooleanOptionalAction, help='Recursively process directories (overrides config)')
+    parser.add_argument('--skip-steps', help='Comma-separated list of steps to skip (overrides config)')
+    parser.add_argument('--only-steps', help='Comma-separated list of steps to run (overrides config)')
+    parser.add_argument('--verbose', action=argparse.BooleanOptionalAction, help='Enable verbose output (overrides config)')
+    parser.add_argument('--strict', action='store_true', help='Enable strict type checking mode')
+    parser.add_argument('--estimate-resources', action=argparse.BooleanOptionalAction, help='Estimate computational resources')
+    parser.add_argument('--ontology-terms-file', type=Path, help='Path to ontology terms file (overrides config)')
+    parser.add_argument('--llm-tasks', help='Comma-separated list of LLM tasks')
+    parser.add_argument('--llm-timeout', type=int, help='Timeout for LLM processing in seconds')
+    parser.add_argument('--pipeline-summary-file', type=Path, help='Path to save pipeline summary')
+    parser.add_argument('--site-html-filename', help='Filename for generated HTML site')
+    parser.add_argument('--duration', type=float, help='Audio duration in seconds for SAPF generation')
+    parser.add_argument('--recreate-venv', action='store_true', help='Recreate virtual environment')
+    parser.add_argument('--dev', action='store_true', help='Install development dependencies')
+    
+    # Parse command line arguments
+    args = parser.parse_args()
+    
+    # Load configuration from YAML file
+    try:
+        # Resolve config file path relative to project root
+        config_path = args.config_file
+        if not config_path.is_absolute():
+            # If we're in src/, go up one level to project root
+            if Path.cwd().name == "src":
+                config_path = Path("../") / config_path
+            else:
+                config_path = Path(".") / config_path
+        
+        config = load_config(config_path)
+        logger.info(f"Configuration loaded from {config_path}")
+    except Exception as e:
+        logger.warning(f"Failed to load configuration from {args.config_file}: {e}")
+        logger.info("Using default configuration")
+        config = GNNPipelineConfig()
+    
+    # Convert config to PipelineArguments
+    pipeline_args = PipelineArguments()
+    
+    # Set values from config
+    config_dict = config.to_pipeline_arguments()
+    for key, value in config_dict.items():
+        if hasattr(pipeline_args, key):
+            setattr(pipeline_args, key, value)
+    
+    # Override with command line arguments if provided
+    if args.target_dir is not None:
+        pipeline_args.target_dir = args.target_dir
+    if args.output_dir is not None:
+        pipeline_args.output_dir = args.output_dir
+    if args.recursive is not None:
+        pipeline_args.recursive = args.recursive
+    if args.skip_steps is not None:
+        pipeline_args.skip_steps = args.skip_steps
+    if args.only_steps is not None:
+        pipeline_args.only_steps = args.only_steps
+    if args.verbose is not None:
+        pipeline_args.verbose = args.verbose
+    if args.strict:
+        pipeline_args.strict = True
+    if args.estimate_resources is not None:
+        pipeline_args.estimate_resources = args.estimate_resources
+    if args.ontology_terms_file is not None:
+        pipeline_args.ontology_terms_file = args.ontology_terms_file
+    if args.llm_tasks is not None:
+        pipeline_args.llm_tasks = args.llm_tasks
+    if args.llm_timeout is not None:
+        pipeline_args.llm_timeout = args.llm_timeout
+    if args.pipeline_summary_file is not None:
+        pipeline_args.pipeline_summary_file = args.pipeline_summary_file
+    if args.site_html_filename is not None:
+        pipeline_args.site_html_filename = args.site_html_filename
+    if args.duration is not None:
+        pipeline_args.duration = args.duration
+    if args.recreate_venv:
+        pipeline_args.recreate_venv = True
+    if args.dev:
+        pipeline_args.dev = True
+    
+    # Resolve relative paths relative to input directory
+    input_dir = Path("input")
+    # If target_dir is relative, make it relative to input directory
+    if not pipeline_args.target_dir.is_absolute():
+        pipeline_args.target_dir = input_dir / pipeline_args.target_dir
+    
+    return pipeline_args
 
 def get_pipeline_scripts(current_dir: Path) -> list[dict[str, int | str | Path]]:
     potential_scripts_pattern = current_dir / "*_*.py"
@@ -465,6 +582,16 @@ def run_pipeline(args: PipelineArguments):
         logger.critical("Cannot proceed without a valid Python executable.")
         sys.exit(1)
     
+    # Ensure target_dir is correct relative to cwd (src/)
+    if not args.target_dir.is_absolute():
+        # If running from src/, prepend ../
+        src_dir = Path.cwd()
+        expected_path = src_dir.parent / args.target_dir
+        if expected_path.exists():
+            args.target_dir = os.path.relpath(str(expected_path), str(src_dir))
+        else:
+            args.target_dir = str(args.target_dir)
+
     # Execute each script
     overall_status = "SUCCESS"
     
@@ -479,49 +606,64 @@ def run_pipeline(args: PipelineArguments):
     logger.info(f"  Pipeline Run: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     for idx, script_info in enumerate(scripts_to_run, 1):
-        # Execute the pipeline step using the centralized execution function
-        result = execute_pipeline_step(
-            script_info['basename'], 
-            idx, 
-            len(scripts_to_run),
-            str(python_to_use),
-            args.target_dir,
-            args.output_dir,
-            args,
-            logger
+        # Build the command line for the step using the enhanced argument builder
+        step_cmd = build_enhanced_step_command_args(
+            script_info['basename'], args, str(python_to_use), script_info['path']
         )
-        
-        # Update performance summary
-        _pipeline_run_data_dict["performance_summary"]["total_steps"] += 1
-        
-        if result.get("memory_usage_mb"):
-            _pipeline_run_data_dict["performance_summary"]["peak_memory_mb"] = max(
-                _pipeline_run_data_dict["performance_summary"]["peak_memory_mb"], 
-                result["memory_usage_mb"]
+        logger.debug(f"📋 Executing command: {' '.join(map(str, step_cmd))}")
+        try:
+            result = subprocess.run(
+                step_cmd,
+                capture_output=True,
+                text=True,
+                check=False
             )
-        
-        # Handle different step result statuses
-        if result["status"] in ["FAILED", "ERROR", "TIMEOUT", "FAILED_NONZERO_EXIT"]:
+            step_status = "SUCCESS" if result.returncode == 0 else "FAILED"
+            step_log = {
+                "step_number": idx,
+                "script_name": script_info['basename'],
+                "status": step_status,
+                "start_time": None,
+                "end_time": None,
+                "duration_seconds": None,
+                "details": "",
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+                "memory_usage_mb": None,
+                "exit_code": result.returncode,
+                "retry_count": 0
+            }
+            if step_status == "FAILED":
+                overall_status = "FAILED"
+                _pipeline_run_data_dict["performance_summary"]["failed_steps"] += 1
+                config = get_pipeline_config()
+                step_config = config.get_step_config(script_info['basename'])
+                is_critical = step_config.required if step_config else True
+                if is_critical:
+                    _pipeline_run_data_dict["performance_summary"]["critical_failures"] += 1
+                    logger.critical(f"🔥 Critical step {script_info['basename']} failed. Halting pipeline.")
+                    _pipeline_run_data_dict["steps"].append(step_log)
+                    break
+            _pipeline_run_data_dict["steps"].append(step_log)
+        except Exception as e:
+            logger.error(f"Exception running step {script_info['basename']}: {e}")
+            step_log = {
+                "step_number": idx,
+                "script_name": script_info['basename'],
+                "status": "ERROR",
+                "start_time": None,
+                "end_time": None,
+                "duration_seconds": None,
+                "details": str(e),
+                "stdout": "",
+                "stderr": str(e),
+                "memory_usage_mb": None,
+                "exit_code": 1,
+                "retry_count": 0
+            }
+            _pipeline_run_data_dict["steps"].append(step_log)
             overall_status = "FAILED"
-            _pipeline_run_data_dict["performance_summary"]["failed_steps"] += 1
-            
-            # Check if this was a critical step failure
-            config = get_pipeline_config()
-            step_config = config.get_step_config(result["script_name"])
-            is_critical = step_config.required if step_config else True
-            
-            if is_critical:
-                _pipeline_run_data_dict["performance_summary"]["critical_failures"] += 1
-                logger.critical(f"🔥 Critical step {result['script_name']} failed. Halting pipeline.")
-                _pipeline_run_data_dict["steps"].append(result)
-                break
-        elif result["status"] == "SUCCESS_WITH_WARNINGS":
-            # Update overall status to warnings if not already failed
-            if overall_status == "SUCCESS":
-                overall_status = "SUCCESS_WITH_WARNINGS"
-        
-        # Add step result to summary
-        _pipeline_run_data_dict["steps"].append(result)
+            break
 
     _pipeline_run_data_dict["end_time"] = datetime.datetime.now().isoformat()
     _pipeline_run_data_dict["overall_status"] = overall_status

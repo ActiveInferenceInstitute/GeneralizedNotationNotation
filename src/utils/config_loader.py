@@ -194,9 +194,13 @@ class GNNPipelineConfig:
         """Validate configuration and return list of errors."""
         errors = []
         
-        # Validate target directory exists
-        if not self.pipeline.target_dir.exists():
-            errors.append(f"Target directory does not exist: {self.pipeline.target_dir}")
+        # Validate target directory exists (only if it's an absolute path or we can resolve it)
+        target_dir = self.pipeline.target_dir
+        if target_dir.is_absolute() and not target_dir.exists():
+            errors.append(f"Target directory does not exist: {target_dir}")
+        elif not target_dir.is_absolute():
+            # For relative paths, we'll resolve them later
+            pass
         
         # Validate ontology terms file exists
         if not self.ontology.terms_file.exists():

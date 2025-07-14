@@ -336,7 +336,7 @@ def main(parsed_args: argparse.Namespace):
 if __name__ == '__main__':
     # Use centralized argument parsing
     if UTILS_AVAILABLE:
-        parsed_args = EnhancedArgumentParser.parse_step_arguments("1_gnn")
+        parsed_args = EnhancedArgumentParser.parse_step_arguments("1_gnn.py")
     else:
         # Fallback argument parsing
         parser = argparse.ArgumentParser(description="GNN file discovery and basic parsing")

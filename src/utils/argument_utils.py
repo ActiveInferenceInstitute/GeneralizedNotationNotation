@@ -54,7 +54,7 @@ class PipelineArguments:
     """Centralized argument configuration for the entire pipeline."""
     
     # Core directories
-    target_dir: Path = field(default_factory=lambda: Path("gnn/examples"))
+    target_dir: Path = field(default_factory=lambda: Path("input/gnn_files"))
     output_dir: Path = field(default_factory=lambda: Path("../output"))
     
     # Processing options
