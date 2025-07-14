@@ -74,12 +74,14 @@ def render_gnn_files(input_dir: Path, output_dir: Path, recursive: bool = False)
     successful_renders = 0
     failed_renders = 0
     
-    # Define rendering targets - now includes DisCoPy and ActiveInference.jl
+    # Define rendering targets - now includes DisCoPy, ActiveInference.jl, and JAX
     render_targets = [
         ("pymdp", "pymdp"),
         ("rxinfer_toml", "rxinfer"),
         ("discopy_combined", "discopy"),  # Use combined to get both diagram and JAX evaluation
-        ("activeinference_combined", "activeinference_jl")  # Use combined to get multiple scripts and analysis suite
+        ("activeinference_combined", "activeinference_jl"),  # Use combined to get multiple scripts and analysis suite
+        ("jax_pomdp", "jax"),  # JAX POMDP solver
+        ("jax", "jax")  # General JAX model
     ]
     
     try:

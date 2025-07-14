@@ -43,8 +43,8 @@ EXPECTED_OUTPUTS = {
     "3_tests": [
         "test_reports/pytest_report.xml"
     ],
-    "4_gnn_type_checker": [
-        "gnn_type_check/gnn_type_check/type_check_report.md"
+            "4_type_checker": [
+        "type_check/type_check/type_check_report.md"
     ],
     "5_export": [
         "gnn_exports/"

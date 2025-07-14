@@ -35,7 +35,7 @@ The MCP implementation within the GNN project is primarily located in the `src/m
     Various GNN functionalities are wrapped and exposed as MCP tools through dedicated `mcp.py` files in their respective modules:
     *   `src/export/mcp.py`: Registers tools for exporting GNN files to different formats (JSON, XML, GraphML, etc.).
     *   `src/render/mcp.py`: Registers tools for rendering GNN models into executable formats (e.g., PyMDP, RxInfer).
-    *   `src/gnn_type_checker/mcp.py`: Registers tools for validating GNN file syntax and structure, and for estimating computational resources.
+    *   `src/type_checker/mcp.py`: Registers tools for validating GNN file syntax and structure, and for estimating computational resources.
     *   `src/visualization/mcp.py` (if present, or logic integrated elsewhere): Would register tools for generating visualizations from GNN files.
     *   `src/ontology/mcp.py`: Registers tools for processing and validating GNN ontology annotations.
 
@@ -63,7 +63,7 @@ A common interaction between an MCP Host (e.g., an AI assistant or an IDE plugin
         ```json
         {
             "jsonrpc": "2.0",
-            "method": "gnn_type_checker.type_check_gnn_file",
+            "method": "type_checker.type_check_gnn_file",
             "params": {"file_path": "path/to/example.gnn"},
             "id": "request-123"
         }
@@ -71,7 +71,7 @@ A common interaction between an MCP Host (e.g., an AI assistant or an IDE plugin
     *   This request is sent to the GNN MCP Server (e.g., via HTTP POST).
 4.  **Server-Side Processing**:
     *   The GNN MCP Server receives the request.
-    *   The `MCP` class in `src/mcp/mcp.py` routes the request to the `type_check_gnn_file_mcp` tool handler, which is defined in `src/gnn_type_checker/mcp.py`.
+    *   The `MCP` class in `src/mcp/mcp.py` routes the request to the `type_check_gnn_file_mcp` tool handler, which is defined in `src/type_checker/mcp.py`.
     *   The tool handler executes the GNN type-checking logic on `example.gnn`.
 5.  **Response**:
     *   The GNN MCP Server sends a JSON-RPC response back to the Host:

@@ -1,9 +1,0 @@
-{
-  "model_name": "sandved_smith_figure3",
-  "input_file": "gnn/examples/sandved_smith_figure3.md",
-  "sapf_file": "../output/sapf_processing_step/sandved_smith_figure3/sandved_smith_figure3.sapf",
-  "audio_file": "../output/sapf_processing_step/sandved_smith_figure3/sandved_smith_figure3_audio.wav",
-  "audio_duration": 30.0,
-  "sapf_code_lines": 74,
-  "processing_successful": true
-}

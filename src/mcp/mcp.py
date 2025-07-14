@@ -1,110 +1,221 @@
+#!/usr/bin/env python3
+"""
+Model Context Protocol (MCP) Core Implementation for GNN
+
+This module provides the core MCP server implementation for the GeneralizedNotationNotation (GNN) project.
+It handles tool discovery, registration, and execution across all GNN modules.
+
+The MCP server exposes GNN functionalities as standardized tools that can be accessed by
+MCP-compatible clients such as AI assistants, IDEs, and automated research pipelines.
+
+Key Features:
+- Dynamic module discovery and tool registration
+- JSON-RPC 2.0 compliant request/response handling
+- Comprehensive error handling and logging
+- Support for both stdio and HTTP transport layers
+- Extensible architecture for adding new tools and resources
+"""
+
 import importlib
 import os
 import sys
 from pathlib import Path
 import logging
 import inspect
+import json
+import time
 from typing import Dict, List, Any, Callable, Optional, TypedDict, Union, Tuple
+from dataclasses import dataclass
+from contextlib import contextmanager
 
 # Configure logging
-# logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("mcp")
 
 # --- Custom MCP Exceptions ---
 class MCPError(Exception):
     """Base class for MCP related errors."""
-    def __init__(self, message, code=-32000, data=None):
+    def __init__(self, message: str, code: int = -32000, data: Optional[Any] = None):
         super().__init__(message)
         self.code = code
         self.data = data
 
 class MCPToolNotFoundError(MCPError):
-    def __init__(self, tool_name):
+    """Raised when a requested tool is not found."""
+    def __init__(self, tool_name: str):
         super().__init__(f"Tool '{tool_name}' not found.", code=-32601, data=f"Tool '{tool_name}' not found.")
 
 class MCPResourceNotFoundError(MCPError):
-    def __init__(self, uri):
-        # Or a custom code, but -32601 (Method not found) can also be used if resources are accessed like methods
+    """Raised when a requested resource is not found."""
+    def __init__(self, uri: str):
         super().__init__(f"Resource '{uri}' not found.", code=-32601, data=f"Resource '{uri}' not found.")
 
 class MCPInvalidParamsError(MCPError):
-    def __init__(self, message, details=None):
+    """Raised when tool parameters are invalid."""
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
         super().__init__(message, code=-32602, data=details)
 
 class MCPToolExecutionError(MCPError):
-    def __init__(self, tool_name, original_exception):
-        super().__init__(f"Error executing tool '{tool_name}': {original_exception}", code=-32000, data=str(original_exception))
+    """Raised when tool execution fails."""
+    def __init__(self, tool_name: str, original_exception: Exception):
+        super().__init__(
+            f"Error executing tool '{tool_name}': {original_exception}", 
+            code=-32000, 
+            data=str(original_exception)
+        )
 
-class MCPSDKNotFoundError(MCPError): # This was already defined, ensuring it inherits from MCPError
-    def __init__(self, message="MCP SDK not found or failed to initialize."):
-        super().__init__(message, code=-32001, data=message) # Example custom server error code
+class MCPSDKNotFoundError(MCPError):
+    """Raised when MCP SDK is not found or fails to initialize."""
+    def __init__(self, message: str = "MCP SDK not found or failed to initialize."):
+        super().__init__(message, code=-32001, data=message)
 
-# --- MCP SDK Status Simulation ---
-# This simulates the detection of the MCP SDK.
-# In a real application, this status would be set by the actual SDK loading mechanism.
-# The original "root - WARNING - MCP SDK not found, using dummy classes" implies
-# such a detection and fallback mechanism exists somewhere. We are making mcp.py
-# react to this conceptual status.
-_MCP_SDK_CONFIG_STATUS = {"found": True, "details": "Using project's internal MCP implementation."}
+class MCPValidationError(MCPError):
+    """Raised when request validation fails."""
+    def __init__(self, message: str, field: Optional[str] = None):
+        super().__init__(message, code=-32602, data={"field": field} if field else None)
 
-# Example: Simulate SDK detection failure for demonstration purposes.
-# To test the "SDK not found" path, you would uncomment the following lines
-# or have a real mechanism that sets _MCP_SDK_CONFIG_STATUS["found"] = False.
-# try:
-#     import hypothetical_critical_mcp_sdk_component # This would be the actual SDK import
-#     _MCP_SDK_CONFIG_STATUS["found"] = True
-#     _MCP_SDK_CONFIG_STATUS["details"] = "Successfully loaded critical MCP SDK component."
-# except ImportError:
-#     _MCP_SDK_CONFIG_STATUS["found"] = False
-#     _MCP_SDK_CONFIG_STATUS["details"] = "Failed to import a critical MCP SDK component. MCP functionality will be impaired."
-    # The original "root - WARNING..." might be logged by such a mechanism.
-
+# --- MCP Data Structures ---
+@dataclass
 class MCPTool:
     """Represents an MCP tool that can be executed."""
+    name: str
+    func: Callable
+    schema: Dict[str, Any]
+    description: str
+    module: str = ""
+    category: str = ""
+    version: str = "1.0.0"
     
-    def __init__(self, name: str, func: Callable, schema: Dict, description: str):
-        self.name = name
-        self.func = func
-        self.schema = schema
-        self.description = description
+    def __post_init__(self):
+        """Validate tool configuration after initialization."""
+        if not self.name:
+            raise ValueError("Tool name cannot be empty")
+        if not callable(self.func):
+            raise ValueError("Tool function must be callable")
+        if not isinstance(self.schema, dict):
+            raise ValueError("Tool schema must be a dictionary")
 
+@dataclass
 class MCPResource:
     """Represents an MCP resource that can be accessed."""
+    uri_template: str
+    retriever: Callable
+    description: str
+    module: str = ""
+    category: str = ""
+    version: str = "1.0.0"
     
-    def __init__(self, uri_template: str, retriever: Callable, description: str):
-        self.uri_template = uri_template
-        self.retriever = retriever
-        self.description = description
+    def __post_init__(self):
+        """Validate resource configuration after initialization."""
+        if not self.uri_template:
+            raise ValueError("Resource URI template cannot be empty")
+        if not callable(self.retriever):
+            raise ValueError("Resource retriever must be callable")
 
-class MCP:
-    """Main Model Context Protocol implementation."""
+@dataclass
+class MCPModuleInfo:
+    """Information about a discovered MCP module."""
+    name: str
+    path: Path
+    tools_count: int = 0
+    resources_count: int = 0
+    status: str = "loaded"
+    error_message: Optional[str] = None
+    load_time: float = 0.0
+
+# --- MCP SDK Status Management ---
+class MCPSDKStatus:
+    """Manages MCP SDK status and configuration."""
     
     def __init__(self):
+        self.found: bool = True
+        self.details: str = "Using project's internal MCP implementation."
+        self.version: str = "1.0.0"
+        self.features: List[str] = ["tool_registration", "resource_access", "module_discovery"]
+        self.last_check: float = time.time()
+    
+    def check_status(self) -> bool:
+        """Check current SDK status."""
+        # In a real implementation, this would check for actual SDK availability
+        # For now, we assume the internal implementation is always available
+        self.last_check = time.time()
+        return self.found
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert status to dictionary."""
+        return {
+            "found": self.found,
+            "details": self.details,
+            "version": self.version,
+            "features": self.features,
+            "last_check": self.last_check
+        }
+
+# Global SDK status instance
+_MCP_SDK_STATUS = MCPSDKStatus()
+
+# --- Main MCP Class ---
+class MCP:
+    """
+    Main Model Context Protocol implementation.
+    
+    This class provides the core functionality for:
+    - Discovering and loading MCP modules
+    - Registering tools and resources
+    - Executing tools and retrieving resources
+    - Managing server capabilities and status
+    """
+    
+    def __init__(self):
+        """Initialize the MCP server."""
         self.tools: Dict[str, MCPTool] = {}
         self.resources: Dict[str, MCPResource] = {}
-        self.modules: Dict[str, Any] = {}
-        self._modules_discovered = False # Flag to track if discovery has run
-        # Note: The _MCP_SDK_CONFIG_STATUS is module-level, not instance-level,
-        # as SDK availability is a system-wide concern for this MCP setup.
+        self.modules: Dict[str, MCPModuleInfo] = {}
+        self._modules_discovered = False
+        self._start_time = time.time()
+        self._request_count = 0
+        self._error_count = 0
         
+        # Performance tracking
+        self._tool_execution_times: Dict[str, List[float]] = {}
+        self._last_activity = time.time()
+        
+        logger.info("MCP server initialized")
+    
+    @property
+    def uptime(self) -> float:
+        """Get server uptime in seconds."""
+        return time.time() - self._start_time
+    
+    @property
+    def request_count(self) -> int:
+        """Get total number of requests processed."""
+        return self._request_count
+    
+    @property
+    def error_count(self) -> int:
+        """Get total number of errors encountered."""
+        return self._error_count
+    
     def discover_modules(self) -> bool:
-        """Discover and load MCP modules from other directories.
-
+        """
+        Discover and load MCP modules from other directories.
+        
+        This method scans the src/ directory for modules with mcp.py files
+        and loads them to register their tools and resources.
+        
         Returns:
             bool: True if all modules loaded successfully, False otherwise.
         """
         if self._modules_discovered:
             logger.debug("MCP modules already discovered. Skipping redundant discovery.")
-            # Return True assuming previous discovery's success state is what matters,
-            # or we'd need to store the previous result. For now, if it ran, assume it was handled.
-            # To be more precise, one might store the result of the first discovery.
-            # However, the function is meant to load modules into self.modules and register tools,
-            # which should not be redone.
-            return True # Or reflect stored status if available and needed.
+            return True
 
         root_dir = Path(__file__).parent.parent
-        logger.debug(f"Discovering MCP modules in {root_dir}")
+        logger.info(f"Discovering MCP modules in {root_dir}")
         all_modules_loaded_successfully = True
+        
+        # Track discovery performance
+        discovery_start = time.time()
         
         for directory in root_dir.iterdir():
             if not directory.is_dir() or directory.name.startswith('_'):
@@ -116,6 +227,8 @@ class MCP:
                 continue
                 
             module_name = f"src.{directory.name}.mcp"
+            module_start = time.time()
+            
             try:
                 # Add parent directory to path if needed
                 if str(root_dir.parent) not in sys.path:
@@ -128,18 +241,51 @@ class MCP:
                 if module_name == "src.llm.mcp":
                     if hasattr(module, "initialize_llm_module") and callable(module.initialize_llm_module):
                         logger.debug(f"Calling initialize_llm_module for {module_name}")
-                        module.initialize_llm_module(self) # Pass MCP instance
+                        module.initialize_llm_module(self)
                     else:
                         logger.warning(f"Module {module_name} does not have a callable initialize_llm_module function.")
 
                 # Register tools and resources from the module
                 if hasattr(module, "register_tools") and callable(module.register_tools):
+                    tools_before = len(self.tools)
+                    resources_before = len(self.resources)
+                    
                     module.register_tools(self)
-                
-                self.modules[directory.name] = module
+                    
+                    tools_added = len(self.tools) - tools_before
+                    resources_added = len(self.resources) - resources_before
+                    
+                    module_load_time = time.time() - module_start
+                    
+                    # Create module info
+                    self.modules[directory.name] = MCPModuleInfo(
+                        name=module_name,
+                        path=mcp_file,
+                        tools_count=tools_added,
+                        resources_count=resources_added,
+                        status="loaded",
+                        load_time=module_load_time
+                    )
+                    
+                    logger.info(f"Successfully loaded module {directory.name}: {tools_added} tools, {resources_added} resources")
+                else:
+                    logger.warning(f"Module {module_name} found but has no register_tools function.")
+                    self.modules[directory.name] = MCPModuleInfo(
+                        name=module_name,
+                        path=mcp_file,
+                        status="no_register_function"
+                    )
+                    
             except Exception as e:
                 logger.error(f"Failed to load MCP module {module_name}: {str(e)}")
                 all_modules_loaded_successfully = False
+                
+                self.modules[directory.name] = MCPModuleInfo(
+                    name=module_name,
+                    path=mcp_file,
+                    status="error",
+                    error_message=str(e)
+                )
 
         # Special handling for core MCP tools in the mcp directory itself
         mcp_dir = Path(__file__).parent
@@ -152,59 +298,306 @@ class MCP:
                 module = importlib.import_module("src.mcp.sympy_mcp")
                 logger.debug(f"Loaded core MCP module: src.mcp.sympy_mcp")
                 
-                # Register tools and resources from the module
                 if hasattr(module, "register_tools") and callable(module.register_tools):
                     module.register_tools(self)
                     logger.info("Successfully registered SymPy MCP tools")
                 
-                self.modules["sympy_mcp"] = module
+                self.modules["sympy_mcp"] = MCPModuleInfo(
+                    name="src.mcp.sympy_mcp",
+                    path=sympy_mcp_file,
+                    status="loaded"
+                )
             except Exception as e:
                 logger.error(f"Failed to load core MCP module src.mcp.sympy_mcp: {str(e)}")
                 all_modules_loaded_successfully = False
+                
+                self.modules["sympy_mcp"] = MCPModuleInfo(
+                    name="src.mcp.sympy_mcp",
+                    path=sympy_mcp_file,
+                    status="error",
+                    error_message=str(e)
+                )
 
-        self._modules_discovered = True # Set flag after successful completion of first discovery
+        discovery_time = time.time() - discovery_start
+        logger.info(f"Module discovery completed in {discovery_time:.2f}s: {len(self.modules)} modules, {len(self.tools)} tools, {len(self.resources)} resources")
+        
+        self._modules_discovered = True
         return all_modules_loaded_successfully
     
-    def register_tool(self, name: str, func: Callable, schema: Dict, description: str):
-        """Register a new tool with the MCP."""
+    def register_tool(self, name: str, func: Callable, schema: Dict[str, Any], description: str, 
+                     module: str = "", category: str = "", version: str = "1.0.0"):
+        """
+        Register a new tool with the MCP.
+        
+        Args:
+            name: Unique tool name
+            func: Callable function to execute
+            schema: JSON schema for tool parameters
+            description: Human-readable description
+            module: Source module name
+            category: Tool category
+            version: Tool version
+        """
         if name in self.tools:
             logger.warning(f"Tool '{name}' already registered. Overwriting.")
         
-        self.tools[name] = MCPTool(name, func, schema, description)
-        logger.debug(f"Registered tool: {name}")
+        try:
+            tool = MCPTool(
+                name=name,
+                func=func,
+                schema=schema,
+                description=description,
+                module=module,
+                category=category,
+                version=version
+            )
+            self.tools[name] = tool
+            logger.debug(f"Registered tool: {name}")
+        except Exception as e:
+            logger.error(f"Failed to register tool {name}: {e}")
+            raise
         
-    def register_resource(self, uri_template: str, retriever: Callable, description: str):
-        """Register a new resource with the MCP."""
+    def register_resource(self, uri_template: str, retriever: Callable, description: str,
+                         module: str = "", category: str = "", version: str = "1.0.0"):
+        """
+        Register a new resource with the MCP.
+        
+        Args:
+            uri_template: URI template for the resource
+            retriever: Function to retrieve resource content
+            description: Human-readable description
+            module: Source module name
+            category: Resource category
+            version: Resource version
+        """
         if uri_template in self.resources:
             logger.warning(f"Resource '{uri_template}' already registered. Overwriting.")
             
-        self.resources[uri_template] = MCPResource(uri_template, retriever, description)
-        logger.debug(f"Registered resource: {uri_template}")
+        try:
+            resource = MCPResource(
+                uri_template=uri_template,
+                retriever=retriever,
+                description=description,
+                module=module,
+                category=category,
+                version=version
+            )
+            self.resources[uri_template] = resource
+            logger.debug(f"Registered resource: {uri_template}")
+        except Exception as e:
+            logger.error(f"Failed to register resource {uri_template}: {e}")
+            raise
     
     def execute_tool(self, tool_name: str, params: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute a registered tool with the given parameters."""
-        logger.debug(f"Attempting to execute tool: {tool_name} with params: {params}")
+        """
+        Execute a registered tool with the given parameters.
+        
+        Args:
+            tool_name: Name of the tool to execute
+            params: Parameters to pass to the tool
+            
+        Returns:
+            Tool execution result
+            
+        Raises:
+            MCPToolNotFoundError: If tool is not found
+            MCPInvalidParamsError: If parameters are invalid
+            MCPToolExecutionError: If tool execution fails
+        """
+        self._request_count += 1
+        self._last_activity = time.time()
+        
+        logger.debug(f"Executing tool: {tool_name} with params: {params}")
+        
         if tool_name not in self.tools:
             logger.error(f"Tool not found: {tool_name}")
+            self._error_count += 1
             raise MCPToolNotFoundError(tool_name)
             
         tool = self.tools[tool_name]
         
-        # Basic schema validation (can be enhanced with a proper JSON schema validator)
-        # For simplicity, this example just checks for required parameters.
-        # A real implementation should use a library like jsonschema for full validation.
-        if tool.schema and tool.schema.get('properties'):
-            required_params = tool.schema.get('required', [])
-            for param_name in required_params:
-                if param_name not in params:
-                    err_msg = f"Missing required parameter for {tool_name}: {param_name}"
-                    logger.error(err_msg)
-                    raise MCPInvalidParamsError(err_msg, details={"missing_parameter": param_name})
-            # Optional: Add type checking here based on schema if not using full jsonschema validation
-            for param_name, param_value in params.items():
-                if param_name in tool.schema['properties']:
-                    expected_type_str = tool.schema['properties'][param_name].get('type')
-                    # Basic type mapping - extend as needed
+        # Validate parameters against schema
+        try:
+            self._validate_params(tool.schema, params)
+        except MCPValidationError as e:
+            self._error_count += 1
+            raise MCPInvalidParamsError(str(e), details=e.data)
+        
+        # Execute tool with performance tracking
+        execution_start = time.time()
+        try:
+            result = tool.func(**params)
+            execution_time = time.time() - execution_start
+            
+            # Track execution time
+            if tool_name not in self._tool_execution_times:
+                self._tool_execution_times[tool_name] = []
+            self._tool_execution_times[tool_name].append(execution_time)
+            
+            logger.info(f"Tool {tool_name} executed successfully in {execution_time:.3f}s")
+            return result
+            
+        except MCPError:
+            # Re-raise MCP-specific errors
+            self._error_count += 1
+            raise
+        except Exception as e:
+            self._error_count += 1
+            logger.error(f"Unhandled error during execution of tool {tool_name}: {e}", exc_info=True)
+            raise MCPToolExecutionError(tool_name, e)
+    
+    def get_resource(self, uri: str) -> Dict[str, Any]:
+        """
+        Retrieve a resource by URI.
+        
+        Args:
+            uri: Resource URI
+            
+        Returns:
+            Resource content
+            
+        Raises:
+            MCPResourceNotFoundError: If resource is not found
+            MCPToolExecutionError: If resource retrieval fails
+        """
+        self._request_count += 1
+        self._last_activity = time.time()
+        
+        logger.debug(f"Retrieving resource: {uri}")
+        
+        # Find matching resource
+        for template, resource in self.resources.items():
+            if self._match_uri_template(template, uri):
+                try:
+                    content = resource.retriever(uri=uri)
+                    logger.info(f"Resource {uri} retrieved successfully")
+                    return content
+                except MCPError:
+                    # Re-raise MCP-specific errors
+                    self._error_count += 1
+                    raise
+                except Exception as e:
+                    self._error_count += 1
+                    logger.error(f"Error retrieving resource {uri}: {e}", exc_info=True)
+                    raise MCPToolExecutionError(f"resource_retriever_for_{template}", e)
+                    
+        logger.warning(f"Resource with URI '{uri}' not found")
+        self._error_count += 1
+        raise MCPResourceNotFoundError(uri)
+    
+    def get_capabilities(self) -> Dict[str, Any]:
+        """
+        Return the capabilities of this MCP instance.
+        
+        Returns:
+            Dictionary containing server capabilities, tools, and resources
+        """
+        tools_info = {}
+        for name, tool in self.tools.items():
+            tools_info[name] = {
+                "schema": tool.schema,
+                "description": tool.description,
+                "module": tool.module,
+                "category": tool.category,
+                "version": tool.version
+            }
+            
+        resources_info = {}
+        for uri_template, resource in self.resources.items():
+            resources_info[uri_template] = {
+                "description": resource.description,
+                "module": resource.module,
+                "category": resource.category,
+                "version": resource.version
+            }
+            
+        modules_info = {}
+        for name, module_info in self.modules.items():
+            modules_info[name] = {
+                "name": module_info.name,
+                "path": str(module_info.path),
+                "tools_count": module_info.tools_count,
+                "resources_count": module_info.resources_count,
+                "status": module_info.status,
+                "error_message": module_info.error_message,
+                "load_time": module_info.load_time
+            }
+            
+        return {
+            "tools": tools_info,
+            "resources": resources_info,
+            "modules": modules_info,
+            "version": "1.0.0",
+            "name": "GeneralizedNotationNotation MCP",
+            "description": "Model Context Protocol server for GNN (Generalized Notation Notation)",
+            "server_info": {
+                "uptime": self.uptime,
+                "request_count": self.request_count,
+                "error_count": self.error_count,
+                "last_activity": self._last_activity,
+                "sdk_status": _MCP_SDK_STATUS.to_dict()
+            }
+        }
+    
+    def get_server_status(self) -> Dict[str, Any]:
+        """
+        Get detailed server status information.
+        
+        Returns:
+            Dictionary containing server status details
+        """
+        # Calculate average execution times
+        avg_execution_times = {}
+        for tool_name, times in self._tool_execution_times.items():
+            if times:
+                avg_execution_times[tool_name] = sum(times) / len(times)
+        
+        return {
+            "status": "running",
+            "uptime_seconds": self.uptime,
+            "uptime_formatted": time.strftime("%H:%M:%S", time.gmtime(self.uptime)),
+            "request_count": self.request_count,
+            "error_count": self.error_count,
+            "error_rate": self.error_count / max(self.request_count, 1),
+            "tools_count": len(self.tools),
+            "resources_count": len(self.resources),
+            "modules_count": len(self.modules),
+            "modules_loaded": sum(1 for m in self.modules.values() if m.status == "loaded"),
+            "modules_failed": sum(1 for m in self.modules.values() if m.status == "error"),
+            "last_activity": self._last_activity,
+            "avg_execution_times": avg_execution_times,
+            "sdk_status": _MCP_SDK_STATUS.to_dict()
+        }
+    
+    def _validate_params(self, schema: Dict[str, Any], params: Dict[str, Any]) -> None:
+        """
+        Validate parameters against a JSON schema.
+        
+        Args:
+            schema: JSON schema for validation
+            params: Parameters to validate
+            
+        Raises:
+            MCPValidationError: If validation fails
+        """
+        if not schema or not isinstance(schema, dict):
+            return  # No schema to validate against
+        
+        properties = schema.get("properties", {})
+        required = schema.get("required", [])
+        
+        # Check required parameters
+        for param_name in required:
+            if param_name not in params:
+                raise MCPValidationError(f"Missing required parameter: {param_name}", field=param_name)
+        
+        # Check parameter types
+        for param_name, param_value in params.items():
+            if param_name in properties:
+                param_schema = properties[param_name]
+                expected_type = param_schema.get("type")
+                
+                if expected_type:
                     type_map = {
                         'string': str,
                         'integer': int,
@@ -213,187 +606,155 @@ class MCP:
                         'array': list,
                         'object': dict
                     }
-                    if expected_type_str and expected_type_str in type_map:
-                        expected_type = type_map[expected_type_str]
-                        if not isinstance(param_value, expected_type):
-                            err_msg = f"Invalid type for parameter '{param_name}' in tool '{tool_name}'. Expected {expected_type_str}, got {type(param_value).__name__}."
-                            logger.error(err_msg)
-                            raise MCPInvalidParamsError(err_msg, details={ "parameter": param_name, "expected_type": expected_type_str, "actual_type": type(param_value).__name__})
-        
-        try:
-            # The actual tool function (tool.func) is responsible for its own logic.
-            # It should return a dictionary or JSON-serializable data.
-            result_data = tool.func(**params)
-            logger.info(f"Tool {tool_name} executed successfully.")
-            # The MCP spec usually expects the result of the tool directly.
-            # The client then wraps this in a JSON-RPC response if it's an MCP client.
-            # If this mcp.py is part of a server that forms the full JSON-RPC response,
-            # then it might return just `result_data`.
-            # The previous code `return {"result": result_data}` implies this method might be
-            # called by something that expects the *full* JSON-RPC `result` field content.
-            # However, the method is `execute_tool`, not `handle_execute_tool_rpc_request`.
-            # For clarity and adhering to what a tool execution means, it should return the tool's direct output.
-            # The JSON-RPC formatting ({"jsonrpc": ..., "result": ..., "id": ...}) should be handled by the transport layer.
-            return result_data # Return the direct result of the tool function
-        except MCPError: # Re-raise MCP-specific errors directly
-            raise
-        except Exception as e:
-            logger.error(f"Unhandled error during execution of tool {tool_name}: {e}", exc_info=True)
-            raise MCPToolExecutionError(tool_name, e)
-    
-    def get_resource(self, uri: str) -> Dict[str, Any]:
-        """Retrieve a resource by URI."""
-        logger.debug(f"Attempting to retrieve resource: {uri}")
-        # Basic implementation - would need more sophisticated URI template matching
-        for template, resource in self.resources.items():
-            # This is a very simplified matching logic. 
-            # A robust solution would use URI template libraries or regex.
-            # Example: if uri matches template pattern (e.g. using re or a template library)
-            if template == uri or (template.endswith('{}') and uri.startswith(template[:-2])) or (template.endswith('{id}') and uri.startswith(template[:-4])) :
-                try:
-                    # The retriever function should return the resource content directly.
-                    resource_content = resource.retriever(uri=uri) # Pass the actual URI to the retriever
-                    logger.info(f"Resource {uri} retrieved successfully.")
-                    # Similar to execute_tool, return the direct content of the resource.
-                    # The JSON-RPC formatting should be handled by the transport layer.
-                    return resource_content
-                except MCPError: # Re-raise MCP-specific errors
-                    raise
-                except Exception as e:
-                    logger.error(f"Error retrieving resource {uri} via retriever for template {template}: {e}", exc_info=True)
-                    # Treat retriever failure like a tool execution failure
-                    raise MCPToolExecutionError(f"resource_retriever_for_{template}", e) # Use template as a quasi-toolname
                     
-        logger.warning(f"Resource with URI '{uri}' not found after checking all templates.")
-        raise MCPResourceNotFoundError(uri)
+                    if expected_type in type_map:
+                        expected_type_class = type_map[expected_type]
+                        if not isinstance(param_value, expected_type_class):
+                            raise MCPValidationError(
+                                f"Invalid type for parameter '{param_name}'. Expected {expected_type}, got {type(param_value).__name__}.",
+                                field=param_name
+                            )
     
-    def get_capabilities(self) -> Dict[str, Any]:
-        """Return the capabilities of this MCP instance."""
-        tools = {}
-        for name, tool in self.tools.items():
-            tools[name] = {
-                "schema": tool.schema,
-                "description": tool.description
-            }
+    def _match_uri_template(self, template: str, uri: str) -> bool:
+        """
+        Match a URI against a URI template.
+        
+        Args:
+            template: URI template
+            uri: URI to match
             
-        resources = {}
-        for uri_template, resource in self.resources.items():
-            resources[uri_template] = {
-                "description": resource.description
-            }
-            
-        return {
-            "tools": tools,
-            "resources": resources,
-            "version": "1.0.0",
-            "name": "GeneralizedNotationNotation MCP"
-        }
+        Returns:
+            True if URI matches template
+        """
+        # Simple template matching - can be enhanced with proper URI template library
+        if template == uri:
+            return True
+        
+        # Handle basic template patterns
+        if template.endswith('{}') and uri.startswith(template[:-2]):
+            return True
+        
+        if template.endswith('{id}') and uri.startswith(template[:-4]):
+            return True
+        
+        # Add more sophisticated template matching as needed
+        return False
+    
+    @contextmanager
+    def _track_performance(self, operation: str):
+        """Context manager for tracking operation performance."""
+        start_time = time.time()
+        try:
+            yield
+        finally:
+            duration = time.time() - start_time
+            logger.debug(f"{operation} completed in {duration:.3f}s")
 
-# Create singleton instance
+# --- Global MCP Instance ---
 mcp_instance = MCP()
 
-# Global flag to track if the critical warning has been issued to avoid repetition
-_critical_mcp_warning_issued = False
-
+# --- Initialization Function ---
 def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = False) -> Tuple[MCP, bool, bool]:
     """
     Initialize the MCP by discovering modules and checking SDK status.
-
-    Args:
-        halt_on_missing_sdk: If True (default), raises MCPSDKNotFoundError if the SDK is missing.
-        force_proceed_flag: If True, proceeds even if SDK is missing and halt_on_missing_sdk is True.
-                            (e.g., controlled by a command-line argument like --proceed-without-mcp-sdk)
-
-    Returns:
-        A tuple: (mcp_instance: MCP, sdk_found: bool, all_modules_loaded: bool)
     
+    Args:
+        halt_on_missing_sdk: If True, raises MCPSDKNotFoundError if SDK is missing
+        force_proceed_flag: If True, proceeds even if SDK is missing
+        
+    Returns:
+        Tuple of (mcp_instance, sdk_found, all_modules_loaded)
+        
     Raises:
-        MCPSDKNotFoundError: If SDK is not found, halt_on_missing_sdk is True, and force_proceed_flag is False.
+        MCPSDKNotFoundError: If SDK is missing and halt_on_missing_sdk is True
     """
     global _critical_mcp_warning_issued
     
-    # Perform module discovery first, as this populates the mcp_instance
-    all_modules_loaded = mcp_instance.discover_modules()
-
-    # With the simplified approach, sdk_found is always True.
-    # The check for _MCP_SDK_CONFIG_STATUS["found"] can be simplified or removed
-    # if we are certain that the project's internal MCP is always sufficient.
-    # For now, we'll keep the structure but ensure "found" is true.
-    sdk_found = _MCP_SDK_CONFIG_STATUS["found"] # This will be True
-
-    if not sdk_found: # This block should ideally not be entered anymore.
-        if not _critical_mcp_warning_issued:
-            consequences_details = _MCP_SDK_CONFIG_STATUS['details']
-            consequences = f"""
-The Model Context Protocol (MCP) SDK was not found or failed to initialize correctly.
-As a result, core MCP functionalities will be severely limited or non-operational.
-This will affect capabilities such as, but not limited to:
-  - Running GNN type checks via MCP.
-  - Estimating GNN computational resources via MCP.
-  - Exporting GNN models and reports to various formats via MCP.
-  - Utilizing setup utilities (e.g., finding project files, managing directories) via MCP.
-  - Executing GNN tests and accessing test reports via MCP.
-  - Generating GNN model visualizations via MCP.
-  - Accessing GNN core documentation and ontology terms via MCP.
-  - Full functionality of the MCP server itself (e.g., self-reflection tools).
-
-Pipeline steps or client applications relying on these MCP functions may fail,
-produce incomplete results, or operate with dummy/fallback implementations.
-It is strongly recommended to install or correct the MCP SDK for full functionality.
-Current SDK status details: {consequences_details}
-"""
-            
-            banner = (
-                "\n" + "="*80 +
-                "\n" + "!!! CRITICAL MCP SDK WARNING !!!".center(80) +
-                "\n" + "="*80
-            )
-            
-            logger.critical(banner)
-            logger.critical(consequences)
-            logger.critical("="*80 + "\n")
-            _critical_mcp_warning_issued = True
-
+    # Check SDK status
+    sdk_found = _MCP_SDK_STATUS.check_status()
+    
+    if not sdk_found:
         if halt_on_missing_sdk and not force_proceed_flag:
             error_message = (
                 "MCP SDK is critical for full functionality and was not found or failed to load. "
                 "Pipeline is configured to halt. To proceed with limited MCP capabilities, "
-                "use a flag like --proceed-without-mcp-sdk (if available in the calling script) "
-                "or adjust pipeline configuration."
+                "use a flag like --proceed-without-mcp-sdk or adjust pipeline configuration."
             )
             logger.error(error_message)
             raise MCPSDKNotFoundError(error_message)
-        elif force_proceed_flag:
+        else:
             logger.warning(
-                "Proceeding without a fully functional MCP SDK due to explicit override. "
-                "MCP features will be limited or non-operational."
+                "MCP SDK not found or failed to load, but proceeding with limited functionality."
             )
-        else: # Not configured to halt, but SDK is missing
-             logger.warning(
-                "MCP SDK not found or failed to load, but pipeline is configured to continue. "
-                "MCP functionalities will be impaired or non-operational."
-            )
-    elif sdk_found and _critical_mcp_warning_issued:
-        # If SDK was previously thought missing, but now found (e.g. re-init with fix)
-        logger.info("MCP SDK appears to be available now.")
-        _critical_mcp_warning_issued = False
-    elif sdk_found: # This is the expected path now
-        logger.info(f"MCP system initialized using project's internal MCP components. SDK Status: {_MCP_SDK_CONFIG_STATUS['details']}")
-        _critical_mcp_warning_issued = False # Ensure warning flag is reset if it was ever set
-
-
-    # The calling script (e.g., 7_mcp.py) might log its own "initialized successfully" message.
-    # This function now returns sdk_found so the caller can be more accurate.
+    
+    # Perform module discovery
+    all_modules_loaded = mcp_instance.discover_modules()
+    
+    if all_modules_loaded:
+        logger.info("MCP initialization completed successfully")
+    else:
+        logger.warning("MCP initialization completed with some module loading failures")
+    
     return mcp_instance, sdk_found, all_modules_loaded
 
-# --- Example Usage (illustrative, not typically run directly from here) ---
+# --- Utility Functions ---
+def get_mcp_instance() -> MCP:
+    """Get the global MCP instance, initializing if necessary."""
+    if not mcp_instance._modules_discovered:
+        initialize()
+    return mcp_instance
 
-# Initialize MCP
-mcp, sdk_found, all_modules_loaded = initialize(halt_on_missing_sdk=True, force_proceed_flag=False)
+def list_available_tools() -> List[str]:
+    """Get a list of all available tool names."""
+    return list(mcp_instance.tools.keys())
 
-# Check if all modules loaded successfully
-# if all_modules_loaded:
-# print("All MCP modules loaded successfully.")
-# else:
-# print("Some MCP modules failed to load.")
-# Comment out example usage to prevent execution during import
+def list_available_resources() -> List[str]:
+    """Get a list of all available resource URI templates."""
+    return list(mcp_instance.resources.keys())
+
+def get_tool_info(tool_name: str) -> Optional[Dict[str, Any]]:
+    """Get detailed information about a specific tool."""
+    if tool_name in mcp_instance.tools:
+        tool = mcp_instance.tools[tool_name]
+        return {
+            "name": tool.name,
+            "description": tool.description,
+            "schema": tool.schema,
+            "module": tool.module,
+            "category": tool.category,
+            "version": tool.version
+        }
+    return None
+
+def get_resource_info(uri_template: str) -> Optional[Dict[str, Any]]:
+    """Get detailed information about a specific resource."""
+    if uri_template in mcp_instance.resources:
+        resource = mcp_instance.resources[uri_template]
+        return {
+            "uri_template": resource.uri_template,
+            "description": resource.description,
+            "module": resource.module,
+            "category": resource.category,
+            "version": resource.version
+        }
+    return None
+
+# --- Example Usage (for documentation) ---
+if __name__ == "__main__":
+    # Example of how to use the MCP system
+    try:
+        # Initialize MCP
+        mcp, sdk_found, all_modules_loaded = initialize()
+        
+        # Get capabilities
+        capabilities = mcp.get_capabilities()
+        print(f"Available tools: {len(capabilities['tools'])}")
+        print(f"Available resources: {len(capabilities['resources'])}")
+        
+        # Get server status
+        status = mcp.get_server_status()
+        print(f"Server uptime: {status['uptime_formatted']}")
+        
+    except Exception as e:
+        logger.error(f"Error in MCP initialization: {e}")
+        sys.exit(1)

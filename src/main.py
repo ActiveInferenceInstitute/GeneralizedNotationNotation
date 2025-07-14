@@ -10,7 +10,7 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 1_gnn.py (Corresponds to gnn/ folder)
 - 2_setup.py (Corresponds to setup/ folder)
 - 3_tests.py (Corresponds to tests/ folder)
-- 4_gnn_type_checker.py (Corresponds to gnn_type_checker/ folder, uses gnn_type_checker.py)
+- 4_type_checker.py (Corresponds to type_checker/ folder, uses type_checker.py)
 - 5_export.py (Corresponds to export/ folder)
 - 6_visualization.py (Corresponds to visualization/ folder, uses visualize_gnn.py)
 - 7_mcp.py (Corresponds to mcp/ folder)
@@ -30,11 +30,11 @@ Options:
     --output-dir DIR        Directory to save outputs (default: ../output)
     --recursive / --no-recursive    Recursively process directories (default: --recursive)
     --skip-steps LIST       Comma-separated list of steps to skip (e.g., "1_gnn,7_mcp" or "1,7")
-    --only-steps LIST       Comma-separated list of steps to run (e.g., "4_gnn_type_checker,6_visualization")
+    --only-steps LIST       Comma-separated list of steps to run (e.g., "4_type_checker,6_visualization")
     --verbose               Enable verbose output
-    --strict                Enable strict type checking mode (for 4_gnn_type_checker)
+    --strict                Enable strict type checking mode (for 4_type_checker)
     --estimate-resources / --no-estimate-resources 
-                            Estimate computational resources (for 4_gnn_type_checker) (default: --estimate-resources)
+                            Estimate computational resources (for 4_type_checker) (default: --estimate-resources)
     --ontology-terms-file   Path to the ontology terms file (default: src/ontology/act_inf_ontology_terms.json)
     --llm-tasks LIST        Comma-separated list of LLM tasks to run for 11_llm.py 
                             (e.g., "summarize,explain_structure")
@@ -279,7 +279,7 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
         1: "gnn_processing",    # 1_gnn.py - GNN file processing 
         2: "core",              # 2_setup.py - Setup step
         3: "testing",           # 3_tests.py - Testing framework
-        4: "gnn_processing",    # 4_gnn_type_checker.py - GNN validation
+        4: "gnn_processing",    # 4_type_checker.py - GNN validation
         5: "export",            # 5_export.py - Export formats
         6: "visualization",     # 6_visualization.py - Visualization
         7: "core",              # 7_mcp.py - MCP tools

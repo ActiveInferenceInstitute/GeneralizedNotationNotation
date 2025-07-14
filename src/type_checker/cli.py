@@ -26,7 +26,7 @@ def main(cmd_args=None):
     Returns:
         Exit code (0 for success, 1 for errors)
     """
-    parser = argparse.ArgumentParser(description="GNN Type Checker")
+    parser = argparse.ArgumentParser(description="Type Checker")
     parser.add_argument("input_path", help="Path to GNN file or directory")
     parser.add_argument("-r", "--report-file", default="type_check_report.md",
                         help="Filename for the main type checking report (markdown). Default: type_check_report.md")
@@ -39,7 +39,7 @@ def main(cmd_args=None):
     
     parsed_args = parser.parse_args(cmd_args)
     
-    # The caller (4_gnn_type_checker.py or user via CLI) is responsible for configuring logging levels.
+    # The caller (4_type_checker.py or user via CLI) is responsible for configuring logging levels.
     # This script just uses the logger.
 
     actual_output_dir = Path(parsed_args.output_dir).resolve()
@@ -51,7 +51,7 @@ def main(cmd_args=None):
 
     markdown_report_name = Path(parsed_args.report_file).name # Use only the filename part
 
-    logger.info(f"GNN Type Checker CLI starting...")
+    logger.info(f"Type Checker CLI starting...")
     logger.info(f"  Input path: {parsed_args.input_path}")
     logger.info(f"  Output directory: {actual_output_dir}")
     logger.info(f"  Main report filename: {markdown_report_name}")
@@ -139,7 +139,7 @@ def main(cmd_args=None):
         return 0
 
 if __name__ == "__main__":
-    # When run directly as `python -m gnn_type_checker.cli ...` or `python src/gnn_type_checker/cli.py ...`,
+    # When run directly as `python -m type_checker.cli ...` or `python src/type_checker/cli.py ...`,
     # this block executes. It should set up basic logging if no other configuration exists.
     if not logging.getLogger().hasHandlers():
         # BasicConfig for the root logger. Any loggers created by this module will inherit.

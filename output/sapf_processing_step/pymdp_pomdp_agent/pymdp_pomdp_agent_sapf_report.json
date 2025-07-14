@@ -1,9 +1,0 @@
-{
-  "model_name": "pymdp_pomdp_agent",
-  "input_file": "gnn/examples/pymdp_pomdp_agent.md",
-  "sapf_file": "../output/sapf_processing_step/pymdp_pomdp_agent/pymdp_pomdp_agent.sapf",
-  "audio_file": "../output/sapf_processing_step/pymdp_pomdp_agent/pymdp_pomdp_agent_audio.wav",
-  "audio_duration": 30.0,
-  "sapf_code_lines": 92,
-  "processing_successful": true
-}

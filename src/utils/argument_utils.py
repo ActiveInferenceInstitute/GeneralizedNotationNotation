@@ -238,7 +238,7 @@ class ArgumentParser:
         "1_gnn.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "2_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
         "3_tests.py": ["target_dir", "output_dir", "verbose"],
-        "4_gnn_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
+        "4_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
         "5_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "6_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "7_mcp.py": ["target_dir", "output_dir", "recursive", "verbose"],
@@ -444,7 +444,7 @@ def get_step_output_dir(step_name: str, base_output_dir: Path) -> Path:
     STEP_OUTPUT_MAPPING = {
         "1_gnn": "gnn_processing_step",
         "3_tests": "test_reports", 
-        "4_gnn_type_checker": "gnn_type_check",
+        "4_type_checker": "type_check",
         "5_export": "gnn_exports",
         "6_visualization": "visualization",
         "7_mcp": "mcp_processing_step",
@@ -485,11 +485,11 @@ class StepConfiguration:
             "defaults": {"verbose": False},
             "description": "Test Execution & Validation"
         },
-        "4_gnn_type_checker": {
+        "4_type_checker": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["recursive", "verbose", "strict", "estimate_resources"],
             "defaults": {"recursive": True, "verbose": False, "strict": False, "estimate_resources": True},
-            "description": "GNN Type Checking & Resource Estimation"
+            "description": "Type Checking & Resource Estimation"
         },
         "5_export": {
             "required_args": ["target_dir", "output_dir"],

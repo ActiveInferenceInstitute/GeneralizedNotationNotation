@@ -1,7 +1,7 @@
 """
-MCP (Model Context Protocol) integration for GNN Type Checker module.
+MCP (Model Context Protocol) integration for Type Checker module.
 
-This module exposes GNN type checking and resource estimation 
+This module exposes type checking and resource estimation 
 functionality through the Model Context Protocol.
 """
 
@@ -25,7 +25,7 @@ try:
 except ImportError:
     # Fallback if checker.py is not found or GNNTypeChecker is not directly in it
     # This is a placeholder; ideally, the import should be direct.
-    logger.warning("GNNTypeChecker not found in gnn_type_checker.checker. Using a mock.")
+    logger.warning("GNNTypeChecker not found in type_checker.checker. Using a mock.")
     class GNNTypeChecker:
         def check_file(self, file_path: str) -> tuple[bool, list, list]:
             logger.debug(f"Mock GNNTypeChecker.check_file called for {file_path}")
@@ -241,5 +241,5 @@ def register_tools(mcp_instance): # Changed 'mcp' to 'mcp_instance' for clarity
         else:
             logger.warning("GNNResourceEstimator appears to be a mock or unavailable. Resource estimation MCP tools will not be registered.")
             
-    logger.info("GNN Type Checker module MCP tools registered.")
+    logger.info("Type Checker module MCP tools registered.")
     # No specific resources to register for type_checker beyond the files it might create (handled by report_file param) 

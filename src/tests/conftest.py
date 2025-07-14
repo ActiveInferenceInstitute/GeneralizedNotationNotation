@@ -396,7 +396,7 @@ def real_gnn_parser():
 def real_type_checker():
     """Provide real type checker for testing."""
     try:
-        from gnn_type_checker import check_gnn_file, check_gnn_directory
+        from type_checker import check_gnn_file, check_gnn_directory
         
         class RealTypeChecker:
             def check_file(self, file_path: Path):

@@ -52,7 +52,7 @@ class TestPipelineStepCommonInterface:
             1: "1_gnn.py",
             2: "2_setup.py", 
             3: "3_tests.py",
-            4: "4_gnn_type_checker.py",
+            4: "4_type_checker.py",
             5: "5_export.py",
             6: "6_visualization.py",
             7: "7_mcp.py",
@@ -95,7 +95,7 @@ class TestPipelineStepCommonInterface:
     def test_pipeline_step_file_structure(self, step_number: int):
         """Test that each pipeline step has the expected file structure."""
         step_scripts = {
-            1: "1_gnn.py", 2: "2_setup.py", 3: "3_tests.py", 4: "4_gnn_type_checker.py",
+            1: "1_gnn.py", 2: "2_setup.py", 3: "3_tests.py", 4: "4_type_checker.py",
             5: "5_export.py", 6: "6_visualization.py", 7: "7_mcp.py", 8: "8_ontology.py",
             9: "9_render.py", 10: "10_execute.py", 11: "11_llm.py", 12: "12_discopy.py",
             13: "13_discopy_jax_eval.py", 14: "14_site.py"
@@ -290,7 +290,7 @@ class TestStep4GNNTypeChecker:
             
             # Test execution with sample files
             result = subprocess.run([
-                "python", str(SRC_DIR / "4_gnn_type_checker.py"),
+                "python", str(SRC_DIR / "4_type_checker.py"),
                 "--target-dir", str(list(sample_gnn_files.values())[0].parent),
                 "--output-dir", str(TEST_CONFIG["temp_output_dir"]),
                 "--strict"

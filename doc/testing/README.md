@@ -110,7 +110,7 @@ class TestGNNParser:
 ```python
 # src/tests/unit/test_type_checker.py
 import pytest
-from src.gnn_type_checker import TypeChecker, ValidationResult
+from src.type_checker import TypeChecker, ValidationResult
 from src.gnn import GNNModel
 
 class TestTypeChecker:
@@ -295,7 +295,7 @@ import time
 import psutil
 import os
 from src.gnn import GNNModel
-from src.gnn_type_checker import TypeChecker
+from src.type_checker import TypeChecker
 
 class TestPerformance:
     @pytest.mark.slow

@@ -12,7 +12,7 @@ from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 # Add the src directory to the Python path to import the module
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
-from gnn_type_checker import GNNTypeChecker
+from type_checker import GNNTypeChecker
 
 
 class TestGNNTypeChecker(unittest.TestCase):

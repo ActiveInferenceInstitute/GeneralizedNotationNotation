@@ -31,7 +31,7 @@ The GNN Processing Pipeline is a comprehensive 14-step system for processing Gen
 - **Output**: `test_reports/pytest_report.xml`
 - **Key Features**: Unit tests, integration tests, JUnit XML reports
 
-#### Step 4: Type Checking (`4_gnn_type_checker.py`)
+#### Step 4: Type Checking (`4_type_checker.py`)
 - **Purpose**: GNN syntax validation and computational resource estimation
 - **Input**: GNN files from target directory
 - **Output**: `gnn_type_check/type_check_report.md`, resource estimation HTML

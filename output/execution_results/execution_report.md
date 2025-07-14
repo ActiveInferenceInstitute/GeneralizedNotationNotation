@@ -1,7 +1,0 @@
-# Execution Results Report
-
-**Generated:** 2025-06-23 15:29:21
-**Target Directory:** gnn/examples
-**Total Successes:** 0
-**Total Failures:** 0
-

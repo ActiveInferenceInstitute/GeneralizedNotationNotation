@@ -20,7 +20,7 @@ parent_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
-from gnn_type_checker import GNNTypeChecker
+from type_checker import GNNTypeChecker
 
 # MCP Tools for Tests Module
 
@@ -187,7 +187,7 @@ def register_tools(mcp):
     
     # Register test tools
     mcp.register_tool(
-        "run_gnn_type_checker",
+        "run_type_checker",
         run_type_checker_on_file,
         {
             "file_path": {"type": "string", "description": "Path to the GNN file to check"}
@@ -196,7 +196,7 @@ def register_tools(mcp):
     )
     
     mcp.register_tool(
-        "run_gnn_type_checker_on_directory",
+        "run_type_checker_on_directory",
         run_type_checker_on_directory,
         {
             "dir_path": {"type": "string", "description": "Path to directory containing GNN files"},

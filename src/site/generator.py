@@ -346,8 +346,8 @@ def _add_test_reports_section(f: IO[str], output_dir: Path):
     else:
         logger.warning(f"Pytest XML report not found: {pytest_report_xml.as_posix()}")
 
-def _add_gnn_type_checker_section(f: IO[str], output_dir: Path):
-    type_check_dir = output_dir / "gnn_type_check"
+def _add_type_checker_section(f: IO[str], output_dir: Path):
+    type_check_dir = output_dir / "type_check"
     if type_check_dir.is_dir():
         f.write(f"<div class='section' id='{make_section_id('GNN Type Checker')}'>\n")
         f.write(f"<h2>GNN Type Checker (Step 4)</h2>\n")
@@ -485,7 +485,7 @@ def _add_other_outputs_section(f: IO[str], output_dir: Path, site_output_file: P
     other_content_html = ""
     handled_items = {
         "pipeline_execution_summary.json", "gnn_processing_step", "test_reports",
-        "gnn_type_check", "gnn_exports", "gnn_processing_summary.md",
+                    "type_check", "gnn_exports", "gnn_processing_summary.md",
         "visualization", "mcp_processing_step", "ontology_processing",
         "gnn_rendered_simulators", "pymdp_execute_logs", "llm_processing_step", "logs",
         site_output_file.name 
@@ -525,7 +525,7 @@ def generate_html_report(output_dir: Path, site_output_file: Path):
         _add_pipeline_summary_section(f, output_dir)
         _add_gnn_discovery_section(f, output_dir)
         _add_test_reports_section(f, output_dir)
-        _add_gnn_type_checker_section(f, output_dir)
+        _add_type_checker_section(f, output_dir)
         _add_gnn_exports_section(f, output_dir) # Also handles gnn_processing_summary.md internally
         _add_visualizations_section(f, output_dir)
         _add_mcp_report_section(f, output_dir)

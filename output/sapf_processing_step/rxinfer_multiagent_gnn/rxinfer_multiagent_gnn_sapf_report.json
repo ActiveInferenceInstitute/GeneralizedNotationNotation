@@ -1,9 +1,0 @@
-{
-  "model_name": "rxinfer_multiagent_gnn",
-  "input_file": "gnn/examples/rxinfer_multiagent_gnn.md",
-  "sapf_file": "../output/sapf_processing_step/rxinfer_multiagent_gnn/rxinfer_multiagent_gnn.sapf",
-  "audio_file": "../output/sapf_processing_step/rxinfer_multiagent_gnn/rxinfer_multiagent_gnn_audio.wav",
-  "audio_duration": 30.0,
-  "sapf_code_lines": 93,
-  "processing_successful": true
-}

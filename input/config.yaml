@@ -1,0 +1,61 @@
+# GNN Pipeline Configuration
+# This file configures the processing of GNN files through the pipeline
+
+# Pipeline Configuration
+pipeline:
+  # Target directory for GNN files (relative to input/)
+  target_dir: "gnn_files"
+  
+  # Output directory (relative to project root)
+  output_dir: "../output"
+  
+  # Processing options
+  recursive: true
+  verbose: true
+  
+  # Step control - which steps to run or skip
+  skip_steps: []  # e.g., ["7_mcp", "11_llm"] to skip MCP and LLM steps
+  only_steps: []  # e.g., ["1_gnn", "4_type_checker"] to run only specific steps
+  
+  # Pipeline summary file
+  pipeline_summary_file: "../output/pipeline_execution_summary.json"
+
+# Type Checking Configuration
+type_checker:
+  strict: false
+  estimate_resources: true
+
+# Ontology Configuration
+ontology:
+  terms_file: "../src/ontology/act_inf_ontology_terms.json"
+
+# LLM Configuration
+llm:
+  tasks: "all"  # or specific tasks like "summarize,explain_structure"
+  timeout: 360  # seconds
+
+# Site Generation Configuration
+site:
+  html_filename: "gnn_pipeline_summary_site.html"
+
+# Setup Configuration
+setup:
+  recreate_venv: false
+  dev: false
+
+# SAPF Audio Configuration
+sapf:
+  duration: 30.0  # seconds
+
+# Model-specific configurations
+models:
+  # Global settings applied to all models
+  global:
+    enable_visualization: true
+    enable_export: true
+    enable_execution: true
+  
+  # Model-specific overrides (optional)
+  # model_name:
+  #   skip_steps: ["11_llm"]
+  #   custom_output_dir: "../output/custom_model" 

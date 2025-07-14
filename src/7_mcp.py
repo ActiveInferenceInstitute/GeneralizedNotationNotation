@@ -47,7 +47,7 @@ except ImportError as e:
 EXPECTED_MCP_MODULE_DIRS = [
     "export",
     "gnn",
-    "gnn_type_checker",
+            "type_checker",
     "ontology",
     "setup",
     "tests",

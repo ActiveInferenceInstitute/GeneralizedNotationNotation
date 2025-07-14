@@ -221,7 +221,7 @@ class TestProjectConfiguration:
         """Test that all expected pipeline scripts exist."""
         expected_scripts = [
             f"{i}_{name}.py" for i, name in [
-                (1, "gnn"), (2, "setup"), (3, "tests"), (4, "gnn_type_checker"),
+                (1, "gnn"), (2, "setup"), (3, "tests"), (4, "type_checker"),
                 (5, "export"), (6, "visualization"), (7, "mcp"), (8, "ontology"),
                 (9, "render"), (10, "execute"), (11, "llm"), (12, "discopy"),
                 (13, "discopy_jax_eval"), (14, "site")
@@ -452,7 +452,7 @@ class TestImportCapabilities:
         # These imports might fail if dependencies are missing, but should be graceful
         pipeline_modules = [
             ("gnn", "GNN processing"),
-            ("gnn_type_checker", "Type checking"),
+            ("type_checker", "Type checking"),
             ("visualization", "Visualization"),
             ("export", "Export functionality"),
         ]

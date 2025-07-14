@@ -184,7 +184,7 @@ src/
 │   ├── 1_gnn.py                    # GNN Discovery & Parsing
 │   ├── 2_setup.py                  # Setup & Dependencies ⚠️ Critical
 │   ├── 3_tests.py                  # Test Suite Execution
-│   ├── 4_gnn_type_checker.py      # Type Checking & Validation
+│   ├── 4_type_checker.py          # Type Checking & Validation
 │   ├── 5_export.py                # Multi-Format Export
 │   ├── 6_visualization.py         # Visualization Generation
 │   ├── 7_mcp.py                   # Model Context Protocol
@@ -252,7 +252,7 @@ flowchart TD
     A["🚀 Start Pipeline"] --> B["1️⃣ GNN Discovery & Parsing<br/>src/gnn/"]
     B --> C["2️⃣ Setup & Dependencies<br/>src/setup/<br/>⚠️ Critical Step"]
     C --> D["3️⃣ Test Suite Execution<br/>src/tests/"]
-    D --> E["4️⃣ Type Checking & Validation<br/>src/gnn_type_checker/"]
+    D --> E["4️⃣ Type Checking & Validation<br/>src/type_checker/"]
     E --> F["5️⃣ Multi-Format Export<br/>src/export/"]
     F --> G["6️⃣ Visualization Generation<br/>src/visualization/"]
     G --> H["7️⃣ Model Context Protocol<br/>src/mcp/"]

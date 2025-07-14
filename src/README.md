@@ -29,7 +29,7 @@ The pipeline processes GNN models through a systematic workflow:
 | 1 | `1_gnn.py` | GNN file discovery and parsing | ✅ WORKING | `gnn_processing_step/` |
 | 2 | `2_setup.py` | Environment setup and dependencies | ✅ WORKING | `setup_artifacts/` |
 | 3 | `3_tests.py` | Test execution and validation | ✅ WORKING | `test_reports/` |
-| 4 | `4_gnn_type_checker.py` | Type checking and validation | ✅ WORKING | `gnn_type_check/` |
+| 4 | `4_type_checker.py` | Type checking and validation | ✅ WORKING | `type_check/` |
 | 5 | `5_export.py` | Multi-format export (JSON, XML, etc.) | ✅ WORKING | `gnn_exports/` |
 | 6 | `6_visualization.py` | Graph and statistical visualizations | ✅ WORKING | `visualization/` |
 | 7 | `7_mcp.py` | Model Context Protocol operations | ⚠️ PARTIAL | `mcp_processing_step/` |
@@ -154,7 +154,7 @@ Each step can be run independently:
 python3 src/1_gnn.py --target-dir src/gnn/examples --output-dir output --verbose
 
 # Run type checking
-python3 src/4_gnn_type_checker.py --target-dir src/gnn/examples --output-dir output --strict
+python3 src/4_type_checker.py --target-dir src/gnn/examples --output-dir output --strict
 
 # Generate exports
 python3 src/5_export.py --target-dir src/gnn/examples --output-dir output

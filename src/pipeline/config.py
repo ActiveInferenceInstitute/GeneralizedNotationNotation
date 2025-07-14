@@ -72,11 +72,11 @@ class PipelineConfig:
                 timeout=600,
                 required=False  # Tests can fail without stopping pipeline
             ),
-            "4_gnn_type_checker.py": StepConfig(
+            "4_type_checker.py": StepConfig(
                 name="type_checking",
                 description="GNN syntax and type validation",
-                module_path="4_gnn_type_checker.py",
-                output_subdir="gnn_type_check",
+                module_path="4_type_checker.py",
+                output_subdir="type_check",
                 dependencies=["1_gnn.py"],
                 performance_tracking=True,
                 required=False  # Type checking can fail without stopping pipeline
@@ -86,7 +86,7 @@ class PipelineConfig:
                 description="Multi-format export generation",
                 module_path="5_export.py",
                 output_subdir="gnn_exports",
-                dependencies=["4_gnn_type_checker.py"],
+                dependencies=["4_type_checker.py"],
                 performance_tracking=True,
                 required=False  # Export can fail without stopping pipeline
             ),

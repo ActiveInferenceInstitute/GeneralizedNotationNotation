@@ -72,7 +72,15 @@ except ImportError as e:
     ACTIVEINFERENCE_AVAILABLE = False
     run_activeinference_analysis = None
 
-logger.debug(f"Execution modules availability - PyMDP: {PYMDP_AVAILABLE}, RxInfer: {RXINFER_AVAILABLE}, DisCoPy: {DISCOPY_AVAILABLE}, ActiveInference.jl: {ACTIVEINFERENCE_AVAILABLE}")
+try:
+    from execute.jax.jax_runner import run_jax_scripts
+    JAX_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"JAX execution not available: {e}")
+    JAX_AVAILABLE = False
+    run_jax_scripts = None
+
+logger.debug(f"Execution modules availability - PyMDP: {PYMDP_AVAILABLE}, RxInfer: {RXINFER_AVAILABLE}, DisCoPy: {DISCOPY_AVAILABLE}, ActiveInference.jl: {ACTIVEINFERENCE_AVAILABLE}, JAX: {JAX_AVAILABLE}")
 
 def execute_rendered_simulators(target_dir: Path, output_dir: Path, recursive: bool = False, verbose: bool = False):
     """Execute rendered simulator scripts."""
@@ -90,6 +98,7 @@ def execute_rendered_simulators(target_dir: Path, output_dir: Path, recursive: b
             "rxinfer_executions": [],
             "discopy_executions": [],
             "activeinference_executions": [],
+            "jax_executions": [],
             "total_successes": 0,
             "total_failures": 0
         }
@@ -179,6 +188,27 @@ def execute_rendered_simulators(target_dir: Path, output_dir: Path, recursive: b
                 execution_results["activeinference_executions"].append({"status": "ERROR", "message": str(e)})
                 log_step_warning(logger, f"ActiveInference.jl analysis failed: {e}")
         
+        # Execute JAX scripts if available
+        if JAX_AVAILABLE and run_jax_scripts:
+            try:
+                with performance_tracker.track_operation("execute_jax_scripts"):
+                    jax_success = run_jax_scripts(
+                        pipeline_output_dir=target_dir,
+                        recursive_search=recursive,
+                        verbose=verbose
+                    )
+                    if jax_success:
+                        execution_results["total_successes"] += 1
+                        execution_results["jax_executions"].append({"status": "SUCCESS", "message": "JAX scripts executed successfully"})
+                    else:
+                        execution_results["total_failures"] += 1
+                        execution_results["jax_executions"].append({"status": "FAILED", "message": "JAX script execution failed"})
+                log_step_success(logger, "JAX script execution completed")
+            except Exception as e:
+                execution_results["total_failures"] += 1
+                execution_results["jax_executions"].append({"status": "ERROR", "message": str(e)})
+                log_step_warning(logger, f"JAX script execution failed: {e}")
+        
         # Save execution summary
         summary_file = execution_output_dir / "execution_summary.json"
         with open(summary_file, 'w') as f:
@@ -209,11 +239,26 @@ def execute_rendered_simulators(target_dir: Path, output_dir: Path, recursive: b
                 f.write("## DisCoPy Analyses\n\n")
                 for exec_info in execution_results["discopy_executions"]:
                     f.write(f"- **{exec_info.get('script', 'Unknown')}** ({exec_info.get('type', 'analysis')}): {exec_info.get('status', 'Unknown')}\n")
+                f.write("\n")
+            
+            if execution_results["activeinference_executions"]:
+                f.write("## ActiveInference.jl Analyses\n\n")
+                for exec_info in execution_results["activeinference_executions"]:
+                    f.write(f"- **{exec_info.get('script', 'Unknown')}**: {exec_info.get('status', 'Unknown')}\n")
+                f.write("\n")
+            
+            if execution_results["jax_executions"]:
+                f.write("## JAX Executions\n\n")
+                for exec_info in execution_results["jax_executions"]:
+                    f.write(f"- **{exec_info.get('script', 'Unknown')}**: {exec_info.get('status', 'Unknown')}\n")
+                f.write("\n")
         
         # Log results summary
         total_executions = (len(execution_results["pymdp_executions"]) + 
                           len(execution_results["rxinfer_executions"]) + 
-                          len(execution_results["discopy_executions"]))
+                          len(execution_results["discopy_executions"]) +
+                          len(execution_results["activeinference_executions"]) +
+                          len(execution_results["jax_executions"]))
         if total_executions > 0:
             success_rate = execution_results["total_successes"] / total_executions * 100
             log_step_success(logger, f"Execution completed. Success rate: {success_rate:.1f}% ({execution_results['total_successes']}/{total_executions})")

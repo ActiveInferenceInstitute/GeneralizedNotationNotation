@@ -121,7 +121,7 @@ except GNNSyntaxError as e:
 ##### `gnn_validate_syntax(model: GNNModel) -> ValidationResult`
 **Description**: Validate GNN model syntax and structure.
 
-### `src.gnn_type_checker` - Model Validation
+### `src.type_checker` - Model Validation
 
 #### Classes
 
@@ -419,7 +419,7 @@ llm:
 ```python
 import os
 from src.gnn import GNNModel
-from src.gnn_type_checker import TypeChecker
+from src.type_checker import TypeChecker
 from src.export import export_to_json
 from src.visualization import GNNVisualizer
 from src.render.pymdp import PyMDPRenderer

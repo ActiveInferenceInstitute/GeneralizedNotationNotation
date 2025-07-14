@@ -949,7 +949,7 @@ class GNNResourceEstimator:
         if output_dir:
             output_path = Path(output_dir)
         else:
-            output_path = Path("output/gnn_type_checker/resources")
+            output_path = Path("output/type_checker/resources")
         
         output_path.mkdir(parents=True, exist_ok=True)
         
@@ -1730,7 +1730,7 @@ def main():
         print(report)
     else:
         # When HTML only mode is selected, just print a simple summary and HTML location
-        output_dir = args.output_dir if args.output_dir else "output/gnn_type_checker/resources"
+        output_dir = args.output_dir if args.output_dir else "output/type_checker/resources"
         html_path = os.path.join(output_dir, "resource_report_detailed.html")
         print(f"Generated HTML resource report at: {html_path}")
         print(f"Analyzed {len(estimator.results)} files")

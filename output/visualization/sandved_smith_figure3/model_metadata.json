@@ -1,7 +1,0 @@
-{
-  "ModelName": "Deep Generative Model for Policy Selection with Meta-Awareness",
-  "ModelAnnotation": "This model represents a deep parametric active inference architecture for modeling meta-awareness and attentional control.\nBased on Sandved-Smith et al. (2021) \"Towards a computational phenomenology of mental action: modelling meta-awareness and attentional control with deep parametric active inference.\"\n\nThe model includes:\n- Single hidden state factor relating to observable modality\n- Policy selection over cognitive states through hierarchical inference\n- Precision control for attentional modulation\n- Meta-awareness states that modulate confidence in lower-level mappings\n- Dynamic perception and action in a unified framework\n\nThis architecture enables the emergence of opacity-transparency dynamics characteristic of conscious experience and deliberate cognitive control.",
-  "GNNVersionAndFlags": "GNN v1",
-  "Time": "Dynamic\nDiscreteTime=t\nModelTimeHorizon=Unbounded\nTemporalDepth=3  # Past, present, future dependencies",
-  "ActInfOntologyAnnotation": "A=LikelihoodMapping\nB=TransitionDynamics\nB_pi=PolicyDependentTransitions\nC=PriorPreferences\nD=PriorStateBeliefs\nE=PriorPolicyBeliefs\nG=ExpectedFreeEnergy\nF_\u03c0=VariationalFreeEnergy\ns=HiddenStates\ns_bar=PosteriorHiddenStates\no=Observations\no_bar=PosteriorObservations\n\u03c0=PolicyBeliefs\n\u03c0_bar=PosteriorPolicyBeliefs\nu=SelectedAction\n\u03b3_A=LikelihoodPrecision\n\u03b2_A=InversePrecision\nt=TimeStep"
-}

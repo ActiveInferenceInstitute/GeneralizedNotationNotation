@@ -430,6 +430,7 @@ def install_jax_and_test(verbose: bool = False) -> bool:
     import subprocess
     import logging
     logger = logging.getLogger(__name__)
+    
     try:
         import jax
         import optax
@@ -437,57 +438,116 @@ def install_jax_and_test(verbose: bool = False) -> bool:
         logger.info(f"JAX version: {jax.__version__}")
         logger.info(f"Optax version: {optax.__version__}")
         logger.info(f"Flax version: {flax.__version__}")
+        
+        # Check available devices
         devices = jax.devices()
-        logger.info(f"JAX devices: {[str(d) for d in devices]}")
+        logger.info(f"Available JAX devices: {[str(d) for d in devices]}")
+        
+        # Test basic JAX functionality
+        x = jax.numpy.array([1.0, 2.0, 3.0])
+        y = jax.numpy.sin(x)
+        logger.info(f"JAX basic test passed: {y}")
+        
+        # Test JIT compilation
+        @jax.jit
+        def test_jit(x):
+            return jax.numpy.sum(jax.numpy.sin(x))
+        
+        result = test_jit(jax.numpy.array([1.0, 2.0, 3.0]))
+        logger.info(f"JAX JIT test passed: {result}")
+        
+        # Test vmap
+        def test_vmap(x):
+            return jax.numpy.sin(x)
+        
+        vmapped_fn = jax.vmap(test_vmap)
+        vmap_result = vmapped_fn(jax.numpy.array([[1.0, 2.0], [3.0, 4.0]]))
+        logger.info(f"JAX vmap test passed: {vmap_result}")
+        
+        # Test Optax
+        optimizer = optax.adam(0.01)
+        params = {"w": jax.numpy.ones((2, 2))}
+        opt_state = optimizer.init(params)
+        logger.info("Optax test passed")
+        
+        # Test Flax
+        class SimpleModel(flax.linen.Module):
+            @flax.linen.compact
+            def __call__(self, x):
+                return flax.linen.Dense(1)(x)
+        
+        model = SimpleModel()
+        variables = model.init(jax.random.PRNGKey(0), jax.numpy.ones((1, 2)))
+        output = model.apply(variables, jax.numpy.ones((1, 2)))
+        logger.info(f"Flax test passed: {output.shape}")
+        
+        # Test POMDP-like operations
+        def test_pomdp_ops():
+            # Belief update simulation
+            belief = jax.numpy.array([0.5, 0.5])
+            transition = jax.numpy.array([[0.8, 0.2], [0.2, 0.8]])
+            observation = jax.numpy.array([0.9, 0.1])
+            
+            # Belief prediction
+            belief_pred = transition @ belief
+            
+            # Belief update
+            numerator = observation * belief_pred
+            denominator = jax.numpy.sum(numerator)
+            updated_belief = numerator / denominator
+            
+            return updated_belief
+        
+        pomdp_result = test_pomdp_ops()
+        logger.info(f"POMDP operations test passed: {pomdp_result}")
+        
+        logger.info("JAX, Optax, and Flax are working correctly with POMDP capabilities")
         return True
-    except ImportError:
-        logger.info("JAX/Optax/Flax not found, attempting installation...")
-        # Detect hardware
-        cuda = False
-        tpu = False
+        
+    except ImportError as e:
+        logger.warning(f"JAX, Optax, or Flax not installed: {e}")
+        
+        # Try to install JAX
         try:
-            import torch
-            cuda = torch.cuda.is_available()
-        except ImportError:
-            pass
-        # Try to detect NVIDIA GPU via nvidia-smi
-        if not cuda:
-            try:
-                result = subprocess.run(["nvidia-smi"], capture_output=True, text=True)
-                if result.returncode == 0:
-                    cuda = True
-            except Exception:
-                pass
-        # Install JAX for the right platform
-        pip = sys.executable + " -m pip"
-        if tpu:
-            jax_cmd = f'{pip} install --upgrade "jax[tpu]" -f https://storage.googleapis.com/jax-releases/libtpu_releases.html'
-        elif cuda:
-            jax_cmd = f'{pip} install --upgrade "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html'
-        else:
-            jax_cmd = f'{pip} install --upgrade "jax[cpu]"'
-        optax_cmd = f'{pip} install --upgrade optax>=0.1.7'
-        flax_cmd = f'{pip} install --upgrade flax>=0.7.0'
-        scipy_cmd = f'{pip} install --upgrade scipy>=1.10.0'
-        for cmd in [jax_cmd, optax_cmd, flax_cmd, scipy_cmd]:
-            logger.info(f"Running: {cmd}")
-            subprocess.run(cmd, shell=True, check=True)
-        # Try again
-        try:
-            import jax
-            import optax
-            import flax
-            logger.info(f"JAX version: {jax.__version__}")
-            logger.info(f"Optax version: {optax.__version__}")
-            logger.info(f"Flax version: {flax.__version__}")
-            devices = jax.devices()
-            logger.info(f"JAX devices: {[str(d) for d in devices]}")
-            return True
-        except Exception as e:
-            logger.error(f"JAX/Optax/Flax install failed: {e}")
+            logger.info("Attempting to install JAX...")
+            
+            # Detect hardware
+            if platform.system() == "Darwin":  # macOS
+                install_cmd = ["pip", "install", "--upgrade", "jax[cpu]"]
+            else:
+                # Check for CUDA
+                try:
+                    subprocess.run(["nvidia-smi"], capture_output=True, check=True)
+                    logger.info("CUDA detected, installing JAX with CUDA support")
+                    install_cmd = ["pip", "install", "--upgrade", "jax[cuda12]", "-f", "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"]
+                except (subprocess.CalledProcessError, FileNotFoundError):
+                    logger.info("No CUDA detected, installing CPU-only JAX")
+                    install_cmd = ["pip", "install", "--upgrade", "jax[cpu]"]
+            
+            if verbose:
+                logger.info(f"Running: {' '.join(install_cmd)}")
+            
+            result = subprocess.run(install_cmd, capture_output=True, text=True)
+            
+            if result.returncode == 0:
+                logger.info("JAX installed successfully")
+                
+                # Install Optax and Flax
+                subprocess.run(["pip", "install", "--upgrade", "optax", "flax"], check=True)
+                logger.info("Optax and Flax installed successfully")
+                
+                # Test again
+                return install_jax_and_test(verbose)
+            else:
+                logger.error(f"Failed to install JAX: {result.stderr}")
+                return False
+                
+        except Exception as install_error:
+            logger.error(f"Failed to install JAX: {install_error}")
             return False
+    
     except Exception as e:
-        logger.error(f"JAX/Optax/Flax check failed: {e}")
+        logger.error(f"JAX test failed: {e}")
         return False
 
 # --- Callable Main Function ---

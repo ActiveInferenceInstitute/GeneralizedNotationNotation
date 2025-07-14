@@ -99,7 +99,7 @@ def collect_pipeline_artifacts(output_dir: Path) -> Dict[str, Any]:
             artifacts["exports"] = list(export_dir.rglob("*.json"))
         
         # Collect type check reports
-        type_check_dir = output_dir / "gnn_type_check"
+        type_check_dir = output_dir / "type_check"
         if type_check_dir.exists():
             artifacts["type_check_reports"] = list(type_check_dir.glob("*.md"))
         

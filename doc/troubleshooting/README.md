@@ -153,7 +153,7 @@ echo "OPENAI_API_KEY=your-key" > .env
 python src/main.py --diagnostics
 
 # Check specific components
-python src/4_gnn_type_checker.py --validate-only
+python src/4_type_checker.py --validate-only
 python src/2_setup.py --check-deps
 ```
 

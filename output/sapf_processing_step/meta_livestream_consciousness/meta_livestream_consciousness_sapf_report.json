@@ -1,9 +1,0 @@
-{
-  "model_name": "meta_livestream_consciousness",
-  "input_file": "gnn/examples/meta_livestream_consciousness.md",
-  "sapf_file": "../output/sapf_processing_step/meta_livestream_consciousness/meta_livestream_consciousness.sapf",
-  "audio_file": "../output/sapf_processing_step/meta_livestream_consciousness/meta_livestream_consciousness_audio.wav",
-  "audio_duration": 30.0,
-  "sapf_code_lines": 105,
-  "processing_successful": true
-}

@@ -267,7 +267,7 @@ Solution: Define B in StateSpaceBlock before referencing in Connections
 This module integrates with the broader GNN pipeline:
 
 1. **Step 1 (1_gnn.py)**: Uses this module for file discovery and basic parsing
-2. **Step 4 (4_gnn_type_checker.py)**: Uses validation for type checking
+2. **Step 4 (4_type_checker.py)**: Uses validation for type checking
 3. **Step 5 (5_export.py)**: Uses parsed structures for format conversion
 4. **Step 6 (6_visualization.py)**: Uses connections for graph visualization
 5. **Step 9 (9_render.py)**: Uses parsed models for code generation

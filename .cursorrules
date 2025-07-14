@@ -36,18 +36,6 @@ GeneralizedNotationNotation (GNN) is a text-based language for standardizing Act
 - **Comments**: Triple hashtags (###) for inline comments
 - **Probability**: Conditional probability notation P(X|Y) using pipe |
 
-### Active Inference Concepts
-- **Hidden States** (s): Internal model states, factors indexed as s_f0, s_f1, etc.
-- **Observations** (o): Observable outcomes, modalities indexed as o_m0, o_m1, etc.
-- **Actions/Control** (u, π): Control factors and policies, indexed as u_c0, π_c0, etc.
-- **Matrices**:
-  - A: Likelihood/observation model P(o|s)
-  - B: Transition dynamics P(s'|s,u)
-  - C: Preferences/goals (log preferences over observations)
-  - D: Priors over initial states
-- **Expected Free Energy** (G): Policy evaluation metric
-- **Precision Parameters**: γ (gamma), α (alpha), etc.
-
 ## Pipeline Architecture & Implementation Paradigm
 
 ### Core Pipeline Orchestration
@@ -64,7 +52,7 @@ Each numbered script corresponds to a specific module folder and implements real
 1. **1_gnn.py** → `src/gnn/` - GNN file discovery, parsing, and basic validation
 2. **2_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation (CRITICAL STEP)
 3. **3_tests.py** → `src/tests/` - Test suite execution with pytest integration
-4. **4_gnn_type_checker.py** → `src/gnn_type_checker/` - GNN syntax validation and resource estimation
+4. **4_type_checker.py** → `src/type_checker/` - GNN syntax validation and resource estimation
 5. **5_export.py** → `src/export/` - Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
 6. **6_visualization.py** → `src/visualization/` - Graph visualization and matrix visualization
 7. **7_mcp.py** → `src/mcp/` - Model Context Protocol operations and tool registration
@@ -72,9 +60,8 @@ Each numbered script corresponds to a specific module folder and implements real
 9. **9_render.py** → `src/render/` - Code generation for PyMDP, RxInfer simulation environments
 10. **10_execute.py** → `src/execute/` - Execute rendered simulation scripts
 11. **11_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
-12. **12_discopy.py** → `src/discopy_translator_module/` - DisCoPy categorical diagram translation
-13. **13_discopy_jax_eval.py** → `src/discopy_translator_module/` - JAX-based evaluation of DisCoPy diagrams
-14. **14_site.py** → `src/site/` - Static HTML site generation from pipeline artifacts
+12. **12_site.py** → `src/site/` - Static HTML site generation from pipeline artifacts
+13. **13_sapf.py** → `src/sapf/` - SAPF (Sound As Pure Form) audio generation and sonification
 
 ### Centralized Infrastructure
 
@@ -117,7 +104,7 @@ Every numbered script follows this pattern:
 - **Centralized Parsing**: Use `EnhancedArgumentParser.parse_step_arguments()` for all pipeline steps
 - **Fallback Handling**: Always provide fallback argument parser for graceful degradation
 - **Common Arguments**: All steps support `--target-dir`, `--output-dir`, `--verbose`, `--recursive`
-- **Step-Specific Arguments**: Additional arguments based on step functionality (e.g., `--strict`, `--jax-seed`)
+- **Step-Specific Arguments**: Additional arguments based on step functionality (e.g., `--strict`, `--duration`)
 - **Path Conversion**: Defensive conversion of string arguments to `pathlib.Path` objects
 
 #### Logging Standards
@@ -146,7 +133,7 @@ Every numbered script follows this pattern:
 - **System Validation**: Comprehensive system dependency checking
 - **Environment Info**: Detailed environment reporting and validation
 
-#### Type Checking (`src/gnn_type_checker/`)
+#### Type Checking (`src/type_checker/`)
 - **Syntax Validation**: Full GNN syntax validation with detailed error reporting
 - **Resource Estimation**: Computational resource estimation for models
 - **Type Consistency**: Variable type checking and dimension validation
@@ -182,11 +169,17 @@ Every numbered script follows this pattern:
 - **Natural Language**: GNN to natural language explanation generation
 - **Real AI Integration**: Functional LLM processing, not mock responses
 
-#### DisCoPy Translation (`src/discopy_translator_module/`)
-- **Categorical Diagrams**: Full DisCoPy diagram generation from GNN specifications
-- **JAX Evaluation**: High-performance numerical evaluation with JAX backend
-- **Mathematical Rigor**: Category theory foundations with proper mathematical validation
-- **Real Translation**: Complete categorical diagram pipeline, not simplified versions
+#### Site Generation (`src/site/`)
+- **HTML Generation**: Static HTML site generation from pipeline artifacts
+- **Report Aggregation**: Comprehensive pipeline summary and results presentation
+- **Interactive Elements**: Dynamic content and navigation
+- **Real Generation**: Complete HTML site with all pipeline outputs
+
+#### SAPF Audio Generation (`src/sapf/`)
+- **Sound As Pure Form**: Audio representation and sonification of GNN models
+- **Model Sonification**: Converting mathematical structures to audio patterns
+- **Audio Synthesis**: Real-time audio generation and processing
+- **Real Audio**: Functional audio generation, not placeholder implementations
 
 ### MCP (Model Context Protocol) Integration
 
@@ -256,5 +249,28 @@ Every applicable module includes `mcp.py` with:
 - **Version Control**: Full provenance tracking and version management
 - **Environment Capture**: Complete environment specification and reproduction
 - **Audit Trails**: Comprehensive logging of all processing steps
+
+### Updated Module Naming Conventions
+
+#### Current Module Structure (Post-Renaming)
+- **Core Modules**: `gnn/`, `type_checker/`, `export/`, `visualization/`, `render/`, `execute/`, `llm/`, `site/`, `sapf/`
+- **Infrastructure**: `utils/`, `pipeline/`, `mcp/`, `ontology/`, `setup/`, `tests/`
+- **Pipeline Scripts**: `1_gnn.py`, `2_setup.py`, `3_tests.py`, `4_type_checker.py`, `5_export.py`, `6_visualization.py`, `7_mcp.py`, `8_ontology.py`, `9_render.py`, `10_execute.py`, `11_llm.py`, `12_site.py`, `13_sapf.py`
+
+#### Output Directory Structure
+- **Type Checking**: `output/type_check/` (renamed from `gnn_type_check/`)
+- **GNN Processing**: `output/gnn_processing_step/`
+- **Setup Artifacts**: `output/setup_artifacts/`
+- **Test Reports**: `output/test_reports/`
+- **Exports**: `output/gnn_exports/`
+- **Visualizations**: `output/visualization/`
+- **MCP Processing**: `output/mcp_processing_step/`
+- **Ontology Processing**: `output/ontology_processing/`
+- **Rendered Simulators**: `output/gnn_rendered_simulators/`
+- **Execution Results**: `output/execution_results/`
+- **LLM Processing**: `output/llm_processing_step/`
+- **SAPF Processing**: `output/sapf_processing_step/`
+- **Site Generation**: `output/site/`
+- **Pipeline Logs**: `output/logs/`
 
 **Critical Implementation Philosophy**: This project implements a comprehensive scientific computing pipeline with real, functional components at every level. Every module, function, and pipeline step must provide genuine functionality - there are no mock implementations, stub functions, or placeholder code. The architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards. 
