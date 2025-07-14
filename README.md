@@ -6,7 +6,7 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
-[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-14-blue.svg)](#%EF%B8%8F-processing-pipeline)
+[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-13-blue.svg)](#%EF%B8%8F-processing-pipeline)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-4-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
@@ -138,7 +138,7 @@ GNN defines a specific file structure, typically using Markdown, to organize mod
 graph TB
     subgraph "🏗️ GNN Project Architecture"
         subgraph "📁 Source Code (src/)"
-            A[⚙️ Pipeline Scripts<br/>1_gnn.py → 14_site.py]
+            A[⚙️ Pipeline Scripts<br/>1_gnn.py → 13_sapf.py]
             B[🧠 Core Modules<br/>gnn/, render/, llm/]
             C[🔧 Utilities<br/>utils/, pipeline/]
             D[🧪 Testing<br/>tests/]
@@ -180,7 +180,7 @@ The `src/` directory contains all the Python scripts and modules that constitute
 
 ```
 src/
-├── 📜 Pipeline Scripts (1-14)
+├── 📜 Pipeline Scripts (1-13)
 │   ├── 1_gnn.py                    # GNN Discovery & Parsing
 │   ├── 2_setup.py                  # Setup & Dependencies ⚠️ Critical
 │   ├── 3_tests.py                  # Test Suite Execution
@@ -192,20 +192,29 @@ src/
 │   ├── 9_render.py                # Code Rendering
 │   ├── 10_execute.py              # Simulation Execution
 │   ├── 11_llm.py                  # LLM Analysis
-│   ├── 12_discopy.py              # DisCoPy Translation
-│   ├── 13_discopy_jax_eval.py     # DisCoPy JAX Evaluation
-│   └── 14_site.py                 # Static Site Generation
+│   ├── 12_site.py                 # Static Site Generation
+│   └── 13_sapf.py                 # SAPF Audio Generation
 ├── 🧠 Core Modules
 │   ├── gnn/                       # GNN processing core
 │   ├── render/                    # Code generation
 │   ├── llm/                       # AI analysis
-│   └── discopy_translator_module/ # Category theory
+│   ├── execute/                   # Simulation execution
+│   ├── visualization/             # Graph generation
+│   ├── export/                    # Multi-format export
+│   ├── type_checker/              # Syntax validation
+│   ├── ontology/                  # Ontology processing
+│   ├── mcp/                       # Model Context Protocol
+│   ├── setup/                     # Environment setup
+│   ├── tests/                     # Test suite
+│   ├── site/                      # HTML generation
+│   └── sapf/                      # Audio generation
 ├── 🔧 Infrastructure
 │   ├── utils/                     # Shared utilities
 │   ├── pipeline/                  # Pipeline orchestration
-│   └── tests/                     # Test suite
+│   └── main.py                    # Main pipeline orchestrator
 └── 📋 Configuration
-    ├── main.py                    # Main pipeline orchestrator
+    ├── pipeline_step_template.py  # Step template
+    ├── pipeline_validation.py     # Validation script
     └── requirements.txt           # Dependencies
 ```
 
@@ -245,7 +254,7 @@ doc/
 
 ## ⚙️ Processing Pipeline
 
-The GNN processing pipeline consists of **14 dynamically discovered stages**, each handling a specific aspect of model processing from parsing to final site generation.
+The GNN processing pipeline consists of **13 dynamically discovered stages**, each handling a specific aspect of model processing from parsing to final site generation.
 
 ```mermaid
 flowchart TD
@@ -260,17 +269,16 @@ flowchart TD
     I --> J["9️⃣ Code Rendering<br/>src/render/"]
     J --> K["🔟 Simulation Execution<br/>src/execute/"]
     K --> L["1️⃣1️⃣ LLM Analysis<br/>src/llm/"]
-    L --> M["1️⃣2️⃣ DisCoPy Translation<br/>src/discopy_translator_module/"]
-    M --> N["1️⃣3️⃣ DisCoPy JAX Evaluation<br/>src/discopy_translator_module/"]
-    N --> O["1️⃣4️⃣ Static Site Generation<br/>src/site/"]
-    O --> P["✅ Pipeline Complete<br/>📊 Summary Generated"]
+    L --> M["1️⃣2️⃣ Static Site Generation<br/>src/site/"]
+    M --> N["1️⃣3️⃣ SAPF Audio Generation<br/>src/sapf/"]
+    N --> O["✅ Pipeline Complete<br/>📊 Summary Generated"]
     
-    C -->|❌ Failure| Q["🛑 Pipeline Halted<br/>Setup Required"]
+    C -->|❌ Failure| P["🛑 Pipeline Halted<br/>Setup Required"]
     
     style A fill:#e1f5fe
     style C fill:#fff3e0,stroke:#ff9800,stroke-width:3px
-    style Q fill:#ffebee,stroke:#f44336
-    style P fill:#e8f5e8,stroke:#4caf50
+    style P fill:#ffebee,stroke:#f44336
+    style O fill:#e8f5e8,stroke:#4caf50
 ```
 
 ### 🎯 GNN Processing Workflow
@@ -337,7 +345,7 @@ python src/main.py --help
 - `--llm-timeout`: LLM processing timeout
 - `--pipeline-summary-file FILE`: Pipeline summary report path
 - `--site-html-filename NAME`: Generated HTML site filename
-- `--discopy-*`: DisCoPy-specific options
+- `--duration`: Audio duration for SAPF generation (default: 30.0)
 - `--recreate-venv`: Recreate virtual environment
 - `--dev`: Install development dependencies
 
@@ -376,10 +384,10 @@ python src/main.py --target-dir path/to/gnn_files
 
 #### 📁 Output Structure
 
-When executed, the type checker creates outputs in `output/gnn_type_check/`:
+When executed, the type checker creates outputs in `output/type_check/`:
 
 ```
-output/gnn_type_check/
+output/type_check/
 ├── type_check_report.md                    # Main Markdown report
 ├── html_vis/
 │   └── type_checker_visualization_report.html  # HTML visualizations
@@ -572,9 +580,9 @@ Explore practical GNN implementations and use cases:
 
 | Example | Description | Location |
 |---------|-------------|----------|
-| **🎯 PyMDP POMDP Agent** | Complete POMDP implementation | [`src/gnn/examples/pymdp_pomdp_agent.md`](src/gnn/examples/actinf_pomdp_agent.md) |
-| **🔬 RxInfer Hidden Markov Model** | Probabilistic sequence modeling | [`src/gnn/examples/rxinfer_hidden_markov_model.md`](doc/archive/rxinfer_hidden_markov_model.md) |
-| **🤝 Multi-Agent System** | Collaborative agent modeling | [`src/gnn/examples/rxinfer_multiagent_gnn.md`](doc/archive/rxinfer_multiagent_gnn.md) |
+| **🎯 PyMDP POMDP Agent** | Complete POMDP implementation | [`src/gnn/examples/actinf_pomdp_agent.md`](src/gnn/examples/actinf_pomdp_agent.md) |
+| **🔬 RxInfer Hidden Markov Model** | Probabilistic sequence modeling | [`doc/archive/rxinfer_hidden_markov_model.md`](doc/archive/rxinfer_hidden_markov_model.md) |
+| **🤝 Multi-Agent System** | Collaborative agent modeling | [`doc/archive/rxinfer_multiagent_gnn.md`](doc/archive/rxinfer_multiagent_gnn.md) |
 
 ### 🧠 Cognitive Phenomena Examples
 
@@ -593,7 +601,7 @@ Explore practical GNN implementations and use cases:
 python src/main.py --target-dir src/gnn/examples
 
 # Process specific example
-python src/main.py --target-dir src/gnn/examples/pymdp_pomdp_agent.md
+python src/main.py --target-dir src/gnn/examples/actinf_pomdp_agent.md
 
 # Process with full analysis
 python src/main.py --target-dir src/gnn/examples --estimate-resources --verbose
@@ -712,7 +720,6 @@ This project is licensed under the **MIT License**. See the [LICENSE.md](./LICEN
 - 📚 **Research Papers**: [Active Inference on arXiv](https://arxiv.org/search/?query=active+inference&searchtype=all)
 
 <div align="center">
-j
 
 ---
 
@@ -721,5 +728,3 @@ j
 [⬆️ Back to top](#generalizednotationnotation-gnn)
 
 </div>
-
----

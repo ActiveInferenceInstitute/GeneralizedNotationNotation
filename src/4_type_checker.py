@@ -35,105 +35,20 @@ from pipeline import (
 # Initialize logger for this step
 logger = setup_step_logging("4_type_checker", verbose=False)
 
-# Import type checker functionality
+# Import the CLI entry point from type_checker
 try:
-    from type_checker import checker
-    from type_checker.resource_estimator import GNNResourceEstimator as ResourceEstimator
-    logger.debug("Successfully imported type checker modules")
+    from type_checker import cli as type_checker_cli
+    logger.debug("Successfully imported type_checker.cli")
 except ImportError as e:
-    log_step_error(logger, f"Could not import type checker: {e}")
-    checker = None
-    ResourceEstimator = None
+    log_step_error(logger, f"Could not import type_checker.cli: {e}")
+    sys.exit(1)
 
-def run_type_checking(target_dir: Path, output_dir: Path, recursive: bool = False, 
-                     strict: bool = False, estimate_resources: bool = False):
-    """Run type checking and validation."""
-    log_step_start(logger, f"Running type checking on: {target_dir}")
-    
-    if not checker:
-        log_step_error(logger, "Type checker not available")
-        return False
-    
-    # Use centralized output directory configuration
-    type_check_output_dir = get_output_dir_for_script("4_type_checker.py", output_dir)
-    
-    try:
-        # Create type checker instance
-        type_checker = checker.GNNTypeChecker(strict_mode=strict)
-        
-        # Run type checking
-        results = type_checker.check_directory(
-            dir_path=str(target_dir),
-            recursive=recursive
-        )
-        
-        # Run resource estimation if requested
-        if estimate_resources and ResourceEstimator:
-            try:
-                estimator = ResourceEstimator()
-                resource_results = estimator.estimate_from_directory(
-                    dir_path=str(target_dir),
-                    recursive=recursive
-                )
-                logger.debug(f"Resource estimation completed for {len(resource_results)} files")
-                log_step_success(logger, "Resource estimation completed")
-            except Exception as e:
-                log_step_warning(logger, f"Resource estimation failed: {e}")
-        
-        # Generate reports
-        try:
-            report_path = type_checker.generate_report(
-                results=results,
-                output_dir_base=type_check_output_dir,
-                project_root_path=target_dir
-            )
-            logger.info(f"Type checking report generated: {report_path}")
-        except Exception as e:
-            log_step_warning(logger, f"Report generation failed: {e}")
-        
-        # Log results summary
-        files_checked = len(results)
-        valid_files = sum(1 for result in results.values() if result.get('is_valid', False))
-        
-        if valid_files == files_checked:
-            log_step_success(logger, f"Type checking completed successfully. Files checked: {files_checked}, All valid: {valid_files}")
-            return True
-        else:
-            log_step_warning(logger, f"Type checking completed with issues. Files checked: {files_checked}, Valid: {valid_files}")
-            return files_checked > 0  # Consider success if we processed files, even with issues
-        
-    except Exception as e:
-        log_step_error(logger, f"Type checking failed: {e}")
-        return False
-
-def main(parsed_args: argparse.Namespace):
-    """Main function for type checking."""
-    
+def main():
+    """Main function for type checking using the CLI entry point."""
     # Log step metadata from centralized configuration
     step_info = STEP_METADATA.get("4_type_checker.py", {})
     log_step_start(logger, f"{step_info.get('description', 'GNN syntax and type validation')}")
-    
-    # Update logger verbosity if needed
-    if parsed_args.verbose:
-        logger.setLevel(logging.DEBUG)
-    
-    # Run type checking
-    success = run_type_checking(
-        target_dir=Path(parsed_args.target_dir),
-        output_dir=Path(parsed_args.output_dir),
-        recursive=getattr(parsed_args, 'recursive', False),
-        strict=getattr(parsed_args, 'strict', False),
-        estimate_resources=getattr(parsed_args, 'estimate_resources', False)
-    )
-    
-    if success:
-        log_step_success(logger, "Type checking completed successfully")
-        return 0
-    else:
-        log_step_error(logger, "Type checking failed")
-        return 1
 
-if __name__ == '__main__':
     # Use centralized argument parsing
     if UTILS_AVAILABLE:
         parsed_args = EnhancedArgumentParser.parse_step_arguments("4_type_checker")
@@ -153,6 +68,36 @@ if __name__ == '__main__':
         parser.add_argument("--estimate-resources", action="store_true",
                           help="Estimate computational resources")
         parsed_args = parser.parse_args()
-    
-    exit_code = main(parsed_args)
-    sys.exit(exit_code) 
+
+    # Build CLI argument list for type_checker.cli.main()
+    cli_args = []
+    # Required positional argument for CLI: input_path
+    cli_args.append(str(parsed_args.target_dir))
+    # Output directory
+    cli_args.extend(["-o", str(parsed_args.output_dir)])
+    # Main report filename (optional, default is fine)
+    # Recursive
+    if getattr(parsed_args, 'recursive', False):
+        cli_args.append("--recursive")
+    # Strict mode
+    if getattr(parsed_args, 'strict', False):
+        cli_args.append("--strict")
+    # Estimate resources
+    if getattr(parsed_args, 'estimate_resources', False):
+        cli_args.append("--estimate-resources")
+    # Verbosity (handled by logger, but could be passed if CLI supports it)
+    # Project root (optional, not always available)
+    if hasattr(parsed_args, 'project_root') and parsed_args.project_root:
+        cli_args.extend(["--project-root", str(parsed_args.project_root)])
+
+    # Call the CLI main function
+    logger.info(f"Invoking type_checker.cli.main with args: {cli_args}")
+    exit_code = type_checker_cli.main(cli_args)
+    if exit_code == 0:
+        log_step_success(logger, "Type checking completed successfully (CLI)")
+    else:
+        log_step_error(logger, "Type checking failed (CLI)")
+    sys.exit(exit_code)
+
+if __name__ == '__main__':
+    main() 

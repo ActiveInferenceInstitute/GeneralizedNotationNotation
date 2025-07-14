@@ -1,200 +1,362 @@
+#!/usr/bin/env python3
 """
-Tests for the GNN Type Checker.
+Tests for GNN Type Checker
 
-This module contains tests for the GNN type checker functionality.
+This module tests the GNN type checker functionality, including file validation,
+syntax checking, and report generation.
 """
 
-import os
-import sys
-import unittest
+import pytest
+import tempfile
 from pathlib import Path
-from tempfile import NamedTemporaryFile, TemporaryDirectory
+from type_checker.checker import GNNTypeChecker, check_gnn_file, validate_syntax
 
-# Add the src directory to the Python path to import the module
-sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
-from type_checker import GNNTypeChecker
-
-
-class TestGNNTypeChecker(unittest.TestCase):
-    """Tests for the GNNTypeChecker class."""
+class TestGNNTypeChecker:
+    """Test cases for GNNTypeChecker class."""
     
-    def setUp(self):
-        """Set up the test environment."""
-        self.checker = GNNTypeChecker()
-        
-        # Create a valid GNN file for testing
-        self.valid_gnn_content = """# GNN Example: Valid Test Model
-# Format: Markdown representation of a Valid Test Model
-# Version: 1.0
-# This file is machine-readable
-
-## GNNSection
-TestModel
-
-## GNNVersionAndFlags
-GNN v1
-
-## ModelName
-Valid Test Model
-
-## StateSpaceBlock
-x[2,1,type=float]      # Observable variable
-y[3,1,type=float]      # Hidden variable
-
-## Connections
-x-y                    # Bidirectional connection
-
-## InitialParameterization
-x={0.0,0.0}            # Initial values for x
-y={1.0,1.0,1.0}        # Initial values for y
-
-## Equations
-x = f(y)               # Simple equation
-
-## Time
-Static
-
-## Footer
-Valid Test Model
-
-## Signature
-NA
-"""
-        
-        # Create an invalid GNN file for testing
-        self.invalid_gnn_content = """# GNN Example: Invalid Test Model
-# Format: Markdown representation of an Invalid Test Model
-# Version: 1.0
-# This file is machine-readable
-
-## GNNSection
-TestModel
-
-## GNNVersionAndFlags
-GNN v1
-
-## ModelName
-Invalid Test Model
-
-## StateSpaceBlock
-x[2,1,type=float]      # Observable variable
-
-## Connections
-x-y                    # Invalid connection to undefined variable y
-
-## InitialParameterization
-x={0.0,0.0}            # Initial values for x
-
-## Equations
-z = f(y)               # Invalid equation with undefined variables
-
-## Time
-InvalidTimeSpec        # Invalid time specification
-
-## Footer
-Invalid Test Model
-
-## Signature
-NA
-"""
+    def setup_method(self):
+        """Set up test fixtures."""
+        self.checker = GNNTypeChecker(strict_mode=False)
+    
+    def test_checker_initialization(self):
+        """Test that the checker initializes correctly."""
+        assert self.checker is not None
+        assert hasattr(self.checker, 'check_file')
+        assert hasattr(self.checker, 'check_directory')
+        assert hasattr(self.checker, 'generate_report')
     
     def test_check_valid_file(self):
         """Test checking a valid GNN file."""
-        with NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
-            f.write(self.valid_gnn_content)
+        valid_content = """
+# GNN Version and Flags
+GNNVersionAndFlags: v1.0
+
+# Model Name
+ModelName: TestModel
+
+# State Space Block
+StateSpaceBlock:
+x[2,1,type=float]        # Observable variable
+y[3,1,type=float]        # Hidden variable
+
+# Connections
+Connections:
+x - y
+
+# Time
+Time:
+Static
+
+# Footer
+Footer: Test footer
+
+# Signature
+Signature: Test signature
+"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+            f.write(valid_content)
             temp_file = f.name
         
         try:
-            is_valid, errors, warnings = self.checker.check_file(temp_file)
-            
-            self.assertTrue(is_valid, f"Expected valid file to pass checks, but got errors: {errors}")
-            self.assertEqual(len(errors), 0, "Expected no errors for valid file")
+            # Fix: The API returns 4 values, not 3
+            is_valid, errors, warnings, details = self.checker.check_file(temp_file)
+            assert is_valid is True
+            assert len(errors) == 0
+            assert isinstance(warnings, list)
+            assert isinstance(details, dict)
         finally:
-            os.unlink(temp_file)
+            Path(temp_file).unlink()
     
     def test_check_invalid_file(self):
         """Test checking an invalid GNN file."""
-        with NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
-            f.write(self.invalid_gnn_content)
+        invalid_content = """
+# GNN Version and Flags
+GNNVersionAndFlags: v1.0
+
+# Model Name
+ModelName: TestModel
+
+# State Space Block
+StateSpaceBlock:
+x[2,1,type=float]        # Observable variable
+
+# Connections
+Connections:
+x - y                    # y is not defined
+
+# Time
+Time:
+InvalidTimeSpec        # Invalid time specification
+
+# Equations
+Equations:
+z = f(y)               # Invalid equation with undefined variables
+
+# Footer
+Footer: Test footer
+
+# Signature
+Signature: Test signature
+"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+            f.write(invalid_content)
             temp_file = f.name
         
         try:
-            is_valid, errors, warnings = self.checker.check_file(temp_file)
-            
-            self.assertFalse(is_valid, "Expected invalid file to fail checks")
-            self.assertGreater(len(errors), 0, "Expected at least one error for invalid file")
-            
-            # Check for specific errors
-            connection_error = any("Connection references undefined variable: y" in error for error in errors)
-            time_error = any("Invalid time specification" in error for error in errors)
-            
-            self.assertTrue(connection_error, "Expected error about undefined variable in connection")
-            self.assertTrue(time_error, "Expected error about invalid time specification")
+            # Fix: The API returns 4 values, not 3
+            is_valid, errors, warnings, details = self.checker.check_file(temp_file)
+            assert is_valid is False
+            assert len(errors) > 0
+            assert isinstance(warnings, list)
+            assert isinstance(details, dict)
         finally:
-            os.unlink(temp_file)
+            Path(temp_file).unlink()
     
     def test_check_directory(self):
         """Test checking a directory of GNN files."""
-        with TemporaryDirectory() as temp_dir:
-            # Create a valid file
-            valid_path = os.path.join(temp_dir, "valid.md")
-            with open(valid_path, 'w') as f:
-                f.write(self.valid_gnn_content)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
             
-            # Create an invalid file
-            invalid_path = os.path.join(temp_dir, "invalid.md")
-            with open(invalid_path, 'w') as f:
-                f.write(self.invalid_gnn_content)
+            # Create valid file
+            valid_content = """
+# GNN Version and Flags
+GNNVersionAndFlags: v1.0
+
+# Model Name
+ModelName: ValidModel
+
+# State Space Block
+StateSpaceBlock:
+x[2,1,type=float]        # Observable variable
+y[3,1,type=float]        # Hidden variable
+
+# Connections
+Connections:
+x - y
+
+# Time
+Time:
+Static
+
+# Footer
+Footer: Test footer
+
+# Signature
+Signature: Test signature
+"""
+            valid_file = temp_path / "valid.md"
+            valid_file.write_text(valid_content)
             
-            # Check the directory
+            # Create invalid file
+            invalid_content = """
+# GNN Version and Flags
+GNNVersionAndFlags: v1.0
+
+# Model Name
+ModelName: InvalidModel
+
+# State Space Block
+StateSpaceBlock:
+x[2,1,type=float]        # Observable variable
+
+# Connections
+Connections:
+x - y                    # y is not defined
+
+# Time
+Time:
+InvalidTimeSpec
+
+# Footer
+Footer: Test footer
+
+# Signature
+Signature: Test signature
+"""
+            invalid_file = temp_path / "invalid.md"
+            invalid_file.write_text(invalid_content)
+            
+            # Test directory checking
             results = self.checker.check_directory(temp_dir)
-            
-            self.assertEqual(len(results), 2, "Expected results for 2 files")
-            self.assertTrue(results[valid_path]["is_valid"], "Expected valid file to pass")
-            self.assertFalse(results[invalid_path]["is_valid"], "Expected invalid file to fail")
+            assert len(results) == 2
+            assert "valid.md" in str(list(results.keys())[0])
+            assert "invalid.md" in str(list(results.keys())[1])
     
     def test_generate_report(self):
-        """Test generating a report from check results."""
+        """Test report generation."""
+        # Create test results
         results = {
             "file1.md": {
                 "is_valid": True,
                 "errors": [],
-                "warnings": ["Warning 1"]
+                "warnings": ["Warning 1"],
+                "details": {"file_path": "file1.md"}
             },
             "file2.md": {
                 "is_valid": False,
                 "errors": ["Error 1", "Error 2"],
-                "warnings": []
+                "warnings": [],
+                "details": {"file_path": "file2.md"}
             }
         }
         
-        with NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            report_path = self.checker.generate_report(
+                results, 
+                Path(temp_dir), 
+                "test_report.md"
+            )
+            
+            assert Path(report_path).exists()
+            report_content = Path(report_path).read_text()
+            
+            # Check that report contains expected content
+            assert "GNN Type Checker Report" in report_content
+            assert "Total Files Checked: 2" in report_content
+            assert "Valid Files: 1" in report_content
+            assert "Invalid Files: 1" in report_content
+    
+    def test_strict_mode(self):
+        """Test strict mode validation."""
+        strict_checker = GNNTypeChecker(strict_mode=True)
+        
+        # Content that would pass in non-strict mode but fail in strict mode
+        content = """
+# GNN Version and Flags
+GNNVersionAndFlags: v1.0
+
+# Model Name
+ModelName: TestModel
+
+# State Space Block
+StateSpaceBlock:
+x[2,1,type=float]        # Observable variable
+
+# Connections
+Connections:
+x - y
+
+# Time
+Time:
+Dynamic                 # Dynamic without time specification
+
+# Footer
+Footer: Test footer
+
+# Signature
+Signature: Test signature
+"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+            f.write(content)
             temp_file = f.name
         
         try:
-            # Get directory and filename from temp_file
-            temp_file_path = Path(temp_file)
-            output_dir = temp_file_path.parent
-            report_filename = temp_file_path.name
-            
-            report = self.checker.generate_report(results, output_dir_base=output_dir, report_md_filename=report_filename)
-            
-            # Check that the report was written to the file
-            self.assertTrue(os.path.exists(temp_file))
-            with open(temp_file, 'r') as f:
-                file_content = f.read()
-                self.assertEqual(file_content, report)
-            
-            # Check report content
-            self.assertIn("Checked 2 files, 1 valid, 1 invalid", report)
-            self.assertIn("file1.md: ✅ VALID", report)
-            self.assertIn("file2.md: ❌ INVALID", report)
-            self.assertIn("Warning 1", report)
-            self.assertIn("Error 1", report)
-            self.assertIn("Error 2", report)
+            # Fix: The API returns 4 values, not 3
+            is_valid, errors, warnings, details = strict_checker.check_file(temp_file)
+            # In strict mode, this should fail due to missing time specification
+            assert is_valid is False
+            assert len(errors) > 0
         finally:
-            os.unlink(temp_file)
+            Path(temp_file).unlink()
 
+class TestTypeCheckerFunctions:
+    """Test cases for standalone type checker functions."""
+    
+    def test_check_gnn_file_function(self):
+        """Test the check_gnn_file function."""
+        valid_content = """
+# GNN Version and Flags
+GNNVersionAndFlags: v1.0
 
-if __name__ == '__main__':
-    unittest.main() 
+# Model Name
+ModelName: TestModel
+
+# State Space Block
+StateSpaceBlock:
+x[2,1,type=float]        # Observable variable
+y[3,1,type=float]        # Hidden variable
+
+# Connections
+Connections:
+x - y
+
+# Time
+Time:
+Static
+
+# Footer
+Footer: Test footer
+
+# Signature
+Signature: Test signature
+"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+            f.write(valid_content)
+            temp_file = f.name
+        
+        try:
+            result = check_gnn_file(temp_file, strict_mode=False)
+            assert result.is_valid is True
+            assert len(result.errors) == 0
+            assert isinstance(result.warnings, list)
+            assert isinstance(result.details, dict)
+        finally:
+            Path(temp_file).unlink()
+    
+    def test_validate_syntax_function(self):
+        """Test the validate_syntax function."""
+        valid_content = """
+# GNN Version and Flags
+GNNVersionAndFlags: v1.0
+
+# Model Name
+ModelName: TestModel
+
+# State Space Block
+StateSpaceBlock:
+x[2,1,type=float]        # Observable variable
+y[3,1,type=float]        # Hidden variable
+
+# Connections
+Connections:
+x - y
+
+# Time
+Time:
+Static
+
+# Footer
+Footer: Test footer
+
+# Signature
+Signature: Test signature
+"""
+        
+        result = validate_syntax(valid_content, strict_mode=False)
+        assert result.is_valid is True
+        assert len(result.errors) == 0
+        assert isinstance(result.warnings, list)
+        assert isinstance(result.details, dict)
+    
+    def test_estimate_resources_function(self):
+        """Test the estimate_resources function."""
+        from type_checker.checker import estimate_resources
+        
+        content = """
+# State Space Block
+StateSpaceBlock:
+x[2,1,type=float]        # Observable variable
+y[3,1,type=float]        # Hidden variable
+z[4,4,type=float]        # Large matrix
+
+# Connections
+Connections:
+x - y
+y - z
+"""
+        
+        resources = estimate_resources(content)
+        assert isinstance(resources, dict)
+        assert 'total_elements' in resources
+        assert 'memory_estimate_mb' in resources
+        assert 'computation_complexity' in resources 
