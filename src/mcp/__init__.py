@@ -16,13 +16,31 @@ from .mcp import (
     create_mcp_server,
     start_mcp_server,
     register_tools,
-    get_mcp_instance
+    get_mcp_instance,
+    # Enhanced error classes
+    MCPToolNotFoundError,
+    MCPResourceNotFoundError,
+    MCPInvalidParamsError,
+    MCPToolExecutionError,
+    MCPSDKNotFoundError,
+    MCPValidationError,
+    MCPModuleLoadError,
+    MCPPerformanceError,
+    # Enhanced data structures
+    MCPModuleInfo,
+    MCPPerformanceMetrics,
+    MCPSDKStatus,
+    # Enhanced utility functions
+    list_available_tools,
+    list_available_resources,
+    get_tool_info,
+    get_resource_info
 )
 
 # Module metadata
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __author__ = "Active Inference Institute"
-__description__ = "Model Context Protocol implementation for GNN"
+__description__ = "Enhanced Model Context Protocol implementation for GNN"
 
 # Feature availability flags
 FEATURES = {
@@ -32,7 +50,15 @@ FEATURES = {
     'json_rpc': True,
     'server_implementation': True,
     'error_handling': True,
-    'mcp_integration': True
+    'mcp_integration': True,
+    'enhanced_features': True,
+    'caching': True,
+    'rate_limiting': True,
+    'concurrent_control': True,
+    'performance_monitoring': True,
+    'thread_safety': True,
+    'enhanced_validation': True,
+    'health_monitoring': True
 }
 
 # Main API functions
@@ -52,7 +78,25 @@ __all__ = [
     'generate_mcp_report',
     'FEATURES',
     '__version__',
-    'get_available_tools'
+    'get_available_tools',
+    # Enhanced error classes
+    'MCPToolNotFoundError',
+    'MCPResourceNotFoundError',
+    'MCPInvalidParamsError',
+    'MCPToolExecutionError',
+    'MCPSDKNotFoundError',
+    'MCPValidationError',
+    'MCPModuleLoadError',
+    'MCPPerformanceError',
+    # Enhanced data structures
+    'MCPModuleInfo',
+    'MCPPerformanceMetrics',
+    'MCPSDKStatus',
+    # Enhanced utility functions
+    'list_available_tools',
+    'list_available_resources',
+    'get_tool_info',
+    'get_resource_info'
 ]
 
 
@@ -72,96 +116,70 @@ def register_module_tools(module_name: str) -> bool:
         # For now, we'll just return success
         return True
     except Exception as e:
+        import logging
+        logger = logging.getLogger("mcp")
         logger.error(f"Failed to register tools for module {module_name}: {e}")
         return False
 
 
-def get_module_info():
-    """Get comprehensive information about the MCP module and its capabilities."""
-    info = {
-        'version': __version__,
-        'description': __description__,
-        'features': FEATURES,
-        'protocol_features': [],
-        'supported_transports': []
-    }
+def handle_mcp_request(request: dict) -> dict:
+    """
+    Handle an MCP request.
     
-    # Protocol features
-    info['protocol_features'].extend([
-        'Tool discovery and registration',
-        'Resource access and retrieval',
-        'JSON-RPC 2.0 compliance',
-        'Error handling and reporting',
-        'Module auto-discovery',
-        'Performance tracking'
-    ])
-    
-    # Supported transports
-    info['supported_transports'].extend(['stdio', 'HTTP', 'WebSocket'])
-    
-    return info
-
-
-def get_mcp_options() -> dict:
-    """Get information about available MCP options."""
-    return {
-        'server_modes': {
-            'stdio': 'Standard input/output transport',
-            'http': 'HTTP transport with REST API',
-            'websocket': 'WebSocket transport for real-time communication'
-        },
-        'tool_categories': {
-            'gnn_processing': 'GNN file processing tools',
-            'visualization': 'Model visualization tools',
-            'execution': 'Model execution tools',
-            'analysis': 'Model analysis tools',
-            'export': 'Export and conversion tools'
-        },
-        'resource_types': {
-            'gnn_files': 'GNN model files',
-            'visualizations': 'Generated visualizations',
-            'reports': 'Analysis reports',
-            'configurations': 'Module configurations'
-        },
-        'error_handling': {
-            'strict': 'Strict error handling with detailed messages',
-            'lenient': 'Lenient error handling with fallbacks',
-            'silent': 'Silent error handling for automation'
+    Args:
+        request: MCP request dictionary
+        
+    Returns:
+        MCP response dictionary
+    """
+    try:
+        mcp = get_mcp_instance()
+        return mcp.handle_request(request)
+    except Exception as e:
+        import logging
+        logger = logging.getLogger("mcp")
+        logger.error(f"Failed to handle MCP request: {e}")
+        return {
+            "jsonrpc": "2.0",
+            "id": request.get("id"),
+            "error": {
+                "code": -32603,
+                "message": f"Internal error: {str(e)}"
+            }
         }
-    } 
+
+
+def generate_mcp_report() -> dict:
+    """
+    Generate a comprehensive MCP report.
+    
+    Returns:
+        Dictionary containing MCP status and metrics
+    """
+    try:
+        mcp = get_mcp_instance()
+        return mcp.get_enhanced_server_status()
+    except Exception as e:
+        import logging
+        logger = logging.getLogger("mcp")
+        logger.error(f"Failed to generate MCP report: {e}")
+        return {
+            "error": f"Failed to generate report: {str(e)}",
+            "timestamp": __import__('time').time()
+        }
 
 
 def get_available_tools() -> list:
-    """Return a list of available MCP tools."""
-    from .mcp import get_available_tools as _get_available_tools
-    return _get_available_tools()
-
-
-# Test-compatible function alias
-def handle_mcp_request(request_data):
-    """Handle an MCP request (test-compatible alias)."""
+    """
+    Get list of all available tools.
+    
+    Returns:
+        List of tool names
+    """
     try:
-        mcp = get_mcp_instance()
-        return mcp.handle_request(request_data)
+        return list_available_tools()
     except Exception as e:
-        return {"error": str(e)}
-
-def generate_mcp_report(mcp_data, output_path=None):
-    """Generate an MCP report (test-compatible alias)."""
-    import json
-    from datetime import datetime
-    
-    report = {
-        "timestamp": datetime.now().isoformat(),
-        "mcp_data": mcp_data,
-        "summary": {
-            "tools_available": len(mcp_data.get('tools', [])),
-            "resources_available": len(mcp_data.get('resources', []))
-        }
-    }
-    
-    if output_path:
-        with open(output_path, 'w') as f:
-            json.dump(report, f, indent=2)
-    
-    return report 
+        import logging
+        logger = logging.getLogger("mcp")
+        logger.error(f"Failed to get available tools: {e}")
+        return [] 

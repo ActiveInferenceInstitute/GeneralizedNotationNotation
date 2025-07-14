@@ -641,10 +641,15 @@ class GnnToPyMdpConverter:
                         self.num_modalities = 1
                         self.obs_names = ['state_observation']
                     if not self.num_states:
-                        self.num_states = [len(param_value[0]) if param_value[0] else 3]
+                        # Handle case where param_value[0] might be an integer or other non-iterable
+                        if isinstance(param_value[0], (list, tuple)) and len(param_value[0]) > 0:
+                            self.num_states = [len(param_value[0])]
+                        else:
+                            # Default to 3 states if we can't determine from A matrix
+                            self.num_states = [3]
                         self.num_factors = 1
                         self.state_names = ['location']
-                    self._add_log(f"Inferred dimensions from A matrix: {len(param_value)} observations, {len(param_value[0]) if param_value[0] else 3} states")
+                    self._add_log(f"Inferred dimensions from A matrix: {len(param_value)} observations, {len(param_value[0]) if isinstance(param_value[0], (list, tuple)) and param_value[0] else 3} states")
             
             elif param_name == "B" and param_value is not None:
                 # Parse B matrix
