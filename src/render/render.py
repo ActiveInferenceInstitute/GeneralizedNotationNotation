@@ -76,10 +76,22 @@ def render_gnn_spec(
         
     elif target.lower() == "discopy_combined":
         # Render to both DisCoPy diagram and JAX evaluation
-        # TODO: Implement combined renderer
-        error_msg = "discopy_combined renderer not yet implemented"
-        logger.error(error_msg)
-        return False, error_msg, []
+        model_name = gnn_spec.get("name", "model")
+        diagram_path = output_directory / f"{model_name}_diagram.png"
+        jax_path = output_directory / f"{model_name}_jax_evaluation.png"
+        
+        # Render DisCoPy diagram
+        success1, message1, artifacts1 = render_gnn_to_discopy(gnn_spec, diagram_path, options)
+        
+        # Render JAX evaluation
+        success2, message2, artifacts2 = render_gnn_to_discopy_jax(gnn_spec, jax_path, options)
+        
+        # Combine results
+        success = success1 and success2
+        combined_message = f"DisCoPy: {message1}; JAX: {message2}"
+        combined_artifacts = artifacts1 + artifacts2
+        
+        return success, combined_message, combined_artifacts
         
     elif target.lower() == "activeinference_jl":
         # Render to ActiveInference.jl script
@@ -124,20 +136,38 @@ def main(cli_args=None):
         logger.error(f"GNN file not found: {gnn_file_path}")
         return 1
     
-    # Parse the GNN file (placeholder - would normally use a proper parser)
+    # Parse the GNN file using proper parsing
     try:
-        # Import dynamically to avoid circular imports
+        # Try to import and use the GNN parser
         from ..gnn.parser import parse_gnn_file
         gnn_spec = parse_gnn_file(gnn_file_path)
-    except (ImportError, ModuleNotFoundError):
-        logger.warning("Could not import GNN parser, using JSON loader as fallback")
-        import json
-        try:
-            with open(gnn_file_path, "r", encoding="utf-8") as f:
-                gnn_spec = json.load(f)
-        except json.JSONDecodeError:
-            logger.error(f"Failed to parse GNN file: {gnn_file_path}")
-            return 1
+        logger.info(f"Successfully parsed GNN file using parser: {gnn_file_path}")
+    except (ImportError, ModuleNotFoundError) as e:
+        logger.warning(f"Could not import GNN parser: {e}")
+        # Fall back to JSON or markdown parsing
+        if gnn_file_path.suffix.lower() == '.json':
+            import json
+            try:
+                with open(gnn_file_path, "r", encoding="utf-8") as f:
+                    gnn_spec = json.load(f)
+                logger.info(f"Successfully parsed JSON GNN file: {gnn_file_path}")
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to parse JSON GNN file: {gnn_file_path} - {e}")
+                return 1
+        else:
+            # Try markdown parsing
+            try:
+                from .pymdp.pymdp_renderer import parse_gnn_markdown
+                with open(gnn_file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                gnn_spec = parse_gnn_markdown(content, gnn_file_path)
+                if not gnn_spec:
+                    logger.error(f"Failed to parse markdown GNN file: {gnn_file_path}")
+                    return 1
+                logger.info(f"Successfully parsed markdown GNN file: {gnn_file_path}")
+            except Exception as e:
+                logger.error(f"Failed to parse GNN file: {gnn_file_path} - {e}")
+                return 1
     
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)

@@ -325,71 +325,94 @@ async def create_placeholder_analysis(
     output_dir: Path, 
     tasks: List[PromptType]
 ) -> Dict[str, Any]:
-    """Create placeholder analysis files when LLM is not available."""
-    log_step_warning(logger, "Creating placeholder analysis files (LLM not available)")
+    """Handle LLM unavailability with proper error reporting and setup guidance."""
+    log_step_error(logger, "LLM analysis is not available due to missing dependencies or configuration")
     
-    results = {
-        'success': True,
+    # Create a comprehensive error report instead of placeholder files
+    error_report = {
+        'success': False,
+        'error_type': 'llm_unavailable',
         'files_processed': len(gnn_files),
         'total_files': len(gnn_files),
-        'placeholder_mode': True,
+        'setup_required': True,
         'files': {}
     }
     
-    for gnn_file in gnn_files:
-        file_output_dir = output_dir / gnn_file.stem
-        file_output_dir.mkdir(parents=True, exist_ok=True)
+    # Create a single comprehensive error report file
+    error_file = output_dir / "llm_setup_required.md"
+    
+    with open(error_file, 'w', encoding='utf-8') as f:
+        f.write("# LLM Analysis Setup Required\n\n")
+        f.write("**Status:** LLM analysis is not available\n")
+        f.write(f"**Generated:** {performance_tracker.get_timestamp()}\n")
+        f.write(f"**Files Found:** {len(gnn_files)}\n\n")
         
-        file_results = {
-            'file': str(gnn_file),
-            'file_name': gnn_file.stem,
-            'analyses': {},
-            'placeholder': True
-        }
+        f.write("## Required Setup\n\n")
+        f.write("To enable LLM analysis, please complete the following steps:\n\n")
+        
+        f.write("### 1. Install Dependencies\n")
+        f.write("```bash\n")
+        f.write("pip install openai aiohttp anthropic google-generativeai\n")
+        f.write("```\n\n")
+        
+        f.write("### 2. Configure API Keys\n")
+        f.write("Set one or more of the following environment variables:\n\n")
+        f.write("- `OPENAI_API_KEY` - For OpenAI GPT models\n")
+        f.write("- `ANTHROPIC_API_KEY` - For Claude models\n")
+        f.write("- `GOOGLE_API_KEY` - For Google Gemini models\n")
+        f.write("- `AZURE_OPENAI_API_KEY` - For Azure OpenAI\n")
+        f.write("- `AZURE_OPENAI_ENDPOINT` - For Azure OpenAI endpoint\n\n")
+        
+        f.write("### 3. Verify Configuration\n")
+        f.write("Run the following to test your setup:\n")
+        f.write("```python\n")
+        f.write("from llm.llm_processor import load_api_keys_from_env\n")
+        f.write("api_keys = load_api_keys_from_env()\n")
+        f.write("print(f\"Available providers: {list(api_keys.keys())}\")\n")
+        f.write("```\n\n")
+        
+        f.write("### 4. Re-run Pipeline\n")
+        f.write("After setup, re-run the pipeline with:\n")
+        f.write("```bash\n")
+        f.write("python main.py --only-steps 11_llm\n")
+        f.write("```\n\n")
+        
+        f.write("## Analysis Tasks That Would Be Performed\n\n")
+        f.write("When LLM analysis is available, the following tasks will be executed:\n\n")
         
         for task_type in tasks:
-            task_title = get_prompt_title(task_type)
-            analysis_file = file_output_dir / f"{task_type.value}_analysis.md"
-            
-            with open(analysis_file, 'w', encoding='utf-8') as f:
-                f.write(f"# {task_title} (Placeholder)\n\n")
-                f.write(f"**File:** {gnn_file.name}\n\n")
-                f.write(f"**Analysis Type:** {task_type.value}\n\n")
-                f.write(f"**Generated:** {performance_tracker.get_timestamp()}\n\n")
-                f.write("---\n\n")
-                f.write("**Note:** This is a placeholder analysis file. ")
-                f.write("LLM analysis was not available during pipeline execution.\n\n")
-                f.write("To generate actual LLM analysis:\n")
-                f.write("1. Set up API keys in environment variables (OPENAI_API_KEY, etc.)\n")
-                f.write("2. Install required dependencies (aiohttp, openai, etc.)\n")
-                f.write("3. Re-run the LLM processing step\n\n")
-                f.write(f"**Intended Analysis:** {task_title}\n\n")
-                f.write("This analysis would have provided:\n")
-                
-                # Add task-specific placeholder content
-                if task_type == PromptType.EXPLAIN_MODEL:
-                    f.write("- Comprehensive explanation of what the generative model does\n")
-                    f.write("- Analysis of model purpose and real-world applications\n")
-                    f.write("- Breakdown of core components and their relationships\n")
-                elif task_type == PromptType.ANALYZE_STRUCTURE:
-                    f.write("- Detailed structural analysis of the model graph\n")
-                    f.write("- Variable analysis and dependencies\n")
-                    f.write("- Complexity assessment and design patterns\n")
-                elif task_type == PromptType.SUMMARIZE_CONTENT:
-                    f.write("- Concise summary of the GNN specification\n")
-                    f.write("- Key variables and parameters overview\n")
-                    f.write("- Notable features and use cases\n")
-                # Add more task-specific descriptions as needed
-            
-            file_results['analyses'][task_type.value] = {
-                'success': True,
-                'file': str(analysis_file),
-                'placeholder': True
-            }
+            task_title = get_prompt_title(task_type) if hasattr(get_prompt_title, '__call__') else str(task_type)
+            f.write(f"- **{task_title}**: {task_type.value}\n")
         
-        results['files'][gnn_file.stem] = file_results
+        f.write("\n## Files Found for Analysis\n\n")
+        for gnn_file in gnn_files:
+            f.write(f"- `{gnn_file.name}`\n")
+        
+        f.write("\n## Technical Details\n\n")
+        f.write("The LLM analysis system provides:\n")
+        f.write("- **Model Explanation**: Comprehensive analysis of GNN model structure and purpose\n")
+        f.write("- **Mathematical Analysis**: Detailed examination of equations and relationships\n")
+        f.write("- **Parameter Extraction**: Identification and analysis of model parameters\n")
+        f.write("- **Improvement Suggestions**: AI-powered recommendations for model enhancement\n")
+        f.write("- **Practical Applications**: Real-world use cases and implementation guidance\n\n")
+        
+        f.write("## Support\n\n")
+        f.write("For additional help with LLM setup, please refer to:\n")
+        f.write("- Project documentation: `doc/llm/README.md`\n")
+        f.write("- API provider documentation\n")
+        f.write("- Pipeline configuration guide\n")
     
-    return results
+    # Update error report with file information
+    for gnn_file in gnn_files:
+        error_report['files'][gnn_file.stem] = {
+            'file': str(gnn_file),
+            'error': 'LLM analysis not available - setup required',
+            'setup_required': True,
+            'error_file': str(error_file)
+        }
+    
+    logger.error(f"LLM analysis setup required. See {error_file} for detailed instructions.")
+    return error_report
 
 def main(parsed_args: argparse.Namespace):
     """Main function for LLM processing."""
@@ -426,9 +449,9 @@ def main(parsed_args: argparse.Namespace):
         ))
         
         if results.get('success', False):
-            if results.get('placeholder_mode', False):
-                log_step_warning(logger, "LLM processing completed in placeholder mode (no LLM available)")
-                return 2  # Success with warnings
+            if results.get('setup_required', False):
+                log_step_error(logger, "LLM analysis requires setup - see llm_setup_required.md for instructions")
+                return 1  # Error exit code since setup is required
             else:
                 log_step_success(logger, "LLM processing completed successfully")
                 return 0

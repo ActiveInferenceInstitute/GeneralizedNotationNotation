@@ -22,57 +22,8 @@ import shutil
 # Thread-local storage for correlation context
 _correlation_context = threading.local()
 
-# Add performance tracking capabilities
-class PerformanceTracker:
-    """Track performance metrics across pipeline steps."""
-    
-    def __init__(self):
-        self._metrics: Dict[str, List[Dict[str, Any]]] = {}
-        self._lock = threading.Lock()
-    
-    def record_timing(self, operation: str, duration: float, metadata: Optional[Dict[str, Any]] = None):
-        """Record timing information for an operation."""
-        with self._lock:
-            if operation not in self._metrics:
-                self._metrics[operation] = []
-            
-            self._metrics[operation].append({
-                'duration': duration,
-                'timestamp': datetime.now().isoformat(),
-                'metadata': metadata or {}
-            })
-    
-    @contextmanager
-    def track_operation(self, operation: str, metadata: Optional[Dict[str, Any]] = None):
-        """Context manager to automatically track operation timing."""
-        start_time = time.time()
-        try:
-            yield
-        finally:
-            duration = time.time() - start_time
-            self.record_timing(operation, duration, metadata)
-    
-    def get_summary(self) -> Dict[str, Any]:
-        """Get summary statistics for all tracked operations."""
-        with self._lock:
-            summary = {}
-            for operation, measurements in self._metrics.items():
-                durations = [m['duration'] for m in measurements]
-                summary[operation] = {
-                    'count': len(durations),
-                    'total_duration': sum(durations),
-                    'avg_duration': sum(durations) / len(durations) if durations else 0,
-                    'min_duration': min(durations) if durations else 0,
-                    'max_duration': max(durations) if durations else 0
-                }
-            return summary
-
-    def get_timestamp(self) -> str:
-        """Get current timestamp as ISO format string."""
-        return datetime.now().isoformat()
-
-# Global performance tracker instance
-performance_tracker = PerformanceTracker()
+# Import performance tracking from dedicated module
+from .performance_tracker import PerformanceTracker, performance_tracker
 
 class CorrelationFormatter(logging.Formatter):
     """Formatter that includes correlation IDs for tracing across pipeline steps."""
@@ -934,8 +885,18 @@ def reset_progress_tracker():
     _global_progress_tracker = None
 
 def get_progress_summary() -> str:
-    """Get current pipeline progress summary."""
-    global _global_progress_tracker
-    if _global_progress_tracker:
-        return _global_progress_tracker.get_overall_progress()
-    return "No pipeline in progress" 
+    """Get a summary of current progress."""
+    return "Progress tracking not available in this context"
+
+def setup_correlation_context(step_name: str, correlation_id: Optional[str] = None) -> str:
+    """
+    Setup correlation context for a pipeline step.
+    
+    Args:
+        step_name: Name of the pipeline step
+        correlation_id: Optional correlation ID (generated if not provided)
+        
+    Returns:
+        The correlation ID that was set
+    """
+    return PipelineLogger.set_correlation_context(step_name, correlation_id) 

@@ -5,13 +5,71 @@ Provides real-time performance tracking, operation timing, and resource usage mo
 Exposes PerformanceTracker, a global performance_tracker instance, and a track_operation context manager.
 """
 
-from .logging_utils import PerformanceTracker, performance_tracker
 from contextlib import contextmanager
 import time
 import platform
 import os
-import psutil
 import threading
+from datetime import datetime
+from typing import Optional, Dict, Any, List
+
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
+
+# Define PerformanceTracker here to avoid circular imports
+class PerformanceTracker:
+    """Track performance metrics across pipeline steps."""
+    
+    def __init__(self):
+        self._metrics: Dict[str, List[Dict[str, Any]]] = {}
+        self._lock = threading.Lock()
+    
+    def record_timing(self, operation: str, duration: float, metadata: Optional[Dict[str, Any]] = None):
+        """Record timing information for an operation."""
+        with self._lock:
+            if operation not in self._metrics:
+                self._metrics[operation] = []
+            
+            self._metrics[operation].append({
+                'duration': duration,
+                'timestamp': datetime.now().isoformat(),
+                'metadata': metadata or {}
+            })
+    
+    @contextmanager
+    def track_operation(self, operation: str, metadata: Optional[Dict[str, Any]] = None):
+        """Context manager to automatically track operation timing."""
+        start_time = time.time()
+        try:
+            yield
+        finally:
+            duration = time.time() - start_time
+            self.record_timing(operation, duration, metadata)
+    
+    def get_summary(self) -> Dict[str, Any]:
+        """Get summary statistics for all tracked operations."""
+        with self._lock:
+            summary = {}
+            for operation, measurements in self._metrics.items():
+                durations = [m['duration'] for m in measurements]
+                summary[operation] = {
+                    'count': len(durations),
+                    'total_duration': sum(durations),
+                    'avg_duration': sum(durations) / len(durations) if durations else 0,
+                    'min_duration': min(durations) if durations else 0,
+                    'max_duration': max(durations) if durations else 0
+                }
+            return summary
+
+    def get_timestamp(self) -> str:
+        """Get current timestamp as ISO format string."""
+        return datetime.now().isoformat()
+
+# Global performance tracker instance
+performance_tracker = PerformanceTracker()
 
 _monitoring_data = {}
 _monitoring_lock = threading.Lock()

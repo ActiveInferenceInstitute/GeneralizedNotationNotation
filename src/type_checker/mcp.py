@@ -23,29 +23,56 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 try:
     from .checker import GNNTypeChecker
 except ImportError:
-    # Fallback if checker.py is not found or GNNTypeChecker is not directly in it
-    # This is a placeholder; ideally, the import should be direct.
-    logger.warning("GNNTypeChecker not found in type_checker.checker. Using a mock.")
+    # Proper error handling when checker.py is not available
+    logger.error("GNNTypeChecker not found in type_checker.checker module.")
+    logger.error("This indicates a missing or corrupted type_checker implementation.")
+    logger.error("Please ensure the type_checker module is properly installed and configured.")
+    
     class GNNTypeChecker:
+        """Error placeholder for missing GNNTypeChecker implementation."""
+        
+        def __init__(self):
+            raise ImportError(
+                "GNNTypeChecker is not available. "
+                "The type_checker.checker module appears to be missing or corrupted. "
+                "Please check your installation and ensure all dependencies are properly configured."
+            )
+        
         def check_file(self, file_path: str) -> tuple[bool, list, list]:
-            logger.debug(f"Mock GNNTypeChecker.check_file called for {file_path}")
-            return True, [], []
+            """This method should never be called due to __init__ raising ImportError."""
+            raise ImportError("GNNTypeChecker not available")
+        
         def check_directory(self, dir_path: str, recursive: bool = False) -> dict:
-            logger.debug(f"Mock GNNTypeChecker.check_directory called for {dir_path}")
-            return {dir_path: {"is_valid": True, "errors": [], "warnings": []}}
+            """This method should never be called due to __init__ raising ImportError."""
+            raise ImportError("GNNTypeChecker not available")
+        
         def generate_report(self, results: dict, output_dir_base: Path, report_md_filename: str = "type_check_report.md") -> str:
-            logger.debug(f"Mock GNNTypeChecker.generate_report called.")
-            return "Mock report content"
+            """This method should never be called due to __init__ raising ImportError."""
+            raise ImportError("GNNTypeChecker not available")
 
 try:
     from .resource_estimator import GNNResourceEstimator
 except ImportError:
-    logger.warning("GNNResourceEstimator not found. Resource estimation tools will be unavailable.")
+    logger.error("GNNResourceEstimator not found. Resource estimation functionality will be unavailable.")
+    logger.error("Please ensure the resource_estimator module is properly installed.")
+    
     class GNNResourceEstimator:
+        """Error placeholder for missing GNNResourceEstimator implementation."""
+        
+        def __init__(self):
+            raise ImportError(
+                "GNNResourceEstimator is not available. "
+                "The resource_estimator module appears to be missing or corrupted. "
+                "Please check your installation and ensure all dependencies are properly configured."
+            )
+        
         def estimate_from_file(self, file_path: str) -> dict:
-            return {"error": "GNNResourceEstimator not available"}
+            """This method should never be called due to __init__ raising ImportError."""
+            raise ImportError("GNNResourceEstimator not available")
+        
         def estimate_from_directory(self, dir_path: str, recursive: bool = False) -> dict:
-            return {"error": "GNNResourceEstimator not available"}
+            """This method should never be called due to __init__ raising ImportError."""
+            raise ImportError("GNNResourceEstimator not available")
 
 # MCP Tools for GNN Type Checker Module
 
@@ -69,6 +96,14 @@ def type_check_gnn_file_mcp(file_path: str) -> Dict[str, Any]:
             "is_valid": is_valid,
             "errors": errors,
             "warnings": warnings
+        }
+    except ImportError as e:
+        logger.error(f"GNNTypeChecker not available: {e}")
+        return {
+            "success": False,
+            "file_path": file_path,
+            "error": str(e),
+            "setup_required": True
         }
     except Exception as e:
         logger.error(f"Error in type_check_gnn_file_mcp for {file_path}: {e}", exc_info=True)
@@ -115,6 +150,14 @@ def type_check_gnn_directory_mcp(dir_path: str, recursive: bool = False, output_
             "results_detail": results,
             "report_generated_at": report_generated_path
         }
+    except ImportError as e:
+        logger.error(f"GNNTypeChecker not available: {e}")
+        return {
+            "success": False,
+            "directory_path": dir_path,
+            "error": str(e),
+            "setup_required": True
+        }
     except Exception as e:
         logger.error(f"Error in type_check_gnn_directory_mcp for {dir_path}: {e}", exc_info=True)
         return {
@@ -142,6 +185,14 @@ def estimate_resources_for_gnn_file_mcp(file_path: str) -> Dict[str, Any]:
             "file_path": file_path,
             "estimates": estimates
         }
+    except ImportError as e:
+        logger.error(f"GNNResourceEstimator not available: {e}")
+        return {
+            "success": False,
+            "file_path": file_path,
+            "error": str(e),
+            "setup_required": True
+        }
     except Exception as e:
         logger.error(f"Error in estimate_resources_for_gnn_file_mcp for {file_path}: {e}", exc_info=True)
         return {
@@ -168,6 +219,14 @@ def estimate_resources_for_gnn_directory_mcp(dir_path: str, recursive: bool = Fa
             "success": True,
             "directory_path": dir_path,
             "all_estimates": all_estimates
+        }
+    except ImportError as e:
+        logger.error(f"GNNResourceEstimator not available: {e}")
+        return {
+            "success": False,
+            "directory_path": dir_path,
+            "error": str(e),
+            "setup_required": True
         }
     except Exception as e:
         logger.error(f"Error in estimate_resources_for_gnn_directory_mcp for {dir_path}: {e}", exc_info=True)

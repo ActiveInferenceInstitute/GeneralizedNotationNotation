@@ -13,6 +13,7 @@ import json
 import argparse
 from pathlib import Path
 from typing import Dict, List, Any, Tuple, Optional
+import re
 
 # Import from local modules, assume they exist in the same directory
 try:
@@ -35,6 +36,183 @@ except ImportError:
         sys.exit(1)
 
 logger = logging.getLogger(__name__)
+
+def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]]:
+    """
+    Parse GNN specification from markdown content.
+    
+    Args:
+        content: The markdown content to parse
+        file_path: Path to the source file for error reporting
+        
+    Returns:
+        Dictionary containing the parsed GNN specification, or None if parsing fails
+    """
+    try:
+        gnn_spec = {}
+        
+        # Extract ModelName
+        model_name_match = re.search(r'#\s*ModelName\s*\n(.*?)(?=\n#|\n$)', content, re.DOTALL)
+        if model_name_match:
+            gnn_spec['ModelName'] = model_name_match.group(1).strip()
+        
+        # Extract ModelAnnotation
+        annotation_match = re.search(r'#\s*ModelAnnotation\s*\n(.*?)(?=\n#|\n$)', content, re.DOTALL)
+        if annotation_match:
+            gnn_spec['ModelAnnotation'] = annotation_match.group(1).strip()
+        
+        # Extract StateSpaceBlock
+        state_block_match = re.search(r'#\s*StateSpaceBlock\s*\n(.*?)(?=\n#|\n$)', content, re.DOTALL)
+        if state_block_match:
+            state_content = state_block_match.group(1).strip()
+            gnn_spec['StateSpaceBlock'] = parse_state_space_block(state_content)
+        
+        # Extract Connections
+        connections_match = re.search(r'#\s*Connections\s*\n(.*?)(?=\n#|\n$)', content, re.DOTALL)
+        if connections_match:
+            connections_content = connections_match.group(1).strip()
+            gnn_spec['Connections'] = parse_connections(connections_content)
+        
+        # Extract InitialParameterization
+        param_match = re.search(r'#\s*InitialParameterization\s*\n(.*?)(?=\n#|\n$)', content, re.DOTALL)
+        if param_match:
+            param_content = param_match.group(1).strip()
+            gnn_spec['InitialParameterization'] = parse_initial_parameterization(param_content)
+        
+        # Extract Equations
+        equations_match = re.search(r'#\s*Equations\s*\n(.*?)(?=\n#|\n$)', content, re.DOTALL)
+        if equations_match:
+            gnn_spec['Equations'] = equations_match.group(1).strip()
+        
+        # Extract Time settings
+        time_match = re.search(r'#\s*Time\s*\n(.*?)(?=\n#|\n$)', content, re.DOTALL)
+        if time_match:
+            time_content = time_match.group(1).strip()
+            gnn_spec['Time'] = parse_time_settings(time_content)
+        
+        # Extract ActInfOntologyAnnotation
+        ontology_match = re.search(r'#\s*ActInfOntologyAnnotation\s*\n(.*?)(?=\n#|\n$)', content, re.DOTALL)
+        if ontology_match:
+            gnn_spec['ActInfOntologyAnnotation'] = ontology_match.group(1).strip()
+        
+        # Extract Footer and Signature
+        footer_match = re.search(r'#\s*Footer\s*\n(.*?)(?=\n#|\n$)', content, re.DOTALL)
+        if footer_match:
+            gnn_spec['Footer'] = footer_match.group(1).strip()
+        
+        signature_match = re.search(r'#\s*Signature\s*\n(.*?)(?=\n#|\n$)', content, re.DOTALL)
+        if signature_match:
+            gnn_spec['Signature'] = signature_match.group(1).strip()
+        
+        # Add metadata
+        gnn_spec['_source_file'] = str(file_path)
+        gnn_spec['_parsed_at'] = str(Path.cwd())
+        
+        logger.info(f"Successfully parsed GNN markdown with {len(gnn_spec)} sections")
+        return gnn_spec
+        
+    except Exception as e:
+        logger.error(f"Failed to parse GNN markdown from {file_path}: {e}")
+        return None
+
+def parse_state_space_block(content: str) -> Dict[str, Any]:
+    """Parse the StateSpaceBlock section."""
+    variables = {}
+    lines = content.split('\n')
+    
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith('#'):
+            # Parse variable definitions like "s_fX[2,3,real]"
+            var_match = re.match(r'(\w+)\[([^\]]+)\]', line)
+            if var_match:
+                var_name = var_match.group(1)
+                var_spec = var_match.group(2)
+                
+                # Parse dimensions and type
+                parts = var_spec.split(',')
+                if len(parts) >= 2:
+                    dimensions = [int(d.strip()) for d in parts[:-1]]
+                    var_type = parts[-1].strip()
+                    
+                    variables[var_name] = {
+                        'dimensions': dimensions,
+                        'type': var_type
+                    }
+    
+    return variables
+
+def parse_connections(content: str) -> List[str]:
+    """Parse the Connections section."""
+    connections = []
+    lines = content.split('\n')
+    
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith('#'):
+            connections.append(line)
+    
+    return connections
+
+def parse_initial_parameterization(content: str) -> Dict[str, Any]:
+    """Parse the InitialParameterization section."""
+    params = {}
+    lines = content.split('\n')
+    
+    current_matrix = None
+    current_matrix_data = []
+    
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith('#'):
+            continue
+            
+        # Check for matrix definitions like "A ="
+        matrix_match = re.match(r'(\w+)\s*=', line)
+        if matrix_match:
+            # Save previous matrix if exists
+            if current_matrix and current_matrix_data:
+                params[current_matrix] = parse_matrix_data(current_matrix_data)
+            
+            current_matrix = matrix_match.group(1)
+            current_matrix_data = []
+        elif current_matrix:
+            current_matrix_data.append(line)
+    
+    # Save last matrix
+    if current_matrix and current_matrix_data:
+        params[current_matrix] = parse_matrix_data(current_matrix_data)
+    
+    return params
+
+def parse_matrix_data(lines: List[str]) -> List[List[float]]:
+    """Parse matrix data from lines."""
+    matrix = []
+    for line in lines:
+        # Extract numbers from the line
+        numbers = re.findall(r'[-+]?\d*\.?\d+', line)
+        if numbers:
+            row = [float(n) for n in numbers]
+            matrix.append(row)
+    return matrix
+
+def parse_time_settings(content: str) -> Dict[str, Any]:
+    """Parse the Time section."""
+    settings = {}
+    lines = content.split('\n')
+    
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith('#'):
+            # Parse key-value pairs
+            if '=' in line:
+                key, value = line.split('=', 1)
+                settings[key.strip()] = value.strip()
+            else:
+                # Single values like "Dynamic" or "Static"
+                settings['mode'] = line
+    
+    return settings
 
 class PyMDPRenderer:
     """
@@ -72,10 +250,11 @@ class PyMDPRenderer:
                 if gnn_file_path.suffix.lower() == '.json':
                     gnn_spec = json.load(f)
                 else:
-                    # For .md files, we'd need a parser here
-                    # For now, return a placeholder
-                    self.logger.warning(f"Markdown parsing not implemented for {gnn_file_path}")
-                    return False, f"Markdown parsing not yet implemented for {gnn_file_path}"
+                    # Parse markdown GNN files by extracting structured sections
+                    content = f.read()
+                    gnn_spec = parse_gnn_markdown(content, gnn_file_path)
+                    if not gnn_spec:
+                        return False, f"Failed to parse GNN markdown file: {gnn_file_path}"
             
             # Use the existing render function
             success, message, artifacts = render_gnn_to_pymdp(gnn_spec, output_path, self.options)

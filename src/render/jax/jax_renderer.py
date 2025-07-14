@@ -269,19 +269,103 @@ class {model_name}Model(nn.Module):
     @nn.compact
     def __call__(self, inputs: Dict[str, jnp.ndarray], training: bool = False) -> Dict[str, jnp.ndarray]:
         """
-        Forward pass of the model.
+        Forward pass of the model based on GNN specification.
+        
+        This implements the core Active Inference computation including:
+        - State inference from observations
+        - Belief updates using the A matrix (likelihood)
+        - Action selection based on expected free energy
+        - State transitions using the B matrix
         
         Args:
-            inputs: Dictionary containing input data
+            inputs: Dictionary containing input data with keys:
+                - 'observations': Observation data [batch_size, num_observations]
+                - 'actions': Optional action data [batch_size, num_actions]
+                - 'beliefs': Optional initial beliefs [batch_size, num_states]
             training: Whether in training mode
             
         Returns:
-            Dictionary containing model outputs
+            Dictionary containing model outputs:
+                - 'beliefs': Updated belief states
+                - 'actions': Selected actions
+                - 'expected_free_energy': Expected free energy values
+                - 'state_predictions': Predicted next states
         """
-        # Implement forward pass based on GNN specification
-        # This is a placeholder - implement based on specific model requirements
+        # Extract input components
+        observations = inputs.get('observations', jnp.zeros((1, self.num_observations)))
+        actions = inputs.get('actions', jnp.zeros((1, self.num_actions)))
+        initial_beliefs = inputs.get('beliefs', self.D_vector)
         
-        return {{"output": jnp.zeros(1)}}
+        batch_size = observations.shape[0]
+        
+        # Ensure beliefs have correct shape
+        if initial_beliefs.ndim == 1:
+            initial_beliefs = jnp.expand_dims(initial_beliefs, 0)
+        
+        # 1. State Inference (Bayesian belief update)
+        # P(s|o) ∝ P(o|s) * P(s) using the A matrix (likelihood)
+        def belief_update(belief, obs):
+            # Compute likelihood P(o|s) using A matrix
+            likelihood = jnp.dot(self.A_matrix, belief)  # [num_observations, num_states] @ [num_states] = [num_observations]
+            
+            # Apply observation to get P(o|s) for this specific observation
+            obs_likelihood = jnp.where(obs > 0, likelihood, 1.0)  # Handle sparse observations
+            
+            # Bayesian update: P(s|o) ∝ P(o|s) * P(s)
+            updated_belief = belief * obs_likelihood
+            
+            # Normalize
+            updated_belief = updated_belief / (jnp.sum(updated_belief) + 1e-8)
+            return updated_belief
+        
+        # Update beliefs for each observation
+        beliefs = jax.vmap(belief_update)(initial_beliefs, observations)
+        
+        # 2. Action Selection (Expected Free Energy)
+        # Compute expected free energy for each action
+        def compute_efe(belief, action):
+            # Expected free energy = -log P(o) + KL[q(s)||p(s)]
+            
+            # Predict next state using B matrix (transitions)
+            next_belief = jnp.dot(self.B_matrix[:, :, action], belief)
+            
+            # Predict observations using A matrix
+            predicted_obs = jnp.dot(self.A_matrix, next_belief)
+            
+            # Compute entropy of predicted observations
+            obs_entropy = -jnp.sum(predicted_obs * jnp.log(predicted_obs + 1e-8))
+            
+            # Compute KL divergence between current and prior beliefs
+            kl_divergence = jnp.sum(belief * jnp.log((belief + 1e-8) / (self.D_vector + 1e-8)))
+            
+            # Expected free energy
+            efe = obs_entropy + kl_divergence
+            return efe
+        
+        # Compute EFE for all actions
+        action_efes = jax.vmap(lambda belief: jax.vmap(lambda action: compute_efe(belief, action))(jnp.arange(self.num_actions)))(beliefs)
+        
+        # Select action with minimum expected free energy
+        selected_actions = jnp.argmin(action_efes, axis=-1)
+        
+        # 3. State Prediction
+        # Predict next states using selected actions and B matrix
+        def predict_next_state(belief, action):
+            return jnp.dot(self.B_matrix[:, :, action], belief)
+        
+        state_predictions = jax.vmap(predict_next_state)(beliefs, selected_actions)
+        
+        # 4. Compute final expected free energy values
+        final_efes = jnp.take_along_axis(action_efes, jnp.expand_dims(selected_actions, -1), axis=-1).squeeze(-1)
+        
+        return {
+            "beliefs": beliefs,
+            "actions": selected_actions,
+            "expected_free_energy": final_efes,
+            "state_predictions": state_predictions,
+            "action_efes": action_efes,  # EFE for all actions
+            "predicted_observations": jnp.dot(observations, self.A_matrix)  # Predicted observations
+        }
 
 def create_model() -> {model_name}Model:
     """Create and return a new instance of the model."""
@@ -615,16 +699,154 @@ class {model_name}Combined(nn.Module):
     Combined JAX model supporting hierarchical, multi-agent, and continuous extensions.
     """
     
+    # Model configuration
+    num_agents: int = 1
+    num_hierarchical_levels: int = 1
+    continuous_dimensions: int = 0
+    use_mixed_precision: bool = True
+    
     def setup(self):
         """Initialize model parameters."""
-        # Placeholder for combined model implementation
-        pass
+        # Hierarchical parameters
+        self.hierarchical_weights = []
+        for level in range(self.num_hierarchical_levels):
+            level_weight = self.param(f'hierarchical_{level}', 
+                                    nn.initializers.normal(0.1), 
+                                    (self.num_agents, self.num_agents))
+            self.hierarchical_weights.append(level_weight)
+        
+        # Multi-agent communication parameters
+        if self.num_agents > 1:
+            self.communication_matrix = self.param('communication_matrix',
+                                                 nn.initializers.orthogonal(),
+                                                 (self.num_agents, self.num_agents))
+        
+        # Continuous state parameters
+        if self.continuous_dimensions > 0:
+            self.continuous_encoder = nn.Dense(self.continuous_dimensions)
+            self.continuous_decoder = nn.Dense(self.continuous_dimensions)
     
     @nn.compact
     def __call__(self, inputs: Dict[str, jnp.ndarray], training: bool = False) -> Dict[str, jnp.ndarray]:
-        """Forward pass of the combined model."""
-        # Placeholder implementation
-        return {{"output": jnp.zeros(1)}}
+        """
+        Forward pass of the combined model.
+        
+        Args:
+            inputs: Dictionary containing:
+                - 'agent_states': [num_agents, state_dim] - Individual agent states
+                - 'hierarchical_context': [num_levels, context_dim] - Hierarchical context
+                - 'continuous_inputs': [batch_size, continuous_dim] - Continuous inputs
+                - 'communication_mask': [num_agents, num_agents] - Communication topology
+            training: Whether in training mode
+            
+        Returns:
+            Dictionary containing:
+                - 'agent_outputs': [num_agents, output_dim] - Individual agent outputs
+                - 'hierarchical_outputs': [num_levels, output_dim] - Hierarchical outputs
+                - 'continuous_outputs': [batch_size, continuous_dim] - Continuous outputs
+                - 'communication_outputs': [num_agents, num_agents] - Communication outputs
+        """
+        # Extract inputs with defaults
+        agent_states = inputs.get('agent_states', jnp.zeros((self.num_agents, 1)))
+        hierarchical_context = inputs.get('hierarchical_context', jnp.zeros((self.num_hierarchical_levels, 1)))
+        continuous_inputs = inputs.get('continuous_inputs', jnp.zeros((1, self.continuous_dimensions)))
+        communication_mask = inputs.get('communication_mask', jnp.eye(self.num_agents))
+        
+        outputs = {}
+        
+        # 1. Multi-agent processing
+        if self.num_agents > 1:
+            # Apply communication matrix with mask
+            communication_weights = self.communication_matrix * communication_mask
+            agent_outputs = jnp.dot(communication_weights, agent_states)
+            outputs['agent_outputs'] = agent_outputs
+            outputs['communication_outputs'] = communication_weights
+        
+        # 2. Hierarchical processing
+        if self.num_hierarchical_levels > 1:
+            hierarchical_outputs = []
+            for level in range(self.num_hierarchical_levels):
+                if level < len(self.hierarchical_weights):
+                    level_output = jnp.dot(self.hierarchical_weights[level], 
+                                         hierarchical_context[level])
+                    hierarchical_outputs.append(level_output)
+                else:
+                    # Default processing for missing levels
+                    hierarchical_outputs.append(hierarchical_context[level])
+            
+            outputs['hierarchical_outputs'] = jnp.stack(hierarchical_outputs)
+        
+        # 3. Continuous processing
+        if self.continuous_dimensions > 0:
+            # Encode continuous inputs
+            encoded = self.continuous_encoder(continuous_inputs)
+            
+            # Apply activation and processing
+            processed = jax.nn.relu(encoded)
+            
+            # Decode back to continuous space
+            decoded = self.continuous_decoder(processed)
+            
+            outputs['continuous_outputs'] = decoded
+        
+        # 4. Combined output (if multiple components exist)
+        if len(outputs) > 1:
+            # Combine different outputs using weighted sum
+            combined_components = []
+            weights = []
+            
+            if 'agent_outputs' in outputs:
+                combined_components.append(outputs['agent_outputs'].flatten())
+                weights.append(1.0)
+            
+            if 'hierarchical_outputs' in outputs:
+                combined_components.append(outputs['hierarchical_outputs'].flatten())
+                weights.append(0.5)
+            
+            if 'continuous_outputs' in outputs:
+                combined_components.append(outputs['continuous_outputs'].flatten())
+                weights.append(0.3)
+            
+            # Normalize weights
+            weights = jnp.array(weights) / jnp.sum(weights)
+            
+            # Weighted combination
+            combined_output = jnp.zeros_like(combined_components[0])
+            for component, weight in zip(combined_components, weights):
+                # Pad or truncate to match size
+                if len(component) > len(combined_output):
+                    component = component[:len(combined_output)]
+                elif len(component) < len(combined_output):
+                    padding = jnp.zeros(len(combined_output) - len(component))
+                    component = jnp.concatenate([component, padding])
+                
+                combined_output += weight * component
+            
+            outputs['combined_output'] = combined_output
+        
+        return outputs
+    
+    def get_parameters(self) -> Dict[str, jnp.ndarray]:
+        """Get all model parameters."""
+        return {
+            'hierarchical_weights': self.hierarchical_weights,
+            'communication_matrix': getattr(self, 'communication_matrix', None),
+            'continuous_encoder': self.continuous_encoder.variables if hasattr(self, 'continuous_encoder') else None,
+            'continuous_decoder': self.continuous_decoder.variables if hasattr(self, 'continuous_decoder') else None
+        }
+    
+    def update_parameters(self, new_params: Dict[str, jnp.ndarray]):
+        """Update model parameters (for training)."""
+        # Implementation for parameter updating during training
+        # This would typically involve gradient-based updates
+        # For now, we'll provide a basic structure
+        updated_params = {}
+        
+        for param_name, new_value in new_params.items():
+            if param_name in self.get_parameters():
+                updated_params[param_name] = new_value
+        
+        return updated_params
 
 def create_combined_model() -> {model_name}Combined:
     """Create and return a new instance of the combined model."""

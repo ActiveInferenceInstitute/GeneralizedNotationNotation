@@ -77,8 +77,8 @@ try:
     )
     
     from .performance_tracker import (
-        PerformanceTracker as PT_PerformanceTracker,
-        performance_tracker as PT_performance_tracker,
+        PerformanceTracker,
+        performance_tracker,
         track_operation
     )
     
@@ -173,9 +173,7 @@ except ImportError as e:
     def get_performance_summary() -> Dict[str, Any]:
         return {"fallback": True, "performance_tracking": "unavailable"}
 
-# For backward compatibility, also expose under canonical names
-PerformanceTracker = PT_PerformanceTracker
-performance_tracker = PT_performance_tracker
+# Performance tracker is already imported with canonical names
 
 # Convenience function for pipeline modules to get all they need in one import
 def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, ...]:
