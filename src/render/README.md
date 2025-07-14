@@ -81,3 +81,51 @@ When adding support for new target platforms, follow the modular design pattern:
 3. Add utility functions for platform-specific tasks
 4. Create a renderer module that coordinates the process
 5. Update the main `render.py` to include the new target 
+
+## Output Structure
+
+The rendering process generates files under `output/gnn_rendered_simulators/` with subfolders for each framework:
+
+- `pymdp/`: Python scripts for PyMDP simulations (e.g., model_name_pymdp.py)
+- `rxinfer/`: Julia scripts for RxInfer models (e.g., model_name_rxinfer.jl)
+- `discopy/`: Python scripts for DisCoPy diagrams (e.g., model_name_discopy.py)
+- `activeinference_jl/`: Julia scripts for ActiveInference.jl (e.g., model_name_activeinference.jl)
+- `jax/`: Python scripts for JAX models (e.g., model_name_jax.py)
+
+Each script is a self-contained executable that can be run to simulate or evaluate the model.
+
+## Running Generated Scripts
+
+### PyMDP
+python model_name_pymdp.py
+
+### RxInfer
+julia model_name_rxinfer.jl
+
+### DisCoPy
+python model_name_discopy.py
+
+### ActiveInference.jl
+julia model_name_activeinference.jl
+
+### JAX
+python model_name_jax.py
+
+## Extending to New Backends
+
+To add a new rendering backend:
+1. Create a subfolder under src/render/ (e.g., new_backend/)
+2. Implement a render_gnn_to_newbackend function that takes gnn_spec dict and output_path, generates the script.
+3. Add to __init__.py import and availability check.
+4. Update render.py render_gnn_spec to handle the new target.
+5. Add to 9_render.py render_targets list.
+
+See existing backends for patterns.
+
+## Best Practices
+
+- Ensure parsers handle all GNN sections relevant to your backend.
+- Generate self-contained scripts with imports and main execution.
+- Include comments and documentation in generated code.
+- Handle errors gracefully and log issues.
+- Test with sample GNN files. 

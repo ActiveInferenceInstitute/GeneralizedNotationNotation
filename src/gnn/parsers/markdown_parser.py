@@ -194,21 +194,33 @@ class MarkdownGNNParser(BaseGNNParser):
             # Parse variable pattern: name[dimensions],type=datatype
             # Examples: s_f0[2], o_m0[3,type=categorical], X[2,3]
             
-            # Extract type specification
+            # Extract dimensions and name FIRST
+            name = None
+            dimensions = [1]  # Default dimension
             type_spec = None
-            if ',type=' in line:
-                line, type_spec = line.split(',type=', 1)
-                type_spec = type_spec.strip()
             
-            # Extract dimensions
             if '[' in line and ']' in line:
-                name_part, dim_part = line.split('[', 1)
-                name = name_part.strip()
-                dimensions_str = '[' + dim_part.strip()
-                dimensions = parse_dimensions(dimensions_str)
+                # Find the opening bracket
+                bracket_start = line.find('[')
+                bracket_end = line.find(']')
+                
+                if bracket_start != -1 and bracket_end != -1:
+                    name = line[:bracket_start].strip()
+                    dimensions_str = line[bracket_start+1:bracket_end].strip()
+                    
+                    # Check if there's a type specification in the dimensions string
+                    if ',type=' in dimensions_str:
+                        dimensions_str, type_spec = dimensions_str.split(',type=', 1)
+                        type_spec = type_spec.strip()
+                    
+                    dimensions = parse_dimensions('[' + dimensions_str + ']')
+                    logger.debug(f"Parsed variable '{name}' with dimensions string '{dimensions_str}' -> {dimensions}")
+                else:
+                    name = line.strip()
+                    logger.debug(f"Parsed variable '{name}' with default dimensions {dimensions}")
             else:
                 name = line.strip()
-                dimensions = [1]  # Default dimension
+                logger.debug(f"Parsed variable '{name}' with default dimensions {dimensions}")
             
             # Determine variable type
             var_type = infer_variable_type(name)
@@ -221,6 +233,8 @@ class MarkdownGNNParser(BaseGNNParser):
             
             # Normalize name
             normalized_name = normalize_variable_name(name)
+            
+            logger.debug(f"Created variable: name='{normalized_name}', dimensions={dimensions}, type={var_type}")
             
             return Variable(
                 name=normalized_name,
@@ -328,12 +342,44 @@ class MarkdownGNNParser(BaseGNNParser):
         """Parse the InitialParameterization section."""
         lines = content.strip().split('\n')
         
+        current_parameter = None
+        current_value_lines = []
+        
         for line in lines:
             line = line.strip()
-            if line and not line.startswith('#') and '=' in line:
-                parameter = self._parse_parameter_assignment(line)
-                if parameter:
-                    model.parameters.append(parameter)
+            
+            if line and not line.startswith('#'):
+                # Check if this is a new parameter definition (contains '=')
+                if '=' in line and not line.startswith('#'):
+                    # Save previous parameter if exists
+                    if current_parameter and current_value_lines:
+                        value_str = '\n'.join(current_value_lines)
+                        parameter = self._parse_parameter_assignment(f"{current_parameter}={value_str}")
+                        if parameter:
+                            model.parameters.append(parameter)
+                    
+                    # Start new parameter
+                    if '=' in line:
+                        name, value = line.split('=', 1)
+                        current_parameter = name.strip()
+                        current_value_lines = [value.strip()]
+                    else:
+                        current_parameter = None
+                        current_value_lines = []
+                else:
+                    # Continue current parameter value
+                    if current_parameter:
+                        current_value_lines.append(line)
+            elif line.startswith('#'):
+                # Skip comments
+                continue
+        
+        # Handle last parameter
+        if current_parameter and current_value_lines:
+            value_str = '\n'.join(current_value_lines)
+            parameter = self._parse_parameter_assignment(f"{current_parameter}={value_str}")
+            if parameter:
+                model.parameters.append(parameter)
     
     def _parse_parameter_assignment(self, line: str) -> Optional[Parameter]:
         """Parse a single parameter assignment line."""
@@ -371,10 +417,77 @@ class MarkdownGNNParser(BaseGNNParser):
         value_str = value_str.strip()
         
         try:
+            # Handle GNN matrix format: A={ (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0) }
+            if value_str.startswith('{') and value_str.endswith('}'):
+                # Remove comments from the string
+                lines = value_str.split('\n')
+                cleaned_lines = []
+                for line in lines:
+                    # Remove comments (everything after #)
+                    if '#' in line:
+                        line = line.split('#')[0]
+                    line = line.strip()
+                    if line:
+                        cleaned_lines.append(line)
+                
+                # Reconstruct the value string without comments
+                cleaned_value = ' '.join(cleaned_lines)
+                
+                # Handle matrix format: { (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0) }
+                if cleaned_value.startswith('{') and cleaned_value.endswith('}'):
+                    inner = cleaned_value[1:-1].strip()
+                    
+                    # Split by commas, but be careful with nested tuples
+                    rows = []
+                    current_row = ""
+                    paren_count = 0
+                    
+                    for char in inner:
+                        if char == '(':
+                            paren_count += 1
+                        elif char == ')':
+                            paren_count -= 1
+                        
+                        if char == ',' and paren_count == 0:
+                            # End of a row
+                            if current_row.strip():
+                                rows.append(current_row.strip())
+                            current_row = ""
+                        else:
+                            current_row += char
+                    
+                    # Add the last row
+                    if current_row.strip():
+                        rows.append(current_row.strip())
+                    
+                    # Parse each row
+                    matrix = []
+                    for row in rows:
+                        row = row.strip()
+                        if row.startswith('(') and row.endswith(')'):
+                            # Parse tuple row
+                            inner_row = row[1:-1]
+                            row_values = [self._parse_single_value(x.strip()) for x in inner_row.split(',') if x.strip()]
+                            matrix.append(row_values)
+                        elif row.startswith('((') and row.endswith('))'):
+                            # Parse nested tuple row (for B matrix)
+                            inner_row = row[2:-2]
+                            # Split by '),('
+                            nested_tuples = inner_row.split('),(')
+                            row_values = []
+                            for nested_tuple in nested_tuples:
+                                nested_tuple = nested_tuple.strip('()')
+                                tuple_values = [self._parse_single_value(x.strip()) for x in nested_tuple.split(',') if x.strip()]
+                                row_values.append(tuple_values)
+                            matrix.append(row_values)
+                    
+                    return matrix
+            
             # Try to evaluate as Python literal
             return ast.literal_eval(value_str)
+            
         except (ValueError, SyntaxError):
-            # Handle special GNN formats
+            # Handle other formats
             
             # Matrix format: {(1,2,3);(4,5,6)}
             if value_str.startswith('{') and value_str.endswith('}') and ';' in value_str:

@@ -14,6 +14,7 @@ import argparse
 from pathlib import Path
 from typing import Dict, List, Any, Tuple, Optional
 import re
+import ast
 
 # Import from local modules, assume they exist in the same directory
 try:
@@ -154,47 +155,105 @@ def parse_connections(content: str) -> List[str]:
     
     return connections
 
-def parse_initial_parameterization(content: str) -> Dict[str, Any]:
-    """Parse the InitialParameterization section."""
+def parse_initial_parameterization(content: str) -> dict:
+    """Parse the InitialParameterization section, robustly grouping full matrix blocks for A, B, etc."""
     params = {}
     lines = content.split('\n')
-    
-    current_matrix = None
-    current_matrix_data = []
-    
+    current_key = None
+    current_block = []
+    in_matrix = False
+    open_brace = None
     for line in lines:
-        line = line.strip()
-        if not line or line.startswith('#'):
+        line_strip = line.strip()
+        if not line_strip or line_strip.startswith('#'):
             continue
-            
-        # Check for matrix definitions like "A ="
-        matrix_match = re.match(r'(\w+)\s*=', line)
-        if matrix_match:
-            # Save previous matrix if exists
-            if current_matrix and current_matrix_data:
-                params[current_matrix] = parse_matrix_data(current_matrix_data)
-            
-            current_matrix = matrix_match.group(1)
-            current_matrix_data = []
-        elif current_matrix:
-            current_matrix_data.append(line)
-    
-    # Save last matrix
-    if current_matrix and current_matrix_data:
-        params[current_matrix] = parse_matrix_data(current_matrix_data)
-    
+        # Detect start of a matrix block
+        matrix_start = re.match(r'^(A|B|C|D|E)\s*=\s*([{(])', line_strip)
+        if matrix_start:
+            if in_matrix and current_key and current_block:
+                # Save previous block
+                params[current_key] = '\n'.join(current_block)
+            current_key = matrix_start.group(1)
+            open_brace = matrix_start.group(2)
+            current_block = [line_strip[line_strip.find(open_brace):]]
+            in_matrix = True
+            continue
+        # Accumulate lines inside a matrix block
+        if in_matrix:
+            current_block.append(line_strip)
+            # Detect end of block
+            if (open_brace == '{' and '}' in line_strip) or (open_brace == '(' and ')' in line_strip):
+                params[current_key] = '\n'.join(current_block)
+                in_matrix = False
+                current_key = None
+                current_block = []
+                open_brace = None
+            continue
+        # Handle single-line assignments (e.g., C = (0.0, 0.0, 1.0))
+        single_assign = re.match(r'^(C|D|E)\s*=\s*(.+)$', line_strip)
+        if single_assign:
+            params[single_assign.group(1)] = single_assign.group(2).strip()
+    # Save any trailing block
+    if in_matrix and current_key and current_block:
+        params[current_key] = '\n'.join(current_block)
     return params
 
-def parse_matrix_data(lines: List[str]) -> List[List[float]]:
-    """Parse matrix data from lines."""
-    matrix = []
-    for line in lines:
-        # Extract numbers from the line
-        numbers = re.findall(r'[-+]?\d*\.?\d+', line)
-        if numbers:
-            row = [float(n) for n in numbers]
-            matrix.append(row)
-    return matrix
+def parse_matrix_data(content: str):
+    """Parse a 2D matrix from GNN curly-brace/tuple format into a Python list of lists."""
+    # Remove curly braces or parentheses
+    content = content.strip()
+    if content.startswith('{') and content.endswith('}'):
+        content = content[1:-1]
+    elif content.startswith('(') and content.endswith(')'):
+        content = content[1:-1]
+    # Remove comments
+    content = re.sub(r'#.*', '', content)
+    # Replace curly braces with parentheses for ast.literal_eval
+    content = content.replace('{', '(').replace('}', ')')
+    # Remove trailing commas
+    content = re.sub(r',\s*\)', ')', content)
+    # Remove newlines and extra spaces
+    content = content.replace('\n', ' ').replace('  ', ' ')
+    # Try to parse as tuple of tuples
+    try:
+        matrix = ast.literal_eval(content)
+        # Convert to list of lists
+        return [list(row) for row in matrix]
+    except Exception as e:
+        raise ValueError(f"Failed to parse 2D matrix: {e}\nContent: {content}")
+
+def parse_3d_matrix(content: str):
+    """Parse a 3D matrix from GNN curly-brace/tuple format into a Python list of lists of lists."""
+    # Remove curly braces or parentheses
+    content = content.strip()
+    if content.startswith('{') and content.endswith('}'):
+        content = content[1:-1]
+    elif content.startswith('(') and content.endswith(')'):
+        content = content[1:-1]
+    # Remove comments
+    content = re.sub(r'#.*', '', content)
+    # Replace curly braces with parentheses for ast.literal_eval
+    content = content.replace('{', '(').replace('}', ')')
+    # Remove trailing commas
+    content = re.sub(r',\s*\)', ')', content)
+    # Remove newlines and extra spaces
+    content = content.replace('\n', ' ').replace('  ', ' ')
+    # Try to parse as tuple of tuple of tuples
+    try:
+        matrix = ast.literal_eval(content)
+        # Convert to list of lists of lists
+        return [[list(row) for row in plane] for plane in matrix]
+    except Exception as e:
+        raise ValueError(f"Failed to parse 3D matrix: {e}\nContent: {content}")
+
+def parse_vector(content: str) -> List[List[float]]:
+    """Parse a vector from GNN format."""
+    # Extract numbers from the content
+    numbers = re.findall(r'[-+]?\d*\.?\d+', content)
+    if numbers:
+        # Return as a single row
+        return [[float(n) for n in numbers]]
+    return []
 
 def parse_time_settings(content: str) -> Dict[str, Any]:
     """Parse the Time section."""

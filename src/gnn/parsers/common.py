@@ -501,7 +501,7 @@ def normalize_variable_name(name: str) -> str:
     return normalized
 
 def parse_dimensions(dim_str: str) -> List[int]:
-    """Parse dimension string like '[2,3,4]' into list of integers."""
+    """Parse dimension string like '[2,3,4]' or '[2,3,type=float]' into list of integers."""
     try:
         # Remove brackets and split by comma
         dim_str = dim_str.strip('[]')
@@ -511,6 +511,9 @@ def parse_dimensions(dim_str: str) -> List[int]:
         dimensions = []
         for dim in dim_str.split(','):
             dim = dim.strip()
+            # Stop parsing if we encounter a type specification
+            if dim.startswith('type='):
+                break
             if dim.isdigit():
                 dimensions.append(int(dim))
             else:

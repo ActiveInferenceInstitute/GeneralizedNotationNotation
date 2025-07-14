@@ -10,6 +10,12 @@ import argparse
 import json
 from pathlib import Path
 import logging
+import os # Added for os.environ
+
+# --- Output Directory Policy ---
+# All type checking outputs must go under a subdirectory named 'type_check' (e.g., output/type_check/)
+# The CLI will refuse to run if --output-dir is set to 'output', 'output/artifacts', or any directory not ending in 'type_check',
+# unless the environment variable GNN_TYPE_CHECKER_ALLOW_ANY_OUTPUT_DIR is set (for test/dev only).
 
 from .checker import GNNTypeChecker
 from .resource_estimator import GNNResourceEstimator
@@ -50,6 +56,20 @@ def main(cmd_args=None):
     # This script just uses the logger.
 
     actual_output_dir = Path(parsed_args.output_dir).resolve()
+
+    # --- Enforce output directory policy ---
+    allow_any_output_dir = bool(os.environ.get("GNN_TYPE_CHECKER_ALLOW_ANY_OUTPUT_DIR", False))
+    forbidden_dirs = ["output", "output/artifacts"]
+    if not allow_any_output_dir:
+        # Only allow output dirs ending with 'type_check' (case-insensitive)
+        if (str(actual_output_dir).rstrip("/\\").lower() in [str(Path(d)).lower() for d in forbidden_dirs] or
+            not actual_output_dir.name.lower().endswith("type_check")):
+            print(f"\n[ERROR] Type checker outputs must go under a subdirectory named 'type_check'.\n"
+                  f"You provided: {actual_output_dir}\n"
+                  f"Please use --output-dir output/type_check or a similar subfolder.\n"
+                  f"(Override with GNN_TYPE_CHECKER_ALLOW_ANY_OUTPUT_DIR=1 for test/dev only.)\n", file=sys.stderr)
+            return 1
+
     try:
         actual_output_dir.mkdir(parents=True, exist_ok=True)
     except OSError as e:

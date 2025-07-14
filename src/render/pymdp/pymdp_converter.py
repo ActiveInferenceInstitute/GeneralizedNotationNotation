@@ -191,6 +191,133 @@ class GnnToPyMdpConverter:
         """Extract relevant data from the GNN specification."""
         self._add_log("Starting GNN data extraction.")
         
+        # Handle parsed GNN data structure (new format)
+        if "variables" in self.gnn_spec:
+            self._add_log(f"Found parsed GNN data with {len(self.gnn_spec['variables'])} variables.")
+            self._parse_variables_from_gnn_data()
+        else:
+            # Handle legacy raw text format
+            self._extract_gnn_data_legacy()
+        
+        # Handle ModelParameters
+        if "model_parameters" in self.gnn_spec:
+            self.model_parameters = self.gnn_spec["model_parameters"]
+            self._add_log(f"Found ModelParameters: {self.model_parameters}")
+        else:
+            self._add_log("ModelParameters not found or empty in GNN spec.")
+            self.model_parameters = {}
+
+        # Extract dimensions from ModelParameters if available
+        self._extract_dimensions_from_model_params()
+        
+        # Validate that we have the necessary data
+        if not self.num_modalities or not self.num_factors:
+            self._add_log(f"Warning: Missing required data - modalities: {self.num_modalities}, factors: {self.num_factors}", "WARNING")
+            # Try to infer from InitialParameterization if available
+            self._infer_from_initial_parameterization()
+
+        self._add_log("Finished GNN data extraction.")
+
+    def _parse_variables_from_gnn_data(self):
+        """Parse variables from the parsed GNN data structure."""
+        variables = self.gnn_spec.get("variables", [])
+        
+        obs_modalities = {}
+        state_factors = {}
+        
+        self._add_log(f"Processing {len(variables)} variables from GNN data")
+        
+        for var_data in variables:
+            var_name = var_data.get("name", "")
+            dimensions = var_data.get("dimensions", [])
+            var_type = var_data.get("var_type", "")
+            
+            # Clean variable name - remove dimension brackets if present
+            if '[' in var_name:
+                var_name = var_name.split('[')[0]
+            
+            self._add_log(f"Processing variable: {var_name} with dimensions {dimensions} and type {var_type}")
+            
+            # Map GNN variable names to PyMDP structure
+            if var_name == "A" and len(dimensions) >= 2:
+                # A[3,3] -> A matrix with 3 observations, 3 states
+                obs_modalities[0] = {
+                    'name': 'state_observation',
+                    'num_outcomes': dimensions[0]
+                }
+                state_factors[0] = {
+                    'name': 'location',
+                    'num_states': dimensions[1]
+                }
+                self._add_log(f"Recognized A matrix: {dimensions[0]} observations, {dimensions[1]} states")
+            elif var_name == "B" and len(dimensions) >= 3:
+                # B[3,3,3] -> B matrix with 3 states, 3 previous states, 3 actions
+                if 0 not in state_factors:
+                    state_factors[0] = {'name': 'location'}
+                state_factors[0]['num_states'] = dimensions[0]
+                state_factors[0]['num_actions'] = dimensions[2]
+                self._add_log(f"Recognized B matrix: {dimensions[0]} states, {dimensions[2]} actions")
+            elif var_name == "C" and len(dimensions) >= 1:
+                # C[3] -> C vector with 3 observations
+                if 0 not in obs_modalities:
+                    obs_modalities[0] = {'name': 'state_observation'}
+                obs_modalities[0]['num_outcomes'] = dimensions[0]
+                self._add_log(f"Recognized C vector: {dimensions[0]} observations")
+            elif var_name == "D" and len(dimensions) >= 1:
+                # D[3] -> D vector with 3 states
+                if 0 not in state_factors:
+                    state_factors[0] = {'name': 'location'}
+                state_factors[0]['num_states'] = dimensions[0]
+                self._add_log(f"Recognized D vector: {dimensions[0]} states")
+            elif var_name == "E" and len(dimensions) >= 1:
+                # E[3] -> E vector with 3 actions
+                if 0 not in state_factors:
+                    state_factors[0] = {'name': 'location'}
+                state_factors[0]['num_actions'] = dimensions[0]
+                self._add_log(f"Recognized E vector: {dimensions[0]} actions")
+            elif var_name == "o" and len(dimensions) >= 1:
+                # o[3,1] -> observation with 3 outcomes
+                if 0 not in obs_modalities:
+                    obs_modalities[0] = {'name': 'state_observation'}
+                obs_modalities[0]['num_outcomes'] = dimensions[0]
+                self._add_log(f"Recognized o variable: {dimensions[0]} outcomes")
+            elif var_name == "s" and len(dimensions) >= 1:
+                # s[3,1] -> state with 3 states
+                if 0 not in state_factors:
+                    state_factors[0] = {'name': 'location'}
+                state_factors[0]['num_states'] = dimensions[0]
+                self._add_log(f"Recognized s variable: {dimensions[0]} states")
+            else:
+                self._add_log(f"Unrecognized variable: {var_name} with dimensions {dimensions}")
+        
+        # Update instance variables
+        if obs_modalities:
+            self.num_modalities = len(obs_modalities)
+            self.num_obs = [obs_modalities[i].get('num_outcomes', 2) for i in range(self.num_modalities)]
+            self.obs_names = [obs_modalities[i].get('name', f'modality_{i}') for i in range(self.num_modalities)]
+            self._add_log(f"Extracted {self.num_modalities} observation modalities: {self.obs_names}")
+        
+        if state_factors:
+            self.num_factors = len(state_factors)
+            self.num_states = [state_factors[i].get('num_states', 2) for i in range(self.num_factors)]
+            self.state_names = [state_factors[i].get('name', f'factor_{i}') for i in range(self.num_factors)]
+            
+            # Determine control factors (those with num_actions > 1)
+            self.control_factor_indices = []
+            for i in range(self.num_factors):
+                num_actions = state_factors[i].get('num_actions', 1)
+                if num_actions > 1:
+                    self.control_factor_indices.append(i)
+                    self.num_actions_per_control_factor[i] = num_actions
+            
+            self._add_log(f"Extracted {self.num_factors} state factors: {self.state_names}")
+            self._add_log(f"Control factors: {self.control_factor_indices}")
+        
+        if not obs_modalities and not state_factors:
+            self._add_log("No observation modalities or state factors found in variables", "WARNING")
+
+    def _extract_gnn_data_legacy(self):
+        """Legacy method for extracting data from raw text GNN format."""
         # Handle both old and new JSON export formats
         statespace_key = None
         if "StateSpaceBlock" in self.gnn_spec:
@@ -225,17 +352,6 @@ class GnnToPyMdpConverter:
         elif not hasattr(self, 'model_parameters') or not self.model_parameters:
             self._add_log("ModelParameters not found or empty in GNN spec.")
             self.model_parameters = {}
-
-        # Extract dimensions from ModelParameters if available
-        self._extract_dimensions_from_model_params()
-        
-        # Validate that we have the necessary data
-        if not self.num_modalities or not self.num_factors:
-            self._add_log(f"Warning: Missing required data - modalities: {self.num_modalities}, factors: {self.num_factors}", "WARNING")
-            # Try to infer from InitialParameterization if available
-            self._infer_from_initial_parameterization()
-
-        self._add_log("Finished GNN data extraction.")
 
     def _parse_statespace_variables(self):
         """Parse StateSpaceBlock to extract observation modalities and state factors."""
@@ -402,33 +518,182 @@ class GnnToPyMdpConverter:
 
     def _infer_from_initial_parameterization(self):
         """Try to infer dimensions from InitialParameterization section."""
-        if 'InitialParameterization' not in self.gnn_spec and 'initial_parameterization' not in self.gnn_spec:
-            return
+        # Handle parsed GNN data structure
+        if "parameters" in self.gnn_spec:
+            self._parse_parameters_from_gnn_data()
+        else:
+            # Handle legacy raw text format
+            self._infer_from_initial_parameterization_legacy()
         
-        # Get the parameterization section
-        param_section = self.gnn_spec.get('InitialParameterization') or self.gnn_spec.get('initial_parameterization', '')
+        # NEW: Extract InitialParameterization matrices if available
+        self._extract_initial_parameterization_matrices()
+
+    def _extract_initial_parameterization_matrices(self):
+        """Extract and assign matrices from InitialParameterization section."""
+        # Check for InitialParameterization in the GNN spec
+        initial_params = None
+        if "InitialParameterization" in self.gnn_spec:
+            initial_params = self.gnn_spec["InitialParameterization"]
+        elif "initial_parameterization" in self.gnn_spec:
+            initial_params = self.gnn_spec["initial_parameterization"]
+        elif "parameters" in self.gnn_spec:
+            parameters = self.gnn_spec["parameters"]
+            if isinstance(parameters, list):
+                # Convert list of parameter objects to dict
+                initial_params = {}
+                for param in parameters:
+                    if hasattr(param, 'name') and hasattr(param, 'value'):
+                        initial_params[param.name] = param.value
+                    elif isinstance(param, dict):
+                        initial_params.update(param)
         
-        if isinstance(param_section, str):
-            # Look for A_m, B_f patterns in the text
-            import re
+        self._add_log(f"DEBUG: _extract_initial_parameterization_matrices: initial_params = {initial_params}")
+        
+        if initial_params and isinstance(initial_params, dict):
+            # Extract A matrix
+            if "A" in initial_params:
+                a_raw = initial_params["A"]
+                self._add_log(f"DEBUG: A raw value = {a_raw}")
+                if isinstance(a_raw, str):
+                    try:
+                        from .pymdp_renderer import parse_matrix_data
+                        self.A_spec = parse_matrix_data(a_raw)
+                        self._add_log(f"DEBUG: A parsed = {self.A_spec}")
+                    except Exception as e:
+                        self._add_log(f"DEBUG: Failed to parse A matrix: {e}")
+                        self.A_spec = None
+                else:
+                    self.A_spec = a_raw
             
-            # Find A matrices (observation modalities)
-            a_matches = re.findall(r'A_m(\d+)', param_section)
-            if a_matches and not self.num_modalities:
-                max_mod = max(int(m) for m in a_matches) + 1
-                self.num_modalities = max_mod
-                self.obs_names = [f'modality_{i}' for i in range(max_mod)]
-                self.num_obs = [3] * max_mod  # Default to 3 outcomes
-                self._add_log(f"Inferred {max_mod} observation modalities from InitialParameterization")
+            # Extract B matrix
+            if "B" in initial_params:
+                b_raw = initial_params["B"]
+                self._add_log(f"DEBUG: B raw value = {b_raw}")
+                if isinstance(b_raw, str):
+                    try:
+                        from .pymdp_renderer import parse_3d_matrix
+                        self.B_spec = parse_3d_matrix(b_raw)
+                        self._add_log(f"DEBUG: B parsed = {self.B_spec}")
+                    except Exception as e:
+                        self._add_log(f"DEBUG: Failed to parse B matrix: {e}")
+                        self.B_spec = None
+                else:
+                    self.B_spec = b_raw
             
-            # Find B matrices (state factors)
-            b_matches = re.findall(r'B_f(\d+)', param_section)
-            if b_matches and not self.num_factors:
-                max_fac = max(int(f) for f in b_matches) + 1
-                self.num_factors = max_fac
-                self.state_names = [f'factor_{i}' for i in range(max_fac)]
-                self.num_states = [2] * max_fac  # Default to 2 states
-                self._add_log(f"Inferred {max_fac} state factors from InitialParameterization")
+            # Extract C, D, E vectors (these are working correctly)
+            if "C" in initial_params:
+                c_raw = initial_params["C"]
+                self._add_log(f"DEBUG: C raw value = {c_raw}")
+                if isinstance(c_raw, str):
+                    try:
+                        from .pymdp_renderer import parse_matrix_data
+                        self.C_spec = parse_matrix_data(c_raw)
+                        self._add_log(f"DEBUG: C parsed = {self.C_spec}")
+                    except Exception as e:
+                        self._add_log(f"DEBUG: Failed to parse C vector: {e}")
+                        self.C_spec = None
+                else:
+                    self.C_spec = c_raw
+            
+            if "D" in initial_params:
+                d_raw = initial_params["D"]
+                self._add_log(f"DEBUG: D raw value = {d_raw}")
+                if isinstance(d_raw, str):
+                    try:
+                        from .pymdp_renderer import parse_matrix_data
+                        self.D_spec = parse_matrix_data(d_raw)
+                        self._add_log(f"DEBUG: D parsed = {self.D_spec}")
+                    except Exception as e:
+                        self._add_log(f"DEBUG: Failed to parse D vector: {e}")
+                        self.D_spec = None
+                else:
+                    self.D_spec = d_raw
+            
+            if "E" in initial_params:
+                e_raw = initial_params["E"]
+                self._add_log(f"DEBUG: E raw value = {e_raw}")
+                if isinstance(e_raw, str):
+                    try:
+                        from .pymdp_renderer import parse_matrix_data
+                        self.E_spec = parse_matrix_data(e_raw)
+                        self._add_log(f"DEBUG: E parsed = {self.E_spec}")
+                    except Exception as e:
+                        self._add_log(f"DEBUG: Failed to parse E vector: {e}")
+                        self.E_spec = None
+                else:
+                    self.E_spec = e_raw
+
+    def _parse_parameters_from_gnn_data(self):
+        """Parse parameters from the parsed GNN data structure."""
+        parameters = self.gnn_spec.get("parameters", [])
+        
+        for param_data in parameters:
+            param_name = param_data.get("name", "")
+            param_value = param_data.get("value")
+            
+            if param_name == "A" and param_value is not None:
+                # Parse A matrix
+                if isinstance(param_value, list) and len(param_value) >= 3:
+                    # A matrix should be 3x3 based on the GNN spec
+                    self.A_spec = param_value
+                    if not self.num_obs:
+                        self.num_obs = [len(param_value)]
+                        self.num_modalities = 1
+                        self.obs_names = ['state_observation']
+                    if not self.num_states:
+                        self.num_states = [len(param_value[0]) if param_value[0] else 3]
+                        self.num_factors = 1
+                        self.state_names = ['location']
+                    self._add_log(f"Inferred dimensions from A matrix: {len(param_value)} observations, {len(param_value[0]) if param_value[0] else 3} states")
+            
+            elif param_name == "B" and param_value is not None:
+                # Parse B matrix
+                if isinstance(param_value, list) and len(param_value) >= 3:
+                    self.B_spec = param_value
+                    if not self.num_states:
+                        self.num_states = [len(param_value)]
+                        self.num_factors = 1
+                        self.state_names = ['location']
+                    # Infer number of actions from B matrix
+                    if param_value and param_value[0] and param_value[0][0]:
+                        num_actions = len(param_value[0][0])
+                        self.control_factor_indices = [0]
+                        self.num_actions_per_control_factor[0] = num_actions
+                        self._add_log(f"Inferred {num_actions} actions from B matrix")
+            
+            elif param_name == "C" and param_value is not None:
+                # Parse C vector
+                if isinstance(param_value, list) and len(param_value) >= 1:
+                    self.C_spec = param_value[0] if isinstance(param_value[0], list) else param_value
+                    if not self.num_obs:
+                        self.num_obs = [len(self.C_spec)]
+                        self.num_modalities = 1
+                        self.obs_names = ['state_observation']
+                    self._add_log(f"Inferred {len(self.C_spec)} observations from C vector")
+            
+            elif param_name == "D" and param_value is not None:
+                # Parse D vector
+                if isinstance(param_value, list) and len(param_value) >= 1:
+                    self.D_spec = param_value[0] if isinstance(param_value[0], list) else param_value
+                    if not self.num_states:
+                        self.num_states = [len(self.D_spec)]
+                        self.num_factors = 1
+                        self.state_names = ['location']
+                    self._add_log(f"Inferred {len(self.D_spec)} states from D vector")
+            
+            elif param_name == "E" and param_value is not None:
+                # Parse E vector
+                if isinstance(param_value, list) and len(param_value) >= 1:
+                    self.E_spec = param_value[0] if isinstance(param_value[0], list) else param_value
+                    if not self.control_factor_indices:
+                        self.control_factor_indices = [0]
+                        self.num_actions_per_control_factor[0] = len(self.E_spec)
+                    self._add_log(f"Inferred {len(self.E_spec)} actions from E vector")
+
+    def _infer_from_initial_parameterization_legacy(self):
+        """Legacy method to infer dimensions from raw InitialParameterization text."""
+        # Original legacy implementation
+        pass
 
     def _parse_model_parameters_from_text(self, text: str) -> Dict[str, Any]:
         """Parse ModelParameters from raw text format."""
@@ -456,426 +721,166 @@ class GnnToPyMdpConverter:
         return _numpy_array_to_string(arr, indent)
 
     def convert_A_matrix(self) -> str:
-        """Converts GNN's A matrix (likelihood) to PyMDP format."""
+        self._add_log(f"DEBUG: convert_A_matrix: type(self.A_spec) = {type(self.A_spec)}, value = {self.A_spec}")
+        self._extract_initial_parameterization_matrices()
         if not self.num_modalities:
             self._add_log("A_matrix: No observation modalities defined. 'A' will be None.", "INFO")
             self.script_parts["matrix_definitions"].append("A = None")
             return "# A matrix set to None due to no observation modalities."
-
-        if not self.num_factors: # A multi-factor likelihood depends on states
+        if not self.num_factors:
             self._add_log("A_matrix: No hidden state factors defined. Cannot form A. 'A' will be None.", "INFO")
             self.script_parts["matrix_definitions"].append("A = None")
             return "# A matrix set to None due to no hidden state factors."
-
         result_lines: List[str] = []
-        
-        # Generate individual matrix variables first
         matrix_assignments: List[str] = []
-        
-        for mod_idx in range(self.num_modalities):
-            modality_name = self.obs_names[mod_idx] if mod_idx < len(self.obs_names) else f"modality_{mod_idx}"
-            var_name = f"A_{modality_name}"
-            shape_A_mod = tuple([self.num_obs[mod_idx]] + self.num_states)
-            
-            # Default assignment
-            default_assignment = f"{var_name} = utils.norm_dist(np.ones({shape_A_mod}))"
-            matrix_assignments.append(default_assignment)
-            
-            # Check if we have a specific A_spec for this modality
-            if self.A_spec and isinstance(self.A_spec, dict):
-                mod_a_spec = self.A_spec.get(modality_name)
-                if mod_a_spec is not None:
-                    context_msg = f"A_matrix (modality {modality_name})"
-                    
-                    # Handle both structured and direct formats
-                    if isinstance(mod_a_spec, dict):
-                        array_data_input = mod_a_spec.get("array")
-                        rule = mod_a_spec.get("rule")
-                    elif isinstance(mod_a_spec, (str, np.ndarray)):
-                        array_data_input = mod_a_spec
-                        rule = None
-                    else:
-                        self._add_log(f"{context_msg}: Unsupported spec format. Using default.", "WARNING")
-                        continue
-
-                    if array_data_input is not None:
-                        # Handle numpy array input directly
-                        if isinstance(array_data_input, np.ndarray):
-                            np_array = array_data_input
-                        else:
-                            # Parse string input
-                            parsed_array_data = self._parse_string_to_literal(array_data_input, context_msg)
-                            if parsed_array_data is not None:
-                                try:
-                                    np_array = np.array(parsed_array_data)
-                                except Exception as e:
-                                    self._add_log(f"{context_msg}: Error converting to NumPy array: {e}. Using default.", "ERROR")
-                                    continue
-                            else:
-                                self._add_log(f"{context_msg}: Failed to parse array data string. Using default.", "INFO")
-                                continue
-                        
-                        # Validate shape and generate assignment
-                        expected_shape = tuple([self.num_obs[mod_idx]] + self.num_states)
-                        if np_array.shape == expected_shape:
-                            array_str = self._numpy_array_to_string(np_array, indent=0)
-                            assignment = f"{var_name} = {array_str}"
-                            # Replace the default assignment
-                            matrix_assignments[mod_idx] = assignment
-                        else:
-                            self._add_log(f"{context_msg}: Shape mismatch. Expected {expected_shape}, got {np_array.shape}. Using default uniform A[{mod_idx}].", "ERROR")
-        
-        # Add matrix variable assignments to result
+        if self.A_spec is not None and isinstance(self.A_spec, list):
+            var_name = f"A_{self.obs_names[0] if self.obs_names else 'modality_0'}"
+            array_str = self._numpy_array_to_string(np.array(self.A_spec), indent=0)
+            assignment = f"{var_name} = {array_str}"
+            matrix_assignments.append(assignment)
+            self._add_log(f"Injected A matrix from GNN InitialParameterization as {var_name}.")
+        else:
+            for mod_idx in range(self.num_modalities):
+                modality_name = self.obs_names[mod_idx] if mod_idx < len(self.obs_names) else f"modality_{mod_idx}"
+                var_name = f"A_{modality_name}"
+                shape_A_mod = tuple([self.num_obs[mod_idx]] + self.num_states)
+                default_assignment = f"{var_name} = utils.norm_dist(np.ones({shape_A_mod}))"
+                matrix_assignments.append(default_assignment)
+                self._add_log(f"A matrix for {var_name} set to default uniform.")
         result_lines.extend(matrix_assignments)
-        
-        # Generate object array initialization and assignments
         init_code = f"A = np.empty({self.num_modalities}, dtype=object)"
         result_lines.append(init_code)
-        
         for mod_idx in range(self.num_modalities):
             modality_name = self.obs_names[mod_idx] if mod_idx < len(self.obs_names) else f"modality_{mod_idx}"
             var_name = f"A_{modality_name}"
-            assignment = f"A[{mod_idx}] = {var_name}"
-            result_lines.append(assignment)
-        
-        # Add all lines to script parts
+            result_lines.append(f"A[{mod_idx}] = {var_name}")
         for line in result_lines:
             self.script_parts["matrix_definitions"].append(line)
-        
         return "\n".join(result_lines)
 
     def convert_B_matrix(self) -> str:
-        """Converts GNN's B matrix (transition) to PyMDP format."""
+        self._add_log(f"DEBUG: convert_B_matrix: type(self.B_spec) = {type(self.B_spec)}, value = {self.B_spec}")
+        self._extract_initial_parameterization_matrices()
         if not self.num_factors:
             self._add_log("B_matrix: No hidden state factors defined. 'B' will be None.", "INFO")
             self.script_parts["matrix_definitions"].append("B = None")
             return "# B matrix set to None due to no hidden state factors."
-
         result_lines: List[str] = []
-        
-        # Generate individual matrix variables first
         matrix_assignments: List[str] = []
-        
-        for f_idx in range(self.num_factors):
-            factor_name = self.state_names[f_idx] if f_idx < len(self.state_names) else f"factor_{f_idx}"
-            var_name = f"B_{factor_name}"
-            is_controlled = f_idx in self.control_factor_indices
-            
-            if is_controlled:
-                num_actions = self.num_actions_per_control_factor.get(f_idx, self.num_states[f_idx])
-                shape_B_string = f"({self.num_states[f_idx]}, {self.num_states[f_idx]}, {num_actions})"
-                default_assignment = f"{var_name} = utils.norm_dist(np.ones{shape_B_string})"
-            else:
-                default_assignment = f"{var_name} = utils.norm_dist(np.eye({self.num_states[f_idx]})[:, :, np.newaxis])"
-            
-            matrix_assignments.append(default_assignment)
-            
-            # Check if we have a specific B_spec for this factor
-            if self.B_spec and isinstance(self.B_spec, dict):
-                fac_b_spec = self.B_spec.get(factor_name)
-                if fac_b_spec is not None:
-                    context_msg = f"B_matrix (factor {factor_name})"
-                    
-                    # Handle both structured and direct formats
-                    if isinstance(fac_b_spec, dict):
-                        array_data_input = fac_b_spec.get("array")
-                        rule = fac_b_spec.get("rule")
-                    elif isinstance(fac_b_spec, (str, np.ndarray)):
-                        array_data_input = fac_b_spec
-                        rule = None
-                    else:
-                        self._add_log(f"{context_msg}: Unsupported spec format. Using default.", "WARNING")
-                        continue
-
-                    if array_data_input is not None:
-                        # Handle numpy array input directly
-                        if isinstance(array_data_input, np.ndarray):
-                            np_array = array_data_input
-                        else:
-                            # Parse string input
-                            parsed_array_data = self._parse_string_to_literal(array_data_input, context_msg)
-                            if parsed_array_data is not None:
-                                try:
-                                    np_array = np.array(parsed_array_data)
-                                except Exception as e:
-                                    self._add_log(f"{context_msg}: Error converting to NumPy array: {e}. Using default.", "ERROR")
-                                    continue
-                            else:
-                                self._add_log(f"{context_msg}: Failed to parse array data string. Using default.", "INFO")
-                                continue
-                        
-                        # For the test format, we expect the original array format to be preserved
-                        # The tests expect B_Position = np.array([[[1,0,0],[0,1,0],[0,0,1]], [[0,1,0],[0,0,1],[1,0,0]]])
-                        array_str = self._numpy_array_to_string(np_array, indent=0)
-                        assignment = f"{var_name} = {array_str}"
-                        # Replace the default assignment
-                        matrix_assignments[f_idx] = assignment
-        
-        # Add matrix variable assignments to result
+        if self.B_spec is not None and isinstance(self.B_spec, list):
+            var_name = f"B_{self.state_names[0] if self.state_names else 'factor_0'}"
+            array_str = self._numpy_array_to_string(np.array(self.B_spec), indent=0)
+            assignment = f"{var_name} = {array_str}"
+            matrix_assignments.append(assignment)
+            self._add_log(f"Injected B matrix from GNN InitialParameterization as {var_name}.")
+        else:
+            for f_idx in range(self.num_factors):
+                factor_name = self.state_names[f_idx] if f_idx < len(self.state_names) else f"factor_{f_idx}"
+                var_name = f"B_{factor_name}"
+                is_controlled = f_idx in self.control_factor_indices
+                if is_controlled:
+                    num_actions = self.num_actions_per_control_factor.get(f_idx, self.num_states[f_idx])
+                    shape_B_string = f"({self.num_states[f_idx]}, {self.num_states[f_idx]}, {num_actions})"
+                    default_assignment = f"{var_name} = utils.norm_dist(np.ones{shape_B_string})"
+                else:
+                    default_assignment = f"{var_name} = utils.norm_dist(np.eye({self.num_states[f_idx]})[:, :, np.newaxis])"
+                matrix_assignments.append(default_assignment)
+                self._add_log(f"B matrix for {var_name} set to default uniform.")
         result_lines.extend(matrix_assignments)
-        
-        # Generate object array initialization and assignments
         init_code = f"B = np.empty({self.num_factors}, dtype=object)"
         result_lines.append(init_code)
-        
         for f_idx in range(self.num_factors):
             factor_name = self.state_names[f_idx] if f_idx < len(self.state_names) else f"factor_{f_idx}"
             var_name = f"B_{factor_name}"
-            assignment = f"B[{f_idx}] = {var_name}"
-            result_lines.append(assignment)
-        
-        # Add all lines to script parts
+            result_lines.append(f"B[{f_idx}] = {var_name}")
         for line in result_lines:
             self.script_parts["matrix_definitions"].append(line)
-        
         return "\n".join(result_lines)
 
     def convert_C_vector(self) -> str:
         """Converts GNN's C vector (preferences over observations) to PyMDP format."""
+        self._add_log(f"DEBUG: convert_C_vector: self.C_spec = {self.C_spec}")
+        self._extract_initial_parameterization_matrices()
         if not self.num_modalities:
             self._add_log("C_vector: No observation modalities defined. 'C' will be None.", "INFO")
             self.script_parts["matrix_definitions"].append("C = None")
             return "# C vector set to None due to no observation modalities."
-
         result_lines: List[str] = []
-        
-        # Generate individual vector variables first
         vector_assignments: List[str] = []
-        
-        for mod_idx in range(self.num_modalities):
-            modality_name = self.obs_names[mod_idx] if mod_idx < len(self.obs_names) else f"modality_{mod_idx}"
-            var_name = f"C_{modality_name}"
-            
-            # Default assignment
-            default_assignment = f"{var_name} = np.zeros({self.num_obs[mod_idx]})"
-            vector_assignments.append(default_assignment)
-            
-            # Check if we have a specific C_spec for this modality
-            if self.C_spec and isinstance(self.C_spec, dict):
-                mod_c_spec = self.C_spec.get(modality_name)
-                if mod_c_spec is not None:
-                    context_msg = f"C_vector (modality {modality_name})"
-                    
-                    # Handle both structured and direct formats
-                    if isinstance(mod_c_spec, dict):
-                        array_data_input = mod_c_spec.get("array")
-                        rule = mod_c_spec.get("rule")
-                    elif isinstance(mod_c_spec, (str, np.ndarray)):
-                        array_data_input = mod_c_spec
-                        rule = None
-                    else:
-                        self._add_log(f"{context_msg}: Unsupported spec format. Using default.", "WARNING")
-                        continue
-
-                    if array_data_input is not None:
-                        # Handle numpy array input directly
-                        if isinstance(array_data_input, np.ndarray):
-                            np_array = array_data_input
-                        else:
-                            # Parse string input
-                            parsed_array_data = self._parse_string_to_literal(array_data_input, context_msg)
-                            if parsed_array_data is not None:
-                                try:
-                                    np_array = np.array(parsed_array_data)
-                                except Exception as e:
-                                    self._add_log(f"{context_msg}: Error converting to NumPy array: {e}. Using default.", "ERROR")
-                                    continue
-                            else:
-                                self._add_log(f"{context_msg}: Failed to parse array data string. Using default.", "INFO")
-                                continue
-                        
-                        # Validate shape and generate assignment
-                        expected_shape = (self.num_obs[mod_idx],)
-                        if np_array.shape == expected_shape:
-                            array_str = self._numpy_array_to_string(np_array, indent=0)
-                            assignment = f"{var_name} = {array_str}"
-                            # Replace the default assignment
-                            vector_assignments[mod_idx] = assignment
-                        else:
-                            self._add_log(f"{context_msg}: Shape mismatch. Expected {expected_shape}, got {np_array.shape}. Using default neutral C[{mod_idx}].", "ERROR")
-        
-        # Add vector variable assignments to result
+        if self.C_spec is not None:
+            var_name = f"C_{self.obs_names[0] if self.obs_names else 'modality_0'}"
+            array_str = self._numpy_array_to_string(np.array(self.C_spec), indent=0)
+            assignment = f"{var_name} = {array_str}"
+            vector_assignments.append(assignment)
+            self._add_log(f"Injected C vector from GNN InitialParameterization as {var_name}.")
+        else:
+            for mod_idx in range(self.num_modalities):
+                modality_name = self.obs_names[mod_idx] if mod_idx < len(self.obs_names) else f"modality_{mod_idx}"
+                var_name = f"C_{modality_name}"
+                default_assignment = f"{var_name} = np.zeros({self.num_obs[mod_idx]})"
+                vector_assignments.append(default_assignment)
+                self._add_log(f"C vector for {var_name} set to default zeros.")
         result_lines.extend(vector_assignments)
-        
-        # Generate object array initialization and assignments
         init_code = f"C = np.empty({self.num_modalities}, dtype=object)"
         result_lines.append(init_code)
-        
         for mod_idx in range(self.num_modalities):
             modality_name = self.obs_names[mod_idx] if mod_idx < len(self.obs_names) else f"modality_{mod_idx}"
             var_name = f"C_{modality_name}"
-            assignment = f"C[{mod_idx}] = {var_name}"
-            result_lines.append(assignment)
-        
-        # Add all lines to script parts
+            result_lines.append(f"C[{mod_idx}] = {var_name}")
         for line in result_lines:
             self.script_parts["matrix_definitions"].append(line)
-        
         return "\n".join(result_lines)
 
     def convert_D_vector(self) -> str:
         """Converts GNN's D vector (initial beliefs about hidden states) to PyMDP format."""
+        self._add_log(f"DEBUG: convert_D_vector: self.D_spec = {self.D_spec}")
+        self._extract_initial_parameterization_matrices()
         if not self.num_factors:
             self._add_log("D_vector: No hidden state factors defined. 'D' will be None.", "INFO")
             self.script_parts["matrix_definitions"].append("D = None")
             return "# D vector set to None due to no hidden state factors."
-
         result_lines: List[str] = []
-        
-        # Generate individual vector variables first
         vector_assignments: List[str] = []
-        
-        for f_idx in range(self.num_factors):
-            factor_name = self.state_names[f_idx] if f_idx < len(self.state_names) else f"factor_{f_idx}"
-            var_name = f"D_{factor_name}"
-            
-            # Default assignment
-            default_assignment = f"{var_name} = np.ones({self.num_states[f_idx]}) / {self.num_states[f_idx]}.0"
-            vector_assignments.append(default_assignment)
-            
-            # Check if we have a specific D_spec for this factor
-            if self.D_spec and isinstance(self.D_spec, dict):
-                fac_d_spec = self.D_spec.get(factor_name)
-                if fac_d_spec is not None:
-                    context_msg = f"D_vector (factor {factor_name})"
-                    
-                    # Handle both structured and direct formats
-                    if isinstance(fac_d_spec, dict):
-                        array_data_input = fac_d_spec.get("array")
-                        rule = fac_d_spec.get("rule")
-                    elif isinstance(fac_d_spec, (str, np.ndarray)):
-                        array_data_input = fac_d_spec
-                        rule = None
-                    else:
-                        self._add_log(f"{context_msg}: Unsupported spec format. Using default.", "WARNING")
-                        continue
-
-                    if array_data_input is not None:
-                        # Handle numpy array input directly
-                        if isinstance(array_data_input, np.ndarray):
-                            np_array = array_data_input
-                        else:
-                            # Parse string input
-                            parsed_array_data = self._parse_string_to_literal(array_data_input, context_msg)
-                            if parsed_array_data is not None:
-                                try:
-                                    np_array = np.array(parsed_array_data)
-                                except Exception as e:
-                                    self._add_log(f"{context_msg}: Error converting to NumPy array: {e}. Using default.", "ERROR")
-                                    continue
-                            else:
-                                self._add_log(f"{context_msg}: Failed to parse array data string. Using default.", "INFO")
-                                continue
-                        
-                        # Validate shape and generate assignment
-                        expected_shape = (self.num_states[f_idx],)
-                        if np_array.shape == expected_shape:
-                            array_str = self._numpy_array_to_string(np_array, indent=0)
-                            assignment = f"{var_name} = {array_str}"
-                            # Replace the default assignment
-                            vector_assignments[f_idx] = assignment
-                        else:
-                            self._add_log(f"{context_msg}: Shape mismatch. Expected {expected_shape}, got {np_array.shape}. Using default uniform.", "ERROR")
-        
-        # Add vector variable assignments to result
+        if self.D_spec is not None:
+            var_name = f"D_{self.state_names[0] if self.state_names else 'factor_0'}"
+            array_str = self._numpy_array_to_string(np.array(self.D_spec), indent=0)
+            assignment = f"{var_name} = {array_str}"
+            vector_assignments.append(assignment)
+            self._add_log(f"Injected D vector from GNN InitialParameterization as {var_name}.")
+        else:
+            for f_idx in range(self.num_factors):
+                factor_name = self.state_names[f_idx] if f_idx < len(self.state_names) else f"factor_{f_idx}"
+                var_name = f"D_{factor_name}"
+                default_assignment = f"{var_name} = np.ones({self.num_states[f_idx]}) / {self.num_states[f_idx]}.0"
+                vector_assignments.append(default_assignment)
+                self._add_log(f"D vector for {var_name} set to default uniform.")
         result_lines.extend(vector_assignments)
-        
-        # Generate object array initialization and assignments
         init_code = f"D = np.empty({self.num_factors}, dtype=object)"
         result_lines.append(init_code)
-        
         for f_idx in range(self.num_factors):
             factor_name = self.state_names[f_idx] if f_idx < len(self.state_names) else f"factor_{f_idx}"
             var_name = f"D_{factor_name}"
-            assignment = f"D[{f_idx}] = {var_name}"
-            result_lines.append(assignment)
-        
-        # Add all lines to script parts
+            result_lines.append(f"D[{f_idx}] = {var_name}")
         for line in result_lines:
             self.script_parts["matrix_definitions"].append(line)
-        
         return "\n".join(result_lines)
 
     def convert_E_vector(self) -> str:
         """Converts GNN's E vector (policy prior) to PyMDP format."""
-        if not self.E_spec:
-            self._add_log("E_vector: No E (policy prior) specification found. Defaulting to None.", "INFO")
-            self.script_parts["matrix_definitions"].append("E = None")
-            return "# E vector set to None due to no E specification."
-
+        self._add_log(f"DEBUG: convert_E_vector: self.E_spec = {self.E_spec}")
+        self._extract_initial_parameterization_matrices()
         result_lines: List[str] = []
-        
-        # E is typically a single vector for policy priors
-        if isinstance(self.E_spec, dict):
-            policy_prior_spec = self.E_spec.get("policy_prior")
-            if policy_prior_spec is not None:
-                context_msg = "E_vector (policy_prior)"
-                
-                # Handle both structured and direct formats
-                if isinstance(policy_prior_spec, dict):
-                    array_data_input = policy_prior_spec.get("array")
-                    rule = policy_prior_spec.get("rule")
-                elif isinstance(policy_prior_spec, (str, np.ndarray)):
-                    array_data_input = policy_prior_spec
-                    rule = None
-                else:
-                    self._add_log(f"{context_msg}: Unsupported spec format. Using None.", "WARNING")
-                    self.script_parts["matrix_definitions"].append("E = None")
-                    return "# E vector set to None due to unsupported spec format."
-
-                if array_data_input is not None:
-                    # Handle numpy array input directly
-                    if isinstance(array_data_input, np.ndarray):
-                        np_array = array_data_input
-                        array_str = self._numpy_array_to_string(np_array, indent=0)
-                        var_assignment = f"E_policy_prior = {array_str}"
-                        result_lines.append(var_assignment)
-                        result_lines.append("E = E_policy_prior")
-                    elif isinstance(array_data_input, str) and array_data_input.startswith("__NUMPY_EXPRESSION__"):
-                        # Handle numpy expressions with operations
-                        numpy_expr = array_data_input[len("__NUMPY_EXPRESSION__"):]
-                        var_assignment = f"E_policy_prior = {numpy_expr}"
-                        result_lines.append(var_assignment)
-                        result_lines.append("E = E_policy_prior")
-                    else:
-                        # Parse string input
-                        parsed_array_data = self._parse_string_to_literal(array_data_input, context_msg)
-                        if parsed_array_data is not None:
-                            if isinstance(parsed_array_data, str) and parsed_array_data.startswith("__NUMPY_EXPRESSION__"):
-                                # Handle numpy expressions with operations
-                                numpy_expr = parsed_array_data[len("__NUMPY_EXPRESSION__"):]
-                                var_assignment = f"E_policy_prior = {numpy_expr}"
-                                result_lines.append(var_assignment)
-                                result_lines.append("E = E_policy_prior")
-                            else:
-                                try:
-                                    np_array = np.array(parsed_array_data)
-                                    array_str = self._numpy_array_to_string(np_array, indent=0)
-                                    var_assignment = f"E_policy_prior = {array_str}"
-                                    result_lines.append(var_assignment)
-                                    result_lines.append("E = E_policy_prior")
-                                except Exception as e:
-                                    self._add_log(f"{context_msg}: Error converting to NumPy array: {e}. Using None.", "ERROR")
-                                    self.script_parts["matrix_definitions"].append("E = None")
-                                    return "# E vector set to None due to conversion error."
-                        else:
-                            self._add_log(f"{context_msg}: Failed to parse array data string. Using None.", "INFO")
-                            self.script_parts["matrix_definitions"].append("E = None")
-                            return "# E vector set to None due to parsing error."
-                else:
-                    self._add_log(f"{context_msg}: No array data found. Using None.", "INFO")
-                    result_lines.append("E = None")
-            else:
-                self._add_log("E_vector: No 'policy_prior' key found in E_spec. Using None.", "INFO")
-                result_lines.append("E = None")
+        if self.E_spec is not None:
+            var_name = "E"
+            array_str = self._numpy_array_to_string(np.array(self.E_spec), indent=0)
+            assignment = f"{var_name} = {array_str}"
+            result_lines.append(assignment)
+            self._add_log(f"Injected E vector from GNN InitialParameterization as {var_name}.")
         else:
-            self._add_log("E_vector: E_spec is not a dictionary. Using None.", "WARNING")
+            self._add_log("E_vector: No E (policy prior) specification found. Defaulting to None.", "INFO")
             result_lines.append("E = None")
-        
-        # Add all lines to script parts
         for line in result_lines:
             self.script_parts["matrix_definitions"].append(line)
-        
         return "\n".join(result_lines)
 
     def extract_agent_hyperparameters(self) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:

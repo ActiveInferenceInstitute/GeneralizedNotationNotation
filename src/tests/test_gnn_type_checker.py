@@ -1,7 +1,8 @@
 """
-Tests for the GNN Type Checker.
+Test suite for GNN Type Checker
 
-This module contains tests for the GNN type checker functionality.
+All test outputs must go under output/type_check/ or a temp subfolder thereof.
+The type checker CLI now enforces this policy and will refuse to run if --output-dir is not a subdirectory named 'type_check'.
 """
 
 import os

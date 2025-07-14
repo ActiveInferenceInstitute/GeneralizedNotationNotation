@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 
 """
-GNN Processing Pipeline - Step 4: Type Checker
+Pipeline Step 4: Type Checker
 
-This script validates GNN files for syntax correctness and type consistency.
-
-Usage:
-    python 4_type_checker.py [options]
-    (Typically called by main.py)
+All outputs from this step must go under output/type_check/ and its subfolders.
+The type checker CLI now enforces this policy and will refuse to run if --output-dir is not a subdirectory named 'type_check'.
 """
 
 import sys
@@ -50,6 +47,7 @@ def main():
     log_step_start(logger, f"{step_info.get('description', 'GNN syntax and type validation')}")
 
     # Use centralized argument parsing
+    # NOTE: All outputs must go under output/type_check/ (enforced by CLI)
     if UTILS_AVAILABLE:
         parsed_args = EnhancedArgumentParser.parse_step_arguments("4_type_checker")
     else:
