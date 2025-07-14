@@ -106,7 +106,7 @@ def build_command_args(script_name: str, script_path: Path, args, python_executa
     if verbose:
         common_args.append(('--verbose', verbose))
     
-    # --recursive (supported by most scripts, with special handling for step 13)
+    # --recursive (supported by most scripts)
     if hasattr(args, 'recursive') and script_name not in ['2_setup.py', '3_tests.py']:
         recursive = getattr(args, 'recursive', True)  # Default to True
         if recursive:
@@ -145,20 +145,6 @@ def build_command_args(script_name: str, script_path: Path, args, python_executa
         if llm_timeout:
             full_args.extend(['--llm-timeout', str(llm_timeout)])
     
-    if 'discopy' in script_name:
-        if 'jax' in script_name:
-            # Special handling for 13_discopy_jax_eval.py - ensure recursive is passed
-            jax_seed = getattr(args, 'discopy_jax_seed', None)
-            if jax_seed is not None:
-                full_args.extend(['--discopy-jax-seed', str(jax_seed)])
-            jax_input_dir = getattr(args, 'discopy_jax_gnn_input_dir', None)
-            if jax_input_dir:
-                full_args.extend(['--discopy-jax-gnn-input-dir', str(jax_input_dir)])
-        else:
-            discopy_input_dir = getattr(args, 'discopy_gnn_input_dir', None)
-            if discopy_input_dir:
-                full_args.extend(['--discopy-gnn-input-dir', str(discopy_input_dir)])
-    
     if 'setup' in script_name:
         if getattr(args, 'recreate_venv', False):
             full_args.append('--recreate-venv')
@@ -182,9 +168,7 @@ def validate_step_dependencies(step_name: str) -> Tuple[bool, List[str]]:
         "9_render.py": ["render", "render.pymdp.pymdp_renderer", "render.rxinfer.gnn_parser"],
         "10_execute.py": ["execute", "execute.pymdp_runner"],
         "11_llm.py": ["llm", "llm.providers"],
-        "12_discopy.py": ["discopy_translator_module", "discopy_translator_module.translator"],
-        "13_discopy_jax_eval.py": ["discopy_translator_module.translator", "discopy_translator_module.visualize_jax_output"],
-        "14_site.py": []  # Site generator dependency handled internally
+        "12_site.py": []  # Site generator dependency handled internally
     }
     
     required_deps = step_dependencies.get(step_name, [])

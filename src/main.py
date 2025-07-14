@@ -15,13 +15,11 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 6_visualization.py (Corresponds to visualization/ folder, uses visualize_gnn.py)
 - 7_mcp.py (Corresponds to mcp/ folder)
 - 8_ontology.py (Corresponds to ontology/ folder)
-- 9_render.py (Corresponds to render/ folder)
-- 10_execute.py (Corresponds to execute/ folder)
+- 9_render.py (Corresponds to render/ folder, includes PyMDP, RxInfer, and DisCoPy rendering)
+- 10_execute.py (Corresponds to execute/ folder, includes PyMDP, RxInfer, and DisCoPy execution)
 - 11_llm.py (Corresponds to llm/ folder)
-- 12_discopy.py (Corresponds to discopy_translator_module/ folder, generates DisCoPy diagrams from GNN)
-- 13_discopy_jax_eval.py (Corresponds to discopy_translator_module/ folder, generates DisCoPy diagrams from GNN using JAX)
-- 14_site.py (Corresponds to site/ folder, generates HTML summary site)
-- 15_sapf.py (Corresponds to sapf/ folder, generates SAPF (Sound As Pure Form) audio representations and sonifications of GNN models)
+- 12_site.py (Corresponds to site/ folder, generates HTML summary site)
+- 13_sapf.py (Corresponds to sapf/ folder, generates SAPF (Sound As Pure Form) audio representations and sonifications of GNN models)
 
 
 Usage:
@@ -44,13 +42,8 @@ Options:
     --pipeline-summary-file FILE
                             Path to save the final pipeline summary report (default: output/pipeline_execution_summary.json)
     --site-html-filename NAME
-                            Filename for the generated HTML summary site (for 14_site.py, saved in output-dir, default: gnn_pipeline_summary_site.html)
-    --discopy-gnn-input-dir DIR
-                            Directory containing GNN files for DisCoPy processing (for 12_discopy.py, default: src/gnn/examples or --target-dir if specified)
-    --discopy-jax-gnn-input-dir DIR
-                            Directory containing GNN files for DisCoPy JAX evaluation (13_discopy_jax_eval.py)
-    --discopy-jax-seed      Seed for JAX PRNG in 13_discopy_jax_eval.py
-    --duration              Audio duration in seconds for SAPF generation (for 15_sapf.py, default: 30.0)
+                            Filename for the generated HTML summary site (for 12_site.py, saved in output-dir, default: gnn_pipeline_summary_site.html)
+    --duration              Audio duration in seconds for SAPF generation (for 13_sapf.py, default: 30.0)
     --recreate-venv         Recreate virtual environment even if it already exists (for 2_setup.py)
     --dev                   Also install development dependencies from requirements-dev.txt (for 2_setup.py)
 
@@ -294,15 +287,13 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
         9: "core",              # 9_render.py - Rendering
         10: "core",             # 10_execute.py - Execution
         11: "core",             # 11_llm.py - LLM processing
-        12: "core",             # 12_discopy.py - DisCoPy processing
-        13: "core",             # 13_discopy_jax_eval.py - JAX evaluation
-        14: "core",             # 14_site.py - Site generation
-        15: "core"              # 15_sapf.py - SAPF audio generation
+        12: "core",             # 12_site.py - Site generation
+        13: "core"              # 13_sapf.py - SAPF audio generation
     }
     
     # Determine which dependency groups we need
     required_groups = set(["core"])
-    for step_num in range(1, 16):  # Updated to include step 15
+    for step_num in range(1, 14):  # Updated to include steps 1-13
         # Skip if in skip list
         if step_num in skip_steps or f"{step_num}_" in str(skip_steps):
             continue

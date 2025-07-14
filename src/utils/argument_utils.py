@@ -80,11 +80,6 @@ class PipelineArguments:
     # Site generation
     site_html_filename: str = "gnn_pipeline_summary_site.html"
     
-    # DisCoPy options
-    discopy_gnn_input_dir: Optional[Path] = None
-    discopy_jax_gnn_input_dir: Optional[Path] = None
-    discopy_jax_seed: int = 0
-    
     # Setup options
     recreate_venv: bool = False
     dev: bool = False
@@ -110,17 +105,6 @@ class PipelineArguments:
             self.pipeline_summary_file = self.output_dir / "pipeline_execution_summary.json"
         elif isinstance(self.pipeline_summary_file, str):
             self.pipeline_summary_file = Path(self.pipeline_summary_file)
-            
-        # Set DisCoPy input dirs to target_dir if not specified
-        if self.discopy_gnn_input_dir is None:
-            self.discopy_gnn_input_dir = self.target_dir
-        elif isinstance(self.discopy_gnn_input_dir, str):
-            self.discopy_gnn_input_dir = Path(self.discopy_gnn_input_dir)
-            
-        if self.discopy_jax_gnn_input_dir is None:
-            self.discopy_jax_gnn_input_dir = self.target_dir
-        elif isinstance(self.discopy_jax_gnn_input_dir, str):
-            self.discopy_jax_gnn_input_dir = Path(self.discopy_jax_gnn_input_dir)
     
     def validate(self) -> List[str]:
         """Validate argument values and return list of errors."""
@@ -231,21 +215,6 @@ class ArgumentParser:
             flag='--site-html-filename',
             help_text='Filename for generated HTML site'
         ),
-        'discopy_gnn_input_dir': ArgumentDefinition(
-            flag='--discopy-gnn-input-dir',
-            arg_type=Path,
-            help_text='Input directory for DisCoPy processing'
-        ),
-        'discopy_jax_gnn_input_dir': ArgumentDefinition(
-            flag='--discopy-jax-gnn-input-dir',
-            arg_type=Path,
-            help_text='Input directory for DisCoPy JAX evaluation'
-        ),
-        'discopy_jax_seed': ArgumentDefinition(
-            flag='--discopy-jax-seed',
-            arg_type=int,
-            help_text='Random seed for DisCoPy JAX evaluation'
-        ),
         'recreate_venv': ArgumentDefinition(
             flag='--recreate-venv',
             action='store_true',
@@ -277,10 +246,8 @@ class ArgumentParser:
         "9_render.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "10_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "11_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
-        "12_discopy.py": ["target_dir", "output_dir", "recursive", "verbose", "discopy_gnn_input_dir"],
-        "13_discopy_jax_eval.py": ["target_dir", "output_dir", "recursive", "verbose", "discopy_jax_gnn_input_dir", "discopy_jax_seed"],
-        "14_site.py": ["target_dir", "output_dir", "verbose", "site_html_filename"],
-        "15_sapf.py": ["target_dir", "output_dir", "recursive", "verbose", "duration"],
+        "12_site.py": ["target_dir", "output_dir", "verbose", "site_html_filename"],
+        "13_sapf.py": ["target_dir", "output_dir", "recursive", "verbose", "duration"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys())
     }
     
@@ -368,8 +335,6 @@ class ArgumentParser:
                         setattr(parsed_args, arg_name, True)
                     elif arg_name.endswith('_dir'):
                         setattr(parsed_args, arg_name, Path("output") if "output" in arg_name else Path("src/gnn/examples"))
-                    elif arg_name == 'discopy_jax_seed':
-                        setattr(parsed_args, arg_name, 0)
                     elif arg_name == 'llm_timeout':
                         setattr(parsed_args, arg_name, 360)
                     elif arg_name == 'llm_tasks':
@@ -403,8 +368,6 @@ class ArgumentParser:
                     setattr(fallback_args, arg_name, True)
                 elif arg_name.endswith('_dir'):
                     setattr(fallback_args, arg_name, Path("output") if "output" in arg_name else Path("src/gnn/examples"))
-                elif arg_name == 'discopy_jax_seed':
-                    setattr(fallback_args, arg_name, 0)
                 elif arg_name == 'llm_timeout':
                     setattr(fallback_args, arg_name, 360)
                 elif arg_name == 'llm_tasks':
@@ -489,8 +452,8 @@ def get_step_output_dir(step_name: str, base_output_dir: Path) -> Path:
         "9_render": "gnn_rendered_simulators",
         "10_execute": "execute_logs",
         "11_llm": "llm_processing_step",
-        "12_discopy": "discopy_gnn",
-        "13_discopy_jax_eval": "discopy_jax_eval"
+        "12_site": "site_generation",
+        "13_sapf": "sapf_generation"
     }
     
     if step_name in STEP_OUTPUT_MAPPING:
@@ -570,25 +533,13 @@ class StepConfiguration:
             "defaults": {"recursive": False, "verbose": False, "llm_tasks": "all", "llm_timeout": 360},
             "description": "LLM Analysis & Processing"
         },
-        "12_discopy": {
-            "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["verbose", "discopy_gnn_input_dir"],
-            "defaults": {"verbose": False},
-            "description": "DisCoPy Diagram Generation"
-        },
-        "13_discopy_jax_eval": {
-            "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["verbose", "discopy_jax_gnn_input_dir", "discopy_jax_seed"],
-            "defaults": {"verbose": False, "discopy_jax_seed": 0},
-            "description": "DisCoPy JAX Evaluation"
-        },
-        "14_site": {
+        "12_site": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["verbose", "site_html_filename"],
             "defaults": {"verbose": False, "site_html_filename": "gnn_pipeline_summary_site.html"},
             "description": "HTML Site Generation"
         },
-        "15_sapf": {
+        "13_sapf": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["recursive", "verbose", "duration"],
             "defaults": {"recursive": True, "verbose": False, "duration": 30.0},

@@ -4,6 +4,19 @@ Execute module for running rendered GNN simulators.
 This package contains modules for executing:
 - PyMDP scripts
 - RxInfer.jl configurations
+- DisCoPy diagrams
+- ActiveInference.jl scripts
 """
 
-# This file marks the directory as a Python package. 
+# Import from submodules
+from . import pymdp
+from . import rxinfer
+from . import discopy
+from . import activeinference_jl
+
+__all__ = [
+    'pymdp',
+    'rxinfer', 
+    'discopy',
+    'activeinference_jl'
+] 

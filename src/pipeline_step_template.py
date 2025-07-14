@@ -5,6 +5,13 @@ Standardized Pipeline Step Template
 This template provides a consistent structure for all GNN pipeline steps.
 Copy this template and modify the TODO sections to create new pipeline steps.
 
+The GNN pipeline consists of 13 steps:
+1-4: Discovery & Parsing
+5-6: Export & Visualization  
+7-8: Integration & Analysis
+9-11: Execution & Enhancement (including DisCoPy rendering/analysis)
+12-13: Advanced Representations
+
 Usage:
     python X_step_name.py [options]
     (Typically called by main.py)

@@ -67,14 +67,11 @@ EXPECTED_OUTPUTS = {
     "11_llm": [
         "llm_processing_step/"
     ],
-    "12_discopy": [
-        "discopy_gnn/"
-    ],
-    "13_discopy_jax_eval": [
-        "discopy_jax_eval/"
-    ],
-    "14_site": [
+    "12_site": [
         "site/"
+    ],
+    "13_sapf": [
+        "sapf_processing_step/"
     ]
 }
 
@@ -138,7 +135,7 @@ def validate_output_structure(output_dir: Path) -> Dict[str, List[str]]:
 def get_pipeline_modules(src_dir: Path) -> List[Path]:
     """Get all numbered pipeline modules."""
     modules = []
-    for i in range(1, 15):  # Steps 1-14
+    for i in range(1, 14):  # Steps 1-13
         module_path = src_dir / f"{i}_*.py"
         matching = list(src_dir.glob(f"{i}_*.py"))
         if matching:

@@ -2,6 +2,12 @@
 
 This module is responsible for running or executing GNN models that have been rendered into specific simulator formats by other parts of the GNN pipeline (e.g., by `9_render.py`).
 
+The execute module is now organized into subfolders for each execution environment:
+- `pymdp/` - PyMDP script execution
+- `rxinfer/` - RxInfer.jl script execution
+- `discopy/` - DisCoPy diagram validation and analysis
+- `activeinference_jl/` - ActiveInference.jl script execution and comprehensive analysis
+
 ## Core Components
 
 ### `pymdp_runner.py`

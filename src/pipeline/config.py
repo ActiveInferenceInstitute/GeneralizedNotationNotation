@@ -141,34 +141,18 @@ class PipelineConfig:
                 performance_tracking=True,
                 required=False  # LLM can fail without stopping pipeline
             ),
-            "12_discopy.py": StepConfig(
-                name="discopy",
-                description="DisCoPy categorical diagram translation",
-                module_path="12_discopy.py",
-                output_subdir="discopy_gnn",
-                dependencies=["5_export.py"],
-                required=False  # DisCoPy can fail without stopping pipeline
-            ),
-            "13_discopy_jax_eval.py": StepConfig(
-                name="discopy_jax_eval",
-                description="JAX-based evaluation of DisCoPy diagrams",
-                module_path="13_discopy_jax_eval.py",
-                output_subdir="discopy_jax_eval",
-                dependencies=["12_discopy.py"],
-                required=False  # JAX eval can fail without stopping pipeline
-            ),
-            "14_site.py": StepConfig(
+            "12_site.py": StepConfig(
                 name="site",
                 description="Static site generation",
-                module_path="14_site.py",
+                module_path="12_site.py",
                 output_subdir="site",
                 dependencies=["6_visualization.py", "8_ontology.py"],
                 required=False  # Site generation can fail without stopping pipeline
             ),
-            "15_sapf.py": StepConfig(
+            "13_sapf.py": StepConfig(
                 name="sapf",
                 description="SAPF audio generation for GNN models",
-                module_path="15_sapf.py",
+                module_path="13_sapf.py",
                 output_subdir="sapf_processing_step",
                 dependencies=["1_gnn.py"],
                 performance_tracking=True,

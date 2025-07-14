@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 # Import renderers
 from .pymdp.pymdp_renderer import render_gnn_to_pymdp
 from .rxinfer import render_gnn_to_rxinfer_toml
+from .discopy import render_gnn_to_discopy, render_gnn_to_discopy_jax, render_gnn_to_discopy_combined
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ def render_gnn_spec(
     
     Args:
         gnn_spec: Dictionary containing the GNN specification
-        target: Target platform ("pymdp", "rxinfer_toml", etc.)
+        target: Target platform ("pymdp", "rxinfer_toml", "discopy", "discopy_jax", "discopy_combined", etc.)
         output_directory: Directory for output files
         options: Additional options for the renderer
         
@@ -61,6 +62,32 @@ def render_gnn_spec(
         config_path = output_directory / f"{model_name}_config.toml"
         return render_gnn_to_rxinfer_toml(gnn_spec, config_path, options)
         
+    elif target.lower() == "discopy":
+        # Render to DisCoPy categorical diagram
+        model_name = gnn_spec.get("name", "model")
+        diagram_path = output_directory / f"{model_name}_diagram.png"
+        return render_gnn_to_discopy(gnn_spec, diagram_path, options)
+        
+    elif target.lower() == "discopy_jax":
+        # Render to DisCoPy matrix diagram with JAX evaluation
+        model_name = gnn_spec.get("name", "model")
+        jax_path = output_directory / f"{model_name}_jax_evaluation.png"
+        return render_gnn_to_discopy_jax(gnn_spec, jax_path, options)
+        
+    elif target.lower() == "discopy_combined":
+        # Render to both DisCoPy diagram and JAX evaluation
+        return render_gnn_to_discopy_combined(gnn_spec, output_directory, options)
+        
+    elif target.lower() == "activeinference_jl":
+        # Render to ActiveInference.jl script
+        model_name = gnn_spec.get("name", "model")
+        script_path = output_directory / f"{model_name}_activeinference.jl"
+        return render_gnn_to_activeinference_jl(gnn_spec, script_path, options)
+        
+    elif target.lower() == "activeinference_combined":
+        # Render to multiple ActiveInference.jl scripts with analysis suite
+        return render_gnn_to_activeinference_combined(gnn_spec, output_directory, options)
+        
     else:
         error_msg = f"Unsupported target platform: {target}"
         logger.error(error_msg)
@@ -71,9 +98,11 @@ def main(cli_args=None):
     parser = argparse.ArgumentParser(description="Render GNN specifications to various target platforms")
     parser.add_argument("gnn_file", help="Path to the GNN specification file")
     parser.add_argument("output_dir", help="Output directory for rendered files")
-    parser.add_argument("target", choices=["pymdp", "rxinfer_toml"], default="pymdp", help="Target platform")
+    parser.add_argument("target", choices=["pymdp", "rxinfer_toml", "discopy", "discopy_jax", "discopy_combined", "activeinference_jl", "activeinference_combined"], 
+                       default="pymdp", help="Target platform")
     parser.add_argument("--output_filename", help="Base filename for the output (without extension)")
     parser.add_argument("--debug", "--verbose", action="store_true", help="Enable debug logging")
+    parser.add_argument("--jax-seed", type=int, default=0, help="Seed for JAX PRNG (for discopy_jax targets)")
     
     args = parser.parse_args(cli_args)
     

@@ -74,6 +74,14 @@ def render_gnn_files(input_dir: Path, output_dir: Path, recursive: bool = False)
     successful_renders = 0
     failed_renders = 0
     
+    # Define rendering targets - now includes DisCoPy and ActiveInference.jl
+    render_targets = [
+        ("pymdp", "pymdp"),
+        ("rxinfer_toml", "rxinfer"),
+        ("discopy_combined", "discopy"),  # Use combined to get both diagram and JAX evaluation
+        ("activeinference_combined", "activeinference_jl")  # Use combined to get multiple scripts and analysis suite
+    ]
+    
     try:
         # Use performance tracking for rendering operations
         with performance_tracker.track_operation("render_all_gnn_files"):
@@ -85,45 +93,26 @@ def render_gnn_files(input_dir: Path, output_dir: Path, recursive: bool = False)
                         "source_file": str(gnn_file)
                     }
                     
-                    # Render to PyMDP
-                    try:
-                        with performance_tracker.track_operation(f"render_pymdp_{gnn_file.name}"):
-                            success, message, artifacts = render_gnn_spec(
-                                gnn_spec, 
-                                "pymdp", 
-                                render_output_dir / "pymdp"
-                            )
-                            
-                        if success:
-                            logger.info(f"PyMDP render successful for {gnn_file.name}: {message}")
-                            successful_renders += 1
-                        else:
-                            logger.warning(f"PyMDP render failed for {gnn_file.name}: {message}")
+                    # Render to each target format
+                    for target_format, output_subdir in render_targets:
+                        try:
+                            with performance_tracker.track_operation(f"render_{target_format}_{gnn_file.name}"):
+                                success, message, artifacts = render_gnn_spec(
+                                    gnn_spec, 
+                                    target_format, 
+                                    render_output_dir / output_subdir
+                                )
+                                
+                            if success:
+                                logger.info(f"{target_format} render successful for {gnn_file.name}: {message}")
+                                successful_renders += 1
+                            else:
+                                logger.warning(f"{target_format} render failed for {gnn_file.name}: {message}")
+                                failed_renders += 1
+                                
+                        except Exception as e:
+                            log_step_warning(logger, f"{target_format} rendering failed for {gnn_file.name}: {e}")
                             failed_renders += 1
-                            
-                    except Exception as e:
-                        log_step_warning(logger, f"PyMDP rendering failed for {gnn_file.name}: {e}")
-                        failed_renders += 1
-                    
-                    # Render to RxInfer
-                    try:
-                        with performance_tracker.track_operation(f"render_rxinfer_{gnn_file.name}"):
-                            success, message, artifacts = render_gnn_spec(
-                                gnn_spec, 
-                                "rxinfer_toml", 
-                                render_output_dir / "rxinfer"
-                            )
-                            
-                        if success:
-                            logger.info(f"RxInfer render successful for {gnn_file.name}: {message}")
-                            successful_renders += 1
-                        else:
-                            logger.warning(f"RxInfer render failed for {gnn_file.name}: {message}")
-                            failed_renders += 1
-                            
-                    except Exception as e:
-                        log_step_warning(logger, f"RxInfer rendering failed for {gnn_file.name}: {e}")
-                        failed_renders += 1
                         
                 except Exception as e:
                     log_step_error(logger, f"Failed to process {gnn_file.name}: {e}")
