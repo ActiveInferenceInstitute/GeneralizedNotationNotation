@@ -65,12 +65,13 @@ class PipelineConfig:
             ),
             "3_tests.py": StepConfig(
                 name="tests",
-                description="Test suite execution",
+                description="Test suite execution with coverage reporting",
                 module_path="3_tests.py",
                 output_subdir="test_reports",
                 dependencies=["2_setup.py"],
                 timeout=600,
-                required=False  # Tests can fail without stopping pipeline
+                required=False,  # Tests can fail without stopping pipeline
+                performance_tracking=True
             ),
             "4_type_checker.py": StepConfig(
                 name="type_checking",
@@ -295,19 +296,149 @@ def set_pipeline_config(config: PipelineConfig):
     global _pipeline_config
     _pipeline_config = config
 
-# Convenience functions for backward compatibility
 def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
-    """Get output directory for a script (backward compatibility)."""
+    """Get the output directory for a specific script."""
     config = get_pipeline_config()
     return config.get_output_dir_for_step(script_name, base_output_dir)
 
-# Step metadata for backward compatibility
+def validate_pipeline_config(config: PipelineConfig) -> bool:
+    """
+    Validate a pipeline configuration for completeness and correctness.
+    Args:
+        config: PipelineConfig instance to validate
+    Returns:
+        bool: True if configuration is valid
+    """
+    try:
+        # Check that all required steps are present
+        required_steps = ["1_gnn.py", "2_setup.py", "main.py"]
+        for step in required_steps:
+            if step not in config.steps:
+                return False
+        
+        # Check that output directories are valid
+        if not config.base_output_dir:
+            return False
+        
+        # Check that step configurations are valid
+        for step_name, step_config in config.steps.items():
+            if not step_config.name or not step_config.description:
+                return False
+        
+        return True
+    except Exception:
+        return False
+
+def update_pipeline_config(**kwargs) -> PipelineConfig:
+    """
+    Update the global pipeline configuration with new values.
+    Args:
+        **kwargs: Configuration parameters to update
+    Returns:
+        Updated PipelineConfig instance
+    """
+    config = get_pipeline_config()
+    
+    # Update basic attributes
+    for key, value in kwargs.items():
+        if hasattr(config, key):
+            setattr(config, key, value)
+    
+    # Update step configurations if provided
+    if 'steps' in kwargs:
+        for step_name, step_data in kwargs['steps'].items():
+            if step_name in config.steps:
+                step_config = config.steps[step_name]
+                for attr, value in step_data.items():
+                    if hasattr(step_config, attr):
+                        setattr(step_config, attr, value)
+    
+    return config
+
+# STEP_METADATA constant for backward compatibility
 STEP_METADATA = {
-    step_name: {
-        "name": step_config.name,
-        "description": step_config.description,
-        "dependencies": step_config.dependencies,
-        "performance_tracking": step_config.performance_tracking
+    "1_gnn.py": {
+        "description": "GNN file discovery and parsing",
+        "required": True,
+        "dependencies": [],
+        "output_subdir": "gnn_processing_step"
+    },
+    "2_setup.py": {
+        "description": "Project setup and environment validation", 
+        "required": True,
+        "dependencies": [],
+        "output_subdir": "setup_artifacts"
+    },
+    "3_tests.py": {
+        "description": "Test suite execution",
+        "required": False,
+        "dependencies": ["2_setup.py"],
+        "output_subdir": "test_reports"
+    },
+    "4_type_checker.py": {
+        "description": "GNN syntax and type validation",
+        "required": False,
+        "dependencies": ["1_gnn.py"],
+        "output_subdir": "type_check"
+    },
+    "5_export.py": {
+        "description": "Multi-format export generation",
+        "required": False,
+        "dependencies": ["4_type_checker.py"],
+        "output_subdir": "gnn_exports"
+    },
+    "6_visualization.py": {
+        "description": "Graph visualization generation",
+        "required": False,
+        "dependencies": ["5_export.py"],
+        "output_subdir": "visualization"
+    },
+    "7_mcp.py": {
+        "description": "Model Context Protocol operations",
+        "required": False,
+        "dependencies": [],
+        "output_subdir": "mcp_processing_step"
+    },
+    "8_ontology.py": {
+        "description": "Ontology processing and validation",
+        "required": False,
+        "dependencies": ["5_export.py"],
+        "output_subdir": "ontology_processing"
+    },
+    "9_render.py": {
+        "description": "Code generation for simulation environments",
+        "required": False,
+        "dependencies": ["5_export.py"],
+        "output_subdir": "gnn_rendered_simulators"
+    },
+    "10_execute.py": {
+        "description": "Execute rendered simulators",
+        "required": False,
+        "dependencies": ["9_render.py"],
+        "output_subdir": "execution_results"
+    },
+    "11_llm.py": {
+        "description": "LLM-enhanced analysis and processing",
+        "required": False,
+        "dependencies": ["5_export.py"],
+        "output_subdir": "llm_processing_step"
+    },
+    "12_site.py": {
+        "description": "Static site generation",
+        "required": False,
+        "dependencies": ["6_visualization.py", "8_ontology.py"],
+        "output_subdir": "site"
+    },
+    "13_sapf.py": {
+        "description": "SAPF audio generation for GNN models",
+        "required": False,
+        "dependencies": ["1_gnn.py"],
+        "output_subdir": "sapf_processing_step"
+    },
+    "main.py": {
+        "description": "Main pipeline orchestrator",
+        "required": True,
+        "dependencies": [],
+        "output_subdir": "pipeline_logs"
     }
-    for step_name, step_config in get_pipeline_config().steps.items()
 } 

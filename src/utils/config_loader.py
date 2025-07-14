@@ -251,3 +251,72 @@ def load_config(config_path: Optional[Path] = None) -> GNNPipelineConfig:
     
     logger.info("Configuration loaded successfully")
     return config 
+
+def save_config(config: dict, file_path: Path) -> None:
+    """
+    Save a configuration dictionary to a file (YAML or JSON based on extension).
+    Args:
+        config: Configuration dictionary to save
+        file_path: Path to the output file (should end with .yaml/.yml or .json)
+    Raises:
+        ValueError: If file extension is not supported
+    """
+    file_path = Path(file_path)
+    try:
+        if file_path.suffix.lower() in {'.yaml', '.yml'}:
+            with open(file_path, 'w') as f:
+                yaml.safe_dump(config, f)
+        elif file_path.suffix.lower() == '.json':
+            import json
+            with open(file_path, 'w') as f:
+                json.dump(config, f, indent=2)
+        else:
+            raise ValueError(f"Unsupported config file extension: {file_path.suffix}")
+        logger.info(f"Configuration saved to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save configuration to {file_path}: {e}")
+        raise 
+
+def validate_config(config: dict) -> bool:
+    """
+    Validate a configuration dictionary for required structure.
+    Returns True if valid, False otherwise.
+    For demonstration, require at least one section with at least one key.
+    """
+    if not isinstance(config, dict) or not config:
+        logger.warning("Config is not a dictionary or is empty.")
+        return False
+    for section, section_data in config.items():
+        if isinstance(section_data, dict) and section_data:
+            return True
+    logger.warning("No valid section with keys found in config.")
+    return False
+
+def get_config_value(config: dict, key: str):
+    """
+    Retrieve a value from a nested config dictionary using dot notation.
+    Example: get_config_value(config, 'section.key')
+    """
+    keys = key.split('.')
+    value = config
+    try:
+        for k in keys:
+            value = value[k]
+        return value
+    except (KeyError, TypeError):
+        logger.warning(f"Key '{key}' not found in config.")
+        return None
+
+def set_config_value(config: dict, key: str, value):
+    """
+    Set a value in a nested config dictionary using dot notation.
+    Example: set_config_value(config, 'section.key', value)
+    """
+    keys = key.split('.')
+    d = config
+    for k in keys[:-1]:
+        if k not in d or not isinstance(d[k], dict):
+            d[k] = {}
+        d = d[k]
+    d[keys[-1]] = value
+    logger.info(f"Set config value: {key} = {value}") 

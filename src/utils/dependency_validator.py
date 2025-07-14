@@ -410,6 +410,80 @@ def validate_pipeline_dependencies(step_names: Optional[List[str]] = None,
     return is_valid
 
 
+def check_optional_dependencies() -> dict:
+    """
+    Check the status of all optional dependencies and return a summary dictionary.
+    Returns:
+        dict: { 'optional_dependencies': {name: status, ...}, 'missing_optional': [name, ...] }
+    """
+    validator = DependencyValidator()
+    optional_status = {}
+    missing_optional = []
+    for group, deps in validator.dependencies.items():
+        for dep in deps:
+            if dep.is_optional:
+                status = validator.validate_python_dependency(dep) if not dep.system_command else validator.validate_system_dependency(dep)
+                optional_status[dep.name] = 'available' if status else 'missing'
+                if not status:
+                    missing_optional.append(dep.name)
+    return {'optional_dependencies': optional_status, 'missing_optional': missing_optional}
+
+def get_dependency_status() -> dict:
+    """
+    Get a summary of required, optional, and missing dependencies for the pipeline.
+    Returns:
+        dict: { 'required_dependencies': [...], 'optional_dependencies': [...], 'missing_dependencies': [...], 'version_conflicts': [...] }
+    """
+    validator = DependencyValidator()
+    validator.validate_all_dependencies()
+    required = []
+    optional = []
+    for group, deps in validator.dependencies.items():
+        for dep in deps:
+            if dep.is_optional:
+                optional.append(dep.name)
+            else:
+                required.append(dep.name)
+    missing = [dep.name for dep in validator.missing_dependencies]
+    version_conflicts = [f"{dep.name}: {conflict}" for dep, conflict in validator.version_conflicts]
+    return {
+        'required_dependencies': required,
+        'optional_dependencies': optional,
+        'missing_dependencies': missing,
+        'version_conflicts': version_conflicts
+    }
+
+def install_missing_dependencies() -> dict:
+    """
+    Attempt to install missing Python dependencies using pip. System dependencies are not installed automatically.
+    Returns:
+        dict: { 'installed': [name, ...], 'failed': [name, ...], 'skipped': [name, ...] }
+    """
+    import subprocess
+    validator = DependencyValidator()
+    validator.validate_all_dependencies()
+    installed = []
+    failed = []
+    skipped = []
+    for dep in validator.missing_dependencies:
+        if dep.system_command:
+            skipped.append(dep.name)
+            continue
+        try:
+            cmd = [sys.executable, '-m', 'pip', 'install', dep.name]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            if result.returncode == 0:
+                installed.append(dep.name)
+                logging.info(f"Installed missing dependency: {dep.name}")
+            else:
+                failed.append(dep.name)
+                logging.error(f"Failed to install {dep.name}: {result.stderr}")
+        except Exception as e:
+            failed.append(dep.name)
+            logging.error(f"Exception installing {dep.name}: {e}")
+    return {'installed': installed, 'failed': failed, 'skipped': skipped}
+
+
 if __name__ == "__main__":
     # Command-line interface for dependency validation
     import argparse

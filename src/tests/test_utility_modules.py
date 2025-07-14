@@ -26,6 +26,7 @@ from typing import Dict, Any, List, Optional, Tuple
 from unittest.mock import patch, Mock, MagicMock, call
 import tempfile
 import importlib.util
+import argparse
 
 # Test markers
 pytestmark = [pytest.mark.utilities, pytest.mark.safe_to_fail]
@@ -50,13 +51,11 @@ class TestArgumentUtilsComprehensive:
         """Test that argument utilities can be imported and have expected structure."""
         try:
             from utils.argument_utils import (
-                EnhancedArgumentParser, parse_step_arguments,
-                validate_arguments, convert_path_arguments
+                EnhancedArgumentParser, validate_arguments, convert_path_arguments
             )
             
             # Test that classes and functions are available
             assert EnhancedArgumentParser is not None, "EnhancedArgumentParser should be available"
-            assert callable(parse_step_arguments), "parse_step_arguments should be callable"
             assert callable(validate_arguments), "validate_arguments should be callable"
             assert callable(convert_path_arguments), "convert_path_arguments should be callable"
             
@@ -84,7 +83,7 @@ class TestArgumentUtilsComprehensive:
     @pytest.mark.safe_to_fail
     def test_step_argument_parsing(self):
         """Test step argument parsing functionality."""
-        from utils.argument_utils import parse_step_arguments
+        from utils.argument_utils import EnhancedArgumentParser
         
         # Test with sample arguments
         sample_args = {
@@ -95,11 +94,11 @@ class TestArgumentUtilsComprehensive:
         }
         
         try:
-            parsed_args = parse_step_arguments(sample_args)
+            parsed_args = EnhancedArgumentParser.parse_step_arguments("test_step", list(sample_args.values()))
             
-            assert isinstance(parsed_args, dict), "Parsed arguments should be a dictionary"
-            assert "target_dir" in parsed_args, "Should contain target_dir"
-            assert "output_dir" in parsed_args, "Should contain output_dir"
+            assert isinstance(parsed_args, argparse.Namespace), "Parsed arguments should be a Namespace"
+            assert hasattr(parsed_args, "target_dir"), "Should contain target_dir"
+            assert hasattr(parsed_args, "output_dir"), "Should contain output_dir"
             
             logging.info("Step argument parsing validated")
             
@@ -113,15 +112,15 @@ class TestArgumentUtilsComprehensive:
         from utils.argument_utils import validate_arguments
         
         # Test valid arguments
-        valid_args = {
-            "target_dir": TEST_DIR,
-            "output_dir": TEST_DIR / "output",
-            "verbose": True
-        }
+        valid_args = argparse.Namespace(
+            target_dir=TEST_DIR,
+            output_dir=TEST_DIR / "output",
+            verbose=True
+        )
         
         try:
-            is_valid = validate_arguments(valid_args)
-            assert isinstance(is_valid, bool), "Validation should return boolean"
+            errors = validate_arguments(valid_args)
+            assert isinstance(errors, list), "Validation should return a list of errors"
             
             logging.info("Argument validation validated")
             
@@ -534,9 +533,10 @@ class TestPipelineConfigComprehensive:
         try:
             config = get_pipeline_config()
             
-            assert isinstance(config, dict), "Config should be a dictionary"
-            assert "steps" in config, "Should contain steps"
-            assert "settings" in config, "Should contain settings"
+            assert hasattr(config, 'steps'), "Config should have steps attribute"
+            assert hasattr(config, 'base_output_dir'), "Config should have base_output_dir attribute"
+            assert hasattr(config, 'base_target_dir'), "Config should have base_target_dir attribute"
+            assert isinstance(config.steps, dict), "Steps should be a dictionary"
             
             logging.info("Pipeline config retrieval validated")
             
@@ -568,12 +568,14 @@ class TestPipelineConfigComprehensive:
     def test_output_directory_generation(self):
         """Test output directory generation for scripts."""
         from pipeline.config import get_output_dir_for_script
+        from pathlib import Path
         
         try:
-            output_dir = get_output_dir_for_script("test_script.py", TEST_DIR)
+            test_dir = Path("/tmp/test_output")
+            output_dir = get_output_dir_for_script("test_script.py", test_dir)
             
             assert isinstance(output_dir, Path), "Output dir should be a Path"
-            assert output_dir.parent == TEST_DIR, "Output dir should be in test directory"
+            assert test_dir in output_dir.parents, "Output dir should be in test directory"
             
             logging.info("Output directory generation validated")
             
@@ -589,12 +591,12 @@ class TestUtilityModuleIntegration:
         """Test coordination between utility modules."""
         try:
             # Test argument parsing -> logging -> config flow
-            from utils.argument_utils import parse_step_arguments
+            from utils.argument_utils import EnhancedArgumentParser
             from utils.logging_utils import setup_step_logging
             from utils.config_loader import load_config
             
             # Parse arguments
-            args = parse_step_arguments({
+            args = EnhancedArgumentParser.parse_step_arguments({
                 "target_dir": str(isolated_temp_dir),
                 "output_dir": str(isolated_temp_dir / "output"),
                 "verbose": True

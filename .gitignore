@@ -13,3 +13,14 @@ src/.pytest_cache/
 /src/export/__pycache__
 /src/setup/__pycache__
 /src/utils/__pycache__
+
+# Coverage artifacts (ignore root level, allow output/coverage)
+htmlcov/
+.coverage
+coverage.json
+src/tests/htmlcov/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class

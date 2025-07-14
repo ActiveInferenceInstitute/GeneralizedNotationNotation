@@ -37,7 +37,7 @@ Usage Examples:
     pytest src/tests/ -m "safe_to_fail"
     
     # Run with detailed coverage reporting
-    pytest src/tests/ --cov=src --cov-report=html --cov-report=term-missing
+    pytest src/tests/ --cov=src --cov-report=html:output/coverage --cov-report=term-missing
     
     # Run environment validation (critical for new setups)
     pytest src/tests/test_environment.py -v

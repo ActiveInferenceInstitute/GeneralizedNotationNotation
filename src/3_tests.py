@@ -50,12 +50,16 @@ def run_tests(output_dir: Path, verbose: bool = False):
     xml_report_path = test_output_dir / "pytest_report.xml"
     json_report_path = test_output_dir / "test_results.json"
     
-    # Prepare pytest command (with optional JSON reporting)
+    # Prepare pytest command (with coverage and JSON reporting)
     pytest_cmd = [
         sys.executable, "-m", "pytest",
         "--verbose" if verbose else "--quiet",
         "--tb=short",
         f"--junitxml={xml_report_path}",
+        "--cov=src",
+        f"--cov-report=html:{output_dir}/coverage",
+        f"--cov-report=json:{output_dir}/test_coverage.json",
+        "--cov-report=term-missing",
         "src/tests/"
     ]
     
@@ -110,6 +114,9 @@ def run_tests(output_dir: Path, verbose: bool = False):
                 logger.warning(f"  {line}")
         
         # Save detailed results
+        coverage_dir = output_dir / "coverage"
+        coverage_json = output_dir / "test_coverage.json"
+        
         results_summary = {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "exit_code": result.returncode,
@@ -117,7 +124,11 @@ def run_tests(output_dir: Path, verbose: bool = False):
             "stdout": result.stdout,
             "stderr": result.stderr,
             "xml_report": str(xml_report_path) if xml_report_path.exists() else None,
-            "json_report": str(json_report_path) if json_report_path.exists() else None
+            "json_report": str(json_report_path) if json_report_path.exists() else None,
+            "coverage": {
+                "html_dir": str(coverage_dir) if coverage_dir.exists() else None,
+                "json_file": str(coverage_json) if coverage_json.exists() else None
+            }
         }
         
         summary_file = test_output_dir / "test_summary.json"

@@ -496,7 +496,7 @@ python -m pytest src/tests/integration/   # Integration tests only
 python -m pytest -m "not slow"            # Skip slow tests
 
 # Run with coverage
-python -m pytest --cov=src --cov-report=html
+python -m pytest --cov=src --cov-report=html:output/coverage
 
 # Run specific test file
 python -m pytest src/tests/unit/test_gnn_parser.py

@@ -34,7 +34,8 @@ try:
         log_section_header,
         get_performance_summary,
         PerformanceTracker,
-        performance_tracker
+        performance_tracker,
+        setup_correlation_context
     )
     
     from .argument_utils import (
@@ -52,7 +53,10 @@ try:
     from .dependency_validator import (
         DependencyValidator,
         validate_pipeline_dependencies,
-        DependencySpec
+        DependencySpec,
+        check_optional_dependencies,
+        get_dependency_status,
+        install_missing_dependencies
     )
     
     from .config_loader import (
@@ -65,7 +69,17 @@ try:
         SetupConfig,
         SAPFConfig,
         ModelConfig,
-        load_config
+        load_config,
+        save_config,
+        validate_config,
+        get_config_value,
+        set_config_value
+    )
+    
+    from .performance_tracker import (
+        PerformanceTracker as PT_PerformanceTracker,
+        performance_tracker as PT_performance_tracker,
+        track_operation
     )
     
     # Flag to indicate utilities are available
@@ -158,6 +172,10 @@ except ImportError as e:
     
     def get_performance_summary() -> Dict[str, Any]:
         return {"fallback": True, "performance_tracking": "unavailable"}
+
+# For backward compatibility, also expose under canonical names
+PerformanceTracker = PT_PerformanceTracker
+performance_tracker = PT_performance_tracker
 
 # Convenience function for pipeline modules to get all they need in one import
 def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, ...]:

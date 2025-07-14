@@ -329,7 +329,7 @@ pytest src/tests/unit/ -v
 pytest src/tests/integration/ -v
 
 # Run with coverage
-pytest --cov=src --cov-report=html
+pytest --cov=src --cov-report=html:output/coverage
 
 # Run performance tests
 pytest src/tests/performance/ --benchmark-only
