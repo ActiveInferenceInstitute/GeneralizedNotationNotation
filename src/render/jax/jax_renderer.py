@@ -544,14 +544,14 @@ class {model_name}Model(nn.Module):
         # 4. Compute final expected free energy values
         final_efes = jnp.take_along_axis(action_efes, jnp.expand_dims(selected_actions, -1), axis=-1).squeeze(-1)
         
-        return {
+        return {{
             "beliefs": beliefs,
             "actions": selected_actions,
             "expected_free_energy": final_efes,
             "state_predictions": state_predictions,
             "action_efes": action_efes,  # EFE for all actions
             "predicted_observations": jnp.dot(observations, self.A_matrix)  # Predicted observations
-        }
+        }}
 
 def create_model() -> {model_name}Model:
     """Create and return a new instance of the model."""

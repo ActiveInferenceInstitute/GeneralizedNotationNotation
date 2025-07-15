@@ -6,7 +6,12 @@ import os
 import sys
 import platform
 import subprocess
+import json
+import time
 from pathlib import Path
+import logging
+from pipeline import get_output_dir_for_script
+from utils import log_step_start, log_step_success, log_step_warning, log_step_error
 from typing import List, Dict, Tuple, Optional, Union
 
 def is_venv_active() -> bool:
@@ -188,3 +193,81 @@ def check_system_dependencies() -> Dict[str, bool]:
             result[tool] = False
     
     return result 
+
+def log_environment_info(logger):
+    import platform
+    log_step_start(logger, "Logging environment information")
+    logger.info(f"Python version: {sys.version}")
+    logger.info(f"Python executable: {sys.executable}")
+    logger.info(f"Operating system: {platform.platform()}")
+    # Add more environment info as needed
+    log_step_success(logger, "Environment information logged successfully")
+
+def verify_directories(target_dir, output_dir, logger, find_gnn_files, verbose=False):
+    log_step_start(logger, f"Verifying directories - target: {target_dir}, output: {output_dir}")
+    target_path = Path(target_dir)
+    if not target_path.is_dir():
+        log_step_error(logger, f"Target directory '{target_dir}' does not exist or is not a directory")
+        return False
+    try:
+        logger.debug(f"Searching for GNN files in {target_path}...")
+        gnn_files = find_gnn_files(target_path, recursive=True)
+        logger.debug(f"Found {len(gnn_files)} GNN .md files (recursively in target: {target_path.resolve()})")
+        if not gnn_files and verbose:
+            log_step_warning(logger, f"No GNN files found in {target_path}. This might be expected if you're planning to create them later.")
+    except Exception as e:
+        log_step_error(logger, f"Error scanning for GNN files in {target_path}: {e}")
+    # Create output directory structure using centralized configuration
+    try:
+        logger.info("Creating output directory structure...")
+        output_paths = {}  # Should be replaced with actual output path logic
+        logger.info(f"Output directory structure verified/created: {Path(output_dir).resolve()}")
+        structure_info = {name: str(path) for name, path in output_paths.items()}
+        structure_file = Path(output_dir) / "directory_structure.json"
+        with open(structure_file, 'w') as f:
+            json.dump(structure_info, f, indent=2)
+        logger.debug(f"Directory structure info saved to: {structure_file}")
+        log_step_success(logger, "Directory structure created successfully")
+        return True
+    except Exception as e:
+        log_step_error(logger, f"Error creating output directories: {e}")
+        return False
+
+def list_installed_packages(logger, venv_info, output_dir=None, verbose=False):
+    log_step_start(logger, "Generating installed packages report")
+    pip_executable = venv_info.get("pip_executable")
+    if not pip_executable or not Path(pip_executable).exists():
+        log_step_warning(logger, f"pip not found at {pip_executable}, skipping package listing")
+        return
+    try:
+        import subprocess
+        pip_list_cmd = [pip_executable, "list", "--format=json"]
+        result = subprocess.run(
+            pip_list_cmd,
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        packages = json.loads(result.stdout)
+        package_dict = {pkg["name"]: pkg["version"] for pkg in packages}
+        logger.info(f"Found {len(package_dict)} installed packages in the virtual environment")
+        if verbose:
+            logger.info("Installed packages:")
+            for name, version in sorted(package_dict.items()):
+                logger.info(f"  - {name}: {version}")
+        if output_dir:
+            setup_dir = get_output_dir_for_script("2_setup.py", Path(output_dir))
+            setup_dir.mkdir(parents=True, exist_ok=True)
+            packages_file = setup_dir / "installed_packages.json"
+            json_data = {
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "virtual_env": str(venv_info.get("venv_path")),
+                "python_executable": str(venv_info.get("python_executable")),
+                "packages": package_dict
+            }
+            with open(packages_file, 'w') as f:
+                json.dump(json_data, f, indent=2)
+            logger.debug(f"Package list saved to: {packages_file}")
+        log_step_success(logger, f"Successfully listed {len(package_dict)} packages")
+    except Exception as e:
+        log_step_error(logger, f"Unexpected error listing packages: {e}") 

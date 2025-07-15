@@ -790,7 +790,7 @@ class TestSAPFIntegration:
             pytest.skip("SAPF processor not available")
         
         # Read the baseball GNN file
-        baseball_file = SRC_DIR / "gnn" / "examples" / "baseball_game_active_inference.md"
+        baseball_file = PROJECT_ROOT / "doc" / "archive" / "baseball_game_active_inference.md"
         
         if not baseball_file.exists():
             pytest.skip("Baseball GNN example not found")

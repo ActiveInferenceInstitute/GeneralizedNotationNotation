@@ -40,6 +40,8 @@ from utils import (
     UTILS_AVAILABLE
 )
 
+from site.generator import generate_site
+
 logger = setup_step_logging("12_site", verbose=False)
 
 # --- Advanced Generator Integration ---
@@ -47,21 +49,6 @@ current_script_path = Path(__file__).resolve()
 src_dir = current_script_path.parent
 if str(src_dir) not in sys.path:
     sys.path.insert(0, str(src_dir))
-
-try:
-    import importlib.util
-    site_generator_path = current_script_path.parent / "site" / "generator.py"
-    spec = importlib.util.spec_from_file_location("site_generator", site_generator_path)
-    site_generator_module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(site_generator_module)
-    generate_html_report = site_generator_module.generate_html_report
-    SITE_GENERATOR_AVAILABLE = True
-except Exception as e:
-    log_step_warning(logger, f"Site generator module not available: {e}")
-    generate_html_report = None
-    SITE_GENERATOR_AVAILABLE = False
-
-DEFAULT_SITE_OUTPUT_DIR = "site_step"
 
 # --- Artifact Collection ---
 def collect_pipeline_artifacts(output_dir: Path) -> Dict[str, Any]:
@@ -224,7 +211,7 @@ def main(args) -> int:
     if not output_dir.exists():
         log_step_error(logger, f"Output directory does not exist: {output_dir}")
         return 1
-    site_output_dir = output_dir / DEFAULT_SITE_OUTPUT_DIR
+    site_output_dir = output_dir / "site_step" # Changed to "site_step" as per original script
     try:
         logger.info("Collecting pipeline artifacts...")
         artifacts = collect_pipeline_artifacts(output_dir)
@@ -232,21 +219,9 @@ def main(args) -> int:
             log_step_warning(logger, "No pipeline artifacts found to generate site from")
             return 0
         logger.info(f"Generating site in {site_output_dir}...")
-        if SITE_GENERATOR_AVAILABLE and generate_html_report is not None:
-            try:
-                generate_html_report(output_dir, site_output_dir / "index.html")
-                log_step_success(logger, f"Site generated successfully in {site_output_dir / 'index.html'}")
-                return 0
-            except Exception as e:
-                log_step_error(logger, f"Site generator failed: {e}. Falling back to robust HTML index.")
-        # Fallback
-        success = create_fallback_index(artifacts, site_output_dir, output_dir)
-        if success:
-            log_step_success(logger, f"Fallback site generation completed successfully. Output: {site_output_dir / 'index.html'}")
-            return 0
-        else:
-            log_step_error(logger, "Fallback site generation failed")
-            return 1
+        generate_site(logger, output_dir, site_output_dir)
+        log_step_success(logger, f"Site generated successfully in {site_output_dir / 'index.html'}")
+        return 0
     except Exception as e:
         log_step_error(logger, f"Unexpected error in site generation: {e}")
         return 1

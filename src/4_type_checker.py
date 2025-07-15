@@ -71,8 +71,17 @@ def main():
     cli_args = []
     # Required positional argument for CLI: input_path
     cli_args.append(str(parsed_args.target_dir))
-    # Output directory
-    cli_args.extend(["-o", str(parsed_args.output_dir)])
+    
+    # Output directory - ensure it's the step-specific type_check directory
+    if UTILS_AVAILABLE:
+        from utils.argument_utils import get_step_output_dir
+        step_output_dir = get_step_output_dir("4_type_checker", parsed_args.output_dir)
+    else:
+        # Fallback: append type_check to the output directory
+        step_output_dir = parsed_args.output_dir / "type_check"
+    
+    cli_args.extend(["-o", str(step_output_dir)])
+    
     # Main report filename (optional, default is fine)
     # Recursive
     if getattr(parsed_args, 'recursive', False):

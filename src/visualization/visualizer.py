@@ -608,3 +608,81 @@ def visualize_gnn_model(gnn_content: str, model_name: str, output_dir: str) -> d
         # Clean up temporary file
         if 'temp_path' in locals():
             os.unlink(temp_path) 
+
+
+def generate_visualizations(target_dir: Path, output_dir: Path, logger, recursive: bool = False):
+    """Generate visualizations for GNN models."""
+    log_step_start(logger, f"Generating visualizations for GNN files in: {target_dir}")
+    
+    # Use centralized output directory configuration
+    viz_output_dir = get_output_dir_for_script("6_visualization.py", output_dir)
+    
+    try:
+        # Create GNN visualizer instance
+        gnn_visualizer = GNNVisualizer(output_dir=str(viz_output_dir))
+        
+        # Initialize results dictionary
+        results = {'success': False, 'files_processed': 0}
+        
+        # Use performance tracking for visualization generation
+        with performance_tracker.track_operation("generate_all_visualizations"):
+            # Find GNN files
+            if recursive:
+                gnn_files = list(target_dir.rglob("*.md"))
+            else:
+                gnn_files = list(target_dir.glob("*.md"))
+            
+            log_step_success(logger, f"Found {len(gnn_files)} GNN files to visualize")
+            
+            # Process each file
+            processed_count = 0
+            for gnn_file in gnn_files:
+                try:
+                    output_path = gnn_visualizer.visualize_file(str(gnn_file))
+                    log_step_success(logger, f"Generated visualization for {gnn_file.name}: {output_path}")
+                    processed_count += 1
+                except Exception as e:
+                    log_step_warning(logger, f"Failed to visualize {gnn_file.name}: {e}")
+            
+            results['files_processed'] = processed_count
+            results['success'] = processed_count > 0
+        
+        # Generate matrix visualizations if available
+        if MatrixVisualizer:
+            try:
+                with performance_tracker.track_operation("generate_matrix_visualizations"):
+                    matrix_viz = MatrixVisualizer()
+                    matrix_results = matrix_viz.visualize_directory(
+                        target_dir=target_dir,
+                        output_dir=viz_output_dir / "matrices"
+                    )
+                    results.update(matrix_results)
+                log_step_success(logger, "Matrix visualizations completed")
+            except Exception as e:
+                log_step_warning(logger, f"Matrix visualization failed: {e}")
+        
+        # Generate ontology visualizations if available
+        if OntologyVisualizer:
+            try:
+                with performance_tracker.track_operation("generate_ontology_visualizations"):
+                    ontology_viz = OntologyVisualizer()
+                    ontology_results = ontology_viz.visualize_directory(
+                        target_dir=target_dir,
+                        output_dir=viz_output_dir / "ontology"
+                    )
+                    results.update(ontology_results)
+                log_step_success(logger, "Ontology visualizations completed")
+            except Exception as e:
+                log_step_warning(logger, f"Ontology visualization failed: {e}")
+        
+        # Log results summary
+        if results.get('success', False):
+            log_step_success(logger, f"Visualization generation completed successfully. Files processed: {results.get('files_processed', 0)}")
+        else:
+            log_step_warning(logger, f"Visualization generation completed with issues. Files processed: {results.get('files_processed', 0)}")
+        
+        return results.get('success', False)
+        
+    except Exception as e:
+        log_step_error(logger, f"Visualization generation failed: {e}")
+        return False 

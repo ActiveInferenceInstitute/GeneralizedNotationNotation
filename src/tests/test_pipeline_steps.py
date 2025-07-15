@@ -60,9 +60,8 @@ class TestPipelineStepCommonInterface:
             9: "9_render.py",
             10: "10_execute.py",
             11: "11_llm.py",
-            12: "12_discopy.py",
-            13: "13_discopy_jax_eval.py",
-            14: "14_site.py"
+            12: "12_site.py",
+            13: "13_sapf.py"
         }
         
         found_steps = {}
@@ -91,14 +90,14 @@ class TestPipelineStepCommonInterface:
         assert len(found_steps) >= 5, f"Expected at least 5 pipeline steps, found {len(found_steps)}"
     
     @pytest.mark.unit
-    @pytest.mark.parametrize("step_number", range(1, 15))
+    @pytest.mark.parametrize("step_number", range(1, 14))
     def test_pipeline_step_file_structure(self, step_number: int):
         """Test that each pipeline step has the expected file structure."""
         step_scripts = {
             1: "1_gnn.py", 2: "2_setup.py", 3: "3_tests.py", 4: "4_type_checker.py",
             5: "5_export.py", 6: "6_visualization.py", 7: "7_mcp.py", 8: "8_ontology.py",
-            9: "9_render.py", 10: "10_execute.py", 11: "11_llm.py", 12: "12_discopy.py",
-            13: "13_discopy_jax_eval.py", 14: "14_site.py"
+            9: "9_render.py", 10: "10_execute.py", 11: "11_llm.py", 12: "12_site.py",
+            13: "13_sapf.py"
         }
         
         script_name = step_scripts.get(step_number)
@@ -584,22 +583,22 @@ class TestStep11LLM:
         
         logging.info(f"Step 11 validated {len(tasks)} LLM tasks")
 
-class TestStep12DisCoPy:
-    """Test Step 12: DisCoPy Categorical Diagram Translation."""
+class TestStep12Site:
+    """Test Step 12: Site Generation."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step12_discopy_execution(self, mock_subprocess, mock_imports):
-        """Test DisCoPy translation execution."""
+    def test_step12_site_generation(self, mock_subprocess, mock_imports):
+        """Test site generation execution."""
         with patch('subprocess.run') as mock_run:
             mock_run.return_value = Mock(
                 returncode=0,
-                stdout="Mock DisCoPy output\nGenerated categorical diagrams",
+                stdout="Mock site generation output\nGenerated HTML site",
                 stderr=""
             )
             
             result = subprocess.run([
-                "python", str(SRC_DIR / "12_discopy.py"),
+                "python", str(SRC_DIR / "12_site.py"),
                 "--target-dir", str(TEST_CONFIG["sample_gnn_dir"]),
                 "--output-dir", str(TEST_CONFIG["temp_output_dir"])
             ], capture_output=True, text=True)
@@ -640,14 +639,13 @@ class TestStep13DiscopyJaxEval:
             )
             
             result = subprocess.run([
-                "python", str(SRC_DIR / "13_discopy_jax_eval.py"),
+                "python", str(SRC_DIR / "13_sapf.py"),
                 "--target-dir", str(TEST_CONFIG["sample_gnn_dir"]),
-                "--output-dir", str(TEST_CONFIG["temp_output_dir"]),
-                "--discopy-jax-seed", "42"
+                "--output-dir", str(TEST_CONFIG["temp_output_dir"])
             ], capture_output=True, text=True)
             
-            assert result.returncode == 0, "Step 13 should execute JAX evaluation successfully"
-            logging.info("Step 13 JAX evaluation validated")
+            assert result.returncode == 0, "Step 13 should execute SAPF generation successfully"
+            logging.info("Step 13 SAPF generation validated")
     
     @pytest.mark.unit
     def test_step13_jax_integration(self, mock_imports):

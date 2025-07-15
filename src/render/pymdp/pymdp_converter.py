@@ -556,8 +556,7 @@ class GnnToPyMdpConverter:
                 self._add_log(f"DEBUG: A raw value = {a_raw}")
                 if isinstance(a_raw, str):
                     try:
-                        from .pymdp_renderer import parse_matrix_data
-                        self.A_spec = parse_matrix_data(a_raw)
+                        self.A_spec = self._parse_gnn_matrix_string(a_raw)
                         self._add_log(f"DEBUG: A parsed = {self.A_spec}")
                     except Exception as e:
                         self._add_log(f"DEBUG: Failed to parse A matrix: {e}")
@@ -571,8 +570,7 @@ class GnnToPyMdpConverter:
                 self._add_log(f"DEBUG: B raw value = {b_raw}")
                 if isinstance(b_raw, str):
                     try:
-                        from .pymdp_renderer import parse_3d_matrix
-                        self.B_spec = parse_3d_matrix(b_raw)
+                        self.B_spec = self._parse_gnn_3d_matrix_string(b_raw)
                         self._add_log(f"DEBUG: B parsed = {self.B_spec}")
                     except Exception as e:
                         self._add_log(f"DEBUG: Failed to parse B matrix: {e}")
@@ -586,8 +584,7 @@ class GnnToPyMdpConverter:
                 self._add_log(f"DEBUG: C raw value = {c_raw}")
                 if isinstance(c_raw, str):
                     try:
-                        from .pymdp_renderer import parse_matrix_data
-                        self.C_spec = parse_matrix_data(c_raw)
+                        self.C_spec = self._parse_gnn_matrix_string(c_raw)
                         self._add_log(f"DEBUG: C parsed = {self.C_spec}")
                     except Exception as e:
                         self._add_log(f"DEBUG: Failed to parse C vector: {e}")
@@ -600,8 +597,7 @@ class GnnToPyMdpConverter:
                 self._add_log(f"DEBUG: D raw value = {d_raw}")
                 if isinstance(d_raw, str):
                     try:
-                        from .pymdp_renderer import parse_matrix_data
-                        self.D_spec = parse_matrix_data(d_raw)
+                        self.D_spec = self._parse_gnn_matrix_string(d_raw)
                         self._add_log(f"DEBUG: D parsed = {self.D_spec}")
                     except Exception as e:
                         self._add_log(f"DEBUG: Failed to parse D vector: {e}")
@@ -614,14 +610,136 @@ class GnnToPyMdpConverter:
                 self._add_log(f"DEBUG: E raw value = {e_raw}")
                 if isinstance(e_raw, str):
                     try:
-                        from .pymdp_renderer import parse_matrix_data
-                        self.E_spec = parse_matrix_data(e_raw)
+                        self.E_spec = self._parse_gnn_matrix_string(e_raw)
                         self._add_log(f"DEBUG: E parsed = {self.E_spec}")
                     except Exception as e:
                         self._add_log(f"DEBUG: Failed to parse E vector: {e}")
                         self.E_spec = None
                 else:
                     self.E_spec = e_raw
+
+    def _parse_gnn_matrix_string(self, matrix_str: str) -> List[List[float]]:
+        """Parse GNN matrix string format into Python list of lists."""
+        import re
+        
+        # Remove comments and extra whitespace
+        lines = [line.strip() for line in matrix_str.split('\n') if line.strip() and not line.strip().startswith('#')]
+        
+        # Find the matrix content (between braces or parentheses)
+        content = matrix_str.strip()
+        if content.startswith('{') and content.endswith('}'):
+            content = content[1:-1]
+        elif content.startswith('(') and content.endswith(')'):
+            content = content[1:-1]
+        
+        # Split into lines and parse each row
+        matrix = []
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            
+            # Remove outer parentheses if present
+            if line.startswith('(') and line.endswith(')'):
+                line = line[1:-1]
+            
+            # Parse the row values
+            row_values = []
+            # Split by comma, but handle nested parentheses
+            parts = re.split(r',(?![^(]*\))', line)
+            for part in parts:
+                part = part.strip()
+                if part:
+                    try:
+                        # Handle tuple format like (1.0, 0.0, 0.0)
+                        if part.startswith('(') and part.endswith(')'):
+                            # Extract values from tuple
+                            tuple_content = part[1:-1]
+                            tuple_values = [float(x.strip()) for x in tuple_content.split(',')]
+                            row_values.extend(tuple_values)
+                        else:
+                            # Single value
+                            row_values.append(float(part))
+                    except ValueError:
+                        continue
+            
+            if row_values:
+                matrix.append(row_values)
+        
+        return matrix
+
+    def _parse_gnn_3d_matrix_string(self, matrix_str: str) -> List[List[List[float]]]:
+        """Parse GNN 3D matrix string format into Python list of lists of lists."""
+        import re
+        
+        # Remove comments and extra whitespace
+        lines = [line.strip() for line in matrix_str.split('\n') if line.strip() and not line.strip().startswith('#')]
+        
+        # Find the matrix content (between braces)
+        content = matrix_str.strip()
+        if content.startswith('{') and content.endswith('}'):
+            content = content[1:-1]
+        
+        # Split into 2D matrices
+        matrices = []
+        current_matrix = []
+        
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            
+            # Check if this line starts a new 2D matrix
+            if line.startswith('((') and line.endswith(')'):
+                # Save previous matrix if exists
+                if current_matrix:
+                    matrices.append(current_matrix)
+                    current_matrix = []
+                
+                # Parse the new matrix row
+                row_values = self._parse_matrix_row(line)
+                if row_values:
+                    current_matrix.append(row_values)
+            elif line.startswith('(') and line.endswith(')'):
+                # Continue current matrix
+                row_values = self._parse_matrix_row(line)
+                if row_values:
+                    current_matrix.append(row_values)
+        
+        # Add the last matrix
+        if current_matrix:
+            matrices.append(current_matrix)
+        
+        return matrices
+
+    def _parse_matrix_row(self, row_str: str) -> List[float]:
+        """Parse a single matrix row string into list of floats."""
+        import re
+        
+        # Remove outer parentheses
+        if row_str.startswith('(') and row_str.endswith(')'):
+            row_str = row_str[1:-1]
+        
+        # Parse the row values
+        row_values = []
+        parts = re.split(r',(?![^(]*\))', row_str)
+        for part in parts:
+            part = part.strip()
+            if part:
+                try:
+                    # Handle tuple format like (1.0, 0.0, 0.0)
+                    if part.startswith('(') and part.endswith(')'):
+                        # Extract values from tuple
+                        tuple_content = part[1:-1]
+                        tuple_values = [float(x.strip()) for x in tuple_content.split(',')]
+                        row_values.extend(tuple_values)
+                    else:
+                        # Single value
+                        row_values.append(float(part))
+                except ValueError:
+                    continue
+        
+        return row_values
 
     def _parse_parameters_from_gnn_data(self):
         """Parse parameters from the parsed GNN data structure."""

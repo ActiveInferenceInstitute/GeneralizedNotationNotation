@@ -227,15 +227,15 @@ def complexity_analysis_csv(all_results: Dict[str, Dict[str, Any]]) -> List[List
     """Return rows for a CSV table of complexity analysis across all files."""
     rows = []
     for fname, res in all_results.items():
-        complexity = res.get('model_complexity', {}).get('model_complexity', {})
+        complexity = res.get('model_complexity', {})
         rows.append([
             os.path.basename(fname),
             res.get('variable_count', 0),
             res.get('connection_count', 0),
             complexity.get('equation_complexity', 0),
             complexity.get('overall_complexity', 0),
-            res.get('model_complexity', {}).get('model_type', 'Unknown'),
-            res.get('model_complexity', {}).get('time_dynamics', {}).get('is_dynamic', False)
+            res.get('model_type', 'Unknown'),
+            res.get('time_dynamics', {}).get('is_dynamic', False)
         ])
     return rows
 

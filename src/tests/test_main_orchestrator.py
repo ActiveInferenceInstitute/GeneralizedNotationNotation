@@ -181,7 +181,7 @@ class TestPipelineScriptDiscovery:
         test_scripts = [
             ("1_gnn.py", True, 1),
             ("2_setup.py", True, 2),
-            ("14_site.py", True, 14),
+            ("13_sapf.py", True, 13),
             ("main.py", False, None),
             ("utils.py", False, None),
             ("not_a_script.txt", False, None)
@@ -209,7 +209,7 @@ class TestPipelineScriptDiscovery:
         mock_scripts = [
             {"num": 3, "basename": "3_tests.py"},
             {"num": 1, "basename": "1_gnn.py"},
-            {"num": 14, "basename": "14_site.py"},
+            {"num": 13, "basename": "13_sapf.py"},
             {"num": 2, "basename": "2_setup.py"}
         ]
         

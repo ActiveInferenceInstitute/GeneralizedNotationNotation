@@ -117,7 +117,24 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
         if matrix_str.startswith('{') and matrix_str.endswith('}'):
             matrix_str = matrix_str[1:-1]
         
-        # Split by rows (looking for ), ( pattern)
+        # Handle the specific GNN format: "(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)"
+        # Split by "), (" to separate rows
+        parts = matrix_str.split('), (')
+        if len(parts) > 1:
+            matrix = []
+            for i, part in enumerate(parts):
+                # Clean up outer parentheses
+                if i == 0:
+                    part = part[1:] if part.startswith('(') else part
+                if i == len(parts) - 1:
+                    part = part[:-1] if part.endswith(')') else part
+                
+                # Split by comma and convert to floats
+                elements = [float(e.strip()) for e in part.split(',')]
+                matrix.append(elements)
+            return matrix
+        
+        # Fallback: try parsing as individual rows
         rows = []
         current_row = ""
         brace_count = 0
@@ -151,27 +168,6 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
         return matrix
     except Exception as e:
         logger.warning(f"Failed to parse matrix {matrix_str}: {e}")
-        # Try alternative parsing for the specific GNN format
-        try:
-            # Handle format like "(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)"
-            # Split by "), (" to separate rows
-            parts = matrix_str.split('), (')
-            if len(parts) > 1:
-                matrix = []
-                for i, part in enumerate(parts):
-                    # Clean up outer parentheses
-                    if i == 0:
-                        part = part[1:] if part.startswith('(') else part
-                    if i == len(parts) - 1:
-                        part = part[:-1] if part.endswith(')') else part
-                    
-                    # Split by comma and convert to floats
-                    elements = [float(e.strip()) for e in part.split(',')]
-                    matrix.append(elements)
-                return matrix
-        except Exception as e2:
-            logger.warning(f"Alternative matrix parsing also failed: {e2}")
-        
         # Return identity matrix as fallback
         return [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
 
@@ -510,7 +506,7 @@ function run_pomdp_control(T_steps = {T}, n_experiments = 10)
     end
     
     success_rate = mean(successes)
-    println("Control experiment completed. Success rate: \$(round(success_rate * 100, digits=1))%")
+    println("Control experiment completed. Success rate: $(round(success_rate * 100, digits=1))%")
     
     return successes, success_rate
 end
@@ -540,18 +536,18 @@ println("- Observations: {num_obs}")
 println("- Actions: {num_actions}")
 println("- A Matrix (Likelihood):")
 for (i, row) in enumerate(A_matrix)
-    println("  [\$(join(row, ", "))]")
+    println("  [$(join(row, ", "))]")
 end
 println("- B Matrix (Transition):")
 for (i, action_matrix) in enumerate(B_matrix)
-    println("  Action \$(i-1):")
+    println("  Action $(i-1):")
     for row in action_matrix
-        println("    [\$(join(row, ", "))]")
+        println("    [$(join(row, ", "))]")
     end
 end
-println("- C Preferences: [\$(join(C_vector, ", "))]")
-println("- D Prior: [\$(join(D_vector, ", "))]")
-println("- E Habit: [\$(join(E_vector, ", "))]")
+println("- C Preferences: [$(join(C_vector, ", "))]")
+println("- D Prior: [$(join(D_vector, ", "))]")
+println("- E Habit: [$(join(E_vector, ", "))]")
 '''
     
     return code

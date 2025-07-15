@@ -614,3 +614,47 @@ if __name__ == "__main__":
             main_site_generator()
     else:
         print("To test generator.py directly with its main_site_generator(), run from the project root 'GeneralizedNotationNotation/' and provide args, or ensure paths are absolute.") 
+
+def generate_site(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False):
+    """Generate static HTML site from pipeline artifacts."""
+    log_step_start(logger, "Generating static HTML site from pipeline artifacts")
+    
+    # Use centralized output directory configuration
+    site_output_dir = get_output_dir_for_script("12_site.py", output_dir)
+    site_output_dir.mkdir(parents=True, exist_ok=True)
+    
+    try:
+        # Create site generator instance
+        site_generator = SiteGenerator(output_dir=str(site_output_dir))
+        
+        # Initialize results dictionary
+        results = {'success': False, 'files_processed': 0}
+        
+        # Use performance tracking for site generation
+        with performance_tracker.track_operation("generate_static_site"):
+            # Find pipeline artifacts
+            if recursive:
+                artifact_files = list(target_dir.rglob("*"))
+            else:
+                artifact_files = list(target_dir.glob("*"))
+            
+            log_step_success(logger, f"Found {len(artifact_files)} pipeline artifacts to process")
+            
+            # Generate site
+            success = site_generator.generate_site(
+                pipeline_dir=str(target_dir),
+                recursive=recursive
+            )
+            
+            if success:
+                results['success'] = True
+                results['files_processed'] = len(artifact_files)
+                log_step_success(logger, "Static site generation completed successfully")
+            else:
+                log_step_warning(logger, "Static site generation completed with issues")
+        
+        return results.get('success', False)
+        
+    except Exception as e:
+        log_step_error(logger, f"Site generation failed: {e}")
+        return False 
