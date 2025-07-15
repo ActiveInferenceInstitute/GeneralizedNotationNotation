@@ -10,8 +10,28 @@ try:
 except ImportError as e:
     SAPF_AVAILABLE = False
 
-def generate_sapf_audio(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, duration: int = 30):
-    """Generate SAPF (Sound As Pure Form) audio from GNN models."""
+def generate_sapf_audio(
+    target_dir: Path, 
+    output_dir: Path, 
+    logger: logging.Logger, 
+    recursive: bool = False, 
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Generate SAPF (Sound As Pure Form) audio from GNN models.
+    
+    Args:
+        target_dir: Directory containing GNN files to generate audio for
+        output_dir: Output directory for results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional audio generation options (e.g., duration)
+        
+    Returns:
+        True if audio generation succeeded, False otherwise
+    """
     log_step_start(logger, "Generating SAPF audio from GNN models")
     
     # Use centralized output directory configuration
@@ -21,6 +41,9 @@ def generate_sapf_audio(target_dir: Path, output_dir: Path, logger: logging.Logg
     if not SAPF_AVAILABLE:
         log_step_error(logger, "SAPF audio generation not available")
         return False
+    
+    # Get duration from kwargs or use default
+    duration = kwargs.get('duration', 30)
     
     # Find GNN files
     pattern = "**/*.md" if recursive else "*.md"

@@ -62,7 +62,7 @@ class TestPipelineScriptDiscovery:
             9: "9_render.py",
             10: "10_execute.py",
             11: "11_llm.py",
-            12: "12_site.py",
+            12: "12_website.py",
             13: "13_sapf.py"
         }
         
@@ -92,7 +92,7 @@ class TestPipelineScriptDiscovery:
     @pytest.mark.parametrize("script_name", [
         "1_gnn.py", "2_setup.py", "3_tests.py", "4_type_checker.py", "5_export.py",
         "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-        "10_execute.py", "11_llm.py", "12_site.py", "13_sapf.py"
+        "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
     ])
     def test_pipeline_script_structure(self, script_name: str):
         """Test that each pipeline script has proper structure and imports."""
@@ -128,7 +128,7 @@ class TestPipelineScriptImports:
     @pytest.mark.parametrize("script_name", [
         "1_gnn.py", "2_setup.py", "3_tests.py", "4_type_checker.py", "5_export.py",
         "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-        "10_execute.py", "11_llm.py", "12_site.py", "13_sapf.py"
+        "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
     ])
     def test_script_import_capability(self, script_name: str):
         """Test that pipeline scripts can be imported without errors."""
@@ -161,7 +161,7 @@ class TestPipelineScriptExecution:
     @pytest.mark.parametrize("script_name", [
         "1_gnn.py", "2_setup.py", "3_tests.py", "4_type_checker.py", "5_export.py",
         "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-        "10_execute.py", "11_llm.py", "12_site.py", "13_sapf.py"
+        "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
     ])
     def test_script_execution_with_mocks(self, script_name: str, mock_subprocess, mock_filesystem, isolated_temp_dir):
         """Test script execution with comprehensive mocking."""
@@ -483,13 +483,13 @@ class TestStep12SiteComprehensive:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step12_site_generation(self, isolated_temp_dir):
-        """Test site generation functionality."""
-        from src.site import generate_site_from_pipeline_output, generate_html_report
+    def test_step12_website_generation(self, isolated_temp_dir):
+        """Test website generation functionality."""
+        from src.website import generate_website_from_pipeline_output, generate_html_report
         # Test site generation
         try:
             site_path = isolated_temp_dir / "test_site"
-            generate_site_from_pipeline_output({"test": "data"}, site_path)
+            generate_website_from_pipeline_output({"test": "data"}, site_path)
             logging.info("Site generation test completed")
         except Exception as e:
             logging.warning(f"Site generation test failed: {e}")

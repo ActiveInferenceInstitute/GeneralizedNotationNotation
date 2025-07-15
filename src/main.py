@@ -18,7 +18,7 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 9_render.py (Corresponds to render/ folder, includes PyMDP, RxInfer, DisCoPy, and JAX rendering)
 - 10_execute.py (Corresponds to execute/ folder, includes PyMDP, RxInfer, DisCoPy, and JAX execution)
 - 11_llm.py (Corresponds to llm/ folder)
-- 12_site.py (Corresponds to site/ folder, generates HTML summary site)
+- 12_website.py (Corresponds to website/ folder, generates HTML summary website)
 - 13_sapf.py (Corresponds to sapf/ folder, generates SAPF (Sound As Pure Form) audio representations and sonifications of GNN models)
 
 Configuration:
@@ -52,8 +52,8 @@ Options:
     --llm-timeout            Timeout in seconds for the LLM processing step (11_llm.py)
     --pipeline-summary-file FILE
                              Path to save the final pipeline summary report (overrides config)
-    --site-html-filename NAME
-                             Filename for the generated HTML summary site (for 12_site.py, saved in output-dir, default: gnn_pipeline_summary_site.html)
+    --website-html-filename NAME
+                             Filename for the generated HTML summary website (for 12_website.py, saved in output-dir, default: gnn_pipeline_summary_website.html)
     --duration               Audio duration in seconds for SAPF generation (for 13_sapf.py, default: 30.0)
     --recreate-venv          Recreate virtual environment even if it already exists (for 2_setup.py)
     --dev                    Also install development dependencies from requirements-dev.txt (for 2_setup.py)
@@ -219,7 +219,7 @@ def parse_arguments() -> PipelineArguments:
     parser.add_argument('--llm-tasks', help='Comma-separated list of LLM tasks')
     parser.add_argument('--llm-timeout', type=int, help='Timeout for LLM processing in seconds')
     parser.add_argument('--pipeline-summary-file', type=Path, help='Path to save pipeline summary')
-    parser.add_argument('--site-html-filename', help='Filename for generated HTML site')
+    parser.add_argument('--website-html-filename', help='Filename for generated HTML website')
     parser.add_argument('--duration', type=float, help='Audio duration in seconds for SAPF generation')
     parser.add_argument('--recreate-venv', action='store_true', help='Recreate virtual environment')
     parser.add_argument('--dev', action='store_true', help='Install development dependencies')
@@ -279,8 +279,8 @@ def parse_arguments() -> PipelineArguments:
         pipeline_args.llm_timeout = args.llm_timeout
     if args.pipeline_summary_file is not None:
         pipeline_args.pipeline_summary_file = args.pipeline_summary_file
-    if args.site_html_filename is not None:
-        pipeline_args.site_html_filename = args.site_html_filename
+    if args.website_html_filename is not None:
+        pipeline_args.website_html_filename = args.website_html_filename
     if args.duration is not None:
         pipeline_args.duration = args.duration
     if args.recreate_venv:
@@ -422,7 +422,7 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
         9: "core",              # 9_render.py - Rendering
         10: "core",             # 10_execute.py - Execution
         11: "core",             # 11_llm.py - LLM processing
-        12: "core",             # 12_site.py - Site generation
+        12: "core",             # 12_website.py - Website generation
         13: "core"              # 13_sapf.py - SAPF audio generation
     }
     

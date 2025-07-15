@@ -201,7 +201,7 @@ def validate_step_dependencies(step_name: str) -> Tuple[bool, List[str]]:
         "9_render.py": ["render", "render.pymdp.pymdp_renderer", "render.rxinfer.gnn_parser"],
         "10_execute.py": ["execute", "execute.pymdp_runner"],
         "11_llm.py": ["llm", "llm.providers"],
-        "12_site.py": []  # Site generator dependency handled internally
+        "12_website.py": []  # Website generator dependency handled internally
     }
     
     required_deps = step_dependencies.get(step_name, [])

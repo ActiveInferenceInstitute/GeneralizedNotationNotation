@@ -2,7 +2,7 @@
 """
 GNN Processing Pipeline - Step 10: Execute
 
-This script executes rendered GNN simulators.
+This script executes rendered simulation scripts.
 
 Usage:
     python 10_execute.py [options]
@@ -10,11 +10,9 @@ Usage:
 """
 
 import sys
-import subprocess
-import json
-import time
 import logging
 from pathlib import Path
+from typing import Dict
 import argparse
 
 # Import centralized utilities and configuration
@@ -84,7 +82,49 @@ except ImportError as e:
 
 logger.debug(f"Execution modules availability - PyMDP: {PYMDP_AVAILABLE}, RxInfer: {RXINFER_AVAILABLE}, DisCoPy: {DISCOPY_AVAILABLE}, ActiveInference.jl: {ACTIVEINFERENCE_AVAILABLE}, JAX: {JAX_AVAILABLE}")
 
-def main(parsed_args: argparse.Namespace):
+def process_execution_standardized(
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
+    recursive: bool = False,
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Standardized execution processing function with consistent signature.
+    
+    Args:
+        target_dir: Directory containing rendered simulators to execute
+        output_dir: Output directory for execution results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional processing options
+        
+    Returns:
+        True if processing succeeded, False otherwise
+    """
+    try:
+        # Update logger verbosity if needed
+        if verbose:
+            logger.setLevel(logging.DEBUG)
+        
+        # Call the existing execute_rendered_simulators function with updated signature
+        success = execute_rendered_simulators(
+            logger=logger,
+            target_dir=target_dir,
+            output_dir=output_dir,
+            recursive=recursive,
+            verbose=verbose
+        )
+        
+        return success
+        
+    except Exception as e:
+        log_step_error(logger, f"Execution processing failed: {e}")
+        return False
+
+def main(parsed_args):
     """Main function for execution operations."""
     
     # Log step metadata from centralized configuration
@@ -96,10 +136,10 @@ def main(parsed_args: argparse.Namespace):
         logger.setLevel(logging.DEBUG)
     
     # Execute rendered simulators
-    success = execute_rendered_simulators(
-        logger=logger,
+    success = process_execution_standardized(
         target_dir=Path(parsed_args.target_dir),
         output_dir=Path(parsed_args.output_dir),
+        logger=logger,
         recursive=getattr(parsed_args, 'recursive', False),
         verbose=getattr(parsed_args, 'verbose', False)
     )
@@ -117,6 +157,7 @@ if __name__ == '__main__':
         parsed_args = EnhancedArgumentParser.parse_step_arguments("10_execute")
     else:
         # Fallback argument parsing
+        import argparse
         parser = argparse.ArgumentParser(description="Execute rendered simulators")
         parser.add_argument("--target-dir", type=Path, required=True,
                           help="Target directory containing GNN files")

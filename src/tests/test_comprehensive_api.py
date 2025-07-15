@@ -27,6 +27,7 @@ import src.mcp
 import src.setup
 import src.utils
 import src.pipeline
+import src.website
 
 
 class TestGNNModule:
@@ -162,22 +163,21 @@ class TestSiteModule:
     
     def test_module_imports(self):
         """Test that all expected functions are available."""
-        assert hasattr(src.site, 'generate_html_report')
-        assert hasattr(src.site, 'main_site_generator')
-        assert hasattr(src.site, 'embed_image')
-        assert hasattr(src.site, 'embed_markdown_file')
-        assert hasattr(src.site, 'embed_text_file')
-        assert hasattr(src.site, 'embed_json_file')
-        assert hasattr(src.site, 'embed_html_file')
-        assert hasattr(src.site, 'get_module_info')
-        assert hasattr(src.site, 'generate_site_from_pipeline_output')
-        assert hasattr(src.site, 'get_supported_file_types')
-        assert hasattr(src.site, 'FEATURES')
-        assert hasattr(src.site, '__version__')
+        assert hasattr(src.website, 'generate_html_report')
+        assert hasattr(src.website, 'main_website_generator')
+        assert hasattr(src.website, 'embed_image')
+        assert hasattr(src.website, 'embed_markdown_file')
+        assert hasattr(src.website, 'embed_text_file')
+        assert hasattr(src.website, 'embed_json_file')
+        assert hasattr(src.website, 'embed_html_file')
+        assert hasattr(src.website, 'get_module_info')
+        assert hasattr(src.website, 'get_supported_file_types')
+        assert hasattr(src.website, 'FEATURES')
+        assert hasattr(src.website, '__version__')
     
     def test_get_module_info(self):
         """Test the get_module_info function."""
-        info = src.site.get_module_info()
+        info = src.website.get_module_info()
         assert isinstance(info, dict)
         assert 'version' in info
         assert 'description' in info
@@ -187,7 +187,7 @@ class TestSiteModule:
     
     def test_get_supported_file_types(self):
         """Test the get_supported_file_types function."""
-        file_types = src.site.get_supported_file_types()
+        file_types = src.website.get_supported_file_types()
         assert isinstance(file_types, dict)
         assert 'images' in file_types
         assert 'markdown' in file_types
@@ -195,9 +195,9 @@ class TestSiteModule:
         assert 'text' in file_types
         assert 'html' in file_types
     
-    def test_generate_site_from_pipeline_output_nonexistent(self):
-        """Test generate_site_from_pipeline_output with nonexistent directory."""
-        result = src.site.generate_site_from_pipeline_output("/nonexistent/directory")
+    def test_generate_website_from_pipeline_output_nonexistent(self):
+        """Test generate_website_from_pipeline_output with nonexistent directory."""
+        result = src.website.generate_website_from_pipeline_output("/nonexistent/directory")
         assert result["success"] is False
         assert "error" in result
 
@@ -447,7 +447,7 @@ class TestMCPIntegration:
     def test_mcp_availability_flags(self):
         """Test that MCP availability flags are properly set."""
         modules_with_mcp = [
-            src.gnn, src.export, src.render, src.site, 
+            src.gnn, src.export, src.render, src.website, 
             src.sapf, src.ontology, src.mcp, src.setup
         ]
         
@@ -460,7 +460,7 @@ class TestMCPIntegration:
     def test_register_tools_functions(self):
         """Test that register_tools functions exist where expected."""
         modules_with_register_tools = [
-            src.export, src.render, src.site, src.sapf, src.ontology
+            src.export, src.render, src.website, src.sapf, src.ontology
         ]
         
         for module in modules_with_register_tools:
@@ -475,7 +475,7 @@ class TestModuleConsistency:
     def test_version_consistency(self):
         """Test that all modules have version information."""
         modules = [
-            src.gnn, src.export, src.render, src.site, 
+            src.gnn, src.export, src.render, src.website, 
             src.sapf, src.ontology, src.mcp, src.setup
         ]
         
@@ -487,7 +487,7 @@ class TestModuleConsistency:
     def test_feature_flags_consistency(self):
         """Test that all modules have consistent feature flag structure."""
         modules_with_features = [
-            src.gnn, src.export, src.render, src.site, 
+            src.gnn, src.export, src.render, src.website, 
             src.sapf, src.ontology
         ]
         
@@ -499,7 +499,7 @@ class TestModuleConsistency:
     def test_module_info_consistency(self):
         """Test that all modules have consistent get_module_info structure."""
         modules_with_info = [
-            src.gnn, src.export, src.render, src.site, 
+            src.gnn, src.export, src.render, src.website, 
             src.sapf, src.ontology
         ]
         

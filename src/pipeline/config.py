@@ -142,13 +142,13 @@ class PipelineConfig:
                 performance_tracking=True,
                 required=False  # LLM can fail without stopping pipeline
             ),
-            "12_site.py": StepConfig(
-                name="site",
-                description="Static site generation",
-                module_path="12_site.py",
-                output_subdir="site",
+            "12_website.py": StepConfig(
+                name="website",
+                description="Static website generation",
+                module_path="12_website.py",
+                output_subdir="website",
                 dependencies=["6_visualization.py", "8_ontology.py"],
-                required=False  # Site generation can fail without stopping pipeline
+                required=False  # Website generation can fail without stopping pipeline
             ),
             "13_sapf.py": StepConfig(
                 name="sapf",
@@ -423,11 +423,11 @@ STEP_METADATA = {
         "dependencies": ["5_export.py"],
         "output_subdir": "llm_processing_step"
     },
-    "12_site.py": {
-        "description": "Static site generation",
+    "12_website.py": {
+        "description": "Static website generation",
         "required": False,
         "dependencies": ["6_visualization.py", "8_ontology.py"],
-        "output_subdir": "site"
+        "output_subdir": "website"
     },
     "13_sapf.py": {
         "description": "SAPF audio generation for GNN models",

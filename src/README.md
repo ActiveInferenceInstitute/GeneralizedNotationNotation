@@ -38,7 +38,7 @@ The pipeline processes GNN models through a systematic workflow:
 | 9 | `9_render.py` | Code generation (PyMDP, RxInfer, ActiveInference.jl) | ✅ WORKING | `gnn_rendered_simulators/` |
 | 10 | `10_execute.py` | Execute rendered simulators | ⚠️ NEEDS_DEPS | `execution_results/` |
 | 11 | `11_llm.py` | LLM-enhanced analysis | ✅ WORKING | `llm_processing_step/` |
-| 12 | `12_site.py` | HTML site generation | ⚠️ PARTIAL | `site/` |
+| 12 | `12_website.py` | HTML website generation | ⚠️ PARTIAL | `website/` |
 | 13 | `13_sapf.py` | SAPF audio generation | ✅ WORKING | `sapf_processing_step/` |
 
 **Note**: The pipeline is designed to be fully extensible, with each step building upon previous outputs while remaining independently executable for targeted processing.
@@ -51,7 +51,7 @@ Scripts 1-6, 8-9, 11, and 13 are fully operational with proper logging, error ha
 ### ⚠️ Partially Functional (3/13 steps)
 - **Step 7 (MCP)**: Core functionality works but may need MCP system initialization
 - **Step 10 (Execute)**: PyMDP/RxInfer execution depends on availability of dependencies
-- **Step 12 (Site)**: Basic HTML generation works, full generator may need additional dependencies
+- **Step 12 (Website)**: Basic HTML website generation works, full generator may need additional dependencies
 
 ## Code Quality Assessment
 
@@ -132,7 +132,7 @@ output/
 ├── gnn_rendered_simulators/      # Step 9: Generated code
 ├── execution_results/            # Step 10: Simulation results
 ├── llm_processing_step/          # Step 11: LLM analysis
-├── site/                         # Step 12: HTML documentation
+├── website/                      # Step 12: HTML documentation
 ├── sapf_processing_step/         # Step 13: SAPF audio generation
 └── logs/                         # Pipeline execution logs
 ```
@@ -195,7 +195,7 @@ python3 src/main.py --target-dir input/gnn_files --estimate-resources --verbose
 - **Step 9**: PyMDP, RxInfer.jl, ActiveInference.jl (optional, for code generation)
 - **Step 10**: PyMDP, Julia/RxInfer.jl, ActiveInference.jl (optional, for simulation execution)
 - **Step 11**: OpenAI API or similar LLM access
-- **Step 12**: Jinja2 or similar templating (for advanced site generation)
+- **Step 12**: Jinja2 or similar templating (for advanced website generation)
 - **Step 13**: SAPF binary (optional), numpy, wave (for audio generation)
 
 ## Error Handling and Recovery

@@ -610,8 +610,40 @@ def visualize_gnn_model(gnn_content: str, model_name: str, output_dir: str) -> d
             os.unlink(temp_path) 
 
 
-def generate_visualizations(target_dir: Path, output_dir: Path, logger, recursive: bool = False):
-    """Generate visualizations for GNN models."""
+def generate_visualizations(
+    target_dir: Path, 
+    output_dir: Path, 
+    logger: logging.Logger, 
+    recursive: bool = False, 
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Generate visualizations for GNN models.
+    
+    Args:
+        target_dir: Directory containing GNN files to visualize
+        output_dir: Output directory for results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional visualization options
+        
+    Returns:
+        True if visualization succeeded, False otherwise
+    """
+    try:
+        from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
+        from pipeline import get_output_dir_for_script
+    except ImportError:
+        # Fallback logging functions
+        def log_step_start(logger, msg): logger.info(f"🚀 {msg}")
+        def log_step_success(logger, msg): logger.info(f"✅ {msg}")
+        def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
+        def log_step_error(logger, msg): logger.error(f"❌ {msg}")
+        def get_output_dir_for_script(script, output_dir): return output_dir / "visualization"
+        performance_tracker = None
+    
     log_step_start(logger, f"Generating visualizations for GNN files in: {target_dir}")
     
     # Use centralized output directory configuration

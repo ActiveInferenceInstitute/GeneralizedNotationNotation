@@ -479,7 +479,7 @@ def _add_pipeline_log_section(f: IO[str], output_dir: Path):
     else:
         logger.warning(f"Pipeline log file not found: {pipeline_log_file.as_posix()}")
 
-def _add_other_outputs_section(f: IO[str], output_dir: Path, site_output_file: Path):
+def _add_other_outputs_section(f: IO[str], output_dir: Path, website_output_file: Path):
     f.write(f"<div class='section' id='{make_section_id('Other Output Files')}'>\n")
     f.write("<h2>Other Output Files/Directories</h2>\n")
     other_content_html = ""
@@ -488,7 +488,7 @@ def _add_other_outputs_section(f: IO[str], output_dir: Path, site_output_file: P
                     "type_check", "gnn_exports", "gnn_processing_summary.md",
         "visualization", "mcp_processing_step", "ontology_processing",
         "gnn_rendered_simulators", "pymdp_execute_logs", "llm_processing_step", "logs",
-        site_output_file.name 
+        website_output_file.name 
     }
     found_other = False
     items_list_html = "<ul>"
@@ -512,14 +512,14 @@ def _add_other_outputs_section(f: IO[str], output_dir: Path, site_output_file: P
 
 # --- Main Report Generation Function ---
 
-def generate_html_report(output_dir: Path, site_output_file: Path):
+def generate_html_report(output_dir: Path, website_output_file: Path):
     """
-    Generates a single HTML file summarizing the contents of the output_dir.
+    Generates a single HTML file summarizing the contents of the output_dir as a website.
     """
     logger.info(f"Starting HTML report generation for directory: {output_dir.as_posix()}")
-    logger.info(f"Output HTML will be saved to: {site_output_file.as_posix()}")
+    logger.info(f"Output HTML will be saved to: {website_output_file.as_posix()}")
 
-    with open(site_output_file, 'w', encoding='utf-8') as f:
+    with open(website_output_file, 'w', encoding='utf-8') as f:
         f.write(HTML_START_TEMPLATE)
 
         _add_pipeline_summary_section(f, output_dir)
@@ -534,18 +534,18 @@ def generate_html_report(output_dir: Path, site_output_file: Path):
         _add_execution_logs_section(f, output_dir)
         _add_llm_outputs_section(f, output_dir)
         _add_pipeline_log_section(f, output_dir)
-        _add_other_outputs_section(f, output_dir, site_output_file)
+        _add_other_outputs_section(f, output_dir, website_output_file)
 
         f.write(HTML_END_TEMPLATE)
-    logger.info(f"✅ HTML report generated successfully: {site_output_file.as_posix()}")
+    logger.info(f"✅ HTML report generated successfully: {website_output_file.as_posix()}")
 
 
-def main_site_generator():
+def main_website_generator():
     """
-    Main function to run the site generator.
-    Parses arguments for output directory and site HTML file path.
+    Main function to run the website generator.
+    Parses arguments for output directory and website HTML file path.
     """
-    parser = argparse.ArgumentParser(description="Generate an HTML summary site from GNN pipeline outputs.")
+    parser = argparse.ArgumentParser(description="Generate an HTML summary website from GNN pipeline outputs.")
     parser.add_argument(
         "--output-dir",
         type=Path,
@@ -553,10 +553,10 @@ def main_site_generator():
         help="The main output directory of the GNN pipeline (e.g., ../output or ./output)."
     )
     parser.add_argument(
-        "--site-output-file",
+        "--website-output-file",
         type=Path,
         required=True,
-        help="The path where the final HTML site file should be saved (e.g., output/gnn_pipeline_summary.html)."
+        help="The path where the final HTML website file should be saved (e.g., output/gnn_pipeline_summary.html)."
     )
     parser.add_argument(
         "--verbose",
@@ -573,88 +573,79 @@ def main_site_generator():
         logger.setLevel(logging.INFO)
 
     resolved_output_dir = args.output_dir.resolve()
-    resolved_site_output_file = args.site_output_file.resolve()
+    resolved_website_output_file = args.website_output_file.resolve()
 
     if not resolved_output_dir.is_dir():
         logger.error(f"Output directory does not exist: {resolved_output_dir.as_posix()}")
         sys.exit(1) # Use sys.exit(1) for error exit code
 
-    resolved_site_output_file.parent.mkdir(parents=True, exist_ok=True)
+    resolved_website_output_file.parent.mkdir(parents=True, exist_ok=True)
     
-    generate_html_report(resolved_output_dir, resolved_site_output_file)
+    generate_html_report(resolved_output_dir, resolved_website_output_file)
     sys.exit(0) # Success exit code
 
 if __name__ == "__main__":
-    print("src.site.generator called directly. Use 12_site.py for pipeline integration or provide CLI args for direct test.")
+    print("src.website.generator called directly. Use 12_website.py for pipeline integration or provide CLI args for direct test.")
     # To test from project root (GeneralizedNotationNotation/):
     # Ensure you have a populated 'output' directory from a previous pipeline run.
     # And install Markdown: pip install Markdown
-    # python src/site/generator.py --output-dir output --site-output-file output/test_site.html --verbose
+    # python src/website/generator.py --output-dir output --website-output-file output/test_website.html --verbose
     
     # Basic test execution when called directly
     if Path.cwd().name == "GeneralizedNotationNotation": 
         test_output_dir_arg = Path.cwd() / "output"
-        test_site_file_arg = test_output_dir_arg / "test_generated_site_by_generator_main.html"
+        test_website_file_arg = test_output_dir_arg / "test_generated_website_by_generator_main.html"
         
-        print(f"Attempting direct test generation with output_dir='{test_output_dir_arg}' and site_output_file='{test_site_file_arg}'")
+        print(f"Attempting direct test generation with output_dir='{test_output_dir_arg}' and website_output_file='{test_website_file_arg}'")
         
         # Simulate command line arguments for testing
         # Note: This requires the script to be run from the project root for these relative paths to be standard.
         # For more robust direct testing, use absolute paths or ensure correct CWD.
         sys.argv.extend([
             "--output-dir", str(test_output_dir_arg),
-            "--site-output-file", str(test_site_file_arg),
+            "--website-output-file", str(test_website_file_arg),
             "--verbose"
         ])
         # Check if output dir exists before running test
         if not test_output_dir_arg.is_dir():
-            logger.warning(f"Test output directory '{test_output_dir_arg}' does not exist. Skipping direct test run of main_site_generator().")
-            print(f"Test output directory '{test_output_dir_arg}' does not exist. Skipping direct test run of main_site_generator().")
+            logger.warning(f"Test output directory '{test_output_dir_arg}' does not exist. Skipping direct test run of main_website_generator().")
+            print(f"Test output directory '{test_output_dir_arg}' does not exist. Skipping direct test run of main_website_generator().")
         else:
-            main_site_generator()
+            main_website_generator()
     else:
-        print("To test generator.py directly with its main_site_generator(), run from the project root 'GeneralizedNotationNotation/' and provide args, or ensure paths are absolute.") 
+        print("To test generator.py directly with its main_website_generator(), run from the project root 'GeneralizedNotationNotation/' and provide args, or ensure paths are absolute.") 
 
-def generate_site(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False):
-    """Generate static HTML site from pipeline artifacts."""
-    log_step_start(logger, "Generating static HTML site from pipeline artifacts")
-    
-    # Use centralized output directory configuration
-    site_output_dir = get_output_dir_for_script("12_site.py", output_dir)
-    site_output_dir.mkdir(parents=True, exist_ok=True)
+def generate_website(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False):
+    """Generate static HTML website from pipeline artifacts."""
+    log_step_start(logger, "Generating static HTML website from pipeline artifacts")
     
     try:
-        # Create site generator instance
-        site_generator = SiteGenerator(output_dir=str(site_output_dir))
+        # Get output directory for this step
+        website_output_dir = get_output_dir_for_script("12_website.py", output_dir)
+        website_output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Initialize results dictionary
-        results = {'success': False, 'files_processed': 0}
+        # Create website generator instance
+        website_generator = WebsiteGenerator(output_dir=str(website_output_dir))
         
-        # Use performance tracking for site generation
-        with performance_tracker.track_operation("generate_static_site"):
-            # Find pipeline artifacts
-            if recursive:
-                artifact_files = list(target_dir.rglob("*"))
-            else:
-                artifact_files = list(target_dir.glob("*"))
-            
-            log_step_success(logger, f"Found {len(artifact_files)} pipeline artifacts to process")
-            
-            # Generate site
-            success = site_generator.generate_site(
-                pipeline_dir=str(target_dir),
+        # Log the generation process
+        logger.info(f"Starting website generation from {target_dir} to {website_output_dir}")
+        
+        # Use performance tracking for website generation
+        with performance_tracker.track_operation("generate_static_website"):
+            # Generate website
+            success = website_generator.generate_website(
+                target_dir=str(target_dir),
+                output_dir=str(website_output_dir),
                 recursive=recursive
             )
-            
-            if success:
-                results['success'] = True
-                results['files_processed'] = len(artifact_files)
-                log_step_success(logger, "Static site generation completed successfully")
-            else:
-                log_step_warning(logger, "Static site generation completed with issues")
         
-        return results.get('success', False)
+        if success:
+            log_step_success(logger, "Static website generation completed successfully")
+        else:
+            log_step_warning(logger, "Static website generation completed with issues")
+        
+        return success
         
     except Exception as e:
-        log_step_error(logger, f"Site generation failed: {e}")
+        log_step_error(logger, f"Website generation failed: {e}")
         return False 

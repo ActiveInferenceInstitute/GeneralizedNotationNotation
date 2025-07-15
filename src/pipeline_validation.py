@@ -67,8 +67,8 @@ EXPECTED_OUTPUTS = {
     "11_llm": [
         "llm_processing_step/"
     ],
-    "12_site": [
-        "site/"
+    "12_website": [
+        "website/"
     ],
     "13_sapf": [
         "sapf_processing_step/"

@@ -7,15 +7,33 @@ from gnn.parsers.markdown_parser import MarkdownGNNParser
 # Import rendering functionality
 try:
     from .render import render_gnn_spec
-    logger.debug("Successfully imported rendering modules")
     RENDER_AVAILABLE = True
 except ImportError as e:
-    log_step_error(logger, f"Could not import rendering modules: {e}")
     render_gnn_spec = None
     RENDER_AVAILABLE = False
 
-def render_gnn_files(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False):
-    """Render GNN files to simulation environments."""
+def render_gnn_files(
+    target_dir: Path, 
+    output_dir: Path, 
+    logger: logging.Logger, 
+    recursive: bool = False, 
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Render GNN files to simulation environments.
+    
+    Args:
+        target_dir: Directory containing GNN files to render
+        output_dir: Output directory for results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional rendering options
+        
+    Returns:
+        True if rendering succeeded, False otherwise
+    """
     log_step_start(logger, "Rendering GNN files to simulation environments")
     
     # Use centralized output directory configuration
@@ -200,43 +218,45 @@ def render_gnn_files(target_dir: Path, output_dir: Path, logger: logging.Logger,
                             # Use model name for filename
                             base_name = model.model_name.lower().replace(" ", "_")
                             if target_format.endswith("_jl") or target_format == "activeinference_combined":
-                                ext = ".jl"
-                            elif target_format == "rxinfer_toml":
-                                ext = ".toml"
+                                output_file = sub_output_dir / f"{base_name}.jl"
+                            elif target_format == "jax" or target_format == "jax_pomdp":
+                                output_file = sub_output_dir / f"{base_name}.py"
                             else:
-                                ext = ".py"
+                                output_file = sub_output_dir / f"{base_name}.py"
                             
-                            output_file = sub_output_dir / f"{base_name}_{target_format}{ext}"
+                            # Render the model
+                            success, message, artifacts = render_gnn_spec(
+                                gnn_spec=gnn_spec,
+                                target=target_format,
+                                output_directory=sub_output_dir,
+                                options={"output_file": str(output_file)}
+                            )
                             
-                            with performance_tracker.track_operation(f"render_{target_format}_{gnn_file.name}"):
-                                success, message, artifacts = render_gnn_spec(
-                                    gnn_spec, 
-                                    target_format,
-                                    output_file.parent,  # Pass directory
-                                    {"output_filename": base_name}  # Pass base name
-                                )
-                                
                             if success:
-                                logger.info(f"{target_format} render successful for {gnn_file.name}: {message}")
                                 successful_renders += 1
+                                logger.debug(f"Successfully rendered {gnn_file.name} to {target_format}")
                             else:
-                                logger.warning(f"{target_format} render failed for {gnn_file.name}: {message}")
                                 failed_renders += 1
+                                log_step_warning(logger, f"Failed to render {gnn_file.name} to {target_format}: {message}")
                                 
                         except Exception as e:
-                            log_step_warning(logger, f"{target_format} rendering failed for {gnn_file.name}: {e}")
                             failed_renders += 1
-                        
+                            log_step_error(logger, f"Exception rendering {gnn_file.name} to {target_format}: {e}")
+                            
                 except Exception as e:
-                    log_step_error(logger, f"Failed to process {gnn_file.name}: {e}")
                     failed_renders += len(render_targets)
+                    log_step_error(logger, f"Failed to process {gnn_file.name}: {e}")
         
         # Log results summary
-        total_attempts = successful_renders + failed_renders
-        success_rate = successful_renders / total_attempts * 100 if total_attempts > 0 else 0.0
-        log_step_success(logger, f"Rendering completed. Success rate: {success_rate:.1f}% ({successful_renders}/{total_attempts})")
-        return failed_renders == 0
-        
+        total_renders = successful_renders + failed_renders
+        if total_renders > 0:
+            success_rate = successful_renders / total_renders * 100
+            log_step_success(logger, f"Rendering completed. Success rate: {success_rate:.1f}% ({successful_renders}/{total_renders})")
+            return failed_renders == 0
+        else:
+            log_step_warning(logger, "No files were rendered")
+            return False
+            
     except Exception as e:
         log_step_error(logger, f"Rendering failed: {e}")
         return False 

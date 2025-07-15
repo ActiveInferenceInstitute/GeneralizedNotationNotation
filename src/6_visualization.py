@@ -51,7 +51,49 @@ logger = setup_step_logging("6_visualization", verbose=False)
 #     MatrixVisualizer = None
 #     OntologyVisualizer = None
 
-def main(parsed_args: argparse.Namespace):
+def process_visualization_standardized(
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
+    recursive: bool = False,
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Standardized visualization processing function with consistent signature.
+    
+    Args:
+        target_dir: Directory containing GNN files to visualize
+        output_dir: Output directory for visualizations
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional processing options
+        
+    Returns:
+        True if processing succeeded, False otherwise
+    """
+    try:
+        # Update logger verbosity if needed
+        if verbose:
+            logger.setLevel(logging.DEBUG)
+        
+        # Call the existing generate_visualizations function with updated signature
+        success = generate_visualizations(
+            logger=logger,
+            target_dir=target_dir,
+            output_dir=output_dir,
+            recursive=recursive,
+            verbose=verbose
+        )
+        
+        return success
+        
+    except Exception as e:
+        log_step_error(logger, f"Visualization processing failed: {e}")
+        return False
+
+def main(parsed_args):
     """Main function for visualization generation."""
     
     # Log step metadata from centralized configuration
@@ -63,11 +105,12 @@ def main(parsed_args: argparse.Namespace):
         logger.setLevel(logging.DEBUG)
     
     # Generate visualizations
-    success = generate_visualizations(
-        logger=logger,
+    success = process_visualization_standardized(
         target_dir=Path(parsed_args.target_dir),
         output_dir=Path(parsed_args.output_dir),
-        recursive=getattr(parsed_args, 'recursive', False)
+        logger=logger,
+        recursive=getattr(parsed_args, 'recursive', False),
+        verbose=getattr(parsed_args, 'verbose', False)
     )
     
     if success:

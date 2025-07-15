@@ -7,7 +7,7 @@ import logging
 from pipeline import get_output_dir_for_script
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error
 
-def run_tests(output_dir: Path, logger: logging.Logger, verbose: bool = False):
+def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False):
     """Run the test suite and save results."""
     log_step_start(logger, "Running test suite")
     

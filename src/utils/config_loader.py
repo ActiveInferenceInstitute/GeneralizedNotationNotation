@@ -65,9 +65,9 @@ class LLMConfig:
     timeout: int = 360
 
 @dataclass
-class SiteConfig:
-    """Configuration for site generation."""
-    html_filename: str = "gnn_pipeline_summary_site.html"
+class WebsiteConfig:
+    """Configuration for website generation."""
+    html_filename: str = "gnn_pipeline_summary_website.html"
 
 @dataclass
 class SetupConfig:
@@ -94,7 +94,7 @@ class GNNPipelineConfig:
     type_checker: TypeCheckerConfig = field(default_factory=TypeCheckerConfig)
     ontology: OntologyConfig = field(default_factory=OntologyConfig)
     llm: LLMConfig = field(default_factory=LLMConfig)
-    site: SiteConfig = field(default_factory=SiteConfig)
+    website: WebsiteConfig = field(default_factory=WebsiteConfig)
     setup: SetupConfig = field(default_factory=SetupConfig)
     sapf: SAPFConfig = field(default_factory=SAPFConfig)
     models: ModelConfig = field(default_factory=ModelConfig)
@@ -145,10 +145,10 @@ class GNNPipelineConfig:
             config.llm.tasks = llm_data.get('tasks', 'all')
             config.llm.timeout = llm_data.get('timeout', 360)
         
-        # Load site configuration
-        if 'site' in config_data:
-            site_data = config_data['site']
-            config.site.html_filename = site_data.get('html_filename', 'gnn_pipeline_summary_site.html')
+        # Load website configuration
+        if 'website' in config_data:
+            website_data = config_data['website']
+            config.website.html_filename = website_data.get('html_filename', 'gnn_pipeline_summary_website.html')
         
         # Load setup configuration
         if 'setup' in config_data:
@@ -184,7 +184,7 @@ class GNNPipelineConfig:
             'ontology_terms_file': self.ontology.terms_file,
             'llm_tasks': self.llm.tasks,
             'llm_timeout': self.llm.timeout,
-            'site_html_filename': self.site.html_filename,
+            'website_html_filename': self.website.html_filename,
             'recreate_venv': self.setup.recreate_venv,
             'dev': self.setup.dev,
             'duration': self.sapf.duration

@@ -77,8 +77,8 @@ class PipelineArguments:
     llm_tasks: str = "all"
     llm_timeout: int = 360
     
-    # Site generation
-    site_html_filename: str = "gnn_pipeline_summary_site.html"
+    # Website generation
+    website_html_filename: str = "gnn_pipeline_summary_website.html"
     
     # Setup options
     recreate_venv: bool = False
@@ -211,9 +211,9 @@ class ArgumentParser:
             arg_type=int,
             help_text='Timeout for LLM processing in seconds'
         ),
-        'site_html_filename': ArgumentDefinition(
-            flag='--site-html-filename',
-            help_text='Filename for generated HTML site'
+        'website_html_filename': ArgumentDefinition(
+            flag='--website-html-filename',
+            help_text='Filename for generated HTML website'
         ),
         'recreate_venv': ArgumentDefinition(
             flag='--recreate-venv',
@@ -246,7 +246,7 @@ class ArgumentParser:
         "9_render.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "10_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "11_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
-        "12_site.py": ["target_dir", "output_dir", "verbose", "site_html_filename"],
+        "12_website.py": ["target_dir", "output_dir", "verbose", "website_html_filename"],
         "13_sapf.py": ["target_dir", "output_dir", "recursive", "verbose", "duration"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys())
     }
@@ -339,8 +339,8 @@ class ArgumentParser:
                         setattr(parsed_args, arg_name, 360)
                     elif arg_name == 'llm_tasks':
                         setattr(parsed_args, arg_name, "all")
-                    elif arg_name == 'site_html_filename':
-                        setattr(parsed_args, arg_name, "gnn_pipeline_summary_site.html")
+                    elif arg_name == 'website_html_filename':
+                        setattr(parsed_args, arg_name, "gnn_pipeline_summary_website.html")
                     elif arg_name in ['recreate_venv', 'dev']:
                         setattr(parsed_args, arg_name, False)
                     elif arg_name == 'duration':
@@ -372,8 +372,8 @@ class ArgumentParser:
                     setattr(fallback_args, arg_name, 360)
                 elif arg_name == 'llm_tasks':
                     setattr(fallback_args, arg_name, "all")
-                elif arg_name == 'site_html_filename':
-                    setattr(fallback_args, arg_name, "gnn_pipeline_summary_site.html")
+                elif arg_name == 'website_html_filename':
+                    setattr(fallback_args, arg_name, "gnn_pipeline_summary_website.html")
                 elif arg_name in ['recreate_venv', 'dev']:
                     setattr(fallback_args, arg_name, False)
                 elif arg_name == 'duration':
@@ -452,7 +452,7 @@ def get_step_output_dir(step_name: str, base_output_dir: Path) -> Path:
         "9_render": "gnn_rendered_simulators",
         "10_execute": "execute_logs",
         "11_llm": "llm_processing_step",
-        "12_site": "site_generation",
+        "12_website": "website_generation",
         "13_sapf": "sapf_generation"
     }
     
@@ -533,11 +533,11 @@ class StepConfiguration:
             "defaults": {"recursive": False, "verbose": False, "llm_tasks": "all", "llm_timeout": 360},
             "description": "LLM Analysis & Processing"
         },
-        "12_site": {
+        "12_website": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["verbose", "site_html_filename"],
-            "defaults": {"verbose": False, "site_html_filename": "gnn_pipeline_summary_site.html"},
-            "description": "HTML Site Generation"
+            "optional_args": ["verbose", "website_html_filename"],
+            "defaults": {"verbose": False, "website_html_filename": "gnn_pipeline_summary_website.html"},
+            "description": "HTML Website Generation"
         },
         "13_sapf": {
             "required_args": ["target_dir", "output_dir"],

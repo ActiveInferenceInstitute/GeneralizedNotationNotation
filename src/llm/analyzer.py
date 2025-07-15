@@ -14,8 +14,28 @@ try:
 except ImportError as e:
     LLM_PROVIDERS_AVAILABLE = False
 
-def analyze_gnn_files(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, verbose: bool = False):
-    """Analyze GNN files using LLM providers."""
+def analyze_gnn_files(
+    target_dir: Path, 
+    output_dir: Path, 
+    logger: logging.Logger, 
+    recursive: bool = False, 
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Analyze GNN files using LLM providers.
+    
+    Args:
+        target_dir: Directory containing GNN files to analyze
+        output_dir: Output directory for results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional analysis options (e.g., llm_tasks, llm_timeout)
+        
+    Returns:
+        True if analysis succeeded, False otherwise
+    """
     log_step_start(logger, "Analyzing GNN files with LLM providers")
     
     # Use centralized output directory configuration

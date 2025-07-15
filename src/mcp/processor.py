@@ -35,7 +35,7 @@ def process_mcp_operations(target_dir: Path, output_dir: Path, logger: logging.L
             # Register tools from each module
             modules_to_register = [
                 "gnn", "export", "visualization", "render", 
-                "execute", "llm", "site", "sapf", "setup", "tests"
+                "execute", "llm", "website", "sapf", "setup", "tests"
             ]
             
             for module_name in modules_to_register:

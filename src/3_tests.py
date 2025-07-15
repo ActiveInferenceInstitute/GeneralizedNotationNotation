@@ -9,14 +9,9 @@ Usage:
     (Typically called by main.py)
 """
 
-import os
 import sys
-from pathlib import Path
-import argparse
-import subprocess
-import json
-import time
 import logging
+from pathlib import Path
 
 # Import centralized utilities and configuration
 from utils import (
@@ -40,7 +35,39 @@ from tests.runner import run_tests
 # Initialize logger for this step
 logger = setup_step_logging("3_tests", verbose=False)
 
-def main(parsed_args: argparse.Namespace):
+def run_tests_standardized(
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
+    recursive: bool = False,
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Standardized test execution function.
+    
+    Args:
+        target_dir: Directory containing files to test
+        output_dir: Output directory for test results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional processing options
+        
+    Returns:
+        True if tests passed, False otherwise
+    """
+    try:
+        # Call the existing run_tests function
+        success = run_tests(logger, output_dir, verbose)
+        
+        return success
+        
+    except Exception as e:
+        log_step_error(logger, f"Test execution failed: {e}")
+        return False
+
+def main(parsed_args):
     """Main function for test execution."""
     
     # Log step metadata from centralized configuration
@@ -52,7 +79,13 @@ def main(parsed_args: argparse.Namespace):
         logger.setLevel(logging.DEBUG)
     
     # Run tests
-    success = run_tests(logger, Path(parsed_args.output_dir), parsed_args.verbose)
+    success = run_tests_standardized(
+        target_dir=Path(parsed_args.target_dir),
+        output_dir=Path(parsed_args.output_dir),
+        logger=logger,
+        recursive=getattr(parsed_args, 'recursive', False),
+        verbose=getattr(parsed_args, 'verbose', False)
+    )
     
     if success:
         log_step_success(logger, "Test execution completed successfully")
@@ -67,6 +100,7 @@ if __name__ == '__main__':
         parsed_args = EnhancedArgumentParser.parse_step_arguments("3_tests")
     else:
         # Fallback argument parsing
+        import argparse
         parser = argparse.ArgumentParser(description="Test suite execution")
         parser.add_argument("--target-dir", type=Path, required=True,
                           help="Target directory containing GNN files")

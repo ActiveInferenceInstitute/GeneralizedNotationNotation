@@ -501,64 +501,64 @@ class TestOntologyModuleComprehensive:
         except Exception as e:
             logging.warning(f"Ontology term validation failed: {e}")
 
-class TestSiteModuleComprehensive:
-    """Comprehensive tests for the site module."""
+class TestWebsiteModuleComprehensive:
+    """Comprehensive tests for the website module."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_site_module_imports(self):
-        """Test that site module can be imported and has expected structure."""
+    def test_website_module_imports(self):
+        """Test that website module can be imported and has expected structure."""
         try:
-            from src.site import (
-                generate_site, create_html_report, generate_site_index,
-                create_site_navigation, generate_site_report
+            from src.website import (
+                generate_website, create_html_report, generate_website_index,
+                create_website_navigation, generate_website_report
             )
             
             # Test that functions are callable
-            assert callable(generate_site), "generate_site should be callable"
+            assert callable(generate_website), "generate_website should be callable"
             assert callable(create_html_report), "create_html_report should be callable"
-            assert callable(generate_site_index), "generate_site_index should be callable"
-            assert callable(create_site_navigation), "create_site_navigation should be callable"
-            assert callable(generate_site_report), "generate_site_report should be callable"
+            assert callable(generate_website_index), "generate_website_index should be callable"
+            assert callable(create_website_navigation), "create_website_navigation should be callable"
+            assert callable(generate_website_report), "generate_website_report should be callable"
             
-            logging.info("Site module imports validated")
+            logging.info("Website module imports validated")
             
         except ImportError as e:
-            pytest.fail(f"Failed to import site module: {e}")
+            pytest.fail(f"Failed to import website module: {e}")
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_site_generation(self, isolated_temp_dir):
-        """Test site generation."""
-        from src.site import generate_site
+    def test_website_generation(self, isolated_temp_dir):
+        """Test website generation."""
+        from src.website import generate_website
         
-        site_data = {
-            "title": "Test Site",
+        website_data = {
+            "title": "Test Website",
             "pages": [
                 {"title": "Page 1", "content": "Content 1"},
                 {"title": "Page 2", "content": "Content 2"}
             ]
         }
         
-        site_path = isolated_temp_dir / "test_site"
+        website_path = isolated_temp_dir / "test_website"
         
         try:
-            generate_site(site_data, site_path)
+            generate_website(website_data, website_path)
             
-            # Check that site directory was created
-            assert site_path.exists(), "Site directory should be created"
-            assert site_path.is_dir(), "Site path should be a directory"
+            # Check that website directory was created
+            assert website_path.exists(), "Website directory should be created"
+            assert website_path.is_dir(), "Website path should be a directory"
             
-            logging.info("Site generation validated")
+            logging.info("Website generation validated")
             
         except Exception as e:
-            logging.warning(f"Site generation failed: {e}")
+            logging.warning(f"Website generation failed: {e}")
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_html_report_creation(self, isolated_temp_dir):
         """Test HTML report creation."""
-        from src.site import create_html_report
+        from src.website import create_html_report
         
         report_data = {
             "title": "Test Report",
@@ -675,7 +675,7 @@ class TestCoreModuleIntegration:
         try:
             from gnn import parse_gnn_file
             from llm import analyze_gnn_model
-            from src.site import generate_html_report
+            from src.website import generate_html_report
             gnn_data = parse_gnn_file(list(sample_gnn_files.values())[0])
             analysis = analyze_gnn_model(gnn_data)
             report_path = isolated_temp_dir / "test_report.html"

@@ -326,8 +326,28 @@ def generate_execution_report(execution_log: List[Dict[str, Any]],
     return executor.generate_execution_report(output_file) 
 
 
-def execute_rendered_simulators(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, verbose: bool = False):
-    """Execute rendered simulator scripts."""
+def execute_rendered_simulators(
+    target_dir: Path, 
+    output_dir: Path, 
+    logger: logging.Logger, 
+    recursive: bool = False, 
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Execute rendered simulator scripts.
+    
+    Args:
+        target_dir: Directory containing rendered simulator scripts
+        output_dir: Output directory for results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional execution options
+        
+    Returns:
+        True if execution succeeded, False otherwise
+    """
     log_step_start(logger, "Executing rendered simulator scripts")
     
     # Use centralized output directory configuration

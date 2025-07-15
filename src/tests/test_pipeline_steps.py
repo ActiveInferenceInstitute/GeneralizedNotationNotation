@@ -60,7 +60,7 @@ class TestPipelineStepCommonInterface:
             9: "9_render.py",
             10: "10_execute.py",
             11: "11_llm.py",
-            12: "12_site.py",
+            12: "12_website.py",
             13: "13_sapf.py"
         }
         
@@ -96,7 +96,7 @@ class TestPipelineStepCommonInterface:
         step_scripts = {
             1: "1_gnn.py", 2: "2_setup.py", 3: "3_tests.py", 4: "4_type_checker.py",
             5: "5_export.py", 6: "6_visualization.py", 7: "7_mcp.py", 8: "8_ontology.py",
-            9: "9_render.py", 10: "10_execute.py", 11: "11_llm.py", 12: "12_site.py",
+            9: "9_render.py", 10: "10_execute.py", 11: "11_llm.py", 12: "12_website.py",
             13: "13_sapf.py"
         }
         
@@ -583,22 +583,22 @@ class TestStep11LLM:
         
         logging.info(f"Step 11 validated {len(tasks)} LLM tasks")
 
-class TestStep12Site:
-    """Test Step 12: Site Generation."""
+class TestStep12Website:
+    """Test Step 12: Website Generation."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step12_site_generation(self, mock_subprocess, mock_imports):
-        """Test site generation execution."""
+    def test_step12_website_generation(self, mock_subprocess, mock_imports):
+        """Test website generation execution."""
         with patch('subprocess.run') as mock_run:
             mock_run.return_value = Mock(
                 returncode=0,
-                stdout="Mock site generation output\nGenerated HTML site",
+                stdout="Mock website generation output\nGenerated HTML website",
                 stderr=""
             )
             
             result = subprocess.run([
-                "python", str(SRC_DIR / "12_site.py"),
+                "python", str(SRC_DIR / "12_website.py"),
                 "--target-dir", str(TEST_CONFIG["sample_gnn_dir"]),
                 "--output-dir", str(TEST_CONFIG["temp_output_dir"])
             ], capture_output=True, text=True)
@@ -624,13 +624,13 @@ class TestStep12Site:
         
         logging.info("Step 12 categorical concepts validated")
 
-class TestStep13DiscopyJaxEval:
-    """Test Step 13: DisCoPy JAX Evaluation."""
+class TestStep13SAPF:
+    """Test Step 13: SAPF Audio Generation."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step13_jax_execution(self, mock_subprocess, mock_imports):
-        """Test JAX-based DisCoPy evaluation."""
+    def test_step13_sapf_execution(self, mock_subprocess, mock_imports):
+        """Test SAPF audio generation."""
         with patch('subprocess.run') as mock_run:
             mock_run.return_value = Mock(
                 returncode=0,
@@ -648,8 +648,8 @@ class TestStep13DiscopyJaxEval:
             logging.info("Step 13 SAPF generation validated")
     
     @pytest.mark.unit
-    def test_step13_jax_integration(self, mock_imports):
-        """Test JAX integration (mocked)."""
+    def test_step13_sapf_integration(self, mock_imports):
+        """Test SAPF integration (mocked)."""
         with patch.dict('sys.modules', {'jax': Mock(), 'jax.numpy': Mock()}):
             try:
                 import jax
@@ -665,46 +665,7 @@ class TestStep13DiscopyJaxEval:
             except Exception as e:
                 pytest.fail(f"JAX integration failed: {e}")
 
-class TestStep14Site:
-    """Test Step 14: Static HTML Site Generation."""
-    
-    @pytest.mark.unit
-    @pytest.mark.safe_to_fail
-    def test_step14_site_generation(self, mock_subprocess, mock_filesystem):
-        """Test HTML site generation."""
-        with patch('subprocess.run') as mock_run:
-            mock_run.return_value = Mock(
-                returncode=0,
-                stdout="Mock site output\nGenerated HTML summary site",
-                stderr=""
-            )
-            
-            result = subprocess.run([
-                "python", str(SRC_DIR / "14_site.py"),
-                "--target-dir", str(TEST_CONFIG["temp_output_dir"]),
-                "--output-dir", str(TEST_CONFIG["temp_output_dir"]),
-                "--site-html-filename", "test_summary.html"
-            ], capture_output=True, text=True)
-            
-            assert result.returncode == 0, "Step 14 should generate site successfully"
-            logging.info("Step 14 site generation validated")
-    
-    @pytest.mark.unit
-    def test_step14_html_structure(self):
-        """Test HTML structure concepts."""
-        html_elements = {
-            "header": "Page title and navigation",
-            "summary": "Pipeline execution summary", 
-            "visualizations": "Embedded charts and graphs",
-            "data_tables": "Results and statistics",
-            "footer": "Generation timestamp and metadata"
-        }
-        
-        for element, description in html_elements.items():
-            assert isinstance(description, str), f"HTML element {element} should have description"
-            assert len(description) > 0, f"HTML element {element} description should not be empty"
-        
-        logging.info(f"Step 14 HTML structure validated with {len(html_elements)} elements")
+
 
 class TestPipelineStepExecution:
     """Test pipeline step execution mechanisms."""

@@ -6,14 +6,32 @@ from utils.path_utils import get_relative_path_if_possible
 from pipeline import get_output_dir_for_script
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error
 
-def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Optional[Path], logger: logging.Logger, recursive: bool = False, verbose: bool = False):
+def process_gnn_folder(
+    target_dir: Path, 
+    output_dir: Path, 
+    logger: logging.Logger, 
+    recursive: bool = False, 
+    verbose: bool = False,
+    **kwargs
+) -> bool:
     """
     Process the GNN folder:
     - Discover .md files.
     - Perform basic parsing for key GNN sections.
     - Log findings and simple statistics to a report file.
+    
+    Args:
+        target_dir: Directory containing GNN files to process
+        output_dir: Output directory for results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional processing options
+        
+    Returns:
+        True if processing succeeded, False otherwise
     """
-    log_step_start(logger, f"Processing GNN files in directory: '{get_relative_path_if_possible(target_dir.resolve(), project_root)}'")
+    log_step_start(logger, f"Processing GNN files in directory: '{target_dir}'")
     
     if recursive:
         logger.info("Recursive mode enabled: searching in subdirectories.")
@@ -23,8 +41,8 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Optiona
     gnn_target_path_abs = target_dir.resolve()
 
     if not target_dir.is_dir():
-        log_step_warning(logger, f"GNN target directory '{get_relative_path_if_possible(gnn_target_path_abs, project_root)}' not found or not a directory. Skipping GNN processing for this target.")
-        return 2
+        log_step_warning(logger, f"GNN target directory '{gnn_target_path_abs}' not found or not a directory. Skipping GNN processing for this target.")
+        return False
 
     # Use centralized output directory configuration
     step_output_dir = get_output_dir_for_script("1_gnn.py", output_dir)
@@ -35,7 +53,7 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Optiona
         logger.debug(f"Created output directory: {step_output_dir}")
     except Exception as e:
         log_step_error(logger, f"Failed to create GNN processing output directory '{step_output_dir}': {e}")
-        return 1
+        return False
 
     report_file_path = step_output_dir / "1_gnn_discovery_report.md"
     report_file_path_abs = report_file_path.resolve()
@@ -53,21 +71,21 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Optiona
     gnn_files = list(target_dir.glob(file_pattern))
 
     if not gnn_files:
-        logger.info(f"No .md files found in '{get_relative_path_if_possible(gnn_target_path_abs, project_root)}' with pattern '{file_pattern}'.")
+        logger.info(f"No .md files found in '{gnn_target_path_abs}' with pattern '{file_pattern}'.")
         try:
             with open(report_file_path, "w", encoding="utf-8") as f_report:
                 f_report.write("# GNN File Discovery Report\n\n")
-                f_report.write(f"No .md files found in `{get_relative_path_if_possible(gnn_target_path_abs, project_root)}` using pattern `{file_pattern}`.\n")
-            logger.info(f"Empty report saved to: {get_relative_path_if_possible(report_file_path_abs, project_root)}")
+                f_report.write(f"No .md files found in `{gnn_target_path_abs}` using pattern `{file_pattern}`.\n")
+            logger.info(f"Empty report saved to: {report_file_path_abs}")
         except IOError as e:
             log_step_error(logger, f"Failed to write empty report to {report_file_path_abs}: {e}")
-        return 0 
+        return True  # Return True for empty directory (not an error)
 
-    logger.info(f"Found {len(gnn_files)} .md file(s) to process in '{get_relative_path_if_possible(gnn_target_path_abs, project_root)}'.")
+    logger.info(f"Found {len(gnn_files)} .md file(s) to process in '{gnn_target_path_abs}'.")
 
     for gnn_file_path_obj in gnn_files:
         resolved_gnn_file_path = gnn_file_path_obj.resolve() 
-        path_for_report_str = get_relative_path_if_possible(resolved_gnn_file_path, project_root)
+        path_for_report_str = str(resolved_gnn_file_path.relative_to(gnn_target_path_abs)) if resolved_gnn_file_path.is_relative_to(gnn_target_path_abs) else str(resolved_gnn_file_path)
         
         logger.debug(f"Processing file: {path_for_report_str}")
         
@@ -193,32 +211,32 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Optiona
     try:
         with open(report_file_path, "w", encoding="utf-8") as f_report:
             f_report.write("# GNN File Discovery Report\n\n")
-            f_report.write(f"**Target Directory:** `{get_relative_path_if_possible(gnn_target_path_abs, project_root)}`\n")
+            f_report.write(f"**Target Directory:** `{gnn_target_path_abs}`\n")
             f_report.write(f"**Search Pattern:** `{file_pattern}`\n")
             f_report.write(f"**Files Found:** {len(gnn_files)}\n\n")
             
             f_report.write("## Summary Statistics\n\n")
-            f_report.write(f"- Files with ModelName section: {found_model_name_count}\n")
-            f_report.write(f"- Files with StateSpaceBlock section: {found_statespace_count}\n")
-            f_report.write(f"- Files with Connections section: {found_connections_count}\n")
-            f_report.write(f"- Files with processing errors: {files_with_errors_count}\n\n")
+            f_report.write(f"- **Files with ModelName:** {found_model_name_count}\n")
+            f_report.write(f"- **Files with StateSpaceBlock:** {found_statespace_count}\n")
+            f_report.write(f"- **Files with Connections:** {found_connections_count}\n")
+            f_report.write(f"- **Files with Errors:** {files_with_errors_count}\n\n")
             
-            f_report.write("## File Details\n\n")
-            
+            f_report.write("## Detailed File Analysis\n\n")
             for file_summary in processed_files_summary:
                 f_report.write(f"### {file_summary['file_name']}\n\n")
                 f_report.write(f"**Path:** `{file_summary['path']}`\n")
                 f_report.write(f"**Model Name:** {file_summary['model_name']}\n\n")
                 
-                f_report.write("**Sections Found:**\n")
-                for section in file_summary['sections_found']:
-                    f_report.write(f"- {section}\n")
-                f_report.write("\n")
+                if file_summary['sections_found']:
+                    f_report.write("**Sections Found:**\n")
+                    for section in file_summary['sections_found']:
+                        f_report.write(f"- {section}\n")
+                    f_report.write("\n")
                 
                 if file_summary['model_parameters']:
                     f_report.write("**Model Parameters:**\n")
-                    for param, value in file_summary['model_parameters'].items():
-                        f_report.write(f"- `{param}`: {value}\n")
+                    for param_name, param_value in file_summary['model_parameters'].items():
+                        f_report.write(f"- `{param_name}` = `{param_value}`\n")
                     f_report.write("\n")
                 
                 if file_summary['errors']:
@@ -226,11 +244,22 @@ def process_gnn_folder(target_dir: Path, output_dir: Path, project_root: Optiona
                     for error in file_summary['errors']:
                         f_report.write(f"- {error}\n")
                     f_report.write("\n")
+                
+                f_report.write("---\n\n")
         
-        log_step_success(logger, f"GNN discovery report saved to: {get_relative_path_if_possible(report_file_path_abs, project_root)}")
+        logger.info(f"Report saved to: {report_file_path_abs}")
         
+        # Log summary
+        if files_with_errors_count == 0:
+            log_step_success(logger, f"Successfully processed {len(gnn_files)} GNN files without errors")
+            return True
+        elif files_with_errors_count < len(gnn_files):
+            log_step_warning(logger, f"Processed {len(gnn_files)} GNN files with {files_with_errors_count} files having errors")
+            return True
+        else:
+            log_step_error(logger, f"All {len(gnn_files)} GNN files had processing errors")
+            return False
+            
     except IOError as e:
         log_step_error(logger, f"Failed to write report to {report_file_path_abs}: {e}")
-        return False
-
-    return True 
+        return False 

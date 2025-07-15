@@ -2,8 +2,7 @@
 """
 GNN Processing Pipeline - Step 11: LLM
 
-This script performs LLM-enhanced analysis and processing of GNN models using
-structured prompts to generate comprehensive analysis reports.
+This script performs LLM-enhanced analysis and processing.
 
 Usage:
     python 11_llm.py [options]
@@ -13,9 +12,9 @@ Usage:
 import sys
 import json
 import asyncio
+import logging
 from pathlib import Path
 import argparse
-import logging
 from typing import List, Dict, Any, Optional
 
 # Import centralized utilities and configuration
@@ -41,41 +40,37 @@ from llm.analyzer import analyze_gnn_files
 # Initialize logger for this step
 logger = setup_step_logging("11_llm", verbose=False)
 
-def parse_task_list(tasks_str: str) -> List[str]: # Changed PromptType to str
+def parse_task_list(tasks_str: str) -> List[str]:
     """
-    Parse the tasks string into a list of PromptType enums.
+    Parse the tasks string into a list of task names.
     
     Args:
         tasks_str: Comma-separated list of task names or 'all'
         
     Returns:
-        List of PromptType enums to execute
+        List of task names to execute
     """
-    # Removed LLM_AVAILABLE check as LLM modules are no longer imported directly
-    
     if tasks_str.lower() == 'all':
-        # Assuming get_default_prompt_sequence is no longer available or not needed
-        # For now, return a placeholder or raise an error if not available
-        return ['summarize_content', 'explain_model'] # Placeholder tasks
+        return ['summarize_content', 'explain_model']  # Placeholder tasks
     
-    # Map string names to PromptType enums
+    # Map string names to task names
     task_map = {
-        'explain': 'explain_model', # Changed PromptType.EXPLAIN_MODEL to 'explain_model'
+        'explain': 'explain_model',
         'explain_model': 'explain_model',
-        'structure': 'analyze_structure', # Changed PromptType.ANALYZE_STRUCTURE to 'analyze_structure'
+        'structure': 'analyze_structure',
         'analyze_structure': 'analyze_structure',
-        'summary': 'summarize_content', # Changed PromptType.SUMMARIZE_CONTENT to 'summarize_content'
+        'summary': 'summarize_content',
         'summarize': 'summarize_content',
         'summarize_content': 'summarize_content',
-        'components': 'identify_components', # Changed PromptType.IDENTIFY_COMPONENTS to 'identify_components'
+        'components': 'identify_components',
         'identify_components': 'identify_components',
-        'math': 'mathematical_analysis', # Changed PromptType.MATHEMATICAL_ANALYSIS to 'mathematical_analysis'
+        'math': 'mathematical_analysis',
         'mathematical_analysis': 'mathematical_analysis',
-        'applications': 'practical_applications', # Changed PromptType.PRACTICAL_APPLICATIONS to 'practical_applications'
+        'applications': 'practical_applications',
         'practical_applications': 'practical_applications',
-        'parameters': 'extract_parameters', # Changed PromptType.EXTRACT_PARAMETERS to 'extract_parameters'
+        'parameters': 'extract_parameters',
         'extract_parameters': 'extract_parameters',
-        'improvements': 'suggest_improvements', # Changed PromptType.SUGGEST_IMPROVEMENTS to 'suggest_improvements'
+        'improvements': 'suggest_improvements',
         'suggest_improvements': 'suggest_improvements',
     }
     
@@ -89,63 +84,59 @@ def parse_task_list(tasks_str: str) -> List[str]: # Changed PromptType to str
     
     return tasks
 
-# Removed analyze_gnn_file_with_llm function
-
-async def process_llm_analysis(
-    target_dir: Path, 
-    output_dir: Path, 
-    tasks: List[str], # Changed PromptType to str
+def process_llm_analysis(
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
     recursive: bool = False,
-    timeout: int = 360
-) -> Dict[str, Any]:
-    """Process GNN files with LLM-enhanced analysis."""
-    log_step_start(logger, "Processing GNN files with LLM-enhanced analysis")
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Standardized LLM analysis processing function.
     
-    # Removed LLM_AVAILABLE check
-    
-    # Use centralized output directory configuration
-    llm_output_dir = get_output_dir_for_script("11_llm.py", output_dir)
-    llm_output_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Find GNN files
-    if recursive:
-        gnn_files = list(target_dir.rglob("*.md"))
-    else:
-        gnn_files = list(target_dir.glob("*.md"))
-    
-    if not gnn_files:
-        log_step_warning(logger, f"No GNN files found in {target_dir}")
-        return {'success': False, 'error': 'No GNN files found'}
-    
+    Args:
+        target_dir: Directory containing GNN files to analyze
+        output_dir: Output directory for analysis results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional processing options
+        
+    Returns:
+        True if processing succeeded, False otherwise
+    """
     try:
-        # Call the new analyze_gnn_files function
-        overall_results = await analyze_gnn_files(
-            gnn_files=gnn_files,
+        # Use centralized output directory configuration
+        llm_output_dir = get_output_dir_for_script("11_llm.py", output_dir)
+        llm_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Call the existing analyze_gnn_files function
+        overall_results = analyze_gnn_files(
+            target_dir=target_dir,
             output_dir=llm_output_dir,
-            tasks=tasks,
             logger=logger,
-            timeout=timeout
+            recursive=recursive,
+            verbose=verbose
         )
         
         # Log results summary
-        if overall_results['files_processed'] > 0:
-            success_rate = (overall_results['successful_analyses'] / overall_results['total_analyses']) * 100
+        if overall_results.get('files_processed', 0) > 0:
+            success_rate = (overall_results.get('successful_analyses', 0) / overall_results.get('total_analyses', 1)) * 100
             log_step_success(logger, 
-                f"LLM processing completed: {overall_results['files_processed']} files, "
-                f"{overall_results['successful_analyses']}/{overall_results['total_analyses']} analyses successful ({success_rate:.1f}%)")
+                f"LLM processing completed: {overall_results.get('files_processed', 0)} files, "
+                f"{overall_results.get('successful_analyses', 0)}/{overall_results.get('total_analyses', 0)} analyses successful ({success_rate:.1f}%)")
         else:
             log_step_warning(logger, "No files were successfully processed")
-            overall_results['success'] = False
+            return False
         
-        return overall_results
+        return overall_results.get('success', False)
         
     except Exception as e:
         log_step_error(logger, f"LLM processing failed: {e}")
-        return {'success': False, 'error': str(e)}
+        return False
 
-# Removed create_placeholder_analysis function
-
-def main(parsed_args: argparse.Namespace):
+def main(parsed_args):
     """Main function for LLM processing."""
     
     # Log step metadata from centralized configuration
@@ -164,20 +155,20 @@ def main(parsed_args: argparse.Namespace):
     
     # Process LLM analysis
     try:
-        results = asyncio.run(process_llm_analysis(
+        success = process_llm_analysis(
             target_dir=Path(parsed_args.target_dir),
             output_dir=Path(parsed_args.output_dir),
-            tasks=tasks,
+            logger=logger,
             recursive=getattr(parsed_args, 'recursive', False),
+            verbose=getattr(parsed_args, 'verbose', False),
             timeout=getattr(parsed_args, 'llm_timeout', 360)
-        ))
+        )
         
-        if results.get('success', False):
-            # Removed setup_required check as it's no longer handled locally
+        if success:
             log_step_success(logger, "LLM processing completed successfully")
             return 0
         else:
-            log_step_error(logger, f"LLM processing failed: {results.get('error', 'Unknown error')}")
+            log_step_error(logger, "LLM processing failed")
             return 1
     
     except Exception as e:
@@ -190,6 +181,7 @@ if __name__ == '__main__':
         parsed_args = EnhancedArgumentParser.parse_step_arguments("11_llm")
     else:
         # Fallback argument parsing
+        import argparse
         parser = argparse.ArgumentParser(description="LLM-enhanced analysis and processing")
         parser.add_argument("--target-dir", type=Path, required=True,
                           help="Target directory containing GNN files")

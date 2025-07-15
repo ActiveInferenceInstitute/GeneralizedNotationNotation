@@ -60,7 +60,7 @@ Each numbered script corresponds to a specific module folder and implements real
 9. **9_render.py** → `src/render/` - Code generation for PyMDP, RxInfer simulation environments
 10. **10_execute.py** → `src/execute/` - Execute rendered simulation scripts
 11. **11_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
-12. **12_site.py** → `src/site/` - Static HTML site generation from pipeline artifacts
+12. **12_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts
 13. **13_sapf.py** → `src/sapf/` - SAPF (Sound As Pure Form) audio generation and sonification
 
 ### Centralized Infrastructure
@@ -253,9 +253,9 @@ Every applicable module includes `mcp.py` with:
 ### Updated Module Naming Conventions
 
 #### Current Module Structure (Post-Renaming)
-- **Core Modules**: `gnn/`, `type_checker/`, `export/`, `visualization/`, `render/`, `execute/`, `llm/`, `site/`, `sapf/`
+- **Core Modules**: `gnn/`, `type_checker/`, `export/`, `visualization/`, `render/`, `execute/`, `llm/`, `website/`, `sapf/`
 - **Infrastructure**: `utils/`, `pipeline/`, `mcp/`, `ontology/`, `setup/`, `tests/`
-- **Pipeline Scripts**: `1_gnn.py`, `2_setup.py`, `3_tests.py`, `4_type_checker.py`, `5_export.py`, `6_visualization.py`, `7_mcp.py`, `8_ontology.py`, `9_render.py`, `10_execute.py`, `11_llm.py`, `12_site.py`, `13_sapf.py`
+- **Pipeline Scripts**: `1_gnn.py`, `2_setup.py`, `3_tests.py`, `4_type_checker.py`, `5_export.py`, `6_visualization.py`, `7_mcp.py`, `8_ontology.py`, `9_render.py`, `10_execute.py`, `11_llm.py`, `12_website.py`, `13_sapf.py`
 
 #### Output Directory Structure
 - **Type Checking**: `output/type_check/` (renamed from `gnn_type_check/`)
@@ -270,7 +270,7 @@ Every applicable module includes `mcp.py` with:
 - **Execution Results**: `output/execution_results/`
 - **LLM Processing**: `output/llm_processing_step/`
 - **SAPF Processing**: `output/sapf_processing_step/`
-- **Site Generation**: `output/site/`
+- **Website Generation**: `output/website/`
 - **Pipeline Logs**: `output/logs/`
 
 **Critical Implementation Philosophy**: This project implements a comprehensive scientific computing pipeline with real, functional components at every level. Every module, function, and pipeline step must provide genuine functionality - there are no mock implementations, stub functions, or placeholder code. The architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards. 

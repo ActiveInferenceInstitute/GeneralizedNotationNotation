@@ -22,8 +22,28 @@ except ImportError as e:
     FORMAT_EXPORTERS_LOADED = False
     HAS_NETWORKX = False
 
-def export_gnn_files(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False):
-    """Export GNN files to multiple formats."""
+def export_gnn_files(
+    target_dir: Path, 
+    output_dir: Path, 
+    logger: logging.Logger, 
+    recursive: bool = False, 
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Export GNN files to multiple formats.
+    
+    Args:
+        target_dir: Directory containing GNN files to export
+        output_dir: Output directory for results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional export options
+        
+    Returns:
+        True if export succeeded, False otherwise
+    """
     log_step_start(logger, f"Exporting GNN files from: {target_dir}")
     
     if not FORMAT_EXPORTERS_LOADED:

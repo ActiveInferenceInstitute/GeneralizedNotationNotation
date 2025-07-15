@@ -974,3 +974,87 @@ def estimate_resources(gnn_content: str) -> Dict[str, Any]:
     finally:
         # Clean up temporary file
         os.unlink(temp_path) 
+
+
+def run_type_checking(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, strict: bool = False):
+    """Run comprehensive type checking on GNN files."""
+    try:
+        from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
+        from pipeline import get_output_dir_for_script
+    except ImportError:
+        # Fallback logging functions
+        def log_step_start(logger, msg): logger.info(f"🚀 {msg}")
+        def log_step_success(logger, msg): logger.info(f"✅ {msg}")
+        def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
+        def log_step_error(logger, msg): logger.error(f"❌ {msg}")
+        def get_output_dir_for_script(script, output_dir): return output_dir / "type_check"
+        performance_tracker = None
+    
+    log_step_start(logger, "Running comprehensive type checking on GNN files")
+    
+    # Use centralized output directory configuration
+    type_check_output_dir = get_output_dir_for_script("4_type_checker.py", output_dir)
+    type_check_output_dir.mkdir(parents=True, exist_ok=True)
+    
+    try:
+        # Initialize type checker
+        type_checker = GNNTypeChecker(strict_mode=strict)
+        
+        # Find GNN files
+        pattern = "**/*.md" if recursive else "*.md"
+        gnn_files = list(target_dir.glob(pattern))
+        
+        if not gnn_files:
+            log_step_warning(logger, f"No GNN files found in {target_dir}")
+            return 0
+        
+        logger.info(f"Found {len(gnn_files)} GNN files to type check")
+        
+        # Process each file
+        successful_checks = 0
+        failed_checks = 0
+        
+        with performance_tracker.track_operation("type_check_all_files"):
+            for gnn_file in gnn_files:
+                try:
+                    logger.debug(f"Type checking file: {gnn_file}")
+                    
+                    # Create file-specific output directory
+                    file_output_dir = type_check_output_dir / gnn_file.stem
+                    file_output_dir.mkdir(parents=True, exist_ok=True)
+                    
+                    # Run type checking
+                    is_valid, errors, warnings, details = type_checker.check_file(str(gnn_file))
+                    results = {
+                        'success': is_valid,
+                        'errors': errors,
+                        'warnings': warnings,
+                        'details': details
+                    }
+                    
+                    if results.get('success', False):
+                        successful_checks += 1
+                        logger.debug(f"Type checking completed for {gnn_file.name}")
+                    else:
+                        failed_checks += 1
+                        log_step_warning(logger, f"Type checking failed for {gnn_file.name}")
+                        
+                except Exception as e:
+                    failed_checks += 1
+                    log_step_error(logger, f"Failed to type check {gnn_file.name}: {e}")
+        
+        # Log results summary
+        total_files = len(gnn_files)
+        if successful_checks == total_files:
+            log_step_success(logger, f"All {total_files} files passed type checking")
+            return 0
+        elif successful_checks > 0:
+            log_step_warning(logger, f"Partial success: {successful_checks}/{total_files} files passed type checking")
+            return 0
+        else:
+            log_step_error(logger, "No files passed type checking")
+            return 1
+        
+    except Exception as e:
+        log_step_error(logger, f"Type checking failed: {e}")
+        return 1 

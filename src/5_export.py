@@ -36,31 +36,49 @@ from export.core import export_gnn_files
 # Initialize logger for this step
 logger = setup_step_logging("5_export", verbose=False)
 
-# Attempt to import format exporters
-# try:
-#     from export.format_exporters import (
-#         _gnn_model_to_dict,
-#         export_to_json_gnn,
-#         export_to_xml_gnn,
-#         export_to_plaintext_summary,
-#         export_to_plaintext_dsl,
-#         export_to_gexf,
-#         export_to_graphml,
-#         export_to_json_adjacency_list,
-#         export_to_python_pickle,
-#         HAS_NETWORKX
-#     )
-#     FORMAT_EXPORTERS_LOADED = True
-#     logger.debug("Successfully imported format exporters")
-# except ImportError as e:
-#     log_step_error(logger, f"Failed to import format_exporters. Individual GNN export formats will be unavailable. Error: {e}")
-#     FORMAT_EXPORTERS_LOADED = False
-#     HAS_NETWORKX = False
+def process_export_standardized(
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
+    recursive: bool = False,
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Standardized export processing function with consistent signature.
+    
+    Args:
+        target_dir: Directory containing GNN files to export
+        output_dir: Output directory for exported files
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional processing options
+        
+    Returns:
+        True if processing succeeded, False otherwise
+    """
+    try:
+        # Update logger verbosity if needed
+        if verbose:
+            logger.setLevel(logging.DEBUG)
+        
+        # Call the existing export_gnn_files function with updated signature
+        success = export_gnn_files(
+            logger=logger,
+            target_dir=target_dir,
+            output_dir=output_dir,
+            recursive=recursive,
+            verbose=verbose
+        )
+        
+        return success
+        
+    except Exception as e:
+        log_step_error(logger, f"Export processing failed: {e}")
+        return False
 
-# Remove local definition of export_gnn_files and format exporter imports
-# In main(), call export_gnn_files with the logger and other arguments
-
-def main(parsed_args: argparse.Namespace):
+def main(parsed_args):
     """Main function for GNN export operations."""
     
     # Log step metadata from centralized configuration
@@ -71,12 +89,13 @@ def main(parsed_args: argparse.Namespace):
     if parsed_args.verbose:
         logger.setLevel(logging.DEBUG)
     
-    # Run export
-    success = export_gnn_files(
-        logger=logger,
+    # Run export with standardized function
+    success = process_export_standardized(
         target_dir=Path(parsed_args.target_dir),
         output_dir=Path(parsed_args.output_dir),
-        recursive=getattr(parsed_args, 'recursive', False)
+        logger=logger,
+        recursive=getattr(parsed_args, 'recursive', False),
+        verbose=getattr(parsed_args, 'verbose', False)
     )
     
     if success:
