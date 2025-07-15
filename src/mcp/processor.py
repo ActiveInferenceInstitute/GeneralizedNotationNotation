@@ -7,8 +7,8 @@ import json
 
 # Import MCP functionality
 try:
-    from .mcp_server import MCPServer
-    from .tool_registry import ToolRegistry
+    from .mcp import MCPServer
+    from .mcp import ToolRegistry
     MCP_AVAILABLE = True
 except ImportError as e:
     MCP_AVAILABLE = False

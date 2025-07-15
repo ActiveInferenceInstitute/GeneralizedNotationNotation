@@ -20,7 +20,6 @@ import src.visualization
 import src.render
 import src.execute
 import src.llm
-import src.site
 import src.sapf
 import src.ontology
 import src.mcp
@@ -158,8 +157,8 @@ class TestRenderModule:
         assert 'mcp_integration' in src.render.FEATURES
 
 
-class TestSiteModule:
-    """Test the site module's exposed API."""
+class TestWebsiteModule:
+    """Test the website module's exposed API."""
     
     def test_module_imports(self):
         """Test that all expected functions are available."""

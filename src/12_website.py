@@ -44,7 +44,7 @@ from pipeline import (
 )
 
 sys.path.insert(0, str(Path(__file__).parent))
-from website.generator import generate_site
+from website.generator import generate_website
 
 # Initialize logger for this step
 logger = setup_step_logging("12_website", verbose=False)
@@ -78,7 +78,7 @@ def process_website_generation(
             return False
         
         # Generate website
-        generate_site(logger, output_dir, output_dir / "website_step")
+        generate_website(logger, output_dir, output_dir / "website_step")
         
         log_step_success(logger, f"Website generated successfully in {output_dir / 'website_step' / 'index.html'}")
         return True

@@ -10,7 +10,7 @@ import sys
 import argparse
 import logging
 from pathlib import Path
-from typing import Optional, Any, Callable, List
+from typing import Optional, Any, Callable, List, Dict
 
 # Standard import pattern for all pipeline modules
 try:

@@ -8,8 +8,8 @@ import json
 # Import LLM functionality
 try:
     from .providers.openai_provider import OpenAIProvider
-    from .providers.anthropic_provider import AnthropicProvider
-    from .providers.local_provider import LocalProvider
+    from .providers.openrouter_provider import OpenRouterProvider
+    from .providers.perplexity_provider import PerplexityProvider
     LLM_PROVIDERS_AVAILABLE = True
 except ImportError as e:
     LLM_PROVIDERS_AVAILABLE = False
@@ -60,8 +60,8 @@ def analyze_gnn_files(
     providers = {}
     try:
         providers['openai'] = OpenAIProvider()
-        providers['anthropic'] = AnthropicProvider()
-        providers['local'] = LocalProvider()
+        providers['openrouter'] = OpenRouterProvider()
+        providers['perplexity'] = PerplexityProvider()
         logger.debug("LLM providers initialized successfully")
     except Exception as e:
         log_step_warning(logger, f"Some LLM providers failed to initialize: {e}")

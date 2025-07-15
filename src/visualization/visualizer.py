@@ -9,6 +9,7 @@ import os
 import json
 import time
 import datetime
+import logging
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -611,9 +612,9 @@ def visualize_gnn_model(gnn_content: str, model_name: str, output_dir: str) -> d
 
 
 def generate_visualizations(
+    logger: logging.Logger,
     target_dir: Path, 
     output_dir: Path, 
-    logger: logging.Logger, 
     recursive: bool = False, 
     verbose: bool = False,
     **kwargs

@@ -478,21 +478,21 @@ class TestStep11LLMComprehensive:
         except Exception as e:
             logging.warning(f"LLM description generation test failed: {e}")
 
-class TestStep12SiteComprehensive:
-    """Comprehensive tests for Step 12: Site Generation."""
+class TestStep12WebsiteComprehensive:
+    """Comprehensive tests for Step 12: Website Generation."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step12_website_generation(self, isolated_temp_dir):
         """Test website generation functionality."""
         from src.website import generate_website_from_pipeline_output, generate_html_report
-        # Test site generation
+        # Test website generation
         try:
-            site_path = isolated_temp_dir / "test_site"
-            generate_website_from_pipeline_output({"test": "data"}, site_path)
-            logging.info("Site generation test completed")
+            website_path = isolated_temp_dir / "test_website"
+            generate_website_from_pipeline_output({"test": "data"}, website_path)
+            logging.info("Website generation test completed")
         except Exception as e:
-            logging.warning(f"Site generation test failed: {e}")
+            logging.warning(f"Website generation test failed: {e}")
         # Test HTML report creation
         try:
             html_path = isolated_temp_dir / "test_report.html"

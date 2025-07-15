@@ -5,6 +5,8 @@ This package provides tools for generating comprehensive HTML reports from GNN p
 including visualizations, exports, execution results, and other artifacts.
 """
 
+from typing import Dict, Any
+
 # Core site generation functions
 from .generator import (
     generate_html_report,

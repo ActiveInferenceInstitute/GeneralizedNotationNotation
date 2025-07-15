@@ -7,7 +7,7 @@ import logging
 from pipeline import get_output_dir_for_script
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error
 
-def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False):
+def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, include_slow: bool = False, fast_only: bool = True):
     """Run the test suite and save results."""
     log_step_start(logger, "Running test suite")
     
@@ -19,18 +19,41 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False):
     xml_report_path = test_output_dir / "pytest_report.xml"
     json_report_path = test_output_dir / "test_results.json"
     
-    # Prepare pytest command (with coverage and JSON reporting)
+    # Prepare pytest command with optimized settings
     pytest_cmd = [
         sys.executable, "-m", "pytest",
         "--verbose" if verbose else "--quiet",
         "--tb=short",
         f"--junitxml={xml_report_path}",
-        "--cov=src",
-        f"--cov-report=html:{output_dir}/coverage",
-        f"--cov-report=json:{output_dir}/test_coverage.json",
-        "--cov-report=term-missing",
-        "src/tests/"
+        "--maxfail=10",  # Stop after 10 failures to prevent hanging
+        "--durations=10",  # Show 10 slowest tests
+        "--disable-warnings",  # Reduce noise
     ]
+    
+    # Add coverage only if explicitly requested or in verbose mode
+    if verbose:
+        pytest_cmd.extend([
+            "--cov=src",
+            f"--cov-report=html:{output_dir}/coverage",
+            f"--cov-report=json:{output_dir}/test_coverage.json",
+            "--cov-report=term-missing",
+        ])
+    
+    # Test selection logic
+    if fast_only:
+        # Run only fast tests
+        pytest_cmd.extend(["-m", "fast"])
+        pytest_cmd.append("src/tests/test_fast_suite.py")
+        logger.info("Running fast test suite only")
+    elif not include_slow:
+        # Exclude slow tests but run all other tests
+        pytest_cmd.extend(["-m", "not slow"])
+        pytest_cmd.append("src/tests/")
+        logger.info("Excluding slow tests (use --include-slow to include them)")
+    else:
+        # Run all tests including slow ones
+        pytest_cmd.append("src/tests/")
+        logger.info("Running all tests including slow tests")
     
     # Try to add JSON reporting if the plugin is available
     try:
@@ -55,13 +78,20 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False):
     logger.info(f"Running command: {' '.join(pytest_cmd)}")
     
     try:
-        # Run pytest
+        # Run pytest with appropriate timeout
+        if fast_only:
+            timeout_seconds = 60  # 1 minute for fast tests
+        elif include_slow:
+            timeout_seconds = 300  # 5 minutes for slow tests
+        else:
+            timeout_seconds = 120  # 2 minutes for regular tests
+            
         result = subprocess.run(
             pytest_cmd,
             capture_output=True,
             text=True,
             cwd=Path(__file__).parent.parent.parent,  # Project root
-            timeout=300  # 5 minute timeout
+            timeout=timeout_seconds
         )
         
         # Log results
@@ -89,6 +119,9 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False):
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "exit_code": result.returncode,
             "success": result.returncode == 0,
+            "fast_only": fast_only,
+            "slow_tests_included": include_slow,
+            "timeout_seconds": timeout_seconds,
             "stdout": result.stdout,
             "stderr": result.stderr,
             "xml_report": str(xml_report_path) if xml_report_path.exists() else None,
@@ -108,7 +141,7 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False):
         return result.returncode == 0
         
     except subprocess.TimeoutExpired:
-        log_step_error(logger, "Test execution timed out after 5 minutes")
+        log_step_error(logger, f"Test execution timed out after {timeout_seconds} seconds")
         return False
     except Exception as e:
         log_step_error(logger, f"Error running tests: {e}")

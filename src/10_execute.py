@@ -135,10 +135,10 @@ def main(parsed_args):
     if parsed_args.verbose:
         logger.setLevel(logging.DEBUG)
     
-    # Execute rendered simulators
+    # Execute rendered simulators with fallbacks
     success = process_execution_standardized(
-        target_dir=Path(parsed_args.target_dir),
-        output_dir=Path(parsed_args.output_dir),
+        target_dir=Path(parsed_args.target_dir) if parsed_args.target_dir is not None else Path("../output/gnn_rendered_simulators"),
+        output_dir=Path(parsed_args.output_dir) if parsed_args.output_dir is not None else Path("../output/execute_logs"),
         logger=logger,
         recursive=getattr(parsed_args, 'recursive', False),
         verbose=getattr(parsed_args, 'verbose', False)

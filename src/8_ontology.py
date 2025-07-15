@@ -13,6 +13,7 @@ Usage:
 """
 
 import sys
+import logging
 from pathlib import Path
 
 # Import centralized utilities and configuration

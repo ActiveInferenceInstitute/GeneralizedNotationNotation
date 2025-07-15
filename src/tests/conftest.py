@@ -26,6 +26,8 @@ import importlib
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Generator, Tuple
 import subprocess
+import jax
+from unittest.mock import patch
 
 # Import test configuration and utilities
 from . import (
@@ -127,6 +129,18 @@ def test_dir() -> Path:
         Path object pointing to the tests directory
     """
     return TEST_DIR
+
+# Fixture to patch JAX cleanup function to avoid logging errors on exit
+@pytest.fixture(autouse=True, scope="session")
+def patch_jax_cleanup():
+    """
+    Patch jax._src.xla_bridge._clear_backends to prevent it from running at exit.
+    This avoids "I/O operation on closed file" errors from the logging module
+    when running pytest. JAX's atexit handler for cleanup can conflict with
+    pytest's log capturing.
+    """
+    with patch("jax._src.xla_bridge._clear_backends") as mock_clear_backends:
+        yield mock_clear_backends
 
 # =============================================================================
 # Function-level fixtures (run for each test function)
@@ -649,3 +663,12 @@ def assert_directory_structure(base_dir: Path, expected_structure: Dict[str, Any
             assert_directory_structure(path, content)
         else:
             assert path.is_file(), f"Should be file: {path}" 
+
+def pytest_sessionfinish(session):
+    """
+    Called after the whole test run finishes.
+    This hook is used to clean up logging handlers to prevent "I/O operation
+    on closed file" errors when JAX attempts to log during shutdown after
+    pytest has closed the log file.
+    """
+    logging.shutdown() 

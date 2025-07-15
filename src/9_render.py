@@ -111,9 +111,9 @@ def main(parsed_args):
     if parsed_args.verbose:
         logger.setLevel(logging.DEBUG)
     
-    # Get input and output directories
-    input_dir = Path(parsed_args.target_dir)
-    output_dir = Path(parsed_args.output_dir)
+    # Get input and output directories with fallbacks
+    input_dir = Path(parsed_args.target_dir) if parsed_args.target_dir is not None else Path("../input/gnn_files")
+    output_dir = Path(parsed_args.output_dir) if parsed_args.output_dir is not None else Path("../output/gnn_rendered_simulators")
     recursive = getattr(parsed_args, 'recursive', True)
     
     # Render GNN files

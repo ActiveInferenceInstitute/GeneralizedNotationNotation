@@ -41,6 +41,8 @@ def run_tests_standardized(
     logger: logging.Logger,
     recursive: bool = False,
     verbose: bool = False,
+    include_slow: bool = False,
+    fast_only: bool = True,
     **kwargs
 ) -> bool:
     """
@@ -52,6 +54,8 @@ def run_tests_standardized(
         logger: Logger instance for this step
         recursive: Whether to process files recursively
         verbose: Whether to enable verbose logging
+        include_slow: Whether to include slow tests
+        fast_only: Whether to run only fast tests
         **kwargs: Additional processing options
         
     Returns:
@@ -59,7 +63,7 @@ def run_tests_standardized(
     """
     try:
         # Call the existing run_tests function
-        success = run_tests(logger, output_dir, verbose)
+        success = run_tests(logger, output_dir, verbose, include_slow, fast_only)
         
         return success
         
@@ -84,7 +88,9 @@ def main(parsed_args):
         output_dir=Path(parsed_args.output_dir),
         logger=logger,
         recursive=getattr(parsed_args, 'recursive', False),
-        verbose=getattr(parsed_args, 'verbose', False)
+        verbose=getattr(parsed_args, 'verbose', False),
+        include_slow=getattr(parsed_args, 'include_slow', False),
+        fast_only=getattr(parsed_args, 'fast_only', True)
     )
     
     if success:
@@ -108,6 +114,10 @@ if __name__ == '__main__':
                           help="Output directory for generated artifacts")
         parser.add_argument("--verbose", action="store_true",
                           help="Enable verbose output")
+        parser.add_argument("--include-slow", action="store_true",
+                          help="Include slow tests in the run")
+        parser.add_argument("--fast-only", action="store_true",
+                          help="Run only fast tests")
         parsed_args = parser.parse_args()
     
     exit_code = main(parsed_args)

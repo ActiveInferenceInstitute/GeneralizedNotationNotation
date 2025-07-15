@@ -224,7 +224,7 @@ class TestProjectConfiguration:
                 (1, "gnn"), (2, "setup"), (3, "tests"), (4, "type_checker"),
                 (5, "export"), (6, "visualization"), (7, "mcp"), (8, "ontology"),
                 (9, "render"), (10, "execute"), (11, "llm"), (12, "discopy"),
-                (13, "discopy_jax_eval"), (14, "site")
+                (13, "discopy_jax_eval"), (14, "website")
             ]
         ]
         
