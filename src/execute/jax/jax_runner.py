@@ -21,9 +21,25 @@ def is_jax_available() -> bool:
     """Check if JAX is importable and print device info."""
     try:
         import jax
-        logger.info(f"JAX version: {jax.__version__}")
-        devices = jax.devices()
-        logger.info(f"JAX devices: {[str(d) for d in devices]}")
+        # Handle different JAX versions
+        try:
+            version = jax.__version__
+        except AttributeError:
+            # For older JAX versions, try alternative version attributes
+            try:
+                import jaxlib
+                version = jaxlib.__version__
+            except (ImportError, AttributeError):
+                version = "unknown"
+        
+        logger.info(f"JAX version: {version}")
+        
+        try:
+            devices = jax.devices()
+            logger.info(f"JAX devices: {[str(d) for d in devices]}")
+        except Exception as e:
+            logger.warning(f"Could not get JAX devices: {e}")
+        
         return True
     except ImportError as e:
         logger.error(f"JAX not available: {e}")
@@ -42,26 +58,75 @@ def find_jax_scripts(base_dir: Union[str, Path], recursive: bool = True) -> List
     return [f for f in base_path.glob(pattern) if "jax" in f.name.lower() or f.parent.name == "jax"]
 
 def execute_jax_script(script_path: Path, verbose: bool = False, device: Optional[str] = None) -> bool:
-    """Execute a single JAX script with optional device selection."""
+    """Execute a single JAX script with enhanced dependency checking and error handling."""
     if not script_path.exists():
         logger.error(f"Script file not found: {script_path}")
         return False
+    
     logger.info(f"Executing JAX script: {script_path}")
+    
+    # Check JAX and related dependencies
+    required_deps = ["jax", "flax", "optax", "numpy"]
+    missing_deps = []
+    
+    for dep in required_deps:
+        try:
+            __import__(dep)
+            logger.debug(f"✅ Dependency available: {dep}")
+        except ImportError:
+            missing_deps.append(dep)
+            logger.warning(f"⚠️ Missing dependency: {dep}")
+    
+    if missing_deps:
+        logger.error(f"Missing required JAX dependencies: {', '.join(missing_deps)}")
+        logger.error("Please install missing dependencies:")
+        logger.error(f"pip install {' '.join(missing_deps)}")
+        return False
+    
+    # Validate script syntax
+    try:
+        with open(script_path, 'r') as f:
+            content = f.read()
+            compile(content, script_path.name, 'exec')
+        logger.debug(f"✅ Script syntax valid: {script_path.name}")
+    except SyntaxError as e:
+        logger.error(f"❌ Syntax error in {script_path.name}: {e}")
+        return False
+    
     env = os.environ.copy()
     if device:
         env["JAX_PLATFORM_NAME"] = device
+        logger.info(f"Using JAX device: {device}")
+    
     try:
-        result = subprocess.run([sys.executable, str(script_path)], capture_output=True, text=True, env=env)
+        # Execute with enhanced error capture
+        result = subprocess.run(
+            [sys.executable, str(script_path)], 
+            capture_output=True, 
+            text=True, 
+            env=env,
+            cwd=script_path.parent,
+            timeout=300  # 5 minute timeout
+        )
+        
         if result.returncode == 0:
-            logger.info(f"Script executed successfully: {script_path.name}")
-            if verbose:
+            logger.info(f"✅ Script executed successfully: {script_path.name}")
+            if verbose and result.stdout.strip():
                 logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
             return True
         else:
-            logger.error(f"Script execution failed: {script_path.name}\n{result.stderr}")
+            logger.error(f"❌ Script execution failed: {script_path.name}")
+            logger.error(f"Return code: {result.returncode}")
+            if result.stderr.strip():
+                logger.error(f"Error output:\n{result.stderr}")
+            if result.stdout.strip():
+                logger.debug(f"Standard output:\n{result.stdout}")
             return False
+    except subprocess.TimeoutExpired:
+        logger.error(f"❌ Script execution timed out: {script_path.name}")
+        return False
     except Exception as e:
-        logger.error(f"Error executing script {script_path.name}: {e}")
+        logger.error(f"❌ Error executing script {script_path.name}: {e}")
         return False
 
 def run_jax_scripts(pipeline_output_dir: Union[str, Path], recursive_search: bool = True, verbose: bool = False, device: Optional[str] = None) -> bool:

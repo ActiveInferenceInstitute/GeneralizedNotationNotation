@@ -335,7 +335,7 @@ def execute_rendered_simulators(
     **kwargs
 ) -> bool:
     """
-    Execute rendered simulator scripts.
+    Execute rendered simulator scripts with enhanced error handling and dependency checking.
     
     Args:
         target_dir: Directory containing rendered simulator scripts
@@ -348,7 +348,7 @@ def execute_rendered_simulators(
     Returns:
         True if execution succeeded, False otherwise
     """
-    log_step_start(logger, "Executing rendered simulator scripts")
+    log_step_start(logger, "Executing rendered simulator scripts with enhanced error handling")
     
     # Use centralized output directory configuration
     execution_output_dir = get_output_dir_for_script("10_execute.py", output_dir)
@@ -364,13 +364,62 @@ def execute_rendered_simulators(
             "activeinference_executions": [],
             "jax_executions": [],
             "total_successes": 0,
-            "total_failures": 0
+            "total_failures": 0,
+            "dependency_issues": [],
+            "syntax_errors": [],
+            "execution_details": {}
         }
+        
+        # Pre-execution validation and dependency checking
+        logger.info("🔍 Pre-execution validation and dependency checking...")
+        
+        # Check Python dependencies
+        python_deps = ["numpy", "pymdp", "flax", "jax", "optax"]
+        missing_python_deps = []
+        for dep in python_deps:
+            try:
+                __import__(dep)
+                logger.debug(f"✅ Python dependency available: {dep}")
+            except ImportError:
+                missing_python_deps.append(dep)
+                logger.warning(f"⚠️ Python dependency missing: {dep}")
+        
+        if missing_python_deps:
+            execution_results["dependency_issues"].extend([
+                f"Missing Python dependencies: {', '.join(missing_python_deps)}"
+            ])
+        
+        # Check Julia availability
+        try:
+            result = subprocess.run(["julia", "--version"], capture_output=True, text=True, check=False)
+            if result.returncode == 0:
+                logger.info(f"✅ Julia available: {result.stdout.strip()}")
+            else:
+                logger.warning("⚠️ Julia not available or not working properly")
+                execution_results["dependency_issues"].append("Julia not available")
+        except FileNotFoundError:
+            logger.warning("⚠️ Julia not found in PATH")
+            execution_results["dependency_issues"].append("Julia not found in PATH")
         
         # Execute PyMDP scripts if available
         if PYMDP_AVAILABLE and run_pymdp_scripts:
             try:
                 with performance_tracker.track_operation("execute_pymdp_scripts"):
+                    logger.info("🚀 Executing PyMDP scripts...")
+                    
+                    # Pre-validate PyMDP scripts for syntax errors
+                    pymdp_dir = target_dir / "gnn_rendered_simulators" / "pymdp"
+                    if pymdp_dir.exists():
+                        pymdp_scripts = list(pymdp_dir.glob("*.py"))
+                        for script in pymdp_scripts:
+                            try:
+                                with open(script, 'r') as f:
+                                    compile(f.read(), script.name, 'exec')
+                                logger.debug(f"✅ PyMDP script syntax valid: {script.name}")
+                            except SyntaxError as e:
+                                logger.warning(f"⚠️ PyMDP script syntax error in {script.name}: {e}")
+                                execution_results["syntax_errors"].append(f"PyMDP: {script.name} - {e}")
+                    
                     pymdp_success = run_pymdp_scripts(
                         pipeline_output_dir=target_dir,
                         recursive_search=recursive,
@@ -378,10 +427,18 @@ def execute_rendered_simulators(
                     )
                     if pymdp_success:
                         execution_results["total_successes"] += 1
-                        execution_results["pymdp_executions"].append({"status": "SUCCESS", "message": "PyMDP scripts executed successfully"})
+                        execution_results["pymdp_executions"].append({
+                            "status": "SUCCESS", 
+                            "message": "PyMDP scripts executed successfully",
+                            "scripts_processed": len(list(pymdp_dir.glob("*.py"))) if pymdp_dir.exists() else 0
+                        })
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["pymdp_executions"].append({"status": "FAILED", "message": "PyMDP script execution failed"})
+                        execution_results["pymdp_executions"].append({
+                            "status": "FAILED", 
+                            "message": "PyMDP script execution failed",
+                            "scripts_processed": len(list(pymdp_dir.glob("*.py"))) if pymdp_dir.exists() else 0
+                        })
                 log_step_success(logger, "PyMDP script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
@@ -392,6 +449,7 @@ def execute_rendered_simulators(
         if RXINFER_AVAILABLE and run_rxinfer_scripts:
             try:
                 with performance_tracker.track_operation("execute_rxinfer_scripts"):
+                    logger.info("🚀 Executing RxInfer scripts...")
                     rxinfer_success = run_rxinfer_scripts(
                         pipeline_output_dir=target_dir,
                         recursive_search=recursive,
@@ -399,10 +457,16 @@ def execute_rendered_simulators(
                     )
                     if rxinfer_success:
                         execution_results["total_successes"] += 1
-                        execution_results["rxinfer_executions"].append({"status": "SUCCESS", "message": "RxInfer scripts executed successfully"})
+                        execution_results["rxinfer_executions"].append({
+                            "status": "SUCCESS", 
+                            "message": "RxInfer scripts executed successfully"
+                        })
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["rxinfer_executions"].append({"status": "FAILED", "message": "RxInfer script execution failed"})
+                        execution_results["rxinfer_executions"].append({
+                            "status": "FAILED", 
+                            "message": "RxInfer script execution failed"
+                        })
                 log_step_success(logger, "RxInfer script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
@@ -413,6 +477,7 @@ def execute_rendered_simulators(
         if DISCOPY_AVAILABLE and run_discopy_analysis:
             try:
                 with performance_tracker.track_operation("execute_discopy_analysis"):
+                    logger.info("🚀 Executing DisCoPy analysis...")
                     discopy_success = run_discopy_analysis(
                         pipeline_output_dir=target_dir,
                         recursive_search=recursive,
@@ -420,10 +485,16 @@ def execute_rendered_simulators(
                     )
                     if discopy_success:
                         execution_results["total_successes"] += 1
-                        execution_results["discopy_executions"].append({"status": "SUCCESS", "message": "DisCoPy analysis completed successfully"})
+                        execution_results["discopy_executions"].append({
+                            "status": "SUCCESS", 
+                            "message": "DisCoPy analysis completed successfully"
+                        })
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["discopy_executions"].append({"status": "FAILED", "message": "DisCoPy analysis failed"})
+                        execution_results["discopy_executions"].append({
+                            "status": "FAILED", 
+                            "message": "DisCoPy analysis failed"
+                        })
                 log_step_success(logger, "DisCoPy analysis completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
@@ -434,6 +505,7 @@ def execute_rendered_simulators(
         if ACTIVEINFERENCE_AVAILABLE and run_activeinference_analysis:
             try:
                 with performance_tracker.track_operation("execute_activeinference_analysis"):
+                    logger.info("🚀 Executing ActiveInference.jl analysis...")
                     activeinference_success = run_activeinference_analysis(
                         pipeline_output_dir=target_dir,
                         recursive_search=recursive,
@@ -442,10 +514,16 @@ def execute_rendered_simulators(
                     )
                     if activeinference_success:
                         execution_results["total_successes"] += 1
-                        execution_results["activeinference_executions"].append({"status": "SUCCESS", "message": "ActiveInference.jl analysis completed successfully"})
+                        execution_results["activeinference_executions"].append({
+                            "status": "SUCCESS", 
+                            "message": "ActiveInference.jl analysis completed successfully"
+                        })
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["activeinference_executions"].append({"status": "FAILED", "message": "ActiveInference.jl analysis failed"})
+                        execution_results["activeinference_executions"].append({
+                            "status": "FAILED", 
+                            "message": "ActiveInference.jl analysis failed"
+                        })
                 log_step_success(logger, "ActiveInference.jl analysis completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
@@ -456,6 +534,7 @@ def execute_rendered_simulators(
         if JAX_AVAILABLE and run_jax_scripts:
             try:
                 with performance_tracker.track_operation("execute_jax_scripts"):
+                    logger.info("🚀 Executing JAX scripts...")
                     jax_success = run_jax_scripts(
                         pipeline_output_dir=target_dir,
                         recursive_search=recursive,
@@ -463,59 +542,108 @@ def execute_rendered_simulators(
                     )
                     if jax_success:
                         execution_results["total_successes"] += 1
-                        execution_results["jax_executions"].append({"status": "SUCCESS", "message": "JAX scripts executed successfully"})
+                        execution_results["jax_executions"].append({
+                            "status": "SUCCESS", 
+                            "message": "JAX scripts executed successfully"
+                        })
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["jax_executions"].append({"status": "FAILED", "message": "JAX script execution failed"})
+                        execution_results["jax_executions"].append({
+                            "status": "FAILED", 
+                            "message": "JAX script execution failed"
+                        })
                 log_step_success(logger, "JAX script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
                 execution_results["jax_executions"].append({"status": "ERROR", "message": str(e)})
                 log_step_warning(logger, f"JAX script execution failed: {e}")
         
-        # Save execution summary
+        # Save execution summary with enhanced details
         summary_file = execution_output_dir / "execution_summary.json"
         with open(summary_file, 'w') as f:
             json.dump(execution_results, f, indent=2)
         
-        # Generate markdown report
+        # Generate enhanced markdown report
         report_file = execution_output_dir / "execution_report.md"
         with open(report_file, 'w') as f:
-            f.write("# Execution Results Report\n\n")
+            f.write("# Enhanced Execution Results Report\n\n")
             f.write(f"**Generated:** {execution_results['timestamp']}\n")
             f.write(f"**Target Directory:** {execution_results['target_directory']}\n")
             f.write(f"**Total Successes:** {execution_results['total_successes']}\n")
             f.write(f"**Total Failures:** {execution_results['total_failures']}\n\n")
             
+            # Dependency issues section
+            if execution_results["dependency_issues"]:
+                f.write("## Dependency Issues\n\n")
+                for issue in execution_results["dependency_issues"]:
+                    f.write(f"- ⚠️ {issue}\n")
+                f.write("\n")
+            
+            # Syntax errors section
+            if execution_results["syntax_errors"]:
+                f.write("## Syntax Errors\n\n")
+                for error in execution_results["syntax_errors"]:
+                    f.write(f"- ❌ {error}\n")
+                f.write("\n")
+            
             if execution_results["pymdp_executions"]:
                 f.write("## PyMDP Executions\n\n")
                 for exec_info in execution_results["pymdp_executions"]:
-                    f.write(f"- **{exec_info.get('script', 'Unknown')}**: {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
+                    f.write(f"- {status_icon} **{exec_info.get('script', 'PyMDP Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    f.write(f"  - {exec_info.get('message', 'No message')}\n")
+                    if 'scripts_processed' in exec_info:
+                        f.write(f"  - Scripts processed: {exec_info['scripts_processed']}\n")
                 f.write("\n")
             
             if execution_results["rxinfer_executions"]:
                 f.write("## RxInfer Executions\n\n")
                 for exec_info in execution_results["rxinfer_executions"]:
-                    f.write(f"- **{exec_info.get('script', 'Unknown')}**: {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
+                    f.write(f"- {status_icon} **{exec_info.get('script', 'RxInfer Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    f.write(f"  - {exec_info.get('message', 'No message')}\n")
                 f.write("\n")
             
             if execution_results["discopy_executions"]:
                 f.write("## DisCoPy Analyses\n\n")
                 for exec_info in execution_results["discopy_executions"]:
-                    f.write(f"- **{exec_info.get('script', 'Unknown')}** ({exec_info.get('type', 'analysis')}): {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
+                    f.write(f"- {status_icon} **{exec_info.get('script', 'DisCoPy Analysis')}** ({exec_info.get('type', 'analysis')}): {exec_info.get('status', 'Unknown')}\n")
+                    f.write(f"  - {exec_info.get('message', 'No message')}\n")
                 f.write("\n")
             
             if execution_results["activeinference_executions"]:
                 f.write("## ActiveInference.jl Analyses\n\n")
                 for exec_info in execution_results["activeinference_executions"]:
-                    f.write(f"- **{exec_info.get('script', 'Unknown')}**: {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
+                    f.write(f"- {status_icon} **{exec_info.get('script', 'ActiveInference.jl Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    f.write(f"  - {exec_info.get('message', 'No message')}\n")
                 f.write("\n")
             
             if execution_results["jax_executions"]:
                 f.write("## JAX Executions\n\n")
                 for exec_info in execution_results["jax_executions"]:
-                    f.write(f"- **{exec_info.get('script', 'Unknown')}**: {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
+                    f.write(f"- {status_icon} **{exec_info.get('script', 'JAX Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    f.write(f"  - {exec_info.get('message', 'No message')}\n")
                 f.write("\n")
+            
+            # Recommendations section
+            f.write("## Recommendations\n\n")
+            if execution_results["dependency_issues"]:
+                f.write("### Install Missing Dependencies\n\n")
+                for issue in execution_results["dependency_issues"]:
+                    if "Python dependencies" in issue:
+                        f.write("- Install missing Python packages: `pip install <package_name>`\n")
+                    elif "Julia" in issue:
+                        f.write("- Install Julia from https://julialang.org/downloads/\n")
+                f.write("\n")
+            
+            if execution_results["syntax_errors"]:
+                f.write("### Fix Syntax Errors\n\n")
+                f.write("- Review and fix syntax errors in rendered scripts\n")
+                f.write("- Check for stray characters or malformed code\n")
+                f.write("- Re-run the rendering step (9_render.py) to regenerate scripts\n\n")
         
         # Log results summary
         total_executions = (len(execution_results["pymdp_executions"]) + 
@@ -523,9 +651,17 @@ def execute_rendered_simulators(
                           len(execution_results["discopy_executions"]) +
                           len(execution_results["activeinference_executions"]) +
                           len(execution_results["jax_executions"]))
+        
         if total_executions > 0:
             success_rate = execution_results["total_successes"] / total_executions * 100
             log_step_success(logger, f"Execution completed. Success rate: {success_rate:.1f}% ({execution_results['total_successes']}/{total_executions})")
+            
+            # Log specific issues
+            if execution_results["dependency_issues"]:
+                logger.warning(f"⚠️ Dependency issues found: {len(execution_results['dependency_issues'])}")
+            if execution_results["syntax_errors"]:
+                logger.warning(f"⚠️ Syntax errors found: {len(execution_results['syntax_errors'])}")
+            
             return execution_results["total_failures"] == 0
         else:
             log_step_warning(logger, "No simulator scripts or outputs found to execute/analyze")

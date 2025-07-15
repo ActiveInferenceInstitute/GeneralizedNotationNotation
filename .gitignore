@@ -24,3 +24,4 @@ src/tests/htmlcov/
 __pycache__/
 *.py[cod]
 *$py.class
+/src/execute/activeinference_jl/.julia

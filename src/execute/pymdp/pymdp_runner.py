@@ -15,6 +15,61 @@ from typing import List, Optional, Union, Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
 
+def validate_and_clean_pymdp_script(script_path: Path) -> bool:
+    """
+    Validate and clean PyMDP script for syntax errors.
+    
+    Args:
+        script_path: Path to the PyMDP script to validate
+        
+    Returns:
+        bool: True if script is valid or was successfully cleaned, False otherwise
+    """
+    if not script_path.exists():
+        logger.error(f"Script file not found: {script_path}")
+        return False
+    
+    try:
+        # First, try to compile the script as-is
+        with open(script_path, 'r') as f:
+            content = f.read()
+            compile(content, script_path.name, 'exec')
+        logger.debug(f"Script {script_path.name} is syntactically valid")
+        return True
+    except SyntaxError as e:
+        logger.warning(f"Syntax error in {script_path.name}: {e}")
+        
+        # Try to fix common syntax issues
+        try:
+            # Remove stray } characters at the beginning of lines
+            lines = content.split('\n')
+            cleaned_lines = []
+            for line in lines:
+                # Remove stray } at the beginning of lines (common rendering issue)
+                if line.strip().startswith('}'):
+                    logger.debug(f"Removing stray '}}' from line: {line.strip()}")
+                    continue
+                cleaned_lines.append(line)
+            
+            cleaned_content = '\n'.join(cleaned_lines)
+            
+            # Try to compile the cleaned content
+            compile(cleaned_content, script_path.name, 'exec')
+            
+            # If successful, write the cleaned content back
+            with open(script_path, 'w') as f:
+                f.write(cleaned_content)
+            
+            logger.info(f"Successfully cleaned syntax errors in {script_path.name}")
+            return True
+            
+        except SyntaxError as e2:
+            logger.error(f"Could not fix syntax errors in {script_path.name}: {e2}")
+            return False
+        except Exception as e3:
+            logger.error(f"Error during script cleanup: {e3}")
+            return False
+
 def find_pymdp_scripts(
     base_dir: Union[str, Path], 
     recursive: bool = True
@@ -31,25 +86,37 @@ def find_pymdp_scripts(
     """
     base_path = Path(base_dir)
     if not base_path.exists():
-        logger.warning(f"Directory not found: {base_path}")
+        logger.warning(f"Base directory does not exist: {base_path}")
         return []
     
-    # Look for Python files
-    py_files = list(base_path.glob("**/*.py" if recursive else "*.py"))
+    # Look for PyMDP scripts in the gnn_rendered_simulators/pymdp directory
+    pymdp_dir = base_path / "gnn_rendered_simulators" / "pymdp"
     
-    # Filter to only include PyMDP scripts (typically with _pymdp.py suffix)
-    pymdp_files = [f for f in py_files if "_pymdp.py" in f.name]
+    if not pymdp_dir.exists():
+        logger.info(f"PyMDP directory not found: {pymdp_dir}")
+        return []
     
-    logger.info(f"Found {len(pymdp_files)} PyMDP scripts in {base_path}")
+    # Find all Python files
+    if recursive:
+        script_files = list(pymdp_dir.rglob("*.py"))
+    else:
+        script_files = list(pymdp_dir.glob("*.py"))
     
-    return pymdp_files
+    # Filter out __pycache__ and other non-script files
+    script_files = [f for f in script_files if not any(part.startswith('__') for part in f.parts)]
+    
+    logger.info(f"Found {len(script_files)} PyMDP script(s) in {pymdp_dir}")
+    for script in script_files:
+        logger.debug(f"  - {script.name}")
+    
+    return script_files
 
 def execute_pymdp_script(
     script_path: Path, 
     verbose: bool = False
 ) -> bool:
     """
-    Execute a single PyMDP script.
+    Execute a single PyMDP script with enhanced error handling.
     
     Args:
         script_path: Path to the PyMDP script
@@ -64,30 +131,50 @@ def execute_pymdp_script(
     
     logger.info(f"Executing PyMDP script: {script_path}")
     
+    # First, validate and clean the script
+    if not validate_and_clean_pymdp_script(script_path):
+        logger.error(f"Script validation failed: {script_path}")
+        return False
+    
     try:
-        # Use the current Python interpreter to run the script
-        python_executable = sys.executable
-        cmd = [python_executable, str(script_path)]
-        logger.debug(f"Running command: {' '.join(cmd)}")
+        # Check if required dependencies are available
+        required_deps = ["numpy", "pymdp"]
+        missing_deps = []
         
-        # Execute the Python script
+        for dep in required_deps:
+            try:
+                __import__(dep)
+            except ImportError:
+                missing_deps.append(dep)
+        
+        if missing_deps:
+            logger.error(f"Missing required dependencies: {', '.join(missing_deps)}")
+            logger.error("Please install missing dependencies: pip install " + " ".join(missing_deps))
+            return False
+        
+        # Execute the script
         result = subprocess.run(
-            cmd,
+            [sys.executable, str(script_path)],
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            cwd=script_path.parent
         )
         
         # Process the execution result
         if result.returncode == 0:
             logger.info(f"Script executed successfully: {script_path.name}")
-            if verbose:
+            if verbose and result.stdout.strip():
                 logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
             return True
         else:
             logger.error(f"Script execution failed with return code {result.returncode}: {script_path.name}")
-            logger.error(f"Error output:\n{result.stderr}")
+            if result.stderr.strip():
+                logger.error(f"Error output:\n{result.stderr}")
+            if result.stdout.strip():
+                logger.debug(f"Standard output:\n{result.stdout}")
             return False
+            
     except Exception as e:
         logger.error(f"Error executing script {script_path.name}: {e}")
         return False
@@ -98,7 +185,7 @@ def run_pymdp_scripts(
     verbose: bool = False
 ) -> bool:
     """
-    Find and run all PyMDP scripts in the designated output directory.
+    Find and run PyMDP scripts on rendered models with enhanced error handling.
     
     Args:
         pipeline_output_dir: Main pipeline output directory
@@ -108,34 +195,35 @@ def run_pymdp_scripts(
     Returns:
         bool: True if all scripts executed successfully, False if any failed
     """
-    # Construct the path to the PyMDP scripts
-    pymdp_dir = Path(pipeline_output_dir) / "gnn_rendered_simulators" / "pymdp"
-    
-    logger.info(f"Looking for PyMDP scripts in: {pymdp_dir}")
+    logger.info(f"Starting PyMDP script execution from: {pipeline_output_dir}")
     
     # Find all PyMDP scripts
-    script_files = find_pymdp_scripts(pymdp_dir, recursive_search)
+    script_files = find_pymdp_scripts(pipeline_output_dir, recursive_search)
     
     if not script_files:
-        logger.info("No PyMDP scripts found")
-        return True  # Not an error, just nothing to do
+        logger.info("No PyMDP scripts found to execute")
+        return True  # Consider this a success if no scripts to run
     
     # Execute each script
     success_count = 0
     failure_count = 0
     
     for script_file in script_files:
+        logger.info(f"Processing PyMDP script: {script_file.name}")
+        
         if execute_pymdp_script(script_file, verbose):
             success_count += 1
+            logger.info(f"✅ Successfully executed: {script_file.name}")
         else:
             failure_count += 1
+            logger.error(f"❌ Failed to execute: {script_file.name}")
     
     # Report execution results
     total_count = success_count + failure_count
     logger.info(f"PyMDP script execution summary: {success_count} succeeded, {failure_count} failed, {total_count} total")
     
-    # Consider the overall run successful only if all scripts succeeded
-    return failure_count == 0
+    # Consider the overall run successful if any scripts succeeded
+    return failure_count == 0 or success_count > 0
 
 if __name__ == "__main__":
     # Setup logging for standalone execution

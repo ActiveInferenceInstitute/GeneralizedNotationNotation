@@ -83,7 +83,7 @@ def execute_activeinference_script(
     output_dir: Optional[Path] = None
 ) -> bool:
     """
-    Execute a single ActiveInference.jl script.
+    Execute a single ActiveInference.jl script with enhanced error handling.
     
     Args:
         script_path: Path to the ActiveInference.jl script
@@ -99,9 +99,31 @@ def execute_activeinference_script(
     
     logger.info(f"Executing ActiveInference.jl script: {script_path}")
     
+    # Check if Julia is available
+    if not is_julia_available():
+        logger.error("Julia is not available, cannot execute ActiveInference.jl scripts")
+        return False
+    
+    # Check if the script has valid Julia syntax
     try:
-        # Prepare Julia command
-        cmd = ["julia", str(script_path)]
+        # Basic syntax check using Julia
+        syntax_check_cmd = ["julia", "-e", f"include(\"{script_path}\")"]
+        result = subprocess.run(
+            syntax_check_cmd,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=30
+        )
+        if result.returncode != 0:
+            logger.warning(f"Syntax check failed for {script_path.name}: {result.stderr}")
+            # Continue anyway, as some scripts might have runtime dependencies
+    except Exception as e:
+        logger.debug(f"Syntax check skipped for {script_path.name}: {e}")
+    
+    try:
+        # Prepare Julia command with enhanced environment
+        cmd = ["julia", "--project=@.", str(script_path)]
         
         # Add output directory argument if provided
         if output_dir:
@@ -113,29 +135,59 @@ def execute_activeinference_script(
         # Set environment variables for Julia
         env = os.environ.copy()
         env["JULIA_PROJECT"] = str(script_path.parent)
+        env["JULIA_DEPOT_PATH"] = str(script_path.parent / ".julia")
         
-        # Execute the Julia script
+        # Create Julia project environment if it doesn't exist
+        project_file = script_path.parent / "Project.toml"
+        if not project_file.exists():
+            logger.info(f"Creating Julia project environment in {script_path.parent}")
+            try:
+                subprocess.run(
+                    ["julia", "--project=@.", "-e", "using Pkg; Pkg.instantiate()"],
+                    cwd=script_path.parent,
+                    capture_output=True,
+                    text=True,
+                    check=False
+                )
+            except Exception as e:
+                logger.warning(f"Could not initialize Julia project: {e}")
+        
+        # Execute the Julia script with timeout
         result = subprocess.run(
             cmd,
             capture_output=True,
             text=True,
             check=False,
             env=env,
-            cwd=script_path.parent
+            cwd=script_path.parent,
+            timeout=600  # 10 minute timeout for Julia scripts
         )
         
         # Process the execution result
         if result.returncode == 0:
-            logger.info(f"Script executed successfully: {script_path.name}")
-            if verbose:
+            logger.info(f"✅ Script executed successfully: {script_path.name}")
+            if verbose and result.stdout.strip():
                 logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
             return True
         else:
-            logger.error(f"Script execution failed with return code {result.returncode}: {script_path.name}")
-            logger.error(f"Error output:\n{result.stderr}")
+            logger.error(f"❌ Script execution failed with return code {result.returncode}: {script_path.name}")
+            if result.stderr.strip():
+                logger.error(f"Error output:\n{result.stderr}")
+            if result.stdout.strip():
+                logger.debug(f"Standard output:\n{result.stdout}")
+            
+            # Check for common Julia package issues
+            stderr_lower = result.stderr.lower()
+            if "package" in stderr_lower and "not found" in stderr_lower:
+                logger.error("💡 This appears to be a missing Julia package issue.")
+                logger.error("💡 Try running: julia --project=@. -e 'using Pkg; Pkg.add(\"PackageName\")'")
+            
             return False
+    except subprocess.TimeoutExpired:
+        logger.error(f"❌ Script execution timed out: {script_path.name}")
+        return False
     except Exception as e:
-        logger.error(f"Error executing script {script_path.name}: {e}")
+        logger.error(f"❌ Error executing script {script_path.name}: {e}")
         return False
 
 def run_activeinference_analysis(

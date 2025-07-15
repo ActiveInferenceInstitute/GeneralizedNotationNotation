@@ -6,9 +6,10 @@ import os
 from pathlib import Path
 import shutil
 from typing import IO, Any, Callable, Dict, List, Optional, Tuple, Union
-import sys # Add sys import for exit codes in main_site_generator
+import sys
+from datetime import datetime
 
-import markdown # For rendering markdown content
+import markdown
 
 # Import logging utilities
 try:
@@ -34,46 +35,346 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 # --- HTML Templates ---
-HTML_START_TEMPLATE = """
-<!DOCTYPE html>
+HTML_START_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GNN Pipeline Output Summary</title>
     <style>
-        body {{ font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }}
-        header {{ background-color: #333; color: #fff; padding: 1em 0; text-align: center; }}
-        nav ul {{ list-style-type: none; padding: 0; text-align: center; background-color: #444; margin-bottom: 20px; }}
-        nav ul li {{ display: inline; margin-right: 15px; }}
-        nav ul li a {{ color: #fff; text-decoration: none; padding: 10px 15px; display: inline-block; }}
-        nav ul li a:hover {{ background-color: #555; }}
-        .container {{ background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }}
-        h1, h2, h3 {{ color: #333; }}
-        h1 {{ text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }}
-        h2 {{ border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 30px; }}
-        pre {{ background-color: #eee; padding: 10px; border-radius: 4px; overflow-x: auto; }}
-        img, iframe {{ max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 4px; margin-top: 10px; }}
-        .file-link {{ display: inline-block; margin: 5px; padding: 8px 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; }}
-        .file-link:hover {{ background-color: #0056b3; }}
-        .section {{ margin-bottom: 30px; }}
-        .gallery img {{ margin: 5px; max-height: 200px; width: auto; }}
-        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
-        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
-        th {{ background-color: #f0f0f0; }}
-        .log-output {{ white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow-y: auto; }}
-        .collapsible {{ background-color: #f9f9f9; color: #444; cursor: pointer; padding: 12px; width: 100%; border: none; text-align: left; outline: none; font-size: 1.1em; margin-top: 10px; border-bottom: 1px solid #ddd; }}
-        .active, .collapsible:hover {{ background-color: #efefef; }}
-        .collapsible-content {{ padding: 0 18px; display: none; overflow: hidden; background-color: white; border: 1px solid #ddd; border-top: none; }}
-        .toc {{ border: 1px solid #ddd; background-color: #f9f9f9; padding: 15px; margin-bottom: 20px; border-radius: 5px; }}
-        .toc ul {{ list-style-type: none; padding-left: 0; }}
-        .toc ul li a {{ text-decoration: none; color: #007bff; }}
-        .toc ul li a:hover {{ text-decoration: underline; }}
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }}
+        header {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 2em 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }}
+        nav {{
+            background-color: #343a40;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }}
+        nav ul {{
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }}
+        nav ul li {{
+            display: inline-block;
+            margin: 0;
+        }}
+        nav ul li a {{
+            color: #fff;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: block;
+            transition: background-color 0.3s;
+        }}
+        nav ul li a:hover {{
+            background-color: #495057;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }}
+        .main-content {{
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }}
+        h1, h2, h3, h4 {{
+            color: #2c3e50;
+            margin-top: 0;
+        }}
+        h1 {{
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+        }}
+        h2 {{
+            font-size: 1.8em;
+            border-bottom: 3px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }}
+        h3 {{
+            font-size: 1.4em;
+            color: #495057;
+            margin-top: 30px;
+        }}
+        h4 {{
+            font-size: 1.2em;
+            color: #6c757d;
+            margin-top: 25px;
+        }}
+        pre {{
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border-left: 4px solid #007bff;
+        }}
+        code {{
+            background-color: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }}
+        img, iframe {{
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 15px 0;
+        }}
+        .file-link {{
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }}
+        .file-link:hover {{
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }}
+        .section {{
+            margin-bottom: 40px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }}
+        .gallery {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }}
+        .gallery img {{
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }}
+        th, td {{
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }}
+        th {{
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }}
+        .log-output {{
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }}
+        .collapsible {{
+            background-color: #f8f9fa;
+            color: #495057;
+            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1.1em;
+            margin-top: 15px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }}
+        .collapsible:hover, .collapsible.active {{
+            background-color: #e9ecef;
+        }}
+        .collapsible-content {{
+            padding: 0 20px;
+            display: none;
+            overflow: hidden;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+        }}
+        .toc {{
+            border: 1px solid #dee2e6;
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }}
+        .toc ul {{
+            list-style-type: none;
+            padding-left: 0;
+        }}
+        .toc ul li {{
+            margin: 8px 0;
+        }}
+        .toc ul li a {{
+            text-decoration: none;
+            color: #007bff;
+            transition: color 0.3s;
+        }}
+        .toc ul li a:hover {{
+            color: #0056b3;
+            text-decoration: underline;
+        }}
+        .status-badge {{
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }}
+        .status-success {{
+            background-color: #d4edda;
+            color: #155724;
+        }}
+        .status-warning {{
+            background-color: #fff3cd;
+            color: #856404;
+        }}
+        .status-error {{
+            background-color: #f8d7da;
+            color: #721c24;
+        }}
+        .metadata {{
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }}
+        .metadata-item {{
+            margin: 5px 0;
+        }}
+        .metadata-label {{
+            font-weight: 600;
+            color: #495057;
+        }}
+        .search-box {{
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }}
+        .search-box:focus {{
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }}
+        .hidden {{
+            display: none;
+        }}
+        .file-stats {{
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }}
+        .file-type-icon {{
+            margin-right: 8px;
+        }}
+        .json-file-content {{
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+        }}
+        .markdown-content {{
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 10px 0;
+        }}
+        .text-file-content {{
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+        }}
+        .html-file-content {{
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+        }}
+        .loading {{
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }}
+        .error-message {{
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #f5c6cb;
+        }}
+        .success-message {{
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #c3e6cb;
+        }}
+        @media (max-width: 768px) {{
+            .container {{
+                padding: 10px;
+            }}
+            .main-content {{
+                padding: 20px;
+            }}
+            nav ul li {{
+                display: block;
+            }}
+            .gallery {{
+                grid-template-columns: 1fr;
+            }}
+        }}
     </style>
 </head>
 <body>
     <header>
         <h1>Generalized Notation Notation (GNN) Pipeline Output Summary</h1>
+        <p>Comprehensive analysis and visualization of GNN model processing results</p>
     </header>
     <nav id="navbar">
         <ul>
@@ -81,68 +382,178 @@ HTML_START_TEMPLATE = """
         </ul>
     </nav>
     <div class="container">
-        <div id="toc-container" class="toc">
-            <h2>Table of Contents</h2>
-            <ul id="toc-list">
-                <!-- TOC items will be injected here -->
-            </ul>
-        </div>
+        <div class="main-content">
+            <div class="metadata">
+                <div class="metadata-item">
+                    <span class="metadata-label">Generated:</span> {generation_time}
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Pipeline Output Directory:</span> {output_dir}
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Total Files Processed:</span> <span id="file-count">Calculating...</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Website Version:</span> 2.1.0
+                </div>
+            </div>
+            
+            <input type="text" id="searchBox" class="search-box" placeholder="Search sections and content...">
+            
+            <div id="toc-container" class="toc">
+                <h2>Table of Contents</h2>
+                <ul id="toc-list">
+                    <!-- TOC items will be injected here -->
+                </ul>
+            </div>
 """
 
 HTML_END_TEMPLATE = """
+        </div>
     </div>
     <script>
-        // Collapsible sections
-        var coll = document.getElementsByClassName("collapsible");
-        for (var i = 0; i < coll.length; i++) {
-            coll[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                var content = this.nextElementSibling;
-                if (content.style.display === "block") {
-                    content.style.display = "none";
-                } else {
-                    content.style.display = "block";
+        // Enhanced search functionality with highlighting
+        function setupSearch() {
+            const searchBox = document.getElementById('searchBox');
+            const sections = document.querySelectorAll('.section');
+            
+            searchBox.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                let visibleCount = 0;
+                
+                sections.forEach(section => {
+                    const title = section.querySelector('h2')?.textContent.toLowerCase() || '';
+                    const content = section.textContent.toLowerCase();
+                    const isVisible = title.includes(searchTerm) || content.includes(searchTerm);
+                    
+                    section.style.display = isVisible ? 'block' : 'none';
+                    if (isVisible) visibleCount++;
+                    
+                    // Highlight search terms
+                    if (searchTerm && isVisible) {
+                        highlightText(section, searchTerm);
+                    } else {
+                        removeHighlighting(section);
+                    }
+                });
+                
+                // Update file count
+                document.getElementById('file-count').textContent = `${visibleCount} sections visible`;
+            });
+        }
+
+        // Highlight search terms
+        function highlightText(element, searchTerm) {
+            const walker = document.createTreeWalker(
+                element,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            
+            const textNodes = [];
+            let node;
+            while (node = walker.nextNode()) {
+                textNodes.push(node);
+            }
+            
+            textNodes.forEach(textNode => {
+                const text = textNode.textContent;
+                const regex = new RegExp(`(${searchTerm})`, 'gi');
+                if (regex.test(text)) {
+                    const highlightedText = text.replace(regex, '<mark>$1</mark>');
+                    const span = document.createElement('span');
+                    span.innerHTML = highlightedText;
+                    textNode.parentNode.replaceChild(span, textNode);
                 }
             });
         }
 
-        // Smooth scroll for TOC links
-        document.querySelectorAll('#toc-list a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
+        // Remove highlighting
+        function removeHighlighting(element) {
+            const marks = element.querySelectorAll('mark');
+            marks.forEach(mark => {
+                const parent = mark.parentNode;
+                parent.replaceChild(document.createTextNode(mark.textContent), mark);
+                parent.normalize();
+            });
+        }
+
+        // Enhanced collapsible sections
+        function setupCollapsible() {
+            const collapsibles = document.getElementsByClassName("collapsible");
+            for (let i = 0; i < collapsibles.length; i++) {
+                collapsibles[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    const content = this.nextElementSibling;
+                    if (content.style.display === "block") {
+                        content.style.display = "none";
+                    } else {
+                        content.style.display = "block";
+                    }
+                });
+            }
+        }
+
+        // Smooth scroll for navigation
+        function setupSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
                 });
             });
-        });
+        }
         
-        // Navbar generation from h2 tags
-        const sections = document.querySelectorAll('.container > h2');
-        const navUl = document.querySelector('#navbar ul');
-        const tocUl = document.getElementById('toc-list');
-
-        sections.forEach(section => {
-            const title = section.textContent;
-            const id = section.id;
-            if (id) {
-                // Navbar link
+        // Dynamic navigation and TOC generation
+        function setupNavigation() {
+            const sections = document.querySelectorAll('.section h2');
+            const navUl = document.querySelector('#navbar ul');
+            const tocUl = document.getElementById('toc-list');
+            
+            // Clear existing content
+            navUl.innerHTML = '';
+            tocUl.innerHTML = '';
+            
+            sections.forEach(section => {
+                const sectionId = section.parentElement.id;
+                const sectionTitle = section.textContent;
+                
+                // Create navigation link
                 const navLi = document.createElement('li');
-                const navA = document.createElement('a');
-                navA.textContent = title;
-                navA.href = `#${id}`;
-                navLi.appendChild(navA);
+                const navLink = document.createElement('a');
+                navLink.href = `#${sectionId}`;
+                navLink.textContent = sectionTitle;
+                navLi.appendChild(navLink);
                 navUl.appendChild(navLi);
-
-                // TOC link
+                
+                // Create TOC link
                 const tocLi = document.createElement('li');
-                const tocA = document.createElement('a');
-                tocA.textContent = title;
-                tocA.href = `#${id}`;
-                tocLi.appendChild(tocA);
+                const tocLink = document.createElement('a');
+                tocLink.href = `#${sectionId}`;
+                tocLink.textContent = sectionTitle;
+                tocLi.appendChild(tocLink);
                 tocUl.appendChild(tocLi);
-            }
-        });
+            });
+        }
 
+        // Initialize all functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            setupSearch();
+            setupCollapsible();
+            setupSmoothScroll();
+            setupNavigation();
+            
+            // Update file count on load
+            const sections = document.querySelectorAll('.section');
+            document.getElementById('file-count').textContent = `${sections.length} sections`;
+        });
     </script>
 </body>
 </html>
@@ -150,11 +561,14 @@ HTML_END_TEMPLATE = """
 
 def make_section_id(title: str) -> str:
     """Generates a URL-friendly ID from a title."""
-    return title.lower().replace(" ", "-").replace("/", "-").replace(":", "").replace("(", "").replace(")", "")
+    import re
+    # Remove special characters and replace spaces with hyphens
+    id_str = re.sub(r'[^\w\s-]', '', title.lower())
+    id_str = re.sub(r'[-\s]+', '-', id_str)
+    return id_str.strip('-')
 
 def add_collapsible_section(f: IO[str], title: str, content_html: str, is_open: bool = False):
     """Adds a collapsible section to the HTML file."""
-    section_id = make_section_id(title) # Although collapsible doesn't use ID for navigation, it's good practice
     display_style = "block" if is_open else "none"
     f.write(f'<button type="button" class="collapsible">{title}</button>\n')
     f.write(f'<div class="collapsible-content" style="display: {display_style};">\n')
@@ -169,7 +583,14 @@ def embed_image(file_path: Path, alt_text: Optional[str] = None) -> str:
         with open(file_path, "rb") as img_file:
             encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
         alt = alt_text if alt_text else file_path.name
-        return f'<img src="data:image/{file_path.suffix.lstrip(".")};base64,{encoded_string}" alt="{alt}" loading="lazy"><br><small>{file_path.name}</small>'
+        file_size = file_path.stat().st_size
+        size_mb = file_size / (1024 * 1024)
+        
+        return f'''<div style="text-align: center; margin: 15px 0;">
+            <img src="data:image/{file_path.suffix.lstrip(".")};base64,{encoded_string}" 
+                 alt="{alt}" loading="lazy" style="max-width: 100%; height: auto;">
+            <br><small>{file_path.name} ({size_mb:.2f} MB)</small>
+        </div>'''
     except Exception as e:
         logger.error(f"Error embedding image {file_path.as_posix()}: {e}")
         return f"<p>Error embedding image {file_path.name}: {e}</p>"
@@ -181,7 +602,21 @@ def embed_markdown_file(file_path: Path) -> str:
     try:
         with open(file_path, 'r', encoding='utf-8') as md_file:
             content = md_file.read()
-        return markdown.markdown(content, extensions=['fenced_code', 'tables', 'sane_lists'])
+        
+        # Enhanced markdown processing with more extensions
+        html_content = markdown.markdown(
+            content, 
+            extensions=[
+                'fenced_code', 
+                'tables', 
+                'sane_lists', 
+                'codehilite',
+                'toc',
+                'attr_list'
+            ]
+        )
+        
+        return f'<div class="markdown-content">{html_content}</div>'
     except Exception as e:
         logger.error(f"Error reading or converting markdown file {file_path.as_posix()}: {e}")
         return f"<p>Error processing markdown file {file_path.name}: {e}</p>"
@@ -193,10 +628,21 @@ def embed_text_file(file_path: Path, max_lines: Optional[int] = 100) -> str:
     try:
         with open(file_path, 'r', encoding='utf-8') as txt_file:
             lines = txt_file.readlines()
+        
         content = "".join(lines[:max_lines])
+        truncated_note = ""
         if len(lines) > max_lines:
-            content += f"\n... (file truncated, total lines: {len(lines)})"
-        return f"<pre class='log-output'><code>{content}</code></pre><small>{file_path.name}</small>"
+            truncated_note = f"\n... (file truncated, showing {max_lines} of {len(lines)} lines)"
+        
+        file_size = file_path.stat().st_size
+        size_kb = file_size / 1024
+        
+        return f'''<div class="text-file-content">
+            <div class="metadata">
+                <span class="metadata-label">File:</span> {file_path.name} ({size_kb:.1f} KB)
+            </div>
+            <pre class="log-output"><code>{content}{truncated_note}</code></pre>
+        </div>'''
     except Exception as e:
         logger.error(f"Error reading text file {file_path.as_posix()}: {e}")
         return f"<p>Error processing text file {file_path.name}: {e}</p>"
@@ -208,126 +654,140 @@ def embed_json_file(file_path: Path) -> str:
     try:
         with open(file_path, 'r', encoding='utf-8') as json_file:
             data = json.load(json_file)
-        return f"<pre class='log-output'><code>{json.dumps(data, indent=2)}</code></pre><small>{file_path.name}</small>"
+        
+        file_size = file_path.stat().st_size
+        size_kb = file_size / 1024
+        
+        return f'''<div class="json-file-content">
+            <div class="metadata">
+                <span class="metadata-label">File:</span> {file_path.name} ({size_kb:.1f} KB)
+            </div>
+            <pre class="log-output"><code>{json.dumps(data, indent=2)}</code></pre>
+        </div>'''
     except Exception as e:
         logger.error(f"Error reading or parsing JSON file {file_path.as_posix()}: {e}")
         return f"<p>Error processing JSON file {file_path.name}: {e}</p>"
         
 def embed_html_file(file_path: Path) -> str:
-    """Embeds an HTML file content directly or within an iframe if too complex."""
+    """Embeds an HTML file content with improved handling."""
     if not file_path.exists():
         return f"<p>HTML file not found: {file_path.as_posix()}</p>"
     try:
-        # For simplicity, using iframe. Direct embedding might break styles.
-        # A more sophisticated approach would be to copy assets and adjust paths,
-        # or to parse and sanitize the HTML.
-        # Copy the HTML file and its associated directory (if one exists, e.g., for Plotly)
-        # to a subdirectory in the site output to ensure relative paths work.
-        
-        # Simplified: provide a link to open it, or try iframe for basic ones.
-        # This assumes the output HTML is in the same directory as the main report.
-        # For robust iframe, files need to be served or be in a predictable relative path.
-        # For now, let's just link to it, assuming it's a sibling or in a known relative path.
-        # Or, if we copy it to an 'assets' folder within the site output:
-        # Create a unique name for the asset
-        
-        # For now, let's assume direct embedding of simple HTML reports (e.g. from type checker)
-        # If a file is complex (e.g. has its own JS, complex CSS), an iframe pointing to a copied version is better.
-        # For this initial version, we'll link it.
-        
-        # Let's try to read and embed directly if it's simple.
-        # For complex HTML like plotly, it's better to copy to an assets dir and iframe.
-        # This will be improved if the user wants interactive plots directly embedded.
         with open(file_path, 'r', encoding='utf-8') as html_f:
             content = html_f.read()
-        # Basic check for complexity (very naive)
-        if "<script" in content.lower() or "<link rel=\"stylesheet\"" in content.lower():
-            # For complex HTML, provide a link. Or, copy to an assets folder and iframe.
-            # For this iteration, providing a link to the file (relative to the main output folder)
-            # This requires the user to navigate the output folder structure.
-            # A better way: copy to a "site_assets" folder and link relatively.
-            return (f'<p><a href="{file_path.name}" target="_blank" class="file-link">View HTML Report: {file_path.name}</a> (Opens in new tab)</p>' +
-                    f'<p><em>Embedding complex HTML directly can be problematic. This report is linked.</em></p>' +
-                    f'<iframe src="{file_path.name}" width="100%" height="500px" style="border:1px solid #ccc;"></iframe>' +
-                    f'<small>Attempting to iframe: {file_path.name}. If it does not load correctly, please use the link above.</small>')
-        else: # Simple HTML
-            return content
+        
+        file_size = file_path.stat().st_size
+        size_kb = file_size / 1024
+        
+        # Check for complexity indicators
+        is_complex = any(indicator in content.lower() for indicator in [
+            "<script", "<link rel=\"stylesheet\"", "plotly", "d3", "chart"
+        ])
+        
+        if is_complex:
+            relative_path = file_path.name
+            return f'''<div class="html-file-content">
+                <div class="metadata">
+                    <span class="metadata-label">File:</span> {file_path.name} ({size_kb:.1f} KB)
+                    <span class="status-badge status-warning">Complex HTML</span>
+                </div>
+                <p><a href="{relative_path}" target="_blank" class="file-link">View standalone: {file_path.name}</a></p>
+                <iframe src="{relative_path}" width="100%" height="600px" 
+                        style="border:1px solid #dee2e6; border-radius: 6px;" 
+                        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+            </div>'''
+        else:
+            return f'''<div class="html-file-content">
+                <div class="metadata">
+                    <span class="metadata-label">File:</span> {file_path.name} ({size_kb:.1f} KB)
+                </div>
+                {content}
+            </div>'''
 
     except Exception as e:
         logger.error(f"Error processing HTML file {file_path.as_posix()}: {e}")
         return f"<p>Error processing HTML file {file_path.name}: {e}</p>"
 
 def process_directory_generic(f: IO[str], dir_path: Path, base_output_dir: Path, title_prefix: str = ""):
-    """Generic handler for directories: lists images, MDs, TXTs, JSONs, HTMLs."""
+    """Generic handler for directories with improved organization."""
     if not dir_path.is_dir():
         return
 
-    content_html = ""
-    images = []
-    md_files = []
-    txt_files = []
-    json_files = []
-    html_files = []
-    other_files = []
+    # Categorize files
+    file_categories = {
+        'images': [],
+        'markdown': [],
+        'html': [],
+        'json': [],
+        'text': [],
+        'other': []
+    }
 
     for item in sorted(dir_path.iterdir()):
         if item.is_file():
-            if item.suffix.lower() in ['.png', '.jpg', '.jpeg', '.gif', '.svg']:
-                images.append(item)
-            elif item.suffix.lower() == '.md':
-                md_files.append(item)
-            elif item.suffix.lower() in ['.txt', '.log']:
-                txt_files.append(item)
-            elif item.suffix.lower() == '.json':
-                json_files.append(item)
-            elif item.suffix.lower() in ['.html', '.htm']:
-                html_files.append(item)
+            suffix = item.suffix.lower()
+            if suffix in ['.png', '.jpg', '.jpeg', '.gif', '.svg']:
+                file_categories['images'].append(item)
+            elif suffix == '.md':
+                file_categories['markdown'].append(item)
+            elif suffix in ['.html', '.htm']:
+                file_categories['html'].append(item)
+            elif suffix == '.json':
+                file_categories['json'].append(item)
+            elif suffix in ['.txt', '.log', '.out']:
+                file_categories['text'].append(item)
             else:
-                other_files.append(item)
+                file_categories['other'].append(item)
     
-    if images:
+    content_html = ""
+    
+    # Process images
+    if file_categories['images']:
         content_html += "<h3>Images</h3><div class='gallery'>"
-        for img_path in images:
+        for img_path in file_categories['images']:
             content_html += embed_image(img_path)
         content_html += "</div>"
 
-    if md_files:
+    # Process markdown files
+    if file_categories['markdown']:
         content_html += "<h3>Markdown Reports</h3>"
-        for md_path in md_files:
+        for md_path in file_categories['markdown']:
             content_html += f"<h4>{md_path.name}</h4>"
             content_html += embed_markdown_file(md_path)
             
-    if html_files:
-        content_html += "<h3>HTML Reports/Outputs</h3>"
-        for html_path in html_files:
-            relative_html_path = html_path.relative_to(base_output_dir).as_posix()
+    # Process HTML files
+    if file_categories['html']:
+        content_html += "<h3>HTML Reports</h3>"
+        for html_path in file_categories['html']:
             content_html += f"<h4>{html_path.name}</h4>"
-            content_html += f'<p><a href="{relative_html_path}" target="_blank" class="file-link">View standalone: {html_path.name}</a></p>'
-            # Sandbox iframe for security, allow-scripts and allow-same-origin for functionality if needed by the embedded HTML.
-            content_html += f'<iframe src="{relative_html_path}" width="100%" height="600px" style="border:1px solid #ccc;" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>'
+            content_html += embed_html_file(html_path)
 
-    if json_files:
+    # Process JSON files
+    if file_categories['json']:
         content_html += "<h3>JSON Files</h3>"
-        for json_path in json_files:
+        for json_path in file_categories['json']:
             content_html += f"<h4>{json_path.name}</h4>"
             content_html += embed_json_file(json_path)
 
-    if txt_files:
+    # Process text files
+    if file_categories['text']:
         content_html += "<h3>Text/Log Files</h3>"
-        for txt_path in txt_files:
+        for txt_path in file_categories['text']:
             content_html += f"<h4>{txt_path.name}</h4>"
             content_html += embed_text_file(txt_path)
             
-    if other_files:
+    # Process other files
+    if file_categories['other']:
         content_html += "<h3>Other Files</h3><ul>"
-        for other_path in other_files:
+        for other_path in file_categories['other']:
             relative_other_path = other_path.relative_to(base_output_dir).as_posix()
             content_html += f'<li><a href="{relative_other_path}" class="file-link" target="_blank">{other_path.name}</a></li>'
         content_html += "</ul>"
 
     if content_html:
         section_title = f"{title_prefix}{dir_path.name}"
-        f.write(f"<div class='section' id='{make_section_id(section_title)}'>\n")
+        section_id = make_section_id(section_title)
+        f.write(f"<div class='section' id='{section_id}'>\n")
         f.write(f"<h2>{section_title}</h2>\n")
         f.write(content_html)
         f.write("</div>\n")
@@ -335,6 +795,7 @@ def process_directory_generic(f: IO[str], dir_path: Path, base_output_dir: Path,
 # --- Section specific helpers ---
 
 def _add_pipeline_summary_section(f: IO[str], output_dir: Path):
+    """Add pipeline execution summary section."""
     summary_json_path = output_dir / "pipeline_execution_summary.json"
     if summary_json_path.exists():
         f.write(f"<div class='section' id='{make_section_id('Pipeline Execution Summary')}'>\n")
@@ -345,6 +806,7 @@ def _add_pipeline_summary_section(f: IO[str], output_dir: Path):
         logger.warning(f"Pipeline summary JSON not found: {summary_json_path.as_posix()}")
 
 def _add_gnn_discovery_section(f: IO[str], output_dir: Path):
+    """Add GNN discovery section."""
     gnn_discovery_dir = output_dir / "gnn_processing_step"
     gnn_discovery_report = gnn_discovery_dir / "1_gnn_discovery_report.md"
     if gnn_discovery_report.exists():
@@ -356,6 +818,7 @@ def _add_gnn_discovery_section(f: IO[str], output_dir: Path):
         logger.warning(f"GNN Discovery report not found: {gnn_discovery_report.as_posix()}")
 
 def _add_test_reports_section(f: IO[str], output_dir: Path):
+    """Add test reports section."""
     test_reports_dir = output_dir / "test_reports"
     pytest_report_xml = test_reports_dir / "pytest_report.xml"
     if pytest_report_xml.exists():
@@ -368,6 +831,7 @@ def _add_test_reports_section(f: IO[str], output_dir: Path):
         logger.warning(f"Pytest XML report not found: {pytest_report_xml.as_posix()}")
 
 def _add_type_checker_section(f: IO[str], output_dir: Path):
+    """Add type checker section."""
     type_check_dir = output_dir / "type_check"
     if type_check_dir.is_dir():
         f.write(f"<div class='section' id='{make_section_id('GNN Type Checker')}'>\n")
@@ -380,7 +844,7 @@ def _add_type_checker_section(f: IO[str], output_dir: Path):
 
         resource_data_json = type_check_dir / "resources" / "type_check_data.json"
         if resource_data_json.exists():
-                add_collapsible_section(f, "Type Check Data (JSON)", embed_json_file(resource_data_json))
+            add_collapsible_section(f, "Type Check Data (JSON)", embed_json_file(resource_data_json))
         
         html_vis_dir = type_check_dir / "resources" / "html_vis"
         if html_vis_dir.is_dir():
@@ -394,6 +858,7 @@ def _add_type_checker_section(f: IO[str], output_dir: Path):
         logger.warning(f"GNN Type Checker directory not found: {type_check_dir.as_posix()}")
 
 def _add_gnn_exports_section(f: IO[str], output_dir: Path):
+    """Add GNN exports section."""
     gnn_exports_dir = output_dir / "gnn_exports"
     if gnn_exports_dir.is_dir():
         f.write(f"<div class='section' id='{make_section_id('GNN Exports')}'>\n")
@@ -419,6 +884,7 @@ def _add_gnn_exports_section(f: IO[str], output_dir: Path):
         f.write("</div>\n")
 
 def _add_visualizations_section(f: IO[str], output_dir: Path):
+    """Add visualizations section."""
     viz_dir = output_dir / "visualization"
     if viz_dir.is_dir():
         f.write(f"<div class='section' id='{make_section_id('GNN Visualizations')}'>\n")
@@ -431,6 +897,7 @@ def _add_visualizations_section(f: IO[str], output_dir: Path):
         logger.warning(f"GNN Visualizations directory not found: {viz_dir.as_posix()}")
 
 def _add_mcp_report_section(f: IO[str], output_dir: Path):
+    """Add MCP report section."""
     mcp_report_dir = output_dir / "mcp_processing_step"
     mcp_report_md = mcp_report_dir / "7_mcp_integration_report.md"
     if mcp_report_md.exists():
@@ -442,6 +909,7 @@ def _add_mcp_report_section(f: IO[str], output_dir: Path):
         logger.warning(f"MCP Integration report not found: {mcp_report_md.as_posix()}")
 
 def _add_ontology_processing_section(f: IO[str], output_dir: Path):
+    """Add ontology processing section."""
     ontology_dir = output_dir / "ontology_processing"
     ontology_report_md = ontology_dir / "ontology_processing_report.md"
     if ontology_report_md.exists():
@@ -453,6 +921,7 @@ def _add_ontology_processing_section(f: IO[str], output_dir: Path):
         logger.warning(f"Ontology Processing report not found: {ontology_report_md.as_posix()}")
 
 def _add_rendered_simulators_section(f: IO[str], output_dir: Path):
+    """Add rendered simulators section."""
     rendered_sim_dir = output_dir / "gnn_rendered_simulators"
     if rendered_sim_dir.is_dir():
         f.write(f"<div class='section' id='{make_section_id('Rendered Simulators')}'>\n")
@@ -465,6 +934,7 @@ def _add_rendered_simulators_section(f: IO[str], output_dir: Path):
         logger.warning(f"Rendered Simulators directory not found: {rendered_sim_dir.as_posix()}")
 
 def _add_execution_logs_section(f: IO[str], output_dir: Path):
+    """Add execution logs section."""
     exec_logs_main_dir = output_dir / "pymdp_execute_logs"
     if exec_logs_main_dir.is_dir():
         f.write(f"<div class='section' id='{make_section_id('Simulator Execution Logs')}'>\n")
@@ -477,6 +947,7 @@ def _add_execution_logs_section(f: IO[str], output_dir: Path):
         logger.warning(f"PyMDP Execute Logs directory not found: {exec_logs_main_dir.as_posix()}")
 
 def _add_llm_outputs_section(f: IO[str], output_dir: Path):
+    """Add LLM outputs section."""
     llm_dir = output_dir / "llm_processing_step"
     if llm_dir.is_dir():
         f.write(f"<div class='section' id='{make_section_id('LLM Processing Outputs')}'>\n")
@@ -489,6 +960,7 @@ def _add_llm_outputs_section(f: IO[str], output_dir: Path):
         logger.warning(f"LLM Processing directory not found: {llm_dir.as_posix()}")
 
 def _add_pipeline_log_section(f: IO[str], output_dir: Path):
+    """Add pipeline log section."""
     pipeline_log_dir = output_dir / "logs"
     pipeline_log_file = pipeline_log_dir / "pipeline.log"
     if pipeline_log_file.exists():
@@ -501,16 +973,18 @@ def _add_pipeline_log_section(f: IO[str], output_dir: Path):
         logger.warning(f"Pipeline log file not found: {pipeline_log_file.as_posix()}")
 
 def _add_other_outputs_section(f: IO[str], output_dir: Path, website_output_file: Path):
+    """Add other outputs section."""
     f.write(f"<div class='section' id='{make_section_id('Other Output Files')}'>\n")
     f.write("<h2>Other Output Files/Directories</h2>\n")
-    other_content_html = ""
+    
     handled_items = {
         "pipeline_execution_summary.json", "gnn_processing_step", "test_reports",
-                    "type_check", "gnn_exports", "gnn_processing_summary.md",
+        "type_check", "gnn_exports", "gnn_processing_summary.md",
         "visualization", "mcp_processing_step", "ontology_processing",
         "gnn_rendered_simulators", "pymdp_execute_logs", "llm_processing_step", "logs",
         website_output_file.name 
     }
+    
     found_other = False
     items_list_html = "<ul>"
     for item in sorted(output_dir.iterdir()):
@@ -524,11 +998,10 @@ def _add_other_outputs_section(f: IO[str], output_dir: Path, website_output_file
     items_list_html += "</ul>"
     
     if found_other:
-        other_content_html = items_list_html
+        f.write(items_list_html)
     else:
-        other_content_html = "<p>No other top-level files or directories found or all were processed above.</p>"
+        f.write("<p>No other top-level files or directories found or all were processed above.</p>")
     
-    f.write(other_content_html)
     f.write("</div>\n")
 
 # --- Main Report Generation Function ---
@@ -540,14 +1013,24 @@ def generate_html_report(output_dir: Path, website_output_file: Path):
     logger.info(f"Starting HTML report generation for directory: {output_dir.as_posix()}")
     logger.info(f"Output HTML will be saved to: {website_output_file.as_posix()}")
 
-    with open(website_output_file, 'w', encoding='utf-8') as f:
-        f.write(HTML_START_TEMPLATE)
+    # Prepare template variables
+    generation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    output_dir_str = str(output_dir.resolve())
 
+    with open(website_output_file, 'w', encoding='utf-8') as f:
+        # Write start template with variables
+        start_template = HTML_START_TEMPLATE.format(
+            generation_time=generation_time,
+            output_dir=output_dir_str
+        )
+        f.write(start_template)
+
+        # Add all sections
         _add_pipeline_summary_section(f, output_dir)
         _add_gnn_discovery_section(f, output_dir)
         _add_test_reports_section(f, output_dir)
         _add_type_checker_section(f, output_dir)
-        _add_gnn_exports_section(f, output_dir) # Also handles gnn_processing_summary.md internally
+        _add_gnn_exports_section(f, output_dir)
         _add_visualizations_section(f, output_dir)
         _add_mcp_report_section(f, output_dir)
         _add_ontology_processing_section(f, output_dir)
@@ -558,8 +1041,8 @@ def generate_html_report(output_dir: Path, website_output_file: Path):
         _add_other_outputs_section(f, output_dir, website_output_file)
 
         f.write(HTML_END_TEMPLATE)
+    
     logger.info(f"✅ HTML report generated successfully: {website_output_file.as_posix()}")
-
 
 def main_website_generator():
     """
@@ -598,19 +1081,15 @@ def main_website_generator():
 
     if not resolved_output_dir.is_dir():
         logger.error(f"Output directory does not exist: {resolved_output_dir.as_posix()}")
-        sys.exit(1) # Use sys.exit(1) for error exit code
+        sys.exit(1)
 
     resolved_website_output_file.parent.mkdir(parents=True, exist_ok=True)
     
     generate_html_report(resolved_output_dir, resolved_website_output_file)
-    sys.exit(0) # Success exit code
+    sys.exit(0)
 
 if __name__ == "__main__":
     print("src.website.generator called directly. Use 12_website.py for pipeline integration or provide CLI args for direct test.")
-    # To test from project root (GeneralizedNotationNotation/):
-    # Ensure you have a populated 'output' directory from a previous pipeline run.
-    # And install Markdown: pip install Markdown
-    # python src/website/generator.py --output-dir output --website-output-file output/test_website.html --verbose
     
     # Basic test execution when called directly
     if Path.cwd().name == "GeneralizedNotationNotation": 
@@ -620,13 +1099,12 @@ if __name__ == "__main__":
         print(f"Attempting direct test generation with output_dir='{test_output_dir_arg}' and website_output_file='{test_website_file_arg}'")
         
         # Simulate command line arguments for testing
-        # Note: This requires the script to be run from the project root for these relative paths to be standard.
-        # For more robust direct testing, use absolute paths or ensure correct CWD.
         sys.argv.extend([
             "--output-dir", str(test_output_dir_arg),
             "--website-output-file", str(test_website_file_arg),
             "--verbose"
         ])
+        
         # Check if output dir exists before running test
         if not test_output_dir_arg.is_dir():
             logger.warning(f"Test output directory '{test_output_dir_arg}' does not exist. Skipping direct test run of main_website_generator().")
@@ -634,7 +1112,7 @@ if __name__ == "__main__":
         else:
             main_website_generator()
     else:
-        print("To test generator.py directly with its main_website_generator(), run from the project root 'GeneralizedNotationNotation/' and provide args, or ensure paths are absolute.") 
+        print("To test generator.py directly with its main_website_generator(), run from the project root 'GeneralizedNotationNotation/' and provide args, or ensure paths are absolute.")
 
 def generate_website(logger: logging.Logger, output_dir: Path, website_output_dir: Path):
     """Generate static HTML website from pipeline artifacts."""
