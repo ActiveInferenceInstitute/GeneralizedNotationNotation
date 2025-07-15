@@ -5,11 +5,15 @@ All test outputs must go under output/type_check/ or a temp subfolder thereof.
 The type checker CLI now enforces this policy and will refuse to run if --output-dir is not a subdirectory named 'type_check'.
 """
 
+import pytest
 import os
 import sys
 import unittest
 from pathlib import Path
 from tempfile import NamedTemporaryFile, TemporaryDirectory
+
+# Test markers
+pytestmark = [pytest.mark.type_checking, pytest.mark.safe_to_fail, pytest.mark.fast]
 
 # Add the src directory to the Python path to import the module
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))

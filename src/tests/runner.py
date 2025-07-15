@@ -7,7 +7,7 @@ import logging
 from pipeline import get_output_dir_for_script
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error
 
-def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, include_slow: bool = False, fast_only: bool = True):
+def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, include_slow: bool = False, fast_only: bool = False):
     """Run the test suite and save results."""
     log_step_start(logger, "Running test suite")
     
@@ -39,17 +39,17 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
             "--cov-report=term-missing",
         ])
     
-    # Test selection logic
+    # Test selection logic - Improved to run all tests by default
     if fast_only:
-        # Run only fast tests
+        # Run only fast tests when explicitly requested
         pytest_cmd.extend(["-m", "fast"])
         pytest_cmd.append("src/tests/test_fast_suite.py")
         logger.info("Running fast test suite only")
     elif not include_slow:
-        # Exclude slow tests but run all other tests
+        # Run all tests except slow ones (default behavior)
         pytest_cmd.extend(["-m", "not slow"])
         pytest_cmd.append("src/tests/")
-        logger.info("Excluding slow tests (use --include-slow to include them)")
+        logger.info("Running all tests except slow tests (use --include-slow to include them)")
     else:
         # Run all tests including slow ones
         pytest_cmd.append("src/tests/")

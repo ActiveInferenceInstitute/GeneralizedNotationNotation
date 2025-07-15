@@ -139,8 +139,12 @@ def patch_jax_cleanup():
     when running pytest. JAX's atexit handler for cleanup can conflict with
     pytest's log capturing.
     """
-    with patch("jax._src.xla_bridge._clear_backends") as mock_clear_backends:
-        yield mock_clear_backends
+    try:
+        with patch("jax._src.xla_bridge._clear_backends") as mock_clear_backends:
+            yield mock_clear_backends
+    except ImportError:
+        # JAX not available, skip patching
+        yield None
 
 # =============================================================================
 # Function-level fixtures (run for each test function)

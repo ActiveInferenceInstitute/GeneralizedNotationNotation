@@ -34,7 +34,7 @@ import argparse
 import time
 
 # Test markers
-pytestmark = pytest.mark.utilities
+pytestmark = [pytest.mark.utilities, pytest.mark.safe_to_fail, pytest.mark.fast]
 
 # Import test utilities and fixtures with fallback
 try:

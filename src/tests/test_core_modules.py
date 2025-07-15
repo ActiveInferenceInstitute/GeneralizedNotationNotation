@@ -28,7 +28,7 @@ import tempfile
 import importlib.util
 
 # Test markers
-pytestmark = [pytest.mark.core, pytest.mark.safe_to_fail]
+pytestmark = [pytest.mark.core, pytest.mark.safe_to_fail, pytest.mark.fast]
 
 # Import test utilities and configuration
 from . import (

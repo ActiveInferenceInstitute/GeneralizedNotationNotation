@@ -42,7 +42,7 @@ def run_tests_standardized(
     recursive: bool = False,
     verbose: bool = False,
     include_slow: bool = False,
-    fast_only: bool = True,
+    fast_only: bool = False,  # Changed default to False to run all tests
     **kwargs
 ) -> bool:
     """
@@ -90,7 +90,7 @@ def main(parsed_args):
         recursive=getattr(parsed_args, 'recursive', False),
         verbose=getattr(parsed_args, 'verbose', False),
         include_slow=getattr(parsed_args, 'include_slow', False),
-        fast_only=getattr(parsed_args, 'fast_only', True)
+        fast_only=getattr(parsed_args, 'fast_only', False)
     )
     
     if success:

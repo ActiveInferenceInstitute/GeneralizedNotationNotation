@@ -28,7 +28,7 @@ from typing import Dict, Any, List, Tuple, Optional
 # Real functional testing without mocks
 
 # Test markers
-pytestmark = [pytest.mark.environment, pytest.mark.safe_to_fail]
+pytestmark = [pytest.mark.environment, pytest.mark.safe_to_fail, pytest.mark.fast]
 
 # Import test utilities
 from . import (
