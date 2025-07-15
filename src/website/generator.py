@@ -10,6 +10,27 @@ import sys # Add sys import for exit codes in main_site_generator
 
 import markdown # For rendering markdown content
 
+# Import logging utilities
+try:
+    from utils import (
+        log_step_start,
+        log_step_success,
+        log_step_error
+    )
+    UTILS_AVAILABLE = True
+except ImportError:
+    # Fallback logging functions if utils not available
+    def log_step_start(logger, message):
+        logger.info(f"🚀 {message}")
+    
+    def log_step_success(logger, message):
+        logger.info(f"✅ {message}")
+    
+    def log_step_error(logger, message):
+        logger.error(f"❌ {message}")
+    
+    UTILS_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 # --- HTML Templates ---
@@ -615,36 +636,25 @@ if __name__ == "__main__":
     else:
         print("To test generator.py directly with its main_website_generator(), run from the project root 'GeneralizedNotationNotation/' and provide args, or ensure paths are absolute.") 
 
-def generate_website(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False):
+def generate_website(logger: logging.Logger, output_dir: Path, website_output_dir: Path):
     """Generate static HTML website from pipeline artifacts."""
     log_step_start(logger, "Generating static HTML website from pipeline artifacts")
     
     try:
-        # Get output directory for this step
-        website_output_dir = get_output_dir_for_script("12_website.py", output_dir)
+        # Ensure the website output directory exists
         website_output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Create website generator instance
-        website_generator = WebsiteGenerator(output_dir=str(website_output_dir))
+        # Create the website HTML file
+        website_html_file = website_output_dir / "index.html"
         
         # Log the generation process
-        logger.info(f"Starting website generation from {target_dir} to {website_output_dir}")
+        logger.info(f"Starting website generation from {output_dir} to {website_output_dir}")
         
-        # Use performance tracking for website generation
-        with performance_tracker.track_operation("generate_static_website"):
-            # Generate website
-            success = website_generator.generate_website(
-                target_dir=str(target_dir),
-                output_dir=str(website_output_dir),
-                recursive=recursive
-            )
+        # Generate the HTML report
+        generate_html_report(output_dir, website_html_file)
         
-        if success:
-            log_step_success(logger, "Static website generation completed successfully")
-        else:
-            log_step_warning(logger, "Static website generation completed with issues")
-        
-        return success
+        log_step_success(logger, f"Static website generation completed successfully: {website_html_file}")
+        return True
         
     except Exception as e:
         log_step_error(logger, f"Website generation failed: {e}")

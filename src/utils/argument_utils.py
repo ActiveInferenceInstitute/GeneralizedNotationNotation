@@ -452,7 +452,7 @@ def get_step_output_dir(step_name: str, base_output_dir: Path) -> Path:
         "9_render": "gnn_rendered_simulators",
         "10_execute": "execute_logs",
         "11_llm": "llm_processing_step",
-        "12_website": "website_generation",
+        "12_website": "website",
         "13_sapf": "sapf_generation"
     }
     

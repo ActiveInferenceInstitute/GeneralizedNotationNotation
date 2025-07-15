@@ -11,6 +11,7 @@ from typing import Dict, Any
 from .generator import (
     generate_html_report,
     main_website_generator,
+    generate_website,
     embed_image,
     embed_markdown_file,
     embed_text_file,
@@ -53,10 +54,6 @@ __all__ = [
     'generate_html_report',
     'main_website_generator',
     'generate_website',
-    'create_html_report',
-    'generate_website_index',
-    'create_website_navigation',
-    'generate_website_report',
     
     # Embedding functions
     'embed_image',
@@ -113,6 +110,7 @@ def get_module_info():
     return info
 
 
+# Test-compatible function aliases
 def generate_website_from_pipeline_output(pipeline_output_dir: str, output_filename: str = "pipeline_summary.html",
                                         verbose: bool = False) -> Dict[str, Any]:
     """
@@ -127,8 +125,17 @@ def generate_website_from_pipeline_output(pipeline_output_dir: str, output_filen
         Dictionary with success status and metadata
     """
     try:
-        # Implementation would go here
-        return {"success": True, "output_file": output_filename}
+        from pathlib import Path
+        from .generator import generate_html_report
+        
+        output_dir = Path(pipeline_output_dir)
+        output_file = output_dir / output_filename
+        
+        if not output_dir.exists():
+            return {"success": False, "error": f"Output directory does not exist: {pipeline_output_dir}"}
+        
+        generate_html_report(output_dir, output_file)
+        return {"success": True, "output_file": str(output_file)}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -161,66 +168,4 @@ def get_supported_file_types() -> dict:
             'embedding': 'Iframe embedding',
             'description': 'HTML files are embedded using iframes'
         }
-    }
-
-
-# Test-compatible function aliases
-def generate_website(pipeline_output_dir, output_filename="pipeline_summary.html", **kwargs):
-    """Legacy function name for backward compatibility."""
-    return generate_website_from_pipeline_output(pipeline_output_dir, output_filename, **kwargs)
-
-def create_html_report(output_dir, output_file, **kwargs):
-    """Create HTML report (test-compatible alias)."""
-    return generate_html_report(output_dir, output_file, **kwargs)
-
-def generate_website_index(site_data, output_path=None):
-    """Generate site index (test-compatible alias)."""
-    import json
-    from datetime import datetime
-    
-    index = {
-        "timestamp": datetime.now().isoformat(),
-        "site_data": site_data,
-        "pages": site_data.get("pages", []),
-        "navigation": []
-    }
-    
-    if output_path:
-        with open(output_path, 'w') as f:
-            json.dump(index, f, indent=2)
-    
-    return index
-
-def create_website_navigation(site_data, output_path=None):
-    """Create site navigation (test-compatible alias)."""
-    navigation = {
-        "title": site_data.get("title", "Site Navigation"),
-        "pages": site_data.get("pages", []),
-        "links": []
-    }
-    
-    if output_path:
-        with open(output_path, 'w') as f:
-            json.dump(navigation, f, indent=2)
-    
-    return navigation
-
-def generate_website_report(site_data, output_path=None):
-    """Generate site report (test-compatible alias)."""
-    import json
-    from datetime import datetime
-    
-    report = {
-        "timestamp": datetime.now().isoformat(),
-        "site_data": site_data,
-        "summary": {
-            "total_pages": len(site_data.get("pages", [])),
-            "title": site_data.get("title", "Untitled Site")
-        }
-    }
-    
-    if output_path:
-        with open(output_path, 'w') as f:
-            json.dump(report, f, indent=2)
-    
-    return report 
+    } 

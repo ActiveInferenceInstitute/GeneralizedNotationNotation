@@ -238,5 +238,29 @@
     "GoalConstraintVariance": {
         "description": "The variance parameter for goal-directed constraints in trajectory planning and optimization.",
         "uri": "obo:TEMP_000060"
+    },
+    "LikelihoodMatrix": {
+        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies).",
+        "uri": "obo:TEMP_000061"
+    },
+    "LogPreferenceVector": {
+        "description": "A vector representing log-preferences over observations or states (e.g., 'C' vector/matrix).",
+        "uri": "obo:TEMP_000062"
+    },
+    "PriorOverHiddenStates": {
+        "description": "A prior probability distribution over hidden states, typically representing initial beliefs before new evidence (e.g., 'D' vector/matrix).",
+        "uri": "obo:TEMP_000063"
+    },
+    "Habit": {
+        "description": "A prior probability distribution over possible actions or policies, representing habitual behavior patterns (e.g., 'E' matrix).",
+        "uri": "obo:TEMP_000064"
+    },
+    "VariationalFreeEnergy": {
+        "description": "A bound on Bayesian model evidence, minimized during perception and learning to approximate posterior beliefs.",
+        "uri": "obo:TEMP_000065"
+    },
+    "Time": {
+        "description": "Represents a point or interval in a temporal sequence, often a discrete time step in a model.",
+        "uri": "obo:TEMP_000066"
     }
 } 

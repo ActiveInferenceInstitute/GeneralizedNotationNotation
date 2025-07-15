@@ -70,12 +70,16 @@ def process_ontology_operations_standardized(
         True if processing succeeded, False otherwise
     """
     try:
+        # Extract ontology_terms_file from kwargs
+        ontology_terms_file = kwargs.get('ontology_terms_file')
+        
         # Call the existing process_ontology_operations function
         success = process_ontology_operations(
             target_dir=target_dir,
             output_dir=output_dir,
             logger=logger,
-            recursive=recursive
+            recursive=recursive,
+            ontology_terms_file=ontology_terms_file
         )
         
         return success

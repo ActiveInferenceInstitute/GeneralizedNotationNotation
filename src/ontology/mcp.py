@@ -41,15 +41,21 @@ def parse_gnn_ontology_section(gnn_file_content: str, verbose: bool = False) -> 
     annotations = {}
     try:
         # Regex to find the ActInfOntologyAnnotation section and capture its content
-        match = re.search(r"^## ActInfOntologyAnnotation\s*$\n(.*?)(?:^## \S+|^\Z)", gnn_file_content, re.MULTILINE | re.DOTALL)
+        # Updated pattern to be more flexible with section boundaries
+        match = re.search(r"^## ActInfOntologyAnnotation\s*$\n(.*?)(?=^## |^\Z)", gnn_file_content, re.MULTILINE | re.DOTALL)
         if not match:
-            logger.debug("'ActInfOntologyAnnotation' section not found.")
+            if verbose:
+                logger.debug("'ActInfOntologyAnnotation' section not found.")
             return annotations
 
         section_content = match.group(1).strip()
         if not section_content:
-            logger.debug("'ActInfOntologyAnnotation' section is empty.")
+            if verbose:
+                logger.debug("'ActInfOntologyAnnotation' section is empty.")
             return annotations
+
+        if verbose:
+            logger.debug(f"Found ActInfOntologyAnnotation section content: {repr(section_content)}")
 
         lines = section_content.split('\n')
         for i, line in enumerate(lines):
@@ -69,12 +75,17 @@ def parse_gnn_ontology_section(gnn_file_content: str, verbose: bool = False) -> 
                     
                 if key and value:
                     annotations[key] = value
+                    if verbose:
+                        logger.debug(f"Parsed annotation: {key} = {value}")
                 else:
-                    logger.debug(f"Malformed line {i+1} in ActInfOntologyAnnotation: '{line}' - skipping.")
+                    if verbose:
+                        logger.debug(f"Malformed line {i+1} in ActInfOntologyAnnotation: '{line}' - skipping.")
             else:
-                logger.debug(f"Line {i+1} in ActInfOntologyAnnotation does not contain '=': '{line}' - skipping.")
+                if verbose:
+                    logger.debug(f"Line {i+1} in ActInfOntologyAnnotation does not contain '=': '{line}' - skipping.")
         
-        logger.debug(f"Parsed annotations: {annotations}")
+        if verbose:
+            logger.debug(f"Parsed annotations: {annotations}")
             
     except Exception as e:
         logger.error(f"Error parsing ActInfOntologyAnnotation section: {e}", exc_info=True)

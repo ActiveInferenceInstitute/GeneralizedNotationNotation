@@ -72,16 +72,17 @@ def process_website_generation(
         True if processing succeeded, False otherwise
     """
     try:
-        # Validate output directory
-        if not output_dir.exists():
-            log_step_error(logger, f"Output directory does not exist: {output_dir}")
-            return False
+        # Get the website output directory for this step
+        website_output_dir = get_output_dir_for_script("12_website.py", output_dir)
         
-        # Generate website
-        generate_website(logger, output_dir, output_dir / "website_step")
+        # Generate website using the main pipeline output directory as source
+        # and the step-specific directory as destination
+        success = generate_website(logger, output_dir, website_output_dir)
         
-        log_step_success(logger, f"Website generated successfully in {output_dir / 'website_step' / 'index.html'}")
-        return True
+        if success:
+            log_step_success(logger, f"Website generated successfully in {website_output_dir / 'index.html'}")
+        
+        return success
         
     except Exception as e:
         log_step_error(logger, f"Website generation failed: {e}")
