@@ -619,7 +619,158 @@ class GnnToPyMdpConverter:
                     self.E_spec = e_raw
 
     def _parse_gnn_matrix_string(self, matrix_str: str) -> List[List[float]]:
-        """Parse GNN matrix string format into Python list of lists."""
+        """Parse GNN matrix string format into Python list of lists using robust parsing."""
+        import re
+        import ast
+        
+        # Remove comments and extra whitespace
+        processed_str = self._strip_comments_from_multiline_str(matrix_str)
+        
+        if not processed_str:
+            self._add_log(f"DEBUG: Matrix string was empty after comment stripping (original: '{matrix_str}')")
+            return []
+        
+        # Convert GNN's array-like curly braces into valid Python list syntax for ast.literal_eval
+        if '{' in processed_str and ':' not in processed_str:
+            processed_str = processed_str.replace('{', '[').replace('}', ']')
+        elif processed_str.startswith("{") and processed_str.endswith("}"):
+            inner_content = processed_str[1:-1].strip()
+            if ':' in inner_content and not (inner_content.startswith("(") and inner_content.endswith(")")):
+                pass  # Likely a dictionary, leave as is
+            else:
+                # Assume GNN's { } means a list-like structure
+                processed_str = "[" + inner_content + "]"
+        
+        try:
+            parsed_value = ast.literal_eval(processed_str)
+            
+            # Convert sets to sorted lists
+            def convert_structure(item):
+                if isinstance(item, set):
+                    try:
+                        return sorted(list(item))
+                    except TypeError:
+                        return list(item)
+                elif isinstance(item, list):
+                    return [convert_structure(x) for x in item]
+                elif isinstance(item, tuple):
+                    return tuple(convert_structure(x) for x in item)
+                elif isinstance(item, dict):
+                    return {k: convert_structure(v) for k, v in item.items()}
+                return item
+            
+            parsed_value = convert_structure(parsed_value)
+            
+            # Handle special case: single tuple in braces {(a,b)} -> convert to list
+            if isinstance(parsed_value, list) and len(parsed_value) == 1 and isinstance(parsed_value[0], (list, tuple)):
+                if processed_str.startswith('[(') and processed_str.endswith(')]'):
+                    if processed_str.count('(') == 1 and processed_str.count(')') == 1:
+                        parsed_value = list(parsed_value[0])
+            
+            # Ensure we have a 2D matrix (list of lists)
+            if isinstance(parsed_value, list):
+                if len(parsed_value) > 0 and isinstance(parsed_value[0], (list, tuple)):
+                    # Already 2D
+                    return [list(row) for row in parsed_value]
+                else:
+                    # 1D list, convert to 2D
+                    return [parsed_value]
+            elif isinstance(parsed_value, tuple):
+                # Convert tuple to list
+                return [list(parsed_value)]
+            else:
+                # Single value, wrap in list
+                return [[parsed_value]]
+                
+        except Exception as e:
+            self._add_log(f"DEBUG: Could not parse matrix string with ast.literal_eval: '{processed_str}'. Error: {e}. Trying fallback parsing.")
+            
+            # Fallback: manual parsing for complex cases
+            return self._parse_matrix_fallback(matrix_str)
+    
+    def _parse_gnn_3d_matrix_string(self, matrix_str: str) -> List[List[List[float]]]:
+        """Parse GNN 3D matrix string format into Python list of lists of lists."""
+        import re
+        import ast
+        
+        # Remove comments and extra whitespace
+        processed_str = self._strip_comments_from_multiline_str(matrix_str)
+        
+        if not processed_str:
+            self._add_log(f"DEBUG: 3D matrix string was empty after comment stripping (original: '{matrix_str}')")
+            return []
+        
+        # Convert GNN's array-like curly braces into valid Python list syntax
+        if '{' in processed_str and ':' not in processed_str:
+            processed_str = processed_str.replace('{', '[').replace('}', ']')
+        elif processed_str.startswith("{") and processed_str.endswith("}"):
+            inner_content = processed_str[1:-1].strip()
+            if ':' in inner_content and not (inner_content.startswith("(") and inner_content.endswith(")")):
+                pass  # Likely a dictionary, leave as is
+            else:
+                # Assume GNN's { } means a list-like structure
+                processed_str = "[" + inner_content + "]"
+        
+        try:
+            parsed_value = ast.literal_eval(processed_str)
+            
+            # Convert sets to sorted lists
+            def convert_structure(item):
+                if isinstance(item, set):
+                    try:
+                        return sorted(list(item))
+                    except TypeError:
+                        return list(item)
+                elif isinstance(item, list):
+                    return [convert_structure(x) for x in item]
+                elif isinstance(item, tuple):
+                    return tuple(convert_structure(x) for x in item)
+                elif isinstance(item, dict):
+                    return {k: convert_structure(v) for k, v in item.items()}
+                return item
+            
+            parsed_value = convert_structure(parsed_value)
+            
+            # Ensure we have a 3D matrix (list of lists of lists)
+            if isinstance(parsed_value, list):
+                if len(parsed_value) > 0:
+                    if isinstance(parsed_value[0], list):
+                        if len(parsed_value[0]) > 0 and isinstance(parsed_value[0][0], (list, tuple)):
+                            # Already 3D
+                            return [[list(row) for row in plane] for plane in parsed_value]
+                        else:
+                            # 2D list, wrap in outer list
+                            return [[list(row) for row in parsed_value]]
+                    else:
+                        # 1D list, wrap in 2D then 3D
+                        return [[parsed_value]]
+                else:
+                    return []
+            else:
+                # Single value, wrap in 3D
+                return [[[parsed_value]]]
+                
+        except Exception as e:
+            self._add_log(f"DEBUG: Could not parse 3D matrix string with ast.literal_eval: '{processed_str}'. Error: {e}. Trying fallback parsing.")
+            
+            # Fallback: manual parsing for complex cases
+            return self._parse_3d_matrix_fallback(matrix_str)
+    
+    def _strip_comments_from_multiline_str(self, m_str: str) -> str:
+        """Strip comments from a multiline string."""
+        lines = m_str.split('\n')
+        cleaned_lines = []
+        for line in lines:
+            # Remove comments (everything after #)
+            if '#' in line:
+                line = line.split('#')[0]
+            line = line.strip()
+            if line:
+                cleaned_lines.append(line)
+        return ' '.join(cleaned_lines)
+    
+    def _parse_matrix_fallback(self, matrix_str: str) -> List[List[float]]:
+        """Fallback parsing for complex matrix strings."""
         import re
         
         # Remove comments and extra whitespace
@@ -645,31 +796,39 @@ class GnnToPyMdpConverter:
             
             # Parse the row values
             row_values = []
-            # Split by comma, but handle nested parentheses
-            parts = re.split(r',(?![^(]*\))', line)
-            for part in parts:
-                part = part.strip()
-                if part:
-                    try:
-                        # Handle tuple format like (1.0, 0.0, 0.0)
-                        if part.startswith('(') and part.endswith(')'):
-                            # Extract values from tuple
-                            tuple_content = part[1:-1]
-                            tuple_values = [float(x.strip()) for x in tuple_content.split(',')]
-                            row_values.extend(tuple_values)
-                        else:
-                            # Single value
-                            row_values.append(float(part))
-                    except ValueError:
-                        continue
+            
+            # Handle the specific GNN format: (1.0, 0.0, 0.0)
+            if line.startswith('(') and line.endswith(')'):
+                # Extract values from tuple
+                tuple_content = line[1:-1]
+                tuple_values = [float(x.strip()) for x in tuple_content.split(',')]
+                row_values = tuple_values
+            else:
+                # Split by comma, but handle nested parentheses
+                parts = re.split(r',(?![^(]*\))', line)
+                for part in parts:
+                    part = part.strip()
+                    if part:
+                        try:
+                            # Handle tuple format like (1.0, 0.0, 0.0)
+                            if part.startswith('(') and part.endswith(')'):
+                                # Extract values from tuple
+                                tuple_content = part[1:-1]
+                                tuple_values = [float(x.strip()) for x in tuple_content.split(',')]
+                                row_values.extend(tuple_values)
+                            else:
+                                # Single value
+                                row_values.append(float(part))
+                        except ValueError:
+                            continue
             
             if row_values:
                 matrix.append(row_values)
         
         return matrix
-
-    def _parse_gnn_3d_matrix_string(self, matrix_str: str) -> List[List[List[float]]]:
-        """Parse GNN 3D matrix string format into Python list of lists of lists."""
+    
+    def _parse_3d_matrix_fallback(self, matrix_str: str) -> List[List[List[float]]]:
+        """Fallback parsing for complex 3D matrix strings."""
         import re
         
         # Remove comments and extra whitespace
@@ -711,7 +870,7 @@ class GnnToPyMdpConverter:
             matrices.append(current_matrix)
         
         return matrices
-
+    
     def _parse_matrix_row(self, row_str: str) -> List[float]:
         """Parse a single matrix row string into list of floats."""
         import re
@@ -722,22 +881,31 @@ class GnnToPyMdpConverter:
         
         # Parse the row values
         row_values = []
-        parts = re.split(r',(?![^(]*\))', row_str)
-        for part in parts:
-            part = part.strip()
-            if part:
-                try:
-                    # Handle tuple format like (1.0, 0.0, 0.0)
-                    if part.startswith('(') and part.endswith(')'):
-                        # Extract values from tuple
-                        tuple_content = part[1:-1]
-                        tuple_values = [float(x.strip()) for x in tuple_content.split(',')]
-                        row_values.extend(tuple_values)
-                    else:
-                        # Single value
-                        row_values.append(float(part))
-                except ValueError:
-                    continue
+        
+        # Handle the specific GNN format: (1.0, 0.0, 0.0)
+        if row_str.startswith('(') and row_str.endswith(')'):
+            # Extract values from tuple
+            tuple_content = row_str[1:-1]
+            tuple_values = [float(x.strip()) for x in tuple_content.split(',')]
+            row_values = tuple_values
+        else:
+            # Split by comma, but handle nested parentheses
+            parts = re.split(r',(?![^(]*\))', row_str)
+            for part in parts:
+                part = part.strip()
+                if part:
+                    try:
+                        # Handle tuple format like (1.0, 0.0, 0.0)
+                        if part.startswith('(') and part.endswith(')'):
+                            # Extract values from tuple
+                            tuple_content = part[1:-1]
+                            tuple_values = [float(x.strip()) for x in tuple_content.split(',')]
+                            row_values.extend(tuple_values)
+                        else:
+                            # Single value
+                            row_values.append(float(part))
+                    except ValueError:
+                        continue
         
         return row_values
 

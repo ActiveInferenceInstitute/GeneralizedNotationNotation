@@ -1,5 +1,6 @@
 from pathlib import Path
 import logging
+import re
 from pipeline import get_output_dir_for_script
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
 from gnn.parsers.markdown_parser import MarkdownGNNParser
@@ -11,6 +12,80 @@ try:
 except ImportError as e:
     render_gnn_spec = None
     RENDER_AVAILABLE = False
+
+def _parse_initial_parameterization_robust(section_content: str) -> dict:
+    """
+    Robustly parse the InitialParameterization section, properly handling multi-line matrix blocks.
+    Handles cases where the opening brace is on a line by itself, and accumulates lines until braces are balanced.
+    """
+    data = {}
+    lines = section_content.split('\n')
+    current_key = None
+    current_block = []
+    in_matrix = False
+    open_brace = None
+    close_brace = None
+    brace_count = 0
+
+    for line in lines:
+        line_strip = line.strip()
+        if not line_strip or line_strip.startswith('#'):
+            continue
+
+        # Detect start of a matrix block (A=, B=, C=, D=, E=)
+        matrix_start = re.match(r'^(A|B|C|D|E)\s*=\s*([{(])', line_strip)
+        if not in_matrix and matrix_start:
+            # Save previous block if exists
+            if current_key and current_block:
+                data[current_key] = '\n'.join(current_block)
+            # Start new matrix block
+            current_key = matrix_start.group(1)
+            open_brace = matrix_start.group(2)
+            close_brace = '}' if open_brace == '{' else ')'
+            # Find the position of the opening brace
+            brace_pos = line_strip.find(open_brace)
+            # Start collecting from the opening brace
+            block_line = line_strip[brace_pos:]
+            current_block = [block_line]
+            # Initialize brace count for this block
+            brace_count = block_line.count(open_brace) - block_line.count(close_brace)
+            in_matrix = True
+            # If the block is closed on the same line, finish immediately
+            if brace_count == 0:
+                data[current_key] = '\n'.join(current_block)
+                in_matrix = False
+                current_key = None
+                current_block = []
+                open_brace = None
+                close_brace = None
+            continue
+
+        # Handle lines inside a matrix block
+        if in_matrix:
+            if not matrix_start:  # Don't double-add the start line
+                current_block.append(line_strip)
+                brace_count += line_strip.count(open_brace)
+                brace_count -= line_strip.count(close_brace)
+            # If braces are balanced, end the matrix block
+            if brace_count == 0:
+                data[current_key] = '\n'.join(current_block)
+                in_matrix = False
+                current_key = None
+                current_block = []
+                open_brace = None
+                close_brace = None
+            continue
+
+        # Handle single-line assignments (e.g., C = (0.0, 0.0, 1.0))
+        single_assign = re.match(r'^(C|D|E)\s*=\s*(.+)$', line_strip)
+        if single_assign:
+            data[single_assign.group(1)] = single_assign.group(2).strip()
+
+    # Save any trailing block
+    if in_matrix and current_key and current_block:
+        data[current_key] = '\n'.join(current_block)
+
+    return data
 
 def render_gnn_files(
     target_dir: Path, 
@@ -94,78 +169,30 @@ def render_gnn_files(
                     
                     # Extract InitialParameterization as a dictionary for matrix access
                     initial_params = {}
+                    
+                    # Method 1: Extract from parsed parameters (most reliable)
                     param_lines = [p for p in model.parameters if hasattr(p, 'name') and hasattr(p, 'value')]
                     matrix_keys = ["A", "B", "C", "D", "E"]
-                    i = 0
-                    while i < len(param_lines):
-                        param = param_lines[i]
+                    
+                    for param in param_lines:
                         name = param.name.strip()
                         value = param.value
-                        if name in matrix_keys and isinstance(value, str) and (value.strip().startswith("{") or value.strip().startswith("(")):
-                            block = value.strip()
-                            open_brace = block[0]
-                            close_brace = '}' if open_brace == '{' else ')'
-                            block_lines = []
-                            # Always include the first line if it starts with '('
-                            if block.startswith('('):
-                                block_lines.append(block)
-                            i += 1
-                            while i < len(param_lines):
-                                next_value = param_lines[i].value
-                                if isinstance(next_value, str):
-                                    next_value_str = next_value.strip()
-                                    if next_value_str.startswith('('):
-                                        block_lines.append(next_value_str)
-                                    if next_value_str.endswith(close_brace):
-                                        break
-                                i += 1
-                            # Wrap with braces/parens
-                            full_block = open_brace + '\n' + '\n'.join(block_lines) + '\n' + close_brace
-                            print(f"DEBUG: InitialParameterization {name} value =\n{full_block}")
-                            initial_params[name] = full_block
-                            i += 1
-                        elif name in matrix_keys and name not in initial_params:
+                        if name in matrix_keys:
                             initial_params[name] = value
-                            i += 1
-                        else:
-                            i += 1
                     
-                    # Also extract from the raw InitialParameterization section if available
+                    # Method 2: Extract from raw InitialParameterization section if available
                     if hasattr(model, 'extensions') and 'initial_parameterization' in model.extensions:
                         raw_init_params = model.extensions['initial_parameterization']
                         if isinstance(raw_init_params, str):
-                            # Parse the raw InitialParameterization section as multiline strings
-                            lines = raw_init_params.split('\n')
-                            current_matrix = None
-                            current_content = []
-                            
-                            for line in lines:
-                                line = line.strip()
-                                if not line or line.startswith('#'):
-                                    continue
-                                
-                                # Check if this line starts a new matrix definition
-                                for matrix_key in matrix_keys:
-                                    if line.startswith(f"{matrix_key}="):
-                                        # Save previous matrix if exists
-                                        if current_matrix and current_content:
-                                            initial_params[current_matrix] = '\n'.join(current_content)
-                                        
-                                        # Start new matrix
-                                        current_matrix = matrix_key
-                                        current_content = [line]
-                                        break
-                                else:
-                                    # Continue current matrix
-                                    if current_matrix:
-                                        current_content.append(line)
-                            
-                            # Save last matrix
-                            if current_matrix and current_content:
-                                initial_params[current_matrix] = '\n'.join(current_content)
+                            # Use the robust parsing method from export module
+                            parsed_raw_params = _parse_initial_parameterization_robust(raw_init_params)
+                            for key, value in parsed_raw_params.items():
+                                if key in matrix_keys:
+                                    initial_params[key] = value
                     
-                    # If matrices are still empty, try to parse them from the raw content
-                    if not any(initial_params.get(key) for key in matrix_keys):
+                    # Method 3: Fallback to direct file parsing if matrices are still missing
+                    missing_matrices = [key for key in matrix_keys if key not in initial_params or not initial_params[key]]
+                    if missing_matrices:
                         # Read the original file content to extract matrices
                         with open(gnn_file, 'r', encoding='utf-8') as f:
                             content = f.read()
@@ -179,34 +206,18 @@ def render_gnn_files(
                             
                             init_section = content[start_idx:end_idx]
                             
-                            def extract_matrix_block(section, key):
-                                # Find the start of the matrix definition
-                                import re
-                                pattern = key + r'\s*=\s*\{'
-                                match = re.search(pattern, section)
-                                if not match:
-                                    return None
-                                start = match.end()  # position after the opening brace
-                                # Now extract until the matching closing brace
-                                brace_count = 1
-                                i = start
-                                block = ['{']
-                                while i < len(section):
-                                    c = section[i]
-                                    if c == '{':
-                                        brace_count += 1
-                                    elif c == '}':
-                                        brace_count -= 1
-                                    block.append(c)
-                                    if brace_count == 0:
-                                        break
-                                    i += 1
-                                return key + '=' + ''.join(block)
-                            
-                            for matrix_key in matrix_keys:
-                                matrix_block = extract_matrix_block(init_section, matrix_key)
-                                if matrix_block:
-                                    initial_params[matrix_key] = matrix_block
+                            # Use the robust parsing method from export module
+                            parsed_section_params = _parse_initial_parameterization_robust(init_section)
+                            for key, value in parsed_section_params.items():
+                                if key in matrix_keys and key not in initial_params:
+                                    initial_params[key] = value
+                    
+                    # Debug logging
+                    for key in matrix_keys:
+                        if key in initial_params:
+                            logger.debug(f"Extracted {key} matrix: {initial_params[key]}")
+                        else:
+                            logger.warning(f"Missing {key} matrix in InitialParameterization")
                     
                     gnn_spec["InitialParameterization"] = initial_params
                     
