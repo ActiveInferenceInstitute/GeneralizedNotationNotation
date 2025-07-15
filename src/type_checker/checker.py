@@ -1010,11 +1010,12 @@ def run_type_checking(target_dir: Path, output_dir: Path, logger: logging.Logger
         
         logger.info(f"Found {len(gnn_files)} GNN files to type check")
         
-        # Process each file
+        # Process each file and collect results
+        results = {}
         successful_checks = 0
         failed_checks = 0
         
-        with performance_tracker.track_operation("type_check_all_files"):
+        with performance_tracker.track_operation("type_check_all_files") if performance_tracker else nullcontext():
             for gnn_file in gnn_files:
                 try:
                     logger.debug(f"Type checking file: {gnn_file}")
@@ -1025,14 +1026,28 @@ def run_type_checking(target_dir: Path, output_dir: Path, logger: logging.Logger
                     
                     # Run type checking
                     is_valid, errors, warnings, details = type_checker.check_file(str(gnn_file))
-                    results = {
-                        'success': is_valid,
+                    
+                    # Store results for reporting
+                    results[str(gnn_file)] = {
+                        'is_valid': is_valid,
                         'errors': errors,
                         'warnings': warnings,
                         'details': details
                     }
                     
-                    if results.get('success', False):
+                    # Generate individual file report
+                    file_report_path = file_output_dir / "type_check_result.json"
+                    with open(file_report_path, 'w') as f:
+                        json.dump({
+                            'file_path': str(gnn_file),
+                            'is_valid': is_valid,
+                            'errors': errors,
+                            'warnings': warnings,
+                            'details': details,
+                            'timestamp': datetime.now().isoformat()
+                        }, f, indent=2)
+                    
+                    if is_valid:
                         successful_checks += 1
                         logger.debug(f"Type checking completed for {gnn_file.name}")
                     else:
@@ -1042,6 +1057,35 @@ def run_type_checking(target_dir: Path, output_dir: Path, logger: logging.Logger
                 except Exception as e:
                     failed_checks += 1
                     log_step_error(logger, f"Failed to type check {gnn_file.name}: {e}")
+                    # Add error result to results dict
+                    results[str(gnn_file)] = {
+                        'is_valid': False,
+                        'errors': [f"Exception during type checking: {str(e)}"],
+                        'warnings': [],
+                        'details': {}
+                    }
+        
+        # Generate comprehensive reports
+        if results:
+            # Generate markdown report
+            report_path = type_check_output_dir / "type_check_report.md"
+            type_checker.generate_report(results, type_check_output_dir, "type_check_report.md")
+            
+            # Generate JSON summary
+            summary_path = type_check_output_dir / "type_check_summary.json"
+            with open(summary_path, 'w') as f:
+                json.dump({
+                    'timestamp': datetime.now().isoformat(),
+                    'total_files': len(results),
+                    'successful_checks': successful_checks,
+                    'failed_checks': failed_checks,
+                    'success_rate': (successful_checks / len(results) * 100) if results else 0,
+                    'results': results
+                }, f, indent=2)
+            
+            logger.info(f"Generated type check reports:")
+            logger.info(f"  - Markdown report: {report_path}")
+            logger.info(f"  - JSON summary: {summary_path}")
         
         # Log results summary
         total_files = len(gnn_files)
@@ -1057,4 +1101,9 @@ def run_type_checking(target_dir: Path, output_dir: Path, logger: logging.Logger
         
     except Exception as e:
         log_step_error(logger, f"Type checking failed: {e}")
-        return 1 
+        return 1
+
+# Context manager for performance tracking fallback
+class nullcontext:
+    def __enter__(self): return None
+    def __exit__(self, *args): return None 

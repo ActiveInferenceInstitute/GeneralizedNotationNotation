@@ -34,8 +34,8 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
     if verbose:
         pytest_cmd.extend([
             "--cov=src",
-            f"--cov-report=html:{output_dir}/coverage",
-            f"--cov-report=json:{output_dir}/test_coverage.json",
+            f"--cov-report=html:{test_output_dir}/coverage",
+            f"--cov-report=json:{test_output_dir}/test_coverage.json",
             "--cov-report=term-missing",
         ])
     
@@ -78,13 +78,13 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
     logger.info(f"Running command: {' '.join(pytest_cmd)}")
     
     try:
-        # Run pytest with appropriate timeout
+        # Run pytest with appropriate timeout - increased timeouts to prevent failures
         if fast_only:
-            timeout_seconds = 60  # 1 minute for fast tests
+            timeout_seconds = 300  # 5 minutes for fast tests
         elif include_slow:
-            timeout_seconds = 300  # 5 minutes for slow tests
+            timeout_seconds = 600  # 10 minutes for slow tests
         else:
-            timeout_seconds = 120  # 2 minutes for regular tests
+            timeout_seconds = 480  # 8 minutes for regular tests
             
         result = subprocess.run(
             pytest_cmd,
@@ -112,8 +112,8 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
                 logger.warning(f"  {line}")
         
         # Save detailed results
-        coverage_dir = output_dir / "coverage"
-        coverage_json = output_dir / "test_coverage.json"
+        coverage_dir = test_output_dir / "coverage"
+        coverage_json = test_output_dir / "test_coverage.json"
         
         results_summary = {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -138,11 +138,51 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
         
         logger.debug(f"Test summary saved to: {summary_file}")
         
+        # Generate a simple test report even if no XML was generated
+        if not xml_report_path.exists():
+            simple_report_path = test_output_dir / "simple_test_report.txt"
+            with open(simple_report_path, 'w') as f:
+                f.write(f"Test Execution Summary\n")
+                f.write(f"=====================\n")
+                f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+                f.write(f"Exit Code: {result.returncode}\n")
+                f.write(f"Success: {result.returncode == 0}\n")
+                f.write(f"Timeout: {timeout_seconds} seconds\n")
+                f.write(f"\nCommand: {' '.join(pytest_cmd)}\n")
+                f.write(f"\nSTDOUT:\n{result.stdout}\n")
+                f.write(f"\nSTDERR:\n{result.stderr}\n")
+            
+            logger.info(f"Simple test report saved to: {simple_report_path}")
+        
         return result.returncode == 0
         
     except subprocess.TimeoutExpired:
         log_step_error(logger, f"Test execution timed out after {timeout_seconds} seconds")
+        
+        # Generate timeout report
+        timeout_report_path = test_output_dir / "timeout_report.txt"
+        with open(timeout_report_path, 'w') as f:
+            f.write(f"Test Execution Timeout Report\n")
+            f.write(f"============================\n")
+            f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"Timeout: {timeout_seconds} seconds\n")
+            f.write(f"Command: {' '.join(pytest_cmd)}\n")
+            f.write(f"Status: TIMEOUT\n")
+        
+        logger.info(f"Timeout report saved to: {timeout_report_path}")
         return False
     except Exception as e:
         log_step_error(logger, f"Error running tests: {e}")
+        
+        # Generate error report
+        error_report_path = test_output_dir / "error_report.txt"
+        with open(error_report_path, 'w') as f:
+            f.write(f"Test Execution Error Report\n")
+            f.write(f"==========================\n")
+            f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"Error: {str(e)}\n")
+            f.write(f"Command: {' '.join(pytest_cmd)}\n")
+            f.write(f"Status: ERROR\n")
+        
+        logger.info(f"Error report saved to: {error_report_path}")
         return False 

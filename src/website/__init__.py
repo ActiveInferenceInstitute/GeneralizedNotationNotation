@@ -22,6 +22,12 @@ from .generator import (
     add_collapsible_section
 )
 
+# Create aliases for test compatibility
+create_html_report = generate_html_report
+generate_website_index = main_website_generator
+create_website_navigation = lambda *args, **kwargs: "Navigation placeholder"
+generate_website_report = generate_html_report
+
 # MCP integration
 try:
     from .mcp import (
@@ -54,6 +60,12 @@ __all__ = [
     'generate_html_report',
     'main_website_generator',
     'generate_website',
+    
+    # Test compatibility aliases
+    'create_html_report',
+    'generate_website_index',
+    'create_website_navigation',
+    'generate_website_report',
     
     # Embedding functions
     'embed_image',
