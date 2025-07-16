@@ -1,6 +1,7 @@
 from pathlib import Path
 import logging
 import re
+import json
 from pipeline import get_output_dir_for_script
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
 from gnn.parsers.markdown_parser import MarkdownGNNParser
@@ -116,11 +117,16 @@ def render_gnn_files(
     render_output_dir.mkdir(parents=True, exist_ok=True)
     
     # Find GNN files
-    pattern = "**/*.md" if recursive else "*.md"
+    pattern = "**/*.json" if recursive else "*.json"
     gnn_files = list(target_dir.glob(pattern))
-    
+
     if not gnn_files:
-        log_step_warning(logger, f"No GNN files found in {target_dir} using pattern '{pattern}'")
+        # Try markdown files as fallback
+        pattern = "**/*.md" if recursive else "*.md"
+        gnn_files = list(target_dir.glob(pattern))
+        
+    if not gnn_files:
+        log_step_warning(logger, f"No GNN files (JSON or MD) found in {target_dir} using pattern '{pattern}'")
         return False
 
     logger.info(f"Found {len(gnn_files)} GNN files to render")
@@ -144,82 +150,106 @@ def render_gnn_files(
         with performance_tracker.track_operation("render_all_gnn_files"):
             for gnn_file in gnn_files:
                 try:
-                    # Parse the GNN file
-                    parse_result = parser.parse_file(str(gnn_file))
-                    if not parse_result.success:
-                        log_step_warning(logger, f"Parsing failed for {gnn_file.name}: {parse_result.errors}")
-                        failed_renders += len(render_targets)
-                        continue
-                    
-                    model = parse_result.model
-                    
-                    # Convert model to dictionary for renderers
-                    gnn_spec = {
-                        "name": model.model_name,
-                        "annotation": model.annotation,
-                        "variables": [vars(v) for v in model.variables],
-                        "connections": [vars(c) for c in model.connections],
-                        "parameters": [vars(p) for p in model.parameters],
-                        "equations": model.equations,
-                        "time": vars(model.time_specification),
-                        "ontology": [vars(m) for m in model.ontology_mappings],
-                        "model_parameters": model.extensions.get('model_parameters', {}),
-                        "source_file": str(gnn_file)
-                    }
-                    
-                    # Extract InitialParameterization as a dictionary for matrix access
-                    initial_params = {}
-                    
-                    # Method 1: Extract from parsed parameters (most reliable)
-                    param_lines = [p for p in model.parameters if hasattr(p, 'name') and hasattr(p, 'value')]
-                    matrix_keys = ["A", "B", "C", "D", "E"]
-                    
-                    for param in param_lines:
-                        name = param.name.strip()
-                        value = param.value
-                        if name in matrix_keys:
-                            initial_params[name] = value
-                    
-                    # Method 2: Extract from raw InitialParameterization section if available
-                    if hasattr(model, 'extensions') and 'initial_parameterization' in model.extensions:
-                        raw_init_params = model.extensions['initial_parameterization']
-                        if isinstance(raw_init_params, str):
-                            # Use the robust parsing method from export module
-                            parsed_raw_params = _parse_initial_parameterization_robust(raw_init_params)
-                            for key, value in parsed_raw_params.items():
-                                if key in matrix_keys:
-                                    initial_params[key] = value
-                    
-                    # Method 3: Fallback to direct file parsing if matrices are still missing
-                    missing_matrices = [key for key in matrix_keys if key not in initial_params or not initial_params[key]]
-                    if missing_matrices:
-                        # Read the original file content to extract matrices
+                    # Determine file type and parse accordingly
+                    if gnn_file.suffix.lower() == '.json':
+                        # Load JSON file directly
                         with open(gnn_file, 'r', encoding='utf-8') as f:
-                            content = f.read()
+                            json_data = json.load(f)
                         
-                        # Find the InitialParameterization section
-                        if '## InitialParameterization' in content:
-                            start_idx = content.find('## InitialParameterization')
-                            end_idx = content.find('##', start_idx + 1)
-                            if end_idx == -1:
-                                end_idx = len(content)
+                        # Convert JSON structure to expected gnn_spec format
+                        gnn_spec = {
+                            "name": json_data.get("name", "Unknown_Model"),
+                            "annotation": json_data.get("raw_sections", {}).get("ModelAnnotation", ""),
+                            "variables": json_data.get("statespaceblock", []),
+                            "connections": json_data.get("connections", []),
+                            "parameters": json_data.get("parameters", []),
+                            "equations": json_data.get("raw_sections", {}).get("Equations", ""),
+                            "time": json_data.get("time_specification", {}),
+                            "ontology": json_data.get("ontology_mappings", []),
+                            "model_parameters": json_data.get("model_parameters", {}),
+                            "source_file": str(gnn_file),
+                            "InitialParameterization": json_data.get("initial_parameterization", {})
+                        }
+                        
+                        logger.info(f"Loaded JSON GNN file: {gnn_file.name}")
+                        
+                    else:
+                        # Parse markdown file using the existing parser
+                        parse_result = parser.parse_file(str(gnn_file))
+                        if not parse_result.success:
+                            log_step_warning(logger, f"Parsing failed for {gnn_file.name}: {parse_result.errors}")
+                            failed_renders += len(render_targets)
+                            continue
+                        
+                        model = parse_result.model
+                        
+                        # Convert model to dictionary for renderers
+                        gnn_spec = {
+                            "name": model.model_name,
+                            "annotation": model.annotation,
+                            "variables": [vars(v) for v in model.variables],
+                            "connections": [vars(c) for c in model.connections],
+                            "parameters": [vars(p) for p in model.parameters],
+                            "equations": model.equations,
+                            "time": vars(model.time_specification),
+                            "ontology": [vars(m) for m in model.ontology_mappings],
+                            "model_parameters": model.extensions.get('model_parameters', {}),
+                            "source_file": str(gnn_file)
+                        }
+                        
+                        # Extract InitialParameterization as a dictionary for matrix access
+                        initial_params = {}
+                        
+                        # Method 1: Extract from parsed parameters (most reliable)
+                        param_lines = [p for p in model.parameters if hasattr(p, 'name') and hasattr(p, 'value')]
+                        matrix_keys = ["A", "B", "C", "D", "E"]
+                        
+                        for param in param_lines:
+                            name = param.name.strip()
+                            value = param.value
+                            if name in matrix_keys:
+                                initial_params[name] = value
+                        
+                        # Method 2: Extract from raw InitialParameterization section if available
+                        if hasattr(model, 'extensions') and 'initial_parameterization' in model.extensions:
+                            raw_init_params = model.extensions['initial_parameterization']
+                            if isinstance(raw_init_params, str):
+                                # Use the robust parsing method from export module
+                                parsed_raw_params = _parse_initial_parameterization_robust(raw_init_params)
+                                for key, value in parsed_raw_params.items():
+                                    if key in matrix_keys:
+                                        initial_params[key] = value
+                        
+                        # Method 3: Fallback to direct file parsing if matrices are still missing
+                        missing_matrices = [key for key in matrix_keys if key not in initial_params or not initial_params[key]]
+                        if missing_matrices:
+                            # Read the original file content to extract matrices
+                            with open(gnn_file, 'r', encoding='utf-8') as f:
+                                content = f.read()
                             
-                            init_section = content[start_idx:end_idx]
-                            
-                            # Use the robust parsing method from export module
-                            parsed_section_params = _parse_initial_parameterization_robust(init_section)
-                            for key, value in parsed_section_params.items():
-                                if key in matrix_keys and key not in initial_params:
-                                    initial_params[key] = value
-                    
-                    # Debug logging
-                    for key in matrix_keys:
-                        if key in initial_params:
-                            logger.debug(f"Extracted {key} matrix: {initial_params[key]}")
-                        else:
-                            logger.warning(f"Missing {key} matrix in InitialParameterization")
-                    
-                    gnn_spec["InitialParameterization"] = initial_params
+                            # Find the InitialParameterization section
+                            if '## InitialParameterization' in content:
+                                start_idx = content.find('## InitialParameterization')
+                                end_idx = content.find('##', start_idx + 1)
+                                if end_idx == -1:
+                                    end_idx = len(content)
+                                
+                                init_section = content[start_idx:end_idx]
+                                
+                                # Use the robust parsing method from export module
+                                parsed_section_params = _parse_initial_parameterization_robust(init_section)
+                                for key, value in parsed_section_params.items():
+                                    if key in matrix_keys and key not in initial_params:
+                                        initial_params[key] = value
+                        
+                        # Debug logging
+                        for key in matrix_keys:
+                            if key in initial_params:
+                                logger.debug(f"Extracted {key} matrix: {initial_params[key]}")
+                            else:
+                                logger.warning(f"Missing {key} matrix in InitialParameterization")
+                        
+                        gnn_spec["InitialParameterization"] = initial_params
                     
                     for target_format, output_subdir in render_targets:
                         try:
@@ -233,7 +263,7 @@ def render_gnn_files(
                             sub_output_dir.mkdir(exist_ok=True)
                             
                             # Use model name for filename
-                            base_name = model.model_name.lower().replace(" ", "_")
+                            base_name = gnn_spec["name"].lower().replace(" ", "_")
                             if target_format.endswith("_jl") or target_format == "activeinference_combined":
                                 output_file = sub_output_dir / f"{base_name}.jl"
                             elif target_format == "jax" or target_format == "jax_pomdp":

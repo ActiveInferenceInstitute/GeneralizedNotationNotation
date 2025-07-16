@@ -202,16 +202,28 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract A, B, C, D matrices from GNN specification."""
     matrices = {}
     
-    # Handle parsed GNN data structure
-    if "variables" in gnn_spec:
-        logger.info("Extracting matrices from parsed GNN data structure")
+    # Handle the JSON export format from GNN processing pipeline
+    if "statespaceblock" in gnn_spec:
+        logger.info("Extracting matrices from GNN JSON export structure")
         
-        # Extract variable dimensions
+        # Extract variable dimensions from statespaceblock
         var_dims = {}
-        for var_data in gnn_spec.get("variables", []):
-            var_name = var_data.get("name", "")
-            dimensions = var_data.get("dimensions", [])
-            var_dims[var_name] = dimensions
+        for var_data in gnn_spec.get("statespaceblock", []):
+            var_name = var_data.get("id", "")
+            dimensions_str = var_data.get("dimensions", "")
+            # Parse dimensions like "3,3,type=float" -> [3, 3]
+            if dimensions_str:
+                dims_parts = dimensions_str.split(',')
+                dims = []
+                for part in dims_parts:
+                    part = part.strip()
+                    if part.startswith('type='):
+                        break
+                    try:
+                        dims.append(int(part))
+                    except ValueError:
+                        continue
+                var_dims[var_name] = dims
         
         # Create default matrices based on dimensions
         default_matrices = {}
@@ -241,10 +253,205 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                 default_matrices['D'] = np.ones(dims[0]) / dims[0]  # Uniform prior
                 logger.info(f"Created default D vector with dimensions {dims}")
         
-        # Initialize matrices with defaults (will be overwritten if parameter parsing succeeds)
+        # Initialize matrices with defaults
         matrices.update(default_matrices)
         
-        # Extract actual parameter values if available
+        # Extract actual parameter values from InitialParameterization
+        initial_params = gnn_spec.get("raw_sections", {}).get("InitialParameterization", "")
+        if initial_params:
+            # Parse A matrix
+            a_match = re.search(r'A\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            if a_match:
+                try:
+                    a_str = a_match.group(1).strip()
+                    parsed_matrix = _parse_gnn_matrix_string(f"{{{a_str}}}")
+                    if parsed_matrix.shape != (1, 1):
+                        matrices['A'] = parsed_matrix
+                        logger.info(f"Successfully parsed A matrix from InitialParameterization: shape {parsed_matrix.shape}")
+                    elif 'A' in default_matrices:
+                        improved_matrix = _create_improved_default_matrix('A', default_matrices['A'], a_str)
+                        matrices['A'] = improved_matrix
+                        logger.info(f"Used improved default A matrix: shape {improved_matrix.shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to parse A matrix: {e}")
+            
+            # Parse B matrix
+            b_match = re.search(r'B\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            if b_match:
+                try:
+                    b_str = b_match.group(1).strip()
+                    parsed_matrix = _parse_gnn_matrix_string(f"{{{b_str}}}")
+                    if parsed_matrix.shape != (1, 1):
+                        matrices['B'] = parsed_matrix
+                        logger.info(f"Successfully parsed B matrix from InitialParameterization: shape {parsed_matrix.shape}")
+                    elif 'B' in default_matrices:
+                        improved_matrix = _create_improved_default_matrix('B', default_matrices['B'], b_str)
+                        matrices['B'] = improved_matrix
+                        logger.info(f"Used improved default B matrix: shape {improved_matrix.shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to parse B matrix: {e}")
+            
+            # Parse C vector
+            c_match = re.search(r'C\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            if c_match:
+                try:
+                    c_str = c_match.group(1).strip()
+                    parsed_vector = _parse_gnn_matrix_string(f"{{{c_str}}}")
+                    if parsed_vector.shape != (1, 1):
+                        matrices['C'] = parsed_vector.flatten()
+                        logger.info(f"Successfully parsed C vector from InitialParameterization: shape {parsed_vector.flatten().shape}")
+                    elif 'C' in default_matrices:
+                        improved_vector = _create_improved_default_matrix('C', default_matrices['C'], c_str)
+                        matrices['C'] = improved_vector
+                        logger.info(f"Used improved default C vector: shape {improved_vector.shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to parse C vector: {e}")
+            
+            # Parse D vector
+            d_match = re.search(r'D\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            if d_match:
+                try:
+                    d_str = d_match.group(1).strip()
+                    parsed_vector = _parse_gnn_matrix_string(f"{{{d_str}}}")
+                    if parsed_vector.shape != (1, 1):
+                        matrices['D'] = parsed_vector.flatten()
+                        logger.info(f"Successfully parsed D vector from InitialParameterization: shape {parsed_vector.flatten().shape}")
+                    elif 'D' in default_matrices:
+                        improved_vector = _create_improved_default_matrix('D', default_matrices['D'], d_str)
+                        matrices['D'] = improved_vector
+                        logger.info(f"Used improved default D vector: shape {improved_vector.shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to parse D vector: {e}")
+    
+    # Handle parsed GNN data structure (legacy format)
+    elif "variables" in gnn_spec:
+        logger.info("Extracting matrices from parsed GNN data structure")
+        
+        # Extract variable dimensions from the variables list
+        var_dims = {}
+        for i, var_data in enumerate(gnn_spec.get("variables", [])):
+            var_name = var_data.get("id", "")  # Use 'id' instead of 'name'
+            dimensions_str = var_data.get("dimensions", "")  # This is a string like "3,3,type=float"
+            
+            # Parse dimensions string like "3,3,type=float" -> [3, 3]
+            if var_name and dimensions_str:
+                dims = []
+                for part in dimensions_str.split(','):
+                    part = part.strip()
+                    if part.startswith('type='):
+                        break
+                    try:
+                        dims.append(int(part))
+                    except ValueError:
+                        continue
+                
+                if dims:  # Only add if we successfully parsed dimensions
+                    var_dims[var_name] = dims
+                    logger.info(f"Found variable '{var_name}' with dimensions {dims}")
+                else:
+                    logger.warning(f"Could not parse dimensions for variable '{var_name}': '{dimensions_str}'")
+        
+        logger.info(f"Extracted variable dimensions: {var_dims}")
+        
+        # Create default matrices based on dimensions
+        default_matrices = {}
+        if "A" in var_dims:
+            dims = var_dims["A"]
+            if len(dims) >= 2:
+                default_matrices['A'] = np.eye(dims[0], dims[1])  # Identity matrix
+                logger.info(f"Created default A matrix with dimensions {dims} -> shape {default_matrices['A'].shape}")
+        
+        if "B" in var_dims:
+            dims = var_dims["B"]
+            if len(dims) >= 3:
+                # Create identity-like transition matrix
+                default_matrices['B'] = np.eye(dims[0], dims[1])[:, :, np.newaxis]
+                default_matrices['B'] = np.repeat(default_matrices['B'], dims[2], axis=2)
+                logger.info(f"Created default B matrix with dimensions {dims} -> shape {default_matrices['B'].shape}")
+        
+        if "C" in var_dims:
+            dims = var_dims["C"]
+            if len(dims) >= 1:
+                default_matrices['C'] = np.zeros(dims[0])  # Zero preferences
+                logger.info(f"Created default C vector with dimensions {dims} -> shape {default_matrices['C'].shape}")
+        
+        if "D" in var_dims:
+            dims = var_dims["D"]
+            if len(dims) >= 1:
+                default_matrices['D'] = np.ones(dims[0]) / dims[0]  # Uniform prior
+                logger.info(f"Created default D vector with dimensions {dims} -> shape {default_matrices['D'].shape}")
+        
+        # Initialize matrices with defaults (will be overwritten if parameter parsing succeeds)
+        matrices.update(default_matrices)
+        logger.info(f"Initialized matrices with shapes: A={matrices.get('A', 'None')}, B={matrices.get('B', 'None')}, C={matrices.get('C', 'None')}, D={matrices.get('D', 'None')}")
+        
+        # Extract actual parameter values from InitialParameterization if available
+        initial_params = gnn_spec.get("InitialParameterization", "")
+        if initial_params:
+            logger.info("Found InitialParameterization section, attempting to parse matrix values")
+            
+            # Parse A matrix
+            a_match = re.search(r'A\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            if a_match:
+                try:
+                    a_str = a_match.group(1).strip()
+                    parsed_matrix = _parse_gnn_matrix_string(f"{{{a_str}}}")
+                    if parsed_matrix.shape != (1, 1):
+                        matrices['A'] = parsed_matrix
+                        logger.info(f"Successfully parsed A matrix from InitialParameterization: shape {parsed_matrix.shape}")
+                    elif 'A' in default_matrices:
+                        # Use default matrix with correct dimensions
+                        matrices['A'] = default_matrices['A']
+                        logger.info(f"Used default A matrix: shape {default_matrices['A'].shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to parse A matrix: {e}")
+            
+            # Parse B matrix  
+            b_match = re.search(r'B\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            if b_match:
+                try:
+                    b_str = b_match.group(1).strip()
+                    parsed_matrix = _parse_gnn_matrix_string(f"{{{b_str}}}")
+                    if parsed_matrix.shape != (1, 1):
+                        matrices['B'] = parsed_matrix
+                        logger.info(f"Successfully parsed B matrix from InitialParameterization: shape {parsed_matrix.shape}")
+                    elif 'B' in default_matrices:
+                        matrices['B'] = default_matrices['B']
+                        logger.info(f"Used default B matrix: shape {default_matrices['B'].shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to parse B matrix: {e}")
+            
+            # Parse C vector
+            c_match = re.search(r'C\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            if c_match:
+                try:
+                    c_str = c_match.group(1).strip()
+                    parsed_vector = _parse_gnn_matrix_string(f"{{{c_str}}}")
+                    if parsed_vector.shape != (1, 1):
+                        matrices['C'] = parsed_vector.flatten()
+                        logger.info(f"Successfully parsed C vector from InitialParameterization: shape {parsed_vector.flatten().shape}")
+                    elif 'C' in default_matrices:
+                        matrices['C'] = default_matrices['C']
+                        logger.info(f"Used default C vector: shape {default_matrices['C'].shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to parse C vector: {e}")
+            
+            # Parse D vector
+            d_match = re.search(r'D\s*=\s*\{([^}]+)\}', initial_params, re.DOTALL)
+            if d_match:
+                try:
+                    d_str = d_match.group(1).strip()
+                    parsed_vector = _parse_gnn_matrix_string(f"{{{d_str}}}")
+                    if parsed_vector.shape != (1, 1):
+                        matrices['D'] = parsed_vector.flatten()
+                        logger.info(f"Successfully parsed D vector from InitialParameterization: shape {parsed_vector.flatten().shape}")
+                    elif 'D' in default_matrices:
+                        matrices['D'] = default_matrices['D']
+                        logger.info(f"Used default D vector: shape {default_matrices['D'].shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to parse D vector: {e}")
+        
+        # Extract actual parameter values if available (legacy parameters section)
         for param_data in gnn_spec.get("parameters", []):
             param_name = param_data.get("name", "")
             param_value = param_data.get("value")
@@ -288,7 +495,7 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     matrices[param_name] = fallback_matrix
                     logger.info(f"Created fallback {param_name} matrix: shape {fallback_matrix.shape}")
                     continue
-    
+
     else:
         # Handle legacy raw text format
         logger.info("Extracting matrices from raw text format")
@@ -712,10 +919,10 @@ def get_model_summary(model: {model_name}Model) -> str:
     """Get a summary of the model architecture."""
     return f"""
 {model_name} Model Summary:
-- Number of states: {{{{model.num_states}}}}
-- Number of observations: {{{{model.num_observations}}}}
-- Number of actions: {{{{model.num_actions}}}}
-- Parameters: {{{{sum(p.size for p in jax.tree_util.tree_leaves(model.variables))}}}}
+- Number of states: {{model.num_states}}
+- Number of observations: {{model.num_observations}}
+- Number of actions: {{model.num_actions}}
+- Parameters: {{sum(p.size for p in jax.tree_util.tree_leaves(model.variables))}}
 """
 
 if __name__ == "__main__":
@@ -725,8 +932,8 @@ if __name__ == "__main__":
     
     # Test forward pass
     key = jax.random.PRNGKey(0)
-    variables = model.init(key, {{"input": jnp.zeros(1)}})
-    outputs = model.apply(variables, {{"input": jnp.zeros(1)}})
+    variables = model.init(key, {{"observations": jnp.zeros((1, model.num_observations))}})
+    outputs = model.apply(variables, {{"observations": jnp.zeros((1, model.num_observations))}})
     print("Model test successful!")
 '''
         
