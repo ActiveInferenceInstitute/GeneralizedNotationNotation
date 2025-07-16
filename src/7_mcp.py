@@ -35,27 +35,16 @@ from pipeline import (
 )
 
 from mcp.processor import process_mcp_operations
+from utils.pipeline_template import create_standardized_pipeline_script
 
 # Initialize logger for this step
 logger = setup_step_logging("7_mcp", verbose=False)
 
 # Define all expected module directories that should have MCP integration
 EXPECTED_MCP_MODULE_DIRS = [
-    "export",
-    "gnn", 
-    "type_checker",
-    "ontology",
-    "setup",
-    "tests",
-    "visualization",
-    "llm",
-    "render",
-    "execute",
-    "website",
-    "sapf",
-    "pipeline",
-    "utils",
-    "src"
+    "export", "gnn", "type_checker", "ontology", "setup", "tests",
+    "visualization", "llm", "render", "execute", "website", "sapf",
+    "pipeline", "utils" 
 ]
 
 def check_module_mcp_integration() -> Dict[str, Any]:
@@ -163,48 +152,11 @@ def process_mcp_operations_standardized(
         log_step_error(logger, f"MCP operations failed: {e}")
         return False
 
-def main(parsed_args):
-    """Main function for MCP operations."""
-    
-    # Log step metadata from centralized configuration
-    step_info = STEP_METADATA.get("7_mcp.py", {})
-    log_step_start(logger, f"{step_info.get('description', 'Model Context Protocol operations')}")
-    
-    # Update logger verbosity if needed
-    if parsed_args.verbose:
-        logger.setLevel(logging.DEBUG)
-    
-    # Run MCP operations
-    success = process_mcp_operations_standardized(
-        target_dir=Path(parsed_args.target_dir),
-        output_dir=Path(parsed_args.output_dir),
-        logger=logger,
-        recursive=getattr(parsed_args, 'recursive', False),
-        verbose=getattr(parsed_args, 'verbose', False)
-    )
-    
-    if success:
-        log_step_success(logger, "MCP operations completed successfully")
-        return 0
-    else:
-        log_step_error(logger, "MCP operations failed")
-        return 1
+run_script = create_standardized_pipeline_script(
+    "7_mcp.py",
+    process_mcp_operations_standardized,
+    "Model Context Protocol operations"
+)
 
 if __name__ == '__main__':
-    # Use centralized argument parsing
-    if UTILS_AVAILABLE:
-        parsed_args = EnhancedArgumentParser.parse_step_arguments("7_mcp")
-    else:
-        # Fallback argument parsing
-        import argparse
-        parser = argparse.ArgumentParser(description="Model Context Protocol operations")
-        parser.add_argument("--target-dir", type=Path, required=True,
-                          help="Target directory containing GNN files")
-        parser.add_argument("--output-dir", type=Path, required=True,
-                          help="Output directory for generated artifacts")
-        parser.add_argument("--verbose", action="store_true",
-                          help="Enable verbose output")
-        parsed_args = parser.parse_args()
-    
-    exit_code = main(parsed_args)
-    sys.exit(exit_code) 
+    sys.exit(run_script()) 

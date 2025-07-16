@@ -36,6 +36,7 @@ from pipeline import (
 )
 
 from llm.analyzer import analyze_gnn_files
+from utils.pipeline_template import create_standardized_pipeline_script
 
 # Initialize logger for this step
 logger = setup_step_logging("11_llm", verbose=False)
@@ -136,66 +137,15 @@ def process_llm_analysis(
         log_step_error(logger, f"LLM processing failed: {e}")
         return False
 
-def main(parsed_args):
-    """Main function for LLM processing."""
-    
-    # Log step metadata from centralized configuration
-    step_info = STEP_METADATA.get("11_llm.py", {})
-    log_step_start(logger, f"{step_info.get('description', 'LLM-enhanced analysis and processing')}")
-    
-    # Update logger verbosity if needed
-    if parsed_args.verbose:
-        logger.setLevel(logging.DEBUG)
-    
-    # Parse tasks
-    tasks_str = getattr(parsed_args, 'llm_tasks', 'all')
-    tasks = parse_task_list(tasks_str)
-    
-    logger.info(f"Will execute {len(tasks)} LLM analysis tasks: {[t for t in tasks]}")
-    
-    # Process LLM analysis
-    try:
-        success = process_llm_analysis(
-            target_dir=Path(parsed_args.target_dir),
-            output_dir=Path(parsed_args.output_dir),
-            logger=logger,
-            recursive=getattr(parsed_args, 'recursive', False),
-            verbose=getattr(parsed_args, 'verbose', False),
-            timeout=getattr(parsed_args, 'llm_timeout', 360)
-        )
-        
-        if success:
-            log_step_success(logger, "LLM processing completed successfully")
-            return 0
-        else:
-            log_step_error(logger, "LLM processing failed")
-            return 1
-    
-    except Exception as e:
-        log_step_error(logger, f"Unexpected error in LLM processing: {e}")
-        return 1
+run_script = create_standardized_pipeline_script(
+    "11_llm.py",
+    process_llm_analysis,
+    "LLM-enhanced analysis and processing",
+    additional_arguments={
+        "llm_tasks": {"type": str, "default": "all", "help": "Comma-separated list of LLM tasks"},
+        "llm_timeout": {"type": int, "default": 360, "help": "Timeout for LLM operations in seconds"}
+    }
+)
 
 if __name__ == '__main__':
-    # Use centralized argument parsing
-    if UTILS_AVAILABLE:
-        parsed_args = EnhancedArgumentParser.parse_step_arguments("11_llm")
-    else:
-        # Fallback argument parsing
-        import argparse
-        parser = argparse.ArgumentParser(description="LLM-enhanced analysis and processing")
-        parser.add_argument("--target-dir", type=Path, required=True,
-                          help="Target directory containing GNN files")
-        parser.add_argument("--output-dir", type=Path, required=True,
-                          help="Output directory for generated artifacts")
-        parser.add_argument("--recursive", action="store_true",
-                          help="Search recursively in subdirectories")
-        parser.add_argument("--verbose", action="store_true",
-                          help="Enable verbose output")
-        parser.add_argument("--llm-tasks", type=str, default="all",
-                          help="Comma-separated list of LLM tasks or 'all'")
-        parser.add_argument("--llm-timeout", type=int, default=360,
-                          help="Timeout for LLM operations in seconds")
-        parsed_args = parser.parse_args()
-    
-    exit_code = main(parsed_args)
-    sys.exit(exit_code) 
+    sys.exit(run_script()) 

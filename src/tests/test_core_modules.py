@@ -510,13 +510,13 @@ class TestWebsiteModuleComprehensive:
         """Test that website module can be imported and has expected structure."""
         try:
             from src.website import (
-                generate_website, create_html_report, generate_website_index,
-                create_website_navigation, generate_website_report
+                generate_website, generate_html_report,
+                generate_website_index, create_website_navigation, generate_website_report
             )
             
             # Test that functions are callable
             assert callable(generate_website), "generate_website should be callable"
-            assert callable(create_html_report), "create_html_report should be callable"
+            assert callable(generate_html_report), "generate_html_report should be callable"
             assert callable(generate_website_index), "generate_website_index should be callable"
             assert callable(create_website_navigation), "create_website_navigation should be callable"
             assert callable(generate_website_report), "generate_website_report should be callable"
@@ -558,7 +558,7 @@ class TestWebsiteModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_html_report_creation(self, isolated_temp_dir):
         """Test HTML report creation."""
-        from src.website import create_html_report
+        from src.website import generate_html_report
         
         report_data = {
             "title": "Test Report",
@@ -571,7 +571,7 @@ class TestWebsiteModuleComprehensive:
         html_path = isolated_temp_dir / "test_report.html"
         
         try:
-            create_html_report(report_data, html_path)
+            generate_html_report(report_data, html_path)
             
             # Check that HTML file was created
             assert html_path.exists(), "HTML file should be created"

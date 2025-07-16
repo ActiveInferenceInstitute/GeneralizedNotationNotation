@@ -485,11 +485,11 @@ class TestStep12WebsiteComprehensive:
     @pytest.mark.safe_to_fail
     def test_step12_website_generation(self, isolated_temp_dir):
         """Test website generation functionality."""
-        from src.website import generate_website_from_pipeline_output, generate_html_report
+        from src.website import generate_website, generate_html_report
         # Test website generation
         try:
-            website_path = isolated_temp_dir / "test_website"
-            generate_website_from_pipeline_output({"test": "data"}, website_path)
+            website_data = {"test": "data"}
+            generate_website(website_data, isolated_temp_dir / "test.html")
             logging.info("Website generation test completed")
         except Exception as e:
             logging.warning(f"Website generation test failed: {e}")

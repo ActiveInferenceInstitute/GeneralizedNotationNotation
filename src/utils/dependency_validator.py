@@ -16,6 +16,11 @@ import logging
 
 from .logging_utils import PipelineLogger
 
+import argparse
+from .venv_utils import get_venv_python
+
+logger = logging.getLogger(__name__)
+
 
 @dataclass
 class DependencySpec:
@@ -511,3 +516,92 @@ if __name__ == "__main__":
     else:
         print("All dependencies validated successfully!")
         sys.exit(0) 
+
+
+def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> bool:
+    """
+    Validate dependencies if the validator is available.
+    
+    Args:
+        args: Parsed command line arguments
+        
+    Returns:
+        bool: True if validation passed or validator unavailable
+    """
+    if getattr(args, 'skip_dependency_validation', False):
+        logger.info("Dependency validation skipped (--skip-dependency-validation flag)")
+        return True
+        
+    if validate_pipeline_dependencies is None:
+        logger.info("Dependency validation skipped (validator not available)")
+        return True
+        
+    logger.info("=== DEPENDENCY VALIDATION ===")
+    
+    # Determine required steps based on what will run
+    required_steps = ["setup"]  # Always need core dependencies
+    
+    # Check which steps will actually run
+    skip_steps = parse_step_list(args.skip_steps) if args.skip_steps else []
+    only_steps = parse_step_list(args.only_steps) if args.only_steps else []
+    
+    # Map step numbers to dependency groups
+    step_dependency_map = {
+        1: "gnn_processing",    # 1_gnn.py - GNN file processing 
+        2: "core",              # 2_setup.py - Setup step
+        3: "testing",           # 3_tests.py - Testing framework
+        4: "gnn_processing",    # 4_type_checker.py - GNN validation
+        5: "export",            # 5_export.py - Export formats
+        6: "visualization",     # 6_visualization.py - Visualization
+        7: "core",              # 7_mcp.py - MCP tools
+        8: "gnn_processing",    # 8_ontology.py - Ontology processing
+        9: "core",              # 9_render.py - Rendering
+        10: "core",             # 10_execute.py - Execution
+        11: "core",             # 11_llm.py - LLM processing
+        12: "core",             # 12_website.py - Website generation
+        13: "core"              # 13_sapf.py - SAPF audio generation
+    }
+    
+    # Determine which dependency groups we need
+    required_groups = set(["core"])
+    for step_num in range(1, 14):  # Updated to include steps 1-13
+        # Skip if in skip list
+        if step_num in skip_steps or f"{step_num}_" in str(skip_steps):
+            continue
+        # Skip if only_steps specified and this step not in it
+        if only_steps and step_num not in only_steps:
+            continue
+        
+        if step_num in step_dependency_map:
+            required_groups.add(step_dependency_map[step_num])
+    
+    logger.info(f"Validating dependency groups: {sorted(required_groups)}")
+    
+    # Get the virtual environment Python path for dependency validation
+    current_dir = Path(__file__).resolve().parent
+    venv_python, _ = get_venv_python(current_dir)
+    python_path = str(venv_python) if venv_python else None
+    
+    if python_path:
+        logger.debug(f"Using Python for dependency validation: {python_path}")
+    else:
+        logger.debug("Using system Python for dependency validation")
+    
+    # Validate dependencies
+    try:
+        is_valid = validate_pipeline_dependencies(list(required_groups), python_path=python_path)
+        
+        if not is_valid:
+            logger.critical("Dependency validation failed. Cannot proceed with pipeline execution.")
+            logger.critical("Please install the missing dependencies and try again.")
+            logger.critical("Alternatively, use --skip-dependency-validation to bypass this check.")
+            return False
+        
+        logger.info("All required dependencies validated successfully.")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error during dependency validation: {e}")
+        logger.critical("Dependency validation encountered an error. Cannot proceed with pipeline execution.")
+        logger.critical("Use --skip-dependency-validation to bypass this check, or fix the validation error.")
+        return False 

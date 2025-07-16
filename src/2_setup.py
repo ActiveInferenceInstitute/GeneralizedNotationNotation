@@ -35,6 +35,8 @@ from pipeline import (
     get_output_dir_for_script
 )
 
+from utils.pipeline_template import create_standardized_pipeline_script
+
 # Initialize logger for this step  
 logger = setup_step_logging("2_setup", verbose=False)
 
@@ -123,54 +125,15 @@ def perform_setup_standardized(
         log_step_error(logger, f"Setup processing failed: {e}")
         return False
 
-def main(parsed_args):
-    """Main function for setup operations."""
-    
-    # Log step metadata from centralized configuration
-    step_info = STEP_METADATA.get("2_setup.py", {})
-    log_step_start(logger, f"{step_info.get('description', 'Environment setup and dependency installation')}")
-    
-    # Update logger verbosity if needed
-    if parsed_args.verbose:
-        logger.setLevel(logging.DEBUG)
-    
-    # Perform setup
-    success = perform_setup_standardized(
-        target_dir=Path(parsed_args.target_dir),
-        output_dir=Path(parsed_args.output_dir),
-        logger=logger,
-        recursive=getattr(parsed_args, 'recursive', False),
-        verbose=getattr(parsed_args, 'verbose', False),
-                recreate_venv=getattr(parsed_args, 'recreate_venv', False),
-                dev=getattr(parsed_args, 'dev', False)
-            )
-    
-    if success:
-        log_step_success(logger, "Setup completed successfully")
-        return 0
-    else:
-        log_step_error(logger, "Setup failed")
-        return 1
+run_script = create_standardized_pipeline_script(
+    "2_setup.py",
+    perform_setup_standardized,
+    "Environment setup and dependency installation",
+    additional_arguments={
+        "recreate_venv": {"type": bool, "default": False, "help": "Recreate virtual environment"},
+        "dev": {"type": bool, "default": False, "help": "Install development dependencies"}
+    }
+)
 
 if __name__ == '__main__':
-    # Use centralized argument parsing
-    if UTILS_AVAILABLE:
-        parsed_args = EnhancedArgumentParser.parse_step_arguments("2_setup")
-    else:
-        # Fallback argument parsing
-        import argparse
-        parser = argparse.ArgumentParser(description="Environment setup and dependency installation")
-        parser.add_argument("--target-dir", type=Path, required=True,
-                          help="Target directory containing GNN files")
-        parser.add_argument("--output-dir", type=Path, required=True,
-                          help="Output directory for generated artifacts")
-        parser.add_argument("--verbose", action="store_true",
-                          help="Enable verbose output")
-        parser.add_argument("--recreate-venv", action="store_true",
-                          help="Recreate virtual environment")
-        parser.add_argument("--dev", action="store_true",
-                          help="Install development dependencies")
-        parsed_args = parser.parse_args()
-    
-    exit_code = main(parsed_args)
-    sys.exit(exit_code) 
+    sys.exit(run_script()) 

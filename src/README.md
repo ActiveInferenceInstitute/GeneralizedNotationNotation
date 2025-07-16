@@ -265,3 +265,6 @@ When adding new pipeline steps:
 8. Update step dependency mapping in pipeline configuration
 
 The pipeline is designed to be extensible while maintaining consistency and reliability across all components. 
+
+### Standardization Improvements
+All pipeline scripts have been standardized using the template from utils/pipeline_template.py for consistent argument handling, logging, and execution. 

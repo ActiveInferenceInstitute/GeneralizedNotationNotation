@@ -34,6 +34,7 @@ from pipeline import (
 )
 
 from ontology.processor import process_ontology_operations
+from utils.pipeline_template import create_standardized_pipeline_script
 
 # Initialize logger for this step
 logger = setup_step_logging("8_ontology", verbose=False)
@@ -88,58 +89,14 @@ def process_ontology_operations_standardized(
         log_step_error(logger, f"Ontology processing failed: {e}")
         return False
 
-def main(parsed_args):
-    """Main function for ontology processing."""
-    
-    # Log step metadata from centralized configuration
-    step_info = STEP_METADATA.get("8_ontology.py", {})
-    log_step_start(logger, f"{step_info.get('description', 'Ontology processing and validation')}")
-    
-    # Update logger verbosity if needed
-    if parsed_args.verbose:
-        logger.setLevel(logging.DEBUG)
-    
-    # Get ontology terms file
-    ontology_terms_file = None
-    if hasattr(parsed_args, 'ontology_terms_file') and parsed_args.ontology_terms_file:
-        ontology_terms_file = Path(parsed_args.ontology_terms_file)
-    
-    # Process ontology operations
-    success = process_ontology_operations_standardized(
-        target_dir=Path(parsed_args.target_dir),
-        output_dir=Path(parsed_args.output_dir),
-        logger=logger,
-        recursive=getattr(parsed_args, 'recursive', False),
-        verbose=getattr(parsed_args, 'verbose', False),
-        ontology_terms_file=ontology_terms_file
-    )
-    
-    if success:
-        log_step_success(logger, "Ontology processing completed successfully")
-        return 0
-    else:
-        log_step_error(logger, "Ontology processing failed")
-        return 1
+run_script = create_standardized_pipeline_script(
+    "8_ontology.py",
+    process_ontology_operations_standardized,
+    "Ontology processing and validation",
+    additional_arguments={
+        "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file"}
+    }
+)
 
 if __name__ == '__main__':
-    # Use centralized argument parsing
-    if UTILS_AVAILABLE:
-        parsed_args = EnhancedArgumentParser.parse_step_arguments("8_ontology")
-    else:
-        # Fallback argument parsing
-        import argparse
-        parser = argparse.ArgumentParser(description="Ontology processing and validation")
-        parser.add_argument("--target-dir", type=Path, required=True,
-                          help="Target directory containing GNN files")
-        parser.add_argument("--output-dir", type=Path, required=True,
-                          help="Output directory for generated artifacts")
-        parser.add_argument("--recursive", action="store_true",
-                          help="Search recursively in subdirectories")
-        parser.add_argument("--verbose", action="store_true",
-                          help="Enable verbose output")
-        parser.add_argument("--ontology-terms-file", type=Path,
-                          help="Path to ontology terms JSON file")
-        parsed_args = parser.parse_args()
-    
-    exit_code = main(parsed_args)
-    sys.exit(exit_code) 
+    sys.exit(run_script()) 

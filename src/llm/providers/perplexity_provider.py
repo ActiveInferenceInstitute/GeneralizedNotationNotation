@@ -381,6 +381,11 @@ class PerplexityProvider(BaseLLMProvider):
         
         return await self.generate_response(messages, config)
     
+    def analyze(self, content: str, task: str) -> str:
+        """Perform analysis on GNN content."""
+        prompt = f"Analyze this GNN model for {task}: {content}"
+        return self.generate_response([{"role": "user", "content": prompt}])
+    
     async def close(self):
         """Close the Perplexity client session."""
         if self.session and not self.session.closed:

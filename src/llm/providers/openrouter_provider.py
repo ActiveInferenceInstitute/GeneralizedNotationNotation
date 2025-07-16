@@ -398,3 +398,8 @@ class OpenRouterProvider(BaseLLMProvider):
         
         self._is_initialized = False
         logger.info("OpenRouter provider connection closed") 
+
+    def analyze(self, content: str, task: str) -> str:
+        """Perform analysis on GNN content."""
+        prompt = f"Analyze this GNN model for {task}: {content}"
+        return self.generate_response([{"role": "user", "content": prompt}]) 

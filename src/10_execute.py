@@ -34,6 +34,7 @@ from pipeline import (
 )
 
 from execute.executor import execute_rendered_simulators
+from utils.pipeline_template import create_standardized_pipeline_script
 
 # Initialize logger for this step
 logger = setup_step_logging("10_execute", verbose=False)
@@ -124,50 +125,11 @@ def process_execution_standardized(
         log_step_error(logger, f"Execution processing failed: {e}")
         return False
 
-def main(parsed_args):
-    """Main function for execution operations."""
-    
-    # Log step metadata from centralized configuration
-    step_info = STEP_METADATA.get("10_execute.py", {})
-    log_step_start(logger, f"{step_info.get('description', 'Execute rendered simulators')}")
-    
-    # Update logger verbosity if needed
-    if parsed_args.verbose:
-        logger.setLevel(logging.DEBUG)
-    
-    # Execute rendered simulators with fallbacks
-    success = process_execution_standardized(
-        target_dir=Path(parsed_args.target_dir) if parsed_args.target_dir is not None else Path("../output/gnn_rendered_simulators"),
-        output_dir=Path(parsed_args.output_dir) if parsed_args.output_dir is not None else Path("../output/execute_logs"),
-        logger=logger,
-        recursive=getattr(parsed_args, 'recursive', False),
-        verbose=getattr(parsed_args, 'verbose', False)
-    )
-    
-    if success:
-        log_step_success(logger, "Execution completed successfully")
-        return 0
-    else:
-        log_step_error(logger, "Execution failed")
-        return 1
+run_script = create_standardized_pipeline_script(
+    "10_execute.py",
+    process_execution_standardized,
+    "Execute rendered simulators"
+)
 
 if __name__ == '__main__':
-    # Use centralized argument parsing
-    if UTILS_AVAILABLE:
-        parsed_args = EnhancedArgumentParser.parse_step_arguments("10_execute")
-    else:
-        # Fallback argument parsing
-        import argparse
-        parser = argparse.ArgumentParser(description="Execute rendered simulators")
-        parser.add_argument("--target-dir", type=Path, required=True,
-                          help="Target directory containing GNN files")
-        parser.add_argument("--output-dir", type=Path, required=True,
-                          help="Output directory for generated artifacts")
-        parser.add_argument("--recursive", action="store_true",
-                          help="Search recursively in subdirectories")
-        parser.add_argument("--verbose", action="store_true",
-                          help="Enable verbose output")
-        parsed_args = parser.parse_args()
-    
-    exit_code = main(parsed_args)
-    sys.exit(exit_code) 
+    sys.exit(run_script()) 

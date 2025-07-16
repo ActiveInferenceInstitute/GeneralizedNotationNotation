@@ -94,7 +94,7 @@ try:
         STEP_METADATA,
         get_output_dir_for_script
     )
-    from pipeline.execution import execute_pipeline_step
+    from pipeline.execution import prepare_scripts_to_run, execute_pipeline_step, summarize_execution, generate_and_print_summary
 except ImportError as e:
     print(f"Error importing pipeline modules: {e}")
     print("Please ensure you're running from the project root directory.")
@@ -119,10 +119,19 @@ try:
         GNNPipelineConfig
     )
     from utils.argument_utils import build_enhanced_step_command_args
+    from utils.venv_utils import get_venv_python
+    from utils.dependency_validator import validate_pipeline_dependencies_if_available
 except ImportError as e:
     print(f"Error importing utility modules: {e}")
     print("Please ensure you're running from the project root directory.")
     sys.exit(1)
+
+# Move get_pipeline_scripts to pipeline/discovery.py and import it
+from pipeline.discovery import get_pipeline_scripts
+from pipeline.execution import prepare_scripts_to_run, execute_pipeline_step, summarize_execution
+
+from utils.argument_utils import parse_step_list, parse_arguments, PipelineArguments, validate_and_convert_paths
+from utils.system_utils import get_system_info
 
 # --- Logger Setup ---
 logger = logging.getLogger("GNN_Pipeline")
@@ -161,698 +170,23 @@ class PipelineRunData(TypedDict):
     environment_info: Dict[str, Any]
     performance_summary: Dict[str, Any]
 
-def get_system_info() -> Dict[str, Any]:
-    """Gather comprehensive system information for pipeline tracking."""
-    try:
-        base_info = {
-            "python_version": sys.version,
-            "platform": os.name,
-            "cpu_count": os.cpu_count(),
-            "working_directory": str(Path.cwd()),
-            "user": os.getenv('USER', 'unknown')
-        }
-        
-        # Add psutil-dependent info if available
-        if PSUTIL_AVAILABLE:
-            base_info.update({
-                "memory_total_gb": round(psutil.virtual_memory().total / (1024**3), 2),
-                "disk_free_gb": round(psutil.disk_usage('.').free / (1024**3), 2)
-            })
-        else:
-            base_info.update({
-                "memory_total_gb": "unavailable (psutil not installed)",
-                "disk_free_gb": "unavailable (psutil not installed)"
-            })
-        
-        return base_info
-    except Exception as e:
-        logger.warning(f"Failed to gather complete system info: {e}")
-        return {"error": str(e)}
-
-def parse_arguments() -> PipelineArguments:
-    """Parse command line arguments and load configuration."""
-    # Create argument parser for command line options
-    parser = argparse.ArgumentParser(
-        description="GNN Processing Pipeline with YAML configuration support",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=__doc__
-    )
-    
-    # Add configuration file option
-    parser.add_argument(
-        '--config-file',
-        type=Path,
-        default=Path("input/config.yaml"),
-        help='Path to configuration file (default: input/config.yaml)'
-    )
-    
-    # Add all other options that can override config
-    parser.add_argument('--target-dir', type=Path, help='Target directory for GNN files (overrides config)')
-    parser.add_argument('--output-dir', type=Path, help='Directory to save outputs (overrides config)')
-    parser.add_argument('--recursive', action=argparse.BooleanOptionalAction, help='Recursively process directories (overrides config)')
-    parser.add_argument('--skip-steps', help='Comma-separated list of steps to skip (overrides config)')
-    parser.add_argument('--only-steps', help='Comma-separated list of steps to run (overrides config)')
-    parser.add_argument('--verbose', action=argparse.BooleanOptionalAction, help='Enable verbose output (overrides config)')
-    parser.add_argument('--strict', action='store_true', help='Enable strict type checking mode')
-    parser.add_argument('--estimate-resources', action=argparse.BooleanOptionalAction, help='Estimate computational resources')
-    parser.add_argument('--ontology-terms-file', type=Path, help='Path to ontology terms file (overrides config)')
-    parser.add_argument('--llm-tasks', help='Comma-separated list of LLM tasks')
-    parser.add_argument('--llm-timeout', type=int, help='Timeout for LLM processing in seconds')
-    parser.add_argument('--pipeline-summary-file', type=Path, help='Path to save pipeline summary')
-    parser.add_argument('--website-html-filename', help='Filename for generated HTML website')
-    parser.add_argument('--duration', type=float, help='Audio duration in seconds for SAPF generation')
-    parser.add_argument('--recreate-venv', action='store_true', help='Recreate virtual environment')
-    parser.add_argument('--dev', action='store_true', help='Install development dependencies')
-    
-    # Parse command line arguments
-    args = parser.parse_args()
-    
-    # Load configuration from YAML file
-    try:
-        # Resolve config file path relative to project root
-        config_path = args.config_file
-        if not config_path.is_absolute():
-            # If we're in src/, go up one level to project root
-            if Path.cwd().name == "src":
-                config_path = Path("../") / config_path
-            else:
-                config_path = Path(".") / config_path
-        
-        config = load_config(config_path)
-        logger.info(f"Configuration loaded from {config_path}")
-    except Exception as e:
-        logger.warning(f"Failed to load configuration from {args.config_file}: {e}")
-        logger.info("Using default configuration")
-        config = GNNPipelineConfig()
-    
-    # Convert config to PipelineArguments
-    pipeline_args = PipelineArguments()
-    
-    # Set values from config
-    config_dict = config.to_pipeline_arguments()
-    for key, value in config_dict.items():
-        if hasattr(pipeline_args, key):
-            setattr(pipeline_args, key, value)
-    
-    # Override with command line arguments if provided
-    if args.target_dir is not None:
-        pipeline_args.target_dir = args.target_dir
-    if args.output_dir is not None:
-        pipeline_args.output_dir = args.output_dir
-    if args.recursive is not None:
-        pipeline_args.recursive = args.recursive
-    if args.skip_steps is not None:
-        pipeline_args.skip_steps = args.skip_steps
-    if args.only_steps is not None:
-        pipeline_args.only_steps = args.only_steps
-    if args.verbose is not None:
-        pipeline_args.verbose = args.verbose
-    if args.strict:
-        pipeline_args.strict = True
-    if args.estimate_resources is not None:
-        pipeline_args.estimate_resources = args.estimate_resources
-    if args.ontology_terms_file is not None:
-        pipeline_args.ontology_terms_file = args.ontology_terms_file
-    if args.llm_tasks is not None:
-        pipeline_args.llm_tasks = args.llm_tasks
-    if args.llm_timeout is not None:
-        pipeline_args.llm_timeout = args.llm_timeout
-    if args.pipeline_summary_file is not None:
-        pipeline_args.pipeline_summary_file = args.pipeline_summary_file
-    if args.website_html_filename is not None:
-        pipeline_args.website_html_filename = args.website_html_filename
-    if args.duration is not None:
-        pipeline_args.duration = args.duration
-    if args.recreate_venv:
-        pipeline_args.recreate_venv = True
-    if args.dev:
-        pipeline_args.dev = True
-    
-    # Resolve relative paths relative to input directory
-    input_dir = Path("input")
-    # If target_dir is relative, make it relative to input directory, but avoid double prefixing
-    if not pipeline_args.target_dir.is_absolute():
-        target_str = str(pipeline_args.target_dir)
-        if not target_str.startswith("input/"):
-            pipeline_args.target_dir = input_dir / pipeline_args.target_dir
-    
-    return pipeline_args
-
-def get_pipeline_scripts(current_dir: Path) -> list[dict[str, int | str | Path]]:
-    potential_scripts_pattern = current_dir / "*_*.py"
-    logger.debug(f"ℹ️ Discovering potential pipeline scripts using pattern: {potential_scripts_pattern}")
-    all_candidate_files = glob.glob(str(potential_scripts_pattern))
-    
-    pipeline_scripts_info: list[dict[str, int | str | Path]] = [] # Explicitly type hint
-    script_name_regex = re.compile(r"^(\d+)_.*\.py$")
-
-    for script_path_str in all_candidate_files:
-        script_basename = os.path.basename(script_path_str)
-        match = script_name_regex.match(script_basename)
-        if match:
-            script_num = int(match.group(1))
-            pipeline_scripts_info.append({'num': script_num, 'basename': script_basename, 'path': Path(script_path_str)})
-            if logger.isEnabledFor(logging.DEBUG):
-                 logger.debug(f"ℹ️ Matched script for pipeline: {script_basename} (Number: {script_num})")
-    
-    pipeline_scripts_info.sort(key=lambda x: (x['num'], x['basename']))
-    sorted_script_basenames: list[str] = [str(info['basename']) for info in pipeline_scripts_info] # Explicitly cast to str and type hint
-
-    if logger.isEnabledFor(logging.DEBUG): 
-        logger.debug(f"ℹ️ Found and sorted script basenames: {sorted_script_basenames}")
-    return pipeline_scripts_info
-
-def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
-    """
-    Find the virtual environment Python executable and site-packages path.
-    
-    Args:
-        script_dir: The directory where the script is located (typically src/)
-        
-    Returns:
-        Tuple of (venv_python_path, site_packages_path)
-    """
-    venv_python_path = None
-    site_packages_path = None
-    
-    # Try multiple common virtual environment locations
-    venv_candidates = [
-        script_dir / ".venv",  # Standard .venv in script directory
-        script_dir.parent / "venv",  # venv in parent directory (our case)
-        script_dir.parent / ".venv",  # .venv in parent directory
-    ]
-    
-    for venv_path in venv_candidates:
-        logger.debug(f"🔍 Checking for virtual environment at: {venv_path}")
-        
-        if venv_path.is_dir():
-            logger.debug(f"✓ Found virtual environment directory: {venv_path}")
-            
-            potential_python_executables = [
-                venv_path / "bin" / "python",
-                venv_path / "bin" / "python3",
-                venv_path / "Scripts" / "python.exe", # Windows
-            ]
-            
-            for py_exec in potential_python_executables:
-                if py_exec.exists() and py_exec.is_file():
-                    venv_python_path = py_exec
-                    logger.debug(f"🐍 Found virtual environment Python: {venv_python_path}")
-                    break
-            
-            # Find site-packages path
-            lib_path = venv_path / "lib"
-            if lib_path.is_dir():
-                for python_version_dir in lib_path.iterdir():
-                    if python_version_dir.is_dir() and python_version_dir.name.startswith("python"):
-                        current_site_packages = python_version_dir / "site-packages"
-                        if current_site_packages.is_dir():
-                            site_packages_path = current_site_packages
-                            logger.debug(f"📦 Found site-packages at: {site_packages_path}")
-                            break
-            
-            # If we found a Python executable, break out of the loop
-            if venv_python_path:
-                logger.info(f"✅ Using virtual environment: {venv_path}")
-                break
-    
-    if not venv_python_path:
-        logger.warning("⚠️ Virtual environment Python not found. Using system Python. This may lead to issues if dependencies are not globally available.")
-        venv_python_path = Path(sys.executable) # Fallback to current interpreter
-    
-    return venv_python_path, site_packages_path
-
-def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> bool:
-    """
-    Validate dependencies if the validator is available.
-    
-    Args:
-        args: Parsed command line arguments
-        
-    Returns:
-        bool: True if validation passed or validator unavailable
-    """
-    if getattr(args, 'skip_dependency_validation', False):
-        logger.info("Dependency validation skipped (--skip-dependency-validation flag)")
-        return True
-        
-    if validate_pipeline_dependencies is None:
-        logger.info("Dependency validation skipped (validator not available)")
-        return True
-        
-    logger.info("=== DEPENDENCY VALIDATION ===")
-    
-    # Determine required steps based on what will run
-    required_steps = ["setup"]  # Always need core dependencies
-    
-    # Check which steps will actually run
-    skip_steps = parse_step_list(args.skip_steps) if args.skip_steps else []
-    only_steps = parse_step_list(args.only_steps) if args.only_steps else []
-    
-    # Map step numbers to dependency groups
-    step_dependency_map = {
-        1: "gnn_processing",    # 1_gnn.py - GNN file processing 
-        2: "core",              # 2_setup.py - Setup step
-        3: "testing",           # 3_tests.py - Testing framework
-        4: "gnn_processing",    # 4_type_checker.py - GNN validation
-        5: "export",            # 5_export.py - Export formats
-        6: "visualization",     # 6_visualization.py - Visualization
-        7: "core",              # 7_mcp.py - MCP tools
-        8: "gnn_processing",    # 8_ontology.py - Ontology processing
-        9: "core",              # 9_render.py - Rendering
-        10: "core",             # 10_execute.py - Execution
-        11: "core",             # 11_llm.py - LLM processing
-        12: "core",             # 12_website.py - Website generation
-        13: "core"              # 13_sapf.py - SAPF audio generation
-    }
-    
-    # Determine which dependency groups we need
-    required_groups = set(["core"])
-    for step_num in range(1, 14):  # Updated to include steps 1-13
-        # Skip if in skip list
-        if step_num in skip_steps or f"{step_num}_" in str(skip_steps):
-            continue
-        # Skip if only_steps specified and this step not in it
-        if only_steps and step_num not in only_steps:
-            continue
-        
-        if step_num in step_dependency_map:
-            required_groups.add(step_dependency_map[step_num])
-    
-    logger.info(f"Validating dependency groups: {sorted(required_groups)}")
-    
-    # Get the virtual environment Python path for dependency validation
-    current_dir = Path(__file__).resolve().parent
-    venv_python, _ = get_venv_python(current_dir)
-    python_path = str(venv_python) if venv_python else None
-    
-    if python_path:
-        logger.debug(f"Using Python for dependency validation: {python_path}")
-    else:
-        logger.debug("Using system Python for dependency validation")
-    
-    # Validate dependencies
-    try:
-        is_valid = validate_pipeline_dependencies(list(required_groups), python_path=python_path)
-        
-        if not is_valid:
-            logger.critical("Dependency validation failed. Cannot proceed with pipeline execution.")
-            logger.critical("Please install the missing dependencies and try again.")
-            logger.critical("Alternatively, use --skip-dependency-validation to bypass this check.")
-            return False
-        
-        logger.info("All required dependencies validated successfully.")
-        return True
-        
-    except Exception as e:
-        logger.error(f"Error during dependency validation: {e}")
-        logger.critical("Dependency validation encountered an error. Cannot proceed with pipeline execution.")
-        logger.critical("Use --skip-dependency-validation to bypass this check, or fix the validation error.")
-        return False
-
-
-def parse_step_list(step_str: str) -> List[int]:
-    """Parse a comma-separated list of step numbers."""
-    if not step_str:
-        return []
-    
-    steps = []
-    for item in step_str.split(','):
-        item = item.strip()
-        # Extract number from formats like "1", "1_gnn", etc.
-        match = re.match(r'^(\d+)', item)
-        if match:
-            steps.append(int(match.group(1)))
-    return steps
-
-def run_pipeline(args: PipelineArguments):
-    """
-    Run the full GNN processing pipeline based on the provided arguments.
-    
-    This function:
-    1. Discovers all numbered scripts in the src/ directory
-    2. Determines which scripts to run based on skip/only flags
-    3. Runs each script with appropriate arguments
-    4. Generates a structured execution summary
-    
-    Args:
-        args: The parsed command-line arguments
-        
-    Returns:
-        Tuple of (exit_code, pipeline_run_data, all_scripts, overall_status)
-    """
-    current_dir = Path(__file__).resolve().parent
-    all_scripts = get_pipeline_scripts(current_dir)
-    
-    # Prepare the summary report structure
-    _pipeline_run_data_dict: Dict[str, Any] = {
-        "start_time": datetime.datetime.now().isoformat(),
-        "arguments": vars(args),
-        "steps": [],
-        "end_time": None,
-        "overall_status": "SUCCESS",  # Will be updated if any step fails
-        "total_duration_seconds": None,
-        "environment_info": get_system_info(),
-        "performance_summary": {
-            "peak_memory_mb": 0.0,
-            "total_steps": 0,
-            "failed_steps": 0,
-            "critical_failures": 0,
-            "successful_steps": 0,
-            "warnings": 0
-        }
-    }
-    
-    # Parse skip/only steps to determine what to run
-    scripts_to_run = []
-    skip_steps = []
-    only_steps = []
-    
-    if args.skip_steps:
-        skip_steps = args.skip_steps.split(',')
-    
-    if args.only_steps:
-        only_steps = args.only_steps.split(',')
-        
-    # Build list of scripts to run
-    for script_info in all_scripts:
-        script_basename = script_info['basename']
-        script_num_str = str(script_info['num'])
-        script_name_no_ext = os.path.splitext(script_basename)[0]
-        
-        # Skip logic: Skip if explicitly listed in skip_steps by number or name
-        # Note: We removed the "not is_enabled_by_default" check to run ALL discovered steps
-        # Only critical failures (required=True steps) will halt the pipeline
-        should_skip = (
-            script_num_str in skip_steps or
-            script_basename in skip_steps or
-            script_name_no_ext in skip_steps
-        )
-        
-        # Only logic: Only run if explicitly listed in only_steps by number or name
-        # If only_steps is empty, this doesn't apply
-        should_only_run = not only_steps or (
-            script_num_str in only_steps or
-            script_basename in only_steps or
-            script_name_no_ext in only_steps
-        )
-        
-        if not should_skip and should_only_run:
-            scripts_to_run.append(script_info)
-    
-    # Check if no scripts are configured to run
-    if not scripts_to_run:
-        if only_steps:
-            logger.warning(f"⚠️ No scripts match the only-steps filter: {args.only_steps}")
-        elif skip_steps:
-            logger.warning(f"⚠️ All scripts were skipped by skip-steps filter: {args.skip_steps}")
-        else:
-            logger.warning("⚠️ No scripts are configured to run in pipeline configuration")
-        
-        # Return with warning status if no scripts run
-        _pipeline_run_data_dict["end_time"] = datetime.datetime.now().isoformat()
-        _pipeline_run_data_dict["overall_status"] = "SUCCESS_WITH_WARNINGS"
-        return 0, cast(PipelineRunData, _pipeline_run_data_dict), all_scripts, "SUCCESS_WITH_WARNINGS"
-    
-    # Log what we're about to run
-    logger.info(f"📋 Will execute {len(scripts_to_run)} pipeline steps:")
-    for idx, script_info in enumerate(scripts_to_run, 1):
-        script_num = script_info['num']
-        script_basename = script_info['basename']
-        config = get_pipeline_config()
-        step_config = config.get_step_config(script_basename)
-        is_critical = step_config.required if step_config else True
-        critical_indicator = " 🔥" if is_critical else ""
-        logger.info(f"  {idx}. {script_num}: {script_basename}{critical_indicator}")
-    
-    # Get the Python executable to use for the scripts
-    logger.debug("🔍 Determining Python executable for subprocess calls...")
-    venv_python, venv_site_packages = get_venv_python(current_dir)
-    
-    if venv_python and venv_python != Path(sys.executable):
-        logger.info(f"✅ Using virtual environment Python: {venv_python}")
-    elif venv_python:
-        logger.debug(f"✓ Using current Python interpreter: {venv_python}")
-    else:
-        logger.warning("⚠️ No specific Python found, will use system default")
-    
-    # Determine which Python to use based on availability
-    python_to_use = venv_python or Path(sys.executable)
-    logger.debug(f"🐍 Selected Python for subprocess calls: {python_to_use}")
-    
-    # Verify the selected Python executable exists and is executable
-    if not python_to_use.exists():
-        logger.error(f"❌ Selected Python executable does not exist: {python_to_use}")
-        logger.critical("Cannot proceed without a valid Python executable.")
-        sys.exit(1)
-    
-    # Ensure target_dir is correct relative to cwd (src/)
-    if not args.target_dir.is_absolute():
-        # If running from src/, prepend ../
-        src_dir = Path.cwd()
-        expected_path = src_dir.parent / args.target_dir
-        if expected_path.exists():
-            args.target_dir = os.path.relpath(str(expected_path), str(src_dir))
-        else:
-            args.target_dir = str(args.target_dir)
-
-    # Execute each script
-    overall_status = "SUCCESS"
-    critical_failures = 0
-    non_critical_failures = 0
-    successful_steps = 0
-
-    logger.info("\n")
-    logger.info("  ╔══════════════════════════════════════════════════════════════════════════════╗")
-    logger.info("  ║                                                                              ║")
-    logger.info("  ║   ██████╗ ███╗   ██╗███╗   ██╗                                              ║")
-    logger.info("  ║  ██╔════╝ ████╗  ██║████╗  ██║                                              ║")
-    logger.info("  ║  ██║  ███╗██╔██╗ ██║██╔██╗ ██║                                              ║")
-    logger.info("  ║  ██║   ██║██║╚██╗██║██║╚██╗██║                                              ║")
-    logger.info("  ║  ╚██████╔╝██║ ╚████║██║ ╚████║                                              ║")
-    logger.info("  ║   ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝                                              ║")
-    logger.info("  ║                                                                              ║")
-    logger.info("  ║                    Generalized Notation Notation (GNN)                      ║")
-    logger.info("  ║                    Active Inference Model Specification                     ║")
-    logger.info("  ║                                                                              ║")
-    logger.info("  ║  ┌──────────────────────────────────────────────────────────────────────────┐  ║")
-    logger.info("  ║  │  🧠 Active Inference Institute  •  Scientific Computing Pipeline        │  ║")
-    logger.info("  ║  │  🔬 Model Validation • Code Generation • Simulation • Analysis           │  ║")
-    logger.info("  ║  └──────────────────────────────────────────────────────────────────────────┘  ║")
-    logger.info("  ║                                                                              ║")
-    logger.info(f"  ║  🚀 Pipeline Run: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}                    ║")
-    logger.info("  ╚══════════════════════════════════════════════════════════════════════════════╝")
-    logger.info("")
-    
-    # Track execution progress
-    logger.info("🔄 Starting pipeline execution...")
-    logger.info("─" * 80)
-    
-    # Show pipeline overview
-    logger.info(f"📋 Pipeline Overview:")
-    logger.info(f"   • Total Steps: {len(scripts_to_run)}")
-    critical_steps = sum(1 for s in scripts_to_run if get_pipeline_config().get_step_config(s['basename']).required)
-    optional_steps = len(scripts_to_run) - critical_steps
-    logger.info(f"   • Critical Steps: {critical_steps}")
-    logger.info(f"   • Optional Steps: {optional_steps}")
-    logger.info(f"   • Target Directory: {args.target_dir}")
-    logger.info(f"   • Output Directory: {args.output_dir}")
-    logger.info("─" * 80)
-    
-    for idx, script_info in enumerate(scripts_to_run, 1):
-        script_basename = script_info['basename']
-        script_num = script_info['num']
-        
-        # Get step configuration
-        config = get_pipeline_config()
-        step_config = config.get_step_config(script_basename)
-        is_critical = step_config.required if step_config else True
-        step_description = step_config.description if step_config else "Unknown step"
-        
-        # Log step start with clear indication of criticality and progress
-        critical_indicator = "🔥 CRITICAL" if is_critical else "⚙️  OPTIONAL"
-        progress_indicator = f"[{idx}/{len(scripts_to_run)}]"
-        logger.info(f"")
-        logger.info(f"🔄 {progress_indicator} Starting: {script_basename}")
-        logger.info(f"   📝 {step_description}")
-        logger.info(f"   🔥 {critical_indicator}")
-        logger.info(f"   ⏱️  Executing...")
-        
-        # Build the command line for the step using the enhanced argument builder
-        step_cmd = build_enhanced_step_command_args(
-            script_basename, args, str(python_to_use), script_info['path']
-        )
-        logger.debug(f"🔧 Command: {' '.join(map(str, step_cmd))}")
-        
-        # Track step execution time
-        step_start_time = datetime.datetime.now()
-        
-        try:
-            result = subprocess.run(
-                step_cmd,
-                capture_output=True,
-                text=True,
-                check=False
-            )
-            
-            step_end_time = datetime.datetime.now()
-            step_duration = (step_end_time - step_start_time).total_seconds()
-            
-            step_status = "SUCCESS" if result.returncode == 0 else "FAILED"
-            step_log = {
-                "step_number": idx,
-                "script_name": script_basename,
-                "status": step_status,
-                "start_time": step_start_time.isoformat(),
-                "end_time": step_end_time.isoformat(),
-                "duration_seconds": step_duration,
-                "details": "",
-                "stdout": result.stdout,
-                "stderr": result.stderr,
-                "memory_usage_mb": None,
-                "exit_code": result.returncode,
-                "retry_count": 0
-            }
-            
-            # Log step completion with detailed status and visual indicators
-            if step_status == "SUCCESS":
-                successful_steps += 1
-                _pipeline_run_data_dict["performance_summary"]["successful_steps"] += 1
-                logger.info(f"✅ {progress_indicator} COMPLETED: {script_basename}")
-                logger.info(f"   ⏱️  Duration: {step_duration:.2f}s")
-                logger.info(f"   📊 Progress: {successful_steps}/{len(scripts_to_run)} steps successful")
-                
-                # Log any stdout if verbose
-                if args.verbose and result.stdout.strip():
-                    logger.debug(f"📤 Step output:\n{result.stdout.strip()}")
-                    
-            else:  # FAILED
-                _pipeline_run_data_dict["performance_summary"]["failed_steps"] += 1
-                
-                if is_critical:
-                    critical_failures += 1
-                    _pipeline_run_data_dict["performance_summary"]["critical_failures"] += 1
-                    logger.error(f"🔥 {progress_indicator} CRITICAL FAILURE: {script_basename}")
-                    logger.error(f"   ⏱️  Duration: {step_duration:.2f}s")
-                    logger.error(f"   🚫 Exit Code: {result.returncode}")
-                    
-                    # Log error details
-                    if result.stderr.strip():
-                        logger.error(f"❌ Error output:\n{result.stderr.strip()}")
-                    if result.stdout.strip():
-                        logger.debug(f"📤 Standard output:\n{result.stdout.strip()}")
-                    
-                    logger.critical(f"🛑 Pipeline halted due to critical step failure: {script_basename}")
-                    _pipeline_run_data_dict["steps"].append(step_log)
-                    overall_status = "FAILED"
-                    break
-                else:
-                    non_critical_failures += 1
-                    logger.warning(f"⚠️  {progress_indicator} NON-CRITICAL FAILURE: {script_basename}")
-                    logger.warning(f"   ⏱️  Duration: {step_duration:.2f}s")
-                    logger.warning(f"   🚫 Exit Code: {result.returncode}")
-                    logger.warning(f"   🔄 Continuing pipeline execution...")
-                    
-                    # Log error details for non-critical failures
-                    if result.stderr.strip():
-                        logger.warning(f"❌ Error output:\n{result.stderr.strip()}")
-                    if result.stdout.strip():
-                        logger.debug(f"📤 Standard output:\n{result.stdout.strip()}")
-                    
-                    # Update overall status to indicate warnings but continue
-                    if overall_status == "SUCCESS":
-                        overall_status = "SUCCESS_WITH_WARNINGS"
-            
-            _pipeline_run_data_dict["steps"].append(step_log)
-            
-        except Exception as e:
-            step_end_time = datetime.datetime.now()
-            step_duration = (step_end_time - step_start_time).total_seconds()
-            
-            logger.error(f"💥 {progress_indicator} EXCEPTION: {script_basename}")
-            logger.error(f"   ⏱️  Duration: {step_duration:.2f}s")
-            logger.error(f"   🚫 Exception: {e}")
-            
-            step_log = {
-                "step_number": idx,
-                "script_name": script_basename,
-                "status": "ERROR",
-                "start_time": step_start_time.isoformat(),
-                "end_time": step_end_time.isoformat(),
-                "duration_seconds": step_duration,
-                "details": str(e),
-                "stdout": "",
-                "stderr": str(e),
-                "memory_usage_mb": None,
-                "exit_code": 1,
-                "retry_count": 0
-            }
-            _pipeline_run_data_dict["steps"].append(step_log)
-            
-            if is_critical:
-                critical_failures += 1
-                _pipeline_run_data_dict["performance_summary"]["critical_failures"] += 1
-                logger.critical(f"🛑 Pipeline halted due to critical step exception: {script_basename}")
-                overall_status = "FAILED"
-                break
-            else:
-                non_critical_failures += 1
-                logger.warning(f"🔄 Continuing pipeline execution despite exception...")
-                if overall_status == "SUCCESS":
-                    overall_status = "SUCCESS_WITH_WARNINGS"
-
-    # Final execution summary
-    logger.info("")
-    logger.info("─" * 80)
-    logger.info("🏁 Pipeline execution completed!")
-    
-    # Calculate final statistics
-    total_executed = len(_pipeline_run_data_dict["steps"])
-    _pipeline_run_data_dict["performance_summary"]["total_steps"] = total_executed
-    
-    # Determine final status
-    if critical_failures > 0:
-        overall_status = "FAILED"
-        logger.error(f"🛑 Pipeline failed with {critical_failures} critical failure(s)")
-    elif non_critical_failures > 0:
-        overall_status = "SUCCESS_WITH_WARNINGS"
-        logger.warning(f"⚠️  Pipeline completed with {non_critical_failures} non-critical failure(s)")
-    else:
-        overall_status = "SUCCESS"
-        logger.info(f"🎉 Pipeline completed successfully!")
-    
-    # Log comprehensive summary
-    logger.info(f"📊 Execution Summary:")
-    logger.info(f"   • Total steps executed: {total_executed}")
-    logger.info(f"   • Successful steps: {successful_steps}")
-    logger.info(f"   • Critical failures: {critical_failures}")
-    logger.info(f"   • Non-critical failures: {non_critical_failures}")
-    logger.info(f"   • Overall status: {overall_status}")
-
-    _pipeline_run_data_dict["end_time"] = datetime.datetime.now().isoformat()
-    _pipeline_run_data_dict["overall_status"] = overall_status
-    
-    # Calculate total duration
-    if _pipeline_run_data_dict["start_time"] and _pipeline_run_data_dict["end_time"]:
-        start_dt = datetime.datetime.fromisoformat(_pipeline_run_data_dict["start_time"])
-        end_dt = datetime.datetime.fromisoformat(_pipeline_run_data_dict["end_time"])
-        _pipeline_run_data_dict["total_duration_seconds"] = (end_dt - start_dt).total_seconds()
-        logger.info(f"⏱️  Total pipeline duration: {_pipeline_run_data_dict['total_duration_seconds']:.2f}s")
-
-    # Return appropriate exit code based on final status
-    if overall_status == "SUCCESS":
-        exit_code = 0
-    elif overall_status == "SUCCESS_WITH_WARNINGS":
-        exit_code = 0  # Still consider this a success
-    else:  # FAILED
-        exit_code = 1
-
-    return exit_code, cast(PipelineRunData, _pipeline_run_data_dict), all_scripts, overall_status
-
 def main():
     """Main entry point for the GNN Processing Pipeline."""
     args = parse_arguments()
     
+    # After args = parse_arguments()
+    project_root = current_dir.parent
+
+    # Resolve paths to absolute
+    args.target_dir = (project_root / args.target_dir).resolve()
+    args.output_dir = (project_root / args.output_dir).resolve()
+    if args.ontology_terms_file:
+        args.ontology_terms_file = (project_root / args.ontology_terms_file).resolve()
+    if args.pipeline_summary_file:
+        args.pipeline_summary_file = (project_root / args.pipeline_summary_file).resolve()
+    else:
+        args.pipeline_summary_file = args.output_dir / "pipeline_execution_summary.json"
+
     # Set up streamlined logging
     log_dir = args.output_dir / "logs"
     pipeline_logger = setup_main_logging(log_dir, args.verbose)
@@ -860,45 +194,7 @@ def main():
     # Set correlation context for main pipeline
     PipelineLogger.set_correlation_context("main")
 
-    # --- Defensive Path Conversion ---
-    # Ensure critical path arguments are pathlib.Path objects.
-    # argparse with type=Path should handle this, but this adds robustness.
-    path_args_to_check = [
-        'output_dir', 'target_dir', 'ontology_terms_file', 'pipeline_summary_file'
-    ]
-
-    for arg_name in path_args_to_check:
-        if not hasattr(args, arg_name):
-            pipeline_logger.debug(f"Argument --{arg_name.replace('_', '-')} not present in args namespace.")
-            continue
-
-        arg_value = getattr(args, arg_name)
-        
-        # Only proceed if arg_value is not None. If it's None, it might be an optional Path not provided.
-        if arg_value is not None and not isinstance(arg_value, Path):
-            pipeline_logger.warning(
-                f"Argument --{arg_name.replace('_', '-')} was unexpectedly a {type(arg_value).__name__} "
-                f"(value: '{arg_value}') instead of pathlib.Path. Converting explicitly. "
-                "This might indicate an issue with argument parsing configuration or an external override."
-            )
-            try:
-                setattr(args, arg_name, Path(arg_value))
-            except TypeError as e:
-                pipeline_logger.error(
-                    f"Failed to convert argument --{arg_name.replace('_', '-')} (value: '{arg_value}') to Path: {e}. "
-                    "This could be due to an unsuitable value for a path."
-                )
-                # If a critical path like output_dir fails conversion, it's a fatal error for the script's purpose.
-                if arg_name in ['output_dir', 'target_dir']:
-                    pipeline_logger.critical(f"Critical path argument --{arg_name.replace('_', '-')} could not be converted to Path. Exiting.")
-                    sys.exit(1)
-        elif arg_value is None and arg_name in ['output_dir', 'target_dir']: # These should always have a default Path value.
-             pipeline_logger.critical(
-                f"Critical path argument --{arg_name.replace('_', '-')} is None after parsing. "
-                "This indicates a problem with default value setup in argparse. Exiting."
-             )
-             sys.exit(1)
-    # --- End Defensive Path Conversion ---
+    validate_and_convert_paths(args, pipeline_logger)
 
     pipeline_logger.info(f"🚀 Initializing GNN Pipeline with Target: '{args.target_dir}', Output: '{args.output_dir}'")
     
@@ -915,112 +211,56 @@ def main():
         sys.exit(1)
         
     # Call the main pipeline execution function
-    exit_code, pipeline_run_data, all_scripts, overall_status = run_pipeline(args)
+    exit_code, pipeline_run_data, all_scripts, overall_status = run_pipeline(args, pipeline_logger)
 
-    # --- Pipeline Summary Report ---
-    logger.info("\n")
-    logger.info("╔══════════════════════════════════════════════════════════════════════════════╗")
-    logger.info("║                           PIPELINE EXECUTION SUMMARY                        ║")
-    logger.info("╚══════════════════════════════════════════════════════════════════════════════╝")
-    
-    num_total = len(pipeline_run_data["steps"])
-    num_success = len([s for s in pipeline_run_data["steps"] if s["status"] == "SUCCESS"])
-    num_warn = len([s for s in pipeline_run_data["steps"] if s["status"] == "SUCCESS_WITH_WARNINGS"])
-    num_failed = len([s for s in pipeline_run_data["steps"] if "FAILED" in s["status"] or "ERROR" in s["status"]])
-    num_skipped = len([s for s in pipeline_run_data["steps"] if s["status"] == "SKIPPED"])
+    generate_and_print_summary(pipeline_run_data, all_scripts, args, logger, overall_status)
 
-    # Calculate success rate
-    total_executed = num_total - num_skipped
-    success_rate = (num_success / total_executed * 100) if total_executed > 0 else 0
-
-    logger.info(f"📊 EXECUTION STATISTICS:")
-    logger.info(f"   • Total Steps Available: {len(all_scripts)}")
-    logger.info(f"   • Steps Executed: {total_executed}")
-    logger.info(f"   • Steps Skipped: {num_skipped}")
-    logger.info(f"")
-    logger.info(f"📈 RESULTS:")
-    logger.info(f"   ✅ Successful: {num_success}")
-    logger.info(f"   ⚠️  Success with Warnings: {num_warn}")
-    logger.info(f"   ❌ Failed/Error: {num_failed}")
-    logger.info(f"   📊 Success Rate: {success_rate:.1f}%")
-    
-    # Show detailed step results if there are failures
-    if num_failed > 0:
-        logger.info(f"")
-        logger.info(f"🔍 FAILED STEPS DETAILS:")
-        for step in pipeline_run_data["steps"]:
-            if "FAILED" in step["status"] or "ERROR" in step["status"]:
-                step_name = step["script_name"]
-                exit_code = step.get("exit_code", "unknown")
-                duration = step.get("duration_seconds", 0)
-                config = get_pipeline_config()
-                step_config = config.get_step_config(step_name)
-                is_critical = step_config.required if step_config else True
-                critical_indicator = "🔥 CRITICAL" if is_critical else "⚙️  OPTIONAL"
-                
-                logger.info(f"   • {step_name} ({critical_indicator}) - Exit: {exit_code}, Duration: {duration:.2f}s")
-                if step.get("stderr", "").strip():
-                    # Show first line of error for context
-                    error_lines = step["stderr"].strip().split('\n')
-                    first_error = error_lines[0][:80] + "..." if len(error_lines[0]) > 80 else error_lines[0]
-                    logger.info(f"     Error: {first_error}")
-
-    # Performance summary
-    if pipeline_run_data.get("total_duration_seconds"):
-        total_duration = pipeline_run_data["total_duration_seconds"]
-        logger.info(f"")
-        logger.info(f"⏱️  PERFORMANCE:")
-        logger.info(f"   • Total Duration: {total_duration:.2f} seconds")
-        if total_executed > 0:
-            avg_duration = total_duration / total_executed
-            logger.info(f"   • Average Step Duration: {avg_duration:.2f} seconds")
-
-    # Final status message with appropriate tone
-    logger.info(f"")
-    if overall_status == "SUCCESS":
-        logger.info("🎉 PIPELINE COMPLETED SUCCESSFULLY!")
-        logger.info("   All critical steps completed without errors.")
-    elif overall_status == "SUCCESS_WITH_WARNINGS":
-        logger.info("🎉 PIPELINE COMPLETED WITH WARNINGS!")
-        logger.info("   All critical steps completed successfully.")
-        logger.info("   Some optional steps failed, but this does not affect core functionality.")
-        logger.info("   Check the detailed logs for specific issues.")
-    else:  # FAILED
-        logger.info("🛑 PIPELINE COMPLETED WITH CRITICAL ERRORS!")
-        logger.info("   One or more critical steps failed.")
-        logger.info("   Check the detailed logs above for specific error information.")
-        logger.info("   Consider addressing the critical failures before re-running.")
-
-    # Output location information
-    logger.info(f"")
-    logger.info(f"📁 OUTPUT LOCATIONS:")
-    logger.info(f"   • Pipeline Summary: {args.pipeline_summary_file}")
-    logger.info(f"   • Log Files: {args.output_dir}/logs/")
-    logger.info(f"   • Step Outputs: {args.output_dir}/")
-
-    # Save detailed summary report
-    try:
-        args.pipeline_summary_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        # Convert Path objects to strings for JSON serialization
-        def path_serializer(obj):
-            if isinstance(obj, Path):
-                return str(obj)
-            raise TypeError(f"Type {type(obj)} not serializable")
-        
-        with open(args.pipeline_summary_file, 'w') as f_summary:
-            json.dump(pipeline_run_data, f_summary, indent=4, default=path_serializer)
-        logger.info(f"💾 Detailed pipeline execution summary (JSON) saved to: {args.pipeline_summary_file}")
-    except Exception as e:
-        logger.error(f"❌ Error saving pipeline summary report: {e}")
-        
-    # Final positive message regardless of status
-    logger.info(f"")
-    logger.info("╔══════════════════════════════════════════════════════════════════════════════╗")
-    logger.info("║                              PIPELINE FINISHED                              ║")
-    logger.info("╚══════════════════════════════════════════════════════════════════════════════╝")
-    
     sys.exit(exit_code)
+
+def run_pipeline(args: PipelineArguments, logger: logging.Logger):
+    current_dir = Path(__file__).resolve().parent
+    all_scripts = get_pipeline_scripts(current_dir)
+    
+    pipeline_run_data = {
+        "start_time": datetime.datetime.now().isoformat(),
+        "arguments": vars(args),
+        "steps": [],
+        "end_time": None,
+        "overall_status": "SUCCESS",
+        "total_duration_seconds": None,
+        "environment_info": get_system_info(),
+        "performance_summary": {
+            "peak_memory_mb": 0.0,
+            "total_steps": 0,
+            "failed_steps": 0,
+            "critical_failures": 0,
+            "successful_steps": 0,
+            "warnings": 0
+        }
+    }
+    
+    scripts_to_run = prepare_scripts_to_run(all_scripts, args)
+    
+    if not scripts_to_run:
+        pipeline_run_data["end_time"] = datetime.datetime.now().isoformat()
+        pipeline_run_data["overall_status"] = "SUCCESS_WITH_WARNINGS"
+        return 0, pipeline_run_data, all_scripts, "SUCCESS_WITH_WARNINGS"
+    
+    venv_python, venv_site_packages = get_venv_python(current_dir)
+    python_to_use = venv_python or Path(sys.executable)
+    
+    overall_status = "SUCCESS"
+    for idx, script_info in enumerate(scripts_to_run, 1):
+        step_result = execute_pipeline_step(script_info['basename'], idx, len(scripts_to_run), python_to_use, args.target_dir, args.output_dir, args, logger)
+        pipeline_run_data["steps"].append(step_result)
+        if step_result["status"] == "FAILED":
+            overall_status = "FAILED"
+            break
+    
+    summarize_execution(pipeline_run_data, scripts_to_run, overall_status)
+    
+    exit_code = 0 if overall_status == "SUCCESS" else 1
+    return exit_code, pipeline_run_data, all_scripts, overall_status
 
 if __name__ == "__main__":
     main() 

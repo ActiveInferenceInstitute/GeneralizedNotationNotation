@@ -32,6 +32,7 @@ from pipeline import (
 )
 
 from export.core import export_gnn_files
+from utils.pipeline_template import create_standardized_pipeline_script
 
 # Initialize logger for this step
 logger = setup_step_logging("5_export", verbose=False)
@@ -78,49 +79,11 @@ def process_export_standardized(
         log_step_error(logger, f"Export processing failed: {e}")
         return False
 
-def main(parsed_args):
-    """Main function for GNN export operations."""
-    
-    # Log step metadata from centralized configuration
-    step_info = STEP_METADATA.get("5_export.py", {})
-    log_step_start(logger, f"{step_info.get('description', 'Multi-format export generation')}")
-    
-    # Update logger verbosity if needed
-    if parsed_args.verbose:
-        logger.setLevel(logging.DEBUG)
-    
-    # Run export with standardized function
-    success = process_export_standardized(
-        target_dir=Path(parsed_args.target_dir),
-        output_dir=Path(parsed_args.output_dir),
-        logger=logger,
-        recursive=getattr(parsed_args, 'recursive', False),
-        verbose=getattr(parsed_args, 'verbose', False)
-    )
-    
-    if success:
-        log_step_success(logger, "GNN export completed successfully")
-        return 0
-    else:
-        log_step_error(logger, "GNN export failed")
-        return 1
+run_script = create_standardized_pipeline_script(
+    "5_export.py",
+    process_export_standardized,
+    "Multi-format export generation"
+)
 
 if __name__ == '__main__':
-    # Use centralized argument parsing
-    if UTILS_AVAILABLE:
-        parsed_args = EnhancedArgumentParser.parse_step_arguments("5_export")
-    else:
-        # Fallback argument parsing
-        parser = argparse.ArgumentParser(description="Multi-format export generation")
-        parser.add_argument("--target-dir", type=Path, required=True,
-                          help="Target directory containing GNN files")
-        parser.add_argument("--output-dir", type=Path, required=True,
-                          help="Output directory for generated artifacts")
-        parser.add_argument("--recursive", action="store_true",
-                          help="Search recursively in subdirectories")
-        parser.add_argument("--verbose", action="store_true",
-                          help="Enable verbose output")
-        parsed_args = parser.parse_args()
-    
-    exit_code = main(parsed_args)
-    sys.exit(exit_code) 
+    sys.exit(run_script()) 

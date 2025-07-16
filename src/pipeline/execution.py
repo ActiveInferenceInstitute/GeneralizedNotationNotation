@@ -323,7 +323,7 @@ def execute_pipeline_step(script_name: str, step_number: int, total_steps: int,
         command = build_command_args(script_name, script_path, args, python_executable)
         
         # Log command execution with enhanced formatting
-        command_display = ' '.join(command)
+        command_display = ' '.join(str(c) for c in command)
         if len(command_display) > 100:
             command_display = command_display[:97] + "..."
         
@@ -582,6 +582,53 @@ def execute_pipeline_steps(scripts: List[Tuple[int, str]], python_executable: st
     
     return summary 
 
+def prepare_scripts_to_run(all_scripts, args):
+    scripts_to_run = []
+    skip_steps = []
+    only_steps = []
+    
+    if args.skip_steps:
+        skip_steps = args.skip_steps.split(',')
+    
+    if args.only_steps:
+        only_steps = args.only_steps.split(',')
+        
+    # Build list of scripts to run
+    for script_info in all_scripts:
+        script_basename = script_info['basename']
+        script_num_str = str(script_info['num'])
+        script_name_no_ext = os.path.splitext(script_basename)[0]
+        
+        # Skip logic: Skip if explicitly listed in skip_steps by number or name
+        # Note: We removed the "not is_enabled_by_default" check to run ALL discovered steps
+        # Only critical failures (required=True steps) will halt the pipeline
+        should_skip = (
+            script_num_str in skip_steps or
+            script_basename in skip_steps or
+            script_name_no_ext in skip_steps
+        )
+        
+        # Only logic: Only run if explicitly listed in only_steps by number or name
+        # If only_steps is empty, this doesn't apply
+        should_only_run = not only_steps or (
+            script_num_str in only_steps or
+            script_basename in only_steps or
+            script_name_no_ext in only_steps
+        )
+        
+        if not should_skip and should_only_run:
+            scripts_to_run.append(script_info)
+    
+    return scripts_to_run
+
+def execute_step(script_info, idx, total_scripts, python_to_use, args, logger):
+    # Implementation for executing a single step
+    pass
+
+def summarize_execution(pipeline_run_data, scripts_to_run, overall_status):
+    # Implementation for summarizing execution
+    pass
+
 def run_pipeline(target_dir: str, output_dir: str, steps: Optional[List[str]] = None) -> Dict[str, Any]:
     """
     Run the GNN pipeline with specified parameters.
@@ -819,3 +866,97 @@ def create_pipeline_config(config_path: str, **kwargs) -> bool:
     except Exception as e:
         logger.error(f"Failed to create pipeline config: {e}")
         return False 
+
+def generate_and_print_summary(pipeline_run_data: Dict[str, Any], all_scripts: List[Dict[str, Any]], args: argparse.Namespace, logger: logging.Logger, overall_status: str):
+    logger.info("\n")
+    logger.info("╔══════════════════════════════════════════════════════════════════════════════╗")
+    logger.info("║                           PIPELINE EXECUTION SUMMARY                        ║")
+    logger.info("╚══════════════════════════════════════════════════════════════════════════════╝")
+    
+    num_total = len(pipeline_run_data["steps"])
+    num_success = len([s for s in pipeline_run_data["steps"] if s["status"] == "SUCCESS"])
+    num_warn = len([s for s in pipeline_run_data["steps"] if s["status"] == "SUCCESS_WITH_WARNINGS"])
+    num_failed = len([s for s in pipeline_run_data["steps"] if "FAILED" in s["status"] or "ERROR" in s["status"]])
+    num_skipped = len([s for s in pipeline_run_data["steps"] if s["status"] == "SKIPPED"])
+
+    total_executed = num_total - num_skipped
+    success_rate = (num_success / total_executed * 100) if total_executed > 0 else 0
+
+    logger.info(f"📊 EXECUTION STATISTICS:")
+    logger.info(f"   • Total Steps Available: {len(all_scripts)}")
+    logger.info(f"   • Steps Executed: {total_executed}")
+    logger.info(f"   • Steps Skipped: {num_skipped}")
+    logger.info(f"")
+    logger.info(f"📈 RESULTS:")
+    logger.info(f"   ✅ Successful: {num_success}")
+    logger.info(f"   ⚠️  Success with Warnings: {num_warn}")
+    logger.info(f"   ❌ Failed/Error: {num_failed}")
+    logger.info(f"   📊 Success Rate: {success_rate:.1f}%")
+    
+    if num_failed > 0:
+        logger.info(f"")
+        logger.info(f"🔍 FAILED STEPS DETAILS:")
+        for step in pipeline_run_data["steps"]:
+            if "FAILED" in step["status"] or "ERROR" in step["status"]:
+                step_name = step["script_name"]
+                exit_code = step.get("exit_code", "unknown")
+                duration = step.get("duration_seconds", 0)
+                config = get_pipeline_config()
+                step_config = config.get_step_config(step_name)
+                is_critical = step_config.required if step_config else True
+                critical_indicator = "🔥 CRITICAL" if is_critical else "⚙️  OPTIONAL"
+                
+                logger.info(f"   • {step_name} ({critical_indicator}) - Exit: {exit_code}, Duration: {duration:.2f}s")
+                if step.get("stderr", "").strip():
+                    error_lines = step["stderr"].strip().split('\n')
+                    first_error = error_lines[0][:80] + "..." if len(error_lines[0]) > 80 else error_lines[0]
+                    logger.info(f"     Error: {first_error}")
+
+    if pipeline_run_data.get("total_duration_seconds"):
+        total_duration = pipeline_run_data["total_duration_seconds"]
+        logger.info(f"")
+        logger.info(f"⏱️  PERFORMANCE:")
+        logger.info(f"   • Total Duration: {total_duration:.2f} seconds")
+        if total_executed > 0:
+            avg_duration = total_duration / total_executed
+            logger.info(f"   • Average Step Duration: {avg_duration:.2f} seconds")
+
+    logger.info(f"")
+    if overall_status == "SUCCESS":
+        logger.info("🎉 PIPELINE COMPLETED SUCCESSFULLY!")
+        logger.info("   All critical steps completed without errors.")
+    elif overall_status == "SUCCESS_WITH_WARNINGS":
+        logger.info("🎉 PIPELINE COMPLETED WITH WARNINGS!")
+        logger.info("   All critical steps completed successfully.")
+        logger.info("   Some optional steps failed, but this does not affect core functionality.")
+        logger.info("   Check the detailed logs for specific issues.")
+    else:  # FAILED
+        logger.info("🛑 PIPELINE COMPLETED WITH CRITICAL ERRORS!")
+        logger.info("   One or more critical steps failed.")
+        logger.info("   Check the detailed logs above for specific error information.")
+        logger.info("   Consider addressing the critical failures before re-running.")
+
+    logger.info(f"")
+    logger.info(f"📁 OUTPUT LOCATIONS:")
+    logger.info(f"   • Pipeline Summary: {args.pipeline_summary_file}")
+    logger.info(f"   • Log Files: {args.output_dir}/logs/")
+    logger.info(f"   • Step Outputs: {args.output_dir}/")
+
+    try:
+        args.pipeline_summary_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        def path_serializer(obj):
+            if isinstance(obj, Path):
+                return str(obj)
+            raise TypeError(f"Type {type(obj)} not serializable")
+        
+        with open(args.pipeline_summary_file, 'w') as f_summary:
+            json.dump(pipeline_run_data, f_summary, indent=4, default=path_serializer)
+        logger.info(f"💾 Detailed pipeline execution summary (JSON) saved to: {args.pipeline_summary_file}")
+    except Exception as e:
+        logger.error(f"❌ Error saving pipeline summary report: {e}")
+        
+    logger.info(f"")
+    logger.info("╔══════════════════════════════════════════════════════════════════════════════╗")
+    logger.info("║                              PIPELINE FINISHED                              ║")
+    logger.info("╚══════════════════════════════════════════════════════════════════════════════╝") 

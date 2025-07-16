@@ -29,6 +29,7 @@ from pipeline import (
 )
 
 from type_checker.checker import run_type_checking
+from utils.pipeline_template import create_standardized_pipeline_script
 
 # Initialize logger for this step
 logger = setup_step_logging("4_type_checker", verbose=False)
@@ -96,55 +97,15 @@ def process_type_checking_standardized(
         log_step_error(logger, f"Type checking failed: {e}")
         return False
 
-def main(parsed_args):
-    """Main function for type checking using the CLI entry point."""
-    # Log step metadata from centralized configuration
-    step_info = STEP_METADATA.get("4_type_checker.py", {})
-    log_step_start(logger, f"{step_info.get('description', 'GNN syntax and type validation')}")
-
-    # Update logger verbosity if needed
-    if parsed_args.verbose:
-        logger.setLevel(logging.DEBUG)
-
-    # Process type checking
-    success = process_type_checking_standardized(
-        target_dir=Path(parsed_args.target_dir),
-        output_dir=Path(parsed_args.output_dir),
-        logger=logger,
-        recursive=getattr(parsed_args, 'recursive', False),
-        verbose=getattr(parsed_args, 'verbose', False),
-        strict=getattr(parsed_args, 'strict', False),
-        estimate_resources=getattr(parsed_args, 'estimate_resources', False)
-    )
-    
-    if success:
-        log_step_success(logger, "Type checking completed successfully")
-        return 0
-    else:
-        log_step_error(logger, "Type checking failed")
-        return 1
+run_script = create_standardized_pipeline_script(
+    "4_type_checker.py",
+    process_type_checking_standardized,
+    "GNN syntax and type validation",
+    additional_arguments={
+        "strict": {"type": bool, "default": False, "help": "Enable strict validation mode"},
+        "estimate_resources": {"type": bool, "default": True, "help": "Estimate computational resources"}
+    }
+)
 
 if __name__ == '__main__':
-    # Use centralized argument parsing
-    if UTILS_AVAILABLE:
-        parsed_args = EnhancedArgumentParser.parse_step_arguments("4_type_checker")
-    else:
-        # Fallback argument parsing
-        import argparse
-        parser = argparse.ArgumentParser(description="GNN syntax and type validation")
-        parser.add_argument("--target-dir", type=Path, required=True,
-                          help="Target directory containing GNN files")
-        parser.add_argument("--output-dir", type=Path, required=True,
-                          help="Output directory for generated artifacts")
-        parser.add_argument("--recursive", action="store_true",
-                          help="Search recursively in subdirectories")
-        parser.add_argument("--verbose", action="store_true",
-                          help="Enable verbose output")
-        parser.add_argument("--strict", action="store_true",
-                          help="Enable strict validation mode")
-        parser.add_argument("--estimate-resources", action="store_true",
-                          help="Estimate computational resources")
-        parsed_args = parser.parse_args()
-
-    exit_code = main(parsed_args)
-    sys.exit(exit_code)
+    sys.exit(run_script())

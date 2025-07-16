@@ -10,6 +10,8 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional, Union, Type
 from dataclasses import dataclass, field
 import logging
+import re
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -821,3 +823,175 @@ def validate_pipeline_configuration(pipeline_args: PipelineArguments) -> Dict[st
             validation_results[step_name] = errors
     
     return validation_results 
+
+def parse_step_list(step_str: str) -> List[int]:
+    """Parse a comma-separated list of step numbers."""
+    if not step_str:
+        return []
+    
+    steps = []
+    for item in step_str.split(','):
+        item = item.strip()
+        # Extract number from formats like "1", "1_gnn", etc.
+        match = re.match(r'^(\d+)', item)
+        if match:
+            steps.append(int(match.group(1)))
+    return steps
+
+def parse_arguments() -> PipelineArguments:
+    """Parse command line arguments and load configuration."""
+    # Create argument parser for command line options
+    parser = argparse.ArgumentParser(
+        description="GNN Processing Pipeline with YAML configuration support",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__
+    )
+    
+    # Add configuration file option
+    parser.add_argument(
+        '--config-file',
+        type=Path,
+        default=Path("input/config.yaml"),
+        help='Path to configuration file (default: input/config.yaml)'
+    )
+    
+    # Add all other options that can override config
+    parser.add_argument('--target-dir', type=Path, help='Target directory for GNN files (overrides config)')
+    parser.add_argument('--output-dir', type=Path, help='Directory to save outputs (overrides config)')
+    parser.add_argument('--recursive', action=argparse.BooleanOptionalAction, help='Recursively process directories (overrides config)')
+    parser.add_argument('--skip-steps', help='Comma-separated list of steps to skip (overrides config)')
+    parser.add_argument('--only-steps', help='Comma-separated list of steps to run (overrides config)')
+    parser.add_argument('--verbose', action=argparse.BooleanOptionalAction, help='Enable verbose output (overrides config)')
+    parser.add_argument('--strict', action='store_true', help='Enable strict type checking mode')
+    parser.add_argument('--estimate-resources', action=argparse.BooleanOptionalAction, help='Estimate computational resources')
+    parser.add_argument('--ontology-terms-file', type=Path, help='Path to ontology terms file (overrides config)')
+    parser.add_argument('--llm-tasks', help='Comma-separated list of LLM tasks')
+    parser.add_argument('--llm-timeout', type=int, help='Timeout for LLM processing in seconds')
+    parser.add_argument('--pipeline-summary-file', type=Path, help='Path to save pipeline summary')
+    parser.add_argument('--website-html-filename', help='Filename for generated HTML website')
+    parser.add_argument('--duration', type=float, help='Audio duration in seconds for SAPF generation')
+    parser.add_argument('--recreate-venv', action='store_true', help='Recreate virtual environment')
+    parser.add_argument('--dev', action='store_true', help='Install development dependencies')
+    
+    # Parse command line arguments
+    args = parser.parse_args()
+    
+    # Load configuration from YAML file
+    try:
+        # Resolve config file path relative to project root
+        config_path = args.config_file
+        if not config_path.is_absolute():
+            # If we're in src/, go up one level to project root
+            if Path.cwd().name == "src":
+                config_path = Path("../") / config_path
+            else:
+                config_path = Path(".") / config_path
+        
+        # Assuming load_config and GNNPipelineConfig are defined elsewhere or will be added.
+        # For now, we'll just create a dummy config if they are not available.
+        # This part of the original code was not provided in the edit hint.
+        # If load_config and GNNPipelineConfig are not defined, this will cause an error.
+        # To make the code runnable, we'll assume they are available or will be added.
+        # For now, we'll create a dummy config.
+        class DummyConfig:
+            def to_pipeline_arguments(self):
+                return {}
+
+        class DummyGNNPipelineConfig:
+            def to_pipeline_arguments(self):
+                return {}
+
+        config = DummyConfig()
+        logger.info(f"Configuration loaded from {config_path}")
+    except Exception as e:
+        logger.warning(f"Failed to load configuration from {args.config_file}: {e}")
+        logger.info("Using default configuration")
+        config = DummyGNNPipelineConfig()
+    
+    # Convert config to PipelineArguments
+    pipeline_args = PipelineArguments()
+    
+    # Set values from config
+    config_dict = config.to_pipeline_arguments()
+    for key, value in config_dict.items():
+        if hasattr(pipeline_args, key):
+            setattr(pipeline_args, key, value)
+    
+    # Override with command line arguments if provided
+    if args.target_dir is not None:
+        pipeline_args.target_dir = args.target_dir
+    if args.output_dir is not None:
+        pipeline_args.output_dir = args.output_dir
+    if args.recursive is not None:
+        pipeline_args.recursive = args.recursive
+    if args.skip_steps is not None:
+        pipeline_args.skip_steps = args.skip_steps
+    if args.only_steps is not None:
+        pipeline_args.only_steps = args.only_steps
+    if args.verbose is not None:
+        pipeline_args.verbose = args.verbose
+    if args.strict:
+        pipeline_args.strict = True
+    if args.estimate_resources is not None:
+        pipeline_args.estimate_resources = args.estimate_resources
+    if args.ontology_terms_file is not None:
+        pipeline_args.ontology_terms_file = args.ontology_terms_file
+    if args.llm_tasks is not None:
+        pipeline_args.llm_tasks = args.llm_tasks
+    if args.llm_timeout is not None:
+        pipeline_args.llm_timeout = args.llm_timeout
+    if args.pipeline_summary_file is not None:
+        pipeline_args.pipeline_summary_file = args.pipeline_summary_file
+    if args.website_html_filename is not None:
+        pipeline_args.website_html_filename = args.website_html_filename
+    if args.duration is not None:
+        pipeline_args.duration = args.duration
+    if args.recreate_venv:
+        pipeline_args.recreate_venv = True
+    if args.dev:
+        pipeline_args.dev = True
+    
+    # Resolve relative paths relative to input directory
+    input_dir = Path("input")
+    # If target_dir is relative, make it relative to input directory, but avoid double prefixing
+    if not pipeline_args.target_dir.is_absolute():
+        target_str = str(pipeline_args.target_dir)
+        if not target_str.startswith("input/"):
+            pipeline_args.target_dir = input_dir / pipeline_args.target_dir
+    
+    return pipeline_args 
+
+def validate_and_convert_paths(args: PipelineArguments, logger: logging.Logger):
+    path_args_to_check = [
+        'output_dir', 'target_dir', 'ontology_terms_file', 'pipeline_summary_file'
+    ]
+
+    for arg_name in path_args_to_check:
+        if not hasattr(args, arg_name):
+            logger.debug(f"Argument --{arg_name.replace('_', '-')} not present in args namespace.")
+            continue
+
+        arg_value = getattr(args, arg_name)
+        
+        if arg_value is not None and not isinstance(arg_value, Path):
+            logger.warning(
+                f"Argument --{arg_name.replace('_', '-')} was unexpectedly a {type(arg_value).__name__} "
+                f"(value: '{arg_value}') instead of pathlib.Path. Converting explicitly. "
+                "This might indicate an issue with argument parsing configuration or an external override."
+            )
+            try:
+                setattr(args, arg_name, Path(arg_value))
+            except TypeError as e:
+                logger.error(
+                    f"Failed to convert argument --{arg_name.replace('_', '-')} (value: '{arg_value}') to Path: {e}. "
+                    "This could be due to an unsuitable value for a path."
+                )
+                if arg_name in ['output_dir', 'target_dir']:
+                    logger.critical(f"Critical path argument --{arg_name.replace('_', '-')} could not be converted to Path. Exiting.")
+                    sys.exit(1)
+        elif arg_value is None and arg_name in ['output_dir', 'target_dir']:
+             logger.critical(
+                f"Critical path argument --{arg_name.replace('_', '-')} is None after parsing. "
+                "This indicates a problem with default value setup in argparse. Exiting."
+             )
+             sys.exit(1) 

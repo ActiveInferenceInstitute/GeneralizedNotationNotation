@@ -217,7 +217,7 @@ class TestPipelineScriptDiscovery:
         sorted_scripts = sorted(mock_scripts, key=lambda x: (x['num'], x['basename']))
         
         # Verify correct order
-        expected_order = [1, 2, 3, 14]
+        expected_order = [1, 2, 3, 13]
         actual_order = [script['num'] for script in sorted_scripts]
         
         assert actual_order == expected_order, f"Scripts should be sorted correctly: {actual_order}"

@@ -162,8 +162,8 @@ class TestWebsiteModule:
     
     def test_module_imports(self):
         """Test that all expected functions are available."""
+        assert hasattr(src.website, 'generate_website')
         assert hasattr(src.website, 'generate_html_report')
-        assert hasattr(src.website, 'main_website_generator')
         assert hasattr(src.website, 'embed_image')
         assert hasattr(src.website, 'embed_markdown_file')
         assert hasattr(src.website, 'embed_text_file')
@@ -181,12 +181,12 @@ class TestWebsiteModule:
         assert 'version' in info
         assert 'description' in info
         assert 'features' in info
-        assert 'supported_formats' in info
+        assert 'supported_file_types' in info
         assert 'embedding_capabilities' in info
     
     def test_get_supported_file_types(self):
         """Test the get_supported_file_types function."""
-        file_types = src.website.get_supported_file_types()
+        file_types = src.website.SUPPORTED_FILE_TYPES
         assert isinstance(file_types, dict)
         assert 'images' in file_types
         assert 'markdown' in file_types
@@ -196,9 +196,14 @@ class TestWebsiteModule:
     
     def test_generate_website_from_pipeline_output_nonexistent(self):
         """Test generate_website_from_pipeline_output with nonexistent directory."""
-        result = src.website.generate_website_from_pipeline_output("/nonexistent/directory")
+        result = src.website.generate_website({"output_dir": "/nonexistent/directory"})
         assert result["success"] is False
         assert "error" in result
+
+    def test_validate_website_config(self):
+        config = {"output_dir": "/path"}
+        result = src.website.validate_website_config(config)
+        assert result['valid']
 
 
 class TestSAPFModule:
