@@ -214,31 +214,35 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
             var_dims[var_name] = dimensions
         
         # Create default matrices based on dimensions
+        default_matrices = {}
         if "A" in var_dims:
             dims = var_dims["A"]
             if len(dims) >= 2:
-                matrices['A'] = np.eye(dims[0], dims[1])  # Identity matrix
-                logger.info(f"Created A matrix with dimensions {dims}")
+                default_matrices['A'] = np.eye(dims[0], dims[1])  # Identity matrix
+                logger.info(f"Created default A matrix with dimensions {dims}")
         
         if "B" in var_dims:
             dims = var_dims["B"]
             if len(dims) >= 3:
                 # Create identity-like transition matrix
-                matrices['B'] = np.eye(dims[0], dims[1])[:, :, np.newaxis]
-                matrices['B'] = np.repeat(matrices['B'], dims[2], axis=2)
-                logger.info(f"Created B matrix with dimensions {dims}")
+                default_matrices['B'] = np.eye(dims[0], dims[1])[:, :, np.newaxis]
+                default_matrices['B'] = np.repeat(default_matrices['B'], dims[2], axis=2)
+                logger.info(f"Created default B matrix with dimensions {dims}")
         
         if "C" in var_dims:
             dims = var_dims["C"]
             if len(dims) >= 1:
-                matrices['C'] = np.zeros(dims[0])  # Zero preferences
-                logger.info(f"Created C vector with dimensions {dims}")
+                default_matrices['C'] = np.zeros(dims[0])  # Zero preferences
+                logger.info(f"Created default C vector with dimensions {dims}")
         
         if "D" in var_dims:
             dims = var_dims["D"]
             if len(dims) >= 1:
-                matrices['D'] = np.ones(dims[0]) / dims[0]  # Uniform prior
-                logger.info(f"Created D vector with dimensions {dims}")
+                default_matrices['D'] = np.ones(dims[0]) / dims[0]  # Uniform prior
+                logger.info(f"Created default D vector with dimensions {dims}")
+        
+        # Initialize matrices with defaults (will be overwritten if parameter parsing succeeds)
+        matrices.update(default_matrices)
         
         # Extract actual parameter values if available
         for param_data in gnn_spec.get("parameters", []):
@@ -249,8 +253,24 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                 try:
                     if isinstance(param_value, str):
                         # Parse GNN matrix string format
-                        matrices[param_name] = _parse_gnn_matrix_string(param_value)
-                        logger.info(f"Parsed {param_name} matrix from string")
+                        parsed_matrix = _parse_gnn_matrix_string(param_value)
+                        
+                        # Enhanced dimension inference and validation
+                        if parsed_matrix.shape != (1, 1):
+                            # Parsing succeeded with meaningful dimensions
+                            matrices[param_name] = parsed_matrix
+                            logger.info(f"Successfully parsed {param_name} matrix from string: shape {parsed_matrix.shape}")
+                        elif param_name in default_matrices:
+                            # Parsing failed but we have default dimensions - use improved matrix
+                            improved_matrix = _create_improved_default_matrix(param_name, default_matrices[param_name], param_value)
+                            matrices[param_name] = improved_matrix
+                            logger.info(f"Used improved default {param_name} matrix based on context: shape {improved_matrix.shape}")
+                        else:
+                            # Parsing failed and no defaults - try dimension inference from context
+                            inferred_matrix = _infer_matrix_from_context(param_name, param_value, var_dims)
+                            matrices[param_name] = inferred_matrix
+                            logger.info(f"Inferred {param_name} matrix from context: shape {inferred_matrix.shape}")
+                            
                     elif isinstance(param_value, list):
                         matrices[param_name] = np.array(param_value)
                         logger.info(f"Converted {param_name} list to array")
@@ -263,6 +283,10 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         logger.info(f"Used {param_name} parameter value directly")
                 except Exception as e:
                     logger.warning(f"Failed to convert {param_name} parameter: {e}")
+                    # Create fallback matrix based on parameter name and expected dimensions
+                    fallback_matrix = _create_fallback_matrix(param_name, var_dims)
+                    matrices[param_name] = fallback_matrix
+                    logger.info(f"Created fallback {param_name} matrix: shape {fallback_matrix.shape}")
                     continue
     
     else:
@@ -316,6 +340,137 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                 logger.error(f"Failed to parse D vector: {e}")
     
     return matrices
+
+def _create_improved_default_matrix(param_name: str, default_matrix: np.ndarray, param_value: str) -> np.ndarray:
+    """Create an improved default matrix based on context clues from the failed parsing."""
+    # Try to extract numerical values from the failed parsing string
+    import re
+    
+    # Look for numerical patterns in the string
+    numbers = re.findall(r'-?\d+\.?\d*', param_value)
+    
+    if numbers and len(numbers) > 1:
+        # We found numbers, try to use them to improve the default matrix
+        try:
+            float_numbers = [float(n) for n in numbers]
+            
+            if param_name == "A":
+                # For A matrix, try to create observation model with extracted values
+                shape = default_matrix.shape
+                new_matrix = np.zeros(shape)
+                for i, val in enumerate(float_numbers[:np.prod(shape)]):
+                    row = i // shape[1]
+                    col = i % shape[1]
+                    if row < shape[0] and col < shape[1]:
+                        new_matrix[row, col] = val
+                
+                # Normalize rows to make it a proper probability matrix
+                row_sums = new_matrix.sum(axis=1, keepdims=True)
+                row_sums = np.where(row_sums > 0, row_sums, 1.0)
+                new_matrix = new_matrix / row_sums
+                return new_matrix
+                
+            elif param_name == "B":
+                # For B matrix, create transition model with extracted values
+                shape = default_matrix.shape
+                new_matrix = np.zeros(shape)
+                for i, val in enumerate(float_numbers[:np.prod(shape)]):
+                    # Map linear index to 3D coordinates
+                    idx_2d = i % (shape[0] * shape[1])
+                    action = i // (shape[0] * shape[1])
+                    row = idx_2d // shape[1]
+                    col = idx_2d % shape[1]
+                    if action < shape[2] and row < shape[0] and col < shape[1]:
+                        new_matrix[row, col, action] = val
+                
+                # Normalize each action matrix
+                for a in range(shape[2]):
+                    action_matrix = new_matrix[:, :, a]
+                    row_sums = action_matrix.sum(axis=1, keepdims=True)
+                    row_sums = np.where(row_sums > 0, row_sums, 1.0)
+                    new_matrix[:, :, a] = action_matrix / row_sums
+                return new_matrix
+                
+            elif param_name in ["C", "D", "E"]:
+                # For vectors, use extracted values directly
+                shape = default_matrix.shape
+                new_vector = np.zeros(shape)
+                for i, val in enumerate(float_numbers[:shape[0]]):
+                    new_vector[i] = val
+                
+                # Normalize if it's a probability vector (D, E)
+                if param_name in ["D", "E"]:
+                    vector_sum = new_vector.sum()
+                    if vector_sum > 0:
+                        new_vector = new_vector / vector_sum
+                    else:
+                        new_vector = np.ones(shape) / shape[0]
+                
+                return new_vector
+        except:
+            pass
+    
+    # If we can't improve it, return the default
+    return default_matrix
+
+def _infer_matrix_from_context(param_name: str, param_value: str, var_dims: dict) -> np.ndarray:
+    """Infer matrix dimensions and create appropriate matrix when no defaults are available."""
+    
+    # Try to infer dimensions from variable information
+    if param_name in var_dims:
+        dims = var_dims[param_name]
+    else:
+        # Use standard POMDP defaults
+        dims = {
+            "A": [2, 2],  # 2 observations x 2 states
+            "B": [2, 2, 2],  # 2 states x 2 states x 2 actions
+            "C": [2],  # 2 observations
+            "D": [2],  # 2 states
+            "E": [2]   # 2 actions
+        }.get(param_name, [2])
+    
+    # Create appropriate matrix based on parameter type
+    if param_name == "A":
+        # Observation model - create informative but not deterministic
+        shape = tuple(dims) if len(dims) >= 2 else (2, 2)
+        matrix = np.eye(min(shape)) + 0.1 * np.random.rand(*shape)
+        # Normalize rows
+        matrix = matrix / matrix.sum(axis=1, keepdims=True)
+        return matrix
+        
+    elif param_name == "B":
+        # Transition model - create identity-like transitions with some noise
+        shape = tuple(dims) if len(dims) >= 3 else (2, 2, 2)
+        matrix = np.zeros(shape)
+        for a in range(shape[2]):
+            action_matrix = np.eye(shape[0], shape[1]) + 0.1 * np.random.rand(shape[0], shape[1])
+            matrix[:, :, a] = action_matrix / action_matrix.sum(axis=1, keepdims=True)
+        return matrix
+        
+    elif param_name == "C":
+        # Preferences - slight preference for later observations
+        shape = dims[0] if dims else 2
+        vector = np.linspace(0.1, 1.0, shape)
+        return vector
+        
+    elif param_name == "D":
+        # Prior - uniform
+        shape = dims[0] if dims else 2
+        return np.ones(shape) / shape
+        
+    elif param_name == "E":
+        # Action prior - uniform
+        shape = dims[0] if dims else 2
+        return np.ones(shape) / shape
+        
+    else:
+        # Generic fallback
+        shape = dims[0] if dims else 2
+        return np.ones(shape) / shape
+
+def _create_fallback_matrix(param_name: str, var_dims: dict) -> np.ndarray:
+    """Create a fallback matrix when all else fails."""
+    return _infer_matrix_from_context(param_name, "", var_dims)
 
 def _parse_matrix_string(matrix_str: str) -> np.ndarray:
     """Parse matrix string to numpy array."""
@@ -432,25 +587,21 @@ class {model_name}Model(nn.Module):
         self.num_actions = {num_actions}
         
         # Initialize matrices as learnable parameters
-        if 'A' in matrices:
-            self.A_matrix = self.param('A_matrix', 
-                lambda key, shape: jnp.array({A_list}), 
-                (self.num_observations, self.num_states))
+        self.A_matrix = self.param('A_matrix', 
+            lambda key, shape: jnp.array({A_list}), 
+            (self.num_observations, self.num_states))
         
-        if 'B' in matrices:
-            self.B_matrix = self.param('B_matrix',
-                lambda key, shape: jnp.array({B_list}),
-                (self.num_states, self.num_states, self.num_actions))
+        self.B_matrix = self.param('B_matrix',
+            lambda key, shape: jnp.array({B_list}),
+            (self.num_states, self.num_states, self.num_actions))
         
-        if 'C' in matrices:
-            self.C_vector = self.param('C_vector',
-                lambda key, shape: jnp.array({C_list}),
-                (self.num_observations,))
+        self.C_vector = self.param('C_vector',
+            lambda key, shape: jnp.array({C_list}),
+            (self.num_observations,))
         
-        if 'D' in matrices:
-            self.D_vector = self.param('D_vector',
-                lambda key, shape: jnp.array({D_list}),
-                (self.num_states,))
+        self.D_vector = self.param('D_vector',
+            lambda key, shape: jnp.array({D_list}),
+            (self.num_states,))
     
     @nn.compact
     def __call__(self, inputs: Dict[str, jnp.ndarray], training: bool = False) -> Dict[str, jnp.ndarray]:
@@ -690,6 +841,7 @@ class JAXPOMDPSolver:
         self.num_states = models.A.shape[1]
         self.num_observations = models.A.shape[0]
         self.num_actions = models.B.shape[2]
+        self.discount_factor = models.discount_factor  # Add missing discount factor
         
         # JIT-compiled functions for performance
         self.belief_update_jitted = jit(self.belief_update)
@@ -745,11 +897,15 @@ class JAXPOMDPSolver:
         # Vectorized future reward computation
         for obs in range(self.num_observations):
             obs_prob = self.compute_observation_probability(belief, action)[obs]
-            if obs_prob > 1e-10:
-                next_belief = self.belief_update(belief, action, obs)
-                values = jnp.dot(alpha_vectors, next_belief)
-                best_alpha = alpha_vectors[jnp.argmax(values)]
-                alpha = alpha + self.discount_factor * obs_prob * best_alpha
+            # Use JAX-compatible conditional instead of if statement
+            next_belief = self.belief_update(belief, action, obs)
+            values = jnp.dot(alpha_vectors, next_belief)
+            best_alpha = alpha_vectors[jnp.argmax(values)]
+            # Only add contribution if observation probability is significant
+            contribution = jnp.where(obs_prob > 1e-10, 
+                                   self.discount_factor * obs_prob * best_alpha,
+                                   jnp.zeros_like(best_alpha))
+            alpha = alpha + contribution
         
         return alpha
     

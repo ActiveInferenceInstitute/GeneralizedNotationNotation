@@ -344,13 +344,15 @@ class MarkdownGNNParser(BaseGNNParser):
         
         current_parameter = None
         current_value_lines = []
+        in_matrix = False
+        matrix_brace_count = 0
         
         for line in lines:
             line = line.strip()
             
             if line and not line.startswith('#'):
-                # Check if this is a new parameter definition (contains '=')
-                if '=' in line and not line.startswith('#'):
+                # Check if this is a new parameter definition (contains '=' and not inside a matrix)
+                if '=' in line and not in_matrix and not line.startswith('#'):
                     # Save previous parameter if exists
                     if current_parameter and current_value_lines:
                         value_str = '\n'.join(current_value_lines)
@@ -359,20 +361,34 @@ class MarkdownGNNParser(BaseGNNParser):
                             model.parameters.append(parameter)
                     
                     # Start new parameter
-                    if '=' in line:
-                        name, value = line.split('=', 1)
-                        current_parameter = name.strip()
-                        current_value_lines = [value.strip()]
-                    else:
-                        current_parameter = None
-                        current_value_lines = []
+                    name, value = line.split('=', 1)
+                    current_parameter = name.strip()
+                    current_value_lines = [value.strip()]
+                    
+                    # Check if this parameter value starts a matrix definition
+                    value_trimmed = value.strip()
+                    if value_trimmed.startswith('{'):
+                        in_matrix = True
+                        matrix_brace_count = value_trimmed.count('{') - value_trimmed.count('}')
+                        if matrix_brace_count <= 0:
+                            in_matrix = False  # Matrix completed on the same line
                 else:
                     # Continue current parameter value
                     if current_parameter:
                         current_value_lines.append(line)
+                        
+                        # Track matrix braces if we're in a matrix
+                        if in_matrix:
+                            matrix_brace_count += line.count('{') - line.count('}')
+                            if matrix_brace_count <= 0:
+                                in_matrix = False  # Matrix completed
             elif line.startswith('#'):
-                # Skip comments
-                continue
+                # Skip comments unless we're inside a matrix
+                if not in_matrix:
+                    continue
+                # If inside matrix, include comments as they might be part of the value
+                if current_parameter:
+                    current_value_lines.append(line)
         
         # Handle last parameter
         if current_parameter and current_value_lines:
@@ -437,49 +453,16 @@ class MarkdownGNNParser(BaseGNNParser):
                 if cleaned_value.startswith('{') and cleaned_value.endswith('}'):
                     inner = cleaned_value[1:-1].strip()
                     
-                    # Split by commas, but be careful with nested tuples
-                    rows = []
-                    current_row = ""
-                    paren_count = 0
-                    
-                    for char in inner:
-                        if char == '(':
-                            paren_count += 1
-                        elif char == ')':
-                            paren_count -= 1
-                        
-                        if char == ',' and paren_count == 0:
-                            # End of a row
-                            if current_row.strip():
-                                rows.append(current_row.strip())
-                            current_row = ""
-                        else:
-                            current_row += char
-                    
-                    # Add the last row
-                    if current_row.strip():
-                        rows.append(current_row.strip())
+                    # Enhanced parsing logic for nested tuples
+                    rows = self._parse_matrix_rows(inner)
                     
                     # Parse each row
                     matrix = []
                     for row in rows:
                         row = row.strip()
-                        if row.startswith('(') and row.endswith(')'):
-                            # Parse tuple row
-                            inner_row = row[1:-1]
-                            row_values = [self._parse_single_value(x.strip()) for x in inner_row.split(',') if x.strip()]
-                            matrix.append(row_values)
-                        elif row.startswith('((') and row.endswith('))'):
-                            # Parse nested tuple row (for B matrix)
-                            inner_row = row[2:-2]
-                            # Split by '),('
-                            nested_tuples = inner_row.split('),(')
-                            row_values = []
-                            for nested_tuple in nested_tuples:
-                                nested_tuple = nested_tuple.strip('()')
-                                tuple_values = [self._parse_single_value(x.strip()) for x in nested_tuple.split(',') if x.strip()]
-                                row_values.append(tuple_values)
-                            matrix.append(row_values)
+                        parsed_row = self._parse_matrix_row(row)
+                        if parsed_row is not None:
+                            matrix.append(parsed_row)
                     
                     return matrix
             
@@ -516,6 +499,105 @@ class MarkdownGNNParser(BaseGNNParser):
             # Single value
             else:
                 return self._parse_single_value(value_str)
+
+    def _parse_matrix_rows(self, inner: str) -> list:
+        """Parse matrix rows, handling nested structures properly."""
+        rows = []
+        current_row = ""
+        paren_count = 0
+        i = 0
+        
+        while i < len(inner):
+            char = inner[i]
+            
+            if char == '(':
+                paren_count += 1
+            elif char == ')':
+                paren_count -= 1
+            
+            if char == ',' and paren_count == 0:
+                # End of a row
+                if current_row.strip():
+                    rows.append(current_row.strip())
+                current_row = ""
+            else:
+                current_row += char
+            
+            i += 1
+        
+        # Add the last row
+        if current_row.strip():
+            rows.append(current_row.strip())
+        
+        return rows
+    
+    def _parse_matrix_row(self, row: str) -> Any:
+        """Parse a single matrix row, handling both simple and nested tuple formats."""
+        row = row.strip()
+        
+        # Simple tuple: (1.0, 0.0, 0.0)
+        if row.startswith('(') and row.endswith(')') and not self._has_nested_tuples(row):
+            inner_row = row[1:-1]
+            row_values = [self._parse_single_value(x.strip()) for x in inner_row.split(',') if x.strip()]
+            return row_values
+        
+        # Nested tuples: ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) )
+        elif self._has_nested_tuples(row):
+            # Remove outer parentheses if present
+            if row.startswith('(') and row.endswith(')'):
+                row = row[1:-1].strip()
+            
+            # Parse nested tuples
+            tuples = self._extract_tuples(row)
+            row_values = []
+            for tuple_str in tuples:
+                tuple_str = tuple_str.strip('()')
+                tuple_values = [self._parse_single_value(x.strip()) for x in tuple_str.split(',') if x.strip()]
+                row_values.append(tuple_values)
+            
+            return row_values
+        
+        return None
+    
+    def _has_nested_tuples(self, row: str) -> bool:
+        """Check if a row contains nested tuples."""
+        # Look for pattern like ( (...), (...) ) or ((...), (...))
+        paren_count = 0
+        found_inner_tuple = False
+        
+        for char in row:
+            if char == '(':
+                paren_count += 1
+                if paren_count >= 2:
+                    found_inner_tuple = True
+            elif char == ')':
+                paren_count -= 1
+        
+        return found_inner_tuple
+    
+    def _extract_tuples(self, row: str) -> list:
+        """Extract individual tuples from a nested tuple string."""
+        tuples = []
+        current_tuple = ""
+        paren_count = 0
+        
+        for char in row:
+            if char == '(':
+                paren_count += 1
+                current_tuple += char
+            elif char == ')':
+                paren_count -= 1
+                current_tuple += char
+                
+                if paren_count == 0 and current_tuple.strip():
+                    # Complete tuple found
+                    tuples.append(current_tuple.strip())
+                    current_tuple = ""
+            elif paren_count > 0:
+                current_tuple += char
+            # Skip characters outside parentheses (commas, spaces)
+        
+        return tuples
     
     def _parse_single_value(self, value_str: str) -> Any:
         """Parse a single value."""

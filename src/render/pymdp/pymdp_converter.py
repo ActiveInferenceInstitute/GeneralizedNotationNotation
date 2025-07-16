@@ -1060,10 +1060,22 @@ class GnnToPyMdpConverter:
         matrix_assignments: List[str] = []
         if self.B_spec is not None and isinstance(self.B_spec, list):
             var_name = f"B_{self.state_names[0] if self.state_names else 'factor_0'}"
-            array_str = self._numpy_array_to_string(np.array(self.B_spec), indent=0)
+            # Normalize B matrix to ensure proper PyMDP transition probabilities
+            b_matrix = np.array(self.B_spec)
+            # Normalize along axis=0 (columns) for each action slice, handling zero columns
+            column_sums = np.sum(b_matrix, axis=0, keepdims=True)
+            # Replace zero sums with 1 to avoid division by zero, and set those columns to uniform
+            zero_cols = column_sums == 0
+            column_sums = np.where(zero_cols, 1.0, column_sums)
+            b_matrix = b_matrix / column_sums
+            # Set zero columns to uniform distribution
+            if np.any(zero_cols):
+                uniform_prob = 1.0 / b_matrix.shape[0]
+                b_matrix = np.where(zero_cols, uniform_prob, b_matrix)
+            array_str = self._numpy_array_to_string(b_matrix, indent=0)
             assignment = f"{var_name} = {array_str}"
             matrix_assignments.append(assignment)
-            self._add_log(f"Injected B matrix from GNN InitialParameterization as {var_name}.")
+            self._add_log(f"Injected and normalized B matrix from GNN InitialParameterization as {var_name}.")
         else:
             for f_idx in range(self.num_factors):
                 factor_name = self.state_names[f_idx] if f_idx < len(self.state_names) else f"factor_{f_idx}"
@@ -1100,7 +1112,11 @@ class GnnToPyMdpConverter:
         vector_assignments: List[str] = []
         if self.C_spec is not None:
             var_name = f"C_{self.obs_names[0] if self.obs_names else 'modality_0'}"
-            array_str = self._numpy_array_to_string(np.array(self.C_spec), indent=0)
+            # Ensure C vector is flattened for PyMDP compatibility
+            c_vector = np.array(self.C_spec)
+            if c_vector.ndim > 1:
+                c_vector = c_vector.flatten()
+            array_str = self._numpy_array_to_string(c_vector, indent=0)
             assignment = f"{var_name} = {array_str}"
             vector_assignments.append(assignment)
             self._add_log(f"Injected C vector from GNN InitialParameterization as {var_name}.")
@@ -1134,7 +1150,11 @@ class GnnToPyMdpConverter:
         vector_assignments: List[str] = []
         if self.D_spec is not None:
             var_name = f"D_{self.state_names[0] if self.state_names else 'factor_0'}"
-            array_str = self._numpy_array_to_string(np.array(self.D_spec), indent=0)
+            # Ensure D vector is flattened for PyMDP compatibility
+            d_vector = np.array(self.D_spec)
+            if d_vector.ndim > 1:
+                d_vector = d_vector.flatten()
+            array_str = self._numpy_array_to_string(d_vector, indent=0)
             assignment = f"{var_name} = {array_str}"
             vector_assignments.append(assignment)
             self._add_log(f"Injected D vector from GNN InitialParameterization as {var_name}.")
@@ -1163,7 +1183,11 @@ class GnnToPyMdpConverter:
         result_lines: List[str] = []
         if self.E_spec is not None:
             var_name = "E"
-            array_str = self._numpy_array_to_string(np.array(self.E_spec), indent=0)
+            # Ensure E vector is flattened for PyMDP compatibility
+            e_vector = np.array(self.E_spec)
+            if e_vector.ndim > 1:
+                e_vector = e_vector.flatten()
+            array_str = self._numpy_array_to_string(e_vector, indent=0)
             assignment = f"{var_name} = {array_str}"
             result_lines.append(assignment)
             self._add_log(f"Injected E vector from GNN InitialParameterization as {var_name}.")

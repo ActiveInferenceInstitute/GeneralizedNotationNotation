@@ -141,7 +141,10 @@ def _create_fallback_parser(description: str, additional_arguments: Optional[Dic
     if additional_arguments:
         for arg_name, arg_config in additional_arguments.items():
             if isinstance(arg_config, dict):
-                parser.add_argument(f"--{arg_name}", **arg_config)
+                # Use custom flag if provided, otherwise default to --{arg_name}
+                config_copy = arg_config.copy()
+                flag = config_copy.pop("flag", f"--{arg_name}")
+                parser.add_argument(flag, **config_copy)
             else:
                 parser.add_argument(f"--{arg_name}", default=arg_config)
     
@@ -158,7 +161,7 @@ import argparse
 import sys
 from pathlib import Path
 import logging
-from typing import Optional, Dict, Any, Union, Callable
+from typing import Callable, Optional, Dict, Any, List, Union
 # Import utilities - these are already imported above
 # from . import (
 #     setup_step_logging, log_step_start, log_step_success, 
@@ -379,15 +382,25 @@ def create_standardized_pipeline_script(
                     except ImportError as e:
                         logging.warning(f"Failed to import {import_name}: {e}")
             
-            # Parse arguments
-            if UTILS_AVAILABLE:
-                try:
-                    parsed_args = EnhancedArgumentParser.parse_step_arguments(step_name)
-                except Exception as e:
-                    logging.warning(f"Failed to use enhanced argument parser: {e}")
-                    parsed_args = _create_fallback_parser(fallback_parser_description, additional_arguments).parse_args()
-            else:
-                parsed_args = _create_fallback_parser(fallback_parser_description, additional_arguments).parse_args()
+            # Parse arguments - try enhanced first, fall back gracefully
+            try:
+                # Import enhanced parser locally to avoid import issues
+                from utils import EnhancedArgumentParser
+                parsed_args = EnhancedArgumentParser.parse_step_arguments(step_name)
+            except Exception as e:
+                # Create fallback parser with step-specific arguments
+                fallback_additional_args = additional_arguments or {}
+                
+                # Add step-specific arguments from pipeline template configuration
+                if step_name == "8_ontology.py" and "ontology_terms_file" not in fallback_additional_args:
+                    fallback_additional_args["ontology_terms_file"] = {
+                        "type": Path, 
+                        "help": "Path to ontology terms JSON file",
+                        "flag": "--ontology-terms-file"
+                    }
+                
+                logging.warning(f"Enhanced parser failed for {step_name}, using fallback: {e}")
+                parsed_args = _create_fallback_parser(fallback_parser_description, fallback_additional_args).parse_args()
             
             # Set up logging
             logger = setup_step_logging(step_name, getattr(parsed_args, 'verbose', False))
@@ -485,7 +498,7 @@ STEP_ADDITIONAL_ARGUMENTS = {
         "duration": {"type": float, "default": 30.0, "help": "Audio duration in seconds"}
     },
     "8_ontology": {
-        "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file"}
+        "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file", "flag": "--ontology-terms-file"}
     },
     "2_setup": {
         "recreate_venv": {"type": bool, "help": "Recreate virtual environment"},

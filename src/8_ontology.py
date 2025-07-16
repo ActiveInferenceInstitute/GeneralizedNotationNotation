@@ -71,8 +71,32 @@ def process_ontology_operations_standardized(
         True if processing succeeded, False otherwise
     """
     try:
-        # Extract ontology_terms_file from kwargs
+        # Extract and resolve ontology_terms_file from kwargs
         ontology_terms_file = kwargs.get('ontology_terms_file')
+        
+        # If no ontology terms file provided, use default
+        if ontology_terms_file is None:
+            # Try to find default ontology terms file in expected locations
+            script_dir = Path(__file__).parent
+            default_paths = [
+                script_dir / "ontology" / "act_inf_ontology_terms.json",
+                script_dir.parent / "src" / "ontology" / "act_inf_ontology_terms.json",
+                Path("src/ontology/act_inf_ontology_terms.json"),
+                Path("ontology/act_inf_ontology_terms.json")
+            ]
+            
+            for default_path in default_paths:
+                if default_path.exists():
+                    ontology_terms_file = default_path
+                    logger.info(f"Using default ontology terms file: {ontology_terms_file}")
+                    break
+            
+            if ontology_terms_file is None:
+                logger.warning("No ontology terms file found in default locations")
+        
+        # Convert to Path if it's a string
+        if isinstance(ontology_terms_file, str):
+            ontology_terms_file = Path(ontology_terms_file)
         
         # Call the existing process_ontology_operations function
         success = process_ontology_operations(
@@ -92,10 +116,7 @@ def process_ontology_operations_standardized(
 run_script = create_standardized_pipeline_script(
     "8_ontology.py",
     process_ontology_operations_standardized,
-    "Ontology processing and validation",
-    additional_arguments={
-        "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file"}
-    }
+    "Ontology processing and validation"
 )
 
 if __name__ == '__main__':

@@ -247,6 +247,7 @@ class ArgumentParser:
         "5_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "6_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "7_mcp.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "8_ontology": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
         "8_ontology.py": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
         "9_render.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "10_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],

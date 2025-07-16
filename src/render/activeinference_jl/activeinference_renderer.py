@@ -235,14 +235,16 @@ function create_generative_model()
     A = Vector{Array{Float64}}(undef, length(N_OBSERVATIONS))
     for (i, n_obs) in enumerate(N_OBSERVATIONS)
         n_states_total = prod(N_STATES)
-        A[i] = normalize(ones(n_obs, n_states_total), dims=1)
+        A_matrix = ones(n_obs, n_states_total)
+        A[i] = A_matrix ./ sum(A_matrix; dims=1)
     end
     
     # Create B matrices (transition model)
     B = Vector{Array{Float64}}(undef, length(N_STATES))
     for (i, n_state) in enumerate(N_STATES)
         n_actions = length(N_CONTROLS) > 0 ? N_CONTROLS[min(i, length(N_CONTROLS))] : 1
-        B[i] = normalize(ones(n_state, n_state, n_actions), dims=1)
+        B_matrix = ones(n_state, n_state, n_actions)
+        B[i] = B_matrix ./ sum(B_matrix; dims=1)
     end
     
     # Create C vectors (preferences)
@@ -254,7 +256,8 @@ function create_generative_model()
     # Create D vectors (initial beliefs)
     D = Vector{Vector{Float64}}(undef, length(N_STATES))
     for (i, n_state) in enumerate(N_STATES)
-        D[i] = normalize(ones(n_state))
+        D_vector = ones(n_state)
+        D[i] = D_vector ./ sum(D_vector)
     end
     
     return A, B, C, D

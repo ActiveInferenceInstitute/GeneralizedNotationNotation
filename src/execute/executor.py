@@ -478,6 +478,7 @@ def execute_rendered_simulators(
             try:
                 with performance_tracker.track_operation("execute_discopy_analysis"):
                     logger.info("🚀 Executing DisCoPy analysis...")
+                    # DisCoPy already creates its own discopy_results subfolder
                     discopy_success = run_discopy_analysis(
                         pipeline_output_dir=target_dir,
                         recursive_search=recursive,

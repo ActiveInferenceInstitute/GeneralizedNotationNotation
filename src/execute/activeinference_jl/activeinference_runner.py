@@ -122,8 +122,11 @@ def execute_activeinference_script(
         logger.debug(f"Syntax check skipped for {script_path.name}: {e}")
     
     try:
+        # Convert to absolute path to avoid path resolution issues
+        abs_script_path = script_path.resolve()
+        
         # Prepare Julia command with enhanced environment
-        cmd = ["julia", "--project=@.", str(script_path)]
+        cmd = ["julia", "--project=@.", str(abs_script_path)]
         
         # Add output directory argument if provided
         if output_dir:
@@ -134,21 +137,30 @@ def execute_activeinference_script(
         
         # Set environment variables for Julia
         env = os.environ.copy()
-        env["JULIA_PROJECT"] = str(script_path.parent)
-        env["JULIA_DEPOT_PATH"] = str(script_path.parent / ".julia")
+        env["JULIA_PROJECT"] = str(abs_script_path.parent)
+        env["JULIA_DEPOT_PATH"] = str(abs_script_path.parent / ".julia")
         
-        # Create Julia project environment if it doesn't exist
-        project_file = script_path.parent / "Project.toml"
+        # Create Julia project environment and install dependencies
+        project_file = abs_script_path.parent / "Project.toml"
         if not project_file.exists():
-            logger.info(f"Creating Julia project environment in {script_path.parent}")
+            logger.info(f"Creating Julia project environment in {abs_script_path.parent}")
             try:
+                # Initialize project and install required packages
+                install_cmd = '''
+using Pkg; 
+Pkg.activate("."); 
+Pkg.add(["ActiveInference", "Distributions", "LinearAlgebra", "Random", "Plots", "StatsBase"]);
+Pkg.instantiate()
+'''
                 subprocess.run(
-                    ["julia", "--project=@.", "-e", "using Pkg; Pkg.instantiate()"],
-                    cwd=script_path.parent,
+                    ["julia", "--project=@.", "-e", install_cmd],
+                    cwd=abs_script_path.parent,
                     capture_output=True,
                     text=True,
-                    check=False
+                    check=False,
+                    timeout=300  # 5 minutes for package installation
                 )
+                logger.info("Julia packages installed successfully")
             except Exception as e:
                 logger.warning(f"Could not initialize Julia project: {e}")
         
@@ -159,7 +171,7 @@ def execute_activeinference_script(
             text=True,
             check=False,
             env=env,
-            cwd=script_path.parent,
+            cwd=abs_script_path.parent,
             timeout=600  # 10 minute timeout for Julia scripts
         )
         

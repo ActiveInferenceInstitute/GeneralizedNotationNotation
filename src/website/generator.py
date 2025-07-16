@@ -355,6 +355,80 @@ HTML_START_TEMPLATE = """<!DOCTYPE html>
             margin: 10px 0;
             border: 1px solid #c3e6cb;
         }}
+        .diagnostics-summary {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }}
+        .diagnostic-card {{
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }}
+        .diagnostic-value {{
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }}
+        .diagnostic-label {{
+            color: #6c757d;
+            font-size: 0.9em;
+        }}
+        .progress-bar {{
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }}
+        .progress-fill {{
+            height: 100%;
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            transition: width 0.3s ease;
+        }}
+        .table-responsive {{
+            overflow-x: auto;
+            margin: 15px 0;
+        }}
+        .enhanced-table {{
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }}
+        .enhanced-table th {{
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+            color: #fff;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+        }}
+        .enhanced-table td {{
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }}
+        .enhanced-table tr:hover {{
+            background-color: #f8f9fa;
+        }}
+        .component-description {{
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 3px;
+        }}
+        .path-code {{
+            font-family: 'Courier New', monospace;
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }}
         @media (max-width: 768px) {{
             .container {{
                 padding: 10px;
@@ -367,6 +441,16 @@ HTML_START_TEMPLATE = """<!DOCTYPE html>
             }}
             .gallery {{
                 grid-template-columns: 1fr;
+            }}
+            .diagnostics-summary {{
+                grid-template-columns: 1fr;
+            }}
+            .enhanced-table {{
+                font-size: 0.9em;
+            }}
+            .enhanced-table th,
+            .enhanced-table td {{
+                padding: 8px;
             }}
         }}
     </style>
@@ -792,6 +876,181 @@ def process_directory_generic(f: IO[str], dir_path: Path, base_output_dir: Path,
         f.write(content_html)
         f.write("</div>\n")
 
+# --- Directory Detection Utilities ---
+
+def find_content_directory(base_dir: Path, expected_name: str) -> Optional[Path]:
+    """
+    Find a content directory, handling both flat and nested structures.
+    
+    Args:
+        base_dir: Base directory to search in
+        expected_name: Expected directory name
+        
+    Returns:
+        Path to the content directory if found, None otherwise
+    """
+    # Try direct path first
+    direct_path = base_dir / expected_name
+    if direct_path.exists() and direct_path.is_dir():
+        # Check if it has content or a nested directory
+        nested_path = direct_path / expected_name
+        if nested_path.exists() and nested_path.is_dir():
+            # Prefer nested if it has more content
+            nested_items = list(nested_path.iterdir()) if nested_path.exists() else []
+            direct_items = list(direct_path.iterdir()) if direct_path.exists() else []
+            if len(nested_items) > len([item for item in direct_items if item.is_file()]):
+                return nested_path
+        return direct_path
+    
+    # Try nested path
+    nested_path = base_dir / expected_name / expected_name
+    if nested_path.exists() and nested_path.is_dir():
+        return nested_path
+    
+    # Try alternative naming patterns
+    alternatives = [
+        expected_name.replace("_", "-"),
+        expected_name.replace("-", "_"),
+        expected_name + "s",
+        expected_name[:-1] if expected_name.endswith("s") else expected_name
+    ]
+    
+    for alt_name in alternatives:
+        alt_path = base_dir / alt_name
+        if alt_path.exists() and alt_path.is_dir():
+            return alt_path
+    
+    return None
+
+def generate_directory_diagnostics(output_dir: Path) -> Dict[str, Any]:
+    """
+    Generate diagnostics about directory structure and content discovery.
+    
+    Args:
+        output_dir: Base output directory
+        
+    Returns:
+        Dictionary with diagnostics information
+    """
+    expected_dirs = {
+        "pipeline_execution_summary.json": "Pipeline execution summary",
+        "gnn_processing_step": "GNN file processing results",
+        "test_reports": "Test execution reports",
+        "type_check": "Type checking results",
+        "gnn_exports": "GNN export artifacts",
+        "visualization": "Generated visualizations",
+        "mcp_processing_step": "MCP integration results",
+        "ontology_processing": "Ontology processing results",
+        "gnn_rendered_simulators": "Rendered simulator code",
+        "execution_results": "Execution results",
+        "llm_processing_step": "LLM processing outputs",
+        "sapf_processing_step": "SAPF generation results",
+        "logs": "Pipeline logs"
+    }
+    
+    diagnostics = {
+        "expected_count": len(expected_dirs),
+        "found_count": 0,
+        "missing_count": 0,
+        "found_items": {},
+        "missing_items": [],
+        "directory_structure": {},
+        "total_files": 0,
+        "total_size_mb": 0
+    }
+    
+    for expected_name, description in expected_dirs.items():
+        if expected_name.endswith(".json"):
+            # Handle files
+            file_path = output_dir / expected_name
+            if file_path.exists() and file_path.is_file():
+                size_mb = file_path.stat().st_size / (1024 * 1024)
+                diagnostics["found_items"][expected_name] = {
+                    "type": "file",
+                    "description": description,
+                    "path": str(file_path.relative_to(output_dir)),
+                    "size_mb": round(size_mb, 2),
+                    "exists": True
+                }
+                diagnostics["found_count"] += 1
+                diagnostics["total_files"] += 1
+                diagnostics["total_size_mb"] += size_mb
+            else:
+                diagnostics["missing_items"].append({
+                    "name": expected_name,
+                    "type": "file",
+                    "description": description
+                })
+                diagnostics["missing_count"] += 1
+        else:
+            # Handle directories
+            found_dir = find_content_directory(output_dir, expected_name)
+            if found_dir:
+                try:
+                    file_count = len(list(found_dir.rglob("*")))
+                    dir_size_mb = sum(f.stat().st_size for f in found_dir.rglob("*") if f.is_file()) / (1024 * 1024)
+                    diagnostics["found_items"][expected_name] = {
+                        "type": "directory",
+                        "description": description,
+                        "path": str(found_dir.relative_to(output_dir)),
+                        "file_count": file_count,
+                        "size_mb": round(dir_size_mb, 2),
+                        "exists": True
+                    }
+                    diagnostics["found_count"] += 1
+                    diagnostics["total_files"] += file_count
+                    diagnostics["total_size_mb"] += dir_size_mb
+                except (OSError, PermissionError):
+                    diagnostics["found_items"][expected_name] = {
+                        "type": "directory",
+                        "description": description,
+                        "path": str(found_dir.relative_to(output_dir)),
+                        "file_count": 0,
+                        "size_mb": 0,
+                        "exists": True,
+                        "error": "Permission denied"
+                    }
+                    diagnostics["found_count"] += 1
+            else:
+                diagnostics["missing_items"].append({
+                    "name": expected_name,
+                    "type": "directory",
+                    "description": description
+                })
+                diagnostics["missing_count"] += 1
+    
+    # Add information about other directories found
+    other_items = []
+    for item in output_dir.iterdir():
+        if item.name not in expected_dirs:
+            if item.is_dir():
+                try:
+                    file_count = len(list(item.rglob("*")))
+                    other_items.append({
+                        "name": item.name,
+                        "type": "directory",
+                        "file_count": file_count
+                    })
+                except (OSError, PermissionError):
+                    other_items.append({
+                        "name": item.name,
+                        "type": "directory",
+                        "file_count": 0,
+                        "error": "Permission denied"
+                    })
+            elif item.is_file():
+                size_mb = item.stat().st_size / (1024 * 1024)
+                other_items.append({
+                    "name": item.name,
+                    "type": "file",
+                    "size_mb": round(size_mb, 2)
+                })
+    
+    diagnostics["other_items"] = other_items
+    diagnostics["completion_percentage"] = round((diagnostics["found_count"] / diagnostics["expected_count"]) * 100, 1)
+    
+    return diagnostics
+
 # --- Section specific helpers ---
 
 def _add_pipeline_summary_section(f: IO[str], output_dir: Path):
@@ -805,17 +1064,114 @@ def _add_pipeline_summary_section(f: IO[str], output_dir: Path):
     else:
         logger.warning(f"Pipeline summary JSON not found: {summary_json_path.as_posix()}")
 
+def _add_diagnostics_section(f: IO[str], output_dir: Path):
+    """Add pipeline diagnostics section."""
+    diagnostics = generate_directory_diagnostics(output_dir)
+    
+    f.write(f"<div class='section' id='{make_section_id('Pipeline Diagnostics')}'>\n")
+    f.write(f"<h2>Pipeline Diagnostics</h2>\n")
+    
+    # Enhanced summary metrics with cards
+    f.write("<div class='diagnostics-summary'>")
+    f.write(f"<div class='diagnostic-card'>")
+    f.write(f"<div class='diagnostic-value'>{diagnostics['completion_percentage']}%</div>")
+    f.write(f"<div class='diagnostic-label'>Pipeline Completion</div>")
+    f.write(f"<div class='progress-bar'><div class='progress-fill' style='width: {diagnostics['completion_percentage']}%'></div></div>")
+    f.write(f"</div>")
+    
+    f.write(f"<div class='diagnostic-card'>")
+    f.write(f"<div class='diagnostic-value'>{diagnostics['found_count']}/{diagnostics['expected_count']}</div>")
+    f.write(f"<div class='diagnostic-label'>Found Components</div>")
+    f.write(f"</div>")
+    
+    f.write(f"<div class='diagnostic-card'>")
+    f.write(f"<div class='diagnostic-value'>{diagnostics['total_files']}</div>")
+    f.write(f"<div class='diagnostic-label'>Total Files</div>")
+    f.write(f"</div>")
+    
+    f.write(f"<div class='diagnostic-card'>")
+    f.write(f"<div class='diagnostic-value'>{diagnostics['total_size_mb']:.1f}</div>")
+    f.write(f"<div class='diagnostic-label'>Total Size (MB)</div>")
+    f.write(f"</div>")
+    f.write("</div>")
+    
+    # Found items table with enhanced styling
+    if diagnostics['found_items']:
+        f.write("<h3>Found Pipeline Components</h3>")
+        f.write("<div class='table-responsive'>")
+        f.write("<table class='enhanced-table'>")
+        f.write("<tr><th>Component</th><th>Type</th><th>Path</th><th>Size/Files</th><th>Status</th></tr>")
+        
+        for name, info in diagnostics['found_items'].items():
+            status_class = "status-success" if info['exists'] else "status-error"
+            if info['type'] == 'file':
+                size_info = f"{info['size_mb']} MB"
+            else:
+                size_info = f"{info['file_count']} files ({info['size_mb']:.1f} MB)"
+            
+            error_note = f" ({info.get('error', '')})" if 'error' in info else ""
+            
+            f.write(f"<tr>")
+            f.write(f"<td><strong>{name}</strong><div class='component-description'>{info['description']}</div></td>")
+            f.write(f"<td>{info['type'].title()}</td>")
+            f.write(f"<td><span class='path-code'>{info['path']}</span></td>")
+            f.write(f"<td>{size_info}</td>")
+            f.write(f"<td><span class='status-badge {status_class}'>Found{error_note}</span></td>")
+            f.write(f"</tr>")
+        
+        f.write("</table>")
+        f.write("</div>")
+    
+    # Missing items with enhanced styling
+    if diagnostics['missing_items']:
+        f.write("<h3>Missing Pipeline Components</h3>")
+        f.write("<div class='table-responsive'>")
+        f.write("<table class='enhanced-table'>")
+        f.write("<tr><th>Component</th><th>Type</th><th>Description</th><th>Status</th></tr>")
+        
+        for item in diagnostics['missing_items']:
+            f.write(f"<tr>")
+            f.write(f"<td><strong>{item['name']}</strong></td>")
+            f.write(f"<td>{item['type'].title()}</td>")
+            f.write(f"<td>{item['description']}</td>")
+            f.write(f"<td><span class='status-badge status-warning'>Missing</span></td>")
+            f.write(f"</tr>")
+        
+        f.write("</table>")
+        f.write("</div>")
+    
+    # Other items
+    if diagnostics['other_items']:
+        f.write("<h3>Additional Files/Directories</h3>")
+        f.write("<ul>")
+        for item in diagnostics['other_items']:
+            if item['type'] == 'directory':
+                file_info = f" ({item['file_count']} files)" if 'file_count' in item else ""
+                error_info = f" - {item['error']}" if 'error' in item else ""
+                f.write(f"<li><strong>{item['name']}/</strong>{file_info}{error_info}</li>")
+            else:
+                f.write(f"<li>{item['name']} ({item['size_mb']} MB)</li>")
+        f.write("</ul>")
+    
+    f.write("</div>\n")
+
 def _add_gnn_discovery_section(f: IO[str], output_dir: Path):
     """Add GNN discovery section."""
-    gnn_discovery_dir = output_dir / "gnn_processing_step"
-    gnn_discovery_report = gnn_discovery_dir / "1_gnn_discovery_report.md"
-    if gnn_discovery_report.exists():
+    gnn_discovery_dir = find_content_directory(output_dir, "gnn_processing_step")
+    if gnn_discovery_dir:
         f.write(f"<div class='section' id='{make_section_id('GNN Discovery')}'>\n")
         f.write(f"<h2>GNN Discovery (Step 1)</h2>\n")
-        f.write(embed_markdown_file(gnn_discovery_report))
+        
+        # Look for discovery report
+        gnn_discovery_report = gnn_discovery_dir / "1_gnn_discovery_report.md"
+        if gnn_discovery_report.exists():
+            f.write(embed_markdown_file(gnn_discovery_report))
+        else:
+            # Process the entire directory if specific report not found
+            process_directory_generic(f, gnn_discovery_dir, output_dir, title_prefix="")
         f.write("</div>\n")
     else:
-        logger.warning(f"GNN Discovery report not found: {gnn_discovery_report.as_posix()}")
+        logger.warning(f"GNN Discovery directory not found in expected locations")
 
 def _add_test_reports_section(f: IO[str], output_dir: Path):
     """Add test reports section."""
@@ -832,8 +1188,8 @@ def _add_test_reports_section(f: IO[str], output_dir: Path):
 
 def _add_type_checker_section(f: IO[str], output_dir: Path):
     """Add type checker section."""
-    type_check_dir = output_dir / "type_check"
-    if type_check_dir.is_dir():
+    type_check_dir = find_content_directory(output_dir, "type_check")
+    if type_check_dir:
         f.write(f"<div class='section' id='{make_section_id('GNN Type Checker')}'>\n")
         f.write(f"<h2>GNN Type Checker (Step 4)</h2>\n")
         
@@ -853,14 +1209,20 @@ def _add_type_checker_section(f: IO[str], output_dir: Path):
         resource_estimates_dir = type_check_dir / "resource_estimates"
         if resource_estimates_dir.is_dir():
             process_directory_generic(f, resource_estimates_dir, output_dir, title_prefix="Resource Estimates: ")
+        
+        # If no specific content found, process the entire directory
+        if not any([type_check_report_md.exists(), resource_data_json.exists(), 
+                   html_vis_dir.is_dir(), resource_estimates_dir.is_dir()]):
+            process_directory_generic(f, type_check_dir, output_dir, title_prefix="")
+        
         f.write("</div>\n")
     else:
-        logger.warning(f"GNN Type Checker directory not found: {type_check_dir.as_posix()}")
+        logger.warning(f"GNN Type Checker directory not found in expected locations")
 
 def _add_gnn_exports_section(f: IO[str], output_dir: Path):
     """Add GNN exports section."""
-    gnn_exports_dir = output_dir / "gnn_exports"
-    if gnn_exports_dir.is_dir():
+    gnn_exports_dir = find_content_directory(output_dir, "gnn_exports")
+    if gnn_exports_dir:
         f.write(f"<div class='section' id='{make_section_id('GNN Exports')}'>\n")
         f.write(f"<h2>GNN Exports (Step 5)</h2>\n")
         
@@ -869,12 +1231,20 @@ def _add_gnn_exports_section(f: IO[str], output_dir: Path):
             f.write("<h3>Export Step Report</h3>")
             f.write(embed_markdown_file(export_step_report))
 
+        # Process subdirectories
+        subdirs_processed = False
         for model_export_dir in sorted(gnn_exports_dir.iterdir()):
             if model_export_dir.is_dir():
                 process_directory_generic(f, model_export_dir, output_dir, title_prefix=f"Exports for {model_export_dir.name}: ")
+                subdirs_processed = True
+        
+        # If no subdirectories, process the main directory
+        if not subdirs_processed:
+            process_directory_generic(f, gnn_exports_dir, output_dir, title_prefix="")
+        
         f.write("</div>\n")
     else:
-        logger.warning(f"GNN Exports directory not found: {gnn_exports_dir.as_posix()}")
+        logger.warning(f"GNN Exports directory not found in expected locations")
 
     gnn_proc_summary_md = output_dir / "gnn_processing_summary.md"
     if gnn_proc_summary_md.exists():
@@ -1027,6 +1397,7 @@ def generate_html_report(output_dir: Path, website_output_file: Path):
 
         # Add all sections
         _add_pipeline_summary_section(f, output_dir)
+        _add_diagnostics_section(f, output_dir)
         _add_gnn_discovery_section(f, output_dir)
         _add_test_reports_section(f, output_dir)
         _add_type_checker_section(f, output_dir)
@@ -1137,3 +1508,68 @@ def generate_website(logger: logging.Logger, output_dir: Path, website_output_di
     except Exception as e:
         log_step_error(logger, f"Website generation failed: {e}")
         return False 
+
+def _add_semantic_structure_improvements():
+    """Additional semantic HTML improvements that can be added to future versions."""
+    return """
+    <!-- Enhanced semantic structure improvements for future versions:
+    - Add proper ARIA labels for navigation and search
+    - Include skip navigation links for accessibility
+    - Add structured data markup for better SEO
+    - Implement keyboard navigation support
+    - Add dark mode toggle functionality
+    - Include print stylesheet optimization
+    -->
+    """
+
+# Enhanced HTML structure with better accessibility
+ENHANCED_HTML_START_ADDITIONS = """
+    <!-- Enhanced accessibility and semantic structure -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div id="top" aria-label="Top of page"></div>
+"""
+
+# Add improved accessibility attributes to the main template
+def get_enhanced_html_start_template():
+    """Get the HTML start template with enhanced accessibility features."""
+    base_template = HTML_START_TEMPLATE
+    # Add lang attribute and improved accessibility
+    enhanced_template = base_template.replace(
+        '<html lang="en">',
+        '<html lang="en" dir="ltr">'
+    ).replace(
+        '<body>',
+        '<body>' + ENHANCED_HTML_START_ADDITIONS
+    ).replace(
+        '<div class="container">',
+        '<main id="main-content" class="container" role="main" aria-label="Pipeline output content">'
+    ).replace(
+        '<div class="main-content">',
+        '<div class="main-content" role="document">'
+    ).replace(
+        'id="searchBox"',
+        'id="searchBox" role="searchbox" aria-label="Search pipeline content"'
+    ).replace(
+        'id="navbar"',
+        'id="navbar" role="navigation" aria-label="Pipeline sections navigation"'
+    )
+    
+    # Add skip link CSS
+    skip_link_css = """
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #000;
+            color: #fff;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 3px;
+            z-index: 10000;
+        }
+        .skip-link:focus {
+            top: 6px;
+        }
+    """
+    
+    return enhanced_template.replace('</style>', skip_link_css + '\n    </style>') 

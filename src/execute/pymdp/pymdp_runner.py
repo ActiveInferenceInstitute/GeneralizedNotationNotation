@@ -153,12 +153,14 @@ def execute_pymdp_script(
             return False
         
         # Execute the script
+        # Convert to absolute path to avoid path resolution issues
+        abs_script_path = script_path.resolve()
         result = subprocess.run(
-            [sys.executable, str(script_path)],
+            [sys.executable, str(abs_script_path)],
             capture_output=True,
             text=True,
             check=False,
-            cwd=script_path.parent
+            cwd=abs_script_path.parent
         )
         
         # Process the execution result

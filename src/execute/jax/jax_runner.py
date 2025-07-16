@@ -100,12 +100,14 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
     
     try:
         # Execute with enhanced error capture
+        # Convert to absolute path to avoid path resolution issues
+        abs_script_path = script_path.resolve()
         result = subprocess.run(
-            [sys.executable, str(script_path)], 
+            [sys.executable, str(abs_script_path)], 
             capture_output=True, 
             text=True, 
             env=env,
-            cwd=script_path.parent,
+            cwd=abs_script_path.parent,
             timeout=300  # 5 minute timeout
         )
         
