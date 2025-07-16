@@ -1,5 +1,10 @@
 # GNN Deployment Guide
 
+> **📋 Document Metadata**  
+> **Type**: Deployment Guide | **Audience**: DevOps & System Administrators | **Complexity**: Advanced  
+> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Cross-References**: [Development Guide](../development/README.md) | [Configuration Guide](../configuration/README.md)
+
 ## Overview
 This guide covers various deployment scenarios for GeneralizedNotationNotation (GNN), from local development to production environments.
 

@@ -3,7 +3,7 @@
 This document outlines how the Generalized Notation Notation (GNN) for specifying generative models, particularly within the Active Inference paradigm, can be understood and enhanced through the lens of the Case-Enabled Reasoning Engine with Bayesian Representations for Unified Modeling (CEREBRUM). CEREBRUM applies linguistic case theory to cognitive models, treating them as entities that can assume different functional roles (cases) within a broader computational ecosystem.
 
 **Relevant CEREBRUM Documentation:** [CEREBRUM v1.4 Paper](cerebrum_v1-4.md) (Note: This is a comprehensive document detailing the CEREBRUM framework.)
-**Relevant GNN Documentation:** [GNN Overview](../gnn_overview.md), [GNN Syntax](../gnn_syntax.md), [GNN Examples](../gnn_examples_doc.md), [GNN Tools](../gnn_tools.md)
+**Relevant GNN Documentation:** [GNN Overview](../gnn/gnn_overview.md), [GNN Syntax](../gnn/gnn_syntax.md), [GNN Examples](../gnn/gnn_examples_doc.md), [GNN Tools](../gnn/gnn_tools.md)
 
 ## 1. Introduction
 

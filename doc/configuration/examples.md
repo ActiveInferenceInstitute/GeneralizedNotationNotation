@@ -972,7 +972,7 @@ pipeline:
       items:
         type: "integer"
         minimum: 1
-        maximum: 14
+        maximum: 13
 ```
 
 This comprehensive collection of configuration examples provides templates for virtually any GNN deployment scenario, from simple development setups to complex distributed production environments. 

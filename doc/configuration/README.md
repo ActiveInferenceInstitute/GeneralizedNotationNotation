@@ -1,5 +1,10 @@
 # GNN Configuration Guide
 
+> **📋 Document Metadata**  
+> **Type**: Configuration Guide | **Audience**: Developers & System Administrators | **Complexity**: Intermediate  
+> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Cross-References**: [Pipeline Architecture](../pipeline/README.md) | [Deployment Guide](../deployment/README.md)
+
 ## Overview
 This guide covers all configuration options for the GeneralizedNotationNotation (GNN) pipeline, from basic settings to advanced customization.
 
@@ -448,8 +453,8 @@ python src/main.py --profile production
 # Custom target and output
 python src/main.py --target-dir my_models/ --output-dir results/
 
-# Skip expensive steps
-python src/main.py --skip 11,12,13,14
+# Skip expensive steps  
+python src/main.py --skip 11,12,13
 
 # Run only specific steps
 python src/main.py --only-steps 1,4,6

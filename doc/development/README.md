@@ -1,5 +1,10 @@
 # Developer Documentation
 
+> **📋 Document Metadata**  
+> **Type**: Development Guide | **Audience**: Developers & Contributors | **Complexity**: Intermediate-Advanced  
+> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Cross-References**: [Testing Guide](../testing/README.md) | [API Documentation](../api/README.md)
+
 ## Overview
 This guide provides comprehensive information for developers contributing to the GNN project, including code organization, development workflows, and architecture patterns.
 

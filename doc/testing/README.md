@@ -1,5 +1,10 @@
 # GNN Testing Guide
 
+> **📋 Document Metadata**  
+> **Type**: Testing Guide | **Audience**: Developers & QA Engineers | **Complexity**: Intermediate  
+> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Cross-References**: [Development Guide](../development/README.md) | [Pipeline Architecture](../pipeline/README.md)
+
 ## Overview
 This guide covers the comprehensive testing strategy for GeneralizedNotationNotation (GNN), including unit tests, integration tests, performance tests, and validation procedures.
 

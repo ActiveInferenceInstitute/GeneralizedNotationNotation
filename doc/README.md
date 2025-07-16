@@ -11,13 +11,13 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 
 ## 🚀 Quick Start
 
-> **🎯 Learning Path**: Beginner → Practitioner (Estimated Time: 2-4 hours)
+> **🎯 Learning Path**: Beginner → Intermediate → Advanced (Estimated Time: 2-8 hours total)
 
-New to GNN? Start here:
+**New to GNN?** Follow the **Beginner Path** in our [Learning Paths Guide](learning_paths.md):
 
 1. **[What is GNN?](gnn/about_gnn.md)** - Overview and motivation
    - *Cross-refs*: [GNN Overview](gnn/gnn_overview.md), [Academic Paper](gnn/gnn_paper.md)
-2. **[Quickstart Tutorial](gnn/quickstart_tutorial.md)** - Comprehensive getting started guide
+2. **[Quickstart Tutorial](quickstart.md)** - Comprehensive getting started guide  
    - *Cross-refs*: [Basic Examples](gnn/gnn_examples_doc.md), [Template System](templates/README.md)
 3. **[Your First GNN Model](gnn/gnn_examples_doc.md#example-1-static-perception-model)** - Simple example walkthrough
    - *Cross-refs*: [Basic Template](templates/basic_gnn_template.md), [Syntax Reference](gnn/gnn_syntax.md)
@@ -26,25 +26,27 @@ New to GNN? Start here:
 5. **[Tools Setup](gnn/gnn_tools.md#installation)** - Get GNN tools running
    - *Cross-refs*: [Pipeline Guide](pipeline/README.md), [API Documentation](api/README.md)
 
+**📚 Complete Learning Paths**: See [Learning Paths Guide](learning_paths.md) for structured beginner → intermediate → advanced progression
+
 ## 📚 Documentation Structure
 
 > **🧭 Navigation by User Type** | **🔗 Related**: Comprehensive cross-reference system
 
 ### For Beginners
-> **📖 Learning Path**: Concepts → Syntax → Examples → Practice
+> **📖 Learning Path**: Concepts → Syntax → Examples → Practice ([Full Beginner Path](learning_paths.md#beginner-path))
 
 - **[GNN Overview](gnn/gnn_overview.md)** - High-level concepts and ecosystem
   - *See Also*: [About GNN](gnn/about_gnn.md), [Academic Paper](gnn/gnn_paper.md)
-  - *Next Steps*: [Quickstart Tutorial](gnn/quickstart_tutorial.md)
+  - *Next Steps*: [Quickstart Tutorial](quickstart.md)
 - **[About GNN](gnn/about_gnn.md)** - Motivation, goals, and "triple play" approach
   - *See Also*: [GNN Overview](gnn/gnn_overview.md), [Ontology System](gnn/ontology_system.md)
   - *Next Steps*: [Basic Examples](gnn/gnn_examples_doc.md)
 - **[Basic Examples](gnn/gnn_examples_doc.md)** - Step-by-step model development
-  - *See Also*: [Template System](templates/README.md), [Quickstart Tutorial](gnn/quickstart_tutorial.md)
+  - *See Also*: [Template System](templates/README.md), [Quickstart Tutorial](quickstart.md)
   - *Next Steps*: [Syntax Reference](gnn/gnn_syntax.md)
 
-### For Practitioners
-> **🛠️ Learning Path**: Syntax → Structure → Implementation → Tools
+### For Intermediate Users
+> **🛠️ Learning Path**: Syntax → Structure → Implementation → Tools ([Full Intermediate Path](learning_paths.md#intermediate-path))
 
 - **[GNN Syntax Reference](gnn/gnn_syntax.md)** - Complete notation specification
   - *See Also*: [File Structure](gnn/gnn_file_structure_doc.md), [Examples](gnn/gnn_examples_doc.md)
@@ -139,6 +141,7 @@ New to GNN? Start here:
 
 ## 🎯 Advanced Topics
 
+> **🔬 Learning Path**: Theory → Specification → Applications → Research ([Full Advanced Path](learning_paths.md#advanced-path))  
 > **🧠 Specialized Applications** | **🔗 Related**: [Cognitive Phenomena](cognitive_phenomena/README.md)
 
 - **[Advanced Modeling Patterns](gnn/advanced_modeling_patterns.md)** - Sophisticated modeling techniques
@@ -200,7 +203,7 @@ New to GNN? Start here:
   - *API Integration*: [API Documentation](api/README.md)
 
 ### API Reference & Integration
-> **🔌 Programming Interfaces** | **📚 11KB Documentation** | **🎯 457 Functions**
+> **🔌 Programming Interfaces** | **📚 36KB Documentation** | **🎯 103 Functions**
 
 - **[Complete API Documentation](api/README.md)** - All classes, functions, and interfaces
   - *Development*: [Development Guide](development/README.md)

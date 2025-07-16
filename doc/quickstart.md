@@ -503,9 +503,8 @@ config/               # Configuration files
 9. **Render** - Generate framework code
 10. **Execute** - Run generated simulations
 11. **LLM** - AI-enhanced analysis
-12. **DisCoPy** - Categorical diagram translation
-13. **JAX Evaluation** - High-performance computation
-14. **Site** - Documentation generation
+12. **Website** - Documentation and site generation
+13. **SAPF** - Spatial Audio Processing Framework
 
 ---
 

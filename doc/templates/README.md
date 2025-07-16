@@ -15,10 +15,12 @@ This directory contains template files for different types of GNN models, provid
 
 ## Available Templates
 
-> **📈 Progressive Complexity**: Basic → POMDP → Multi-agent → Hierarchical
+> **📈 Progressive Complexity**: Basic → POMDP → Multi-agent → Hierarchical  
+> **🎯 Learning Integration**: Templates align with [Learning Paths Guide](../learning_paths.md) progression
 
 ### Basic GNN Template
-> **📋 Metadata**: Complexity: Beginner | Domain: General | Features: Static
+> **📋 Metadata**: Complexity: Beginner | Domain: General | Features: Static  
+> **🎯 Learning Path**: Part of [Beginner Path](../learning_paths.md#beginner-path)
 
 **File**: `basic_gnn_template.md` (4.4KB, 141 lines)  
 **Use Case**: Simple static perception models, learning GNN syntax  
@@ -29,12 +31,13 @@ This directory contains template files for different types of GNN models, provid
 - Clear annotations
 
 **Cross-References**:
-- *Learning Path*: [Quickstart Tutorial](../gnn/quickstart_tutorial.md) → [Basic Examples](../gnn/gnn_examples_doc.md)
+- *Learning Path*: [Quickstart Tutorial](../quickstart.md) → [Basic Examples](../gnn/gnn_examples_doc.md)
 - *Framework Integration*: [PyMDP Basics](../pymdp/gnn_pymdp.md#basic-examples) | [RxInfer Getting Started](../rxinfer/gnn_rxinfer.md#getting-started)
 - *Validation*: [Type Checker](../gnn/gnn_tools.md#validation-tools)
 
 ### POMDP Template
-> **📋 Metadata**: Complexity: Intermediate | Domain: Navigation, Perception | Features: Temporal, Stochastic
+> **📋 Metadata**: Complexity: Intermediate | Domain: Navigation, Perception | Features: Temporal, Stochastic  
+> **🎯 Learning Path**: Part of [Intermediate Path](../learning_paths.md#intermediate-path)
 
 **File**: `pomdp_template.md` (9.5KB, 240 lines)  
 **Use Case**: Partially Observable Markov Decision Processes  

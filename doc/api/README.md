@@ -1,5 +1,10 @@
 # GNN API Reference
 
+> **📋 Document Metadata**  
+> **Type**: API Reference | **Audience**: Developers & Integrators | **Complexity**: Intermediate-Advanced  
+> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Cross-References**: [Pipeline Architecture](../pipeline/README.md) | [Framework Integration](../gnn/framework_integration_guide.md)
+
 ## Overview
 This is the complete API reference for GeneralizedNotationNotation (GNN), covering all public interfaces, classes, and functions.
 

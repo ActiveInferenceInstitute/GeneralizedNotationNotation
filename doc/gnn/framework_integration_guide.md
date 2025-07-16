@@ -3,7 +3,7 @@
 > **📋 Document Metadata**  
 > **Type**: Integration Guide | **Audience**: Developers, Researchers | **Complexity**: Intermediate  
 > **Last Updated**: June 2025 | **Status**: Production-Ready  
-> **Cross-References**: [PyMDP Guide](pymdp/gnn_pymdp.md) | [RxInfer Guide](rxinfer/gnn_rxinfer.md) | [DisCoPy Guide](discopy/gnn_discopy.md)
+> **Cross-References**: [PyMDP Guide](../pymdp/gnn_pymdp.md) | [RxInfer Guide](../rxinfer/gnn_rxinfer.md) | [DisCoPy Guide](../discopy/gnn_discopy.md) | [ActiveInference.jl Guide](../activeinference_jl/activeinference-jl.md)
 
 ## Overview
 
@@ -16,16 +16,19 @@ flowchart TD
     A[GNN Model] --> B[GNN Parser]
     B --> C[Validation Engine]
     C --> D{Framework Selection}
-    D -->|Python| E[PyMDP Integration]
-    D -->|Julia| F[RxInfer Integration]
+    D -->|Python POMDP| E[PyMDP Integration]
+    D -->|Julia Bayesian| F[RxInfer Integration]
     D -->|Category Theory| G[DisCoPy Integration]
-    E --> H[PyMDP Simulation]
-    F --> I[RxInfer Simulation]
-    G --> J[JAX Evaluation]
-    H --> K[Results Aggregation]
-    I --> K
-    J --> K
-    K --> L[Unified Output Format]
+    D -->|Julia POMDP| H[ActiveInference.jl Integration]
+    E --> I[PyMDP Simulation]
+    F --> J[RxInfer Simulation]
+    G --> K[JAX Evaluation]
+    H --> L[ActiveInference.jl Simulation]
+    I --> M[Results Aggregation]
+    J --> M
+    K --> M
+    L --> M
+    M --> N[Unified Output Format]
 ```
 
 ## Common Integration Patterns
@@ -52,7 +55,8 @@ class GNNModelIR:
         converters = {
             'pymdp': self._to_pymdp,
             'rxinfer': self._to_rxinfer,
-            'discopy': self._to_discopy
+            'discopy': self._to_discopy,
+            'activeinference_jl': self._to_activeinference_jl
         }
         return converters[framework]()
 ```
