@@ -28,7 +28,15 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 import logging
 
-from .generator import generate_website, generate_html_report
+from .generator import (
+    generate_website, 
+    generate_html_report,
+    embed_image,
+    embed_markdown_file,
+    embed_text_file,
+    embed_json_file,
+    embed_html_file
+)
 from .mcp import (
     generate_pipeline_summary_website_mcp,
     analyze_pipeline_outputs_mcp,
@@ -106,6 +114,10 @@ MCP_TOOLS = {
     }
 }
 
+def get_supported_file_types() -> Dict[str, Any]:
+    """Get supported file types for website generation."""
+    return SUPPORTED_FILE_TYPES.copy()
+
 def get_module_info() -> Dict[str, Any]:
     """Get comprehensive module information."""
     return {
@@ -113,6 +125,13 @@ def get_module_info() -> Dict[str, Any]:
         "description": __description__,
         "features": FEATURES,
         "supported_file_types": SUPPORTED_FILE_TYPES,
+        "embedding_capabilities": {
+            "images": "Embed images with base64 encoding",
+            "markdown": "Convert markdown to HTML and embed",
+            "text": "Embed text files with syntax highlighting",
+            "json": "Pretty-print and embed JSON files",
+            "html": "Embed HTML files with proper escaping"
+        },
         "mcp_tools": MCP_TOOLS,
         "main_functions": [
             "generate_website",

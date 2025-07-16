@@ -105,8 +105,8 @@ TEST_CONFIG = {
     "mock_project_root": TEST_DIR / "mock_project",
     
     # Execution settings - Optimized for speed
-    "timeout_seconds": 60,  
-    "max_test_files": 5,  # Reduced maximum GNN files to process in tests
+    "timeout_seconds": 60,  # Reasonable timeout for comprehensive operations
+    "max_test_files": 10,  # Reasonable limit for test file processing
     "enable_performance_tracking": False,  # Disable performance tracking to speed up tests
     "verbose_logging": False,  # Verbose logging in tests
     
