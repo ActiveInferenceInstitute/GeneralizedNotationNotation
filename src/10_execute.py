@@ -112,9 +112,9 @@ def process_execution_standardized(
         
         # Call the existing execute_rendered_simulators function with updated signature
         success = execute_rendered_simulators(
-            logger=logger,
             target_dir=target_dir,
             output_dir=output_dir,
+            logger=logger,
             recursive=recursive,
             verbose=verbose
         )

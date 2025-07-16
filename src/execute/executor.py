@@ -427,8 +427,11 @@ def execute_rendered_simulators(
                 with performance_tracker.track_operation("execute_pymdp_scripts"):
                     logger.info("🚀 Executing PyMDP scripts...")
                     
+                    # Look for rendered simulators in the output directory, not target_dir
+                    rendered_simulators_dir = execution_output_dir.parent / "gnn_rendered_simulators"
+                    pymdp_dir = rendered_simulators_dir / "pymdp"
+                    
                     # Pre-validate PyMDP scripts for syntax errors
-                    pymdp_dir = target_dir / "gnn_rendered_simulators" / "pymdp"
                     if pymdp_dir.exists():
                         pymdp_scripts = list(pymdp_dir.glob("*.py"))
                         for script in pymdp_scripts:
@@ -440,9 +443,9 @@ def execute_rendered_simulators(
                                 logger.warning(f"⚠️ PyMDP script syntax error in {script.name}: {e}")
                                 execution_results["syntax_errors"].append(f"PyMDP: {script.name} - {e}")
                     
-                    # Pass framework-specific output directory
+                    # Pass the output directory where rendered simulators should be located
                     pymdp_success = run_pymdp_scripts(
-                        pipeline_output_dir=target_dir,
+                        pipeline_output_dir=execution_output_dir.parent,
                         execution_output_dir=framework_dirs["pymdp"],
                         recursive_search=recursive,
                         verbose=verbose
@@ -479,7 +482,7 @@ def execute_rendered_simulators(
                 with performance_tracker.track_operation("execute_rxinfer_scripts"):
                     logger.info("🚀 Executing RxInfer scripts...")
                     rxinfer_success = run_rxinfer_scripts(
-                        pipeline_output_dir=target_dir,
+                        pipeline_output_dir=execution_output_dir.parent,
                         execution_output_dir=framework_dirs["rxinfer"],
                         recursive_search=recursive,
                         verbose=verbose
@@ -514,7 +517,7 @@ def execute_rendered_simulators(
                 with performance_tracker.track_operation("execute_discopy_analysis"):
                     logger.info("🚀 Executing DisCoPy analysis...")
                     discopy_success = run_discopy_analysis(
-                        pipeline_output_dir=target_dir,
+                        pipeline_output_dir=execution_output_dir.parent,
                         execution_output_dir=framework_dirs["discopy"],
                         recursive_search=recursive,
                         verbose=verbose
@@ -549,7 +552,7 @@ def execute_rendered_simulators(
                 with performance_tracker.track_operation("execute_activeinference_analysis"):
                     logger.info("🚀 Executing ActiveInference.jl analysis...")
                     activeinference_success = run_activeinference_analysis(
-                        pipeline_output_dir=target_dir,
+                        pipeline_output_dir=execution_output_dir.parent,
                         execution_output_dir=framework_dirs["activeinference_jl"],
                         recursive_search=recursive,
                         verbose=verbose,
@@ -585,7 +588,7 @@ def execute_rendered_simulators(
                 with performance_tracker.track_operation("execute_jax_scripts"):
                     logger.info("🚀 Executing JAX scripts...")
                     jax_success = run_jax_scripts(
-                        pipeline_output_dir=target_dir,
+                        pipeline_output_dir=execution_output_dir.parent,
                         execution_output_dir=framework_dirs["jax"],
                         recursive_search=recursive,
                         verbose=verbose

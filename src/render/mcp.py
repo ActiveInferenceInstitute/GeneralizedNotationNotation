@@ -125,9 +125,9 @@ async def handle_render_gnn_spec(input_data: RenderGnnInput) -> RenderGnnOutput:
 
     success, message, artifacts = render_gnn_spec(
         gnn_spec=gnn_spec_dict,
-        output_script_path=temp_output_path,
-        target_format=input_data.target_format,
-        render_options=input_data.render_options or {}
+        target=input_data.target_format,
+        output_directory=temp_output_path.parent,
+        options=(input_data.render_options or {})
     )
 
     if success:
