@@ -176,10 +176,11 @@ def main():
     
     # After args = parse_arguments()
     project_root = current_dir.parent
-
+    
     # Resolve paths to absolute
     args.target_dir = (project_root / args.target_dir).resolve()
     args.output_dir = (project_root / args.output_dir).resolve()
+    
     if args.ontology_terms_file:
         args.ontology_terms_file = (project_root / args.ontology_terms_file).resolve()
     if args.pipeline_summary_file:

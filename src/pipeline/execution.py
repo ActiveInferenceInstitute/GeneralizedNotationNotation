@@ -132,7 +132,9 @@ def build_command_args(script_name: str, script_path: Path, args, python_executa
     # --output-dir (supported by all scripts)
     output_dir = getattr(args, 'output_dir', None)
     if output_dir is not None:
-        common_args.append(('--output-dir', output_dir))
+        # Determine script-specific output directory
+        script_output_dir = get_output_dir_for_script(script_name, output_dir)
+        common_args.append(('--output-dir', script_output_dir))
     
     # --verbose (supported by all scripts)
     verbose = getattr(args, 'verbose', False)
@@ -321,6 +323,9 @@ def execute_pipeline_step(script_name: str, step_number: int, total_steps: int,
         # Build command with enhanced argument handling
         script_path = Path(__file__).parent.parent / script_name
         command = build_command_args(script_name, script_path, args, python_executable)
+        # Ensure script-specific output directory exists
+        script_dir = get_output_dir_for_script(script_name, output_dir)
+        script_dir.mkdir(parents=True, exist_ok=True)
         
         # Log command execution with enhanced formatting
         command_display = ' '.join(str(c) for c in command)

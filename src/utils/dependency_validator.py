@@ -18,6 +18,7 @@ from .logging_utils import PipelineLogger
 
 import argparse
 from .venv_utils import get_venv_python
+from .argument_utils import parse_step_list
 
 logger = logging.getLogger(__name__)
 

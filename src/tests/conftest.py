@@ -26,7 +26,14 @@ import importlib
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Generator, Tuple
 import subprocess
-import jax
+try:
+    import jax
+    from jax._src import api as _jax_api
+    from jax._src import xla_bridge as _jax_bridge
+    _jax_api.clean_up = lambda *args, **kwargs: None
+    _jax_bridge._clear_backends = lambda *args, **kwargs: None
+except ImportError:
+    pass
 from unittest.mock import patch
 
 # Import test configuration and utilities

@@ -13,6 +13,9 @@ import logging
 import re
 import sys
 
+# Import config loading functionality
+from .config_loader import load_config, GNNPipelineConfig
+
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -887,26 +890,13 @@ def parse_arguments() -> PipelineArguments:
             else:
                 config_path = Path(".") / config_path
         
-        # Assuming load_config and GNNPipelineConfig are defined elsewhere or will be added.
-        # For now, we'll just create a dummy config if they are not available.
-        # This part of the original code was not provided in the edit hint.
-        # If load_config and GNNPipelineConfig are not defined, this will cause an error.
-        # To make the code runnable, we'll assume they are available or will be added.
-        # For now, we'll create a dummy config.
-        class DummyConfig:
-            def to_pipeline_arguments(self):
-                return {}
-
-        class DummyGNNPipelineConfig:
-            def to_pipeline_arguments(self):
-                return {}
-
-        config = DummyConfig()
+        # Load the actual configuration from YAML file
+        config = load_config(config_path)
         logger.info(f"Configuration loaded from {config_path}")
     except Exception as e:
         logger.warning(f"Failed to load configuration from {args.config_file}: {e}")
         logger.info("Using default configuration")
-        config = DummyGNNPipelineConfig()
+        config = GNNPipelineConfig()
     
     # Convert config to PipelineArguments
     pipeline_args = PipelineArguments()

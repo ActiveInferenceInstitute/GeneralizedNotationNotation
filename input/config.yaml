@@ -7,7 +7,7 @@ pipeline:
   target_dir: "gnn_files"
   
   # Output directory (relative to project root)
-  output_dir: "../output"
+  output_dir: "output"
   
   # Processing options
   recursive: true
@@ -18,7 +18,7 @@ pipeline:
   only_steps: []  # e.g., ["1_gnn", "4_type_checker"] to run only specific steps
   
   # Pipeline summary file
-  pipeline_summary_file: "../output/pipeline_execution_summary.json"
+  pipeline_summary_file: "output/pipeline_execution_summary.json"
 
 # Type Checking Configuration
 type_checker:
