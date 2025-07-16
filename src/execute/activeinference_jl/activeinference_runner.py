@@ -429,7 +429,7 @@ def find_activeinference_scripts(
         return []
 
 def run_activeinference_analysis(
-    pipeline_output_dir: Union[str, Path],
+    rendered_simulators_dir: Union[str, Path],
     execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False,
@@ -440,7 +440,7 @@ def run_activeinference_analysis(
     Find and run ActiveInference.jl analysis scripts on rendered models with robust environment setup.
     
     Args:
-        pipeline_output_dir: Main pipeline output directory
+        rendered_simulators_dir: Directory containing rendered simulators (target_dir from executor)
         execution_output_dir: Specific directory for ActiveInference.jl execution outputs (optional)
         recursive_search: Whether to search recursively for scripts
         verbose: Whether to enable verbose output
@@ -461,13 +461,13 @@ def run_activeinference_analysis(
     if execution_output_dir:
         exec_output_dir = Path(execution_output_dir)
     else:
-        exec_output_dir = Path(pipeline_output_dir) / "execution_results" / "activeinference_jl"
+        exec_output_dir = Path(rendered_simulators_dir) / "execution_results" / "activeinference_jl"
     
     exec_output_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f"ActiveInference.jl execution outputs will be saved to: {exec_output_dir}")
     
     # Find ActiveInference.jl rendered scripts
-    activeinference_dir = Path(pipeline_output_dir) / "gnn_rendered_simulators" / "activeinference_jl"
+    activeinference_dir = Path(rendered_simulators_dir) / "activeinference_jl"
     
     logger.info(f"Looking for ActiveInference.jl scripts in: {activeinference_dir}")
     

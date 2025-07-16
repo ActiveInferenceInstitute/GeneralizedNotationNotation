@@ -427,9 +427,8 @@ def execute_rendered_simulators(
                 with performance_tracker.track_operation("execute_pymdp_scripts"):
                     logger.info("🚀 Executing PyMDP scripts...")
                     
-                    # Look for rendered simulators in the output directory, not target_dir
-                    rendered_simulators_dir = execution_output_dir.parent / "gnn_rendered_simulators"
-                    pymdp_dir = rendered_simulators_dir / "pymdp"
+                    # Use target_dir to find rendered simulators
+                    pymdp_dir = target_dir / "pymdp"
                     
                     # Pre-validate PyMDP scripts for syntax errors
                     if pymdp_dir.exists():
@@ -443,28 +442,27 @@ def execute_rendered_simulators(
                                 logger.warning(f"⚠️ PyMDP script syntax error in {script.name}: {e}")
                                 execution_results["syntax_errors"].append(f"PyMDP: {script.name} - {e}")
                     
-                    # Pass the output directory where rendered simulators should be located
+                    # Pass the target directory directly to the PyMDP runner
                     pymdp_success = run_pymdp_scripts(
-                        pipeline_output_dir=execution_output_dir.parent,
+                        rendered_simulators_dir=target_dir,
                         execution_output_dir=framework_dirs["pymdp"],
                         recursive_search=recursive,
                         verbose=verbose
                     )
+                    
                     if pymdp_success:
                         execution_results["total_successes"] += 1
                         execution_results["pymdp_executions"].append({
                             "status": "SUCCESS", 
                             "message": "PyMDP scripts executed successfully",
-                            "output_dir": str(framework_dirs["pymdp"]),
-                            "scripts_processed": len(list(pymdp_dir.glob("*.py"))) if pymdp_dir.exists() else 0
+                            "output_dir": str(framework_dirs["pymdp"])
                         })
                     else:
                         execution_results["total_failures"] += 1
                         execution_results["pymdp_executions"].append({
                             "status": "FAILED", 
                             "message": "PyMDP script execution failed",
-                            "output_dir": str(framework_dirs["pymdp"]),
-                            "scripts_processed": len(list(pymdp_dir.glob("*.py"))) if pymdp_dir.exists() else 0
+                            "output_dir": str(framework_dirs["pymdp"])
                         })
                 log_step_success(logger, "PyMDP script execution completed")
             except Exception as e:
@@ -482,7 +480,7 @@ def execute_rendered_simulators(
                 with performance_tracker.track_operation("execute_rxinfer_scripts"):
                     logger.info("🚀 Executing RxInfer scripts...")
                     rxinfer_success = run_rxinfer_scripts(
-                        pipeline_output_dir=execution_output_dir.parent,
+                        rendered_simulators_dir=target_dir,
                         execution_output_dir=framework_dirs["rxinfer"],
                         recursive_search=recursive,
                         verbose=verbose
@@ -517,7 +515,7 @@ def execute_rendered_simulators(
                 with performance_tracker.track_operation("execute_discopy_analysis"):
                     logger.info("🚀 Executing DisCoPy analysis...")
                     discopy_success = run_discopy_analysis(
-                        pipeline_output_dir=execution_output_dir.parent,
+                        rendered_simulators_dir=target_dir,
                         execution_output_dir=framework_dirs["discopy"],
                         recursive_search=recursive,
                         verbose=verbose
@@ -552,11 +550,10 @@ def execute_rendered_simulators(
                 with performance_tracker.track_operation("execute_activeinference_analysis"):
                     logger.info("🚀 Executing ActiveInference.jl analysis...")
                     activeinference_success = run_activeinference_analysis(
-                        pipeline_output_dir=execution_output_dir.parent,
+                        rendered_simulators_dir=target_dir,
                         execution_output_dir=framework_dirs["activeinference_jl"],
                         recursive_search=recursive,
-                        verbose=verbose,
-                        analysis_type="comprehensive"
+                        verbose=verbose
                     )
                     if activeinference_success:
                         execution_results["total_successes"] += 1
@@ -588,7 +585,7 @@ def execute_rendered_simulators(
                 with performance_tracker.track_operation("execute_jax_scripts"):
                     logger.info("🚀 Executing JAX scripts...")
                     jax_success = run_jax_scripts(
-                        pipeline_output_dir=execution_output_dir.parent,
+                        rendered_simulators_dir=target_dir,
                         execution_output_dir=framework_dirs["jax"],
                         recursive_search=recursive,
                         verbose=verbose

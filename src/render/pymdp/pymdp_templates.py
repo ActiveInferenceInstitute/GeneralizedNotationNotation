@@ -49,6 +49,10 @@ try:
     import inspect 
     import traceback 
     import ast
+    import json
+    import os
+    from datetime import datetime
+    from pathlib import Path
 
     # try:
     #     print(f'AGENT_SCRIPT: Imported pymdp version: {{pymdp.__version__}}') # Commented out
@@ -68,6 +72,37 @@ try:
     print('  AGENT_SCRIPT: action_names = {action_names_dict_str}')
     print('  AGENT_SCRIPT: qs_initial = {qs_initial_str}')
     print('  AGENT_SCRIPT: agent_hyperparams = {agent_hyperparams_dict_str}')
+    
+    # Save matrix information to file if PYMDP_OUTPUT_DIR is set
+    output_dir_env = os.environ.get('PYMDP_OUTPUT_DIR')
+    if output_dir_env:
+        output_dir = Path(output_dir_env)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save matrix information
+        matrix_info = {{
+            "timestamp": datetime.now().isoformat(),
+            "script_name": __file__ if '__file__' in globals() else "unknown_script",
+            "matrices": {{
+                "A": str(A) if 'A' in globals() and A is not None else None,
+                "B": str(B) if 'B' in globals() and B is not None else None,
+                "C": str(C) if 'C' in globals() and C is not None else None,
+                "D": str(D) if 'D' in globals() and D is not None else None,
+                "E": str(E) if 'E' in globals() and E is not None else None
+            }},
+            "parameters": {{
+                "control_fac_idx": str(control_fac_idx) if 'control_fac_idx' in globals() else None,
+                "action_names": "{action_names_dict_str}",
+                "qs_initial": "{qs_initial_str}",
+                "agent_hyperparams": "{agent_hyperparams_dict_str}"
+            }}
+        }}
+        
+        matrix_file = output_dir / "matrices_extracted.json"
+        with open(matrix_file, 'w') as f:
+            json.dump(matrix_info, f, indent=2)
+        print(f'AGENT_SCRIPT: Saved matrix information to {{matrix_file}}')
+    
     print('AGENT_SCRIPT: Attempting to instantiate agent with defined parameters for debug...')
     
     local_agent_hyperparams_str_val = '{agent_hyperparams_dict_str}'
@@ -86,12 +121,65 @@ try:
         print("AGENT_SCRIPT: Debug - agent_hyperparams_dict_str ('" + local_agent_hyperparams_str_val + "') is empty or '{{}}'. Using empty dict for debug agent.")
     
     debug_params_copy = {{k: v for k, v in agent_params_for_debug.items() if not (isinstance(v, str) and v == 'None')}}
-    temp_agent = Agent(**debug_params_copy)
-    print(f'AGENT_SCRIPT: Debug agent successfully instantiated: {{temp_agent}}')
+    
+    # Attempt agent instantiation and save results
+    agent_instantiation_result = {{
+        "timestamp": datetime.now().isoformat(),
+        "success": False,
+        "error": None,
+        "agent_info": None
+    }}
+    
+    try:
+        temp_agent = Agent(**debug_params_copy)
+        print(f'AGENT_SCRIPT: Debug agent successfully instantiated: {{temp_agent}}')
+        agent_instantiation_result["success"] = True
+        agent_instantiation_result["agent_info"] = str(temp_agent)
+        
+        # Save successful instantiation info
+        if output_dir_env:
+            instantiation_file = output_dir / "agent_instantiation_result.json"
+            with open(instantiation_file, 'w') as f:
+                json.dump(agent_instantiation_result, f, indent=2)
+            print(f'AGENT_SCRIPT: Saved agent instantiation result to {{instantiation_file}}')
+            
+    except Exception as e_agent:
+        agent_instantiation_result["success"] = False
+        agent_instantiation_result["error"] = str(e_agent)
+        print(f'AGENT_SCRIPT: Error during agent instantiation: {{e_agent}}')
+        
+        # Save failed instantiation info
+        if output_dir_env:
+            instantiation_file = output_dir / "agent_instantiation_result.json"
+            with open(instantiation_file, 'w') as f:
+                json.dump(agent_instantiation_result, f, indent=2)
+            print(f'AGENT_SCRIPT: Saved agent instantiation error to {{instantiation_file}}')
+        
 except Exception as e_debug:
     print(f'AGENT_SCRIPT: Error during PyMDP runtime debug: {{e_debug}}')
     print("AGENT_SCRIPT: Traceback:")
     print(traceback.format_exc())
+    
+    # Save debug error if possible
+    output_dir_env = os.environ.get('PYMDP_OUTPUT_DIR')
+    if output_dir_env:
+        try:
+            output_dir = Path(output_dir_env)
+            output_dir.mkdir(parents=True, exist_ok=True)
+            
+            error_info = {{
+                "timestamp": datetime.now().isoformat(),
+                "error": str(e_debug),
+                "traceback": traceback.format_exc()
+            }}
+            
+            error_file = output_dir / "debug_error.json"
+            with open(error_file, 'w') as f:
+                json.dump(error_info, f, indent=2)
+            print(f'AGENT_SCRIPT: Saved debug error to {{error_file}}')
+        except Exception as e_save:
+            print(f'AGENT_SCRIPT: Could not save debug error: {{e_save}}')
+            
 print('--- End PyMDP Runtime Debug ---')
 """
 

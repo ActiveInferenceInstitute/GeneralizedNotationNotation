@@ -110,12 +110,32 @@ def process_execution_standardized(
         if verbose:
             logger.setLevel(logging.DEBUG)
         
-        # Call the existing execute_rendered_simulators function with updated signature
+        # Step 10 should process rendered simulators from step 9
+        # Check if target_dir exists, if not, look for rendered simulators in output_dir
+        if target_dir is None or not target_dir.exists():
+            # Look for rendered simulators in the expected location from step 9
+            render_dir = output_dir / "gnn_rendered_simulators"
+            if render_dir.exists():
+                target_dir = render_dir
+                logger.info(f"Using rendered simulators from step 9: {target_dir}")
+            else:
+                # Check if there are any existing execution logs to use as source
+                execute_log_dir = output_dir / "execute_logs"
+                if execute_log_dir.exists():
+                    target_dir = execute_log_dir
+                    logger.info(f"Using existing execution directory: {target_dir}")
+                else:
+                    log_step_warning(logger, f"No rendered simulators found in expected locations: {render_dir}")
+                    log_step_warning(logger, "This may be expected if step 9 (render) did not complete successfully")
+                    # Don't return False here - let the execution step handle the empty directory gracefully
+                    target_dir = render_dir  # Use the expected directory even if it doesn't exist
+        
+        # Call the existing execute_rendered_simulators function
         success = execute_rendered_simulators(
             target_dir=target_dir,
             output_dir=output_dir,
-            logger=logger,
             recursive=recursive,
+            logger=logger,
             verbose=verbose
         )
         

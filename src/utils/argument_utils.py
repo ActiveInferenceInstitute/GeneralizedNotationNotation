@@ -522,13 +522,13 @@ class StepConfiguration:
         },
         "9_render": {
             "required_args": ["output_dir"],
-            "optional_args": ["recursive", "verbose"],
-            "defaults": {"recursive": False, "verbose": False},
+            "optional_args": ["target_dir", "recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
             "description": "Simulator Code Generation"
         },
         "10_execute": {
-            "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose"],
+            "required_args": ["output_dir"],
+            "optional_args": ["target_dir", "recursive", "verbose"],
             "defaults": {"recursive": True, "verbose": False},
             "description": "Simulator Execution"
         },

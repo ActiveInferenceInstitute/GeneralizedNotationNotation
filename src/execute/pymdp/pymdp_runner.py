@@ -10,8 +10,13 @@ import logging
 import os
 import subprocess
 import sys
+import json
+import traceback
+import matplotlib.pyplot as plt
+import numpy as np
 from pathlib import Path
 from typing import List, Optional, Union, Dict, Any, Tuple
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -70,34 +75,354 @@ def validate_and_clean_pymdp_script(script_path: Path) -> bool:
             logger.error(f"Error during script cleanup: {e3}")
             return False
 
-def find_pymdp_scripts(
-    base_dir: Union[str, Path], 
-    recursive: bool = True
-) -> List[Path]:
+def execute_pymdp_script_with_outputs(
+    script_path: Path, 
+    output_dir: Path,
+    verbose: bool = False
+) -> Dict[str, Any]:
     """
-    Find PyMDP scripts in the specified directory.
+    Execute a single PyMDP script with comprehensive output capture and analysis.
     
     Args:
-        base_dir: Directory to search for PyMDP scripts
-        recursive: Whether to search recursively in subdirectories
+        script_path: Path to the PyMDP script
+        output_dir: Directory to save execution outputs
+        verbose: Whether to enable verbose output
         
     Returns:
-        List of paths to PyMDP script files
+        Dict containing execution results, logs, and analysis data
     """
-    base_path = Path(base_dir)
-    if not base_path.exists():
-        logger.warning(f"Base directory does not exist: {base_path}")
-        return []
+    if not script_path.exists():
+        logger.error(f"Script file not found: {script_path}")
+        return {"success": False, "error": "Script file not found"}
     
-    # Look for PyMDP scripts in the gnn_rendered_simulators/pymdp directory
-    pymdp_dir = base_path / "gnn_rendered_simulators" / "pymdp"
+    logger.info(f"Executing PyMDP script with full output capture: {script_path}")
+    
+    # Create output subdirectory for this script
+    script_output_dir = output_dir / script_path.stem
+    script_output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # First, validate and clean the script
+    if not validate_and_clean_pymdp_script(script_path):
+        logger.error(f"Script validation failed: {script_path}")
+        return {"success": False, "error": "Script validation failed"}
+    
+    try:
+        # Check if required dependencies are available
+        required_deps = ["numpy", "pymdp", "matplotlib"]
+        missing_deps = []
+        
+        for dep in required_deps:
+            try:
+                __import__(dep)
+            except ImportError:
+                missing_deps.append(dep)
+        
+        if missing_deps:
+            error_msg = f"Missing required dependencies: {', '.join(missing_deps)}"
+            logger.error(error_msg)
+            return {"success": False, "error": error_msg, "missing_dependencies": missing_deps}
+        
+        # Execute the script with output capture
+        abs_script_path = script_path.resolve()
+        
+        # Prepare environment for enhanced execution
+        env = os.environ.copy()
+        env['PYTHONPATH'] = str(abs_script_path.parent.parent.parent)  # Add src to path
+        env['PYMDP_OUTPUT_DIR'] = str(script_output_dir)  # Let script know where to save files
+        
+        logger.info(f"Running PyMDP script: {script_path.name}")
+        result = subprocess.run(
+            [sys.executable, str(abs_script_path)],
+            capture_output=True,
+            text=True,
+            check=False,
+            cwd=abs_script_path.parent,
+            env=env
+        )
+        
+        # Save execution logs
+        execution_log = {
+            "script_name": script_path.name,
+            "execution_time": datetime.now().isoformat(),
+            "return_code": result.returncode,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+            "script_path": str(script_path),
+            "output_directory": str(script_output_dir)
+        }
+        
+        # Save detailed execution log
+        log_file = script_output_dir / f"{script_path.stem}_execution_log.json"
+        with open(log_file, 'w') as f:
+            json.dump(execution_log, f, indent=2)
+        
+        # Save stdout to text file for easy viewing
+        stdout_file = script_output_dir / f"{script_path.stem}_stdout.txt"
+        with open(stdout_file, 'w') as f:
+            f.write(result.stdout)
+        
+        # Save stderr to text file if there are errors
+        if result.stderr.strip():
+            stderr_file = script_output_dir / f"{script_path.stem}_stderr.txt"
+            with open(stderr_file, 'w') as f:
+                f.write(result.stderr)
+        
+        # Process the execution result
+        if result.returncode == 0:
+            logger.info(f"Script executed successfully: {script_path.name}")
+            
+            # Generate additional analysis and visualizations
+            analysis_results = generate_pymdp_analysis(script_path, result.stdout, script_output_dir)
+            
+            execution_summary = {
+                "success": True,
+                "script_name": script_path.name,
+                "return_code": result.returncode,
+                "output_files": [
+                    str(log_file.relative_to(output_dir)),
+                    str(stdout_file.relative_to(output_dir))
+                ],
+                "analysis": analysis_results,
+                "execution_time": execution_log["execution_time"]
+            }
+            
+            if verbose and result.stdout.strip():
+                logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
+            
+            return execution_summary
+        else:
+            logger.error(f"Script execution failed with return code {result.returncode}: {script_path.name}")
+            error_summary = {
+                "success": False,
+                "script_name": script_path.name,
+                "return_code": result.returncode,
+                "error": "Script execution failed",
+                "stderr": result.stderr,
+                "stdout": result.stdout,
+                "execution_time": execution_log["execution_time"]
+            }
+            return error_summary
+            
+    except Exception as e:
+        logger.error(f"Error executing script {script_path.name}: {e}")
+        return {
+            "success": False, 
+            "script_name": script_path.name,
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }
+
+def generate_pymdp_analysis(script_path: Path, stdout_content: str, output_dir: Path) -> Dict[str, Any]:
+    """
+    Generate analysis artifacts from PyMDP script execution.
+    
+    Args:
+        script_path: Path to the executed script
+        stdout_content: Captured stdout from script execution
+        output_dir: Directory to save analysis outputs
+        
+    Returns:
+        Dictionary containing analysis results
+    """
+    analysis_results = {
+        "matrices_extracted": False,
+        "agent_instantiated": False,
+        "visualizations_created": 0,
+        "analysis_files": []
+    }
+    
+    try:
+        # Parse stdout for matrix information
+        if "A = " in stdout_content and "B = " in stdout_content:
+            analysis_results["matrices_extracted"] = True
+            logger.info(f"Successfully extracted A and B matrices from {script_path.name}")
+        
+        # Check if agent was instantiated
+        if "agent successfully instantiated" in stdout_content.lower():
+            analysis_results["agent_instantiated"] = True
+            logger.info(f"PyMDP Agent successfully instantiated in {script_path.name}")
+        
+        # Generate matrix visualization if matrices were found
+        if analysis_results["matrices_extracted"]:
+            viz_count = create_matrix_visualizations(stdout_content, output_dir, script_path.stem)
+            analysis_results["visualizations_created"] = viz_count
+        
+        # Create analysis summary
+        summary_file = output_dir / f"{script_path.stem}_analysis_summary.json"
+        with open(summary_file, 'w') as f:
+            json.dump(analysis_results, f, indent=2)
+        
+        analysis_results["analysis_files"].append(str(summary_file.name))
+        
+        # Generate simulation trace if possible
+        trace_file = generate_simulation_trace(stdout_content, output_dir, script_path.stem)
+        if trace_file:
+            analysis_results["analysis_files"].append(str(trace_file.name))
+        
+    except Exception as e:
+        logger.warning(f"Error during analysis generation for {script_path.name}: {e}")
+        analysis_results["error"] = str(e)
+    
+    return analysis_results
+
+def create_matrix_visualizations(stdout_content: str, output_dir: Path, script_name: str) -> int:
+    """
+    Create visualizations of PyMDP matrices from stdout content.
+    
+    Returns:
+        Number of visualizations created
+    """
+    viz_count = 0
+    
+    try:
+        # Look for matrix content in stdout
+        lines = stdout_content.split('\n')
+        
+        # Simple visualization of matrix structure
+        plt.figure(figsize=(12, 8))
+        
+        # Create a summary plot showing matrix information
+        plt.subplot(2, 2, 1)
+        plt.text(0.1, 0.5, f"PyMDP Script Analysis\n{script_name}", 
+                fontsize=14, ha='left', va='center')
+        plt.axis('off')
+        plt.title("Execution Summary")
+        
+        # Matrix extraction status
+        plt.subplot(2, 2, 2)
+        matrix_info = []
+        for line in lines:
+            if "A = " in line or "B = " in line or "C = " in line or "D = " in line:
+                matrix_info.append(line.strip()[:50] + "..." if len(line.strip()) > 50 else line.strip())
+        
+        if matrix_info:
+            plt.text(0.1, 0.8, "Extracted Matrices:", fontsize=12, weight='bold')
+            for i, info in enumerate(matrix_info[:5]):  # Show first 5 matrix lines
+                plt.text(0.1, 0.7 - i*0.1, info, fontsize=10, family='monospace')
+        else:
+            plt.text(0.1, 0.5, "No matrices found in output", fontsize=12)
+        plt.axis('off')
+        plt.title("Matrix Information")
+        
+        # Execution status
+        plt.subplot(2, 2, 3)
+        status_lines = [line for line in lines if "AGENT_SCRIPT:" in line or "SUCCESS" in line or "ERROR" in line]
+        if status_lines:
+            plt.text(0.1, 0.8, "Execution Status:", fontsize=12, weight='bold')
+            for i, status in enumerate(status_lines[-3:]):  # Show last 3 status lines
+                plt.text(0.1, 0.6 - i*0.15, status[:60] + "..." if len(status) > 60 else status, 
+                        fontsize=9, family='monospace')
+        plt.axis('off')
+        plt.title("Execution Trace")
+        
+        # Script metadata
+        plt.subplot(2, 2, 4)
+        plt.text(0.1, 0.8, "Script Details:", fontsize=12, weight='bold')
+        plt.text(0.1, 0.6, f"Name: {script_name}", fontsize=10)
+        plt.text(0.1, 0.4, f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", fontsize=10)
+        plt.text(0.1, 0.2, f"Output Lines: {len(lines)}", fontsize=10)
+        plt.axis('off')
+        plt.title("Metadata")
+        
+        plt.tight_layout()
+        
+        # Save the visualization
+        viz_file = output_dir / f"{script_name}_analysis_visualization.png"
+        plt.savefig(viz_file, dpi=150, bbox_inches='tight')
+        plt.close()
+        
+        viz_count += 1
+        logger.info(f"Created analysis visualization: {viz_file.name}")
+        
+    except Exception as e:
+        logger.warning(f"Error creating visualizations: {e}")
+    
+    return viz_count
+
+def generate_simulation_trace(stdout_content: str, output_dir: Path, script_name: str) -> Optional[Path]:
+    """
+    Generate a simulation trace file from PyMDP execution output.
+    
+    Returns:
+        Path to generated trace file, or None if generation failed
+    """
+    try:
+        lines = stdout_content.split('\n')
+        
+        # Extract relevant execution traces
+        trace_data = {
+            "script_name": script_name,
+            "timestamp": datetime.now().isoformat(),
+            "matrices_found": [],
+            "agent_status": [],
+            "debug_output": [],
+            "errors": []
+        }
+        
+        for line in lines:
+            if any(matrix in line for matrix in ["A = ", "B = ", "C = ", "D = ", "E = "]):
+                trace_data["matrices_found"].append(line.strip())
+            elif "AGENT_SCRIPT:" in line:
+                trace_data["agent_status"].append(line.strip())
+            elif "Debug" in line or "debug" in line:
+                trace_data["debug_output"].append(line.strip())
+            elif "Error" in line or "ERROR" in line:
+                trace_data["errors"].append(line.strip())
+        
+        # Save trace data
+        trace_file = output_dir / f"{script_name}_simulation_trace.json"
+        with open(trace_file, 'w') as f:
+            json.dump(trace_data, f, indent=2)
+        
+        logger.info(f"Generated simulation trace: {trace_file.name}")
+        return trace_file
+        
+    except Exception as e:
+        logger.warning(f"Error generating simulation trace: {e}")
+        return None
+
+def run_pymdp_scripts(
+    rendered_simulators_dir: Union[str, Path],
+    execution_output_dir: Optional[Union[str, Path]] = None,
+    recursive_search: bool = True,
+    verbose: bool = False
+) -> bool:
+    """
+    Find and run PyMDP scripts on rendered models with comprehensive output generation.
+    
+    Args:
+        rendered_simulators_dir: Directory containing rendered simulators (target_dir from executor)
+        execution_output_dir: Directory for PyMDP execution outputs
+        recursive_search: Whether to search recursively for scripts
+        verbose: Whether to enable verbose output
+        
+    Returns:
+        bool: True if all scripts executed successfully, False if any failed
+    """
+    logger.info(f"Starting PyMDP script execution with output capture from: {rendered_simulators_dir}")
+    
+    # Set up execution output directory
+    if execution_output_dir:
+        exec_output_dir = Path(execution_output_dir)
+        exec_output_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"PyMDP execution outputs will be saved to: {exec_output_dir}")
+    else:
+        exec_output_dir = Path("pymdp_execution_outputs")
+        exec_output_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Using default PyMDP execution output directory: {exec_output_dir}")
+    
+    # Find all PyMDP scripts - look directly in the PyMDP subdirectory
+    base_path = Path(rendered_simulators_dir)
+    pymdp_dir = base_path / "pymdp"
     
     if not pymdp_dir.exists():
         logger.info(f"PyMDP directory not found: {pymdp_dir}")
-        return []
+        # Create empty execution report for consistency
+        create_empty_execution_report(exec_output_dir)
+        return True  # Consider this a success if no scripts to run
     
     # Find all Python files
-    if recursive:
+    if recursive_search:
         script_files = list(pymdp_dir.rglob("*.py"))
     else:
         script_files = list(pymdp_dir.glob("*.py"))
@@ -109,131 +434,115 @@ def find_pymdp_scripts(
     for script in script_files:
         logger.debug(f"  - {script.name}")
     
-    return script_files
-
-def execute_pymdp_script(
-    script_path: Path, 
-    verbose: bool = False
-) -> bool:
-    """
-    Execute a single PyMDP script with enhanced error handling.
-    
-    Args:
-        script_path: Path to the PyMDP script
-        verbose: Whether to enable verbose output
-        
-    Returns:
-        bool: True if execution was successful, False otherwise
-    """
-    if not script_path.exists():
-        logger.error(f"Script file not found: {script_path}")
-        return False
-    
-    logger.info(f"Executing PyMDP script: {script_path}")
-    
-    # First, validate and clean the script
-    if not validate_and_clean_pymdp_script(script_path):
-        logger.error(f"Script validation failed: {script_path}")
-        return False
-    
-    try:
-        # Check if required dependencies are available
-        required_deps = ["numpy", "pymdp"]
-        missing_deps = []
-        
-        for dep in required_deps:
-            try:
-                __import__(dep)
-            except ImportError:
-                missing_deps.append(dep)
-        
-        if missing_deps:
-            logger.error(f"Missing required dependencies: {', '.join(missing_deps)}")
-            logger.error("Please install missing dependencies: pip install " + " ".join(missing_deps))
-            return False
-        
-        # Execute the script
-        # Convert to absolute path to avoid path resolution issues
-        abs_script_path = script_path.resolve()
-        result = subprocess.run(
-            [sys.executable, str(abs_script_path)],
-            capture_output=True,
-            text=True,
-            check=False,
-            cwd=abs_script_path.parent
-        )
-        
-        # Process the execution result
-        if result.returncode == 0:
-            logger.info(f"Script executed successfully: {script_path.name}")
-            if verbose and result.stdout.strip():
-                logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
-            return True
-        else:
-            logger.error(f"Script execution failed with return code {result.returncode}: {script_path.name}")
-            if result.stderr.strip():
-                logger.error(f"Error output:\n{result.stderr}")
-            if result.stdout.strip():
-                logger.debug(f"Standard output:\n{result.stdout}")
-            return False
-            
-    except Exception as e:
-        logger.error(f"Error executing script {script_path.name}: {e}")
-        return False
-
-def run_pymdp_scripts(
-    pipeline_output_dir: Union[str, Path],
-    execution_output_dir: Optional[Union[str, Path]] = None,
-    recursive_search: bool = True,
-    verbose: bool = False
-) -> bool:
-    """
-    Find and run PyMDP scripts on rendered models with enhanced error handling.
-    
-    Args:
-        pipeline_output_dir: Main pipeline output directory
-        execution_output_dir: Specific directory for PyMDP execution outputs (optional)
-        recursive_search: Whether to search recursively for scripts
-        verbose: Whether to enable verbose output
-        
-    Returns:
-        bool: True if all scripts executed successfully, False if any failed
-    """
-    logger.info(f"Starting PyMDP script execution from: {pipeline_output_dir}")
-    
-    # Set up execution output directory
-    if execution_output_dir:
-        exec_output_dir = Path(execution_output_dir)
-        exec_output_dir.mkdir(parents=True, exist_ok=True)
-        logger.info(f"PyMDP execution outputs will be saved to: {exec_output_dir}")
-    
-    # Find all PyMDP scripts
-    script_files = find_pymdp_scripts(pipeline_output_dir, recursive_search)
-    
     if not script_files:
         logger.info("No PyMDP scripts found to execute")
+        create_empty_execution_report(exec_output_dir)
         return True  # Consider this a success if no scripts to run
     
-    # Execute each script
+    # Execute each script with comprehensive output capture
+    execution_results = []
     success_count = 0
     failure_count = 0
     
     for script_file in script_files:
         logger.info(f"Processing PyMDP script: {script_file.name}")
         
-        if execute_pymdp_script(script_file, verbose):
+        script_result = execute_pymdp_script_with_outputs(script_file, exec_output_dir, verbose)
+        execution_results.append(script_result)
+        
+        if script_result.get("success", False):
             success_count += 1
             logger.info(f"✅ Successfully executed: {script_file.name}")
         else:
             failure_count += 1
             logger.error(f"❌ Failed to execute: {script_file.name}")
     
-    # Report execution results
+    # Generate comprehensive execution report
     total_count = success_count + failure_count
     logger.info(f"PyMDP script execution summary: {success_count} succeeded, {failure_count} failed, {total_count} total")
     
+    # Create final execution report
+    create_execution_report(exec_output_dir, execution_results, success_count, failure_count, total_count)
+    
     # Consider the overall run successful if any scripts succeeded
     return failure_count == 0 or success_count > 0
+
+def create_execution_report(output_dir: Path, execution_results: List[Dict], 
+                          success_count: int, failure_count: int, total_count: int):
+    """Create a comprehensive PyMDP execution report."""
+    
+    report = {
+        "timestamp": datetime.now().isoformat(),
+        "framework": "PyMDP",
+        "execution_summary": {
+            "total_scripts": total_count,
+            "successful_scripts": success_count,
+            "failed_scripts": failure_count,
+            "success_rate": success_count / total_count if total_count > 0 else 0.0
+        },
+        "script_results": execution_results,
+        "output_directory": str(output_dir)
+    }
+    
+    # Save JSON report
+    report_file = output_dir / "pymdp_execution_report.json"
+    with open(report_file, 'w') as f:
+        json.dump(report, f, indent=2)
+    
+    # Save markdown report
+    md_report_file = output_dir / "pymdp_execution_report.md"
+    with open(md_report_file, 'w') as f:
+        f.write(f"# PyMDP Execution Report\n\n")
+        f.write(f"**Generated:** {report['timestamp']}\n")
+        f.write(f"**Framework:** PyMDP\n")
+        f.write(f"**Success Rate:** {report['execution_summary']['success_rate']:.1%}\n\n")
+        
+        f.write(f"## Execution Summary\n\n")
+        f.write(f"- **Total Scripts:** {total_count}\n")
+        f.write(f"- **Successful:** {success_count}\n")
+        f.write(f"- **Failed:** {failure_count}\n\n")
+        
+        f.write(f"## Script Details\n\n")
+        for result in execution_results:
+            status = "✅ SUCCESS" if result.get("success", False) else "❌ FAILED"
+            f.write(f"### {result.get('script_name', 'Unknown')} - {status}\n")
+            
+            if result.get("success", False):
+                f.write(f"- **Execution Time:** {result.get('execution_time', 'N/A')}\n")
+                if 'analysis' in result:
+                    analysis = result['analysis']
+                    f.write(f"- **Matrices Extracted:** {'Yes' if analysis.get('matrices_extracted', False) else 'No'}\n")
+                    f.write(f"- **Agent Instantiated:** {'Yes' if analysis.get('agent_instantiated', False) else 'No'}\n")
+                    f.write(f"- **Visualizations Created:** {analysis.get('visualizations_created', 0)}\n")
+            else:
+                f.write(f"- **Error:** {result.get('error', 'Unknown error')}\n")
+            
+            f.write("\n")
+    
+    logger.info(f"Created comprehensive execution report: {report_file.name}")
+
+def create_empty_execution_report(output_dir: Path):
+    """Create an empty execution report when no scripts are found."""
+    
+    report = {
+        "timestamp": datetime.now().isoformat(),
+        "framework": "PyMDP",
+        "execution_summary": {
+            "total_scripts": 0,
+            "successful_scripts": 0,
+            "failed_scripts": 0,
+            "success_rate": 0.0
+        },
+        "script_results": [],
+        "message": "No PyMDP scripts found to execute",
+        "output_directory": str(output_dir)
+    }
+    
+    report_file = output_dir / "pymdp_execution_report.json"
+    with open(report_file, 'w') as f:
+        json.dump(report, f, indent=2)
+    
+    logger.info(f"Created empty execution report: {report_file.name}")
 
 if __name__ == "__main__":
     # Setup logging for standalone execution
@@ -261,7 +570,7 @@ if __name__ == "__main__":
     
     # Run the scripts
     success = run_pymdp_scripts(
-        pipeline_output_dir=args.output_dir,
+        rendered_simulators_dir=args.output_dir,
         recursive_search=args.recursive,
         verbose=args.verbose
     )

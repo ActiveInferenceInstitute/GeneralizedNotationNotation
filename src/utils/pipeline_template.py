@@ -100,16 +100,38 @@ def create_standard_pipeline_script(
             # Set up logging
             logger = setup_step_logging(step_name, getattr(parsed_args, 'verbose', False))
             
-            # Convert paths
-            target_dir = Path(getattr(parsed_args, 'target_dir', 'input/gnn_files'))
-            output_dir = Path(getattr(parsed_args, 'output_dir', 'output'))
+            # Convert paths with proper handling for None values
+            target_dir_raw = getattr(parsed_args, 'target_dir', None)
+            if target_dir_raw is None:
+                # Set default based on step type
+                if step_name == "9_render.py":
+                    # Step 9 should process exports from step 5 by default
+                    target_dir = Path('output/gnn_exports/gnn_exports')
+                elif step_name == "10_execute.py":
+                    # Step 10 should process rendered simulators from step 9 by default
+                    target_dir = Path('output/gnn_rendered_simulators')
+                else:
+                    # Default for other steps
+                    target_dir = Path('input/gnn_files')
+            else:
+                target_dir = Path(target_dir_raw)
+            
+            output_dir_raw = getattr(parsed_args, 'output_dir', 'output')
+            output_dir = Path(output_dir_raw) if output_dir_raw is not None else Path('output')
+            
+            # Set recursive flag default based on step type
+            if step_name in ["9_render.py", "10_execute.py"]:
+                # Steps 9 and 10 need recursive processing by default
+                recursive_default = True
+            else:
+                recursive_default = False
             
             # Call the module function
             success = module_function(
                 target_dir=target_dir,
                 output_dir=output_dir,
                 logger=logger,
-                recursive=getattr(parsed_args, 'recursive', False),
+                recursive=getattr(parsed_args, 'recursive', recursive_default),
                 verbose=getattr(parsed_args, 'verbose', False),
                 **{k: v for k, v in vars(parsed_args).items() 
                    if k not in ['target_dir', 'output_dir', 'recursive', 'verbose']}
@@ -127,8 +149,8 @@ def _create_fallback_parser(description: str, additional_arguments: Optional[Dic
     """Create a fallback argument parser with standard arguments."""
     parser = argparse.ArgumentParser(description=description)
     
-    # Standard arguments
-    parser.add_argument("--target-dir", type=Path, default=Path("input/gnn_files"),
+    # Standard arguments - use None for defaults that get set by pipeline template
+    parser.add_argument("--target-dir", type=Path, default=None,
                        help="Target directory containing files to process")
     parser.add_argument("--output-dir", type=Path, default=Path("output"),
                        help="Output directory for generated artifacts")
@@ -405,16 +427,38 @@ def create_standardized_pipeline_script(
             # Set up logging
             logger = setup_step_logging(step_name, getattr(parsed_args, 'verbose', False))
             
-            # Convert paths
-            target_dir = Path(getattr(parsed_args, 'target_dir', 'input/gnn_files'))
-            output_dir = Path(getattr(parsed_args, 'output_dir', 'output'))
+            # Convert paths with proper handling for None values
+            target_dir_raw = getattr(parsed_args, 'target_dir', None)
+            if target_dir_raw is None:
+                # Set default based on step type
+                if step_name == "9_render.py":
+                    # Step 9 should process exports from step 5 by default
+                    target_dir = Path('output/gnn_exports/gnn_exports')
+                elif step_name == "10_execute.py":
+                    # Step 10 should process rendered simulators from step 9 by default
+                    target_dir = Path('output/gnn_rendered_simulators')
+                else:
+                    # Default for other steps
+                    target_dir = Path('input/gnn_files')
+            else:
+                target_dir = Path(target_dir_raw)
+            
+            output_dir_raw = getattr(parsed_args, 'output_dir', 'output')
+            output_dir = Path(output_dir_raw) if output_dir_raw is not None else Path('output')
+            
+            # Set recursive flag default based on step type
+            if step_name in ["9_render.py", "10_execute.py"]:
+                # Steps 9 and 10 need recursive processing by default
+                recursive_default = True
+            else:
+                recursive_default = False
             
             # Call the module function
             success = module_function(
                 target_dir=target_dir,
                 output_dir=output_dir,
                 logger=logger,
-                recursive=getattr(parsed_args, 'recursive', False),
+                recursive=getattr(parsed_args, 'recursive', recursive_default),
                 verbose=getattr(parsed_args, 'verbose', False),
                 **{k: v for k, v in vars(parsed_args).items() 
                    if k not in ['target_dir', 'output_dir', 'recursive', 'verbose']}

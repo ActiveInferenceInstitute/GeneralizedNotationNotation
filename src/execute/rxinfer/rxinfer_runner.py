@@ -147,16 +147,16 @@ def execute_rxinfer_script(
         return False
 
 def run_rxinfer_scripts(
-    pipeline_output_dir: Union[str, Path],
+    rendered_simulators_dir: Union[str, Path],
     execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False
 ) -> bool:
     """
-    Find and run all RxInfer.jl scripts in the designated output directory.
+    Find and run all RxInfer.jl scripts in the designated directory.
     
     Args:
-        pipeline_output_dir: Main pipeline output directory
+        rendered_simulators_dir: Directory containing rendered simulators (target_dir from executor)
         execution_output_dir: Specific directory for RxInfer execution outputs (optional)
         recursive_search: Whether to search recursively for scripts
         verbose: Whether to enable verbose output
@@ -176,7 +176,7 @@ def run_rxinfer_scripts(
         logger.info(f"RxInfer execution outputs will be saved to: {exec_output_dir}")
     
     # Construct the path to the RxInfer.jl scripts
-    rxinfer_dir = Path(pipeline_output_dir) / "gnn_rendered_simulators" / "rxinfer"
+    rxinfer_dir = Path(rendered_simulators_dir) / "rxinfer"
     
     logger.info(f"Looking for RxInfer.jl scripts in: {rxinfer_dir}")
     
@@ -230,7 +230,7 @@ if __name__ == "__main__":
     
     # Run the scripts
     success = run_rxinfer_scripts(
-        pipeline_output_dir=args.output_dir,
+        rendered_simulators_dir=args.output_dir,
         recursive_search=args.recursive,
         verbose=args.verbose
     )

@@ -138,7 +138,8 @@ def process_website_generation(
 
 def _copy_website_assets(source_dir: Path, website_dir: Path, logger: logging.Logger):
     """
-    Copy website assets like images and HTML files to make them accessible from the website.
+    Copy website assets like images and other files to make them accessible from the website.
+    Excludes HTML files to prevent recursive nesting of website generations.
     
     Args:
         source_dir: Source directory containing pipeline outputs
@@ -147,12 +148,19 @@ def _copy_website_assets(source_dir: Path, website_dir: Path, logger: logging.Lo
     """
     assets_copied = 0
     
-    # Asset patterns to copy
-    asset_patterns = ["*.png", "*.jpg", "*.jpeg", "*.gif", "*.svg", "*.html", "*.htm"]
+    # Asset patterns to copy - EXCLUDE HTML files to prevent nesting issues
+    asset_patterns = ["*.png", "*.jpg", "*.jpeg", "*.gif", "*.svg"]
     
     for pattern in asset_patterns:
         for asset_file in source_dir.rglob(pattern):
             if asset_file.is_file():
+                # Skip files that are already in the website directory to prevent recursion
+                try:
+                    asset_file.relative_to(website_dir)
+                    continue  # Skip files already in website directory
+                except ValueError:
+                    pass  # File is not in website directory, continue processing
+                
                 try:
                     # Calculate relative path from source_dir
                     relative_path = asset_file.relative_to(source_dir)

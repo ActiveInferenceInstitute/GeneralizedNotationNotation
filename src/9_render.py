@@ -81,6 +81,24 @@ def process_rendering_standardized(
         if verbose:
             logger.setLevel(logging.DEBUG)
         
+        # Step 9 should process exported JSON files from step 5
+        # Check if target_dir exists, if not, look for exports in output_dir
+        if target_dir is None or not target_dir.exists():
+            # Look for exported JSON files in the expected export location
+            export_dir = output_dir / "gnn_exports" / "gnn_exports"
+            if export_dir.exists():
+                target_dir = export_dir
+                logger.info(f"Using exported files from step 5: {target_dir}")
+            else:
+                # Fallback: look in the base gnn_exports directory
+                export_dir_alt = output_dir / "gnn_exports"
+                if export_dir_alt.exists():
+                    target_dir = export_dir_alt
+                    logger.info(f"Using exported files from step 5 (alternative location): {target_dir}")
+                else:
+                    log_step_error(logger, f"No exported JSON files found in expected locations: {export_dir} or {export_dir_alt}")
+                    return False
+        
         # Validate input directory
         if not target_dir.exists():
             log_step_error(logger, f"Input directory does not exist: {target_dir}")

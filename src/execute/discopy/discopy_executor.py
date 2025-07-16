@@ -245,16 +245,16 @@ class DisCoPyExecutor:
 
 
 def run_discopy_analysis(
-    pipeline_output_dir: Union[str, Path],
+    rendered_simulators_dir: Union[str, Path],
     execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False
 ) -> bool:
     """
-    Find and analyze all DisCoPy outputs in the designated output directory.
+    Find and analyze all DisCoPy outputs in the designated directory.
     
     Args:
-        pipeline_output_dir: Main pipeline output directory
+        rendered_simulators_dir: Directory containing rendered simulators (target_dir from executor)
         execution_output_dir: Specific directory for DisCoPy execution outputs (optional)
         recursive_search: Whether to search recursively for outputs
         verbose: Whether to enable verbose output
@@ -269,10 +269,10 @@ def run_discopy_analysis(
         logger.info(f"DisCoPy execution outputs will be saved to: {exec_output_dir}")
         results_dir = exec_output_dir
     else:
-        results_dir = Path(pipeline_output_dir) / "execution_results" / "discopy_results"
+        results_dir = Path(rendered_simulators_dir) / "execution_results" / "discopy_results"
     
     # Construct the path to the DisCoPy outputs
-    discopy_dir = Path(pipeline_output_dir) / "gnn_rendered_simulators" / "discopy"
+    discopy_dir = Path(rendered_simulators_dir) / "discopy"
     
     logger.info(f"Looking for DisCoPy outputs in: {discopy_dir}")
     
@@ -322,7 +322,7 @@ if __name__ == "__main__":
     
     # Run the analysis
     success = run_discopy_analysis(
-        pipeline_output_dir=args.output_dir,
+        rendered_simulators_dir=args.output_dir,
         recursive_search=args.recursive,
         verbose=args.verbose
     )
