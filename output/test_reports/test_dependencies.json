@@ -1,0 +1,18 @@
+{
+  "pytest": {
+    "available": true,
+    "version": "8.4.1"
+  },
+  "pytest-cov": {
+    "available": true,
+    "version": "6.2.1"
+  },
+  "pytest-json-report": {
+    "available": false,
+    "version": null
+  },
+  "pytest-xdist": {
+    "available": false,
+    "version": null
+  }
+}

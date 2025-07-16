@@ -1,5 +1,10 @@
 # Contributor Covenant Code of Conduct
 
+> **📋 Document Metadata**  
+> **Type**: Code of Conduct | **Audience**: All Community Members | **Complexity**: Essential  
+> **Last Updated**: July 2025 | **Status**: Production-Ready  
+> **Cross-References**: [Contributing Guide](CONTRIBUTING.md) | [Support Guide](SUPPORT.md)
+
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our

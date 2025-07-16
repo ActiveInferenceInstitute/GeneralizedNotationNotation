@@ -192,7 +192,7 @@ src/
 │   ├── 9_render.py                # Code Rendering
 │   ├── 10_execute.py              # Simulation Execution
 │   ├── 11_llm.py                  # LLM Analysis
-│   ├── 12_site.py                 # Static Site Generation
+│   ├── 12_website.py              # Static Site Generation
 │   └── 13_sapf.py                 # SAPF Audio Generation
 ├── 🧠 Core Modules
 │   ├── gnn/                       # GNN processing core

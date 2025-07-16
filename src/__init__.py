@@ -6,6 +6,6 @@ This package contains the complete GNN (Generalized Notation Notation) processin
 with integrated steps for parsing, validation, export, visualization, analysis, audio generation, and more!.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __author__ = "GNN Pipeline Team (@docxology, Active Inference Institute)"
 __description__ = "Generalized Notation Notation Processing Pipeline" 

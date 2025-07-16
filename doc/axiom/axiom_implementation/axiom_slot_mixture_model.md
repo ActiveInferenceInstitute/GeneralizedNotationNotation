@@ -117,4 +117,4 @@ Signature:
   Author: "AXIOM Research Team - sMM Module"
   Institution: "VERSES AI / Active Inference Institute"
   ContactEmail: "axiom-smm@verses.ai"
-  DOI: "10.5281/zenodo.axiom.gnn.smm" 
+  DOI: "TBD - Not yet published" 

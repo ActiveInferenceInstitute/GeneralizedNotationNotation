@@ -304,9 +304,9 @@ def analyze_gnn_files(
                                     # Generate task-specific prompt
                                     prompt = prompts[task_name].format(content=gnn_content)
                                     
-                                    # Get analysis from provider
+                                    # Get analysis from provider - fix method call signature
                                     timeout = kwargs.get('llm_timeout', 360)
-                                    response = provider.analyze(prompt, max_tokens=2000, timeout=timeout)
+                                    response = provider.analyze(content=gnn_content, task=task_name)
                                     
                                     if response and response.strip():
                                         # Save task-specific analysis
@@ -410,6 +410,16 @@ def analyze_gnn_files(
         
     except Exception as e:
         log_step_error(logger, f"LLM analysis failed: {e}")
+        
+        # Create a serializable version of providers_status (remove non-serializable instances)
+        serializable_providers_status = {}
+        for provider_name, status in providers_status.items():
+            serializable_providers_status[provider_name] = {
+                "available": status.get("available", False),
+                "error": status.get("error", None)
+                # Note: Intentionally excluding "instance" as it's not JSON serializable
+            }
+        
         error_summary = {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "status": "error",
@@ -420,7 +430,7 @@ def analyze_gnn_files(
             "failed_analyses": failed_analyses,
             "total_analyses": total_analyses,
             "success": False,
-            "providers_status": providers_status
+            "providers_status": serializable_providers_status
         }
         return error_summary
 

@@ -188,4 +188,4 @@ Signature:
   Author: "AXIOM Research Team - Planning Module"
   Institution: "VERSES AI / Active Inference Institute"
   ContactEmail: "axiom-planning@verses.ai"
-  DOI: "10.5281/zenodo.axiom.gnn.planning" 
+  DOI: "TBD - Not yet published" 

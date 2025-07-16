@@ -1,0 +1,25 @@
+{
+    "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/test_ontology_validation.md",
+    "name": "test_ontology_validation",
+    "raw_sections": {
+        "StateSpaceBlock": "A[3,3,type=float]\nB[3,3,type=float]\ninvalidVar[2,1,type=float]",
+        "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=transitionmatrix  # Case mismatch test\ninvalidVar=InvalidTerm  # Should be flagged as invalid\nC=HiddenStae  # Typo that should trigger fuzzy matching (should suggest HiddenState)\nD=SomethingCompletelyWrong  # Should be flagged as invalid\nE=  # Empty value test\n# F=CommentedOut  # Should be ignored\nvalidTerm=Action"
+    },
+    "statespaceblock": [
+        {
+            "id": "A",
+            "dimensions": "3,3,type=float",
+            "original_id": "A"
+        },
+        {
+            "id": "B",
+            "dimensions": "3,3,type=float",
+            "original_id": "B"
+        },
+        {
+            "id": "invalidVar",
+            "dimensions": "2,1,type=float",
+            "original_id": "invalidVar"
+        }
+    ]
+}

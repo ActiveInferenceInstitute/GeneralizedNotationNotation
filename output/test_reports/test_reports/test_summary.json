@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-07-16 08:26:49",
+  "exit_code": 2,
+  "success": false,
+  "test_configuration": {
+    "fast_only": false,
+    "slow_tests_included": false,
+    "verbose": true,
+    "parallel_execution": false,
+    "coverage_enabled": true
+  },
+  "execution": {
+    "timeout_seconds": 600,
+    "command": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python -m pytest --verbose --tb=short --junitxml=/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/pytest_report.xml --maxfail=20 --durations=15 --disable-warnings --strict-markers --cov=src --cov-report=html:/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/coverage --cov-report=json:/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/test_coverage.json --cov-report=term-missing --cov-fail-under=0 -m not slow /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/tests",
+    "working_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation"
+  },
+  "test_statistics": {
+    "total_tests": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "errors": 0,
+    "warnings": 0
+  },
+  "dependencies": {
+    "pytest": {
+      "available": true,
+      "version": "8.4.0"
+    },
+    "pytest-cov": {
+      "available": true,
+      "version": "6.2.1"
+    },
+    "pytest-json-report": {
+      "available": false,
+      "version": null
+    },
+    "pytest-xdist": {
+      "available": false,
+      "version": null
+    }
+  },
+  "output_files": {
+    "xml_report": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/pytest_report.xml",
+    "json_report": null,
+    "markdown_report": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/test_report.md",
+    "coverage_html": null,
+    "coverage_json": null
+  },
+  "raw_output": {
+    "stdout": "============================= test session starts ==============================\nplatform darwin -- Python 3.13.5, pytest-8.4.0, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /Users/4d/Documents/GitHub/GeneralizedNotationNotation\nconfigfile: pytest.ini\nplugins: anyio-4.9.0, cov-6.2.1, mock-3.14.1\ncollecting ... collected 404 items / 1 error / 10 deselected / 394 selected\n\n==================================== ERRORS ====================================\n__________________ ERROR collecting src/tests/test_render.py ___________________\n'render' not found in `markers` configuration option\n- generated xml file: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/pytest_report.xml -\n=========================== short test summary info ============================\nERROR src/tests/test_render.py - Failed: 'render' not found in `markers` conf...\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n======================= 10 deselected, 1 error in 4.12s ========================\n",
+    "stderr": ""
+  }
+}

@@ -128,4 +128,4 @@ Signature:
   Author: "AXIOM Research Team - tMM Module"
   Institution: "VERSES AI / Active Inference Institute"
   ContactEmail: "axiom-tmm@verses.ai"
-  DOI: "10.5281/zenodo.axiom.gnn.tmm" 
+  DOI: "TBD - Not yet published" 

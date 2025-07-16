@@ -22,7 +22,11 @@ logging.basicConfig(
 )
 
 # Import the GNN parser for file parsing
-from visualization.parser import GNNParser
+try:
+    from visualization.parser import GNNParser
+except ImportError:
+    # Fallback for test environment
+    from ..visualization.parser import GNNParser
 
 # Create a logger for this module
 logger = logging.getLogger(__name__)

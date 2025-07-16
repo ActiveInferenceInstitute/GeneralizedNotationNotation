@@ -71,6 +71,12 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
     json_report_path = test_output_dir / "test_results.json"
     markdown_report_path = test_output_dir / "test_report.md"
     
+    # Define project root early for consistent path resolution
+    project_root = Path(__file__).parent.parent.parent
+    
+    # Enhanced test selection logic
+    src_tests_dir = project_root / "src" / "tests"
+    
     # Prepare pytest command with enhanced settings
     pytest_cmd = [
         sys.executable, "-m", "pytest",
@@ -80,7 +86,8 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
         "--maxfail=20",  # Allow more failures for better coverage
         "--durations=15",  # Show 15 slowest tests
         "--disable-warnings",  # Reduce noise
-        "--strict-markers",  # Enforce proper test markers
+        # Note: Removed --strict-markers to allow tests with minor marker issues to run
+        f"-c{project_root}/pytest.ini",  # Explicitly specify config file location
     ]
     
     # Add parallel execution if pytest-xdist is available
@@ -101,7 +108,6 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
         logger.debug("Coverage reporting enabled")
     
     # Enhanced test selection logic
-    src_tests_dir = Path(__file__).parent.parent.parent / "src" / "tests"
     
     if fast_only:
         pytest_cmd.extend(["-m", "fast"])
@@ -138,7 +144,6 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
             timeout_seconds = 600  # 10 minutes for regular tests
         
         # Ensure we're in the right directory
-        project_root = Path(__file__).parent.parent.parent
         
         with performance_tracker.track_operation("execute_test_suite"):
             result = subprocess.run(

@@ -1,0 +1,6 @@
+{
+  "_HeaderComments": "# Test Ontology Validation\n\nThis is a test file to validate enhanced ontology processing features.",
+  "StateSpaceBlock": "A[3,3,type=float]\nB[3,3,type=float]\ninvalidVar[2,1,type=float]",
+  "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=transitionmatrix  # Case mismatch test\ninvalidVar=InvalidTerm  # Should be flagged as invalid\nC=HiddenStae  # Typo that should trigger fuzzy matching (should suggest HiddenState)\nD=SomethingCompletelyWrong  # Should be flagged as invalid\nE=  # Empty value test\n# F=CommentedOut  # Should be ignored\nvalidTerm=Action",
+  "ModelName": "Test Ontology Validation"
+}

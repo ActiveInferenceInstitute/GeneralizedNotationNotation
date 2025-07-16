@@ -25,7 +25,7 @@ from .executor import (
 )
 
 # Module metadata
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __author__ = "Active Inference Institute"
 __description__ = "GNN model execution and simulation"
 

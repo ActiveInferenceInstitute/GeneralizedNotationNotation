@@ -118,7 +118,12 @@ run_script = create_standardized_pipeline_script(
     process_ontology_operations_standardized,
     "Ontology processing and validation",
     additional_arguments={
-        "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file"}
+        "ontology_terms_file": {
+            "type": Path, 
+            "help": "Path to ontology terms JSON file",
+            "flag": "--ontology-terms-file",
+            "dest": "ontology_terms_file"
+        }
     }
 )
 

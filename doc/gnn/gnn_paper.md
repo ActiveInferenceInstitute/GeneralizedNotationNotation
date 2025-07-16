@@ -3,7 +3,7 @@ Inference Models
 Jakub Sm´ekal1[0000−0003−4989−4968] and Daniel Ari
 Friedman1[0000−0001−6232−9096]
 Active Inference Institute, USA https://www.activeinference.institute/
-blanket@ActiveInference.institute
+blanket@activeinference.institute
 Abstract. This paper introduces Generalized Notation Notation (GNN),
 a novel approach to generative model representation that facilitates communication, understanding, and application of Active Inference across
 various domains. GNN complements the Active Inference Ontology as a

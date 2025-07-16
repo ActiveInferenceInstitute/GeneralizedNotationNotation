@@ -145,11 +145,17 @@ def execute_activeinference_script(
         if not project_file.exists():
             logger.info(f"Creating Julia project environment in {abs_script_path.parent}")
             try:
-                # Initialize project and install required packages
+                # Initialize project and install required packages including standard library packages
                 install_cmd = '''
 using Pkg; 
 Pkg.activate("."); 
-Pkg.add(["ActiveInference", "Distributions", "LinearAlgebra", "Random", "Plots", "StatsBase"]);
+Pkg.add([
+    "ActiveInference", "Distributions", "LinearAlgebra", "Random", 
+    "Plots", "StatsBase", "DelimitedFiles", "Statistics", "Printf",
+    "Dates", "JSON", "JSON3", "DataFrames", "CSV", "MAT",
+    "Colors", "ColorSchemes", "StatsPlots", "GraphPlot", 
+    "NetworkLayout", "LightGraphs", "FFTW", "Logging"
+]);
 Pkg.instantiate()
 '''
                 subprocess.run(

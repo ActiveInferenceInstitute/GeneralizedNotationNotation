@@ -38,7 +38,7 @@ from .mcp import (
 )
 
 # Module metadata
-__version__ = "2.1.0"
+__version__ = "1.1.0"
 __author__ = "GNN Pipeline Team"
 __description__ = "Enhanced website generation for GNN pipeline outputs with advanced features"
 

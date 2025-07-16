@@ -50,8 +50,13 @@ except ImportError as e:
     JAX_AVAILABLE = False
     run_jax_scripts = None
 
-from pipeline import get_output_dir_for_script
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
+
+try:
+    from pipeline import get_output_dir_for_script
+except ImportError:
+    # Fallback for test environment
+    from ..pipeline import get_output_dir_for_script
 
 logger = logging.getLogger(__name__)
 

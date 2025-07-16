@@ -1,6 +1,13 @@
 # Contributing to GeneralizedNotationNotation
 
-First off, thank you for considering contributing to GeneralizedNotationNotation (GNN)! It's people like you that make GNN such a great tool.
+> **📋 Document Metadata**  
+> **Type**: Contribution Guide | **Audience**: Contributors, Developers | **Complexity**: Intermediate  
+> **Last Updated**: July 2025 | **Status**: Production-Ready  
+> **Cross-References**: [Code of Conduct](CODE_OF_CONDUCT.md) | [Security Policy](SECURITY.md) | [Documentation Guide](doc/README.md)
+
+First off, thank you for considering contributing to GeneralizedNotationNotation (GNN)! It's agents like you that make GNN such a great tool.
+
+Contact: [blanket@activeinference.institute](mailto:blanket@activeinference.institute)
 
 This document provides guidelines for contributing to the project. Please read it carefully to ensure a smooth and effective contribution process.
 
@@ -41,7 +48,7 @@ GNN has comprehensive documentation to help you understand the project:
     source .venv/bin/activate  # On Windows use `.venv\Scripts\activate`
     pip install -r requirements.txt
     ```
-    Refer to **[SETUP.md](SETUP.md)** for comprehensive setup instructions and the **[Configuration Guide](doc/configuration/README.md)** for detailed configuration options.
+    Refer to **[SETUP.md](doc/SETUP.md)** for comprehensive setup instructions and the **[Configuration Guide](doc/configuration/README.md)** for detailed configuration options.
 
 4.  **Create a Branch**: Create a new branch for your changes.
     ```bash

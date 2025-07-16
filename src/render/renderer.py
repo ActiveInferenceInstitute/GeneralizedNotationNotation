@@ -223,6 +223,12 @@ def render_gnn_files(
                     
                     for target_format, output_subdir in render_targets:
                         try:
+                            # Check if rendering is available
+                            if not RENDER_AVAILABLE or render_gnn_spec is None:
+                                failed_renders += 1
+                                log_step_warning(logger, f"Render functionality not available for {target_format}")
+                                continue
+                            
                             sub_output_dir = render_output_dir / output_subdir
                             sub_output_dir.mkdir(exist_ok=True)
                             
