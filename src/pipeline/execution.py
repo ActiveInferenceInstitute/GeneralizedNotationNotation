@@ -44,6 +44,8 @@ try:
         log_pipeline_summary, reset_progress_tracker, get_progress_summary,
         VisualLoggingEnhancer, performance_tracker, EnhancedPipelineLogger
     )
+    from utils.argument_utils import build_enhanced_step_command_args, PipelineArguments
+    ENHANCED_ARGS_AVAILABLE = True
 except ImportError:
     # Fallback for when utils is not available
     def log_step_start(*args, **kwargs):
@@ -65,6 +67,9 @@ except ImportError:
     class EnhancedPipelineLogger:
         pass
     performance_tracker = None
+    build_enhanced_step_command_args = None
+    PipelineArguments = None
+    ENHANCED_ARGS_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -322,7 +327,37 @@ def execute_pipeline_step(script_name: str, step_number: int, total_steps: int,
         
         # Build command with enhanced argument handling
         script_path = Path(__file__).parent.parent / script_name
-        command = build_command_args(script_name, script_path, args, python_executable)
+        
+        # Use enhanced command building if available
+        if ENHANCED_ARGS_AVAILABLE and build_enhanced_step_command_args:
+            # Convert args to PipelineArguments if needed
+            if not isinstance(args, PipelineArguments):
+                # Create PipelineArguments from namespace
+                pipeline_args = PipelineArguments(
+                    target_dir=getattr(args, 'target_dir', target_dir),
+                    output_dir=getattr(args, 'output_dir', output_dir),
+                    recursive=getattr(args, 'recursive', True),
+                    verbose=getattr(args, 'verbose', False),
+                    strict=getattr(args, 'strict', False),
+                    estimate_resources=getattr(args, 'estimate_resources', True),
+                    ontology_terms_file=getattr(args, 'ontology_terms_file', None),
+                    llm_tasks=getattr(args, 'llm_tasks', 'all'),
+                    llm_timeout=getattr(args, 'llm_timeout', 360),
+                    website_html_filename=getattr(args, 'website_html_filename', 'gnn_pipeline_summary_website.html'),
+                    duration=getattr(args, 'duration', 30.0),
+                    recreate_venv=getattr(args, 'recreate_venv', False),
+                    dev=getattr(args, 'dev', False),
+                )
+            else:
+                pipeline_args = args
+            
+            try:
+                command = build_enhanced_step_command_args(script_name, pipeline_args, python_executable, script_path)
+            except Exception as e:
+                logger.warning(f"Enhanced command building failed for {script_name}: {e}, falling back to basic")
+                command = build_command_args(script_name, script_path, args, python_executable)
+        else:
+            command = build_command_args(script_name, script_path, args, python_executable)
         # Ensure script-specific output directory exists
         script_dir = get_output_dir_for_script(script_name, output_dir)
         script_dir.mkdir(parents=True, exist_ok=True)

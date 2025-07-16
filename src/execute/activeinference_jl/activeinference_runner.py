@@ -204,6 +204,7 @@ Pkg.instantiate()
 
 def run_activeinference_analysis(
     pipeline_output_dir: Union[str, Path],
+    execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False,
     analysis_type: str = "comprehensive"
@@ -213,6 +214,7 @@ def run_activeinference_analysis(
     
     Args:
         pipeline_output_dir: Main pipeline output directory
+        execution_output_dir: Specific directory for ActiveInference.jl execution outputs (optional)
         recursive_search: Whether to search recursively for scripts
         verbose: Whether to enable verbose output
         analysis_type: Type of analysis to run ('basic', 'comprehensive', 'all')
@@ -224,6 +226,15 @@ def run_activeinference_analysis(
     if not is_julia_available():
         logger.error("Julia is not available, cannot execute ActiveInference.jl scripts")
         return False
+    
+    # Set up execution output directory
+    if execution_output_dir:
+        exec_output_dir = Path(execution_output_dir)
+        exec_output_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"ActiveInference.jl execution outputs will be saved to: {exec_output_dir}")
+        results_dir = exec_output_dir
+    else:
+        results_dir = Path(pipeline_output_dir) / "execution_results" / "activeinference_jl"
     
     # Construct the path to the ActiveInference.jl outputs
     activeinference_dir = Path(pipeline_output_dir) / "gnn_rendered_simulators" / "activeinference_jl"
@@ -242,8 +253,6 @@ def run_activeinference_analysis(
     # Execute each script
     success_count = 0
     failure_count = 0
-    
-    results_dir = Path(pipeline_output_dir) / "execution_results" / "activeinference_jl"
     
     for script_file in script_files:
         output_dir = results_dir / script_file.stem

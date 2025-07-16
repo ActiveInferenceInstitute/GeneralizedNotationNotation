@@ -116,7 +116,10 @@ def process_ontology_operations_standardized(
 run_script = create_standardized_pipeline_script(
     "8_ontology.py",
     process_ontology_operations_standardized,
-    "Ontology processing and validation"
+    "Ontology processing and validation",
+    additional_arguments={
+        "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file"}
+    }
 )
 
 if __name__ == '__main__':

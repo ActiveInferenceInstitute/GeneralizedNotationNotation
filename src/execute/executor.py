@@ -336,6 +336,7 @@ def execute_rendered_simulators(
 ) -> bool:
     """
     Execute rendered simulator scripts with enhanced error handling and dependency checking.
+    Framework outputs are organized in separate subdirectories.
     
     Args:
         target_dir: Directory containing rendered simulator scripts
@@ -348,16 +349,30 @@ def execute_rendered_simulators(
     Returns:
         True if execution succeeded, False otherwise
     """
-    log_step_start(logger, "Executing rendered simulator scripts with enhanced error handling")
+    log_step_start(logger, "Executing rendered simulator scripts with framework-specific organization")
     
     # Use centralized output directory configuration
     execution_output_dir = get_output_dir_for_script("10_execute.py", output_dir)
     execution_output_dir.mkdir(parents=True, exist_ok=True)
     
+    # Create framework-specific output directories
+    framework_dirs = {
+        "pymdp": execution_output_dir / "pymdp",
+        "rxinfer": execution_output_dir / "rxinfer", 
+        "discopy": execution_output_dir / "discopy",
+        "activeinference_jl": execution_output_dir / "activeinference_jl",
+        "jax": execution_output_dir / "jax"
+    }
+    
+    for framework, framework_dir in framework_dirs.items():
+        framework_dir.mkdir(parents=True, exist_ok=True)
+        logger.debug(f"Created framework directory: {framework_dir}")
+    
     try:
         execution_results = {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "target_directory": str(target_dir),
+            "framework_execution_dirs": {k: str(v) for k, v in framework_dirs.items()},
             "pymdp_executions": [],
             "rxinfer_executions": [],
             "discopy_executions": [],
@@ -420,8 +435,10 @@ def execute_rendered_simulators(
                                 logger.warning(f"⚠️ PyMDP script syntax error in {script.name}: {e}")
                                 execution_results["syntax_errors"].append(f"PyMDP: {script.name} - {e}")
                     
+                    # Pass framework-specific output directory
                     pymdp_success = run_pymdp_scripts(
                         pipeline_output_dir=target_dir,
+                        execution_output_dir=framework_dirs["pymdp"],
                         recursive_search=recursive,
                         verbose=verbose
                     )
@@ -430,6 +447,7 @@ def execute_rendered_simulators(
                         execution_results["pymdp_executions"].append({
                             "status": "SUCCESS", 
                             "message": "PyMDP scripts executed successfully",
+                            "output_dir": str(framework_dirs["pymdp"]),
                             "scripts_processed": len(list(pymdp_dir.glob("*.py"))) if pymdp_dir.exists() else 0
                         })
                     else:
@@ -437,12 +455,17 @@ def execute_rendered_simulators(
                         execution_results["pymdp_executions"].append({
                             "status": "FAILED", 
                             "message": "PyMDP script execution failed",
+                            "output_dir": str(framework_dirs["pymdp"]),
                             "scripts_processed": len(list(pymdp_dir.glob("*.py"))) if pymdp_dir.exists() else 0
                         })
                 log_step_success(logger, "PyMDP script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["pymdp_executions"].append({"status": "ERROR", "message": str(e)})
+                execution_results["pymdp_executions"].append({
+                    "status": "ERROR", 
+                    "message": str(e),
+                    "output_dir": str(framework_dirs["pymdp"])
+                })
                 log_step_warning(logger, f"PyMDP script execution failed: {e}")
         
         # Execute RxInfer scripts if available
@@ -452,6 +475,7 @@ def execute_rendered_simulators(
                     logger.info("🚀 Executing RxInfer scripts...")
                     rxinfer_success = run_rxinfer_scripts(
                         pipeline_output_dir=target_dir,
+                        execution_output_dir=framework_dirs["rxinfer"],
                         recursive_search=recursive,
                         verbose=verbose
                     )
@@ -459,18 +483,24 @@ def execute_rendered_simulators(
                         execution_results["total_successes"] += 1
                         execution_results["rxinfer_executions"].append({
                             "status": "SUCCESS", 
-                            "message": "RxInfer scripts executed successfully"
+                            "message": "RxInfer scripts executed successfully",
+                            "output_dir": str(framework_dirs["rxinfer"])
                         })
                     else:
                         execution_results["total_failures"] += 1
                         execution_results["rxinfer_executions"].append({
                             "status": "FAILED", 
-                            "message": "RxInfer script execution failed"
+                            "message": "RxInfer script execution failed",
+                            "output_dir": str(framework_dirs["rxinfer"])
                         })
                 log_step_success(logger, "RxInfer script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["rxinfer_executions"].append({"status": "ERROR", "message": str(e)})
+                execution_results["rxinfer_executions"].append({
+                    "status": "ERROR", 
+                    "message": str(e),
+                    "output_dir": str(framework_dirs["rxinfer"])
+                })
                 log_step_warning(logger, f"RxInfer script execution failed: {e}")
         
         # Execute DisCoPy analysis if available
@@ -478,9 +508,9 @@ def execute_rendered_simulators(
             try:
                 with performance_tracker.track_operation("execute_discopy_analysis"):
                     logger.info("🚀 Executing DisCoPy analysis...")
-                    # DisCoPy already creates its own discopy_results subfolder
                     discopy_success = run_discopy_analysis(
                         pipeline_output_dir=target_dir,
+                        execution_output_dir=framework_dirs["discopy"],
                         recursive_search=recursive,
                         verbose=verbose
                     )
@@ -488,18 +518,24 @@ def execute_rendered_simulators(
                         execution_results["total_successes"] += 1
                         execution_results["discopy_executions"].append({
                             "status": "SUCCESS", 
-                            "message": "DisCoPy analysis completed successfully"
+                            "message": "DisCoPy analysis completed successfully",
+                            "output_dir": str(framework_dirs["discopy"])
                         })
                     else:
                         execution_results["total_failures"] += 1
                         execution_results["discopy_executions"].append({
                             "status": "FAILED", 
-                            "message": "DisCoPy analysis failed"
+                            "message": "DisCoPy analysis failed",
+                            "output_dir": str(framework_dirs["discopy"])
                         })
                 log_step_success(logger, "DisCoPy analysis completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["discopy_executions"].append({"status": "ERROR", "message": str(e)})
+                execution_results["discopy_executions"].append({
+                    "status": "ERROR", 
+                    "message": str(e),
+                    "output_dir": str(framework_dirs["discopy"])
+                })
                 log_step_warning(logger, f"DisCoPy analysis failed: {e}")
         
         # Execute ActiveInference.jl analysis if available
@@ -509,6 +545,7 @@ def execute_rendered_simulators(
                     logger.info("🚀 Executing ActiveInference.jl analysis...")
                     activeinference_success = run_activeinference_analysis(
                         pipeline_output_dir=target_dir,
+                        execution_output_dir=framework_dirs["activeinference_jl"],
                         recursive_search=recursive,
                         verbose=verbose,
                         analysis_type="comprehensive"
@@ -517,18 +554,24 @@ def execute_rendered_simulators(
                         execution_results["total_successes"] += 1
                         execution_results["activeinference_executions"].append({
                             "status": "SUCCESS", 
-                            "message": "ActiveInference.jl analysis completed successfully"
+                            "message": "ActiveInference.jl analysis completed successfully",
+                            "output_dir": str(framework_dirs["activeinference_jl"])
                         })
                     else:
                         execution_results["total_failures"] += 1
                         execution_results["activeinference_executions"].append({
                             "status": "FAILED", 
-                            "message": "ActiveInference.jl analysis failed"
+                            "message": "ActiveInference.jl analysis failed",
+                            "output_dir": str(framework_dirs["activeinference_jl"])
                         })
                 log_step_success(logger, "ActiveInference.jl analysis completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["activeinference_executions"].append({"status": "ERROR", "message": str(e)})
+                execution_results["activeinference_executions"].append({
+                    "status": "ERROR", 
+                    "message": str(e),
+                    "output_dir": str(framework_dirs["activeinference_jl"])
+                })
                 log_step_warning(logger, f"ActiveInference.jl analysis failed: {e}")
         
         # Execute JAX scripts if available
@@ -538,6 +581,7 @@ def execute_rendered_simulators(
                     logger.info("🚀 Executing JAX scripts...")
                     jax_success = run_jax_scripts(
                         pipeline_output_dir=target_dir,
+                        execution_output_dir=framework_dirs["jax"],
                         recursive_search=recursive,
                         verbose=verbose
                     )
@@ -545,18 +589,24 @@ def execute_rendered_simulators(
                         execution_results["total_successes"] += 1
                         execution_results["jax_executions"].append({
                             "status": "SUCCESS", 
-                            "message": "JAX scripts executed successfully"
+                            "message": "JAX scripts executed successfully",
+                            "output_dir": str(framework_dirs["jax"])
                         })
                     else:
                         execution_results["total_failures"] += 1
                         execution_results["jax_executions"].append({
                             "status": "FAILED", 
-                            "message": "JAX script execution failed"
+                            "message": "JAX script execution failed",
+                            "output_dir": str(framework_dirs["jax"])
                         })
                 log_step_success(logger, "JAX script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["jax_executions"].append({"status": "ERROR", "message": str(e)})
+                execution_results["jax_executions"].append({
+                    "status": "ERROR", 
+                    "message": str(e),
+                    "output_dir": str(framework_dirs["jax"])
+                })
                 log_step_warning(logger, f"JAX script execution failed: {e}")
         
         # Save execution summary with enhanced details
@@ -572,6 +622,12 @@ def execute_rendered_simulators(
             f.write(f"**Target Directory:** {execution_results['target_directory']}\n")
             f.write(f"**Total Successes:** {execution_results['total_successes']}\n")
             f.write(f"**Total Failures:** {execution_results['total_failures']}\n\n")
+            
+            # Framework-specific output directories
+            f.write("## Framework-Specific Output Directories\n\n")
+            for framework, framework_dir in execution_results["framework_execution_dirs"].items():
+                f.write(f"- **{framework.upper()}**: {framework_dir}\n")
+            f.write("\n")
             
             # Dependency issues section
             if execution_results["dependency_issues"]:
@@ -593,6 +649,7 @@ def execute_rendered_simulators(
                     status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
                     f.write(f"- {status_icon} **{exec_info.get('script', 'PyMDP Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
+                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
                     if 'scripts_processed' in exec_info:
                         f.write(f"  - Scripts processed: {exec_info['scripts_processed']}\n")
                 f.write("\n")
@@ -603,6 +660,7 @@ def execute_rendered_simulators(
                     status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
                     f.write(f"- {status_icon} **{exec_info.get('script', 'RxInfer Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
+                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
                 f.write("\n")
             
             if execution_results["discopy_executions"]:
@@ -611,6 +669,7 @@ def execute_rendered_simulators(
                     status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
                     f.write(f"- {status_icon} **{exec_info.get('script', 'DisCoPy Analysis')}** ({exec_info.get('type', 'analysis')}): {exec_info.get('status', 'Unknown')}\n")
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
+                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
                 f.write("\n")
             
             if execution_results["activeinference_executions"]:
@@ -619,6 +678,7 @@ def execute_rendered_simulators(
                     status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
                     f.write(f"- {status_icon} **{exec_info.get('script', 'ActiveInference.jl Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
+                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
                 f.write("\n")
             
             if execution_results["jax_executions"]:
@@ -627,6 +687,7 @@ def execute_rendered_simulators(
                     status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
                     f.write(f"- {status_icon} **{exec_info.get('script', 'JAX Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
+                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
                 f.write("\n")
             
             # Recommendations section
@@ -655,7 +716,7 @@ def execute_rendered_simulators(
         
         if total_executions > 0:
             success_rate = execution_results["total_successes"] / total_executions * 100
-            log_step_success(logger, f"Execution completed. Success rate: {success_rate:.1f}% ({execution_results['total_successes']}/{total_executions})")
+            log_step_success(logger, f"Execution completed with framework-specific organization. Success rate: {success_rate:.1f}% ({execution_results['total_successes']}/{total_executions})")
             
             # Log specific issues
             if execution_results["dependency_issues"]:

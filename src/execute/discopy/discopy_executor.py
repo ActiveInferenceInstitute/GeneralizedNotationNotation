@@ -246,6 +246,7 @@ class DisCoPyExecutor:
 
 def run_discopy_analysis(
     pipeline_output_dir: Union[str, Path],
+    execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False
 ) -> bool:
@@ -254,12 +255,22 @@ def run_discopy_analysis(
     
     Args:
         pipeline_output_dir: Main pipeline output directory
+        execution_output_dir: Specific directory for DisCoPy execution outputs (optional)
         recursive_search: Whether to search recursively for outputs
         verbose: Whether to enable verbose output
         
     Returns:
         bool: True if analysis completed successfully, False if any failed
     """
+    # Set up execution output directory
+    if execution_output_dir:
+        exec_output_dir = Path(execution_output_dir)
+        exec_output_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"DisCoPy execution outputs will be saved to: {exec_output_dir}")
+        results_dir = exec_output_dir
+    else:
+        results_dir = Path(pipeline_output_dir) / "execution_results" / "discopy_results"
+    
     # Construct the path to the DisCoPy outputs
     discopy_dir = Path(pipeline_output_dir) / "gnn_rendered_simulators" / "discopy"
     
@@ -271,7 +282,6 @@ def run_discopy_analysis(
     
     # Create executor and run analysis
     executor = DisCoPyExecutor(verbose=verbose)
-    results_dir = Path(pipeline_output_dir) / "execution_results" / "discopy_results"
     results = executor.execute_directory(discopy_dir, results_dir)
     
     # Report analysis results

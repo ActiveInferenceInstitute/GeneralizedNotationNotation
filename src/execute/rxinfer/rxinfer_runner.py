@@ -148,6 +148,7 @@ def execute_rxinfer_script(
 
 def run_rxinfer_scripts(
     pipeline_output_dir: Union[str, Path],
+    execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False
 ) -> bool:
@@ -156,6 +157,7 @@ def run_rxinfer_scripts(
     
     Args:
         pipeline_output_dir: Main pipeline output directory
+        execution_output_dir: Specific directory for RxInfer execution outputs (optional)
         recursive_search: Whether to search recursively for scripts
         verbose: Whether to enable verbose output
         
@@ -166,6 +168,12 @@ def run_rxinfer_scripts(
     if not is_julia_available():
         logger.error("Julia is not available, cannot execute RxInfer.jl scripts")
         return False
+    
+    # Set up execution output directory
+    if execution_output_dir:
+        exec_output_dir = Path(execution_output_dir)
+        exec_output_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"RxInfer execution outputs will be saved to: {exec_output_dir}")
     
     # Construct the path to the RxInfer.jl scripts
     rxinfer_dir = Path(pipeline_output_dir) / "gnn_rendered_simulators" / "rxinfer"

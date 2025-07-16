@@ -94,7 +94,7 @@ def process_llm_analysis(
     **kwargs
 ) -> bool:
     """
-    Standardized LLM analysis processing function.
+    Enhanced LLM analysis processing function with improved error handling.
     
     Args:
         target_dir: Directory containing GNN files to analyze
@@ -102,39 +102,104 @@ def process_llm_analysis(
         logger: Logger instance for this step
         recursive: Whether to process files recursively
         verbose: Whether to enable verbose logging
-        **kwargs: Additional processing options
+        **kwargs: Additional processing options (llm_tasks, llm_timeout)
         
     Returns:
         True if processing succeeded, False otherwise
     """
     try:
+        log_step_start(logger, "Starting enhanced LLM analysis with comprehensive reporting")
+        
+        # Update logger verbosity if needed
+        if verbose:
+            logger.setLevel(logging.DEBUG)
+        
         # Use centralized output directory configuration
         llm_output_dir = get_output_dir_for_script("11_llm.py", output_dir)
         llm_output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Call the existing analyze_gnn_files function
-        overall_results = analyze_gnn_files(
-            target_dir=target_dir,
-            output_dir=llm_output_dir,
-            logger=logger,
-            recursive=recursive,
-            verbose=verbose
-        )
+        logger.info(f"LLM analysis source directory: {target_dir}")
+        logger.info(f"LLM analysis output directory: {llm_output_dir}")
         
-        # Log results summary
-        if overall_results.get('files_processed', 0) > 0:
-            success_rate = (overall_results.get('successful_analyses', 0) / overall_results.get('total_analyses', 1)) * 100
-            log_step_success(logger, 
-                f"LLM processing completed: {overall_results.get('files_processed', 0)} files, "
-                f"{overall_results.get('successful_analyses', 0)}/{overall_results.get('total_analyses', 0)} analyses successful ({success_rate:.1f}%)")
-        else:
-            log_step_warning(logger, "No files were successfully processed")
+        # Validate that the target directory exists
+        if not target_dir.exists():
+            log_step_error(logger, f"Target directory does not exist: {target_dir}")
             return False
         
-        return overall_results.get('success', False)
+        # Pass through additional kwargs like llm_tasks and llm_timeout
+        analysis_kwargs = {
+            'llm_tasks': kwargs.get('llm_tasks', 'all'),
+            'llm_timeout': kwargs.get('llm_timeout', 360)
+        }
+        
+        logger.debug(f"Analysis configuration: {analysis_kwargs}")
+        
+        # Call the enhanced analyze_gnn_files function
+        with performance_tracker.track_operation("llm_analysis_complete"):
+            overall_results = analyze_gnn_files(
+                target_dir=target_dir,
+                output_dir=llm_output_dir,
+                logger=logger,
+                recursive=recursive,
+                verbose=verbose,
+                **analysis_kwargs
+            )
+        
+        # Enhanced result processing
+        if not overall_results:
+            log_step_error(logger, "No results returned from LLM analysis")
+            return False
+        
+        # Extract key metrics
+        status = overall_results.get('status', 'unknown')
+        files_processed = overall_results.get('files_processed', 0)
+        successful_analyses = overall_results.get('successful_analyses', 0)
+        total_analyses = overall_results.get('total_analyses', 0)
+        success_rate = overall_results.get('success_rate', 0)
+        
+        # Log detailed results
+        logger.info(f"=== LLM Analysis Results ===")
+        logger.info(f"Status: {status}")
+        logger.info(f"Files processed: {files_processed}")
+        logger.info(f"Successful analyses: {successful_analyses}")
+        logger.info(f"Total analyses: {total_analyses}")
+        logger.info(f"Success rate: {success_rate:.1f}%")
+        
+        # Determine success based on different criteria
+        if status == 'no_providers_available':
+            log_step_warning(logger, "No LLM providers available - analysis skipped")
+            return True  # Don't fail pipeline for missing providers
+        elif status == 'no_files_found':
+            log_step_warning(logger, "No GNN files found for analysis")
+            return True  # Not an error condition
+        elif status == 'error':
+            error_msg = overall_results.get('error', 'Unknown error')
+            log_step_error(logger, f"LLM analysis error: {error_msg}")
+            return False
+        elif status == 'completed':
+            if successful_analyses > 0:
+                log_step_success(logger, 
+                    f"LLM analysis completed successfully: {successful_analyses}/{total_analyses} analyses successful ({success_rate:.1f}%)")
+                
+                # Additional logging for analysis tasks
+                analysis_tasks = overall_results.get('analysis_tasks', [])
+                available_providers = overall_results.get('available_providers', [])
+                logger.info(f"Analysis tasks performed: {', '.join(analysis_tasks)}")
+                logger.info(f"Providers used: {', '.join(available_providers)}")
+                
+                return True
+            else:
+                log_step_warning(logger, "LLM analysis completed but no analyses were successful")
+                return True  # Don't fail pipeline for failed analyses
+        else:
+            log_step_warning(logger, f"Unknown LLM analysis status: {status}")
+            return overall_results.get('success', False)
         
     except Exception as e:
-        log_step_error(logger, f"LLM processing failed: {e}")
+        log_step_error(logger, f"LLM processing failed with exception: {e}")
+        if verbose:
+            import traceback
+            logger.error(f"Full traceback: {traceback.format_exc()}")
         return False
 
 run_script = create_standardized_pipeline_script(

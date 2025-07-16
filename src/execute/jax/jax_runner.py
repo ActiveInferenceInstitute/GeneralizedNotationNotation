@@ -131,11 +131,18 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
         logger.error(f"❌ Error executing script {script_path.name}: {e}")
         return False
 
-def run_jax_scripts(pipeline_output_dir: Union[str, Path], recursive_search: bool = True, verbose: bool = False, device: Optional[str] = None) -> bool:
+def run_jax_scripts(pipeline_output_dir: Union[str, Path], execution_output_dir: Optional[Union[str, Path]] = None, recursive_search: bool = True, verbose: bool = False, device: Optional[str] = None) -> bool:
     """Find and run JAX scripts on rendered models."""
     if not is_jax_available():
         logger.error("JAX is not available, cannot execute JAX scripts")
         return False
+    
+    # Set up execution output directory
+    if execution_output_dir:
+        exec_output_dir = Path(execution_output_dir)
+        exec_output_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"JAX execution outputs will be saved to: {exec_output_dir}")
+    
     jax_dir = Path(pipeline_output_dir) / "gnn_rendered_simulators" / "jax"
     logger.info(f"Looking for JAX scripts in: {jax_dir}")
     script_files = find_jax_scripts(jax_dir, recursive_search)

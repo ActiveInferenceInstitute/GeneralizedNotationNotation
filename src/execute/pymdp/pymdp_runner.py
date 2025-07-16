@@ -183,6 +183,7 @@ def execute_pymdp_script(
 
 def run_pymdp_scripts(
     pipeline_output_dir: Union[str, Path],
+    execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False
 ) -> bool:
@@ -191,6 +192,7 @@ def run_pymdp_scripts(
     
     Args:
         pipeline_output_dir: Main pipeline output directory
+        execution_output_dir: Specific directory for PyMDP execution outputs (optional)
         recursive_search: Whether to search recursively for scripts
         verbose: Whether to enable verbose output
         
@@ -198,6 +200,12 @@ def run_pymdp_scripts(
         bool: True if all scripts executed successfully, False if any failed
     """
     logger.info(f"Starting PyMDP script execution from: {pipeline_output_dir}")
+    
+    # Set up execution output directory
+    if execution_output_dir:
+        exec_output_dir = Path(execution_output_dir)
+        exec_output_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"PyMDP execution outputs will be saved to: {exec_output_dir}")
     
     # Find all PyMDP scripts
     script_files = find_pymdp_scripts(pipeline_output_dir, recursive_search)

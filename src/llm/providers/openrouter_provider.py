@@ -56,6 +56,9 @@ class OpenRouterProvider(BaseLLMProvider):
         "meta-llama/llama-3.1-70b-instruct",
         "meta-llama/llama-3.1-8b-instruct",
         
+        # Moonshot AI models
+        "moonshotai/kimi-k2:free",
+        
         # Other providers
         "mistralai/mistral-7b-instruct",
         "cohere/command-r-plus",
@@ -77,6 +80,8 @@ class OpenRouterProvider(BaseLLMProvider):
         self.api_key = api_key or os.getenv('OPENROUTER_API_KEY')
         self.site_url = kwargs.get('site_url') or os.getenv('OPENROUTER_SITE_URL', 'http://localhost')
         self.site_name = kwargs.get('site_name') or os.getenv('OPENROUTER_SITE_NAME', 'GNN Pipeline')
+        # Use environment variable for model selection if available
+        self.preferred_model = os.getenv('OPENROUTER_MODEL', self.DEFAULT_MODEL)
         self.session = None
         
     @property
@@ -87,7 +92,7 @@ class OpenRouterProvider(BaseLLMProvider):
     @property
     def default_model(self) -> str:
         """Return the default OpenRouter model."""
-        return self.DEFAULT_MODEL
+        return self.preferred_model
     
     @property
     def available_models(self) -> List[str]:

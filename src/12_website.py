@@ -74,26 +74,114 @@ def process_website_generation(
         True if processing succeeded, False otherwise
     """
     try:
+        log_step_start(logger, "Starting static website generation from pipeline outputs")
+        
+        # Update logger verbosity if needed
+        if verbose:
+            logger.setLevel(logging.DEBUG)
+        
         # Get the website output directory for this step
         website_output_dir = get_output_dir_for_script("12_website.py", output_dir)
+        website_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        logger.info(f"Website source directory: {output_dir}")
+        logger.info(f"Website output directory: {website_output_dir}")
+        
+        # Validate that the output directory exists and has content
+        if not output_dir.exists():
+            log_step_error(logger, f"Pipeline output directory does not exist: {output_dir}")
+            return False
+        
+        # Check for minimum required content
+        required_items = ["pipeline_execution_summary.json"]
+        missing_items = []
+        for item in required_items:
+            if not (output_dir / item).exists():
+                missing_items.append(item)
+        
+        if missing_items:
+            logger.warning(f"Some expected pipeline outputs are missing: {missing_items}")
+            logger.info("Proceeding with website generation using available content")
         
         # Generate website using the main pipeline output directory as source
         # and the step-specific directory as destination
         success = generate_website(logger, output_dir, website_output_dir)
         
         if success:
-            log_step_success(logger, f"Website generated successfully in {website_output_dir / 'index.html'}")
-        
-        return success
+            website_file = website_output_dir / "index.html"
+            if website_file.exists():
+                file_size_mb = website_file.stat().st_size / (1024 * 1024)
+                log_step_success(logger, f"Website generated successfully: {website_file} ({file_size_mb:.2f} MB)")
+                
+                # Copy any assets from the output directory that might be referenced
+                # This ensures that images, HTML files, etc. are accessible from the website
+                try:
+                    _copy_website_assets(output_dir, website_output_dir, logger)
+                except Exception as e:
+                    logger.warning(f"Failed to copy some website assets: {e}")
+                
+                return True
+            else:
+                log_step_error(logger, f"Website generation reported success but index.html not found at {website_file}")
+                return False
+        else:
+            log_step_error(logger, "Website generation failed")
+            return False
         
     except Exception as e:
-        log_step_error(logger, f"Website generation failed: {e}")
+        log_step_error(logger, f"Website generation failed with exception: {e}")
+        if verbose:
+            import traceback
+            logger.error(f"Full traceback: {traceback.format_exc()}")
         return False
+
+
+def _copy_website_assets(source_dir: Path, website_dir: Path, logger: logging.Logger):
+    """
+    Copy website assets like images and HTML files to make them accessible from the website.
+    
+    Args:
+        source_dir: Source directory containing pipeline outputs
+        website_dir: Website output directory
+        logger: Logger for this operation
+    """
+    assets_copied = 0
+    
+    # Asset patterns to copy
+    asset_patterns = ["*.png", "*.jpg", "*.jpeg", "*.gif", "*.svg", "*.html", "*.htm"]
+    
+    for pattern in asset_patterns:
+        for asset_file in source_dir.rglob(pattern):
+            if asset_file.is_file():
+                try:
+                    # Calculate relative path from source_dir
+                    relative_path = asset_file.relative_to(source_dir)
+                    target_file = website_dir / relative_path
+                    
+                    # Create parent directories if needed
+                    target_file.parent.mkdir(parents=True, exist_ok=True)
+                    
+                    # Copy the file if it doesn't exist or is newer
+                    if not target_file.exists() or asset_file.stat().st_mtime > target_file.stat().st_mtime:
+                        shutil.copy2(asset_file, target_file)
+                        assets_copied += 1
+                        logger.debug(f"Copied asset: {relative_path}")
+                        
+                except Exception as e:
+                    logger.warning(f"Failed to copy asset {asset_file}: {e}")
+    
+    if assets_copied > 0:
+        logger.info(f"Copied {assets_copied} website assets")
+    else:
+        logger.debug("No website assets needed copying")
 
 run_script = create_standardized_pipeline_script(
     "12_website.py",
     process_website_generation,
-    "Static HTML website generation"
+    "Static HTML website generation",
+    additional_arguments={
+        "website_html_filename": {"type": str, "default": "gnn_pipeline_summary_website.html", "help": "Filename for generated HTML website"}
+    }
 )
 
 if __name__ == '__main__':
