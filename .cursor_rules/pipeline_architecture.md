@@ -8,7 +8,7 @@
 - **Dependency Validation**: Comprehensive dependency checking before pipeline execution
 - **Performance Tracking**: Built-in performance monitoring and resource usage tracking
 
-### Pipeline Steps (Dynamically Discovered, 1-14)
+### Pipeline Steps (Dynamically Discovered, 1-13)
 Each numbered script corresponds to a specific module folder and implements real functionality:
 
 1. **1_gnn.py** → `src/gnn/` - GNN file discovery, parsing, and basic validation

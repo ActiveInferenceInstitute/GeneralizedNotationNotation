@@ -137,7 +137,7 @@ python scripts/deploy_staging.py --version 1.2.0-rc.1
 
 #### **RC Testing Checklist**
 
-- [ ] **Functional Testing**: All 14 pipeline steps execute successfully
+- [ ] **Functional Testing**: All 13 pipeline steps execute successfully
 - [ ] **Integration Testing**: Framework compatibility (PyMDP, RxInfer, DisCoPy)
 - [ ] **Performance Testing**: Benchmark comparison with previous version
 - [ ] **Security Testing**: Vulnerability scan and penetration testing

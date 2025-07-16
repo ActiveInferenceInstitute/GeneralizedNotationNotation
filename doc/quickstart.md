@@ -311,7 +311,7 @@ python src/main.py my_model.md --steps 1 2 4 5 9 --target pymdp
 python src/main.py my_model.md --steps 1 2 4 5 6
 
 # Full pipeline with documentation
-python src/main.py my_model.md --steps 1-14
+python src/main.py my_model.md --steps 1-13
 ```
 
 ### Batch Processing
@@ -476,7 +476,7 @@ python src/main.py model.md --steps 1-4
 python src/main.py model.md --steps 1-5,9
 
 # Full pipeline
-python src/main.py model.md --steps 1-14
+python src/main.py model.md --steps 1-13
 
 # Debug mode
 python src/main.py model.md --debug --verbose

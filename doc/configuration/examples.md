@@ -47,7 +47,7 @@ description: "Standard development configuration with full pipeline"
 
 # Complete pipeline for development
 pipeline:
-  steps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+  steps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
   continue_on_error: true
   parallel_execution: false
   timeout_seconds: 300
@@ -244,7 +244,7 @@ description: "Production-ready configuration with reliability features"
 
 # Reliable pipeline execution
 pipeline:
-  steps: [1, 2, 3, 4, 5, 6, 8, 9, 10, 14]  # Skip development tools
+  steps: [1, 2, 3, 4, 5, 6, 8, 9, 10, 12]  # Skip development tools
   continue_on_error: false
   retry_attempts: 3
   retry_delay: 5.0
@@ -704,7 +704,7 @@ name: "research_publication"
 
 # Complete publication pipeline
 pipeline:
-  steps: [1, 2, 3, 4, 5, 6, 9, 10, 11, 14]
+  steps: [1, 2, 3, 4, 5, 6, 9, 10, 11, 12]
   
 # Publication outputs
 outputs:
@@ -743,7 +743,7 @@ name: "gnn_education"
 
 # Educational-focused pipeline
 pipeline:
-  steps: [1, 2, 3, 4, 5, 6, 11, 14]  # Include visualization and explanations
+  steps: [1, 2, 3, 4, 5, 6, 11, 12]  # Include visualization and explanations
   
 # Educational outputs
 education:

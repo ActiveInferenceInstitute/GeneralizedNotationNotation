@@ -255,7 +255,7 @@ This captures all debug output including correlation IDs for tracing issues acro
 
 When adding new pipeline steps:
 
-1. Follow the numbered naming convention (`14_new_step.py`)
+1. Follow the numbered naming convention (`N_new_step.py` where N is 14 or higher)
 2. Use centralized utilities from `utils/` package
 3. Implement proper error handling and logging
 4. Add step configuration to `pipeline/config.py`

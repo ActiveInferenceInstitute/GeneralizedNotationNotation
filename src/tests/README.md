@@ -4,7 +4,7 @@
 
 This test suite provides comprehensive testing for the GNN (Generalized Notation Notation) processing pipeline. The test suite is designed to be:
 
-- **Comprehensive**: Covers all 14 pipeline steps plus utilities and orchestration
+- **Comprehensive**: Covers all 13 pipeline steps plus utilities and orchestration
 - **Safe-to-fail**: Uses extensive mocking to prevent destructive operations
 - **Fast by default**: Runs all tests except slow ones in normal execution
 - **Well-organized**: Clear categorization with pytest markers

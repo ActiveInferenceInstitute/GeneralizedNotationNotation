@@ -96,7 +96,7 @@ New to GNN? Start here:
 |-----------|---------------|-------------|----------------------|----------|
 | **PyMDP** | [gnn_pymdp.md](pymdp/gnn_pymdp.md) | Python Active Inference framework | ✅ All templates | [POMDP](templates/pomdp_template.md), [Multi-agent](templates/multiagent_template.md) |
 | **RxInfer** | [gnn_rxinfer.md](rxinfer/gnn_rxinfer.md) | Julia Bayesian inference | ✅ All templates | [Hierarchical](templates/hierarchical_template.md), [Multi-agent](rxinfer/multiagent_trajectory_planning/) |
-| **DisCoPy** | [gnn_discopy.md](discopy/gnn_discopy.md) | Category theory and quantum computing | ✅ Advanced templates | [Pipeline Step 12](pipeline/README.md#step-12-discopy-categorical-diagrams) |
+| **DisCoPy** | [gnn_discopy.md](discopy/gnn_discopy.md) | Category theory and quantum computing | ✅ Advanced templates | [Category Theory Models](discopy/gnn_discopy.md) |
 | **DSPy** | [gnn_dspy.md](dspy/gnn_dspy.md) | AI prompt programming | 🔄 LLM integration | [LLM Pipeline](gnn/gnn_llm_neurosymbolic_active_inference.md) |
 | **AutoGenLib** | [gnn_autogenlib.md](autogenlib/gnn_autogenlib.md) | Dynamic code generation | 🔄 Code generation | [Tool Development](gnn/gnn_dsl_manual.md) |
 | **MCP** | [gnn_mcp.md](mcp/gnn_mcp_model_context_protocol.md) | Model Context Protocol | ✅ API integration | [MCP Guide](mcp/README.md), [FastMCP](mcp/fastmcp.md) |
@@ -169,7 +169,7 @@ New to GNN? Start here:
 - **Converting to code**: See [Rendering Documentation](gnn/gnn_tools.md#conversion-tools)
   - *Frameworks*: [PyMDP](pymdp/gnn_pymdp.md) | [RxInfer](rxinfer/gnn_rxinfer.md) | [DisCoPy](discopy/gnn_discopy.md)
 - **Visualizing models**: Follow [Visualization Guide](gnn/gnn_tools.md#visualization-tools)
-  - *Pipeline*: [Step 6 Visualization](pipeline/README.md#step-6-visualization) → [DisCoPy Diagrams](pipeline/README.md#step-12-discopy-categorical-diagrams)
+  - *Pipeline*: [Step 6 Visualization](pipeline/README.md#step-6-visualization) → [Step 12 Website](pipeline/README.md#step-12-website-generation)
 
 ### File Templates
 > **📋 Production-Ready Templates** | **📊 Total**: 4 comprehensive templates (49KB)
@@ -190,9 +190,9 @@ New to GNN? Start here:
   - *Related*: [Advanced Patterns](gnn/advanced_modeling_patterns.md), [Cerebrum](cerebrum/gnn_cerebrum.md)
 
 ### Pipeline Documentation
-> **⚙️ 14-Step Processing Pipeline** | **📈 Complete Workflow Coverage**
+> **⚙️ 13-Step Processing Pipeline** | **📈 Complete Workflow Coverage**
 
-- **[Complete Pipeline Guide](pipeline/README.md)** - All 14 steps explained
+- **[Complete Pipeline Guide](pipeline/README.md)** - All 13 steps explained
   - *Architecture*: [Pipeline Architecture](pipeline/PIPELINE_ARCHITECTURE.md)
   - *Configuration*: [Configuration Guide](configuration/README.md)
 - **[Pipeline Architecture](pipeline/PIPELINE_ARCHITECTURE.md)** - Technical architecture
@@ -338,7 +338,7 @@ coverage_metrics:
   template_count: 4
   framework_integrations: 7
   research_integrations: 3
-  pipeline_steps: 14
+  pipeline_steps: 13
   cognitive_phenomena: 20+
 status: production_ready
 quality_level: gold_standard

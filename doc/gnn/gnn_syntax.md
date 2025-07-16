@@ -205,7 +205,7 @@ P(s_{t+1}|s_t,u_t) = \text{Cat}(B_{f0}[:,:,u_t] s_t)
 
 **Cross-References**: 
 - *Mathematical Foundations*: [Advanced Patterns - Mathematical Foundations](advanced_modeling_patterns.md#mathematical-foundations)
-- *LaTeX Rendering*: [Site Generation](../pipeline/README.md#step-14-static-site-generation)
+- *LaTeX Rendering*: [Website Generation](../pipeline/README.md#step-12-website-generation)
 
 ### Common Mathematical Constructs
 - **Categorical Distribution**: `Cat(parameters)`

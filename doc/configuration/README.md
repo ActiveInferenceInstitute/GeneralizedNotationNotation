@@ -26,8 +26,8 @@ Primary configuration file: `config.yaml` (create in project root)
 
 # Global Pipeline Settings
 pipeline:
-  # Which steps to run (1-14, or "all")
-  steps: "all"  # or [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+  # Which steps to run (1-13, or "all")
+steps: "all"  # or [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
   
   # Steps to skip
   skip_steps: []  # e.g., [11, 12, 13] to skip LLM and DisCoPy steps
@@ -332,7 +332,7 @@ jax_eval:
   preallocate_memory: true
   memory_fraction: 0.8
 
-# Step 14: Site Generation
+# Step 13: SAPF Processing
 site:
   # Static site configuration
   enabled: true

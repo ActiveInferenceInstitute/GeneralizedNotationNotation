@@ -182,7 +182,7 @@ python -c "import src.gnn as gnn; print(gnn.__version__)"
 **Problem**: Pipeline runs slowly
 **Solutions**:
 - Use `--parallel` for multi-core processing
-- Skip expensive steps: `--skip 6,11,14`
+- Skip expensive steps: `--skip 6,11,13`
 - Use conservative mode: `--conservative`
 
 ### Memory Optimization

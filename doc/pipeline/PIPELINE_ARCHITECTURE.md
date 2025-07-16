@@ -9,7 +9,7 @@ The GNN Processing Pipeline is a comprehensive, modular system for processing Ge
 ```mermaid
 graph TD
     A[1_gnn.py] --> B[2_setup.py]
-    B --> C[4_gnn_type_checker.py]
+    B --> C[4_type_checker.py]
     C --> D[5_export.py]
     D --> E[6_visualization.py]
     E --> F[7_mcp.py]
@@ -17,15 +17,13 @@ graph TD
     G --> H[9_render.py]
     H --> I[10_execute.py]
     I --> J[11_llm.py]
-    J --> K[12_discopy.py]
-    K --> L[14_site.py]
+    J --> K[12_website.py]
+    K --> L[13_sapf.py]
     
     B -.-> M[3_tests.py]
-    K -.-> N[13_discopy_jax_eval.py]
     
     style B fill:#ffcccc
     style M fill:#e6f3ff
-    style N fill:#e6f3ff
 ```
 
 ## Stage Descriptions
@@ -37,7 +35,7 @@ graph TD
 | 1 | `1_gnn.py` | GNN file discovery and basic parsing | 2 min | No |
 | 2 | `2_setup.py` | Environment setup and dependency management | **20 min** | **Yes** |
 | 3 | `3_tests.py` | Test execution (optional) | 5 min | No |
-| 4 | `4_gnn_type_checker.py` | Type checking and resource estimation | 2 min | No |
+| 4 | `4_type_checker.py` | Type checking and resource estimation | 2 min | No |
 | 5 | `5_export.py` | Export to multiple formats (JSON, XML, etc.) | 2 min | No |
 | 6 | `6_visualization.py` | Generate visual representations | 5 min | No |
 | 7 | `7_mcp.py` | MCP integration analysis | 2 min | No |
@@ -45,9 +43,8 @@ graph TD
 | 9 | `9_render.py` | Code generation for simulators | 2 min | No |
 | 10 | `10_execute.py` | Execute rendered simulator code | 5 min | No |
 | 11 | `11_llm.py` | LLM-powered analysis and documentation | Configurable | No |
-| 12 | `12_discopy.py` | DisCoPy diagram generation | 2 min | No |
-| 13 | `13_discopy_jax_eval.py` | JAX-based DisCoPy evaluation (experimental) | 5 min | No |
-| 14 | `14_site.py` | HTML summary site generation | 2 min | No |
+| 12 | `12_website.py` | Website and HTML summary generation | 2 min | No |
+| 13 | `13_sapf.py` | SAPF audio generation and processing | 5 min | No |
 
 ### Step Dependencies
 
@@ -55,7 +52,7 @@ graph TD
 - **Step 3 (tests.py)** is optional and disabled by default
 - **Step 13 (discopy_jax_eval.py)** is experimental and disabled by default
 - Most steps depend on the output of **Step 1 (gnn.py)** for GNN file discovery
-- **Step 14 (site.py)** aggregates outputs from all previous steps
+- **Step 13 (sapf.py)** completes processing with audio generation
 
 ## Configuration Management
 

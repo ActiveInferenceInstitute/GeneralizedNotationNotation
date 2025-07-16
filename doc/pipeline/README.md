@@ -6,7 +6,7 @@
 > **Cross-References**: [Main Documentation](../README.md) | [API Reference](../api/README.md)
 
 ## Overview
-The GNN Processing Pipeline is a comprehensive 14-step system for processing Generalized Notation Notation files from parsing through execution and analysis.
+The GNN Processing Pipeline is a comprehensive 13-step system for processing Generalized Notation Notation files from parsing through execution and analysis.
 
 ## Complete Pipeline Steps
 
@@ -84,24 +84,17 @@ The GNN Processing Pipeline is a comprehensive 14-step system for processing Gen
 - **Key Features**: Model explanation, structure analysis, natural language summaries
 - **Configuration**: Supports multiple LLM providers, configurable timeout
 
-#### Step 12: DisCoPy Translation (`12_discopy.py`)
-- **Purpose**: Category theory diagram generation using DisCoPy
-- **Input**: GNN files
-- **Output**: `discopy_gnn/` with categorical diagrams
-- **Key Features**: String diagram generation, categorical model representation
-
-#### Step 13: JAX Evaluation (`13_discopy_jax_eval.py`) **[EXPERIMENTAL]**
-- **Purpose**: High-performance numerical evaluation using JAX
-- **Input**: GNN files with tensor definitions
-- **Output**: JAX evaluation results, performance visualizations
-- **Key Features**: JAX-compiled evaluation, tensor visualization, performance analysis
-- **Status**: Disabled by default, experimental
-
-#### Step 14: Site Generation (`14_site.py`)
+#### Step 12: Website Generation (`12_website.py`)
 - **Purpose**: Comprehensive HTML summary website generation
 - **Input**: All previous pipeline outputs
 - **Output**: `gnn_pipeline_summary_site.html`
 - **Key Features**: Interactive dashboard, result aggregation, artifact navigation
+
+#### Step 13: SAPF Processing (`13_sapf.py`)
+- **Purpose**: Spatial Audio Processing Framework (SAPF) audio generation
+- **Input**: GNN files with spatial audio specifications
+- **Output**: Audio files and SAPF analysis results
+- **Key Features**: Audio generation, spatial processing, SAPF integration
 
 ## Pipeline Configuration
 

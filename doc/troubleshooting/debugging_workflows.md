@@ -279,7 +279,7 @@ done
 
 ```bash
 # Test individual pipeline steps
-for step in {1..14}; do
+for step in {1..13}; do
     echo "Testing step $step..."
     timeout 300 python src/main.py --only-steps $step --target-dir your_file.md
     if [ $? -eq 0 ]; then
