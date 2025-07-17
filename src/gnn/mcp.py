@@ -30,11 +30,11 @@ def get_gnn_documentation(doc_name: Literal["file_structure", "punctuation", "sc
     base_path = Path(__file__).parent
     
     file_map = {
-        "file_structure": "gnn_file_structure.md",
-        "punctuation": "gnn_punctuation.md",
-        "schema_json": "gnn_schema.json",
-        "schema_yaml": "gnn_schema.yaml", 
-        "grammar": "gnn_grammar.ebnf"
+        "file_structure": "documentation/file_structure.md",
+        "punctuation": "documentation/punctuation.md",
+        "schema_json": "schemas/json.json",
+        "schema_yaml": "schemas/yaml.yaml", 
+        "grammar": "grammars/ebnf.ebnf"
     }
     
     if doc_name not in file_map:
@@ -129,7 +129,7 @@ def get_gnn_schema_info() -> Dict[str, Any]:
         base_path = Path(__file__).parent
         
         # Load schema info from YAML if available
-        yaml_path = base_path / "gnn_schema.yaml"
+        yaml_path = base_path / "schemas/yaml.yaml"
         if yaml_path.exists():
             with open(yaml_path, 'r') as f:
                 schema_data = yaml.safe_load(f)
