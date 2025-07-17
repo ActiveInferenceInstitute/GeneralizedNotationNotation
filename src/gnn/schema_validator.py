@@ -558,7 +558,7 @@ class GNNValidator:
     
     def __init__(self, schema_path: Optional[Path] = None, use_formal_parser: bool = True):
         if schema_path is None:
-            schema_path = Path(__file__).parent / "gnn_schema.json"
+            schema_path = Path(__file__).parent / "schemas/json.json"
         
         self.schema_path = schema_path
         self.schema = self._load_schema()

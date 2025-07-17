@@ -42,7 +42,7 @@ class CrossFormatValidator:
     def _initialize_validators(self):
         """Initialize validators for different schema formats."""
         # JSON Schema validator
-        json_schema_path = self.gnn_path / "gnn_schema.json"
+        json_schema_path = self.gnn_path / "schemas/json.json"
         if json_schema_path.exists():
             self.format_validators['json'] = GNNValidator(json_schema_path)
         
@@ -149,13 +149,13 @@ class CrossFormatValidator:
         
         try:
             # JSON Schema
-            json_path = self.gnn_path / "gnn_schema.json"
+            json_path = self.gnn_path / "schemas/json.json"
             if json_path.exists():
                 with open(json_path, 'r') as f:
                     schemas['json'] = json.load(f)
             
             # YAML Schema
-            yaml_path = self.gnn_path / "gnn_schema.yaml"
+            yaml_path = self.gnn_path / "schemas/yaml.yaml"
             if yaml_path.exists():
                 with open(yaml_path, 'r') as f:
                     schemas['yaml'] = yaml.safe_load(f)

@@ -367,19 +367,19 @@ def get_module_info():
     import os
     module_dir = os.path.dirname(__file__)
     schema_files = {
-        'JSON': os.path.exists(os.path.join(module_dir, 'gnn_schema.json')),
-        'YAML': os.path.exists(os.path.join(module_dir, 'gnn_schema.yaml')),
-        'XSD': os.path.exists(os.path.join(module_dir, 'gnn_schema.xsd')),
-        'Protocol Buffers': os.path.exists(os.path.join(module_dir, 'gnn_schema.proto')),
-        'Apple Pkl': os.path.exists(os.path.join(module_dir, 'gnn_schema.pkl')),
-        'EBNF Grammar': os.path.exists(os.path.join(module_dir, 'gnn_grammar.ebnf')),
-        'BNF Grammar': os.path.exists(os.path.join(module_dir, 'gnn_grammar.bnf')),
-        'Lean': os.path.exists(os.path.join(module_dir, 'gnn_category_theory.lean')),
-        'Haskell': os.path.exists(os.path.join(module_dir, 'GNN.hs')),
-        'Z Notation': os.path.exists(os.path.join(module_dir, 'gnn_schema.zed')),
-        'Alloy': os.path.exists(os.path.join(module_dir, 'gnn_schema.als')),
-        'ASN.1': os.path.exists(os.path.join(module_dir, 'gnn_schema.asn1')),
-        'Agda': os.path.exists(os.path.join(module_dir, 'gnn_type_theory.agda'))
+        'JSON': os.path.exists(os.path.join(module_dir, 'schemas/json.json')),
+        'YAML': os.path.exists(os.path.join(module_dir, 'schemas/yaml.yaml')),
+        'XSD': os.path.exists(os.path.join(module_dir, 'schemas/xsd.xsd')),
+        'Protocol Buffers': os.path.exists(os.path.join(module_dir, 'schemas/proto.proto')),
+        'Apple Pkl': os.path.exists(os.path.join(module_dir, 'schemas/pkl.pkl')),
+        'EBNF Grammar': os.path.exists(os.path.join(module_dir, 'grammars/ebnf.ebnf')),
+        'BNF Grammar': os.path.exists(os.path.join(module_dir, 'grammars/bnf.bnf')),
+        'Lean': os.path.exists(os.path.join(module_dir, 'formal_specs/lean.lean')),
+        'Haskell': os.path.exists(os.path.join(module_dir, 'type_systems/haskell.hs')),
+        'Z Notation': os.path.exists(os.path.join(module_dir, 'formal_specs/z_notation.zed')),
+        'Alloy': os.path.exists(os.path.join(module_dir, 'formal_specs/alloy.als')),
+        'ASN.1': os.path.exists(os.path.join(module_dir, 'schemas/asn1.asn1')),
+        'Agda': os.path.exists(os.path.join(module_dir, 'formal_specs/agda.agda'))
     }
     
     info['schema_formats'] = [fmt for fmt, exists in schema_files.items() if exists]

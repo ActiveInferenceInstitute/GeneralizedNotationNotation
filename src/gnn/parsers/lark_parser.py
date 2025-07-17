@@ -414,7 +414,7 @@ class GNNFormalParser:
     """Formal GNN parser using Lark with EBNF grammar."""
     
     def __init__(self, grammar_path: Optional[Path] = None):
-        self.grammar_path = grammar_path or Path(__file__).parent.parent / "gnn_grammar.ebnf"
+        self.grammar_path = grammar_path or Path(__file__).parent.parent / "grammars/ebnf.ebnf"
         self.parser = None
         self.transformer = GNNTransformer()
         
