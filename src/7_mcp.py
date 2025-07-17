@@ -138,6 +138,22 @@ def process_mcp_operations_standardized(
         logger.info(f"Verbose: {verbose}")
         logger.info("-------------------------------")
         
+        # Initialize MCP with performance mode
+        from mcp import get_mcp_instance
+        mcp = get_mcp_instance()
+        
+        # Add simple web integration example
+        def web_search_tool(query: str) -> Dict[str, Any]:
+            # Placeholder for web search; in production, integrate actual websearch
+            return {"results": f"Web search results for: {query}"}
+        
+        mcp.register_tool(
+            "web_search",
+            web_search_tool,
+            {"type": "object", "properties": {"query": {"type": "string"}}},
+            "Perform a web search"
+        )
+        
         # Call the existing process_mcp_operations function
         success = process_mcp_operations(
             target_dir=target_dir,

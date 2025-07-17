@@ -7,43 +7,46 @@ import logging
 import shutil
 from pipeline import get_output_dir_for_script
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
+import re
+import warnings
+import os
+warnings.filterwarnings('ignore', category=ResourceWarning)
 
 def check_test_dependencies(logger: logging.Logger) -> dict:
-    """Check if required test dependencies are available."""
+    """Check for test-related dependencies with enhanced detection."""
     dependencies = {
-        "pytest": {"available": False, "version": None},
-        "pytest-cov": {"available": False, "version": None},
-        "pytest-json-report": {"available": False, "version": None},
-        "pytest-xdist": {"available": False, "version": None}
+        "pytest": {"available": False, "version": "N/A"},
+        "pytest-cov": {"available": False, "version": "N/A"},
+        "pytest-json-report": {"available": False, "version": "N/A"},
+        "pytest-xdist": {"available": False, "version": "N/A"},
+        "coverage": {"available": False, "version": "N/A"},
+        "mock": {"available": False, "version": "N/A"},
+        "psutil": {"available": False, "version": "N/A"},
     }
     
     for dep in dependencies.keys():
         try:
-            result = subprocess.run(
-                [sys.executable, "-m", "pip", "show", dep],
-                capture_output=True,
-                text=True,
-                timeout=10
-            )
-            if result.returncode == 0:
-                dependencies[dep]["available"] = True
-                # Extract version from output
-                for line in result.stdout.splitlines():
-                    if line.startswith("Version:"):
-                        dependencies[dep]["version"] = line.split(":", 1)[1].strip()
-                        break
-        except Exception as e:
-            logger.debug(f"Could not check dependency {dep}: {e}")
+            module = __import__(dep.replace('-', '_'))
+            dependencies[dep]["available"] = True
+            dependencies[dep]["version"] = getattr(module, '__version__', "Unknown")
+        except ImportError:
+            dependencies[dep]["available"] = False
     
     return dependencies
 
-def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, include_slow: bool = False, fast_only: bool = False):
+def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, include_slow: bool = False, fast_only: bool = False, generate_coverage: bool = True):
     """Run the test suite with enhanced reporting and error handling."""
     log_step_start(logger, "Running enhanced test suite with comprehensive reporting")
     
     # Use centralized output directory configuration
     test_output_dir = get_output_dir_for_script("3_tests.py", output_dir)
     test_output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Define test report paths
+    xml_report_path = test_output_dir / "pytest_report.xml"
+    json_report_path = test_output_dir / "test_results.json"
+    markdown_report_path = test_output_dir / "test_report.md"
+    coverage_report_path = test_output_dir / "coverage_report.html"
     
     # Check test dependencies
     with performance_tracker.track_operation("check_test_dependencies"):
@@ -66,11 +69,6 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
         if dependencies["pytest-json-report"]["available"]:
             logger.debug(f"pytest-json-report available: {dependencies['pytest-json-report']['version']}")
     
-    # Define test report paths
-    xml_report_path = test_output_dir / "pytest_report.xml"
-    json_report_path = test_output_dir / "test_results.json"
-    markdown_report_path = test_output_dir / "test_report.md"
-    
     # Define project root early for consistent path resolution
     project_root = Path(__file__).parent.parent.parent
     
@@ -86,7 +84,6 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
         "--maxfail=20",  # Allow more failures for better coverage
         "--durations=15",  # Show 15 slowest tests
         "--disable-warnings",  # Reduce noise
-        # Note: Removed --strict-markers to allow tests with minor marker issues to run
         f"-c{project_root}/pytest.ini",  # Explicitly specify config file location
     ]
     
@@ -95,17 +92,22 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
         pytest_cmd.extend(["-n", "auto"])
         logger.debug("Parallel test execution enabled")
     
-    # Add coverage reporting if available and requested
-    if verbose and dependencies["pytest-cov"]["available"]:
+    # Add coverage reporting if available and requested, limited to key modules
+    if generate_coverage and dependencies["pytest-cov"]["available"]:
         coverage_dir = test_output_dir / "coverage"
         pytest_cmd.extend([
-            "--cov=src",
+            "--cov=src/gnn",  # Limit to key modules
+            "--cov=src/pipeline",
+            "--cov=src/utils",
             f"--cov-report=html:{coverage_dir}",
             f"--cov-report=json:{test_output_dir}/test_coverage.json",
             "--cov-report=term-missing",
-            "--cov-fail-under=0",  # Don't fail on low coverage
+            "--cov-fail-under=0",
+            f"--cov-config={project_root}/.coveragerc",
+            "--cov-branch",  # Enable branch coverage
         ])
-        logger.debug("Coverage reporting enabled")
+        logger.debug("Limited coverage reporting enabled to reduce resource usage")
+    elif generate_coverage: logger.warning('Coverage generation requested but pytest-cov not available')
     
     # Enhanced test selection logic
     
@@ -131,6 +133,7 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
             f"--json-report-file={json_report_path}"
         ])
         logger.debug("JSON reporting enabled")
+    else: logger.warning('JSON reporting not available - consider installing pytest-json-report')
     
     logger.info(f"Running command: {' '.join(pytest_cmd)}")
     
@@ -144,6 +147,7 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
             timeout_seconds = 600  # 10 minutes for regular tests
         
         # Ensure we're in the right directory
+        os.environ['PYTHONWARNINGS'] = 'ignore::ResourceWarning'
         
         with performance_tracker.track_operation("execute_test_suite"):
             result = subprocess.run(
@@ -151,7 +155,8 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
                 capture_output=True,
                 text=True,
                 cwd=project_root,
-                timeout=timeout_seconds
+                timeout=timeout_seconds,
+                env=dict(os.environ, PYTHONWARNINGS='ignore::ResourceWarning')
             )
         
         # Enhanced result analysis
@@ -183,6 +188,7 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
         
         # Parse test statistics from output
         test_stats = _parse_test_statistics(result.stdout)
+        coverage_stats = _parse_coverage_statistics(coverage_json, logger) if generate_coverage and coverage_json.exists() else {}
         
         results_summary = {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -193,7 +199,7 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
                 "slow_tests_included": include_slow,
                 "verbose": verbose,
                 "parallel_execution": dependencies["pytest-xdist"]["available"],
-                "coverage_enabled": verbose and dependencies["pytest-cov"]["available"]
+                "coverage_enabled": generate_coverage and dependencies["pytest-cov"]["available"],
             },
             "execution": {
                 "timeout_seconds": timeout_seconds,
@@ -201,6 +207,7 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
                 "working_directory": str(project_root)
             },
             "test_statistics": test_stats,
+            "coverage_statistics": coverage_stats,
             "dependencies": dependencies,
             "output_files": {
                 "xml_report": str(xml_report_path) if xml_report_path.exists() else None,
@@ -239,42 +246,70 @@ def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, i
         return False
         
     except Exception as e:
-        log_step_error(logger, f"Error running tests: {e}")
-        
+        if 'logger' in locals():
+            log_step_error(logger, f"Error running tests: {str(e)}")
+        else:
+            print(f"Critical error: {str(e)}")
         # Enhanced error report
         _generate_error_report(test_output_dir, pytest_cmd, str(e))
         return False
 
 
-def _parse_test_statistics(stdout: str) -> dict:
-    """Parse test statistics from pytest output."""
+def _parse_test_statistics(pytest_output: str) -> dict:
+    """Parse test statistics from pytest output with enhanced parsing."""
     stats = {
         "total_tests": 0,
         "passed": 0,
         "failed": 0,
         "skipped": 0,
         "errors": 0,
-        "warnings": 0
+        "warnings": 0,
+        "xfailed": 0,
+        "xpassed": 0,
+        "deselected": 0,
+        "execution_time_seconds": 0.0,
+        "collection_time_seconds": 0.0
     }
     
-    # Look for pytest summary line
-    for line in stdout.splitlines():
-        if "passed" in line and any(word in line for word in ["failed", "error", "skipped"]):
-            # Parse lines like "5 passed, 2 failed, 1 skipped in 10.2s"
-            parts = line.split()
-            for i, part in enumerate(parts):
-                if part.isdigit():
-                    count = int(part)
-                    if i + 1 < len(parts):
-                        test_type = parts[i + 1].rstrip(',')
-                        if test_type in stats:
-                            stats[test_type] = count
-                        elif test_type == "passed":
-                            stats["passed"] = count
-            break
+    # Parse counts from summary line
+    summary_match = re.search(r"collected (\d+) items", pytest_output)
+    if summary_match:
+        stats["total_tests"] = int(summary_match.group(1))
     
-    stats["total_tests"] = sum(stats[k] for k in ["passed", "failed", "skipped", "errors"])
+    # Parse results
+    results_pattern = re.compile(r"(\d+) (passed|failed|skipped|errors|warnings|xfailed|xpassed|deselected)")
+    for match in results_pattern.finditer(pytest_output):
+        count = int(match.group(1))
+        category = match.group(2)
+        stats[category] = count
+    
+    # Parse execution time
+    time_match = re.search(r"in ([\d.]+)s", pytest_output)
+    if time_match:
+        stats["execution_time_seconds"] = float(time_match.group(1))
+    
     return stats
+
+
+def _parse_coverage_statistics(coverage_json_path: Path, logger: logging.Logger) -> dict:
+    """Parse coverage statistics from JSON report."""
+    if not coverage_json_path.exists():
+        return {}
+    try:
+        with open(coverage_json_path, 'r') as f:
+            data = json.load(f)
+        return {
+            "total_coverage": data.get("totals", {}).get("percent_covered", 0.0),
+            "covered_lines": data.get("totals", {}).get("covered_lines", 0),
+            "missing_lines": data.get("totals", {}).get("missing_lines", 0),
+            "num_statements": data.get("totals", {}).get("num_statements", 0),
+            "files_covered": len(data.get("files", {})),
+            "branch_coverage": data.get("totals", {}).get("branch_percent", 0.0),
+            "line_coverage": data.get("totals", {}).get("line_percent", 0.0),
+        }
+    except Exception as e:
+        logger.warning(f"Failed to parse coverage JSON: {e}")
+        return {}
 
 
 def _generate_markdown_report(report_path: Path, summary: dict):
@@ -291,7 +326,8 @@ def _generate_markdown_report(report_path: Path, summary: dict):
         f.write(f"- **Test Mode**: {'Fast Only' if config['fast_only'] else 'All Tests' if config['slow_tests_included'] else 'Regular Tests'}\n")
         f.write(f"- **Verbose Output**: {config['verbose']}\n")
         f.write(f"- **Parallel Execution**: {config['parallel_execution']}\n")
-        f.write(f"- **Coverage Enabled**: {config['coverage_enabled']}\n\n")
+        f.write(f"- **Coverage Enabled**: {config['coverage_enabled']}\n")
+        f.write("\n")
         
         # Test statistics
         stats = summary['test_statistics']
@@ -301,11 +337,30 @@ def _generate_markdown_report(report_path: Path, summary: dict):
             f.write(f"- **Passed**: ✅ {stats['passed']}\n")
             f.write(f"- **Failed**: ❌ {stats['failed']}\n")
             f.write(f"- **Skipped**: ⏭️ {stats['skipped']}\n")
-            f.write(f"- **Errors**: 🚨 {stats['errors']}\n\n")
+            f.write(f"- **Errors**: 🚨 {stats['errors']}\n")
+            f.write(f"- **Warnings**: ⚠️ {stats['warnings']}\n")
+            f.write(f"- **Xfailed**: {stats['xfailed']}\n")
+            f.write(f"- **Xpassed**: {stats['xpassed']}\n")
+            f.write(f"- **Deselected**: {stats['deselected']}\n\n")
             
             if stats['total_tests'] > 0:
                 success_rate = (stats['passed'] / stats['total_tests']) * 100
-                f.write(f"**Success Rate**: {success_rate:.1f}%\n\n")
+                f.write(f"**Success Rate**: {success_rate:.1f}%\n")
+                failure_rate = (stats['failed'] + stats['errors']) / stats['total_tests'] * 100
+                f.write(f"**Failure Rate**: {failure_rate:.1f}%\n")
+            f.write(f"**Execution Time**: {stats['execution_time_seconds']:.1f} seconds\n\n")
+        
+        # Coverage statistics
+        coverage = summary.get('coverage_statistics', {})
+        if coverage:
+            f.write("## Coverage Statistics\n\n")
+            f.write(f"- **Total Coverage**: {coverage['total_coverage']:.1f}%\n")
+            f.write(f"- **Covered Lines**: {coverage['covered_lines']}\n")
+            f.write(f"- **Missing Lines**: {coverage['missing_lines']}\n")
+            f.write(f"- **Total Statements**: {coverage['num_statements']}\n")
+            f.write(f"- **Files Covered**: {coverage['files_covered']}\n")
+            f.write(f"- **Branch Coverage**: {coverage['branch_coverage']:.1f}%\n")
+            f.write(f"- **Line Coverage**: {coverage['line_coverage']:.1f}%\n\n")
         
         # Dependencies
         f.write("## Test Dependencies\n\n")
@@ -330,53 +385,68 @@ def _generate_markdown_report(report_path: Path, summary: dict):
         f.write(f"- **Command**: `{execution['command']}`\n")
         f.write(f"- **Working Directory**: `{execution['working_directory']}`\n")
         f.write(f"- **Timeout**: {execution['timeout_seconds']} seconds\n\n")
+        
+        # Raw output (truncated)
+        f.write("## Raw Output Preview\n\n")
+        stdout_preview = '\n'.join(summary['raw_output']['stdout'].splitlines()[-50:])
+        stderr_preview = '\n'.join(summary['raw_output']['stderr'].splitlines()[-20:])
+        f.write("### Standard Output (last 50 lines)\n```\n")
+        f.write(stdout_preview + "\n```\n\n")
+        f.write("### Standard Error (last 20 lines)\n```\n")
+        f.write(stderr_preview + "\n```\n")
 
 
 def _generate_fallback_report(output_dir: Path, summary: dict):
-    """Generate a fallback report when XML wasn't created."""
-    report_path = output_dir / "fallback_test_report.txt"
+    """Generate fallback report if primary reports failed."""
+    report_path = output_dir / "fallback_test_report.md"
     with open(report_path, 'w') as f:
-        f.write("Fallback Test Execution Report\n")
-        f.write("=============================\n\n")
-        f.write(f"Timestamp: {summary['timestamp']}\n")
-        f.write(f"Exit Code: {summary['exit_code']}\n")
-        f.write(f"Success: {summary['success']}\n")
-        f.write(f"Command: {summary['execution']['command']}\n\n")
-        f.write("STDOUT:\n")
-        f.write(summary['raw_output']['stdout'])
-        f.write("\n\nSTDERR:\n")
-        f.write(summary['raw_output']['stderr'])
+        f.write("# Fallback Test Report\n\n")
+        f.write("Primary test reports could not be generated. Basic summary:\n\n")
+        f.write(f"**Success**: {summary['success']}\n")
+        f.write(f"**Exit Code**: {summary['exit_code']}\n")
+        f.write(f"**Configuration**: {json.dumps(summary['test_configuration'], indent=2)}\n")
+        f.write(f"**Test Statistics**: {json.dumps(summary['test_statistics'], indent=2)}\n")
+        f.write(f"**Dependencies**: {json.dumps(summary['dependencies'], indent=2)}\n")
+    logger.warning(f"Fallback report generated at: {report_path}")
 
 
-def _generate_timeout_report(output_dir: Path, pytest_cmd: list, timeout_seconds: int):
-    """Generate a timeout report."""
-    report_path = output_dir / "timeout_report.md"
+def _generate_timeout_report(output_dir: Path, cmd: list, timeout: int):
+    """Generate report for timed out test execution."""
+    report_path = output_dir / "test_timeout_report.md"
     with open(report_path, 'w') as f:
         f.write("# Test Execution Timeout Report\n\n")
-        f.write(f"**Generated**: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
-        f.write(f"**Status**: ⏰ TIMEOUT\n")
-        f.write(f"**Timeout Duration**: {timeout_seconds} seconds\n\n")
-        f.write("## Issue\n\n")
-        f.write("Test execution exceeded the maximum allowed time.\n\n")
-        f.write("## Recommendations\n\n")
-        f.write("1. Run tests with `--fast-only` flag for quicker execution\n")
-        f.write("2. Check for hanging tests or infinite loops\n")
-        f.write("3. Consider increasing timeout for slow test environments\n\n")
-        f.write(f"**Command**: `{' '.join(pytest_cmd)}`\n")
+        f.write(f"**Timeout**: {timeout} seconds\n")
+        f.write(f"**Command**: {' '.join(cmd)}\n")
+        f.write("\n## Suggested Fixes\n")
+        f.write("- Increase timeout with --timeout option\n")
+        f.write("- Run with --fast-only to exclude slow tests\n")
+        f.write("- Check for infinite loops in tests\n")
+        f.write("- Optimize slow tests\n")
+        f.write("- Run on faster hardware or with more resources\n")
+        f.write("- Use parallel execution if not already enabled\n")
+    logger.info(f"Timeout report saved to: {report_path}")
 
-
-def _generate_error_report(output_dir: Path, pytest_cmd: list, error: str):
-    """Generate an error report."""
-    report_path = output_dir / "error_report.md"
+def _generate_error_report(output_dir: Path, cmd: list, error_msg: str):
+    """Generate report for test execution errors."""
+    report_path = output_dir / "test_error_report.md"
     with open(report_path, 'w') as f:
         f.write("# Test Execution Error Report\n\n")
-        f.write(f"**Generated**: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
-        f.write(f"**Status**: 🚨 ERROR\n")
-        f.write(f"**Error**: {error}\n\n")
-        f.write("## Issue\n\n")
-        f.write("An unexpected error occurred during test execution.\n\n")
-        f.write("## Recommendations\n\n")
-        f.write("1. Check that all test dependencies are installed\n")
-        f.write("2. Verify pytest configuration is correct\n")
-        f.write("3. Check system resources and permissions\n\n")
-        f.write(f"**Command**: `{' '.join(pytest_cmd)}`\n") 
+        f.write(f"**Error**: {error_msg}\n")
+        f.write(f"**Command**: {' '.join(cmd)}\n")
+        f.write("\n## Suggested Fixes\n")
+        f.write("- Check pytest installation\n")
+        f.write("- Verify dependencies\n")
+        f.write("- Run with --verbose for more details\n")
+        f.write("- Check Python version compatibility\n")
+        f.write("- Ensure no conflicts in PYTHONPATH\n")
+        f.write("- Run in a clean virtual environment\n")
+    logger.info(f"Error report saved to: {report_path}") 
+
+# Add memory monitoring if psutil available
+def monitor_memory(logger, threshold_mb=2000):
+    if dependencies.get('psutil', {}).get('available'):
+        import psutil
+        mem = psutil.virtual_memory()
+        used_mb = mem.used / (1024 * 1024)
+        if used_mb > threshold_mb:
+            logger.warning(f"High memory usage: {used_mb:.1f}MB") 

@@ -1,7 +1,0 @@
-GNN Model Summary: test_ontology_validation
-
---- STATESPACEBLOCK ---
-- {'id': 'A', 'dimensions': '3,3,type=float', 'original_id': 'A'}
-- {'id': 'B', 'dimensions': '3,3,type=float', 'original_id': 'B'}
-- {'id': 'invalidVar', 'dimensions': '2,1,type=float', 'original_id': 'invalidVar'}
-

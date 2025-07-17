@@ -12,6 +12,7 @@ Usage:
 import sys
 import logging
 from pathlib import Path
+import argparse
 
 # Import centralized utilities and configuration
 from utils import (
@@ -44,27 +45,32 @@ def run_tests_standardized(
     verbose: bool = False,
     include_slow: bool = False,
     fast_only: bool = False,  # Changed default to False to run all tests
+    generate_coverage: bool = True,  # Add flag to generate coverage reports (default True for completeness)
     **kwargs
 ) -> bool:
     """
     Standardized test execution function.
     
     Args:
-        target_dir: Directory containing files to test
+        target_dir: Directory containing files to test (not typically used for tests, but included for consistency)
         output_dir: Output directory for test results
         logger: Logger instance for this step
-        recursive: Whether to process files recursively
+        recursive: Whether to process files recursively (unused for tests)
         verbose: Whether to enable verbose logging
-        include_slow: Whether to include slow tests
-        fast_only: Whether to run only fast tests
+        include_slow: Whether to include slow tests (runs all tests including slow ones)
+        fast_only: Whether to run only fast tests (overrides include_slow)
+        generate_coverage: Whether to generate coverage reports
         **kwargs: Additional processing options
         
     Returns:
-        True if tests passed, False otherwise
+        True if tests passed (or were executed successfully), False otherwise
     """
     try:
-        # Call the existing run_tests function
-        success = run_tests(logger, output_dir, verbose, include_slow, fast_only)
+        # Add: Log test configuration for better documentation and debugging
+        logger.info(f"Test configuration: fast_only={fast_only}, include_slow={include_slow}, verbose={verbose}, generate_coverage={generate_coverage}")
+        
+        # Call the existing run_tests function with enhanced parameters
+        success = run_tests(logger, output_dir, verbose, include_slow, fast_only, generate_coverage=generate_coverage)
         
         return success
         
@@ -78,5 +84,13 @@ run_script = create_standardized_pipeline_script(
     "Test suite execution"
 )
 
+# Add custom argument parsing before calling run_script, to include new flags
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Run test suite')
+    parser.add_argument('--include-slow', action='store_true', help='Include slow tests')
+    parser.add_argument('--fast-only', action='store_true', help='Run only fast tests')
+    parser.add_argument('--generate-coverage', action='store_true', default=True, help='Generate coverage reports')
+    # Parse known args to add these, then pass to run_script
+    args, unknown = parser.parse_known_args()
+    sys.argv = [sys.argv[0]] + unknown  # Remove parsed args from sys.argv for run_script
     sys.exit(run_script()) 

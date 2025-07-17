@@ -547,5 +547,14 @@ STEP_ADDITIONAL_ARGUMENTS = {
     "2_setup": {
         "recreate_venv": {"type": bool, "help": "Recreate virtual environment"},
         "dev": {"type": bool, "help": "Install development dependencies"}
+    },
+    "7_mcp.py": {
+        "performance-mode": {
+            "type": str,
+            "default": "low",
+            "choices": ["low", "high"],
+            "help": "Performance mode for MCP",
+            "flag": "--performance-mode"
+        }
     }
 } 

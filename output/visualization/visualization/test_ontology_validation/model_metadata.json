@@ -1,7 +1,0 @@
-{
-  "ModelName": "Test Ontology Validation",
-  "ModelAnnotation": "",
-  "GNNVersionAndFlags": "",
-  "Time": "",
-  "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=transitionmatrix  # Case mismatch test\ninvalidVar=InvalidTerm  # Should be flagged as invalid\nC=HiddenStae  # Typo that should trigger fuzzy matching (should suggest HiddenState)\nD=SomethingCompletelyWrong  # Should be flagged as invalid\nE=  # Empty value test\n# F=CommentedOut  # Should be ignored\nvalidTerm=Action"
-}

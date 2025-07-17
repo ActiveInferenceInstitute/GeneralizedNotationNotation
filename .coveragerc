@@ -1,0 +1,22 @@
+ 
+[run]
+source = src
+
+[paths]
+source =
+    src
+    */site-packages
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.: 
+    raise NotImplementedError
+    pass
+sort = cover
+omit =
+    */venv/*
+    */.venv/*
+    */tests/*
+    */__init__.py
+    setup.py 

@@ -465,8 +465,12 @@ class MCP:
         self._result_cache: Dict[str, Tuple[Any, float]] = {}
         self._cache_lock = threading.Lock()
         
-        # Thread pool for concurrent operations
-        self._executor = ThreadPoolExecutor(max_workers=10, thread_name_prefix="MCP")
+        # Remove thread pool
+        self._executor = None
+        # Disable advanced features by default
+        self._enable_caching = False
+        self._enable_rate_limiting = False
+        self._strict_validation = False
         
         logger.info("Enhanced MCP server initialized")
     
@@ -832,79 +836,21 @@ class MCP:
             
             tool = self.tools[tool_name]
             
-            # Check rate limiting
-            if tool.rate_limit is not None:
-                self._check_rate_limit(tool_name, tool.rate_limit)
-            
-            # Check concurrent execution limits
-            if tool.max_concurrent > 1:
-                self._check_concurrent_limit(tool_name, tool.max_concurrent)
-            
-            # Check cache for cached results
-            if tool.cache_ttl is not None:
-                cache_key = self._generate_cache_key(tool_name, params)
-                cached_result = self._get_cached_result(cache_key)
-                if cached_result is not None:
-                    logger.debug(f"Cache hit for tool {tool_name}")
-                    self._performance_metrics.update_cache_stats(True)
-                    return cached_result
-            
-            # Validate parameters if enabled
+            # Simplified validation
             if tool.input_validation:
-                try:
-                    self._validate_params(tool.schema, params)
-                except MCPValidationError as e:
-                    e.tool_name = tool_name
-                    raise
+                if 'required' in tool.schema:
+                    for req in tool.schema['required']:
+                        if req not in params:
+                            raise MCPInvalidParamsError(f"Missing required param: {req}")
             
-            # Execute the tool with timeout and performance tracking
-            execution_start = time.time()
-            
+            # Synchronous execution
             try:
                 with self._track_performance(f"tool_execution_{tool_name}"):
-                    # Track active execution
-                    with self._execution_lock:
-                        self._active_executions[tool_name] += 1
-                        self._performance_metrics.concurrent_requests += 1
-                        self._performance_metrics.max_concurrent_requests = max(
-                            self._performance_metrics.max_concurrent_requests,
-                            self._performance_metrics.concurrent_requests
-                        )
-                    
-                    # Execute with timeout if specified
-                    if tool.timeout is not None:
-                        future = self._executor.submit(tool.func, **params)
-                        result = future.result(timeout=tool.timeout)
-                    else:
-                        result = tool.func(**params)
-                    
-                    execution_time = time.time() - execution_start
-                    
-                    # Check performance thresholds
-                    if execution_time > 30.0:  # 30 second threshold
-                        logger.warning(f"Tool {tool_name} execution time ({execution_time:.3f}s) exceeded threshold")
-                    
-                    # Update performance metrics
-                    self._performance_metrics.successful_requests += 1
-                    self._performance_metrics.update_execution_time(execution_time)
-                    self._performance_metrics.tool_usage_stats[tool_name] = \
-                        self._performance_metrics.tool_usage_stats.get(tool_name, 0) + 1
-                    
-                    # Store execution time for this tool
-                    self._tool_execution_times[tool_name].append(execution_time)
-                    
-                    # Cache result if TTL is specified
-                    if tool.cache_ttl is not None:
-                        cache_key = self._generate_cache_key(tool_name, params)
-                        self._cache_result(cache_key, result, tool.cache_ttl)
-                    
-                    # Validate output if enabled
-                    if tool.output_validation:
-                        self._validate_output(result)
-                    
-                    logger.debug(f"Tool {tool_name} executed successfully in {execution_time:.3f}s")
-                    return result
-                    
+                    result = tool.func(**params)
+                if tool.output_validation:
+                    self._validate_output(result)
+                logger.debug(f"Tool {tool_name} executed successfully")
+                return result
             except Exception as e:
                 execution_time = time.time() - execution_start
                 self._performance_metrics.failed_requests += 1
@@ -1147,6 +1093,14 @@ class MCP:
         Raises:
             MCPValidationError: If validation fails
         """
+        if not self._strict_validation:
+            # Basic validation only
+            if "required" in schema:
+                for required in schema["required"]:
+                    if required not in params:
+                        raise MCPValidationError(f"Missing required parameter: {required}")
+            return
+
         if not isinstance(params, dict):
             raise MCPValidationError("Parameters must be a dictionary")
         
@@ -1389,67 +1343,6 @@ class MCP:
             execution_time = time.time() - start_time
             logger.debug(f"Operation '{operation}' completed in {execution_time:.4f}s")
 
-    def _check_rate_limit(self, tool_name: str, rate_limit: float):
-        """Check if tool execution is within rate limits."""
-        with self._rate_limit_lock:
-            current_time = time.time()
-            timestamps = self._rate_limit_timestamps[tool_name]
-            
-            # Remove old timestamps (older than 1 second)
-            timestamps[:] = [ts for ts in timestamps if current_time - ts < 1.0]
-            
-            # Check if we're within rate limit
-            if len(timestamps) >= rate_limit:
-                raise MCPValidationError(
-                    f"Rate limit exceeded for tool {tool_name}: {len(timestamps)} requests in 1 second",
-                    tool_name=tool_name
-                )
-            
-            # Add current timestamp
-            timestamps.append(current_time)
-
-    def _check_concurrent_limit(self, tool_name: str, max_concurrent: int):
-        """Check if tool execution is within concurrent limits."""
-        with self._execution_lock:
-            current_concurrent = self._active_executions[tool_name]
-            if current_concurrent >= max_concurrent:
-                raise MCPValidationError(
-                    f"Concurrent execution limit exceeded for tool {tool_name}: {current_concurrent}/{max_concurrent}",
-                    tool_name=tool_name
-                )
-
-    def _generate_cache_key(self, tool_name: str, params: Dict[str, Any]) -> str:
-        """Generate a cache key for tool execution."""
-        param_str = json.dumps(params, sort_keys=True)
-        return hashlib.md5(f"{tool_name}:{param_str}".encode()).hexdigest()
-
-    def _get_cached_result(self, cache_key: str) -> Optional[Any]:
-        """Get a cached result if available and not expired."""
-        with self._cache_lock:
-            if cache_key in self._result_cache:
-                result, timestamp = self._result_cache[cache_key]
-                if time.time() - timestamp < 300:  # 5 minute default TTL
-                    return result
-                else:
-                    # Remove expired cache entry
-                    del self._result_cache[cache_key]
-            return None
-
-    def _cache_result(self, cache_key: str, result: Any, ttl: float):
-        """Cache a tool execution result."""
-        with self._cache_lock:
-            self._result_cache[cache_key] = (result, time.time())
-            
-            # Limit cache size
-            if len(self._result_cache) > 1000:
-                # Remove oldest entries
-                oldest_keys = sorted(
-                    self._result_cache.keys(),
-                    key=lambda k: self._result_cache[k][1]
-                )[:100]
-                for key in oldest_keys:
-                    del self._result_cache[key]
-
     def _validate_output(self, result: Any):
         """Validate tool output (basic validation)."""
         if result is None:
@@ -1644,6 +1537,17 @@ class MCP:
         
         logger.info(f"MCP server shutdown complete: {final_stats}")
         return final_stats
+
+    def set_performance_mode(self, mode: str = "low"):
+        """Set performance mode to optimize resource usage."""
+        if mode == "low":
+            self._enable_caching = False
+            self._enable_rate_limiting = False
+            self._strict_validation = False
+        elif mode == "high":
+            self._enable_caching = True
+            self._enable_rate_limiting = True
+            self._strict_validation = True
 
 # --- Global MCP Instance ---
 mcp_instance = MCP()

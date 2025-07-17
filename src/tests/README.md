@@ -244,6 +244,9 @@ pytest.TimeoutError: Test execution timed out
 - **Solution**: Increase timeout or optimize test
 - **Prevention**: Use fast markers for quick tests
 
+### Known Warnings
+- **ResourceWarning: unclosed database in sqlite3.Connection**: This is a known issue with coverage.py on macOS/Python 3.13. It's benign and doesn't affect test results. Suppressed via warnings filters and env vars in runner.py.
+
 ### Debug Mode
 ```bash
 # Run with verbose output

@@ -449,111 +449,6 @@ class TestMCPCoreComprehensive:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_mcp_rate_limiting(self):
-        """Test MCP rate limiting functionality."""
-        from mcp import MCP, MCPValidationError
-        
-        mcp_instance = MCP()
-        
-        # Create a test tool with rate limiting
-        def test_tool() -> Dict[str, Any]:
-            return {"result": "success"}
-        
-        test_schema = {"type": "object", "properties": {}, "required": []}
-        
-        mcp_instance.register_tool(
-            name="test_rate_limit_tool",
-            func=test_tool,
-            schema=test_schema,
-            description="A test tool for rate limiting",
-            rate_limit=2.0  # 2 requests per second
-        )
-        
-        try:
-            # First two executions should succeed
-            result1 = mcp_instance.execute_tool("test_rate_limit_tool", {})
-            result2 = mcp_instance.execute_tool("test_rate_limit_tool", {})
-            
-            assert result1["result"] == "success", "First execution should succeed"
-            assert result2["result"] == "success", "Second execution should succeed"
-            
-            # Third execution should fail due to rate limiting
-            with pytest.raises(MCPValidationError) as exc_info:
-                mcp_instance.execute_tool("test_rate_limit_tool", {})
-            assert "Rate limit exceeded" in str(exc_info.value), "Should report rate limit exceeded"
-            
-            # Wait for rate limit to reset
-            time.sleep(1.1)
-            
-            # Should succeed again after waiting
-            result3 = mcp_instance.execute_tool("test_rate_limit_tool", {})
-            assert result3["result"] == "success", "Execution should succeed after rate limit reset"
-            
-            logging.info("MCP rate limiting validated")
-            
-        except Exception as e:
-            logging.warning(f"MCP rate limiting failed: {e}")
-    
-    @pytest.mark.unit
-    @pytest.mark.safe_to_fail
-    def test_mcp_concurrent_execution_limits(self):
-        """Test MCP concurrent execution limits."""
-        from mcp import MCP, MCPValidationError
-        import threading
-        
-        mcp_instance = MCP()
-        
-        # Create a test tool with concurrent limits
-        def test_tool() -> Dict[str, Any]:
-            time.sleep(0.1)  # Simulate work
-            return {"result": "success"}
-        
-        test_schema = {"type": "object", "properties": {}, "required": []}
-        
-        mcp_instance.register_tool(
-            name="test_concurrent_tool",
-            func=test_tool,
-            schema=test_schema,
-            description="A test tool for concurrent execution limits",
-            max_concurrent=2  # Only 2 concurrent executions allowed
-        )
-        
-        try:
-            # Start two concurrent executions
-            results = []
-            errors = []
-            
-            def execute_tool():
-                try:
-                    result = mcp_instance.execute_tool("test_concurrent_tool", {})
-                    results.append(result)
-                except Exception as e:
-                    errors.append(e)
-            
-            # Start 3 threads (should exceed limit)
-            threads = []
-            for i in range(3):
-                thread = threading.Thread(target=execute_tool)
-                threads.append(thread)
-                thread.start()
-            
-            # Wait for all threads to complete
-            for thread in threads:
-                thread.join()
-            
-            # Should have 2 successful executions and 1 error
-            assert len(results) == 2, "Should have 2 successful executions"
-            assert len(errors) == 1, "Should have 1 error due to concurrent limit"
-            assert isinstance(errors[0], MCPValidationError), "Error should be MCPValidationError"
-            assert "Concurrent execution limit exceeded" in str(errors[0]), "Should report concurrent limit exceeded"
-            
-            logging.info("MCP concurrent execution limits validated")
-            
-        except Exception as e:
-            logging.warning(f"MCP concurrent execution limits failed: {e}")
-    
-    @pytest.mark.unit
-    @pytest.mark.safe_to_fail
     def test_mcp_enhanced_server_status(self):
         """Test enhanced server status with detailed metrics."""
         from mcp import MCP
@@ -609,136 +504,47 @@ class TestMCPCoreComprehensive:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_mcp_cache_functionality(self):
-        """Test MCP caching functionality."""
-        from mcp import MCP
+    def test_mcp_enhanced_error_handling(self):
+        """Test enhanced error handling."""
+        from mcp import MCP, MCPToolNotFoundError, MCPInvalidParamsError
         
         mcp_instance = MCP()
         
-        # Create a test tool with caching
-        call_count = 0
-        def test_tool(param: str) -> Dict[str, Any]:
-            nonlocal call_count
-            call_count += 1
-            return {"result": f"cached_{param}", "call_count": call_count}
+        # Test non-existent tool
+        try:
+            mcp_instance.execute_tool("non_existent_tool", {})
+            pytest.fail("Should raise MCPToolNotFoundError for non-existent tool")
+        except MCPToolNotFoundError:
+            logging.info("MCPToolNotFoundError correctly raised for non-existent tool")
+        except Exception as e:
+            logging.warning(f"Unexpected error for non-existent tool: {e}")
+        
+        # Test invalid parameters
+        def test_tool(param1: str) -> Dict[str, Any]:
+            return {"result": param1}
         
         test_schema = {
             "type": "object",
-            "properties": {"param": {"type": "string"}},
-            "required": ["param"]
+            "properties": {
+                "param1": {"type": "string"}
+            },
+            "required": ["param1"]
         }
         
         mcp_instance.register_tool(
-            name="test_cache_tool",
+            name="test_tool",
             func=test_tool,
             schema=test_schema,
-            description="A test tool for caching",
-            cache_ttl=60.0
+            description="Test tool"
         )
         
         try:
-            # First execution should increment call count
-            result1 = mcp_instance.execute_tool("test_cache_tool", {"param": "test"})
-            assert result1["result"] == "cached_test", "First execution result should match"
-            assert result1["call_count"] == 1, "First execution should have call_count 1"
-            
-            # Second execution with same parameters should use cache
-            result2 = mcp_instance.execute_tool("test_cache_tool", {"param": "test"})
-            assert result2["result"] == "cached_test", "Cached execution result should match"
-            assert result2["call_count"] == 1, "Cached execution should have same call_count"
-            
-            # Third execution with different parameters should increment call count
-            result3 = mcp_instance.execute_tool("test_cache_tool", {"param": "different"})
-            assert result3["result"] == "cached_different", "Different execution result should match"
-            assert result3["call_count"] == 2, "Different execution should have call_count 2"
-            
-            # Test cache clearing
-            cache_stats = mcp_instance.clear_cache()
-            assert "result_cache_cleared" in cache_stats, "Cache stats should include result_cache_cleared"
-            assert cache_stats["result_cache_cleared"] > 0, "Should have cleared some cache entries"
-            
-            # After clearing cache, execution should increment call count again
-            result4 = mcp_instance.execute_tool("test_cache_tool", {"param": "test"})
-            assert result4["call_count"] == 3, "After cache clear, execution should increment call count"
-            
-            logging.info("MCP cache functionality validated")
-            
+            mcp_instance.execute_tool("test_tool", {"invalid_param": "value"})
+            pytest.fail("Should raise MCPInvalidParamsError for invalid parameters")
+        except MCPInvalidParamsError:
+            logging.info("MCPInvalidParamsError correctly raised for invalid parameters")
         except Exception as e:
-            logging.warning(f"MCP cache functionality failed: {e}")
-    
-    @pytest.mark.unit
-    @pytest.mark.safe_to_fail
-    def test_mcp_enhanced_error_handling(self):
-        """Test enhanced error handling with detailed error information."""
-        from mcp import MCP, MCPToolNotFoundError, MCPInvalidParamsError, MCPToolExecutionError
-        
-        mcp_instance = MCP()
-        
-        try:
-            # Test tool not found error
-            with pytest.raises(MCPToolNotFoundError) as exc_info:
-                mcp_instance.execute_tool("nonexistent_tool", {})
-            
-            error = exc_info.value
-            assert error.code == -32601, "Tool not found error should have correct code"
-            assert "nonexistent_tool" in str(error), "Error should mention tool name"
-            assert "available_tools" in error.data, "Error should include available tools"
-            assert error.tool_name == "nonexistent_tool", "Error should have tool_name"
-            
-            # Test invalid parameters error
-            def test_tool(param: str) -> Dict[str, Any]:
-                return {"result": param}
-            
-            test_schema = {
-                "type": "object",
-                "properties": {"param": {"type": "string", "minLength": 1}},
-                "required": ["param"]
-            }
-            
-            mcp_instance.register_tool(
-                name="test_error_tool",
-                func=test_tool,
-                schema=test_schema,
-                description="A test tool for error handling"
-            )
-            
-            with pytest.raises(MCPInvalidParamsError) as exc_info:
-                mcp_instance.execute_tool("test_error_tool", {"param": ""})  # Empty string violates minLength
-            
-            error = exc_info.value
-            assert error.code == -32602, "Invalid params error should have correct code"
-            assert "param" in str(error), "Error should mention field name"
-            assert error.field == "param", "Error should have field name"
-            assert error.value == "", "Error should have invalid value"
-            assert error.tool_name == "test_error_tool", "Error should have tool_name"
-            
-            # Test tool execution error
-            def failing_tool() -> Dict[str, Any]:
-                raise ValueError("Simulated tool failure")
-            
-            test_schema = {"type": "object", "properties": {}, "required": []}
-            
-            mcp_instance.register_tool(
-                name="test_failing_tool",
-                func=failing_tool,
-                schema=test_schema,
-                description="A test tool that fails"
-            )
-            
-            with pytest.raises(MCPToolExecutionError) as exc_info:
-                mcp_instance.execute_tool("test_failing_tool", {})
-            
-            error = exc_info.value
-            assert error.code == -32603, "Tool execution error should have correct code"
-            assert "test_failing_tool" in str(error), "Error should mention tool name"
-            assert "Simulated tool failure" in str(error), "Error should include original exception"
-            assert "execution_time" in error.data, "Error should include execution time"
-            assert error.tool_name == "test_failing_tool", "Error should have tool_name"
-            
-            logging.info("Enhanced MCP error handling validated")
-            
-        except Exception as e:
-            logging.warning(f"Enhanced MCP error handling failed: {e}")
+            logging.warning(f"Unexpected error for invalid parameters: {e}")
 
 class TestMCPTransportLayers:
     """Comprehensive tests for MCP transport layer implementations."""

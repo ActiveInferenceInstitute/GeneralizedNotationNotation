@@ -1,7 +1,0 @@
-{
-  "model_name": "test_ontology_validation",
-  "input_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/test_ontology_validation.md",
-  "audio_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/sapf_generation/sapf_processing_step/test_ontology_validation_audio.wav",
-  "audio_duration": 30.0,
-  "processing_successful": true
-}
