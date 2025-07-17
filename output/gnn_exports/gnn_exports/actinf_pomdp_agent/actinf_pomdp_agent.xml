@@ -1,0 +1,288 @@
+<?xml version="1.0" ?>
+<Classic_Active_Inference_POMDP_Agent_v1>
+  <file_path>/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md</file_path>
+  <name>Classic Active Inference POMDP Agent v1</name>
+  <raw_sections>
+    <GNNSection>ClassicPOMDPAgent</GNNSection>
+    <GNNVersionAndFlags>GNN v1</GNNVersionAndFlags>
+    <ModelName>Classic Active Inference POMDP Agent v1</ModelName>
+    <ModelAnnotation>This model describes a classic Active Inference agent for a discrete POMDP:
+- One observation modality ("state_observation") with 3 possible outcomes.
+- One hidden state factor ("location") with 3 possible states.
+- The hidden state is fully controllable via 3 discrete actions.
+- The agent's preferences are encoded as log-probabilities over observations.
+- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.
+- All parameterizations are explicit and suitable for translation to code or simulation in any Active Inference framework.</ModelAnnotation>
+    <StateSpaceBlock># Likelihood matrix: A[observation_outcomes, hidden_states]
+A[3,3,type=float]   # Likelihood mapping hidden states to observations
+
+# Transition matrix: B[states_next, states_previous, actions]
+B[3,3,3,type=float]   # State transitions given previous state and action
+
+# Preference vector: C[observation_outcomes]
+C[3,type=float]       # Log-preferences over observations
+
+# Prior vector: D[states]
+D[3,type=float]       # Prior over initial hidden states
+
+# Habit vector: E[actions]
+E[3,type=float]       # Initial policy prior (habit) over actions
+
+# Hidden State
+s[3,1,type=float]     # Current hidden state distribution
+s_prime[3,1,type=float] # Next hidden state distribution
+
+# Observation
+o[3,1,type=float]     # Current observation
+
+# Policy and Control
+π[3,type=float]       # Policy (distribution over actions)
+u[1,type=int]         # Action taken
+G[1,type=float]       # Expected Free Energy (scalar or per policy)
+t[1,type=int]         # Time step</StateSpaceBlock>
+    <Connections>D-s
+s-A
+s-s_prime
+A-o
+(s,u)-B
+B-s_prime
+C&gt;G
+E&gt;π
+G&gt;π
+π-u</Connections>
+    <InitialParameterization># A: 3 observations x 3 hidden states. Identity mapping (each state deterministically produces a unique observation).
+A={
+  (1.0, 0.0, 0.0),  # obs=0; state=0,1,2
+  (0.0, 1.0, 0.0),  # obs=1
+  (0.0, 0.0, 1.0)   # obs=2
+}
+
+# B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state.
+B={
+  ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ), # s_next=0; actions 0,1,2
+  ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ), # s_next=1
+  ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) )  # s_next=2
+}
+
+# C: 3 observations. Preference for observing state 2.
+C={(0.0, 0.0, 1.0)}
+
+# D: 3 states. Uniform prior.
+D={(0.33333, 0.33333, 0.33333)}
+
+# E: 3 actions. Uniform habit (no initial preference for any action).
+E={(0.33333, 0.33333, 0.33333)}</InitialParameterization>
+    <Equations># Standard Active Inference update equations for POMDPs:
+# - State inference: qs = infer_states(o)
+# - Policy evaluation: q_pi, efe = infer_policies()
+# - Action selection: action = sample_action()</Equations>
+    <Time>Dynamic
+DiscreteTime=t
+ModelTimeHorizon=Unbounded # The agent is defined for an unbounded time horizon; simulation runs may specify a finite horizon.</Time>
+    <ActInfOntologyAnnotation>A=LikelihoodMatrix
+B=TransitionMatrix
+C=LogPreferenceVector
+D=PriorOverHiddenStates
+E=Habit
+s=HiddenState
+s_prime=NextHiddenState
+o=Observation
+π=PolicyVector # Distribution over actions
+u=Action       # Chosen action
+F=VariationalFreeEnergy
+G=ExpectedFreeEnergy
+t=Time</ActInfOntologyAnnotation>
+    <ModelParameters>num_hidden_states: 3  # s[3]
+num_obs: 3           # o[3]
+num_actions: 3       # B actions_dim=3 (controlled by π)</ModelParameters>
+    <Footer>Classic Active Inference POMDP Agent v1 - GNN Representation</Footer>
+    <Signature>NA</Signature>
+  </raw_sections>
+  <statespaceblock>
+    <statespaceblock_item>
+      <id>A</id>
+      <dimensions>3,3,type=float</dimensions>
+      <original_id>A</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>B</id>
+      <dimensions>3,3,3,type=float</dimensions>
+      <original_id>B</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>C</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>C</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>D</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>D</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>E</id>
+      <dimensions>3,type=float</dimensions>
+      <original_id>E</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>s</id>
+      <dimensions>3,1,type=float</dimensions>
+      <original_id>s</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>s_prime</id>
+      <dimensions>3,1,type=float</dimensions>
+      <original_id>s_prime</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>o</id>
+      <dimensions>3,1,type=float</dimensions>
+      <original_id>o</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>u</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>u</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>G</id>
+      <dimensions>1,type=float</dimensions>
+      <original_id>G</original_id>
+    </statespaceblock_item>
+    <statespaceblock_item>
+      <id>t</id>
+      <dimensions>1,type=int</dimensions>
+      <original_id>t</original_id>
+    </statespaceblock_item>
+  </statespaceblock>
+  <connections>
+    <connections_item>
+      <sources>
+        <sources_item>D</sources_item>
+      </sources>
+      <operator>-</operator>
+      <targets>
+        <targets_item>s</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>s</sources_item>
+      </sources>
+      <operator>-</operator>
+      <targets>
+        <targets_item>A</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>s</sources_item>
+      </sources>
+      <operator>-</operator>
+      <targets>
+        <targets_item>s_prime</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>A</sources_item>
+      </sources>
+      <operator>-</operator>
+      <targets>
+        <targets_item>o</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>s</sources_item>
+        <sources_item>u</sources_item>
+      </sources>
+      <operator>-</operator>
+      <targets>
+        <targets_item>B</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>B</sources_item>
+      </sources>
+      <operator>-</operator>
+      <targets>
+        <targets_item>s_prime</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>C</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>G</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>E</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>π</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>G</sources_item>
+      </sources>
+      <operator>&gt;</operator>
+      <targets>
+        <targets_item>π</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+    <connections_item>
+      <sources>
+        <sources_item>π</sources_item>
+      </sources>
+      <operator>-</operator>
+      <targets>
+        <targets_item>u</targets_item>
+      </targets>
+      <attributes/>
+    </connections_item>
+  </connections>
+  <initialparameterization>
+    <A>
+      <A_item>(1.0, 0.0, 0.0)</A_item>
+      <A_item>(0.0, 1.0, 0.0)</A_item>
+      <A_item>(0.0, 0.0, 1.0)</A_item>
+    </A>
+    <B>
+      <B_item>((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))</B_item>
+      <B_item>((0.0, 1.0, 0.0), (1.0, 0.0, 0.0), (0.0, 0.0, 1.0))</B_item>
+      <B_item>((0.0, 0.0, 1.0), (0.0, 1.0, 0.0), (1.0, 0.0, 0.0))</B_item>
+    </B>
+    <C>
+      <C_item>0.0</C_item>
+      <C_item>0.0</C_item>
+      <C_item>1.0</C_item>
+    </C>
+    <D>
+      <D_item>0.33333</D_item>
+      <D_item>0.33333</D_item>
+      <D_item>0.33333</D_item>
+    </D>
+    <E>
+      <E_item>0.33333</E_item>
+      <E_item>0.33333</E_item>
+      <E_item>0.33333</E_item>
+    </E>
+  </initialparameterization>
+</Classic_Active_Inference_POMDP_Agent_v1>
