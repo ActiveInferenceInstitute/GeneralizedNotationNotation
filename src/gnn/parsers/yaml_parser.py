@@ -56,21 +56,41 @@ class YAMLGNNParser(BaseGNNParser):
     
     def parse_string(self, content: str) -> ParseResult:
         """Parse YAML content from string."""
+        # Quick check if this looks like YAML content
+        content = content.strip()
+        if content.startswith('#') or '##' in content[:50]:
+            result = ParseResult(
+                model=self.create_empty_model("Invalid YAML Format"),
+                success=False
+            )
+            result.add_error("Content appears to be Markdown, not YAML")
+            return result
+        
         try:
+            # Try to parse with PyYAML if available
             if HAS_YAML:
-                data = yaml.safe_load(content)
+                try:
+                    data = yaml.safe_load(content)
+                    if not isinstance(data, dict):
+                        raise ValueError("YAML content must produce a dictionary")
+                    return self._parse_yaml_data(data)
+                except yaml.YAMLError as e:
+                    logger.warning(f"PyYAML parsing error: {e}")
+                    # Fall back to simplified parsing
+                    data = self._fallback_yaml_parse(content)
+                    return self._parse_yaml_data(data)
             else:
+                # Use simplified parsing
                 data = self._fallback_yaml_parse(content)
-            
-            return self._parse_yaml_data(data)
-            
+                return self._parse_yaml_data(data)
+                
         except Exception as e:
             logger.error(f"Error parsing YAML content: {e}")
             result = ParseResult(
                 model=self.create_empty_model("Failed YAML Parse"),
                 success=False
             )
-            result.add_error(f"Failed to parse YAML content: {e}")
+            result.add_error(f"Failed to parse YAML content: {str(e)}")
             return result
     
     def _fallback_yaml_parse(self, content: str) -> Dict[str, Any]:

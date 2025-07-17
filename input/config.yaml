@@ -40,7 +40,7 @@ site:
 
 # Setup Configuration
 setup:
-  recreate_venv: false
+  recreate_venv: true
   dev: false
 
 # SAPF Audio Configuration

@@ -490,15 +490,31 @@ class BaseGNNParser(ABC):
 # ================================
 
 def normalize_variable_name(name: str) -> str:
-    """Normalize a variable name according to GNN conventions."""
-    # Remove whitespace and convert to valid identifier
-    normalized = name.strip().replace(' ', '_')
+    """
+    Normalize variable name for consistent reference.
     
-    # Ensure it starts with a letter or underscore
-    if normalized and not (normalized[0].isalpha() or normalized[0] == '_'):
-        normalized = '_' + normalized
+    This function ensures that variable names are treated consistently
+    throughout the codebase, regardless of case or minor variations.
     
-    return normalized
+    Args:
+        name: Variable name to normalize
+        
+    Returns:
+        Normalized variable name
+    """
+    # Handle special Unicode characters like π
+    if name == 'π' or name.lower() == 'pi':
+        return 'π'  # Standardize on Unicode π
+    
+    # Remove any whitespace
+    name = name.strip()
+    
+    # Keep case sensitivity for specific Active Inference standard variables
+    if name in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+        return name
+        
+    # For other variables, use lowercase for normalization
+    return name
 
 def parse_dimensions(dim_str: str) -> List[int]:
     """Parse dimension string like '[2,3,4]' or '[2,3,type=float]' into list of integers."""
@@ -525,27 +541,65 @@ def parse_dimensions(dim_str: str) -> List[int]:
         return [1]  # Default dimension
 
 def infer_variable_type(name: str) -> VariableType:
-    """Infer variable type from name using Active Inference conventions."""
+    """
+    Infer variable type from its name according to Active Inference conventions.
+    
+    Args:
+        name: Variable name
+        
+    Returns:
+        Inferred variable type
+    """
     name_lower = name.lower()
     
-    if name_lower.startswith('s_f') or 'state' in name_lower:
-        return VariableType.HIDDEN_STATE
-    elif name_lower.startswith('o_m') or 'obs' in name_lower:
-        return VariableType.OBSERVATION
-    elif name_lower.startswith('u_c') or 'action' in name_lower:
-        return VariableType.ACTION
-    elif name_lower.startswith('pi_c') or name_lower.startswith('π_c') or 'policy' in name_lower:
+    # Handle Unicode π (pi) character
+    if name == 'π' or name_lower == 'pi':
         return VariableType.POLICY
-    elif name_lower.startswith('a_m') or 'likelihood' in name_lower:
+    
+    # Single character variable conventions in Active Inference
+    if name == 'A':
         return VariableType.LIKELIHOOD_MATRIX
-    elif name_lower.startswith('b_f') or 'transition' in name_lower:
+    elif name == 'B':
         return VariableType.TRANSITION_MATRIX
-    elif name_lower.startswith('c_m') or 'preference' in name_lower:
+    elif name == 'C':
         return VariableType.PREFERENCE_VECTOR
-    elif name_lower.startswith('d_f') or 'prior' in name_lower:
+    elif name == 'D':
         return VariableType.PRIOR_VECTOR
-    else:
-        return VariableType.HIDDEN_STATE  # Default
+    elif name == 'E':
+        return VariableType.POLICY  # Habit/initial policy prior
+    elif name == 'F':
+        return VariableType.HIDDEN_STATE  # Variational free energy is often computed on states
+    elif name == 'G':
+        return VariableType.POLICY  # EFE drives policy
+    
+    # Other standard Active Inference variables
+    if name_lower.startswith('s'):
+        return VariableType.HIDDEN_STATE
+    elif name_lower.startswith('o'):
+        return VariableType.OBSERVATION
+    elif name_lower.startswith('u') or name_lower.startswith('a'):
+        return VariableType.ACTION
+    
+    # Check for common prefixes/patterns
+    if 'state' in name_lower or 'hidden' in name_lower:
+        return VariableType.HIDDEN_STATE
+    elif 'obs' in name_lower or 'perception' in name_lower:
+        return VariableType.OBSERVATION
+    elif 'action' in name_lower or 'control' in name_lower:
+        return VariableType.ACTION
+    elif 'policy' in name_lower or 'pi' in name_lower or 'habit' in name_lower:
+        return VariableType.POLICY
+    elif 'prior' in name_lower:
+        return VariableType.PRIOR_VECTOR
+    elif 'likelihood' in name_lower:
+        return VariableType.LIKELIHOOD_MATRIX
+    elif 'transition' in name_lower:
+        return VariableType.TRANSITION_MATRIX
+    elif 'preference' in name_lower or 'utility' in name_lower:
+        return VariableType.PREFERENCE_VECTOR
+    
+    # Default
+    return VariableType.HIDDEN_STATE
 
 def parse_connection_operator(op: str) -> ConnectionType:
     """Parse connection operator string to ConnectionType."""

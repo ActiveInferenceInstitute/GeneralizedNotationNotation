@@ -12,6 +12,7 @@ from typing import Dict, List, Any, Optional, Tuple, Union
 from dataclasses import dataclass, field
 from enum import Enum
 import logging
+import unicodedata
 
 # Try to import formal parser for enhanced validation
 try:
@@ -103,11 +104,11 @@ class GNNParser:
     
     # Regular expressions for GNN syntax elements
     SECTION_PATTERN = re.compile(r'^## (.+)$')
-    VARIABLE_PATTERN = re.compile(r'^([a-zA-Z_][a-zA-Z0-9_]*)\[([^\]]+)\](?:,type=([a-zA-Z]+))?(?:\s*###\s*(.*))?$')
-    CONNECTION_PATTERN = re.compile(r'^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*###\s*(.*))?$')
-    PARAMETER_PATTERN = re.compile(r'^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+?)(?:\s*###\s*(.*))?$')
-    ONTOLOGY_PATTERN = re.compile(r'^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*([a-zA-Z_][a-zA-Z0-9_]*)(?:\s*###\s*(.*))?$')
-    COMMENT_PATTERN = re.compile(r'^\s*###\s*(.*)$')
+    VARIABLE_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$')
+    CONNECTION_PATTERN = re.compile(r'^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$')
+    PARAMETER_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*=\s*)(.+?)(?:\s*#\s*(.*))?$')
+    ONTOLOGY_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*=\s*)([a-zA-Z_][a-zA-Z0-9_]*)(?:\s*#\s*(.*))?$')
+    COMMENT_PATTERN = re.compile(r'^\s*#\s*(.*)$')  # Explicitly handle single hashtag comments
     
     def __init__(self):
         self.current_section = None
@@ -218,9 +219,9 @@ class GNNParser:
             match = self.VARIABLE_PATTERN.match(line)
             if match:
                 name = match.group(1)
-                dims_str = match.group(2)
-                data_type = match.group(3) or "float"
-                description = match.group(4)
+                dims_str = match.group(3)
+                data_type = match.group(4) or "float"
+                description = match.group(5)
                 
                 # Parse dimensions
                 dimensions = []
@@ -312,8 +313,8 @@ class GNNParser:
             match = self.PARAMETER_PATTERN.match(line)
             if match:
                 name = match.group(1)
-                value_str = match.group(2)
-                description = match.group(3)
+                value_str = match.group(3)
+                description = match.group(4)
                 
                 # Try to parse the value
                 try:
@@ -539,7 +540,7 @@ class GNNParser:
             match = self.ONTOLOGY_PATTERN.match(line)
             if match:
                 variable = match.group(1)
-                ontology_term = match.group(2)
+                ontology_term = match.group(3)
                 parsed.ontology_mappings[variable] = ontology_term
     
     def _parse_signature(self, content: str) -> Dict[str, str]:

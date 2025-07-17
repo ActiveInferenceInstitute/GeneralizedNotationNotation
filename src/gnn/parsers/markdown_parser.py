@@ -782,9 +782,10 @@ class MarkdownGNNParser(BaseGNNParser):
             if missing_targets:
                 logger.warning(f"Connection references unknown target variables: {missing_targets}")
         
-        # Ensure ontology mappings reference existing variables
+        # Ensure ontology mappings reference existing variables or are standard Active Inference variables
+        standard_ai_vars = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'Q', 'R', 'π', 'u', 's', 'o', 't'}
         for mapping in model.ontology_mappings:
-            if mapping.variable_name not in all_var_names:
+            if mapping.variable_name not in all_var_names and mapping.variable_name not in standard_ai_vars:
                 logger.warning(f"Ontology mapping references unknown variable: {mapping.variable_name}")
 
 # Export the parser class

@@ -117,7 +117,7 @@ class TLAParser(BaseGNNParser):
             result.model.time_specification = TimeSpecification(
                 time_type="Dynamic",
                 discretization="DiscreteTime",
-                description="TLA+ temporal logic specification"
+                horizon="Unbounded"
             )
             
             result.model.annotation = "Parsed from TLA+ temporal logic specification"

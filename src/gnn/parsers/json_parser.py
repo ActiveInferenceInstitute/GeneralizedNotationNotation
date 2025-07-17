@@ -59,6 +59,17 @@ class JSONGNNParser(BaseGNNParser):
     def parse_string(self, content: str) -> ParseResult:
         """Parse JSON content from string."""
         try:
+            # Check if this content is likely JSON
+            content = content.strip()
+            if not (content.startswith('{') or content.startswith('[')):
+                # This doesn't look like JSON, might be markdown or another format
+                result = ParseResult(
+                    model=self.create_empty_model("Failed JSON Parse"),
+                    success=False
+                )
+                result.add_error("Content doesn't appear to be valid JSON (missing opening brace or bracket)")
+                return result
+            
             data = json.loads(content)
             return self._parse_json_data(data)
             
@@ -72,12 +83,12 @@ class JSONGNNParser(BaseGNNParser):
             return result
             
         except Exception as e:
-            logger.error(f"Error parsing JSON content: {e}")
+            logger.error(f"Error parsing JSON content: {str(e)}")
             result = ParseResult(
                 model=self.create_empty_model("Failed JSON Parse"),
                 success=False
             )
-            result.add_error(f"Failed to parse JSON content: {e}")
+            result.add_error(f"Failed to parse JSON content: {str(e)}")
             return result
     
     def _parse_json_data(self, data: Dict[str, Any]) -> ParseResult:

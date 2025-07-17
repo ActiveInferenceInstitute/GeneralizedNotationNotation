@@ -7,6 +7,7 @@ based on the EBNF grammar specification for GNN files.
 
 import logging
 import re
+import unicodedata
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Union, Tuple
 from dataclasses import dataclass, field
@@ -411,22 +412,23 @@ class GNNTransformer(Transformer):
 
 
 class GNNFormalParser:
-    """Formal GNN parser using Lark with EBNF grammar."""
+    """Parser for the formal GNN specification."""
     
     def __init__(self, grammar_path: Optional[Path] = None):
-        self.grammar_path = grammar_path or Path(__file__).parent.parent / "grammars/ebnf.ebnf"
+        """Initialize the parser with optional explicit grammar path."""
+        self.grammar_path = grammar_path
         self.parser = None
         self.transformer = GNNTransformer()
         
-        if LARK_AVAILABLE:
-            self._initialize_parser()
-        else:
-            logger.warning("Lark parsing library not available. Install with: pip install lark")
+        # For more robust Unicode support
+        self.unicode_support = True
+        
+        self._initialize_parser()
     
     def _initialize_parser(self):
         """Initialize the Lark parser with GNN grammar."""
         try:
-            if self.grammar_path.exists():
+            if self.grammar_path and self.grammar_path.exists():
                 with open(self.grammar_path, 'r') as f:
                     grammar_content = f.read()
                 
@@ -506,15 +508,19 @@ class GNNFormalParser:
         
         ontology_mapping: identifier "=" identifier comment? NEWLINE
         
-        parameter_definition: identifier "=" /[^\\n#]+/ comment? NEWLINE
+        parameter_definition: identifier ":" /[^\\n#]+/ comment? NEWLINE
         
         model_name: /[^\\n]+/
         annotation_text: /[^#]+/
         footer_text: /[^#]+/
         signature_text: /[^#]+/
         
-        comment: "###" /[^\\n]*/
-        identifier: /[a-zA-Z_][a-zA-Z0-9_]*/
+        // Support both single (#) and triple (###) hashtag comments
+        comment: /#+ *[^\\n]*/
+        
+        // Support Unicode characters like π in identifiers
+        identifier: /[a-zA-Z_\\u00A0-\\uFFFF][a-zA-Z0-9_\\u00A0-\\uFFFF]*/
+        
         TIME_KEY: "DiscreteTime" | "ContinuousTime" | "ModelTimeHorizon"
         
         BOOLEAN: "true" | "false" | "True" | "False"
@@ -524,6 +530,8 @@ class GNNFormalParser:
         %import common.WS
         %import common.NEWLINE
         %ignore WS
+        // Explicitly ignore single hashtag comments
+        %ignore /[#][^\\n]*/
         '''
         
         return lark_grammar

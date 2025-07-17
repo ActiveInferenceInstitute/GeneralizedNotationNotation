@@ -298,3 +298,6 @@ This module integrates with the broader GNN pipeline:
 ## License and Citation
 
 This implementation follows the GNN specification v1.0 and is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
+
+## Reference Alignment
+This module is aligned with the reference Active Inference POMDP specification in actinf_pomdp.md, ensuring all components handle classic POMDP structures including A/B/C/D matrices, state transitions, and policy inference. 

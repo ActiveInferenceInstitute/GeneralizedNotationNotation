@@ -45,6 +45,7 @@ object VariableType {
   case class TransitionMatrix(factor: Int) extends VariableType
   case class PreferenceVector(modality: Int) extends VariableType
   case class PriorVector(factor: Int) extends VariableType
+  case class HabitVector(control: Int) extends VariableType  // Added habit vector type
   
   implicit val variableTypeShow: Show[VariableType] = Show.show {
     case HiddenState(f) => s"s_f$f"
@@ -55,6 +56,7 @@ object VariableType {
     case TransitionMatrix(f) => s"B_f$f"
     case PreferenceVector(m) => s"C_m$m"
     case PriorVector(f) => s"D_f$f"
+    case HabitVector(c) => s"E_c$c"  // Show instance for habit vector
   }
   
   implicit val variableTypeEq: Eq[VariableType] = Eq.fromUniversalEquals
@@ -322,6 +324,12 @@ case class PriorMapping[S](
   prior: CategoricalDist[S]
 )
 
+/** Habit mapping as a functor */
+case class HabitMapping[U](
+  actionSpace: ActionSpace[U],
+  habits: CategoricalDist[U]  // Initial policy prior over actions
+)
+
 /** Complete Active Inference model as a structured category */
 case class ActiveInferenceModel[S, O, U](
   stateSpace: StateSpace[S],
@@ -331,6 +339,7 @@ case class ActiveInferenceModel[S, O, U](
   transition: TransitionMapping[S, U],
   preferences: PreferenceMapping[O],
   priors: PriorMapping[S],
+  habits: HabitMapping[U],  // Added habit mapping
   timeHorizon: Int
 )
 
@@ -376,7 +385,7 @@ object ActiveInferenceModel {
     }.sum
   }
   
-  /** Policy inference via softmax over expected free energy */
+  /** Policy inference via softmax over expected free energy, biased by habit */
   def policyInference[S, O, U](
     model: ActiveInferenceModel[S, O, U],
     beliefs: CategoricalDist[S]
@@ -385,8 +394,15 @@ object ActiveInferenceModel {
       action -> expectedFreeEnergy(model, beliefs, action)
     }.toMap
     
+    // Get habit prior
+    val habitPrior = model.habits.habits
+    
     // Softmax with inverted EFE (lower EFE = higher probability)
-    val expValues = efeValues.map { case (action, efe) => action -> math.exp(-efe) }
+    // Modified to incorporate habit bias
+    val expValues = efeValues.map { case (action, efe) => 
+      val habitStrength = habitPrior.probabilities.getOrElse(action, Probability.zero).value
+      action -> math.exp(-efe) * (1.0 + habitStrength)  // Habit modulates policy selection
+    }
     val total = expValues.values.sum
     
     if (total > 0) {
@@ -574,6 +590,7 @@ object GNNExample {
       transition = ??? // Would need proper transition matrix
       preferences = ??? // Would need preferences
       priors = ??? // Would need priors
+      habits = ??? // Would need habits
       timeHorizon = 10
     ),
     equations = List.empty,

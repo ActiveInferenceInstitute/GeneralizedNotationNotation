@@ -6,7 +6,6 @@ specifications of GNN models.
 
 Author: @docxology
 Date: 2025-01-11
-License: MIT
 """
 
 import re

@@ -27,6 +27,12 @@ Supported Formats:
 - Haskell (.hs) - Functional specifications
 - Pickle (.pkl) - Python serialization
 
+Features:
+- Unicode support for mathematical symbols (e.g., π, σ, μ) in variable names
+- Special handling for Active Inference models with standard variables (A, B, C, D, E, F, G)
+- Comprehensive validation for model consistency and correctness
+- Cross-format conversion while preserving semantics
+
 Author: @docxology
 Date: 2025-01-11
 License: MIT

@@ -57,6 +57,16 @@ class XMLGNNParser(BaseGNNParser):
     def parse_string(self, content: str) -> ParseResult:
         """Parse XML content from string."""
         try:
+            # Quick check if this even looks like XML
+            content = content.strip()
+            if not content.startswith('<') or '<?xml' not in content and '<gnn' not in content:
+                result = ParseResult(
+                    model=self.create_empty_model("Invalid XML"),
+                    success=False
+                )
+                result.add_error("Content doesn't appear to be valid XML (missing XML declaration or root element)")
+                return result
+                
             root = ET.fromstring(content)
             return self._parse_xml_root(root)
             

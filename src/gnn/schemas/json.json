@@ -57,7 +57,7 @@
       "type": "object", 
       "description": "Variable definitions with dimensions and types",
       "patternProperties": {
-        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+        "^[a-zA-Z_πσμαβγδεζηθικλνξορτυφχψω][a-zA-Z0-9_πσμαβγδεζηθικλνξορτυφχψω]*$": {
           "type": "object",
           "description": "Variable definition",
           "required": ["dimensions", "type"],
@@ -136,7 +136,7 @@
       "type": "object",
       "description": "Starting values, matrices, and priors",
       "patternProperties": {
-        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+        "^[a-zA-Z_πσμαβγδεζηθικλνξορτυφχψω][a-zA-Z0-9_πσμαβγδεζηθικλνξορτυφχψω]*$": {
           "oneOf": [
             {"type": "number"},
             {"type": "string"},
@@ -215,7 +215,7 @@
       "type": "object",
       "description": "Mapping to Active Inference Ontology terms",
       "patternProperties": {
-        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+        "^[a-zA-Z_πσμαβγδεζηθικλνξορτυφχψω][a-zA-Z0-9_πσμαβγδεζηθικλνξορτυφχψω]*$": {
           "type": "string",
           "description": "Active Inference Ontology term",
           "pattern": "^[A-Za-z][A-Za-z0-9_]*$"
@@ -226,17 +226,20 @@
       "type": "object",
       "description": "Model-specific parameters and metadata",
       "properties": {
-        "num_hidden_states_factors": {
-          "type": "array",
-          "items": {"type": "integer", "minimum": 1}
+        "num_hidden_states": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of hidden states"
         },
-        "num_obs_modalities": {
-          "type": "array", 
-          "items": {"type": "integer", "minimum": 1}
+        "num_obs": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of observations"
         },
-        "num_control_factors": {
-          "type": "array",
-          "items": {"type": "integer", "minimum": 1}
+        "num_actions": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of actions"
         },
         "backend": {
           "type": "string",
@@ -270,13 +273,18 @@
   "definitions": {
     "variable_reference": {
       "type": "string",
-      "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+      "pattern": "^[a-zA-Z_πσμαβγδεζηθικλνξορτυφχψω][a-zA-Z0-9_πσμαβγδεζηθικλνξορτυφχψω]*$",
       "description": "Reference to a variable defined in StateSpaceBlock"
     },
     "matrix_notation": {
       "type": "string",
-      "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*\\[[0-9]+(,[0-9]+)*\\]$",
+      "pattern": "^[a-zA-Z_πσμαβγδεζηθικλνξορτυφχψω][a-zA-Z0-9_πσμαβγδεζηθικλνξορτυφχψω]*\\[[0-9]+(,[0-9]+)*\\]$",
       "description": "Matrix notation like A[3,3] for dimensions"
+    },
+    "comment_syntax": {
+      "type": "string",
+      "pattern": "^\\s*#.*$",
+      "description": "Single hashtag comment format"
     },
     "active_inference_matrices": {
       "type": "object",
@@ -301,6 +309,42 @@
           "type": "array",
           "description": "Priors over initial states",
           "items": {"type": "array"}
+        },
+        "E_vectors": {
+          "type": "array",
+          "description": "Habits (initial policy priors)",
+          "items": {"type": "array"}
+        }
+      }
+    },
+    "active_inference_variables": {
+      "type": "object",
+      "description": "Standard Active Inference variables",
+      "properties": {
+        "hidden_states": {
+          "type": "array",
+          "description": "Hidden state variables (s)",
+          "items": {"type": "object"}
+        },
+        "observations": {
+          "type": "array",
+          "description": "Observation variables (o)",
+          "items": {"type": "object"}
+        },
+        "actions": {
+          "type": "array",
+          "description": "Action variables (u)",
+          "items": {"type": "object"}
+        },
+        "policies": {
+          "type": "array",
+          "description": "Policy variables (π)",
+          "items": {"type": "object"}
+        },
+        "expected_free_energy": {
+          "type": "array",
+          "description": "Expected free energy (G)",
+          "items": {"type": "object"}
         }
       }
     }
