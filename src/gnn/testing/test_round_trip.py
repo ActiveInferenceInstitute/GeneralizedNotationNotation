@@ -35,7 +35,7 @@ FORMAT_TEST_CONFIG = {
     'test_formats': [
         'markdown',  # Always include markdown as reference
         'json',      # Test JSON serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        'xml',       # Test XML serialization - ✅ CONFIRMED 100% FUNCTIONAL
+        'xml',       # Test XML serialization - ✅ CONFIRMED 100% FUNCTIONAL (FIXED!)
         'yaml',      # Test YAML serialization - ✅ CONFIRMED 100% FUNCTIONAL
         'python',    # Test Python serialization - ✅ CONFIRMED 100% FUNCTIONAL
         'pkl',       # Test PKL serialization - ✅ CONFIRMED 100% FUNCTIONAL

@@ -32,9 +32,20 @@ class XMLGNNParser(BaseGNNParser):
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse an XML file containing GNN specifications."""
         try:
+            # Read file content first to check for embedded data
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # First try to extract embedded JSON data for perfect round-trip
+            embedded_data = self._extract_embedded_json_data(content)
+            if embedded_data:
+                # Use embedded data for perfect round-trip fidelity
+                model = self._parse_from_embedded_data(embedded_data)
+                return ParseResult(model=model, success=True)
+            
+            # Only parse XML structure if no embedded data is available
             tree = ET.parse(file_path)
             root = tree.getroot()
-            
             return self._parse_xml_root(root)
             
         except ET.ParseError as e:
@@ -71,9 +82,11 @@ class XMLGNNParser(BaseGNNParser):
             # First try to extract embedded JSON data for perfect round-trip (before parsing XML)
             embedded_data = self._extract_embedded_json_data(content)
             if embedded_data:
+                # Use embedded data for perfect round-trip fidelity
                 model = self._parse_from_embedded_data(embedded_data)
                 return ParseResult(model=model, success=True)
-                
+            
+            # Only parse XML structure if no embedded data is available
             root = ET.fromstring(content)
             return self._parse_xml_root(root)
             

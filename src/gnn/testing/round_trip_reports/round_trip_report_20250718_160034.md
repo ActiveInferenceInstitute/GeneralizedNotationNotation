@@ -1,5 +1,5 @@
 # GNN Round-Trip Testing Report
-**Generated:** 2025-07-18 14:01:45
+**Generated:** 2025-07-18 16:00:34
 **Reference File:** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md`
 
 ## Summary
@@ -35,9 +35,7 @@
 - **Semantic Checksum:** ✅
 
 ### xml ✅ PASS
-- **Semantic Checksum:** ❌
-- **Warnings:**
-  - Semantic checksums don't match (may indicate data loss)
+- **Semantic Checksum:** ✅
 
 ### yaml ✅ PASS
 - **Semantic Checksum:** ✅
