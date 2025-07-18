@@ -66,6 +66,10 @@ class PipelineArguments:
     recursive: bool = True
     verbose: bool = True
     
+    # Enhanced validation options (enabled by default for comprehensive testing)
+    enable_round_trip: bool = True      # Enable round-trip testing across all 21 formats
+    enable_cross_format: bool = True    # Enable cross-format consistency validation
+    
     # Step control  
     skip_steps: Optional[str] = None
     only_steps: Optional[str] = None
@@ -179,6 +183,16 @@ class ArgumentParser:
             action=argparse.BooleanOptionalAction, 
             help_text='Enable verbose output'
         ),
+        'enable_round_trip': ArgumentDefinition(
+            flag='--enable-round-trip',
+            action='store_true',
+            help_text='Enable comprehensive round-trip testing across all 21 formats'
+        ),
+        'enable_cross_format': ArgumentDefinition(
+            flag='--enable-cross-format',
+            action='store_true',
+            help_text='Enable cross-format consistency validation'
+        ),
         'skip_steps': ArgumentDefinition(
             flag='--skip-steps',
             help_text='Comma-separated list of steps to skip'
@@ -240,7 +254,7 @@ class ArgumentParser:
     
     # Define which arguments each step supports
     STEP_ARGUMENTS = {
-        "1_gnn.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "1_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
         "2_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
         "3_tests.py": ["target_dir", "output_dir", "verbose"],
         "4_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
@@ -865,6 +879,8 @@ def parse_arguments() -> PipelineArguments:
     parser.add_argument('--skip-steps', help='Comma-separated list of steps to skip (overrides config)')
     parser.add_argument('--only-steps', help='Comma-separated list of steps to run (overrides config)')
     parser.add_argument('--verbose', action=argparse.BooleanOptionalAction, help='Enable verbose output (overrides config)')
+    parser.add_argument('--enable-round-trip', action='store_true', help='Enable comprehensive round-trip testing across all 21 formats (overrides config)')
+    parser.add_argument('--enable-cross-format', action='store_true', help='Enable cross-format consistency validation (overrides config)')
     parser.add_argument('--strict', action='store_true', help='Enable strict type checking mode')
     parser.add_argument('--estimate-resources', action=argparse.BooleanOptionalAction, help='Estimate computational resources')
     parser.add_argument('--ontology-terms-file', type=Path, help='Path to ontology terms file (overrides config)')
@@ -920,6 +936,10 @@ def parse_arguments() -> PipelineArguments:
         pipeline_args.only_steps = args.only_steps
     if args.verbose is not None:
         pipeline_args.verbose = args.verbose
+    if args.enable_round_trip:
+        pipeline_args.enable_round_trip = True
+    if args.enable_cross_format:
+        pipeline_args.enable_cross_format = True
     if args.strict:
         pipeline_args.strict = True
     if args.estimate_resources is not None:

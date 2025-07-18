@@ -24,6 +24,10 @@ class PipelineConfig:
     recursive: bool = True
     verbose: bool = True
     
+    # Enhanced validation options (enabled by default for comprehensive testing)
+    enable_round_trip: bool = True      # Enable round-trip testing across all 21 formats
+    enable_cross_format: bool = True    # Enable cross-format consistency validation
+    
     # Step control
     skip_steps: List[str] = field(default_factory=list)
     only_steps: List[str] = field(default_factory=list)
@@ -123,6 +127,8 @@ class GNNPipelineConfig:
             config.pipeline.output_dir = Path(pipeline_data.get('output_dir', '../output'))
             config.pipeline.recursive = pipeline_data.get('recursive', True)
             config.pipeline.verbose = pipeline_data.get('verbose', True)
+            config.pipeline.enable_round_trip = pipeline_data.get('enable_round_trip', True)
+            config.pipeline.enable_cross_format = pipeline_data.get('enable_cross_format', True)
             config.pipeline.skip_steps = pipeline_data.get('skip_steps', [])
             config.pipeline.only_steps = pipeline_data.get('only_steps', [])
             if 'pipeline_summary_file' in pipeline_data:
@@ -176,6 +182,8 @@ class GNNPipelineConfig:
             'output_dir': self.pipeline.output_dir,
             'recursive': self.pipeline.recursive,
             'verbose': self.pipeline.verbose,
+            'enable_round_trip': self.pipeline.enable_round_trip,
+            'enable_cross_format': self.pipeline.enable_cross_format,
             'skip_steps': ','.join(self.pipeline.skip_steps) if self.pipeline.skip_steps else None,
             'only_steps': ','.join(self.pipeline.only_steps) if self.pipeline.only_steps else None,
             'pipeline_summary_file': self.pipeline.pipeline_summary_file,

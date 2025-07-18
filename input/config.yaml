@@ -13,6 +13,10 @@ pipeline:
   recursive: true
   verbose: true
   
+  # Enhanced validation options (enabled by default for comprehensive testing)
+  enable_round_trip: true      # Enable round-trip testing across all 21 formats
+  enable_cross_format: true    # Enable cross-format consistency validation
+  
   # Step control - which steps to run or skip
   skip_steps: []  # e.g., ["7_mcp", "11_llm"] to skip MCP and LLM steps
   only_steps: []  # e.g., ["1_gnn", "4_type_checker"] to run only specific steps

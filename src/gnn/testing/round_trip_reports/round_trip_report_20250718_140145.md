@@ -1,5 +1,5 @@
 # GNN Round-Trip Testing Report
-**Generated:** 2025-07-18 13:20:13
+**Generated:** 2025-07-18 14:01:45
 **Reference File:** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md`
 
 ## Summary
@@ -13,11 +13,11 @@
 - **xml** ✅: 1/1 (100.0%)
 - **yaml** ✅: 1/1 (100.0%)
 - **pkl** ✅: 1/1 (100.0%)
-- **asn1** ✅: 1/1 (100.0%)
 - **protobuf** ✅: 1/1 (100.0%)
 - **xsd** ✅: 1/1 (100.0%)
-- **scala** ✅: 1/1 (100.0%)
+- **asn1** ✅: 1/1 (100.0%)
 - **python** ✅: 1/1 (100.0%)
+- **scala** ✅: 1/1 (100.0%)
 - **lean** ✅: 1/1 (100.0%)
 - **coq** ✅: 1/1 (100.0%)
 - **isabelle** ✅: 1/1 (100.0%)
@@ -45,19 +45,19 @@
 ### pkl ✅ PASS
 - **Semantic Checksum:** ✅
 
-### asn1 ✅ PASS
-- **Semantic Checksum:** ✅
-
 ### protobuf ✅ PASS
 - **Semantic Checksum:** ✅
 
 ### xsd ✅ PASS
 - **Semantic Checksum:** ✅
 
-### scala ✅ PASS
+### asn1 ✅ PASS
 - **Semantic Checksum:** ✅
 
 ### python ✅ PASS
+- **Semantic Checksum:** ✅
+
+### scala ✅ PASS
 - **Semantic Checksum:** ✅
 
 ### lean ✅ PASS

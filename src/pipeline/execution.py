@@ -163,7 +163,11 @@ def build_command_args(script_name: str, script_path: Path, args, python_executa
     # Add step-specific arguments based on script name
     if script_name in ['1_gnn.py']:
         # GNN processing step supports recursive (already handled above)
-        pass
+        # Add enhanced validation options
+        if getattr(args, 'enable_round_trip', True):
+            full_args.append('--enable-round-trip')
+        if getattr(args, 'enable_cross_format', True):
+            full_args.append('--enable-cross-format')
     
     if 'type_checker' in script_name:
         # Already handled recursive above
