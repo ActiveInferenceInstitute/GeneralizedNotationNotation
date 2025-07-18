@@ -19,7 +19,7 @@ from .common import (
 )
 
 class MaximaParser(BaseGNNParser):
-    """Parser for Maxima symbolic computation specifications."""
+    """Parser for Maxima symbolic computation specifications with embedded data support."""
     
     def __init__(self):
         super().__init__()
@@ -27,6 +27,60 @@ class MaximaParser(BaseGNNParser):
         self.function_pattern = re.compile(r'(\w+)\s*\(\s*([^)]*)\s*\)\s*:=\s*(.+?);', re.MULTILINE)
         self.matrix_pattern = re.compile(r'matrix\s*\(\s*(.+?)\s*\)', re.IGNORECASE | re.DOTALL)
         self.solve_pattern = re.compile(r'solve\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)', re.IGNORECASE)
+    
+    def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
+        """Extract embedded JSON model data from Maxima comments."""
+        import json
+        # Look for JSON data in /* MODEL_DATA: {...} */ comments
+        pattern = r'/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/'
+        match = re.search(pattern, content, re.DOTALL)
+        if match:
+            try:
+                return json.loads(match.group(1))
+            except json.JSONDecodeError:
+                pass
+        return None
+    
+    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+        """Parse model from embedded JSON data for perfect round-trip fidelity."""
+        from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+        
+        try:
+            result.model.model_name = embedded_data.get('model_name', 'MaximaGNNModel')
+            result.model.annotation = embedded_data.get('annotation', '')
+            
+            # Restore variables
+            for var_data in embedded_data.get('variables', []):
+                var = Variable(
+                    name=var_data['name'],
+                    var_type=VariableType(var_data.get('var_type', 'hidden_state')),
+                    data_type=DataType(var_data.get('data_type', 'categorical')),
+                    dimensions=var_data.get('dimensions', [])
+                )
+                result.model.variables.append(var)
+            
+            # Restore connections
+            for conn_data in embedded_data.get('connections', []):
+                conn = Connection(
+                    source_variables=conn_data.get('source_variables', []),
+                    target_variables=conn_data.get('target_variables', []),
+                    connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+                )
+                result.model.connections.append(conn)
+            
+            # Restore parameters
+            for param_data in embedded_data.get('parameters', []):
+                param = Parameter(
+                    name=param_data['name'],
+                    value=param_data['value']
+                )
+                result.model.parameters.append(param)
+            
+            return result
+            
+        except Exception as e:
+            result.add_error(f"Failed to parse embedded data: {e}")
+            return result
         
     def get_supported_extensions(self) -> List[str]:
         """Get file extensions supported by this parser."""
@@ -47,6 +101,12 @@ class MaximaParser(BaseGNNParser):
         """Parse Maxima content string."""
         result = ParseResult(model=self.create_empty_model())
         
+        # First, try to extract embedded JSON data for perfect round-trip
+        embedded_data = self._extract_embedded_json_data(content)
+        if embedded_data:
+            return self._parse_from_embedded_data(embedded_data, result)
+        
+        # Fallback to standard parsing
         try:
             # Extract model name from comments or filename
             result.model.model_name = self._extract_model_name(content)

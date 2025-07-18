@@ -81,6 +81,7 @@ class GNNFormat(Enum):
     YAML = "yaml"
     XSD = "xsd"
     ASN1 = "asn1"
+    PKL = "pkl"
     ALLOY = "alloy"
     Z_NOTATION = "z_notation"
     TLA_PLUS = "tla_plus"
@@ -320,16 +321,39 @@ class GNNInternalRepresentation:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
+        def serialize_obj(obj):
+            """Helper to serialize objects with enums to dict."""
+            if hasattr(obj, '__dict__'):
+                result = {}
+                for key, value in obj.__dict__.items():
+                    if isinstance(value, Enum):
+                        result[key] = value.value
+                    elif isinstance(value, list):
+                        result[key] = [serialize_obj(item) if hasattr(item, '__dict__') else 
+                                     item.value if isinstance(item, Enum) else item for item in value]
+                    elif isinstance(value, dict):
+                        result[key] = {k: serialize_obj(v) if hasattr(v, '__dict__') else 
+                                     v.value if isinstance(v, Enum) else v for k, v in value.items()}
+                    elif hasattr(value, '__dict__'):
+                        result[key] = serialize_obj(value)
+                    else:
+                        result[key] = value
+                return result
+            elif isinstance(obj, Enum):
+                return obj.value
+            else:
+                return obj
+        
         return {
             'model_name': self.model_name,
             'version': self.version,
             'annotation': self.annotation,
-            'variables': [var.__dict__ for var in self.variables],
-            'connections': [conn.__dict__ for conn in self.connections],
-            'parameters': [param.__dict__ for param in self.parameters],
-            'equations': [eq.__dict__ for eq in self.equations],
-            'time_specification': self.time_specification.__dict__ if self.time_specification else None,
-            'ontology_mappings': [mapping.__dict__ for mapping in self.ontology_mappings],
+            'variables': [serialize_obj(var) for var in self.variables],
+            'connections': [serialize_obj(conn) for conn in self.connections],
+            'parameters': [serialize_obj(param) for param in self.parameters],
+            'equations': [serialize_obj(eq) for eq in self.equations],
+            'time_specification': serialize_obj(self.time_specification) if self.time_specification else None,
+            'ontology_mappings': [serialize_obj(mapping) for mapping in self.ontology_mappings],
             'source_format': self.source_format.value if self.source_format else None,
             'created_at': self.created_at.isoformat(),
             'modified_at': self.modified_at.isoformat(),
@@ -539,6 +563,35 @@ def parse_dimensions(dim_str: str) -> List[int]:
         return dimensions
     except Exception:
         return [1]  # Default dimension
+
+def safe_enum_convert(enum_class, value, default=None):
+    """Safely convert string to enum, handling case insensitivity."""
+    if isinstance(value, enum_class):
+        return value
+    
+    if isinstance(value, str):
+        # Try exact match first
+        try:
+            return enum_class(value)
+        except ValueError:
+            pass
+        
+        # Try lowercase
+        try:
+            return enum_class(value.lower())
+        except ValueError:
+            pass
+        
+        # Try uppercase
+        try:
+            return enum_class(value.upper())
+        except ValueError:
+            pass
+    
+    # Return default if provided, otherwise first enum value
+    if default is not None:
+        return default
+    return list(enum_class)[0]
 
 def infer_variable_type(name: str) -> VariableType:
     """

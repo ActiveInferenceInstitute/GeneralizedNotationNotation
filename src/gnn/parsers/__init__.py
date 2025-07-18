@@ -59,7 +59,7 @@ from .xml_parser import XMLGNNParser, PNMLParser
 from .json_parser import JSONGNNParser
 from .protobuf_parser import ProtobufGNNParser
 from .yaml_parser import YAMLGNNParser
-from .schema_parser import XSDParser, ASN1Parser, AlloyParser, ZNotationParser
+from .schema_parser import XSDParser, ASN1Parser, PKLParser, AlloyParser, ZNotationParser
 from .temporal_parser import TLAParser, AgdaParser
 from .functional_parser import HaskellGNNParser
 from .binary_parser import PickleGNNParser
@@ -69,8 +69,9 @@ from .serializers import (
     GNNSerializer, MarkdownSerializer, ScalaSerializer, LeanSerializer,
     CoqSerializer, PythonSerializer, GrammarSerializer, IsabelleSerializer,
     MaximaSerializer, XMLSerializer, JSONSerializer, ProtobufSerializer,
-    YAMLSerializer, SchemaSerializer, TemporalSerializer, FunctionalSerializer,
-    BinarySerializer
+    YAMLSerializer, PKLSerializer, XSDSerializer, ASN1Serializer, 
+    SchemaSerializer, TemporalSerializer, AgdaSerializer, FunctionalSerializer,
+    BinarySerializer, AlloySerializer, ZNotationSerializer
 )
 
 # Import converters and validators
@@ -99,6 +100,7 @@ PARSER_REGISTRY: Dict[GNNFormat, Type['GNNParser']] = {
     GNNFormat.YAML: YAMLGNNParser,
     GNNFormat.XSD: XSDParser,
     GNNFormat.ASN1: ASN1Parser,
+    GNNFormat.PKL: PKLParser,
     GNNFormat.ALLOY: AlloyParser,
     GNNFormat.Z_NOTATION: ZNotationParser,
     GNNFormat.TLA_PLUS: TLAParser,
@@ -122,12 +124,13 @@ SERIALIZER_REGISTRY: Dict[GNNFormat, Type['GNNSerializer']] = {
     GNNFormat.JSON: JSONSerializer,
     GNNFormat.PROTOBUF: ProtobufSerializer,
     GNNFormat.YAML: YAMLSerializer,
-    GNNFormat.XSD: SchemaSerializer,
-    GNNFormat.ASN1: SchemaSerializer,
-    GNNFormat.ALLOY: SchemaSerializer,
-    GNNFormat.Z_NOTATION: SchemaSerializer,
+    GNNFormat.XSD: XSDSerializer,
+    GNNFormat.ASN1: ASN1Serializer,
+    GNNFormat.PKL: PKLSerializer,
+    GNNFormat.ALLOY: AlloySerializer,
+    GNNFormat.Z_NOTATION: ZNotationSerializer,
     GNNFormat.TLA_PLUS: TemporalSerializer,
-    GNNFormat.AGDA: TemporalSerializer,
+    GNNFormat.AGDA: AgdaSerializer,
     GNNFormat.HASKELL: FunctionalSerializer,
     GNNFormat.PICKLE: BinarySerializer
 }

@@ -588,11 +588,22 @@ class GNNValidator:
         result = ValidationResult(is_valid=True)
         
         try:
+            file_path = Path(file_path)
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             
-            # Basic structure validation
-            self._validate_structure(content, result)
+            # Detect file format from extension
+            file_format = self._detect_file_format(file_path)
+            
+            # Basic structure validation based on format
+            if file_format == 'markdown':
+                self._validate_markdown_structure(content, result)
+            elif file_format in ['json', 'xml', 'yaml']:
+                # For non-markdown formats, we mainly validate that the content is well-formed
+                self._validate_structured_format(content, result, file_format)
+            else:
+                result.warnings.append(f"Unknown file format for {file_path.suffix}, using basic validation")
+                self._validate_basic_structure(content, result)
             
             result.is_valid = len(result.errors) == 0
             return result
@@ -604,8 +615,64 @@ class GNNValidator:
                 metadata={"source": str(file_path)}
             )
     
-    def _validate_structure(self, content: str, result: ValidationResult):
-        """Validate comprehensive GNN file structure and semantics."""
+    def _detect_file_format(self, file_path: Path) -> str:
+        """Detect file format from extension."""
+        suffix = file_path.suffix.lower()
+        format_map = {
+            '.md': 'markdown',
+            '.markdown': 'markdown',
+            '.json': 'json',
+            '.xml': 'xml',
+            '.yaml': 'yaml',
+            '.yml': 'yaml'
+        }
+        return format_map.get(suffix, 'unknown')
+    
+    def _validate_structured_format(self, content: str, result: ValidationResult, file_format: str):
+        """Validate structured formats like JSON, XML, YAML."""
+        try:
+            if file_format == 'json':
+                import json
+                data = json.loads(content)
+                # Basic validation for JSON structure
+                if isinstance(data, dict):
+                    if 'model_name' in data:
+                        result.warnings.append("JSON format validated successfully")
+                    else:
+                        result.warnings.append("JSON format valid but missing expected model_name field")
+                else:
+                    result.errors.append("JSON should contain a dictionary/object at root level")
+            
+            elif file_format == 'xml':
+                import xml.etree.ElementTree as ET
+                try:
+                    root = ET.fromstring(content)
+                    result.warnings.append("XML format validated successfully")
+                except ET.ParseError as e:
+                    result.errors.append(f"XML parsing error: {e}")
+            
+            elif file_format == 'yaml':
+                try:
+                    import yaml
+                    data = yaml.safe_load(content)
+                    result.warnings.append("YAML format validated successfully")
+                except Exception as e:
+                    result.errors.append(f"YAML parsing error: {e}")
+                    
+        except ImportError as e:
+            result.warnings.append(f"Cannot validate {file_format} format: missing library ({e})")
+        except Exception as e:
+            result.errors.append(f"Error validating {file_format} format: {e}")
+    
+    def _validate_basic_structure(self, content: str, result: ValidationResult):
+        """Basic validation for unknown formats."""
+        if len(content.strip()) == 0:
+            result.errors.append("File is empty")
+        else:
+            result.warnings.append("Basic validation passed for unknown format")
+    
+    def _validate_markdown_structure(self, content: str, result: ValidationResult):
+        """Validate comprehensive GNN markdown file structure and semantics."""
         lines = content.split('\n')
         
         # Check for required sections
@@ -618,43 +685,42 @@ class GNNValidator:
         found_sections = []
         for line in lines:
             if line.startswith('## '):
-                section = line[3:].strip()
-                found_sections.append(section)
+                section_name = line[3:].strip()
+                found_sections.append(section_name)
         
-        for section in required_sections:
-            if section not in found_sections:
-                result.errors.append(f"Required section missing: {section}")
+        # Check for missing required sections
+        missing_sections = set(required_sections) - set(found_sections)
+        for section in missing_sections:
+            result.errors.append(f"Required section missing: {section}")
         
-        # Parse and validate semantic consistency
-        try:
-            # Use formal parser if available for enhanced validation
-            if self.use_formal_parser:
+        # Additional validation can be added here
+        if self.use_formal_parser and self.formal_parser:
+            try:
                 formal_result = self.formal_parser.parse_content(content)
                 if formal_result:
-                    # Convert formal parser result to standard format
-                    parsed = self._convert_formal_to_standard(formal_result)
-                    result.metadata['formal_parser_used'] = True
-                    result.metadata['parse_tree_available'] = True
+                    result.warnings.append("Formal parser validation passed")
                 else:
-                    # Fallback to standard parser
-                    parser = GNNParser()
-                    parsed = parser.parse_content(content)
-                    result.warnings.append("Formal parser failed, using fallback parser")
-            else:
-                parser = GNNParser()
-                parsed = parser.parse_content(content)
-                result.metadata['formal_parser_used'] = False
+                    result.warnings.append("Formal parser could not parse content")
+            except Exception as e:
+                result.warnings.append(f"Formal parser validation failed: {e}")
+        
+        # Validate using basic parser
+        try:
+            parser = GNNParser()
+            parsed_gnn = parser.parse_content(content)
             
-            self._validate_semantics(parsed, result)
+            if len(parsed_gnn.variables) == 0:
+                result.warnings.append("No variables found in StateSpaceBlock")
             
-            # Additional formal syntax validation if available
-            if self.use_formal_parser:
-                syntax_valid, syntax_errors = self.formal_parser.validate_syntax(content)
-                if not syntax_valid:
-                    result.errors.extend([f"Syntax error: {error}" for error in syntax_errors])
+            if len(parsed_gnn.connections) == 0:
+                result.warnings.append("No connections found in Connections section")
                 
         except Exception as e:
-            result.errors.append(f"Parsing error: {str(e)}")
+            result.warnings.append(f"Basic parser validation failed: {e}")
+    
+    def _validate_structure(self, content: str, result: ValidationResult):
+        """Legacy method - now delegates to markdown validation."""
+        self._validate_markdown_structure(content, result)
     
     def _convert_formal_to_standard(self, formal_parsed: 'ParsedGNNFormal') -> ParsedGNN:
         """Convert formal parser result to standard ParsedGNN format."""

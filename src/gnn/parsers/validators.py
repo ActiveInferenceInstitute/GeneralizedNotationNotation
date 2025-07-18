@@ -528,7 +528,7 @@ class GNNValidator:
             ))
         
         # Check for habit E
-        if not actinf_vars['E']:
+        if not actinf_vars.get('E', False):
             result.add_issue(ValidationIssue(
                 severity=ValidationSeverity.INFO,
                 message="Habit E is missing",

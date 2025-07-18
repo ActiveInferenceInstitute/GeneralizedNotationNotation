@@ -16,7 +16,8 @@ from typing import Dict, List, Any, Optional, Union
 
 from .common import (
     BaseGNNParser, ParseResult, GNNInternalRepresentation, ParseError,
-    Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+    Variable, Connection, Parameter, VariableType, DataType, ConnectionType,
+    Equation, TimeSpecification, OntologyMapping
 )
 
 logger = logging.getLogger(__name__)
@@ -132,6 +133,15 @@ class XMLGNNParser(BaseGNNParser):
         # Parse parameters
         self._parse_xml_parameters(root, model)
         
+        # Parse equations
+        self._parse_xml_equations(root, model)
+        
+        # Parse time specification
+        self._parse_xml_time_specification(root, model)
+        
+        # Parse ontology mappings
+        self._parse_xml_ontology_mappings(root, model)
+        
         return model
     
     def _parse_metadata(self, root: ET.Element, model: GNNInternalRepresentation):
@@ -207,19 +217,23 @@ class XMLGNNParser(BaseGNNParser):
     
     def _parse_xml_connections(self, root: ET.Element, model: GNNInternalRepresentation):
         """Parse connections from XML."""
-        # Look for connections in multiple possible locations
-        connections_containers = [
-            root.findall('.//connections/connection'),
-            root.findall('.//connection'),
-            root.findall('.//edge'),
-            root.findall('.//arc')  # For Petri net style
-        ]
+        # Look for connections in prioritized order to avoid duplicates
+        connection_elements = []
         
-        for connections in connections_containers:
-            for conn_elem in connections:
-                connection = self._parse_xml_connection(conn_elem)
-                if connection:
-                    model.connections.append(connection)
+        # First try structured format
+        connections_in_container = root.findall('.//connections/connection')
+        if connections_in_container:
+            connection_elements = connections_in_container
+        else:
+            # Fall back to other formats if no structured format found
+            connection_elements = (root.findall('.//connection') + 
+                                 root.findall('.//edge') + 
+                                 root.findall('.//arc'))
+        
+        for conn_elem in connection_elements:
+            connection = self._parse_xml_connection(conn_elem)
+            if connection:
+                model.connections.append(connection)
     
     def _parse_xml_connection(self, conn_elem: ET.Element) -> Optional[Connection]:
         """Parse a single connection from XML element."""
@@ -331,6 +345,94 @@ class XMLGNNParser(BaseGNNParser):
             return VariableType.POLICY
         
         return VariableType.HIDDEN_STATE
+    
+    def _parse_xml_equations(self, root: ET.Element, model: GNNInternalRepresentation):
+        """Parse equations from XML."""
+        equations_containers = [
+            root.findall('.//equations/equation'),
+            root.findall('.//equation')
+        ]
+        
+        for equations in equations_containers:
+            for eq_elem in equations:
+                equation = self._parse_xml_equation(eq_elem)
+                if equation:
+                    model.equations.append(equation)
+    
+    def _parse_xml_equation(self, eq_elem: ET.Element) -> Optional[Equation]:
+        """Parse a single equation from XML element."""
+        try:
+            content = eq_elem.text or ""
+            label = eq_elem.get('label')
+            format_type = eq_elem.get('format', 'latex')
+            description = eq_elem.get('description', '')
+            
+            return Equation(
+                content=content,
+                label=label,
+                format=format_type,
+                description=description
+            )
+            
+        except Exception as e:
+            logger.warning(f"Failed to parse XML equation {eq_elem.tag}: {e}")
+            return None
+    
+    def _parse_xml_time_specification(self, root: ET.Element, model: GNNInternalRepresentation):
+        """Parse time specification from XML."""
+        time_elem = root.find('.//time_specification')
+        if time_elem is not None:
+            time_type = time_elem.get('type', 'Static')
+            discretization = time_elem.get('discretization')
+            horizon = time_elem.get('horizon')
+            
+            # Convert horizon to appropriate type
+            if horizon:
+                try:
+                    if horizon.isdigit():
+                        horizon = int(horizon)
+                except:
+                    pass  # Keep as string
+            
+            model.time_specification = TimeSpecification(
+                time_type=time_type,
+                discretization=discretization,
+                horizon=horizon
+            )
+    
+    def _parse_xml_ontology_mappings(self, root: ET.Element, model: GNNInternalRepresentation):
+        """Parse ontology mappings from XML."""
+        ontology_containers = [
+            root.findall('.//ontology_mappings/mapping'),
+            root.findall('.//ontology/mapping'),
+            root.findall('.//mapping')
+        ]
+        
+        for mappings in ontology_containers:
+            for mapping_elem in mappings:
+                mapping = self._parse_xml_ontology_mapping(mapping_elem)
+                if mapping:
+                    model.ontology_mappings.append(mapping)
+    
+    def _parse_xml_ontology_mapping(self, mapping_elem: ET.Element) -> Optional[OntologyMapping]:
+        """Parse a single ontology mapping from XML element."""
+        try:
+            variable_name = mapping_elem.get('variable')
+            ontology_term = mapping_elem.get('term')
+            description = mapping_elem.get('description', '')
+            
+            if not variable_name or not ontology_term:
+                return None
+            
+            return OntologyMapping(
+                variable_name=variable_name,
+                ontology_term=ontology_term,
+                description=description
+            )
+            
+        except Exception as e:
+            logger.warning(f"Failed to parse XML ontology mapping {mapping_elem.tag}: {e}")
+            return None
     
     def get_supported_extensions(self) -> List[str]:
         """Get supported file extensions."""

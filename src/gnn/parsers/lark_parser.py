@@ -416,6 +416,22 @@ class GNNFormalParser:
     
     def __init__(self, grammar_path: Optional[Path] = None):
         """Initialize the parser with optional explicit grammar path."""
+        # Auto-detect grammar path if not provided
+        if grammar_path is None:
+            # Try to find the EBNF grammar file in the grammars directory
+            current_dir = Path(__file__).parent.parent
+            potential_paths = [
+                current_dir / "grammars" / "ebnf.ebnf",
+                current_dir / "grammars" / "bnf.bnf",
+                current_dir.parent / "grammars" / "ebnf.ebnf",
+                current_dir.parent / "grammars" / "bnf.bnf"
+            ]
+            
+            for path in potential_paths:
+                if path.exists():
+                    grammar_path = path
+                    break
+        
         self.grammar_path = grammar_path
         self.parser = None
         self.transformer = GNNTransformer()
@@ -438,10 +454,10 @@ class GNNFormalParser:
                 self.parser = Lark(lark_grammar, parser='lalr', transformer=self.transformer)
                 logger.info(f"Formal parser initialized with grammar from {self.grammar_path}")
             else:
-                logger.error(f"Grammar file not found: {self.grammar_path}")
+                logger.warning(f"Grammar file not found at: {self.grammar_path}")
                 self._create_fallback_parser()
         except Exception as e:
-            logger.error(f"Failed to initialize parser: {e}")
+            logger.warning(f"Failed to initialize parser: {e}")
             self._create_fallback_parser()
     
     def _convert_ebnf_to_lark(self, ebnf_content: str) -> str:
@@ -508,18 +524,19 @@ class GNNFormalParser:
         
         ontology_mapping: identifier "=" identifier comment? NEWLINE
         
-        parameter_definition: identifier ":" /[^\\n#]+/ comment? NEWLINE
+        parameter_definition: identifier ":" parameter_value_text comment? NEWLINE
+        parameter_value_text: /[^\\n#]+/
         
         model_name: /[^\\n]+/
-        annotation_text: /[^#]+/
-        footer_text: /[^#]+/
-        signature_text: /[^#]+/
+        annotation_text: /[^#\\n]+/
+        footer_text: /[^#\\n]+/
+        signature_text: /[^#\\n]+/
         
         // Support both single (#) and triple (###) hashtag comments
-        comment: /#+ *[^\\n]*/
+        comment: /#[^\\n]*/
         
         // Support Unicode characters like π in identifiers
-        identifier: /[a-zA-Z_\\u00A0-\\uFFFF][a-zA-Z0-9_\\u00A0-\\uFFFF]*/
+        identifier: /[a-zA-Z_πσμαβγδεζηθικλνξορτυφχψω][a-zA-Z0-9_πσμαβγδεζηθικλνξορτυφχψω]*/
         
         TIME_KEY: "DiscreteTime" | "ContinuousTime" | "ModelTimeHorizon"
         
@@ -530,8 +547,6 @@ class GNNFormalParser:
         %import common.WS
         %import common.NEWLINE
         %ignore WS
-        // Explicitly ignore single hashtag comments
-        %ignore /[#][^\\n]*/
         '''
         
         return lark_grammar

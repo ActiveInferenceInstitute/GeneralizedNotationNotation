@@ -422,9 +422,14 @@ class YAMLGNNParser(BaseGNNParser):
                 return self._parse_connection_string(conn_data)
             
             elif isinstance(conn_data, dict):
-                source_variables = conn_data.get('source', conn_data.get('from', []))
-                target_variables = conn_data.get('target', conn_data.get('to', []))
-                connection_type_str = conn_data.get('type', 'directed')
+                # Try multiple field names for source and target
+                source_variables = (conn_data.get('source_variables') or 
+                                  conn_data.get('source') or 
+                                  conn_data.get('from') or [])
+                target_variables = (conn_data.get('target_variables') or 
+                                  conn_data.get('target') or 
+                                  conn_data.get('to') or [])
+                connection_type_str = conn_data.get('connection_type', conn_data.get('type', 'directed'))
                 weight = conn_data.get('weight')
                 description = conn_data.get('description', '')
                 
