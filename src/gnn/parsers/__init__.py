@@ -83,7 +83,7 @@ from .maxima_serializer import MaximaSerializer
 from .alloy_serializer import AlloySerializer
 from .znotation_serializer import ZNotationSerializer
 from .schema_serializer import SchemaSerializer
-from .temporal_serializer import TemporalSerializer
+from .temporal_serializer import TemporalSerializer, TLASerializer, AgdaSerializer
 from .functional_serializer import FunctionalSerializer
 from .binary_serializer import BinarySerializer
 
@@ -126,6 +126,7 @@ SERIALIZER_REGISTRY: Dict[GNNFormat, Type['GNNSerializer']] = {
     GNNFormat.MARKDOWN: MarkdownSerializer,
     GNNFormat.JSON: JSONSerializer,
     GNNFormat.XML: XMLSerializer,
+    GNNFormat.PNML: XMLSerializer,  # PNML uses XML serializer
     GNNFormat.YAML: YAMLSerializer,
     GNNFormat.SCALA: ScalaSerializer,
     GNNFormat.PROTOBUF: ProtobufSerializer,
@@ -141,8 +142,8 @@ SERIALIZER_REGISTRY: Dict[GNNFormat, Type['GNNSerializer']] = {
     GNNFormat.MAXIMA: MaximaSerializer,
     GNNFormat.ALLOY: AlloySerializer,
     GNNFormat.Z_NOTATION: ZNotationSerializer,
-    GNNFormat.TLA_PLUS: TemporalSerializer,
-    GNNFormat.AGDA: TemporalSerializer,  # Assuming Agda uses Temporal
+    GNNFormat.TLA_PLUS: TLASerializer,
+    GNNFormat.AGDA: AgdaSerializer,
     GNNFormat.HASKELL: FunctionalSerializer,
     GNNFormat.PICKLE: BinarySerializer
 }

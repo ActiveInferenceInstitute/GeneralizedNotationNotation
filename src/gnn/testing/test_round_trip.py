@@ -41,8 +41,20 @@ FORMAT_TEST_CONFIG = {
         'python',    # Test Python serialization
         'pkl',       # Test PKL serialization
         'asn1',      # Test ASN.1 serialization
-        # 'alloy',   # Uncomment to test Alloy
-        # Add more formats as needed
+        'alloy',     # Test Alloy serialization
+        'lean',      # Test Lean serialization
+        'coq',       # Test Coq serialization
+        'protobuf',  # Test Protobuf serialization
+        'xsd',       # Test XSD serialization
+        'isabelle',  # Test Isabelle serialization
+        'haskell',   # Test Haskell serialization
+        'bnf',       # Test BNF serialization
+        'pickle',    # Test Pickle serialization
+        'z_notation', # Test Z notation serialization
+        'tla_plus',  # Test TLA+ serialization
+        'agda',      # Test Agda serialization
+        'maxima',    # Test Maxima serialization
+        # 'pnml',    # Skip PNML for now (uses XML serializer)
     ],
     
     # Format categories to test (when test_all_formats=True)
@@ -70,7 +82,7 @@ TEST_BEHAVIOR_CONFIG = {
     'save_converted_files': True,   # Save converted files for inspection
     'run_cross_format_validation': False,  # Run cross-format consistency checks - DISABLED due to recursion
     'compute_checksums': True,      # Compute semantic checksums for comparison
-    'validate_round_trip': False,    # Validate that round-trip preserves semantics - DISABLED due to recursion
+    'validate_round_trip': True,    # Validate that round-trip preserves semantics - NOW ENABLED!
     'max_test_time': 300,          # Maximum time for all tests (seconds)
     'per_format_timeout': 30,      # Maximum time per format test (seconds)
 }
@@ -136,8 +148,16 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 from gnn.types import RoundTripResult, ComprehensiveTestReport
 
 try:
-    from gnn.types import GNNFormat, ParseResult, ParsedGNN, ValidationResult
-    from gnn.parsers.common import GNNInternalRepresentation
+    # Use proper absolute imports from src
+    import sys
+    from pathlib import Path
+    
+    # Add src directory to path if not already there
+    src_path = Path(__file__).parent.parent.parent / "src"
+    if str(src_path) not in sys.path:
+        sys.path.insert(0, str(src_path))
+    
+    from gnn.parsers.common import GNNInternalRepresentation, GNNFormat, ParseResult
     from gnn.parsers import GNNParsingSystem
     from gnn.parsers.unified_parser import UnifiedGNNParser
     # Update serializer imports
@@ -164,6 +184,13 @@ try:
     # Import schema validator and testing types
     GNNParser = None  # Will be imported when needed
     GNNValidator = None
+    
+    # Import additional types if available
+    try:
+        from gnn.types import ValidationResult, ParsedGNN
+    except ImportError:
+        ValidationResult = None
+        ParsedGNN = None
     
     # Try to import cross-format validator if available
     try:
@@ -344,23 +371,43 @@ class GNNRoundTripTester:
                         # Parse dimensions and type
                         dims_parts = [p.strip() for p in dims_str.split(',')]
                         dimensions = []
-                        var_type = 'float'  # default
+                        data_type = 'float'  # default data type
                         
                         for part in dims_parts:
                             if part.startswith('type='):
-                                var_type = part[5:]
+                                raw_type = part[5:]
+                                # Map common type aliases to proper DataType values
+                                type_mapping = {
+                                    'int': 'integer',
+                                    'float': 'float',
+                                    'bool': 'binary',
+                                    'str': 'categorical',
+                                    'string': 'categorical'
+                                }
+                                data_type = type_mapping.get(raw_type, raw_type)
                             else:
                                 try:
                                     dimensions.append(int(part))
                                 except ValueError:
                                     pass
                         
+                        # Infer variable type from name (Active Inference convention)
+                        var_type = 'hidden_state'  # default
+                        if name in ['A', 'B', 'C', 'D']:
+                            var_type = 'likelihood_matrix' if name in ['A'] else 'transition_matrix' if name in ['B'] else 'preference_vector' if name in ['C'] else 'prior_vector'
+                        elif name in ['o', 'u']:
+                            var_type = 'observation' if name == 'o' else 'action'
+                        elif name in ['s', 's_prime']:
+                            var_type = 'hidden_state'
+                        elif name in ['π', 'G']:
+                            var_type = 'policy'
+                        
                         # Create a simple object with attributes instead of a dict
                         var = type('Variable', (), {
                             'name': name,
                             'dimensions': dimensions,
                             'var_type': type('VarType', (), {'value': var_type})(),
-                            'data_type': type('DataType', (), {'value': var_type})(),
+                            'data_type': type('DataType', (), {'value': data_type})(),
                             'description': description
                         })()
                         variables.append(var)

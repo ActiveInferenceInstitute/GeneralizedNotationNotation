@@ -196,4 +196,18 @@ class TemporalSerializer(BaseGNNSerializer):
             "float": "ℝ",
             "complex": "String"
         }
-        return mapping.get(data_type, "String") 
+        return mapping.get(data_type, "String")
+
+
+class TLASerializer(TemporalSerializer):
+    """Specific serializer for TLA+ format."""
+    
+    def __init__(self):
+        super().__init__(target_format="tla")
+
+
+class AgdaSerializer(TemporalSerializer):
+    """Specific serializer for Agda format."""
+    
+    def __init__(self):
+        super().__init__(target_format="agda") 
