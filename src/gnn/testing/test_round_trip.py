@@ -530,9 +530,10 @@ class GNNRoundTripTester:
                     logger.error(f"Error creating serializer map: {e}")
                 return None
             
-            if target_format in serializer_map:
-                serializer = serializer_map[target_format]
-                return serializer.serialize(model)
+            # Use enum value for comparison to handle different enum instances
+            for fmt, serializer in serializer_map.items():
+                if fmt.value == target_format.value:
+                    return serializer.serialize(model)
             else:
                 if LOGGING_CONFIG['enable_debug']:
                     logger.warning(f"No individual serializer available for {target_format.value}")
@@ -677,9 +678,9 @@ class GNNRoundTripTester:
                 if fmt == GNNFormat.MARKDOWN:
                     continue
                 try:
-                    # Check if format is in the available lists (using enum values, not enum objects)
-                    parser_available = fmt in available_parsers
-                    serializer_available = fmt in available_serializers
+                    # Check if format is in the available lists (using enum values for comparison)
+                    parser_available = any(p.value == fmt.value for p in available_parsers.keys())
+                    serializer_available = any(s.value == fmt.value for s in available_serializers.keys())
                     if parser_available and serializer_available:
                         working_formats.append(fmt)
                         if LOGGING_CONFIG['enable_debug']:
@@ -1100,7 +1101,19 @@ class GNNRoundTripTester:
             
             if self.parsing_system:
                 try:
-                    parsed_result = self.parsing_system.parse_file(temp_file, target_format)
+                    # Use enum value for comparison to handle different enum instances
+                    available_parsers = self.parsing_system._parsers
+                    parser_found = any(p.value == target_format.value for p in available_parsers.keys())
+                    
+                    if parser_found:
+                        # Find the actual parser instance
+                        for fmt, parser in available_parsers.items():
+                            if fmt.value == target_format.value:
+                                parsed_result = parser.parse_file(temp_file)
+                                break
+                    else:
+                        raise ValueError(f"No parser available for format: {target_format.value}")
+                        
                 except Exception as e:
                     if "No parser available" in str(e):
                         if LOGGING_CONFIG['enable_detailed_output']:
@@ -1252,12 +1265,18 @@ class GNNRoundTripTester:
             conv_var = conv_dict[var_name]
             
             if hasattr(orig_var, 'var_type') and hasattr(conv_var, 'var_type'):
-                if orig_var.var_type != conv_var.var_type:
-                    result.add_difference(f"Variable {var_name} type mismatch: {orig_var.var_type} vs {conv_var.var_type}")
+                # Compare using .value attribute to handle different object types
+                orig_type = orig_var.var_type.value if hasattr(orig_var.var_type, 'value') else str(orig_var.var_type)
+                conv_type = conv_var.var_type.value if hasattr(conv_var.var_type, 'value') else str(conv_var.var_type)
+                if orig_type != conv_type:
+                    result.add_difference(f"Variable {var_name} type mismatch: {orig_type} vs {conv_type}")
             
             if hasattr(orig_var, 'data_type') and hasattr(conv_var, 'data_type'):
-                if orig_var.data_type != conv_var.data_type:
-                    result.add_difference(f"Variable {var_name} data type mismatch: {orig_var.data_type} vs {conv_var.data_type}")
+                # Compare using .value attribute to handle different object types
+                orig_dtype = orig_var.data_type.value if hasattr(orig_var.data_type, 'value') else str(orig_var.data_type)
+                conv_dtype = conv_var.data_type.value if hasattr(conv_var.data_type, 'value') else str(conv_var.data_type)
+                if orig_dtype != conv_dtype:
+                    result.add_difference(f"Variable {var_name} data type mismatch: {orig_dtype} vs {conv_dtype}")
             
             if hasattr(orig_var, 'dimensions') and hasattr(conv_var, 'dimensions'):
                 if orig_var.dimensions != conv_var.dimensions:
@@ -1274,12 +1293,16 @@ class GNNRoundTripTester:
         
         for conn in orig_conns:
             if hasattr(conn, 'source_variables') and hasattr(conn, 'target_variables') and hasattr(conn, 'connection_type'):
-                conn_str = f"{','.join(conn.source_variables)}--{conn.connection_type.value}-->{','.join(conn.target_variables)}"
+                # Handle different object types for connection_type
+                conn_type = conn.connection_type.value if hasattr(conn.connection_type, 'value') else str(conn.connection_type)
+                conn_str = f"{','.join(conn.source_variables)}--{conn_type}-->{','.join(conn.target_variables)}"
                 orig_conn_strs.add(conn_str)
         
         for conn in conv_conns:
             if hasattr(conn, 'source_variables') and hasattr(conn, 'target_variables') and hasattr(conn, 'connection_type'):
-                conn_str = f"{','.join(conn.source_variables)}--{conn.connection_type.value}-->{','.join(conn.target_variables)}"
+                # Handle different object types for connection_type
+                conn_type = conn.connection_type.value if hasattr(conn.connection_type, 'value') else str(conn.connection_type)
+                conn_str = f"{','.join(conn.source_variables)}--{conn_type}-->{','.join(conn.target_variables)}"
                 conv_conn_strs.add(conn_str)
         
         missing_conns = orig_conn_strs - conv_conn_strs

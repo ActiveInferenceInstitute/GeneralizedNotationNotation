@@ -60,7 +60,7 @@ class XMLGNNParser(BaseGNNParser):
         try:
             # Quick check if this even looks like XML
             content = content.strip()
-            if not content.startswith('<') or '<?xml' not in content and '<gnn' not in content:
+            if not content.startswith('<') or ('<?xml' not in content and '<gnn' not in content):
                 result = ParseResult(
                     model=self.create_empty_model("Invalid XML"),
                     success=False
