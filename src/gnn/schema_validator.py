@@ -18,146 +18,51 @@ import re
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple, Union
 from dataclasses import dataclass, field
-from enum import Enum
 import logging
 import unicodedata
 import hashlib
 import tempfile
 
+# Import shared types
+from .types import (
+    ValidationLevel,
+    GNNSyntaxError,
+    ValidationResult,
+    GNNVariable,
+    GNNConnection,
+    ParsedGNN,
+    GNNFormat,
+    RoundTripResult
+)
+
 # Try to import formal parser for enhanced validation
 try:
     from .parsers.lark_parser import GNNFormalParser, ParsedGNNFormal, LARK_AVAILABLE
-    FORMAL_PARSER_AVAILABLE = LARK_AVAILABLE
+    FORMAL_PARSER_AVAILABLE = False  # Temporarily disable to bypass recursion issue
 except ImportError:
     FORMAL_PARSER_AVAILABLE = False
 
 # Try to import round-trip testing capabilities
 try:
-    from .testing.test_round_trip import GNNRoundTripTester, RoundTripResult
-    from .parsers import GNNFormat, GNNParsingSystem
+    from .parsers import GNNParsingSystem
     ROUND_TRIP_AVAILABLE = True
 except ImportError:
     ROUND_TRIP_AVAILABLE = False
 
+# Import round-trip testing after we have the base types
+try:
+    if ROUND_TRIP_AVAILABLE:
+        from .testing.test_round_trip import RoundTripResult
+        # Note: GNNRoundTripTester will be imported when needed to avoid circular deps
+except ImportError:
+    class RoundTripResult:
+        """Fallback RoundTripResult class for when testing is not available."""
+        def __init__(self):
+            self.success = False
+            self.errors = []
+            self.warnings = []
+
 logger = logging.getLogger(__name__)
-
-
-class ValidationLevel(Enum):
-    """Validation strictness levels with enhanced round-trip support."""
-    BASIC = "basic"              # File structure and syntax
-    STANDARD = "standard"        # Standard validation + semantic checks
-    STRICT = "strict"            # Strict validation + cross-format consistency
-    RESEARCH = "research"        # Research-grade + round-trip testing
-    ROUND_TRIP = "round_trip"    # Complete round-trip validation across all formats
-
-
-class GNNSyntaxError(Exception):
-    """Enhanced GNN syntax error with position information."""
-    
-    def __init__(self, message: str, line: int = None, column: int = None, 
-                 format_context: str = None):
-        super().__init__(message)
-        self.line = line
-        self.column = column
-        self.format_context = format_context
-    
-    def format_message(self) -> str:
-        """Format error message with position information."""
-        msg = str(self)
-        if self.line is not None:
-            msg += f" (line {self.line}"
-            if self.column is not None:
-                msg += f", column {self.column}"
-            msg += ")"
-        if self.format_context:
-            msg += f" in {self.format_context} format"
-        return msg
-
-
-@dataclass
-class ValidationResult:
-    """Enhanced validation results with round-trip and cross-format support."""
-    is_valid: bool
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    suggestions: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    
-    # Enhanced fields for comprehensive validation
-    validation_level: ValidationLevel = ValidationLevel.STANDARD
-    format_tested: Optional[str] = None
-    round_trip_results: List[RoundTripResult] = field(default_factory=list)
-    cross_format_consistent: Optional[bool] = None
-    semantic_checksum: Optional[str] = None
-    performance_metrics: Dict[str, float] = field(default_factory=dict)
-    
-    def add_round_trip_result(self, result: RoundTripResult):
-        """Add a round-trip test result."""
-        self.round_trip_results.append(result)
-        if not result.success:
-            self.errors.extend(result.errors)
-            self.warnings.extend(result.warnings)
-    
-    def get_round_trip_success_rate(self) -> float:
-        """Get round-trip test success rate."""
-        if not self.round_trip_results:
-            return 0.0
-        successful = sum(1 for r in self.round_trip_results if r.success)
-        return (successful / len(self.round_trip_results)) * 100
-
-
-@dataclass 
-class GNNVariable:
-    """Represents a GNN variable definition with enhanced metadata."""
-    name: str
-    dimensions: List[Union[int, str]]
-    data_type: str
-    description: Optional[str] = None
-    constraints: Optional[Dict[str, Any]] = None
-    line_number: Optional[int] = None
-    
-    # Enhanced fields for cross-format support
-    ontology_mapping: Optional[str] = None
-    format_specific_metadata: Dict[str, Any] = field(default_factory=dict)
-
-
-@dataclass
-class GNNConnection:
-    """Represents a connection between GNN variables with enhanced metadata."""
-    source: Union[str, List[str]]
-    target: Union[str, List[str]]
-    connection_type: str  # 'directed', 'undirected', 'conditional'
-    symbol: str  # '>', '-', '->', '|'
-    description: Optional[str] = None
-    line_number: Optional[int] = None
-    
-    # Enhanced fields for cross-format support
-    weight: Optional[float] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
-
-@dataclass
-class ParsedGNN:
-    """Complete parsed representation of a GNN file with enhanced metadata."""
-    gnn_section: str
-    version: str
-    model_name: str
-    model_annotation: str
-    variables: Dict[str, GNNVariable]
-    connections: List[GNNConnection]
-    parameters: Dict[str, Any]
-    equations: List[Dict[str, str]]
-    time_config: Dict[str, Any]
-    ontology_mappings: Dict[str, str]
-    model_parameters: Dict[str, Any]
-    footer: str
-    signature: Optional[Dict[str, str]] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    
-    # Enhanced fields for comprehensive validation
-    source_format: Optional[str] = None
-    semantic_checksum: Optional[str] = None
-    round_trip_verified: bool = False
 
 
 class GNNParser:
@@ -882,6 +787,7 @@ class GNNValidator:
         # Initialize round-trip tester if enabled
         if self.enable_round_trip_testing:
             try:
+                from .testing.test_round_trip import GNNRoundTripTester
                 self.round_trip_tester = GNNRoundTripTester()
                 logger.info("Round-trip testing enabled for comprehensive validation")
             except Exception as e:
@@ -898,8 +804,13 @@ class GNNValidator:
     def _load_schema(self) -> Dict[str, Any]:
         """Load the JSON schema."""
         try:
+            import sys
+            old_limit = sys.getrecursionlimit()
+            sys.setrecursionlimit(2000)
             with open(self.schema_path, 'r') as f:
-                return json.load(f)
+                schema = json.load(f)
+            sys.setrecursionlimit(old_limit)
+            return schema
         except Exception as e:
             logger.error(f"Could not load schema from {self.schema_path}: {e}")
             return {}

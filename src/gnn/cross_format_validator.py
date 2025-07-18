@@ -21,15 +21,26 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Set, Tuple
 from dataclasses import dataclass, field
 
-from .schema_validator import GNNValidator, ValidationResult, GNNParser, ValidationLevel
+from .schema_validator import GNNValidator, GNNParser, ValidationLevel
+
+from .types import ValidationResult, GNNFormat, RoundTripResult
+
+from .parsers import GNNParsingSystem
 
 # Try to import enhanced testing capabilities
 try:
-    from .testing.test_round_trip import RoundTripResult
-    from .parsers import GNNFormat, GNNParsingSystem
+    from .parsers.common import GNNFormat
+    from .parsers import GNNParsingSystem
     ENHANCED_TESTING_AVAILABLE = True
 except ImportError:
     ENHANCED_TESTING_AVAILABLE = False
+
+# Import round-trip testing after we have the base types
+try:
+    if ENHANCED_TESTING_AVAILABLE:
+        from .types import RoundTripResult
+except ImportError:
+    pass
 
 logger = logging.getLogger(__name__)
 

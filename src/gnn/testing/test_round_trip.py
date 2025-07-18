@@ -25,12 +25,20 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import logging
 
+from gnn.types import RoundTripResult, ComprehensiveTestReport
+
 # Add the src directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
+# Debug prints
+print('__file__: ', __file__)
+print('dirname: ', os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+print('sys.path[0]: ', sys.path[0])
+
 try:
-    from gnn.schema_validator import GNNParser, GNNValidator, ValidationResult, ParsedGNN
-    from gnn.parsers import GNNParsingSystem, GNNFormat, ParseResult, GNNInternalRepresentation
+    from gnn.types import GNNFormat, GNNInternalRepresentation, ParseResult, ParsedGNN, ValidationResult
+    from gnn.parsers import GNNParsingSystem
     from gnn.parsers.unified_parser import UnifiedGNNParser
     from gnn.parsers.serializers import (
         MarkdownSerializer, JSONSerializer, XMLSerializer, YAMLSerializer,
@@ -38,6 +46,10 @@ try:
         ProtobufSerializer, BinarySerializer
     )
     GNN_AVAILABLE = True
+    
+    # Import schema validator and testing types
+    GNNParser = None  # Will be imported when needed
+    GNNValidator = None
     
     # Try to import cross-format validator if available
     try:
@@ -58,84 +70,6 @@ except ImportError as e:
     GNN_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
-
-@dataclass
-class RoundTripResult:
-    """Results from a complete round-trip test."""
-    source_format: GNNFormat
-    target_format: GNNFormat
-    success: bool
-    original_model: Optional[GNNInternalRepresentation] = None
-    converted_content: Optional[str] = None
-    parsed_back_model: Optional[GNNInternalRepresentation] = None
-    differences: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    errors: List[str] = field(default_factory=list)
-    test_time: float = 0.0
-    checksum_original: Optional[str] = None
-    checksum_converted: Optional[str] = None
-    
-    def add_difference(self, diff: str):
-        """Add a semantic difference found."""
-        self.differences.append(diff)
-        self.success = False
-    
-    def add_warning(self, warning: str):
-        """Add a warning."""
-        self.warnings.append(warning)
-    
-    def add_error(self, error: str):
-        """Add an error."""
-        self.errors.append(error)
-        self.success = False
-
-@dataclass
-class ComprehensiveTestReport:
-    """Complete test report for all round-trip tests."""
-    reference_file: str
-    test_timestamp: datetime = field(default_factory=datetime.now)
-    total_tests: int = 0
-    successful_tests: int = 0
-    failed_tests: int = 0
-    round_trip_results: List[RoundTripResult] = field(default_factory=list)
-    format_matrix: Dict[Tuple[GNNFormat, GNNFormat], bool] = field(default_factory=dict)
-    semantic_differences: List[str] = field(default_factory=list)
-    critical_errors: List[str] = field(default_factory=list)
-    
-    def add_result(self, result: RoundTripResult):
-        """Add a round-trip test result."""
-        self.round_trip_results.append(result)
-        self.total_tests += 1
-        
-        if result.success:
-            self.successful_tests += 1
-        else:
-            self.failed_tests += 1
-            self.semantic_differences.extend(result.differences)
-            self.critical_errors.extend(result.errors)
-        
-        self.format_matrix[(result.source_format, result.target_format)] = result.success
-    
-    def get_success_rate(self) -> float:
-        """Get overall success rate."""
-        return (self.successful_tests / self.total_tests) * 100 if self.total_tests > 0 else 0.0
-    
-    def get_format_summary(self) -> Dict[GNNFormat, Dict[str, int]]:
-        """Get summary by format."""
-        format_summary = {}
-        
-        for result in self.round_trip_results:
-            fmt = result.target_format
-            if fmt not in format_summary:
-                format_summary[fmt] = {"success": 0, "failure": 0, "total": 0}
-            
-            format_summary[fmt]["total"] += 1
-            if result.success:
-                format_summary[fmt]["success"] += 1
-            else:
-                format_summary[fmt]["failure"] += 1
-        
-        return format_summary
 
 class GNNRoundTripTester:
     """Comprehensive round-trip testing system for GNN formats."""
