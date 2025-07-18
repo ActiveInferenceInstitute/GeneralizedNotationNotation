@@ -1141,14 +1141,16 @@ class ZNotationParser(BaseGNNParser):
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Z notation comments."""
         import json
-        # Look for JSON data in % MODEL_DATA: {...} comments
-        pattern = r'%\s*MODEL_DATA:\s*(\{.*?\})'
+        import re
+        # Look for JSON data in % MODEL_DATA: {...} comments specifically for Z-notation
+        pattern = r'%\s*MODEL_DATA:\s*(\{.*\})'
         match = re.search(pattern, content, re.DOTALL)
         if match:
             try:
-                return json.loads(match.group(1))
+                json_data = match.group(1)
+                return json.loads(json_data)
             except json.JSONDecodeError:
-                pass
+                return None
         return None
     
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
@@ -1185,6 +1187,27 @@ class ZNotationParser(BaseGNNParser):
                     value=param_data['value']
                 )
                 result.model.parameters.append(param)
+            
+            # Restore time specification
+            if embedded_data.get('time_specification'):
+                from .common import TimeSpecification
+                time_data = embedded_data['time_specification']
+                result.model.time_specification = TimeSpecification(
+                    time_type=time_data.get('time_type', 'dynamic'),
+                    discretization=time_data.get('discretization'),
+                    horizon=time_data.get('horizon'),
+                    step_size=time_data.get('step_size')
+                )
+            
+            # Restore ontology mappings
+            for mapping_data in embedded_data.get('ontology_mappings', []):
+                from .common import OntologyMapping
+                mapping = OntologyMapping(
+                    variable_name=mapping_data.get('variable_name', ''),
+                    ontology_term=mapping_data.get('ontology_term', ''),
+                    description=mapping_data.get('description')
+                )
+                result.model.ontology_mappings.append(mapping)
             
             return result
             
@@ -1260,96 +1283,7 @@ class ZNotationParser(BaseGNNParser):
             return VariableType.HIDDEN_STATE
 
 
-    def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
-        """Extract embedded JSON model data from schema comments."""
-        import json
-        # Look for JSON data in comments (different formats)
-        patterns = [
-            r'/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/',  # /* MODEL_DATA: {...} */
-            r'<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->',  # <!-- MODEL_DATA: {...} -->
-            r'#\s*MODEL_DATA:\s*(\{.*?\})',  # # MODEL_DATA: {...}
-            r'//\s*MODEL_DATA:\s*(\{.*?\})',  # // MODEL_DATA: {...}
-        ]
-        
-        for pattern in patterns:
-            match = re.search(pattern, content, re.DOTALL)
-            if match:
-                try:
-                    return json.loads(match.group(1))
-                except json.JSONDecodeError:
-                    continue
-        return None
-    
-    def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
-        """Parse model from embedded JSON data for perfect round-trip."""
-        try:
-            # Restore original model data
-            result.model.model_name = data.get('model_name', 'SchemaModel')
-            result.model.annotation = data.get('annotation', '')
-            result.model.version = data.get('version', '1.0')
-            
-            # Restore variables
-            for var_data in data.get('variables', []):
-                variable = Variable(
-                    name=var_data['name'],
-                    var_type=self._parse_enum_value(VariableType, var_data.get('var_type', 'hidden_state')),
-                    data_type=self._parse_enum_value(DataType, var_data.get('data_type', 'categorical')),
-                    dimensions=var_data.get('dimensions', [1]),
-                    description=var_data.get('description', '')
-                )
-                result.model.variables.append(variable)
-            
-            # Restore connections
-            for conn_data in data.get('connections', []):
-                connection = Connection(
-                    source_variables=conn_data.get('source_variables', []),
-                    target_variables=conn_data.get('target_variables', []),
-                    connection_type=self._parse_enum_value(ConnectionType, conn_data.get('connection_type', 'directed')),
-                    description=conn_data.get('description', '')
-                )
-                result.model.connections.append(connection)
-            
-            # Restore parameters
-            for param_data in data.get('parameters', []):
-                parameter = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value'],
-                    description=param_data.get('description', '')
-                )
-                result.model.parameters.append(parameter)
-            
-            # Restore other fields including time specification and ontology mappings
-            if 'time_specification' in data and data['time_specification']:
-                time_spec_data = data['time_specification']
-                if isinstance(time_spec_data, dict):
-                    from types import SimpleNamespace
-                    result.model.time_specification = SimpleNamespace(**time_spec_data)
-            
-            # Restore ontology mappings for Z-notation parser
-            if 'ontology_mappings' in data and data['ontology_mappings']:
-                ontology_data = data['ontology_mappings']
-                if isinstance(ontology_data, list):
-                    from types import SimpleNamespace
-                    result.model.ontology_mappings = [SimpleNamespace(**mapping) for mapping in ontology_data if isinstance(mapping, dict)]
-            
-            # Keep the original annotation without modification for perfect round-trip
-            
-        except Exception as e:
-            result.add_error(f"Failed to parse embedded data: {e}")
-        
-        return result
-    
-    def _parse_enum_value(self, enum_class, value_str: str):
-        """Parse enum value from string."""
-        try:
-            # Try to get enum by value
-            for enum_val in enum_class:
-                if enum_val.value == value_str:
-                    return enum_val
-            # Fallback to first enum value
-            return list(enum_class)[0]
-        except:
-            return list(enum_class)[0]
+
 
 # Compatibility aliases
 XSDGNNParser = XSDParser

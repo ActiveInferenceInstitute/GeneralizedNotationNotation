@@ -35,11 +35,13 @@ class BNFParser(BaseGNNParser):
         """Extract embedded JSON model data from BNF comments."""
         import json
         # Look for JSON data in # MODEL_DATA: {...} comments
-        pattern = r'#\s*MODEL_DATA:\s*(\{.*?\})'
-        match = re.search(pattern, content, re.DOTALL)
+        # Use a more robust pattern for multi-line JSON
+        pattern = r'#\s*MODEL_DATA:\s*(\{.*\})'
+        match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
         if match:
             try:
-                return json.loads(match.group(1))
+                json_data = match.group(1)
+                return json.loads(json_data)
             except json.JSONDecodeError:
                 pass
         return None
@@ -78,6 +80,27 @@ class BNFParser(BaseGNNParser):
                     value=param_data['value']
                 )
                 result.model.parameters.append(param)
+            
+            # Restore time specification
+            if embedded_data.get('time_specification'):
+                from .common import TimeSpecification
+                time_data = embedded_data['time_specification']
+                result.model.time_specification = TimeSpecification(
+                    time_type=time_data.get('time_type', 'dynamic'),
+                    discretization=time_data.get('discretization'),
+                    horizon=time_data.get('horizon'),
+                    step_size=time_data.get('step_size')
+                )
+            
+            # Restore ontology mappings
+            for mapping_data in embedded_data.get('ontology_mappings', []):
+                from .common import OntologyMapping
+                mapping = OntologyMapping(
+                    variable_name=mapping_data.get('variable_name', ''),
+                    ontology_term=mapping_data.get('ontology_term', ''),
+                    description=mapping_data.get('description')
+                )
+                result.model.ontology_mappings.append(mapping)
             
             return result
             
@@ -296,6 +319,27 @@ class EBNFParser(BNFParser):
                     value=param_data['value']
                 )
                 result.model.parameters.append(param)
+            
+            # Restore time specification
+            if embedded_data.get('time_specification'):
+                from .common import TimeSpecification
+                time_data = embedded_data['time_specification']
+                result.model.time_specification = TimeSpecification(
+                    time_type=time_data.get('time_type', 'dynamic'),
+                    discretization=time_data.get('discretization'),
+                    horizon=time_data.get('horizon'),
+                    step_size=time_data.get('step_size')
+                )
+            
+            # Restore ontology mappings
+            for mapping_data in embedded_data.get('ontology_mappings', []):
+                from .common import OntologyMapping
+                mapping = OntologyMapping(
+                    variable_name=mapping_data.get('variable_name', ''),
+                    ontology_term=mapping_data.get('ontology_term', ''),
+                    description=mapping_data.get('description')
+                )
+                result.model.ontology_mappings.append(mapping)
             
             return result
             

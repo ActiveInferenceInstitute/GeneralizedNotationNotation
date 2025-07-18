@@ -152,6 +152,27 @@ class PickleGNNParser(BaseGNNParser):
             )
             model.parameters.append(param)
         
+        # Reconstruct time specification
+        if data.get('time_specification'):
+            from .common import TimeSpecification
+            time_data = data['time_specification']
+            model.time_specification = TimeSpecification(
+                time_type=time_data.get('time_type', 'dynamic'),
+                discretization=time_data.get('discretization'),
+                horizon=time_data.get('horizon'),
+                step_size=time_data.get('step_size')
+            )
+        
+        # Reconstruct ontology mappings
+        for mapping_data in data.get('ontology_mappings', []):
+            from .common import OntologyMapping
+            mapping = OntologyMapping(
+                variable_name=mapping_data.get('variable_name', ''),
+                ontology_term=mapping_data.get('ontology_term', ''),
+                description=mapping_data.get('description')
+            )
+            model.ontology_mappings.append(mapping)
+        
         return model
     
     def _parse_dict_data(self, data: Dict[str, Any], result: ParseResult):

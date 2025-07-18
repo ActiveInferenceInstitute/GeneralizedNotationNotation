@@ -1,29 +1,23 @@
 # GNN File Discovery Report
 
 **Target Directory:** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files`
-**Search Pattern:** `**/*.md`
-**Files Found:** 2
+**Search Pattern:** `**/*.md` and other formats
+**Files Found:** 1
 
 ## Summary Statistics
 
 - **Files with ModelName:** 1
-- **Files with StateSpaceBlock:** 2
+- **Files with ModelName:** 1
+- **Files with StateSpaceBlock:** 1
 - **Files with Connections:** 1
+- **Files with InitialParameterization:** 1
+- **Files with Equations:** 1
+- **Files with Time:** 1
+- **Files with ActInfOntologyAnnotation:** 1
+- **Files with ModelParameters:** 1
 - **Files with Errors:** 0
 
 ## Detailed File Analysis
-
-### test_ontology_validation.md
-
-**Path:** `test_ontology_validation.md`
-**Model Name:** Not found
-
-**Sections Found:**
-- ModelName: Not found
-- StateSpaceBlock: Found
-- Connections: Not found
-
----
 
 ### actinf_pomdp_agent.md
 
@@ -31,9 +25,14 @@
 **Model Name:** Classic Active Inference POMDP Agent v1
 
 **Sections Found:**
-- ModelName: Found: Classic Active Inference POMDP Agent v1
+- ModelName: Found
 - StateSpaceBlock: Found
 - Connections: Found
+- InitialParameterization: Found
+- Equations: Found
+- Time: Found
+- ActInfOntologyAnnotation: Found
+- ModelParameters: Found
 
 ---
 

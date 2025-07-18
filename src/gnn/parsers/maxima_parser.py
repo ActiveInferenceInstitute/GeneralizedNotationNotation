@@ -76,6 +76,27 @@ class MaximaParser(BaseGNNParser):
                 )
                 result.model.parameters.append(param)
             
+            # Restore time specification
+            if embedded_data.get('time_specification'):
+                from .common import TimeSpecification
+                time_data = embedded_data['time_specification']
+                result.model.time_specification = TimeSpecification(
+                    time_type=time_data.get('time_type', 'dynamic'),
+                    discretization=time_data.get('discretization'),
+                    horizon=time_data.get('horizon'),
+                    step_size=time_data.get('step_size')
+                )
+            
+            # Restore ontology mappings
+            for mapping_data in embedded_data.get('ontology_mappings', []):
+                from .common import OntologyMapping
+                mapping = OntologyMapping(
+                    variable_name=mapping_data.get('variable_name', ''),
+                    ontology_term=mapping_data.get('ontology_term', ''),
+                    description=mapping_data.get('description')
+                )
+                result.model.ontology_mappings.append(mapping)
+            
             return result
             
         except Exception as e:

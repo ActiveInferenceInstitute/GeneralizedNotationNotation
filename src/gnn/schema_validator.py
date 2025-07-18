@@ -2,7 +2,15 @@
 GNN Schema Validation and Parsing Module
 
 This module provides comprehensive validation, parsing, and analysis capabilities
-for GNN (Generalized Notation Notation) model files according to the formal schema.
+for GNN (Generalized Notation Notation) model files with enhanced round-trip
+testing support and cross-format validation.
+
+Enhanced Features:
+- Complete format ecosystem support (21 formats)
+- Binary file validation for pickle/binary formats
+- Cross-format consistency validation
+- Round-trip semantic preservation testing
+- Enhanced error reporting and suggestions
 """
 
 import json
@@ -13,6 +21,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 import logging
 import unicodedata
+import hashlib
+import tempfile
 
 # Try to import formal parser for enhanced validation
 try:
@@ -21,68 +31,114 @@ try:
 except ImportError:
     FORMAL_PARSER_AVAILABLE = False
 
+# Try to import round-trip testing capabilities
+try:
+    from .testing.test_round_trip import GNNRoundTripTester, RoundTripResult
+    from .parsers import GNNFormat, GNNParsingSystem
+    ROUND_TRIP_AVAILABLE = True
+except ImportError:
+    ROUND_TRIP_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
 class ValidationLevel(Enum):
-    """Validation strictness levels."""
-    BASIC = "basic"
-    STANDARD = "standard"
-    STRICT = "strict"
-    RESEARCH = "research"
+    """Validation strictness levels with enhanced round-trip support."""
+    BASIC = "basic"              # File structure and syntax
+    STANDARD = "standard"        # Standard validation + semantic checks
+    STRICT = "strict"            # Strict validation + cross-format consistency
+    RESEARCH = "research"        # Research-grade + round-trip testing
+    ROUND_TRIP = "round_trip"    # Complete round-trip validation across all formats
 
 
 class GNNSyntaxError(Exception):
-    """Exception raised for GNN syntax errors."""
-    def __init__(self, message: str, line: int = None, column: int = None):
-        self.message = message
+    """Enhanced GNN syntax error with position information."""
+    
+    def __init__(self, message: str, line: int = None, column: int = None, 
+                 format_context: str = None):
+        super().__init__(message)
         self.line = line
         self.column = column
-        super().__init__(self.format_message())
+        self.format_context = format_context
     
     def format_message(self) -> str:
+        """Format error message with position information."""
+        msg = str(self)
         if self.line is not None:
+            msg += f" (line {self.line}"
             if self.column is not None:
-                return f"Line {self.line}, Column {self.column}: {self.message}"
-            return f"Line {self.line}: {self.message}"
-        return self.message
+                msg += f", column {self.column}"
+            msg += ")"
+        if self.format_context:
+            msg += f" in {self.format_context} format"
+        return msg
 
 
 @dataclass
 class ValidationResult:
-    """Results from GNN validation."""
+    """Enhanced validation results with round-trip and cross-format support."""
     is_valid: bool
     errors: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
     suggestions: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
+    
+    # Enhanced fields for comprehensive validation
+    validation_level: ValidationLevel = ValidationLevel.STANDARD
+    format_tested: Optional[str] = None
+    round_trip_results: List[RoundTripResult] = field(default_factory=list)
+    cross_format_consistent: Optional[bool] = None
+    semantic_checksum: Optional[str] = None
+    performance_metrics: Dict[str, float] = field(default_factory=dict)
+    
+    def add_round_trip_result(self, result: RoundTripResult):
+        """Add a round-trip test result."""
+        self.round_trip_results.append(result)
+        if not result.success:
+            self.errors.extend(result.errors)
+            self.warnings.extend(result.warnings)
+    
+    def get_round_trip_success_rate(self) -> float:
+        """Get round-trip test success rate."""
+        if not self.round_trip_results:
+            return 0.0
+        successful = sum(1 for r in self.round_trip_results if r.success)
+        return (successful / len(self.round_trip_results)) * 100
 
 
 @dataclass 
 class GNNVariable:
-    """Represents a GNN variable definition."""
+    """Represents a GNN variable definition with enhanced metadata."""
     name: str
     dimensions: List[Union[int, str]]
     data_type: str
     description: Optional[str] = None
     constraints: Optional[Dict[str, Any]] = None
     line_number: Optional[int] = None
+    
+    # Enhanced fields for cross-format support
+    ontology_mapping: Optional[str] = None
+    format_specific_metadata: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class GNNConnection:
-    """Represents a connection between GNN variables."""
+    """Represents a connection between GNN variables with enhanced metadata."""
     source: Union[str, List[str]]
     target: Union[str, List[str]]
     connection_type: str  # 'directed', 'undirected', 'conditional'
     symbol: str  # '>', '-', '->', '|'
     description: Optional[str] = None
     line_number: Optional[int] = None
+    
+    # Enhanced fields for cross-format support
+    weight: Optional[float] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class ParsedGNN:
-    """Complete parsed representation of a GNN file."""
+    """Complete parsed representation of a GNN file with enhanced metadata."""
     gnn_section: str
     version: str
     model_name: str
@@ -97,37 +153,278 @@ class ParsedGNN:
     footer: str
     signature: Optional[Dict[str, str]] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
+    
+    # Enhanced fields for comprehensive validation
+    source_format: Optional[str] = None
+    semantic_checksum: Optional[str] = None
+    round_trip_verified: bool = False
 
 
 class GNNParser:
-    """Parser for GNN file format."""
+    """Enhanced parser for GNN file format with multi-format support."""
     
-    # Regular expressions for GNN syntax elements
+    # Regular expressions for GNN syntax elements (enhanced)
     SECTION_PATTERN = re.compile(r'^## (.+)$')
     VARIABLE_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$')
     CONNECTION_PATTERN = re.compile(r'^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$')
     PARAMETER_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*=\s*)(.+?)(?:\s*#\s*(.*))?$')
     ONTOLOGY_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*=\s*)([a-zA-Z_][a-zA-Z0-9_]*)(?:\s*#\s*(.*))?$')
-    COMMENT_PATTERN = re.compile(r'^\s*#\s*(.*)$')  # Explicitly handle single hashtag comments
+    COMMENT_PATTERN = re.compile(r'^\s*#\s*(.*)$')
     
-    def __init__(self):
-        self.current_section = None
-        self.line_number = 0
-        
-    def parse_file(self, file_path: Union[str, Path]) -> ParsedGNN:
-        """Parse a GNN file and return structured representation."""
+    # Enhanced format detection patterns
+    FORMAT_SIGNATURES = {
+        'json': [r'^\s*\{', r'"model_name":', r'"variables":'],
+        'xml': [r'^\s*<\?xml', r'<gnn.*>', r'<model'],
+        'yaml': [r'^---', r'model_name:', r'variables:'],
+        'binary': [b'\x80\x03', b'pickle', b'\x00\x00\x00'],  # Pickle signatures
+    }
+    
+    def __init__(self, enhanced_validation: bool = True):
+        self.enhanced_validation = enhanced_validation
+        if enhanced_validation and ROUND_TRIP_AVAILABLE:
+            self.parsing_system = GNNParsingSystem()
+            logger.info("Enhanced multi-format parsing system initialized")
+        else:
+            self.parsing_system = None
+            logger.info("Basic GNN parser initialized")
+
+    def parse_file(self, file_path: Union[str, Path], 
+                   format_hint: Optional[str] = None) -> ParsedGNN:
+        """Enhanced file parsing with format detection and validation."""
         file_path = Path(file_path)
         
         if not file_path.exists():
-            raise FileNotFoundError(f"GNN file not found: {file_path}")
-            
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-            
-        return self.parse_content(content, str(file_path))
+            raise FileNotFoundError(f"File not found: {file_path}")
+        
+        # Detect format
+        detected_format = format_hint or self._detect_file_format(file_path)
+        
+        # Handle different formats
+        if detected_format == 'binary':
+            return self._parse_binary_file(file_path)
+        else:
+            # Read as text
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+            except UnicodeDecodeError:
+                # Try as binary if UTF-8 fails
+                return self._parse_binary_file(file_path)
+        
+        return self.parse_content(content, str(file_path), detected_format)
     
-    def parse_content(self, content: str, source_name: str = "<string>") -> ParsedGNN:
-        """Parse GNN content from string."""
+    def _detect_file_format(self, file_path: Path) -> str:
+        """Enhanced format detection with content analysis."""
+        # First try extension-based detection
+        extension = file_path.suffix.lower()
+        extension_map = {
+            '.md': 'markdown',
+            '.json': 'json',
+            '.xml': 'xml',
+            '.yaml': 'yaml',
+            '.yml': 'yaml',
+            '.pkl': 'binary',
+            '.pickle': 'binary'
+        }
+        
+        if extension in extension_map:
+            detected = extension_map[extension]
+            
+            # Verify with content analysis for ambiguous cases
+            if extension in ['.md', '.txt'] and file_path.exists():
+                content_format = self._detect_format_from_content(file_path)
+                if content_format != 'markdown':
+                    return content_format
+            
+            return detected
+        
+        # Content-based detection for unknown extensions
+        return self._detect_format_from_content(file_path)
+    
+    def _detect_format_from_content(self, file_path: Path) -> str:
+        """Detect format from file content analysis."""
+        try:
+            # Try reading as text first
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read(2000)  # Read first 2KB
+            
+            content_lower = content.lower()
+            
+            # Check format signatures
+            for fmt, patterns in self.FORMAT_SIGNATURES.items():
+                if fmt == 'binary':
+                    continue  # Skip binary patterns for text content
+                
+                if any(re.search(pattern, content, re.IGNORECASE) for pattern in patterns):
+                    return fmt
+            
+            # Check for GNN markdown indicators
+            if ('##' in content and 
+                any(section in content for section in ['GNNSection', 'ModelName', 'StateSpaceBlock'])):
+                return 'markdown'
+            
+            return 'markdown'  # Default fallback
+            
+        except UnicodeDecodeError:
+            return 'binary'
+        except Exception:
+            return 'unknown'
+    
+    def _parse_binary_file(self, file_path: Path) -> ParsedGNN:
+        """Parse binary files (pickle format)."""
+        try:
+            import pickle
+            with open(file_path, 'rb') as f:
+                data = pickle.load(f)
+            
+            # Convert pickle data to ParsedGNN format
+            return self._convert_pickle_to_parsed_gnn(data)
+            
+        except Exception as e:
+            # Create minimal parsed representation for failed binary files
+            return ParsedGNN(
+                gnn_section="BinaryGNN",
+                version="1.0",
+                model_name=f"BinaryModel_{file_path.stem}",
+                model_annotation=f"Binary file: {file_path.name}",
+                variables={},
+                connections=[],
+                parameters={},
+                equations=[],
+                time_config={},
+                ontology_mappings={},
+                model_parameters={},
+                footer="",
+                metadata={"parse_error": str(e), "source_format": "binary"}
+            )
+    
+    def _convert_pickle_to_parsed_gnn(self, data: Any) -> ParsedGNN:
+        """Convert pickle data to ParsedGNN structure."""
+        # Implementation depends on pickle data structure
+        # This is a simplified version
+        if isinstance(data, dict):
+            return ParsedGNN(
+                gnn_section=data.get('gnn_section', 'PickleGNN'),
+                version=data.get('version', '1.0'),
+                model_name=data.get('model_name', 'PickleModel'),
+                model_annotation=data.get('annotation', ''),
+                variables=data.get('variables', {}),
+                connections=data.get('connections', []),
+                parameters=data.get('parameters', {}),
+                equations=data.get('equations', []),
+                time_config=data.get('time_config', {}),
+                ontology_mappings=data.get('ontology_mappings', {}),
+                model_parameters=data.get('model_parameters', {}),
+                footer=data.get('footer', ''),
+                source_format='pickle'
+            )
+        else:
+            # Create minimal representation for non-dict pickle data
+            return ParsedGNN(
+                gnn_section="PickleGNN",
+                version="1.0",
+                model_name="PickleModel",
+                model_annotation=f"Pickled data: {type(data).__name__}",
+                variables={},
+                connections=[],
+                parameters={},
+                equations=[],
+                time_config={},
+                ontology_mappings={},
+                model_parameters={},
+                footer="",
+                source_format='pickle'
+            )
+
+    def parse_content(self, content: str, source_name: str = "<string>", 
+                     format_hint: str = "markdown") -> ParsedGNN:
+        """Enhanced content parsing with format-specific handling."""
+        # Use multi-format parsing system if available
+        if self.parsing_system and format_hint != "markdown":
+            try:
+                format_enum = GNNFormat(format_hint)
+                result = self.parsing_system.parse_string(content, format_enum)
+                if result.success:
+                    return self._convert_parse_result_to_parsed_gnn(result, format_hint)
+            except (ValueError, Exception) as e:
+                logger.warning(f"Multi-format parsing failed for {format_hint}: {e}")
+        
+        # Fallback to markdown parsing
+        return self._parse_markdown_content(content, source_name)
+    
+    def _convert_parse_result_to_parsed_gnn(self, result, source_format: str) -> ParsedGNN:
+        """Convert ParseResult to ParsedGNN format."""
+        model = result.model
+        
+        # Convert variables
+        variables = {}
+        for var in model.variables:
+            variables[var.name] = GNNVariable(
+                name=var.name,
+                dimensions=getattr(var, 'dimensions', []),
+                data_type=str(getattr(var, 'data_type', 'categorical')),
+                description=getattr(var, 'description', ''),
+                ontology_mapping=getattr(var, 'ontology_mapping', None)
+            )
+        
+        # Convert connections
+        connections = []
+        for conn in model.connections:
+            connections.append(GNNConnection(
+                source=getattr(conn, 'source_variables', []),
+                target=getattr(conn, 'target_variables', []),
+                connection_type=str(getattr(conn, 'connection_type', 'directed')),
+                symbol=self._infer_symbol_from_type(str(getattr(conn, 'connection_type', 'directed'))),
+                description=getattr(conn, 'description', '')
+            ))
+        
+        # Convert parameters
+        parameters = {}
+        for param in model.parameters:
+            parameters[param.name] = param.value
+        
+        return ParsedGNN(
+            gnn_section=getattr(model, 'gnn_section', f"{source_format.upper()}GNN"),
+            version=getattr(model, 'version', '1.0'),
+            model_name=model.model_name,
+            model_annotation=model.annotation,
+            variables=variables,
+            connections=connections,
+            parameters=parameters,
+            equations=getattr(model, 'equations', []),
+            time_config=getattr(model, 'time_config', {}),
+            ontology_mappings=getattr(model, 'ontology_mappings', {}),
+            model_parameters=getattr(model, 'model_parameters', {}),
+            footer=getattr(model, 'footer', ''),
+            source_format=source_format,
+            semantic_checksum=self._compute_semantic_checksum(model)
+        )
+    
+    def _infer_symbol_from_type(self, connection_type: str) -> str:
+        """Infer connection symbol from type."""
+        symbol_map = {
+            'directed': '>',
+            'undirected': '-',
+            'conditional': '|',
+            'bidirectional': '<->'
+        }
+        return symbol_map.get(connection_type, '>')
+    
+    def _compute_semantic_checksum(self, model) -> str:
+        """Compute semantic checksum for model."""
+        # Create normalized representation
+        checksum_data = {
+            'model_name': model.model_name,
+            'variables': sorted([var.name for var in model.variables]),
+            'connections_count': len(model.connections),
+            'parameters_count': len(model.parameters)
+        }
+        
+        checksum_str = json.dumps(checksum_data, sort_keys=True)
+        return hashlib.md5(checksum_str.encode()).hexdigest()
+
+    def _parse_markdown_content(self, content: str, source_name: str) -> ParsedGNN:
+        """Parse GNN content from string (markdown format)."""
         lines = content.split('\n')
         self.line_number = 0
         self.current_section = None
@@ -555,15 +852,23 @@ class GNNParser:
 
 
 class GNNValidator:
-    """Validator for GNN files against the formal schema with enhanced parsing."""
+    """Enhanced validator for GNN files with comprehensive round-trip and cross-format support."""
     
-    def __init__(self, schema_path: Optional[Path] = None, use_formal_parser: bool = True):
+    def __init__(self, schema_path: Optional[Path] = None, 
+                 use_formal_parser: bool = True, 
+                 enable_round_trip_testing: bool = False,
+                 validation_level: ValidationLevel = ValidationLevel.STANDARD):
         if schema_path is None:
             schema_path = Path(__file__).parent / "schemas/json.json"
         
         self.schema_path = schema_path
         self.schema = self._load_schema()
         self.use_formal_parser = use_formal_parser and FORMAL_PARSER_AVAILABLE
+        self.enable_round_trip_testing = enable_round_trip_testing and ROUND_TRIP_AVAILABLE
+        self.validation_level = validation_level
+        
+        # Initialize enhanced parser
+        self.parser = GNNParser(enhanced_validation=True)
         
         # Initialize formal parser if available
         if self.use_formal_parser:
@@ -573,6 +878,22 @@ class GNNValidator:
             except Exception as e:
                 logger.warning(f"Could not initialize formal parser: {e}")
                 self.use_formal_parser = False
+        
+        # Initialize round-trip tester if enabled
+        if self.enable_round_trip_testing:
+            try:
+                self.round_trip_tester = GNNRoundTripTester()
+                logger.info("Round-trip testing enabled for comprehensive validation")
+            except Exception as e:
+                logger.warning(f"Could not initialize round-trip tester: {e}")
+                self.enable_round_trip_testing = False
+        
+        # Initialize cross-format validator
+        try:
+            from .cross_format_validator import CrossFormatValidator
+            self.cross_validator = CrossFormatValidator()
+        except ImportError:
+            self.cross_validator = None
     
     def _load_schema(self) -> Dict[str, Any]:
         """Load the JSON schema."""
@@ -583,37 +904,93 @@ class GNNValidator:
             logger.error(f"Could not load schema from {self.schema_path}: {e}")
             return {}
     
-    def validate_file(self, file_path: Union[str, Path]) -> ValidationResult:
-        """Validate a GNN file."""
-        result = ValidationResult(is_valid=True)
+    def validate_file(self, file_path: Union[str, Path], 
+                     validation_level: Optional[ValidationLevel] = None) -> ValidationResult:
+        """Enhanced validation with comprehensive testing capabilities."""
+        import time
+        start_time = time.time()
+        
+        validation_level = validation_level or self.validation_level
+        file_path = Path(file_path)
+        
+        result = ValidationResult(
+            is_valid=True, 
+            validation_level=validation_level,
+            format_tested=self._detect_file_format(file_path)
+        )
         
         try:
-            file_path = Path(file_path)
-            with open(file_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-            
-            # Detect file format from extension
+            # Step 1: Basic file access and format detection
             file_format = self._detect_file_format(file_path)
+            result.format_tested = file_format
             
-            # Basic structure validation based on format
-            if file_format == 'markdown':
-                self._validate_markdown_structure(content, result)
-            elif file_format in ['json', 'xml', 'yaml']:
-                # For non-markdown formats, we mainly validate that the content is well-formed
-                self._validate_structured_format(content, result, file_format)
-            else:
-                result.warnings.append(f"Unknown file format for {file_path.suffix}, using basic validation")
-                self._validate_basic_structure(content, result)
+            # Handle binary formats
+            if file_format in ['binary', 'pickle']:
+                return self._validate_binary_file(file_path, result)
             
+            # Read text content
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+            except UnicodeDecodeError as e:
+                result.errors.append(f"File encoding error: {e}")
+                result.is_valid = False
+                return result
+            
+            # Step 2: Parse the file using enhanced parser
+            try:
+                parsed_gnn = self.parser.parse_file(file_path)
+                result.semantic_checksum = parsed_gnn.semantic_checksum
+                result.metadata['parsed_successfully'] = True
+                result.metadata['source_format'] = parsed_gnn.source_format
+            except Exception as e:
+                result.errors.append(f"Parsing failed: {e}")
+                result.is_valid = False
+                if validation_level == ValidationLevel.BASIC:
+                    return result
+                # Continue with content-based validation for higher levels
+                parsed_gnn = None
+            
+            # Step 3: Validation based on level
+            if validation_level >= ValidationLevel.BASIC:
+                self._validate_basic_structure(content, result, file_format)
+            
+            if validation_level >= ValidationLevel.STANDARD and parsed_gnn:
+                self._validate_semantics(parsed_gnn, result)
+            
+            if validation_level >= ValidationLevel.STRICT:
+                self._validate_strict_requirements(parsed_gnn, content, result)
+            
+            if validation_level >= ValidationLevel.RESEARCH:
+                self._validate_research_standards(parsed_gnn, content, result)
+            
+            # Step 4: Round-trip testing if enabled and requested
+            if (validation_level == ValidationLevel.ROUND_TRIP and 
+                self.enable_round_trip_testing and parsed_gnn):
+                self._perform_round_trip_validation(parsed_gnn, result)
+            
+            # Step 5: Cross-format consistency if available
+            if (validation_level >= ValidationLevel.STRICT and 
+                self.cross_validator and parsed_gnn):
+                self._validate_cross_format_consistency(content, result)
+            
+            # Final result determination
             result.is_valid = len(result.errors) == 0
+            
+            # Performance metrics
+            end_time = time.time()
+            result.performance_metrics = {
+                'validation_time': end_time - start_time,
+                'content_length': len(content),
+                'validation_level': validation_level.value
+            }
+            
             return result
             
         except Exception as e:
-            return ValidationResult(
-                is_valid=False,
-                errors=[f"File error: {str(e)}"],
-                metadata={"source": str(file_path)}
-            )
+            result.errors.append(f"Validation failed with exception: {e}")
+            result.is_valid = False
+            return result
     
     def _detect_file_format(self, file_path: Path) -> str:
         """Detect file format from extension."""
@@ -624,7 +1001,9 @@ class GNNValidator:
             '.json': 'json',
             '.xml': 'xml',
             '.yaml': 'yaml',
-            '.yml': 'yaml'
+            '.yml': 'yaml',
+            '.pkl': 'pickle',
+            '.pickle': 'pickle'
         }
         return format_map.get(suffix, 'unknown')
     
@@ -664,12 +1043,201 @@ class GNNValidator:
         except Exception as e:
             result.errors.append(f"Error validating {file_format} format: {e}")
     
-    def _validate_basic_structure(self, content: str, result: ValidationResult):
-        """Basic validation for unknown formats."""
+    def _validate_binary_file(self, file_path: Path, result: ValidationResult) -> ValidationResult:
+        """Validate binary files (pickle format)."""
+        try:
+            with open(file_path, 'rb') as f:
+                # Try to read first few bytes to ensure it's accessible
+                header = f.read(10)
+                
+            # Check for pickle signature
+            if header.startswith(b'\x80\x03') or b'pickle' in header:
+                result.warnings.append("Binary pickle format detected - validation limited to accessibility check")
+            else:
+                result.warnings.append("Unknown binary format - validation limited to accessibility check")
+            
+            result.metadata['binary_format'] = True
+            result.metadata['file_size'] = file_path.stat().st_size
+            result.is_valid = True
+            
+        except Exception as e:
+            result.errors.append(f"Binary file access error: {e}")
+            result.is_valid = False
+        
+        return result
+    
+    def _validate_basic_structure(self, content: str, result: ValidationResult, file_format: str):
+        """Enhanced basic validation with format-specific checks."""
         if len(content.strip()) == 0:
             result.errors.append("File is empty")
+            return
+        
+        # Format-specific basic validation
+        if file_format == 'markdown':
+            self._validate_markdown_structure(content, result)
+        elif file_format in ['json', 'xml', 'yaml']:
+            self._validate_structured_format(content, result, file_format)
         else:
-            result.warnings.append("Basic validation passed for unknown format")
+            result.warnings.append(f"Unknown file format: {file_format}, using basic validation")
+            # Basic text validation
+            if len(content) < 10:
+                result.warnings.append("File content is very short")
+            if '\x00' in content:
+                result.warnings.append("File contains null bytes - may be binary")
+    
+    def _validate_strict_requirements(self, parsed_gnn: Optional[ParsedGNN], content: str, result: ValidationResult):
+        """Validate strict requirements for research-grade models."""
+        if not parsed_gnn:
+            result.errors.append("Parsed model required for strict validation")
+            return
+        
+        # Check for complete documentation
+        if not parsed_gnn.model_annotation or len(parsed_gnn.model_annotation.strip()) < 50:
+            result.warnings.append("Model annotation should be more descriptive for research use")
+        
+        # Check for ontology mappings
+        if not parsed_gnn.ontology_mappings:
+            result.suggestions.append("Consider adding ontology mappings for better interoperability")
+        
+        # Check for equations
+        if not parsed_gnn.equations:
+            result.suggestions.append("Consider adding mathematical equations for clarity")
+        
+        # Validate parameter completeness
+        if len(parsed_gnn.parameters) < len(parsed_gnn.variables) * 0.5:
+            result.warnings.append("Many variables lack parameter specifications")
+    
+    def _validate_research_standards(self, parsed_gnn: Optional[ParsedGNN], content: str, result: ValidationResult):
+        """Validate research-grade standards."""
+        if not parsed_gnn:
+            return
+        
+        # Check for signature/provenance
+        if not parsed_gnn.signature:
+            result.suggestions.append("Add signature section for provenance tracking")
+        
+        # Check for time configuration
+        if not parsed_gnn.time_config:
+            result.suggestions.append("Specify time configuration for reproducibility")
+        
+        # Validate model parameters
+        if not parsed_gnn.model_parameters:
+            result.suggestions.append("Add model parameters for complete specification")
+        
+        # Check for research-grade documentation
+        research_keywords = ['hypothesis', 'method', 'experiment', 'analysis', 'result']
+        annotation_lower = parsed_gnn.model_annotation.lower()
+        found_keywords = [kw for kw in research_keywords if kw in annotation_lower]
+        
+        if len(found_keywords) < 2:
+            result.suggestions.append("Consider adding research context (hypothesis, methods, etc.)")
+    
+    def _perform_round_trip_validation(self, parsed_gnn: ParsedGNN, result: ValidationResult):
+        """Perform round-trip validation testing."""
+        try:
+            # Create a temporary markdown file
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+                # Write parsed content back to markdown
+                markdown_content = self._convert_parsed_gnn_to_markdown(parsed_gnn)
+                f.write(markdown_content)
+                temp_file = Path(f.name)
+            
+            try:
+                # Run round-trip tests on a subset of formats
+                test_formats = [GNNFormat.JSON, GNNFormat.XML, GNNFormat.YAML]
+                
+                for fmt in test_formats:
+                    try:
+                        # Test conversion to format and back
+                        round_trip_result = self.round_trip_tester._test_round_trip(
+                            parsed_gnn, fmt
+                        )
+                        result.add_round_trip_result(round_trip_result)
+                        
+                    except Exception as e:
+                        result.warnings.append(f"Round-trip test failed for {fmt.value}: {e}")
+                
+                # Summary
+                success_rate = result.get_round_trip_success_rate()
+                if success_rate == 100.0:
+                    result.suggestions.append("Perfect round-trip compatibility achieved")
+                elif success_rate >= 80.0:
+                    result.warnings.append(f"Good round-trip compatibility: {success_rate:.1f}%")
+                else:
+                    result.errors.append(f"Poor round-trip compatibility: {success_rate:.1f}%")
+                    
+            finally:
+                # Clean up temporary file
+                temp_file.unlink(missing_ok=True)
+                
+        except Exception as e:
+            result.warnings.append(f"Round-trip validation failed: {e}")
+    
+    def _validate_cross_format_consistency(self, content: str, result: ValidationResult):
+        """Validate cross-format consistency."""
+        try:
+            cross_result = self.cross_validator.validate_cross_format_consistency(content)
+            result.cross_format_consistent = cross_result.is_consistent
+            
+            if cross_result.is_consistent:
+                result.suggestions.append("Cross-format consistency validated")
+            else:
+                result.warnings.extend(cross_result.inconsistencies)
+                result.warnings.extend(cross_result.warnings)
+        
+        except Exception as e:
+            result.warnings.append(f"Cross-format validation failed: {e}")
+    
+    def _convert_parsed_gnn_to_markdown(self, parsed_gnn: ParsedGNN) -> str:
+        """Convert ParsedGNN back to markdown format."""
+        lines = []
+        
+        lines.append(f"## GNNSection")
+        lines.append(parsed_gnn.gnn_section)
+        lines.append("")
+        
+        lines.append(f"## GNNVersionAndFlags")
+        lines.append(parsed_gnn.version)
+        lines.append("")
+        
+        lines.append(f"## ModelName")
+        lines.append(parsed_gnn.model_name)
+        lines.append("")
+        
+        lines.append(f"## ModelAnnotation")
+        lines.append(parsed_gnn.model_annotation)
+        lines.append("")
+        
+        lines.append(f"## StateSpaceBlock")
+        for var_name, var in parsed_gnn.variables.items():
+            dim_str = f"[{','.join(map(str, var.dimensions))}]" if var.dimensions else ""
+            type_str = f",type={var.data_type}" if var.data_type != 'categorical' else ""
+            desc_str = f" # {var.description}" if var.description else ""
+            lines.append(f"{var_name}{dim_str}{type_str}{desc_str}")
+        lines.append("")
+        
+        lines.append(f"## Connections")
+        for conn in parsed_gnn.connections:
+            source = ','.join(conn.source) if isinstance(conn.source, list) else conn.source
+            target = ','.join(conn.target) if isinstance(conn.target, list) else conn.target
+            desc_str = f" # {conn.description}" if conn.description else ""
+            lines.append(f"{source}{conn.symbol}{target}{desc_str}")
+        lines.append("")
+        
+        lines.append(f"## InitialParameterization")
+        for param_name, param_value in parsed_gnn.parameters.items():
+            lines.append(f"{param_name}={param_value}")
+        lines.append("")
+        
+        lines.append(f"## Time")
+        time_type = parsed_gnn.time_config.get('type', 'Dynamic')
+        lines.append(time_type)
+        lines.append("")
+        
+        lines.append(f"## Footer")
+        lines.append(parsed_gnn.footer)
+        
+        return "\n".join(lines)
     
     def _validate_markdown_structure(self, content: str, result: ValidationResult):
         """Validate comprehensive GNN markdown file structure and semantics."""
