@@ -1,54 +1,54 @@
 from typing import Dict, Any, List, Optional, Union, Protocol
 from abc import ABC, abstractmethod
+import json
 from datetime import datetime
 from .common import GNNInternalRepresentation, GNNFormat
 from .base_serializer import BaseGNNSerializer
-import json
 
-class ScalaSerializer(BaseGNNSerializer):
-    """Serializer for Scala categorical specifications."""
+class ZNotationSerializer(BaseGNNSerializer):
+    """Serializer for Z notation formal specification language."""
     
     def serialize(self, model: GNNInternalRepresentation) -> str:
-        """Convert GNN model to Scala categorical format."""
+        """Convert GNN model to Z notation format with embedded data."""
         lines = []
         
-        # Package and imports
-        lines.append("package gnn.categorical")
-        lines.append("")
-        lines.append("import cats._")
-        lines.append("import cats.implicits._")
-        lines.append("import cats.arrow.Category")
-        lines.append("")
-        
-        # Model object
+        # Z notation header
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
-        lines.append(f"object {model_name_clean}Model {{")
+        lines.append(f"% Z Notation Specification for {model.model_name}")
+        if model.annotation:
+            lines.append(f"% {model.annotation}")
         lines.append("")
         
-        # State space definition
+        # Schema definitions for variables
         if model.variables:
-            lines.append("  // State Space")
+            lines.append("┌─ " + model_name_clean + " ─┐")
             for var in sorted(model.variables, key=lambda v: v.name):
-                var_type = self._map_variable_type(var)
-                lines.append(f"  type {var.name} = {var_type}")
+                z_type = self._map_to_z_type(var.data_type.value)
+                lines.append(f"│ {var.name}: {z_type}")
+            lines.append("└─────────────────┘")
             lines.append("")
         
-        # Morphisms (connections)
-        if model.connections:
-            lines.append("  // Morphisms")
-            sorted_conns = sorted(model.connections, key=lambda c: (
-                ",".join(sorted(c.source_variables)), 
-                ",".join(sorted(c.target_variables))
-            ))
-            for conn in sorted_conns:
-                for src in sorted(conn.source_variables):
-                    for tgt in sorted(conn.target_variables):
-                        lines.append(f"  val {src}To{tgt}: {src} => {tgt} = identity")
-            lines.append("")
+        # State schema
+        lines.append("┌─ " + model_name_clean + "State ─┐")
+        if model.variables:
+            for var in sorted(model.variables, key=lambda v: v.name):
+                lines.append(f"│ {var.name}: ℕ")
+            lines.append("│")
+            lines.append("│ // State constraints")
+            for var in model.variables:
+                lines.append(f"│ {var.name} ∈ ℕ")
+        lines.append("└─────────────────┘")
+        lines.append("")
         
-        lines.append("}")
+        # Operations schema
+        lines.append("┌─ " + model_name_clean + "Operation ─┐")
+        lines.append("│ Δ" + model_name_clean + "State")
+        lines.append("│")
+        lines.append("│ // Operations preserve model invariants")
+        lines.append("└─────────────────┘")
+        lines.append("")
         
-        # Embed complete model data as Scala comment for round-trip fidelity
+        # Embed complete model data as Z notation comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
             'annotation': model.annotation,
@@ -82,11 +82,23 @@ class ScalaSerializer(BaseGNNSerializer):
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
         
-        # Add embedded JSON data as Scala comment
-        lines.append("// MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
+        # Add embedded JSON data as Z notation comment
+        lines.append("% MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
         lines.append("")
         
         return '\n'.join(lines)
+    
+    def _map_to_z_type(self, data_type: str) -> str:
+        """Map GNN data types to Z notation types."""
+        mapping = {
+            "categorical": "ℕ",
+            "continuous": "ℝ",
+            "binary": "𝔹",
+            "integer": "ℤ",
+            "float": "ℝ",
+            "complex": "ℂ"
+        }
+        return mapping.get(data_type, "ℕ")
     
     def _serialize_time_spec(self, time_spec):
         """Serialize time specification object."""
@@ -110,15 +122,4 @@ class ScalaSerializer(BaseGNNSerializer):
                 'description': getattr(mapping, 'description', None)
             }
             for mapping in mappings
-        ]
-    
-    def _map_variable_type(self, var) -> str:
-        """Map GNN variable types to Scala types."""
-        if var.data_type.value == "categorical":
-            return "List[Double]"
-        elif var.data_type.value == "continuous":
-            return "Double"
-        elif var.data_type.value == "binary":
-            return "Boolean"
-        else:
-            return "Any" 
+        ] 

@@ -95,5 +95,4 @@ class MarkdownSerializer(BaseGNNSerializer):
             sections.append(f"Checksum: {model.checksum}")
         sections.append("")
         
-        return "
-".join(sections) 
+        return '\n'.join(sections) 

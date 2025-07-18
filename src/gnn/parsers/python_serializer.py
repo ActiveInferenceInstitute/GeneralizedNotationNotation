@@ -1,54 +1,65 @@
 from typing import Dict, Any, List, Optional, Union, Protocol
 from abc import ABC, abstractmethod
 from datetime import datetime
+import json
 from .common import GNNInternalRepresentation, GNNFormat
 from .base_serializer import BaseGNNSerializer
-import json
 
-class ScalaSerializer(BaseGNNSerializer):
-    """Serializer for Scala categorical specifications."""
+class PythonSerializer(BaseGNNSerializer):
+    """Serializer for Python format."""
     
     def serialize(self, model: GNNInternalRepresentation) -> str:
-        """Convert GNN model to Scala categorical format."""
+        """Convert GNN model to Python format."""
         lines = []
         
-        # Package and imports
-        lines.append("package gnn.categorical")
+        # Header
+        lines.append(f'"""')
+        lines.append(f'GNN Model: {model.model_name}')
+        lines.append(f'{model.annotation}')
+        lines.append(f'Generated: {datetime.now().isoformat()}')
+        lines.append(f'"""')
         lines.append("")
-        lines.append("import cats._")
-        lines.append("import cats.implicits._")
-        lines.append("import cats.arrow.Category")
+        lines.append("import numpy as np")
+        lines.append("from typing import Dict, List, Any")
         lines.append("")
         
-        # Model object
+        # Model class
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
-        lines.append(f"object {model_name_clean}Model {{")
+        lines.append(f"class {model_name_clean}Model:")
+        lines.append(f'    """GNN Model: {model.model_name}"""')
+        lines.append("")
+        lines.append("    def __init__(self):")
+        lines.append(f'        self.model_name = "{model.model_name}"')
+        lines.append(f'        self.version = "{model.version}"')
+        lines.append(f'        self.annotation = "{model.annotation}"')
         lines.append("")
         
-        # State space definition
+        # Variables
         if model.variables:
-            lines.append("  // State Space")
+            lines.append("        # Variables")
+            lines.append("        self.variables = {")
             for var in sorted(model.variables, key=lambda v: v.name):
-                var_type = self._map_variable_type(var)
-                lines.append(f"  type {var.name} = {var_type}")
+                lines.append(f'            "{var.name}": {{')
+                lines.append(f'                "type": "{var.var_type.value}",')
+                lines.append(f'                "data_type": "{var.data_type.value}",')
+                lines.append(f'                "dimensions": {var.dimensions},')
+                if var.description:
+                    lines.append(f'                "description": "{var.description}",')
+                lines.append("            },")
+            lines.append("        }")
             lines.append("")
         
-        # Morphisms (connections)
-        if model.connections:
-            lines.append("  // Morphisms")
-            sorted_conns = sorted(model.connections, key=lambda c: (
-                ",".join(sorted(c.source_variables)), 
-                ",".join(sorted(c.target_variables))
-            ))
-            for conn in sorted_conns:
-                for src in sorted(conn.source_variables):
-                    for tgt in sorted(conn.target_variables):
-                        lines.append(f"  val {src}To{tgt}: {src} => {tgt} = identity")
+        # Parameters
+        if model.parameters:
+            lines.append("        # Parameters")
+            lines.append("        self.parameters = {")
+            for param in sorted(model.parameters, key=lambda p: p.name):
+                value_repr = repr(param.value) if isinstance(param.value, str) else str(param.value)
+                lines.append(f'            "{param.name}": {value_repr},')
+            lines.append("        }")
             lines.append("")
         
-        lines.append("}")
-        
-        # Embed complete model data as Scala comment for round-trip fidelity
+        # Embed complete model data as Python comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
             'annotation': model.annotation,
@@ -82,8 +93,8 @@ class ScalaSerializer(BaseGNNSerializer):
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
         
-        # Add embedded JSON data as Scala comment
-        lines.append("// MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
+        # Add embedded JSON data as Python comment
+        lines.append("# MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
         lines.append("")
         
         return '\n'.join(lines)
@@ -110,15 +121,4 @@ class ScalaSerializer(BaseGNNSerializer):
                 'description': getattr(mapping, 'description', None)
             }
             for mapping in mappings
-        ]
-    
-    def _map_variable_type(self, var) -> str:
-        """Map GNN variable types to Scala types."""
-        if var.data_type.value == "categorical":
-            return "List[Double]"
-        elif var.data_type.value == "continuous":
-            return "Double"
-        elif var.data_type.value == "binary":
-            return "Boolean"
-        else:
-            return "Any" 
+        ] 

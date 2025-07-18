@@ -35,12 +35,8 @@ from .types import (
     RoundTripResult
 )
 
-# Try to import formal parser for enhanced validation
-try:
-    from .parsers.lark_parser import GNNFormalParser, ParsedGNNFormal, LARK_AVAILABLE
-    FORMAL_PARSER_AVAILABLE = False  # Temporarily disable to bypass recursion issue
-except ImportError:
-    FORMAL_PARSER_AVAILABLE = False
+# Lark parser removed - too complex and not needed
+FORMAL_PARSER_AVAILABLE = False
 
 # Try to import round-trip testing capabilities
 try:
@@ -775,14 +771,8 @@ class GNNValidator:
         # Initialize enhanced parser
         self.parser = GNNParser(enhanced_validation=True)
         
-        # Initialize formal parser if available
-        if self.use_formal_parser:
-            try:
-                self.formal_parser = GNNFormalParser()
-                logger.info("Formal Lark parser initialized for enhanced validation")
-            except Exception as e:
-                logger.warning(f"Could not initialize formal parser: {e}")
-                self.use_formal_parser = False
+        # Formal parser removed (Lark was too complex)
+        self.formal_parser = None
         
         # Initialize round-trip tester if enabled
         if self.enable_round_trip_testing:
@@ -1200,48 +1190,6 @@ class GNNValidator:
     def _validate_structure(self, content: str, result: ValidationResult):
         """Legacy method - now delegates to markdown validation."""
         self._validate_markdown_structure(content, result)
-    
-    def _convert_formal_to_standard(self, formal_parsed: 'ParsedGNNFormal') -> ParsedGNN:
-        """Convert formal parser result to standard ParsedGNN format."""
-        # Convert formal parser variables to standard format
-        variables = {}
-        for var_name, var_info in formal_parsed.variables.items():
-            variables[var_name] = GNNVariable(
-                name=var_name,
-                dimensions=var_info.get('dimensions', []),
-                data_type=var_info.get('data_type', 'float'),
-                description=var_info.get('description'),
-                line_number=None
-            )
-        
-        # Convert connections
-        connections = []
-        for conn_info in formal_parsed.connections:
-            connections.append(GNNConnection(
-                source=conn_info.get('source', ''),
-                target=conn_info.get('target', ''),
-                connection_type=conn_info.get('connection_type', 'directed'),
-                symbol=conn_info.get('operator', '>'),
-                description=conn_info.get('description'),
-                line_number=None
-            ))
-        
-        return ParsedGNN(
-            gnn_section=formal_parsed.gnn_section,
-            version=formal_parsed.version,
-            model_name=formal_parsed.model_name,
-            model_annotation=formal_parsed.model_annotation,
-            variables=variables,
-            connections=connections,
-            parameters=formal_parsed.parameters,
-            equations=formal_parsed.equations,
-            time_config=formal_parsed.time_config,
-            ontology_mappings=formal_parsed.ontology_mappings,
-            model_parameters=formal_parsed.model_parameters,
-            footer=formal_parsed.footer,
-            signature=formal_parsed.signature,
-            metadata=formal_parsed.metadata
-        )
     
     def _validate_semantics(self, parsed: ParsedGNN, result: ValidationResult):
         """Validate semantic consistency of parsed GNN model."""

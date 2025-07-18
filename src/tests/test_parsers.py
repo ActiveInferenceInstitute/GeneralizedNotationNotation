@@ -12,7 +12,6 @@ from typing import Dict, Any
 
 # Import parsers to test
 from gnn.parsers.markdown_parser import MarkdownGNNParser
-from gnn.parsers.lark_parser import GNNFormalParser
 from gnn.parsers.schema_parser import XSDParser
 from gnn.parsers.scala_parser import ScalaGNNParser
 from gnn.parsers.lean_parser import LeanGNNParser  # Add more as needed
@@ -55,18 +54,7 @@ class TestMarkdownParser:
 # Add similar classes for other parsers like TestLarkParser, TestSchemaParser, etc., with valid/invalid/edge case tests
 
 # For LarkParser example:
-class TestLarkParser:
-    def test_valid_parsing(self, sample_lark):
-        parser = GNNFormalParser()
-        result = parser.parse_content(sample_lark)
-        assert result is not None
-        assert result.parse_tree is not None
-        assert isinstance(result, ParsedGNNFormal)
-
-    def test_invalid_parsing(self, sample_lark):
-        parser = GNNFormalParser()
-        result = parser.parse_content('invalid')
-        assert result is None
+# Lark parser removed - too complex and not needed
 
 # Extend for all major parsers: maxima, protobuf, lean, temporal, isabelle, coq, grammar, binary, functional, schema, validators, converters, serializers, common
 

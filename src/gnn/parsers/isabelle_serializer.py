@@ -1,54 +1,39 @@
 from typing import Dict, Any, List, Optional, Union, Protocol
 from abc import ABC, abstractmethod
+import json
 from datetime import datetime
 from .common import GNNInternalRepresentation, GNNFormat
 from .base_serializer import BaseGNNSerializer
-import json
 
-class ScalaSerializer(BaseGNNSerializer):
-    """Serializer for Scala categorical specifications."""
+class IsabelleSerializer(BaseGNNSerializer):
+    """Serializer for Isabelle/HOL format."""
     
     def serialize(self, model: GNNInternalRepresentation) -> str:
-        """Convert GNN model to Scala categorical format."""
+        """Convert GNN model to Isabelle/HOL format."""
         lines = []
         
-        # Package and imports
-        lines.append("package gnn.categorical")
-        lines.append("")
-        lines.append("import cats._")
-        lines.append("import cats.implicits._")
-        lines.append("import cats.arrow.Category")
-        lines.append("")
-        
-        # Model object
+        # Theory header
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
-        lines.append(f"object {model_name_clean}Model {{")
+        lines.append(f"theory {model_name_clean}")
+        lines.append("imports Main")
+        lines.append("begin")
         lines.append("")
         
-        # State space definition
+        # Documentation
+        lines.append(f'text \\\<open>{model.model_name}\\\<close>')
+        lines.append(f'text \\\<open>{model.annotation}\\\<close>')
+        lines.append("")
+        
+        # Variable types
         if model.variables:
-            lines.append("  // State Space")
             for var in sorted(model.variables, key=lambda v: v.name):
-                var_type = self._map_variable_type(var)
-                lines.append(f"  type {var.name} = {var_type}")
+                isabelle_type = self._map_to_isabelle_type(var.data_type.value)
+                lines.append(f'type_synonym {var.name} = \"{isabelle_type}\"')
             lines.append("")
         
-        # Morphisms (connections)
-        if model.connections:
-            lines.append("  // Morphisms")
-            sorted_conns = sorted(model.connections, key=lambda c: (
-                ",".join(sorted(c.source_variables)), 
-                ",".join(sorted(c.target_variables))
-            ))
-            for conn in sorted_conns:
-                for src in sorted(conn.source_variables):
-                    for tgt in sorted(conn.target_variables):
-                        lines.append(f"  val {src}To{tgt}: {src} => {tgt} = identity")
-            lines.append("")
+        lines.append("end")
         
-        lines.append("}")
-        
-        # Embed complete model data as Scala comment for round-trip fidelity
+        # Embed complete model data as Isabelle comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
             'annotation': model.annotation,
@@ -82,8 +67,8 @@ class ScalaSerializer(BaseGNNSerializer):
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
         
-        # Add embedded JSON data as Scala comment
-        lines.append("// MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
+        # Add embedded JSON data as Isabelle comment
+        lines.append("(* MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')) + " *)")
         lines.append("")
         
         return '\n'.join(lines)
@@ -112,13 +97,14 @@ class ScalaSerializer(BaseGNNSerializer):
             for mapping in mappings
         ]
     
-    def _map_variable_type(self, var) -> str:
-        """Map GNN variable types to Scala types."""
-        if var.data_type.value == "categorical":
-            return "List[Double]"
-        elif var.data_type.value == "continuous":
-            return "Double"
-        elif var.data_type.value == "binary":
-            return "Boolean"
-        else:
-            return "Any" 
+    def _map_to_isabelle_type(self, data_type: str) -> str:
+        """Map GNN data types to Isabelle types."""
+        mapping = {
+            "categorical": "nat list",
+            "continuous": "real",
+            "binary": "bool",
+            "integer": "int",
+            "float": "real",
+            "complex": "string"
+        }
+        return mapping.get(data_type, "string") 

@@ -1,54 +1,50 @@
 from typing import Dict, Any, List, Optional, Union, Protocol
 from abc import ABC, abstractmethod
+import json
 from datetime import datetime
 from .common import GNNInternalRepresentation, GNNFormat
 from .base_serializer import BaseGNNSerializer
-import json
 
-class ScalaSerializer(BaseGNNSerializer):
-    """Serializer for Scala categorical specifications."""
+class LeanSerializer(BaseGNNSerializer):
+    """Serializer for Lean theorem prover format."""
     
     def serialize(self, model: GNNInternalRepresentation) -> str:
-        """Convert GNN model to Scala categorical format."""
+        """Convert GNN model to Lean format."""
         lines = []
         
-        # Package and imports
-        lines.append("package gnn.categorical")
+        # Header
+        lines.append("-- GNN Model in Lean 4")
+        lines.append(f"-- Model: {model.model_name}")
+        lines.append(f"-- {model.annotation}")
         lines.append("")
-        lines.append("import cats._")
-        lines.append("import cats.implicits._")
-        lines.append("import cats.arrow.Category")
+        lines.append("import Mathlib.Data.Matrix.Basic")
+        lines.append("import Mathlib.Data.Real.Basic")
         lines.append("")
         
-        # Model object
+        # Model namespace
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
-        lines.append(f"object {model_name_clean}Model {{")
+        lines.append(f"namespace {model_name_clean}")
         lines.append("")
         
-        # State space definition
+        # Variable definitions
         if model.variables:
-            lines.append("  // State Space")
+            lines.append("-- Variables")
             for var in sorted(model.variables, key=lambda v: v.name):
-                var_type = self._map_variable_type(var)
-                lines.append(f"  type {var.name} = {var_type}")
+                lean_type = self._map_to_lean_type(var.data_type.value)
+                lines.append(f"variable ({var.name} : {lean_type})")
             lines.append("")
         
-        # Morphisms (connections)
-        if model.connections:
-            lines.append("  // Morphisms")
-            sorted_conns = sorted(model.connections, key=lambda c: (
-                ",".join(sorted(c.source_variables)), 
-                ",".join(sorted(c.target_variables))
-            ))
-            for conn in sorted_conns:
-                for src in sorted(conn.source_variables):
-                    for tgt in sorted(conn.target_variables):
-                        lines.append(f"  val {src}To{tgt}: {src} => {tgt} = identity")
-            lines.append("")
+        # Structure definition
+        lines.append(f"structure {model_name_clean}Model where")
+        if model.variables:
+            for var in sorted(model.variables, key=lambda v: v.name):
+                lean_type = self._map_to_lean_type(var.data_type.value)
+                lines.append(f"  {var.name} : {lean_type}")
+        lines.append("")
         
-        lines.append("}")
+        lines.append(f"end {model_name_clean}")
         
-        # Embed complete model data as Scala comment for round-trip fidelity
+        # Embed complete model data as Lean comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
             'annotation': model.annotation,
@@ -82,8 +78,8 @@ class ScalaSerializer(BaseGNNSerializer):
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
         
-        # Add embedded JSON data as Scala comment
-        lines.append("// MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
+        # Add embedded JSON data as Lean comment
+        lines.append("-- MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
         lines.append("")
         
         return '\n'.join(lines)
@@ -112,13 +108,14 @@ class ScalaSerializer(BaseGNNSerializer):
             for mapping in mappings
         ]
     
-    def _map_variable_type(self, var) -> str:
-        """Map GNN variable types to Scala types."""
-        if var.data_type.value == "categorical":
-            return "List[Double]"
-        elif var.data_type.value == "continuous":
-            return "Double"
-        elif var.data_type.value == "binary":
-            return "Boolean"
-        else:
-            return "Any" 
+    def _map_to_lean_type(self, data_type: str) -> str:
+        """Map GNN data types to Lean types."""
+        mapping = {
+            "categorical": "List ℕ",
+            "continuous": "ℝ",
+            "binary": "Bool",
+            "integer": "ℤ",
+            "float": "ℝ",
+            "complex": "ℂ"
+        }
+        return mapping.get(data_type, "String") 

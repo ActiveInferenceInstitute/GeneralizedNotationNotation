@@ -1,54 +1,54 @@
 from typing import Dict, Any, List, Optional, Union, Protocol
 from abc import ABC, abstractmethod
+import json
 from datetime import datetime
 from .common import GNNInternalRepresentation, GNNFormat
 from .base_serializer import BaseGNNSerializer
-import json
 
-class ScalaSerializer(BaseGNNSerializer):
-    """Serializer for Scala categorical specifications."""
+class GrammarSerializer(BaseGNNSerializer):
+    """Serializer for BNF/EBNF grammar format with embedded data support."""
     
     def serialize(self, model: GNNInternalRepresentation) -> str:
-        """Convert GNN model to Scala categorical format."""
+        """Convert GNN model to BNF format with embedded data."""
         lines = []
         
-        # Package and imports
-        lines.append("package gnn.categorical")
-        lines.append("")
-        lines.append("import cats._")
-        lines.append("import cats.implicits._")
-        lines.append("import cats.arrow.Category")
+        # Header
+        lines.append(f"# Grammar for GNN Model: {model.model_name}")
+        lines.append(f"# {model.annotation}")
         lines.append("")
         
-        # Model object
-        model_name_clean = model.model_name.replace(" ", "").replace("-", "")
-        lines.append(f"object {model_name_clean}Model {{")
+        # Root rule
+        lines.append("<gnn_model> ::= <variables> <connections> <parameters>")
         lines.append("")
         
-        # State space definition
+        # Variables
         if model.variables:
-            lines.append("  // State Space")
+            lines.append("<variables> ::= <variable> | <variable> <variables>")
+            lines.append("<variable> ::= <variable_name> <variable_type>")
+            var_names = []
             for var in sorted(model.variables, key=lambda v: v.name):
-                var_type = self._map_variable_type(var)
-                lines.append(f"  type {var.name} = {var_type}")
+                var_names.append(f'"{var.name}"')
+            lines.append("<variable_name> ::= " + " | ".join(var_names))
             lines.append("")
         
-        # Morphisms (connections)
+        # Connections
         if model.connections:
-            lines.append("  // Morphisms")
-            sorted_conns = sorted(model.connections, key=lambda c: (
-                ",".join(sorted(c.source_variables)), 
-                ",".join(sorted(c.target_variables))
-            ))
-            for conn in sorted_conns:
-                for src in sorted(conn.source_variables):
-                    for tgt in sorted(conn.target_variables):
-                        lines.append(f"  val {src}To{tgt}: {src} => {tgt} = identity")
+            lines.append("<connections> ::= <connection> | <connection> <connections>")
+            lines.append("<connection> ::= <source_var> <connection_op> <target_var>")
+            lines.append('<connection_op> ::= ">" | "-" | "->"')
             lines.append("")
         
-        lines.append("}")
+        # Parameters  
+        if model.parameters:
+            lines.append("<parameters> ::= <parameter> | <parameter> <parameters>")
+            lines.append("<parameter> ::= <param_name> = <param_value>")
+            param_names = []
+            for param in sorted(model.parameters, key=lambda p: p.name):
+                param_names.append(f'"{param.name}"')
+            lines.append("<param_name> ::= " + " | ".join(param_names))
+            lines.append("")
         
-        # Embed complete model data as Scala comment for round-trip fidelity
+        # Embed complete model data as BNF comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
             'annotation': model.annotation,
@@ -82,8 +82,8 @@ class ScalaSerializer(BaseGNNSerializer):
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
         
-        # Add embedded JSON data as Scala comment
-        lines.append("// MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
+        # Add embedded JSON data as BNF comment
+        lines.append("# MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
         lines.append("")
         
         return '\n'.join(lines)
@@ -110,15 +110,4 @@ class ScalaSerializer(BaseGNNSerializer):
                 'description': getattr(mapping, 'description', None)
             }
             for mapping in mappings
-        ]
-    
-    def _map_variable_type(self, var) -> str:
-        """Map GNN variable types to Scala types."""
-        if var.data_type.value == "categorical":
-            return "List[Double]"
-        elif var.data_type.value == "continuous":
-            return "Double"
-        elif var.data_type.value == "binary":
-            return "Boolean"
-        else:
-            return "Any" 
+        ] 

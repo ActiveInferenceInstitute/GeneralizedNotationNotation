@@ -102,5 +102,4 @@ class YAMLSerializer(BaseGNNSerializer):
             else:
                 lines.append(f"{spaces}{key}: {value}")
         
-        return "
-".join(lines) 
+        return '\n'.join(lines) 

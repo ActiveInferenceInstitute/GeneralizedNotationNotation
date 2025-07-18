@@ -154,15 +154,13 @@ class XMLSerializer(BaseGNNSerializer):
         pretty_xml = reparsed.toprettyxml(indent="  ")
         
         # Remove empty lines and normalize
-        lines = [line for line in pretty_xml.split('
-') if line.strip()]
+        lines = [line for line in pretty_xml.split('\n') if line.strip()]
         
         # Add embedded data as XML comment before the closing tag
         if lines and lines[-1].strip() == '</gnn_model>':
             lines.insert(-1, f"<!-- MODEL_DATA: {json.dumps(model_data, separators=(',', ':'))} -->")
         
-        return '
-'.join(lines)
+        return '\n'.join(lines)
     
     def _serialize_time_spec(self, time_spec):
         """Serialize time specification object."""

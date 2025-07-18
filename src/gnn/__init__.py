@@ -33,14 +33,25 @@ except ImportError:
     CROSS_FORMAT_AVAILABLE = False
 
 # Formal parsing (optional dependency)
-try:
-    from .parsers.lark_parser import (
-        GNNFormalParser, ParsedGNNFormal, parse_gnn_formal,
-        validate_gnn_syntax_formal, get_parse_tree_visualization
-    )
-    FORMAL_PARSER_AVAILABLE = True
-except ImportError:
-    FORMAL_PARSER_AVAILABLE = False
+# Lark parser removed - too complex and not needed
+FORMAL_PARSER_AVAILABLE = False
+
+# Provide stub classes for graceful degradation
+class GNNFormalParser:
+    """Stub class for when Lark is not available."""
+    def __init__(self): pass
+    def parse_file(self, file_path): return None
+    def parse_content(self, content, source_name="<string>"): return None
+    def validate_syntax(self, content): return False, ["Lark not available"]
+    def visualize_parse_tree(self, content): return "Lark not available"
+
+class ParsedGNNFormal:
+    """Stub class for when Lark is not available."""
+    def __init__(self): pass
+
+def parse_gnn_formal(file_path): return None
+def validate_gnn_syntax_formal(content): return False, ["Lark not available"]
+def get_parse_tree_visualization(content): return "Lark not available"
 
 # MCP integration
 try:
