@@ -38,7 +38,7 @@
 # Version and flags specification
 <version_spec> ::= <version_number> <newline>
 
-<version_number> ::= <digit> "." <digit> "." <digit>
+<version_number> ::= <digit> "." <digit> "." <digit> | "GNN v" <digit> | "GNN v" <digit> "." <digit>
 
 <flags_spec> ::= <flag_list> | <empty>
 
@@ -64,7 +64,7 @@
 
 <data_type> ::= "categorical" | "continuous" | "binary" | "integer" | "float" | "complex"
 
-<comment> ::= "###" <comment_text> | <empty>
+<comment> ::= "#" <comment_text> | <empty>
 
 # Connections between variables
 <connection_list> ::= <connection> | <connection> <newline> <connection_list>
@@ -124,7 +124,7 @@
 
 <time_discretization> ::= "DiscreteTime" | "ContinuousTime"
 
-<time_horizon> ::= "ModelTimeHorizon=" <integer>
+<time_horizon> ::= "ModelTimeHorizon=" <integer> | "ModelTimeHorizon=" "Unbounded" | "ModelTimeHorizon=" "Infinite"
 
 <time_step> ::= "TimeStep=" <number>
 
@@ -142,10 +142,13 @@
 
 <alphanumeric> ::= <letter> | <digit> | "_"
 
+# Updated to include Unicode characters, especially π
 <letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" |
              "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" |
              "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" |
-             "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z"
+             "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" |
+             "π" | "σ" | "μ" | "α" | "β" | "γ" | "δ" | "ε" | "ζ" | "η" | "θ" | "ι" | "κ" |
+             "λ" | "ν" | "ξ" | "ο" | "ρ" | "τ" | "υ" | "φ" | "χ" | "ψ" | "ω"
 
 <digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
@@ -219,19 +222,19 @@
 <empty> ::= ""
 
 # Active Inference specific patterns
-<state_variable> ::= "s_f" <digit_sequence>
+<state_variable> ::= "s" | "s_" <digit_sequence>
 
-<observation_variable> ::= "o_m" <digit_sequence>
+<observation_variable> ::= "o" | "o_" <digit_sequence>
 
-<action_variable> ::= "u_c" <digit_sequence>
+<action_variable> ::= "u" | "u_" <digit_sequence>
 
-<policy_variable> ::= "pi_c" <digit_sequence>
+<policy_variable> ::= "π" | "pi" | "pi_" <digit_sequence>
 
 <matrix_variable> ::= <matrix_prefix> <matrix_suffix>
 
-<matrix_prefix> ::= "A_" | "B_" | "C_" | "D_"
+<matrix_prefix> ::= "A" | "B" | "C" | "D" | "E" | "G" | "F"
 
-<matrix_suffix> ::= <identifier>
+<matrix_suffix> ::= <empty> | "_" <identifier>
 
 # Complex mathematical expressions
 <mathematical_expression> ::= <simple_expression> | <complex_expression>
@@ -345,7 +348,7 @@
 
 <comment_char> ::= <letter> | <digit> | <special_char> | <newline>
 
-<line_comment> ::= "//" <comment_text> <newline> | "###" <comment_text> <newline>
+<line_comment> ::= "//" <comment_text> <newline> | "#" <comment_text> <newline>
 
 # Optional sections for advanced features
 <optimization_section> ::= "## Optimization" <newline> <optimization_spec>
@@ -379,5 +382,27 @@
 
 <import_items> ::= <identifier> | <identifier> "," <import_items>
 
+# Active Inference specific variables and terms
+<actinf_specific_variable> ::= <likelihood_matrix> | <transition_matrix> | <preference_vector> | 
+                               <prior_vector> | <habit_vector> | <free_energy> | <expected_free_energy>
+
+<likelihood_matrix> ::= "A"
+
+<transition_matrix> ::= "B"
+
+<preference_vector> ::= "C"
+
+<prior_vector> ::= "D"
+
+<habit_vector> ::= "E"
+
+<free_energy> ::= "F"
+
+<expected_free_energy> ::= "G"
+
 # Complete grammar entry point
 <gnn_file> ::= <optional_imports> <gnn_model> <optional_extensions> 
+
+<optional_imports> ::= <import_section> | <empty>
+
+<optional_extensions> ::= <extension_section> | <empty> 

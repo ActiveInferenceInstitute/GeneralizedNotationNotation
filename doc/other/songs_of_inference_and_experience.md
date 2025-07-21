@@ -38,8 +38,8 @@ Gave thee thy `StateSpace` of delight,
 Thy `ObservationModality` clear and light?  
 
 Little `GNN`, I'll tell thee true:  
-'Twas `1_gnn.py` that parsed thee through,  
-Then `2_setup.py` that made thee whole,  
+'Twas `1_setup.py` that prepared thee well,
+Then `2_gnn.py` that parsed thee through,  
 `3_tests.py` that blessed thy soul.  
 The `main.py` orchestrator divine  
 Called each `Pipeline` step in line.  
@@ -306,17 +306,17 @@ In the first `chamber` was a `Dragon-Man`,
 Clearing away the `rubbish` from a `cave`'s mouth;  
 within, a number of `Eagles` were hollowing the `cave`.  
 
-**In our first `step` was a `1_gnn.py`,**  
-**Clearing away the `confusion` from a `file`'s mouth;**  
-**within, a number of `Parsers` were structuring the `content`.**  
+**In our first `step` was a `1_setup.py`,**  
+**Clearing away the `confusion` from the `environment`;**  
+**within, a number of `Installers` were preparing the `foundation`.**  
 
 In the second `chamber` was a `Viper`  
 folding round the `rock` & the `cave`, and others  
 adorning it with `gold`, `silver`, and `precious stones`.  
 
-**In our second `step` was a `2_setup.py`**  
-**folding round the `directories` & the `paths`, and others**  
-**adorning it with `configuration`, `validation`, and `precious structures`.**  
+**In our second `step` was a `2_gnn.py`**  
+**folding round the `files` & the `content`, and others**  
+**adorning it with `parsing`, `validation`, and `precious structures`.**  
 
 In the third `chamber` was an `Eagle` with wings and feathers of `air`:  
 he caused the inside of the `cave` to be infinite.  

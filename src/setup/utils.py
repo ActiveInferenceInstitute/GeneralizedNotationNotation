@@ -256,7 +256,7 @@ def list_installed_packages(logger, venv_info, output_dir=None, verbose=False):
             for name, version in sorted(package_dict.items()):
                 logger.info(f"  - {name}: {version}")
         if output_dir:
-            setup_dir = get_output_dir_for_script("2_setup.py", Path(output_dir))
+            setup_dir = get_output_dir_for_script("1_setup.py", Path(output_dir))
             setup_dir.mkdir(parents=True, exist_ok=True)
             packages_file = setup_dir / "installed_packages.json"
             json_data = {

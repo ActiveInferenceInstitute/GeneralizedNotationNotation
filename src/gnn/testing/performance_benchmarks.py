@@ -38,7 +38,7 @@ class GNNPerformanceBenchmark:
     
     def benchmark_parsing(self, file_path: Path) -> PerformanceMetrics:
         """Benchmark GNN file parsing performance."""
-        from .schema_validator import GNNParser
+        from ..schema_validator import GNNParser
         
         parser = GNNParser()
         
@@ -79,7 +79,7 @@ class GNNPerformanceBenchmark:
     
     def benchmark_validation(self, file_path: Path) -> PerformanceMetrics:
         """Benchmark GNN file validation performance."""
-        from .schema_validator import GNNValidator
+        from ..schema_validator import GNNValidator
         
         validator = GNNValidator()
         

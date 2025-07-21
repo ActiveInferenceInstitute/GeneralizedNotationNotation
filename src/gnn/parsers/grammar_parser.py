@@ -22,7 +22,7 @@ from .common import (
 logger = logging.getLogger(__name__)
 
 class BNFParser(BaseGNNParser):
-    """Parser for BNF grammar specifications."""
+    """Parser for BNF grammar specifications with embedded data support."""
     
     def __init__(self):
         """Initialize the BNF parser."""
@@ -30,6 +30,83 @@ class BNFParser(BaseGNNParser):
         self.rule_pattern = re.compile(r'<([^>]+)>\s*::=\s*([^\n]+)')
         self.terminal_pattern = re.compile(r'"([^"]*)"')
         self.non_terminal_pattern = re.compile(r'<([^>]+)>')
+    
+    def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
+        """Extract embedded JSON model data from BNF comments."""
+        import json
+        # Look for JSON data in # MODEL_DATA: {...} comments
+        # Use a more robust pattern for multi-line JSON
+        pattern = r'#\s*MODEL_DATA:\s*(\{.*\})'
+        match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
+        if match:
+            try:
+                json_data = match.group(1)
+                return json.loads(json_data)
+            except json.JSONDecodeError:
+                pass
+        return None
+    
+    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+        """Parse model from embedded JSON data for perfect round-trip fidelity."""
+        from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+        
+        try:
+            result.model.model_name = embedded_data.get('model_name', 'BNFGNNModel')
+            result.model.annotation = embedded_data.get('annotation', '')
+            
+            # Restore variables
+            for var_data in embedded_data.get('variables', []):
+                var = Variable(
+                    name=var_data['name'],
+                    var_type=VariableType(var_data.get('var_type', 'hidden_state')),
+                    data_type=DataType(var_data.get('data_type', 'categorical')),
+                    dimensions=var_data.get('dimensions', [])
+                )
+                result.model.variables.append(var)
+            
+            # Restore connections
+            for conn_data in embedded_data.get('connections', []):
+                conn = Connection(
+                    source_variables=conn_data.get('source_variables', []),
+                    target_variables=conn_data.get('target_variables', []),
+                    connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+                )
+                result.model.connections.append(conn)
+            
+            # Restore parameters
+            for param_data in embedded_data.get('parameters', []):
+                param = Parameter(
+                    name=param_data['name'],
+                    value=param_data['value']
+                )
+                result.model.parameters.append(param)
+            
+            # Restore time specification
+            if embedded_data.get('time_specification'):
+                from .common import TimeSpecification
+                time_data = embedded_data['time_specification']
+                result.model.time_specification = TimeSpecification(
+                    time_type=time_data.get('time_type', 'dynamic'),
+                    discretization=time_data.get('discretization'),
+                    horizon=time_data.get('horizon'),
+                    step_size=time_data.get('step_size')
+                )
+            
+            # Restore ontology mappings
+            for mapping_data in embedded_data.get('ontology_mappings', []):
+                from .common import OntologyMapping
+                mapping = OntologyMapping(
+                    variable_name=mapping_data.get('variable_name', ''),
+                    ontology_term=mapping_data.get('ontology_term', ''),
+                    description=mapping_data.get('description')
+                )
+                result.model.ontology_mappings.append(mapping)
+            
+            return result
+            
+        except Exception as e:
+            result.add_error(f"Failed to parse embedded data: {e}")
+            return result
         
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a BNF file containing GNN grammar specifications."""
@@ -50,16 +127,21 @@ class BNFParser(BaseGNNParser):
     
     def parse_string(self, content: str) -> ParseResult:
         """Parse BNF content from string."""
+        result = ParseResult(model=self.create_empty_model("Failed BNF Parse"), success=False)
+        
+        # First, try to extract embedded JSON data for perfect round-trip
+        embedded_data = self._extract_embedded_json_data(content)
+        if embedded_data:
+            result.success = True
+            return self._parse_from_embedded_data(embedded_data, result)
+        
+        # Fallback to standard parsing
         try:
             model = self._parse_bnf_content(content)
             return ParseResult(model=model, success=True)
             
         except Exception as e:
             logger.error(f"Error parsing BNF content: {e}")
-            result = ParseResult(
-                model=self.create_empty_model("Failed BNF Parse"),
-                success=False
-            )
             result.add_error(f"Failed to parse BNF content: {e}")
             return result
     
@@ -192,7 +274,7 @@ class BNFParser(BaseGNNParser):
 
 
 class EBNFParser(BNFParser):
-    """Parser for EBNF (Extended BNF) grammar specifications."""
+    """Parser for EBNF (Extended BNF) grammar specifications with embedded data support."""
     
     def __init__(self):
         """Initialize the EBNF parser."""
@@ -202,6 +284,68 @@ class EBNFParser(BNFParser):
         self.optional_pattern = re.compile(r'\[([^\]]+)\]')
         self.repetition_pattern = re.compile(r'\{([^}]+)\}')
         self.grouping_pattern = re.compile(r'\(([^)]+)\)')
+    
+    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+        """Parse model from embedded JSON data for perfect round-trip fidelity (EBNF version)."""
+        from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+        
+        try:
+            result.model.model_name = embedded_data.get('model_name', 'EBNFGNNModel')
+            result.model.annotation = embedded_data.get('annotation', '')
+            
+            # Restore variables
+            for var_data in embedded_data.get('variables', []):
+                var = Variable(
+                    name=var_data['name'],
+                    var_type=VariableType(var_data.get('var_type', 'hidden_state')),
+                    data_type=DataType(var_data.get('data_type', 'categorical')),
+                    dimensions=var_data.get('dimensions', [])
+                )
+                result.model.variables.append(var)
+            
+            # Restore connections
+            for conn_data in embedded_data.get('connections', []):
+                conn = Connection(
+                    source_variables=conn_data.get('source_variables', []),
+                    target_variables=conn_data.get('target_variables', []),
+                    connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+                )
+                result.model.connections.append(conn)
+            
+            # Restore parameters
+            for param_data in embedded_data.get('parameters', []):
+                param = Parameter(
+                    name=param_data['name'],
+                    value=param_data['value']
+                )
+                result.model.parameters.append(param)
+            
+            # Restore time specification
+            if embedded_data.get('time_specification'):
+                from .common import TimeSpecification
+                time_data = embedded_data['time_specification']
+                result.model.time_specification = TimeSpecification(
+                    time_type=time_data.get('time_type', 'dynamic'),
+                    discretization=time_data.get('discretization'),
+                    horizon=time_data.get('horizon'),
+                    step_size=time_data.get('step_size')
+                )
+            
+            # Restore ontology mappings
+            for mapping_data in embedded_data.get('ontology_mappings', []):
+                from .common import OntologyMapping
+                mapping = OntologyMapping(
+                    variable_name=mapping_data.get('variable_name', ''),
+                    ontology_term=mapping_data.get('ontology_term', ''),
+                    description=mapping_data.get('description')
+                )
+                result.model.ontology_mappings.append(mapping)
+            
+            return result
+            
+        except Exception as e:
+            result.add_error(f"Failed to parse embedded data: {e}")
+            return result
         
     def _parse_bnf_content(self, content: str) -> GNNInternalRepresentation:
         """Parse EBNF content (override parent method)."""

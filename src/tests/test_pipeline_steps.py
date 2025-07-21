@@ -49,8 +49,8 @@ class TestPipelineStepCommonInterface:
     def test_pipeline_step_discovery(self):
         """Test that all expected pipeline steps can be discovered."""
         expected_steps = {
-            1: "1_gnn.py",
-            2: "2_setup.py", 
+            1: "1_setup.py",
+            2: "2_gnn.py", 
             3: "3_tests.py",
             4: "4_type_checker.py",
             5: "5_export.py",
@@ -80,7 +80,7 @@ class TestPipelineStepCommonInterface:
             logging.warning(f"Missing pipeline steps: {missing_steps}")
         
         # At minimum, we expect the core steps to exist
-        critical_steps = {1: "1_gnn.py"}
+        critical_steps = {1: "1_setup.py"}
         missing_critical = {
             num: name for num, name in critical_steps.items()
             if num in missing_steps
@@ -94,7 +94,7 @@ class TestPipelineStepCommonInterface:
     def test_pipeline_step_file_structure(self, step_number: int):
         """Test that each pipeline step has the expected file structure."""
         step_scripts = {
-            1: "1_gnn.py", 2: "2_setup.py", 3: "3_tests.py", 4: "4_type_checker.py",
+            1: "1_setup.py", 2: "2_gnn.py", 3: "3_tests.py", 4: "4_type_checker.py",
             5: "5_export.py", 6: "6_visualization.py", 7: "7_mcp.py", 8: "8_ontology.py",
             9: "9_render.py", 10: "10_execute.py", 11: "11_llm.py", 12: "12_website.py",
             13: "13_sapf.py"
@@ -146,19 +146,19 @@ class TestPipelineStepCommonInterface:
         except ImportError as e:
             pytest.fail(f"Pipeline steps cannot import common utilities: {e}")
 
-class TestStep1GNN:
-    """Test Step 1: GNN File Discovery and Basic Parsing."""
+class TestStep2GNN:
+    """Test Step 2: GNN File Discovery and Basic Parsing."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step1_basic_execution(self, mock_subprocess, sample_gnn_files, isolated_temp_dir):
-        """Test basic execution of step 1 with mocked dependencies."""
+    def test_step2_basic_execution(self, mock_subprocess, sample_gnn_files, isolated_temp_dir):
+        """Test basic execution of step 2 with mocked dependencies."""
         with patch('subprocess.run') as mock_run:
             mock_run.return_value = Mock(returncode=0, stdout="Mock step 1 output", stderr="")
             
             # Test execution with sample arguments
             args = [
-                "python", str(SRC_DIR / "1_gnn.py"),
+                "python", str(SRC_DIR / "2_gnn.py"),
                 "--target-dir", str(list(sample_gnn_files.values())[0].parent),
                 "--output-dir", str(isolated_temp_dir),
                 "--verbose"
@@ -171,7 +171,7 @@ class TestStep1GNN:
             logging.info("Step 1 basic execution test passed")
     
     @pytest.mark.unit
-    def test_step1_gnn_file_discovery(self, sample_gnn_files):
+    def test_step2_gnn_file_discovery(self, sample_gnn_files):
         """Test GNN file discovery functionality."""
         # This tests the concept without actually running the step
         gnn_files = sample_gnn_files
@@ -190,12 +190,12 @@ class TestStep1GNN:
             
         logging.info(f"Step 1 file discovery validated with {len(md_files)} files")
 
-class TestStep2Setup:
-    """Test Step 2: Environment Setup and Dependency Management."""
+class TestStep1Setup:
+    """Test Step 1: Environment Setup and Dependency Management."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step2_environment_validation(self, mock_subprocess, mock_dangerous_operations):
+    def test_step1_environment_validation(self, mock_subprocess, mock_dangerous_operations):
         """Test environment setup validation without actual changes."""
         with patch('subprocess.run') as mock_run:
             mock_run.return_value = Mock(returncode=0, stdout="Mock setup output", stderr="")
@@ -206,7 +206,7 @@ class TestStep2Setup:
                 
                 # Test basic setup validation
                 result = subprocess.run([
-                    "python", str(SRC_DIR / "2_setup.py"),
+                    "python", str(SRC_DIR / "1_setup.py"),
                     "--output-dir", str(TEST_CONFIG["temp_output_dir"])
                 ], capture_output=True, text=True)
                 
@@ -214,7 +214,7 @@ class TestStep2Setup:
                 logging.info("Step 2 environment validation test passed")
     
     @pytest.mark.unit
-    def test_step2_dependency_checking(self):
+    def test_step1_dependency_checking(self):
         """Test dependency checking functionality."""
         # Test that we can check for required dependencies
         required_deps = ['pytest', 'pathlib', 'json', 'logging']

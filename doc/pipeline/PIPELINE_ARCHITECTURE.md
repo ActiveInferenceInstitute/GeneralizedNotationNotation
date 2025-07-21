@@ -8,7 +8,7 @@ The GNN Processing Pipeline is a comprehensive, modular system for processing Ge
 
 ```mermaid
 graph TD
-    A[1_gnn.py] --> B[2_setup.py]
+    A[1_setup.py] --> B[2_gnn.py]
     B --> C[4_type_checker.py]
     C --> D[5_export.py]
     D --> E[6_visualization.py]
@@ -32,8 +32,8 @@ graph TD
 
 | Stage | Script | Purpose | Timeout | Critical |
 |-------|--------|---------|---------|----------|
-| 1 | `1_gnn.py` | GNN file discovery and basic parsing | 2 min | No |
-| 2 | `2_setup.py` | Environment setup and dependency management | **20 min** | **Yes** |
+| 1 | `1_setup.py` | Environment setup and dependency management | **20 min** | **Yes** |
+| 2 | `2_gnn.py` | GNN file discovery and basic parsing | 2 min | No |
 | 3 | `3_tests.py` | Test execution (optional) | 5 min | No |
 | 4 | `4_type_checker.py` | Type checking and resource estimation | 2 min | No |
 | 5 | `5_export.py` | Export to multiple formats (JSON, XML, etc.) | 2 min | No |
@@ -62,8 +62,8 @@ Steps can be enabled/disabled via `PIPELINE_STEP_CONFIGURATION` in `src/pipeline
 
 ```python
 PIPELINE_STEP_CONFIGURATION = {
-    "1_gnn.py": True,
-    "2_setup.py": True,
+    "1_setup.py": True,
+"2_gnn.py": True,
     "3_tests.py": False,  # Disabled by default
     # ... etc
 }

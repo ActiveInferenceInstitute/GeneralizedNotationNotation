@@ -751,10 +751,13 @@ def log_step_error(logger_or_step_name, message: str = None, step_number: int = 
         completion_summary = _global_progress_tracker.complete_step(step_number, "FAILED")
         message = f"{completion_summary}\n    {message}"
     
+    # Extract event_type if provided, otherwise use default
+    event_type = metadata.pop("event_type", "step_error") if metadata else "step_error"
+    
     EnhancedPipelineLogger.log_structured(
         logger, logging.ERROR,
         f"❌ {message}",
-        event_type="step_error",
+        event_type=event_type,
         step_number=step_number,
         **metadata
     )

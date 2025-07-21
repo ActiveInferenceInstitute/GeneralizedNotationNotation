@@ -66,7 +66,7 @@ python3 main.py --only-steps 2_setup
 
 ```bash
 cd src
-python3 2_setup.py
+python3 1_setup.py
 ```
 
 ### 3. Advanced Setup Options

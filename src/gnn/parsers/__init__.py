@@ -27,6 +27,12 @@ Supported Formats:
 - Haskell (.hs) - Functional specifications
 - Pickle (.pkl) - Python serialization
 
+Features:
+- Unicode support for mathematical symbols (e.g., π, σ, μ) in variable names
+- Special handling for Active Inference models with standard variables (A, B, C, D, E, F, G)
+- Comprehensive validation for model consistency and correctness
+- Cross-format conversion while preserving semantics
+
 Author: @docxology
 Date: 2025-01-11
 License: MIT
@@ -39,7 +45,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 
-# Import all parser modules
+# Import all parser modules (Lark parser removed)
 from .unified_parser import UnifiedGNNParser, GNNFormat, ParseResult
 from .markdown_parser import MarkdownGNNParser
 from .scala_parser import ScalaGNNParser
@@ -53,19 +59,33 @@ from .xml_parser import XMLGNNParser, PNMLParser
 from .json_parser import JSONGNNParser
 from .protobuf_parser import ProtobufGNNParser
 from .yaml_parser import YAMLGNNParser
-from .schema_parser import XSDParser, ASN1Parser, AlloyParser, ZNotationParser
+from .schema_parser import XSDParser, ASN1Parser, PKLParser, AlloyParser, ZNotationParser
 from .temporal_parser import TLAParser, AgdaParser
 from .functional_parser import HaskellGNNParser
 from .binary_parser import PickleGNNParser
 
-# Import serializers
-from .serializers import (
-    GNNSerializer, MarkdownSerializer, ScalaSerializer, LeanSerializer,
-    CoqSerializer, PythonSerializer, GrammarSerializer, IsabelleSerializer,
-    MaximaSerializer, XMLSerializer, JSONSerializer, ProtobufSerializer,
-    YAMLSerializer, SchemaSerializer, TemporalSerializer, FunctionalSerializer,
-    BinarySerializer
-)
+# Import serializers from individual files
+from .markdown_serializer import MarkdownSerializer
+from .json_serializer import JSONSerializer
+from .xml_serializer import XMLSerializer
+from .yaml_serializer import YAMLSerializer
+from .scala_serializer import ScalaSerializer
+from .protobuf_serializer import ProtobufSerializer
+from .pkl_serializer import PKLSerializer
+from .xsd_serializer import XSDSerializer
+from .asn1_serializer import ASN1Serializer
+from .lean_serializer import LeanSerializer
+from .coq_serializer import CoqSerializer
+from .python_serializer import PythonSerializer
+from .grammar_serializer import GrammarSerializer
+from .isabelle_serializer import IsabelleSerializer
+from .maxima_serializer import MaximaSerializer
+from .alloy_serializer import AlloySerializer
+from .znotation_serializer import ZNotationSerializer
+from .schema_serializer import SchemaSerializer
+from .temporal_serializer import TemporalSerializer, TLASerializer, AgdaSerializer
+from .functional_serializer import FunctionalSerializer
+from .binary_serializer import BinarySerializer
 
 # Import converters and validators
 from .converters import FormatConverter, ConversionError
@@ -93,6 +113,7 @@ PARSER_REGISTRY: Dict[GNNFormat, Type['GNNParser']] = {
     GNNFormat.YAML: YAMLGNNParser,
     GNNFormat.XSD: XSDParser,
     GNNFormat.ASN1: ASN1Parser,
+    GNNFormat.PKL: PKLParser,
     GNNFormat.ALLOY: AlloyParser,
     GNNFormat.Z_NOTATION: ZNotationParser,
     GNNFormat.TLA_PLUS: TLAParser,
@@ -103,7 +124,15 @@ PARSER_REGISTRY: Dict[GNNFormat, Type['GNNParser']] = {
 
 SERIALIZER_REGISTRY: Dict[GNNFormat, Type['GNNSerializer']] = {
     GNNFormat.MARKDOWN: MarkdownSerializer,
+    GNNFormat.JSON: JSONSerializer,
+    GNNFormat.XML: XMLSerializer,
+    GNNFormat.PNML: XMLSerializer,  # PNML uses XML serializer
+    GNNFormat.YAML: YAMLSerializer,
     GNNFormat.SCALA: ScalaSerializer,
+    GNNFormat.PROTOBUF: ProtobufSerializer,
+    GNNFormat.PKL: PKLSerializer,
+    GNNFormat.XSD: XSDSerializer,
+    GNNFormat.ASN1: ASN1Serializer,
     GNNFormat.LEAN: LeanSerializer,
     GNNFormat.COQ: CoqSerializer,
     GNNFormat.PYTHON: PythonSerializer,
@@ -111,17 +140,10 @@ SERIALIZER_REGISTRY: Dict[GNNFormat, Type['GNNSerializer']] = {
     GNNFormat.EBNF: GrammarSerializer,
     GNNFormat.ISABELLE: IsabelleSerializer,
     GNNFormat.MAXIMA: MaximaSerializer,
-    GNNFormat.XML: XMLSerializer,
-    GNNFormat.PNML: XMLSerializer,
-    GNNFormat.JSON: JSONSerializer,
-    GNNFormat.PROTOBUF: ProtobufSerializer,
-    GNNFormat.YAML: YAMLSerializer,
-    GNNFormat.XSD: SchemaSerializer,
-    GNNFormat.ASN1: SchemaSerializer,
-    GNNFormat.ALLOY: SchemaSerializer,
-    GNNFormat.Z_NOTATION: SchemaSerializer,
-    GNNFormat.TLA_PLUS: TemporalSerializer,
-    GNNFormat.AGDA: TemporalSerializer,
+    GNNFormat.ALLOY: AlloySerializer,
+    GNNFormat.Z_NOTATION: ZNotationSerializer,
+    GNNFormat.TLA_PLUS: TLASerializer,
+    GNNFormat.AGDA: AgdaSerializer,
     GNNFormat.HASKELL: FunctionalSerializer,
     GNNFormat.PICKLE: BinarySerializer
 }

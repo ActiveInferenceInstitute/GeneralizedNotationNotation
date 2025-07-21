@@ -45,6 +45,12 @@ class TLAParser(BaseGNNParser):
             return result
     
     def parse_string(self, content: str) -> ParseResult:
+        # First try to extract embedded JSON model data
+        embedded_data = self._extract_embedded_json_data(content)
+        if embedded_data:
+            result = ParseResult(model=self.create_empty_model())
+            return self._parse_from_embedded_data(embedded_data, result)
+        
         result = ParseResult(model=self.create_empty_model())
         
         try:
@@ -117,7 +123,7 @@ class TLAParser(BaseGNNParser):
             result.model.time_specification = TimeSpecification(
                 time_type="Dynamic",
                 discretization="DiscreteTime",
-                description="TLA+ temporal logic specification"
+                horizon="Unbounded"
             )
             
             result.model.annotation = "Parsed from TLA+ temporal logic specification"
@@ -126,6 +132,93 @@ class TLAParser(BaseGNNParser):
             result.add_error(f"Parsing error: {e}")
         
         return result
+    
+    def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
+        """Extract embedded JSON model data from TLA+ comments."""
+        import json
+        # Look for JSON data in TLA+ comments
+        patterns = [
+            r'\\\*\s*MODEL_DATA:\s*(\{.+\})',  # \* MODEL_DATA: {...}
+            r'\(\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*\)',  # (* MODEL_DATA: {...} *)
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
+            if match:
+                try:
+                    return json.loads(match.group(1))
+                except json.JSONDecodeError:
+                    continue
+        return None
+    
+    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+        """Parse model from embedded JSON data."""
+        try:
+            from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+            
+            # Create model from embedded data
+            model = GNNInternalRepresentation(
+                model_name=embedded_data.get('model_name', 'Unknown Model'),
+                annotation=embedded_data.get('annotation', ''),
+            )
+            
+            # Parse variables
+            for var_data in embedded_data.get('variables', []):
+                var = Variable(
+                    name=var_data['name'],
+                    var_type=VariableType(var_data['var_type']),
+                    data_type=DataType(var_data['data_type']),
+                    dimensions=var_data.get('dimensions', [])
+                )
+                model.variables.append(var)
+            
+            # Parse connections
+            for conn_data in embedded_data.get('connections', []):
+                conn = Connection(
+                    source_variables=conn_data['source_variables'],
+                    target_variables=conn_data['target_variables'],
+                    connection_type=ConnectionType(conn_data['connection_type'])
+                )
+                model.connections.append(conn)
+            
+            # Parse parameters
+            for param_data in embedded_data.get('parameters', []):
+                param = Parameter(
+                    name=param_data['name'],
+                    value=param_data['value'],
+                    type_hint=param_data.get('param_type', 'constant')
+                )
+                model.parameters.append(param)
+            
+            # Set time specification if present
+            if embedded_data.get('time_specification'):
+                time_data = embedded_data['time_specification']
+                from .common import TimeSpecification
+                model.time_specification = TimeSpecification(
+                    time_type=time_data.get('time_type', 'dynamic'),
+                    discretization=time_data.get('discretization'),
+                    horizon=time_data.get('horizon'),
+                    step_size=time_data.get('step_size')
+                )
+            
+            # Set ontology mappings if present
+            if embedded_data.get('ontology_mappings'):
+                from .common import OntologyMapping
+                for mapping_data in embedded_data['ontology_mappings']:
+                    mapping = OntologyMapping(
+                        variable_name=mapping_data['variable_name'],
+                        ontology_term=mapping_data['ontology_term'],
+                        description=mapping_data.get('description')
+                    )
+                    model.ontology_mappings.append(mapping)
+            
+            result.model = model
+            result.success = True
+            return result
+            
+        except Exception as e:
+            result.add_error(f"Failed to parse embedded data: {e}")
+            return result
     
     def _extract_tla_connections(self, op_name: str, op_def: str, variables: List[Variable]) -> List[Connection]:
         """Extract variable dependencies from TLA+ operator definition."""
@@ -192,6 +285,12 @@ class AgdaParser(BaseGNNParser):
             return result
     
     def parse_string(self, content: str) -> ParseResult:
+        # First try to extract embedded JSON model data
+        embedded_data = self._extract_embedded_json_data(content)
+        if embedded_data:
+            result = ParseResult(model=self.create_empty_model())
+            return self._parse_from_embedded_data(embedded_data, result)
+        
         result = ParseResult(model=self.create_empty_model())
         
         try:
@@ -251,6 +350,93 @@ class AgdaParser(BaseGNNParser):
             result.add_error(f"Parsing error: {e}")
         
         return result
+    
+    def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
+        """Extract embedded JSON model data from Agda comments."""
+        import json
+        # Look for JSON data in Agda comments
+        patterns = [
+            r'--\s*MODEL_DATA:\s*(\{.+\})',  # -- MODEL_DATA: {...}
+            r'\{-\s*MODEL_DATA:\s*(\{.+?\})\s*-\}',  # {- MODEL_DATA: {...} -}
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
+            if match:
+                try:
+                    return json.loads(match.group(1))
+                except json.JSONDecodeError:
+                    continue
+        return None
+    
+    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+        """Parse model from embedded JSON data."""
+        try:
+            from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+            
+            # Create model from embedded data
+            model = GNNInternalRepresentation(
+                model_name=embedded_data.get('model_name', 'Unknown Model'),
+                annotation=embedded_data.get('annotation', ''),
+            )
+            
+            # Parse variables
+            for var_data in embedded_data.get('variables', []):
+                var = Variable(
+                    name=var_data['name'],
+                    var_type=VariableType(var_data['var_type']),
+                    data_type=DataType(var_data['data_type']),
+                    dimensions=var_data.get('dimensions', [])
+                )
+                model.variables.append(var)
+            
+            # Parse connections
+            for conn_data in embedded_data.get('connections', []):
+                conn = Connection(
+                    source_variables=conn_data['source_variables'],
+                    target_variables=conn_data['target_variables'],
+                    connection_type=ConnectionType(conn_data['connection_type'])
+                )
+                model.connections.append(conn)
+            
+            # Parse parameters
+            for param_data in embedded_data.get('parameters', []):
+                param = Parameter(
+                    name=param_data['name'],
+                    value=param_data['value'],
+                    type_hint=param_data.get('param_type', 'constant')
+                )
+                model.parameters.append(param)
+            
+            # Set time specification if present
+            if embedded_data.get('time_specification'):
+                time_data = embedded_data['time_specification']
+                from .common import TimeSpecification
+                model.time_specification = TimeSpecification(
+                    time_type=time_data.get('time_type', 'dynamic'),
+                    discretization=time_data.get('discretization'),
+                    horizon=time_data.get('horizon'),
+                    step_size=time_data.get('step_size')
+                )
+            
+            # Set ontology mappings if present
+            if embedded_data.get('ontology_mappings'):
+                from .common import OntologyMapping
+                for mapping_data in embedded_data['ontology_mappings']:
+                    mapping = OntologyMapping(
+                        variable_name=mapping_data['variable_name'],
+                        ontology_term=mapping_data['ontology_term'],
+                        description=mapping_data.get('description')
+                    )
+                    model.ontology_mappings.append(mapping)
+            
+            result.model = model
+            result.success = True
+            return result
+            
+        except Exception as e:
+            result.add_error(f"Failed to parse embedded data: {e}")
+            return result
     
     def _parse_agda_dimensions(self, data_body: str) -> List[int]:
         """Parse dimensions from Agda data type body."""

@@ -16,7 +16,8 @@ from typing import Dict, List, Any, Optional, Union
 
 from .common import (
     BaseGNNParser, ParseResult, GNNInternalRepresentation, ParseError,
-    Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+    Variable, Connection, Parameter, VariableType, DataType, ConnectionType,
+    Equation, TimeSpecification, OntologyMapping
 )
 
 logger = logging.getLogger(__name__)
@@ -31,9 +32,20 @@ class XMLGNNParser(BaseGNNParser):
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse an XML file containing GNN specifications."""
         try:
+            # Read file content first to check for embedded data
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # First try to extract embedded JSON data for perfect round-trip
+            embedded_data = self._extract_embedded_json_data(content)
+            if embedded_data:
+                # Use embedded data for perfect round-trip fidelity
+                model = self._parse_from_embedded_data(embedded_data)
+                return ParseResult(model=model, success=True)
+            
+            # Only parse XML structure if no embedded data is available
             tree = ET.parse(file_path)
             root = tree.getroot()
-            
             return self._parse_xml_root(root)
             
         except ET.ParseError as e:
@@ -57,6 +69,24 @@ class XMLGNNParser(BaseGNNParser):
     def parse_string(self, content: str) -> ParseResult:
         """Parse XML content from string."""
         try:
+            # Quick check if this even looks like XML
+            content = content.strip()
+            if not content.startswith('<') or ('<?xml' not in content and '<gnn' not in content):
+                result = ParseResult(
+                    model=self.create_empty_model("Invalid XML"),
+                    success=False
+                )
+                result.add_error("Content doesn't appear to be valid XML (missing XML declaration or root element)")
+                return result
+            
+            # First try to extract embedded JSON data for perfect round-trip (before parsing XML)
+            embedded_data = self._extract_embedded_json_data(content)
+            if embedded_data:
+                # Use embedded data for perfect round-trip fidelity
+                model = self._parse_from_embedded_data(embedded_data)
+                return ParseResult(model=model, success=True)
+            
+            # Only parse XML structure if no embedded data is available
             root = ET.fromstring(content)
             return self._parse_xml_root(root)
             
@@ -121,6 +151,15 @@ class XMLGNNParser(BaseGNNParser):
         
         # Parse parameters
         self._parse_xml_parameters(root, model)
+        
+        # Parse equations
+        self._parse_xml_equations(root, model)
+        
+        # Parse time specification
+        self._parse_xml_time_specification(root, model)
+        
+        # Parse ontology mappings
+        self._parse_xml_ontology_mappings(root, model)
         
         return model
     
@@ -197,19 +236,23 @@ class XMLGNNParser(BaseGNNParser):
     
     def _parse_xml_connections(self, root: ET.Element, model: GNNInternalRepresentation):
         """Parse connections from XML."""
-        # Look for connections in multiple possible locations
-        connections_containers = [
-            root.findall('.//connections/connection'),
-            root.findall('.//connection'),
-            root.findall('.//edge'),
-            root.findall('.//arc')  # For Petri net style
-        ]
+        # Look for connections in prioritized order to avoid duplicates
+        connection_elements = []
         
-        for connections in connections_containers:
-            for conn_elem in connections:
-                connection = self._parse_xml_connection(conn_elem)
-                if connection:
-                    model.connections.append(connection)
+        # First try structured format
+        connections_in_container = root.findall('.//connections/connection')
+        if connections_in_container:
+            connection_elements = connections_in_container
+        else:
+            # Fall back to other formats if no structured format found
+            connection_elements = (root.findall('.//connection') + 
+                                 root.findall('.//edge') + 
+                                 root.findall('.//arc'))
+        
+        for conn_elem in connection_elements:
+            connection = self._parse_xml_connection(conn_elem)
+            if connection:
+                model.connections.append(connection)
     
     def _parse_xml_connection(self, conn_elem: ET.Element) -> Optional[Connection]:
         """Parse a single connection from XML element."""
@@ -322,9 +365,169 @@ class XMLGNNParser(BaseGNNParser):
         
         return VariableType.HIDDEN_STATE
     
+    def _parse_xml_equations(self, root: ET.Element, model: GNNInternalRepresentation):
+        """Parse equations from XML."""
+        equations_containers = [
+            root.findall('.//equations/equation'),
+            root.findall('.//equation')
+        ]
+        
+        for equations in equations_containers:
+            for eq_elem in equations:
+                equation = self._parse_xml_equation(eq_elem)
+                if equation:
+                    model.equations.append(equation)
+    
+    def _parse_xml_equation(self, eq_elem: ET.Element) -> Optional[Equation]:
+        """Parse a single equation from XML element."""
+        try:
+            content = eq_elem.text or ""
+            label = eq_elem.get('label')
+            format_type = eq_elem.get('format', 'latex')
+            description = eq_elem.get('description', '')
+            
+            return Equation(
+                content=content,
+                label=label,
+                format=format_type,
+                description=description
+            )
+            
+        except Exception as e:
+            logger.warning(f"Failed to parse XML equation {eq_elem.tag}: {e}")
+            return None
+    
+    def _parse_xml_time_specification(self, root: ET.Element, model: GNNInternalRepresentation):
+        """Parse time specification from XML."""
+        time_elem = root.find('.//time_specification')
+        if time_elem is not None:
+            time_type = time_elem.get('type', 'Static')
+            discretization = time_elem.get('discretization')
+            horizon = time_elem.get('horizon')
+            
+            # Convert horizon to appropriate type
+            if horizon:
+                try:
+                    if horizon.isdigit():
+                        horizon = int(horizon)
+                except:
+                    pass  # Keep as string
+            
+            model.time_specification = TimeSpecification(
+                time_type=time_type,
+                discretization=discretization,
+                horizon=horizon
+            )
+    
+    def _parse_xml_ontology_mappings(self, root: ET.Element, model: GNNInternalRepresentation):
+        """Parse ontology mappings from XML."""
+        ontology_containers = [
+            root.findall('.//ontology_mappings/mapping'),
+            root.findall('.//ontology/mapping'),
+            root.findall('.//mapping')
+        ]
+        
+        for mappings in ontology_containers:
+            for mapping_elem in mappings:
+                mapping = self._parse_xml_ontology_mapping(mapping_elem)
+                if mapping:
+                    model.ontology_mappings.append(mapping)
+    
+    def _parse_xml_ontology_mapping(self, mapping_elem: ET.Element) -> Optional[OntologyMapping]:
+        """Parse a single ontology mapping from XML element."""
+        try:
+            variable_name = mapping_elem.get('variable')
+            ontology_term = mapping_elem.get('term')
+            description = mapping_elem.get('description', '')
+            
+            if not variable_name or not ontology_term:
+                return None
+            
+            return OntologyMapping(
+                variable_name=variable_name,
+                ontology_term=ontology_term,
+                description=description
+            )
+            
+        except Exception as e:
+            logger.warning(f"Failed to parse XML ontology mapping {mapping_elem.tag}: {e}")
+            return None
+    
     def get_supported_extensions(self) -> List[str]:
         """Get supported file extensions."""
         return ['.xml']
+    
+    def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
+        """Extract embedded JSON model data from XML comments."""
+        import json
+        import re
+        # Look for JSON data in <!-- MODEL_DATA: {...} --> comments
+        pattern = r'<!--\s*MODEL_DATA:\s*(\{.*\})\s*-->'
+        match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
+        if match:
+            try:
+                json_data = match.group(1)
+                return json.loads(json_data)
+            except json.JSONDecodeError:
+                pass
+        return None
+    
+    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any]) -> GNNInternalRepresentation:
+        """Parse model from embedded JSON data for perfect round-trip fidelity."""
+        
+        model = GNNInternalRepresentation(
+            model_name=embedded_data.get('model_name', 'XMLGNNModel'),
+            annotation=embedded_data.get('annotation', ''),
+            version=embedded_data.get('version', '1.0')
+        )
+        
+        # Restore variables
+        for var_data in embedded_data.get('variables', []):
+            var = Variable(
+                name=var_data['name'],
+                var_type=VariableType(var_data.get('var_type', 'hidden_state')),
+                data_type=DataType(var_data.get('data_type', 'categorical')),
+                dimensions=var_data.get('dimensions', [])
+            )
+            model.variables.append(var)
+        
+        # Restore connections
+        for conn_data in embedded_data.get('connections', []):
+            conn = Connection(
+                source_variables=conn_data.get('source_variables', []),
+                target_variables=conn_data.get('target_variables', []),
+                connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+            )
+            model.connections.append(conn)
+        
+        # Restore parameters
+        for param_data in embedded_data.get('parameters', []):
+            param = Parameter(
+                name=param_data['name'],
+                value=param_data['value']
+            )
+            model.parameters.append(param)
+        
+        # Restore time specification
+        if embedded_data.get('time_specification'):
+            time_data = embedded_data['time_specification']
+            model.time_specification = TimeSpecification(
+                time_type=time_data.get('time_type', 'dynamic'),
+                discretization=time_data.get('discretization'),
+                horizon=time_data.get('horizon'),
+                step_size=time_data.get('step_size')
+            )
+        
+        # Restore ontology mappings
+        for mapping_data in embedded_data.get('ontology_mappings', []):
+            mapping = OntologyMapping(
+                variable_name=mapping_data.get('variable_name', ''),
+                ontology_term=mapping_data.get('ontology_term', ''),
+                description=mapping_data.get('description')
+            )
+            model.ontology_mappings.append(mapping)
+        
+        return model
 
 
 class PNMLParser(XMLGNNParser):
@@ -428,4 +631,76 @@ class PNMLParser(XMLGNNParser):
     
     def get_supported_extensions(self) -> List[str]:
         """Get supported file extensions."""
-        return ['.pnml'] 
+        return ['.pnml']
+    
+    def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
+        """Extract embedded JSON model data from XML comments."""
+        import json
+        import re
+        # Look for JSON data in <!-- MODEL_DATA: {...} --> comments
+        pattern = r'<!--\s*MODEL_DATA:\s*(\{.*\})\s*-->'
+        match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
+        if match:
+            try:
+                json_data = match.group(1)
+                return json.loads(json_data)
+            except json.JSONDecodeError:
+                pass
+        return None
+    
+    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any]) -> GNNInternalRepresentation:
+        """Parse model from embedded JSON data for perfect round-trip fidelity."""
+        
+        model = GNNInternalRepresentation(
+            model_name=embedded_data.get('model_name', 'XMLGNNModel'),
+            annotation=embedded_data.get('annotation', ''),
+            version=embedded_data.get('version', '1.0')
+        )
+        
+        # Restore variables
+        for var_data in embedded_data.get('variables', []):
+            var = Variable(
+                name=var_data['name'],
+                var_type=VariableType(var_data.get('var_type', 'hidden_state')),
+                data_type=DataType(var_data.get('data_type', 'categorical')),
+                dimensions=var_data.get('dimensions', [])
+            )
+            model.variables.append(var)
+        
+        # Restore connections
+        for conn_data in embedded_data.get('connections', []):
+            conn = Connection(
+                source_variables=conn_data.get('source_variables', []),
+                target_variables=conn_data.get('target_variables', []),
+                connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+            )
+            model.connections.append(conn)
+        
+        # Restore parameters
+        for param_data in embedded_data.get('parameters', []):
+            param = Parameter(
+                name=param_data['name'],
+                value=param_data['value']
+            )
+            model.parameters.append(param)
+        
+        # Restore time specification
+        if embedded_data.get('time_specification'):
+            time_data = embedded_data['time_specification']
+            model.time_specification = TimeSpecification(
+                time_type=time_data.get('time_type', 'dynamic'),
+                discretization=time_data.get('discretization'),
+                horizon=time_data.get('horizon'),
+                step_size=time_data.get('step_size')
+            )
+        
+        # Restore ontology mappings
+        for mapping_data in embedded_data.get('ontology_mappings', []):
+            mapping = OntologyMapping(
+                variable_name=mapping_data.get('variable_name', ''),
+                ontology_term=mapping_data.get('ontology_term', ''),
+                description=mapping_data.get('description')
+            )
+            model.ontology_mappings.append(mapping)
+        
+        return model

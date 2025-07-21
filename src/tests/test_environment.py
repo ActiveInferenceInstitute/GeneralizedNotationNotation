@@ -244,7 +244,7 @@ class TestProjectConfiguration:
             logging.warning(f"Missing pipeline scripts: {missing_scripts}")
         
         # We expect at least the basic scripts to exist
-        critical_scripts = ["1_gnn.py", "main.py"]
+        critical_scripts = ["1_setup.py", "main.py"]
         missing_critical = [
             script for script in critical_scripts
             if not (SRC_DIR / script).exists()

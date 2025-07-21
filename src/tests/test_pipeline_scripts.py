@@ -51,8 +51,8 @@ class TestPipelineScriptDiscovery:
     def test_all_pipeline_scripts_exist(self):
         """Verify all expected pipeline scripts exist."""
         expected_scripts = {
-            1: "1_gnn.py",
-            2: "2_setup.py", 
+            1: "1_setup.py",
+            2: "2_gnn.py", 
             3: "3_tests.py",
             4: "4_type_checker.py",
             5: "5_export.py",
@@ -90,7 +90,7 @@ class TestPipelineScriptDiscovery:
     
     @pytest.mark.unit
     @pytest.mark.parametrize("script_name", [
-        "1_gnn.py", "2_setup.py", "3_tests.py", "4_type_checker.py", "5_export.py",
+        "1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py",
         "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
         "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
     ])
@@ -127,7 +127,7 @@ class TestPipelineScriptImports:
     
     @pytest.mark.unit
     @pytest.mark.parametrize("script_name", [
-        "1_gnn.py", "2_setup.py", "3_tests.py", "4_type_checker.py", "5_export.py",
+        "1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py",
         "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
         "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
     ])
@@ -160,7 +160,7 @@ class TestPipelineScriptExecution:
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     @pytest.mark.parametrize("script_name", [
-        "1_gnn.py", "2_setup.py", "3_tests.py", "4_type_checker.py", "5_export.py",
+        "1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py",
         "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
         "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
     ])
@@ -197,12 +197,12 @@ class TestPipelineScriptExecution:
                         
                         logging.info(f"Script {script_name} executed successfully with exit code {result.returncode}")
 
-class TestStep1GNNComprehensive:
-    """Comprehensive tests for Step 1: GNN File Processing."""
+class TestStep2GNNComprehensive:
+    """Comprehensive tests for Step 2: GNN File Processing."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step1_gnn_file_discovery(self, sample_gnn_files, isolated_temp_dir):
+    def test_step2_gnn_file_discovery(self, sample_gnn_files, isolated_temp_dir):
         """Test GNN file discovery functionality."""
         try:
             from gnn import discover_gnn_files, parse_gnn_file
@@ -225,7 +225,7 @@ class TestStep1GNNComprehensive:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step1_gnn_validation(self, sample_gnn_files):
+    def test_step2_gnn_validation(self, sample_gnn_files):
         """Test GNN validation functionality."""
         try:
             from gnn import validate_gnn_structure
@@ -240,12 +240,12 @@ class TestStep1GNNComprehensive:
         except ImportError as e:
             logging.warning(f"GNN validation function not available: {e}")
 
-class TestStep2SetupComprehensive:
-    """Comprehensive tests for Step 2: Environment Setup."""
+class TestStep1SetupComprehensive:
+    """Comprehensive tests for Step 1: Environment Setup."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step2_environment_validation(self, mock_subprocess):
+    def test_step1_environment_validation(self, mock_subprocess):
         """Test environment validation functionality."""
         try:
             from setup import validate_environment, check_dependencies
@@ -535,7 +535,7 @@ class TestPipelineScriptIntegration:
     def test_pipeline_script_coordination(self, mock_subprocess, isolated_temp_dir):
         """Test coordination between pipeline scripts."""
         # Test that scripts can be executed in sequence
-        scripts = ["1_gnn.py", "2_setup.py", "3_tests.py", "4_type_checker.py", "5_export.py"]
+        scripts = ["1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py"]
         
         for script_name in scripts:
             script_path = SRC_DIR / script_name
@@ -561,7 +561,7 @@ class TestPipelineScriptIntegration:
         
         common_args = ["--target-dir", "--output-dir", "--verbose"]
         
-        scripts = ["1_gnn.py", "2_setup.py", "3_tests.py", "4_type_checker.py", "5_export.py"]
+        scripts = ["1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py"]
         
         for script_name in scripts:
             script_path = SRC_DIR / script_name

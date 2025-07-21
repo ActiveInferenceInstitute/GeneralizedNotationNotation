@@ -69,3 +69,7 @@ py-spy>=0.3.14
 
 # Site Generation
 markdown>=3.4.3 
+
+# PyMDP
+flax
+optax

@@ -548,8 +548,8 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
     
     # Map step numbers to dependency groups
     step_dependency_map = {
-        1: "gnn_processing",    # 1_gnn.py - GNN file processing 
-        2: "core",              # 2_setup.py - Setup step
+        1: "core",              # 1_setup.py - Setup step
+        2: "gnn_processing",    # 2_gnn.py - GNN file processing
         3: "testing",           # 3_tests.py - Testing framework
         4: "gnn_processing",    # 4_type_checker.py - GNN validation
         5: "export",            # 5_export.py - Export formats

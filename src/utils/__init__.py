@@ -246,7 +246,7 @@ def execute_pipeline_step_template(
     - Dependency validation
     
     Args:
-        step_name: Name of the step (e.g., "1_gnn.py")
+        step_name: Name of the step (e.g., "1_setup.py")
         step_description: Description of what the step does
         main_function: Function to execute the step logic
         import_dependencies: List of module names to validate before execution

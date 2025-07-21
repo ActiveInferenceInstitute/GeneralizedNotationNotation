@@ -10,6 +10,7 @@ License: MIT
 """
 
 import pickle
+import base64
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 
@@ -20,7 +21,7 @@ from .common import (
 )
 
 class PickleGNNParser(BaseGNNParser):
-    """Parser for Python pickle binary format."""
+    """Parser for Python pickle binary format with enhanced round-trip support."""
     
     def __init__(self):
         super().__init__()
@@ -30,36 +31,57 @@ class PickleGNNParser(BaseGNNParser):
     
     def parse_file(self, file_path: str) -> ParseResult:
         try:
+            # Try binary read first
             with open(file_path, 'rb') as f:
                 data = pickle.load(f)
             return self._parse_pickle_data(data)
-        except Exception as e:
-            result = ParseResult(model=self.create_empty_model())
-            result.add_error(f"Failed to read pickle file: {e}")
-            return result
+        except Exception as binary_error:
+            # If binary fails, try reading as base64-encoded text
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read().strip()
+                return self.parse_string(content)
+            except Exception as text_error:
+                result = ParseResult(model=self.create_empty_model())
+                result.add_error(f"Failed to read pickle file as binary: {binary_error}")
+                result.add_error(f"Failed to read pickle file as text: {text_error}")
+                return result
     
     def parse_string(self, content: str) -> ParseResult:
-        # For pickle, string parsing doesn't make sense - return empty model
-        result = ParseResult(model=self.create_empty_model())
-        result.add_warning("Pickle parser requires binary file, not string content")
-        return result
+        """Parse base64-encoded pickle content from string."""
+        try:
+            # Try to decode base64 content
+            binary_data = base64.b64decode(content)
+            data = pickle.loads(binary_data)
+            return self._parse_pickle_data(data)
+        except Exception as e:
+            result = ParseResult(model=self.create_empty_model())
+            result.add_error(f"Failed to decode base64 pickle data: {e}")
+            return result
     
     def _parse_pickle_data(self, data: Any) -> ParseResult:
-        """Parse pickled data into GNN representation."""
+        """Parse pickled data into GNN representation with enhanced support."""
         result = ParseResult(model=self.create_empty_model())
-        result.model.model_name = "PickleModel"
         
         try:
             if isinstance(data, dict):
-                self._parse_dict_data(data, result)
+                # Check if this is our enhanced format with complete model data
+                if self._is_enhanced_gnn_data(data):
+                    result.model = self._reconstruct_model_from_enhanced_data(data)
+                else:
+                    # Legacy format
+                    result.model.model_name = "PickleModel"
+                    self._parse_dict_data(data, result)
             elif isinstance(data, GNNInternalRepresentation):
                 # Already a GNN model
                 result.model = data
             elif hasattr(data, '__dict__'):
                 # Object with attributes
+                result.model.model_name = "PickleModel"
                 self._parse_object_data(data, result)
             else:
                 # Simple value
+                result.model.model_name = "PickleModel"
                 parameter = Parameter(
                     name="pickle_value",
                     value=data,
@@ -67,12 +89,91 @@ class PickleGNNParser(BaseGNNParser):
                 )
                 result.model.parameters.append(parameter)
             
-            result.model.annotation = "Parsed from Python pickle file"
+            if not result.model.annotation:
+                result.model.annotation = "Parsed from Python pickle file"
             
         except Exception as e:
             result.add_error(f"Error parsing pickle data: {e}")
         
         return result
+    
+    def _is_enhanced_gnn_data(self, data: Dict[str, Any]) -> bool:
+        """Check if data is from our enhanced GNN serialization format."""
+        required_fields = ['model_name', 'variables', 'connections', 'parameters']
+        return all(field in data for field in required_fields)
+    
+    def _reconstruct_model_from_enhanced_data(self, data: Dict[str, Any]) -> GNNInternalRepresentation:
+        """Reconstruct GNN model from enhanced pickle data for perfect round-trip."""
+        from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+        from datetime import datetime
+        
+        model = GNNInternalRepresentation(
+            model_name=data.get('model_name', 'PickleModel')
+        )
+        
+        # Basic metadata
+        model.version = data.get('version', '1.0')
+        model.annotation = data.get('annotation', '')
+        model.checksum = data.get('checksum', '')
+        
+        # Parse timestamps
+        try:
+            if 'created_at' in data:
+                model.created_at = datetime.fromisoformat(data['created_at'])
+            if 'modified_at' in data:
+                model.modified_at = datetime.fromisoformat(data['modified_at'])
+        except:
+            pass
+        
+        # Reconstruct variables
+        for var_data in data.get('variables', []):
+            var = Variable(
+                name=var_data['name'],
+                var_type=VariableType(var_data.get('var_type', 'hidden_state')),
+                data_type=DataType(var_data.get('data_type', 'categorical')),
+                dimensions=var_data.get('dimensions', [])
+            )
+            model.variables.append(var)
+        
+        # Reconstruct connections
+        for conn_data in data.get('connections', []):
+            conn = Connection(
+                source_variables=conn_data.get('source_variables', []),
+                target_variables=conn_data.get('target_variables', []),
+                connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+            )
+            model.connections.append(conn)
+        
+        # Reconstruct parameters
+        for param_data in data.get('parameters', []):
+            param = Parameter(
+                name=param_data['name'],
+                value=param_data['value']
+            )
+            model.parameters.append(param)
+        
+        # Reconstruct time specification
+        if data.get('time_specification'):
+            from .common import TimeSpecification
+            time_data = data['time_specification']
+            model.time_specification = TimeSpecification(
+                time_type=time_data.get('time_type', 'dynamic'),
+                discretization=time_data.get('discretization'),
+                horizon=time_data.get('horizon'),
+                step_size=time_data.get('step_size')
+            )
+        
+        # Reconstruct ontology mappings
+        for mapping_data in data.get('ontology_mappings', []):
+            from .common import OntologyMapping
+            mapping = OntologyMapping(
+                variable_name=mapping_data.get('variable_name', ''),
+                ontology_term=mapping_data.get('ontology_term', ''),
+                description=mapping_data.get('description')
+            )
+            model.ontology_mappings.append(mapping)
+        
+        return model
     
     def _parse_dict_data(self, data: Dict[str, Any], result: ParseResult):
         """Parse dictionary data."""
@@ -127,15 +228,32 @@ class PickleGNNParser(BaseGNNParser):
                 )
                 result.model.variables.append(variable)
     
-    def _parse_parameters_dict(self, parameters: Dict[str, Any], result: ParseResult):
-        """Parse parameters from dictionary."""
-        for param_name, param_value in parameters.items():
-            parameter = Parameter(
-                name=param_name,
-                value=param_value,
-                description=f"Pickled parameter: {type(param_value).__name__}"
-            )
-            result.model.parameters.append(parameter)
+    def _parse_parameters_dict(self, parameters: Any, result: ParseResult):
+        """Parse parameters from dictionary or list."""
+        if isinstance(parameters, dict):
+            for param_name, param_value in parameters.items():
+                parameter = Parameter(
+                    name=param_name,
+                    value=param_value,
+                    description=f"Pickled parameter: {type(param_value).__name__}"
+                )
+                result.model.parameters.append(parameter)
+        elif isinstance(parameters, list):
+            for param_data in parameters:
+                if isinstance(param_data, dict):
+                    parameter = Parameter(
+                        name=param_data.get('name', f'param_{len(result.model.parameters)}'),
+                        value=param_data.get('value', ''),
+                        description=param_data.get('description', 'Pickled parameter')
+                    )
+                    result.model.parameters.append(parameter)
+                else:
+                    parameter = Parameter(
+                        name=f'param_{len(result.model.parameters)}',
+                        value=param_data,
+                        description=f"Pickled parameter: {type(param_data).__name__}"
+                    )
+                    result.model.parameters.append(parameter)
     
     def _parse_variable_type(self, type_str: str) -> VariableType:
         """Parse variable type from string."""

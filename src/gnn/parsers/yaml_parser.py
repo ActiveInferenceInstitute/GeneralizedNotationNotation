@@ -56,21 +56,41 @@ class YAMLGNNParser(BaseGNNParser):
     
     def parse_string(self, content: str) -> ParseResult:
         """Parse YAML content from string."""
+        # Quick check if this looks like YAML content
+        content = content.strip()
+        if content.startswith('#') or '##' in content[:50]:
+            result = ParseResult(
+                model=self.create_empty_model("Invalid YAML Format"),
+                success=False
+            )
+            result.add_error("Content appears to be Markdown, not YAML")
+            return result
+        
         try:
+            # Try to parse with PyYAML if available
             if HAS_YAML:
-                data = yaml.safe_load(content)
+                try:
+                    data = yaml.safe_load(content)
+                    if not isinstance(data, dict):
+                        raise ValueError("YAML content must produce a dictionary")
+                    return self._parse_yaml_data(data)
+                except yaml.YAMLError as e:
+                    logger.warning(f"PyYAML parsing error: {e}")
+                    # Fall back to simplified parsing
+                    data = self._fallback_yaml_parse(content)
+                    return self._parse_yaml_data(data)
             else:
+                # Use simplified parsing
                 data = self._fallback_yaml_parse(content)
-            
-            return self._parse_yaml_data(data)
-            
+                return self._parse_yaml_data(data)
+                
         except Exception as e:
             logger.error(f"Error parsing YAML content: {e}")
             result = ParseResult(
                 model=self.create_empty_model("Failed YAML Parse"),
                 success=False
             )
-            result.add_error(f"Failed to parse YAML content: {e}")
+            result.add_error(f"Failed to parse YAML content: {str(e)}")
             return result
     
     def _fallback_yaml_parse(self, content: str) -> Dict[str, Any]:
@@ -402,9 +422,14 @@ class YAMLGNNParser(BaseGNNParser):
                 return self._parse_connection_string(conn_data)
             
             elif isinstance(conn_data, dict):
-                source_variables = conn_data.get('source', conn_data.get('from', []))
-                target_variables = conn_data.get('target', conn_data.get('to', []))
-                connection_type_str = conn_data.get('type', 'directed')
+                # Try multiple field names for source and target
+                source_variables = (conn_data.get('source_variables') or 
+                                  conn_data.get('source') or 
+                                  conn_data.get('from') or [])
+                target_variables = (conn_data.get('target_variables') or 
+                                  conn_data.get('target') or 
+                                  conn_data.get('to') or [])
+                connection_type_str = conn_data.get('connection_type', conn_data.get('type', 'directed'))
                 weight = conn_data.get('weight')
                 description = conn_data.get('description', '')
                 

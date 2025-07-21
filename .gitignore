@@ -25,3 +25,4 @@ __pycache__/
 *.py[cod]
 *$py.class
 /src/execute/activeinference_jl/.julia
+*.pyc

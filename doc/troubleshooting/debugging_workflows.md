@@ -635,7 +635,7 @@ python -m memory_profiler src/main.py --target-dir file.md
 python src/main.py --only-steps 1,2,3 --target-dir file.md
 
 # Environment check
-python src/2_setup.py --verbose
+python src/1_setup.py --verbose
 
 # Interactive debugging
 python -c "from src.gnn import GNNModel; import pdb; pdb.set_trace(); model = GNNModel.from_file('file.md')"

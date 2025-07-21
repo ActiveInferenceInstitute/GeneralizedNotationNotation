@@ -69,7 +69,19 @@ class UnifiedGNNParser:
                 logger.info(f"Detected format: {format_hint.value} for {file_path}")
             
             # Get or create format-specific parser
-            parser = self._get_parser(format_hint)
+            try:
+                parser = self._get_parser(format_hint)
+            except ValueError as e:
+                # Handle parser initialization error
+                parse_time = time.time() - start_time
+                result = ParseResult(
+                    model=GNNInternalRepresentation(model_name=f"Failed {format_hint.value} Parse"),
+                    success=False,
+                    parse_time=parse_time,
+                    source_file=str(file_path)
+                )
+                result.add_error(f"Parser initialization failed: {str(e)}")
+                return result
             
             # Parse the file
             logger.info(f"Parsing {file_path} as {format_hint.value}")
@@ -81,8 +93,11 @@ class UnifiedGNNParser:
             result.model.source_format = format_hint
             
             # Compute checksum
-            content = file_path.read_text(encoding='utf-8')
-            result.model.checksum = hashlib.md5(content.encode()).hexdigest()
+            try:
+                content = file_path.read_text(encoding='utf-8')
+                result.model.checksum = hashlib.md5(content.encode()).hexdigest()
+            except Exception as e:
+                logger.warning(f"Failed to compute checksum: {e}")
             
             logger.info(f"Successfully parsed {file_path} in {result.parse_time:.3f}s")
             return result
@@ -117,7 +132,18 @@ class UnifiedGNNParser:
         
         try:
             # Get format-specific parser
-            parser = self._get_parser(format)
+            try:
+                parser = self._get_parser(format)
+            except ValueError as e:
+                # Handle parser initialization error
+                parse_time = time.time() - start_time
+                result = ParseResult(
+                    model=GNNInternalRepresentation(model_name=f"Failed {format.value} Parse"),
+                    success=False,
+                    parse_time=parse_time
+                )
+                result.add_error(f"Parser initialization failed: {str(e)}")
+                return result
             
             # Parse the content
             logger.info(f"Parsing string content as {format.value}")
@@ -126,7 +152,11 @@ class UnifiedGNNParser:
             # Add metadata
             result.parse_time = time.time() - start_time
             result.model.source_format = format
-            result.model.checksum = hashlib.md5(content.encode()).hexdigest()
+            
+            try:
+                result.model.checksum = hashlib.md5(content.encode()).hexdigest()
+            except Exception as e:
+                logger.warning(f"Failed to compute checksum: {e}")
             
             logger.info(f"Successfully parsed string content in {result.parse_time:.3f}s")
             return result
@@ -286,30 +316,34 @@ class UnifiedGNNParser:
     
     def _get_parser(self, format: GNNFormat) -> BaseGNNParser:
         """
-        Get or create a parser for the specified format.
+        Get or create a format-specific parser.
         
         Args:
             format: Format to get parser for
             
         Returns:
-            Format-specific parser instance
+            BaseGNNParser for the format
             
         Raises:
-            ParseError: If no parser is available for the format
+            ValueError: If format not supported
         """
-        if format in self.format_parsers:
-            return self.format_parsers[format]
+        if format not in self.format_parsers:
+            try:
+                # Get the parser class
+                parser_class = self._get_parser_class(format)
+                
+                # Create and initialize the parser
+                self.format_parsers[format] = parser_class()
+                logger.debug(f"Initialized parser for {format.value}")
+                
+            except ImportError as e:
+                logger.error(f"Failed to import parser for {format.value}: {e}")
+                raise ValueError(f"Parser for {format.value} is not available. Required module missing: {e}")
+            except Exception as e:
+                logger.error(f"Failed to initialize parser for {format.value}: {e}")
+                raise ValueError(f"Failed to initialize parser for {format.value}: {e}")
         
-        # Lazy initialization of parsers
-        try:
-            parser_class = self._get_parser_class(format)
-            parser = parser_class()
-            self.format_parsers[format] = parser
-            logger.debug(f"Initialized parser for {format.value}")
-            return parser
-            
-        except Exception as e:
-            raise ParseError(f"Failed to initialize parser for {format.value}: {e}")
+        return self.format_parsers[format]
     
     def _get_parser_class(self, format: GNNFormat) -> Type[BaseGNNParser]:
         """

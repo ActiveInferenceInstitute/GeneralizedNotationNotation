@@ -1,10 +1,9 @@
-# GNN Example: Classic Active Inference POMDP Agent
-# Format: Markdown representation of a single-modality, single-factor POMDP agent in Active Inference format
-# Version: 1.0
+# GNN Example: Active Inference POMDP Agent
+# GNN Version: 1.0
 # This file is machine-readable and specifies a classic Active Inference agent for a discrete POMDP with one observation modality and one hidden state factor. The model is suitable for rendering into various simulation or inference backends.
 
 ## GNNSection
-ClassicPOMDPAgent
+ActInfPOMDP
 
 ## GNNVersionAndFlags
 GNN v1
@@ -19,7 +18,6 @@ This model describes a classic Active Inference agent for a discrete POMDP:
 - The hidden state is fully controllable via 3 discrete actions.
 - The agent's preferences are encoded as log-probabilities over observations.
 - The agent has an initial policy prior (habit) encoded as log-probabilities over actions.
-- All parameterizations are explicit and suitable for translation to code or simulation in any Active Inference framework.
 
 ## StateSpaceBlock
 # Likelihood matrix: A[observation_outcomes, hidden_states]
@@ -42,59 +40,63 @@ s[3,1,type=float]     # Current hidden state distribution
 s_prime[3,1,type=float] # Next hidden state distribution
 
 # Observation
-o[3,1,type=float]     # Current observation
+o[3,1,type=int]     # Current observation (integer index)
 
 # Policy and Control
-π[3,type=float]       # Policy (distribution over actions)
+π[3,type=float]       # Policy (distribution over actions), no planning
 u[1,type=int]         # Action taken
-G[1,type=float]       # Expected Free Energy (scalar or per policy)
-t[1,type=int]         # Time step
+G[π,type=float]       # Expected Free Energy (per policy)
+
+# Time
+t[1,type=int]         # Discrete time step
 
 ## Connections
-D-s
+D>s
 s-A
-s-s_prime
+s>s_prime
 A-o
-(s,u)-B
-B-s_prime
+s-B
 C>G
 E>π
 G>π
-π-u
+π>u
+B>u
+u>s_prime
 
 ## InitialParameterization
-# A: 3 observations x 3 hidden states. Identity mapping (each state deterministically produces a unique observation).
+# A: 3 observations x 3 hidden states. Identity mapping (each state deterministically produces a unique observation). Rows are observations, columns are hidden states.
 A={
-  (1.0, 0.0, 0.0),  # obs=0; state=0,1,2
-  (0.0, 1.0, 0.0),  # obs=1
-  (0.0, 0.0, 1.0)   # obs=2
+  (0.9, 0.05, 0.05),
+  (0.05, 0.9, 0.05),
+  (0.05, 0.05, 0.9)
 }
 
-# B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state.
+# B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state. For each slice, rows are previous states, columns are next states. Each slice is a transition matrix corresponding to a different action selection.
 B={
-  ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ), # s_next=0; actions 0,1,2
-  ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ), # s_next=1
-  ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) )  # s_next=2
+  ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ),
+  ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ),
+  ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) )
 }
 
-# C: 3 observations. Preference for observing state 2.
-C={(0.0, 0.0, 1.0)}
+# C: 3 observations. Preference in terms of log-probabilities over observations.
+C={(0.1, 0.1, 1.0)}
 
-# D: 3 states. Uniform prior.
+# D: 3 states. Uniform prior over hidden states. Rows are hidden states, columns are prior probabilities.
 D={(0.33333, 0.33333, 0.33333)}
 
-# E: 3 actions. Uniform habit (no initial preference for any action).
+# E: 3 actions. Uniform habit used as initial policy prior.
 E={(0.33333, 0.33333, 0.33333)}
 
 ## Equations
 # Standard Active Inference update equations for POMDPs:
-# - State inference: qs = infer_states(o)
-# - Policy evaluation: q_pi, efe = infer_policies()
-# - Action selection: action = sample_action()
+# - State inference using Variational Free Energy with infer_states()
+# - Policy inference using Expected Free Energy = with infer_policies()
+# - Action selection from policy posterior: action = sample_action()
 
 ## Time
+Time=t
 Dynamic
-DiscreteTime=t
+Discrete
 ModelTimeHorizon=Unbounded # The agent is defined for an unbounded time horizon; simulation runs may specify a finite horizon.
 
 ## ActInfOntologyAnnotation
@@ -103,13 +105,13 @@ B=TransitionMatrix
 C=LogPreferenceVector
 D=PriorOverHiddenStates
 E=Habit
+F=VariationalFreeEnergy
+G=ExpectedFreeEnergy
 s=HiddenState
 s_prime=NextHiddenState
 o=Observation
 π=PolicyVector # Distribution over actions
 u=Action       # Chosen action
-F=VariationalFreeEnergy
-G=ExpectedFreeEnergy
 t=Time
 
 ## ModelParameters
@@ -118,7 +120,8 @@ num_obs: 3           # o[3]
 num_actions: 3       # B actions_dim=3 (controlled by π)
 
 ## Footer
-Classic Active Inference POMDP Agent v1 - GNN Representation
+Active Inference POMDP Agent v1 - GNN Representation. 
+Currently there is a planning horizon of 1 step (no deep planning), no precision modulation, no hierarchical nesting. 
 
 ## Signature
-NA 
+Cryptographic signature goes here 

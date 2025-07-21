@@ -66,6 +66,10 @@ class PipelineArguments:
     recursive: bool = True
     verbose: bool = True
     
+    # Enhanced validation options (enabled by default for comprehensive testing)
+    enable_round_trip: bool = True      # Enable round-trip testing across all 21 formats
+    enable_cross_format: bool = True    # Enable cross-format consistency validation
+    
     # Step control  
     skip_steps: Optional[str] = None
     only_steps: Optional[str] = None
@@ -179,6 +183,16 @@ class ArgumentParser:
             action=argparse.BooleanOptionalAction, 
             help_text='Enable verbose output'
         ),
+        'enable_round_trip': ArgumentDefinition(
+            flag='--enable-round-trip',
+            action='store_true',
+            help_text='Enable comprehensive round-trip testing across all 21 formats'
+        ),
+        'enable_cross_format': ArgumentDefinition(
+            flag='--enable-cross-format',
+            action='store_true',
+            help_text='Enable cross-format consistency validation'
+        ),
         'skip_steps': ArgumentDefinition(
             flag='--skip-steps',
             help_text='Comma-separated list of steps to skip'
@@ -240,8 +254,8 @@ class ArgumentParser:
     
     # Define which arguments each step supports
     STEP_ARGUMENTS = {
-        "1_gnn.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "2_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
+        "1_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
+        "2_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
         "3_tests.py": ["target_dir", "output_dir", "verbose"],
         "4_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
         "5_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
@@ -472,17 +486,17 @@ class StepConfiguration:
     
     # Define step-specific requirements and defaults
     STEP_CONFIGS = {
-        "1_gnn": {
-            "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose"],
-            "defaults": {"recursive": True, "verbose": False},
-            "description": "GNN Discovery & Basic Parse"
-        },
-        "2_setup": {
+        "1_setup": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["verbose", "recreate_venv", "dev"],
             "defaults": {"verbose": False, "recreate_venv": False, "dev": False},
             "description": "Project Setup & Environment Configuration"
+        },
+        "2_gnn": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "GNN Discovery & Basic Parse"
         },
         "3_tests": {
             "required_args": ["target_dir", "output_dir"],
@@ -710,7 +724,10 @@ def build_enhanced_step_command_args(step_name: str, pipeline_args: PipelineArgu
         ValueError: If step configuration is invalid
     """
     # Validate step exists
+    # Strip .py extension for lookup in STEP_CONFIGS
     config_key = step_name.replace('.py', '') if step_name.endswith('.py') else step_name
+    # Also try with .py extension for STEP_ARGUMENTS lookup
+    step_key = f"{config_key}.py" if not step_name.endswith('.py') else step_name
     config = StepConfiguration.get_step_config(config_key)
     if not config:
         raise ValueError(f"Unknown pipeline step: {step_name}")
@@ -718,7 +735,12 @@ def build_enhanced_step_command_args(step_name: str, pipeline_args: PipelineArgu
     cmd = [python_executable, str(script_path)]
     
     # Get all arguments this step supports
+    # First try from StepConfiguration
     all_supported_args = config.get("required_args", []) + config.get("optional_args", [])
+    
+    # If no arguments found, try from STEP_ARGUMENTS as fallback
+    if not all_supported_args and step_key in ArgumentParser.STEP_ARGUMENTS:
+        all_supported_args = ArgumentParser.STEP_ARGUMENTS.get(step_key, [])
     
     # Build arguments from pipeline configuration
     for arg_name in all_supported_args:
@@ -865,6 +887,8 @@ def parse_arguments() -> PipelineArguments:
     parser.add_argument('--skip-steps', help='Comma-separated list of steps to skip (overrides config)')
     parser.add_argument('--only-steps', help='Comma-separated list of steps to run (overrides config)')
     parser.add_argument('--verbose', action=argparse.BooleanOptionalAction, help='Enable verbose output (overrides config)')
+    parser.add_argument('--enable-round-trip', action='store_true', help='Enable comprehensive round-trip testing across all 21 formats (overrides config)')
+    parser.add_argument('--enable-cross-format', action='store_true', help='Enable cross-format consistency validation (overrides config)')
     parser.add_argument('--strict', action='store_true', help='Enable strict type checking mode')
     parser.add_argument('--estimate-resources', action=argparse.BooleanOptionalAction, help='Estimate computational resources')
     parser.add_argument('--ontology-terms-file', type=Path, help='Path to ontology terms file (overrides config)')
@@ -920,6 +944,10 @@ def parse_arguments() -> PipelineArguments:
         pipeline_args.only_steps = args.only_steps
     if args.verbose is not None:
         pipeline_args.verbose = args.verbose
+    if args.enable_round_trip:
+        pipeline_args.enable_round_trip = True
+    if args.enable_cross_format:
+        pipeline_args.enable_cross_format = True
     if args.strict:
         pipeline_args.strict = True
     if args.estimate_resources is not None:

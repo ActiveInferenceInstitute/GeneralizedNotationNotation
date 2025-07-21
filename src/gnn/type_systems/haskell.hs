@@ -37,6 +37,7 @@ module GNN
   , TransitionMatrix(..)
   , PreferenceVector(..)
   , PriorVector(..)
+  , HabitVector(..)  -- Added HabitVector to exports
   
     -- * Connections and Morphisms
   , Connection(..)
@@ -102,6 +103,7 @@ data VariableType
   | Observation { modalityIndex :: Int }
   | Action { controlIndex :: Int }
   | Policy { controlIndex :: Int }
+  | Habit { controlIndex :: Int }  -- Added Habit type for E vector
   deriving (Show, Eq, Ord)
 
 -- | A GNN variable with type-level dimension information
@@ -175,6 +177,11 @@ newtype PriorVector (s :: Nat) = PriorVector
   { getPriorVector :: Vector Double
   } deriving (Show)
 
+-- | Habit vector E: initial policy prior over actions
+newtype HabitVector (u :: Nat) = HabitVector
+  { getHabitVector :: Vector Double
+  } deriving (Show)
+
 -- | Validation levels for different use cases
 data ValidationLevel
   = Basic
@@ -201,6 +208,7 @@ data ActiveInferenceModel (s :: Nat) (o :: Nat) (u :: Nat) = ActiveInferenceMode
   , transitionMatrix :: TransitionMatrix s u
   , preferenceVector :: PreferenceVector o
   , priorVector :: PriorVector s
+  , habitVector :: HabitVector u  -- Added habit vector to match POMDP agent model
   , timeHorizon :: Int
   } deriving (Show)
 
@@ -289,6 +297,27 @@ expectedFreeEnergy model beliefs policy =
       
   in complexity + expectedCost
 
+-- | Policy inference with habit bias
+policyInference :: (KnownNat s, KnownNat o, KnownNat u) =>
+                  ActiveInferenceModel s o u ->
+                  Vector Double ->
+                  Vector Double
+policyInference model beliefs =
+  let -- Calculate EFE for each action
+      efe = undefined -- EFE calculation
+      
+      -- Get habit bias
+      habits = getHabitVector $ habitVector model
+      
+      -- Apply habit-modulated softmax
+      softmax = V.map (\(e, h) -> exp (-e) * (1 + h)) $ V.zip efe habits
+      total = V.sum softmax
+      
+      -- Normalize
+      normalized = V.map (/ total) softmax
+  
+  in normalized
+
 -- | Minimize free energy to find optimal beliefs
 minimizeFreeEnergy :: (KnownNat s, KnownNat o, KnownNat u) =>
                      ActiveInferenceModel s o u -> 
@@ -334,6 +363,15 @@ mkPriorVector v =
   then Right (PriorVector v)
   else Left "Vector does not satisfy probability distribution constraints"
 
+-- | Smart constructor for habit vector with validation
+mkHabitVector :: (KnownNat u) => 
+                Vector Double -> 
+                Either String (HabitVector u)
+mkHabitVector v = 
+  if abs (V.sum v - 1.0) < 1e-10 && V.all (>= 0) v
+  then Right (HabitVector v)
+  else Left "Habit vector does not satisfy probability distribution constraints"
+
 -- | Example: Simple two-state Active Inference model
 exampleTwoStateModel :: Either String (ActiveInferenceModel 2 2 2)
 exampleTwoStateModel = do
@@ -349,6 +387,9 @@ exampleTwoStateModel = do
   -- Preference vector C: log preferences
   let prefVec = PreferenceVector $ V.fromList [1.0, 0.0]
   
+  -- Habit vector E: initial policy prior
+  habitVec <- mkHabitVector $ V.fromList [0.5, 0.5]  -- Added habit vector
+  
   -- Construct state space
   let stateVar = Variable "s_f0" (HiddenState 0) (Dims (Proxy :: Proxy 2)) Categorical Nothing
       stateSpace = StateSpace [stateVar]
@@ -362,7 +403,7 @@ exampleTwoStateModel = do
       actionSpace = ActionSpace [actionVar]
   
   return $ ActiveInferenceModel stateSpace obsSpace actionSpace 
-                                likelihoodMat transitionMat prefVec priorVec 10
+                                likelihoodMat transitionMat prefVec priorVec habitVec 10
 
 -- | Example: Visual foraging model with multiple modalities
 exampleVisualForaging :: Either String GNNModel
@@ -372,8 +413,9 @@ exampleVisualForaging = do
   let locationVar = Variable "s_f0" (HiddenState 0) (Dims (Proxy :: Proxy 4)) Categorical (Just "Location factor")
       contextVar = Variable "s_f1" (HiddenState 1) (Dims (Proxy :: Proxy 2)) Categorical (Just "Context factor")
       visualVar = Variable "o_m0" (Observation 0) (Dims (Proxy :: Proxy 4)) Categorical (Just "Visual observations")
+      habitVar = Variable "E_c0" (Habit 0) (Dims (Proxy :: Proxy 3)) Categorical (Just "Habit prior over actions")  -- Added habit variable
       
-      variables = [locationVar, contextVar, visualVar]
+      variables = [locationVar, contextVar, visualVar, habitVar]  -- Include habit variable
       
       connections = [Connection locationVar visualVar Directed ">" (Just "Location generates visual observations")]
       
@@ -383,6 +425,7 @@ exampleVisualForaging = do
         [ ("s_f0", "HiddenStateFactor")
         , ("s_f1", "HiddenStateFactor") 
         , ("o_m0", "ObservationModality")
+        , ("E_c0", "HabitVector")  -- Added habit vector mapping
         ]
       
       modelParameters = Map.fromList 
@@ -432,7 +475,7 @@ validateVariableName name
   | name `elem` validPrefixes = _Success name
   | otherwise = _Failure (NE.singleton $ "Invalid variable name: " ++ name)
   where
-    validPrefixes = ["s_f", "o_m", "u_c", "pi_c", "A_", "B_", "C_", "D_"]
+    validPrefixes = ["s_f", "o_m", "u_c", "pi_c", "A_", "B_", "C_", "D_", "E_"]
 
 -- | Type-level programming utilities for dimension checking
 type family Multiply (m :: Nat) (n :: Nat) :: Nat where

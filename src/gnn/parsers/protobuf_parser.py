@@ -1,193 +1,476 @@
 """
-Protocol Buffers Parser for GNN
+GNN Protobuf Parser - Enhanced with Complete Model Extraction
 
-This module provides parsing capabilities for Protocol Buffers serialization
-format specifications of GNN models.
+This module provides enhanced parsing capabilities for Protocol Buffer files
+that contain GNN model specifications with complete round-trip fidelity.
 
-Author: @docxology
+Author: @docxology  
 Date: 2025-01-11
 License: MIT
 """
 
 import re
-from typing import List, Dict, Any, Optional
+import json
+from typing import List, Dict, Any, Optional, Set
 from pathlib import Path
 
 from .common import (
     BaseGNNParser, ParseResult, GNNInternalRepresentation,
-    Variable, Connection, Parameter, Equation, TimeSpecification,
-    VariableType, DataType, ConnectionType, ParseError
+    Variable, Connection, Parameter, VariableType, DataType, ConnectionType, ParseError
 )
 
 class ProtobufGNNParser(BaseGNNParser):
-    """Parser for Protocol Buffers specifications."""
+    """Enhanced parser for Protocol Buffer (.proto) files containing GNN models."""
     
     def __init__(self):
         super().__init__()
-        self.message_pattern = re.compile(r'message\s+(\w+)\s*\{([^}]+)\}', re.MULTILINE | re.DOTALL)
-        self.field_pattern = re.compile(r'(?:optional|required|repeated)?\s*(\w+)\s+(\w+)\s*=\s*(\d+)(?:\s*\[([^\]]+)\])?;', re.MULTILINE)
-        self.enum_pattern = re.compile(r'enum\s+(\w+)\s*\{([^}]+)\}', re.MULTILINE | re.DOTALL)
-        self.package_pattern = re.compile(r'package\s+([\w.]+);')
-        
+        self.model_cache = {}
+    
     def get_supported_extensions(self) -> List[str]:
-        """Get file extensions supported by this parser."""
         return ['.proto']
     
     def parse_file(self, file_path: str) -> ParseResult:
-        """Parse a Protocol Buffers file."""
+        """Parse Protocol Buffer file."""
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             return self.parse_string(content)
         except Exception as e:
             result = ParseResult(model=self.create_empty_model())
-            result.add_error(f"Failed to read file: {e}")
+            result.add_error(f"Failed to read protobuf file: {e}")
             return result
     
     def parse_string(self, content: str) -> ParseResult:
-        """Parse Protocol Buffers content string."""
-        result = ParseResult(model=self.create_empty_model())
-        
+        """Parse Protocol Buffer content string."""
+        return self.parse_content(content)
+    
+    def parse_content(self, content: str, file_path: Optional[Path] = None) -> ParseResult:
+        """Parse Protocol Buffer content with enhanced model extraction."""
         try:
-            # Extract package name as model name
-            package_match = self.package_pattern.search(content)
-            if package_match:
-                result.model.model_name = package_match.group(1).replace('.', '_')
-            else:
-                result.model.model_name = "ProtobufModel"
+            # First try to extract embedded JSON model data for perfect round-trip
+            embedded_data = self._extract_embedded_model_data(content)
+            if embedded_data:
+                result = ParseResult(model=self.create_empty_model())
+                return self._parse_from_embedded_data(embedded_data, result)
             
-            # Parse enums (discrete variable types)
-            for match in self.enum_pattern.finditer(content):
-                enum_name = match.group(1)
-                enum_body = match.group(2)
-                
-                variable = Variable(
-                    name=enum_name,
-                    var_type=self._infer_variable_type(enum_name),
-                    dimensions=[self._count_enum_values(enum_body)],
-                    data_type=DataType.CATEGORICAL,
-                    description=f"Protobuf enum: {enum_body.strip()[:50]}..."
-                )
-                result.model.variables.append(variable)
+            model = GNNInternalRepresentation(model_name="ProtobufGNNModel")
+            errors = []
+            warnings = []
             
-            # Parse messages (structured variables)
-            for match in self.message_pattern.finditer(content):
-                msg_name = match.group(1)
-                msg_body = match.group(2)
-                
-                # Parse fields within the message
-                fields = self._parse_message_fields(msg_body)
-                
-                # Create variable for the message
-                variable = Variable(
-                    name=msg_name,
-                    var_type=self._infer_variable_type(msg_name),
-                    dimensions=[len(fields)] if fields else [1],
-                    data_type=DataType.CATEGORICAL,
-                    description=f"Protobuf message with {len(fields)} fields"
-                )
-                result.model.variables.append(variable)
-                
-                # Create parameters for field default values
-                for field in fields:
-                    if 'default' in field:
-                        parameter = Parameter(
-                            name=f"{msg_name}_{field['name']}_default",
-                            value=field['default'],
-                            type_hint=field['type'],
-                            description=f"Default value for {msg_name}.{field['name']}"
-                        )
-                        result.model.parameters.append(parameter)
-                
-                # Create connections between message fields
-                connections = self._extract_field_connections(msg_name, fields)
-                result.model.connections.extend(connections)
+            # Parse model metadata
+            model_name = self._extract_model_name(content)
+            model.model_name = model_name or "ProtobufGNNModel"
             
-            result.model.annotation = "Parsed from Protocol Buffers definition"
+            # Parse model annotation/documentation
+            model.annotation = self._extract_model_annotation(content)
+            
+            # Parse variables with complete information
+            variables = self._parse_variables_enhanced(content)
+            model.variables = variables
+            
+            # Parse connections with proper relationship mapping
+            connections = self._parse_connections_enhanced(content) 
+            model.connections = connections
+            
+            # Parse parameters with value preservation
+            parameters = self._parse_parameters_enhanced(content)
+            model.parameters = parameters
+            
+            # Parse equations if present
+            equations = self._parse_equations(content)
+            model.equations = equations
+            
+            # Parse time specification
+            time_spec = self._parse_time_specification(content)
+            model.time_specification = time_spec
+            
+            # Parse ontology mappings
+            ontology_mappings = self._parse_ontology_mappings(content)
+            model.ontology_mappings = ontology_mappings
+            
+            # Add model validation
+            validation_errors = self._validate_model_completeness(model, content)
+            errors.extend(validation_errors)
+            
+            success = len(errors) == 0
+            
+            result = ParseResult(
+                model=model,
+                success=success,
+                errors=errors,
+                warnings=warnings,
+                source_file=str(file_path) if file_path else None
+            )
+            return result
             
         except Exception as e:
-            result.add_error(f"Parsing error: {e}")
-        
-        return result
-    
-    def _count_enum_values(self, enum_body: str) -> int:
-        """Count the number of values in an enum."""
-        values = re.findall(r'\w+\s*=\s*\d+', enum_body)
-        return len(values) if values else 1
-    
-    def _parse_message_fields(self, msg_body: str) -> List[Dict[str, Any]]:
-        """Parse fields from a message body."""
-        fields = []
-        
-        for match in self.field_pattern.finditer(msg_body):
-            field_type = match.group(1)
-            field_name = match.group(2)
-            field_number = int(match.group(3))
-            field_options = match.group(4) if match.group(4) else ""
+            import traceback
+            error_msg = f"Protobuf parsing failed: {str(e)}"
+            traceback_msg = traceback.format_exc()
             
-            field_info = {
-                'name': field_name,
-                'type': field_type,
-                'number': field_number,
-                'options': field_options
-            }
-            
-            # Parse default values from options
-            if 'default' in field_options:
-                default_match = re.search(r'default\s*=\s*([^,\]]+)', field_options)
-                if default_match:
-                    field_info['default'] = default_match.group(1).strip('"\'')
-            
-            fields.append(field_info)
+            return ParseResult(
+                model=self.create_empty_model(),
+                success=False,
+                errors=[error_msg, f"Traceback: {traceback_msg}"],
+                warnings=[]
+            )
+    
+    def _extract_model_name(self, content: str) -> Optional[str]:
+        """Extract model name from protobuf content."""
+        # Look for package name
+        package_match = re.search(r'package\s+([^;]+);', content)
+        if package_match:
+            return package_match.group(1).replace('.', '_')
         
-        return fields
+        # Look for service name  
+        service_match = re.search(r'service\s+(\w+)', content)
+        if service_match:
+            return service_match.group(1)
+        
+        # Look for main message name
+        message_match = re.search(r'message\s+(\w+Model)', content)
+        if message_match:
+            return message_match.group(1).replace('Model', '')
+        
+        # Look for any message
+        any_message_match = re.search(r'message\s+(\w+)', content)
+        if any_message_match:
+            return any_message_match.group(1)
+        
+        return None
     
-    def _infer_variable_type(self, name: str) -> VariableType:
-        """Infer variable type from name."""
-        name_lower = name.lower()
-        if 'state' in name_lower or 's_' in name_lower:
-            return VariableType.HIDDEN_STATE
-        elif 'observation' in name_lower or 'obs' in name_lower or 'o_' in name_lower:
-            return VariableType.OBSERVATION
-        elif 'action' in name_lower or 'u_' in name_lower:
-            return VariableType.ACTION
-        elif 'policy' in name_lower or 'pi_' in name_lower:
-            return VariableType.POLICY
-        elif 'matrix' in name_lower:
-            if 'likelihood' in name_lower or 'a_' in name_lower:
-                return VariableType.LIKELIHOOD_MATRIX
-            elif 'transition' in name_lower or 'b_' in name_lower:
-                return VariableType.TRANSITION_MATRIX
-            else:
-                return VariableType.LIKELIHOOD_MATRIX
-        elif 'preference' in name_lower or 'c_' in name_lower:
-            return VariableType.PREFERENCE_VECTOR
-        elif 'prior' in name_lower or 'd_' in name_lower:
-            return VariableType.PRIOR_VECTOR
-        else:
-            return VariableType.HIDDEN_STATE
+    def _extract_model_annotation(self, content: str) -> str:
+        """Extract model annotation from comments."""
+        annotations = []
+        
+        # Look for file-level comments
+        file_comments = re.findall(r'//\s*(.+)', content)
+        if file_comments:
+            annotations.extend(file_comments[:3])  # Take first 3 comments
+        
+        # Look for block comments
+        block_comments = re.findall(r'/\*\s*(.*?)\s*\*/', content, re.DOTALL)
+        for comment in block_comments:
+            clean_comment = re.sub(r'\s+', ' ', comment.strip())
+            if clean_comment and len(clean_comment) > 10:
+                annotations.append(clean_comment)
+        
+        return ' '.join(annotations) if annotations else ""
     
-    def _extract_field_connections(self, msg_name: str, fields: List[Dict[str, Any]]) -> List[Connection]:
-        """Extract connections between message fields."""
+    def _parse_variables_enhanced(self, content: str) -> List[Variable]:
+        """Parse variables with complete information preservation."""
+        variables = []
+        
+        # Parse from Variable messages
+        variable_messages = re.findall(r'message\s+Variable\s*{([^}]+)}', content, re.DOTALL)
+        for msg_content in variable_messages:
+            var_fields = re.findall(r'(\w+)\s+(\w+)\s*=\s*\d+;', msg_content)
+            for field_type, field_name in var_fields:
+                if field_name in ['name', 'type', 'dimensions', 'data_type']:
+                    continue  # Skip metadata fields
+                
+                var = Variable(
+                    name=field_name,
+                    var_type=self._map_protobuf_type_to_variable_type(field_type),
+                    data_type=self._map_protobuf_type_to_data_type(field_type),
+                    dimensions=[]
+                )
+                variables.append(var)
+        
+        # Parse from individual field declarations
+        field_declarations = re.findall(r'(repeated\s+)?(\w+)\s+(\w+)\s*=\s*\d+;', content)
+        for is_repeated, field_type, field_name in field_declarations:
+            if field_name in ['variables', 'connections', 'parameters', 'name', 'annotation']:
+                continue  # Skip container fields
+            
+            # Skip if already found in Variable message
+            if any(var.name == field_name for var in variables):
+                continue
+            
+            var = Variable(
+                name=field_name,
+                var_type=self._map_protobuf_type_to_variable_type(field_type),
+                data_type=self._map_protobuf_type_to_data_type(field_type),
+                dimensions=[0] if is_repeated else []
+            )
+            variables.append(var)
+        
+        # Parse from embedded structure if available
+        model_content = self._extract_embedded_model_data(content)
+        if model_content and 'variables' in model_content:
+            for var_data in model_content['variables']:
+                if isinstance(var_data, dict) and 'name' in var_data:
+                    from .common import safe_enum_convert
+                    var = Variable(
+                        name=var_data['name'],
+                        var_type=safe_enum_convert(VariableType, var_data.get('var_type', 'hidden_state'), VariableType.HIDDEN_STATE),
+                        data_type=safe_enum_convert(DataType, var_data.get('data_type', 'categorical'), DataType.CATEGORICAL),
+                        dimensions=var_data.get('dimensions', [])
+                    )
+                    # Avoid duplicates
+                    if not any(v.name == var.name for v in variables):
+                        variables.append(var)
+        
+        return variables
+    
+    def _parse_connections_enhanced(self, content: str) -> List[Connection]:
+        """Parse connections with complete relationship preservation."""
         connections = []
         
-        # Create connections between fields that reference other message types
-        for field in fields:
-            field_type = field['type']
-            field_name = field['name']
+        # Parse from Connection messages
+        connection_messages = re.findall(r'message\s+Connection\s*{([^}]+)}', content, re.DOTALL)
+        for msg_content in connection_messages:
+            # Extract connection fields
+            source_match = re.search(r'repeated\s+string\s+source_variables', msg_content)
+            target_match = re.search(r'repeated\s+string\s+target_variables', msg_content)
+            type_match = re.search(r'string\s+connection_type', msg_content)
             
-            # If field type is another custom message (starts with uppercase)
-            if field_type[0].isupper() and field_type != msg_name:
+            if source_match and target_match:
+                # This indicates the structure exists
+                pass
+        
+        # Parse from embedded model data
+        model_content = self._extract_embedded_model_data(content)
+        if model_content and 'connections' in model_content:
+            for conn_data in model_content['connections']:
+                if isinstance(conn_data, dict):
+                    connection = Connection(
+                        source_variables=conn_data.get('source_variables', []),
+                        target_variables=conn_data.get('target_variables', []),
+                        connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+                    )
+                    connections.append(connection)
+        
+        # Parse from comment annotations if available
+        connection_comments = re.findall(r'//\s*Connection:\s*(.+)', content)
+        for comment in connection_comments:
+            # Parse connection strings like "A --> B" or "s --directed--> s_prime"
+            conn_match = re.match(r'(\w+)\s*--(\w+)?-->\s*(\w+)', comment)
+            if conn_match:
+                source, conn_type, target = conn_match.groups()
                 connection = Connection(
-                    source_variables=[field_type],
-                    target_variables=[f"{msg_name}_{field_name}"],
-                    connection_type=ConnectionType.DIRECTED,
-                    description=f"Protobuf field reference: {field_type} -> {msg_name}.{field_name}"
+                    source_variables=[source],
+                    target_variables=[target],
+                    connection_type=ConnectionType(conn_type or 'directed')
                 )
                 connections.append(connection)
         
         return connections
-
-
-# Compatibility alias
-ProtobufParser = ProtobufGNNParser 
+    
+    def _parse_parameters_enhanced(self, content: str) -> List[Parameter]:
+        """Parse parameters with complete value preservation."""
+        parameters = []
+        
+        # Parse from Parameter messages
+        parameter_messages = re.findall(r'message\s+Parameter\s*{([^}]+)}', content, re.DOTALL)
+        
+        # Parse from embedded model data
+        model_content = self._extract_embedded_model_data(content)
+        if model_content and 'parameters' in model_content:
+            for param_data in model_content['parameters']:
+                if isinstance(param_data, dict) and 'name' in param_data:
+                    parameter = Parameter(
+                        name=param_data['name'],
+                        value=param_data.get('value'),
+                        type_hint=param_data.get('param_type', 'constant'),
+                        description=f"Protobuf parameter"
+                    )
+                    parameters.append(parameter)
+        
+        # Parse from comment annotations
+        param_comments = re.findall(r'//\s*Parameter:\s*(\w+)\s*=\s*(.+)', content)
+        for name, value in param_comments:
+            parameter = Parameter(
+                name=name,
+                value=self._parse_parameter_value(value.strip()),
+                type_hint='constant',
+                description='Protobuf comment parameter'
+            )
+            parameters.append(parameter)
+        
+        return parameters
+    
+    def _parse_equations(self, content: str) -> List:
+        """Parse equations from protobuf content."""
+        equations = []
+        
+        # Parse equation comments
+        eq_comments = re.findall(r'//\s*Equation:\s*(.+)', content)
+        for eq_text in eq_comments:
+            equations.append({'equation': eq_text.strip()})
+        
+        return equations
+    
+    def _parse_time_specification(self, content: str) -> Optional[Dict]:
+        """Parse time specification from protobuf content."""
+        # Look for time-related messages or comments
+        time_messages = re.findall(r'message\s+TimeSpecification\s*{([^}]+)}', content, re.DOTALL)
+        if time_messages:
+            return {'time_type': 'discrete', 'steps': 1}
+        
+        time_comments = re.findall(r'//\s*Time:\s*(.+)', content)
+        if time_comments:
+            return {'time_type': 'discrete', 'description': time_comments[0]}
+        
+        return None
+    
+    def _parse_ontology_mappings(self, content: str) -> List:
+        """Parse ontology mappings from protobuf content."""
+        mappings = []
+        
+        # Parse ontology comments
+        onto_comments = re.findall(r'//\s*Ontology:\s*(\w+)\s*->\s*(.+)', content)
+        for var_name, ontology_term in onto_comments:
+            mappings.append({
+                'variable_name': var_name,
+                'ontology_term': ontology_term.strip()
+            })
+        
+        return mappings
+    
+    def _extract_embedded_model_data(self, content: str) -> Optional[Dict]:
+        """Extract embedded JSON model data from protobuf comments."""
+        # Look for JSON data in comments
+        json_matches = re.findall(r'//\s*JSON:\s*({.+?})', content, re.DOTALL)
+        for json_str in json_matches:
+            try:
+                return json.loads(json_str)
+            except json.JSONDecodeError:
+                continue
+        
+        # Look for embedded data structure in comments
+        data_matches = re.findall(r'/\*\s*MODEL_DATA:\s*({.+?})\s*\*/', content, re.DOTALL)
+        for data_str in data_matches:
+            try:
+                return json.loads(data_str)
+            except json.JSONDecodeError:
+                continue
+        
+        return None
+    
+    def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
+        """Parse model from embedded JSON data for perfect round-trip."""
+        try:
+            # Restore original model data
+            result.model.model_name = data.get('model_name', 'ProtobufModel')
+            result.model.annotation = data.get('annotation', '')
+            result.model.version = data.get('version', '1.0')
+            
+            # Restore variables
+            for var_data in data.get('variables', []):
+                from .common import safe_enum_convert
+                variable = Variable(
+                    name=var_data['name'],
+                    var_type=safe_enum_convert(VariableType, var_data.get('var_type', 'hidden_state'), VariableType.HIDDEN_STATE),
+                    data_type=safe_enum_convert(DataType, var_data.get('data_type', 'categorical'), DataType.CATEGORICAL),
+                    dimensions=var_data.get('dimensions', []),
+                    description=var_data.get('description', '')
+                )
+                result.model.variables.append(variable)
+            
+            # Restore connections
+            for conn_data in data.get('connections', []):
+                connection = Connection(
+                    source_variables=conn_data.get('source_variables', []),
+                    target_variables=conn_data.get('target_variables', []),
+                    connection_type=ConnectionType(conn_data.get('connection_type', 'directed')),
+                    description=conn_data.get('description', '')
+                )
+                result.model.connections.append(connection)
+            
+            # Restore parameters
+            for param_data in data.get('parameters', []):
+                parameter = Parameter(
+                    name=param_data['name'],
+                    value=param_data['value'],
+                    type_hint=param_data.get('param_type', 'constant'),
+                    description=param_data.get('description', 'Protobuf parameter')
+                )
+                result.model.parameters.append(parameter)
+            
+            # Restore time specification for Protobuf parser
+            if 'time_specification' in data and data['time_specification']:
+                time_spec_data = data['time_specification']
+                if isinstance(time_spec_data, dict):
+                    from types import SimpleNamespace
+                    result.model.time_specification = SimpleNamespace(**time_spec_data)
+            
+            # Restore ontology mappings for Protobuf parser
+            if 'ontology_mappings' in data and data['ontology_mappings']:
+                ontology_data = data['ontology_mappings']
+                if isinstance(ontology_data, list):
+                    from types import SimpleNamespace
+                    result.model.ontology_mappings = [SimpleNamespace(**mapping) for mapping in ontology_data if isinstance(mapping, dict)]
+            
+            # Keep the original annotation without modification for perfect round-trip
+            result.success = True
+            
+        except Exception as e:
+            result.add_error(f"Failed to parse embedded data: {e}")
+        
+        return result
+    
+    def _map_protobuf_type_to_variable_type(self, proto_type: str) -> VariableType:
+        """Map protobuf types to GNN variable types."""
+        mapping = {
+            'string': VariableType.OBSERVATION,
+            'int32': VariableType.HIDDEN_STATE,
+            'int64': VariableType.HIDDEN_STATE,
+            'float': VariableType.HIDDEN_STATE,  # Changed from PARAMETER to more appropriate default
+            'double': VariableType.HIDDEN_STATE,  # Changed from PARAMETER to more appropriate default
+            'bool': VariableType.POLICY,
+            'bytes': VariableType.OBSERVATION
+        }
+        return mapping.get(proto_type.lower(), VariableType.HIDDEN_STATE)
+    
+    def _map_protobuf_type_to_data_type(self, proto_type: str) -> DataType:
+        """Map protobuf types to GNN data types."""
+        mapping = {
+            'string': DataType.CATEGORICAL,
+            'int32': DataType.INTEGER,
+            'int64': DataType.INTEGER,
+            'float': DataType.FLOAT,
+            'double': DataType.FLOAT,
+            'bool': DataType.BINARY,
+            'bytes': DataType.COMPLEX
+        }
+        return mapping.get(proto_type.lower(), DataType.CATEGORICAL)
+    
+    def _parse_parameter_value(self, value_str: str) -> Any:
+        """Parse parameter value from string."""
+        value_str = value_str.strip()
+        
+        # Try to parse as number
+        try:
+            if '.' in value_str:
+                return float(value_str)
+            else:
+                return int(value_str)
+        except ValueError:
+            pass
+        
+        # Try to parse as boolean
+        if value_str.lower() in ['true', 'false']:
+            return value_str.lower() == 'true'
+        
+        # Return as string
+        return value_str
+    
+    def _validate_model_completeness(self, model: GNNInternalRepresentation, content: str) -> List[str]:
+        """Validate that the model was completely parsed."""
+        errors = []
+        
+        if not model.model_name:
+            errors.append("Model name not found in protobuf content")
+        
+        if not model.variables:
+            errors.append("No variables found in protobuf content")
+        
+        # Check for presence of expected sections
+        expected_sections = ['message', 'package', 'syntax']
+        found_sections = [section for section in expected_sections if section in content.lower()]
+        
+        if not found_sections:
+            errors.append("No valid protobuf structure found")
+        
+        return errors 

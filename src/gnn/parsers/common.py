@@ -81,6 +81,7 @@ class GNNFormat(Enum):
     YAML = "yaml"
     XSD = "xsd"
     ASN1 = "asn1"
+    PKL = "pkl"
     ALLOY = "alloy"
     Z_NOTATION = "z_notation"
     TLA_PLUS = "tla_plus"
@@ -320,16 +321,39 @@ class GNNInternalRepresentation:
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
+        def serialize_obj(obj):
+            """Helper to serialize objects with enums to dict."""
+            if hasattr(obj, '__dict__'):
+                result = {}
+                for key, value in obj.__dict__.items():
+                    if isinstance(value, Enum):
+                        result[key] = value.value
+                    elif isinstance(value, list):
+                        result[key] = [serialize_obj(item) if hasattr(item, '__dict__') else 
+                                     item.value if isinstance(item, Enum) else item for item in value]
+                    elif isinstance(value, dict):
+                        result[key] = {k: serialize_obj(v) if hasattr(v, '__dict__') else 
+                                     v.value if isinstance(v, Enum) else v for k, v in value.items()}
+                    elif hasattr(value, '__dict__'):
+                        result[key] = serialize_obj(value)
+                    else:
+                        result[key] = value
+                return result
+            elif isinstance(obj, Enum):
+                return obj.value
+            else:
+                return obj
+        
         return {
             'model_name': self.model_name,
             'version': self.version,
             'annotation': self.annotation,
-            'variables': [var.__dict__ for var in self.variables],
-            'connections': [conn.__dict__ for conn in self.connections],
-            'parameters': [param.__dict__ for param in self.parameters],
-            'equations': [eq.__dict__ for eq in self.equations],
-            'time_specification': self.time_specification.__dict__ if self.time_specification else None,
-            'ontology_mappings': [mapping.__dict__ for mapping in self.ontology_mappings],
+            'variables': [serialize_obj(var) for var in self.variables],
+            'connections': [serialize_obj(conn) for conn in self.connections],
+            'parameters': [serialize_obj(param) for param in self.parameters],
+            'equations': [serialize_obj(eq) for eq in self.equations],
+            'time_specification': serialize_obj(self.time_specification) if self.time_specification else None,
+            'ontology_mappings': [serialize_obj(mapping) for mapping in self.ontology_mappings],
             'source_format': self.source_format.value if self.source_format else None,
             'created_at': self.created_at.isoformat(),
             'modified_at': self.modified_at.isoformat(),
@@ -490,15 +514,31 @@ class BaseGNNParser(ABC):
 # ================================
 
 def normalize_variable_name(name: str) -> str:
-    """Normalize a variable name according to GNN conventions."""
-    # Remove whitespace and convert to valid identifier
-    normalized = name.strip().replace(' ', '_')
+    """
+    Normalize variable name for consistent reference.
     
-    # Ensure it starts with a letter or underscore
-    if normalized and not (normalized[0].isalpha() or normalized[0] == '_'):
-        normalized = '_' + normalized
+    This function ensures that variable names are treated consistently
+    throughout the codebase, regardless of case or minor variations.
     
-    return normalized
+    Args:
+        name: Variable name to normalize
+        
+    Returns:
+        Normalized variable name
+    """
+    # Handle special Unicode characters like π
+    if name == 'π' or name.lower() == 'pi':
+        return 'π'  # Standardize on Unicode π
+    
+    # Remove any whitespace
+    name = name.strip()
+    
+    # Keep case sensitivity for specific Active Inference standard variables
+    if name in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+        return name
+        
+    # For other variables, use lowercase for normalization
+    return name
 
 def parse_dimensions(dim_str: str) -> List[int]:
     """Parse dimension string like '[2,3,4]' or '[2,3,type=float]' into list of integers."""
@@ -524,28 +564,95 @@ def parse_dimensions(dim_str: str) -> List[int]:
     except Exception:
         return [1]  # Default dimension
 
+def safe_enum_convert(enum_class, value, default=None):
+    """Safely convert string to enum, handling case insensitivity."""
+    if isinstance(value, enum_class):
+        return value
+    
+    if isinstance(value, str):
+        # Try exact match first
+        try:
+            return enum_class(value)
+        except ValueError:
+            pass
+        
+        # Try lowercase
+        try:
+            return enum_class(value.lower())
+        except ValueError:
+            pass
+        
+        # Try uppercase
+        try:
+            return enum_class(value.upper())
+        except ValueError:
+            pass
+    
+    # Return default if provided, otherwise first enum value
+    if default is not None:
+        return default
+    return list(enum_class)[0]
+
 def infer_variable_type(name: str) -> VariableType:
-    """Infer variable type from name using Active Inference conventions."""
+    """
+    Infer variable type from its name according to Active Inference conventions.
+    
+    Args:
+        name: Variable name
+        
+    Returns:
+        Inferred variable type
+    """
     name_lower = name.lower()
     
-    if name_lower.startswith('s_f') or 'state' in name_lower:
-        return VariableType.HIDDEN_STATE
-    elif name_lower.startswith('o_m') or 'obs' in name_lower:
-        return VariableType.OBSERVATION
-    elif name_lower.startswith('u_c') or 'action' in name_lower:
-        return VariableType.ACTION
-    elif name_lower.startswith('pi_c') or name_lower.startswith('π_c') or 'policy' in name_lower:
+    # Handle Unicode π (pi) character
+    if name == 'π' or name_lower == 'pi':
         return VariableType.POLICY
-    elif name_lower.startswith('a_m') or 'likelihood' in name_lower:
+    
+    # Single character variable conventions in Active Inference
+    if name == 'A':
         return VariableType.LIKELIHOOD_MATRIX
-    elif name_lower.startswith('b_f') or 'transition' in name_lower:
+    elif name == 'B':
         return VariableType.TRANSITION_MATRIX
-    elif name_lower.startswith('c_m') or 'preference' in name_lower:
+    elif name == 'C':
         return VariableType.PREFERENCE_VECTOR
-    elif name_lower.startswith('d_f') or 'prior' in name_lower:
+    elif name == 'D':
         return VariableType.PRIOR_VECTOR
-    else:
-        return VariableType.HIDDEN_STATE  # Default
+    elif name == 'E':
+        return VariableType.POLICY  # Habit/initial policy prior
+    elif name == 'F':
+        return VariableType.HIDDEN_STATE  # Variational free energy is often computed on states
+    elif name == 'G':
+        return VariableType.POLICY  # EFE drives policy
+    
+    # Other standard Active Inference variables
+    if name_lower.startswith('s'):
+        return VariableType.HIDDEN_STATE
+    elif name_lower.startswith('o'):
+        return VariableType.OBSERVATION
+    elif name_lower.startswith('u') or name_lower.startswith('a'):
+        return VariableType.ACTION
+    
+    # Check for common prefixes/patterns
+    if 'state' in name_lower or 'hidden' in name_lower:
+        return VariableType.HIDDEN_STATE
+    elif 'obs' in name_lower or 'perception' in name_lower:
+        return VariableType.OBSERVATION
+    elif 'action' in name_lower or 'control' in name_lower:
+        return VariableType.ACTION
+    elif 'policy' in name_lower or 'pi' in name_lower or 'habit' in name_lower:
+        return VariableType.POLICY
+    elif 'prior' in name_lower:
+        return VariableType.PRIOR_VECTOR
+    elif 'likelihood' in name_lower:
+        return VariableType.LIKELIHOOD_MATRIX
+    elif 'transition' in name_lower:
+        return VariableType.TRANSITION_MATRIX
+    elif 'preference' in name_lower or 'utility' in name_lower:
+        return VariableType.PREFERENCE_VECTOR
+    
+    # Default
+    return VariableType.HIDDEN_STATE
 
 def parse_connection_operator(op: str) -> ConnectionType:
     """Parse connection operator string to ConnectionType."""

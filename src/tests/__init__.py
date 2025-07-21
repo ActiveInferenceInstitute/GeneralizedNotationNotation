@@ -566,8 +566,8 @@ def get_mock_filesystem_structure() -> Dict[str, Any]:
         "src": {
             "__init__.py": "",
             "main.py": "# Mock main.py content",
-            "1_gnn.py": "# Mock pipeline step 1",
-            "2_setup.py": "# Mock pipeline step 2",
+            "1_setup.py": "# Mock pipeline step 1",
+            "2_gnn.py": "# Mock pipeline step 2",
             "gnn": {
                 "__init__.py": "",
                 "examples": {

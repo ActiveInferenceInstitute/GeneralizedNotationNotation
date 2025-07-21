@@ -70,7 +70,7 @@ sections:
     content_type: "structured"
     format: "variable_definitions"
     syntax:
-      variable_definition: "variable_name[dimensions,type=data_type] ### optional_comment"
+      variable_definition: "variable_name[dimensions,type=data_type] # optional_comment"
       dimensions: "comma-separated list of positive integers or identifiers"
       data_types:
         - "float"
@@ -79,12 +79,14 @@ sections:
         - "string"
         - "categorical"
     validation:
-      variable_name_pattern: '^[a-zA-Z_][a-zA-Z0-9_]*$'
+      # Updated to handle Unicode characters including π
+      variable_name_pattern: '^[a-zA-Z_πσμαβγδεζηθικλνξορτυφχψω][a-zA-Z0-9_πσμαβγδεζηθικλνξορτυφχψω]*$'
       dimension_pattern: '^[0-9]+$|^[a-zA-Z_][a-zA-Z0-9_]*$'
     examples:
       - "A[3,3,type=float]           # Transition matrix"
       - "s_f0[2,1,type=float]        # Hidden state factor 0"
       - "o_m0[3,1,type=int]          # Observation modality 0"
+      - "π[3,type=float]             # Policy (distribution over actions)"
 
   Connections:
     description: "Directed and undirected edges showing dependencies"
@@ -103,13 +105,14 @@ sections:
       - "A>B                        # A influences B"
       - "(A,B)-C                    # A and B are associated with C"
       - "X|Y                        # X conditional on Y"
+      - "π>u                        # Policy influences action"
 
   InitialParameterization:
     description: "Starting values, matrices, and priors"
     content_type: "structured"
     format: "parameter_assignments"
     syntax:
-      assignment: "parameter_name=value ### optional_comment"
+      assignment: "parameter_name=value # optional_comment"
       value_types:
         scalar: "number, boolean, or string"
         matrix: "{(row1), (row2), ...}"
@@ -126,10 +129,10 @@ sections:
     format: "latex_equations"
     syntax:
       equation: "LaTeX mathematical expression"
-      comment: "### Description of equation"
+      comment: "# Description of equation"
     examples:
       - 's_{t+1} = A \cdot s_t + B \cdot u_t'
-      - "### State transition equation"
+      - "# State transition equation"
 
   Time:
     description: "Temporal settings and configuration"
@@ -155,22 +158,25 @@ sections:
     content_type: "structured"
     format: "ontology_mappings"
     syntax:
-      mapping: "variable_name=ontology_term ### optional_comment"
+      mapping: "variable_name=ontology_term # optional_comment"
     validation:
+      # Updated to handle Unicode characters in variable names
+      variable_pattern: '^[a-zA-Z_πσμαβγδεζηθικλνξορτυφχψω][a-zA-Z0-9_πσμαβγδεζηθικλνξορτυφχψω]*$'
       ontology_term_pattern: '^[A-Za-z][A-Za-z0-9_]*$'
     examples:
       - "A=LikelihoodMatrix            # A matrix maps to likelihood"
       - "B=TransitionMatrix            # B matrix maps to transitions"
       - "C=PreferenceVector           # C vector maps to preferences"
+      - "π=PolicyVector               # π maps to policy vector"
 
   ModelParameters:
     description: "Model-specific parameters and metadata"
     content_type: "structured"
     format: "parameter_definitions"
     common_parameters:
-      - "num_hidden_states_factors: [int, ...]"
-      - "num_obs_modalities: [int, ...]"
-      - "num_control_factors: [int, ...]"
+      - "num_hidden_states: 3"
+      - "num_obs: 3"
+      - "num_actions: 3"
       - "backend: PyMDP|RxInfer.jl|JAX|TensorFlow|PyTorch|Custom"
       - "inference_method: variational_message_passing|belief_propagation|monte_carlo"
 
@@ -197,8 +203,9 @@ sections:
 # GNN Syntax Rules
 syntax_rules:
   identifiers:
-    pattern: '^[a-zA-Z_][a-zA-Z0-9_]*$'
-    description: "Variable and parameter names"
+    # Updated to handle Unicode characters
+    pattern: '^[a-zA-Z_πσμαβγδεζηθικλνξορτυφχψω][a-zA-Z0-9_πσμαβγδεζηθικλνξορτυφχψω]*$'
+    description: "Variable and parameter names including Unicode symbols"
     
   subscripts:
     syntax: "variable_underscore_index"
@@ -210,15 +217,15 @@ syntax_rules:
     
   dimensions:
     syntax: "variable[dim1,dim2,...]"
-    examples: ["A[3,3]", "s[2,1]", "matrix[N,M]"]
+    examples: ["A[3,3]", "s[2,1]", "matrix[N,M]", "π[3]"]
     
   types:
     syntax: "variable[dims,type=datatype]"
-    examples: ["A[3,3,type=float]", "flag[1,type=bool]"]
+    examples: ["A[3,3,type=float]", "flag[1,type=bool]", "π[3,type=float]"]
     
   comments:
-    syntax: "### comment_text"
-    description: "Comments use triple hashtags"
+    syntax: "# comment_text"
+    description: "Comments use single hashtag"
     
   exact_values:
     syntax: "variable{exact_value}"
@@ -250,23 +257,32 @@ active_inference:
       description: "Priors over initial states"
       naming_pattern: "D_f[0-9]+ or D[dimensions]"
       dimensions: "[num_states]"
+      
+    E_vectors:
+      description: "Habits (initial policy priors)"
+      naming_pattern: "E"
+      dimensions: "[num_actions]"
 
   standard_variables:
     hidden_states:
-      pattern: "s_f[0-9]+"
+      pattern: "s(_f[0-9]+)?"
       description: "Hidden state factors"
       
     observations:
-      pattern: "o_m[0-9]+"
+      pattern: "o(_m[0-9]+)?"
       description: "Observation modalities"
       
     actions:
-      pattern: "u_c[0-9]+"
+      pattern: "u(_c[0-9]+)?"
       description: "Control/action factors"
       
     policies:
-      pattern: "π_c[0-9]+"
+      pattern: "π|pi(_c[0-9]+)?"
       description: "Policy distributions"
+      
+    expected_free_energy:
+      pattern: "G"
+      description: "Expected Free Energy"
 
 # Validation Levels
 validation_levels:

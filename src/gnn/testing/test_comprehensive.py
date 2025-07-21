@@ -34,11 +34,8 @@ try:
 except ImportError:
     GNN_AVAILABLE = False
 
-try:
-    from gnn.parsers.lark_parser import GNNFormalParser, ParsedGNNFormal, LARK_AVAILABLE
-    FORMAL_PARSER_AVAILABLE = True
-except ImportError:
-    FORMAL_PARSER_AVAILABLE = False
+# Lark parser removed - too complex and not needed
+LARK_AVAILABLE = False
 
 
 class TestGNNSchemaValidation(unittest.TestCase):
@@ -49,8 +46,8 @@ class TestGNNSchemaValidation(unittest.TestCase):
         if not GNN_AVAILABLE:
             self.skipTest("GNN module not available")
         
-        self.validator = GNNValidator()
-        self.parser = GNNParser()
+        self.validator = GNNParser()
+        self.parser = GNNValidator()
         
         # Valid GNN content for testing
         self.valid_gnn_content = """# GNN Example: Test Model
@@ -527,78 +524,6 @@ class TestGNNExampleValidation(unittest.TestCase):
                     target_vars = connection.target if isinstance(connection.target, list) else []
 
 
-class TestGNNFormalParser(unittest.TestCase):
-    """Test formal Lark-based parser."""
-    
-    def setUp(self):
-        """Set up test environment."""
-        if not FORMAL_PARSER_AVAILABLE:
-            self.skipTest("Formal parser not available")
-        
-        self.formal_parser = GNNFormalParser()
-    
-    def test_formal_parser_initialization(self):
-        """Test formal parser initialization."""
-        self.assertIsNotNone(self.formal_parser)
-        
-        if LARK_AVAILABLE:
-            # Parser should be initialized if Lark is available
-            pass  # Parser initialization is complex and depends on grammar file
-    
-    def test_syntax_validation(self):
-        """Test syntax validation with formal parser."""
-        if not LARK_AVAILABLE:
-            self.skipTest("Lark library not available")
-        
-        valid_content = """## GNNSection
-TestModel
-
-## GNNVersionAndFlags
-GNN v1
-
-## ModelName
-Test Model
-
-## ModelAnnotation
-Test annotation.
-
-## StateSpaceBlock
-x[2,type=float]
-
-## Connections
-x>y
-
-## InitialParameterization
-x={(1.0,2.0)}
-
-## Time
-Static
-
-## Footer
-End
-"""
-        
-        is_valid, errors = self.formal_parser.validate_syntax(valid_content)
-        
-        # This test depends on successful grammar loading
-        if self.formal_parser.parser:
-            self.assertTrue(is_valid, f"Valid content should parse: {errors}")
-    
-    def test_parse_tree_visualization(self):
-        """Test parse tree visualization."""
-        if not LARK_AVAILABLE:
-            self.skipTest("Lark library not available")
-        
-        simple_content = "## GNNSection\nTestModel"
-        
-        tree_viz = self.formal_parser.visualize_parse_tree(simple_content)
-        
-        self.assertIsInstance(tree_viz, str)
-        # Tree visualization should contain some structure
-        if self.formal_parser.parser:
-            self.assertGreater(len(tree_viz), 0)
-
-
 class TestGNNPerformance(unittest.TestCase):
     """Test GNN module performance and memory usage."""
     
@@ -996,7 +921,6 @@ if __name__ == '__main__':
         TestGNNSchemaValidation,
         TestGNNParser,
         TestGNNExampleValidation,
-        TestGNNFormalParser,
         TestGNNPerformance,
         TestGNNErrorHandling,
         TestGNNMCPIntegration,

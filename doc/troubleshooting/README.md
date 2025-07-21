@@ -154,7 +154,7 @@ python src/main.py --diagnostics
 
 # Check specific components
 python src/4_type_checker.py --validate-only
-python src/2_setup.py --check-deps
+python src/1_setup.py --check-deps
 ```
 
 ### Debug Mode
@@ -278,7 +278,7 @@ If pipeline is completely broken:
 # Nuclear option - complete reset
 git checkout HEAD -- .
 rm -rf output/ src/.venv/ __pycache__/
-python src/2_setup.py --clean-install
+python src/1_setup.py --clean-install
 ```
 
 This troubleshooting guide covers the most common issues. For persistent problems, please file a GitHub issue with debug information. 

@@ -432,32 +432,113 @@ class GNNValidator:
             ))
     
     def _validate_active_inference(self, model: GNNInternalRepresentation, result: ValidationResult):
-        """Validate Active Inference specific requirements."""
-        # Check for required Active Inference components
-        var_types = {var.var_type for var in model.variables}
+        """Validate Active Inference specific constraints."""
+        # Check for essential Active Inference components
+        actinf_vars = {
+            'A': False,  # Likelihood matrix
+            'B': False,  # Transition matrix
+            'C': False,  # Preference vector
+            'D': False,  # Prior vector
+            'π': False,  # Policy
+            'G': False,  # Expected free energy
+            's': False,  # Hidden state
+            'o': False,  # Observation
+            'u': False   # Action
+        }
         
-        # Should have hidden states
-        if VariableType.HIDDEN_STATE not in var_types:
+        # Check for variables with Active Inference standard names
+        for var in model.variables:
+            # Handle case variations and normalize Unicode (e.g., π, pi)
+            name = var.name.lower()
+            
+            # Normalize pi characters (π or pi)
+            if name == 'π' or name == 'pi':
+                actinf_vars['π'] = True
+                continue
+                
+            # Single letter variable check (A, B, C, D, G, E, F)
+            if var.name in actinf_vars:
+                actinf_vars[var.name] = True
+            elif var.name.lower() == 's':
+                actinf_vars['s'] = True
+            elif var.name.lower() == 'o':
+                actinf_vars['o'] = True
+            elif var.name.lower() == 'u':
+                actinf_vars['u'] = True
+                
+            # Handle cases with subscripts like s_1, o_m, etc.
+            if name.startswith('s_'):
+                actinf_vars['s'] = True
+            elif name.startswith('o_'):
+                actinf_vars['o'] = True
+            
+        # Check for core Active Inference components
+        missing_components = []
+        
+        # For POMDP models, A and o are critical
+        if not actinf_vars['A'] and not actinf_vars['o']:
+            missing_components.append("observation model (A matrix or o variable)")
+        
+        # For action-perception models, state is critical
+        if not actinf_vars['s']:
+            missing_components.append("state representation (s variable)")
+            
+        # For full active inference, policy selection is needed
+        if not (actinf_vars['π'] or actinf_vars['G']):
+            missing_components.append("policy selection mechanism (π or G variables)")
+            
+        # Check if model has special variables E (habit) or F (variational free energy)
+        has_habit = any(var.name == 'E' for var in model.variables)
+        has_vfe = any(var.name == 'F' for var in model.variables)
+        
+        # Add warnings for missing components
+        if missing_components:
+            component_list = ", ".join(missing_components)
             result.add_issue(ValidationIssue(
                 severity=ValidationSeverity.WARNING,
-                message="Active Inference models typically require hidden states",
+                message=f"Model may be missing core Active Inference components: {component_list}",
                 component="model",
                 component_type="active_inference",
-                details={"missing_component": "hidden_state"}
+                details={"missing_components": missing_components}
+            ))
+            
+        # POMDP and other checks
+        self._validate_pomdp_structure(model, actinf_vars, result)
+    
+    def _validate_pomdp_structure(self, model: GNNInternalRepresentation, actinf_vars: Dict[str, bool], result: ValidationResult):
+        """Validate the structure of a POMDP model."""
+        # Check for policy variable π
+        if not actinf_vars['π']:
+            result.add_issue(ValidationIssue(
+                severity=ValidationSeverity.WARNING,
+                message="Policy variable π is missing",
+                component="π",
+                component_type="variable",
+                details={"suggestion": "Add a policy variable π"}
             ))
         
-        # Should have observations
-        if VariableType.OBSERVATION not in var_types:
+        # Check for expected free energy G
+        if not actinf_vars['G']:
             result.add_issue(ValidationIssue(
-                severity=ValidationSeverity.WARNING,
-                message="Active Inference models typically require observations",
-                component="model",
-                component_type="active_inference",
-                details={"missing_component": "observation"}
+                severity=ValidationSeverity.INFO,
+                message="Expected Free Energy G is missing",
+                component="G",
+                component_type="variable",
+                details={"suggestion": "Add an expected free energy variable G"}
+            ))
+        
+        # Check for habit E
+        if not actinf_vars.get('E', False):
+            result.add_issue(ValidationIssue(
+                severity=ValidationSeverity.INFO,
+                message="Habit E is missing",
+                component="E",
+                component_type="variable",
+                details={"suggestion": "Add a habit variable E"}
             ))
         
         # Check for A matrix (observation model)
-        if VariableType.LIKELIHOOD_MATRIX not in var_types:
+        if not actinf_vars['A']:
             result.add_issue(ValidationIssue(
                 severity=ValidationSeverity.INFO,
                 message="No A matrix (observation model) found",
@@ -470,7 +551,7 @@ class GNNValidator:
         has_temporal_connections = any(
             connection.description and 'temporal' in connection.description.lower()
             for connection in model.connections
-        )
+        ) or model.time_specification and model.time_specification.time_type == "Dynamic"
         
         if has_temporal_connections and not model.time_specification:
             result.add_issue(ValidationIssue(
