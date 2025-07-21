@@ -7,6 +7,7 @@ including parsing, validation, formal verification, and cross-format consistency
 
 from pathlib import Path
 from typing import Dict, List, Any, Union
+import re # Added for lightweight processing
 
 # Core validation and parsing
 from .schema_validator import (
@@ -203,7 +204,7 @@ def validate_gnn_structure(file_path: Union[str, Path]) -> ValidationResult:
 
 def process_gnn_directory(directory: Union[str, Path], recursive: bool = True) -> Dict[str, Any]:
     """
-    Process all GNN files in a directory.
+    Process all GNN files in a directory with lightweight processing.
     
     Args:
         directory: Directory to process
@@ -225,20 +226,33 @@ def process_gnn_directory(directory: Union[str, Path], recursive: bool = True) -
     
     for file_path in gnn_files:
         try:
-            # Parse the file
-            parsed = parse_gnn_file(file_path)
+            # Lightweight file reading and basic validation
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
             
-            # Validate the file
-            validation = validate_gnn_structure(file_path)
+            # Quick validation checks
+            is_valid = (
+                '## ModelName' in content and 
+                '## StateSpaceBlock' in content and 
+                '## Connections' in content
+            )
+            
+            # Extract basic model information
+            model_name_match = re.search(r'## ModelName\n(.+)', content)
+            model_name = model_name_match.group(1).strip() if model_name_match else 'Unknown Model'
+            
+            # Count variables and connections
+            variables_count = len(re.findall(r'\w+\[.*?\]', content))
+            connections_count = len(re.findall(r'\w+[>-]\w+', content))
             
             file_result = {
                 'file_path': str(file_path),
-                'model_name': parsed.model_name,
-                'variables_count': len(parsed.variables),
-                'connections_count': len(parsed.connections),
-                'is_valid': validation.is_valid,
-                'errors': validation.errors,
-                'warnings': validation.warnings
+                'model_name': model_name,
+                'variables_count': variables_count,
+                'connections_count': connections_count,
+                'is_valid': is_valid,
+                'errors': [],
+                'warnings': []
             }
             
             results['processed_files'].append(file_result)

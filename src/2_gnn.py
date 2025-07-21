@@ -36,6 +36,7 @@ import sys
 import time
 from pathlib import Path
 from typing import Optional, List, Dict, Any
+from datetime import datetime
 
 # Import utilities if available
 try:
@@ -101,18 +102,21 @@ def log_step_error_safe(logger, message):
     else:
         logger.error(f"[ERROR] {message}")
 
-# Global function for processing directory with timeout
-def _process_gnn_directory_with_timeout(target_dir, recursive, logger=None):
+def _process_gnn_directory_with_timeout(
+    target_dir: Path, 
+    recursive: bool, 
+    logger: Optional[logging.Logger] = None
+) -> Dict[str, Any]:
     """
-    Global function to process GNN directory with error handling.
+    Global function to process GNN directory with enhanced error handling and logging.
     
     Args:
         target_dir: Directory to process
         recursive: Whether to process recursively
-        logger: Optional logger for error reporting
+        logger: Optional logger for detailed reporting
     
     Returns:
-        Processing results or None if processing fails
+        Processing results dictionary
     """
     import signal
     import sys
@@ -126,7 +130,7 @@ def _process_gnn_directory_with_timeout(target_dir, recursive, logger=None):
     
     # Set up timeout handler
     signal.signal(signal.SIGALRM, timeout_handler)
-    signal.alarm(30)  # 30 second timeout
+    signal.alarm(30)  # 30-second timeout
     
     try:
         # Suppress specific warnings from cross_format_validator
@@ -140,8 +144,8 @@ def _process_gnn_directory_with_timeout(target_dir, recursive, logger=None):
         if not isinstance(target_dir, Path):
             target_dir = Path(target_dir)
         
-        # Add more detailed logging
         if logger:
+            # Extremely detailed file discovery logging
             logger.debug(f"Processing directory: {target_dir}")
             logger.debug(f"Recursive: {recursive}")
             logger.debug(f"Directory exists: {target_dir.exists()}")
@@ -223,6 +227,14 @@ def _process_gnn_directory_with_timeout(target_dir, recursive, logger=None):
         # Attempt to process directory
         try:
             processing_results = process_gnn_directory(target_dir, recursive=recursive)
+            
+            # Add extensive logging for processing results
+            if logger:
+                logger.info(f"Processing Results: {json.dumps(processing_results, indent=2)}")
+                
+                # Log detailed file processing information
+                for file_result in processing_results.get('processed_files', []):
+                    logger.info(f"Processed File: {file_result}")
         except Exception as e:
             # Detailed error logging
             if logger:
@@ -246,12 +258,8 @@ def _process_gnn_directory_with_timeout(target_dir, recursive, logger=None):
                 'errors': [str(e)]
             }
         
-        if logger:
-            logger.debug("process_gnn_directory completed successfully")
-            logger.debug(f"Total files processed: {processing_results.get('total_files', 0)}")
-            logger.debug(f"Processed files: {len(processing_results.get('processed_files', []))}")
-        
         return processing_results
+        
     except TimeoutError:
         if logger:
             logger.warning("GNN processing timed out")
@@ -713,7 +721,64 @@ def run_script() -> int:
             logger.debug(f"  Recursive: {args.recursive}")
             logger.debug(f"  Architecture: {'Legacy (forced)' if args.force_legacy else 'Modular'}")
         
-                # Choose processing method - prefer enhanced GNN module processing
+        # Run round-trip testing
+        try:
+            from gnn.testing.test_round_trip import GNNRoundTripTester
+            
+            logger.info("Running comprehensive round-trip tests...")
+            tester = GNNRoundTripTester()
+            
+            # Configure test settings based on CLI arguments
+            if test_subset:
+                # Modify test configuration to use only specified formats
+                import gnn.testing.test_round_trip as test_module
+                test_module.FORMAT_TEST_CONFIG['test_all_formats'] = False
+                test_module.FORMAT_TEST_CONFIG['test_formats'] = test_subset
+            
+            # Run tests
+            report = tester.run_comprehensive_tests()
+            
+            # Generate and save report
+            round_trip_output_dir = output_dir / "round_trip_tests"
+            round_trip_output_dir.mkdir(parents=True, exist_ok=True)
+            
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            
+            # Markdown report
+            md_report_file = round_trip_output_dir / f"round_trip_report_{timestamp}.md"
+            tester.generate_report(report, md_report_file)
+            
+            # JSON results
+            json_report_file = round_trip_output_dir / f"round_trip_results_{timestamp}.json"
+            import json
+            with open(json_report_file, 'w') as f:
+                json.dump({
+                    'total_tests': report.total_tests,
+                    'successful_tests': report.successful_tests,
+                    'failed_tests': report.failed_tests,
+                    'success_rate': report.get_success_rate(),
+                    'results': [
+                        {
+                            'format': result.target_format.value,
+                            'success': result.success,
+                            'errors': result.errors,
+                            'warnings': result.warnings,
+                            'differences': result.differences
+                        } for result in report.round_trip_results
+                    ]
+                }, f, indent=2)
+            
+            logger.info(f"Round-trip test report saved: {md_report_file}")
+            logger.info(f"Round-trip test results saved: {json_report_file}")
+            
+        except ImportError:
+            logger.warning("Round-trip testing module not available")
+        except Exception as e:
+            logger.error(f"Round-trip testing failed: {e}")
+            if args.verbose:
+                logger.exception("Detailed error:")
+        
+        # Choose processing method - prefer enhanced GNN module processing
         if args.force_legacy:
             logger.info("Using legacy processing mode (forced)")
             success = process_gnn_files_legacy(
