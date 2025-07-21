@@ -60,7 +60,7 @@ class PipelineConfig:
                 description="Project setup and environment validation",
                 module_path="2_setup.py",
                 output_subdir="setup_artifacts",
-                timeout=300,
+                timeout=600,
                 required=True  # Setup is critical for the pipeline
             ),
             "3_tests.py": StepConfig(

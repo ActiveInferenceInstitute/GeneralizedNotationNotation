@@ -103,7 +103,8 @@ def perform_setup_standardized(
                 exit_code = perform_full_setup(
                     verbose=verbose,
                     recreate_venv=kwargs.get('recreate_venv', False),
-                    dev=kwargs.get('dev', False)
+                    dev=kwargs.get('dev', False),
+                    skip_jax_test=kwargs.get('skip_jax_test', True)
                 )
                 if exit_code != 0:
                     log_step_error(logger, "Environment setup failed")
@@ -131,7 +132,8 @@ run_script = create_standardized_pipeline_script(
     "Environment setup and dependency installation",
     additional_arguments={
         "recreate_venv": {"type": bool, "default": False, "help": "Recreate virtual environment"},
-        "dev": {"type": bool, "default": False, "help": "Install development dependencies"}
+        "dev": {"type": bool, "default": False, "help": "Install development dependencies"},
+        "skip_jax_test": {"type": bool, "default": True, "help": "Skip JAX installation testing (faster setup)"}
     }
 )
 
