@@ -1,0 +1,10 @@
+{
+  "step_name": "13_sapf",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "processing_options": {
+    "verbose": true,
+    "duration": 30.0
+  }
+}

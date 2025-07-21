@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-07-21 12:33:14",
+  "status": "completed",
+  "total_files": 1,
+  "files_processed": 0,
+  "successful_analyses": 0,
+  "failed_analyses": 18,
+  "total_analyses": 18,
+  "success": false,
+  "providers_status": {
+    "openai": {
+      "available": true,
+      "instance": 

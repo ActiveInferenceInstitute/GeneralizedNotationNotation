@@ -1,0 +1,17 @@
+{
+  "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md": {
+    "A": "LikelihoodMatrix",
+    "B": "TransitionMatrix",
+    "C": "LogPreferenceVector",
+    "D": "PriorOverHiddenStates",
+    "E": "Habit",
+    "F": "VariationalFreeEnergy",
+    "G": "ExpectedFreeEnergy",
+    "s": "HiddenState",
+    "s_prime": "NextHiddenState",
+    "o": "Observation",
+    "π": "PolicyVector",
+    "u": "Action",
+    "t": "Time"
+  }
+}
