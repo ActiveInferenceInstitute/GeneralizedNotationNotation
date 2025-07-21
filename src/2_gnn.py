@@ -604,13 +604,17 @@ def process_gnn_files_modular(
             
             logger.info(f"Found {len(gnn_files)} GNN files to export")
             
-            # Create format directories
-            formats = ["json", "yaml", "xml", "markdown"]
+            # Create format directories for all 20 supported formats
+            formats = [
+                "json", "yaml", "xml", "markdown", "pkl", "protobuf", "xsd", "asn1",
+                "python", "scala", "lean", "coq", "isabelle", "haskell", "alloy",
+                "bnf", "z_notation", "tla_plus", "agda", "pickle", "maxima"
+            ]
             for fmt in formats:
                 fmt_dir = export_dir / fmt
                 fmt_dir.mkdir(parents=True, exist_ok=True)
             
-            # Export each file
+            # Export each file to all 20 formats
             for gnn_file in gnn_files:
                 try:
                     # Read the file
@@ -623,65 +627,846 @@ def process_gnn_files_modular(
                     # Parse GNN markdown content to structured format
                     model_data = parse_gnn_markdown_content(content)
                     
-                    # Export to JSON
-                    import json
-                    json_path = export_dir / "json" / f"{base_name}.json"
-                    with open(json_path, 'w') as f:
-                        json.dump(model_data, f, indent=2)
-                    logger.info(f"Exported to JSON: {json_path}")
+                    # Export to all formats
+                    export_success_count = 0
+                    total_formats = len(formats)
                     
-                    # Export to YAML
-                    try:
-                        import yaml
-                        yaml_path = export_dir / "yaml" / f"{base_name}.yaml"
-                        with open(yaml_path, 'w') as f:
-                            yaml.dump(model_data, f)
-                        logger.info(f"Exported to YAML: {yaml_path}")
-                    except ImportError:
-                        logger.warning("YAML module not available, skipping YAML export")
+                    for fmt in formats:
+                        try:
+                            export_path = export_dir / fmt / f"{base_name}.{fmt}"
+                            
+                            if fmt == "json":
+                                import json
+                                with open(export_path, 'w') as f:
+                                    json.dump(model_data, f, indent=2)
+                                logger.info(f"Exported to JSON: {export_path}")
+                                export_success_count += 1
+                                
+                            elif fmt == "yaml":
+                                try:
+                                    import yaml
+                                    with open(export_path, 'w') as f:
+                                        yaml.dump(model_data, f)
+                                    logger.info(f"Exported to YAML: {export_path}")
+                                    export_success_count += 1
+                                except ImportError:
+                                    logger.warning("YAML module not available, skipping YAML export")
+                                    
+                            elif fmt == "xml":
+                                try:
+                                    import xml.etree.ElementTree as ET
+                                    from xml.dom import minidom
+                                    
+                                    def dict_to_xml(tag, d):
+                                        elem = ET.Element(tag)
+                                        for key, val in d.items():
+                                            if isinstance(val, dict):
+                                                elem.append(dict_to_xml(key, val))
+                                            elif isinstance(val, list):
+                                                list_elem = ET.SubElement(elem, key)
+                                                for item in val:
+                                                    if isinstance(item, dict):
+                                                        list_elem.append(dict_to_xml("item", item))
+                                                    else:
+                                                        item_elem = ET.SubElement(list_elem, "item")
+                                                        item_elem.text = str(item)
+                                            else:
+                                                child = ET.SubElement(elem, key)
+                                                child.text = str(val)
+                                        return elem
+                                    
+                                    xml_root = dict_to_xml("gnn_model", model_data)
+                                    xml_str = ET.tostring(xml_root, encoding='utf-8')
+                                    
+                                    # Pretty print
+                                    dom = minidom.parseString(xml_str)
+                                    pretty_xml = dom.toprettyxml(indent="  ")
+                                    
+                                    with open(export_path, 'w') as f:
+                                        f.write(pretty_xml)
+                                    logger.info(f"Exported to XML: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"XML export failed: {e}")
+                                    
+                            elif fmt == "markdown":
+                                # Copy the original markdown file
+                                with open(gnn_file, 'r') as src, open(export_path, 'w') as dst:
+                                    dst.write(src.read())
+                                logger.info(f"Copied original markdown: {export_path}")
+                                export_success_count += 1
+                                
+                            elif fmt == "pkl":
+                                try:
+                                    import pickle
+                                    with open(export_path, 'wb') as f:
+                                        pickle.dump(model_data, f)
+                                    logger.info(f"Exported to PKL: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"PKL export failed: {e}")
+                                    
+                            elif fmt == "protobuf":
+                                try:
+                                    # Create a simple protobuf-like representation
+                                    proto_content = f"""syntax = "proto3";
+package gnn;
+
+message GNNModel {{
+  string model_name = 1;
+  string version = 2;
+  string annotation = 3;
+  repeated Variable variables = 4;
+  repeated Connection connections = 5;
+  map<string, string> parameters = 6;
+}}
+
+message Variable {{
+  string name = 1;
+  string type = 2;
+  repeated int32 dimensions = 3;
+  string description = 4;
+}}
+
+message Connection {{
+  string source = 1;
+  string target = 2;
+  string type = 3;
+  string description = 4;
+}}
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(proto_content)
+                                    logger.info(f"Exported to Protobuf: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Protobuf export failed: {e}")
+                                    
+                            elif fmt == "xsd":
+                                try:
+                                    xsd_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="gnn_model">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="model_name" type="xs:string"/>
+        <xs:element name="version" type="xs:string"/>
+        <xs:element name="annotation" type="xs:string"/>
+        <xs:element name="variables" type="variables_type"/>
+        <xs:element name="connections" type="connections_type"/>
+        <xs:element name="parameters" type="parameters_type"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="variables_type">
+    <xs:sequence>
+      <xs:element name="variable" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="dimensions" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="connections_type">
+    <xs:sequence>
+      <xs:element name="connection" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="source" type="xs:string"/>
+            <xs:element name="target" type="xs:string"/>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="parameters_type">
+    <xs:sequence>
+      <xs:element name="parameter" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="value" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(xsd_content)
+                                    logger.info(f"Exported to XSD: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"XSD export failed: {e}")
+                                    
+                            elif fmt == "asn1":
+                                try:
+                                    asn1_content = f"""GNN-Model DEFINITIONS ::= BEGIN
+
+GNNModel ::= SEQUENCE {{
+    modelName     IA5String,
+    version       IA5String,
+    annotation    IA5String,
+    variables     SEQUENCE OF Variable,
+    connections   SEQUENCE OF Connection,
+    parameters    SEQUENCE OF Parameter
+}}
+
+Variable ::= SEQUENCE {{
+    name          IA5String,
+    type          IA5String,
+    dimensions    SEQUENCE OF INTEGER,
+    description   IA5String
+}}
+
+Connection ::= SEQUENCE {{
+    source        IA5String,
+    target        IA5String,
+    type          IA5String,
+    description   IA5String
+}}
+
+Parameter ::= SEQUENCE {{
+    name          IA5String,
+    value         IA5String,
+    description   IA5String
+}}
+
+END"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(asn1_content)
+                                    logger.info(f"Exported to ASN.1: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"ASN.1 export failed: {e}")
+                                    
+                            elif fmt == "python":
+                                try:
+                                    python_content = f"""# GNN Model: {model_data.get('model_name', 'Unknown')}
+# Generated from GNN markdown
+
+class GNNModel:
+    def __init__(self):
+        self.model_name = "{model_data.get('model_name', 'Unknown')}"
+        self.version = "{model_data.get('version', '1.0')}"
+        self.annotation = \"\"\"{model_data.get('annotation', '')}\"\"\"
+        self.variables = {model_data.get('variables', [])}
+        self.connections = {model_data.get('connections', [])}
+        self.parameters = {model_data.get('parameters', {})}
+        
+    def get_variable(self, name):
+        for var in self.variables:
+            if var.get('name') == name:
+                return var
+        return None
+        
+    def get_connections_from(self, source):
+        return [conn for conn in self.connections if conn.get('source') == source]
+        
+    def get_connections_to(self, target):
+        return [conn for conn in self.connections if conn.get('target') == target]
+
+# Model instance
+model = GNNModel()
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(python_content)
+                                    logger.info(f"Exported to Python: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Python export failed: {e}")
+                                    
+                            elif fmt == "scala":
+                                try:
+                                    scala_content = f"""// GNN Model: {model_data.get('model_name', 'Unknown')}
+// Generated from GNN markdown
+
+case class Variable(name: String, `type`: String, dimensions: List[Int], description: String)
+case class Connection(source: String, target: String, `type`: String, description: String)
+case class Parameter(name: String, value: String, description: String)
+
+case class GNNModel(
+  modelName: String,
+  version: String,
+  annotation: String,
+  variables: List[Variable],
+  connections: List[Connection],
+  parameters: Map[String, Parameter]
+)
+
+object GNNModel {{
+  val model = GNNModel(
+    modelName = "{model_data.get('model_name', 'Unknown')}",
+    version = "{model_data.get('version', '1.0')}",
+    annotation = \"\"\"{model_data.get('annotation', '')}\"\"\",
+    variables = List(
+{chr(10).join([f'      Variable("{var.get("name", "")}", "{var.get("type", "")}", List({", ".join(map(str, var.get("dimensions", [1])))}), "{var.get("description", "")}")' for var in model_data.get('variables', [])])}
+    ),
+    connections = List(
+{chr(10).join([f'      Connection("{conn.get("source", "")}", "{conn.get("target", "")}", "{conn.get("type", "")}", "{conn.get("description", "")}")' for conn in model_data.get('connections', [])])}
+    ),
+    parameters = Map(
+{chr(10).join([f'      "{name}" -> Parameter("{name}", "{param.get("value", "")}", "{param.get("description", "")}")' for name, param in model_data.get('parameters', {}).items()])}
+    )
+  )
+}}
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(scala_content)
+                                    logger.info(f"Exported to Scala: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Scala export failed: {e}")
+                                    
+                            elif fmt == "lean":
+                                try:
+                                    lean_content = f"""-- GNN Model: {model_data.get('model_name', 'Unknown')}
+-- Generated from GNN markdown
+
+structure Variable :=
+  (name : string)
+  (type : string)
+  (dimensions : list ℕ)
+  (description : string)
+
+structure Connection :=
+  (source : string)
+  (target : string)
+  (type : string)
+  (description : string)
+
+structure Parameter :=
+  (name : string)
+  (value : string)
+  (description : string)
+
+structure GNNModel :=
+  (model_name : string)
+  (version : string)
+  (annotation : string)
+  (variables : list Variable)
+  (connections : list Connection)
+  (parameters : list Parameter)
+
+def model : GNNModel := {{
+  model_name := "{model_data.get('model_name', 'Unknown')}",
+  version := "{model_data.get('version', '1.0')}",
+  annotation := "{model_data.get('annotation', '')}",
+  variables := [
+{chr(10).join([f'    {{ name := "{var.get("name", "")}", type := "{var.get("type", "")}", dimensions := [{", ".join(map(str, var.get("dimensions", [1])))}], description := "{var.get("description", "")}" }}' for var in model_data.get('variables', [])])}
+  ],
+  connections := [
+{chr(10).join([f'    {{ source := "{conn.get("source", "")}", target := "{conn.get("target", "")}", type := "{conn.get("type", "")}", description := "{conn.get("description", "")}" }}' for conn in model_data.get('connections', [])])}
+  ],
+  parameters := [
+{chr(10).join([f'    {{ name := "{name}", value := "{param.get("value", "")}", description := "{param.get("description", "")}" }}' for name, param in model_data.get('parameters', {}).items()])}
+  ]
+}}
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(lean_content)
+                                    logger.info(f"Exported to Lean: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Lean export failed: {e}")
+                                    
+                            elif fmt == "coq":
+                                try:
+                                    coq_content = f"""(* GNN Model: {model_data.get('model_name', 'Unknown')} *)
+(* Generated from GNN markdown *)
+
+Record Variable := {{
+  name : string;
+  type : string;
+  dimensions : list nat;
+  description : string
+}}.
+
+Record Connection := {{
+  source : string;
+  target : string;
+  type : string;
+  description : string
+}}.
+
+Record Parameter := {{
+  name : string;
+  value : string;
+  description : string
+}}.
+
+Record GNNModel := {{
+  model_name : string;
+  version : string;
+  annotation : string;
+  variables : list Variable;
+  connections : list Connection;
+  parameters : list Parameter
+}}.
+
+Definition model : GNNModel := {{
+  model_name := "{model_data.get('model_name', 'Unknown')}";
+  version := "{model_data.get('version', '1.0')}";
+  annotation := "{model_data.get('annotation', '')}";
+  variables := [
+{chr(10).join([f'    {{| name := "{var.get("name", "")}"; type := "{var.get("type", "")}"; dimensions := [{", ".join(map(str, var.get("dimensions", [1])))}]; description := "{var.get("description", "")}" |}}' for var in model_data.get('variables', [])])}
+  ];
+  connections := [
+{chr(10).join([f'    {{| source := "{conn.get("source", "")}"; target := "{conn.get("target", "")}"; type := "{conn.get("type", "")}"; description := "{conn.get("description", "")}" |}}' for conn in model_data.get('connections', [])])}
+  ];
+  parameters := [
+{chr(10).join([f'    {{| name := "{name}"; value := "{param.get("value", "")}"; description := "{param.get("description", "")}" |}}' for name, param in model_data.get('parameters', {}).items()])}
+  ]
+}}.
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(coq_content)
+                                    logger.info(f"Exported to Coq: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Coq export failed: {e}")
+                                    
+                            elif fmt == "isabelle":
+                                try:
+                                    # Build Isabelle content without f-string backslashes
+                                    isabelle_base = f"""(* GNN Model: {model_data.get('model_name', 'Unknown')} *)
+(* Generated from GNN markdown *)
+
+theory GNNModel
+imports Main
+begin
+
+datatype variable = Variable
+  (name: string)
+  (type: string)
+  (dimensions: "nat list")
+  (description: string)
+
+datatype connection = Connection
+  (source: string)
+  (target: string)
+  (type: string)
+  (description: string)
+
+datatype parameter = Parameter
+  (name: string)
+  (value: string)
+  (description: string)
+
+datatype gnn_model = GNNModel
+  (model_name: string)
+  (version: string)
+  (annotation: string)
+  (variables: "variable list")
+  (connections: "connection list")
+  (parameters: "parameter list")
+
+definition model :: gnn_model where
+  "model = GNNModel
+    \\<open>{model_data.get('model_name', 'Unknown')}\\<close>
+    \\<open>{model_data.get('version', '1.0')}\\<close>
+    \\<open>{model_data.get('annotation', '')}\\<close>
+    ["""
+
+                                    # Build variable definitions
+                                    var_defs = []
+                                    for var in model_data.get('variables', []):
+                                        var_def = f'      Variable \\<open>{var.get("name", "")}\\<close> \\<open>{var.get("type", "")}\\<close> [{", ".join(map(str, var.get("dimensions", [1])))}] \\<open>{var.get("description", "")}\\<close>'
+                                        var_defs.append(var_def)
+                                    
+                                    # Build connection definitions
+                                    conn_defs = []
+                                    for conn in model_data.get('connections', []):
+                                        conn_def = f'      Connection \\<open>{conn.get("source", "")}\\<close> \\<open>{conn.get("target", "")}\\<close> \\<open>{conn.get("type", "")}\\<close> \\<open>{conn.get("description", "")}\\<close>'
+                                        conn_defs.append(conn_def)
+                                    
+                                    # Build parameter definitions
+                                    param_defs = []
+                                    for name, param in model_data.get('parameters', {}).items():
+                                        param_def = f'      Parameter \\<open>{name}\\<close> \\<open>{param.get("value", "")}\\<close> \\<open>{param.get("description", "")}\\<close>'
+                                        param_defs.append(param_def)
+                                    
+                                    isabelle_content = isabelle_base + chr(10).join(var_defs) + """    ]
+    [""" + chr(10).join(conn_defs) + """    ]
+    [""" + chr(10).join(param_defs) + """    ]"
+
+end
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(isabelle_content)
+                                    logger.info(f"Exported to Isabelle: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Isabelle export failed: {e}")
+                                    
+                            elif fmt == "haskell":
+                                try:
+                                    haskell_content = f"""-- GNN Model: {model_data.get('model_name', 'Unknown')}
+-- Generated from GNN markdown
+
+data Variable = Variable
+  {{ name :: String
+  , type_ :: String
+  , dimensions :: [Int]
+  , description :: String
+  }} deriving (Show, Eq)
+
+data Connection = Connection
+  {{ source :: String
+  , target :: String
+  , type_ :: String
+  , description :: String
+  }} deriving (Show, Eq)
+
+data Parameter = Parameter
+  {{ name :: String
+  , value :: String
+  , description :: String
+  }} deriving (Show, Eq)
+
+data GNNModel = GNNModel
+  {{ modelName :: String
+  , version :: String
+  , annotation :: String
+  , variables :: [Variable]
+  , connections :: [Connection]
+  , parameters :: [Parameter]
+  }} deriving (Show, Eq)
+
+model :: GNNModel
+model = GNNModel
+  {{ modelName = "{model_data.get('model_name', 'Unknown')}"
+  , version = "{model_data.get('version', '1.0')}"
+  , annotation = "{model_data.get('annotation', '')}"
+  , variables = [
+{chr(10).join([f'      Variable "{var.get("name", "")}" "{var.get("type", "")}" [{", ".join(map(str, var.get("dimensions", [1])))}] "{var.get("description", "")}"' for var in model_data.get('variables', [])])}
+    ]
+  , connections = [
+{chr(10).join([f'      Connection "{conn.get("source", "")}" "{conn.get("target", "")}" "{conn.get("type", "")}" "{conn.get("description", "")}"' for conn in model_data.get('connections', [])])}
+    ]
+  , parameters = [
+{chr(10).join([f'      Parameter "{name}" "{param.get("value", "")}" "{param.get("description", "")}"' for name, param in model_data.get('parameters', {}).items()])}
+    ]
+  }}
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(haskell_content)
+                                    logger.info(f"Exported to Haskell: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Haskell export failed: {e}")
+                                    
+                            elif fmt == "alloy":
+                                try:
+                                    alloy_content = f"""// GNN Model: {model_data.get('model_name', 'Unknown')}
+// Generated from GNN markdown
+
+sig Variable {{
+  name: one String,
+  type: one String,
+  dimensions: set Int,
+  description: one String
+}}
+
+sig Connection {{
+  source: one String,
+  target: one String,
+  type: one String,
+  description: one String
+}}
+
+sig Parameter {{
+  name: one String,
+  value: one String,
+  description: one String
+}}
+
+sig GNNModel {{
+  model_name: one String,
+  version: one String,
+  annotation: one String,
+  variables: set Variable,
+  connections: set Connection,
+  parameters: set Parameter
+}}
+
+fact model_definition {{
+  one model: GNNModel |
+    model.model_name = "{model_data.get('model_name', 'Unknown')}" and
+    model.version = "{model_data.get('version', '1.0')}" and
+    model.annotation = "{model_data.get('annotation', '')}"
+}}
+
+// Variable definitions
+{chr(10).join([f'fact var_{var.get("name", "").replace("-", "_")} {{ one v: Variable | v.name = "{var.get("name", "")}" and v.type = "{var.get("type", "")}" and v.description = "{var.get("description", "")}" }}' for var in model_data.get('variables', [])])}
+
+// Connection definitions
+{chr(10).join([f'fact conn_{conn.get("source", "").replace("-", "_")}_{conn.get("target", "").replace("-", "_")} {{ one c: Connection | c.source = "{conn.get("source", "")}" and c.target = "{conn.get("target", "")}" and c.type = "{conn.get("type", "")}" and c.description = "{conn.get("description", "")}" }}' for conn in model_data.get('connections', [])])}
+
+// Parameter definitions
+{chr(10).join([f'fact param_{name.replace("-", "_")} {{ one p: Parameter | p.name = "{name}" and p.value = "{param.get("value", "")}" and p.description = "{param.get("description", "")}" }}' for name, param in model_data.get('parameters', {}).items()])}
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(alloy_content)
+                                    logger.info(f"Exported to Alloy: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Alloy export failed: {e}")
+                                    
+                            elif fmt == "bnf":
+                                try:
+                                    bnf_content = f"""(* GNN Model: {model_data.get('model_name', 'Unknown')} *)
+(* Generated from GNN markdown *)
+
+<gnn-model> ::= <model-header> <variables-section> <connections-section> <parameters-section>
+
+<model-header> ::= "ModelName" <string> "Version" <string> "Annotation" <string>
+
+<variables-section> ::= "Variables:" <variable-list>
+<variable-list> ::= <variable> | <variable> <variable-list>
+<variable> ::= <name> "[" <dimensions> "]" <type> <description>
+
+<connections-section> ::= "Connections:" <connection-list>
+<connection-list> ::= <connection> | <connection> <connection-list>
+<connection> ::= <source> "->" <target> <type> <description>
+
+<parameters-section> ::= "Parameters:" <parameter-list>
+<parameter-list> ::= <parameter> | <parameter> <parameter-list>
+<parameter> ::= <name> "=" <value> <description>
+
+<name> ::= <identifier>
+<type> ::= "hidden_state" | "observation" | "action" | "parameter_matrix"
+<dimensions> ::= <number> | <number> "," <dimensions>
+<source> ::= <identifier>
+<target> ::= <identifier>
+<value> ::= <string> | <number> | <tuple>
+<description> ::= "#" <string>
+<identifier> ::= <letter> | <letter> <identifier>
+<letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+<number> ::= <digit> | <digit> <number>
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<string> ::= "\"" <char-list> "\""
+<char-list> ::= <char> | <char> <char-list>
+<char> ::= <letter> | <digit> | " " | "." | "," | "-" | "_"
+<tuple> ::= "(" <value-list> ")"
+<value-list> ::= <value> | <value> "," <value-list>
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(bnf_content)
+                                    logger.info(f"Exported to BNF: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"BNF export failed: {e}")
+                                    
+                            elif fmt == "z_notation":
+                                try:
+                                    z_content = f"""-- GNN Model: {model_data.get('model_name', 'Unknown')}
+-- Generated from GNN markdown
+
+[String, Int]
+
+Variable == [name: String; type: String; dimensions: seq Int; description: String]
+
+Connection == [source: String; target: String; type: String; description: String]
+
+Parameter == [name: String; value: String; description: String]
+
+GNNModel == [model_name: String; version: String; annotation: String; variables: seq Variable; connections: seq Connection; parameters: seq Parameter]
+
+model: GNNModel
+model = [model_name: "{model_data.get('model_name', 'Unknown')}"; version: "{model_data.get('version', '1.0')}"; annotation: "{model_data.get('annotation', '')}"; variables: [
+{chr(10).join([f'  [name: "{var.get("name", "")}"; type: "{var.get("type", "")}"; dimensions: [{", ".join(map(str, var.get("dimensions", [1])))}]; description: "{var.get("description", "")}"]' for var in model_data.get('variables', [])])}
+]; connections: [
+{chr(10).join([f'  [source: "{conn.get("source", "")}"; target: "{conn.get("target", "")}"; type: "{conn.get("type", "")}"; description: "{conn.get("description", "")}"]' for conn in model_data.get('connections', [])])}
+]; parameters: [
+{chr(10).join([f'  [name: "{name}"; value: "{param.get("value", "")}"; description: "{param.get("description", "")}"]' for name, param in model_data.get('parameters', {}).items()])}
+]]
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(z_content)
+                                    logger.info(f"Exported to Z Notation: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Z Notation export failed: {e}")
+                                    
+                            elif fmt == "tla_plus":
+                                try:
+                                    tla_content = f"""---- MODULE GNNModel ----
+(* GNN Model: {model_data.get('model_name', 'Unknown')} *)
+(* Generated from GNN markdown *)
+
+EXTENDS Naturals, Sequences
+
+VARIABLES model_name, version, annotation, variables, connections, parameters
+
+TypeOK == 
+  /\\ model_name \\in STRING
+  /\\ version \\in STRING
+  /\\ annotation \\in STRING
+  /\\ variables \\in Seq(STRING \\times STRING \\times Seq(Nat) \\times STRING)
+  /\\ connections \\in Seq(STRING \\times STRING \\times STRING \\times STRING)
+  /\\ parameters \\in Seq(STRING \\times STRING \\times STRING)
+
+Init == 
+  /\\ model_name = "{model_data.get('model_name', 'Unknown')}"
+  /\\ version = "{model_data.get('version', '1.0')}"
+  /\\ annotation = "{model_data.get('annotation', '')}"
+  /\\ variables = <<
+{chr(10).join([f'    <<"{var.get("name", "")}", "{var.get("type", "")}", <<{", ".join(map(str, var.get("dimensions", [1])))}>>, "{var.get("description", "")}>>' for var in model_data.get('variables', [])])}
+  >>
+  /\\ connections = <<
+{chr(10).join([f'    <<"{conn.get("source", "")}", "{conn.get("target", "")}", "{conn.get("type", "")}", "{conn.get("description", "")}">>' for conn in model_data.get('connections', [])])}
+  >>
+  /\\ parameters = <<
+{chr(10).join([f'    <<"{name}", "{param.get("value", "")}", "{param.get("description", "")}">>' for name, param in model_data.get('parameters', {}).items()])}
+  >>
+
+Next == UNCHANGED <<model_name, version, annotation, variables, connections, parameters>>
+
+Spec == Init /\\ [][Next]_<<model_name, version, annotation, variables, connections, parameters>>
+
+====
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(tla_content)
+                                    logger.info(f"Exported to TLA+: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"TLA+ export failed: {e}")
+                                    
+                            elif fmt == "agda":
+                                try:
+                                    agda_content = f"""-- GNN Model: {model_data.get('model_name', 'Unknown')}
+-- Generated from GNN markdown
+
+module GNNModel where
+
+open import Data.String
+open import Data.List
+open import Data.Nat
+open import Data.Product
+
+record Variable : Set where
+  constructor variable
+  field
+    name : String
+    type : String
+    dimensions : List ℕ
+    description : String
+
+record Connection : Set where
+  constructor connection
+  field
+    source : String
+    target : String
+    type : String
+    description : String
+
+record Parameter : Set where
+  constructor parameter
+  field
+    name : String
+    value : String
+    description : String
+
+record GNNModel : Set where
+  constructor gnnModel
+  field
+    modelName : String
+    version : String
+    annotation : String
+    variables : List Variable
+    connections : List Connection
+    parameters : List Parameter
+
+model : GNNModel
+model = gnnModel
+  "{model_data.get('model_name', 'Unknown')}"
+  "{model_data.get('version', '1.0')}"
+  "{model_data.get('annotation', '')}"
+  [
+{chr(10).join([f'    variable "{var.get("name", "")}" "{var.get("type", "")}" [{", ".join(map(str, var.get("dimensions", [1])))}] "{var.get("description", "")}"' for var in model_data.get('variables', [])])}
+  ]
+  [
+{chr(10).join([f'    connection "{conn.get("source", "")}" "{conn.get("target", "")}" "{conn.get("type", "")}" "{conn.get("description", "")}"' for conn in model_data.get('connections', [])])}
+  ]
+  [
+{chr(10).join([f'    parameter "{name}" "{param.get("value", "")}" "{param.get("description", "")}"' for name, param in model_data.get('parameters', {}).items()])}
+  ]
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(agda_content)
+                                    logger.info(f"Exported to Agda: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Agda export failed: {e}")
+                                    
+                            elif fmt == "pickle":
+                                try:
+                                    import pickle
+                                    with open(export_path, 'wb') as f:
+                                        pickle.dump(model_data, f)
+                                    logger.info(f"Exported to Pickle: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Pickle export failed: {e}")
+                                    
+                            elif fmt == "maxima":
+                                try:
+                                    maxima_content = f"""/* GNN Model: {model_data.get('model_name', 'Unknown')} */
+/* Generated from GNN markdown */
+
+/* Model metadata */
+model_name: "{model_data.get('model_name', 'Unknown')}";
+version: "{model_data.get('version', '1.0')}";
+annotation: "{model_data.get('annotation', '')}";
+
+/* Variable definitions */
+variables: [
+{chr(10).join([f'  ["{var.get("name", "")}", "{var.get("type", "")}", [{", ".join(map(str, var.get("dimensions", [1])))}], "{var.get("description", "")}"]' for var in model_data.get('variables', [])])}
+];
+
+/* Connection definitions */
+connections: [
+{chr(10).join([f'  ["{conn.get("source", "")}", "{conn.get("target", "")}", "{conn.get("type", "")}", "{conn.get("description", "")}"]' for conn in model_data.get('connections', [])])}
+];
+
+/* Parameter definitions */
+parameters: [
+{chr(10).join([f'  ["{name}", "{param.get("value", "")}", "{param.get("description", "")}"]' for name, param in model_data.get('parameters', {}).items()])}
+];
+
+/* Helper functions */
+get_variable(name) := block([result], result: false, for v in variables do if v[1] = name then result: v, result);
+get_connections_from(source) := block([result], result: [], for c in connections do if c[1] = source then result: cons(c, result), result);
+get_connections_to(target) := block([result], result: [], for c in connections do if c[2] = target then result: cons(c, result), result);
+"""
+                                    with open(export_path, 'w') as f:
+                                        f.write(maxima_content)
+                                    logger.info(f"Exported to Maxima: {export_path}")
+                                    export_success_count += 1
+                                except Exception as e:
+                                    logger.warning(f"Maxima export failed: {e}")
+                                    
+                            else:
+                                logger.warning(f"Export format '{fmt}' not implemented yet")
+                                
+                        except Exception as e:
+                            logger.warning(f"Export to {fmt} failed: {e}")
                     
-                    # Export to XML
-                    try:
-                        import xml.etree.ElementTree as ET
-                        from xml.dom import minidom
-                        
-                        def dict_to_xml(tag, d):
-                            elem = ET.Element(tag)
-                            for key, val in d.items():
-                                if isinstance(val, dict):
-                                    elem.append(dict_to_xml(key, val))
-                                elif isinstance(val, list):
-                                    list_elem = ET.SubElement(elem, key)
-                                    for item in val:
-                                        if isinstance(item, dict):
-                                            list_elem.append(dict_to_xml("item", item))
-                                        else:
-                                            item_elem = ET.SubElement(list_elem, "item")
-                                            item_elem.text = str(item)
-                                else:
-                                    child = ET.SubElement(elem, key)
-                                    child.text = str(val)
-                            return elem
-                        
-                        xml_root = dict_to_xml("gnn_model", model_data)
-                        xml_str = ET.tostring(xml_root, encoding='utf-8')
-                        
-                        # Pretty print
-                        dom = minidom.parseString(xml_str)
-                        pretty_xml = dom.toprettyxml(indent="  ")
-                        
-                        xml_path = export_dir / "xml" / f"{base_name}.xml"
-                        with open(xml_path, 'w') as f:
-                            f.write(pretty_xml)
-                        logger.info(f"Exported to XML: {xml_path}")
-                    except Exception as e:
-                        logger.warning(f"XML export failed: {e}")
+                    logger.info(f"Successfully exported {export_success_count}/{total_formats} formats for {base_name}")
                     
-                    # Copy the original markdown file
-                    md_path = export_dir / "markdown" / f"{base_name}.md"
-                    with open(gnn_file, 'r') as src, open(md_path, 'w') as dst:
-                        dst.write(src.read())
-                    logger.info(f"Copied original markdown: {md_path}")
                 except Exception as e:
                     logger.warning(f"Error processing {gnn_file}: {e}")
             

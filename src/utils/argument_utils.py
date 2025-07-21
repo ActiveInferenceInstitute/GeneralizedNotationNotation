@@ -461,7 +461,8 @@ def get_step_output_dir(step_name: str, base_output_dir: Path) -> Path:
     """
     # Map of steps to their subdirectories  
     STEP_OUTPUT_MAPPING = {
-        "1_gnn": "gnn_processing_step",
+        "1_setup": "setup_artifacts",
+        "2_gnn": "gnn_processing_step",
         "3_tests": "test_reports", 
         "4_type_checker": "type_check",
         "5_export": "gnn_exports",
@@ -469,10 +470,10 @@ def get_step_output_dir(step_name: str, base_output_dir: Path) -> Path:
         "7_mcp": "mcp_processing_step",
         "8_ontology": "ontology_processing",
         "9_render": "gnn_rendered_simulators",
-        "10_execute": "execute_logs",
+        "10_execute": "execution_results",
         "11_llm": "llm_processing_step",
         "12_website": "website",
-        "13_sapf": "sapf_generation"
+        "13_sapf": "sapf_processing_step"
     }
     
     if step_name in STEP_OUTPUT_MAPPING:

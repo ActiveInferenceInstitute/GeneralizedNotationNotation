@@ -1,7 +1,0 @@
-{
-  "model_name": "actinf_pomdp_agent",
-  "input_file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
-  "audio_file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/sapf_generation/sapf_processing_step/actinf_pomdp_agent_audio.wav",
-  "audio_duration": 30.0,
-  "processing_successful": true
-}
