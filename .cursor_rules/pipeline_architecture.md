@@ -11,8 +11,8 @@
 ### Pipeline Steps (Dynamically Discovered, 1-13)
 Each numbered script corresponds to a specific module folder and implements real functionality:
 
-1. **1_gnn.py** → `src/gnn/` - GNN file discovery, parsing, and basic validation
-2. **2_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation (CRITICAL STEP)
+1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation (CRITICAL STEP)
+2. **2_gnn.py** → `src/gnn/` - GNN file discovery, parsing, and basic validation
 3. **3_tests.py** → `src/tests/` - Test suite execution with pytest integration
 4. **4_type_checker.py** → `src/type_checker/` - GNN syntax validation and resource estimation
 5. **5_export.py** → `src/export/` - Multi-format export (JSON, XML, GraphML, GEXF, Pickle)

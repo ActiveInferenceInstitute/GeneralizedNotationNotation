@@ -147,7 +147,7 @@ def build_command_args(script_name: str, script_path: Path, args, python_executa
         common_args.append(('--verbose', verbose))
     
     # --recursive (supported by most scripts)
-    if hasattr(args, 'recursive') and script_name not in ['2_setup.py', '3_tests.py']:
+    if hasattr(args, 'recursive') and script_name not in ['1_setup.py', '3_tests.py']:
         recursive = getattr(args, 'recursive', True)  # Default to True
         if recursive:
             common_args.append(('--recursive', recursive))
@@ -161,7 +161,7 @@ def build_command_args(script_name: str, script_path: Path, args, python_executa
                 full_args.extend([flag, str(value)])
     
     # Add step-specific arguments based on script name
-    if script_name in ['1_gnn.py']:
+    if script_name in ['2_gnn.py']:
         # GNN processing step supports recursive (already handled above)
         # Add enhanced validation options
         if getattr(args, 'enable_round_trip', True):

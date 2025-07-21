@@ -397,7 +397,7 @@ python src/4_gnn_type_checker.py my_model.md --check-matrices
 ### Missing Dependencies
 ```bash
 # Check what's missing
-python src/2_setup.py --check-dependencies
+python src/1_setup.py --check-dependencies
 
 # Install optional dependencies
 pip install torch  # For PyTorch integration

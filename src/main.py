@@ -7,8 +7,8 @@ It dynamically discovers and runs numbered scripts in the src/ directory, where 
 corresponds to a top-level folder and a specific processing stage.
 
 Pipeline Steps (Dynamically Discovered and Ordered):
-- 1_gnn.py (Corresponds to gnn/ folder)
-- 2_setup.py (Corresponds to setup/ folder)
+- 1_setup.py (Corresponds to setup/ folder, environment setup and dependencies)
+- 2_gnn.py (Corresponds to gnn/ folder, GNN file discovery and processing)
 - 3_tests.py (Corresponds to tests/ folder)
 - 4_type_checker.py (Corresponds to type_checker/ folder, uses type_checker.py)
 - 5_export.py (Corresponds to export/ folder)
@@ -55,8 +55,8 @@ Options:
     --website-html-filename NAME
                              Filename for the generated HTML summary website (for 12_website.py, saved in output-dir, default: gnn_pipeline_summary_website.html)
     --duration               Audio duration in seconds for SAPF generation (for 13_sapf.py, default: 30.0)
-    --recreate-venv          Recreate virtual environment even if it already exists (for 2_setup.py)
-    --dev                    Also install development dependencies from requirements-dev.txt (for 2_setup.py)
+    --recreate-venv          Recreate virtual environment even if it already exists (for 1_setup.py)
+    --dev                    Also install development dependencies from requirements-dev.txt (for 1_setup.py)
 
 """
 

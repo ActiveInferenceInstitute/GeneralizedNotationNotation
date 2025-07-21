@@ -179,8 +179,8 @@ class TestPipelineScriptDiscovery:
         expected_pattern = r"^(\d+)_.*\.py$"
         
         test_scripts = [
-            ("1_gnn.py", True, 1),
-            ("2_setup.py", True, 2),
+            ("1_setup.py", True, 1),
+            ("2_gnn.py", True, 2),
             ("13_sapf.py", True, 13),
             ("main.py", False, None),
             ("utils.py", False, None),
@@ -208,9 +208,9 @@ class TestPipelineScriptDiscovery:
         # Test script sorting by number and name
         mock_scripts = [
             {"num": 3, "basename": "3_tests.py"},
-            {"num": 1, "basename": "1_gnn.py"},
+            {"num": 1, "basename": "1_setup.py"},
             {"num": 13, "basename": "13_sapf.py"},
-            {"num": 2, "basename": "2_setup.py"}
+            {"num": 2, "basename": "2_gnn.py"}
         ]
         
         # Sort like the main orchestrator would
@@ -282,7 +282,7 @@ class TestStepExecution:
                 returncode=0,
                 stdout="Mock step output",
                 stderr="",
-                args=["python", "1_gnn.py"]
+                args=["python", "2_gnn.py"]
             )
             
             # Test basic step execution
@@ -477,7 +477,7 @@ class TestOutputGeneration:
             "step_results": [
                 {
                     "step_number": 1,
-                    "step_name": "1_gnn.py",
+                    "step_name": "2_gnn.py",
                     "status": "success",
                     "duration": 10.0,
                     "output": "Mock step 1 output"

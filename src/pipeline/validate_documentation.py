@@ -48,8 +48,8 @@ class DocumentationValidator:
         # Define actual pipeline steps (13 steps, not 14)
         self.actual_pipeline_steps = list(range(1, 14))  # 1-13
         self.pipeline_script_names = {
-            1: "1_gnn.py",
-            2: "2_setup.py", 
+            1: "1_setup.py",
+            2: "2_gnn.py", 
             3: "3_tests.py",
             4: "4_gnn_type_checker.py",
             5: "5_export.py",

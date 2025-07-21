@@ -12,18 +12,18 @@ The GNN Processing Pipeline is a comprehensive 13-step system for processing Gen
 
 ### Core Processing Chain
 
-#### Step 1: GNN File Discovery (`1_gnn.py`)
-- **Purpose**: Discover and perform basic parsing of GNN (.md) files
-- **Input**: Target directory containing GNN files  
-- **Output**: `gnn_processing_step/1_gnn_discovery_report.md`
-- **Key Features**: ModelName extraction, StateSpaceBlock detection, Connections identification
-
-#### Step 2: Environment Setup (`2_setup.py`) **[CRITICAL]**
+#### Step 1: Environment Setup (`1_setup.py`) **[CRITICAL]**
 - **Purpose**: Virtual environment setup and dependency installation
 - **Input**: Project requirements
 - **Output**: Configured environment, package reports
 - **Key Features**: Virtual environment creation, dependency validation, package listing
 - **Criticality**: Pipeline halts if this step fails
+
+#### Step 2: GNN File Discovery (`2_gnn.py`)
+- **Purpose**: Discover and perform basic parsing of GNN (.md) files
+- **Input**: Target directory containing GNN files  
+- **Output**: `gnn_processing_step/2_gnn_discovery_report.md`
+- **Key Features**: ModelName extraction, StateSpaceBlock detection, Connections identification
 
 #### Step 3: Test Execution (`3_tests.py`)
 - **Purpose**: Run comprehensive test suites

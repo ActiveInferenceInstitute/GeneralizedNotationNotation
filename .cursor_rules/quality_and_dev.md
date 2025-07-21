@@ -59,7 +59,7 @@
 #### Current Module Structure (Post-Renaming)
 - **Core Modules**: `gnn/`, `type_checker/`, `export/`, `visualization/`, `render/`, `execute/`, `llm/`, `website/`, `sapf/`
 - **Infrastructure**: `utils/`, `pipeline/`, `mcp/`, `ontology/`, `setup/`, `tests/`
-- **Pipeline Scripts**: `1_gnn.py`, `2_setup.py`, `3_tests.py`, `4_type_checker.py`, `5_export.py`, `6_visualization.py`, `7_mcp.py`, `8_ontology.py`, `9_render.py`, `10_execute.py`, `11_llm.py`, `12_website.py`, `13_sapf.py`
+- **Pipeline Scripts**: `1_setup.py`, `2_gnn.py`, `3_tests.py`, `4_type_checker.py`, `5_export.py`, `6_visualization.py`, `7_mcp.py`, `8_ontology.py`, `9_render.py`, `10_execute.py`, `11_llm.py`, `12_website.py`, `13_sapf.py`
 
 #### Output Directory Structure
 - **Type Checking**: `output/type_check/` (renamed from `gnn_type_check/`)

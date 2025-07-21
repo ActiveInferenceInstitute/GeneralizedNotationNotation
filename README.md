@@ -138,7 +138,7 @@ GNN defines a specific file structure, typically using Markdown, to organize mod
 graph TB
     subgraph "🏗️ GNN Project Architecture"
         subgraph "📁 Source Code (src/)"
-            A[⚙️ Pipeline Scripts<br/>1_gnn.py → 13_sapf.py]
+            A[⚙️ Pipeline Scripts<br/>1_setup.py → 13_sapf.py]
             B[🧠 Core Modules<br/>gnn/, render/, llm/]
             C[🔧 Utilities<br/>utils/, pipeline/]
             D[🧪 Testing<br/>tests/]
@@ -181,8 +181,8 @@ The `src/` directory contains all the Python scripts and modules that constitute
 ```
 src/
 ├── 📜 Pipeline Scripts (1-13)
-│   ├── 1_gnn.py                    # GNN Discovery & Parsing
-│   ├── 2_setup.py                  # Setup & Dependencies ⚠️ Critical
+│   ├── 1_setup.py                  # Setup & Dependencies ⚠️ Critical
+│   ├── 2_gnn.py                    # GNN Discovery & Parsing
 │   ├── 3_tests.py                  # Test Suite Execution
 │   ├── 4_type_checker.py          # Type Checking & Validation
 │   ├── 5_export.py                # Multi-Format Export
@@ -258,8 +258,8 @@ The GNN processing pipeline consists of **13 dynamically discovered stages**, ea
 
 ```mermaid
 flowchart TD
-    A["🚀 Start Pipeline"] --> B["1️⃣ GNN Discovery & Parsing<br/>src/gnn/"]
-    B --> C["2️⃣ Setup & Dependencies<br/>src/setup/<br/>⚠️ Critical Step"]
+    A["🚀 Start Pipeline"] --> B["1️⃣ Setup & Dependencies<br/>src/setup/<br/>⚠️ Critical Step"]
+    B --> C["2️⃣ GNN Discovery & Parsing<br/>src/gnn/"]
     C --> D["3️⃣ Test Suite Execution<br/>src/tests/"]
     D --> E["4️⃣ Type Checking & Validation<br/>src/type_checker/"]
     E --> F["5️⃣ Multi-Format Export<br/>src/export/"]
@@ -273,7 +273,7 @@ flowchart TD
     M --> N["1️⃣3️⃣ SAPF Audio Generation<br/>src/sapf/"]
     N --> O["✅ Pipeline Complete<br/>📊 Summary Generated"]
     
-    C -->|❌ Failure| P["🛑 Pipeline Halted<br/>Setup Required"]
+    B -->|❌ Failure| P["🛑 Pipeline Halted<br/>Setup Required"]
     
     style A fill:#e1f5fe
     style C fill:#fff3e0,stroke:#ff9800,stroke-width:3px

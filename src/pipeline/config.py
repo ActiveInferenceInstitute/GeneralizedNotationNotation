@@ -47,28 +47,28 @@ class PipelineConfig:
     def _initialize_step_configs(self):
         """Initialize default step configurations."""
         self.steps = {
-            "1_gnn.py": StepConfig(
-                name="gnn_processing",
-                description="GNN file discovery and parsing",
-                module_path="1_gnn.py",
-                output_subdir="gnn_processing_step",
-                performance_tracking=True,
-                required=True  # GNN processing is critical for the pipeline
-            ),
-            "2_setup.py": StepConfig(
+            "1_setup.py": StepConfig(
                 name="setup",
                 description="Project setup and environment validation",
-                module_path="2_setup.py",
+                module_path="1_setup.py",
                 output_subdir="setup_artifacts",
                 timeout=600,
                 required=True  # Setup is critical for the pipeline
+            ),
+            "2_gnn.py": StepConfig(
+                name="gnn_processing",
+                description="GNN file discovery and parsing",
+                module_path="2_gnn.py",
+                output_subdir="gnn_processing_step",
+                performance_tracking=True,
+                required=True  # GNN processing is critical for the pipeline
             ),
             "3_tests.py": StepConfig(
                 name="tests",
                 description="Test suite execution with coverage reporting",
                 module_path="3_tests.py",
                 output_subdir="test_reports",
-                dependencies=["2_setup.py"],
+                dependencies=["1_setup.py"],
                 timeout=600,
                 required=False,  # Tests can fail without stopping pipeline
                 performance_tracking=True
@@ -78,7 +78,7 @@ class PipelineConfig:
                 description="GNN syntax and type validation",
                 module_path="4_type_checker.py",
                 output_subdir="type_check",
-                dependencies=["1_gnn.py"],
+                dependencies=["2_gnn.py"],
                 performance_tracking=True,
                 required=False  # Type checking can fail without stopping pipeline
             ),
@@ -155,7 +155,7 @@ class PipelineConfig:
                 description="SAPF audio generation for GNN models",
                 module_path="13_sapf.py",
                 output_subdir="sapf_processing_step",
-                dependencies=["1_gnn.py"],
+                dependencies=["2_gnn.py"],
                 performance_tracking=True,
                 required=False  # SAPF can fail without stopping pipeline
             ),
@@ -311,7 +311,7 @@ def validate_pipeline_config(config: PipelineConfig) -> bool:
     """
     try:
         # Check that all required steps are present
-        required_steps = ["1_gnn.py", "2_setup.py", "main.py"]
+        required_steps = ["1_setup.py", "2_gnn.py", "main.py"]
         for step in required_steps:
             if step not in config.steps:
                 return False
@@ -357,28 +357,28 @@ def update_pipeline_config(**kwargs) -> PipelineConfig:
 
 # STEP_METADATA constant for backward compatibility
 STEP_METADATA = {
-    "1_gnn.py": {
-        "description": "GNN file discovery and parsing",
-        "required": True,
-        "dependencies": [],
-        "output_subdir": "gnn_processing_step"
-    },
-    "2_setup.py": {
+    "1_setup.py": {
         "description": "Project setup and environment validation", 
         "required": True,
         "dependencies": [],
         "output_subdir": "setup_artifacts"
     },
+    "2_gnn.py": {
+        "description": "GNN file discovery and parsing",
+        "required": True,
+        "dependencies": [],
+        "output_subdir": "gnn_processing_step"
+    },
     "3_tests.py": {
         "description": "Test suite execution",
         "required": False,
-        "dependencies": ["2_setup.py"],
+        "dependencies": ["1_setup.py"],
         "output_subdir": "test_reports"
     },
     "4_type_checker.py": {
         "description": "GNN syntax and type validation",
         "required": False,
-        "dependencies": ["1_gnn.py"],
+        "dependencies": ["2_gnn.py"],
         "output_subdir": "type_check"
     },
     "5_export.py": {
@@ -432,7 +432,7 @@ STEP_METADATA = {
     "13_sapf.py": {
         "description": "SAPF audio generation for GNN models",
         "required": False,
-        "dependencies": ["1_gnn.py"],
+                    "dependencies": ["2_gnn.py"],
         "output_subdir": "sapf_processing_step"
     },
     "main.py": {

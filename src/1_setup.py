@@ -7,7 +7,7 @@ This script performs initial setup tasks:
 - Sets up the Python virtual environment and installs dependencies.
 
 Usage:
-    python 2_setup.py [options]
+    python 1_setup.py [options]
     (Typically called by main.py)
     
 Options:
@@ -38,7 +38,7 @@ from pipeline import (
 from utils.pipeline_template import create_standardized_pipeline_script
 
 # Initialize logger for this step  
-logger = setup_step_logging("2_setup", verbose=False)
+logger = setup_step_logging("1_setup", verbose=False)
 
 # Import setup module for environment setup
 try:
@@ -127,7 +127,7 @@ def perform_setup_standardized(
         return False
 
 run_script = create_standardized_pipeline_script(
-    "2_setup.py",
+    "1_setup.py",
     perform_setup_standardized,
     "Environment setup and dependency installation",
     additional_arguments={

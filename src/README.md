@@ -27,8 +27,8 @@ The pipeline processes GNN models through a systematic workflow:
 
 | Step | Script | Purpose | Status | Output Directory |
 |------|--------|---------|--------|------------------|
-| 1 | `1_gnn.py` | GNN file discovery and parsing | ✅ WORKING | `gnn_processing_step/` |
-| 2 | `2_setup.py` | Environment setup and dependencies | ✅ WORKING | `setup_artifacts/` |
+| 1 | `1_setup.py` | Environment setup and dependencies | ✅ WORKING | `setup_artifacts/` |
+| 2 | `2_gnn.py` | GNN file discovery and parsing | ✅ WORKING | `gnn_processing_step/` |
 | 3 | `3_tests.py` | Test execution and validation | ✅ WORKING | `test_reports/` |
 | 4 | `4_type_checker.py` | Type checking and validation | ✅ WORKING | `type_check/` |
 | 5 | `5_export.py` | Multi-format export (JSON, XML, etc.) | ✅ WORKING | `gnn_exports/` |
@@ -121,8 +121,8 @@ All pipeline outputs are organized under a main output directory:
 
 ```
 output/
-├── gnn_processing_step/           # Step 1: GNN discovery results
-├── setup_artifacts/               # Step 2: Environment setup logs
+├── setup_artifacts/               # Step 1: Environment setup results
+├── gnn_processing_step/           # Step 2: GNN discovery results
 ├── test_reports/                  # Step 3: Test execution results
 ├── type_check/                   # Step 4: Type checking reports
 ├── gnn_exports/                  # Step 5: Multi-format exports
@@ -166,7 +166,7 @@ python3 src/main.py --skip-steps 10,12,13 --target-dir input/gnn_files --output-
 Each step can be run independently:
 
 ```bash
-python3 src/1_gnn.py --target-dir input/gnn_files --output-dir output --verbose
+python3 src/2_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 
 python3 src/4_type_checker.py --target-dir input/gnn_files --output-dir output --strict
 

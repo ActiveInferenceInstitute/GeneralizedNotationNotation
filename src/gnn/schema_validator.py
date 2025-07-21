@@ -791,19 +791,48 @@ class GNNValidator:
         except ImportError:
             self.cross_validator = None
     
-    def _load_schema(self) -> Dict[str, Any]:
-        """Load the JSON schema."""
+    def _load_schema(self):
+        """
+        Load JSON or YAML schema with robust error handling.
+        
+        Handles potential recursion and parsing errors by providing fallback mechanisms.
+        """
         try:
-            import sys
-            old_limit = sys.getrecursionlimit()
-            sys.setrecursionlimit(2000)
-            with open(self.schema_path, 'r') as f:
-                schema = json.load(f)
-            sys.setrecursionlimit(old_limit)
-            return schema
+            # First, try standard loading
+            if self.schema_path.suffix.lower() == '.json':
+                import json
+                with open(self.schema_path, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            elif self.schema_path.suffix.lower() in ['.yaml', '.yml']:
+                import yaml
+                with open(self.schema_path, 'r', encoding='utf-8') as f:
+                    return yaml.safe_load(f)
+            else:
+                raise ValueError(f"Unsupported schema file type: {self.schema_path.suffix}")
+        
+        except (json.JSONDecodeError, yaml.YAMLError, RecursionError) as e:
+            # Log the specific error
+            logger.warning(f"Schema loading error for {self.schema_path}: {e}")
+            
+            # Fallback to minimal schema
+            return {
+                "title": "Fallback GNN Schema",
+                "description": "Minimal schema due to loading error",
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
         except Exception as e:
-            logger.error(f"Could not load schema from {self.schema_path}: {e}")
-            return {}
+            # Catch-all for any other unexpected errors
+            logger.error(f"Unexpected error loading schema {self.schema_path}: {e}")
+            
+            # Return an empty, permissive schema
+            return {
+                "title": "Emergency Fallback Schema",
+                "description": "Completely permissive schema due to critical loading error",
+                "type": "object",
+                "additionalProperties": True
+            }
     
     def validate_file(self, file_path: Union[str, Path], 
                      validation_level: Optional[ValidationLevel] = None) -> ValidationResult:

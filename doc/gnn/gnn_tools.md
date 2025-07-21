@@ -438,13 +438,13 @@ You can also view these options by running `python src/main.py --help`.
 
 The following describes the individual scripts that constitute the pipeline stages, executed in numerical order. Their specific functionalities are determined by their content, but their names and the `main.py` structure suggest their roles:
 
-1.  **`1_gnn.py` (GNN Core Processing)**
-    *   **Associated Folder:** `gnn/`
-    *   **Purpose:** Likely handles fundamental parsing, processing, or validation of GNN files themselves. This could involve initial syntax checks, structural analysis, or preparing GNN data for subsequent steps.
-
-2.  **`2_setup.py` (Project Setup)**
+1.  **`1_setup.py` (Environment Setup)**
     *   **Associated Folder:** `setup/`
-    *   **Purpose:** This script is designated as a **critical step**. It probably performs essential setup tasks, configurations, or environment checks required for the rest of conseguent pipeline. If this step fails, the entire pipeline halts.
+    *   **Purpose:** This script is designated as a **critical step**. It performs essential setup tasks, configurations, and environment checks required for the rest of the pipeline. If this step fails, the entire pipeline halts.
+
+2.  **`2_gnn.py` (GNN Core Processing)**
+    *   **Associated Folder:** `gnn/`
+    *   **Purpose:** Handles fundamental parsing, processing, or validation of GNN files themselves. This involves initial syntax checks, structural analysis, and preparing GNN data for subsequent steps.
 
 3.  **`3_tests.py` (Testing)**
     *   **Associated Folder:** `tests/`

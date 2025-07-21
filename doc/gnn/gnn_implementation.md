@@ -277,7 +277,7 @@ When developing a comprehensive environment for working with GNN, it's beneficia
 
 2.  **Modular, Numbered Scripts for Pipeline Stages:**
     *   Specific tasks (e.g., core GNN parsing, setup, testing, type checking, export, visualization, ontology mapping) are implemented in separate Python scripts.
-    *   These scripts are often numbered (e.g., `1_gnn.py`, `2_setup.py`, `4_gnn_type_checker.py`) to indicate a logical sequence of execution or dependency.
+    *   These scripts are often numbered (e.g., `1_setup.py`, `2_gnn.py`, `4_gnn_type_checker.py`) to indicate a logical sequence of execution or dependency.
     *   Each script typically focuses on one primary function and can be developed and tested independently.
     *   The orchestrator (`main.py`) dynamically discovers these numbered scripts and executes them in order, passing necessary arguments and context.
 

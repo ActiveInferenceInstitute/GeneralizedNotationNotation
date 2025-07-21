@@ -81,8 +81,8 @@
 **Pip:** Numbered scripts? Like a dance card? What do these fellas do?
 
 **Professor Cogswell:** Each one has its job, see?
-*   First, there's `1_gnn.py` which does some core GNN file processing, gets the basics sorted.
-*   Then `2_setup.py` makes sure the stage is set, directories are ready, that sort of thing. Critical, this one!
+*   First, there's `1_setup.py` which makes sure the stage is set, directories are ready, and dependencies are installed. Critical, this one!
+*   Then `2_gnn.py` does some core GNN file processing, gets the basics sorted.
 *   `3_tests.py` runs a battery of tests, makes sure all the parts are in working order. No flappers falling off mid-show!
 *   `4_gnn_type_checker.py` – this one's a real eagle-eye! It checks your GNN file for a proper structure, makes sure your variable types aren't all higgledy-piggledy, and can even estimate the computational resources your model might need. A very smart cookie, that one.
 *   `5_export.py` takes your GNN model and can save it in all sorts of formats – JSON, XML, GraphML for those graph-minded folks, even a simple text summary.
