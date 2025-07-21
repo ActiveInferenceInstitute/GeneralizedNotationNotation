@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Cross-Format Validation for GNN Schema Consistency - Enhanced
 
@@ -12,8 +13,6 @@ Enhanced Features:
 - Cross-format semantic preservation validation
 """
 
-import json
-import yaml
 import logging
 import tempfile
 import hashlib
@@ -21,26 +20,9 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Set, Tuple
 from dataclasses import dataclass, field
 
-from .schema_validator import GNNValidator, GNNParser, ValidationLevel
-
-from .types import ValidationResult, GNNFormat, RoundTripResult
-
-from .parsers import GNNParsingSystem
-
-# Try to import enhanced testing capabilities
-try:
-    from .parsers.common import GNNFormat
-    from .parsers import GNNParsingSystem
-    ENHANCED_TESTING_AVAILABLE = True
-except ImportError:
-    ENHANCED_TESTING_AVAILABLE = False
-
-# Import round-trip testing after we have the base types
-try:
-    if ENHANCED_TESTING_AVAILABLE:
-        from .types import RoundTripResult
-except ImportError:
-    pass
+# Import these at module level to avoid circular imports
+from .types import ValidationResult, GNNFormat
+from .schema_validator import ValidationLevel
 
 logger = logging.getLogger(__name__)
 
@@ -85,22 +67,28 @@ class CrossFormatValidator:
             gnn_module_path = Path(__file__).parent
         
         self.gnn_path = gnn_module_path
-        self.enable_round_trip_testing = enable_round_trip_testing and ENHANCED_TESTING_AVAILABLE
+        self.enable_round_trip_testing = enable_round_trip_testing
         self.format_validators = {}
         self.parsing_system = None
         
+        # Initialize validators with proper error handling
         self._initialize_validators()
         
-        # Initialize enhanced parsing system if available
-        if ENHANCED_TESTING_AVAILABLE:
-            try:
-                self.parsing_system = GNNParsingSystem()
-                logger.info("Enhanced parsing system initialized for cross-format validation")
-            except Exception as e:
-                logger.warning(f"Could not initialize parsing system: {e}")
+        # Initialize parsing system if available
+        try:
+            # Import here to avoid circular imports
+            from .parsers import GNNParsingSystem
+            self.parsing_system = GNNParsingSystem()
+            logger.info("Enhanced parsing system initialized for cross-format validation")
+        except Exception as e:
+            # Use debug level to avoid excessive warnings
+            logger.debug(f"Could not initialize parsing system: {e}")
     
     def _initialize_validators(self):
         """Initialize enhanced validators for different schema formats."""
+        # Import here to avoid circular imports
+        from .schema_validator import GNNValidator
+        
         # Enhanced validation levels for different formats
         validation_levels = {
             'json': ValidationLevel.STANDARD,
@@ -110,20 +98,49 @@ class CrossFormatValidator:
             'markdown': ValidationLevel.STRICT
         }
         
+        # Track initialization results for more thoughtful reporting
+        initialization_results = {
+            'success': [],
+            'failed': [],
+            'missing_schema': []
+        }
+        
+        # Initialize validators with proper exception handling
         for format_name, validation_level in validation_levels.items():
             try:
                 schema_path = self.gnn_path / f"schemas/{format_name}.{format_name}"
-                if schema_path.exists() or format_name in ['binary', 'markdown']:
+                schema_exists = schema_path.exists()
+                
+                if schema_exists or format_name in ['binary', 'markdown']:
                     self.format_validators[format_name] = GNNValidator(
-                        schema_path if schema_path.exists() else None,
+                        schema_path if schema_exists else None,
                         validation_level=validation_level
                     )
+                    initialization_results['success'].append(format_name)
                     logger.debug(f"Initialized {format_name} validator with {validation_level.value} level")
+                else:
+                    initialization_results['missing_schema'].append(format_name)
+                    logger.debug(f"Skipped {format_name} validator: schema file not found")
+                    
             except Exception as e:
-                logger.warning(f"Could not initialize {format_name} validator: {e}")
+                # Use a more specific error message
+                initialization_results['failed'].append(f"{format_name}: {str(e)}")
+                logger.debug(f"Could not initialize {format_name} validator: {e}")
         
         self.available_formats = list(self.format_validators.keys())
-        logger.info(f"Cross-format validator initialized with {len(self.available_formats)} formats")
+        
+        # Provide thoughtful summary reporting instead of intense warnings
+        if initialization_results['success']:
+            logger.info(f"Cross-format validator initialized with {len(self.available_formats)} formats: {', '.join(initialization_results['success'])}")
+        
+        # Only warn if there are actual failures (not just missing schemas)
+        if initialization_results['failed']:
+            # Use a single warning instead of multiple warnings
+            logger.warning(f"Some format validators failed to initialize: {'; '.join(initialization_results['failed'])}")
+        
+        # Debug-level info about missing schemas (expected in many cases)
+        if initialization_results['missing_schema']:
+            logger.debug(f"Schema files not found for: {', '.join(initialization_results['missing_schema'])} (validation will be basic)")
     
     def validate_cross_format_consistency(self, gnn_content: str, 
                                         source_format: str = "markdown") -> CrossFormatValidationResult:
@@ -161,7 +178,7 @@ class CrossFormatValidator:
                 logger.debug(f"  {format_name}: {'✅' if validation_result.is_valid else '❌'} ({format_time:.3f}s)")
                 
             except Exception as e:
-                logger.warning(f"Validation failed for {format_name}: {e}")
+                logger.debug(f"Validation failed for {format_name}: {e}")
                 result.add_format_issue(format_name, f"Validation error: {e}")
                 result.inconsistencies.append(f"Error validating {format_name} format: {str(e)}")
                 result.is_consistent = False
@@ -253,42 +270,37 @@ class CrossFormatValidator:
     def _test_round_trip_compatibility(self, gnn_content: str, result: CrossFormatValidationResult):
         """Test round-trip compatibility between formats."""
         try:
-            from .testing.test_round_trip import GNNRoundTripTester
+            # Import here to avoid circular imports
+            from .schema_validator import GNNParser
             
-            # Create temporary tester
-            with tempfile.TemporaryDirectory() as temp_dir:
-                tester = GNNRoundTripTester(Path(temp_dir))
+            # Create temporary file for parsing
+            temp_file = self._create_temp_file(gnn_content, "markdown")
+            
+            try:
+                # Parse the content
+                parsed_gnn = GNNParser(enhanced_validation=True).parse_file(temp_file)
                 
-                # Test a subset of formats for round-trip compatibility
-                test_formats = [GNNFormat.JSON, GNNFormat.XML, GNNFormat.YAML]
-                
-                # Parse the content first
-                parser = GNNParser(enhanced_validation=True)
-                try:
-                    # Create temporary file for parsing
-                    temp_file = self._create_temp_file(gnn_content, "markdown")
-                    parsed_gnn = parser.parse_file(temp_file)
+                # If we have a parsing system, test round-trip for key formats
+                if self.parsing_system and hasattr(parsed_gnn, 'model_name'):
+                    test_formats = [GNNFormat.JSON, GNNFormat.XML, GNNFormat.YAML]
                     
-                    # Convert to internal representation for testing
-                    if hasattr(parsed_gnn, 'model_name'):
-                        # Test round-trip for each format
-                        for fmt in test_formats:
-                            try:
-                                # This is a simplified round-trip test
-                                round_trip_success = True  # Placeholder
-                                result.round_trip_compatibility[fmt.value] = round_trip_success
+                    for fmt in test_formats:
+                        try:
+                            # This is a simplified round-trip test
+                            round_trip_success = True  # Placeholder
+                            result.round_trip_compatibility[fmt.value] = round_trip_success
+                            
+                            if round_trip_success:
+                                result.warnings.append(f"Round-trip compatible: {fmt.value}")
+                            else:
+                                result.inconsistencies.append(f"Round-trip incompatible: {fmt.value}")
                                 
-                                if round_trip_success:
-                                    result.warnings.append(f"Round-trip compatible: {fmt.value}")
-                                else:
-                                    result.inconsistencies.append(f"Round-trip incompatible: {fmt.value}")
-                                    
-                            except Exception as e:
-                                result.add_format_issue(fmt.value, f"Round-trip test failed: {e}")
+                        except Exception as e:
+                            result.add_format_issue(fmt.value, f"Round-trip test failed: {e}")
+            
+            except Exception as e:
+                result.warnings.append(f"Round-trip testing limited due to parsing issues: {e}")
                 
-                except Exception as e:
-                    result.warnings.append(f"Round-trip testing limited due to parsing issues: {e}")
-                    
         except Exception as e:
             result.warnings.append(f"Round-trip testing unavailable: {e}")
     
@@ -393,6 +405,10 @@ class CrossFormatValidator:
         }
         
         try:
+            # Import here to avoid circular imports
+            import json
+            import yaml
+            
             for format_name, schema_path in schema_files.items():
                 if schema_path.exists():
                     try:
@@ -421,6 +437,9 @@ class CrossFormatValidator:
             # Enhanced structural consistency validation
             self._validate_enhanced_schema_structure_consistency(schemas, result)
             
+        except ImportError as e:
+            # Handle import errors gracefully
+            result.warnings.append(f"Schema validation limited: {e}")
         except Exception as e:
             result.inconsistencies.append(f"Error loading schema definitions: {str(e)}")
             result.is_consistent = False
@@ -465,7 +484,7 @@ class CrossFormatValidator:
         for format_name, schema_data in schemas.items():
             if isinstance(schema_data, dict):
                 # Check if expected elements are covered
-                schema_str = json.dumps(schema_data).lower()
+                schema_str = str(schema_data).lower()
                 found_elements = [elem for elem in expected_elements if elem.lower() in schema_str]
                 
                 coverage = len(found_elements) / len(expected_elements) * 100

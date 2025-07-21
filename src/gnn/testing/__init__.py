@@ -24,6 +24,13 @@ try:
     except ImportError:
         pass
     
+    # Import RoundTripTestStrategy from round_trip_strategy module
+    try:
+        from .round_trip_strategy import RoundTripTestStrategy
+        __all__.append('RoundTripTestStrategy')
+    except ImportError:
+        pass
+    
     # Note: Performance benchmarks temporarily disabled due to numpy dependency issues
     
 except ImportError as e:
