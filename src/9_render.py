@@ -15,6 +15,11 @@ from pathlib import Path
 from typing import Dict
 import argparse
 
+# Add src directory to Python path for imports
+src_dir = Path(__file__).parent
+if str(src_dir) not in sys.path:
+    sys.path.insert(0, str(src_dir))
+
 # Import centralized utilities and configuration
 from utils import (
     setup_step_logging,

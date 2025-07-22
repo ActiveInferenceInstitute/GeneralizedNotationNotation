@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-22 05:42:44",
+  "timestamp": "2025-07-22 07:36:28",
   "processing_options": {
     "validation_mode": "lenient",
     "case_sensitive": true,
@@ -17,7 +17,7 @@
     "validation_rate": 100.0,
     "unique_terms_count": 13,
     "unique_invalid_terms_count": 0,
-    "processing_time": 0.00017189979553222656
+    "processing_time": 0.00015497207641601562
   },
   "ontology_terms_loaded": 64,
   "files_processed": [
@@ -25,7 +25,7 @@
       "file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
       "success": true,
       "annotations_count": 13,
-      "processing_time": 0.00017189979553222656,
+      "processing_time": 0.00015497207641601562,
       "error": null,
       "warnings_count": 0
     }

@@ -1,78 +1,110 @@
 # Quality Assurance and Development Standards
 
-### Quality Assurance Standards
+## Quality Assurance Standards
 
-#### Implementation Requirements
-- **No Mocks or Stubs**: All implementations must be fully functional
-- **Real Data Processing**: Use actual GNN files and real computation
-- **Complete Pipelines**: End-to-end functionality from input to output
-- **Scientific Accuracy**: Mathematically correct Active Inference implementations
+### Implementation Requirements
+- **No Mocks or Stubs**: All implementations must be fully functional with real data processing
+- **Real Data Processing**: Use actual GNN files, comprehensive format support, and genuine computation
+- **Complete Pipelines**: End-to-end functionality from multi-format input to executable simulation output
+- **Scientific Accuracy**: Mathematically correct Active Inference implementations with validation
+- **Performance Monitoring**: Real-time resource tracking and optimization across all pipeline steps
 
-#### Testing Integration
-- **Pytest Framework**: Comprehensive test suite with real GNN file testing
-- **Integration Tests**: Full pipeline testing with actual data
-- **Performance Tests**: Resource usage and timing validation
-- **Regression Tests**: Ensure changes don't break existing functionality
+### Comprehensive Testing Infrastructure
+- **Pytest Framework**: Complete test suite with real GNN file testing across all supported formats
+- **Integration Tests**: Full pipeline testing with actual data and cross-format validation
+- **Performance Tests**: Resource usage validation, timing analysis, and scalability testing
+- **Regression Tests**: Ensure changes don't break existing functionality with automated CI/CD
+- **Round-Trip Testing**: Semantic preservation validation across format conversions
+- **Cross-Format Validation**: Consistency testing across Markdown, JSON, YAML, XML, PKL, and Protobuf formats
 
-#### Documentation Standards
-- **Comprehensive Docstrings**: Full documentation for all functions and classes
-- **Type Hints**: Complete type annotations throughout codebase
-- **Usage Examples**: Real examples using actual GNN files
-- **API Documentation**: Generated from docstrings and type hints
+### Documentation and Type Safety Standards
+- **Comprehensive Docstrings**: Full documentation for all functions, classes, and modules with examples
+- **Complete Type Hints**: Type annotations throughout codebase with proper generics and union types
+- **Usage Examples**: Real examples using actual GNN files and multi-format scenarios
+- **API Documentation**: Auto-generated documentation from docstrings and type hints
+- **Validation Documentation**: Clear documentation of all validation levels and their requirements
 
-### Development Guidelines
+## Development Guidelines
 
-#### Code Organization
-- **Module Separation**: Clear separation between pipeline steps and core modules
-- **Import Hierarchy**: Centralized utilities → pipeline config → module-specific
-- **Dependency Management**: Explicit dependency declarations and validation
-- **Path Management**: Consistent path handling with pathlib.Path
+### Advanced Code Organization
+- **Module Separation**: Clear separation between pipeline steps, core modules, and infrastructure
+- **Import Hierarchy**: Centralized utilities → pipeline config → module-specific with fallback handling
+- **Dependency Management**: Explicit dependency declarations, validation, and graceful degradation
+- **Path Management**: Consistent path handling with pathlib.Path and centralized output management
+- **Configuration Management**: YAML-based configuration with CLI override support
 
-#### Error Handling Philosophy
-- **Fail Fast**: Early detection of configuration and dependency issues
-- **Informative Errors**: Clear error messages with actionable suggestions
-- **Graceful Recovery**: Attempt to continue pipeline when possible
-- **Comprehensive Logging**: Full audit trail of all operations
+### Enhanced Error Handling Philosophy
+- **Fail Fast with Recovery**: Early detection of issues with intelligent recovery mechanisms
+- **Informative Diagnostics**: Clear error messages with actionable suggestions and context
+- **Graceful Degradation**: Attempt to continue pipeline processing when possible
+- **Comprehensive Audit Trails**: Full logging of all operations with correlation IDs and performance metrics
+- **Multi-Level Validation**: Different validation levels (BASIC, STANDARD, STRICT, RESEARCH, ROUND_TRIP)
 
-#### Performance Considerations
-- **Resource Monitoring**: Track memory usage, execution time, and system resources
-- **Parallel Processing**: Use parallel operations when appropriate and safe
-- **Caching**: Cache parsed results and expensive computations
-- **Optimization**: Profile and optimize critical paths
+### Performance and Resource Management
+- **Real-Time Monitoring**: Track memory usage, execution time, and system resources across all steps
+- **Parallel Processing**: Use parallel operations when appropriate and safe with proper resource management
+- **Intelligent Caching**: Cache parsed results, validation outcomes, and expensive computations
+- **Performance Optimization**: Profile and optimize critical paths with data-driven improvements
+- **Resource Estimation**: Computational resource estimation for model execution planning
 
-### Advanced Features
+## Advanced Features and Architecture
 
-#### Extensibility Architecture
-- **Plugin System**: Support for custom pipeline steps and modules
-- **Backend Flexibility**: Multiple simulation backends (PyMDP, RxInfer, JAX)
-- **Format Extension**: Easy addition of new export formats
-- **Tool Integration**: MCP-based tool ecosystem for external integrations
+### Extensibility and Plugin Architecture
+- **Modular Pipeline System**: Support for custom pipeline steps and dynamic module discovery
+- **Multi-Backend Flexibility**: Multiple simulation backends (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy)
+- **Format Extension System**: Easy addition of new export/import formats with round-trip support
+- **Tool Integration Ecosystem**: MCP-based tool ecosystem for external integrations and AI assistance
+- **Template-Based Code Generation**: Extensible template system for multiple target environments
 
-#### Scientific Reproducibility
-- **Deterministic Behavior**: Consistent outputs for identical inputs
-- **Version Control**: Full provenance tracking and version management
-- **Environment Capture**: Complete environment specification and reproduction
-- **Audit Trails**: Comprehensive logging of all processing steps
+### Scientific Reproducibility and Validation
+- **Deterministic Behavior**: Consistent outputs for identical inputs across all processing steps
+- **Comprehensive Version Control**: Full provenance tracking, version management, and audit trails
+- **Environment Capture**: Complete environment specification and reproduction capabilities
+- **Multi-Level Validation**: Configurable validation depth from basic syntax to research-grade validation
+- **Cross-Format Consistency**: Semantic preservation and consistency across all supported formats
 
-### Updated Module Naming Conventions
+## Current Module Structure and Naming Conventions
 
-#### Current Module Structure (Post-Renaming)
-- **Core Modules**: `gnn/`, `type_checker/`, `export/`, `visualization/`, `render/`, `execute/`, `llm/`, `website/`, `sapf/`
-- **Infrastructure**: `utils/`, `pipeline/`, `mcp/`, `ontology/`, `setup/`, `tests/`
+### 13-Step Pipeline Structure (Updated)
+- **Core Processing Modules**: `setup/`, `gnn/`, `tests/`, `type_checker/`, `export/`, `visualization/`, `mcp/`, `ontology/`, `render/`, `execute/`, `llm/`, `website/`, `sapf/`
+- **Infrastructure Modules**: `utils/`, `pipeline/` (centralized configuration and execution), `tests/` (comprehensive testing)
 - **Pipeline Scripts**: `1_setup.py`, `2_gnn.py`, `3_tests.py`, `4_type_checker.py`, `5_export.py`, `6_visualization.py`, `7_mcp.py`, `8_ontology.py`, `9_render.py`, `10_execute.py`, `11_llm.py`, `12_website.py`, `13_sapf.py`
 
-#### Output Directory Structure
-- **Type Checking**: `output/type_check/` (renamed from `gnn_type_check/`)
-- **GNN Processing**: `output/gnn_processing_step/`
-- **Setup Artifacts**: `output/setup_artifacts/`
-- **Test Reports**: `output/test_reports/`
-- **Exports**: `output/gnn_exports/`
-- **Visualizations**: `output/visualization/`
-- **MCP Processing**: `output/mcp_processing_step/`
-- **Ontology Processing**: `output/ontology_processing/`
-- **Rendered Simulators**: `output/gnn_rendered_simulators/`
-- **Execution Results**: `output/execution_results/`
-- **LLM Processing**: `output/llm_processing_step/`
-- **SAPF Processing**: `output/sapf_processing_step/`
-- **Website Generation**: `output/website/`
-- **Pipeline Logs**: `output/logs/` 
+### Standardized Output Directory Structure
+- **Setup Artifacts**: `output/setup_artifacts/` (environment info, dependency reports)
+- **GNN Processing**: `output/gnn_processing_step/` (discovery reports, parsing results)
+- **Test Reports**: `output/test_reports/` (pytest results, coverage reports)
+- **Type Checking**: `output/type_check/` (validation reports, resource estimates)
+- **Multi-Format Exports**: `output/gnn_exports/` (JSON, XML, GraphML, GEXF, PKL, Protobuf)
+- **Visualizations**: `output/visualization/` (graphs, matrices, ontology diagrams)
+- **MCP Processing**: `output/mcp_processing_step/` (tool registrations, MCP operations)
+- **Ontology Processing**: `output/ontology_processing/` (semantic mappings, validation)
+- **Rendered Simulators**: `output/gnn_rendered_simulators/` (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy)
+- **Execution Results**: `output/execution_results/` (simulation outputs, performance metrics)
+- **LLM Processing**: `output/llm_processing_step/` (AI analysis, natural language explanations)
+- **Website Generation**: `output/website/` (HTML reports, interactive elements)
+- **SAPF Processing**: `output/sapf_processing_step/` (audio representations, sonifications)
+- **Pipeline Logs**: `output/logs/` (correlation IDs, performance tracking, audit trails)
+
+## Development Workflow and Tools
+
+### Pipeline Development Tools
+- **Pipeline Step Template**: Use `src/pipeline/pipeline_step_template.py` for consistent new step creation
+- **Pipeline Validation**: Use `src/pipeline/pipeline_validation.py` to validate implementation consistency
+- **Module Template**: Follow `src/utils/pipeline_template.py` patterns for module structure
+- **Configuration System**: Leverage `src/pipeline/config.py` for centralized configuration management
+- **Testing Infrastructure**: Use comprehensive testing in `src/tests/` with real data validation
+
+### Code Quality and Consistency Tools
+- **EnhancedArgumentParser**: Standardized argument parsing with step-specific configuration
+- **Centralized Logging**: Structured logging with correlation IDs and performance tracking
+- **Performance Tracking**: Built-in performance monitoring and resource usage analysis
+- **Dependency Validation**: Comprehensive dependency checking with clear error messages
+- **Multi-Format Support**: Robust parsing and validation across all supported GNN formats
+
+### Advanced Quality Assurance
+- **Round-Trip Validation**: Semantic preservation testing across format conversions
+- **Cross-Format Consistency**: Validation across Markdown, JSON, YAML, XML, PKL, and Protobuf
+- **Performance Benchmarking**: Automated performance testing and regression detection
+- **Scientific Validation**: Active Inference model compliance and mathematical accuracy checking
+- **Comprehensive Error Reporting**: Detailed diagnostics with actionable suggestions and context 

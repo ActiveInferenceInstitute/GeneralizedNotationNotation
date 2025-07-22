@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="4" failures="0" skipped="0" tests="4" time="0.937" timestamp="2025-07-22T05:42:41.331127-07:00" hostname="timelock.local"><testcase classname="" name="src.tests.test_comprehensive_api" time="0.000"><error message="collection failure">src/tests/test_comprehensive_api.py:16: in &lt;module&gt;
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="4" failures="0" skipped="0" tests="4" time="0.591" timestamp="2025-07-22T07:36:25.616885-07:00" hostname="timelock.local"><testcase classname="" name="src.tests.test_comprehensive_api" time="0.000"><error message="collection failure">src/tests/test_comprehensive_api.py:16: in &lt;module&gt;
     import src.gnn
 src/gnn/__init__.py:13: in &lt;module&gt;
     from .schema_validator import (

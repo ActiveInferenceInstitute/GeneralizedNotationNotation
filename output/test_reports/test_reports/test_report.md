@@ -1,6 +1,6 @@
 # Test Execution Report
 
-**Generated**: 2025-07-22 05:42:42
+**Generated**: 2025-07-22 07:36:26
 **Status**: ❌ FAILED
 **Exit Code**: 2
 
@@ -25,7 +25,7 @@
 
 **Success Rate**: 0.0%
 **Failure Rate**: 1.1%
-**Execution Time**: 0.9 seconds
+**Execution Time**: 0.6 seconds
 
 ## Test Dependencies
 
@@ -101,7 +101,7 @@ ERROR src/tests/test_export.py - RecursionError: maximum recursion depth exce...
 ERROR src/tests/test_gnn_type_checker.py - RecursionError: maximum recursion ...
 ERROR src/tests/test_parsers.py - RecursionError: maximum recursion depth exc...
 !!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!
-================= 11 deselected, 1 warning, 4 errors in 0.94s ==================
+================= 11 deselected, 1 warning, 4 errors in 0.59s ==================
 ```
 
 ### Standard Error (last 20 lines)

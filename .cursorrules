@@ -1,24 +1,58 @@
 # .cursorrules - High-Level Rules for AI Code Assistant (Cursor) - GNN Project
 
 ## Project Overview and Context
-GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project enables model specification, validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl), categorical diagram representation (DisCoPy), and LLM-enhanced analysis.
+GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive 13-step pipeline that transforms GNN specifications into executable simulations, visualizations, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), and LLM-enhanced analysis.
 
 ## Overall AI Behavior & Persona
-- Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications
+- Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications and pipeline architecture
 - Be professional, scientifically rigorous, modular, concise, elegant, and thoughtful
 - Prioritize the user's direct instructions in the <user_query>
 - When in doubt, ask clarifying questions rather than making risky assumptions, but prefer to find answers via tools if possible
-- Express chains of thought and rationale, especially for complex decisions involving GNN syntax or Active Inference concepts
+- Express chains of thought and rationale, especially for complex decisions involving GNN syntax, Active Inference concepts, or pipeline modifications
 - Identify and use all programming best practices thoughtfully, with special attention to scientific reproducibility
-- **NEVER create dummy, mock, placeholder, or stub implementations - all code must be fully functional**
+- NEVER create dummy, mock, placeholder, or stub implementations
+- All code must be fully functional, documented, and covered by tests
+- Version existing code with narrow intelligent changes, don't make variant or redundant files
 
 ## Critical Implementation Philosophy
 This project implements a comprehensive scientific computing pipeline with real, functional components at every level. Every module, function, and pipeline step must provide genuine functionality - there are no mock implementations, stub functions, or placeholder code. The architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards.
 
+## Key Implementation Patterns (MUST FOLLOW)
+- **Pipeline Scripts**: Use standardized imports from `utils` (setup_step_logging, log_step_*, EnhancedArgumentParser) and `pipeline` (get_output_dir_for_script, get_pipeline_config)
+- **Argument Parsing**: Always use `EnhancedArgumentParser.parse_step_arguments()` with fallback argument parser for graceful degradation
+- **Logging**: Use centralized logging with correlation IDs via `setup_step_logging()` and structured `log_step_*()` functions
+- **Error Handling**: Return proper exit codes (0=success, 1=critical error, 2=success with warnings) and use `log_step_error()` for failures
+- **MCP Integration**: Every applicable module includes `mcp.py` with functional tool registration and real implementations
+- **Module Structure**: Follow `src/[module_name]/` pattern with `__init__.py`, core functionality, and `mcp.py` where applicable
+- **Path Handling**: Always convert string arguments to `pathlib.Path` objects and use centralized output directory management
+
+## 13-Step Pipeline Structure (CURRENT)
+The pipeline consists of exactly 13 steps (steps 1-13), executed in order:
+1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation
+2. **2_gnn.py** → `src/gnn/` - GNN file discovery, multi-format parsing, and validation
+3. **3_tests.py** → `src/tests/` - Comprehensive test suite execution
+4. **4_type_checker.py** → `src/type_checker/` - GNN syntax validation and resource estimation
+5. **5_export.py** → `src/export/` - Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
+6. **6_visualization.py** → `src/visualization/` - Graph and matrix visualization generation
+7. **7_mcp.py** → `src/mcp/` - Model Context Protocol operations and tool registration
+8. **8_ontology.py** → `src/ontology/` - Active Inference Ontology processing and validation
+9. **9_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl simulation environments
+10. **10_execute.py** → `src/execute/` - Execute rendered simulation scripts with result capture
+11. **11_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
+12. **12_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts
+13. **13_sapf.py** → `src/sapf/` - SAPF (Sound As Pure Form) audio generation and sonification
+
 ## Detailed Guidelines
 For more targeted guidelines, refer to the files in the .cursor_rules/ directory:
-- pipeline_architecture.md: Pipeline architecture, steps, and module details
+- implementation_patterns.md: Detailed coding patterns and infrastructure usage
+- pipeline_architecture.md: Pipeline architecture, steps, and module details  
 - mcp_integration.md: MCP integration details
 - quality_and_dev.md: Quality assurance, development guidelines, and naming conventions
+- gnn_standards.md: GNN domain knowledge, syntax, and processing standards
 
-Additionally, for GNN-specific standards, see doc/gnn/gnn_standards.md 
+## Development Workflow Integration
+- Use `src/pipeline/pipeline_step_template.py` as template for new pipeline steps
+- Validate changes with `src/pipeline/pipeline_validation.py`
+- Follow the established patterns in `src/utils/pipeline_template.py` for consistent module structure
+- Leverage the centralized configuration system in `src/pipeline/config.py`
+- Use the comprehensive testing infrastructure in `src/tests/` for validation 

@@ -1,8 +1,8 @@
 """
 ActiveInference.jl renderer module for GNN specifications.
 
-This module provides rendering capabilities for GNN specifications to
-ActiveInference.jl code and configurations.
+This module provides streamlined rendering capabilities for GNN specifications to
+ActiveInference.jl code, focusing on core POMDP functionality.
 """
 
 from .activeinference_renderer import (
