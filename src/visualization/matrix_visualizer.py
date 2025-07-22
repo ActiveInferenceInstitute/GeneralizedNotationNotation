@@ -238,6 +238,15 @@ class MatrixVisualizer:
                 ax = fig.add_subplot(grid_size, grid_size, i + 1)
                 axes.append(ax)
             
+            # Calculate global min and max for consistent colormap scaling
+            all_values = []
+            for matrix_data in matrices.values():
+                matrix_array = np.array(matrix_data)
+                all_values.extend(matrix_array.flatten())
+            
+            global_min = min(all_values)
+            global_max = max(all_values)
+            
             # Plot each matrix
             im = None  # Store last imshow result for colorbar
             for i, (matrix_name, matrix_data) in enumerate(matrices.items()):
@@ -247,8 +256,8 @@ class MatrixVisualizer:
                 ax = axes[i]
                 matrix_array = np.array(matrix_data)
                 
-                # Create heatmap
-                im = ax.imshow(matrix_array, cmap=self.cmap)
+                # Create heatmap with consistent colormap scaling
+                im = ax.imshow(matrix_array, cmap=self.cmap, vmin=global_min, vmax=global_max)
                 
                 # Add title
                 ax.set_title(matrix_name, fontsize=self.font_size['subtitle'])
@@ -275,7 +284,7 @@ class MatrixVisualizer:
                         for x in range(matrix_array.shape[1]):
                             ax.text(x, y, f"{matrix_array[y, x]:.2f}", 
                                   ha="center", va="center", fontsize=self.font_size['values'],
-                                  color="black" if matrix_array[y, x] > 0.5 else "white")
+                                  color="black" if matrix_array[y, x] > (global_min + global_max) / 2 else "white")
             
             # Hide unused subplots
             for j in range(i + 1, len(axes)):
