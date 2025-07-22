@@ -27,6 +27,7 @@ aiohttp>=3.9.0  # For async HTTP requests and LLM processing
 
 # Configuration and Serialization
 toml>=0.10.2  # For TOML configuration files (render step)
+PyYAML>=6.0  # For YAML configuration files
 
 # Visualization and Diagramming
 altair>=5.0.1
@@ -69,6 +70,9 @@ py-spy>=0.3.14
 
 # Site Generation
 markdown>=3.4.3 
+
+# XML Processing
+lxml>=4.6.0
 
 # PyMDP
 flax

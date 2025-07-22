@@ -4,7 +4,13 @@ Configuration Loader for GNN Pipeline
 Handles loading and validation of YAML configuration files for the pipeline.
 """
 
-import yaml
+try:
+    import yaml
+    YAML_AVAILABLE = True
+except ImportError:
+    YAML_AVAILABLE = False
+    yaml = None
+
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 import logging
@@ -106,6 +112,10 @@ class GNNPipelineConfig:
     @classmethod
     def load_from_file(cls, config_path: Path) -> 'GNNPipelineConfig':
         """Load configuration from YAML file."""
+        if not YAML_AVAILABLE:
+            logger.warning("PyYAML not available, returning default configuration")
+            return cls()
+            
         try:
             with open(config_path, 'r') as f:
                 config_data = yaml.safe_load(f)
@@ -272,8 +282,15 @@ def save_config(config: dict, file_path: Path) -> None:
     file_path = Path(file_path)
     try:
         if file_path.suffix.lower() in {'.yaml', '.yml'}:
-            with open(file_path, 'w') as f:
-                yaml.safe_dump(config, f)
+            if not YAML_AVAILABLE:
+                logger.warning("PyYAML not available, saving as JSON instead")
+                file_path = file_path.with_suffix('.json')
+                import json
+                with open(file_path, 'w') as f:
+                    json.dump(config, f, indent=2)
+            else:
+                with open(file_path, 'w') as f:
+                    yaml.safe_dump(config, f)
         elif file_path.suffix.lower() == '.json':
             import json
             with open(file_path, 'w') as f:

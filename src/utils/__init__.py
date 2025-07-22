@@ -47,12 +47,15 @@ try:
         get_step_output_dir,
         StepConfiguration,
         get_pipeline_step_info,
-        validate_pipeline_configuration
+        validate_pipeline_configuration,
+        parse_arguments,
+        validate_and_convert_paths
     )
     
     from .dependency_validator import (
         DependencyValidator,
         validate_pipeline_dependencies,
+        validate_pipeline_dependencies_if_available,
         DependencySpec,
         check_optional_dependencies,
         get_dependency_status,
@@ -80,6 +83,14 @@ try:
         PerformanceTracker,
         performance_tracker,
         track_operation
+    )
+    
+    from .venv_utils import (
+        get_venv_python
+    )
+    
+    from .system_utils import (
+        get_system_info
     )
     
     from .shared_functions import (
@@ -193,6 +204,31 @@ except ImportError as e:
     
     def get_performance_summary() -> Dict[str, Any]:
         return {"fallback": True, "performance_tracking": "unavailable"}
+    
+    def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
+        """Fallback for get_venv_python."""
+        return None, None
+    
+    def get_system_info() -> Dict[str, Any]:
+        """Fallback for get_system_info."""
+        return {"fallback": True, "system_info": "unavailable"}
+    
+    def parse_arguments():
+        """Fallback for parse_arguments."""
+        import argparse
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--target-dir', type=Path, default=Path("input/gnn_files"))
+        parser.add_argument('--output-dir', type=Path, default=Path("../output"))
+        parser.add_argument('--verbose', action='store_true')
+        return parser.parse_args()
+    
+    def validate_and_convert_paths(args, logger):
+        """Fallback for validate_and_convert_paths."""
+        pass
+    
+    def validate_pipeline_dependencies_if_available(args):
+        """Fallback for validate_pipeline_dependencies_if_available."""
+        return True
 
 # Performance tracker is already imported with canonical names
 
@@ -266,6 +302,7 @@ __all__ = [
     'log_step_error',
     'log_section_header',
     'ArgumentParser',
+    'EnhancedArgumentParser',
     'PipelineArguments',
     'StepConfiguration',
     'DependencyValidator',
@@ -274,5 +311,10 @@ __all__ = [
     'validate_output_directory',
     'get_performance_summary',
     'execute_pipeline_step_template',
+    'get_venv_python',
+    'get_system_info',
+    'parse_arguments',
+    'validate_and_convert_paths',
+    'validate_pipeline_dependencies_if_available',
     'UTILS_AVAILABLE'
 ] 

@@ -18,10 +18,12 @@ def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
     site_packages_path = None
     
     # Try multiple common virtual environment locations
+    # Prioritize project root .venv for consistency
     venv_candidates = [
-        script_dir / ".venv",  # Standard .venv in script directory
-        script_dir.parent / "venv",  # venv in parent directory (our case)
-        script_dir.parent / ".venv",  # .venv in parent directory
+        script_dir.parent / ".venv",  # .venv in project root (preferred)
+        script_dir / ".venv",  # Standard .venv in script directory (fallback)
+        script_dir.parent / "venv",  # venv in parent directory (legacy)
+        script_dir.parent.parent / ".venv",  # .venv in grandparent (project root from src/)
     ]
     
     for venv_path in venv_candidates:

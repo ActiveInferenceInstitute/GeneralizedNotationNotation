@@ -61,6 +61,7 @@ Options:
 """
 
 import sys
+import os
 from pathlib import Path
 import logging
 import datetime
@@ -76,6 +77,51 @@ current_file = Path(__file__).resolve()
 current_dir = current_file.parent
 if str(current_dir) not in sys.path:
     sys.path.insert(0, str(current_dir))
+
+# Check if virtual environment exists and create one if needed
+current_file = Path(__file__).resolve()
+current_dir = current_file.parent
+project_root = current_dir.parent
+
+# Simple check for virtual environment
+venv_path = project_root / ".venv"
+if not venv_path.exists():
+    print("🔧 No virtual environment detected. Creating one automatically...")
+    try:
+        import subprocess
+        import sys
+        
+        # Create virtual environment
+        print("📦 Creating virtual environment...")
+        subprocess.run([sys.executable, "-m", "venv", str(venv_path)], check=True)
+        
+        # Install dependencies
+        print("📦 Installing dependencies...")
+        if sys.platform == "win32":
+            pip_path = venv_path / "Scripts" / "pip.exe"
+        else:
+            pip_path = venv_path / "bin" / "pip"
+        
+        subprocess.run([str(pip_path), "install", "-r", str(project_root / "requirements.txt")], check=True)
+        print("✅ Virtual environment created successfully!")
+        
+        # Restart the script with the virtual environment
+        print("🔄 Restarting with virtual environment...")
+        if sys.platform == "win32":
+            python_path = venv_path / "Scripts" / "python.exe"
+        else:
+            python_path = venv_path / "bin" / "python"
+        
+        # Get the original command line arguments
+        args = sys.argv[1:] if len(sys.argv) > 1 else []
+        
+        # Restart with the virtual environment Python
+        os.execv(str(python_path), [str(python_path), str(current_file)] + args)
+        
+    except Exception as e:
+        print(f"❌ Error creating virtual environment: {e}")
+        print("Please run 'python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt' manually.")
+        sys.exit(1)
 
 # Import the centralized pipeline utilities
 try:
@@ -103,14 +149,16 @@ try:
         PipelineArguments,
         PipelineLogger,
         performance_tracker,
-        validate_pipeline_dependencies,
+        validate_pipeline_dependencies_if_available,
         UTILS_AVAILABLE,
         load_config,
-        GNNPipelineConfig
+        GNNPipelineConfig,
+        get_venv_python,
+        get_system_info,
+        parse_arguments,
+        validate_and_convert_paths
     )
     from utils.argument_utils import build_enhanced_step_command_args
-    from utils.venv_utils import get_venv_python
-    from utils.dependency_validator import validate_pipeline_dependencies_if_available
 except ImportError as e:
     print(f"Error importing utility modules: {e}")
     print("Please ensure you're running from the project root directory.")
@@ -119,9 +167,6 @@ except ImportError as e:
 # Move get_pipeline_scripts to pipeline/discovery.py and import it
 from pipeline.discovery import get_pipeline_scripts
 from pipeline.execution import prepare_scripts_to_run, execute_pipeline_step, summarize_execution
-
-from utils.argument_utils import parse_arguments, PipelineArguments, validate_and_convert_paths
-from utils.system_utils import get_system_info
 
 # --- Logger Setup ---
 logger = logging.getLogger("GNN_Pipeline")
@@ -195,6 +240,30 @@ def main():
         for arg, value in sorted(vars(args).items()):
             log_msgs.append(f"  --{arg.replace('_', '-')}: {value} (Type: {type(value).__name__})")
         pipeline_logger.debug('\n'.join(log_msgs))
+    
+    # Check if virtual environment exists and create one if needed
+    venv_python, venv_site_packages = get_venv_python(current_dir)
+    if not venv_python:
+        pipeline_logger.info("🔧 No virtual environment detected. Creating one automatically...")
+        try:
+            # Import setup module for automatic virtual environment creation
+            from setup.setup import perform_full_setup
+            pipeline_logger.info("📦 Creating virtual environment and installing dependencies...")
+            perform_full_setup(verbose=args.verbose, recreate_venv=False, dev=args.dev)
+            pipeline_logger.info("✅ Virtual environment created successfully!")
+            
+            # Re-check for virtual environment
+            venv_python, venv_site_packages = get_venv_python(current_dir)
+            if not venv_python:
+                pipeline_logger.critical("Failed to create virtual environment automatically.")
+                sys.exit(1)
+        except ImportError as e:
+            pipeline_logger.critical(f"Could not import setup modules: {e}")
+            pipeline_logger.critical("Please run 'python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt' manually.")
+            sys.exit(1)
+        except Exception as e:
+            pipeline_logger.critical(f"Error creating virtual environment: {e}")
+            sys.exit(1)
     
     # Validate dependencies before pipeline execution
     if not validate_pipeline_dependencies_if_available(args):
