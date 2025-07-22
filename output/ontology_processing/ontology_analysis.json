@@ -1,0 +1,156 @@
+{
+  "timestamp": "2025-07-22T08:49:56.506773",
+  "files_processed": 1,
+  "ontology_terms_count": 64,
+  "mappings": [
+    {
+      "term": "HiddenState",
+      "description": {
+        "description": "A state of the environment or agent that is not directly observable.",
+        "uri": "obo:ACTO_000001"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "Observation",
+      "description": {
+        "description": "Data received from the environment through sensory input.",
+        "uri": "obo:ACTO_000003"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "Action",
+      "description": {
+        "description": "An output of the agent that can affect the environment or the agent itself.",
+        "uri": "obo:ACTO_000004"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "Policy",
+      "description": {
+        "description": "A sequence of actions, or a mapping from states to actions.",
+        "uri": "obo:ACTO_000005"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "TransitionMatrix",
+      "description": {
+        "description": "A probabilistic mapping defining the dynamics of hidden states over time, potentially conditioned on action (e.g., 'B' matrix).",
+        "uri": "obo:ACTO_000009"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "Preferences",
+      "description": {
+        "description": "The agent's desired or preferred observations or states (e.g., 'C' vector/matrix).",
+        "uri": "obo:ACTO_000010"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "ExpectedFreeEnergy",
+      "description": {
+        "description": "A quantity minimized by the agent to select policies, balancing epistemic value (information gain) and pragmatic value (preference satisfaction).",
+        "uri": "obo:ACTO_000011"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "VariationalFreeEnergy",
+      "description": {
+        "description": "A bound on Bayesian model evidence, minimized during perception and learning to approximate posterior beliefs.",
+        "uri": "obo:TEMP_000065"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "Precision",
+      "description": {
+        "description": "The inverse variance or uncertainty associated with a probability distribution, often modulating the influence of prediction errors.",
+        "uri": "obo:ACTO_000015"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "Prior",
+      "description": {
+        "description": "A prior probability distribution over hidden states, typically representing initial beliefs before new evidence (e.g., 'D' vector/matrix).",
+        "uri": "obo:TEMP_000017"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "NextHiddenState",
+      "description": {
+        "description": "The anticipated or inferred hidden state at the subsequent time step (e.g., s_t+1 or s').",
+        "uri": "obo:TEMP_000018"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "Time",
+      "description": {
+        "description": "Represents a point or interval in a temporal sequence, often a discrete time step in a model.",
+        "uri": "obo:TEMP_000066"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "Preference",
+      "description": {
+        "description": "The agent's desired or preferred observations or states, influencing policy selection (e.g., 'C' vector/matrix).",
+        "uri": "obo:TEMP_000020"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "PolicyVector",
+      "description": {
+        "description": "A vector representing a specific sequence of actions or a probability distribution over available policies.",
+        "uri": "obo:TEMP_000021"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "LikelihoodMatrix",
+      "description": {
+        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies).",
+        "uri": "obo:TEMP_000061"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "LogPreferenceVector",
+      "description": {
+        "description": "A vector representing log-preferences over observations or states (e.g., 'C' vector/matrix).",
+        "uri": "obo:TEMP_000062"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "PriorOverHiddenStates",
+      "description": {
+        "description": "A prior probability distribution over hidden states, typically representing initial beliefs before new evidence (e.g., 'D' vector/matrix).",
+        "uri": "obo:TEMP_000063"
+      },
+      "file": "actinf_pomdp_agent.md"
+    },
+    {
+      "term": "Habit",
+      "description": {
+        "description": "A prior probability distribution over possible actions or policies, representing habitual behavior patterns (e.g., 'E' matrix).",
+        "uri": "obo:TEMP_000064"
+      },
+      "file": "actinf_pomdp_agent.md"
+    }
+  ],
+  "coverage_analysis": {
+    "files_with_mappings": 1,
+    "total_mappings_found": 18,
+    "unmapped_concepts": []
+  }
+}

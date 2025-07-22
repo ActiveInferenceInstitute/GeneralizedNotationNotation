@@ -1,0 +1,51 @@
+{
+  "timestamp": "2025-07-22 08:50:02",
+  "target_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "framework_execution_dirs": {
+    "pymdp": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/pymdp",
+    "rxinfer": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/rxinfer",
+    "discopy": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/discopy",
+    "activeinference_jl": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/activeinference_jl",
+    "jax": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/jax"
+  },
+  "pymdp_executions": [
+    {
+      "status": "SUCCESS",
+      "message": "PyMDP scripts executed successfully",
+      "output_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/pymdp"
+    }
+  ],
+  "rxinfer_executions": [
+    {
+      "status": "SUCCESS",
+      "message": "RxInfer scripts executed successfully",
+      "output_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/rxinfer"
+    }
+  ],
+  "discopy_executions": [
+    {
+      "status": "SUCCESS",
+      "message": "DisCoPy analysis completed successfully",
+      "output_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/discopy"
+    }
+  ],
+  "activeinference_executions": [
+    {
+      "status": "FAILED",
+      "message": "ActiveInference.jl analysis failed",
+      "output_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/activeinference_jl"
+    }
+  ],
+  "jax_executions": [
+    {
+      "status": "SUCCESS",
+      "message": "JAX scripts executed successfully",
+      "output_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/jax"
+    }
+  ],
+  "total_successes": 4,
+  "total_failures": 1,
+  "dependency_issues": [],
+  "syntax_errors": [],
+  "execution_details": {}
+}
