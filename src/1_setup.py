@@ -31,7 +31,6 @@ from utils import (
 )
 
 from pipeline import (
-    STEP_METADATA,
     get_output_dir_for_script
 )
 
@@ -61,7 +60,7 @@ except ImportError as e:
     perform_full_setup = None
     sys.exit(1)
 
-def perform_setup_standardized(
+def process_setup_standardized(
     target_dir: Path,
     output_dir: Path,
     logger: logging.Logger,
@@ -107,10 +106,10 @@ def perform_setup_standardized(
                     skip_jax_test=kwargs.get('skip_jax_test', True)
                 )
                 if exit_code != 0:
-                    log_step_error(logger, "Environment setup failed")
+                    log_step_error(logger, "Setup failed")
                     return False
             except Exception as e:
-                log_step_error(logger, f"Environment setup failed with exception: {e}")
+                log_step_error(logger, f"Setup failed: {e}")
                 return False
         else:
             log_step_warning(logger, "Project environment setup not available, skipping")
@@ -123,12 +122,12 @@ def perform_setup_standardized(
         return True
         
     except Exception as e:
-        log_step_error(logger, f"Setup processing failed: {e}")
+        log_step_error(logger, f"Setup failed: {e}")
         return False
 
 run_script = create_standardized_pipeline_script(
     "1_setup.py",
-    perform_setup_standardized,
+    process_setup_standardized,
     "Environment setup and dependency installation",
     additional_arguments={
         "recreate_venv": {"type": bool, "default": False, "help": "Recreate virtual environment"},

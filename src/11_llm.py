@@ -31,7 +31,6 @@ from utils import (
 )
 
 from pipeline import (
-    STEP_METADATA,
     get_output_dir_for_script
 )
 
@@ -196,7 +195,7 @@ def process_llm_analysis(
             return overall_results.get('success', False)
         
     except Exception as e:
-        log_step_error(logger, f"LLM processing failed with exception: {e}")
+        log_step_error(logger, f"LLM failed: {e}")
         if verbose:
             import traceback
             logger.error(f"Full traceback: {traceback.format_exc()}")

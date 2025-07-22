@@ -220,10 +220,16 @@ def verify_directories(target_dir, output_dir, logger, find_gnn_files, verbose=F
     # Create output directory structure using centralized configuration
     try:
         logger.info("Creating output directory structure...")
-        output_paths = {}  # Should be replaced with actual output path logic
-        logger.info(f"Output directory structure verified/created: {Path(output_dir).resolve()}")
+        # Ensure output directory exists first
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+        
+        # Get the actual output paths using the centralized function
+        output_paths = get_output_paths(output_dir)
+        logger.info(f"Output directory structure verified/created: {output_path.resolve()}")
+        
         structure_info = {name: str(path) for name, path in output_paths.items()}
-        structure_file = Path(output_dir) / "directory_structure.json"
+        structure_file = output_path / "directory_structure.json"
         with open(structure_file, 'w') as f:
             json.dump(structure_info, f, indent=2)
         logger.debug(f"Directory structure info saved to: {structure_file}")

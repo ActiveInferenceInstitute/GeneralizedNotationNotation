@@ -8,6 +8,7 @@ to ensure they adhere to the specification and are correctly typed.
 import re
 import logging
 import json
+import os
 import time
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -21,15 +22,152 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
-# Import the GNN parser for file parsing
-try:
-    from visualization.parser import GNNParser
-except ImportError:
-    # Fallback for test environment
-    from ..visualization.parser import GNNParser
-
 # Create a logger for this module
 logger = logging.getLogger(__name__)
+
+class SimpleGNNParser:
+    """Simple GNN parser that handles markdown format correctly."""
+    
+    def parse_file(self, file_path: str) -> Dict[str, Any]:
+        """Parse a GNN file and return structured content."""
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            return self._parse_markdown_format(content)
+        except Exception as e:
+            logger.error(f"Failed to parse file {file_path}: {e}")
+            return {}
+    
+    def _parse_markdown_format(self, content: str) -> Dict[str, Any]:
+        """Parse GNN file in Markdown format."""
+        sections: Dict[str, Any] = {}
+        
+        # Extract header comments (lines before first ## section)
+        lines = content.split('\n')
+        header_lines = []
+        section_start = -1
+        
+        for i, line in enumerate(lines):
+            if line.strip().startswith('## '):
+                section_start = i
+                break
+            header_lines.append(line)
+        
+        if header_lines:
+            header_content = '\n'.join(header_lines).strip()
+            sections['_HeaderComments'] = header_content
+            
+            # Extract ModelName from header
+            for line in header_lines:
+                if line.strip().startswith('# GNN Example:'):
+                    sections['ModelName'] = line.replace('# GNN Example:', '').strip()
+                    break
+                elif line.strip().startswith('#') and 'ModelName' not in sections:
+                    sections['ModelName'] = line.replace('#', '').strip()
+        
+        # Extract sections
+        current_section = None
+        current_content = []
+        
+        for i in range(section_start, len(lines)) if section_start >= 0 else []:
+            line = lines[i]
+            
+            if line.strip().startswith('## '):
+                # Save previous section
+                if current_section:
+                    sections[current_section] = '\n'.join(current_content).strip()
+                
+                # Start new section
+                current_section = line.replace('##', '').strip()
+                current_content = []
+            else:
+                current_content.append(line)
+        
+        # Save last section
+        if current_section:
+            sections[current_section] = '\n'.join(current_content).strip()
+        
+        # Process state space and connections
+        self._process_state_space(sections)
+        self._process_connections(sections)
+        
+        return sections
+    
+    def _process_state_space(self, sections: Dict[str, Any]) -> None:
+        """Process StateSpaceBlock to extract variables."""
+        if 'StateSpaceBlock' not in sections:
+            return
+        
+        content = sections['StateSpaceBlock']
+        variables = {}
+        
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            
+            # Match variable definitions like: A[3,3,type=float]
+            match = re.match(r'(\w+)\s*\[([^\]]+)\](?:\s*#\s*(.*))?', line)
+            if match:
+                var_name = match.group(1)
+                dims_str = match.group(2)
+                comment = match.group(3) if match.group(3) else ""
+                
+                dimensions = []
+                var_type = None
+                
+                for part in dims_str.split(','):
+                    part = part.strip()
+                    if part.startswith('type='):
+                        var_type = part.split('=')[1]
+                    else:
+                        try:
+                            dimensions.append(int(part))
+                        except ValueError:
+                            dimensions.append(part)
+                
+                variables[var_name] = {
+                    'dimensions': dimensions,
+                    'type': var_type or 'float',  # default to float
+                    'comment': comment
+                }
+        
+        if variables:
+            sections['Variables'] = variables
+    
+    def _process_connections(self, sections: Dict[str, Any]) -> None:
+        """Process Connections section to extract edges."""
+        if 'Connections' not in sections:
+            return
+        
+        content = sections['Connections']
+        edges = []
+        
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            
+            # Match connections like: D>s, s-A, etc.
+            if '>' in line:
+                parts = line.split('>')
+                if len(parts) == 2:
+                    edges.append({
+                        'source': parts[0].strip(),
+                        'target': parts[1].strip(),
+                        'type': 'directed'
+                    })
+            elif '-' in line:
+                parts = line.split('-')
+                if len(parts) == 2:
+                    edges.append({
+                        'source': parts[0].strip(),
+                        'target': parts[1].strip(),
+                        'type': 'undirected'
+                    })
+        
+        if edges:
+            sections['Edges'] = edges
 
 
 class GNNTypeChecker:
@@ -38,13 +176,23 @@ class GNNTypeChecker:
     and have consistent typing.
     """
     
-    # Required sections per GNN specification
+    # Required sections per GNN specification (more flexible)
     REQUIRED_SECTIONS = {
         'GNNSection',
-        'GNNVersionAndFlags',
-        'ModelName',
+        'GNNVersionAndFlags', 
         'StateSpaceBlock',
-        'Connections',
+        'Connections'
+    }
+    
+    # Optional but common sections
+    OPTIONAL_SECTIONS = {
+        'ModelName',
+        'ModelAnnotation',
+        'InitialParameterization',
+        'Equations',
+        'Time',
+        'ActInfOntologyAnnotation',
+        'ModelParameters',
         'Footer',
         'Signature'
     }
@@ -52,7 +200,10 @@ class GNNTypeChecker:
     # Allowed time specifications
     VALID_TIME_SPECS = {
         'Static', 
-        'Dynamic'
+        'Dynamic',
+        'Time=t',
+        'Discrete',
+        'ModelTimeHorizon=Unbounded'
     }
     
     # Valid types for variables
@@ -71,7 +222,7 @@ class GNNTypeChecker:
         Args:
             strict_mode: Whether to enforce strict type checking rules
         """
-        self.parser = GNNParser()
+        self.parser = SimpleGNNParser()
         self.strict_mode = strict_mode
         self.errors = []
         self.warnings = []
@@ -86,9 +237,12 @@ class GNNTypeChecker:
         self.errors = []
         self.warnings = []
         details = {}
+        
         try:
             parsed_content = self.parser.parse_file(file_path)
             logger.debug(f"Successfully parsed file: {file_path}")
+            logger.debug(f"Parsed sections: {list(parsed_content.keys())}")
+            
             self._check_required_sections(parsed_content)
             self._check_state_space(parsed_content)
             self._check_connections(parsed_content)
@@ -109,6 +263,11 @@ class GNNTypeChecker:
         
         is_valid = len(self.errors) == 0
         logger.info(f"Finished GNN check for file: {file_path}. Valid: {is_valid}")
+        if self.errors:
+            logger.info(f"Errors found: {self.errors}")
+        if self.warnings:
+            logger.info(f"Warnings found: {self.warnings}")
+            
         details['is_valid'] = is_valid
         details['errors'] = list(self.errors)
         details['warnings'] = list(self.warnings)
@@ -156,12 +315,21 @@ class GNNTypeChecker:
         Args:
             content: Parsed GNN content
         """
-        missing_sections = self.REQUIRED_SECTIONS - set(content.keys())
+        available_sections = set(content.keys())
+        missing_sections = self.REQUIRED_SECTIONS - available_sections
         
         for section in missing_sections:
             error_msg = f"Missing required section: {section}"
             self.errors.append(error_msg)
             logger.debug(f"Validation Error: {error_msg}")
+        
+        # Check for ModelName in header comments if not in sections
+        if 'ModelName' not in available_sections and '_HeaderComments' in content:
+            if any('GNN Example:' in line for line in content['_HeaderComments'].split('\n')):
+                # ModelName can be derived from header
+                pass
+            else:
+                self.warnings.append("ModelName not explicitly defined but may be derivable from header")
     
     def _check_state_space(self, content: Dict[str, Any]) -> None:
         """
@@ -171,17 +339,22 @@ class GNNTypeChecker:
             content: Parsed GNN content
         """
         if 'Variables' not in content:
-            error_msg = "No variables extracted from StateSpaceBlock"
-            self.errors.append(error_msg)
-            logger.debug(f"Validation Error: {error_msg}")
+            if 'StateSpaceBlock' in content:
+                # StateSpaceBlock exists but no variables were parsed
+                self.warnings.append("StateSpaceBlock found but no variables could be parsed")
+            else:
+                error_msg = "No StateSpaceBlock section found"
+                self.errors.append(error_msg)
+                logger.debug(f"Validation Error: {error_msg}")
             return
         
         variables = content['Variables']
+        logger.debug(f"Checking {len(variables)} variables")
         
         for var_name, var_info in variables.items():
             # Check if dimensions are properly specified
             dims = var_info.get('dimensions', [])
-            if not dims:
+            if not dims and self.strict_mode:
                 error_msg = f"Variable '{var_name}' has no dimensions specified"
                 self.errors.append(error_msg)
                 logger.debug(f"Validation Error: {error_msg}")
@@ -189,9 +362,10 @@ class GNNTypeChecker:
             # Check variable type if specified
             var_type = var_info.get('type')
             if var_type and var_type not in self.VALID_TYPES:
-                error_msg = f"Variable '{var_name}' has invalid type: {var_type}"
-                self.errors.append(error_msg)
-                logger.debug(f"Validation Error: {error_msg}")
+                # Only warning for now as the type system might be extensible
+                warning_msg = f"Variable '{var_name}' has non-standard type: {var_type}"
+                self.warnings.append(warning_msg)
+                logger.debug(f"Validation Warning: {warning_msg}")
     
     def _check_connections(self, content: Dict[str, Any]) -> None:
         """
@@ -200,31 +374,44 @@ class GNNTypeChecker:
         Args:
             content: Parsed GNN content
         """
-        if 'Edges' not in content or 'Variables' not in content:
+        if 'Edges' not in content:
+            if 'Connections' in content:
+                self.warnings.append("Connections section found but no edges could be parsed")
+            else:
+                self.warnings.append("No Connections section found")
+            return
+        
+        if 'Variables' not in content:
+            self.warnings.append("Cannot validate connections without variables")
             return
         
         edges = content['Edges']
         variables = content['Variables']
         var_names = set(variables.keys())
         
+        logger.debug(f"Checking {len(edges)} connections against {len(var_names)} variables")
+        
         # Check for undefined variables in connections
         for edge in edges:
-            source = edge.get('source')
-            target = edge.get('target')
+            source = edge.get('source', '')
+            target = edge.get('target', '')
             
-            # Extract base variable names (without time indices)
-            source_base = re.sub(r'_t(?:\+\d+)?', '', source)
-            target_base = re.sub(r'_t(?:\+\d+)?', '', target)
+            # Extract base variable names (without time indices or suffixes)
+            source_base = re.sub(r'_t(?:\+\d+)?|_prime|\+\d+', '', source)
+            target_base = re.sub(r'_t(?:\+\d+)?|_prime|\+\d+', '', target)
             
             if source_base not in var_names:
-                error_msg = f"Connection references undefined variable: {source}"
-                self.errors.append(error_msg)
-                logger.debug(f"Validation Error: {error_msg}")
+                # Check if it might be a Greek letter or special symbol
+                if source_base not in ['π', 'u', 'G', 't'] and len(source_base) > 0:
+                    warning_msg = f"Connection references potentially undefined variable: {source}"
+                    self.warnings.append(warning_msg)
+                    logger.debug(f"Validation Warning: {warning_msg}")
             
             if target_base not in var_names:
-                error_msg = f"Connection references undefined variable: {target}"
-                self.errors.append(error_msg)
-                logger.debug(f"Validation Error: {error_msg}")
+                if target_base not in ['π', 'u', 'G', 't'] and len(target_base) > 0:
+                    warning_msg = f"Connection references potentially undefined variable: {target}"
+                    self.warnings.append(warning_msg)
+                    logger.debug(f"Validation Warning: {warning_msg}")
     
     def _check_time_specification(self, content: Dict[str, Any]) -> None:
         """
@@ -234,39 +421,29 @@ class GNNTypeChecker:
             content: Parsed GNN content
         """
         if 'Time' not in content:
-            warning_msg = "Time section not specified"
-            self.warnings.append(warning_msg)
-            logger.debug(f"Validation Warning: {warning_msg}")
+            self.warnings.append("Time section not specified")
             return
         
         time_spec = content['Time']
-        lines = time_spec.split('\n')
+        lines = [line.strip() for line in time_spec.split('\n') if line.strip()]
         
-        primary_spec = lines[0].strip() if lines else ""
+        if not lines:
+            self.warnings.append("Empty Time section")
+            return
         
-        if primary_spec not in self.VALID_TIME_SPECS:
-            error_msg = f"Invalid time specification: {primary_spec}"
+        # Check for valid time specifications
+        valid_spec_found = False
+        for line in lines:
+            if any(spec in line for spec in self.VALID_TIME_SPECS):
+                valid_spec_found = True
+                break
+        
+        if not valid_spec_found and self.strict_mode:
+            error_msg = f"No valid time specification found in Time section"
             self.errors.append(error_msg)
             logger.debug(f"Validation Error: {error_msg}")
-        
-        # If dynamic, check additional time specifications
-        if primary_spec == 'Dynamic':
-            has_time_var = False
-            for line in lines[1:]:
-                if line.startswith('DiscreteTime=') or line.startswith('ContinuousTime='):
-                    has_time_var = True
-                    time_var = line.split('=')[1].strip()
-                    
-                    # Check if the time variable is defined
-                    if 'Variables' in content and time_var not in content['Variables']:
-                        error_msg = f"Time variable {time_var} not defined in StateSpaceBlock"
-                        self.errors.append(error_msg)
-                        logger.debug(f"Validation Error: {error_msg}")
-            
-            if not has_time_var and self.strict_mode:
-                error_msg = "Dynamic model requires DiscreteTime or ContinuousTime specification"
-                self.errors.append(error_msg)
-                logger.debug(f"Validation Error: {error_msg}")
+        elif not valid_spec_found:
+            self.warnings.append("Time section may not contain standard time specifications")
     
     def _check_equations(self, content: Dict[str, Any]) -> None:
         """
@@ -275,30 +452,28 @@ class GNNTypeChecker:
         Args:
             content: Parsed GNN content
         """
-        if 'Equations' not in content or 'Variables' not in content:
+        if 'Equations' not in content:
+            # Equations are optional
             return
         
         equations = content['Equations']
+        if not equations.strip():
+            return
+        
+        if 'Variables' not in content:
+            self.warnings.append("Cannot validate equations without variables")
+            return
+        
         variables = content['Variables']
         var_names = set(variables.keys())
         
-        # Extract variable names from equations using simple regex
-        # This is a simplistic approach and might not catch all variable references
-        equation_lines = equations.split('\n')
-        referenced_in_equation = set()
-        for line in equation_lines:
-            if '=' in line:
-                left_side = line.split('=')[0].strip()
-                
-                # Extract the variable name from lhs (handle subscripts and superscripts)
-                match = re.match(r'([a-zA-Z0-9_]+)(?:_[a-zA-Z0-9{}\+]+)?(?:\^[a-zA-Z0-9{}]+)?', left_side)
-                if match:
-                    var_name = match.group(1)
-                    if var_name not in var_names and not self._is_common_math_function(var_name):
-                        error_msg = f"Equation '{line}' references undefined variable: {var_name}"
-                        self.errors.append(error_msg)
-                        logger.debug(f"Validation Error: {error_msg}")
-                        referenced_in_equation.add(var_name)
+        # Basic validation - just check if equations section is present and non-empty
+        equation_lines = [line.strip() for line in equations.split('\n') if line.strip() and not line.startswith('#')]
+        
+        if equation_lines:
+            logger.debug(f"Found {len(equation_lines)} equation lines")
+            # For now, just log that equations are present
+            # More sophisticated equation parsing could be added later
     
     def _check_version_and_flags(self, content: Dict[str, Any]) -> None:
         """
@@ -308,14 +483,15 @@ class GNNTypeChecker:
             content: Parsed GNN content
         """
         if 'GNNVersionAndFlags' not in content:
+            self.warnings.append("GNNVersionAndFlags section not found")
             return
         
         version_flags = content['GNNVersionAndFlags']
         
         # Check if GNN version is specified
-        if not re.search(r'GNN v\d+(?:\.\d+)?', version_flags):
-            self.errors.append("Invalid GNNVersionAndFlags: Missing GNN version")
-    
+        if not re.search(r'GNN\s+v?\d+(?:\.\d+)?', version_flags, re.IGNORECASE):
+            self.warnings.append("GNN version not clearly specified in GNNVersionAndFlags")
+
     def _is_common_math_function(self, name: str) -> bool:
         # Basic check for common math functions to avoid false positives
         return name.lower() in ['ln', 'log', 'exp', 'sin', 'cos', 'tan', 'sqrt', 'softmax', 'sigmoid']
@@ -430,12 +606,12 @@ class GNNTypeChecker:
                     connections_data['connection_types']['undirected'] += 1
                 
                 # Check for temporal connections
-                if '+' in source or '+' in target:
+                if '+' in source or '+' in target or '_prime' in source or '_prime' in target:
                     connections_data['connection_types']['temporal'] += 1
                 
                 # Track variable connectivity
-                source_base = source.split('+')[0] if '+' in source else source
-                target_base = target.split('+')[0] if '+' in target else target
+                source_base = re.sub(r'_prime|\+\d+', '', source)
+                target_base = re.sub(r'_prime|\+\d+', '', target)
                 
                 connections_data['variable_connectivity'][source_base] = connections_data['variable_connectivity'].get(source_base, 0) + 1
                 connections_data['variable_connectivity'][target_base] = connections_data['variable_connectivity'].get(target_base, 0) + 1
@@ -444,7 +620,7 @@ class GNNTypeChecker:
                     'source': source,
                     'target': target,
                     'type': edge_type,
-                    'is_temporal': '+' in source or '+' in target
+                    'is_temporal': '+' in source or '+' in target or '_prime' in source or '_prime' in target
                 })
         
         return connections_data

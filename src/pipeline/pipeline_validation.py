@@ -273,7 +273,7 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
         
         if error_modules > 0:
             recommendations.append(f"🔴 **Critical**: Fix import errors in {error_modules} modules")
-            recommendations.append("   - Use the template in `src/pipeline_step_template.py` as a reference")
+            recommendations.append("   - Use the template in `src/utils/pipeline_template.py` as a reference")
             recommendations.append("   - Ensure all modules import from the centralized `utils` package")
         
         if warning_modules > 0:
@@ -304,6 +304,27 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
         recommendations.append("📊 **Performance**: Add performance tracking to compute-intensive steps")
         recommendations.append(f"   - Modules to enhance: {', '.join(performance_modules)}")
     
+    # Argument consistency recommendations
+    arg_issues = report.get("argument_validation", {})
+    if arg_issues and arg_issues.get("inconsistencies"):
+        recommendations.append("🔧 **Arguments**: Fix argument inconsistencies")
+        for inconsistency in arg_issues["inconsistencies"][:3]:  # Show first 3
+            recommendations.append(f"   - {inconsistency}")
+    
+    # Dependency cycle recommendations  
+    cycle_issues = report.get("dependency_validation", {})
+    if cycle_issues and cycle_issues.get("cycles"):
+        recommendations.append("🔄 **Dependencies**: Fix circular dependency issues")
+        for cycle in cycle_issues["cycles"][:2]:  # Show first 2
+            recommendations.append(f"   - Cycle: {' → '.join(cycle)}")
+    
+    # Output naming recommendations
+    naming_issues = report.get("output_validation", {})
+    if naming_issues and naming_issues.get("naming_violations"):
+        recommendations.append("📁 **Naming**: Fix output directory naming violations")
+        for violation in naming_issues["naming_violations"][:3]:  # Show first 3
+            recommendations.append(f"   - {violation}")
+    
     # General recommendations
     recommendations.extend([
         "",
@@ -322,6 +343,176 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
     
     return recommendations
 
+def validate_argument_consistency() -> Dict[str, List[str]]:
+    """Validate that argument parsing is consistent across pipeline steps."""
+    issues = {"errors": [], "warnings": [], "inconsistencies": []}
+    
+    try:
+        from utils.argument_utils import ArgumentParser, STEP_ARGUMENTS
+        
+        # Check that all steps define their supported arguments
+        expected_steps = [f"{i}_{name}.py" for i, name in enumerate([
+            "setup", "gnn", "tests", "type_checker", "export", "visualization",
+            "mcp", "ontology", "render", "execute", "llm", "website", "sapf"
+        ], 1)]
+        
+        missing_definitions = []
+        for step in expected_steps:
+            if step not in STEP_ARGUMENTS:
+                missing_definitions.append(step)
+        
+        if missing_definitions:
+            issues["warnings"].append(f"Steps missing argument definitions: {', '.join(missing_definitions)}")
+        
+        # Check for argument consistency across similar steps
+        common_args = ["target_dir", "output_dir", "recursive", "verbose"]
+        inconsistent_steps = []
+        
+        for step_name, step_args in STEP_ARGUMENTS.items():
+            missing_common = [arg for arg in common_args if arg not in step_args]
+            if missing_common:
+                inconsistent_steps.append(f"{step_name} missing: {', '.join(missing_common)}")
+        
+        issues["inconsistencies"] = inconsistent_steps
+        
+    except ImportError as e:
+        issues["errors"].append(f"Cannot import argument utilities: {e}")
+    except Exception as e:
+        issues["errors"].append(f"Argument validation error: {e}")
+    
+    return issues
+
+def validate_dependency_cycles() -> Dict[str, List[str]]:
+    """Check for circular dependencies in pipeline step configuration."""
+    issues = {"errors": [], "warnings": [], "cycles": []}
+    
+    try:
+        from pipeline.config import get_pipeline_config
+        
+        config = get_pipeline_config()
+        
+        # Build dependency graph
+        dependencies = {}
+        for step_name, step_config in config.steps.items():
+            dependencies[step_name] = step_config.dependencies
+        
+        # Detect cycles using DFS
+        def find_cycles(node, path, visited, rec_stack):
+            visited.add(node)
+            rec_stack.add(node)
+            
+            for neighbor in dependencies.get(node, []):
+                if neighbor not in visited:
+                    cycle = find_cycles(neighbor, path + [neighbor], visited, rec_stack)
+                    if cycle:
+                        return cycle
+                elif neighbor in rec_stack:
+                    # Found cycle
+                    cycle_start = path.index(neighbor)
+                    return path[cycle_start:] + [neighbor]
+            
+            rec_stack.remove(node)
+            return None
+        
+        visited = set()
+        for step in dependencies:
+            if step not in visited:
+                cycle = find_cycles(step, [step], visited, set())
+                if cycle:
+                    issues["cycles"].append(cycle)
+        
+        # Check for missing dependencies
+        all_steps = set(dependencies.keys())
+        missing_deps = []
+        for step, deps in dependencies.items():
+            for dep in deps:
+                if dep not in all_steps:
+                    missing_deps.append(f"{step} depends on non-existent {dep}")
+        
+        if missing_deps:
+            issues["errors"].extend(missing_deps)
+            
+    except ImportError as e:
+        issues["errors"].append(f"Cannot import pipeline config: {e}")
+    except Exception as e:
+        issues["errors"].append(f"Dependency validation error: {e}")
+    
+    return issues
+
+def validate_output_naming_conventions() -> Dict[str, List[str]]:
+    """Validate that output directory naming follows conventions."""
+    issues = {"errors": [], "warnings": [], "naming_violations": []}
+    
+    try:
+        from pipeline.config import get_pipeline_config
+        
+        config = get_pipeline_config()
+        
+        # Expected naming pattern: step name + descriptive suffix
+        expected_patterns = {
+            "1_setup.py": "setup_artifacts",
+            "2_gnn.py": "gnn_processing_step", 
+            "3_tests.py": "test_reports",
+            "4_type_checker.py": "type_check",
+            "5_export.py": "gnn_exports",
+            "6_visualization.py": "visualization",
+            "7_mcp.py": "mcp_processing_step",
+            "8_ontology.py": "ontology_processing", 
+            "9_render.py": "gnn_rendered_simulators",
+            "10_execute.py": "execution_results",
+            "11_llm.py": "llm_processing_step",
+            "12_website.py": "website",
+            "13_sapf.py": "sapf_processing_step"
+        }
+        
+        violations = []
+        for step_name, expected_pattern in expected_patterns.items():
+            step_config = config.get_step_config(step_name)
+            if step_config and step_config.output_subdir != expected_pattern:
+                violations.append(f"{step_name}: expected '{expected_pattern}', got '{step_config.output_subdir}'")
+        
+        issues["naming_violations"] = violations
+        
+    except ImportError as e:
+        issues["errors"].append(f"Cannot import pipeline config: {e}")
+    except Exception as e:
+        issues["errors"].append(f"Output naming validation error: {e}")
+    
+    return issues
+
+def validate_performance_tracking_coverage() -> Dict[str, List[str]]:
+    """Check which steps have performance tracking enabled."""
+    issues = {"warnings": [], "missing_tracking": [], "suggestions": []}
+    
+    try:
+        from pipeline.config import get_pipeline_config
+        
+        config = get_pipeline_config()
+        
+        # Steps that should have performance tracking (compute-intensive)
+        should_have_tracking = [
+            "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py", 
+            "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
+            "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
+        ]
+        
+        missing_tracking = []
+        for step_name in should_have_tracking:
+            step_config = config.get_step_config(step_name)
+            if step_config and not step_config.performance_tracking:
+                missing_tracking.append(step_name)
+        
+        if missing_tracking:
+            issues["missing_tracking"] = missing_tracking
+            issues["suggestions"].append("Enable performance tracking for compute-intensive steps")
+            
+    except ImportError as e:
+        issues["warnings"].append(f"Cannot import pipeline config: {e}")
+    except Exception as e:
+        issues["warnings"].append(f"Performance tracking validation error: {e}")
+    
+    return issues
+
 def generate_validation_report(src_dir: Path, output_dir: Path) -> Dict:
     """Generate a comprehensive validation report."""
     log_step_start(logger, "Generating pipeline validation report")
@@ -333,6 +524,8 @@ def generate_validation_report(src_dir: Path, output_dir: Path) -> Dict:
         "output_validation": {},
         "module_issues": {},
         "configuration_validation": {},
+        "argument_validation": {},
+        "dependency_validation": {},
         "improvement_recommendations": [],
         "summary": {}
     }
@@ -355,6 +548,18 @@ def generate_validation_report(src_dir: Path, output_dir: Path) -> Dict:
     
     # Check output structure
     report["output_validation"] = validate_output_structure(output_dir)
+
+    # Check argument consistency
+    report["argument_validation"] = validate_argument_consistency()
+
+    # Check dependency cycles
+    report["dependency_validation"] = validate_dependency_cycles()
+
+    # Check output naming conventions
+    report["output_validation"]["naming_violations"] = validate_output_naming_conventions()
+
+    # Check performance tracking coverage
+    report["performance_tracking_coverage"] = validate_performance_tracking_coverage()
     
     # Generate improvement recommendations
     report["improvement_recommendations"] = generate_improvement_recommendations(report)
@@ -435,6 +640,34 @@ def print_validation_report(report: Dict):
         for present in output_val["present"]:
             print(f"  ✓ {present}")
     
+    # Argument validation
+    arg_val = report.get("argument_validation", {})
+    if arg_val.get("inconsistencies"):
+        print(f"\nARGUMENT INCONSISTENCIES:")
+        for inconsistency in arg_val["inconsistencies"]:
+            print(f"  - {inconsistency}")
+
+    # Dependency validation
+    dep_val = report.get("dependency_validation", {})
+    if dep_val.get("cycles"):
+        print(f"\nDEPENDENCY CYCLES:")
+        for cycle in dep_val["cycles"]:
+            print(f"  - Cycle: {' → '.join(cycle)}")
+
+    # Output naming violations
+    naming_val = report.get("output_validation", {}).get("naming_violations")
+    if naming_val:
+        print(f"\nOUTPUT NAMING VIOLATIONS:")
+        for violation in naming_val:
+            print(f"  - {violation}")
+
+    # Performance tracking coverage
+    perf_val = report.get("performance_tracking_coverage", {})
+    if perf_val.get("missing_tracking"):
+        print(f"\nMISSING PERFORMANCE TRACKING:")
+        for step in perf_val["missing_tracking"]:
+            print(f"  - {step}")
+
     # Improvement recommendations
     recommendations = report.get("improvement_recommendations", [])
     if recommendations:

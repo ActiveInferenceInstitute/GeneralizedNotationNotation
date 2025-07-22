@@ -24,7 +24,6 @@ from utils import (
 )
 
 from pipeline import (
-    STEP_METADATA,
     get_output_dir_for_script
 )
 
@@ -34,7 +33,7 @@ from utils.pipeline_template import create_standardized_pipeline_script
 # Initialize logger for this step
 logger = setup_step_logging("4_type_checker", verbose=False)
 
-def process_type_checking_standardized(
+def process_type_checker_standardized(
     target_dir: Path,
     output_dir: Path,
     logger: logging.Logger,
@@ -94,16 +93,16 @@ def process_type_checking_standardized(
         return exit_code == 0
         
     except Exception as e:
-        log_step_error(logger, f"Type checking failed: {e}")
+        log_step_error(logger, f"Type Checker failed: {e}")
         return False
 
 run_script = create_standardized_pipeline_script(
     "4_type_checker.py",
-    process_type_checking_standardized,
+    process_type_checker_standardized,
     "GNN syntax and type validation",
     additional_arguments={
         "strict": {"type": bool, "default": False, "help": "Enable strict validation mode"},
-        "estimate_resources": {"type": bool, "default": True, "help": "Estimate computational resources"}
+        "estimate-resources": {"action": "store_true", "default": True, "help": "Estimate computational resources", "dest": "estimate_resources"}
     }
 )
 

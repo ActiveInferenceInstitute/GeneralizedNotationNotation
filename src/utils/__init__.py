@@ -122,113 +122,37 @@ try:
     _utils_logger.debug("GNN Pipeline utilities loaded successfully")
     
 except ImportError as e:
-    # Graceful fallback if utilities can't be imported
+    # Minimal fallback if utilities can't be imported
     logging.basicConfig(
         level=logging.INFO, 
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
     _fallback_logger = logging.getLogger("utils_fallback")
-    _fallback_logger.warning(f"Failed to import some utilities: {e}")
+    _fallback_logger.error(f"Critical error: Failed to import utilities: {e}")
     UTILS_AVAILABLE = False
     
-    # Provide basic fallbacks that maintain interface compatibility
-    class PipelineLogger:
+    # Minimal compatibility stubs
+    def setup_step_logging(step_name: str, verbose: bool = False):
+        return logging.getLogger(step_name)
+    
+    def log_step_start(logger, message): logger.info(f"🚀 {message}")
+    def log_step_success(logger, message): logger.info(f"✅ {message}")
+    def log_step_warning(logger, message): logger.warning(f"⚠️ {message}")
+    def log_step_error(logger, message): logger.error(f"❌ {message}")
+    
+    # Minimal stubs for other functions
+    setup_main_logging = setup_step_logging
+    get_performance_summary = lambda: {"error": "utils_unavailable"}
+    get_venv_python = lambda x: (None, None)
+    get_system_info = lambda: {"error": "utils_unavailable"}
+    validate_output_directory = lambda x, y: False
+    performance_tracker = None
+    
+    class MockArgumentParser:
         @staticmethod
-        def get_logger(name: str):
-            return logging.getLogger(name)
-        
-        @staticmethod
-        def set_correlation_context(step_name: str, correlation_id: Optional[str] = None):
-            return correlation_id or "fallback"
-    
-    def setup_step_logging(step_name: str, verbose: bool = False) -> logging.Logger:
-        """Fallback logging setup that maintains interface compatibility."""
-        level = logging.DEBUG if verbose else logging.INFO
-        logger = logging.getLogger(step_name)
-        logger.setLevel(level)
-        
-        # Ensure handler exists
-        if not logger.handlers:
-            handler = logging.StreamHandler()
-            formatter = logging.Formatter(
-                '%(asctime)s [fallback] %(name)s - %(levelname)s - %(message)s'
-            )
-            handler.setFormatter(formatter)
-            logger.addHandler(handler)
-        
-        return logger
-    
-    def log_step_start(logger_or_step_name, message: str = None, **kwargs):
-        """Fallback for log_step_start with flexible signature."""
-        if isinstance(logger_or_step_name, str):
-            logger = logging.getLogger(logger_or_step_name)
-            message = message or f"Starting {logger_or_step_name}"
-        else:
-            logger = logger_or_step_name
-            message = message or "Starting step"
-        logger.info(f"🚀 {message}")
-    
-    def log_step_success(logger_or_step_name, message: str = None, **kwargs):
-        """Fallback for log_step_success with flexible signature."""
-        if isinstance(logger_or_step_name, str):
-            logger = logging.getLogger(logger_or_step_name)
-            message = message or f"{logger_or_step_name} completed successfully"
-        else:
-            logger = logger_or_step_name
-            message = message or "Step completed successfully"
-        logger.info(f"✅ {message}")
-    
-    def log_step_warning(logger_or_step_name, message: str = None, **kwargs):
-        """Fallback for log_step_warning with flexible signature."""
-        if isinstance(logger_or_step_name, str):
-            logger = logging.getLogger(logger_or_step_name)
-            message = message or f"Warning in {logger_or_step_name}"
-        else:
-            logger = logger_or_step_name
-            message = message or "Step warning"
-        logger.warning(f"⚠️ {message}")
-    
-    def log_step_error(logger_or_step_name, message: str = None, **kwargs):
-        """Fallback for log_step_error with flexible signature."""
-        if isinstance(logger_or_step_name, str):
-            logger = logging.getLogger(logger_or_step_name)
-            message = message or f"Error in {logger_or_step_name}"
-        else:
-            logger = logger_or_step_name
-            message = message or "Step error"
-        logger.error(f"❌ {message}")
-
-    # Minimal fallbacks for other utilities
-    def setup_main_logging(log_dir: Optional[Path] = None, verbose: bool = False):
-        return setup_step_logging("main", verbose)
-    
-    def get_performance_summary() -> Dict[str, Any]:
-        return {"fallback": True, "performance_tracking": "unavailable"}
-    
-    def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
-        """Fallback for get_venv_python."""
-        return None, None
-    
-    def get_system_info() -> Dict[str, Any]:
-        """Fallback for get_system_info."""
-        return {"fallback": True, "system_info": "unavailable"}
-    
-    def parse_arguments():
-        """Fallback for parse_arguments."""
-        import argparse
-        parser = argparse.ArgumentParser()
-        parser.add_argument('--target-dir', type=Path, default=Path("input/gnn_files"))
-        parser.add_argument('--output-dir', type=Path, default=Path("../output"))
-        parser.add_argument('--verbose', action='store_true')
-        return parser.parse_args()
-    
-    def validate_and_convert_paths(args, logger):
-        """Fallback for validate_and_convert_paths."""
-        pass
-    
-    def validate_pipeline_dependencies_if_available(args):
-        """Fallback for validate_pipeline_dependencies_if_available."""
-        return True
+        def parse_step_arguments(step_name): 
+            import argparse
+            return argparse.Namespace(target_dir=Path("input"), output_dir=Path("output"), verbose=False)
 
 # Performance tracker is already imported with canonical names
 

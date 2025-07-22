@@ -27,7 +27,6 @@ from utils import (
 )
 
 from pipeline import (
-    STEP_METADATA,
     get_output_dir_for_script
 )
 
@@ -76,7 +75,7 @@ def process_export_standardized(
         return success
         
     except Exception as e:
-        log_step_error(logger, f"Export processing failed: {e}")
+        log_step_error(logger, f"Export failed: {e}")
         return False
 
 run_script = create_standardized_pipeline_script(

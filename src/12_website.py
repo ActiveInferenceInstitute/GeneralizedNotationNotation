@@ -34,6 +34,7 @@ from utils import (
     log_step_error,
     validate_output_directory,
     EnhancedArgumentParser,
+    performance_tracker,
     PipelineLogger,
     UTILS_AVAILABLE
 )
@@ -41,7 +42,6 @@ from utils import (
 from utils.pipeline_template import create_standardized_pipeline_script
 
 from pipeline import (
-    STEP_METADATA,
     get_output_dir_for_script
 )
 
@@ -74,65 +74,138 @@ def process_website_generation(
         True if processing succeeded, False otherwise
     """
     try:
-        log_step_start(logger, "Starting static website generation from pipeline outputs")
-        
-        # Update logger verbosity if needed
-        if verbose:
-            logger.setLevel(logging.DEBUG)
-        
-        # Get the website output directory for this step
-        website_output_dir = get_output_dir_for_script("12_website.py", output_dir)
-        website_output_dir.mkdir(parents=True, exist_ok=True)
-        
-        logger.info(f"Website source directory: {output_dir}")
-        logger.info(f"Website output directory: {website_output_dir}")
-        
-        # Validate that the output directory exists and has content
-        if not output_dir.exists():
-            log_step_error(logger, f"Pipeline output directory does not exist: {output_dir}")
-            return False
-        
-        # Check for minimum required content
-        required_items = ["pipeline_execution_summary.json"]
-        missing_items = []
-        for item in required_items:
-            if not (output_dir / item).exists():
-                missing_items.append(item)
-        
-        if missing_items:
-            logger.warning(f"Some expected pipeline outputs are missing: {missing_items}")
-            logger.info("Proceeding with website generation using available content")
-        
-        # Generate website using the main pipeline output directory as source
-        # and the step-specific directory as destination
-        success = generate_website(logger, output_dir, website_output_dir)
-        
-        if success:
-            website_file = website_output_dir / "index.html"
-            if website_file.exists():
-                file_size_mb = website_file.stat().st_size / (1024 * 1024)
-                log_step_success(logger, f"Website generated successfully: {website_file} ({file_size_mb:.2f} MB)")
-                
-                # Copy any assets from the output directory that might be referenced
-                # This ensures that images, HTML files, etc. are accessible from the website
-                try:
-                    _copy_website_assets(output_dir, website_output_dir, logger)
-                except Exception as e:
-                    logger.warning(f"Failed to copy some website assets: {e}")
-                
-                return True
-            else:
-                log_step_error(logger, f"Website generation reported success but index.html not found at {website_file}")
+        # Start performance tracking
+        with performance_tracker.track_operation("website_generation", {"verbose": verbose, "recursive": recursive}):
+            log_step_start(logger, "Starting static website generation from pipeline outputs")
+            
+            # Update logger verbosity if needed
+            if verbose:
+                logger.setLevel(logging.DEBUG)
+            
+            # Set up paths - website generation uses output_dir as source of pipeline outputs
+            website_output_dir = output_dir / "website"
+            website_output_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Check if pipeline output directory exists
+            pipeline_output_dir = output_dir.parent if output_dir.name == "website" else output_dir
+            if not pipeline_output_dir.exists():
+                log_step_error(logger, f"Pipeline output directory does not exist: {pipeline_output_dir}")
                 return False
-        else:
-            log_step_error(logger, "Website generation failed")
-            return False
-        
+            
+            # Generate website using the website module
+            try:
+                website_html_filename = kwargs.get('website_html_filename', 'index.html')
+                
+                # Basic website generation
+                website_result = generate_website(
+                    pipeline_output_dir=pipeline_output_dir,
+                    website_output_dir=website_output_dir,
+                    html_filename=website_html_filename,
+                    logger=logger
+                )
+                
+                if website_result.get('success', False):
+                    website_file = website_output_dir / website_html_filename
+                    
+                    if website_file.exists():
+                        file_size_mb = website_file.stat().st_size / (1024 * 1024)
+                        log_step_success(logger, f"Website generated successfully: {website_file} ({file_size_mb:.2f} MB)")
+                        
+                        # Generate additional metadata
+                        metadata = {
+                            "timestamp": datetime.datetime.now().isoformat(),
+                            "website_file": str(website_file),
+                            "file_size_mb": round(file_size_mb, 2),
+                            "source_directory": str(pipeline_output_dir),
+                            "generation_details": website_result
+                        }
+                        
+                        metadata_file = website_output_dir / "generation_metadata.json"
+                        with open(metadata_file, 'w') as f:
+                            json.dump(metadata, f, indent=2)
+                        
+                        return True
+                    else:
+                        log_step_error(logger, f"Website generation reported success but index.html not found at {website_file}")
+                        return False
+                else:
+                    log_step_error(logger, "Website generation failed")
+                    return False
+            
+            except Exception as generation_error:
+                log_step_warning(logger, f"Advanced website generation failed: {generation_error}")
+                
+                # Fallback: basic HTML generation
+                return _generate_basic_website(pipeline_output_dir, website_output_dir, logger)
+            
     except Exception as e:
-        log_step_error(logger, f"Website generation failed with exception: {e}")
+        log_step_error(logger, f"Website failed: {e}")
         if verbose:
             import traceback
-            logger.error(f"Full traceback: {traceback.format_exc()}")
+            logger.debug(f"Website generation traceback: {traceback.format_exc()}")
+        return False
+
+def _generate_basic_website(pipeline_output_dir: Path, website_output_dir: Path, logger: logging.Logger) -> bool:
+    """Generate a basic HTML website as fallback."""
+    try:
+        logger.info("Generating basic HTML website (fallback mode)")
+        
+        # Create basic HTML content
+        html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GNN Pipeline Results</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 40px; }}
+        .header {{ background: #f0f0f0; padding: 20px; border-radius: 5px; }}
+        .section {{ margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }}
+        .file-list {{ list-style-type: none; padding: 0; }}
+        .file-item {{ padding: 5px; border-bottom: 1px solid #eee; }}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>GNN Pipeline Results</h1>
+        <p>Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+    </div>
+    
+    <div class="section">
+        <h2>Pipeline Outputs</h2>
+        <p>Source directory: {pipeline_output_dir}</p>
+        <ul class="file-list">
+"""
+        
+        # List pipeline outputs
+        for item in pipeline_output_dir.iterdir():
+            if item.is_dir():
+                html_content += f'<li class="file-item">📁 {item.name}/</li>\n'
+            else:
+                html_content += f'<li class="file-item">📄 {item.name}</li>\n'
+        
+        html_content += """
+        </ul>
+    </div>
+    
+    <div class="section">
+        <h2>Website Generation</h2>
+        <p>This website was generated using basic HTML fallback mode.</p>
+        <p>For enhanced features, ensure advanced website dependencies are available.</p>
+    </div>
+</body>
+</html>"""
+        
+        # Save basic website
+        index_file = website_output_dir / "index.html"
+        with open(index_file, 'w') as f:
+            f.write(html_content)
+        
+        log_step_success(logger, f"Basic website generated: {index_file}")
+        return True
+        
+    except Exception as e:
+        log_step_error(logger, f"Basic website generation failed: {e}")
         return False
 
 

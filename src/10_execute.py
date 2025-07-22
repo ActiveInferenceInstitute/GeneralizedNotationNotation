@@ -34,7 +34,6 @@ from utils import (
 )
 
 from pipeline import (
-    STEP_METADATA,
     get_output_dir_for_script
 )
 
@@ -88,7 +87,7 @@ except ImportError as e:
 
 logger.debug(f"Execution modules availability - PyMDP: {PYMDP_AVAILABLE}, RxInfer: {RXINFER_AVAILABLE}, DisCoPy: {DISCOPY_AVAILABLE}, ActiveInference.jl: {ACTIVEINFERENCE_AVAILABLE}, JAX: {JAX_AVAILABLE}")
 
-def process_execution_standardized(
+def process_execute_standardized(
     target_dir: Path,
     output_dir: Path,
     logger: logging.Logger,
@@ -147,12 +146,12 @@ def process_execution_standardized(
         return success
         
     except Exception as e:
-        log_step_error(logger, f"Execution processing failed: {e}")
+        log_step_error(logger, f"Execute failed: {e}")
         return False
 
 run_script = create_standardized_pipeline_script(
     "10_execute.py",
-    process_execution_standardized,
+    process_execute_standardized,
     "Execute rendered simulators"
 )
 

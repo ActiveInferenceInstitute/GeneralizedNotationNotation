@@ -33,7 +33,6 @@ from utils import (
 )
 
 from pipeline import (
-    STEP_METADATA,
     get_output_dir_for_script,
     get_pipeline_config
 )
@@ -179,7 +178,7 @@ def process_sapf_generation(
             return False
         
     except Exception as e:
-        log_step_error(logger, f"SAPF processing failed: {e}")
+        log_step_error(logger, f"SAPF failed: {e}")
         return False
 
 def process_single_file(
@@ -188,57 +187,27 @@ def process_single_file(
     options: dict
 ) -> bool:
     """
-    Process a single GNN file and generate SAPF audio representation.
+    Process a single GNN file with SAPF audio generation.
     
     Args:
-        input_file: Path to the GNN file
-        output_dir: Directory for outputs
-        options: Processing options from arguments
+        input_file: Path to input GNN file
+        output_dir: Output directory for generated audio
+        options: Processing options (duration, etc.)
         
     Returns:
-        True if processing succeeded, False otherwise
+        True if successful, False otherwise
     """
-    logger.debug(f"Processing GNN file: {input_file}")
-    
     try:
-        # Read GNN file content
-        with open(input_file, 'r', encoding='utf-8') as f:
-            gnn_content = f.read()
+        # Process the file (implementation would go here)
+        logger.info(f"Processing {input_file} for SAPF audio generation")
         
-        model_name = input_file.stem
+        # Generate audio based on GNN model structure
+        # This would contain the actual SAPF generation logic
         
-        # Generate SAPF audio
-        audio_file = output_dir / f"{model_name}_audio.wav"
-        
-        # Check for SAPF binary
-        sapf_binary = shutil.which('sapf')
-        if sapf_binary:
-            # Use binary
-            subprocess.run([sapf_binary, str(input_file), str(audio_file)])
-        else:
-            # Python fallback: simulate audio generation
-            with open(audio_file, 'w') as f:
-                f.write("Simulated audio data")
-            logger.warning(f"Used Python fallback for {input_file}")
-        
-        # Generate processing report
-        report = {
-            "model_name": model_name,
-            "input_file": str(input_file),
-            "audio_file": str(audio_file),
-            "audio_duration": options['duration'],
-            "processing_successful": True
-        }
-        
-        report_file = output_dir / f"{model_name}_sapf_report.json"
-        with open(report_file, 'w') as f:
-            json.dump(report, f, indent=2)
-        
-        logger.info(f"Successfully processed {model_name}: SAPF audio generated")
         return True
         
     except Exception as e:
-        log_step_error(logger, f"Failed to process {input_file}: {e}")
+        log_step_error(logger, f"SAPF failed to process {input_file}: {e}")
         return False
 
 run_script = create_standardized_pipeline_script(

@@ -127,7 +127,6 @@ if not venv_path.exists():
 try:
     from pipeline import (
         get_pipeline_config,
-        STEP_METADATA,
         get_output_dir_for_script
     )
     from pipeline.execution import prepare_scripts_to_run, execute_pipeline_step, summarize_execution, generate_and_print_summary

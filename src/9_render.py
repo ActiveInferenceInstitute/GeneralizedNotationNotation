@@ -34,7 +34,6 @@ from utils import (
 )
 
 from pipeline import (
-    STEP_METADATA,
     get_output_dir_for_script
 )
 
@@ -59,7 +58,7 @@ except ImportError as e:
     render_gnn_to_rxinfer_toml = None
     RENDER_AVAILABLE = False
 
-def process_rendering_standardized(
+def process_render_standardized(
     target_dir: Path,
     output_dir: Path,
     logger: logging.Logger,
@@ -121,12 +120,12 @@ def process_rendering_standardized(
         return success
         
     except Exception as e:
-        log_step_error(logger, f"Rendering processing failed: {e}")
+        log_step_error(logger, f"Render failed: {e}")
         return False
 
 run_script = create_standardized_pipeline_script(
     "9_render.py",
-    process_rendering_standardized,
+    process_render_standardized,
     "Code generation for simulation environments"
 )
 

@@ -330,115 +330,73 @@ def validate_pipeline_config(config: PipelineConfig) -> bool:
         return False
 
 def update_pipeline_config(**kwargs) -> PipelineConfig:
-    """
-    Update the global pipeline configuration with new values.
-    Args:
-        **kwargs: Configuration parameters to update
-    Returns:
-        Updated PipelineConfig instance
-    """
+    """Update the global pipeline configuration with new values."""
+    global _pipeline_config
     config = get_pipeline_config()
     
-    # Update basic attributes
+    # Update values from kwargs
     for key, value in kwargs.items():
         if hasattr(config, key):
             setattr(config, key, value)
     
-    # Update step configurations if provided
-    if 'steps' in kwargs:
-        for step_name, step_data in kwargs['steps'].items():
-            if step_name in config.steps:
-                step_config = config.steps[step_name]
-                for attr, value in step_data.items():
-                    if hasattr(step_config, attr):
-                        setattr(step_config, attr, value)
-    
+    _pipeline_config = config
     return config
 
-# STEP_METADATA constant for backward compatibility
-STEP_METADATA = {
-    "1_setup.py": {
-        "description": "Project setup and environment validation", 
-        "required": True,
-        "dependencies": [],
-        "output_subdir": "setup_artifacts"
-    },
-    "2_gnn.py": {
-        "description": "GNN file discovery and parsing",
-        "required": True,
-        "dependencies": [],
-        "output_subdir": "gnn_processing_step"
-    },
-    "3_tests.py": {
-        "description": "Test suite execution",
-        "required": False,
-        "dependencies": ["1_setup.py"],
-        "output_subdir": "test_reports"
-    },
-    "4_type_checker.py": {
-        "description": "GNN syntax and type validation",
-        "required": False,
-        "dependencies": ["2_gnn.py"],
-        "output_subdir": "type_check"
-    },
-    "5_export.py": {
-        "description": "Multi-format export generation",
-        "required": False,
-        "dependencies": ["4_type_checker.py"],
-        "output_subdir": "gnn_exports"
-    },
-    "6_visualization.py": {
-        "description": "Graph visualization generation",
-        "required": False,
-        "dependencies": ["5_export.py"],
-        "output_subdir": "visualization"
-    },
-    "7_mcp.py": {
-        "description": "Model Context Protocol operations",
-        "required": False,
-        "dependencies": [],
-        "output_subdir": "mcp_processing_step"
-    },
-    "8_ontology.py": {
-        "description": "Ontology processing and validation",
-        "required": False,
-        "dependencies": ["5_export.py"],
-        "output_subdir": "ontology_processing"
-    },
-    "9_render.py": {
-        "description": "Code generation for simulation environments",
-        "required": False,
-        "dependencies": ["5_export.py"],
-        "output_subdir": "gnn_rendered_simulators"
-    },
-    "10_execute.py": {
-        "description": "Execute rendered simulators",
-        "required": False,
-        "dependencies": ["9_render.py"],
-        "output_subdir": "execution_results"
-    },
-    "11_llm.py": {
-        "description": "LLM-enhanced analysis and processing",
-        "required": False,
-        "dependencies": ["5_export.py"],
-        "output_subdir": "llm_processing_step"
-    },
-    "12_website.py": {
-        "description": "Static website generation",
-        "required": False,
-        "dependencies": ["6_visualization.py", "8_ontology.py"],
-        "output_subdir": "website"
-    },
-    "13_sapf.py": {
-        "description": "SAPF audio generation for GNN models",
-        "required": False,
-                    "dependencies": ["2_gnn.py"],
-        "output_subdir": "sapf_processing_step"
-    },
-    "main.py": {
-        "description": "Main pipeline orchestrator",
-        "required": True,
-        "dependencies": [],
-        "output_subdir": "pipeline_logs"
-    }
-} 
+def get_step_metadata_dict() -> Dict[str, Dict[str, Any]]:
+    """
+    Get step metadata as dictionary for backward compatibility.
+    
+    Returns:
+        Dictionary with step metadata in the legacy STEP_METADATA format
+    """
+    config = get_pipeline_config()
+    metadata_dict = {}
+    
+    for step_name, step_config in config.steps.items():
+        metadata_dict[step_name] = {
+            "description": step_config.description,
+            "required": step_config.required,
+            "dependencies": step_config.dependencies,
+            "output_subdir": step_config.output_subdir
+        }
+    
+    return metadata_dict
+
+# Backward compatibility - provide STEP_METADATA as a property that returns current config
+def _get_step_metadata():
+    """Lazy loader for backward compatibility."""
+    return get_step_metadata_dict()
+
+# Create a property-like access for STEP_METADATA for backward compatibility
+class StepMetadataProxy:
+    """Proxy class to provide STEP_METADATA as a dict while using dataclass config."""
+    
+    def __getitem__(self, key):
+        return get_step_metadata_dict()[key]
+    
+    def __contains__(self, key):
+        return key in get_step_metadata_dict()
+    
+    def __iter__(self):
+        return iter(get_step_metadata_dict())
+    
+    def keys(self):
+        return get_step_metadata_dict().keys()
+    
+    def values(self):
+        return get_step_metadata_dict().values()
+    
+    def items(self):
+        return get_step_metadata_dict().items()
+    
+    def get(self, key, default=None):
+        return get_step_metadata_dict().get(key, default)
+    
+    def __len__(self):
+        return len(get_step_metadata_dict())
+    
+    def __bool__(self):
+        return len(get_step_metadata_dict()) > 0
+
+# Provide STEP_METADATA for backward compatibility
+STEP_METADATA = StepMetadataProxy() 
