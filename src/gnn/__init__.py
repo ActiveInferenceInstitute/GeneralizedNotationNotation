@@ -23,6 +23,131 @@ try:
 except ImportError:
     PARSERS_AVAILABLE = False
 
+def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = False) -> Dict[str, Any]:
+    """
+    Lightweight GNN directory processing function.
+    
+    This function provides basic GNN file discovery and processing
+    when full parser modules are not available.
+    
+    Args:
+        target_dir: Directory containing GNN files
+        output_dir: Output directory for results (optional)
+        recursive: Whether to search recursively
+        
+    Returns:
+        Dictionary containing processing results
+    """
+    import json
+    from datetime import datetime
+    
+    results = {
+        "timestamp": datetime.now().isoformat(),
+        "source_directory": str(target_dir),
+        "output_directory": str(output_dir) if output_dir else None,
+        "recursive": recursive,
+        "files_found": [],
+        "files_processed": [],
+        "errors": [],
+        "processing_mode": "lightweight"
+    }
+    
+    try:
+        # Find GNN files
+        pattern = "**/*.md" if recursive else "*.md"
+        gnn_files = list(target_dir.glob(pattern))
+        
+        results["files_found"] = [str(f) for f in gnn_files]
+        
+        # Process each file with basic analysis
+        for gnn_file in gnn_files:
+            try:
+                with open(gnn_file, 'r') as f:
+                    content = f.read()
+                
+                # Basic content analysis
+                file_info = {
+                    "file_path": str(gnn_file),
+                    "file_name": gnn_file.name,
+                    "file_size": gnn_file.stat().st_size,
+                    "line_count": len(content.splitlines()),
+                    "sections_found": _extract_sections_lightweight(content),
+                    "variables_found": _extract_variables_lightweight(content),
+                    "processing_status": "success"
+                }
+                
+                results["files_processed"].append(file_info)
+                
+            except Exception as e:
+                error_info = {
+                    "file_path": str(gnn_file),
+                    "error": str(e),
+                    "error_type": type(e).__name__
+                }
+                results["errors"].append(error_info)
+        
+        # Save results if output directory provided
+        if output_dir:
+            output_dir = Path(output_dir)
+            output_dir.mkdir(parents=True, exist_ok=True)
+            
+            discovery_report = output_dir / "gnn_discovery_report.json"
+            with open(discovery_report, 'w') as f:
+                json.dump(results, f, indent=2)
+        
+        return results
+        
+    except Exception as e:
+        results["errors"].append({
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "location": "directory_processing"
+        })
+        return results
+
+def _extract_sections_lightweight(content: str) -> List[str]:
+    """Extract GNN sections using lightweight regex parsing."""
+    sections = []
+    
+    # Common GNN sections
+    section_patterns = [
+        r'ModelDescription\s*{',
+        r'InitialParameterization\s*{',
+        r'StateSpace\s*{',
+        r'ActionSpace\s*{',
+        r'ObservationSpace\s*{',
+        r'ActInfOntologyAnnotation\s*{',
+        r'Connections\s*{'
+    ]
+    
+    for pattern in section_patterns:
+        if re.search(pattern, content, re.IGNORECASE):
+            section_name = pattern.split('\\')[0].replace(r'\s*{', '')
+            sections.append(section_name)
+    
+    return sections
+
+def _extract_variables_lightweight(content: str) -> List[str]:
+    """Extract variable names using lightweight regex parsing."""
+    variables = []
+    
+    # Look for variable patterns like x, y, z, A, B, etc.
+    variable_patterns = [
+        r'\b([A-Za-z])\s*=',  # Single letter variables
+        r'\b([A-Za-z_][A-Za-z0-9_]*)\s*=',  # Multi-character variables
+    ]
+    
+    for pattern in variable_patterns:
+        matches = re.findall(pattern, content)
+        variables.extend(matches)
+    
+    # Remove duplicates and common non-variables
+    variables = list(set(variables))
+    exclude_words = {'if', 'is', 'in', 'or', 'and', 'not', 'the', 'for', 'to', 'of', 'a', 'an'}
+    variables = [v for v in variables if v.lower() not in exclude_words]
+    
+    return variables[:20]  # Limit to first 20 to avoid spam
+
 # Cross-format validation
 try:
     from .cross_format_validator import (

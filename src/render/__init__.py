@@ -10,21 +10,35 @@ This package contains modules for rendering GNN specifications to:
 - Other simulators
 """
 
+import logging
+
+# Set up module logger
+logger = logging.getLogger(__name__)
+
 # Import renderers here to make them available at package level
-from .render import render_gnn_spec, main
+try:
+    from .render import render_gnn_spec, main
+    RENDER_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"Core render functionality not available: {e}")
+    render_gnn_spec = None
+    main = None
+    RENDER_AVAILABLE = False
 
 # Target-specific renderers with fallback for missing dependencies
 try:
     from .rxinfer import render_gnn_to_rxinfer_toml
     RXINFER_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+    logger.debug(f"RxInfer renderer not available: {e}")
     render_gnn_to_rxinfer_toml = None
     RXINFER_AVAILABLE = False
 
 try:
     from .pymdp.pymdp_renderer import render_gnn_to_pymdp
     PYMDP_AVAILABLE = True
-except ImportError:
+except (ImportError, RecursionError) as e:
+    logger.debug(f"PyMDP renderer not available: {e}")
     render_gnn_to_pymdp = None
     PYMDP_AVAILABLE = False
 

@@ -6,12 +6,142 @@ into PyMDP-compatible data structures and scripts.
 """
 
 import logging
-import numpy as np
 from pathlib import Path
 import re
 import ast
 import sys
 from typing import Any, Dict, List, Optional, Tuple, Union
+
+# Deferred numpy import to avoid recursion issues
+def _get_numpy():
+    """Safely import numpy with fallback."""
+    try:
+        import numpy as np
+        return np
+    except RecursionError:
+        # Handle recursion error by using a minimal implementation
+        logging.warning("Numpy recursion detected, using fallback implementation")
+        return None
+    except ImportError:
+        logging.warning("Numpy not available, using fallback implementation")
+        return None
+
+# Use a lazy loading approach for numpy
+_numpy_cache = None
+
+def get_numpy():
+    """Get numpy module with caching."""
+    global _numpy_cache
+    if _numpy_cache is None:
+        _numpy_cache = _get_numpy()
+    return _numpy_cache
+
+class NumpySafeOperations:
+    """Safe wrapper for numpy operations with fallbacks."""
+    
+    def __init__(self):
+        self.np = get_numpy()
+    
+    def array(self, data):
+        """Create array with fallback."""
+        if self.np is not None:
+            return self.np.array(data)
+        return data  # Return raw data if numpy not available
+    
+    def ones(self, shape):
+        """Create ones array with fallback."""
+        if self.np is not None:
+            return self.np.ones(shape)
+        if isinstance(shape, (int, tuple)):
+            if isinstance(shape, int):
+                return [1.0] * shape
+            # For multi-dimensional shapes, create nested lists
+            return self._create_ones_list(shape)
+        return [1.0]
+    
+    def zeros(self, shape):
+        """Create zeros array with fallback."""
+        if self.np is not None:
+            return self.np.zeros(shape)
+        if isinstance(shape, (int, tuple)):
+            if isinstance(shape, int):
+                return [0.0] * shape
+            return self._create_zeros_list(shape)
+        return [0.0]
+    
+    def eye(self, n):
+        """Create identity matrix with fallback."""
+        if self.np is not None:
+            return self.np.eye(n)
+        # Create identity matrix as nested lists
+        matrix = []
+        for i in range(n):
+            row = [0.0] * n
+            row[i] = 1.0
+            matrix.append(row)
+        return matrix
+    
+    def empty(self, shape, dtype=None):
+        """Create empty array with fallback."""
+        if self.np is not None:
+            return self.np.empty(shape, dtype=dtype)
+        # Return None for object dtype, appropriate structure for others
+        if dtype == object:
+            return [None] * shape if isinstance(shape, int) else None
+        return self.zeros(shape)
+    
+    def sum(self, arr, axis=None, keepdims=False):
+        """Sum with fallback."""
+        if self.np is not None:
+            return self.np.sum(arr, axis=axis, keepdims=keepdims)
+        # Simple fallback sum
+        if hasattr(arr, '__iter__'):
+            return sum(arr)
+        return arr
+    
+    def where(self, condition, x, y):
+        """Where operation with fallback."""
+        if self.np is not None:
+            return self.np.where(condition, x, y)
+        # Simple fallback
+        if hasattr(condition, '__iter__'):
+            return [x if c else y for c in condition]
+        return x if condition else y
+    
+    def any(self, arr):
+        """Any operation with fallback."""
+        if self.np is not None:
+            return self.np.any(arr)
+        if hasattr(arr, '__iter__'):
+            return any(arr)
+        return bool(arr)
+    
+    def newaxis(self):
+        """Get newaxis with fallback."""
+        if self.np is not None:
+            return self.np.newaxis
+        return None  # Fallback
+    
+    def _create_ones_list(self, shape):
+        """Create nested list of ones."""
+        if len(shape) == 1:
+            return [1.0] * shape[0]
+        result = []
+        for _ in range(shape[0]):
+            result.append(self._create_ones_list(shape[1:]))
+        return result
+    
+    def _create_zeros_list(self, shape):
+        """Create nested list of zeros."""
+        if len(shape) == 1:
+            return [0.0] * shape[0]
+        result = []
+        for _ in range(shape[0]):
+            result.append(self._create_zeros_list(shape[1:]))
+        return result
+
+# Create global instance
+numpy_safe = NumpySafeOperations()
 
 from .pymdp_utils import (
     _numpy_array_to_string,
@@ -139,7 +269,13 @@ class GnnToPyMdpConverter:
     def _parse_string_to_literal(self, data_str: Any, context_msg: str) -> Optional[Any]:
         """Parse a string representation of a Python literal."""
         if not isinstance(data_str, str):
-            if data_str is None or isinstance(data_str, (list, dict, tuple, int, float, bool, np.ndarray)):
+            np = get_numpy()
+            if np is not None:
+                valid_types = (list, dict, tuple, int, float, bool, np.ndarray)
+            else:
+                valid_types = (list, dict, tuple, int, float, bool)
+                
+            if data_str is None or isinstance(data_str, valid_types):
                 return data_str
             self._add_log(f"{context_msg}: Expected string for ast.literal_eval or a known pre-parsed type, but got {type(data_str)}. Returning None.", "ERROR")
             return None
@@ -1007,7 +1143,7 @@ class GnnToPyMdpConverter:
                     params[key] = value
         return params
 
-    def _numpy_array_to_string(self, arr: np.ndarray, indent=0) -> str:
+    def _numpy_array_to_string(self, arr, indent=0) -> str:
         """Convert numpy array to string representation for code generation."""
         return _numpy_array_to_string(arr, indent)
 
@@ -1026,7 +1162,11 @@ class GnnToPyMdpConverter:
         matrix_assignments: List[str] = []
         if self.A_spec is not None and isinstance(self.A_spec, list):
             var_name = f"A_{self.obs_names[0] if self.obs_names else 'modality_0'}"
-            array_str = self._numpy_array_to_string(np.array(self.A_spec), indent=0)
+            np = get_numpy()
+            if np is not None:
+                array_str = self._numpy_array_to_string(np.array(self.A_spec), indent=0)
+            else:
+                array_str = str(self.A_spec)  # Fallback to string representation
             assignment = f"{var_name} = {array_str}"
             matrix_assignments.append(assignment)
             self._add_log(f"Injected A matrix from GNN InitialParameterization as {var_name}.")
@@ -1061,17 +1201,17 @@ class GnnToPyMdpConverter:
         if self.B_spec is not None and isinstance(self.B_spec, list):
             var_name = f"B_{self.state_names[0] if self.state_names else 'factor_0'}"
             # Normalize B matrix to ensure proper PyMDP transition probabilities
-            b_matrix = np.array(self.B_spec)
+            b_matrix = numpy_safe.array(self.B_spec)
             # Normalize along axis=0 (columns) for each action slice, handling zero columns
-            column_sums = np.sum(b_matrix, axis=0, keepdims=True)
+            column_sums = numpy_safe.sum(b_matrix, axis=0, keepdims=True)
             # Replace zero sums with 1 to avoid division by zero, and set those columns to uniform
             zero_cols = column_sums == 0
-            column_sums = np.where(zero_cols, 1.0, column_sums)
+            column_sums = numpy_safe.where(zero_cols, 1.0, column_sums)
             b_matrix = b_matrix / column_sums
             # Set zero columns to uniform distribution
-            if np.any(zero_cols):
+            if numpy_safe.any(zero_cols):
                 uniform_prob = 1.0 / b_matrix.shape[0]
-                b_matrix = np.where(zero_cols, uniform_prob, b_matrix)
+                b_matrix = numpy_safe.where(zero_cols, uniform_prob, b_matrix)
             array_str = self._numpy_array_to_string(b_matrix, indent=0)
             assignment = f"{var_name} = {array_str}"
             matrix_assignments.append(assignment)
@@ -1113,7 +1253,7 @@ class GnnToPyMdpConverter:
         if self.C_spec is not None:
             var_name = f"C_{self.obs_names[0] if self.obs_names else 'modality_0'}"
             # Ensure C vector is flattened for PyMDP compatibility
-            c_vector = np.array(self.C_spec)
+            c_vector = numpy_safe.array(self.C_spec)
             if c_vector.ndim > 1:
                 c_vector = c_vector.flatten()
             array_str = self._numpy_array_to_string(c_vector, indent=0)
@@ -1151,7 +1291,7 @@ class GnnToPyMdpConverter:
         if self.D_spec is not None:
             var_name = f"D_{self.state_names[0] if self.state_names else 'factor_0'}"
             # Ensure D vector is flattened for PyMDP compatibility
-            d_vector = np.array(self.D_spec)
+            d_vector = numpy_safe.array(self.D_spec)
             if d_vector.ndim > 1:
                 d_vector = d_vector.flatten()
             array_str = self._numpy_array_to_string(d_vector, indent=0)
@@ -1184,7 +1324,7 @@ class GnnToPyMdpConverter:
         if self.E_spec is not None:
             var_name = "E"
             # Ensure E vector is flattened for PyMDP compatibility
-            e_vector = np.array(self.E_spec)
+            e_vector = numpy_safe.array(self.E_spec)
             if e_vector.ndim > 1:
                 e_vector = e_vector.flatten()
             array_str = self._numpy_array_to_string(e_vector, indent=0)

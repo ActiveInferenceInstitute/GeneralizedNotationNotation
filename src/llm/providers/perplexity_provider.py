@@ -384,7 +384,46 @@ class PerplexityProvider(BaseLLMProvider):
     def analyze(self, content: str, task: str) -> str:
         """Perform analysis on GNN content."""
         prompt = f"Analyze this GNN model for {task}: {content}"
-        return self.generate_response([{"role": "user", "content": prompt}])
+        
+        # Handle async call properly
+        try:
+            # Try to run in existing event loop
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # Create a new event loop in a separate thread
+                import concurrent.futures
+                import threading
+                
+                def run_async():
+                    new_loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(new_loop)
+                    try:
+                        result = new_loop.run_until_complete(
+                            self.generate_response([{"role": "user", "content": prompt}])
+                        )
+                        return result.content if hasattr(result, 'content') else str(result)
+                    finally:
+                        new_loop.close()
+                
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(run_async)
+                    return future.result(timeout=30)
+            else:
+                # Run directly in current loop
+                result = loop.run_until_complete(
+                    self.generate_response([{"role": "user", "content": prompt}])
+                )
+                return result.content if hasattr(result, 'content') else str(result)
+                
+        except RuntimeError:
+            # No event loop, create new one
+            result = asyncio.run(
+                self.generate_response([{"role": "user", "content": prompt}])
+            )
+            return result.content if hasattr(result, 'content') else str(result)
+        except Exception as e:
+            logger.error(f"Perplexity analysis failed: {e}")
+            return f"Analysis failed: {e}"
     
     async def close(self):
         """Close the Perplexity client session."""
