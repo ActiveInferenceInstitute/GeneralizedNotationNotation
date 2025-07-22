@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-07-22T05:42:52.158866",
+  "framework": "PyMDP",
+  "execution_summary": {
+    "total_scripts": 0,
+    "successful_scripts": 0,
+    "failed_scripts": 0,
+    "success_rate": 0.0
+  },
+  "script_results": [],
+  "message": "No PyMDP scripts found to execute",
+  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/execution_results/pymdp"
+}
