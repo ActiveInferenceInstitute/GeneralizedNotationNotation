@@ -1,0 +1,77 @@
+// GNN Model: Classic Active Inference POMDP Agent v1
+// Generated from GNN markdown
+
+sig Variable {
+  name: one String,
+  type: one String,
+  dimensions: set Int,
+  description: one String
+}
+
+sig Connection {
+  source: one String,
+  target: one String,
+  type: one String,
+  description: one String
+}
+
+sig Parameter {
+  name: one String,
+  value: one String,
+  description: one String
+}
+
+sig GNNModel {
+  model_name: one String,
+  version: one String,
+  annotation: one String,
+  variables: set Variable,
+  connections: set Connection,
+  parameters: set Parameter
+}
+
+fact model_definition {
+  one model: GNNModel |
+    model.model_name = "Classic Active Inference POMDP Agent v1" and
+    model.version = "1.0" and
+    model.annotation = "This model describes a classic Active Inference agent for a discrete POMDP:
+- One observation modality ("state_observation") with 3 possible outcomes.
+- One hidden state factor ("location") with 3 possible states.
+- The hidden state is fully controllable via 3 discrete actions.
+- The agent's preferences are encoded as log-probabilities over observations.
+- The agent has an initial policy prior (habit) encoded as log-probabilities over actions."
+}
+
+// Variable definitions
+fact var_A { one v: Variable | v.name = "A" and v.type = "parameter_matrix" and v.description = "Likelihood mapping hidden states to observations" }
+fact var_B { one v: Variable | v.name = "B" and v.type = "parameter_matrix" and v.description = "State transitions given previous state and action" }
+fact var_C { one v: Variable | v.name = "C" and v.type = "parameter_matrix" and v.description = "Log-preferences over observations" }
+fact var_D { one v: Variable | v.name = "D" and v.type = "parameter_matrix" and v.description = "Prior over initial hidden states" }
+fact var_E { one v: Variable | v.name = "E" and v.type = "parameter_matrix" and v.description = "Initial policy prior (habit) over actions" }
+fact var_s { one v: Variable | v.name = "s" and v.type = "hidden_state" and v.description = "Current hidden state distribution" }
+fact var_s_prime { one v: Variable | v.name = "s_prime" and v.type = "hidden_state" and v.description = "Next hidden state distribution" }
+fact var_o { one v: Variable | v.name = "o" and v.type = "observation" and v.description = "Current observation (integer index)" }
+fact var_π { one v: Variable | v.name = "π" and v.type = "hidden_state" and v.description = "Policy (distribution over actions), no planning" }
+fact var_u { one v: Variable | v.name = "u" and v.type = "action" and v.description = "Action taken" }
+fact var_G { one v: Variable | v.name = "G" and v.type = "hidden_state" and v.description = "Expected Free Energy (per policy)" }
+fact var_t { one v: Variable | v.name = "t" and v.type = "hidden_state" and v.description = "Discrete time step" }
+
+// Connection definitions
+fact conn_D_s { one c: Connection | c.source = "D" and c.target = "s" and c.type = "directed" and c.description = "" }
+fact conn_s_A { one c: Connection | c.source = "s" and c.target = "A" and c.type = "undirected" and c.description = "" }
+fact conn_s_s_prime { one c: Connection | c.source = "s" and c.target = "s_prime" and c.type = "directed" and c.description = "" }
+fact conn_A_o { one c: Connection | c.source = "A" and c.target = "o" and c.type = "undirected" and c.description = "" }
+fact conn_s_B { one c: Connection | c.source = "s" and c.target = "B" and c.type = "undirected" and c.description = "" }
+fact conn_C_G { one c: Connection | c.source = "C" and c.target = "G" and c.type = "directed" and c.description = "" }
+fact conn_E_π { one c: Connection | c.source = "E" and c.target = "π" and c.type = "directed" and c.description = "" }
+fact conn_G_π { one c: Connection | c.source = "G" and c.target = "π" and c.type = "directed" and c.description = "" }
+fact conn_π_u { one c: Connection | c.source = "π" and c.target = "u" and c.type = "directed" and c.description = "" }
+fact conn_B_u { one c: Connection | c.source = "B" and c.target = "u" and c.type = "directed" and c.description = "" }
+fact conn_u_s_prime { one c: Connection | c.source = "u" and c.target = "s_prime" and c.type = "directed" and c.description = "" }
+
+// Parameter definitions
+fact param_A { one p: Parameter | p.name = "A" and p.value = "{" and p.description = "" }
+fact param_B { one p: Parameter | p.name = "B" and p.value = "{" and p.description = "" }
+fact param_C { one p: Parameter | p.name = "C" and p.value = "(0.1, 0.1, 1.0)" and p.description = "" }
+fact param_D { one p: Parameter | p.name = "D" and p.value = "(0.33333, 0.33333, 0.33333)" and p.description = "" }
+fact param_E { one p: Parameter | p.name = "E" and p.value = "(0.33333, 0.33333, 0.33333)" and p.description = "" }

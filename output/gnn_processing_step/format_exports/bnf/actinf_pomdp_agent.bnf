@@ -1,0 +1,35 @@
+(* GNN Model: Classic Active Inference POMDP Agent v1 *)
+(* Generated from GNN markdown *)
+
+<gnn-model> ::= <model-header> <variables-section> <connections-section> <parameters-section>
+
+<model-header> ::= "ModelName" <string> "Version" <string> "Annotation" <string>
+
+<variables-section> ::= "Variables:" <variable-list>
+<variable-list> ::= <variable> | <variable> <variable-list>
+<variable> ::= <name> "[" <dimensions> "]" <type> <description>
+
+<connections-section> ::= "Connections:" <connection-list>
+<connection-list> ::= <connection> | <connection> <connection-list>
+<connection> ::= <source> "->" <target> <type> <description>
+
+<parameters-section> ::= "Parameters:" <parameter-list>
+<parameter-list> ::= <parameter> | <parameter> <parameter-list>
+<parameter> ::= <name> "=" <value> <description>
+
+<name> ::= <identifier>
+<type> ::= "hidden_state" | "observation" | "action" | "parameter_matrix"
+<dimensions> ::= <number> | <number> "," <dimensions>
+<source> ::= <identifier>
+<target> ::= <identifier>
+<value> ::= <string> | <number> | <tuple>
+<description> ::= "#" <string>
+<identifier> ::= <letter> | <letter> <identifier>
+<letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z"
+<number> ::= <digit> | <digit> <number>
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<string> ::= """ <char-list> """
+<char-list> ::= <char> | <char> <char-list>
+<char> ::= <letter> | <digit> | " " | "." | "," | "-" | "_"
+<tuple> ::= "(" <value-list> ")"
+<value-list> ::= <value> | <value> "," <value-list>

@@ -3,8 +3,8 @@
 
 # Pipeline Configuration
 pipeline:
-  # Target directory for GNN files (relative to input/)
-  target_dir: "gnn_files"
+  # Target directory for GNN files (relative to project root)
+  target_dir: "input/gnn_files"
   
   # Output directory (relative to project root)
   output_dir: "output"
@@ -31,7 +31,7 @@ type_checker:
 
 # Ontology Configuration
 ontology:
-  terms_file: "../src/ontology/act_inf_ontology_terms.json"
+  terms_file: "src/ontology/act_inf_ontology_terms.json"
 
 # LLM Configuration
 llm:

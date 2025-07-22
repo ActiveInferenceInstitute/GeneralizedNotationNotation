@@ -1,0 +1,65 @@
+---- MODULE GNNModel ----
+(* GNN Model: Classic Active Inference POMDP Agent v1 *)
+(* Generated from GNN markdown *)
+
+EXTENDS Naturals, Sequences
+
+VARIABLES model_name, version, annotation, variables, connections, parameters
+
+TypeOK == 
+  /\ model_name \in STRING
+  /\ version \in STRING
+  /\ annotation \in STRING
+  /\ variables \in Seq(STRING \times STRING \times Seq(Nat) \times STRING)
+  /\ connections \in Seq(STRING \times STRING \times STRING \times STRING)
+  /\ parameters \in Seq(STRING \times STRING \times STRING)
+
+Init == 
+  /\ model_name = "Classic Active Inference POMDP Agent v1"
+  /\ version = "1.0"
+  /\ annotation = "This model describes a classic Active Inference agent for a discrete POMDP:
+- One observation modality ("state_observation") with 3 possible outcomes.
+- One hidden state factor ("location") with 3 possible states.
+- The hidden state is fully controllable via 3 discrete actions.
+- The agent's preferences are encoded as log-probabilities over observations.
+- The agent has an initial policy prior (habit) encoded as log-probabilities over actions."
+  /\ variables = <<
+    <<"A", "parameter_matrix", <<3, 3>>, "Likelihood mapping hidden states to observations>>
+    <<"B", "parameter_matrix", <<3, 3, 3>>, "State transitions given previous state and action>>
+    <<"C", "parameter_matrix", <<3>>, "Log-preferences over observations>>
+    <<"D", "parameter_matrix", <<3>>, "Prior over initial hidden states>>
+    <<"E", "parameter_matrix", <<3>>, "Initial policy prior (habit) over actions>>
+    <<"s", "hidden_state", <<3, 1>>, "Current hidden state distribution>>
+    <<"s_prime", "hidden_state", <<3, 1>>, "Next hidden state distribution>>
+    <<"o", "observation", <<3, 1>>, "Current observation (integer index)>>
+    <<"π", "hidden_state", <<3>>, "Policy (distribution over actions), no planning>>
+    <<"u", "action", <<1>>, "Action taken>>
+    <<"G", "hidden_state", <<>>, "Expected Free Energy (per policy)>>
+    <<"t", "hidden_state", <<1>>, "Discrete time step>>
+  >>
+  /\ connections = <<
+    <<"D", "s", "directed", "">>
+    <<"s", "A", "undirected", "">>
+    <<"s", "s_prime", "directed", "">>
+    <<"A", "o", "undirected", "">>
+    <<"s", "B", "undirected", "">>
+    <<"C", "G", "directed", "">>
+    <<"E", "π", "directed", "">>
+    <<"G", "π", "directed", "">>
+    <<"π", "u", "directed", "">>
+    <<"B", "u", "directed", "">>
+    <<"u", "s_prime", "directed", "">>
+  >>
+  /\ parameters = <<
+    <<"A", "{", "">>
+    <<"B", "{", "">>
+    <<"C", "(0.1, 0.1, 1.0)", "">>
+    <<"D", "(0.33333, 0.33333, 0.33333)", "">>
+    <<"E", "(0.33333, 0.33333, 0.33333)", "">>
+  >>
+
+Next == UNCHANGED <<model_name, version, annotation, variables, connections, parameters>>
+
+Spec == Init /\ [][Next]_<<model_name, version, annotation, variables, connections, parameters>>
+
+====

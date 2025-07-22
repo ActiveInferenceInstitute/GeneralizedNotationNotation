@@ -1,0 +1,72 @@
+{
+  "timestamp": "2025-07-22 05:42:42",
+  "exit_code": 2,
+  "success": false,
+  "test_configuration": {
+    "fast_only": false,
+    "slow_tests_included": false,
+    "verbose": true,
+    "parallel_execution": false,
+    "coverage_enabled": true
+  },
+  "execution": {
+    "timeout_seconds": 600,
+    "command": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --verbose --tb=short --junitxml=/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/pytest_report.xml --maxfail=20 --durations=15 --disable-warnings -c/Users/4d/Documents/GitHub/GeneralizedNotationNotation/pytest.ini --cov=src/gnn --cov=src/pipeline --cov=src/utils --cov-report=html:/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/coverage --cov-report=json:/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/test_coverage.json --cov-report=term-missing --cov-fail-under=0 --cov-config=/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.coveragerc --cov-branch -m not slow /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/tests",
+    "working_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation"
+  },
+  "test_statistics": {
+    "total_tests": 350,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "errors": 4,
+    "warnings": 0,
+    "xfailed": 0,
+    "xpassed": 0,
+    "deselected": 11,
+    "execution_time_seconds": 0.94,
+    "collection_time_seconds": 0.0
+  },
+  "coverage_statistics": {},
+  "dependencies": {
+    "pytest": {
+      "available": true,
+      "version": "8.4.1"
+    },
+    "pytest-cov": {
+      "available": true,
+      "version": "6.2.1"
+    },
+    "pytest-json-report": {
+      "available": false,
+      "version": "N/A"
+    },
+    "pytest-xdist": {
+      "available": false,
+      "version": "N/A"
+    },
+    "coverage": {
+      "available": true,
+      "version": "7.9.2"
+    },
+    "mock": {
+      "available": false,
+      "version": "N/A"
+    },
+    "psutil": {
+      "available": true,
+      "version": "7.0.0"
+    }
+  },
+  "output_files": {
+    "xml_report": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/pytest_report.xml",
+    "json_report": null,
+    "markdown_report": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/test_report.md",
+    "coverage_html": null,
+    "coverage_json": null
+  },
+  "raw_output": {
+    "stdout": "============================= test session starts ==============================\nplatform darwin -- Python 3.13.5, pytest-8.4.1, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /Users/4d/Documents/GitHub/GeneralizedNotationNotation\nconfigfile: pytest.ini\nplugins: anyio-4.9.0, cov-6.2.1, mock-3.14.1\ncollecting ... collected 350 items / 4 errors / 11 deselected / 339 selected\n\n==================================== ERRORS ====================================\n_____________ ERROR collecting src/tests/test_comprehensive_api.py _____________\nsrc/tests/test_comprehensive_api.py:16: in <module>\n    import src.gnn\nsrc/gnn/__init__.py:13: in <module>\n    from .schema_validator import (\nsrc/gnn/schema_validator.py:51: in <module>\n    from .testing.test_round_trip import RoundTripResult\nsrc/gnn/testing/__init__.py:11: in <module>\n    from .test_round_trip import ComprehensiveTestReport, RoundTripResult\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:935: in _load_unlocked\n    ???\n.venv/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:186: in exec_module\n    exec(co, module.__dict__)\nsrc/gnn/testing/test_round_trip.py:172: in <module>\n    from gnn.types import RoundTripResult, ComprehensiveTestReport\nsrc/gnn/__init__.py:13: in <module>\n    from .schema_validator import (\nsrc/gnn/schema_validator.py:43: in <module>\n    from .parsers import GNNParsingSystem\nsrc/gnn/parsers/__init__.py:49: in <module>\n    from .unified_parser import UnifiedGNNParser, GNNFormat, ParseResult\nsrc/gnn/parsers/unified_parser.py:18: in <module>\n    from .common import (\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1322: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:1262: in _find_spec\n    ???\n.venv/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:100: in find_spec\n    if self._early_rewrite_bailout(name, state):\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:211: in _early_rewrite_bailout\n    path = PurePath(*parts).with_suffix(\".py\")\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_abc.py:227: in with_suffix\n    stem = self.stem\n           ^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_abc.py:197: in stem\n    name = self.name\n           ^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_local.py:349: in name\n    tail = self._tail\n           ^^^^^^^^^^\nE   RecursionError: maximum recursion depth exceeded\n__________________ ERROR collecting src/tests/test_export.py ___________________\nsrc/tests/test_export.py:6: in <module>\n    from render.render import render_gnn_spec\nsrc/render/__init__.py:14: in <module>\n    from .render import render_gnn_spec, main\nsrc/render/render.py:18: in <module>\n    from .pymdp import render_gnn_to_pymdp\nsrc/render/pymdp/__init__.py:5: in <module>\n    from .pymdp_renderer import render_gnn_to_pymdp\nsrc/render/pymdp/pymdp_renderer.py:22: in <module>\n    from .pymdp_converter import GnnToPyMdpConverter\nsrc/render/pymdp/pymdp_converter.py:34: in <module>\n    from pymdp import utils as pymdp_utils\n.venv/lib/python3.13/site-packages/pymdp/__init__.py:1: in <module>\n    from . import agent\n.venv/lib/python3.13/site-packages/pymdp/agent.py:12: in <module>\n    from pymdp import inference, control, learning\n.venv/lib/python3.13/site-packages/pymdp/inference.py:7: in <module>\n    from pymdp import utils\n<frozen importlib._bootstrap>:1357: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:417: in __enter__\n    ???\n<frozen importlib._bootstrap>:443: in _get_module_lock\n    ???\nE   RecursionError: maximum recursion depth exceeded\n_____________ ERROR collecting src/tests/test_gnn_type_checker.py ______________\nsrc/tests/test_gnn_type_checker.py:20: in <module>\n    from type_checker import GNNTypeChecker\nsrc/type_checker/__init__.py:8: in <module>\n    from .checker import (\nsrc/type_checker/checker.py:26: in <module>\n    from visualization.parser import GNNParser\nsrc/visualization/__init__.py:8: in <module>\n    from .visualizer import (\nsrc/visualization/visualizer.py:13: in <module>\n    import networkx as nx\n.venv/lib/python3.13/site-packages/networkx/__init__.py:19: in <module>\n    from networkx import utils\n.venv/lib/python3.13/site-packages/networkx/utils/__init__.py:8: in <module>\n    from networkx.utils.backends import *\n.venv/lib/python3.13/site-packages/networkx/utils/backends.py:94: in <module>\n    backends = _get_backends(\"networkx.backends\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib/python3.13/site-packages/networkx/utils/backends.py:67: in _get_backends\n    items = entry_points(group=group)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/metadata/__init__.py:1011: in entry_points\n    return EntryPoints(eps).select(**params)\n           ^^^^^^^^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/metadata/__init__.py:1009: in <genexpr>\n    dist.entry_points for dist in _unique(distributions())\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/metadata/_itertools.py:15: in unique_everseen\n    for element in iterable:\n                   ^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/metadata/__init__.py:891: in <genexpr>\n    path.search(prepared) for path in map(FastPath, paths)\n    ^^^^^^^^^^^^^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/metadata/__init__.py:757: in search\n    return self.lookup(self.mtime).search(name)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/metadata/_functools.py:80: in wrapper\n    return cached_method(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/metadata/__init__.py:767: in lookup\n    return Lookup(self)\n           ^^^^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/metadata/__init__.py:801: in __init__\n    self.infos.freeze()\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/importlib/metadata/_collections.py:23: in freeze\n    def freeze(self):\n.venv/lib/python3.13/site-packages/coverage/control.py:417: in _should_trace\n    disp = self._inorout.should_trace(filename, frame)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib/python3.13/site-packages/coverage/inorout.py:332: in should_trace\n    orig = os.path.basename(original_filename)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen posixpath>:169: in basename\n    ???\nE   RecursionError: maximum recursion depth exceeded\n__________________ ERROR collecting src/tests/test_parsers.py __________________\nsrc/tests/test_parsers.py:14: in <module>\n    from gnn.parsers.markdown_parser import MarkdownGNNParser\nsrc/gnn/__init__.py:59: in <module>\n    from .mcp import (\nsrc/gnn/mcp.py:36: in <module>\n    from .processors import (\nsrc/gnn/processors.py:23: in <module>\n    from utils.path_utils import get_relative_path_if_possible\nsrc/utils/__init__.py:24: in <module>\n    from .logging_utils import (\nsrc/utils/logging_utils.py:26: in <module>\n    from .performance_tracker import PerformanceTracker, performance_tracker\nsrc/utils/performance_tracker.py:17: in <module>\n    import psutil\n.venv/lib/python3.13/site-packages/psutil/__init__.py:39: in <module>\n    from . import _common\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1322: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:1262: in _find_spec\n    ???\n.venv/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:100: in find_spec\n    if self._early_rewrite_bailout(name, state):\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n.venv/lib/python3.13/site-packages/_pytest/assertion/rewrite.py:211: in _early_rewrite_bailout\n    path = PurePath(*parts).with_suffix(\".py\")\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_abc.py:227: in with_suffix\n    stem = self.stem\n           ^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_abc.py:197: in stem\n    name = self.name\n           ^^^^^^^^^\n/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/pathlib/_local.py:349: in name\n    tail = self._tail\n           ^^^^^^^^^^\nE   RecursionError: maximum recursion depth exceeded\n- generated xml file: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports/test_reports/pytest_report.xml -\n=========================== short test summary info ============================\nERROR src/tests/test_comprehensive_api.py - RecursionError: maximum recursion...\nERROR src/tests/test_export.py - RecursionError: maximum recursion depth exce...\nERROR src/tests/test_gnn_type_checker.py - RecursionError: maximum recursion ...\nERROR src/tests/test_parsers.py - RecursionError: maximum recursion depth exc...\n!!!!!!!!!!!!!!!!!!! Interrupted: 4 errors during collection !!!!!!!!!!!!!!!!!!!!\n================= 11 deselected, 1 warning, 4 errors in 0.94s ==================\n",
+    "stderr": ""
+  }
+}

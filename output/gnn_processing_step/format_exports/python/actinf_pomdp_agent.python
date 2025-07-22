@@ -1,0 +1,31 @@
+# GNN Model: Classic Active Inference POMDP Agent v1
+# Generated from GNN markdown
+
+class GNNModel:
+    def __init__(self):
+        self.model_name = "Classic Active Inference POMDP Agent v1"
+        self.version = "1.0"
+        self.annotation = """This model describes a classic Active Inference agent for a discrete POMDP:
+- One observation modality ("state_observation") with 3 possible outcomes.
+- One hidden state factor ("location") with 3 possible states.
+- The hidden state is fully controllable via 3 discrete actions.
+- The agent's preferences are encoded as log-probabilities over observations.
+- The agent has an initial policy prior (habit) encoded as log-probabilities over actions."""
+        self.variables = [{'name': 'A', 'type': 'parameter_matrix', 'dimensions': [3, 3], 'description': 'Likelihood mapping hidden states to observations'}, {'name': 'B', 'type': 'parameter_matrix', 'dimensions': [3, 3, 3], 'description': 'State transitions given previous state and action'}, {'name': 'C', 'type': 'parameter_matrix', 'dimensions': [3], 'description': 'Log-preferences over observations'}, {'name': 'D', 'type': 'parameter_matrix', 'dimensions': [3], 'description': 'Prior over initial hidden states'}, {'name': 'E', 'type': 'parameter_matrix', 'dimensions': [3], 'description': 'Initial policy prior (habit) over actions'}, {'name': 's', 'type': 'hidden_state', 'dimensions': [3, 1], 'description': 'Current hidden state distribution'}, {'name': 's_prime', 'type': 'hidden_state', 'dimensions': [3, 1], 'description': 'Next hidden state distribution'}, {'name': 'o', 'type': 'observation', 'dimensions': [3, 1], 'description': 'Current observation (integer index)'}, {'name': 'π', 'type': 'hidden_state', 'dimensions': [3], 'description': 'Policy (distribution over actions), no planning'}, {'name': 'u', 'type': 'action', 'dimensions': [1], 'description': 'Action taken'}, {'name': 'G', 'type': 'hidden_state', 'dimensions': [], 'description': 'Expected Free Energy (per policy)'}, {'name': 't', 'type': 'hidden_state', 'dimensions': [1], 'description': 'Discrete time step'}]
+        self.connections = [{'source': 'D', 'target': 's', 'type': 'directed', 'description': ''}, {'source': 's', 'target': 'A', 'type': 'undirected', 'description': ''}, {'source': 's', 'target': 's_prime', 'type': 'directed', 'description': ''}, {'source': 'A', 'target': 'o', 'type': 'undirected', 'description': ''}, {'source': 's', 'target': 'B', 'type': 'undirected', 'description': ''}, {'source': 'C', 'target': 'G', 'type': 'directed', 'description': ''}, {'source': 'E', 'target': 'π', 'type': 'directed', 'description': ''}, {'source': 'G', 'target': 'π', 'type': 'directed', 'description': ''}, {'source': 'π', 'target': 'u', 'type': 'directed', 'description': ''}, {'source': 'B', 'target': 'u', 'type': 'directed', 'description': ''}, {'source': 'u', 'target': 's_prime', 'type': 'directed', 'description': ''}]
+        self.parameters = {'A': {'value': '{', 'description': ''}, 'B': {'value': '{', 'description': ''}, 'C': {'value': '(0.1, 0.1, 1.0)', 'description': ''}, 'D': {'value': '(0.33333, 0.33333, 0.33333)', 'description': ''}, 'E': {'value': '(0.33333, 0.33333, 0.33333)', 'description': ''}}
+        
+    def get_variable(self, name):
+        for var in self.variables:
+            if var.get('name') == name:
+                return var
+        return None
+        
+    def get_connections_from(self, source):
+        return [conn for conn in self.connections if conn.get('source') == source]
+        
+    def get_connections_to(self, target):
+        return [conn for conn in self.connections if conn.get('target') == target]
+
+# Model instance
+model = GNNModel()

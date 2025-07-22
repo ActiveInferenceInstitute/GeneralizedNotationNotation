@@ -1,0 +1,145 @@
+annotation: 'This model describes a classic Active Inference agent for a discrete
+  POMDP:
+
+  - One observation modality ("state_observation") with 3 possible outcomes.
+
+  - One hidden state factor ("location") with 3 possible states.
+
+  - The hidden state is fully controllable via 3 discrete actions.
+
+  - The agent''s preferences are encoded as log-probabilities over observations.
+
+  - The agent has an initial policy prior (habit) encoded as log-probabilities over
+  actions.'
+connections:
+- description: ''
+  source: D
+  target: s
+  type: directed
+- description: ''
+  source: s
+  target: A
+  type: undirected
+- description: ''
+  source: s
+  target: s_prime
+  type: directed
+- description: ''
+  source: A
+  target: o
+  type: undirected
+- description: ''
+  source: s
+  target: B
+  type: undirected
+- description: ''
+  source: C
+  target: G
+  type: directed
+- description: ''
+  source: E
+  target: "\u03C0"
+  type: directed
+- description: ''
+  source: G
+  target: "\u03C0"
+  type: directed
+- description: ''
+  source: "\u03C0"
+  target: u
+  type: directed
+- description: ''
+  source: B
+  target: u
+  type: directed
+- description: ''
+  source: u
+  target: s_prime
+  type: directed
+equations: []
+model_name: Classic Active Inference POMDP Agent v1
+ontology_mappings: {}
+parameters:
+  A:
+    description: ''
+    value: '{'
+  B:
+    description: ''
+    value: '{'
+  C:
+    description: ''
+    value: (0.1, 0.1, 1.0)
+  D:
+    description: ''
+    value: (0.33333, 0.33333, 0.33333)
+  E:
+    description: ''
+    value: (0.33333, 0.33333, 0.33333)
+time_config: {}
+variables:
+- description: Likelihood mapping hidden states to observations
+  dimensions:
+  - 3
+  - 3
+  name: A
+  type: parameter_matrix
+- description: State transitions given previous state and action
+  dimensions:
+  - 3
+  - 3
+  - 3
+  name: B
+  type: parameter_matrix
+- description: Log-preferences over observations
+  dimensions:
+  - 3
+  name: C
+  type: parameter_matrix
+- description: Prior over initial hidden states
+  dimensions:
+  - 3
+  name: D
+  type: parameter_matrix
+- description: Initial policy prior (habit) over actions
+  dimensions:
+  - 3
+  name: E
+  type: parameter_matrix
+- description: Current hidden state distribution
+  dimensions:
+  - 3
+  - 1
+  name: s
+  type: hidden_state
+- description: Next hidden state distribution
+  dimensions:
+  - 3
+  - 1
+  name: s_prime
+  type: hidden_state
+- description: Current observation (integer index)
+  dimensions:
+  - 3
+  - 1
+  name: o
+  type: observation
+- description: Policy (distribution over actions), no planning
+  dimensions:
+  - 3
+  name: "\u03C0"
+  type: hidden_state
+- description: Action taken
+  dimensions:
+  - 1
+  name: u
+  type: action
+- description: Expected Free Energy (per policy)
+  dimensions: []
+  name: G
+  type: hidden_state
+- description: Discrete time step
+  dimensions:
+  - 1
+  name: t
+  type: hidden_state
+version: '1.0'

@@ -23,8 +23,8 @@ class PipelineConfig:
     """Configuration for the GNN pipeline."""
     
     # Core directories
-    target_dir: Path = field(default_factory=lambda: Path("gnn_files"))
-    output_dir: Path = field(default_factory=lambda: Path("../output"))
+    target_dir: Path = field(default_factory=lambda: Path("input/gnn_files"))
+    output_dir: Path = field(default_factory=lambda: Path("output"))
     
     # Processing options
     recursive: bool = True
@@ -62,7 +62,7 @@ class TypeCheckerConfig:
 @dataclass
 class OntologyConfig:
     """Configuration for ontology processing."""
-    terms_file: Path = field(default_factory=lambda: Path("../src/ontology/act_inf_ontology_terms.json"))
+    terms_file: Path = field(default_factory=lambda: Path("src/ontology/act_inf_ontology_terms.json"))
     
     def __post_init__(self):
         if isinstance(self.terms_file, str):
@@ -133,8 +133,8 @@ class GNNPipelineConfig:
         # Load pipeline configuration
         if 'pipeline' in config_data:
             pipeline_data = config_data['pipeline']
-            config.pipeline.target_dir = Path(pipeline_data.get('target_dir', 'gnn_files'))
-            config.pipeline.output_dir = Path(pipeline_data.get('output_dir', '../output'))
+            config.pipeline.target_dir = Path(pipeline_data.get('target_dir', 'input/gnn_files'))
+            config.pipeline.output_dir = Path(pipeline_data.get('output_dir', 'output'))
             config.pipeline.recursive = pipeline_data.get('recursive', True)
             config.pipeline.verbose = pipeline_data.get('verbose', True)
             config.pipeline.enable_round_trip = pipeline_data.get('enable_round_trip', True)
@@ -153,7 +153,7 @@ class GNNPipelineConfig:
         # Load ontology configuration
         if 'ontology' in config_data:
             ontology_data = config_data['ontology']
-            config.ontology.terms_file = Path(ontology_data.get('terms_file', '../src/ontology/act_inf_ontology_terms.json'))
+            config.ontology.terms_file = Path(ontology_data.get('terms_file', 'src/ontology/act_inf_ontology_terms.json'))
         
         # Load LLM configuration
         if 'llm' in config_data:

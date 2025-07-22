@@ -81,7 +81,7 @@ if str(current_dir) not in sys.path:
 # Check if virtual environment exists and create one if needed
 current_file = Path(__file__).resolve()
 current_dir = current_file.parent
-project_root = current_dir.parent
+project_root = current_dir.parent.parent
 
 # Simple check for virtual environment
 venv_path = project_root / ".venv"
@@ -210,7 +210,7 @@ def main():
     args = parse_arguments()
     
     # After args = parse_arguments()
-    project_root = current_dir.parent
+    project_root = current_dir.parent.parent
     
     # Resolve paths to absolute
     args.target_dir = (project_root / args.target_dir).resolve()

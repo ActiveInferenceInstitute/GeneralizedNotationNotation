@@ -60,7 +60,7 @@ class PipelineArguments:
     
     # Core directories
     target_dir: Path = field(default_factory=lambda: Path("input/gnn_files"))
-    output_dir: Path = field(default_factory=lambda: Path("../output"))
+    output_dir: Path = field(default_factory=lambda: Path("output"))
     
     # Processing options
     recursive: bool = True
@@ -904,16 +904,17 @@ def parse_arguments() -> PipelineArguments:
     # Parse command line arguments
     args = parser.parse_args()
     
+    # Determine project root - this should be the parent of the src directory
+    current_file = Path(__file__).resolve()
+    current_dir = current_file.parent
+    project_root = current_dir.parent.parent  # Go up from utils/ to src/ to project root
+    
     # Load configuration from YAML file
     try:
         # Resolve config file path relative to project root
         config_path = args.config_file
         if not config_path.is_absolute():
-            # If we're in src/, go up one level to project root
-            if Path.cwd().name == "src":
-                config_path = Path("../") / config_path
-            else:
-                config_path = Path(".") / config_path
+            config_path = project_root / config_path
         
         # Load the actual configuration from YAML file
         config = load_config(config_path)
@@ -931,6 +932,16 @@ def parse_arguments() -> PipelineArguments:
     for key, value in config_dict.items():
         if hasattr(pipeline_args, key):
             setattr(pipeline_args, key, value)
+    
+    # Resolve relative paths relative to project root
+    if not pipeline_args.target_dir.is_absolute():
+        pipeline_args.target_dir = project_root / pipeline_args.target_dir
+    if not pipeline_args.output_dir.is_absolute():
+        pipeline_args.output_dir = project_root / pipeline_args.output_dir
+    if pipeline_args.ontology_terms_file and not pipeline_args.ontology_terms_file.is_absolute():
+        pipeline_args.ontology_terms_file = project_root / pipeline_args.ontology_terms_file
+    if pipeline_args.pipeline_summary_file and not pipeline_args.pipeline_summary_file.is_absolute():
+        pipeline_args.pipeline_summary_file = project_root / pipeline_args.pipeline_summary_file
     
     # Override with command line arguments if provided
     if args.target_dir is not None:
