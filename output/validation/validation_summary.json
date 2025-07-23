@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-07-23T12:45:01.115947",
+  "step_name": "validation",
+  "input_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/validation",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "files_with_warnings": 1,
+  "validation_level": "standard",
+  "profile_performance": true,
+  "check_consistency": true,
+  "performance_metrics": {}
+}

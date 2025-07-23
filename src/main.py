@@ -7,20 +7,28 @@ It dynamically discovers and runs numbered scripts in the src/ directory, where 
 corresponds to a top-level folder and a specific processing stage.
 
 Pipeline Steps (Dynamically Discovered and Ordered):
+- 0_template.py (Corresponds to template/ folder, pipeline template and initialization)
 - 1_setup.py (Corresponds to setup/ folder, environment setup and dependencies)
-- 2_gnn.py (Corresponds to gnn/ folder, GNN file discovery and processing)
-- 3_tests.py (Corresponds to tests/ folder)
-- 4_type_checker.py (Corresponds to type_checker/ folder, uses type_checker.py)
-- 5_export.py (Corresponds to export/ folder)
-- 6_visualization.py (Corresponds to visualization/ folder, uses visualize_gnn.py)
-- 7_mcp.py (Corresponds to mcp/ folder)
-- 8_ontology.py (Corresponds to ontology/ folder)
-- 9_render.py (Corresponds to render/ folder, includes PyMDP, RxInfer, ActiveInference.jl, DisCoPy, and JAX rendering)
-- 10_execute.py (Corresponds to execute/ folder, includes PyMDP, RxInfer, ActiveInference.jl, DisCoPy, and JAX execution)
-- 11_llm.py (Corresponds to llm/ folder)
-- 12_audio.py (Corresponds to audio/ folder, generates audio representations of GNN models using multiple backends)
-- 13_website.py (Corresponds to website/ folder, generates HTML summary website)
-- 14_report.py (Corresponds to report/ folder, generates comprehensive analysis reports)
+- 2_tests.py (Corresponds to tests/ folder, comprehensive test suite execution)
+- 3_gnn.py (Corresponds to gnn/ folder, GNN file discovery and processing)
+- 4_model_registry.py (Corresponds to model_registry/ folder, model registry management)
+- 5_type_checker.py (Corresponds to type_checker/ folder, GNN syntax validation)
+- 6_validation.py (Corresponds to validation/ folder, advanced validation)
+- 7_export.py (Corresponds to export/ folder, multi-format export)
+- 8_visualization.py (Corresponds to visualization/ folder, graph visualization)
+- 9_advanced_viz.py (Corresponds to advanced_visualization/ folder, advanced plots)
+- 10_ontology.py (Corresponds to ontology/ folder, Active Inference Ontology)
+- 11_render.py (Corresponds to render/ folder, code generation for simulation environments)
+- 12_execute.py (Corresponds to execute/ folder, simulation execution)
+- 13_llm.py (Corresponds to llm/ folder, LLM-enhanced analysis)
+- 14_ml_integration.py (Corresponds to ml_integration/ folder, ML integration)
+- 15_audio.py (Corresponds to audio/ folder, audio generation)
+- 16_analysis.py (Corresponds to analysis/ folder, advanced analysis)
+- 17_integration.py (Corresponds to integration/ folder, system integration)
+- 18_security.py (Corresponds to security/ folder, security validation)
+- 19_research.py (Corresponds to research/ folder, research tools)
+- 20_website.py (Corresponds to website/ folder, HTML website generation)
+- 21_report.py (Corresponds to report/ folder, comprehensive reports)
 
 Configuration:
 The pipeline uses a YAML configuration file located at input/config.yaml to configure
@@ -67,12 +75,22 @@ import os
 from pathlib import Path
 import logging
 import datetime
+import subprocess
 from typing import TypedDict, List, Union, Dict, Any
 try:
     import psutil
     PSUTIL_AVAILABLE = True
 except ImportError:
     PSUTIL_AVAILABLE = False
+
+# Import pipeline utilities
+from pipeline.discovery import get_pipeline_scripts
+from pipeline.execution import prepare_scripts_to_run, execute_pipeline_step, summarize_execution, generate_and_print_summary
+from utils.logging_utils import setup_main_logging, PipelineLogger
+from utils.dependency_validator import validate_pipeline_dependencies_if_available
+from utils.argument_utils import parse_arguments, PipelineArguments, validate_and_convert_paths
+from utils.venv_utils import get_venv_python
+from utils.system_utils import get_system_info
 
 # Fix import path issues by ensuring src directory is in Python path
 current_file = Path(__file__).resolve()
@@ -83,7 +101,7 @@ if str(current_dir) not in sys.path:
 # Check if virtual environment exists and create one if needed
 current_file = Path(__file__).resolve()
 current_dir = current_file.parent
-project_root = current_dir.parent.parent
+project_root = current_dir.parent  # This should be the project root (one level up from src)
 
 # Simple check for virtual environment
 venv_path = project_root / ".venv"
@@ -211,7 +229,7 @@ def main():
     args = parse_arguments()
     
     # After args = parse_arguments()
-    project_root = current_dir.parent.parent
+    project_root = current_dir.parent  # This should be the project root (one level up from src)
     
     # Resolve paths to absolute
     args.target_dir = (project_root / args.target_dir).resolve()
@@ -274,7 +292,7 @@ def main():
     # Call the main pipeline execution function
     exit_code, pipeline_run_data, all_scripts, overall_status = run_pipeline(args, pipeline_logger)
 
-    generate_and_print_summary(pipeline_run_data, all_scripts, args, logger, overall_status)
+    generate_and_print_summary(pipeline_run_data, all_scripts, args, pipeline_logger, overall_status)
 
     sys.exit(exit_code)
 

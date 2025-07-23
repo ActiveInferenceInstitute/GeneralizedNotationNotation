@@ -2,74 +2,90 @@
 
 ## Overview
 
-The GNN (Generalized Notation Notation) Processing Pipeline is a sophisticated, modular system for processing Active Inference generative models. This pipeline consists of 14 numbered steps that transform GNN specifications into various formats and provide comprehensive analysis, including cutting-edge audio representations through multiple backends (SAPF, Pedalboard, and others).
+The GNN (Generalized Notation Notation) Processing Pipeline is a sophisticated, modular system for processing Active Inference generative models. This pipeline consists of 21 numbered steps (0-21) that transform GNN specifications into various formats and provide comprehensive analysis, including cutting-edge audio representations, advanced visualizations, and integration capabilities.
 
 ### Pipeline Flow
 
-The pipeline processes GNN models through a systematic workflow:
+The enhanced pipeline processes GNN models through a systematic workflow:
 
-1. **Discovery & Parsing** (Steps 1-4): Find and validate GNN files
-2. **Export & Visualization** (Steps 5-6): Generate multiple output formats and visualizations  
-3. **Integration & Analysis** (Steps 7-8): MCP tools and ontology processing
-4. **Execution & Enhancement** (Steps 9-11): Code generation, simulation, and LLM analysis
-5. **Advanced Representations** (Steps 12-14): Audio generation, site generation, and comprehensive reporting
+1. **Foundation & Testing** (Steps 0-3): Template, setup, tests, and file discovery
+2. **Model Management & Validation** (Steps 4-7): Model registry, type checking, validation, and export
+3. **Visualization & Semantics** (Steps 8-11): Basic and advanced visualization, ontology processing
+4. **Execution & Intelligence** (Steps 12-16): Code generation, execution, LLM analysis, ML integration, audio
+5. **Analysis & Integration** (Steps 17-19): Advanced analysis, integration, security, and research
+6. **Documentation & Reporting** (Steps 20-21): Website generation and comprehensive reporting
 
 ## Pipeline Architecture
 
 ### Core Components
 
-- **Main Orchestrator**: `main.py` - Discovers and executes numbered pipeline scripts (1-14)
+- **Template Step**: `0_template.py` - Standardized template for all pipeline steps
+- **Main Orchestrator**: `main.py` - Discovers and executes numbered pipeline scripts (0-21)
 - **Centralized Utilities**: `utils/` package providing logging, argument parsing, and validation
 - **Pipeline Configuration**: `pipeline/config.py` - Centralized configuration management
 - **Pipeline Validation**: `pipeline_validation.py` - Validates consistency and functionality
 
-### 14-Step Pipeline
+### 21-Step Pipeline
 
 | Step | Script | Purpose | Status | Output Directory |
 |------|--------|---------|--------|------------------|
+| 0 | `0_template.py` | Standardized pipeline step template | ✅ WORKING | `template/` |
 | 1 | `1_setup.py` | Environment setup and dependencies | ✅ WORKING | `setup_artifacts/` |
-| 2 | `2_gnn.py` | GNN file discovery and parsing | ✅ WORKING | `gnn_processing_step/` |
-| 3 | `3_tests.py` | Test execution and validation | ✅ WORKING | `test_reports/` |
-| 4 | `4_type_checker.py` | Type checking and validation | ✅ WORKING | `type_check/` |
-| 5 | `5_export.py` | Multi-format export (JSON, XML, etc.) | ✅ WORKING | `gnn_exports/` |
-| 6 | `6_visualization.py` | Graph and statistical visualizations | ✅ WORKING | `visualization/` |
-| 7 | `7_mcp.py` | Model Context Protocol operations | ✅ WORKING | `mcp_processing_step/` |
-| 8 | `8_ontology.py` | Ontology processing and validation | ✅ WORKING | `ontology_processing/` |
-| 9 | `9_render.py` | Code generation (PyMDP, RxInfer, ActiveInference.jl) | ✅ WORKING | `gnn_rendered_simulators/` |
-| 10 | `10_execute.py` | Execute rendered simulators | ✅ WORKING | `execution_results/` |
-| 11 | `11_llm.py` | LLM-enhanced analysis | ✅ WORKING | `llm_processing_step/` |
-| 12 | `12_audio.py` | Audio generation (SAPF, Pedalboard, and other backends) | ✅ WORKING | `audio_processing_step/` |
-| 13 | `13_website.py` | HTML website generation | ✅ WORKING | `website/` |
-| 14 | `14_report.py` | Comprehensive analysis reports | ✅ WORKING | `report_processing_step/` |
+| 2 | `2_tests.py` | Test execution and validation | ✅ WORKING | `test_reports/` |
+| 3 | `3_gnn.py` | GNN file discovery and parsing | ✅ WORKING | `gnn_processing_step/` |
+| 4 | `4_model_registry.py` | Model versioning and management | 🚧 PLANNED | `model_registry/` |
+| 5 | `5_type_checker.py` | Type checking and validation | ✅ WORKING | `type_check/` |
+| 6 | `6_validation.py` | Enhanced validation and QA | 🚧 PLANNED | `validation/` |
+| 7 | `7_export.py` | Multi-format export (JSON, XML, etc.) | ✅ WORKING | `gnn_exports/` |
+| 8 | `8_visualization.py` | Basic graph and statistical visualizations | ✅ WORKING | `visualization/` |
+| 9 | `9_advanced_viz.py` | Advanced visualization and exploration | 🚧 PLANNED | `advanced_visualization/` |
+| 10 | `10_ontology.py` | Ontology processing and validation | ✅ WORKING | `ontology_processing/` |
+| 11 | `11_render.py` | Code generation (PyMDP, RxInfer, ActiveInference.jl) | ✅ WORKING | `gnn_rendered_simulators/` |
+| 12 | `12_execute.py` | Execute rendered simulators | ✅ WORKING | `execution_results/` |
+| 13 | `13_llm.py` | LLM-enhanced analysis | ✅ WORKING | `llm_processing_step/` |
+| 14 | `14_ml_integration.py` | Machine learning integration | 🚧 PLANNED | `ml_integration/` |
+| 15 | `15_audio.py` | Audio generation (SAPF, Pedalboard) | ✅ WORKING | `audio_processing_step/` |
+| 16 | `16_analysis.py` | Advanced statistical analysis and reporting | 🚧 PLANNED | `analysis/` |
+| 17 | `17_integration.py` | API gateway and plugin system | 🚧 PLANNED | `integration/` |
+| 18 | `18_security.py` | Security and compliance features | 🚧 PLANNED | `security/` |
+| 19 | `19_research.py` | Research workflow enhancement | 🚧 PLANNED | `research/` |
+| 20 | `20_website.py` | HTML website generation | ✅ WORKING | `website/` |
+| 21 | `21_report.py` | Comprehensive analysis reports | ✅ WORKING | `report_processing_step/` |
 
 **Note**: The pipeline is designed to be fully extensible, with each step building upon previous outputs while remaining independently executable for targeted processing.
 
 ## Functional Status Analysis
 
-### ✅ Fully Functional (14/14 steps)
-All scripts are fully operational with proper logging, error handling, and output generation. Each step includes:
+### ✅ Fully Functional (14/21 steps)
+All current scripts are fully operational with proper logging, error handling, and output generation. Each step includes:
 - **Graceful dependency handling**: Steps continue with reduced functionality when optional dependencies are unavailable
 - **Comprehensive error reporting**: Clear messages when external dependencies are missing
 - **Fallback modes**: Alternative processing when advanced features are not available
 
-### Optional Dependencies by Step
-- **Step 7 (MCP)**: MCP server integration (graceful fallback to standard mode)
-- **Step 10 (Execute)**: PyMDP, RxInfer.jl, ActiveInference.jl (validates availability before execution)
-- **Step 12 (Audio)**: SAPF binary, Pedalboard (fallback to basic audio generation)
-- **Step 13 (Website)**: Advanced templating libraries (fallback to basic HTML generation)
+### 🚧 Planned Steps (7/21 steps)
+The planned steps will follow the standardized template pattern and integrate seamlessly with the existing pipeline:
+- **Model Registry**: Advanced model versioning and management
+- **Enhanced Validation**: Deep semantic analysis and quality assurance
+- **Advanced Visualization**: 3D visualization and interactive dashboards
+- **ML Integration**: Machine learning integration for model optimization
+- **Advanced Analysis**: Statistical analysis and uncertainty quantification
+- **Integration**: API gateway and plugin system
+- **Security & Research**: Security features and research workflow tools
 
 ## Code Quality Assessment
 
 ### Strengths
 
-1. **Consistent Logging**: All scripts use centralized `utils` package with correlation IDs
-2. **Modular Design**: Each step is independent and can run standalone
-3. **Error Handling**: Comprehensive try/catch blocks with graceful failures
-4. **Type Hints**: Extensive use of Python type annotations
-5. **Documentation**: Well-documented functions and classes
-6. **Flexible Arguments**: Support for both pipeline and standalone execution
-7. **Output Management**: Structured output directories with clear naming
-8. **Centralized Configuration**: Unified configuration management via `pipeline/config.py`
+1. **Standardized Template**: All steps follow a consistent template pattern
+2. **Consistent Logging**: All scripts use centralized `utils` package with correlation IDs
+3. **Modular Design**: Each step is independent and can run standalone
+4. **Error Handling**: Comprehensive try/catch blocks with graceful failures
+5. **Type Hints**: Extensive use of Python type annotations
+6. **Documentation**: Well-documented functions and classes
+7. **Flexible Arguments**: Support for both pipeline and standalone execution
+8. **Output Management**: Structured output directories with clear naming
+9. **Centralized Configuration**: Unified configuration management via `pipeline/config.py`
+10. **MCP Integration**: Model Context Protocol support in all steps
 
 ### Areas for Improvement
 
@@ -79,6 +95,37 @@ All scripts are fully operational with proper logging, error handling, and outpu
 4. **Caching**: Intermediate results could be cached for re-runs
 
 ## Technical Implementation Details
+
+### Template Step (`0_template/`)
+
+The template step provides a standardized structure for all pipeline steps:
+
+```python
+from utils import (
+    setup_step_logging,
+    log_step_start,
+    log_step_success,
+    log_step_warning,
+    log_step_error,
+    performance_tracker
+)
+
+def process_template_standardized(
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
+    recursive: bool = False,
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    # Standardized processing logic
+```
+
+Features:
+- **Consistent Structure**: Common code structure for all steps
+- **MCP Integration**: Built-in Model Context Protocol support
+- **Validation System**: Built-in validation capabilities
+- **Documentation Generation**: Automatic documentation
 
 ### Centralized Utilities (`utils/`)
 
@@ -126,21 +173,29 @@ All pipeline outputs are organized under a main output directory:
 
 ```
 output/
+├── template/                      # Step 0: Template processing results
 ├── setup_artifacts/               # Step 1: Environment setup results
-├── gnn_processing_step/           # Step 2: GNN discovery results
-├── test_reports/                  # Step 3: Test execution results
-├── type_check/                   # Step 4: Type checking reports
-├── gnn_exports/                  # Step 5: Multi-format exports
-├── visualization/                # Step 6: Generated visualizations
-├── mcp_processing_step/          # Step 7: MCP integration reports
-├── ontology_processing/          # Step 8: Ontology analysis
-├── gnn_rendered_simulators/      # Step 9: Generated code
-├── execution_results/            # Step 10: Simulation results
-├── llm_processing_step/          # Step 11: LLM analysis
-├── audio_processing_step/        # Step 12: Audio generation (SAPF, Pedalboard, etc.)
-├── website/                      # Step 13: HTML documentation
-├── report_processing_step/       # Step 14: Comprehensive analysis reports
-└── logs/                         # Pipeline execution logs
+├── test_reports/                  # Step 2: Test execution results
+├── gnn_processing_step/           # Step 3: GNN discovery results
+├── model_registry/                # Step 4: Model registry data
+├── type_check/                    # Step 5: Type checking reports
+├── validation/                    # Step 6: Enhanced validation results
+├── gnn_exports/                   # Step 7: Multi-format exports
+├── visualization/                 # Step 8: Basic visualizations
+├── advanced_visualization/        # Step 9: Advanced visualizations
+├── ontology_processing/           # Step 10: Ontology analysis
+├── gnn_rendered_simulators/       # Step 11: Generated code
+├── execution_results/             # Step 12: Simulation results
+├── llm_processing_step/           # Step 13: LLM analysis
+├── ml_integration/                # Step 14: Machine learning integration
+├── audio_processing_step/         # Step 15: Audio generation
+├── analysis/                      # Step 16: Advanced analysis
+├── integration/                   # Step 17: API and plugin integration
+├── security/                      # Step 18: Security features
+├── research/                      # Step 19: Research workflow tools
+├── website/                       # Step 20: HTML documentation
+├── report_processing_step/        # Step 21: Comprehensive reports
+└── logs/                          # Pipeline execution logs
 ```
 
 ### Validation System
@@ -172,13 +227,13 @@ python3 src/main.py --skip-steps 10,13,14 --target-dir input/gnn_files --output-
 Each step can be run independently:
 
 ```bash
-python3 src/2_gnn.py --target-dir input/gnn_files --output-dir output --verbose
+python3 src/0_template.py --target-dir input/gnn_files --output-dir output --verbose
 
-python3 src/4_type_checker.py --target-dir input/gnn_files --output-dir output --strict
+python3 src/2_tests.py --target-dir input/gnn_files --output-dir output
 
-python3 src/5_export.py --target-dir input/gnn_files --output-dir output
+python3 src/5_type_checker.py --target-dir input/gnn_files --output-dir output --strict
 
-python3 src/12_audio.py --target-dir input/gnn_files --output-dir output --duration 30 --audio-backend sapf
+python3 src/15_audio.py --target-dir input/gnn_files --output-dir output --duration 30 --audio-backend sapf
 ```
 
 ### Validation
@@ -194,16 +249,23 @@ python3 src/main.py --target-dir input/gnn_files --estimate-resources --verbose
 - pathlib, argparse, json, datetime (standard library)
 
 ### Step-Specific Dependencies
-- **Step 2**: Virtual environment tools
-- **Step 3**: pytest
-- **Step 5**: networkx (optional, for graph exports)
-- **Step 6**: matplotlib, graphviz (for visualizations)
-- **Step 9**: PyMDP, RxInfer.jl, ActiveInference.jl (optional, for code generation)
-- **Step 10**: PyMDP, Julia/RxInfer.jl, ActiveInference.jl (optional, for simulation execution)
-- **Step 11**: OpenAI API or similar LLM access
-- **Step 12**: SAPF binary (optional), numpy, wave, pedalboard (for audio generation)
-- **Step 13**: Jinja2 or similar templating (for advanced website generation)
-- **Step 14**: pandas, matplotlib (for comprehensive reporting)
+- **Step 0**: None (pure Python)
+- **Step 1**: Virtual environment tools
+- **Step 2**: pytest
+- **Step 4**: Git-like versioning tools
+- **Step 5-6**: Type checking and validation libraries
+- **Step 7**: networkx (optional, for graph exports)
+- **Step 8-9**: matplotlib, graphviz, plotly (for visualizations)
+- **Step 11**: PyMDP, RxInfer.jl, ActiveInference.jl (optional, for code generation)
+- **Step 12**: PyMDP, Julia/RxInfer.jl, ActiveInference.jl (optional, for simulation execution)
+- **Step 13**: OpenAI API or similar LLM access
+- **Step 14**: scikit-learn, TensorFlow, or PyTorch
+- **Step 15**: SAPF binary (optional), numpy, wave, pedalboard (for audio generation)
+- **Step 16**: pandas, scipy, statsmodels
+- **Step 17**: Flask, FastAPI, or similar
+- **Step 18**: cryptography, authlib
+- **Step 20**: Jinja2 or similar templating (for advanced website generation)
+- **Step 21**: pandas, matplotlib (for comprehensive reporting)
 
 ## Error Handling and Recovery
 
@@ -224,10 +286,10 @@ Based on current implementation:
 - **Large GNN files** (10MB+): Full pipeline in 5-15 minutes
 
 Bottlenecks typically occur in:
-- Step 11 (LLM API calls)
-- Step 9 (Code generation when enabled)
-- Step 10 (Simulation execution)
-- Step 12 (Audio generation for large models)
+- Step 13 (LLM API calls)
+- Step 11 (Code generation when enabled)
+- Step 12 (Simulation execution)
+- Step 15 (Audio generation for large models)
 
 ## Future Enhancements
 
@@ -262,16 +324,17 @@ This captures all debug output including correlation IDs for tracing issues acro
 
 When adding new pipeline steps:
 
-1. Follow the numbered naming convention (`N_new_step.py` where N is 15 or higher)
-2. Use centralized utilities from `utils/` package
-3. Implement proper error handling and logging
-4. Add step configuration to `pipeline/config.py`
-5. Add output validation to `pipeline_validation.py`
-6. Update this documentation and main.py
-7. Include unit tests
-8. Update step dependency mapping in pipeline configuration
+1. Start with the template step (`0_template.py`)
+2. Follow the numbered naming convention (`N_new_step.py` where N is the appropriate number)
+3. Use centralized utilities from `utils/` package
+4. Implement proper error handling and logging
+5. Add step configuration to `pipeline/config.py`
+6. Add output validation to `pipeline_validation.py`
+7. Update this documentation and main.py
+8. Include unit tests
+9. Update step dependency mapping in pipeline configuration
 
 The pipeline is designed to be extensible while maintaining consistency and reliability across all components. 
 
 ### Standardization Improvements
-All pipeline scripts have been standardized using the template from utils/pipeline_template.py for consistent argument handling, logging, and execution. 
+All pipeline scripts have been standardized using the template from `0_template.py` for consistent argument handling, logging, and execution. 

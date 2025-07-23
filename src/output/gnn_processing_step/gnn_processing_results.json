@@ -1,0 +1,22 @@
+{
+  "directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "total_files": 1,
+  "processed_files": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "model_name": "Classic Active Inference POMDP Agent v1",
+      "variables_count": 19,
+      "connections_count": 16,
+      "is_valid": true,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "errors": [],
+  "summary": {
+    "valid_files": 1,
+    "invalid_files": 0,
+    "total_variables": 19,
+    "total_connections": 16
+  }
+}

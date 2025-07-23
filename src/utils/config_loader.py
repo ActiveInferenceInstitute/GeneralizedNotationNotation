@@ -212,17 +212,25 @@ class GNNPipelineConfig:
         """Validate configuration and return list of errors."""
         errors = []
         
+        # Get project root for relative path resolution
+        project_root = Path(__file__).parent.parent.parent
+        
         # Validate target directory exists (only if it's an absolute path or we can resolve it)
         target_dir = self.pipeline.target_dir
         if target_dir.is_absolute() and not target_dir.exists():
             errors.append(f"Target directory does not exist: {target_dir}")
         elif not target_dir.is_absolute():
-            # For relative paths, we'll resolve them later
-            pass
+            # For relative paths, check if they exist relative to project root
+            resolved_target = project_root / target_dir
+            if not resolved_target.exists():
+                errors.append(f"Target directory does not exist: {resolved_target}")
         
         # Validate ontology terms file exists
-        if not self.ontology.terms_file.exists():
-            errors.append(f"Ontology terms file does not exist: {self.ontology.terms_file}")
+        ontology_file = self.ontology.terms_file
+        if not ontology_file.is_absolute():
+            ontology_file = project_root / ontology_file
+        if not ontology_file.exists():
+            errors.append(f"Ontology terms file does not exist: {ontology_file}")
         
         # Validate LLM timeout
         if self.llm.timeout <= 0:

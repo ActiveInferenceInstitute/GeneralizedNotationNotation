@@ -21,9 +21,9 @@ def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
     # Prioritize project root .venv for consistency
     venv_candidates = [
         script_dir.parent / ".venv",  # .venv in project root (preferred)
+        script_dir.parent.parent / ".venv",  # .venv in grandparent (project root from src/)
         script_dir / ".venv",  # Standard .venv in script directory (fallback)
         script_dir.parent / "venv",  # venv in parent directory (legacy)
-        script_dir.parent.parent / ".venv",  # .venv in grandparent (project root from src/)
     ]
     
     for venv_path in venv_candidates:

@@ -1,9 +1,0 @@
-{
-  "base": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/setup_artifacts",
-  "type_check": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/setup_artifacts/type_check",
-  "visualization": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/setup_artifacts/visualization",
-  "exports": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/setup_artifacts/gnn_exports",
-  "rendered": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/setup_artifacts/gnn_rendered_simulators",
-  "logs": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/setup_artifacts/logs",
-  "test_reports": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/setup_artifacts/test_reports"
-}

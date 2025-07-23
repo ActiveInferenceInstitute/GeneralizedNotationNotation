@@ -1,0 +1,5 @@
+{
+  "memory_tests": true,
+  "execution_time_tests": true,
+  "scalability_tests": true
+}
