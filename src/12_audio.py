@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-SAPF Audio Generation Pipeline Step
+Audio Generation Pipeline Step
 
-This step applies Sound As Pure Form (SAPF) to GNN files, generating audio representations
-of Active Inference generative models. Outputs include SAPF code, audio files, and
-sonification reports.
+This step applies audio processing to GNN files, generating audio representations
+of Active Inference generative models. Outputs include audio files and
+sonification reports using multiple backends (SAPF, Pedalboard, etc).
 
 Usage:
-    python 13_sapf.py [options]
+    python 13_audio.py [options]
     (Typically called by main.py)
 """
 
@@ -37,24 +37,24 @@ from pipeline import (
     get_pipeline_config
 )
 
-from sapf.generator import generate_sapf_audio
+from audio.generator import generate_audio
 from utils.pipeline_template import create_standardized_pipeline_script
 
 # Initialize logger for this step
-logger = setup_step_logging("13_sapf", verbose=False)
+logger = setup_step_logging("13_audio", verbose=False)
 
 # Import step-specific modules
 try:
     import numpy as np
     
     DEPENDENCIES_AVAILABLE = True
-    logger.debug("Successfully imported SAPF-GNN dependencies")
+    logger.debug("Successfully imported Audio-GNN dependencies")
     
 except ImportError as e:
-    log_step_warning(logger, f"Failed to import SAPF modules: {e}")
+    log_step_warning(logger, f"Failed to import audio modules: {e}")
     DEPENDENCIES_AVAILABLE = False
 
-def process_sapf_generation(
+def process_audio_generation(
     target_dir: Path,
     output_dir: Path,
     logger: logging.Logger,
@@ -63,15 +63,15 @@ def process_sapf_generation(
     **kwargs
 ) -> bool:
     """
-    Standardized SAPF generation processing function.
+    Standardized audio generation processing function.
     
     Args:
         target_dir: Directory containing GNN files to process
-        output_dir: Output directory for SAPF audio files
+        output_dir: Output directory for audio files
         logger: Logger instance for this step
         recursive: Whether to process files recursively
         verbose: Whether to enable verbose logging
-        **kwargs: Additional processing options (duration, etc.)
+        **kwargs: Additional processing options (duration, backend, etc.)
         
     Returns:
         True if processing succeeded, False otherwise
@@ -79,23 +79,25 @@ def process_sapf_generation(
     try:
         # Validate step requirements
         if not DEPENDENCIES_AVAILABLE:
-            log_step_error(logger, "Required SAPF dependencies are not available")
+            log_step_error(logger, "Required audio dependencies are not available")
             return False
         
         # Get configuration
         config = get_pipeline_config()
-        step_config = config.get_step_config("13_sapf.py")
+        step_config = config.get_step_config("13_audio.py")
         
         # Set up paths
-        step_output_dir = get_output_dir_for_script("13_sapf.py", output_dir)
+        step_output_dir = get_output_dir_for_script("13_audio.py", output_dir)
         step_output_dir.mkdir(parents=True, exist_ok=True)
         
         # Get processing options
         duration = kwargs.get('duration', 30.0)
+        backend = kwargs.get('backend', 'auto')
         
         logger.info(f"Processing GNN files from: {target_dir}")
         logger.info(f"Output directory: {step_output_dir}")
         logger.info(f"Audio duration: {duration} seconds")
+        logger.info(f"Audio backend: {backend}")
         
         # Validate input directory
         if not target_dir.exists():
@@ -130,6 +132,7 @@ def process_sapf_generation(
         processing_options = {
             'verbose': verbose,
             'duration': duration,
+            'backend': backend
         }
         
         for gnn_file in gnn_files:
@@ -151,12 +154,12 @@ def process_sapf_generation(
         
         # Report results
         total_files = successful_files + failed_files
-        logger.info(f"SAPF processing complete: {successful_files}/{total_files} files successful")
+        logger.info(f"Audio processing complete: {successful_files}/{total_files} files successful")
         
         # Generate summary report
-        summary_file = step_output_dir / "sapf_processing_summary.json"
+        summary_file = step_output_dir / "audio_processing_summary.json"
         summary = {
-            "step_name": "13_sapf",
+            "step_name": "13_audio",
             "total_files": total_files,
             "successful_files": successful_files,
             "failed_files": failed_files,
@@ -168,7 +171,7 @@ def process_sapf_generation(
         
         # Determine success
         if failed_files == 0:
-            log_step_success(logger, "All GNN files processed successfully with SAPF")
+            log_step_success(logger, "All GNN files processed successfully with audio generation")
             return True
         elif successful_files > 0:
             log_step_warning(logger, f"Partial success: {failed_files} files failed")
@@ -178,7 +181,11 @@ def process_sapf_generation(
             return False
         
     except Exception as e:
+<<<<<<< Updated upstream:src/13_sapf.py
         log_step_error(logger, f"SAPF failed: {e}")
+=======
+        log_step_error(logger, f"Audio processing failed: {e}")
+>>>>>>> Stashed changes:src/12_audio.py
         return False
 
 def process_single_file(
@@ -187,7 +194,11 @@ def process_single_file(
     options: dict
 ) -> bool:
     """
+<<<<<<< Updated upstream:src/13_sapf.py
     Process a single GNN file with SAPF audio generation.
+=======
+    Process a single GNN file and generate audio representation.
+>>>>>>> Stashed changes:src/12_audio.py
     
     Args:
         input_file: Path to input GNN file
@@ -204,6 +215,44 @@ def process_single_file(
         # Generate audio based on GNN model structure
         # This would contain the actual SAPF generation logic
         
+<<<<<<< Updated upstream:src/13_sapf.py
+=======
+        # Create file-specific output directory
+        file_output_dir = output_dir / model_name
+        file_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Generate audio
+        audio_file = file_output_dir / f"{model_name}_audio.wav"
+        
+        # Generate audio using the unified generator
+        success = generate_audio(
+            gnn_content=gnn_content,
+            output_file=audio_file,
+            model_name=model_name,
+            duration=options['duration'],
+            backend=options.get('backend', 'auto')
+        )
+        
+        if not success:
+            logger.warning(f"Failed to generate audio for {input_file}")
+            return False
+        
+        # Generate processing report
+        report = {
+            "model_name": model_name,
+            "input_file": str(input_file),
+            "audio_file": str(audio_file),
+            "audio_duration": options['duration'],
+            "audio_backend": options.get('backend', 'auto'),
+            "processing_successful": True
+        }
+        
+        report_file = file_output_dir / f"{model_name}_audio_report.json"
+        with open(report_file, 'w') as f:
+            json.dump(report, f, indent=2)
+        
+        logger.info(f"Successfully processed {model_name}: Audio generated")
+>>>>>>> Stashed changes:src/12_audio.py
         return True
         
     except Exception as e:
@@ -211,11 +260,12 @@ def process_single_file(
         return False
 
 run_script = create_standardized_pipeline_script(
-    "13_sapf.py",
-    process_sapf_generation,  # Assuming you rename or adjust the function name
-    "SAPF audio generation for GNN models",
+    "13_audio.py",
+    process_audio_generation,
+    "Audio generation for GNN models",
     additional_arguments={
-        "duration": {"type": float, "default": 30.0, "help": "Audio duration in seconds"}
+        "duration": {"type": float, "default": 30.0, "help": "Audio duration in seconds"},
+        "backend": {"type": str, "default": "auto", "help": "Audio backend to use (auto, sapf, pedalboard)"}
     }
 )
 

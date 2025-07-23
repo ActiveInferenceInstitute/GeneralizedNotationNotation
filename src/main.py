@@ -15,14 +15,15 @@ Pipeline Steps (Dynamically Discovered and Ordered):
 - 6_visualization.py (Corresponds to visualization/ folder, uses visualize_gnn.py)
 - 7_mcp.py (Corresponds to mcp/ folder)
 - 8_ontology.py (Corresponds to ontology/ folder)
-- 9_render.py (Corresponds to render/ folder, includes PyMDP, RxInfer, DisCoPy, and JAX rendering)
-- 10_execute.py (Corresponds to execute/ folder, includes PyMDP, RxInfer, DisCoPy, and JAX execution)
+- 9_render.py (Corresponds to render/ folder, includes PyMDP, RxInfer, ActiveInference.jl, DisCoPy, and JAX rendering)
+- 10_execute.py (Corresponds to execute/ folder, includes PyMDP, RxInfer, ActiveInference.jl, DisCoPy, and JAX execution)
 - 11_llm.py (Corresponds to llm/ folder)
-- 12_website.py (Corresponds to website/ folder, generates HTML summary website)
-- 13_sapf.py (Corresponds to sapf/ folder, generates SAPF (Sound As Pure Form) audio representations and sonifications of GNN models)
+- 12_audio.py (Corresponds to audio/ folder, generates audio representations of GNN models using multiple backends)
+- 13_website.py (Corresponds to website/ folder, generates HTML summary website)
+- 14_report.py (Corresponds to report/ folder, generates comprehensive analysis reports)
 
 Configuration:
-The pipelinew uses a YAML configuration file located at input/config.yaml to configure
+The pipeline uses a YAML configuration file located at input/config.yaml to configure
 all aspects of the pipeline execution. The input directory structure is:
 
 input/
@@ -53,8 +54,9 @@ Options:
     --pipeline-summary-file FILE
                              Path to save the final pipeline summary report (overrides config)
     --website-html-filename NAME
-                             Filename for the generated HTML summary website (for 12_website.py, saved in output-dir, default: gnn_pipeline_summary_website.html)
-    --duration               Audio duration in seconds for SAPF generation (for 13_sapf.py, default: 30.0)
+                             Filename for the generated HTML summary website (for 13_website.py, saved in output-dir, default: gnn_pipeline_summary_website.html)
+    --duration               Audio duration in seconds for audio generation (for 12_audio.py, default: 30.0)
+    --audio-backend          Audio backend to use (for 12_audio.py, options: auto, sapf, pedalboard, default: auto)
     --recreate-venv          Recreate virtual environment even if it already exists (for 1_setup.py)
     --dev                    Also install development dependencies from requirements-dev.txt (for 1_setup.py)
 

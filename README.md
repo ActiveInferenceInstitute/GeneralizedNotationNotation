@@ -6,7 +6,7 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
-[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-13-blue.svg)](#%EF%B8%8F-processing-pipeline)
+[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-14-blue.svg)](#%EF%B8%8F-processing-pipeline)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-4-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
@@ -192,8 +192,9 @@ src/
 │   ├── 9_render.py                # Code Rendering
 │   ├── 10_execute.py              # Simulation Execution
 │   ├── 11_llm.py                  # LLM Analysis
-│   ├── 12_website.py              # Static Site Generation
-│   └── 13_sapf.py                 # SAPF Audio Generation
+│   ├── 12_audio.py                # Audio Generation (SAPF, Pedalboard, etc.)
+│   ├── 13_website.py              # Static Site Generation
+│   └── 14_report.py               # Report Generation
 ├── 🧠 Core Modules
 │   ├── gnn/                       # GNN processing core
 │   ├── render/                    # Code generation
@@ -207,7 +208,8 @@ src/
 │   ├── setup/                     # Environment setup
 │   ├── tests/                     # Test suite
 │   ├── site/                      # HTML generation
-│   └── sapf/                      # Audio generation
+│   ├── audio/                     # Audio generation (SAPF, Pedalboard, etc.)
+│   └── report/                    # Report generation
 ├── 🔧 Infrastructure
 │   ├── utils/                     # Shared utilities
 │   ├── pipeline/                  # Pipeline orchestration
@@ -254,7 +256,7 @@ doc/
 
 ## ⚙️ Processing Pipeline
 
-The GNN processing pipeline consists of **13 dynamically discovered stages**, each handling a specific aspect of model processing from parsing to final site generation.
+The GNN processing pipeline consists of **14 dynamically discovered stages**, each handling a specific aspect of model processing from parsing to final site generation.
 
 ```mermaid
 flowchart TD
@@ -269,9 +271,10 @@ flowchart TD
     I --> J["9️⃣ Code Rendering<br/>src/render/"]
     J --> K["🔟 Simulation Execution<br/>src/execute/"]
     K --> L["1️⃣1️⃣ LLM Analysis<br/>src/llm/"]
-    L --> M["1️⃣2️⃣ Static Site Generation<br/>src/site/"]
-    M --> N["1️⃣3️⃣ SAPF Audio Generation<br/>src/sapf/"]
-    N --> O["✅ Pipeline Complete<br/>📊 Summary Generated"]
+    L --> M["1️⃣2️⃣ Audio Generation<br/>src/audio/"]
+    M --> N["1️⃣3️⃣ Static Site Generation<br/>src/site/"]
+    N --> O["1️⃣4️⃣ Report Generation<br/>src/report/"]
+    O --> P["✅ Pipeline Complete<br/>📊 Summary Generated"]
     
     B -->|❌ Failure| P["🛑 Pipeline Halted<br/>Setup Required"]
     
@@ -298,12 +301,14 @@ flowchart TD
         
         D --> I["📚 Ontology Mapping<br/>Active Inference terms"]
         G --> J["📈 Results Analysis<br/>Performance metrics"]
-        H --> K["🌐 Site Generation<br/>Static HTML reports"]
+        H --> K["🎵 Audio Generation<br/>SAPF, Pedalboard backends"]
         
-        I --> K
-        J --> K
+        I --> L["🌐 Site Generation<br/>Static HTML reports"]
+        J --> L
+        K --> M["📊 Report Generation<br/>Comprehensive analysis"]
         
-        K --> L["✨ Complete Analysis<br/>Multi-modal outputs"]
+        L --> M
+        M --> N["✨ Complete Analysis<br/>Multi-modal outputs"]
     end
     
     style A fill:#e1f5fe,stroke:#0277bd
@@ -345,7 +350,8 @@ python src/main.py --help
 - `--llm-timeout`: LLM processing timeout
 - `--pipeline-summary-file FILE`: Pipeline summary report path
 - `--site-html-filename NAME`: Generated HTML site filename
-- `--duration`: Audio duration for SAPF generation (default: 30.0)
+- `--duration`: Audio duration for audio generation (default: 30.0)
+- `--audio-backend`: Audio backend to use (auto, sapf, pedalboard, default: auto)
 - `--recreate-venv`: Recreate virtual environment
 - `--dev`: Install development dependencies
 

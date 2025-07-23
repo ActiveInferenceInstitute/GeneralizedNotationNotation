@@ -2,7 +2,7 @@
 
 ## Overview
 
-The GNN (Generalized Notation Notation) Processing Pipeline is a sophisticated, modular system for processing Active Inference generative models. This pipeline consists of 13 numbered steps that transform GNN specifications into various formats and provide comprehensive analysis, including cutting-edge audio representations through SAPF (Sound As Pure Form).
+The GNN (Generalized Notation Notation) Processing Pipeline is a sophisticated, modular system for processing Active Inference generative models. This pipeline consists of 14 numbered steps that transform GNN specifications into various formats and provide comprehensive analysis, including cutting-edge audio representations through multiple backends (SAPF, Pedalboard, and others).
 
 ### Pipeline Flow
 
@@ -12,13 +12,13 @@ The pipeline processes GNN models through a systematic workflow:
 2. **Export & Visualization** (Steps 5-6): Generate multiple output formats and visualizations  
 3. **Integration & Analysis** (Steps 7-8): MCP tools and ontology processing
 4. **Execution & Enhancement** (Steps 9-11): Code generation, simulation, and LLM analysis
-5. **Advanced Representations** (Steps 12-13): Site generation and audio sonification
+5. **Advanced Representations** (Steps 12-14): Audio generation, site generation, and comprehensive reporting
 
 ## Pipeline Architecture
 
 ### Core Components
 
-- **Main Orchestrator**: `main.py` - Discovers and executes numbered pipeline scripts (1-13)
+- **Main Orchestrator**: `main.py` - Discovers and executes numbered pipeline scripts (1-14)
 - **Centralized Utilities**: `utils/` package providing logging, argument parsing, and validation
 - **Pipeline Configuration**: `pipeline/config.py` - Centralized configuration management
 - **Pipeline Validation**: `pipeline_validation.py` - Validates consistency and functionality
@@ -38,13 +38,20 @@ The pipeline processes GNN models through a systematic workflow:
 | 9 | `9_render.py` | Code generation (PyMDP, RxInfer, ActiveInference.jl) | ✅ WORKING | `gnn_rendered_simulators/` |
 | 10 | `10_execute.py` | Execute rendered simulators | ✅ WORKING | `execution_results/` |
 | 11 | `11_llm.py` | LLM-enhanced analysis | ✅ WORKING | `llm_processing_step/` |
+<<<<<<< Updated upstream
 | 12 | `12_website.py` | HTML website generation | ✅ WORKING | `website/` |
 | 13 | `13_sapf.py` | SAPF audio generation | ✅ WORKING | `sapf_processing_step/` |
+=======
+| 12 | `12_audio.py` | Audio generation (SAPF, Pedalboard, and other backends) | ✅ WORKING | `audio_processing_step/` |
+| 13 | `13_website.py` | HTML website generation | ⚠️ PARTIAL | `website/` |
+| 14 | `14_report.py` | Comprehensive analysis reports | ✅ WORKING | `report_processing_step/` |
+>>>>>>> Stashed changes
 
 **Note**: The pipeline is designed to be fully extensible, with each step building upon previous outputs while remaining independently executable for targeted processing.
 
 ## Functional Status Analysis
 
+<<<<<<< Updated upstream
 ### ✅ Fully Functional (13/13 steps)
 All scripts are fully operational with proper logging, error handling, and output generation. Each step includes:
 - **Graceful dependency handling**: Steps continue with reduced functionality when optional dependencies are unavailable
@@ -55,6 +62,15 @@ All scripts are fully operational with proper logging, error handling, and outpu
 - **Step 7 (MCP)**: MCP server integration (graceful fallback to standard mode)
 - **Step 10 (Execute)**: PyMDP, RxInfer.jl, ActiveInference.jl (validates availability before execution)
 - **Step 12 (Website)**: Advanced templating libraries (fallback to basic HTML generation)
+=======
+### ✅ Fully Functional (11/14 steps)
+Scripts 1-6, 8-9, 11-12, and 14 are fully operational with proper logging, error handling, and output generation.
+
+### ⚠️ Partially Functional (3/14 steps)
+- **Step 7 (MCP)**: Core functionality works but may need MCP system initialization
+- **Step 10 (Execute)**: PyMDP/RxInfer execution depends on availability of dependencies
+- **Step 12 (Website)**: Basic HTML website generation works, full generator may need additional dependencies
+>>>>>>> Stashed changes
 
 ## Code Quality Assessment
 
@@ -135,8 +151,9 @@ output/
 ├── gnn_rendered_simulators/      # Step 9: Generated code
 ├── execution_results/            # Step 10: Simulation results
 ├── llm_processing_step/          # Step 11: LLM analysis
-├── website/                      # Step 12: HTML documentation
-├── sapf_processing_step/         # Step 13: SAPF audio generation
+├── audio_processing_step/        # Step 12: Audio generation (SAPF, Pedalboard, etc.)
+├── website/                      # Step 13: HTML documentation
+├── report_processing_step/       # Step 14: Comprehensive analysis reports
 └── logs/                         # Pipeline execution logs
 ```
 
@@ -161,7 +178,7 @@ python3 src/main.py --target-dir input/gnn_files --output-dir output --verbose
 
 python3 src/main.py --only-steps 1,2,3 --target-dir input/gnn_files --output-dir output
 
-python3 src/main.py --skip-steps 10,12,13 --target-dir input/gnn_files --output-dir output
+python3 src/main.py --skip-steps 10,13,14 --target-dir input/gnn_files --output-dir output
 ```
 
 ### Individual Step Execution
@@ -175,7 +192,7 @@ python3 src/4_type_checker.py --target-dir input/gnn_files --output-dir output -
 
 python3 src/5_export.py --target-dir input/gnn_files --output-dir output
 
-python3 src/13_sapf.py --target-dir input/gnn_files --output-dir output --duration 30
+python3 src/12_audio.py --target-dir input/gnn_files --output-dir output --duration 30 --audio-backend sapf
 ```
 
 ### Validation
@@ -198,8 +215,9 @@ python3 src/main.py --target-dir input/gnn_files --estimate-resources --verbose
 - **Step 9**: PyMDP, RxInfer.jl, ActiveInference.jl (optional, for code generation)
 - **Step 10**: PyMDP, Julia/RxInfer.jl, ActiveInference.jl (optional, for simulation execution)
 - **Step 11**: OpenAI API or similar LLM access
-- **Step 12**: Jinja2 or similar templating (for advanced website generation)
-- **Step 13**: SAPF binary (optional), numpy, wave (for audio generation)
+- **Step 12**: SAPF binary (optional), numpy, wave, pedalboard (for audio generation)
+- **Step 13**: Jinja2 or similar templating (for advanced website generation)
+- **Step 14**: pandas, matplotlib (for comprehensive reporting)
 
 ## Error Handling and Recovery
 
@@ -223,7 +241,7 @@ Bottlenecks typically occur in:
 - Step 11 (LLM API calls)
 - Step 9 (Code generation when enabled)
 - Step 10 (Simulation execution)
-- Step 13 (Audio generation for large models)
+- Step 12 (Audio generation for large models)
 
 ## Future Enhancements
 
@@ -258,7 +276,7 @@ This captures all debug output including correlation IDs for tracing issues acro
 
 When adding new pipeline steps:
 
-1. Follow the numbered naming convention (`N_new_step.py` where N is 14 or higher)
+1. Follow the numbered naming convention (`N_new_step.py` where N is 15 or higher)
 2. Use centralized utilities from `utils/` package
 3. Implement proper error handling and logging
 4. Add step configuration to `pipeline/config.py`

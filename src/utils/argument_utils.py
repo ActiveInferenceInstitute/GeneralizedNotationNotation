@@ -93,8 +93,9 @@ class PipelineArguments:
     recreate_venv: bool = False
     dev: bool = False
     
-    # Duration for SAPF generation
+    # Audio generation options
     duration: float = 30.0
+    audio_backend: str = "auto"
     
     def __post_init__(self):
         """Post-initialization validation and path resolution."""
@@ -248,7 +249,13 @@ class ArgumentParser:
             flag='--duration',
             arg_type=float,
             default=30.0,
-            help_text='Audio duration in seconds for SAPF generation'
+            help_text='Audio duration in seconds for audio generation'
+        ),
+        'audio_backend': ArgumentDefinition(
+            flag='--audio-backend',
+            arg_type=str,
+            default='auto',
+            help_text='Audio backend to use (auto, sapf, pedalboard, default: auto)'
         )
     }
     
@@ -897,7 +904,9 @@ def parse_arguments() -> PipelineArguments:
     parser.add_argument('--llm-timeout', type=int, help='Timeout for LLM processing in seconds')
     parser.add_argument('--pipeline-summary-file', type=Path, help='Path to save pipeline summary')
     parser.add_argument('--website-html-filename', help='Filename for generated HTML website')
-    parser.add_argument('--duration', type=float, help='Audio duration in seconds for SAPF generation')
+    parser.add_argument('--duration', type=float, help='Audio duration in seconds for audio generation')
+    parser.add_argument('--audio-backend', type=str, default='auto', 
+                       help='Audio backend to use (auto, sapf, pedalboard, default: auto)')
     parser.add_argument('--recreate-venv', action='store_true', help='Recreate virtual environment')
     parser.add_argument('--dev', action='store_true', help='Install development dependencies')
     
