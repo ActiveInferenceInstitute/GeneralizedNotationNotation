@@ -36,7 +36,7 @@ def process_research(
     logger = logging.getLogger("research")
     
     try:
-        log_step_start("Processing research")
+        log_step_start(logger, "Processing research")
         
         # Create results directory
         results_dir = output_dir / "research_results"
@@ -61,14 +61,14 @@ def process_research(
             json.dump(results, f, indent=2)
         
         if results["success"]:
-            log_step_success("research processing completed successfully")
+            log_step_success(logger, "research processing completed successfully")
         else:
-            log_step_error("research processing failed")
+            log_step_error(logger, "research processing failed")
         
         return results["success"]
         
     except Exception as e:
-        log_step_error("research processing failed", {"error": str(e)})
+        log_step_error(logger, "research processing failed", {"error": str(e)})
         return False
 
 # Module metadata

@@ -22,8 +22,7 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def main():
     """Main execute processing function."""
-    parser = EnhancedArgumentParser.parse_step_arguments("12_execute")
-    args = parser.parse_args()
+    args = EnhancedArgumentParser.parse_step_arguments("12_execute")
     
     # Setup logging
     logger = setup_step_logging("execute", args)
@@ -37,7 +36,7 @@ def main():
         # Import and run execute processing
         from execute import process_execute
         
-        log_step_start("Processing execute")
+        log_step_start(logger, "Processing execute")
         
         success = process_execute(
             target_dir=args.target_dir,
@@ -46,14 +45,14 @@ def main():
         )
         
         if success:
-            log_step_success("Execute processing completed successfully")
+            log_step_success(logger, "Execute processing completed successfully")
             return 0
         else:
-            log_step_error("Execute processing failed")
+            log_step_error(logger, "Execute processing failed")
             return 1
             
     except Exception as e:
-        log_step_error("Execute processing failed", {"error": str(e)})
+        log_step_error(logger, "Execute processing failed", {"error": str(e)})
         return 1
 
 if __name__ == "__main__":

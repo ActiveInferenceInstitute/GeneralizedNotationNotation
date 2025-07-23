@@ -22,8 +22,7 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def main():
     """Main security processing function."""
-    parser = EnhancedArgumentParser.parse_step_arguments("18_security")
-    args = parser.parse_args()
+    args = EnhancedArgumentParser.parse_step_arguments("18_security")
     
     # Setup logging
     logger = setup_step_logging("security", args)
@@ -37,7 +36,7 @@ def main():
         # Import and run security processing
         from security import process_security
         
-        log_step_start("Processing security")
+        log_step_start(logger, "Processing security")
         
         success = process_security(
             target_dir=args.target_dir,
@@ -46,14 +45,14 @@ def main():
         )
         
         if success:
-            log_step_success("Security processing completed successfully")
+            log_step_success(logger, "Security processing completed successfully")
             return 0
         else:
-            log_step_error("Security processing failed")
+            log_step_error(logger, "Security processing failed")
             return 1
             
     except Exception as e:
-        log_step_error("Security processing failed", {"error": str(e)})
+        log_step_error(logger, "Security processing failed", {"error": str(e)})
         return 1
 
 if __name__ == "__main__":

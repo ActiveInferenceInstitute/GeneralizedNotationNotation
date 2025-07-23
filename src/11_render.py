@@ -22,8 +22,7 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def main():
     """Main render processing function."""
-    parser = EnhancedArgumentParser.parse_step_arguments("11_render")
-    args = parser.parse_args()
+    args = EnhancedArgumentParser.parse_step_arguments("11_render")
     
     # Setup logging
     logger = setup_step_logging("render", args)
@@ -37,7 +36,7 @@ def main():
         # Import and run render processing
         from render import process_render
         
-        log_step_start("Processing render")
+        log_step_start(logger, "Processing render")
         
         success = process_render(
             target_dir=args.target_dir,
@@ -46,14 +45,14 @@ def main():
         )
         
         if success:
-            log_step_success("Render processing completed successfully")
+            log_step_success(logger, "Render processing completed successfully")
             return 0
         else:
-            log_step_error("Render processing failed")
+            log_step_error(logger, "Render processing failed")
             return 1
             
     except Exception as e:
-        log_step_error("Render processing failed", {"error": str(e)})
+        log_step_error(logger, "Render processing failed", {"error": str(e)})
         return 1
 
 if __name__ == "__main__":

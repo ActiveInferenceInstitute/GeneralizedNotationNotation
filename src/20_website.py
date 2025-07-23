@@ -22,8 +22,7 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def main():
     """Main website processing function."""
-    parser = EnhancedArgumentParser.parse_step_arguments("20_website")
-    args = parser.parse_args()
+    args = EnhancedArgumentParser.parse_step_arguments("20_website")
     
     # Setup logging
     logger = setup_step_logging("website", args)
@@ -37,7 +36,7 @@ def main():
         # Import and run website processing
         from website import process_website
         
-        log_step_start("Processing website")
+        log_step_start(logger, "Processing website")
         
         success = process_website(
             target_dir=args.target_dir,
@@ -46,14 +45,14 @@ def main():
         )
         
         if success:
-            log_step_success("Website processing completed successfully")
+            log_step_success(logger, "Website processing completed successfully")
             return 0
         else:
-            log_step_error("Website processing failed")
+            log_step_error(logger, "Website processing failed")
             return 1
             
     except Exception as e:
-        log_step_error("Website processing failed", {"error": str(e)})
+        log_step_error(logger, "Website processing failed", {"error": str(e)})
         return 1
 
 if __name__ == "__main__":

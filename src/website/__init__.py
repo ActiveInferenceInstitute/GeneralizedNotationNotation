@@ -36,7 +36,7 @@ def process_website(
     logger = logging.getLogger("website")
     
     try:
-        log_step_start("Processing website")
+        log_step_start(logger, "Processing website")
         
         # Create results directory
         results_dir = output_dir / "website_results"
@@ -61,14 +61,14 @@ def process_website(
             json.dump(results, f, indent=2)
         
         if results["success"]:
-            log_step_success("website processing completed successfully")
+            log_step_success(logger, "website processing completed successfully")
         else:
-            log_step_error("website processing failed")
+            log_step_error(logger, "website processing failed")
         
         return results["success"]
         
     except Exception as e:
-        log_step_error("website processing failed", {"error": str(e)})
+        log_step_error(logger, "website processing failed", {"error": str(e)})
         return False
 
 # Module metadata

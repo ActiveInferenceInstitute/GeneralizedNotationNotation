@@ -22,8 +22,7 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def main():
     """Main report processing function."""
-    parser = EnhancedArgumentParser.parse_step_arguments("21_report")
-    args = parser.parse_args()
+    args = EnhancedArgumentParser.parse_step_arguments("21_report")
     
     # Setup logging
     logger = setup_step_logging("report", args)
@@ -37,7 +36,7 @@ def main():
         # Import and run report processing
         from report import process_report
         
-        log_step_start("Processing report")
+        log_step_start(logger, "Processing report")
         
         success = process_report(
             target_dir=args.target_dir,
@@ -46,14 +45,14 @@ def main():
         )
         
         if success:
-            log_step_success("Report processing completed successfully")
+            log_step_success(logger, "Report processing completed successfully")
             return 0
         else:
-            log_step_error("Report processing failed")
+            log_step_error(logger, "Report processing failed")
             return 1
             
     except Exception as e:
-        log_step_error("Report processing failed", {"error": str(e)})
+        log_step_error(logger, "Report processing failed", {"error": str(e)})
         return 1
 
 if __name__ == "__main__":

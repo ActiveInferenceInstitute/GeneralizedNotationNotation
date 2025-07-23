@@ -36,7 +36,7 @@ def process_integration(
     logger = logging.getLogger("integration")
     
     try:
-        log_step_start("Processing integration")
+        log_step_start(logger, "Processing integration")
         
         # Create results directory
         results_dir = output_dir / "integration_results"
@@ -61,14 +61,14 @@ def process_integration(
             json.dump(results, f, indent=2)
         
         if results["success"]:
-            log_step_success("integration processing completed successfully")
+            log_step_success(logger, "integration processing completed successfully")
         else:
-            log_step_error("integration processing failed")
+            log_step_error(logger, "integration processing failed")
         
         return results["success"]
         
     except Exception as e:
-        log_step_error("integration processing failed", {"error": str(e)})
+        log_step_error(logger, "integration processing failed", {"error": str(e)})
         return False
 
 # Module metadata

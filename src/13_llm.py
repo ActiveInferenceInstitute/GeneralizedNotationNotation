@@ -22,8 +22,7 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def main():
     """Main LLM processing function."""
-    parser = EnhancedArgumentParser.parse_step_arguments("13_llm")
-    args = parser.parse_args()
+    args = EnhancedArgumentParser.parse_step_arguments("13_llm")
     
     # Setup logging
     logger = setup_step_logging("llm", args)
@@ -37,7 +36,7 @@ def main():
         # Import and run LLM processing
         from llm import process_llm
         
-        log_step_start("Processing LLM")
+        log_step_start(logger, "Processing LLM")
         
         success = process_llm(
             target_dir=args.target_dir,
@@ -46,14 +45,14 @@ def main():
         )
         
         if success:
-            log_step_success("LLM processing completed successfully")
+            log_step_success(logger, "LLM processing completed successfully")
             return 0
         else:
-            log_step_error("LLM processing failed")
+            log_step_error(logger, "LLM processing failed")
             return 1
             
     except Exception as e:
-        log_step_error("LLM processing failed", {"error": str(e)})
+        log_step_error(logger, "LLM processing failed", {"error": str(e)})
         return 1
 
 if __name__ == "__main__":

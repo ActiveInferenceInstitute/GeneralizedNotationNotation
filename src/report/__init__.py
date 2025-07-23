@@ -36,7 +36,7 @@ def process_report(
     logger = logging.getLogger("report")
     
     try:
-        log_step_start("Processing report")
+        log_step_start(logger, "Processing report")
         
         # Create results directory
         results_dir = output_dir / "report_results"
@@ -61,14 +61,14 @@ def process_report(
             json.dump(results, f, indent=2)
         
         if results["success"]:
-            log_step_success("report processing completed successfully")
+            log_step_success(logger, "report processing completed successfully")
         else:
-            log_step_error("report processing failed")
+            log_step_error(logger, "report processing failed")
         
         return results["success"]
         
     except Exception as e:
-        log_step_error("report processing failed", {"error": str(e)})
+        log_step_error(logger, "report processing failed", {"error": str(e)})
         return False
 
 # Module metadata

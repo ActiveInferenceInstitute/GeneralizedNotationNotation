@@ -22,8 +22,7 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def main():
     """Main audio processing function."""
-    parser = EnhancedArgumentParser.parse_step_arguments("15_audio")
-    args = parser.parse_args()
+    args = EnhancedArgumentParser.parse_step_arguments("15_audio")
     
     # Setup logging
     logger = setup_step_logging("audio", args)
@@ -37,7 +36,7 @@ def main():
         # Import and run audio processing
         from audio import process_audio
         
-        log_step_start("Processing audio")
+        log_step_start(logger, "Processing audio")
         
         success = process_audio(
             target_dir=args.target_dir,
@@ -46,14 +45,14 @@ def main():
         )
         
         if success:
-            log_step_success("Audio processing completed successfully")
+            log_step_success(logger, "Audio processing completed successfully")
             return 0
         else:
-            log_step_error("Audio processing failed")
+            log_step_error(logger, "Audio processing failed")
             return 1
             
     except Exception as e:
-        log_step_error("Audio processing failed", {"error": str(e)})
+        log_step_error(logger, "Audio processing failed", {"error": str(e)})
         return 1
 
 if __name__ == "__main__":
