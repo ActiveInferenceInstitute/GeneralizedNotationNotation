@@ -1,4 +1,4 @@
 {
-  "function_discovery": false,
+  "function_discovery": true,
   "function_execution": true
 }

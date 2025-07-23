@@ -36,7 +36,7 @@ def process_audio(
     logger = logging.getLogger("audio")
     
     try:
-        log_step_start("Processing audio")
+        log_step_start(logger, "Processing audio")
         
         # Create results directory
         results_dir = output_dir / "audio_results"
@@ -61,14 +61,14 @@ def process_audio(
             json.dump(results, f, indent=2)
         
         if results["success"]:
-            log_step_success("audio processing completed successfully")
+            log_step_success(logger, "audio processing completed successfully")
         else:
-            log_step_error("audio processing failed")
+            log_step_error(logger, "audio processing failed")
         
         return results["success"]
         
     except Exception as e:
-        log_step_error("audio processing failed", {"error": str(e)})
+        log_step_error(logger, "audio processing failed", {"error": str(e)})
         return False
 
 # Module metadata

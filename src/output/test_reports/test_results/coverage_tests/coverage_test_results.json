@@ -1,5 +1,5 @@
 {
   "code_coverage": true,
-  "function_coverage": false,
+  "function_coverage": true,
   "module_coverage": true
 }

@@ -2,5 +2,5 @@
   "unit_tests": true,
   "integration_tests": true,
   "performance_tests": true,
-  "coverage_tests": false
+  "coverage_tests": true
 }

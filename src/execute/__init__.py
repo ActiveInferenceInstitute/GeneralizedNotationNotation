@@ -36,7 +36,7 @@ def process_execute(
     logger = logging.getLogger("execute")
     
     try:
-        log_step_start("Processing execute")
+        log_step_start(logger, "Processing execute")
         
         # Create results directory
         results_dir = output_dir / "execute_results"
@@ -61,14 +61,14 @@ def process_execute(
             json.dump(results, f, indent=2)
         
         if results["success"]:
-            log_step_success("execute processing completed successfully")
+            log_step_success(logger, "execute processing completed successfully")
         else:
-            log_step_error("execute processing failed")
+            log_step_error(logger, "execute processing failed")
         
         return results["success"]
         
     except Exception as e:
-        log_step_error("execute processing failed", {"error": str(e)})
+        log_step_error(logger, "execute processing failed", {"error": str(e)})
         return False
 
 # Module metadata

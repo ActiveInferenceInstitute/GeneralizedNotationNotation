@@ -36,7 +36,7 @@ def process_llm(
     logger = logging.getLogger("llm")
     
     try:
-        log_step_start("Processing llm")
+        log_step_start(logger, "Processing llm")
         
         # Create results directory
         results_dir = output_dir / "llm_results"
@@ -61,14 +61,14 @@ def process_llm(
             json.dump(results, f, indent=2)
         
         if results["success"]:
-            log_step_success("llm processing completed successfully")
+            log_step_success(logger, "llm processing completed successfully")
         else:
-            log_step_error("llm processing failed")
+            log_step_error(logger, "llm processing failed")
         
         return results["success"]
         
     except Exception as e:
-        log_step_error("llm processing failed", {"error": str(e)})
+        log_step_error(logger, "llm processing failed", {"error": str(e)})
         return False
 
 # Module metadata

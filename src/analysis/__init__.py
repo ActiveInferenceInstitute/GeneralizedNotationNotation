@@ -36,7 +36,7 @@ def process_analysis(
     logger = logging.getLogger("analysis")
     
     try:
-        log_step_start("Processing analysis")
+        log_step_start(logger, "Processing analysis")
         
         # Create results directory
         results_dir = output_dir / "analysis_results"
@@ -61,14 +61,14 @@ def process_analysis(
             json.dump(results, f, indent=2)
         
         if results["success"]:
-            log_step_success("analysis processing completed successfully")
+            log_step_success(logger, "analysis processing completed successfully")
         else:
-            log_step_error("analysis processing failed")
+            log_step_error(logger, "analysis processing failed")
         
         return results["success"]
         
     except Exception as e:
-        log_step_error("analysis processing failed", {"error": str(e)})
+        log_step_error(logger, "analysis processing failed", {"error": str(e)})
         return False
 
 # Module metadata

@@ -36,7 +36,7 @@ def process_render(
     logger = logging.getLogger("render")
     
     try:
-        log_step_start("Processing render")
+        log_step_start(logger, "Processing render")
         
         # Create results directory
         results_dir = output_dir / "render_results"
@@ -61,14 +61,14 @@ def process_render(
             json.dump(results, f, indent=2)
         
         if results["success"]:
-            log_step_success("render processing completed successfully")
+            log_step_success(logger, "render processing completed successfully")
         else:
-            log_step_error("render processing failed")
+            log_step_error(logger, "render processing failed")
         
         return results["success"]
         
     except Exception as e:
-        log_step_error("render processing failed", {"error": str(e)})
+        log_step_error(logger, "render processing failed", {"error": str(e)})
         return False
 
 # Module metadata

@@ -1,0 +1,13 @@
+{
+  "actinf_pomdp_agent.md": {
+    "file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+    "success": true,
+    "exports": {
+      "json": true,
+      "xml": true,
+      "graphml": true,
+      "gexf": true,
+      "pickle": true
+    }
+  }
+}
