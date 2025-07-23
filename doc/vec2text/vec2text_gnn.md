@@ -75,11 +75,11 @@ The framework implements a "**Triple Play**" approach that provides three comple
 
 ### Technical Implementation and Architecture
 
-GNN employs a sophisticated **13-step processing pipeline** that transforms model specifications through comprehensive analysis stages[16]:
+GNN employs a sophisticated **14-step processing pipeline** that transforms model specifications through comprehensive analysis stages[16]:
 
 **Steps 1-4 (Discovery & Validation)**: File parsing, environment setup, testing, and type checking with resource estimation
 **Steps 5-8 (Export & Integration)**: Multi-format export, visualization generation, MCP (Model Context Protocol) integration, and ontology processing  
-**Steps 9-13 (Execution & Enhancement)**: Code generation, simulation execution, LLM-enhanced analysis, website generation, and SAPF (Sound As Pure Form) audio sonification
+**Steps 9-14 (Execution & Enhancement)**: Code generation, simulation execution, LLM-enhanced analysis, audio generation, website generation, and comprehensive reporting
 
 ### Syntax and Semantic Framework
 

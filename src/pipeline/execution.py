@@ -212,7 +212,7 @@ def validate_step_dependencies(step_name: str) -> Tuple[bool, List[str]]:
         "9_render.py": ["render", "render.pymdp.pymdp_renderer", "render.rxinfer.gnn_parser"],
         "10_execute.py": ["execute", "execute.pymdp_runner"],
         "11_llm.py": ["llm", "llm.providers"],
-        "12_website.py": []  # Website generator dependency handled internally
+        "13_website.py": []  # Website generator dependency handled internally
     }
     
     required_deps = step_dependencies.get(step_name, [])
@@ -865,7 +865,8 @@ def get_pipeline_info() -> Dict[str, Any]:
         "10": "Model execution",
         "11": "LLM-enhanced analysis",
         "12": "Site generation",
-        "13": "SAPF audio generation"
+        "13": "Website generation",
+"14": "Report generation"
     }
     
     return info

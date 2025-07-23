@@ -525,7 +525,8 @@ STANDARD_MODULE_FUNCTION_NAMES = {
     "10_execute": "process_execution",
     "11_llm": "process_llm_analysis",
     "12_website": "process_website_generation",
-    "13_sapf": "process_sapf_generation"
+    "13_website": "process_website_generation",
+"14_report": "process_report_generation"
 }
 
 # Standard additional arguments for each step
@@ -538,8 +539,11 @@ STEP_ADDITIONAL_ARGUMENTS = {
         "llm_tasks": {"type": str, "default": "all", "help": "Comma-separated list of LLM tasks"},
         "llm_timeout": {"type": int, "default": 360, "help": "Timeout for LLM operations in seconds"}
     },
-    "13_sapf": {
-        "duration": {"type": float, "default": 30.0, "help": "Audio duration in seconds"}
+    "13_website": {
+        "website_html_filename": {"type": str, "default": "gnn_pipeline_summary_website.html", "help": "Filename for generated HTML website"}
+    },
+    "14_report": {
+        # No additional arguments for report generation
     },
     "8_ontology": {
         "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file", "flag": "--ontology-terms-file"}

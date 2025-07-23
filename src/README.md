@@ -23,7 +23,7 @@ The pipeline processes GNN models through a systematic workflow:
 - **Pipeline Configuration**: `pipeline/config.py` - Centralized configuration management
 - **Pipeline Validation**: `pipeline_validation.py` - Validates consistency and functionality
 
-### 13-Step Pipeline
+### 14-Step Pipeline
 
 | Step | Script | Purpose | Status | Output Directory |
 |------|--------|---------|--------|------------------|
@@ -38,21 +38,15 @@ The pipeline processes GNN models through a systematic workflow:
 | 9 | `9_render.py` | Code generation (PyMDP, RxInfer, ActiveInference.jl) | ✅ WORKING | `gnn_rendered_simulators/` |
 | 10 | `10_execute.py` | Execute rendered simulators | ✅ WORKING | `execution_results/` |
 | 11 | `11_llm.py` | LLM-enhanced analysis | ✅ WORKING | `llm_processing_step/` |
-<<<<<<< Updated upstream
-| 12 | `12_website.py` | HTML website generation | ✅ WORKING | `website/` |
-| 13 | `13_sapf.py` | SAPF audio generation | ✅ WORKING | `sapf_processing_step/` |
-=======
 | 12 | `12_audio.py` | Audio generation (SAPF, Pedalboard, and other backends) | ✅ WORKING | `audio_processing_step/` |
-| 13 | `13_website.py` | HTML website generation | ⚠️ PARTIAL | `website/` |
+| 13 | `13_website.py` | HTML website generation | ✅ WORKING | `website/` |
 | 14 | `14_report.py` | Comprehensive analysis reports | ✅ WORKING | `report_processing_step/` |
->>>>>>> Stashed changes
 
 **Note**: The pipeline is designed to be fully extensible, with each step building upon previous outputs while remaining independently executable for targeted processing.
 
 ## Functional Status Analysis
 
-<<<<<<< Updated upstream
-### ✅ Fully Functional (13/13 steps)
+### ✅ Fully Functional (14/14 steps)
 All scripts are fully operational with proper logging, error handling, and output generation. Each step includes:
 - **Graceful dependency handling**: Steps continue with reduced functionality when optional dependencies are unavailable
 - **Comprehensive error reporting**: Clear messages when external dependencies are missing
@@ -61,16 +55,8 @@ All scripts are fully operational with proper logging, error handling, and outpu
 ### Optional Dependencies by Step
 - **Step 7 (MCP)**: MCP server integration (graceful fallback to standard mode)
 - **Step 10 (Execute)**: PyMDP, RxInfer.jl, ActiveInference.jl (validates availability before execution)
-- **Step 12 (Website)**: Advanced templating libraries (fallback to basic HTML generation)
-=======
-### ✅ Fully Functional (11/14 steps)
-Scripts 1-6, 8-9, 11-12, and 14 are fully operational with proper logging, error handling, and output generation.
-
-### ⚠️ Partially Functional (3/14 steps)
-- **Step 7 (MCP)**: Core functionality works but may need MCP system initialization
-- **Step 10 (Execute)**: PyMDP/RxInfer execution depends on availability of dependencies
-- **Step 12 (Website)**: Basic HTML website generation works, full generator may need additional dependencies
->>>>>>> Stashed changes
+- **Step 12 (Audio)**: SAPF binary, Pedalboard (fallback to basic audio generation)
+- **Step 13 (Website)**: Advanced templating libraries (fallback to basic HTML generation)
 
 ## Code Quality Assessment
 

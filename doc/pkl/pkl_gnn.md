@@ -163,7 +163,7 @@ class ExperimentConfiguration {
 }
 ```
 
-## Integration with GNN's 13-Step Pipeline
+## Integration with GNN's 14-Step Pipeline
 
 ### Enhanced Pipeline Steps with Pkl Integration
 

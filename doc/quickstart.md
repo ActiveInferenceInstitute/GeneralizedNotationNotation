@@ -476,7 +476,7 @@ python src/main.py model.md --steps 1-4
 python src/main.py model.md --steps 1-5,9
 
 # Full pipeline
-python src/main.py model.md --steps 1-13
+python src/main.py model.md --steps 1-14
 
 # Debug mode
 python src/main.py model.md --debug --verbose
@@ -492,19 +492,20 @@ config/               # Configuration files
 ```
 
 ### Pipeline Steps
-1. **GNN Parsing** - Read and parse model
-2. **Setup** - Initialize environment  
-3. **Tests** - Run validation tests
+1. **Setup** - Initialize environment and dependencies
+2. **GNN Processing** - Read, parse, and validate models
+3. **Tests** - Run validation tests (optional)
 4. **Type Checking** - Validate syntax and semantics
 5. **Export** - Export to standard formats
-6. **Visualization** - Generate diagrams
+6. **Visualization** - Generate diagrams and graphs
 7. **MCP** - Model Context Protocol integration
 8. **Ontology** - Process ontology annotations
 9. **Render** - Generate framework code
 10. **Execute** - Run generated simulations
 11. **LLM** - AI-enhanced analysis
-12. **Website** - Documentation and site generation
-13. **SAPF** - Spatial Audio Processing Framework
+12. **Audio** - Generate audio representations
+13. **Website** - Static HTML site generation
+14. **Report** - Comprehensive analysis reports
 
 ---
 

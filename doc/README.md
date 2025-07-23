@@ -193,9 +193,9 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Related*: [Advanced Patterns](gnn/advanced_modeling_patterns.md), [Cerebrum](cerebrum/gnn_cerebrum.md)
 
 ### Pipeline Documentation
-> **⚙️ 13-Step Processing Pipeline** | **📈 Complete Workflow Coverage**
+> **⚙️ 14-Step Processing Pipeline** | **📈 Complete Workflow Coverage**
 
-- **[Complete Pipeline Guide](pipeline/README.md)** - All 13 steps explained
+- **[Complete Pipeline Guide](pipeline/README.md)** - All 14 steps explained
   - *Architecture*: [Pipeline Architecture](pipeline/PIPELINE_ARCHITECTURE.md)
   - *Configuration*: [Configuration Guide](configuration/README.md)
 - **[Pipeline Architecture](pipeline/PIPELINE_ARCHITECTURE.md)** - Technical architecture
@@ -350,7 +350,7 @@ recent_additions: [poe-world_integration, enhanced_cross_references, improved_re
 
 ---
 
-**Last Updated**: June 2025  
+**Last Updated**: July 2025  
 **Documentation Version**: Compatible with GNN v1.x  
 **Status**: Comprehensive and Production-Ready  
 **Cross-Reference Network**: ✅ [Fully Integrated](CROSS_REFERENCE_INDEX.md) 

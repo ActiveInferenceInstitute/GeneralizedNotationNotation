@@ -72,7 +72,7 @@ This index provides a comprehensive mapping of all cross-references within the G
 - **Primary**: [DisCoPy Guide](discopy/gnn_discopy.md)
 - **Templates**: [Hierarchical Template](templates/hierarchical_template.md)
 - **Theory**: [Advanced Patterns - Compositional Modeling](gnn/advanced_modeling_patterns.md)
-- **Pipeline**: [Step 12 Website Generation](pipeline/README.md#step-12-website-generation), [Step 13 SAPF Processing](pipeline/README.md#step-13-sapf-processing)
+- **Pipeline**: [Step 12 Audio Generation](pipeline/README.md#step-12-audio-generation), [Step 13 Website Generation](pipeline/README.md#step-13-website-generation), [Step 14 Report Generation](pipeline/README.md#step-14-report-generation)
 - **Examples**: [Simple DisCoPy Test](archive/gnn_simple_discopy_test.md)
 
 ### LLM Integrations
@@ -178,7 +178,7 @@ This index provides a comprehensive mapping of all cross-references within the G
 
 ## Pipeline Integration Matrix
 
-### 13-Step Processing Pipeline
+### 14-Step Processing Pipeline
 > **⚙️ Complete Workflow** | **🔄 Automated Processing**
 
 | Step | Component | Primary Documentation | Cross-References | Framework Integration |
@@ -194,8 +194,9 @@ This index provides a comprehensive mapping of all cross-references within the G
 | 9 | **Rendering** | [Code Generation](gnn/gnn_tools.md#code-generation), [Pipeline Step 9](pipeline/README.md#step-9-rendering) | [PyMDP](pymdp/gnn_pymdp.md), [RxInfer](rxinfer/gnn_rxinfer.md) | Framework-Specific |
 | 10 | **Execution** | [Execution Guide](gnn/gnn_tools.md#execution), [Pipeline Step 10](pipeline/README.md#step-10-execution) | [PyMDP Examples](pymdp/gnn_pymdp.md#examples), [RxInfer Examples](rxinfer/gnn_rxinfer.md#examples) | Framework-Specific |
 | 11 | **LLM** | [LLM Integration](gnn/gnn_llm_neurosymbolic_active_inference.md), [Pipeline Step 11](pipeline/README.md#step-11-llm) | [DSPy](dspy/gnn_dspy.md), [PoE-World](poe-world/poe-world_gnn.md) | AI-Enhanced |
-| 12 | **Website** | [Website Generation](gnn/gnn_tools.md#documentation), [Pipeline Step 12](pipeline/README.md#step-12-website) | [Documentation](README.md), [Site Generation](README.md) | Documentation |
-| 13 | **SAPF** | [SAPF Guide](sapf/sapf_gnn.md), [Pipeline Step 13](pipeline/README.md#step-13-sapf) | [Audio Generation](sapf/sapf.md), [Spatial Processing](sapf/sapf_gnn.md) | Audio Processing |
+| 12 | **Audio** | [Audio Generation](audio/README.md), [Pipeline Step 12](pipeline/README.md#step-12-audio) | [SAPF](sapf/sapf.md), [Pedalboard](pedalboard/pedalboard.md) | Audio Processing |
+| 13 | **Website** | [Website Generation](gnn/gnn_tools.md#documentation), [Pipeline Step 13](pipeline/README.md#step-13-website) | [Documentation](README.md), [Site Generation](README.md) | Documentation |
+| 14 | **Report** | [Report Generation](report/README.md), [Pipeline Step 14](pipeline/README.md#step-14-report) | [Analysis](report/README.md), [Comprehensive Reports](report/README.md) | Analysis |
 
 
 ## Machine-Readable Navigation Data

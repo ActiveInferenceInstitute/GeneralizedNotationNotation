@@ -559,8 +559,9 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
         9: "core",              # 9_render.py - Rendering
         10: "core",             # 10_execute.py - Execution
         11: "core",             # 11_llm.py - LLM processing
-        12: "core",             # 12_website.py - Website generation
-        13: "core"              # 13_sapf.py - SAPF audio generation
+        12: "core",             # 12_audio.py - Audio generation
+13: "core",             # 13_website.py - Website generation
+14: "core"              # 14_report.py - Comprehensive analysis reports
     }
     
     # Determine which dependency groups we need

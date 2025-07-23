@@ -272,8 +272,9 @@ class ArgumentParser:
         "9_render.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "10_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "11_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
-        "12_website.py": ["target_dir", "output_dir", "recursive", "verbose", "website_html_filename"],
-        "13_sapf.py": ["target_dir", "output_dir", "recursive", "verbose", "duration"],
+        "12_audio.py": ["target_dir", "output_dir", "recursive", "verbose", "duration", "audio_backend"],
+"13_website.py": ["target_dir", "output_dir", "recursive", "verbose", "website_html_filename"],
+"14_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys())
     }
     
@@ -480,7 +481,8 @@ def get_step_output_dir(step_name: str, base_output_dir: Path) -> Path:
         "10_execute": "execution_results",
         "11_llm": "llm_processing_step",
         "12_website": "website",
-        "13_sapf": "sapf_processing_step"
+        "13_website": "website",
+"14_report": "report_processing_step"
     }
     
     if step_name in STEP_OUTPUT_MAPPING:
@@ -566,11 +568,17 @@ class StepConfiguration:
             "defaults": {"verbose": False, "website_html_filename": "gnn_pipeline_summary_website.html"},
             "description": "HTML Website Generation"
         },
-        "13_sapf": {
+        "13_website": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose", "duration"],
-            "defaults": {"recursive": True, "verbose": False, "duration": 30.0},
-            "description": "SAPF Audio Generation for GNN Models"
+            "optional_args": ["recursive", "verbose", "website_html_filename"],
+            "defaults": {"recursive": False, "verbose": False, "website_html_filename": "gnn_pipeline_summary_website.html"},
+            "description": "HTML Website Generation"
+        },
+        "14_report": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": False, "verbose": False},
+            "description": "Comprehensive Analysis Report Generation"
         }
     }
     

@@ -7,7 +7,7 @@
 
 This document provides comprehensive instructions for setting up the GNN (Generalized Notation Notation) Processing Pipeline environment, including installation steps, environment variables, and detailed information about dependencies.
 
-> **🎯 Quick Start**: For immediate setup, run `cd src && python3 main.py --only-steps 2_setup --dev`
+> **🎯 Quick Start**: For immediate setup, run `cd src && python3 main.py --only-steps 1 --dev`
 
 > **📖 Complete Guide**: For comprehensive documentation on GNN itself, please refer to the [GNN Documentation](gnn/about_gnn.md) in the `doc/gnn/` directory.
 
@@ -20,7 +20,7 @@ cd GeneralizedNotationNotation
 
 # Run the setup script
 cd src
-python3 main.py --only-steps 2_setup --dev
+python3 main.py --only-steps 1 --dev
 ```
 
 ## System Requirements
@@ -59,7 +59,7 @@ This method runs only the setup step through the main pipeline:
 
 ```bash
 cd src
-python3 main.py --only-steps 2_setup
+python3 main.py --only-steps 1
 ```
 
 #### Option B: Running the Setup Step Directly
@@ -76,7 +76,7 @@ python3 1_setup.py
 To also install development dependencies (testing, code quality, documentation tools):
 
 ```bash
-python3 main.py --only-steps 2_setup --dev
+python3 main.py --only-steps 1 --dev
 ```
 
 #### Recreating the Virtual Environment
@@ -84,7 +84,7 @@ python3 main.py --only-steps 2_setup --dev
 If you need to recreate the virtual environment from scratch:
 
 ```bash
-python3 main.py --only-steps 2_setup --recreate-venv
+python3 main.py --only-steps 1 --recreate-venv
 ```
 
 #### Verbose Setup
@@ -92,7 +92,7 @@ python3 main.py --only-steps 2_setup --recreate-venv
 For detailed logging during setup:
 
 ```bash
-python3 main.py --only-steps 2_setup --verbose
+python3 main.py --only-steps 1 --verbose
 ```
 
 ## Environment Variables
@@ -200,7 +200,7 @@ To update dependencies in an existing installation:
 
 ```bash
 cd src
-python3 main.py --only-steps 2_setup --recreate-venv
+python3 main.py --only-steps 1 --recreate-venv
 ```
 
 ## Using a Custom Python Executable
@@ -208,7 +208,7 @@ python3 main.py --only-steps 2_setup --recreate-venv
 If you need to use a specific Python executable:
 
 ```bash
-/path/to/your/python main.py --only-steps 2_setup
+/path/to/your/python main.py --only-steps 1
 ```
 
 ## Docker Setup (Experimental)
@@ -290,7 +290,7 @@ jobs:
     - name: Setup GNN
       run: |
         cd src
-        python3 main.py --only-steps 2_setup
+        python3 main.py --only-steps 1
     - name: Run Tests
       run: |
         cd src
@@ -305,12 +305,12 @@ To work with multiple GNN versions:
 # Use virtual environments for version isolation
 python3 -m venv gnn-v1.1.0
 source gnn-v1.1.0/bin/activate
-cd src && python3 main.py --only-steps 2_setup
+cd src && python3 main.py --only-steps 1
 
 # Create another environment for development
 python3 -m venv gnn-dev
 source gnn-dev/bin/activate
-cd src && python3 main.py --only-steps 2_setup --dev
+cd src && python3 main.py --only-steps 1 --dev
 ```
 
 ### **Upgrade Process**

@@ -65,7 +65,7 @@ When reporting a vulnerability, please provide:
 - Unsafe resource access patterns
 - Data leakage through model context
 
-**Pipeline Security** (All 13 Steps):
+**Pipeline Security** (All 14 Steps):
 - Code injection through GNN file parsing
 - Unsafe file operations in output generation
 - Privilege escalation in execution steps

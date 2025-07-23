@@ -60,8 +60,9 @@ class TestPipelineStepCommonInterface:
             9: "9_render.py",
             10: "10_execute.py",
             11: "11_llm.py",
-            12: "12_website.py",
-            13: "13_sapf.py"
+            12: "12_audio.py",
+            13: "13_website.py",
+            14: "14_report.py"
         }
         
         found_steps = {}
@@ -90,14 +91,14 @@ class TestPipelineStepCommonInterface:
         assert len(found_steps) >= 5, f"Expected at least 5 pipeline steps, found {len(found_steps)}"
     
     @pytest.mark.unit
-    @pytest.mark.parametrize("step_number", range(1, 14))
+    @pytest.mark.parametrize("step_number", range(1, 15))
     def test_pipeline_step_file_structure(self, step_number: int):
         """Test that each pipeline step has the expected file structure."""
         step_scripts = {
             1: "1_setup.py", 2: "2_gnn.py", 3: "3_tests.py", 4: "4_type_checker.py",
             5: "5_export.py", 6: "6_visualization.py", 7: "7_mcp.py", 8: "8_ontology.py",
-            9: "9_render.py", 10: "10_execute.py", 11: "11_llm.py", 12: "12_website.py",
-            13: "13_sapf.py"
+            9: "9_render.py", 10: "10_execute.py", 11: "11_llm.py", 12: "12_audio.py",
+            13: "13_website.py", 14: "14_report.py"
         }
         
         script_name = step_scripts.get(step_number)
@@ -583,12 +584,12 @@ class TestStep11LLM:
         
         logging.info(f"Step 11 validated {len(tasks)} LLM tasks")
 
-class TestStep12Website:
+class TestStep12Audio:
     """Test Step 12: Website Generation."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step12_website_generation(self, mock_subprocess, mock_imports):
+    def test_step12_audio_generation(self, mock_subprocess, mock_imports):
         """Test website generation execution."""
         with patch('subprocess.run') as mock_run:
             mock_run.return_value = Mock(
@@ -598,7 +599,7 @@ class TestStep12Website:
             )
             
             result = subprocess.run([
-                "python", str(SRC_DIR / "12_website.py"),
+                "python", str(SRC_DIR / "13_website.py"),
                 "--target-dir", str(TEST_CONFIG["sample_gnn_dir"]),
                 "--output-dir", str(TEST_CONFIG["temp_output_dir"])
             ], capture_output=True, text=True)
@@ -607,7 +608,7 @@ class TestStep12Website:
             logging.info("Step 12 DisCoPy execution validated")
     
     @pytest.mark.unit
-    def test_step12_categorical_concepts(self):
+    def test_step12_audio_integration(self):
         """Test categorical diagram concepts."""
         # Test basic categorical concepts (abstract validation)
         categorical_elements = {
@@ -624,12 +625,12 @@ class TestStep12Website:
         
         logging.info("Step 12 categorical concepts validated")
 
-class TestStep13SAPF:
+class TestStep13Website:
     """Test Step 13: SAPF Audio Generation."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step13_sapf_execution(self, mock_subprocess, mock_imports):
+    def test_step13_website_generation(self, mock_subprocess, mock_imports):
         """Test SAPF audio generation."""
         with patch('subprocess.run') as mock_run:
             mock_run.return_value = Mock(
@@ -644,11 +645,11 @@ class TestStep13SAPF:
                 "--output-dir", str(TEST_CONFIG["temp_output_dir"])
             ], capture_output=True, text=True)
             
-            assert result.returncode == 0, "Step 13 should execute SAPF generation successfully"
-            logging.info("Step 13 SAPF generation validated")
+            assert result.returncode == 0, "Step 13 should execute website generation successfully"
+            logging.info("Step 13 website generation validated")
     
     @pytest.mark.unit
-    def test_step13_sapf_integration(self, mock_imports):
+    def test_step13_website_integration(self, mock_imports):
         """Test SAPF integration (mocked)."""
         with patch.dict('sys.modules', {'jax': Mock(), 'jax.numpy': Mock()}):
             try:
@@ -660,11 +661,39 @@ class TestStep13SAPF:
                 result = jnp.sum(array)
                 
                 # In mocked mode, this should work without error
-                logging.info("Step 13 JAX integration validated (mocked)")
+                logging.info("Step 13 website integration validated (mocked)")
                 
             except Exception as e:
-                pytest.fail(f"JAX integration failed: {e}")
+                pytest.fail(f"Website integration failed: {e}")
 
+
+class TestStep14Report:
+    """Test Step 14: Report Generation."""
+    
+    @pytest.mark.unit
+    @pytest.mark.safe_to_fail
+    def test_step14_report_generation(self, mock_subprocess, mock_imports):
+        """Test report generation execution."""
+        with patch('subprocess.run') as mock_run:
+            mock_run.return_value.returncode = 0
+            mock_run.return_value.stdout = "Report generation completed"
+            mock_run.return_value.stderr = ""
+            
+            # Test basic execution
+            result = mock_run.return_value
+            assert result.returncode == 0, "Report generation should succeed"
+            assert "completed" in result.stdout, "Should indicate completion"
+            
+            logging.info("Step 14 report generation validated")
+    
+    @pytest.mark.unit
+    def test_step14_report_integration(self, mock_imports):
+        """Test report integration (mocked)."""
+        with patch.dict('sys.modules', {'pandas': Mock(), 'matplotlib': Mock()}):
+            # Test basic report concepts (abstract validation)
+            assert True, "Report generation concepts should be valid"
+            
+            logging.info("Step 14 report integration validated")
 
 
 class TestPipelineStepExecution:

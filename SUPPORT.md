@@ -122,7 +122,7 @@ Currently, there is no official commercial support offered for GeneralizedNotati
 - [MCP Integration](./doc/mcp/) - Model Context Protocol
 
 ### 🔧 Pipeline and Tools
-- [Pipeline Architecture](./doc/pipeline/PIPELINE_ARCHITECTURE.md) - 13-step pipeline overview
+- [Pipeline Architecture](./doc/pipeline/PIPELINE_ARCHITECTURE.md) - 14-step pipeline overview
 - [API Reference](./doc/api/README.md) - Complete API documentation
 - [Testing Guide](./doc/testing/README.md) - Testing strategies
 

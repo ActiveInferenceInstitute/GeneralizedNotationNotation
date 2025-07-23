@@ -288,7 +288,7 @@
 
 This vaudeville dialog serves as a comprehensive tour through the GNN project architecture:
 
-- **Pipeline Architecture**: All 13 steps from parsing to SAPF processing
+- **Pipeline Architecture**: All 14 steps from parsing to comprehensive reporting
 - **Core GNN Concepts**: State spaces, connections, matrices, notation syntax
 - **Active Inference Framework**: Hidden states, observations, actions, beliefs
 - **Multi-Backend Support**: PyMDP, RxInfer, JAX compilation

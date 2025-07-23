@@ -1,7 +1,7 @@
 # Pipeline Architecture & Implementation Paradigm
 
 ### Core Pipeline Orchestration
-- **Main Orchestrator**: `src/main.py` dynamically discovers and executes numbered pipeline scripts (1-13)
+- **Main Orchestrator**: `src/main.py` dynamically discovers and executes numbered pipeline scripts (1-14)
 - **Script Discovery**: Uses glob patterns to find `*_*.py` files, sorts by number and basename
 - **Execution Model**: Each script runs as subprocess with centralized argument passing
 - **Virtual Environment**: Automatic detection and use of project virtual environment
@@ -9,7 +9,7 @@
 - **Performance Tracking**: Built-in performance monitoring and resource usage tracking
 - **Configuration Management**: YAML-based configuration with CLI argument overrides
 
-### Pipeline Steps (13 Steps - Current Order)
+### Pipeline Steps (14 Steps - Current Order)
 Each numbered script corresponds to a specific module folder and implements real functionality:
 
 1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation (CRITICAL STEP)
@@ -23,8 +23,9 @@ Each numbered script corresponds to a specific module folder and implements real
 9. **9_render.py** → `src/render/` - Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, JAX, and DisCoPy environments
 10. **10_execute.py** → `src/execute/` - Execute rendered simulation scripts with comprehensive result capture
 11. **11_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, natural language explanations
-12. **12_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts with interactive elements
-13. **13_sapf.py** → `src/sapf/` - SAPF (Sound As Pure Form) audio generation and model sonification
+12. **12_audio.py** → `src/audio/` - Audio generation (SAPF, Pedalboard, and other backends)
+13. **13_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts with interactive elements
+14. **14_report.py** → `src/report/` - Comprehensive analysis report generation
 
 ### Centralized Infrastructure
 
@@ -145,11 +146,23 @@ Every numbered script follows this standardized pattern:
 - **Interactive Elements**: Dynamic content, visualization embedding, and user-friendly interfaces
 - **Multi-Format Output**: Support for different website templates and customization options
 
-#### SAPF Audio Generation (`src/sapf/`) - Step 13
-- **Sound As Pure Form**: Advanced audio representation and sonification of mathematical GNN models
+#### Audio Generation (`src/audio/`) - Step 12
+- **Multi-Backend Support**: SAPF, Pedalboard, and other audio generation backends
 - **Model Sonification**: Converting mathematical structures, matrices, and relationships to audio patterns
 - **Audio Synthesis**: Real-time audio generation, processing, and export with multiple format support
 - **Scientific Sonification**: Mathematically grounded audio representations for model analysis and understanding
+
+#### Website Generation (`src/website/`) - Step 13
+- **HTML Generation**: Static HTML site generation from pipeline artifacts with modern responsive design
+- **Report Aggregation**: Comprehensive pipeline summary and results presentation with interactive navigation
+- **Interactive Elements**: Dynamic content, visualization embedding, and user-friendly interfaces
+- **Multi-Format Output**: Support for different website templates and customization options
+
+#### Report Generation (`src/report/`) - Step 14
+- **Comprehensive Analysis**: Aggregates data from all pipeline steps into unified reports
+- **Performance Metrics**: Execution time, memory usage, and resource consumption analysis
+- **Quality Assessment**: Validation results, error summaries, and success rate reporting
+- **Multi-Format Reports**: HTML, JSON, and structured data exports for further analysis
 
 ### Performance and Quality Standards
 - **Real-Time Monitoring**: Comprehensive performance tracking across all pipeline steps

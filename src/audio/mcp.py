@@ -9,8 +9,8 @@ import logging
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 
-from .sapf_gnn_processor import SAPFGNNProcessor, convert_gnn_to_sapf, validate_sapf_code
-from .audio_generators import SyntheticAudioGenerator
+from .sapf.sapf_gnn_processor import SAPFGNNProcessor, convert_gnn_to_sapf, validate_sapf_code
+from .sapf.audio_generators import SyntheticAudioGenerator
 
 logger = logging.getLogger(__name__)
 

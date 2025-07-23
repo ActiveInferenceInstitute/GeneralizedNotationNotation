@@ -47,6 +47,7 @@ def process_tests_standardized(
     include_slow: bool = False,
     fast_only: bool = False,
     generate_coverage: bool = True,
+    include_report_tests: bool = True,
     **kwargs
 ) -> bool:
     """
@@ -61,6 +62,7 @@ def process_tests_standardized(
         include_slow: Whether to include slow tests
         fast_only: Whether to run only fast tests
         generate_coverage: Whether to generate coverage reports
+        include_report_tests: Whether to include comprehensive report tests
         **kwargs: Additional processing options
         
     Returns:
@@ -68,7 +70,11 @@ def process_tests_standardized(
     """
     try:
         # Start performance tracking
-        with performance_tracker.track_operation("test_execution", {"verbose": verbose, "generate_coverage": generate_coverage}):
+        with performance_tracker.track_operation("test_execution", {
+            "verbose": verbose, 
+            "generate_coverage": generate_coverage,
+            "include_report_tests": include_report_tests
+        }):
             # Update logger verbosity if needed
             if verbose:
                 logger.setLevel(logging.DEBUG)
@@ -92,11 +98,21 @@ def process_tests_standardized(
                     f"--junitxml={output_dir}/pytest_report.xml",
                 ]
                 
+                # Add specific test patterns
+                if include_report_tests:
+                    pytest_args.extend([
+                        "src/tests/test_report_comprehensive.py",
+                        "src/tests/test_pipeline_steps.py::TestStep14Report",
+                        "src/tests/test_pipeline_scripts.py::TestStep14ReportComprehensive"
+                    ])
+                
                 if generate_coverage:
                     pytest_args.extend([
                         "--cov=src",
+                        "--cov=src/report",
                         f"--cov-report=html:{output_dir}/coverage_html",
-                        f"--cov-report=xml:{output_dir}/coverage.xml"
+                        f"--cov-report=xml:{output_dir}/coverage.xml",
+                        f"--cov-report=term-missing"
                     ])
                 
                 if fast_only:
@@ -104,20 +120,30 @@ def process_tests_standardized(
                 elif include_slow:
                     pytest_args.extend(["-m", ""])
                 
+                # Add specific markers for report tests
+                if include_report_tests:
+                    pytest_args.extend([
+                        "-m", "unit or integration",
+                        "--tb=short"
+                    ])
+                
                 # Run tests
+                logger.info(f"Running pytest with args: {' '.join(pytest_args[3:])}")
                 result = subprocess.run(pytest_args, capture_output=True, text=True)
                 
                 # Generate test summary
                 test_summary = {
                     "exit_code": result.returncode,
-                    "stdout": result.stdout[-1000:],  # Last 1000 chars
-                    "stderr": result.stderr[-1000:] if result.stderr else "",
+                    "stdout": result.stdout[-2000:],  # Last 2000 chars
+                    "stderr": result.stderr[-2000:] if result.stderr else "",
                     "test_options": {
                         "verbose": verbose,
                         "include_slow": include_slow, 
                         "fast_only": fast_only,
-                        "generate_coverage": generate_coverage
-                    }
+                        "generate_coverage": generate_coverage,
+                        "include_report_tests": include_report_tests
+                    },
+                    "pytest_command": " ".join(pytest_args[3:])
                 }
                 
                 # Save test summary
@@ -125,11 +151,22 @@ def process_tests_standardized(
                 with open(summary_file, 'w') as f:
                     json.dump(test_summary, f, indent=2)
                 
+                # Log test results
                 if result.returncode == 0:
                     logger.info("All tests passed successfully")
+                    
+                    # Check for report test results specifically
+                    if include_report_tests and "test_report_comprehensive" in result.stdout:
+                        logger.info("Report generation tests completed successfully")
+                    
                     return True
                 else:
                     logger.warning(f"Some tests failed (exit code: {result.returncode})")
+                    
+                    # Log specific failures if verbose
+                    if verbose and result.stderr:
+                        logger.warning(f"Test errors: {result.stderr}")
+                    
                     return True  # Non-critical step, continue pipeline
                     
             except ImportError:
@@ -137,6 +174,12 @@ def process_tests_standardized(
                 # Fallback: basic validation that test files exist
                 test_files = list(Path("src/tests").glob("test_*.py"))
                 logger.info(f"Found {len(test_files)} test files for validation")
+                
+                # Check for report test files specifically
+                report_test_files = list(Path("src/tests").glob("*report*.py"))
+                if report_test_files:
+                    logger.info(f"Found {len(report_test_files)} report test files")
+                
                 return True
                 
     except Exception as e:
@@ -155,7 +198,22 @@ if __name__ == '__main__':
     parser.add_argument('--include-slow', action='store_true', help='Include slow tests')
     parser.add_argument('--fast-only', action='store_true', help='Run only fast tests')
     parser.add_argument('--generate-coverage', action='store_true', default=True, help='Generate coverage reports')
+    parser.add_argument('--include-report-tests', action='store_true', default=True, help='Include comprehensive report tests')
+    parser.add_argument('--skip-report-tests', action='store_true', help='Skip comprehensive report tests')
+    
     # Parse known args to add these, then pass to run_script
     args, unknown = parser.parse_known_args()
-    sys.argv = [sys.argv[0]] + unknown  # Remove parsed args from sys.argv for run_script
+    
+    # Handle report test inclusion/exclusion
+    if args.skip_report_tests:
+        args.include_report_tests = False
+    
+    # Update sys.argv to remove parsed args for run_script
+    sys.argv = [sys.argv[0]] + unknown
+    
+    # Set environment variable for report tests if needed
+    if args.include_report_tests:
+        import os
+        os.environ['INCLUDE_REPORT_TESTS'] = '1'
+    
     sys.exit(run_script()) 

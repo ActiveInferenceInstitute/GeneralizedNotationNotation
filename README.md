@@ -138,7 +138,7 @@ GNN defines a specific file structure, typically using Markdown, to organize mod
 graph TB
     subgraph "🏗️ GNN Project Architecture"
         subgraph "📁 Source Code (src/)"
-            A[⚙️ Pipeline Scripts<br/>1_setup.py → 13_sapf.py]
+            A[⚙️ Pipeline Scripts<br/>1_setup.py → 14_report.py]
             B[🧠 Core Modules<br/>gnn/, render/, llm/]
             C[🔧 Utilities<br/>utils/, pipeline/]
             D[🧪 Testing<br/>tests/]
@@ -256,7 +256,7 @@ doc/
 
 ## ⚙️ Processing Pipeline
 
-The GNN processing pipeline consists of **14 dynamically discovered stages**, each handling a specific aspect of model processing from parsing to final site generation.
+The GNN processing pipeline consists of **14 dynamically discovered stages**, each handling a specific aspect of model processing from parsing to final report generation.
 
 ```mermaid
 flowchart TD
@@ -272,9 +272,9 @@ flowchart TD
     J --> K["🔟 Simulation Execution<br/>src/execute/"]
     K --> L["1️⃣1️⃣ LLM Analysis<br/>src/llm/"]
     L --> M["1️⃣2️⃣ Audio Generation<br/>src/audio/"]
-    M --> N["1️⃣3️⃣ Static Site Generation<br/>src/site/"]
+    M --> N["1️⃣3️⃣ Static Site Generation<br/>src/website/"]
     N --> O["1️⃣4️⃣ Report Generation<br/>src/report/"]
-    O --> P["✅ Pipeline Complete<br/>📊 Summary Generated"]
+    O --> P["✅ Pipeline Complete<br/>📊 Comprehensive Analysis Generated"]
     
     B -->|❌ Failure| P["🛑 Pipeline Halted<br/>Setup Required"]
     

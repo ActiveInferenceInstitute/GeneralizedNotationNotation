@@ -9,21 +9,24 @@ The GNN Processing Pipeline is a comprehensive, modular system for processing Ge
 ```mermaid
 graph TD
     A[1_setup.py] --> B[2_gnn.py]
-    B --> C[4_type_checker.py]
-    C --> D[5_export.py]
-    D --> E[6_visualization.py]
-    E --> F[7_mcp.py]
-    F --> G[8_ontology.py]
-    G --> H[9_render.py]
-    H --> I[10_execute.py]
-    I --> J[11_llm.py]
-    J --> K[12_website.py]
-    K --> L[13_sapf.py]
+    B --> C[3_tests.py]
+    B --> D[4_type_checker.py]
+    D --> E[5_export.py]
+    E --> F[6_visualization.py]
+    E --> G[7_mcp.py]
+    E --> H[8_ontology.py]
+    E --> I[9_render.py]
+    I --> J[10_execute.py]
+    E --> K[11_llm.py]
+    B --> L[12_audio.py]
+    F --> M[13_website.py]
+    H --> M
+    F --> N[14_report.py]
+    H --> N
+    L --> N
     
-    B -.-> M[3_tests.py]
-    
-    style B fill:#ffcccc
-    style M fill:#e6f3ff
+    style A fill:#ffcccc
+    style B fill:#e6f3ff
 ```
 
 ## Stage Descriptions
@@ -33,7 +36,7 @@ graph TD
 | Stage | Script | Purpose | Timeout | Critical |
 |-------|--------|---------|---------|----------|
 | 1 | `1_setup.py` | Environment setup and dependency management | **20 min** | **Yes** |
-| 2 | `2_gnn.py` | GNN file discovery and basic parsing | 2 min | No |
+| 2 | `2_gnn.py` | GNN file discovery and basic parsing | 2 min | **Yes** |
 | 3 | `3_tests.py` | Test execution (optional) | 5 min | No |
 | 4 | `4_type_checker.py` | Type checking and resource estimation | 2 min | No |
 | 5 | `5_export.py` | Export to multiple formats (JSON, XML, etc.) | 2 min | No |
@@ -43,16 +46,21 @@ graph TD
 | 9 | `9_render.py` | Code generation for simulators | 2 min | No |
 | 10 | `10_execute.py` | Execute rendered simulator code | 5 min | No |
 | 11 | `11_llm.py` | LLM-powered analysis and documentation | Configurable | No |
-| 12 | `12_website.py` | Website and HTML summary generation | 2 min | No |
-| 13 | `13_sapf.py` | SAPF audio generation and processing | 5 min | No |
+| 12 | `12_audio.py` | Audio generation (SAPF, Pedalboard, etc.) | 5 min | No |
+| 13 | `13_website.py` | Static website generation | 2 min | No |
+| 14 | `14_report.py` | Comprehensive analysis report generation | 2 min | No |
 
 ### Step Dependencies
 
-- **Step 2 (setup.py)** is critical - pipeline halts on failure
+- **Step 1 (setup.py)** is critical - pipeline halts on failure
+- **Step 2 (gnn.py)** is critical - pipeline halts on failure
 - **Step 3 (tests.py)** is optional and disabled by default
-- **Step 13 (discopy_jax_eval.py)** is experimental and disabled by default
-- Most steps depend on the output of **Step 1 (gnn.py)** for GNN file discovery
-- **Step 13 (sapf.py)** completes processing with audio generation
+- **Step 4 (type_checker.py)** depends on Step 2 for GNN file discovery
+- **Step 5 (export.py)** depends on Step 4 for validated GNN data
+- **Steps 6-11** depend on Step 5 for exported data
+- **Step 12 (audio.py)** depends on Step 2 for GNN file discovery
+- **Step 13 (website.py)** depends on Steps 6 and 8 for visualizations and ontology
+- **Step 14 (report.py)** depends on Steps 6, 8, and 12 for comprehensive analysis
 
 ## Configuration Management
 
@@ -80,21 +88,26 @@ Each step has a configured timeout in `STEP_TIMEOUTS`:
 
 ### Critical Steps
 
-Only **Step 2 (setup.py)** is marked as critical. If it fails, the entire pipeline halts to prevent cascading failures from missing dependencies.
+**Steps 1 (setup.py)** and **Step 2 (gnn.py)** are marked as critical. If either fails, the entire pipeline halts to prevent cascading failures from missing dependencies or GNN files.
 
 ## Output Structure
 
 ```
 output/
-├── gnn_processing_step/           # Step 1 output
-├── gnn_type_check/               # Step 4 output
+├── setup_artifacts/              # Step 1 output
+├── gnn_processing_step/          # Step 2 output
+├── test_reports/                 # Step 3 output
+├── type_check/                   # Step 4 output
 ├── gnn_exports/                  # Step 5 output
 ├── visualization/                # Step 6 output
 ├── mcp_processing_step/          # Step 7 output
 ├── ontology_processing/          # Step 8 output
 ├── gnn_rendered_simulators/      # Step 9 output
+├── execution_results/            # Step 10 output
 ├── llm_processing_step/          # Step 11 output
-├── discopy_gnn/                  # Step 12 output
+├── audio_processing_step/        # Step 12 output
+├── website/                      # Step 13 output
+├── report_processing_step/       # Step 14 output
 ├── logs/                         # Pipeline logs
 ├── pipeline_execution_summary.json
 └── gnn_pipeline_summary_site.html
@@ -183,10 +196,11 @@ python main.py \
 
 ### Common Issues
 
-1. **Step 2 (setup) fails**: Check internet connection, disk space
-2. **Timeout errors**: Increase timeouts for slow systems
-3. **Memory issues**: Reduce concurrent processing or increase system RAM
-4. **Missing dependencies**: Ensure virtual environment is properly set up
+1. **Step 1 (setup) fails**: Check internet connection, disk space, Python version
+2. **Step 2 (gnn) fails**: Check GNN file format, file permissions, target directory
+3. **Timeout errors**: Increase timeouts for slow systems
+4. **Memory issues**: Reduce concurrent processing or increase system RAM
+5. **Missing dependencies**: Ensure virtual environment is properly set up
 
 ### Debug Mode
 

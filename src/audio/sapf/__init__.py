@@ -21,7 +21,7 @@ from .audio_generators import (
 
 # MCP integration
 try:
-    from .mcp import (
+    from ..mcp import (
         register_sapf_tools,
         handle_convert_gnn_to_sapf_audio,
         handle_generate_sapf_code,

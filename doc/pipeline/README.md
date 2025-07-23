@@ -6,7 +6,7 @@
 > **Cross-References**: [Main Documentation](../README.md) | [API Reference](../api/README.md)
 
 ## Overview
-The GNN Processing Pipeline is a comprehensive 13-step system for processing Generalized Notation Notation files from parsing through execution and analysis.
+The GNN Processing Pipeline is a comprehensive 14-step system for processing Generalized Notation Notation files from parsing through execution and analysis.
 
 ## Complete Pipeline Steps
 
@@ -84,17 +84,24 @@ The GNN Processing Pipeline is a comprehensive 13-step system for processing Gen
 - **Key Features**: Model explanation, structure analysis, natural language summaries
 - **Configuration**: Supports multiple LLM providers, configurable timeout
 
-#### Step 12: Website Generation (`12_website.py`)
-- **Purpose**: Comprehensive HTML summary website generation
-- **Input**: All previous pipeline outputs
-- **Output**: `gnn_pipeline_summary_site.html`
+#### Step 12: Audio Generation (`12_audio.py`)
+- **Purpose**: Generate audio representations of GNN models using multiple backends
+- **Input**: GNN files, audio configuration
+- **Output**: `audio_processing_step/` with audio files and processing reports
+- **Key Features**: SAPF, Pedalboard, and other audio backends, model sonification
+- **Configuration**: Supports duration, backend selection, and audio format options
+
+#### Step 13: Website Generation (`13_website.py`)
+- **Purpose**: Static HTML website generation from pipeline artifacts
+- **Input**: Pipeline outputs (visualizations, ontology, etc.)
+- **Output**: `website/` directory with static HTML site
 - **Key Features**: Interactive dashboard, result aggregation, artifact navigation
 
-#### Step 13: SAPF Processing (`13_sapf.py`)
-- **Purpose**: Spatial Audio Processing Framework (SAPF) audio generation
-- **Input**: GNN files with spatial audio specifications
-- **Output**: Audio files and SAPF analysis results
-- **Key Features**: Audio generation, spatial processing, SAPF integration
+#### Step 14: Report Generation (`14_report.py`)
+- **Purpose**: Comprehensive analysis report generation from all pipeline outputs
+- **Input**: All previous pipeline outputs
+- **Output**: `report_processing_step/` with comprehensive analysis reports
+- **Key Features**: Multi-modal analysis, performance metrics, cross-referenced results
 
 ## Pipeline Configuration
 
@@ -125,16 +132,20 @@ python main.py --estimate-resources --strict
 ## Output Structure
 ```
 output/
-├── gnn_processing_step/          # Step 1: Discovery reports
-├── gnn_type_check/              # Step 4: Validation results  
-├── gnn_exports/                 # Step 5: Multi-format exports
-├── visualization/               # Step 6: Graphical diagrams
-├── mcp_processing_step/         # Step 7: MCP integration
-├── ontology_processing/         # Step 8: Ontology analysis
-├── gnn_rendered_simulators/     # Step 9: Generated code
-├── llm_processing_step/         # Step 11: AI analysis
-├── discopy_gnn/                # Step 12: Category diagrams
+├── setup_artifacts/             # Step 1: Environment setup
+├── gnn_processing_step/         # Step 2: Discovery reports
 ├── test_reports/               # Step 3: Test results
+├── type_check/                 # Step 4: Validation results  
+├── gnn_exports/                # Step 5: Multi-format exports
+├── visualization/              # Step 6: Graphical diagrams
+├── mcp_processing_step/        # Step 7: MCP integration
+├── ontology_processing/        # Step 8: Ontology analysis
+├── gnn_rendered_simulators/    # Step 9: Generated code
+├── execution_results/          # Step 10: Simulation results
+├── llm_processing_step/        # Step 11: AI analysis
+├── audio_processing_step/      # Step 12: Audio generation
+├── website/                    # Step 13: Static website
+├── report_processing_step/     # Step 14: Comprehensive reports
 ├── logs/                       # Pipeline execution logs
 ├── pipeline_execution_summary.json
 └── gnn_pipeline_summary_site.html
@@ -162,7 +173,8 @@ output/
 ## Error Handling
 
 ### Critical Failures
-- **Step 2 failure**: Halts entire pipeline
+- **Step 1 (setup) failure**: Halts entire pipeline
+- **Step 2 (gnn) failure**: Halts entire pipeline
 - **Missing dependencies**: Graceful degradation where possible
 
 ### Non-Critical Failures

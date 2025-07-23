@@ -1460,7 +1460,7 @@ def main_website_generator():
     sys.exit(0)
 
 if __name__ == "__main__":
-    print("src.website.generator called directly. Use 12_website.py for pipeline integration or provide CLI args for direct test.")
+    print("src.website.generator called directly. Use 13_website.py for pipeline integration or provide CLI args for direct test.")
     
     # Basic test execution when called directly
     if Path.cwd().name == "GeneralizedNotationNotation": 

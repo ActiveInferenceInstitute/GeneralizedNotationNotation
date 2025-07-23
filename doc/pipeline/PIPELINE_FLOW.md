@@ -10,35 +10,40 @@
 ```mermaid
 graph TD
     A[1_setup.py] -->|Environment Ready| B[2_gnn.py]
-    B -->|GNN Files Processed| C[4_type_checker.py]
-    C -->|Types Validated| D[5_export.py]
-    D -->|Exports Generated| E[6_visualization.py]
-    E -->|Visualizations Ready| F[7_mcp.py]
-    F -->|MCP Integration| G[8_ontology.py]
-    G -->|Ontology Mapped| H[9_render.py]
-    H -->|Code Generated| I[10_execute.py]
-    I -->|Execution Results| J[11_llm.py]
-    J -->|LLM Analysis| K[12_website.py]
-    K -->|Website Generated| L[13_sapf.py]
-    
-    B -.->|Optional| M[3_tests.py]
+    B -->|GNN Files Processed| C[3_tests.py]
+    B -->|GNN Files Processed| D[4_type_checker.py]
+    D -->|Types Validated| E[5_export.py]
+    E -->|Exports Generated| F[6_visualization.py]
+    E -->|Exports Generated| G[7_mcp.py]
+    E -->|Exports Generated| H[8_ontology.py]
+    E -->|Exports Generated| I[9_render.py]
+    I -->|Code Generated| J[10_execute.py]
+    E -->|Exports Generated| K[11_llm.py]
+    B -->|GNN Files Processed| L[12_audio.py]
+    F -->|Visualizations Ready| M[13_website.py]
+    H -->|Ontology Mapped| M
+    F -->|Visualizations Ready| N[14_report.py]
+    H -->|Ontology Mapped| N
+    L -->|Audio Generated| N
     
     style A fill:#ff9999,stroke:#ff0000
-    style M fill:#e6f3ff,stroke:#0066cc
+    style B fill:#ff9999,stroke:#ff0000
+    style C fill:#e6f3ff,stroke:#0066cc
 ```
 
 ## Step Dependencies
 
 ### Critical Path
 1. **1_setup.py** → **2_gnn.py** → **4_type_checker.py** → **5_export.py**
-   - Setup is critical - pipeline halts on failure
-   - GNN processing and type checking form core validation
+   - Setup and GNN processing are critical - pipeline halts on failure
+   - Type checking and export form core validation
    - Export provides base for visualization and analysis
 
 ### Parallel Execution Groups
 1. **Group 1**: 3_tests.py (can run independently)
-2. **Group 2**: 6_visualization.py, 7_mcp.py, 8_ontology.py
-3. **Group 3**: 11_llm.py, 12_website.py, 13_sapf.py
+2. **Group 2**: 6_visualization.py, 7_mcp.py, 8_ontology.py, 11_llm.py (depend on export)
+3. **Group 3**: 12_audio.py (depends on GNN files)
+4. **Group 4**: 13_website.py, 14_report.py (final integration steps)
 
 ## Step Details
 
@@ -61,13 +66,13 @@ graph TD
 - **Recovery**: Continue with warnings
 
 ### 4. Type Checking (4_type_checker.py)
-- **Critical**: Yes
+- **Critical**: No
 - **Dependencies**: 2_gnn.py
 - **Timeout**: 5 minutes
 - **Recovery**: Fallback to basic validation
 
 ### 5. Export (5_export.py)
-- **Critical**: Yes
+- **Critical**: No
 - **Dependencies**: 4_type_checker.py
 - **Timeout**: 5 minutes
 - **Recovery**: Retry individual formats
@@ -91,34 +96,40 @@ graph TD
 - **Recovery**: Use basic mappings
 
 ### 9. Render (9_render.py)
-- **Critical**: Yes
-- **Dependencies**: 8_ontology.py
+- **Critical**: No
+- **Dependencies**: 5_export.py
 - **Timeout**: 10 minutes
 - **Recovery**: Adjust recursion limits
 
 ### 10. Execute (10_execute.py)
-- **Critical**: Yes
+- **Critical**: No
 - **Dependencies**: 9_render.py
 - **Timeout**: 15 minutes
 - **Recovery**: Fallback to CPU execution
 
 ### 11. LLM (11_llm.py)
 - **Critical**: No
-- **Dependencies**: 10_execute.py
+- **Dependencies**: 5_export.py
 - **Timeout**: 10 minutes
 - **Recovery**: Retry with backoff
 
-### 12. Website (12_website.py)
+### 12. Audio (12_audio.py)
 - **Critical**: No
-- **Dependencies**: 11_llm.py
+- **Dependencies**: 2_gnn.py
+- **Timeout**: 10 minutes
+- **Recovery**: Skip complex audio
+
+### 13. Website (13_website.py)
+- **Critical**: No
+- **Dependencies**: 6_visualization.py, 8_ontology.py
 - **Timeout**: 5 minutes
 - **Recovery**: Generate minimal site
 
-### 13. SAPF (13_sapf.py)
+### 14. Report (14_report.py)
 - **Critical**: No
-- **Dependencies**: 10_execute.py
-- **Timeout**: 10 minutes
-- **Recovery**: Skip complex audio
+- **Dependencies**: 6_visualization.py, 8_ontology.py, 12_audio.py
+- **Timeout**: 5 minutes
+- **Recovery**: Generate basic report
 
 ## Resource Requirements
 

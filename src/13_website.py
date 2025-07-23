@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GNN Processing Pipeline - Step 12: Website Generation
+GNN Processing Pipeline - Step 13: Website Generation
 
 This script generates a static website from pipeline outputs:
 - Creates an HTML documentation website
@@ -8,7 +8,7 @@ This script generates a static website from pipeline outputs:
 - Provides navigation and search functionality
 
 Usage:
-    python 12_website.py [options]
+    python 13_website.py [options]
 """
 
 import sys
@@ -49,7 +49,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from website.generator import generate_website
 
 # Initialize logger for this step
-logger = setup_step_logging("12_website", verbose=False)
+logger = setup_step_logging("13_website", verbose=False)
 
 def process_website_generation(
     target_dir: Path,
@@ -257,7 +257,7 @@ def _copy_website_assets(source_dir: Path, website_dir: Path, logger: logging.Lo
         logger.debug("No website assets needed copying")
 
 run_script = create_standardized_pipeline_script(
-    "12_website.py",
+    "13_website.py",
     process_website_generation,
     "Static HTML website generation",
     additional_arguments={

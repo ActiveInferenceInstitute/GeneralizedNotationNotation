@@ -1,7 +1,7 @@
 # .cursorrules - High-Level Rules for AI Code Assistant (Cursor) - GNN Project
 
 ## Project Overview and Context
-GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive 13-step pipeline that transforms GNN specifications into executable simulations, visualizations, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), and LLM-enhanced analysis.
+GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive 14-step pipeline that transforms GNN specifications into executable simulations, visualizations, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), and LLM-enhanced analysis.
 
 ## Overall AI Behavior & Persona
 - Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications and pipeline architecture
@@ -26,8 +26,8 @@ This project implements a comprehensive scientific computing pipeline with real,
 - **Module Structure**: Follow `src/[module_name]/` pattern with `__init__.py`, core functionality, and `mcp.py` where applicable
 - **Path Handling**: Always convert string arguments to `pathlib.Path` objects and use centralized output directory management
 
-## 13-Step Pipeline Structure (CURRENT)
-The pipeline consists of exactly 13 steps (steps 1-13), executed in order:
+## 14-Step Pipeline Structure (CURRENT)
+The pipeline consists of exactly 14 steps (steps 1-14), executed in order:
 1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation
 2. **2_gnn.py** → `src/gnn/` - GNN file discovery, multi-format parsing, and validation
 3. **3_tests.py** → `src/tests/` - Comprehensive test suite execution
@@ -39,8 +39,9 @@ The pipeline consists of exactly 13 steps (steps 1-13), executed in order:
 9. **9_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl simulation environments
 10. **10_execute.py** → `src/execute/` - Execute rendered simulation scripts with result capture
 11. **11_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
-12. **12_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts
-13. **13_sapf.py** → `src/sapf/` - SAPF (Sound As Pure Form) audio generation and sonification
+12. **12_audio.py** → `src/audio/` - Audio generation (SAPF, Pedalboard, and other backends)
+13. **13_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts
+14. **14_report.py** → `src/report/` - Comprehensive analysis report generation
 
 ## Detailed Guidelines
 For more targeted guidelines, refer to the files in the .cursor_rules/ directory:

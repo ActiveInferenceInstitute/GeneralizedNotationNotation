@@ -70,8 +70,11 @@ EXPECTED_OUTPUTS = {
     "12_website": [
         "website/"
     ],
-    "13_sapf": [
-        "sapf_processing_step/"
+    "13_website": [
+        "website/"
+    ],
+    "14_report": [
+        "report_processing_step/"
     ]
 }
 
@@ -135,7 +138,7 @@ def validate_output_structure(output_dir: Path) -> Dict[str, List[str]]:
 def get_pipeline_modules(src_dir: Path) -> List[Path]:
     """Get all numbered pipeline modules."""
     modules = []
-    for i in range(1, 14):  # Steps 1-13
+    for i in range(1, 15):  # Steps 1-14
         module_path = src_dir / f"{i}_*.py"
         matching = list(src_dir.glob(f"{i}_*.py"))
         if matching:
@@ -207,7 +210,7 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
                 issues["suggestions"].append("Consider using EnhancedArgumentParser.parse_step_arguments for consistency")
         
         # Check for performance tracking usage
-        if module_path.name in ['5_export.py', '6_visualization.py', '9_render.py', '10_execute.py', '11_llm.py', '13_sapf.py']:
+        if module_path.name in ['5_export.py', '6_visualization.py', '9_render.py', '10_execute.py', '11_llm.py', '12_audio.py', '13_website.py', '14_report.py']:
             if "performance_tracker" not in content:
                 issues["suggestions"].append("Consider adding performance tracking for this compute-intensive step")
                 
@@ -461,8 +464,9 @@ def validate_output_naming_conventions() -> Dict[str, List[str]]:
             "9_render.py": "gnn_rendered_simulators",
             "10_execute.py": "execution_results",
             "11_llm.py": "llm_processing_step",
-            "12_website.py": "website",
-            "13_sapf.py": "sapf_processing_step"
+            "12_audio.py": "audio_processing_step",
+"13_website.py": "website",
+"14_report.py": "report_processing_step"
         }
         
         violations = []
@@ -493,7 +497,7 @@ def validate_performance_tracking_coverage() -> Dict[str, List[str]]:
         should_have_tracking = [
             "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py", 
             "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-            "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
+            "10_execute.py", "11_llm.py", "12_audio.py", "13_website.py", "14_report.py"
         ]
         
         missing_tracking = []

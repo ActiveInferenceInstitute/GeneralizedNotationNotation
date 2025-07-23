@@ -45,13 +45,14 @@ class DocumentationValidator:
         self.verbose = verbose
         self.results = ValidationResult([], [], [])
         
-        # Define actual pipeline steps (13 steps, not 14)
-        self.actual_pipeline_steps = list(range(1, 14))  # 1-13
-        self.pipeline_script_names = {
+        # Define actual pipeline steps (14 steps)
+        self.actual_pipeline_steps = list(range(1, 15))  # 1-14
+        # Step number to script name mapping
+        self.step_mapping = {
             1: "1_setup.py",
-            2: "2_gnn.py", 
+            2: "2_gnn.py",
             3: "3_tests.py",
-            4: "4_gnn_type_checker.py",
+            4: "4_type_checker.py",
             5: "5_export.py",
             6: "6_visualization.py",
             7: "7_mcp.py",
@@ -59,8 +60,9 @@ class DocumentationValidator:
             9: "9_render.py",
             10: "10_execute.py",
             11: "11_llm.py",
-            12: "12_website.py",
-            13: "13_sapf.py"
+            12: "12_audio.py",
+            13: "13_website.py",
+            14: "14_report.py"
         }
         
         # Patterns to search for broken links
@@ -223,7 +225,7 @@ class DocumentationValidator:
         """Validate that referenced files exist"""
         # Check that all pipeline script files exist
         src_dir = self.project_root / "src"
-        for step_num, script_name in self.pipeline_script_names.items():
+        for step_num, script_name in self.step_mapping.items():
             script_path = src_dir / script_name
             if not script_path.exists():
                 self.results.errors.append(
@@ -262,8 +264,8 @@ class DocumentationValidator:
             r'\b1[-\s]*14\s+steps?\b': '1-13 steps',
             
             # Incorrect script references
-            r'\b12_discopy\.py\b': '12_website.py',
-            r'\b13_discopy_jax_eval\.py\b': '13_sapf.py',
+            r'\b12_discopy\.py\b': '12_audio.py',
+            r'\b13_discopy_jax_eval\.py\b': '13_website.py',
             r'\b14_site\.py\b': '12_website.py',
             
             # Maximum value fixes

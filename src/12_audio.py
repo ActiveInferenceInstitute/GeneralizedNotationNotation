@@ -7,7 +7,7 @@ of Active Inference generative models. Outputs include audio files and
 sonification reports using multiple backends (SAPF, Pedalboard, etc).
 
 Usage:
-    python 13_audio.py [options]
+    python 12_audio.py [options]
     (Typically called by main.py)
 """
 
@@ -41,7 +41,7 @@ from audio.generator import generate_audio
 from utils.pipeline_template import create_standardized_pipeline_script
 
 # Initialize logger for this step
-logger = setup_step_logging("13_audio", verbose=False)
+logger = setup_step_logging("12_audio", verbose=False)
 
 # Import step-specific modules
 try:
@@ -84,10 +84,10 @@ def process_audio_generation(
         
         # Get configuration
         config = get_pipeline_config()
-        step_config = config.get_step_config("13_audio.py")
+        step_config = config.get_step_config("12_audio.py")
         
         # Set up paths
-        step_output_dir = get_output_dir_for_script("13_audio.py", output_dir)
+        step_output_dir = get_output_dir_for_script("12_audio.py", output_dir)
         step_output_dir.mkdir(parents=True, exist_ok=True)
         
         # Get processing options
@@ -181,11 +181,7 @@ def process_audio_generation(
             return False
         
     except Exception as e:
-<<<<<<< Updated upstream:src/13_sapf.py
-        log_step_error(logger, f"SAPF failed: {e}")
-=======
         log_step_error(logger, f"Audio processing failed: {e}")
->>>>>>> Stashed changes:src/12_audio.py
         return False
 
 def process_single_file(
@@ -194,11 +190,7 @@ def process_single_file(
     options: dict
 ) -> bool:
     """
-<<<<<<< Updated upstream:src/13_sapf.py
-    Process a single GNN file with SAPF audio generation.
-=======
     Process a single GNN file and generate audio representation.
->>>>>>> Stashed changes:src/12_audio.py
     
     Args:
         input_file: Path to input GNN file
@@ -210,13 +202,11 @@ def process_single_file(
     """
     try:
         # Process the file (implementation would go here)
-        logger.info(f"Processing {input_file} for SAPF audio generation")
+        logger.info(f"Processing {input_file} for audio generation")
         
         # Generate audio based on GNN model structure
-        # This would contain the actual SAPF generation logic
+        # This would contain the actual audio generation logic
         
-<<<<<<< Updated upstream:src/13_sapf.py
-=======
         # Create file-specific output directory
         file_output_dir = output_dir / model_name
         file_output_dir.mkdir(parents=True, exist_ok=True)
@@ -252,15 +242,14 @@ def process_single_file(
             json.dump(report, f, indent=2)
         
         logger.info(f"Successfully processed {model_name}: Audio generated")
->>>>>>> Stashed changes:src/12_audio.py
         return True
         
     except Exception as e:
-        log_step_error(logger, f"SAPF failed to process {input_file}: {e}")
+        log_step_error(logger, f"Audio processing failed for {input_file}: {e}")
         return False
 
 run_script = create_standardized_pipeline_script(
-    "13_audio.py",
+    "12_audio.py",
     process_audio_generation,
     "Audio generation for GNN models",
     additional_arguments={

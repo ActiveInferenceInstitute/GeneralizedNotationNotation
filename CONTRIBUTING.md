@@ -66,7 +66,7 @@ GNN has comprehensive documentation to help you understand the project:
 ### 🧪 Testing Requirements
 
 - **Comprehensive Testing**: If you add new features, please include corresponding tests in the `src/tests/` directory. 
-- **13-Step Pipeline Testing**: Ensure all tests pass before submitting your changes:
+- **14-Step Pipeline Testing**: Ensure all tests pass before submitting your changes:
     ```bash
     python src/main.py --only-steps 3
     ```
@@ -136,7 +136,7 @@ See the **[Testing Guide](doc/testing/README.md)** for comprehensive testing str
 - **DisCoPy**: Reference **[DisCoPy documentation](doc/discopy/)** for categorical diagram contributions
 
 ### **Pipeline Development**
-- **13-Step Pipeline**: Understand the **[Pipeline Architecture](doc/pipeline/PIPELINE_ARCHITECTURE.md)**
+- **14-Step Pipeline**: Understand the **[Pipeline Architecture](doc/pipeline/PIPELINE_ARCHITECTURE.md)**
 - **New Pipeline Steps**: Follow the **[Development Guide](doc/development/README.md)** for adding new numbered scripts
 - **Configuration**: Use the **[Configuration Guide](doc/configuration/README.md)** for proper parameter handling
 

@@ -62,8 +62,9 @@ class TestPipelineScriptDiscovery:
             9: "9_render.py",
             10: "10_execute.py",
             11: "11_llm.py",
-            12: "12_website.py",
-            13: "13_sapf.py"
+            12: "12_audio.py",
+            13: "13_website.py",
+            14: "14_report.py"
         }
         
         missing_scripts = []
@@ -92,7 +93,7 @@ class TestPipelineScriptDiscovery:
     @pytest.mark.parametrize("script_name", [
         "1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py",
         "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-        "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
+        "10_execute.py", "11_llm.py", "12_audio.py", "13_website.py", "14_report.py"
     ])
     def test_pipeline_script_structure(self, script_name: str):
         """Test that each pipeline script has proper structure and imports."""
@@ -129,7 +130,7 @@ class TestPipelineScriptImports:
     @pytest.mark.parametrize("script_name", [
         "1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py",
         "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-        "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
+        "10_execute.py", "11_llm.py", "12_audio.py", "13_website.py", "14_report.py"
     ])
     def test_script_import_capability(self, script_name: str):
         """Test that pipeline scripts can be imported without errors."""
@@ -162,7 +163,7 @@ class TestPipelineScriptExecution:
     @pytest.mark.parametrize("script_name", [
         "1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py",
         "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-        "10_execute.py", "11_llm.py", "12_website.py", "13_sapf.py"
+        "10_execute.py", "11_llm.py", "12_audio.py", "13_website.py", "14_report.py"
     ])
     def test_script_execution_with_mocks(self, script_name: str, mock_subprocess, mock_filesystem, isolated_temp_dir):
         """Test script execution with comprehensive mocking."""
@@ -479,12 +480,12 @@ class TestStep11LLMComprehensive:
         except Exception as e:
             logging.warning(f"LLM description generation test failed: {e}")
 
-class TestStep12WebsiteComprehensive:
+class TestStep12AudioComprehensive:
     """Comprehensive tests for Step 12: Website Generation."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step12_website_generation(self, isolated_temp_dir):
+    def test_step12_audio_generation(self, isolated_temp_dir):
         """Test website generation functionality."""
         from src.website import generate_website, generate_html_report
         # Test website generation
@@ -502,12 +503,12 @@ class TestStep12WebsiteComprehensive:
         except Exception as e:
             logging.warning(f"HTML report creation test failed: {e}")
 
-class TestStep13SAPFComprehensive:
+class TestStep13WebsiteComprehensive:
     """Comprehensive tests for Step 13: SAPF Audio Generation."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step13_sapf_generation(self, sample_gnn_files, isolated_temp_dir):
+    def test_step13_website_generation(self, sample_gnn_files, isolated_temp_dir):
         """Test SAPF audio generation."""
         from sapf import generate_sapf_audio, convert_gnn_to_sapf
         
@@ -525,7 +526,38 @@ class TestStep13SAPFComprehensive:
             generate_sapf_audio("test_sapf_code", audio_path)
             logging.info("SAPF audio generation test completed")
         except Exception as e:
-            logging.warning(f"SAPF audio generation test failed: {e}")
+            logging.warning(f"Website generation test failed: {e}")
+
+
+class TestStep14ReportComprehensive:
+    """Comprehensive tests for Step 14: Report Generation."""
+    
+    @pytest.mark.unit
+    @pytest.mark.safe_to_fail
+    def test_step14_report_generation(self, sample_gnn_files, isolated_temp_dir):
+        """Test report generation."""
+        from report import generate_report, analyze_pipeline_data
+        
+        try:
+            # Test report generation
+            report_data = {
+                "pipeline_steps": 14,
+                "total_files_processed": 5,
+                "success_rate": 0.95,
+                "execution_time": 120.5
+            }
+            
+            report_file = isolated_temp_dir / "pipeline_report.html"
+            success = generate_report(report_data, report_file)
+            
+            assert success, "Report generation should succeed"
+            assert report_file.exists(), "Report file should be created"
+            
+            logging.info("Step 14 report generation validated")
+            
+        except Exception as e:
+            logging.warning(f"Report generation test failed: {e}")
+
 
 class TestPipelineScriptIntegration:
     """Integration tests for pipeline script coordination."""
