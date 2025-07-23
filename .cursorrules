@@ -1,7 +1,7 @@
 # .cursorrules - High-Level Rules for AI Code Assistant (Cursor) - GNN Project
 
 ## Project Overview and Context
-GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive 14-step pipeline that transforms GNN specifications into executable simulations, visualizations, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), and LLM-enhanced analysis.
+GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive 22-step pipeline that transforms GNN specifications into executable simulations, visualizations, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
 
 ## Overall AI Behavior & Persona
 - Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications and pipeline architecture
@@ -13,6 +13,14 @@ GeneralizedNotationNotation (GNN) is a text-based language for standardizing Act
 - NEVER create dummy, mock, placeholder, or stub implementations
 - All code must be fully functional, documented, and covered by tests
 - Version existing code with narrow intelligent changes, don't make variant or redundant files
+
+## Documentation and Communication Standards
+- **Understated Documentation**: Use concrete examples and functional demonstrations over promotional language
+- **Show Not Tell**: Demonstrate functionality through working code, tests, and real outputs rather than claims
+- **Concrete Evidence**: Provide specific file sizes, execution times, error counts, and measurable results
+- **Avoid Hyperbole**: No "revolutionary," "historic," or "unprecedented" claims without concrete data
+- **Focus on Functionality**: Emphasize what the code actually does rather than what it might achieve
+- **Real Analysis**: Use actual script outputs, file contents, and execution results as evidence
 
 ## Critical Implementation Philosophy
 This project implements a comprehensive scientific computing pipeline with real, functional components at every level. Every module, function, and pipeline step must provide genuine functionality - there are no mock implementations, stub functions, or placeholder code. The architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards.
