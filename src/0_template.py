@@ -30,7 +30,7 @@ def main():
     try:
         # Get pipeline configuration
         config = get_pipeline_config()
-        output_dir = get_output_dir_for_script("0_template.py", config.base_output_dir)
+        output_dir = get_output_dir_for_script("0_template.py", Path(args.output_dir))
         output_dir.mkdir(parents=True, exist_ok=True)
         
         log_step_start(logger, "Pipeline template initialization")

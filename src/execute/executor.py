@@ -76,8 +76,8 @@ class GNNExecutor:
         if output_dir:
             self.output_dir = Path(output_dir)
         else:
-            # Default to a subdirectory within the current working directory
-            self.output_dir = Path.cwd() / "output" / "execution_results"
+            # Default to a subdirectory within the project root
+            self.output_dir = Path(__file__).parent.parent.parent / "output" / "execution_results"
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.execution_log = []
     

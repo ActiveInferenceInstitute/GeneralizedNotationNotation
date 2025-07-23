@@ -394,7 +394,7 @@ def execute_pipeline_step(script_name: str, step_number: int, total_steps: int,
                 capture_output=True,
                 text=True,
                 timeout=step_timeout,
-                cwd=Path(__file__).parent.parent  # Run from src directory
+                cwd=Path(__file__).parent.parent.parent  # Run from project root directory
             )
             
             # Calculate execution metrics

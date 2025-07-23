@@ -275,13 +275,13 @@ def main():
     try:
         # Get pipeline configuration
         config = get_pipeline_config()
-        output_dir = get_output_dir_for_script("11_render.py", config.base_output_dir)
+        output_dir = get_output_dir_for_script("11_render.py", Path(args.output_dir))
         output_dir.mkdir(parents=True, exist_ok=True)
         
         log_step_start(logger, "Processing render")
         
         # Load parsed GNN data from previous step
-        gnn_output_dir = get_output_dir_for_script("3_gnn.py", config.base_output_dir)
+        gnn_output_dir = get_output_dir_for_script("3_gnn.py", Path(args.output_dir))
         gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
         
         if not gnn_results_file.exists():
