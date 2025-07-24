@@ -427,10 +427,19 @@ def analyze_audio_characteristics(audio_result: Dict[str, Any], verbose: bool = 
             dominant_freq_idx = np.argmax(magnitude[:len(magnitude)//2])
             dominant_freq = freqs[dominant_freq_idx]
             
+            # Calculate spectral metrics with safe division
+            magnitude_sum = np.sum(magnitude[:len(magnitude)//2])
+            if magnitude_sum > 0:
+                spectral_centroid = np.sum(freqs[:len(freqs)//2] * magnitude[:len(magnitude)//2]) / magnitude_sum
+                spectral_bandwidth = np.sqrt(np.sum((freqs[:len(freqs)//2] - dominant_freq)**2 * magnitude[:len(magnitude)//2]) / magnitude_sum)
+            else:
+                spectral_centroid = 0.0
+                spectral_bandwidth = 0.0
+            
             analysis["spectral_analysis"][audio_type] = {
                 "dominant_frequency": dominant_freq,
-                "spectral_centroid": np.sum(freqs[:len(freqs)//2] * magnitude[:len(magnitude)//2]) / np.sum(magnitude[:len(magnitude)//2]),
-                "spectral_bandwidth": np.sqrt(np.sum((freqs[:len(freqs)//2] - dominant_freq)**2 * magnitude[:len(magnitude)//2]) / np.sum(magnitude[:len(magnitude)//2]))
+                "spectral_centroid": spectral_centroid,
+                "spectral_bandwidth": spectral_bandwidth
             }
             
         except Exception as e:

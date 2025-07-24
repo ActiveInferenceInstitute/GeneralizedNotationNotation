@@ -8,6 +8,7 @@ This script orchestrates the complete 22-step GNN processing pipeline.
 import sys
 import json
 import time
+import logging
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, List, Optional
@@ -24,6 +25,20 @@ from utils.pipeline_template import (
 )
 from utils.argument_utils import EnhancedArgumentParser, PipelineArguments
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
+
+# Import enhanced logging and progress tracking
+try:
+    from utils.logging_utils import (
+        PipelineProgressTracker,
+        VisualLoggingEnhancer,
+        EnhancedPipelineLogger,
+        log_pipeline_summary,
+        reset_progress_tracker,
+        setup_enhanced_step_logging
+    )
+    ENHANCED_LOGGING_AVAILABLE = True
+except ImportError:
+    ENHANCED_LOGGING_AVAILABLE = False
 
 def main():
     """Main pipeline orchestration function."""
@@ -68,8 +83,13 @@ def main():
     args.target_dir = temp_args.target_dir
     args.output_dir = temp_args.output_dir
     
-    # Setup logging
-    logger = setup_step_logging("pipeline", args)
+    # Setup enhanced logging if available
+    if ENHANCED_LOGGING_AVAILABLE:
+        logger = setup_enhanced_step_logging("pipeline", args.verbose, enable_structured=True)
+        # Reset progress tracker for new pipeline run
+        reset_progress_tracker()
+    else:
+        logger = setup_step_logging("pipeline", args)
     
     # Initialize pipeline execution summary
     pipeline_summary = {
@@ -91,7 +111,18 @@ def main():
     }
     
     try:
-        log_step_start(logger, "Starting GNN Processing Pipeline")
+        # Enhanced pipeline start logging
+        if ENHANCED_LOGGING_AVAILABLE:
+            EnhancedPipelineLogger.log_structured(
+                logger, logging.INFO,
+                "🚀 Starting GNN Processing Pipeline",
+                total_steps=22,
+                target_dir=str(args.target_dir),
+                output_dir=str(args.output_dir),
+                event_type="pipeline_start"
+            )
+        else:
+            log_step_start(logger, "Starting GNN Processing Pipeline")
         
         # Define pipeline steps
         pipeline_steps = [
@@ -131,12 +162,28 @@ def main():
             steps_to_execute = [step for i, step in enumerate(pipeline_steps) if i not in skip_numbers]
             logger.info(f"Skipping steps: {[pipeline_steps[i][0] for i in skip_numbers if 0 <= i < len(pipeline_steps)]}")
         
+        # Initialize progress tracker if enhanced logging is available
+        progress_tracker = None
+        if ENHANCED_LOGGING_AVAILABLE:
+            progress_tracker = PipelineProgressTracker(len(steps_to_execute))
+        
         # Execute each step
         for step_number, (script_name, description) in enumerate(steps_to_execute, 1):
             step_start_time = time.time()
             step_start_datetime = datetime.now()
             
-            logger.info(f"Executing step {step_number}: {description}")
+            # Enhanced step start logging with progress tracking
+            if ENHANCED_LOGGING_AVAILABLE and progress_tracker:
+                progress_header = progress_tracker.start_step(step_number, description)
+                logger.info(progress_header)
+                # Use enhanced logging functions that support additional parameters
+                from utils.logging_utils import log_step_start as enhanced_log_step_start
+                enhanced_log_step_start(logger, f"Starting {description}", 
+                                      step_number=step_number, 
+                                      total_steps=len(steps_to_execute),
+                                      script_name=script_name)
+            else:
+                logger.info(f"Executing step {step_number}: {description}")
             
             # Execute the step
             step_result = execute_pipeline_step(script_name, args, logger)
@@ -178,6 +225,27 @@ def main():
             
             # Update total steps count
             pipeline_summary["performance_summary"]["total_steps"] = len(steps_to_execute)
+            
+            # Enhanced step completion logging with progress tracking
+            if ENHANCED_LOGGING_AVAILABLE and progress_tracker:
+                status = step_result["status"]
+                if "WARNING" in step_result.get("stdout", ""):
+                    status = "SUCCESS_WITH_WARNINGS"
+                
+                completion_summary = progress_tracker.complete_step(step_number, status, step_duration)
+                logger.info(completion_summary)
+                
+                # Use enhanced logging functions that support additional parameters
+                from utils.logging_utils import log_step_success as enhanced_log_step_success
+                enhanced_log_step_success(logger, f"{description} completed", 
+                                        step_number=step_number,
+                                        duration=step_duration,
+                                        status=status)
+            else:
+                if step_result["status"] == "SUCCESS":
+                    logger.info(f"✅ Step {step_number} completed successfully in {step_duration:.2f}s")
+                else:
+                    logger.error(f"❌ Step {step_number} failed with status: {step_result['status']}")
         
         # Complete pipeline summary
         pipeline_summary["end_time"] = datetime.now().isoformat()
@@ -201,11 +269,21 @@ def main():
             json.dump(pipeline_summary, f, indent=4)
         logger.info(f"Pipeline summary saved successfully")
         
-        # Log final status
-        if pipeline_summary["overall_status"] == "SUCCESS":
-            log_step_success(logger, f"Pipeline completed successfully in {pipeline_summary['total_duration_seconds']:.2f}s")
+        # Enhanced final status logging
+        if ENHANCED_LOGGING_AVAILABLE:
+            # Log overall progress summary
+            if progress_tracker:
+                overall_progress = progress_tracker.get_overall_progress()
+                logger.info(overall_progress)
+            
+            # Log detailed pipeline summary
+            log_pipeline_summary(logger, pipeline_summary)
         else:
-            log_step_error(logger, f"Pipeline completed with status: {pipeline_summary['overall_status']}")
+            # Log final status
+            if pipeline_summary["overall_status"] == "SUCCESS":
+                log_step_success(logger, f"Pipeline completed successfully in {pipeline_summary['total_duration_seconds']:.2f}s")
+            else:
+                log_step_error(logger, f"Pipeline completed with status: {pipeline_summary['overall_status']}")
         
         return 0 if pipeline_summary["overall_status"] == "SUCCESS" else 1
         
@@ -223,7 +301,7 @@ def main():
         with open(summary_path, 'w') as f:
             json.dump(pipeline_summary, f, indent=4)
         
-        log_step_error(logger, "Pipeline failed", {"error": str(e)})
+        log_step_error(logger, f"Pipeline failed: {str(e)}")
         return 1
 
 def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> Dict[str, Any]:
@@ -244,12 +322,19 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         # Get script path
         script_path = Path(__file__).parent / script_name
         
+        # Get virtual environment Python path
+        project_root = Path(__file__).parent.parent
+        venv_python = project_root / ".venv" / "bin" / "python"
+        
+        # Use virtual environment Python if available, otherwise fall back to system Python
+        python_executable = str(venv_python) if venv_python.exists() else sys.executable
+        
         # Prepare command using the enhanced argument builder
         from utils.argument_utils import build_enhanced_step_command_args
         cmd = build_enhanced_step_command_args(
             script_name.replace('.py', ''),
             args,
-            sys.executable,
+            python_executable,
             script_path
         )
         

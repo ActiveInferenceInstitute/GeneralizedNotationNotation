@@ -52,7 +52,7 @@ def main():
             return 1
             
     except Exception as e:
-        log_step_error(logger, "Analysis processing failed", {"error": str(e)})
+        log_step_error(logger, f"Analysis processing failed: {str(e)}")
         return 1
 
 if __name__ == "__main__":

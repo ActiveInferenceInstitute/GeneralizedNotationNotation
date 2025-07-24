@@ -99,7 +99,18 @@ def process_analysis(
         # Save detailed results
         results_file = results_dir / "analysis_results.json"
         with open(results_file, 'w') as f:
-            json.dump(results, f, indent=2)
+            # Convert numpy types to native Python types for JSON serialization
+            def convert_numpy_types(obj):
+                if hasattr(obj, 'item'):  # numpy scalar
+                    return obj.item()
+                elif isinstance(obj, dict):
+                    return {k: convert_numpy_types(v) for k, v in obj.items()}
+                elif isinstance(obj, list):
+                    return [convert_numpy_types(item) for item in obj]
+                return obj
+            
+            serializable_results = convert_numpy_types(results)
+            json.dump(serializable_results, f, indent=2)
         
         # Generate summary report
         summary = generate_analysis_summary(results)
@@ -115,7 +126,7 @@ def process_analysis(
         return results["success"]
         
     except Exception as e:
-        log_step_error(logger, "Analysis processing failed", {"error": str(e)})
+        log_step_error(logger, f"Analysis processing failed: {str(e)}")
         return False
 
 def perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict[str, Any]:
