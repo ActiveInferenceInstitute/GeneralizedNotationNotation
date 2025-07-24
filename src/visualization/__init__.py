@@ -12,28 +12,34 @@ import re
 import json
 import numpy as np
 
-# Try to import visualization libraries
-try:
-    import matplotlib.pyplot as plt
-    import matplotlib.patches as patches
-    from matplotlib import cm
-    import seaborn as sns
-    MATPLOTLIB_AVAILABLE = True
-except ImportError:
-    MATPLOTLIB_AVAILABLE = False
+# Import visualization libraries (assumed to be installed via requirements.txt)
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib import cm
+import seaborn as sns
+import networkx as nx
 
-try:
-    import networkx as nx
-    NETWORKX_AVAILABLE = True
-except ImportError:
-    NETWORKX_AVAILABLE = False
+# Import main classes
+from .matrix_visualizer import MatrixVisualizer
+from .visualizer import GNNVisualizer
+from .ontology_visualizer import OntologyVisualizer
 
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error,
-    log_step_warning
-)
+# Try to import utils, but provide fallbacks if not available
+try:
+    from utils.pipeline_template import (
+        log_step_start,
+        log_step_success,
+        log_step_error,
+        log_step_warning
+    )
+    UTILS_AVAILABLE = True
+except ImportError:
+    # Fallback logging functions
+    def log_step_start(logger, msg): logger.info(f"🚀 {msg}")
+    def log_step_success(logger, msg): logger.info(f"✅ {msg}")
+    def log_step_error(logger, msg): logger.error(f"❌ {msg}")
+    def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
+    UTILS_AVAILABLE = False
 
 def process_visualization(
     target_dir: Path,
@@ -256,7 +262,7 @@ def parse_matrix_data(matrix_str: str) -> np.ndarray:
 
 def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
     """
-    Generate matrix visualizations.
+    Generate matrix visualizations using the MatrixVisualizer class.
     
     Args:
         parsed_data: Parsed GNN data
@@ -266,162 +272,65 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
     Returns:
         List of generated filenames
     """
+    from .matrix_visualizer import MatrixVisualizer
+    
+    visualizer = MatrixVisualizer()
     generated_files = []
     
     try:
-        # Set up matplotlib style
-        plt.style.use('default')
-        sns.set_palette("husl")
+        # Create model-specific output directory
+        model_output_dir = output_dir / model_name
+        model_output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Create individual matrix plots
-        for matrix_name, matrix_info in parsed_data["matrices"].items():
-            if matrix_info["data"] is not None:
-                data = matrix_info["data"]
-                
-                if data.ndim == 2:
-                    # 2D matrix - single heatmap
-                    fig, ax = plt.subplots(figsize=(8, 6))
-                    
-                    sns.heatmap(data, 
-                               annot=True, 
-                               fmt='.3f', 
-                               cmap='viridis',
-                               ax=ax,
-                               cbar_kws={'label': 'Value'})
-                    
-                    ax.set_title(f'{matrix_name} Matrix - {matrix_info["description"]}')
-                    ax.set_xlabel('Columns')
-                    ax.set_ylabel('Rows')
-                    
-                    filename = f"{model_name}_{matrix_name}_matrix.png"
-                    filepath = output_dir / filename
-                    plt.savefig(filepath, dpi=300, bbox_inches='tight')
-                    plt.close()
-                    
-                    generated_files.append(filename)
-                    
-                elif data.ndim == 3:
-                    # 3D matrix - multiple heatmaps (one per slice)
-                    n_slices = data.shape[2]
-                    cols = min(3, n_slices)
-                    rows = (n_slices + cols - 1) // cols
-                    
-                    fig, axes = plt.subplots(rows, cols, figsize=(5*cols, 4*rows))
-                    if rows == 1:
-                        axes = [axes] if cols == 1 else axes
-                    else:
-                        axes = axes.flatten()
-                    
-                    for i in range(n_slices):
-                        if i < len(axes):
-                            sns.heatmap(data[:, :, i], 
-                                       annot=True, 
-                                       fmt='.3f', 
-                                       cmap='viridis',
-                                       ax=axes[i],
-                                       cbar=False)
-                            axes[i].set_title(f'{matrix_name} (Slice {i+1})')
-                            axes[i].set_xlabel('')
-                            axes[i].set_ylabel('')
-                    
-                    # Hide unused subplots
-                    for i in range(n_slices, len(axes)):
-                        axes[i].set_visible(False)
-                    
-                    plt.suptitle(f'{matrix_name} Matrix - {matrix_info["description"]}', fontsize=14)
-                    plt.tight_layout()
-                    
-                    filename = f"{model_name}_{matrix_name}_matrix.png"
-                    filepath = output_dir / filename
-                    plt.savefig(filepath, dpi=300, bbox_inches='tight')
-                    plt.close()
-                    
-                    generated_files.append(filename)
-                    
-                elif data.ndim == 1:
-                    # 1D vector - bar plot
-                    fig, ax = plt.subplots(figsize=(8, 6))
-                    
-                    bars = ax.bar(range(len(data)), data, color='skyblue', alpha=0.7)
-                    ax.set_title(f'{matrix_name} Vector - {matrix_info["description"]}')
-                    ax.set_xlabel('Index')
-                    ax.set_ylabel('Value')
-                    ax.grid(True, alpha=0.3)
-                    
-                    # Add value labels on bars
-                    for i, bar in enumerate(bars):
-                        height = bar.get_height()
-                        ax.text(bar.get_x() + bar.get_width()/2., height,
-                               f'{height:.3f}', ha='center', va='bottom')
-                    
-                    filename = f"{model_name}_{matrix_name}_vector.png"
-                    filepath = output_dir / filename
-                    plt.savefig(filepath, dpi=300, bbox_inches='tight')
-                    plt.close()
-                    
-                    generated_files.append(filename)
+        # Extract parameters from parsed data
+        parameters = parsed_data.get('parameters', [])
         
-        # Create combined matrix overview
-        if len(parsed_data["matrices"]) > 1:
-            n_matrices = len(parsed_data["matrices"])
-            cols = min(3, n_matrices)
-            rows = (n_matrices + cols - 1) // cols
-            
-            fig, axes = plt.subplots(rows, cols, figsize=(5*cols, 4*rows))
-            if rows == 1:
-                axes = [axes] if cols == 1 else axes
-            else:
-                axes = axes.flatten()
-            
-            for i, (matrix_name, matrix_info) in enumerate(parsed_data["matrices"].items()):
-                if i < len(axes) and matrix_info["data"] is not None:
+        # Generate matrix analysis
+        matrix_analysis_path = model_output_dir / "matrix_analysis.png"
+        if visualizer.generate_matrix_analysis(parameters, matrix_analysis_path):
+            generated_files.append(str(matrix_analysis_path))
+        
+        # Generate matrix statistics
+        matrix_stats_path = model_output_dir / "matrix_statistics.png"
+        if visualizer.generate_matrix_statistics(parameters, matrix_stats_path):
+            generated_files.append(str(matrix_stats_path))
+        
+        # Note: POMDP transition analysis temporarily disabled due to matplotlib backend issues
+        # The B matrix is already visualized via the 3D tensor visualization in generate_matrix_analysis
+        
+        # Also handle legacy matrix format if present
+        if "matrices" in parsed_data:
+            for matrix_name, matrix_info in parsed_data["matrices"].items():
+                if matrix_info.get("data") is not None:
                     data = matrix_info["data"]
                     
                     if data.ndim == 2:
-                        # 2D matrix
+                        # 2D matrix - single heatmap
+                        fig, ax = plt.subplots(figsize=(8, 6))
+                        
                         sns.heatmap(data, 
                                    annot=True, 
-                                   fmt='.2f', 
+                                   fmt='.3f', 
                                    cmap='viridis',
-                                   ax=axes[i],
-                                   cbar=False)
-                        axes[i].set_title(f'{matrix_name}')
-                    elif data.ndim == 3:
-                        # 3D matrix - show first slice
-                        sns.heatmap(data[:, :, 0], 
-                                   annot=True, 
-                                   fmt='.2f', 
-                                   cmap='viridis',
-                                   ax=axes[i],
-                                   cbar=False)
-                        axes[i].set_title(f'{matrix_name} (Slice 1)')
-                    elif data.ndim == 1:
-                        # 1D vector - show as bar plot
-                        axes[i].bar(range(len(data)), data, color='skyblue', alpha=0.7)
-                        axes[i].set_title(f'{matrix_name}')
-                    
-                    axes[i].set_xlabel('')
-                    axes[i].set_ylabel('')
-            
-            # Hide unused subplots
-            for i in range(n_matrices, len(axes)):
-                axes[i].set_visible(False)
-            
-            plt.suptitle(f'{model_name} - Matrix Overview', fontsize=16)
-            plt.tight_layout()
-            
-            filename = f"{model_name}_matrix_overview.png"
-            filepath = output_dir / filename
-            plt.savefig(filepath, dpi=300, bbox_inches='tight')
-            plt.close()
-            
-            generated_files.append(filename)
+                                   ax=ax,
+                                   cbar_kws={'label': 'Value'})
+                        
+                        ax.set_title(f'{matrix_name} Matrix - {matrix_info.get("description", "")}')
+                        ax.set_xlabel('Columns')
+                        ax.set_ylabel('Rows')
+                        
+                        filename = f"{model_name}_{matrix_name}_matrix.png"
+                        filepath = model_output_dir / filename
+                        plt.savefig(filepath, dpi=300, bbox_inches='tight')
+                        plt.close()
+                        
+                        generated_files.append(str(filepath))
         
         return generated_files
         
     except Exception as e:
-        logging.error(f"Failed to generate matrix visualizations: {e}")
-        return []
+        logging.getLogger("visualization").error(f"Error generating matrix visualizations: {e}")
+        return generated_files
 
 def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
     """
@@ -738,12 +647,12 @@ __version__ = "2.0.0"
 __author__ = "Active Inference Institute"
 __description__ = "Comprehensive visualization processing for GNN Processing Pipeline"
 
-# Feature availability flags
+# Feature availability flags (all features available when dependencies are installed)
 FEATURES = {
-    'matrix_visualizations': MATPLOTLIB_AVAILABLE,
-    'network_visualizations': NETWORKX_AVAILABLE,
-    'combined_analysis': MATPLOTLIB_AVAILABLE,
-    'comparison_analysis': MATPLOTLIB_AVAILABLE
+    'matrix_visualizations': True,
+    'network_visualizations': True,
+    'combined_analysis': True,
+    'comparison_analysis': True
 }
 
 __all__ = [
@@ -754,6 +663,9 @@ __all__ = [
     'generate_network_visualizations',
     'generate_combined_analysis',
     'generate_combined_visualizations',
+    'MatrixVisualizer',
+    'GNNVisualizer',
+    'OntologyVisualizer',
     'FEATURES',
     '__version__'
 ]

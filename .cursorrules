@@ -34,6 +34,24 @@ This project implements a comprehensive scientific computing pipeline with real,
 - **Module Structure**: Follow `src/[module_name]/` pattern with `__init__.py`, core functionality, and `mcp.py` where applicable
 - **Path Handling**: Always convert string arguments to `pathlib.Path` objects and use centralized output directory management
 
+## Architectural Pattern: Thin Orchestrator Scripts
+**CRITICAL**: Numbered pipeline scripts (e.g., `8_visualization.py`, `9_advanced_viz.py`) must be thin orchestrators that:
+1. **Import and invoke methods** from their corresponding modules (e.g., `src/visualization/`, `src/advanced_visualization/`)
+2. **NEVER contain long method definitions** - all core logic belongs in the module
+3. **Handle pipeline orchestration** - argument parsing, logging, output directory management, result aggregation
+4. **Delegate core functionality** to module classes and functions
+5. **Maintain separation of concerns** - scripts handle pipeline flow, modules handle domain logic
+
+**Examples of correct pattern:**
+- `8_visualization.py` imports from `src/visualization/` and calls `MatrixVisualizer.generate_matrix_analysis()`
+- `9_advanced_viz.py` imports from `src/advanced_visualization/` and calls `AdvancedVisualizer.process_model()`
+- Scripts contain only orchestration logic, not domain-specific visualization or processing code
+
+**Examples of incorrect pattern:**
+- Defining `generate_matrix_heatmap()` function directly in `8_visualization.py`
+- Implementing `extract_visualization_data()` directly in `9_advanced_viz.py`
+- Any long method definitions (>20 lines) in numbered scripts
+
 ## 22-Step Pipeline Structure (CURRENT)
 The pipeline consists of exactly 22 steps (steps 0-21), executed in order:
 0. **0_template.py** → `src/template/` - Pipeline template and initialization

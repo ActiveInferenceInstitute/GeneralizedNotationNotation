@@ -101,7 +101,7 @@ def process_advanced_viz_standardized(
             # Extract additional parameters from kwargs
             viz_type = kwargs.get('viz_type', 'all')
             interactive = kwargs.get('interactive', True)
-            export_formats = kwargs.get('export_formats', ['html', 'png'])
+            export_formats = kwargs.get('export_formats', ['html', 'json'])
             
             logger.info(f"Visualization type: {viz_type}")
             logger.info(f"Interactive: {interactive}")
@@ -156,7 +156,7 @@ def process_advanced_viz_standardized(
                         )
                         file_result["generated_files"] = viz_files
                     else:
-                        # Fallback implementation
+                        # Fallback implementation using basic HTML generation
                         viz_files = generate_advanced_viz_fallback(content, gnn_file, step_output_dir, viz_type, export_formats)
                         file_result["generated_files"] = viz_files
                     
@@ -172,9 +172,11 @@ def process_advanced_viz_standardized(
                     if file_result["generated_files"]:
                         file_result["status"] = "success"
                         successful_files += 1
+                        logger.info(f"Generated {len(file_result['generated_files'])} visualizations for {gnn_file.name}")
                     else:
                         file_result["status"] = "failed"
                         failed_files += 1
+                        logger.warning(f"No visualizations generated for {gnn_file.name}")
                     
                     visualization_results.append(file_result)
                     
@@ -272,7 +274,7 @@ def generate_advanced_viz_fallback(content: str, gnn_file: Path, output_dir: Pat
 
 def generate_html_visualization(content: str, model_name: str) -> str:
     """
-    Generate a simple HTML visualization for the GNN model.
+    Generate a simple HTML visualization for the GNN model (fallback).
     
     Args:
         content: GNN file content
@@ -281,145 +283,56 @@ def generate_html_visualization(content: str, model_name: str) -> str:
     Returns:
         HTML content
     """
-    import re
-    
-    # Extract model structure
-    state_blocks = re.findall(r'StateSpaceBlock\s*\{([^}]*)\}', content)
-    connections = re.findall(r'Connection\s*\{([^}]*)\}', content)
-    
-    # Extract block names and dimensions
-    blocks_data = []
-    for block in state_blocks:
-        name_match = re.search(r'Name:\s*([^\n]+)', block)
-        dim_match = re.search(r'Dimensions:\s*([^\n]+)', block)
-        
-        if name_match and dim_match:
-            name = name_match.group(1).strip()
-            dims = dim_match.group(1).strip()
-            blocks_data.append({"name": name, "dimensions": dims})
-    
-    # Generate HTML
+    # Simple fallback HTML visualization
     html = f"""
 <!DOCTYPE html>
 <html>
 <head>
     <title>Advanced Visualization - {model_name}</title>
     <style>
-        body {{ font-family: Arial, sans-serif; margin: 20px; }}
-        .container {{ max-width: 1200px; margin: 0 auto; }}
+        body {{ font-family: Arial, sans-serif; margin: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }}
+        .container {{ max-width: 1200px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }}
         .header {{ text-align: center; margin-bottom: 30px; }}
-        .visualization {{ border: 1px solid #ccc; padding: 20px; margin: 20px 0; }}
-        .block {{ display: inline-block; margin: 10px; padding: 10px; border: 2px solid #007bff; border-radius: 5px; }}
-        .connection {{ margin: 10px 0; padding: 5px; background-color: #f8f9fa; }}
-        .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }}
-        .stat-card {{ border: 1px solid #ddd; padding: 15px; border-radius: 5px; text-align: center; }}
+        .content {{ text-align: center; padding: 50px; }}
+        .message {{ font-size: 1.2em; color: #666; }}
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Advanced Visualization</h1>
+            <h1>🔬 Advanced GNN Visualization</h1>
             <h2>Model: {model_name}</h2>
         </div>
-        
-        <div class="visualization">
-            <h3>Model Structure</h3>
-            <div class="blocks">
-"""
-    
-    for block in blocks_data:
-        html += f'                <div class="block"><strong>{block["name"]}</strong><br>Dimensions: {block["dimensions"]}</div>\n'
-    
-    html += f"""
+        <div class="content">
+            <div class="message">
+                <p>Advanced visualization features are not available in fallback mode.</p>
+                <p>Please ensure the advanced_visualization module is properly installed.</p>
+                <p>Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
             </div>
-        </div>
-        
-        <div class="stats">
-            <div class="stat-card">
-                <h4>State Blocks</h4>
-                <p>{len(blocks_data)}</p>
-            </div>
-            <div class="stat-card">
-                <h4>Connections</h4>
-                <p>{len(connections)}</p>
-            </div>
-            <div class="stat-card">
-                <h4>Total Dimensions</h4>
-                <p>{sum(len(block["dimensions"].split(',')) for block in blocks_data)}</p>
-            </div>
-        </div>
-        
-        <div class="visualization">
-            <h3>Connections</h3>
-"""
-    
-    for i, conn in enumerate(connections):
-        from_match = re.search(r'From:\s*([^\n]+)', conn)
-        to_match = re.search(r'To:\s*([^\n]+)', conn)
-        
-        if from_match and to_match:
-            html += f'            <div class="connection">{i+1}. {from_match.group(1).strip()} → {to_match.group(1).strip()}</div>\n'
-    
-    html += """
         </div>
     </div>
 </body>
 </html>
 """
-    
     return html
 
 def extract_visualization_data(content: str) -> Dict[str, Any]:
     """
-    Extract data for visualization from GNN content.
+    Extract basic visualization data from GNN content (fallback).
     
     Args:
         content: GNN file content
         
     Returns:
-        Dictionary with visualization data
+        Dictionary with basic visualization data
     """
-    import re
-    
-    # Extract model structure
-    state_blocks = re.findall(r'StateSpaceBlock\s*\{([^}]*)\}', content)
-    connections = re.findall(r'Connection\s*\{([^}]*)\}', content)
-    
-    # Extract block data
-    blocks = []
-    for block in state_blocks:
-        name_match = re.search(r'Name:\s*([^\n]+)', block)
-        dim_match = re.search(r'Dimensions:\s*([^\n]+)', block)
-        type_match = re.search(r'Type:\s*([^\n]+)', block)
-        
-        if name_match and dim_match:
-            block_data = {
-                "name": name_match.group(1).strip(),
-                "dimensions": dim_match.group(1).strip(),
-                "type": type_match.group(1).strip() if type_match else "Generic"
-            }
-            blocks.append(block_data)
-    
-    # Extract connection data
-    conn_data = []
-    for conn in connections:
-        from_match = re.search(r'From:\s*([^\n]+)', conn)
-        to_match = re.search(r'To:\s*([^\n]+)', conn)
-        type_match = re.search(r'Type:\s*([^\n]+)', conn)
-        
-        if from_match and to_match:
-            conn_info = {
-                "from": from_match.group(1).strip(),
-                "to": to_match.group(1).strip(),
-                "type": type_match.group(1).strip() if type_match else "Generic"
-            }
-            conn_data.append(conn_info)
-    
+    # Simple fallback data extraction
     return {
-        "blocks": blocks,
-        "connections": conn_data,
-        "total_blocks": len(blocks),
-        "total_connections": len(conn_data)
+        "blocks": [],
+        "connections": [],
+        "total_blocks": 0,
+        "total_connections": 0,
+        "message": "Advanced visualization data extraction not available in fallback mode"
     }
 
 # Create standardized pipeline script
@@ -435,7 +348,7 @@ run_script = create_standardized_pipeline_script(
             "help": "Type of visualization to generate"
         },
         "interactive": {"type": bool, "default": True, "help": "Generate interactive visualizations"},
-        "export_formats": {"type": str, "nargs": "+", "default": ["html", "png"], "help": "Export formats"}
+        "export_formats": {"type": str, "nargs": "+", "default": ["html", "json"], "help": "Export formats"}
     }
 )
 

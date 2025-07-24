@@ -1,7 +1,7 @@
 """
-MCP (Model Context Protocol) integration for $module utilities.
+MCP (Model Context Protocol) integration for visualization utilities.
 
-This module exposes utility functions from the $module module through MCP.
+This module exposes utility functions from the visualization module through MCP.
 """
 
 import os
@@ -11,14 +11,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Import utilities from the $module module
-from . import process_$module
+# Import utilities from the visualization module
+from . import process_visualization
 
-# MCP Tools for $module Utilities Module
+# MCP Tools for Visualization Utilities Module
 
-def process_$module_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
+def process_visualization_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
     """
-    Process $module for GNN files. Exposed via MCP.
+    Process visualization for GNN files. Exposed via MCP.
     
     Args:
         target_directory: Directory containing GNN files to process
@@ -29,7 +29,7 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
         Dictionary with operation status and results.
     """
     try:
-        success = process_$module(
+        success = process_visualization(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
             verbose=verbose
@@ -38,10 +38,10 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": f"$module processing {'completed successfully' if success else 'failed'}"
+            "message": f"Visualization processing {'completed successfully' if success else 'failed'}"
         }
     except Exception as e:
-        logger.error(f"Error in process_$module_mcp for {target_directory}: {e}", exc_info=True)
+        logger.error(f"Error in process_visualization_mcp for {target_directory}: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e)
@@ -49,17 +49,17 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
 
 # MCP Registration Function
 def register_tools(mcp_instance):
-    """Register $module utility tools with the MCP."""
+    """Register visualization utility tools with the MCP."""
     
     mcp_instance.register_tool(
-        "process_$module",
-        process_$module_mcp,
+        "process_visualization",
+        process_visualization_mcp,
         {
             "target_directory": {"type": "string", "description": "Directory containing GNN files to process."},
-            "output_directory": {"type": "string", "description": "Directory to save $module results."},
+            "output_directory": {"type": "string", "description": "Directory to save visualization results."},
             "verbose": {"type": "boolean", "description": "Enable verbose output. Defaults to false.", "optional": True}
         },
-        f"Process $module for GNN files in the specified directory."
+        "Process visualization for GNN files in the specified directory."
     )
     
-    logger.info("$module module MCP tools registered.")
+    logger.info("Visualization module MCP tools registered.")

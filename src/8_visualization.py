@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional, Tuple
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -24,6 +24,9 @@ from utils.pipeline_template import (
 )
 from utils.argument_utils import EnhancedArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
+
+# Import visualization module components
+from visualization.matrix_visualizer import MatrixVisualizer
 
 def create_network_graph(variables: List[Dict], connections: List[Dict]) -> nx.DiGraph:
     """Create a NetworkX graph from variables and connections."""
@@ -328,6 +331,46 @@ def generate_model_overview_chart(model_data: Dict, output_path: Path):
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
 
+def generate_matrix_visualizations_for_model(model_data: Dict, output_dir: Path, model_name: str) -> List[str]:
+    """
+    Generate matrix visualizations using the visualization module.
+    
+    Args:
+        model_data: Parsed model data
+        output_dir: Output directory
+        model_name: Name of the model
+        
+    Returns:
+        List of generated visualization file paths
+    """
+    generated_files = []
+    
+    try:
+        # Use the MatrixVisualizer from the visualization module
+        visualizer = MatrixVisualizer()
+        
+        # Extract parameters from model data
+        parameters = model_data.get('parameters', [])
+        
+        # Generate matrix analysis
+        matrix_analysis_path = output_dir / "matrix_analysis.png"
+        if visualizer.generate_matrix_analysis(parameters, matrix_analysis_path):
+            generated_files.append(str(matrix_analysis_path))
+        
+        # Generate matrix statistics
+        matrix_stats_path = output_dir / "matrix_statistics.png"
+        if visualizer.generate_matrix_statistics(parameters, matrix_stats_path):
+            generated_files.append(str(matrix_stats_path))
+        
+        # Note: POMDP transition analysis temporarily disabled due to matplotlib backend issues
+        # The B matrix is already visualized via the 3D tensor visualization in generate_matrix_analysis
+        
+        return generated_files
+        
+    except Exception as e:
+        print(f"Error generating matrix visualizations: {e}")
+        return generated_files
+
 def main():
     """Main visualization processing function."""
     args = EnhancedArgumentParser.parse_step_arguments("8_visualization.py")
@@ -446,6 +489,16 @@ def main():
                     "path": str(model_overview_path),
                     "file_size": model_overview_path.stat().st_size
                 }
+                
+                # Generate matrix visualizations using the visualization module
+                matrix_files = generate_matrix_visualizations_for_model(model_data, file_output_dir, file_name.replace('.md', ''))
+                for matrix_file in matrix_files:
+                    matrix_path = Path(matrix_file)
+                    if matrix_path.exists():
+                        file_viz_result["visualizations"][matrix_path.stem] = {
+                            "path": str(matrix_path),
+                            "file_size": matrix_path.stat().st_size
+                        }
                 
                 logger.info(f"Generated {len(file_viz_result['visualizations'])} visualizations for {file_name}")
                 
