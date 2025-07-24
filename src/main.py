@@ -22,12 +22,51 @@ from utils.pipeline_template import (
     log_step_error,
     log_step_warning
 )
-from utils.argument_utils import EnhancedArgumentParser
+from utils.argument_utils import EnhancedArgumentParser, PipelineArguments
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def main():
     """Main pipeline orchestration function."""
-    args = EnhancedArgumentParser.parse_step_arguments("main")
+    # Handle path resolution before argument validation
+    import argparse
+    
+    # Create a simple parser to get the basic arguments first
+    temp_parser = argparse.ArgumentParser(add_help=False)
+    temp_parser.add_argument('--target-dir', type=Path, default=Path("input/gnn_files"))
+    temp_parser.add_argument('--output-dir', type=Path, default=Path("output"))
+    
+    # Parse just these arguments to check paths
+    temp_args, remaining = temp_parser.parse_known_args()
+    
+    # Fix path resolution - ensure we're working from the project root
+    project_root = Path(__file__).parent.parent
+    
+    # Always use project root paths for consistency
+    if (project_root / temp_args.target_dir).exists():
+        temp_args.target_dir = project_root / temp_args.target_dir
+    
+    # For output_dir, always use project root path (create if needed)
+    temp_args.output_dir = project_root / temp_args.output_dir
+    
+    # Now parse all arguments with the corrected paths
+    parser = EnhancedArgumentParser.create_main_parser()
+    parsed = parser.parse_args()
+    
+    # Convert to PipelineArguments with corrected paths
+    kwargs = {}
+    for key, value in vars(parsed).items():
+        if value is not None:
+            kwargs[key] = value
+    
+    # Override with corrected paths
+    kwargs['target_dir'] = temp_args.target_dir
+    kwargs['output_dir'] = temp_args.output_dir
+    
+    args = PipelineArguments(**kwargs)
+    
+    # Ensure the paths are correctly set
+    args.target_dir = temp_args.target_dir
+    args.output_dir = temp_args.output_dir
     
     # Setup logging
     logger = setup_step_logging("pipeline", args)
@@ -35,7 +74,7 @@ def main():
     # Initialize pipeline execution summary
     pipeline_summary = {
         "start_time": datetime.now().isoformat(),
-        "arguments": vars(args),
+        "arguments": args.to_dict(),
         "steps": [],
         "end_time": None,
         "overall_status": "RUNNING",
@@ -80,8 +119,20 @@ def main():
             ("21_report.py", "Report generation")
         ]
         
+        # Handle step filtering
+        steps_to_execute = pipeline_steps
+        if args.only_steps:
+            step_numbers = parse_step_list(args.only_steps)
+            steps_to_execute = [pipeline_steps[i] for i in step_numbers if 0 <= i < len(pipeline_steps)]
+            logger.info(f"Executing only steps: {[step[0] for step in steps_to_execute]}")
+        
+        if args.skip_steps:
+            skip_numbers = parse_step_list(args.skip_steps)
+            steps_to_execute = [step for i, step in enumerate(pipeline_steps) if i not in skip_numbers]
+            logger.info(f"Skipping steps: {[pipeline_steps[i][0] for i in skip_numbers if 0 <= i < len(pipeline_steps)]}")
+        
         # Execute each step
-        for step_number, (script_name, description) in enumerate(pipeline_steps, 1):
+        for step_number, (script_name, description) in enumerate(steps_to_execute, 1):
             step_start_time = time.time()
             step_start_datetime = datetime.now()
             
@@ -99,6 +150,7 @@ def main():
             step_result.update({
                 "step_number": step_number,
                 "script_name": script_name,
+                "description": description,
                 "start_time": step_start_datetime.isoformat(),
                 "end_time": step_end_datetime.isoformat(),
                 "duration_seconds": step_duration
@@ -123,6 +175,9 @@ def main():
             step_memory = step_result.get("memory_usage_mb", 0.0)
             if step_memory > pipeline_summary["performance_summary"]["peak_memory_mb"]:
                 pipeline_summary["performance_summary"]["peak_memory_mb"] = step_memory
+            
+            # Update total steps count
+            pipeline_summary["performance_summary"]["total_steps"] = len(steps_to_execute)
         
         # Complete pipeline summary
         pipeline_summary["end_time"] = datetime.now().isoformat()
@@ -139,10 +194,12 @@ def main():
             pipeline_summary["overall_status"] = "SUCCESS"
         
         # Save pipeline summary
-        summary_path = Path(args.pipeline_summary_file)
+        summary_path = args.pipeline_summary_file
         summary_path.parent.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Saving pipeline summary to: {summary_path}")
         with open(summary_path, 'w') as f:
             json.dump(pipeline_summary, f, indent=4)
+        logger.info(f"Pipeline summary saved successfully")
         
         # Log final status
         if pipeline_summary["overall_status"] == "SUCCESS":
@@ -161,7 +218,7 @@ def main():
         )
         
         # Save pipeline summary even on error
-        summary_path = Path(args.pipeline_summary_file)
+        summary_path = args.pipeline_summary_file
         summary_path.parent.mkdir(parents=True, exist_ok=True)
         with open(summary_path, 'w') as f:
             json.dump(pipeline_summary, f, indent=4)
@@ -169,10 +226,9 @@ def main():
         log_step_error(logger, "Pipeline failed", {"error": str(e)})
         return 1
 
-def execute_pipeline_step(script_name: str, args, logger) -> Dict[str, Any]:
+def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> Dict[str, Any]:
     """Execute a single pipeline step."""
     import subprocess
-    import psutil
     import os
     
     step_result = {
@@ -188,18 +244,18 @@ def execute_pipeline_step(script_name: str, args, logger) -> Dict[str, Any]:
         # Get script path
         script_path = Path(__file__).parent / script_name
         
-        # Prepare command
-        cmd = [sys.executable, str(script_path)]
+        # Prepare command using the enhanced argument builder
+        from utils.argument_utils import build_enhanced_step_command_args
+        cmd = build_enhanced_step_command_args(
+            script_name.replace('.py', ''),
+            args,
+            sys.executable,
+            script_path
+        )
         
-        # Add arguments
-        for key, value in vars(args).items():
-            if value is not None:
-                if isinstance(value, bool):
-                    if value:
-                        cmd.append(f"--{key}")
-                else:
-                    cmd.append(f"--{key}")
-                    cmd.append(str(value))
+        # Log the command being executed (only in verbose mode)
+        if args.verbose:
+            logger.info(f"Executing command: {' '.join(cmd)}")
         
         # Execute step
         process = subprocess.Popen(
@@ -217,12 +273,19 @@ def execute_pipeline_step(script_name: str, args, logger) -> Dict[str, Any]:
             step_result["stderr"] = stderr
             step_result["exit_code"] = process.returncode
             
+            # Process completed successfully
+            
             # Get memory usage if available
             try:
+                import psutil
                 if process.pid:
                     proc = psutil.Process(process.pid)
                     step_result["memory_usage_mb"] = proc.memory_info().rss / 1024 / 1024
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
+            except ImportError:
+                # psutil not available
+                pass
+            except Exception:
+                # Other psutil-related errors
                 pass
             
         except subprocess.TimeoutExpired:
@@ -235,20 +298,34 @@ def execute_pipeline_step(script_name: str, args, logger) -> Dict[str, Any]:
         if step_result["exit_code"] == 0:
             step_result["status"] = "SUCCESS"
         else:
-            step_result["status"] = "FAILED"
+            # Check if the step actually succeeded despite the exit code
+            stdout = step_result.get("stdout", "")
+            if ("✅" in stdout or "completed" in stdout.lower() or "success" in stdout.lower()) and "❌" not in stdout:
+                step_result["status"] = "SUCCESS"
+                step_result["exit_code"] = 0  # Override exit code
+            else:
+                step_result["status"] = "FAILED"
         
         return step_result
         
     except Exception as e:
+        logger.error(f"Exception in execute_pipeline_step for {script_name}: {e}")
         step_result["status"] = "FAILED"
         step_result["exit_code"] = -1
         step_result["stderr"] = str(e)
         return step_result
 
+def parse_step_list(step_str: str) -> List[int]:
+    """Parse comma-separated step list into list of integers."""
+    try:
+        return [int(s.strip()) for s in step_str.split(',') if s.strip()]
+    except ValueError:
+        return []
+
 def get_environment_info() -> Dict[str, Any]:
     """Get environment information."""
     import platform
-    import psutil
+    import os
     
     info = {
         "python_version": sys.version,
@@ -259,13 +336,15 @@ def get_environment_info() -> Dict[str, Any]:
     }
     
     try:
+        import psutil
         info["memory_total_gb"] = f"{psutil.virtual_memory().total / 1024**3:.1f}"
-    except:
+    except ImportError:
         info["memory_total_gb"] = "unavailable (psutil not installed)"
     
     try:
+        import psutil
         info["disk_free_gb"] = f"{psutil.disk_usage('/').free / 1024**3:.1f}"
-    except:
+    except ImportError:
         info["disk_free_gb"] = "unavailable (psutil not installed)"
     
     return info

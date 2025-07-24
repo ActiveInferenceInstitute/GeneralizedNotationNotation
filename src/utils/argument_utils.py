@@ -121,8 +121,27 @@ class PipelineArguments:
         errors = []
         
         # Check that target directory exists if not a special placeholder
-        if not str(self.target_dir).startswith("<") and not self.target_dir.exists():
-            errors.append(f"Target directory does not exist: {self.target_dir}")
+        if not str(self.target_dir).startswith("<"):
+            # Try to resolve path relative to project root if not found
+            if not self.target_dir.exists():
+                # Check if we're running from src directory and target_dir is relative to project root
+                import sys
+                if hasattr(sys, '_getframe'):
+                    try:
+                        current_file = Path(sys._getframe(1).f_code.co_filename)
+                        if current_file.name == 'main.py' and current_file.parent.name == 'src':
+                            project_root = current_file.parent.parent
+                            project_target_dir = project_root / self.target_dir.name
+                            if project_target_dir.exists():
+                                self.target_dir = project_target_dir
+                            else:
+                                errors.append(f"Target directory does not exist: {self.target_dir}")
+                        else:
+                            errors.append(f"Target directory does not exist: {self.target_dir}")
+                    except (ValueError, AttributeError):
+                        errors.append(f"Target directory does not exist: {self.target_dir}")
+                else:
+                    errors.append(f"Target directory does not exist: {self.target_dir}")
             
         # Check that ontology terms file exists if specified and not placeholder
         if (self.ontology_terms_file and 
@@ -667,8 +686,28 @@ class StepConfiguration:
                 arg_value = getattr(args, arg_name)
                 if arg_value and isinstance(arg_value, Path):
                     # Only validate existence for input paths, not output paths
-                    if arg_name in ["target_dir", "ontology_terms_file"] and not arg_value.exists():
-                        errors.append(f"Path does not exist for {step_name}: {arg_value}")
+                    if arg_name in ["target_dir", "ontology_terms_file"]:
+                        # Try to resolve path relative to project root if not found
+                        if not arg_value.exists():
+                            # Check if we're running from src directory and path is relative to project root
+                            import sys
+                            if hasattr(sys, '_getframe'):
+                                try:
+                                    current_file = Path(sys._getframe(1).f_code.co_filename)
+                                    if current_file.name.endswith('.py') and current_file.parent.name == 'src':
+                                        project_root = current_file.parent.parent
+                                        project_path = project_root / arg_value.name
+                                        if project_path.exists():
+                                            # Update the argument with the correct path
+                                            setattr(args, arg_name, project_path)
+                                        else:
+                                            errors.append(f"Path does not exist for {step_name}: {arg_value}")
+                                    else:
+                                        errors.append(f"Path does not exist for {step_name}: {arg_value}")
+                                except (ValueError, AttributeError):
+                                    errors.append(f"Path does not exist for {step_name}: {arg_value}")
+                            else:
+                                errors.append(f"Path does not exist for {step_name}: {arg_value}")
         
         return errors
 
