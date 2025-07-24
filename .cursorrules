@@ -1,7 +1,7 @@
 # .cursorrules - High-Level Rules for AI Code Assistant (Cursor) - GNN Project
 
 ## Project Overview and Context
-GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive 14-step pipeline that transforms GNN specifications into executable simulations, visualizations, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), and LLM-enhanced analysis.
+GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive 22-step pipeline that transforms GNN specifications into executable simulations, visualizations, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
 
 ## Overall AI Behavior & Persona
 - Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications and pipeline architecture
@@ -13,6 +13,14 @@ GeneralizedNotationNotation (GNN) is a text-based language for standardizing Act
 - NEVER create dummy, mock, placeholder, or stub implementations
 - All code must be fully functional, documented, and covered by tests
 - Version existing code with narrow intelligent changes, don't make variant or redundant files
+
+## Documentation and Communication Standards
+- **Understated Documentation**: Use concrete examples and functional demonstrations over promotional language
+- **Show Not Tell**: Demonstrate functionality through working code, tests, and real outputs rather than claims
+- **Concrete Evidence**: Provide specific file sizes, execution times, error counts, and measurable results
+- **Avoid Hyperbole**: No "revolutionary," "historic," or "unprecedented" claims without concrete data
+- **Focus on Functionality**: Emphasize what the code actually does rather than what it might achieve
+- **Real Analysis**: Use actual script outputs, file contents, and execution results as evidence
 
 ## Critical Implementation Philosophy
 This project implements a comprehensive scientific computing pipeline with real, functional components at every level. Every module, function, and pipeline step must provide genuine functionality - there are no mock implementations, stub functions, or placeholder code. The architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards.
@@ -26,22 +34,48 @@ This project implements a comprehensive scientific computing pipeline with real,
 - **Module Structure**: Follow `src/[module_name]/` pattern with `__init__.py`, core functionality, and `mcp.py` where applicable
 - **Path Handling**: Always convert string arguments to `pathlib.Path` objects and use centralized output directory management
 
-## 14-Step Pipeline Structure (CURRENT)
-The pipeline consists of exactly 14 steps (steps 1-14), executed in order:
+## Architectural Pattern: Thin Orchestrator Scripts
+**CRITICAL**: Numbered pipeline scripts (e.g., `8_visualization.py`, `9_advanced_viz.py`) must be thin orchestrators that:
+1. **Import and invoke methods** from their corresponding modules (e.g., `src/visualization/`, `src/advanced_visualization/`)
+2. **NEVER contain long method definitions** - all core logic belongs in the module
+3. **Handle pipeline orchestration** - argument parsing, logging, output directory management, result aggregation
+4. **Delegate core functionality** to module classes and functions
+5. **Maintain separation of concerns** - scripts handle pipeline flow, modules handle domain logic
+
+**Examples of correct pattern:**
+- `8_visualization.py` imports from `src/visualization/` and calls `MatrixVisualizer.generate_matrix_analysis()`
+- `9_advanced_viz.py` imports from `src/advanced_visualization/` and calls `AdvancedVisualizer.process_model()`
+- Scripts contain only orchestration logic, not domain-specific visualization or processing code
+
+**Examples of incorrect pattern:**
+- Defining `generate_matrix_heatmap()` function directly in `8_visualization.py`
+- Implementing `extract_visualization_data()` directly in `9_advanced_viz.py`
+- Any long method definitions (>20 lines) in numbered scripts
+
+## 22-Step Pipeline Structure (CURRENT)
+The pipeline consists of exactly 22 steps (steps 0-21), executed in order:
+0. **0_template.py** → `src/template/` - Pipeline template and initialization
 1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation
-2. **2_gnn.py** → `src/gnn/` - GNN file discovery, multi-format parsing, and validation
-3. **3_tests.py** → `src/tests/` - Comprehensive test suite execution
-4. **4_type_checker.py** → `src/type_checker/` - GNN syntax validation and resource estimation
-5. **5_export.py** → `src/export/` - Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
-6. **6_visualization.py** → `src/visualization/` - Graph and matrix visualization generation
-7. **7_mcp.py** → `src/mcp/` - Model Context Protocol operations and tool registration
-8. **8_ontology.py** → `src/ontology/` - Active Inference Ontology processing and validation
-9. **9_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl simulation environments
-10. **10_execute.py** → `src/execute/` - Execute rendered simulation scripts with result capture
-11. **11_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
-12. **12_audio.py** → `src/audio/` - Audio generation (SAPF, Pedalboard, and other backends)
-13. **13_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts
-14. **14_report.py** → `src/report/` - Comprehensive analysis report generation
+2. **2_tests.py** → `src/tests/` - Comprehensive test suite execution
+3. **3_gnn.py** → `src/gnn/` - GNN file discovery, multi-format parsing, and validation
+4. **4_model_registry.py** → `src/model_registry/` - Model registry management and versioning
+5. **5_type_checker.py** → `src/type_checker/` - GNN syntax validation and resource estimation
+6. **6_validation.py** → `src/validation/` - Advanced validation and consistency checking
+7. **7_export.py** → `src/export/` - Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
+8. **8_visualization.py** → `src/visualization/` - Graph and matrix visualization generation
+9. **9_advanced_viz.py** → `src/advanced_visualization/` - Advanced visualization and interactive plots
+10. **10_ontology.py** → `src/ontology/` - Active Inference Ontology processing and validation
+11. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl simulation environments
+12. **12_execute.py** → `src/execute/` - Execute rendered simulation scripts with result capture
+13. **13_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
+14. **14_ml_integration.py** → `src/ml_integration/` - Machine learning integration and model training
+15. **15_audio.py** → `src/audio/` - Audio generation (SAPF, Pedalboard, and other backends)
+16. **16_analysis.py** → `src/analysis/` - Advanced analysis and statistical processing
+17. **17_integration.py** → `src/integration/` - System integration and cross-module coordination
+18. **18_security.py** → `src/security/` - Security validation and access control
+19. **19_research.py** → `src/research/` - Research tools and experimental features
+20. **20_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts
+21. **21_report.py** → `src/report/` - Comprehensive analysis report generation
 
 ## Detailed Guidelines
 For more targeted guidelines, refer to the files in the .cursor_rules/ directory:

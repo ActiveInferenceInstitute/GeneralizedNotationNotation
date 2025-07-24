@@ -394,7 +394,7 @@ def execute_pipeline_step(script_name: str, step_number: int, total_steps: int,
                 capture_output=True,
                 text=True,
                 timeout=step_timeout,
-                cwd=Path(__file__).parent.parent  # Run from src directory
+                cwd=Path(__file__).parent.parent.parent  # Run from project root directory
             )
             
             # Calculate execution metrics
@@ -716,7 +716,7 @@ def run_pipeline(target_dir: str, output_dir: str, steps: Optional[List[str]] = 
         src_dir = Path(__file__).parent.parent
         scripts = []
         for script_file in src_dir.glob("*.py"):
-            if script_file.name.startswith(("1_", "2_", "3_", "4_", "5_", "6_", "7_", "8_", "9_", "10_", "11_", "12_", "13_")):
+            if script_file.name.startswith(("1_", "2_", "3_", "4_", "5_", "6_", "7_", "8_", "9_", "10_", "11_", "12_", "13_", "14_", "15_", "16_", "17_", "18_", "19_", "20_", "21_")):
                 step_num = int(script_file.name.split("_")[0])
                 scripts.append((step_num, script_file.name))
         
@@ -844,29 +844,39 @@ def get_pipeline_info() -> Dict[str, Any]:
         "pipeline_name": "GNN Processing Pipeline",
         "version": "1.0.0",
         "description": "Comprehensive pipeline for processing GNN models",
-        "total_steps": 13,
+        "total_steps": 22,  # 0-21
         "modules": [
-            "gnn", "setup", "tests", "type_checker", "export", "visualization",
-            "mcp", "ontology", "render", "execute", "llm", "site", "sapf"
+            "template", "setup", "tests", "gnn", "model_registry", "type_checker", 
+            "validation", "export", "visualization", "advanced_visualization", "ontology", 
+            "render", "execute", "llm", "ml_integration", "audio", "analysis", 
+            "integration", "security", "research", "website", "report"
         ]
     }
     
     # Add step descriptions
     info["steps"] = {
-        "1": "GNN file discovery and parsing",
-        "2": "Environment setup and dependency installation",
-        "3": "Test suite execution",
-        "4": "Type checking and validation",
-        "5": "Multi-format export",
-        "6": "Visualization generation",
-        "7": "MCP tool registration",
-        "8": "Ontology processing",
-        "9": "Code rendering for simulators",
-        "10": "Model execution",
-        "11": "LLM-enhanced analysis",
-        "12": "Site generation",
-        "13": "Website generation",
-"14": "Report generation"
+        "0": "Standardized pipeline step template",
+        "1": "Environment setup and dependency installation",
+        "2": "Test suite execution",
+        "3": "GNN file discovery and parsing",
+        "4": "Model versioning and management",
+        "5": "Type checking and validation",
+        "6": "Enhanced validation and quality assurance",
+        "7": "Multi-format export",
+        "8": "Basic visualization generation",
+        "9": "Advanced visualization and exploration",
+        "10": "Ontology processing",
+        "11": "Code rendering for simulators",
+        "12": "Model execution",
+        "13": "LLM-enhanced analysis",
+        "14": "Machine learning integration",
+        "15": "Audio generation",
+        "16": "Advanced statistical analysis and reporting",
+        "17": "API gateway and plugin system",
+        "18": "Security and compliance features",
+        "19": "Research workflow enhancement",
+        "20": "Website generation",
+        "21": "Comprehensive report generation"
     }
     
     return info

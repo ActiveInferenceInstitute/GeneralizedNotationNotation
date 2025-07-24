@@ -117,7 +117,11 @@ class GNNVisualizer:
             if 'InitialParameterization' in parsed_data:
                 print(f"[GNNVisualizer] Found 'InitialParameterization' section for {file_name}. Attempting matrix visualization.")
                 if parsed_data['InitialParameterization'].strip(): # Check if content is not just whitespace
-                    self.matrix_visualizer.visualize_all_matrices(parsed_data, file_output_dir)
+                    # Extract parameters from parsed data for matrix visualization
+                    parameters = self._extract_parameters_from_parsed_data(parsed_data)
+                    if parameters:
+                        self.matrix_visualizer.generate_matrix_analysis(parameters, file_output_dir / "matrix_analysis.png")
+                        self.matrix_visualizer.generate_matrix_statistics(parameters, file_output_dir / "matrix_statistics.png")
                 else:
                     print(f"[GNNVisualizer] 'InitialParameterization' section for {file_name} is empty. Skipping matrix visualization.")
             else:
@@ -504,7 +508,66 @@ class GNNVisualizer:
         if 'ModelName' in parsed_data and parsed_data['ModelName']:
             # Remove Markdown formatting and clean up
             return parsed_data['ModelName'].replace('#', '').strip()
-        return "GNN Model" 
+        return "GNN Model"
+    
+    def _extract_parameters_from_parsed_data(self, parsed_data: Dict[str, Any]) -> List[Dict]:
+        """
+        Extract parameters from parsed data for matrix visualization.
+        
+        Args:
+            parsed_data: Parsed GNN data
+            
+        Returns:
+            List of parameter dictionaries
+        """
+        parameters = []
+        
+        # Extract from InitialParameterization section
+        if 'InitialParameterization' in parsed_data:
+            init_content = parsed_data['InitialParameterization']
+            
+            # Parse matrix definitions (A, B, C, D, E matrices)
+            matrix_pattern = r'([A-Z])\s*=\s*\{([^}]+)\}'
+            for match in re.finditer(matrix_pattern, init_content):
+                matrix_name = match.group(1)
+                matrix_data = match.group(2)
+                
+                try:
+                    # Convert matrix data to list format
+                    matrix_list = self._parse_matrix_string(matrix_data)
+                    parameters.append({
+                        "name": matrix_name,
+                        "value": matrix_list
+                    })
+                except Exception:
+                    # Skip if parsing fails
+                    continue
+        
+        return parameters
+    
+    def _parse_matrix_string(self, matrix_str: str) -> List[List[float]]:
+        """
+        Parse matrix string into list format.
+        
+        Args:
+            matrix_str: Matrix data as string
+            
+        Returns:
+            List representation of matrix
+        """
+        # Remove extra whitespace and newlines
+        matrix_str = re.sub(r'\s+', ' ', matrix_str.strip())
+        
+        # Parse nested tuples
+        matrix_str = matrix_str.replace('(', '[').replace(')', ']')
+        
+        # Convert to Python list structure
+        matrix_str = matrix_str.replace('[', '[').replace(']', ']')
+        
+        # Evaluate as Python expression
+        matrix_data = eval(matrix_str)
+        
+        return matrix_data 
 
 
 def generate_graph_visualization(gnn_data: Dict[str, Any], output_path: str) -> bool:
@@ -540,7 +603,12 @@ def generate_matrix_visualization(gnn_data: Dict[str, Any], output_path: str) ->
     """
     try:
         visualizer = GNNVisualizer()
-        visualizer.matrix_visualizer.visualize_all_matrices(gnn_data, Path(output_path).parent)
+        # Extract parameters and generate matrix visualizations
+        parameters = visualizer._extract_parameters_from_parsed_data(gnn_data)
+        if parameters:
+            output_dir = Path(output_path).parent
+            visualizer.matrix_visualizer.generate_matrix_analysis(parameters, output_dir / "matrix_analysis.png")
+            visualizer.matrix_visualizer.generate_matrix_statistics(parameters, output_dir / "matrix_statistics.png")
         return True
     except Exception as e:
         print(f"Error generating matrix visualization: {e}")

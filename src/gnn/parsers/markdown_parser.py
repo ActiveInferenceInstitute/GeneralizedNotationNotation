@@ -177,30 +177,25 @@ class MarkdownGNNParser(BaseGNNParser):
         for line in lines:
             line = line.strip()
             if line and not line.startswith('#'):
-                variable = self._parse_variable_definition(line)
-                if variable:
-                    model.variables.append(variable)
+                # Check if line contains variable definition pattern
+                if '[' in line and ']' in line:
+                    variable = self._parse_variable_definition(line)
+                    if variable:
+                        model.variables.append(variable)
+                        logger.debug(f"Parsed variable: {variable.name} with dimensions {variable.dimensions}")
     
     def _parse_variable_definition(self, line: str) -> Optional[Variable]:
         """Parse a single variable definition line."""
         try:
-            # Extract comment first
+            # Handle lines like: A[3,3,type=float]   # Comment
             comment = None
-            if '###' in line:
-                line, comment = line.split('###', 1)
+            if '#' in line:
+                line, comment = line.split('#', 1)
                 comment = comment.strip()
                 line = line.strip()
             
-            # Parse variable pattern: name[dimensions],type=datatype
-            # Examples: s_f0[2], o_m0[3,type=categorical], X[2,3]
-            
-            # Extract dimensions and name FIRST
-            name = None
-            dimensions = [1]  # Default dimension
-            type_spec = None
-            
+            # Parse variable pattern: name[dimensions,type=datatype]
             if '[' in line and ']' in line:
-                # Find the opening bracket
                 bracket_start = line.find('[')
                 bracket_end = line.find(']')
                 
@@ -208,41 +203,30 @@ class MarkdownGNNParser(BaseGNNParser):
                     name = line[:bracket_start].strip()
                     dimensions_str = line[bracket_start+1:bracket_end].strip()
                     
-                    # Check if there's a type specification in the dimensions string
+                    # Extract type specification
+                    type_spec = None
                     if ',type=' in dimensions_str:
                         dimensions_str, type_spec = dimensions_str.split(',type=', 1)
                         type_spec = type_spec.strip()
                     
+                    # Parse dimensions
                     dimensions = parse_dimensions('[' + dimensions_str + ']')
-                    logger.debug(f"Parsed variable '{name}' with dimensions string '{dimensions_str}' -> {dimensions}")
-                else:
-                    name = line.strip()
-                    logger.debug(f"Parsed variable '{name}' with default dimensions {dimensions}")
-            else:
-                name = line.strip()
-                logger.debug(f"Parsed variable '{name}' with default dimensions {dimensions}")
+                    
+                    # Determine variable type and data type
+                    var_type = infer_variable_type(name)
+                    data_type = self._parse_data_type(type_spec) if type_spec else DataType.FLOAT
+                    
+                    logger.debug(f"Parsed variable '{name}' with dimensions {dimensions}, type={type_spec}")
+                    
+                    return Variable(
+                        name=normalize_variable_name(name),
+                        var_type=var_type,
+                        dimensions=dimensions,
+                        data_type=data_type,
+                        description=comment
+                    )
             
-            # Determine variable type
-            var_type = infer_variable_type(name)
-            
-            # Determine data type
-            if type_spec:
-                data_type = self._parse_data_type(type_spec)
-            else:
-                data_type = DataType.CATEGORICAL  # Default
-            
-            # Normalize name
-            normalized_name = normalize_variable_name(name)
-            
-            logger.debug(f"Created variable: name='{normalized_name}', dimensions={dimensions}, type={var_type}")
-            
-            return Variable(
-                name=normalized_name,
-                var_type=var_type,
-                dimensions=dimensions,
-                data_type=data_type,
-                description=comment
-            )
+            return None
             
         except Exception as e:
             logger.warning(f"Failed to parse variable definition '{line}': {e}")
@@ -275,14 +259,15 @@ class MarkdownGNNParser(BaseGNNParser):
                 connection = self._parse_connection_definition(line)
                 if connection:
                     model.connections.append(connection)
+                    logger.debug(f"Parsed connection: {connection.source_variables} -> {connection.target_variables}")
     
     def _parse_connection_definition(self, line: str) -> Optional[Connection]:
         """Parse a single connection definition line."""
         try:
             # Extract comment
             comment = None
-            if '###' in line:
-                line, comment = line.split('###', 1)
+            if '#' in line:
+                line, comment = line.split('#', 1)
                 comment = comment.strip()
                 line = line.strip()
             

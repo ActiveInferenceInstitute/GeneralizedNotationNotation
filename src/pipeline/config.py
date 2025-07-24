@@ -47,6 +47,13 @@ class PipelineConfig:
     def _initialize_step_configs(self):
         """Initialize default step configurations."""
         self.steps = {
+            "0_template.py": StepConfig(
+                name="template",
+                description="Standardized pipeline step template",
+                module_path="0_template.py",
+                output_subdir="template",
+                required=False  # Template is not required for pipeline execution
+            ),
             "1_setup.py": StepConfig(
                 name="setup",
                 description="Project setup and environment validation",
@@ -55,116 +62,181 @@ class PipelineConfig:
                 timeout=600,
                 required=True  # Setup is critical for the pipeline
             ),
-            "2_gnn.py": StepConfig(
-                name="gnn_processing",
-                description="GNN file discovery and parsing",
-                module_path="2_gnn.py",
-                output_subdir="gnn_processing_step",
-                performance_tracking=True,
-                required=True  # GNN processing is critical for the pipeline
-            ),
-            "3_tests.py": StepConfig(
+            "2_tests.py": StepConfig(
                 name="tests",
                 description="Test suite execution with coverage reporting",
-                module_path="3_tests.py",
+                module_path="2_tests.py",
                 output_subdir="test_reports",
                 dependencies=["1_setup.py"],
                 timeout=600,
                 required=False,  # Tests can fail without stopping pipeline
                 performance_tracking=True
             ),
-            "4_type_checker.py": StepConfig(
+            "3_gnn.py": StepConfig(
+                name="gnn_processing",
+                description="GNN file discovery and parsing",
+                module_path="3_gnn.py",
+                output_subdir="gnn_processing_step",
+                performance_tracking=True,
+                required=True  # GNN processing is critical for the pipeline
+            ),
+            "4_model_registry.py": StepConfig(
+                name="model_registry",
+                description="Model versioning and management",
+                module_path="4_model_registry.py",
+                output_subdir="model_registry",
+                dependencies=["3_gnn.py"],
+                performance_tracking=True,
+                required=False  # Model registry can fail without stopping pipeline
+            ),
+            "5_type_checker.py": StepConfig(
                 name="type_checking",
                 description="GNN syntax and type validation",
-                module_path="4_type_checker.py",
+                module_path="5_type_checker.py",
                 output_subdir="type_check",
-                dependencies=["2_gnn.py"],
+                dependencies=["3_gnn.py"],
                 performance_tracking=True,
                 required=False  # Type checking can fail without stopping pipeline
             ),
-            "5_export.py": StepConfig(
+            "6_validation.py": StepConfig(
+                name="validation",
+                description="Enhanced validation and quality assurance",
+                module_path="6_validation.py",
+                output_subdir="validation",
+                dependencies=["5_type_checker.py"],
+                performance_tracking=True,
+                required=False  # Validation can fail without stopping pipeline
+            ),
+            "7_export.py": StepConfig(
                 name="export",
                 description="Multi-format export generation",
-                module_path="5_export.py",
+                module_path="7_export.py",
                 output_subdir="gnn_exports",
-                dependencies=["4_type_checker.py"],
+                dependencies=["5_type_checker.py"],
                 performance_tracking=True,
                 required=False  # Export can fail without stopping pipeline
             ),
-            "6_visualization.py": StepConfig(
+            "8_visualization.py": StepConfig(
                 name="visualization",
-                description="Graph visualization generation",
-                module_path="6_visualization.py",
+                description="Basic graph and statistical visualizations",
+                module_path="8_visualization.py",
                 output_subdir="visualization",
-                dependencies=["5_export.py"],
+                dependencies=["7_export.py"],
                 performance_tracking=True,
                 required=False  # Visualization can fail without stopping pipeline
             ),
-            "7_mcp.py": StepConfig(
-                name="mcp",
-                description="Model Context Protocol operations",
-                module_path="7_mcp.py",
-                output_subdir="mcp_processing_step",
-                required=False  # MCP can fail without stopping pipeline
+            "9_advanced_viz.py": StepConfig(
+                name="advanced_visualization",
+                description="Advanced visualization and exploration",
+                module_path="9_advanced_viz.py",
+                output_subdir="advanced_visualization",
+                dependencies=["8_visualization.py"],
+                performance_tracking=True,
+                required=False  # Advanced visualization can fail without stopping pipeline
             ),
-            "8_ontology.py": StepConfig(
+            "10_ontology.py": StepConfig(
                 name="ontology",
                 description="Ontology processing and validation",
-                module_path="8_ontology.py",
+                module_path="10_ontology.py",
                 output_subdir="ontology_processing",
-                dependencies=["5_export.py"],
+                dependencies=["7_export.py"],
                 required=False  # Ontology can fail without stopping pipeline
             ),
-            "9_render.py": StepConfig(
+            "11_render.py": StepConfig(
                 name="render",
                 description="Code generation for simulation environments",
-                module_path="9_render.py",
+                module_path="11_render.py",
                 output_subdir="gnn_rendered_simulators",
-                dependencies=["5_export.py"],
+                dependencies=["7_export.py"],
                 performance_tracking=True,
                 required=False  # Rendering can fail without stopping pipeline
             ),
-            "10_execute.py": StepConfig(
+            "12_execute.py": StepConfig(
                 name="execute",
                 description="Execute rendered simulators",
-                module_path="10_execute.py",
+                module_path="12_execute.py",
                 output_subdir="execution_results",
-                dependencies=["9_render.py"],
+                dependencies=["11_render.py"],
                 performance_tracking=True,
                 required=False  # Execution can fail without stopping pipeline
             ),
-            "11_llm.py": StepConfig(
+            "13_llm.py": StepConfig(
                 name="llm",
                 description="LLM-enhanced analysis and processing",
-                module_path="11_llm.py",
+                module_path="13_llm.py",
                 output_subdir="llm_processing_step",
-                dependencies=["5_export.py"],
+                dependencies=["7_export.py"],
                 performance_tracking=True,
                 required=False  # LLM can fail without stopping pipeline
             ),
-            "12_audio.py": StepConfig(
+            "14_ml_integration.py": StepConfig(
+                name="ml_integration",
+                description="Machine learning integration",
+                module_path="14_ml_integration.py",
+                output_subdir="ml_integration",
+                dependencies=["13_llm.py"],
+                performance_tracking=True,
+                required=False  # ML integration can fail without stopping pipeline
+            ),
+            "15_audio.py": StepConfig(
                 name="audio",
                 description="Audio generation for GNN models (SAPF, Pedalboard, and other backends)",
-                module_path="12_audio.py",
+                module_path="15_audio.py",
                 output_subdir="audio_processing_step",
-                dependencies=["2_gnn.py"],
+                dependencies=["3_gnn.py"],
                 performance_tracking=True,
                 required=False  # Audio generation can fail without stopping pipeline
             ),
-            "13_website.py": StepConfig(
+            "16_analysis.py": StepConfig(
+                name="analysis",
+                description="Advanced statistical analysis and reporting",
+                module_path="16_analysis.py",
+                output_subdir="analysis",
+                dependencies=["12_execute.py", "14_ml_integration.py"],
+                performance_tracking=True,
+                required=False  # Analysis can fail without stopping pipeline
+            ),
+            "17_integration.py": StepConfig(
+                name="integration",
+                description="API gateway and plugin system",
+                module_path="17_integration.py",
+                output_subdir="integration",
+                dependencies=["16_analysis.py"],
+                performance_tracking=True,
+                required=False  # Integration can fail without stopping pipeline
+            ),
+            "18_security.py": StepConfig(
+                name="security",
+                description="Security and compliance features",
+                module_path="18_security.py",
+                output_subdir="security",
+                dependencies=["17_integration.py"],
+                performance_tracking=True,
+                required=False  # Security can fail without stopping pipeline
+            ),
+            "19_research.py": StepConfig(
+                name="research",
+                description="Research workflow enhancement",
+                module_path="19_research.py",
+                output_subdir="research",
+                dependencies=["16_analysis.py"],
+                performance_tracking=True,
+                required=False  # Research workflow can fail without stopping pipeline
+            ),
+            "20_website.py": StepConfig(
                 name="website",
                 description="Static website generation",
-                module_path="13_website.py",
+                module_path="20_website.py",
                 output_subdir="website",
-                dependencies=["6_visualization.py", "8_ontology.py"],
+                dependencies=["8_visualization.py", "10_ontology.py", "16_analysis.py"],
                 required=False  # Website generation can fail without stopping pipeline
             ),
-            "14_report.py": StepConfig(
+            "21_report.py": StepConfig(
                 name="report",
                 description="Comprehensive analysis report generation",
-                module_path="14_report.py",
+                module_path="21_report.py",
                 output_subdir="report_processing_step",
-                dependencies=["6_visualization.py", "8_ontology.py", "12_audio.py"],
+                dependencies=["16_analysis.py", "20_website.py"],
                 performance_tracking=True,
                 required=False  # Report generation can fail without stopping pipeline
             ),

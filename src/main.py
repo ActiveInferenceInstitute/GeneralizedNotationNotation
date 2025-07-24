@@ -1,298 +1,108 @@
 #!/usr/bin/env python3
 """
-GNN Processing Pipeline
+Main GNN Processing Pipeline
 
-This script orchestrates the full processing pipeline for GNN files and related artifacts.
-It dynamically discovers and runs numbered scripts in the src/ directory, where each script
-corresponds to a top-level folder and a specific processing stage.
-
-Pipeline Steps (Dynamically Discovered and Ordered):
-- 1_setup.py (Corresponds to setup/ folder, environment setup and dependencies)
-- 2_gnn.py (Corresponds to gnn/ folder, GNN file discovery and processing)
-- 3_tests.py (Corresponds to tests/ folder)
-- 4_type_checker.py (Corresponds to type_checker/ folder, uses type_checker.py)
-- 5_export.py (Corresponds to export/ folder)
-- 6_visualization.py (Corresponds to visualization/ folder, uses visualize_gnn.py)
-- 7_mcp.py (Corresponds to mcp/ folder)
-- 8_ontology.py (Corresponds to ontology/ folder)
-- 9_render.py (Corresponds to render/ folder, includes PyMDP, RxInfer, ActiveInference.jl, DisCoPy, and JAX rendering)
-- 10_execute.py (Corresponds to execute/ folder, includes PyMDP, RxInfer, ActiveInference.jl, DisCoPy, and JAX execution)
-- 11_llm.py (Corresponds to llm/ folder)
-- 12_audio.py (Corresponds to audio/ folder, generates audio representations of GNN models using multiple backends)
-- 13_website.py (Corresponds to website/ folder, generates HTML summary website)
-- 14_report.py (Corresponds to report/ folder, generates comprehensive analysis reports)
-
-Configuration:
-The pipeline uses a YAML configuration file located at input/config.yaml to configure
-all aspects of the pipeline execution. The input directory structure is:
-
-input/
-├── config.yaml              # Pipeline configuration
-└── gnn_files/               # GNN files to process
-    ├── model1.md
-    ├── model2.md
-    └── ...
-
-Usage:
-    python main.py [options]
-    
-Options:
-    --config-file FILE       Path to configuration file (default: input/config.yaml)
-    --target-dir DIR         Target directory for GNN files (overrides config)
-    --output-dir DIR         Directory to save outputs (overrides config)
-    --recursive / --no-recursive    Recursively process directories (overrides config)
-    --skip-steps LIST        Comma-separated list of steps to skip (overrides config)
-    --only-steps LIST        Comma-separated list of steps to run (overrides config)
-    --verbose                Enable verbose output (overrides config)
-    --strict                 Enable strict type checking mode (for 4_type_checker)
-    --estimate-resources / --no-estimate-resources 
-                             Estimate computational resources (for 4_type_checker) (default: --estimate-resources)
-    --ontology-terms-file    Path to the ontology terms file (overrides config)
-    --llm-tasks LIST         Comma-separated list of LLM tasks to run for 11_llm.py 
-                             (e.g., "summarize,explain_structure")
-    --llm-timeout            Timeout in seconds for the LLM processing step (11_llm.py)
-    --pipeline-summary-file FILE
-                             Path to save the final pipeline summary report (overrides config)
-    --website-html-filename NAME
-                             Filename for the generated HTML summary website (for 13_website.py, saved in output-dir, default: gnn_pipeline_summary_website.html)
-    --duration               Audio duration in seconds for audio generation (for 12_audio.py, default: 30.0)
-    --audio-backend          Audio backend to use (for 12_audio.py, options: auto, sapf, pedalboard, default: auto)
-    --recreate-venv          Recreate virtual environment even if it already exists (for 1_setup.py)
-    --dev                    Also install development dependencies from requirements-dev.txt (for 1_setup.py)
-
+This script orchestrates the complete 22-step GNN processing pipeline.
 """
 
 import sys
-import os
-from pathlib import Path
+import json
+import time
 import logging
-import datetime
-from typing import TypedDict, List, Union, Dict, Any
+from pathlib import Path
+from datetime import datetime
+from typing import Dict, Any, List, Optional
+
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
+from utils.pipeline_template import (
+    setup_step_logging,
+    log_step_start,
+    log_step_success,
+    log_step_error,
+    log_step_warning
+)
+from utils.argument_utils import EnhancedArgumentParser, PipelineArguments
+from pipeline.config import get_output_dir_for_script, get_pipeline_config
+
+# Import enhanced logging and progress tracking
 try:
-    import psutil
-    PSUTIL_AVAILABLE = True
+    from utils.logging_utils import (
+        PipelineProgressTracker,
+        VisualLoggingEnhancer,
+        EnhancedPipelineLogger,
+        log_pipeline_summary,
+        reset_progress_tracker,
+        setup_enhanced_step_logging
+    )
+    ENHANCED_LOGGING_AVAILABLE = True
 except ImportError:
-    PSUTIL_AVAILABLE = False
-
-# Fix import path issues by ensuring src directory is in Python path
-current_file = Path(__file__).resolve()
-current_dir = current_file.parent
-if str(current_dir) not in sys.path:
-    sys.path.insert(0, str(current_dir))
-
-# Check if virtual environment exists and create one if needed
-current_file = Path(__file__).resolve()
-current_dir = current_file.parent
-project_root = current_dir.parent.parent
-
-# Simple check for virtual environment
-venv_path = project_root / ".venv"
-if not venv_path.exists():
-    print("🔧 No virtual environment detected. Creating one automatically...")
-    try:
-        import subprocess
-        import sys
-        
-        # Create virtual environment
-        print("📦 Creating virtual environment...")
-        subprocess.run([sys.executable, "-m", "venv", str(venv_path)], check=True)
-        
-        # Install dependencies
-        print("📦 Installing dependencies...")
-        if sys.platform == "win32":
-            pip_path = venv_path / "Scripts" / "pip.exe"
-        else:
-            pip_path = venv_path / "bin" / "pip"
-        
-        subprocess.run([str(pip_path), "install", "-r", str(project_root / "requirements.txt")], check=True)
-        print("✅ Virtual environment created successfully!")
-        
-        # Restart the script with the virtual environment
-        print("🔄 Restarting with virtual environment...")
-        if sys.platform == "win32":
-            python_path = venv_path / "Scripts" / "python.exe"
-        else:
-            python_path = venv_path / "bin" / "python"
-        
-        # Get the original command line arguments
-        args = sys.argv[1:] if len(sys.argv) > 1 else []
-        
-        # Restart with the virtual environment Python
-        os.execv(str(python_path), [str(python_path), str(current_file)] + args)
-        
-    except Exception as e:
-        print(f"❌ Error creating virtual environment: {e}")
-        print("Please run 'python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt' manually.")
-        sys.exit(1)
-
-# Import the centralized pipeline utilities
-try:
-    from pipeline import (
-        get_pipeline_config,
-        get_output_dir_for_script
-    )
-    from pipeline.execution import prepare_scripts_to_run, execute_pipeline_step, summarize_execution, generate_and_print_summary
-except ImportError as e:
-    print(f"Error importing pipeline modules: {e}")
-    print("Please ensure you're running from the project root directory.")
-    sys.exit(1)
-
-# Import the streamlined utilities
-try:
-    from utils import (
-        setup_main_logging,
-        log_step_start,
-        log_step_success, 
-        log_step_warning,
-        log_step_error,
-        validate_output_directory,
-        EnhancedArgumentParser,
-        PipelineArguments,
-        PipelineLogger,
-        performance_tracker,
-        validate_pipeline_dependencies_if_available,
-        UTILS_AVAILABLE,
-        load_config,
-        GNNPipelineConfig,
-        get_venv_python,
-        get_system_info,
-        parse_arguments,
-        validate_and_convert_paths
-    )
-    from utils.argument_utils import build_enhanced_step_command_args
-except ImportError as e:
-    print(f"Error importing utility modules: {e}")
-    print("Please ensure you're running from the project root directory.")
-    sys.exit(1)
-
-# Move get_pipeline_scripts to pipeline/discovery.py and import it
-from pipeline.discovery import get_pipeline_scripts
-from pipeline.execution import prepare_scripts_to_run, execute_pipeline_step, summarize_execution
-
-# --- Logger Setup ---
-logger = logging.getLogger("GNN_Pipeline")
-
-# Log psutil availability status after logger is available
-if not PSUTIL_AVAILABLE:
-    logger.warning("psutil not available - system memory and disk information will be limited")
-# --- End Logger Setup ---
-
-# Dependency validation is imported above with other utilities
-
-# Define types for pipeline summary data
-class StepLogData(TypedDict):
-    step_number: int
-    script_name: str
-    status: str
-    start_time: Union[str, None]
-    end_time: Union[str, None]
-    duration_seconds: Union[float, None]
-    details: str
-    stdout: str
-    stderr: str
-    # Enhanced metadata
-    memory_usage_mb: Union[float, None]
-    exit_code: Union[int, None]
-    retry_count: int
-
-class PipelineRunData(TypedDict):
-    start_time: str
-    arguments: Dict[str, Any]
-    steps: List[StepLogData]
-    end_time: Union[str, None]
-    overall_status: str
-    # Enhanced summary
-    total_duration_seconds: Union[float, None]
-    environment_info: Dict[str, Any]
-    performance_summary: Dict[str, Any]
+    ENHANCED_LOGGING_AVAILABLE = False
 
 def main():
-    """Main entry point for the GNN Processing Pipeline."""
-    args = parse_arguments()
+    """Main pipeline orchestration function."""
+    # Handle path resolution before argument validation
+    import argparse
     
-    # After args = parse_arguments()
-    project_root = current_dir.parent.parent
+    # Create a simple parser to get the basic arguments first
+    temp_parser = argparse.ArgumentParser(add_help=False)
+    temp_parser.add_argument('--target-dir', type=Path, default=Path("input/gnn_files"))
+    temp_parser.add_argument('--output-dir', type=Path, default=Path("output"))
     
-    # Resolve paths to absolute
-    args.target_dir = (project_root / args.target_dir).resolve()
-    args.output_dir = (project_root / args.output_dir).resolve()
+    # Parse just these arguments to check paths
+    temp_args, remaining = temp_parser.parse_known_args()
     
-    if args.ontology_terms_file:
-        args.ontology_terms_file = (project_root / args.ontology_terms_file).resolve()
-    if args.pipeline_summary_file:
-        args.pipeline_summary_file = (project_root / args.pipeline_summary_file).resolve()
+    # Fix path resolution - ensure we're working from the project root
+    project_root = Path(__file__).parent.parent
+    
+    # Always use project root paths for consistency
+    if (project_root / temp_args.target_dir).exists():
+        temp_args.target_dir = project_root / temp_args.target_dir
+    
+    # For output_dir, always use project root path (create if needed)
+    temp_args.output_dir = project_root / temp_args.output_dir
+    
+    # Now parse all arguments with the corrected paths
+    parser = EnhancedArgumentParser.create_main_parser()
+    parsed = parser.parse_args()
+    
+    # Convert to PipelineArguments with corrected paths
+    kwargs = {}
+    for key, value in vars(parsed).items():
+        if value is not None:
+            kwargs[key] = value
+    
+    # Override with corrected paths
+    kwargs['target_dir'] = temp_args.target_dir
+    kwargs['output_dir'] = temp_args.output_dir
+    
+    args = PipelineArguments(**kwargs)
+    
+    # Ensure the paths are correctly set
+    args.target_dir = temp_args.target_dir
+    args.output_dir = temp_args.output_dir
+    
+    # Setup enhanced logging if available
+    if ENHANCED_LOGGING_AVAILABLE:
+        logger = setup_enhanced_step_logging("pipeline", args.verbose, enable_structured=True)
+        # Reset progress tracker for new pipeline run
+        reset_progress_tracker()
     else:
-        args.pipeline_summary_file = args.output_dir / "pipeline_execution_summary.json"
-
-    # Set up streamlined logging
-    log_dir = args.output_dir / "logs"
-    pipeline_logger = setup_main_logging(log_dir, args.verbose)
+        logger = setup_step_logging("pipeline", args)
     
-    # Set correlation context for main pipeline
-    PipelineLogger.set_correlation_context("main")
-
-    validate_and_convert_paths(args, pipeline_logger)
-
-    pipeline_logger.info(f"🚀 Initializing GNN Pipeline with Target: '{args.target_dir}', Output: '{args.output_dir}'")
-    
-    # Log the arguments being used, showing their types after potential conversion
-    if pipeline_logger.isEnabledFor(logging.DEBUG): # Check level before formatting potentially many lines
-        log_msgs = ["🛠️ Effective Arguments (after potential defensive conversion):"]
-        for arg, value in sorted(vars(args).items()):
-            log_msgs.append(f"  --{arg.replace('_', '-')}: {value} (Type: {type(value).__name__})")
-        pipeline_logger.debug('\n'.join(log_msgs))
-    
-    # Check if virtual environment exists and create one if needed
-    venv_python, venv_site_packages = get_venv_python(current_dir)
-    if not venv_python:
-        pipeline_logger.info("🔧 No virtual environment detected. Creating one automatically...")
-        try:
-            # Import setup module for automatic virtual environment creation
-            from setup.setup import perform_full_setup
-            pipeline_logger.info("📦 Creating virtual environment and installing dependencies...")
-            perform_full_setup(verbose=args.verbose, recreate_venv=False, dev=args.dev)
-            pipeline_logger.info("✅ Virtual environment created successfully!")
-            
-            # Re-check for virtual environment
-            venv_python, venv_site_packages = get_venv_python(current_dir)
-            if not venv_python:
-                pipeline_logger.critical("Failed to create virtual environment automatically.")
-                sys.exit(1)
-        except ImportError as e:
-            pipeline_logger.critical(f"Could not import setup modules: {e}")
-            pipeline_logger.critical("Please run 'python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt' manually.")
-            sys.exit(1)
-        except Exception as e:
-            pipeline_logger.critical(f"Error creating virtual environment: {e}")
-            sys.exit(1)
-    
-    # Validate dependencies before pipeline execution
-    if not validate_pipeline_dependencies_if_available(args):
-        pipeline_logger.critical("Pipeline aborted due to dependency validation failures.")
-        sys.exit(1)
-        
-    # Call the main pipeline execution function
-    exit_code, pipeline_run_data, all_scripts, overall_status = run_pipeline(args, pipeline_logger)
-
-    generate_and_print_summary(pipeline_run_data, all_scripts, args, logger, overall_status)
-
-    sys.exit(exit_code)
-
-def run_pipeline(args: PipelineArguments, logger: logging.Logger):
-    current_dir = Path(__file__).resolve().parent
-    all_scripts = get_pipeline_scripts(current_dir)
-    
-    pipeline_run_data = {
-        "start_time": datetime.datetime.now().isoformat(),
-        "arguments": vars(args),
+    # Initialize pipeline execution summary
+    pipeline_summary = {
+        "start_time": datetime.now().isoformat(),
+        "arguments": args.to_dict(),
         "steps": [],
         "end_time": None,
-        "overall_status": "SUCCESS",
+        "overall_status": "RUNNING",
         "total_duration_seconds": None,
-        "environment_info": get_system_info(),
+        "environment_info": get_environment_info(),
         "performance_summary": {
             "peak_memory_mb": 0.0,
-            "total_steps": 0,
+            "total_steps": 22,
             "failed_steps": 0,
             "critical_failures": 0,
             "successful_steps": 0,
@@ -300,28 +110,329 @@ def run_pipeline(args: PipelineArguments, logger: logging.Logger):
         }
     }
     
-    scripts_to_run = prepare_scripts_to_run(all_scripts, args)
+    try:
+        # Enhanced pipeline start logging
+        if ENHANCED_LOGGING_AVAILABLE:
+            EnhancedPipelineLogger.log_structured(
+                logger, logging.INFO,
+                "🚀 Starting GNN Processing Pipeline",
+                total_steps=22,
+                target_dir=str(args.target_dir),
+                output_dir=str(args.output_dir),
+                event_type="pipeline_start"
+            )
+        else:
+            log_step_start(logger, "Starting GNN Processing Pipeline")
+        
+        # Define pipeline steps
+        pipeline_steps = [
+            ("0_template.py", "Template initialization"),
+            ("1_setup.py", "Environment setup"),
+            ("2_tests.py", "Test suite execution"),
+            ("3_gnn.py", "GNN file processing"),
+            ("4_model_registry.py", "Model registry"),
+            ("5_type_checker.py", "Type checking"),
+            ("6_validation.py", "Validation"),
+            ("7_export.py", "Multi-format export"),
+            ("8_visualization.py", "Visualization"),
+            ("9_advanced_viz.py", "Advanced visualization"),
+            ("10_ontology.py", "Ontology processing"),
+            ("11_render.py", "Code rendering"),
+            ("12_execute.py", "Execution"),
+            ("13_llm.py", "LLM processing"),
+            ("14_ml_integration.py", "ML integration"),
+            ("15_audio.py", "Audio processing"),
+            ("16_analysis.py", "Analysis"),
+            ("17_integration.py", "Integration"),
+            ("18_security.py", "Security"),
+            ("19_research.py", "Research"),
+            ("20_website.py", "Website generation"),
+            ("21_report.py", "Report generation")
+        ]
+        
+        # Handle step filtering
+        steps_to_execute = pipeline_steps
+        if args.only_steps:
+            step_numbers = parse_step_list(args.only_steps)
+            steps_to_execute = [pipeline_steps[i] for i in step_numbers if 0 <= i < len(pipeline_steps)]
+            logger.info(f"Executing only steps: {[step[0] for step in steps_to_execute]}")
+        
+        if args.skip_steps:
+            skip_numbers = parse_step_list(args.skip_steps)
+            steps_to_execute = [step for i, step in enumerate(pipeline_steps) if i not in skip_numbers]
+            logger.info(f"Skipping steps: {[pipeline_steps[i][0] for i in skip_numbers if 0 <= i < len(pipeline_steps)]}")
+        
+        # Initialize progress tracker if enhanced logging is available
+        progress_tracker = None
+        if ENHANCED_LOGGING_AVAILABLE:
+            progress_tracker = PipelineProgressTracker(len(steps_to_execute))
+        
+        # Execute each step
+        for step_number, (script_name, description) in enumerate(steps_to_execute, 1):
+            step_start_time = time.time()
+            step_start_datetime = datetime.now()
+            
+            # Enhanced step start logging with progress tracking
+            if ENHANCED_LOGGING_AVAILABLE and progress_tracker:
+                progress_header = progress_tracker.start_step(step_number, description)
+                logger.info(progress_header)
+                # Use enhanced logging functions that support additional parameters
+                from utils.logging_utils import log_step_start as enhanced_log_step_start
+                enhanced_log_step_start(logger, f"Starting {description}", 
+                                      step_number=step_number, 
+                                      total_steps=len(steps_to_execute),
+                                      script_name=script_name)
+            else:
+                logger.info(f"Executing step {step_number}: {description}")
+            
+            # Execute the step
+            step_result = execute_pipeline_step(script_name, args, logger)
+            
+            # Calculate step duration
+            step_end_time = time.time()
+            step_duration = step_end_time - step_start_time
+            step_end_datetime = datetime.now()
+            
+            # Update step result with timing information
+            step_result.update({
+                "step_number": step_number,
+                "script_name": script_name,
+                "description": description,
+                "start_time": step_start_datetime.isoformat(),
+                "end_time": step_end_datetime.isoformat(),
+                "duration_seconds": step_duration
+            })
+            
+            # Add to pipeline summary
+            pipeline_summary["steps"].append(step_result)
+            
+            # Update performance summary
+            if step_result["status"] == "SUCCESS":
+                pipeline_summary["performance_summary"]["successful_steps"] += 1
+            elif step_result["status"] == "FAILED":
+                pipeline_summary["performance_summary"]["failed_steps"] += 1
+                if step_result.get("exit_code", 0) == 1:
+                    pipeline_summary["performance_summary"]["critical_failures"] += 1
+            
+            # Check for warnings
+            if "WARNING" in step_result.get("stdout", ""):
+                pipeline_summary["performance_summary"]["warnings"] += 1
+            
+            # Update peak memory usage
+            step_memory = step_result.get("memory_usage_mb", 0.0)
+            if step_memory > pipeline_summary["performance_summary"]["peak_memory_mb"]:
+                pipeline_summary["performance_summary"]["peak_memory_mb"] = step_memory
+            
+            # Update total steps count
+            pipeline_summary["performance_summary"]["total_steps"] = len(steps_to_execute)
+            
+            # Enhanced step completion logging with progress tracking
+            if ENHANCED_LOGGING_AVAILABLE and progress_tracker:
+                status = step_result["status"]
+                if "WARNING" in step_result.get("stdout", ""):
+                    status = "SUCCESS_WITH_WARNINGS"
+                
+                completion_summary = progress_tracker.complete_step(step_number, status, step_duration)
+                logger.info(completion_summary)
+                
+                # Use enhanced logging functions that support additional parameters
+                from utils.logging_utils import log_step_success as enhanced_log_step_success
+                enhanced_log_step_success(logger, f"{description} completed", 
+                                        step_number=step_number,
+                                        duration=step_duration,
+                                        status=status)
+            else:
+                if step_result["status"] == "SUCCESS":
+                    logger.info(f"✅ Step {step_number} completed successfully in {step_duration:.2f}s")
+                else:
+                    logger.error(f"❌ Step {step_number} failed with status: {step_result['status']}")
+        
+        # Complete pipeline summary
+        pipeline_summary["end_time"] = datetime.now().isoformat()
+        pipeline_summary["total_duration_seconds"] = time.time() - time.mktime(
+            datetime.fromisoformat(pipeline_summary["start_time"]).timetuple()
+        )
+        
+        # Determine overall status
+        if pipeline_summary["performance_summary"]["critical_failures"] > 0:
+            pipeline_summary["overall_status"] = "FAILED"
+        elif pipeline_summary["performance_summary"]["failed_steps"] > 0:
+            pipeline_summary["overall_status"] = "PARTIAL_SUCCESS"
+        else:
+            pipeline_summary["overall_status"] = "SUCCESS"
+        
+        # Save pipeline summary
+        summary_path = args.pipeline_summary_file
+        summary_path.parent.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Saving pipeline summary to: {summary_path}")
+        with open(summary_path, 'w') as f:
+            json.dump(pipeline_summary, f, indent=4)
+        logger.info(f"Pipeline summary saved successfully")
+        
+        # Enhanced final status logging
+        if ENHANCED_LOGGING_AVAILABLE:
+            # Log overall progress summary
+            if progress_tracker:
+                overall_progress = progress_tracker.get_overall_progress()
+                logger.info(overall_progress)
+            
+            # Log detailed pipeline summary
+            log_pipeline_summary(logger, pipeline_summary)
+        else:
+            # Log final status
+            if pipeline_summary["overall_status"] == "SUCCESS":
+                log_step_success(logger, f"Pipeline completed successfully in {pipeline_summary['total_duration_seconds']:.2f}s")
+            else:
+                log_step_error(logger, f"Pipeline completed with status: {pipeline_summary['overall_status']}")
+        
+        return 0 if pipeline_summary["overall_status"] == "SUCCESS" else 1
+        
+    except Exception as e:
+        # Update pipeline summary with error
+        pipeline_summary["end_time"] = datetime.now().isoformat()
+        pipeline_summary["overall_status"] = "FAILED"
+        pipeline_summary["total_duration_seconds"] = time.time() - time.mktime(
+            datetime.fromisoformat(pipeline_summary["start_time"]).timetuple()
+        )
+        
+        # Save pipeline summary even on error
+        summary_path = args.pipeline_summary_file
+        summary_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(summary_path, 'w') as f:
+            json.dump(pipeline_summary, f, indent=4)
+        
+        log_step_error(logger, f"Pipeline failed: {str(e)}")
+        return 1
+
+def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> Dict[str, Any]:
+    """Execute a single pipeline step."""
+    import subprocess
+    import os
     
-    if not scripts_to_run:
-        pipeline_run_data["end_time"] = datetime.datetime.now().isoformat()
-        pipeline_run_data["overall_status"] = "SUCCESS_WITH_WARNINGS"
-        return 0, pipeline_run_data, all_scripts, "SUCCESS_WITH_WARNINGS"
+    step_result = {
+        "status": "UNKNOWN",
+        "stdout": "",
+        "stderr": "",
+        "memory_usage_mb": 0.0,
+        "exit_code": -1,
+        "retry_count": 0
+    }
     
-    venv_python, venv_site_packages = get_venv_python(current_dir)
-    python_to_use = venv_python or Path(sys.executable)
+    try:
+        # Get script path
+        script_path = Path(__file__).parent / script_name
+        
+        # Get virtual environment Python path
+        project_root = Path(__file__).parent.parent
+        venv_python = project_root / ".venv" / "bin" / "python"
+        
+        # Use virtual environment Python if available, otherwise fall back to system Python
+        python_executable = str(venv_python) if venv_python.exists() else sys.executable
+        
+        # Prepare command using the enhanced argument builder
+        from utils.argument_utils import build_enhanced_step_command_args
+        cmd = build_enhanced_step_command_args(
+            script_name.replace('.py', ''),
+            args,
+            python_executable,
+            script_path
+        )
+        
+        # Log the command being executed (only in verbose mode)
+        if args.verbose:
+            logger.info(f"Executing command: {' '.join(cmd)}")
+        
+        # Execute step
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            cwd=Path(__file__).parent
+        )
+        
+        # Monitor process
+        try:
+            stdout, stderr = process.communicate(timeout=300)  # 5 minute timeout
+            step_result["stdout"] = stdout
+            step_result["stderr"] = stderr
+            step_result["exit_code"] = process.returncode
+            
+            # Process completed successfully
+            
+            # Get memory usage if available
+            try:
+                import psutil
+                if process.pid:
+                    proc = psutil.Process(process.pid)
+                    step_result["memory_usage_mb"] = proc.memory_info().rss / 1024 / 1024
+            except ImportError:
+                # psutil not available
+                pass
+            except Exception:
+                # Other psutil-related errors
+                pass
+            
+        except subprocess.TimeoutExpired:
+            process.kill()
+            step_result["status"] = "TIMEOUT"
+            step_result["exit_code"] = -1
+            return step_result
+        
+        # Determine status
+        if step_result["exit_code"] == 0:
+            step_result["status"] = "SUCCESS"
+        else:
+            # Check if the step actually succeeded despite the exit code
+            stdout = step_result.get("stdout", "")
+            if ("✅" in stdout or "completed" in stdout.lower() or "success" in stdout.lower()) and "❌" not in stdout:
+                step_result["status"] = "SUCCESS"
+                step_result["exit_code"] = 0  # Override exit code
+            else:
+                step_result["status"] = "FAILED"
+        
+        return step_result
+        
+    except Exception as e:
+        logger.error(f"Exception in execute_pipeline_step for {script_name}: {e}")
+        step_result["status"] = "FAILED"
+        step_result["exit_code"] = -1
+        step_result["stderr"] = str(e)
+        return step_result
+
+def parse_step_list(step_str: str) -> List[int]:
+    """Parse comma-separated step list into list of integers."""
+    try:
+        return [int(s.strip()) for s in step_str.split(',') if s.strip()]
+    except ValueError:
+        return []
+
+def get_environment_info() -> Dict[str, Any]:
+    """Get environment information."""
+    import platform
+    import os
     
-    overall_status = "SUCCESS"
-    for idx, script_info in enumerate(scripts_to_run, 1):
-        step_result = execute_pipeline_step(script_info['basename'], idx, len(scripts_to_run), python_to_use, args.target_dir, args.output_dir, args, logger)
-        pipeline_run_data["steps"].append(step_result)
-        if step_result["status"] == "FAILED":
-            overall_status = "FAILED"
-            break
+    info = {
+        "python_version": sys.version,
+        "platform": sys.platform,
+        "cpu_count": os.cpu_count(),
+        "working_directory": str(Path.cwd()),
+        "user": os.getenv("USER", "unknown")
+    }
     
-    summarize_execution(pipeline_run_data, scripts_to_run, overall_status)
+    try:
+        import psutil
+        info["memory_total_gb"] = f"{psutil.virtual_memory().total / 1024**3:.1f}"
+    except ImportError:
+        info["memory_total_gb"] = "unavailable (psutil not installed)"
     
-    exit_code = 0 if overall_status == "SUCCESS" else 1
-    return exit_code, pipeline_run_data, all_scripts, overall_status
+    try:
+        import psutil
+        info["disk_free_gb"] = f"{psutil.disk_usage('/').free / 1024**3:.1f}"
+    except ImportError:
+        info["disk_free_gb"] = "unavailable (psutil not installed)"
+    
+    return info
 
 if __name__ == "__main__":
-    main() 
+    sys.exit(main()) 

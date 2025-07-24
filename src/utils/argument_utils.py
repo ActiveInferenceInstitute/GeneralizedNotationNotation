@@ -121,8 +121,27 @@ class PipelineArguments:
         errors = []
         
         # Check that target directory exists if not a special placeholder
-        if not str(self.target_dir).startswith("<") and not self.target_dir.exists():
-            errors.append(f"Target directory does not exist: {self.target_dir}")
+        if not str(self.target_dir).startswith("<"):
+            # Try to resolve path relative to project root if not found
+            if not self.target_dir.exists():
+                # Check if we're running from src directory and target_dir is relative to project root
+                import sys
+                if hasattr(sys, '_getframe'):
+                    try:
+                        current_file = Path(sys._getframe(1).f_code.co_filename)
+                        if current_file.name == 'main.py' and current_file.parent.name == 'src':
+                            project_root = current_file.parent.parent
+                            project_target_dir = project_root / self.target_dir.name
+                            if project_target_dir.exists():
+                                self.target_dir = project_target_dir
+                            else:
+                                errors.append(f"Target directory does not exist: {self.target_dir}")
+                        else:
+                            errors.append(f"Target directory does not exist: {self.target_dir}")
+                    except (ValueError, AttributeError):
+                        errors.append(f"Target directory does not exist: {self.target_dir}")
+                else:
+                    errors.append(f"Target directory does not exist: {self.target_dir}")
             
         # Check that ontology terms file exists if specified and not placeholder
         if (self.ontology_terms_file and 
@@ -167,11 +186,13 @@ class ArgumentParser:
         'target_dir': ArgumentDefinition(
             flag='--target-dir',
             arg_type=Path,
+            default=Path("input/gnn_files"),
             help_text='Target directory for GNN files'
         ),
         'output_dir': ArgumentDefinition(
             flag='--output-dir', 
             arg_type=Path,
+            default=Path("output"),
             help_text='Directory to save outputs'
         ),
         'recursive': ArgumentDefinition(
@@ -261,20 +282,28 @@ class ArgumentParser:
     
     # Define which arguments each step supports
     STEP_ARGUMENTS = {
+        "0_template.py": ["target_dir", "output_dir", "verbose"],
         "1_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
-        "2_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
-        "3_tests.py": ["target_dir", "output_dir", "verbose"],
-        "4_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
-        "5_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "6_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "7_mcp.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "8_ontology.py": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
-        "9_render.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "10_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "11_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
-        "12_audio.py": ["target_dir", "output_dir", "recursive", "verbose", "duration", "audio_backend"],
-"13_website.py": ["target_dir", "output_dir", "recursive", "verbose", "website_html_filename"],
-"14_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "2_tests.py": ["target_dir", "output_dir", "verbose"],
+        "3_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
+        "4_model_registry.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "5_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
+        "6_validation.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "7_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "8_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "9_advanced_viz.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "10_ontology.py": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
+        "11_render.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "12_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "13_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
+        "14_ml_integration.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "15_audio.py": ["target_dir", "output_dir", "recursive", "verbose", "duration", "audio_backend"],
+        "16_analysis.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "17_integration.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "18_security.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "19_research.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "20_website.py": ["target_dir", "output_dir", "recursive", "verbose", "website_html_filename"],
+        "21_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys())
     }
     
@@ -496,88 +525,136 @@ class StepConfiguration:
     
     # Define step-specific requirements and defaults
     STEP_CONFIGS = {
+        "0_template": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["verbose"],
+            "defaults": {"verbose": False},
+            "description": "Standardized pipeline step template"
+        },
         "1_setup": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["verbose", "recreate_venv", "dev"],
             "defaults": {"verbose": False, "recreate_venv": False, "dev": False},
             "description": "Project Setup & Environment Configuration"
         },
-        "2_gnn": {
-            "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose"],
-            "defaults": {"recursive": True, "verbose": False},
-            "description": "GNN Discovery & Basic Parse"
-        },
-        "3_tests": {
-            "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["verbose"],
+        "2_tests": {
+            "required_args": [],
+            "optional_args": ["target_dir", "output_dir", "verbose"],
             "defaults": {"verbose": False},
             "description": "Test Execution & Validation"
         },
-        "4_type_checker": {
+        "3_gnn": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose", "enable_round_trip", "enable_cross_format"],
+            "defaults": {"recursive": True, "verbose": False, "enable_round_trip": True, "enable_cross_format": True},
+            "description": "GNN Discovery & Basic Parse"
+        },
+        "4_model_registry": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Model Registry & Versioning"
+        },
+        "5_type_checker": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["recursive", "verbose", "strict", "estimate_resources"],
             "defaults": {"recursive": True, "verbose": False, "strict": False, "estimate_resources": True},
             "description": "Type Checking & Resource Estimation"
         },
-        "5_export": {
+        "6_validation": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["recursive", "verbose"],
-            "defaults": {"recursive": False, "verbose": False},
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Enhanced Validation & Quality Assurance"
+        },
+        "7_export": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
             "description": "GNN Export & Format Conversion"
         },
-        "6_visualization": {
+        "8_visualization": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["recursive", "verbose"],
-            "defaults": {"recursive": False, "verbose": False},
-            "description": "Visualization Generation"
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Basic Visualization Generation"
         },
-        "7_mcp": {
+        "9_advanced_viz": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["verbose"],
-            "defaults": {"verbose": False},
-            "description": "MCP Integration & Tool Discovery"
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Advanced Visualization & Exploration"
         },
-        "8_ontology": {
+        "10_ontology": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["recursive", "verbose", "ontology_terms_file"],
-            "defaults": {"recursive": False, "verbose": False},
+            "defaults": {"recursive": True, "verbose": False},
             "description": "Ontology Processing & Validation"
         },
-        "9_render": {
-            "required_args": ["output_dir"],
-            "optional_args": ["target_dir", "recursive", "verbose"],
+        "11_render": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
             "defaults": {"recursive": True, "verbose": False},
             "description": "Simulator Code Generation"
         },
-        "10_execute": {
-            "required_args": ["output_dir"],
-            "optional_args": ["target_dir", "recursive", "verbose"],
+        "12_execute": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
             "defaults": {"recursive": True, "verbose": False},
             "description": "Simulator Execution"
         },
-        "11_llm": {
+        "13_llm": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["recursive", "verbose", "llm_tasks", "llm_timeout"],
-            "defaults": {"recursive": False, "verbose": False, "llm_tasks": "all", "llm_timeout": 360},
+            "defaults": {"recursive": True, "verbose": False, "llm_tasks": "all", "llm_timeout": 360},
             "description": "LLM Analysis & Processing"
         },
-        "12_website": {
-            "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["verbose", "website_html_filename"],
-            "defaults": {"verbose": False, "website_html_filename": "gnn_pipeline_summary_website.html"},
-            "description": "HTML Website Generation"
-        },
-        "13_website": {
-            "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose", "website_html_filename"],
-            "defaults": {"recursive": False, "verbose": False, "website_html_filename": "gnn_pipeline_summary_website.html"},
-            "description": "HTML Website Generation"
-        },
-        "14_report": {
+        "14_ml_integration": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["recursive", "verbose"],
-            "defaults": {"recursive": False, "verbose": False},
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Machine Learning Integration"
+        },
+        "15_audio": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose", "duration", "audio_backend"],
+            "defaults": {"recursive": True, "verbose": False, "duration": 30.0, "audio_backend": "auto"},
+            "description": "Audio Generation & Processing"
+        },
+        "16_analysis": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Advanced Analysis & Reporting"
+        },
+        "17_integration": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "API Gateway & Plugin System"
+        },
+        "18_security": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Security & Compliance Features"
+        },
+        "19_research": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Research Workflow Enhancement"
+        },
+        "20_website": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose", "website_html_filename"],
+            "defaults": {"recursive": True, "verbose": False, "website_html_filename": "gnn_pipeline_summary_website.html"},
+            "description": "HTML Website Generation"
+        },
+        "21_report": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
             "description": "Comprehensive Analysis Report Generation"
         }
     }
@@ -609,8 +686,28 @@ class StepConfiguration:
                 arg_value = getattr(args, arg_name)
                 if arg_value and isinstance(arg_value, Path):
                     # Only validate existence for input paths, not output paths
-                    if arg_name in ["target_dir", "ontology_terms_file"] and not arg_value.exists():
-                        errors.append(f"Path does not exist for {step_name}: {arg_value}")
+                    if arg_name in ["target_dir", "ontology_terms_file"]:
+                        # Try to resolve path relative to project root if not found
+                        if not arg_value.exists():
+                            # Check if we're running from src directory and path is relative to project root
+                            import sys
+                            if hasattr(sys, '_getframe'):
+                                try:
+                                    current_file = Path(sys._getframe(1).f_code.co_filename)
+                                    if current_file.name.endswith('.py') and current_file.parent.name == 'src':
+                                        project_root = current_file.parent.parent
+                                        project_path = project_root / arg_value.name
+                                        if project_path.exists():
+                                            # Update the argument with the correct path
+                                            setattr(args, arg_name, project_path)
+                                        else:
+                                            errors.append(f"Path does not exist for {step_name}: {arg_value}")
+                                    else:
+                                        errors.append(f"Path does not exist for {step_name}: {arg_value}")
+                                except (ValueError, AttributeError):
+                                    errors.append(f"Path does not exist for {step_name}: {arg_value}")
+                            else:
+                                errors.append(f"Path does not exist for {step_name}: {arg_value}")
         
         return errors
 
