@@ -1,0 +1,494 @@
+{
+  "success": true,
+  "model_info": {
+    "name": "Classic Active Inference POMDP Agent v1",
+    "version": "1.0",
+    "annotation": "This model describes a classic Active Inference agent for a discrete POMDP:\n- One observation modality (\"state_observation\") with 3 possible outcomes.\n- One hidden state factor (\"location\") with 3 possible states.\n- The hidden state is fully controllable via 3 discrete actions.\n- The agent's preferences are encoded as log-probabilities over observations.\n- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.",
+    "source_format": null,
+    "created_at": "2025-07-24T10:58:26.586592",
+    "modified_at": "2025-07-24T10:58:26.586596"
+  },
+  "blocks": [
+    {
+      "name": "A",
+      "type": "likelihood_matrix",
+      "data_type": "float",
+      "dimensions": [
+        3,
+        3
+      ],
+      "description": "Likelihood mapping hidden states to observations",
+      "constraints": {}
+    },
+    {
+      "name": "B",
+      "type": "transition_matrix",
+      "data_type": "float",
+      "dimensions": [
+        3,
+        3,
+        3
+      ],
+      "description": "State transitions given previous state and action",
+      "constraints": {}
+    },
+    {
+      "name": "C",
+      "type": "preference_vector",
+      "data_type": "float",
+      "dimensions": [
+        3
+      ],
+      "description": "Log-preferences over observations",
+      "constraints": {}
+    },
+    {
+      "name": "D",
+      "type": "prior_vector",
+      "data_type": "float",
+      "dimensions": [
+        3
+      ],
+      "description": "Prior over initial hidden states",
+      "constraints": {}
+    },
+    {
+      "name": "E",
+      "type": "policy",
+      "data_type": "float",
+      "dimensions": [
+        3
+      ],
+      "description": "Initial policy prior (habit) over actions",
+      "constraints": {}
+    },
+    {
+      "name": "s",
+      "type": "hidden_state",
+      "data_type": "float",
+      "dimensions": [
+        3,
+        1
+      ],
+      "description": "Current hidden state distribution",
+      "constraints": {}
+    },
+    {
+      "name": "s_prime",
+      "type": "hidden_state",
+      "data_type": "float",
+      "dimensions": [
+        3,
+        1
+      ],
+      "description": "Next hidden state distribution",
+      "constraints": {}
+    },
+    {
+      "name": "o",
+      "type": "observation",
+      "data_type": "integer",
+      "dimensions": [
+        3,
+        1
+      ],
+      "description": "Current observation (integer index)",
+      "constraints": {}
+    },
+    {
+      "name": "\u03c0",
+      "type": "policy",
+      "data_type": "float",
+      "dimensions": [
+        3
+      ],
+      "description": "Policy (distribution over actions), no planning",
+      "constraints": {}
+    },
+    {
+      "name": "u",
+      "type": "action",
+      "data_type": "integer",
+      "dimensions": [
+        1
+      ],
+      "description": "Action taken",
+      "constraints": {}
+    },
+    {
+      "name": "G",
+      "type": "policy",
+      "data_type": "float",
+      "dimensions": [
+        1
+      ],
+      "description": "Expected Free Energy (per policy)",
+      "constraints": {}
+    },
+    {
+      "name": "t",
+      "type": "hidden_state",
+      "data_type": "integer",
+      "dimensions": [
+        1
+      ],
+      "description": "Discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "from": [
+        "D"
+      ],
+      "to": [
+        "s"
+      ],
+      "type": "directed",
+      "weight": null,
+      "description": ""
+    },
+    {
+      "from": [
+        "s"
+      ],
+      "to": [
+        "A"
+      ],
+      "type": "undirected",
+      "weight": null,
+      "description": ""
+    },
+    {
+      "from": [
+        "s"
+      ],
+      "to": [
+        "s_prime"
+      ],
+      "type": "directed",
+      "weight": null,
+      "description": ""
+    },
+    {
+      "from": [
+        "A"
+      ],
+      "to": [
+        "o"
+      ],
+      "type": "undirected",
+      "weight": null,
+      "description": ""
+    },
+    {
+      "from": [
+        "s"
+      ],
+      "to": [
+        "B"
+      ],
+      "type": "undirected",
+      "weight": null,
+      "description": ""
+    },
+    {
+      "from": [
+        "C"
+      ],
+      "to": [
+        "G"
+      ],
+      "type": "directed",
+      "weight": null,
+      "description": ""
+    },
+    {
+      "from": [
+        "E"
+      ],
+      "to": [
+        "\u03c0"
+      ],
+      "type": "directed",
+      "weight": null,
+      "description": ""
+    },
+    {
+      "from": [
+        "G"
+      ],
+      "to": [
+        "\u03c0"
+      ],
+      "type": "directed",
+      "weight": null,
+      "description": ""
+    },
+    {
+      "from": [
+        "\u03c0"
+      ],
+      "to": [
+        "u"
+      ],
+      "type": "directed",
+      "weight": null,
+      "description": ""
+    },
+    {
+      "from": [
+        "B"
+      ],
+      "to": [
+        "u"
+      ],
+      "type": "directed",
+      "weight": null,
+      "description": ""
+    },
+    {
+      "from": [
+        "u"
+      ],
+      "to": [
+        "s_prime"
+      ],
+      "type": "directed",
+      "weight": null,
+      "description": ""
+    }
+  ],
+  "parameters": [
+    {
+      "name": "A",
+      "value": [
+        [
+          0.9,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.9,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": ""
+    },
+    {
+      "name": "B",
+      "value": [
+        [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": ""
+    },
+    {
+      "name": "C",
+      "value": [
+        [
+          0.1,
+          0.1,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": ""
+    },
+    {
+      "name": "D",
+      "value": [
+        [
+          0.33333,
+          0.33333,
+          0.33333
+        ]
+      ],
+      "type_hint": null,
+      "description": ""
+    },
+    {
+      "name": "E",
+      "value": [
+        [
+          0.33333,
+          0.33333,
+          0.33333
+        ]
+      ],
+      "type_hint": null,
+      "description": ""
+    },
+    {
+      "name": "num_actions: 3       # B actions_dim",
+      "value": "3 (controlled by \u03c0)",
+      "type_hint": null,
+      "description": ""
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "Unbounded # The agent is defined for an unbounded time horizon; simulation runs may specify a finite horizon.",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "variable_name": "A",
+      "ontology_term": "LikelihoodMatrix",
+      "description": ""
+    },
+    {
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": ""
+    },
+    {
+      "variable_name": "C",
+      "ontology_term": "LogPreferenceVector",
+      "description": ""
+    },
+    {
+      "variable_name": "D",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": ""
+    },
+    {
+      "variable_name": "E",
+      "ontology_term": "Habit",
+      "description": ""
+    },
+    {
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": ""
+    },
+    {
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": ""
+    },
+    {
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": ""
+    },
+    {
+      "variable_name": "s_prime",
+      "ontology_term": "NextHiddenState",
+      "description": ""
+    },
+    {
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": ""
+    },
+    {
+      "variable_name": "\u03c0",
+      "ontology_term": "PolicyVector # Distribution over actions",
+      "description": ""
+    },
+    {
+      "variable_name": "u",
+      "ontology_term": "Action       # Chosen action",
+      "description": ""
+    },
+    {
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": ""
+    }
+  ],
+  "total_blocks": 12,
+  "total_connections": 11,
+  "total_parameters": 6,
+  "total_equations": 0,
+  "extraction_timestamp": "2025-07-24T10:58:26.587310",
+  "statistics": {
+    "variable_types": {
+      "likelihood_matrix": 1,
+      "transition_matrix": 1,
+      "preference_vector": 1,
+      "prior_vector": 1,
+      "policy": 3,
+      "hidden_state": 3,
+      "observation": 1,
+      "action": 1
+    },
+    "data_types": {
+      "float": 9,
+      "integer": 3
+    },
+    "connection_types": {
+      "directed": 8,
+      "undirected": 3
+    },
+    "dimension_distribution": {
+      "2D": 4,
+      "3D": 1,
+      "1D": 7
+    },
+    "total_variables": 12,
+    "total_connections": 11,
+    "total_parameters": 6,
+    "total_equations": 0
+  }
+}

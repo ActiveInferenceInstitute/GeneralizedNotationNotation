@@ -1,0 +1,5 @@
+{
+  "core_tests": true,
+  "utility_tests": true,
+  "pipeline_tests": true
+}
