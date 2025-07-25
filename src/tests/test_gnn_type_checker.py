@@ -17,7 +17,7 @@ pytestmark = [pytest.mark.type_checking, pytest.mark.safe_to_fail, pytest.mark.f
 
 # Add the src directory to the Python path to import the module
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
-from type_checker import GNNTypeChecker
+from src.type_checker import GNNTypeChecker
 
 
 class TestGNNTypeChecker(unittest.TestCase):

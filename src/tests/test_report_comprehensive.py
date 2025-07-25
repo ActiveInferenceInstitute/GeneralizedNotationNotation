@@ -14,7 +14,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime
 
-from report import (
+from src.report import (
     # Generator functions
     generate_comprehensive_report,
     generate_html_report_file,

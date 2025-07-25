@@ -45,18 +45,8 @@ try:
 except ImportError:
     ROUND_TRIP_AVAILABLE = False
 
-# Import round-trip testing after we have the base types
-try:
-    if ROUND_TRIP_AVAILABLE:
-        from .testing.test_round_trip import RoundTripResult
-        # Note: GNNRoundTripTester will be imported when needed to avoid circular deps
-except ImportError:
-    class RoundTripResult:
-        """Fallback RoundTripResult class for when testing is not available."""
-        def __init__(self):
-            self.success = False
-            self.errors = []
-            self.warnings = []
+# RoundTripResult is already imported from .types above
+# No need to import it again from testing module to avoid circular deps
 
 logger = logging.getLogger(__name__)
 

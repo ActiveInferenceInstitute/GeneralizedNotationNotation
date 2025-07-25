@@ -15,6 +15,12 @@ from src.utils.pipeline_template import (
     log_step_warning
 )
 
+# Import performance tracker and other utilities
+try:
+    from src.utils import performance_tracker
+except ImportError:
+    performance_tracker = None
+
 # Test configuration and constants
 TEST_CONFIG = {
     "safe_mode": True,
@@ -67,6 +73,16 @@ def validate_test_environment():
     """Validate test environment."""
     return True, []
 
+def get_test_args():
+    """Get standard test arguments for pipeline operations."""
+    return {
+        "target_dir": TEST_DIR / "test_data",
+        "output_dir": PROJECT_ROOT / "output" / "test_results", 
+        "verbose": True,
+        "recursive": True,
+        "strict": False
+    }
+
 def get_sample_pipeline_arguments():
     """Get sample pipeline arguments for testing."""
     return {
@@ -76,9 +92,65 @@ def get_sample_pipeline_arguments():
         "strict": False
     }
 
-def create_test_gnn_files(target_dir: Path):
+def create_test_gnn_files(target_dir: Path) -> List[Path]:
     """Create test GNN files for testing."""
     target_dir.mkdir(parents=True, exist_ok=True)
+    test_files = []
+    
+    # Create a basic test GNN file
+    test_file = target_dir / "test_model.md"
+    content = """# Test GNN Model
+
+## GNNVersionAndFlags
+Version: 1.0
+Flags: test
+
+## ModelName
+TestModel
+
+## StateSpaceBlock
+Variables:
+- A: [3, 3] (likelihood_matrix)
+- B: [3, 3, 3] (transition_matrix)
+
+Connections:
+- A -> B
+"""
+    with open(test_file, 'w') as f:
+        f.write(content)
+    test_files.append(test_file)
+    
+    return test_files
+
+def create_test_files(target_dir: Path, num_files: int = 3) -> List[Path]:
+    """Create multiple test GNN files for testing purposes."""
+    target_dir.mkdir(parents=True, exist_ok=True)
+    test_files = []
+    
+    for i in range(num_files):
+        test_file = target_dir / f"test_model_{i}.md"
+        content = f"""# Test GNN Model {i}
+
+## GNNVersionAndFlags
+Version: 1.0
+Flags: test
+
+## ModelName
+TestModel{i}
+
+## StateSpaceBlock
+Variables:
+- A: [3, 3] (likelihood_matrix)
+- B: [3, 3, 3] (transition_matrix)
+
+Connections:
+- A -> B
+"""
+        with open(test_file, 'w') as f:
+            f.write(content)
+        test_files.append(test_file)
+    
+    return test_files
     
 def create_sample_gnn_content():
     """Create sample GNN content for testing."""
@@ -276,6 +348,15 @@ __all__ = [
     'run_integration_tests',
     'run_performance_tests',
     'run_coverage_tests',
+    'get_test_args',
+    'create_test_files',
+    'create_test_gnn_files',
+    'get_sample_pipeline_arguments',
+    'performance_tracker',
+    'TEST_CONFIG',
+    'TEST_DIR',
+    'SRC_DIR',
+    'PROJECT_ROOT',
     'FEATURES',
     '__version__'
 ] 

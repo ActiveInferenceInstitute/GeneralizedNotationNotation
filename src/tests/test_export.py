@@ -3,7 +3,7 @@ import pytest
 # Test markers
 pytestmark = [pytest.mark.export, pytest.mark.safe_to_fail, pytest.mark.fast]
 
-from render.render import render_gnn_spec
+from src.render.render import render_gnn_spec
 
 @pytest.fixture
 def sample_gnn_spec():

@@ -8,12 +8,32 @@ from pathlib import Path
 from typing import Dict, Any, List
 import logging
 
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error,
-    log_step_warning
-)
+try:
+    from utils.pipeline_template import (
+        log_step_start,
+        log_step_success,
+        log_step_error,
+        log_step_warning
+    )
+except ImportError:
+    # For tests and when running from different contexts
+    from src.utils.pipeline_template import (
+        log_step_start,
+        log_step_success,
+        log_step_error,
+        log_step_warning
+    )
+
+# Import GNNTypeChecker for backwards compatibility
+try:
+    from .checker import GNNTypeChecker
+    TYPE_CHECKER_AVAILABLE = True
+except ImportError:
+    TYPE_CHECKER_AVAILABLE = False
+    class GNNTypeChecker:
+        """Fallback GNNTypeChecker for when checker module is not available."""
+        def __init__(self, *args, **kwargs):
+            pass
 
 def validate_gnn_files(
     target_dir: Path,
@@ -183,6 +203,7 @@ __all__ = [
     'validate_gnn_files',
     'validate_single_gnn_file',
     'estimate_file_resources',
+    'GNNTypeChecker',
     'FEATURES',
     '__version__'
 ] 
