@@ -1,0 +1,70 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.13.5, pytest-8.4.1, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/4d/Documents/GitHub/GeneralizedNotationNotation
+configfile: pytest.ini
+plugins: anyio-4.9.0, asyncio-1.1.0, cov-6.2.1
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 501 items / 332 deselected / 169 selected
+
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports PASSED [  0%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery ERROR [  1%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing ERROR [  1%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation ERROR [  2%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_directory_processing ERROR [  2%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports FAILED [  3%]
+
+==================================== ERRORS ====================================
+_____ ERROR at setup of TestGNNModuleComprehensive.test_gnn_file_discovery _____
+.venv/lib/python3.13/site-packages/pytest_asyncio/plugin.py:681: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+src/tests/conftest.py:585: in sample_gnn_files
+    sample_content = create_sample_gnn_content()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   NameError: name 'create_sample_gnn_content' is not defined
+______ ERROR at setup of TestGNNModuleComprehensive.test_gnn_file_parsing ______
+.venv/lib/python3.13/site-packages/pytest_asyncio/plugin.py:681: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+src/tests/conftest.py:585: in sample_gnn_files
+    sample_content = create_sample_gnn_content()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   NameError: name 'create_sample_gnn_content' is not defined
+_______ ERROR at setup of TestGNNModuleComprehensive.test_gnn_validation _______
+.venv/lib/python3.13/site-packages/pytest_asyncio/plugin.py:681: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+src/tests/conftest.py:585: in sample_gnn_files
+    sample_content = create_sample_gnn_content()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   NameError: name 'create_sample_gnn_content' is not defined
+__ ERROR at setup of TestGNNModuleComprehensive.test_gnn_directory_processing __
+.venv/lib/python3.13/site-packages/pytest_asyncio/plugin.py:681: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+src/tests/conftest.py:585: in sample_gnn_files
+    sample_content = create_sample_gnn_content()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   NameError: name 'create_sample_gnn_content' is not defined
+=================================== FAILURES ===================================
+___________ TestRenderModuleComprehensive.test_render_module_imports ___________
+src/tests/test_core_modules.py:164: in test_render_module_imports
+    from render import (
+E   ImportError: cannot import name 'render_gnn_to_rxinfer_toml' from 'render' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py). Did you mean: 'render_gnn_to_rxinfer_impl'?
+
+During handling of the above exception, another exception occurred:
+src/tests/test_core_modules.py:176: in test_render_module_imports
+    pytest.fail(f"Failed to import render module: {e}")
+E   Failed: Failed to import render module: cannot import name 'render_gnn_to_rxinfer_toml' from 'render' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
+============================= slowest 10 durations =============================
+
+(10 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ============================
+FAILED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
+ERROR src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery
+ERROR src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing
+ERROR src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation
+ERROR src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_directory_processing
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+============ 1 failed, 1 passed, 332 deselected, 4 errors in 1.96s =============

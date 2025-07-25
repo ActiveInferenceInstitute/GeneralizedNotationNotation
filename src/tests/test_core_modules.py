@@ -162,14 +162,14 @@ class TestRenderModuleComprehensive:
         """Test that render module can be imported and has expected structure."""
         try:
             from render import (
-                render_gnn_to_pymdp, render_gnn_to_rxinfer_toml, render_gnn_to_discopy,
-                render_gnn_to_jax, get_available_renderers
+                render_gnn_to_pymdp, render_gnn_to_rxinfer, render_gnn_to_discopy,
+                render_gnn_to_activeinference_jl, get_available_renderers
             )
             # Test that functions are callable
             assert callable(render_gnn_to_pymdp), "render_gnn_to_pymdp should be callable"
-            assert callable(render_gnn_to_rxinfer_toml), "render_gnn_to_rxinfer_toml should be callable"
+            assert callable(render_gnn_to_rxinfer), "render_gnn_to_rxinfer should be callable"
             assert callable(render_gnn_to_discopy), "render_gnn_to_discopy should be callable"
-            assert callable(render_gnn_to_jax), "render_gnn_to_jax should be callable"
+            assert callable(render_gnn_to_activeinference_jl), "render_gnn_to_activeinference_jl should be callable"
             assert callable(get_available_renderers), "get_available_renderers should be callable"
             logging.info("Render module imports validated")
         except ImportError as e:
@@ -195,10 +195,10 @@ class TestRenderModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_rxinfer_rendering(self, sample_gnn_files, isolated_temp_dir):
         """Test RxInfer code rendering."""
-        from render import render_gnn_to_rxinfer_toml
+        from render import render_gnn_to_rxinfer
         output_path = isolated_temp_dir / "test_rxinfer.jl"
         try:
-            render_gnn_to_rxinfer_toml(sample_gnn_files, output_path)
+            render_gnn_to_rxinfer(sample_gnn_files, output_path)
             assert output_path.exists(), "RxInfer output file should be created"
             content = output_path.read_text()
             assert len(content) > 0, "RxInfer output should not be empty"

@@ -45,6 +45,9 @@ PROJECT_ROOT = SRC_DIR.parent
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
+# Import test utilities
+from tests import create_sample_gnn_content
+
 # Test configuration and markers
 PYTEST_MARKERS = {
     "unit": "Unit tests for individual components",

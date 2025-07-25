@@ -7,7 +7,15 @@ This module provides comprehensive testing capabilities for the GNN pipeline.
 from pathlib import Path
 from typing import Dict, Any, List
 import logging
+import sys
 
+# Ensure src is in Python path for imports
+_test_dir = Path(__file__).parent
+_src_dir = _test_dir.parent
+if str(_src_dir) not in sys.path:
+    sys.path.insert(0, str(_src_dir))
+
+# Now safe to import from utils
 from utils.pipeline_template import (
     setup_step_logging,
     log_step_start,
@@ -164,7 +172,11 @@ Connections:
 def create_sample_gnn_content():
     """Create sample GNN content for testing."""
     return {
-        "valid_basic": """## ModelName
+        "valid_basic": """## GNNVersionAndFlags
+Version: 1.0
+Flags: test
+
+## ModelName
 TestModel
 
 ## StateSpaceBlock
@@ -179,7 +191,14 @@ X[2]
 ## Parameters
 - A: [[1,2,3], [4,5,6]]
 """,
-        "complex_model": """# ComplexTestModel
+        "complex_model": """## GNNVersionAndFlags
+Version: 1.1
+Flags: complex
+
+# ComplexTestModel
+
+## ModelName
+ComplexTestModel
 
 ## Variables
 - X: [3, 3]
@@ -195,7 +214,13 @@ X[2]
 - A: [[1,2,3], [4,5,6], [7,8,9]]
 - B: [[0.1, 0.9], [0.7, 0.3]]
 """,
-        "minimal": """# MinimalModel
+        "minimal": """## GNNVersionAndFlags
+Version: 1.0
+
+# MinimalModel
+
+## ModelName
+MinimalModel
 
 ## Variables
 - S: [2]
