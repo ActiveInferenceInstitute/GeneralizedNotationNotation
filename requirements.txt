@@ -16,6 +16,7 @@ pymdp>=0.0.1
 # Testing and development
 pytest>=6.0.0
 pytest-cov>=3.0.0
+pytest-asyncio>=0.21.0
 black>=22.0.0
 flake8>=4.0.0
 mypy>=0.950
@@ -45,6 +46,14 @@ torch>=1.12.0
 # Audio backends
 pedalboard>=0.5.0
 # sapf  # Temporarily commented out - package not available in PyPI
+
+# Configuration and serialization
+toml>=0.10.0
+defusedxml>=0.7.0
+
+# Additional dependencies for rendering and processing
+jax>=0.4.0
+jaxlib>=0.4.0
 
 # Security
 bandit>=1.7.0

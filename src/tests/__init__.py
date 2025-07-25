@@ -21,6 +21,11 @@ try:
 except ImportError:
     performance_tracker = None
 
+# Test directory constants
+TEST_DIR = Path(__file__).parent
+SRC_DIR = TEST_DIR.parent
+PROJECT_ROOT = SRC_DIR.parent
+
 # Test configuration and constants
 TEST_CONFIG = {
     "safe_mode": True,
@@ -28,7 +33,10 @@ TEST_CONFIG = {
     "strict": False,
     "estimate_resources": False,
     "skip_steps": [],
-    "only_steps": []
+    "only_steps": [],
+    "timeout_seconds": 300,  # 5 minutes default timeout
+    "temp_output_dir": TEST_DIR.parent.parent / "output" / "test_artifacts",
+    "max_test_files": 10  # Maximum number of test files to process
 }
 
 PYTEST_MARKERS = {
@@ -154,8 +162,12 @@ Connections:
     
 def create_sample_gnn_content():
     """Create sample GNN content for testing."""
-    return """
-# TestModel
+    return {
+        "valid_basic": """## ModelName
+TestModel
+
+## StateSpaceBlock
+X[2]
 
 ## Variables
 - X: [2]
@@ -165,7 +177,33 @@ def create_sample_gnn_content():
 
 ## Parameters
 - A: [[1,2,3], [4,5,6]]
+""",
+        "complex_model": """# ComplexTestModel
+
+## Variables
+- X: [3, 3]
+- Y: [2]
+- Z: [4]
+
+## Connections
+- X -> Y
+- Y -> Z
+- Z -> X
+
+## Parameters
+- A: [[1,2,3], [4,5,6], [7,8,9]]
+- B: [[0.1, 0.9], [0.7, 0.3]]
+""",
+        "minimal": """# MinimalModel
+
+## Variables
+- S: [2]
+""",
+        "invalid": """# InvalidModel
+This is not a proper GNN format
+Missing required sections
 """
+    }
 
 def get_mock_filesystem_structure():
     """Get mock filesystem structure for testing."""

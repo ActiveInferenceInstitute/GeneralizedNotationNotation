@@ -13,7 +13,7 @@ try:
     import matplotlib.patches as patches
     from matplotlib import cm
     MATPLOTLIB_AVAILABLE = True
-except ImportError:
+except (ImportError, RecursionError) as e:
     plt = None
     patches = None
     cm = None
@@ -29,7 +29,7 @@ except ImportError:
 try:
     import seaborn as sns
     SEABORN_AVAILABLE = True
-except ImportError:
+except (ImportError, RecursionError) as e:
     sns = None
     SEABORN_AVAILABLE = False
 

@@ -24,15 +24,108 @@ from utils.path_utils import get_relative_path_if_possible
 from pipeline import get_output_dir_for_script
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error
 
-# Import enhanced GNN testing capabilities
-try:
-    from gnn.testing.test_round_trip import GNNRoundTripTester, ComprehensiveTestReport, RoundTripResult
-    from gnn.parsers import GNNParsingSystem, GNNFormat
-    from gnn.schema_validator import GNNValidator, ValidationLevel, ValidationResult
-    from gnn.cross_format_validator import CrossFormatValidator, CrossFormatValidationResult
-    ENHANCED_TESTING_AVAILABLE = True
-except ImportError:
-    ENHANCED_TESTING_AVAILABLE = False
+# Import enhanced GNN testing capabilities with lazy loading to avoid circular imports
+ENHANCED_TESTING_AVAILABLE = False
+_testing_modules_cache = {}
+
+def _get_testing_modules():
+    """Lazy import of testing modules to avoid circular dependencies."""
+    global _testing_modules_cache, ENHANCED_TESTING_AVAILABLE
+    
+    if _testing_modules_cache:
+        return _testing_modules_cache
+        
+    try:
+        # Use lazy imports to break circular dependency
+        import importlib
+        test_round_trip = importlib.import_module('gnn.testing.test_round_trip')
+        parsers = importlib.import_module('gnn.parsers')
+        schema_validator = importlib.import_module('gnn.schema_validator')
+        cross_format_validator = importlib.import_module('gnn.cross_format_validator')
+        
+        _testing_modules_cache = {
+            'GNNRoundTripTester': getattr(test_round_trip, 'GNNRoundTripTester', None),
+            'ComprehensiveTestReport': getattr(test_round_trip, 'ComprehensiveTestReport', None),
+            'RoundTripResult': getattr(test_round_trip, 'RoundTripResult', None),
+            'GNNParsingSystem': getattr(parsers, 'GNNParsingSystem', None),
+            'GNNFormat': getattr(parsers, 'GNNFormat', None),
+            'GNNValidator': getattr(schema_validator, 'GNNValidator', None),
+            'ValidationLevel': getattr(schema_validator, 'ValidationLevel', None),
+            'ValidationResult': getattr(schema_validator, 'ValidationResult', None),
+            'CrossFormatValidator': getattr(cross_format_validator, 'CrossFormatValidator', None),
+            'CrossFormatValidationResult': getattr(cross_format_validator, 'CrossFormatValidationResult', None),
+        }
+        ENHANCED_TESTING_AVAILABLE = True
+        return _testing_modules_cache
+    except (ImportError, AttributeError, RecursionError):
+        ENHANCED_TESTING_AVAILABLE = False
+        return {}
+
+
+def enhanced_validation_with_gnn_processing(
+    target_dir: Path,
+    validation_level: str = "standard",
+    enable_round_trip: bool = False,
+    enable_cross_format: bool = False,
+    test_subset: Optional[List[str]] = None
+) -> Tuple[int, Optional[str]]:
+    """
+    Enhanced validation using GNN processing capabilities.
+    
+    Returns:
+        Tuple of (exit_code, error_message)
+    """
+    logger = logging.getLogger(__name__)
+    
+    # Load testing modules lazily
+    modules = _get_testing_modules()
+    if not modules:
+        logger.warning("Enhanced testing modules not available, using basic validation")
+        return 2, "Enhanced testing modules not available"
+    
+    try:
+        # Initialize validation level
+        try:
+            val_level = modules['ValidationLevel'](validation_level.lower())
+        except ValueError:
+            logger.warning(f"Invalid validation level '{validation_level}', using STANDARD")
+            val_level = modules['ValidationLevel'].STANDARD
+        
+        # Initialize enhanced validator
+        validator = modules['GNNValidator'](
+            validation_level=val_level,
+            enable_round_trip_testing=enable_round_trip
+        )
+        
+        # Process files with enhanced validation
+        total_files = 0
+        validation_errors = 0
+        
+        for file_path in target_dir.rglob("*.md"):
+            total_files += 1
+            logger.info(f"Enhanced validation of {file_path}")
+            
+            try:
+                result = validator.validate_file(file_path)
+                if not result.is_valid:
+                    validation_errors += 1
+                    logger.error(f"Validation failed for {file_path}: {result.errors}")
+                elif result.warnings:
+                    logger.warning(f"Validation warnings for {file_path}: {result.warnings}")
+                    
+            except Exception as e:
+                validation_errors += 1
+                logger.error(f"Error during enhanced validation of {file_path}: {e}")
+        
+        logger.info(f"Enhanced validation complete: {total_files - validation_errors}/{total_files} files valid")
+        
+        if validation_errors > 0:
+            return 1, f"Enhanced validation failed for {validation_errors} files"
+        return 0, None
+        
+    except Exception as e:
+        logger.error(f"Enhanced validation error: {e}")
+        return 1, f"Enhanced validation error: {e}"
 
 
 def process_gnn_folder(
@@ -75,13 +168,13 @@ def process_gnn_folder(
     
     # Initialize validation level
     try:
-        val_level = ValidationLevel(validation_level.lower())
+        val_level = _testing_modules_cache['ValidationLevel'](validation_level.lower())
     except ValueError:
         logger.warning(f"Invalid validation level '{validation_level}', using STANDARD")
-        val_level = ValidationLevel.STANDARD
+        val_level = _testing_modules_cache['ValidationLevel'].STANDARD
     
     # Initialize enhanced validator
-    validator = GNNValidator(
+    validator = _testing_modules_cache['GNNValidator'](
         validation_level=val_level,
         enable_round_trip_testing=enable_round_trip
     )
@@ -310,7 +403,7 @@ def _basic_gnn_processing(
     return success_rate >= 50.0
 
 
-def _generate_performance_analysis(report: ComprehensiveTestReport, test_time: float) -> str:
+def _generate_performance_analysis(report: Any, test_time: float) -> str:
     """Generate performance analysis section for reports."""
     lines = [
         "## Performance Analysis",
@@ -321,43 +414,18 @@ def _generate_performance_analysis(report: ComprehensiveTestReport, test_time: f
         f"- **Average test time:** {test_time / report.total_tests:.3f} seconds" if report.total_tests > 0 else "- **Average test time:** N/A",
         "",
         f"### Success Rate Analysis",
-        f"- **Overall success rate:** {report.get_success_rate():.1f}%",
-        f"- **Total tests:** {report.total_tests}",
-        f"- **Successful tests:** {report.successful_tests}",
-        f"- **Failed tests:** {report.failed_tests}",
-        ""
+        f"- **Successful tests:** {report.tests_passed}/{report.total_tests} ({report.tests_passed/report.total_tests*100:.1f}%)" if report.total_tests > 0 else "- **Successful tests:** 0/0",
+        f"- **Failed tests:** {report.tests_failed}/{report.total_tests} ({report.tests_failed/report.total_tests*100:.1f}%)" if report.total_tests > 0 else "- **Failed tests:** 0/0",
+        "",
+        f"### Format Coverage",
+        f"- **Formats tested:** {len(report.format_results)}"
     ]
     
-    # Format category analysis
-    format_summary = report.get_format_summary()
-    if format_summary:
-        lines.extend([
-            "### Format Performance Breakdown",
-            ""
-        ])
-        
-        for fmt, stats in format_summary.items():
-            success_rate = (stats['success'] / stats['total'] * 100) if stats['total'] > 0 else 0
-            status = "🟢" if success_rate == 100 else "🟡" if success_rate >= 50 else "🔴"
-            lines.append(f"- **{fmt.value}** {status}: {stats['success']}/{stats['total']} ({success_rate:.1f}%)")
-        
-        lines.append("")
-    
-    # Performance recommendations
-    lines.extend([
-        "### Performance Recommendations",
-        ""
-    ])
-    
-    if report.get_success_rate() == 100.0:
-        lines.append("- ✅ Perfect performance achieved - no optimizations needed")
-    elif report.get_success_rate() >= 80.0:
-        lines.append("- 🎯 Excellent performance - minor optimizations possible")
-    else:
-        lines.append("- ⚠️ Performance improvements needed:")
-        lines.append("  - Review failed format implementations")
-        lines.append("  - Consider enhanced validation for error prevention")
-        lines.append("  - Optimize serialization/parsing for slow formats")
+    if hasattr(report, 'format_results') and report.format_results:
+        lines.append("- **Formats:**")
+        for fmt, result in report.format_results.items():
+            status = "✓" if result.get('success', False) else "✗"
+            lines.append(f"  - {status} {fmt}")
     
     return "\n".join(lines)
 
@@ -393,35 +461,53 @@ def _is_gnn_file(file_path: Path) -> bool:
         return False
 
 
-def _validate_binary_cross_format(file_path: Path, cross_validator) -> 'CrossFormatValidationResult':
+def _validate_binary_cross_format(file_path: Path, cross_validator) -> Any:
     """Validate binary files for cross-format consistency."""
     try:
-        # For binary files, we have limited cross-format validation
-        # Just check if the file is readable
-        with open(file_path, 'rb') as f:
-            data = f.read(100)  # Read first 100 bytes
+        # Binary files need special handling for cross-format validation
+        if not file_path.exists():
+            logger.error(f"Binary file not found: {file_path}")
+            # Return a mock result
+            return type('CrossFormatValidationResult', (), {
+                'is_valid': False,
+                'errors': [f"File not found: {file_path}"],
+                'warnings': [],
+                'binary_format': str(file_path.suffix),
+                'content_hash': None
+            })()
         
-        # Create a mock result for binary files
-        from types import SimpleNamespace
-        result = SimpleNamespace()
-        result.is_consistent = True  # Assume consistency for binary files
-        result.schema_formats = ['binary']
-        result.inconsistencies = []
-        result.warnings = [f"Binary file validation limited for {file_path.name}"]
-        result.metadata = {'binary_format': True, 'file_size': file_path.stat().st_size}
+        # For binary files, we can only do basic format checks
+        logger.info(f"Validating binary file: {file_path}")
         
-        return result
+        # Check file size and basic properties
+        file_size = file_path.stat().st_size
+        if file_size == 0:
+            return type('CrossFormatValidationResult', (), {
+                'is_valid': False,
+                'errors': ["Empty binary file"],
+                'warnings': [],
+                'binary_format': str(file_path.suffix),
+                'content_hash': None
+            })()
+        
+        # Create a successful result for valid binary files
+        return type('CrossFormatValidationResult', (), {
+            'is_valid': True,
+            'errors': [],
+            'warnings': [],
+            'binary_format': str(file_path.suffix),
+            'content_hash': str(hash(file_path.read_bytes()))
+        })()
         
     except Exception as e:
-        from types import SimpleNamespace
-        result = SimpleNamespace()
-        result.is_consistent = False
-        result.schema_formats = []
-        result.inconsistencies = [f"Binary file error: {e}"]
-        result.warnings = []
-        result.metadata = {'error': str(e)}
-        
-        return result
+        logger.error(f"Error validating binary file {file_path}: {e}")
+        return type('CrossFormatValidationResult', (), {
+            'is_valid': False,
+            'errors': [str(e)],
+            'warnings': [],
+            'binary_format': str(file_path.suffix),
+            'content_hash': None
+        })()
 
 
 def run_gnn_round_trip_tests(
@@ -459,11 +545,17 @@ def run_gnn_round_trip_tests(
     round_trip_output_dir.mkdir(parents=True, exist_ok=True)
     
     try:
+        # Load testing modules lazily
+        modules = _get_testing_modules()
+        if not modules:
+            log_step_warning(logger, "Enhanced testing modules not available")
+            return False
+            
         # Initialize enhanced round-trip tester
         temp_dir = round_trip_output_dir / "temp"
         temp_dir.mkdir(exist_ok=True)
         
-        tester = GNNRoundTripTester(temp_dir)
+        tester = modules['GNNRoundTripTester'](temp_dir)
         
         # Configure reference file
         if reference_file:
@@ -491,7 +583,7 @@ def run_gnn_round_trip_tests(
             subset_formats = []
             for fmt_name in test_subset:
                 try:
-                    fmt = GNNFormat(fmt_name.lower())
+                    fmt = modules['GNNFormat'](fmt_name.lower())
                     if fmt in tester.supported_formats:
                         subset_formats.append(fmt)
                     else:
@@ -500,7 +592,7 @@ def run_gnn_round_trip_tests(
                     logger.warning(f"Unknown format: {fmt_name}")
             
             if subset_formats:
-                tester.supported_formats = [GNNFormat.MARKDOWN] + subset_formats
+                tester.supported_formats = [modules['GNNFormat'].MARKDOWN] + subset_formats
                 logger.info(f"Testing subset: {[f.value for f in subset_formats]}")
             else:
                 logger.warning("No valid formats in subset, using all supported")
@@ -613,9 +705,15 @@ def validate_gnn_cross_format_consistency(
     validation_output_dir.mkdir(parents=True, exist_ok=True)
     
     try:
+        # Load testing modules lazily
+        modules = _get_testing_modules()
+        if not modules:
+            log_step_warning(logger, "Enhanced validation modules not available")
+            return False
+            
         # Initialize enhanced validators
-        validator = GNNValidator(validation_level=ValidationLevel.STRICT)
-        cross_validator = CrossFormatValidator()
+        validator = modules['GNNValidator'](validation_level=modules['ValidationLevel'].STRICT)
+        cross_validator = modules['CrossFormatValidator']()
         
         # Discover GNN files to test
         if files_to_test:

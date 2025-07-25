@@ -36,6 +36,15 @@ except ImportError:
     pass
 from unittest.mock import patch
 
+# Test directory constants
+TEST_DIR = Path(__file__).parent
+SRC_DIR = TEST_DIR.parent
+PROJECT_ROOT = SRC_DIR.parent
+
+# Ensure src is in Python path
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
 # Test configuration and markers
 PYTEST_MARKERS = {
     "unit": "Unit tests for individual components",

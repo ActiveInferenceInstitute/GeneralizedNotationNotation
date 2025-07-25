@@ -238,10 +238,13 @@ try:
     import sys
     from pathlib import Path
     
-    # Add src directory to path if not already there
-    src_path = Path(__file__).parent.parent.parent / "src"
-    if str(src_path) not in sys.path:
-        sys.path.insert(0, str(src_path))
+    # Add src directory to path if not already there using safer path operations
+    import os
+    current_file_dir = os.path.dirname(os.path.abspath(__file__))
+    src_path = os.path.join(current_file_dir, "..", "..", "..", "src")
+    src_path = os.path.normpath(src_path)
+    if src_path not in sys.path:
+        sys.path.insert(0, src_path)
     
     from gnn.parsers.common import GNNInternalRepresentation, GNNFormat, ParseResult
     from gnn.parsers import GNNParsingSystem

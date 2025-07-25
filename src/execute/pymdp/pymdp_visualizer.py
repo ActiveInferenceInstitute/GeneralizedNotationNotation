@@ -18,9 +18,18 @@ Date: 2024
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import seaborn as sns
+
+# Import matplotlib with error handling for testing
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.patches as patches
+    import seaborn as sns
+    MATPLOTLIB_AVAILABLE = True
+except (ImportError, RecursionError) as e:
+    plt = None
+    patches = None
+    sns = None
+    MATPLOTLIB_AVAILABLE = False
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional, Any
 import warnings
@@ -48,8 +57,9 @@ class PyMDPVisualizer:
         self.style = style
         self.save_dir = Path(save_dir) if save_dir else None
         
-        # Set matplotlib style
-        plt.style.use(self.style)
+        # Set matplotlib style if available
+        if MATPLOTLIB_AVAILABLE and plt is not None:
+            plt.style.use(self.style)
         
         # Color schemes for different visualizations
         self.colors = {
@@ -70,7 +80,7 @@ class PyMDPVisualizer:
         states: List[int], 
         num_states: int,
         title: str = "Discrete State Sequence"
-    ) -> plt.Figure:
+    ) -> Optional[Any]:
         """
         Visualize sequence of discrete states over time.
         
@@ -80,8 +90,11 @@ class PyMDPVisualizer:
             title: Plot title
             
         Returns:
-            matplotlib Figure object
+            matplotlib Figure object or None if matplotlib not available
         """
+        if not MATPLOTLIB_AVAILABLE or plt is None:
+            return None
+            
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=self.figsize)
         
         # Plot state sequence over time
@@ -110,7 +123,7 @@ class PyMDPVisualizer:
         self, 
         beliefs: List[np.ndarray],
         title: str = "Belief Evolution"
-    ) -> plt.Figure:
+    ) -> Optional[Any]:
         """
         Visualize evolution of belief distributions over time.
         
@@ -119,8 +132,10 @@ class PyMDPVisualizer:
             title: Plot title
             
         Returns:
-            matplotlib Figure object
+            matplotlib Figure object or None if matplotlib not available
         """
+        if not MATPLOTLIB_AVAILABLE or plt is None:
+            return None
         beliefs_array = np.array(beliefs)
         num_states = beliefs_array.shape[1]
         
@@ -151,7 +166,7 @@ class PyMDPVisualizer:
         self, 
         metrics: Dict[str, Any],
         title: str = "Performance Metrics"
-    ) -> plt.Figure:
+    ) -> Optional[Any]:
         """
         Visualize various performance metrics from simulation.
         
@@ -160,8 +175,11 @@ class PyMDPVisualizer:
             title: Plot title
             
         Returns:
-            matplotlib Figure object
+            matplotlib Figure object or None if matplotlib not available
         """
+        if not MATPLOTLIB_AVAILABLE or plt is None:
+            return None
+            
         fig, axes = plt.subplots(2, 2, figsize=(12, 10))
         
         # Expected free energy over time

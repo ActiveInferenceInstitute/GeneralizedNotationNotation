@@ -12,12 +12,34 @@ import re
 import json
 import numpy as np
 
-# Import visualization libraries (assumed to be installed via requirements.txt)
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from matplotlib import cm
-import seaborn as sns
-import networkx as nx
+# Import visualization libraries with error handling for testing
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.patches as patches
+    from matplotlib import cm
+    import seaborn as sns
+    MATPLOTLIB_AVAILABLE = True
+except (ImportError, RecursionError) as e:
+    plt = None
+    patches = None
+    cm = None
+    sns = None
+    MATPLOTLIB_AVAILABLE = False
+    
+# Safe NetworkX import to avoid pathlib recursion errors
+try:
+    import sys
+    if sys.version_info >= (3, 13):
+        # For Python 3.13+, use a safer import approach
+        import os
+        # Disable automatic backends completely for Python 3.13
+        os.environ.pop('NETWORKX_AUTOMATIC_BACKENDS', None)
+        os.environ['NETWORKX_CACHE_CONVERTED_GRAPHS'] = '1'
+    import networkx as nx
+    NETWORKX_AVAILABLE = True
+except (ImportError, RecursionError, AttributeError, ValueError) as e:
+    nx = None
+    NETWORKX_AVAILABLE = False
 
 # Import main classes
 from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization

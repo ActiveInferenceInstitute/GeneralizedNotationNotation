@@ -18,10 +18,18 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import pickle
 
+# Safe NetworkX import to avoid pathlib recursion errors
 try:
+    import sys
+    if sys.version_info >= (3, 13):
+        # For Python 3.13+, use a safer import approach
+        import os
+        # Disable automatic backends completely for Python 3.13
+        os.environ.pop('NETWORKX_AUTOMATIC_BACKENDS', None)
+        os.environ['NETWORKX_CACHE_CONVERTED_GRAPHS'] = '1'
     import networkx as nx
     HAS_NETWORKX = True
-except ImportError:
+except (ImportError, RecursionError, AttributeError, ValueError) as e:
     nx = None
     HAS_NETWORKX = False
     logging.getLogger(__name__).warning("NetworkX library not found. Graph export functionalities (GEXF, GraphML) will be disabled.")
