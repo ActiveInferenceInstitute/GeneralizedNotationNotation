@@ -251,7 +251,7 @@ def validate_environment(venv_path: Path, logger: logging.Logger) -> Dict[str, A
             logger.info(f"Pip available: {validation_results['pip_available']}")
             
             # Check key packages with versions
-            key_packages = ["numpy", "matplotlib", "networkx", "pandas", "pyyaml", "scipy", "scikit-learn"]
+            key_packages = ["numpy", "matplotlib", "networkx", "pandas", "yaml", "scipy", "sklearn"]
             logger.info("Validating key packages:")
             
             for package in key_packages:

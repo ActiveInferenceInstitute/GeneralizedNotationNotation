@@ -7,6 +7,8 @@ This step runs comprehensive tests for the GNN pipeline.
 
 import sys
 from pathlib import Path
+import subprocess
+import json
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -33,18 +35,29 @@ def main():
         output_dir = get_output_dir_for_script("2_tests.py", Path(args.output_dir))
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Import and run tests from tests module
-        from tests import run_all_tests
-        
         log_step_start(logger, "Running comprehensive test suite")
         
-        success = run_all_tests(
-            target_dir=args.target_dir,
-            output_dir=output_dir,
-            verbose=args.verbose
-        )
+        # Run pytest
+        test_command = [
+            sys.executable, "-m", "pytest",
+            "src/tests/",
+            "--cov=src/",
+            "--cov-report=json:coverage.json",
+            "-v" if args.verbose else ""
+        ]
+        result = subprocess.run(test_command, capture_output=True, text=True, cwd=Path(__file__).parent.parent)
         
-        if success:
+        # Save results
+        results_file = output_dir / "test_results.json"
+        test_results = {
+            "success": result.returncode == 0,
+            "stdout": result.stdout,
+            "stderr": result.stderr
+        }
+        with open(results_file, 'w') as f:
+            json.dump(test_results, f, indent=2)
+        
+        if result.returncode == 0:
             log_step_success(logger, "All tests passed successfully")
             return 0
         else:
