@@ -19,9 +19,28 @@ from .schema_validator import (
 # Import parsers for additional functionality
 try:
     from .parsers import parse_gnn_file as parse_gnn_file_parser
+    from .parsers import parsers, GNNParsingSystem  # Add missing parser exports
     PARSERS_AVAILABLE = True
 except ImportError:
     PARSERS_AVAILABLE = False
+    # Fallback functions for parsers
+    def parsers(*args, **kwargs):
+        return {"error": "Parsers module not available"}
+    
+    class GNNParsingSystem:
+        """Fallback parsing system."""
+        def __init__(self):
+            pass
+
+# Import GNNFormat from types module
+try:
+    from .types import GNNFormat
+except ImportError:
+    # Fallback GNNFormat
+    class GNNFormat:
+        """Fallback GNN format class."""
+        def __init__(self):
+            pass
 
 def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = False) -> Dict[str, Any]:
     """
@@ -578,4 +597,12 @@ def validate_gnn(file_path_or_content, validation_level=ValidationLevel.STANDARD
             
             # Clean up
             os.unlink(temp_path)
-            return result 
+            return result
+
+# Add to __all__ for proper exports
+__all__ = [
+    'GNNValidator', 'GNNParser', 'ValidationResult', 'ParsedGNN',
+    'GNNVariable', 'GNNConnection', 'ValidationLevel', 'GNNSyntaxError',
+    'validate_gnn_file', 'parse_gnn_file_parser', 'parsers', 'GNNParsingSystem',
+    'GNNFormat', 'process_gnn_directory_lightweight'
+] 

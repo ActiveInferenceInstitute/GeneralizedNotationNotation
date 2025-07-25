@@ -9,6 +9,84 @@ target languages and simulation environments.
 from pathlib import Path
 from typing import Dict, Any, Optional, Union, Tuple, List
 
+# Import all the missing render functions from subdirectories
+try:
+    from .pymdp.pymdp_renderer import PyMdpRenderer, render_gnn_to_pymdp_impl
+    from .pymdp.pymdp_converter import GnnToPyMdpConverter, convert_gnn_to_pymdp
+    from .activeinference_jl.activeinference_jl_renderer import ActiveInferenceJlRenderer, render_gnn_to_activeinference_jl_impl
+    from .rxinfer.rxinfer_renderer import RxInferRenderer, render_gnn_to_rxinfer_impl  
+    from .discopy.discopy_renderer import DiscopyCategoryRenderer, render_gnn_to_discopy_impl
+except ImportError:
+    # Fallback classes and functions
+    class PyMdpRenderer:
+        def __init__(self): pass
+    class GnnToPyMdpConverter:
+        def __init__(self): pass
+    class ActiveInferenceJlRenderer:
+        def __init__(self): pass
+    class RxInferRenderer:
+        def __init__(self): pass
+    class DiscopyCategoryRenderer:
+        def __init__(self): pass
+    
+    def render_gnn_to_pymdp_impl(*args, **kwargs):
+        return {"error": "PyMDP renderer not available"}
+    def render_gnn_to_activeinference_jl_impl(*args, **kwargs):
+        return {"error": "ActiveInference.jl renderer not available"}
+    def render_gnn_to_rxinfer_impl(*args, **kwargs):
+        return {"error": "RxInfer renderer not available"}
+    def render_gnn_to_discopy_impl(*args, **kwargs):
+        return {"error": "DisCoPy renderer not available"}
+    def convert_gnn_to_pymdp(*args, **kwargs):
+        return {"error": "PyMDP converter not available"}
+
+# Export the missing functions that scripts are looking for
+def render_gnn_to_pymdp(*args, **kwargs):
+    """Render GNN to PyMDP simulation code."""
+    return render_gnn_to_pymdp_impl(*args, **kwargs)
+
+def render_gnn_to_activeinference_jl(*args, **kwargs):
+    """Render GNN to ActiveInference.jl simulation code."""
+    return render_gnn_to_activeinference_jl_impl(*args, **kwargs)
+
+def render_gnn_to_rxinfer(*args, **kwargs):
+    """Render GNN to RxInfer.jl simulation code."""
+    return render_gnn_to_rxinfer_impl(*args, **kwargs)
+
+def render_gnn_to_discopy(*args, **kwargs):
+    """Render GNN to DisCoPy categorical diagram."""
+    return render_gnn_to_discopy_impl(*args, **kwargs)
+
+def pymdp_renderer(*args, **kwargs):
+    """Legacy function name for PyMDP rendering."""
+    return render_gnn_to_pymdp(*args, **kwargs)
+
+def activeinference_jl_renderer(*args, **kwargs):
+    """Legacy function name for ActiveInference.jl rendering."""
+    return render_gnn_to_activeinference_jl(*args, **kwargs)
+
+def rxinfer_renderer(*args, **kwargs):
+    """Legacy function name for RxInfer rendering."""
+    return render_gnn_to_rxinfer(*args, **kwargs)
+
+def discopy_renderer(*args, **kwargs):
+    """Legacy function name for DisCoPy rendering."""
+    return render_gnn_to_discopy(*args, **kwargs)
+
+def pymdp_converter(*args, **kwargs):
+    """Legacy function name for PyMDP conversion."""
+    return convert_gnn_to_pymdp(*args, **kwargs)
+
+# Add to __all__ for proper exports
+__all__ = [
+    'PyMdpRenderer', 'GnnToPyMdpConverter', 'ActiveInferenceJlRenderer',
+    'RxInferRenderer', 'DiscopyCategoryRenderer',
+    'render_gnn_to_pymdp', 'render_gnn_to_activeinference_jl', 
+    'render_gnn_to_rxinfer', 'render_gnn_to_discopy',
+    'pymdp_renderer', 'activeinference_jl_renderer', 'rxinfer_renderer',
+    'discopy_renderer', 'pymdp_converter', 'process_render'
+]
+
 def process_render(
     target_dir: Path,
     output_dir: Path,

@@ -20,9 +20,20 @@ import seaborn as sns
 import networkx as nx
 
 # Import main classes
-from .matrix_visualizer import MatrixVisualizer
+from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
 from .visualizer import GNNVisualizer
 from .ontology_visualizer import OntologyVisualizer
+
+# Export the missing functions that scripts are looking for
+def matrix_visualizer(*args, **kwargs):
+    """Legacy function name compatibility for matrix visualization."""
+    return process_matrix_visualization(*args, **kwargs)
+
+# Add to __all__ for proper exports
+__all__ = [
+    'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer',
+    'matrix_visualizer', 'process_matrix_visualization', 'process_visualization'
+]
 
 # Try to import utils, but provide fallbacks if not available
 try:
