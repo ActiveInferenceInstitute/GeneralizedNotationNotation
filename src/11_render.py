@@ -3,10 +3,12 @@
 Step 11: Render Processing
 
 This step generates simulation code for PyMDP, RxInfer, and ActiveInference.jl from GNN models.
+This is a thin orchestrator that delegates rendering to modular framework implementations.
 """
 
 import sys
 import json
+import logging
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Any
@@ -24,138 +26,70 @@ from utils.argument_utils import EnhancedArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def generate_pymdp_code(model_data: Dict) -> str:
-    """Generate PyMDP simulation code using the pipeline's PyMDP renderer."""
+    """Generate PyMDP simulation code using the modular PyMDP renderer."""
     try:
-        from render import render_gnn_spec
+        from render.pymdp.pymdp_renderer import render_gnn_to_pymdp
+        from render.pymdp.pymdp_converter import GnnToPyMdpConverter
         
-        # Use the pipeline's PyMDP renderer to generate proper simulation code
-        success, message, warnings = render_gnn_spec(
-            gnn_spec=model_data,
-            target='pymdp',
-            output_directory='temp_render',
-            options={'embedded_mode': True}
-        )
+        # Get model name for file paths
+        model_name = model_data.get('model_name', 'GNN_Model')
         
-        if success:
-            # Read the generated code
-            from pathlib import Path
-            model_name = model_data.get('model_name', 'GNN_Model')
-            temp_file = Path('temp_render') / f"{model_name}_pymdp_simulation.py"
-            
-            if temp_file.exists():
-                with open(temp_file, 'r') as f:
-                    code = f.read()
-                # Clean up temp file
-                temp_file.unlink()
-                temp_file.parent.rmdir()
-                return code
-            
-    except Exception as e:
-        logging.warning(f"Failed to use pipeline PyMDP renderer: {e}, falling back to simple generation")
-    
-    # Fallback to simple code generation
-    model_name = model_data.get('model_name', 'Unknown')
-    num_states = model_data.get('model_parameters', {}).get('num_hidden_states', 3)
-    num_obs = model_data.get('model_parameters', {}).get('num_obs', 3) 
-    num_actions = model_data.get('model_parameters', {}).get('num_actions', 3)
-    
-    code = f"""#!/usr/bin/env python3
-# PyMDP Active Inference Simulation
-# Generated from GNN Model: {model_name}
-# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-# 
-# This is a simplified fallback implementation.
-# For full pipeline integration, use the execute/pymdp module.
-
-import sys
-from pathlib import Path
-
-# Add src to path for pipeline integration
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-try:
-    from src.execute.pymdp import execute_pymdp_simulation
-    
-    def main():
-        \"\"\"Run PyMDP simulation using pipeline integration.\"\"\"
+        # Use the dedicated PyMDP converter for full script generation
+        converter = GnnToPyMdpConverter(model_data)
+        pymdp_script = converter.get_full_python_script(include_example_usage=True)
         
-        # GNN specification (embedded)
-        gnn_spec = {model_data}
-        
-        # Output directory
-        output_dir = Path("output") / "pymdp_simulations" / "{model_name}"
-        output_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Run simulation using pipeline
-        success, results = execute_pymdp_simulation(
-            gnn_spec=gnn_spec,
-            output_dir=output_dir
-        )
-        
-        if success:
-            print(f"✓ Simulation completed successfully!")
-            print(f"Output: {{results.get('output_directory')}}")
+        if pymdp_script:
+            logging.info(f"Successfully generated PyMDP code using GNN converter for {model_name}")
+            return pymdp_script
         else:
-            print(f"✗ Simulation failed: {{results.get('error')}}")
-        
-        return 0 if success else 1
-
-except ImportError:
-    # Fallback for basic PyMDP usage
-    import numpy as np
-    
-    def main():
-        \"\"\"Fallback PyMDP simulation.\"\"\"
-        try:
-            from pymdp import utils
-            from pymdp.agent import Agent
+            # Fallback to renderer if converter doesn't work
+            logging.warning("GNN converter returned empty script, using PyMDP renderer")
+            # Create a temporary output path (the script content will be returned, not written)
+            temp_output_path = Path("/tmp/temp_pymdp_script.py")
+            success, message, warnings = render_gnn_to_pymdp(model_data, temp_output_path)
             
-            print("Running basic PyMDP simulation...")
-            
-            # Model parameters from GNN
-            num_states = {num_states}
-            num_obs = {num_obs}
-            num_actions = {num_actions}
-            
-            # Create simple POMDP matrices
-            A = utils.obj_array(1)
-            A[0] = np.eye(num_obs, num_states)
-            A[0] = utils.norm_dist(A[0])
-            
-            B = utils.obj_array(1) 
-            B[0] = np.random.uniform(0.1, 1.0, (num_states, num_states, num_actions))
-            B[0] = utils.norm_dist(B[0])
-            
-            C = utils.obj_array(1)
-            C[0] = np.random.uniform(-1, 1, num_obs)
-            
-            D = utils.obj_array(1)
-            D[0] = np.ones(num_states) / num_states
-            
-            # Create agent
-            agent = Agent(A=A, B=B, C=C, D=D)
-            
-            # Simple simulation
-            for t in range(10):
-                obs = np.random.choice(num_obs)
-                qs = agent.infer_states([obs])
-                action = agent.sample_action()
-                print(f"Step {{t}}: obs={{obs}}, action={{action[0]}}")
-            
-            print("Basic simulation completed!")
-            return 0
-            
-        except ImportError:
-            print("PyMDP not available. Please install: pip install inferactively-pymdp")
-            return 1
-
-if __name__ == "__main__":
-    sys.exit(main())
+            if success and temp_output_path.exists():
+                with open(temp_output_path, 'r') as f:
+                    script_content = f.read()
+                temp_output_path.unlink()  # Clean up
+                return script_content
+            else:
+                raise Exception(f"PyMDP renderer failed: {message}")
+                
+    except Exception as e:
+        logging.error(f"Failed to generate PyMDP code: {e}")
+        return f"""#!/usr/bin/env python3
+# PyMDP code generation failed: {e}
+# Please check the GNN specification and try again.
+print("Error: PyMDP code generation failed")
 """
-    return code
 
 def generate_rxinfer_code(model_data: Dict) -> str:
-    """Generate RxInfer.jl simulation code."""
+    """Generate RxInfer.jl simulation code using the modular RxInfer renderer."""
+    try:
+        from render.rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
+        
+        # Create a temporary output path
+        temp_output_path = Path("/tmp/temp_rxinfer_script.jl")
+        success, message, warnings = render_gnn_to_rxinfer(model_data, temp_output_path)
+        
+        if success and temp_output_path.exists():
+            with open(temp_output_path, 'r') as f:
+                script_content = f.read()
+            temp_output_path.unlink()  # Clean up
+            return script_content
+        else:
+            raise Exception(f"RxInfer renderer failed: {message}")
+            
+    except ImportError:
+        logging.warning("RxInfer renderer not available, using fallback")
+        return generate_rxinfer_fallback_code(model_data)
+    except Exception as e:
+        logging.error(f"Failed to generate RxInfer code: {e}")
+        return generate_rxinfer_fallback_code(model_data)
+
+def generate_rxinfer_fallback_code(model_data: Dict) -> str:
+    """Fallback RxInfer.jl code generation."""
     # Calculate dimensions
     state_vars = [var for var in model_data.get('variables', []) if 'state' in var.get('type', '')]
     obs_vars = [var for var in model_data.get('variables', []) if 'observation' in var.get('type', '')]
@@ -214,7 +148,31 @@ println("RxInfer.jl simulation completed!")
     return code
 
 def generate_activeinference_jl_code(model_data: Dict) -> str:
-    """Generate ActiveInference.jl simulation code."""
+    """Generate ActiveInference.jl simulation code using the modular ActiveInference.jl renderer."""
+    try:
+        from render.activeinference_jl.activeinference_jl_renderer import render_gnn_to_activeinference_jl
+        
+        # Create a temporary output path
+        temp_output_path = Path("/tmp/temp_activeinference_jl_script.jl")
+        success, message, warnings = render_gnn_to_activeinference_jl(model_data, temp_output_path)
+        
+        if success and temp_output_path.exists():
+            with open(temp_output_path, 'r') as f:
+                script_content = f.read()
+            temp_output_path.unlink()  # Clean up
+            return script_content
+        else:
+            raise Exception(f"ActiveInference.jl renderer failed: {message}")
+            
+    except ImportError:
+        logging.warning("ActiveInference.jl renderer not available, using fallback")
+        return generate_activeinference_jl_fallback_code(model_data)
+    except Exception as e:
+        logging.error(f"Failed to generate ActiveInference.jl code: {e}")
+        return generate_activeinference_jl_fallback_code(model_data)
+
+def generate_activeinference_jl_fallback_code(model_data: Dict) -> str:
+    """Fallback ActiveInference.jl code generation."""
     # Calculate dimensions
     state_vars = [var for var in model_data.get('variables', []) if 'state' in var.get('type', '')]
     obs_vars = [var for var in model_data.get('variables', []) if 'observation' in var.get('type', '')]
@@ -270,7 +228,31 @@ println("ActiveInference.jl simulation completed!")
     return code
 
 def generate_discopy_code(model_data: Dict) -> str:
-    """Generate DisCoPy code for categorical diagrams."""
+    """Generate DisCoPy code for categorical diagrams using the modular DisCoPy renderer."""
+    try:
+        from render.discopy.discopy_renderer import render_gnn_to_discopy
+        
+        # Create a temporary output path
+        temp_output_path = Path("/tmp/temp_discopy_script.py")
+        success, message, warnings = render_gnn_to_discopy(model_data, temp_output_path)
+        
+        if success and temp_output_path.exists():
+            with open(temp_output_path, 'r') as f:
+                script_content = f.read()
+            temp_output_path.unlink()  # Clean up
+            return script_content
+        else:
+            raise Exception(f"DisCoPy renderer failed: {message}")
+            
+    except ImportError:
+        logging.warning("DisCoPy renderer not available, using fallback")
+        return generate_discopy_fallback_code(model_data)
+    except Exception as e:
+        logging.error(f"Failed to generate DisCoPy code: {e}")
+        return generate_discopy_fallback_code(model_data)
+
+def generate_discopy_fallback_code(model_data: Dict) -> str:
+    """Fallback DisCoPy code generation."""
     variables = [var.get('name', '') for var in model_data.get('variables', [])]
     connections = []
     for conn in model_data.get('connections', []):
@@ -376,7 +358,7 @@ def main():
             }
         }
         
-        # Render targets
+        # Render targets - delegate to modular framework renderers
         render_targets = [
             ("pymdp", generate_pymdp_code, ".py"),
             ("rxinfer", generate_rxinfer_code, ".jl"),
@@ -391,6 +373,23 @@ def main():
             file_name = file_result["file_name"]
             logger.info(f"Rendering code for: {file_name}")
             
+            # Load the actual parsed GNN specification
+            parsed_model_file = file_result.get("parsed_model_file")
+            if parsed_model_file and Path(parsed_model_file).exists():
+                try:
+                    with open(parsed_model_file, 'r') as f:
+                        actual_gnn_spec = json.load(f)
+                    logger.info(f"Loaded parsed GNN specification from {parsed_model_file}")
+                    # Use the actual GNN specification instead of the summary
+                    model_data = actual_gnn_spec
+                except Exception as e:
+                    logger.error(f"Failed to load parsed GNN spec from {parsed_model_file}: {e}")
+                    # Fall back to using the summary data
+                    model_data = file_result
+            else:
+                logger.warning(f"Parsed model file not found for {file_name}, using summary data")
+                model_data = file_result
+            
             # Create file-specific output directory
             file_output_dir = output_dir / file_name.replace('.md', '')
             file_output_dir.mkdir(exist_ok=True)
@@ -402,11 +401,11 @@ def main():
                 "success": True
             }
             
-            # Generate code for each target
+            # Generate code for each target using modular renderers
             for target_name, code_generator, extension in render_targets:
                 try:
-                    # Generate code
-                    code = code_generator(file_result)
+                    # Generate code using the modular renderer
+                    code = code_generator(model_data)
                     
                     # Save code file
                     code_file = file_output_dir / f"{file_name.replace('.md', '')}_{target_name}{extension}"
