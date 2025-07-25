@@ -219,8 +219,8 @@ for t in 1:T
     q_pi = infer_policies(agent)
     action = sample_action(agent, q_pi)
     
-    println("Step \$t: Observation=\$obs, Action=\$action")
-    println("  State beliefs: \$qs")
+            println("Step \\$t: Observation=\\$obs, Action=\\$action")
+        println("  State beliefs: \\$qs")
 end
 
 println("ActiveInference.jl simulation completed!")

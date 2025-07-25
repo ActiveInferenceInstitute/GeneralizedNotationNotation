@@ -192,16 +192,20 @@ def check_dependencies() -> List[ValidationResult]:
     for package, min_version in required_packages:
         try:
             # Try to import the package
-            __import__(package)
+            if package == "pyyaml":
+                # Special case: pyyaml installs as 'yaml' module
+                import yaml
+                module = yaml
+            elif package == "scikit-learn":
+                # Special case: scikit-learn installs as 'sklearn' module  
+                import sklearn
+                module = sklearn
+            else:
+                module = __import__(package)
             
             # Try to get version
             try:
-                if package == "scikit-learn":
-                    import sklearn
-                    version = sklearn.__version__
-                else:
-                    module = __import__(package)
-                    version = getattr(module, '__version__', 'unknown')
+                version = getattr(module, '__version__', 'unknown')
                 
                 results.append(ValidationResult(
                     component=f"dependency_{package}",

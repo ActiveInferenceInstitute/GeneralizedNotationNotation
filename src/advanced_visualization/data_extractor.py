@@ -264,4 +264,80 @@ class VisualizationDataExtractor:
             "total_connections": len(connections),
             "total_parameters": extracted_data.get("total_parameters", 0),
             "total_equations": extracted_data.get("total_equations", 0)
-        } 
+        }
+
+
+def extract_visualization_data(target_dir, output_dir, **kwargs):
+    """
+    Extract visualization data from GNN files in the target directory.
+    
+    Args:
+        target_dir: Directory containing GNN files
+        output_dir: Directory to save extracted data
+        **kwargs: Additional arguments
+        
+    Returns:
+        Dictionary with extraction results
+    """
+    from pathlib import Path
+    import json
+    
+    target_dir = Path(target_dir)
+    output_dir = Path(output_dir)
+    
+    extractor = VisualizationDataExtractor(strict_validation=False)
+    
+    results = {
+        "processed_files": 0,
+        "successful_extractions": 0,
+        "failed_extractions": 0,
+        "extracted_data": {},
+        "statistics": {},
+        "errors": []
+    }
+    
+    # Find all GNN files
+    gnn_extensions = ['.md', '.gnn', '.json', '.yaml', '.yml']
+    gnn_files = []
+    
+    for ext in gnn_extensions:
+        gnn_files.extend(target_dir.glob(f"**/*{ext}"))
+    
+    for gnn_file in gnn_files:
+        try:
+            extracted_data = extractor.extract_from_file(gnn_file)
+            
+            results["processed_files"] += 1
+            
+            if extracted_data.get("success", False):
+                results["successful_extractions"] += 1
+                
+                model_name = gnn_file.stem
+                results["extracted_data"][model_name] = extracted_data
+                results["statistics"][model_name] = extractor.get_model_statistics(extracted_data)
+                
+                # Save individual file data
+                model_output_dir = output_dir / model_name
+                model_output_dir.mkdir(parents=True, exist_ok=True)
+                
+                with open(model_output_dir / "extracted_data.json", 'w') as f:
+                    json.dump(extracted_data, f, indent=2)
+                
+                with open(model_output_dir / "statistics.json", 'w') as f:
+                    json.dump(results["statistics"][model_name], f, indent=2)
+            else:
+                results["failed_extractions"] += 1
+                results["errors"].append(f"Failed to extract from {gnn_file}: {extracted_data.get('errors', [])}")
+            
+        except Exception as e:
+            results["processed_files"] += 1
+            results["failed_extractions"] += 1
+            results["errors"].append(f"Error processing {gnn_file}: {e}")
+    
+    # Save overall summary
+    output_dir.mkdir(parents=True, exist_ok=True)
+    summary_file = output_dir / "extraction_summary.json"
+    with open(summary_file, 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    return results 

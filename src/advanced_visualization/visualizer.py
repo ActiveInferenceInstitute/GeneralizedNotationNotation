@@ -801,4 +801,75 @@ class AdvancedVisualizer:
 </html>
 """
         
-        return html 
+        return html
+
+
+def process_advanced_visualization(target_dir, output_dir, **kwargs):
+    """
+    Process advanced visualizations for GNN files in the target directory.
+    
+    Args:
+        target_dir: Directory containing GNN files
+        output_dir: Directory to save visualization results
+        **kwargs: Additional arguments including viz_type, interactive, export_formats
+        
+    Returns:
+        Dictionary with visualization results
+    """
+    target_dir = Path(target_dir)
+    output_dir = Path(output_dir)
+    
+    viz_type = kwargs.get('viz_type', 'all')
+    interactive = kwargs.get('interactive', True)
+    export_formats = kwargs.get('export_formats', ['html', 'json'])
+    
+    visualizer = AdvancedVisualizer(strict_validation=False)
+    
+    results = {
+        "processed_files": 0,
+        "successful_visualizations": 0,
+        "failed_visualizations": 0,
+        "generated_files": [],
+        "errors": []
+    }
+    
+    # Find all GNN files
+    gnn_extensions = ['.md', '.gnn', '.json', '.yaml', '.yml']
+    gnn_files = []
+    
+    for ext in gnn_extensions:
+        gnn_files.extend(target_dir.glob(f"**/*{ext}"))
+    
+    for gnn_file in gnn_files:
+        try:
+            with open(gnn_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            model_name = gnn_file.stem
+            model_output_dir = output_dir / model_name
+            model_output_dir.mkdir(parents=True, exist_ok=True)
+            
+            generated_files = visualizer.generate_visualizations(
+                content=content,
+                model_name=model_name,
+                output_dir=model_output_dir,
+                viz_type=viz_type,
+                interactive=interactive,
+                export_formats=export_formats
+            )
+            
+            results["processed_files"] += 1
+            results["successful_visualizations"] += 1
+            results["generated_files"].extend([str(f) for f in generated_files])
+            
+        except Exception as e:
+            results["processed_files"] += 1
+            results["failed_visualizations"] += 1
+            results["errors"].append(f"Failed to visualize {gnn_file}: {e}")
+    
+    # Save summary
+    summary_file = output_dir / "advanced_visualization_summary.json"
+    with open(summary_file, 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    return results 

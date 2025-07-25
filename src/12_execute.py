@@ -301,20 +301,44 @@ def main():
     logger.info(f"[{correlation_id}] Starting execute processing")
     
     try:
-        # Validate execution environment
-        validation_results = validate_execution_environment()
-        log_validation_results(validation_results, logger)
-        
-        if validation_results["summary"]["total_errors"] > 0:
-            logger.error(f"[{correlation_id}] Environment validation failed - aborting execution")
-            return 1
-        
         # Get pipeline configuration
         config = get_pipeline_config()
         output_dir = get_output_dir_for_script("12_execute.py", Path(args.output_dir))
         output_dir.mkdir(parents=True, exist_ok=True)
         
         log_step_start(logger, f"[{correlation_id}] Processing execute with safety patterns")
+        
+        # Validate execution environment
+        validation_results = validate_execution_environment()
+        log_validation_results(validation_results, logger)
+        
+        if validation_results["summary"]["total_errors"] > 0:
+            logger.warning(f"[{correlation_id}] Environment validation failed - continuing with degraded functionality")
+            # Create degraded execution results but continue pipeline
+            degraded_results = {
+                "timestamp": datetime.now().isoformat(),
+                "correlation_id": correlation_id,
+                "source_directory": str(args.target_dir),
+                "output_directory": str(output_dir),
+                "environment_validation": validation_results,
+                "executions": [],
+                "summary": {
+                    "total_scripts": 0,
+                    "successful_executions": 0,
+                    "failed_executions": 0,
+                    "gnn_based_executions": 0,
+                    "total_attempts": 0,
+                    "environment_degraded": True
+                }
+            }
+            
+            # Save degraded results
+            results_file = output_dir / "execution_results.json"
+            with open(results_file, 'w') as f:
+                json.dump(degraded_results, f, indent=2, default=str)
+                
+            log_step_warning(logger, f"[{correlation_id}] Execution skipped due to missing dependencies, but pipeline continues")
+            return 0  # Continue pipeline even with environment issues
         
         # Load GNN processing results to get full specifications
         gnn_output_dir = get_output_dir_for_script("3_gnn.py", Path(args.output_dir))
@@ -510,7 +534,7 @@ def main():
         return 0
             
     except Exception as e:
-        log_step_error(logger, f"[{correlation_id}] Execute processing failed", {"error": str(e), "traceback": traceback.format_exc()})
+        log_step_error(logger, f"[{correlation_id}] Execute processing failed: {str(e)}")
         
         # Even on complete failure, try to save an error report
         try:

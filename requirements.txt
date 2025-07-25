@@ -10,6 +10,9 @@ scikit-learn>=1.0.0
 plotly>=5.0.0
 seaborn>=0.11.0
 
+# Active Inference and simulation
+pymdp>=0.0.1
+
 # Testing and development
 pytest>=6.0.0
 pytest-cov>=3.0.0

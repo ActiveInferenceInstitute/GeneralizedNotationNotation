@@ -7,11 +7,34 @@ including heatmaps, statistics, and analysis of model parameters.
 Specialized support for 3D tensors like POMDP transition matrices.
 """
 
-import matplotlib.pyplot as plt
-import numpy as np
+# Safe imports with fallbacks
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.patches as patches
+    from matplotlib import cm
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    plt = None
+    patches = None
+    cm = None
+    MATPLOTLIB_AVAILABLE = False
+
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    np = None
+    NUMPY_AVAILABLE = False
+
+try:
+    import seaborn as sns
+    SEABORN_AVAILABLE = True
+except ImportError:
+    sns = None
+    SEABORN_AVAILABLE = False
+
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
-import seaborn as sns
 
 class MatrixVisualizer:
     """
@@ -425,75 +448,112 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
     
     def generate_matrix_analysis(self, parameters: List[Dict], output_path: Path) -> bool:
         """
-        Generate comprehensive matrix analysis visualizations.
+        Generate comprehensive matrix analysis from parameters.
         
         Args:
-            parameters: List of parameter dictionaries
-            output_path: Output directory path
+            parameters: List of parameter dictionaries from GNN
+            output_path: Path where to save the analysis image
             
         Returns:
-            True if successful, False otherwise
+            bool: True if analysis was generated successfully
         """
+        if not MATPLOTLIB_AVAILABLE or not NUMPY_AVAILABLE:
+            # Create a simple text report instead
+            try:
+                with open(output_path.with_suffix('.txt'), 'w') as f:
+                    f.write("Matrix Analysis Report\n")
+                    f.write("=====================\n\n")
+                    f.write(f"Dependencies Status:\n")
+                    f.write(f"- Matplotlib: {MATPLOTLIB_AVAILABLE}\n")
+                    f.write(f"- NumPy: {NUMPY_AVAILABLE}\n")
+                    f.write(f"- Seaborn: {SEABORN_AVAILABLE}\n\n")
+                    f.write(f"Parameters found: {len(parameters)}\n")
+                    for i, param in enumerate(parameters[:10]):  # Show first 10
+                        f.write(f"  {i+1}. {param.get('name', 'unnamed')}: {param.get('type', 'unknown')}\n")
+                    if len(parameters) > 10:
+                        f.write(f"  ... and {len(parameters) - 10} more\n")
+                return True
+            except Exception:
+                return False
+        
         try:
+            # Extract matrix data from parameters
             matrices = self.extract_matrix_data_from_parameters(parameters)
             
             if not matrices:
-                # Create placeholder if no matrices
-                plt.figure(figsize=(12, 8))
-                plt.text(0.5, 0.5, 'No matrix data found in parameters', 
-                        ha='center', va='center', transform=plt.gca().transAxes,
-                        fontsize=16, fontweight='bold')
-                plt.title('Matrix Analysis', fontsize=16, fontweight='bold')
-                plt.savefig(output_path, dpi=300, bbox_inches='tight')
-                plt.close()
-                return True
+                return False
             
-            # Generate individual matrix heatmaps
-            matrix_files = []
-            for matrix_name, matrix in matrices.items():
-                matrix_file = output_path.parent / f"matrix_{matrix_name}_heatmap.png"
+            # Create figure with subplots
+            n_matrices = len(matrices)
+            if n_matrices == 0:
+                return False
                 
-                # Handle 3D tensors specially
-                if matrix.ndim == 3:
-                    if matrix_name == 'B':
-                        # Special POMDP transition matrix visualization
-                        self.generate_3d_tensor_visualization(matrix_name, matrix, matrix_file, 
-                                                            tensor_type="transition")
-                    else:
-                        # Generic 3D tensor visualization
-                        self.generate_3d_tensor_visualization(matrix_name, matrix, matrix_file)
-                else:
-                    # 2D matrix visualization
-                    # Determine appropriate colormap based on matrix type
-                    if matrix_name in ['A', 'B']:  # Likelihood and transition matrices
-                        cmap = 'Blues'
-                    elif matrix_name in ['C', 'D', 'E']:  # Preference and prior vectors
-                        cmap = 'Reds'
-                    else:
-                        cmap = 'viridis'
-                    
-                    # Generate title with matrix description
-                    title_map = {
-                        'A': 'Likelihood Matrix A (Observations × Hidden States)',
-                        'B': 'Transition Matrix B (Next States × Previous States × Actions)',
-                        'C': 'Preference Vector C (Log-preferences over Observations)',
-                        'D': 'Prior Vector D (Prior over Initial Hidden States)',
-                        'E': 'Habit Vector E (Initial Policy Prior over Actions)'
-                    }
-                    
-                    title = title_map.get(matrix_name, f'Matrix {matrix_name}')
-                    self.generate_matrix_heatmap(matrix_name, matrix, matrix_file, title, cmap)
-                
-                matrix_files.append(str(matrix_file))
+            # Calculate grid dimensions
+            cols = min(3, n_matrices)
+            rows = (n_matrices + cols - 1) // cols
             
-            # Generate combined matrix overview
-            self.generate_combined_matrix_overview(matrices, output_path)
+            fig, axes = plt.subplots(rows, cols, figsize=(15, 5 * rows))
+            if n_matrices == 1:
+                axes = [axes]
+            elif rows == 1:
+                axes = [axes] if not hasattr(axes, '__len__') else axes
+            else:
+                axes = axes.flatten()
+                
+            # Generate visualizations for each matrix
+            for i, (name, matrix) in enumerate(matrices.items()):
+                if i >= len(axes):
+                    break
+                    
+                ax = axes[i]
+                
+                # Handle different matrix shapes
+                if matrix.ndim == 1:
+                    # Vector - plot as bar chart
+                    ax.bar(range(len(matrix)), matrix)
+                    ax.set_title(f'{name} (Vector)')
+                elif matrix.ndim == 2:
+                    # Matrix - plot as heatmap
+                    if SEABORN_AVAILABLE:
+                        sns.heatmap(matrix, ax=ax, cmap='viridis', annot=True if matrix.size <= 100 else False)
+                    else:
+                        im = ax.imshow(matrix, cmap='viridis', aspect='auto')
+                        plt.colorbar(im, ax=ax)
+                    ax.set_title(f'{name} (Matrix {matrix.shape})')
+                elif matrix.ndim == 3:
+                    # 3D tensor - show first slice
+                    if SEABORN_AVAILABLE:
+                        sns.heatmap(matrix[0], ax=ax, cmap='viridis', annot=True if matrix[0].size <= 100 else False)
+                    else:
+                        im = ax.imshow(matrix[0], cmap='viridis', aspect='auto')
+                        plt.colorbar(im, ax=ax)
+                    ax.set_title(f'{name} (3D Tensor {matrix.shape}, slice 0)')
+                
+                # Add statistics text
+                stats_text = f'Mean: {np.mean(matrix):.3f}\nStd: {np.std(matrix):.3f}'
+                ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, 
+                       verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+            
+            # Hide unused subplots
+            for i in range(n_matrices, len(axes)):
+                axes[i].set_visible(False)
+            
+            plt.tight_layout()
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.close()
+            
             return True
             
         except Exception as e:
-            print(f"Error generating matrix analysis: {e}")
-            plt.close()
-            return False
+            # Fallback: create error report
+            try:
+                with open(output_path.with_suffix('.txt'), 'w') as f:
+                    f.write(f"Matrix Analysis Failed\n")
+                    f.write(f"Error: {str(e)}\n")
+                    f.write(f"Parameters: {len(parameters)} found\n")
+                return True
+            except:
+                return False
     
     def generate_combined_matrix_overview(self, matrices: Dict[str, np.ndarray], output_path: Path) -> bool:
         """
@@ -879,3 +939,25 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
             generated_files.append(str(pomdp_analysis_path))
     
     return generated_files 
+
+
+def process_matrix_visualization(parameters: List[Dict], output_path: Path, **kwargs) -> bool:
+    """
+    Process matrix visualization using the MatrixVisualizer class.
+    
+    This function provides a standalone interface for matrix visualization
+    that can be called from other modules.
+    
+    Args:
+        parameters: List of parameter dictionaries from GNN
+        output_path: Path where to save the visualization
+        **kwargs: Additional keyword arguments
+        
+    Returns:
+        bool: True if visualization was successful
+    """
+    try:
+        visualizer = MatrixVisualizer()
+        return visualizer.generate_matrix_analysis(parameters, output_path)
+    except Exception:
+        return False 

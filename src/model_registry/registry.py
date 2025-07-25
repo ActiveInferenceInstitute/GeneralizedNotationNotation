@@ -404,4 +404,48 @@ class ModelRegistry:
         if license_match:
             metadata["license"] = license_match.group(1).strip()
         
-        return metadata 
+        return metadata
+
+
+def process_model_registry(target_dir: Path, output_dir: Path, **kwargs) -> Dict[str, Any]:
+    """
+    Process model registry for GNN files in the target directory.
+    
+    Args:
+        target_dir: Directory containing GNN files
+        output_dir: Directory to save registry results
+        **kwargs: Additional arguments
+        
+    Returns:
+        Dictionary with processing results
+    """
+    registry_path = output_dir / "model_registry.json"
+    registry = ModelRegistry(registry_path)
+    
+    processed_files = 0
+    successful_registrations = 0
+    
+    # Find all GNN files
+    gnn_extensions = ['.md', '.gnn', '.json', '.yaml', '.yml']
+    gnn_files = []
+    
+    for ext in gnn_extensions:
+        gnn_files.extend(target_dir.glob(f"**/*{ext}"))
+    
+    for gnn_file in gnn_files:
+        processed_files += 1
+        if registry.register_model(gnn_file):
+            successful_registrations += 1
+    
+    # Save registry
+    registry.save()
+    
+    # Create summary
+    results = {
+        "processed_files": processed_files,
+        "successful_registrations": successful_registrations,
+        "registry_path": str(registry_path),
+        "total_models": len(registry.models)
+    }
+    
+    return results 

@@ -381,4 +381,72 @@ class SemanticValidator:
         return {
             "errors": errors,
             "warnings": warnings
-        } 
+        }
+
+
+def process_semantic_validation(target_dir, output_dir, **kwargs):
+    """
+    Process semantic validation for GNN files in the target directory.
+    
+    Args:
+        target_dir: Directory containing GNN files
+        output_dir: Directory to save validation results
+        **kwargs: Additional arguments including validation_level
+        
+    Returns:
+        Dictionary with validation results
+    """
+    from pathlib import Path
+    import json
+    
+    target_dir = Path(target_dir)
+    output_dir = Path(output_dir)
+    validation_level = kwargs.get('validation_level', 'standard')
+    
+    validator = SemanticValidator(validation_level)
+    
+    results = {
+        "processed_files": 0,
+        "valid_files": 0,
+        "total_errors": 0,
+        "total_warnings": 0,
+        "files": {}
+    }
+    
+    # Find all GNN files
+    gnn_extensions = ['.md', '.gnn', '.json', '.yaml', '.yml']
+    gnn_files = []
+    
+    for ext in gnn_extensions:
+        gnn_files.extend(target_dir.glob(f"**/*{ext}"))
+    
+    for gnn_file in gnn_files:
+        try:
+            with open(gnn_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            validation_result = validator.validate(content)
+            
+            results["processed_files"] += 1
+            if validation_result["is_valid"]:
+                results["valid_files"] += 1
+            
+            results["total_errors"] += len(validation_result["errors"])
+            results["total_warnings"] += len(validation_result["warnings"])
+            results["files"][str(gnn_file)] = validation_result
+            
+        except Exception as e:
+            results["files"][str(gnn_file)] = {
+                "is_valid": False,
+                "errors": [f"Failed to process file: {e}"],
+                "warnings": []
+            }
+            results["total_errors"] += 1
+    
+    # Save results
+    output_dir.mkdir(parents=True, exist_ok=True)
+    results_file = output_dir / "semantic_validation_results.json"
+    with open(results_file, 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    return results 
