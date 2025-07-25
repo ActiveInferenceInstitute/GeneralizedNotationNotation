@@ -54,11 +54,6 @@ try:
     from datetime import datetime
     from pathlib import Path
 
-    # try:
-    #     print(f'AGENT_SCRIPT: Imported pymdp version: {{pymdp.__version__}}') # Commented out
-    # except AttributeError:
-    #     print('AGENT_SCRIPT: pymdp.__version__ attribute not found.') # Commented out
-    # print(f'AGENT_SCRIPT: pymdp module location: {{pymdp.__file__}}') # Commented out
     from pymdp.agent import Agent
     print(f'AGENT_SCRIPT: Imported Agent: {{Agent}}')
     print(f'AGENT_SCRIPT: Agent module location: {{inspect.getfile(Agent)}}')

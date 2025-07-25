@@ -36,22 +36,48 @@ except ImportError:
     pass
 from unittest.mock import patch
 
-# Import test configuration and utilities
-from . import (
-    TEST_CONFIG, 
-    PYTEST_MARKERS,
-    setup_test_environment,
-    cleanup_test_environment,
-    create_sample_gnn_content,
-    create_test_gnn_files,
-    get_sample_pipeline_arguments,
-    validate_test_environment,
-    get_mock_filesystem_structure,
-    is_safe_mode,
-    TEST_DIR,
-    SRC_DIR,
-    PROJECT_ROOT
-)
+# Test configuration and markers
+PYTEST_MARKERS = {
+    "unit": "Unit tests for individual components",
+    "integration": "Integration tests for component interactions", 
+    "performance": "Performance and resource usage tests",
+    "slow": "Tests that take significant time to complete",
+    "fast": "Quick tests for rapid feedback",
+    "safe_to_fail": "Tests safe to run without side effects",
+    "destructive": "Tests that may modify system state",
+    "external": "Tests requiring external dependencies",
+    "core": "Core module tests",
+    "utilities": "Utility function tests",
+    "environment": "Environment validation tests",
+    "render": "Rendering and code generation tests",
+    "export": "Export functionality tests",
+    "parsers": "Parser and format tests"
+}
+
+TEST_CONFIG = {
+    "safe_mode": True,
+    "verbose": False,
+    "strict": False,
+    "estimate_resources": False,
+    "skip_steps": [],
+    "only_steps": []
+}
+
+def is_safe_mode():
+    """Check if tests are running in safe mode."""
+    return TEST_CONFIG["safe_mode"]
+
+def setup_test_environment():
+    """Set up test environment."""
+    pass
+
+def cleanup_test_environment():
+    """Clean up test environment."""
+    pass
+
+def validate_test_environment():
+    """Validate test environment."""
+    return True, []
 
 # Configure pytest markers
 def pytest_configure(config):

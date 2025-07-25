@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 import subprocess
 import json
+import os
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -45,7 +46,13 @@ def main():
             "--cov-report=json:coverage.json",
             "-v" if args.verbose else ""
         ]
-        result = subprocess.run(test_command, capture_output=True, text=True, cwd=Path(__file__).parent.parent)
+        
+        # Set PYTHONPATH to include src/
+        test_env = os.environ.copy()
+        src_path = str(Path(__file__).parent)
+        test_env['PYTHONPATH'] = src_path + os.pathsep + test_env.get('PYTHONPATH', '')
+        
+        result = subprocess.run(test_command, capture_output=True, text=True, cwd=Path(__file__).parent.parent, env=test_env)
         
         # Save results
         results_file = output_dir / "test_results.json"

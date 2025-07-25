@@ -8,25 +8,36 @@ The GNN Processing Pipeline is a comprehensive, modular system for processing Ge
 
 ```mermaid
 graph TD
-    A[1_setup.py] --> B[2_gnn.py]
-    B --> C[3_tests.py]
-    B --> D[4_type_checker.py]
-    D --> E[5_export.py]
-    E --> F[6_visualization.py]
-    E --> G[7_mcp.py]
-    E --> H[8_ontology.py]
-    E --> I[9_render.py]
-    I --> J[10_execute.py]
-    E --> K[11_llm.py]
-    B --> L[12_audio.py]
-    F --> M[13_website.py]
-    H --> M
-    F --> N[14_report.py]
-    H --> N
-    L --> N
+    A[0_template.py] --> B[1_setup.py]
+    B --> C[2_tests.py]
+    B --> D[3_gnn.py]
+    D --> E[4_model_registry.py]
+    E --> F[5_type_checker.py]
+    F --> G[6_validation.py]
+    G --> H[7_export.py]
+    H --> I[8_visualization.py]
+    H --> J[9_advanced_viz.py]
+    H --> K[10_ontology.py]
+    H --> L[11_render.py]
+    L --> M[12_execute.py]
+    H --> N[13_llm.py]
+    H --> O[14_ml_integration.py]
+    D --> P[15_audio.py]
+    I --> Q[16_analysis.py]
+    K --> Q
+    P --> Q
+    Q --> R[17_integration.py]
+    R --> S[18_security.py]
+    S --> T[19_research.py]
+    I --> U[20_website.py]
+    K --> U
+    Q --> V[21_report.py]
+    K --> V
+    P --> V
     
     style A fill:#ffcccc
-    style B fill:#e6f3ff
+    style B fill:#ffcccc
+    style D fill:#e6f3ff
 ```
 
 ## Stage Descriptions
@@ -35,32 +46,47 @@ graph TD
 
 | Stage | Script | Purpose | Timeout | Critical |
 |-------|--------|---------|---------|----------|
+| 0 | `0_template.py` | Template initialization | 1 min | No |
 | 1 | `1_setup.py` | Environment setup and dependency management | **20 min** | **Yes** |
-| 2 | `2_gnn.py` | GNN file discovery and basic parsing | 2 min | **Yes** |
-| 3 | `3_tests.py` | Test execution (optional) | 5 min | No |
-| 4 | `4_type_checker.py` | Type checking and resource estimation | 2 min | No |
-| 5 | `5_export.py` | Export to multiple formats (JSON, XML, etc.) | 2 min | No |
-| 6 | `6_visualization.py` | Generate visual representations | 5 min | No |
-| 7 | `7_mcp.py` | MCP integration analysis | 2 min | No |
-| 8 | `8_ontology.py` | Ontology validation and mapping | 2 min | No |
-| 9 | `9_render.py` | Code generation for simulators | 2 min | No |
-| 10 | `10_execute.py` | Execute rendered simulator code | 5 min | No |
-| 11 | `11_llm.py` | LLM-powered analysis and documentation | Configurable | No |
-| 12 | `12_audio.py` | Audio generation (SAPF, Pedalboard, etc.) | 5 min | No |
-| 13 | `13_website.py` | Static website generation | 2 min | No |
-| 14 | `14_report.py` | Comprehensive analysis report generation | 2 min | No |
+| 2 | `2_tests.py` | Test execution | 5 min | No |
+| 3 | `3_gnn.py` | GNN file discovery and basic parsing | 2 min | **Yes** |
+| 4 | `4_model_registry.py` | Model registry management | 2 min | No |
+| 5 | `5_type_checker.py` | Type checking and resource estimation | 2 min | No |
+| 6 | `6_validation.py` | Advanced validation and consistency checking | 2 min | No |
+| 7 | `7_export.py` | Export to multiple formats (JSON, XML, etc.) | 2 min | No |
+| 8 | `8_visualization.py` | Generate visual representations | 5 min | No |
+| 9 | `9_advanced_viz.py` | Advanced visualization and interactive plots | 5 min | No |
+| 10 | `10_ontology.py` | Ontology validation and mapping | 2 min | No |
+| 11 | `11_render.py` | Code generation for simulators | 2 min | No |
+| 12 | `12_execute.py` | Execute rendered simulator code | 5 min | No |
+| 13 | `13_llm.py` | LLM-powered analysis and documentation | Configurable | No |
+| 14 | `14_ml_integration.py` | Machine learning integration | 5 min | No |
+| 15 | `15_audio.py` | Audio generation (SAPF, Pedalboard, etc.) | 5 min | No |
+| 16 | `16_analysis.py` | Advanced analysis and statistical processing | 5 min | No |
+| 17 | `17_integration.py` | System integration and coordination | 2 min | No |
+| 18 | `18_security.py` | Security validation and access control | 2 min | No |
+| 19 | `19_research.py` | Research tools and experimental features | 5 min | No |
+| 20 | `20_website.py` | Static website generation | 2 min | No |
+| 21 | `21_report.py` | Comprehensive analysis report generation | 2 min | No |
 
 ### Step Dependencies
 
+- **Step 0 (template.py)** provides pipeline initialization
 - **Step 1 (setup.py)** is critical - pipeline halts on failure
-- **Step 2 (gnn.py)** is critical - pipeline halts on failure
-- **Step 3 (tests.py)** is optional and disabled by default
-- **Step 4 (type_checker.py)** depends on Step 2 for GNN file discovery
-- **Step 5 (export.py)** depends on Step 4 for validated GNN data
-- **Steps 6-11** depend on Step 5 for exported data
-- **Step 12 (audio.py)** depends on Step 2 for GNN file discovery
-- **Step 13 (website.py)** depends on Steps 6 and 8 for visualizations and ontology
-- **Step 14 (report.py)** depends on Steps 6, 8, and 12 for comprehensive analysis
+- **Step 2 (tests.py)** is optional and can run independently
+- **Step 3 (gnn.py)** is critical - pipeline halts on failure
+- **Step 4 (model_registry.py)** depends on Step 3 for GNN file discovery
+- **Step 5 (type_checker.py)** depends on Step 4 for model registry
+- **Step 6 (validation.py)** depends on Step 5 for type checking
+- **Step 7 (export.py)** depends on Step 6 for validated GNN data
+- **Steps 8-14** depend on Step 7 for exported data
+- **Step 15 (audio.py)** depends on Step 3 for GNN file discovery
+- **Step 16 (analysis.py)** depends on Steps 8, 10, and 15 for comprehensive analysis
+- **Step 17 (integration.py)** depends on Step 16 for analysis results
+- **Step 18 (security.py)** depends on Step 17 for integration results
+- **Step 19 (research.py)** depends on Step 18 for security validation
+- **Step 20 (website.py)** depends on Steps 8 and 10 for visualizations and ontology
+- **Step 21 (report.py)** depends on Steps 10, 15, and 16 for comprehensive reporting
 
 ## Configuration Management
 

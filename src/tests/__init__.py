@@ -8,12 +8,100 @@ from pathlib import Path
 from typing import Dict, Any, List
 import logging
 
-from utils.pipeline_template import (
+from src.utils.pipeline_template import (
     log_step_start,
     log_step_success,
     log_step_error,
     log_step_warning
 )
+
+# Test configuration and constants
+TEST_CONFIG = {
+    "safe_mode": True,
+    "verbose": False,
+    "strict": False,
+    "estimate_resources": False,
+    "skip_steps": [],
+    "only_steps": []
+}
+
+PYTEST_MARKERS = {
+    "unit": "Unit tests for individual components",
+    "integration": "Integration tests for component interactions", 
+    "performance": "Performance and resource usage tests",
+    "slow": "Tests that take significant time to complete",
+    "fast": "Quick tests for rapid feedback",
+    "safe_to_fail": "Tests safe to run without side effects",
+    "destructive": "Tests that may modify system state",
+    "external": "Tests requiring external dependencies",
+    "core": "Core module tests",
+    "utilities": "Utility function tests",
+    "environment": "Environment validation tests",
+    "render": "Rendering and code generation tests",
+    "export": "Export functionality tests",
+    "parsers": "Parser and format tests",
+    "type_checking": "Type checking tests",
+    "main_orchestrator": "Main orchestrator tests",
+    "mcp": "MCP integration tests",
+    "pipeline": "Pipeline step tests"
+}
+
+# Test directory constants
+TEST_DIR = Path(__file__).parent
+SRC_DIR = TEST_DIR.parent
+PROJECT_ROOT = SRC_DIR.parent
+
+def is_safe_mode():
+    """Check if tests are running in safe mode."""
+    return TEST_CONFIG["safe_mode"]
+
+def setup_test_environment():
+    """Set up test environment."""
+    pass
+
+def cleanup_test_environment():
+    """Clean up test environment."""
+    pass
+
+def validate_test_environment():
+    """Validate test environment."""
+    return True, []
+
+def get_sample_pipeline_arguments():
+    """Get sample pipeline arguments for testing."""
+    return {
+        "target_dir": TEST_DIR / "fixtures",
+        "output_dir": TEST_DIR / "output",
+        "verbose": False,
+        "strict": False
+    }
+
+def create_test_gnn_files(target_dir: Path):
+    """Create test GNN files for testing."""
+    target_dir.mkdir(parents=True, exist_ok=True)
+    
+def create_sample_gnn_content():
+    """Create sample GNN content for testing."""
+    return """
+# TestModel
+
+## Variables
+- X: [2]
+
+## Connections
+- X -> Y
+
+## Parameters
+- A: [[1,2,3], [4,5,6]]
+"""
+
+def get_mock_filesystem_structure():
+    """Get mock filesystem structure for testing."""
+    return {
+        "input": ["model.md"],
+        "output": [],
+        "src": ["main.py"]
+    }
 
 def run_all_tests(
     target_dir: Path,

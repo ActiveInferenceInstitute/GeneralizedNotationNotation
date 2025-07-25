@@ -6,11 +6,17 @@
 > **Cross-References**: [Main Documentation](../README.md) | [API Reference](../api/README.md)
 
 ## Overview
-The GNN Processing Pipeline is a comprehensive 14-step system for processing Generalized Notation Notation files from parsing through execution and analysis.
+The GNN Processing Pipeline is a comprehensive 22-step system for processing Generalized Notation Notation files from parsing through execution and analysis.
 
 ## Complete Pipeline Steps
 
 ### Core Processing Chain
+
+#### Step 0: Template Initialization (`0_template.py`)
+- **Purpose**: Pipeline template and initialization
+- **Input**: Project configuration
+- **Output**: Template initialization artifacts
+- **Key Features**: Pipeline structure setup, initialization logging
 
 #### Step 1: Environment Setup (`1_setup.py`) **[CRITICAL]**
 - **Purpose**: Virtual environment setup and dependency installation
@@ -19,89 +25,125 @@ The GNN Processing Pipeline is a comprehensive 14-step system for processing Gen
 - **Key Features**: Virtual environment creation, dependency validation, package listing
 - **Criticality**: Pipeline halts if this step fails
 
-#### Step 2: GNN File Discovery (`2_gnn.py`)
-- **Purpose**: Discover and perform basic parsing of GNN (.md) files
-- **Input**: Target directory containing GNN files  
-- **Output**: `gnn_processing_step/2_gnn_discovery_report.md`
-- **Key Features**: ModelName extraction, StateSpaceBlock detection, Connections identification
-
-#### Step 3: Test Execution (`3_tests.py`)
+#### Step 2: Test Execution (`2_tests.py`)
 - **Purpose**: Run comprehensive test suites
 - **Input**: Test files in `src/tests/`
 - **Output**: `test_reports/pytest_report.xml`
 - **Key Features**: Unit tests, integration tests, JUnit XML reports
 
-#### Step 4: Type Checking (`4_type_checker.py`)
+#### Step 3: GNN File Discovery (`3_gnn.py`)
+- **Purpose**: Discover and perform basic parsing of GNN (.md) files
+- **Input**: Target directory containing GNN files  
+- **Output**: `gnn_processing_step/gnn_processing_report.md`
+- **Key Features**: ModelName extraction, StateSpaceBlock detection, Connections identification
+
+#### Step 4: Model Registry (`4_model_registry.py`)
+- **Purpose**: Model registry management and versioning
+- **Input**: GNN files
+- **Output**: `model_registry/model_registry.json`
+- **Key Features**: Model registration, version tracking, metadata management
+
+#### Step 5: Type Checking (`5_type_checker.py`)
 - **Purpose**: GNN syntax validation and computational resource estimation
 - **Input**: GNN files from target directory
-- **Output**: `gnn_type_check/type_check_report.md`, resource estimation HTML
+- **Output**: `type_check/type_check_report.md`, resource estimation HTML
 - **Key Features**: Syntax validation, dimension checking, resource estimation
 
-#### Step 5: Export Processing (`5_export.py`)
+#### Step 6: Validation (`6_validation.py`)
+- **Purpose**: Advanced validation and consistency checking
+- **Input**: GNN files
+- **Output**: `validation/validation_report.md`
+- **Key Features**: Cross-format validation, semantic consistency checks
+
+#### Step 7: Export Processing (`7_export.py`)
 - **Purpose**: Export GNN models to multiple formats
 - **Input**: GNN files
 - **Output**: `gnn_exports/` with JSON, XML, GraphML, etc.
-- **Key Features**: Multi-format export, summary generation, format validation
+- **Key Features**: Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
 
-#### Step 6: Visualization (`6_visualization.py`)
-- **Purpose**: Generate graphical representations of GNN models
+#### Step 8: Visualization (`8_visualization.py`)
+- **Purpose**: Generate standard graph and matrix visualizations
+- **Input**: Exported GNN data
+- **Output**: `visualization/` with PNG, SVG, HTML plots
+- **Key Features**: Network graphs, matrix heatmaps, statistical plots
+
+#### Step 9: Advanced Visualization (`9_advanced_viz.py`)
+- **Purpose**: Advanced visualization and interactive plots
+- **Input**: Exported GNN data
+- **Output**: `advanced_visualization/` with interactive HTML
+- **Key Features**: 3D visualizations, interactive dashboards, dynamic plots
+
+#### Step 10: Ontology Processing (`10_ontology.py`)
+- **Purpose**: Active Inference Ontology processing and validation
 - **Input**: GNN files
-- **Output**: `visualization/` with PNG diagrams and reports
-- **Key Features**: Factor graphs, model structure diagrams, interactive visualizations
+- **Output**: `ontology_processing/ontology_results.json`
+- **Key Features**: Ontology mapping, validation, semantic analysis
 
-#### Step 7: MCP Integration (`7_mcp.py`)
-- **Purpose**: Model Context Protocol integration analysis
-- **Input**: Project MCP modules
-- **Output**: `mcp_processing_step/7_mcp_integration_report.md`
-- **Key Features**: MCP tool discovery, API documentation, integration status
+#### Step 11: Code Rendering (`11_render.py`)
+- **Purpose**: Code generation for PyMDP, RxInfer, ActiveInference.jl simulation environments
+- **Input**: Validated GNN data
+- **Output**: `gnn_rendered_simulators/` with executable code
+- **Key Features**: Multi-platform code generation, simulation templates
 
-#### Step 8: Ontology Processing (`8_ontology.py`)
-- **Purpose**: Active Inference ontology validation and mapping
-- **Input**: GNN files, ontology terms JSON
-- **Output**: `ontology_processing/ontology_processing_report.md`
-- **Key Features**: Ontology term validation, annotation checking, concept mapping
+#### Step 12: Execution (`12_execute.py`)
+- **Purpose**: Execute rendered simulation scripts with result capture
+- **Input**: Generated simulation code
+- **Output**: `execution_results/` with simulation outputs
+- **Key Features**: Multi-environment execution, result capture, performance monitoring
 
-### Execution Chain
+#### Step 13: LLM Processing (`13_llm.py`)
+- **Purpose**: LLM-enhanced analysis, model interpretation, and AI assistance
+- **Input**: GNN files and analysis results
+- **Output**: `llm_processing_step/llm_results.md`
+- **Key Features**: AI-powered analysis, natural language interpretation, insights generation
 
-#### Step 9: Code Rendering (`9_render.py`)
-- **Purpose**: Generate executable code from GNN specifications
-- **Input**: Exported GNN models (JSON)
-- **Output**: `gnn_rendered_simulators/` with PyMDP and RxInfer code
-- **Key Features**: PyMDP Python generation, RxInfer.jl TOML configuration
+#### Step 14: ML Integration (`14_ml_integration.py`)
+- **Purpose**: Machine learning integration and model training
+- **Input**: GNN data and execution results
+- **Output**: `ml_integration/ml_integration_results.json`
+- **Key Features**: Model training, ML pipeline integration, performance analysis
 
-#### Step 10: Simulator Execution (`10_execute.py`)
-- **Purpose**: Execute rendered simulator code
-- **Input**: Rendered code from Step 9
-- **Output**: Execution results, simulation outputs
-- **Key Features**: PyMDP script execution, RxInfer.jl execution, Julia detection
+#### Step 15: Audio Processing (`15_audio.py`)
+- **Purpose**: Audio generation (SAPF, Pedalboard, and other backends)
+- **Input**: GNN data for sonification
+- **Output**: `audio_processing_step/audio_results/` with WAV files
+- **Key Features**: SAPF sonification, Pedalboard effects, multi-format audio output
 
-### Advanced Analysis Chain
+#### Step 16: Analysis (`16_analysis.py`)
+- **Purpose**: Advanced analysis and statistical processing
+- **Input**: All pipeline artifacts
+- **Output**: `analysis/analysis_results.json`
+- **Key Features**: Statistical analysis, performance metrics, comprehensive insights
 
-#### Step 11: LLM Integration (`11_llm.py`)
-- **Purpose**: AI-enhanced analysis and documentation generation
-- **Input**: GNN files, previous pipeline outputs
-- **Output**: `llm_processing_step/` with AI-generated analysis
-- **Key Features**: Model explanation, structure analysis, natural language summaries
-- **Configuration**: Supports multiple LLM providers, configurable timeout
+#### Step 17: Integration (`17_integration.py`)
+- **Purpose**: System integration and cross-module coordination
+- **Input**: All pipeline outputs
+- **Output**: `integration/integration_results.json`
+- **Key Features**: Cross-module coordination, system integration, unified reporting
 
-#### Step 12: Audio Generation (`12_audio.py`)
-- **Purpose**: Generate audio representations of GNN models using multiple backends
-- **Input**: GNN files, audio configuration
-- **Output**: `audio_processing_step/` with audio files and processing reports
-- **Key Features**: SAPF, Pedalboard, and other audio backends, model sonification
-- **Configuration**: Supports duration, backend selection, and audio format options
+#### Step 18: Security (`18_security.py`)
+- **Purpose**: Security validation and access control
+- **Input**: Pipeline artifacts
+- **Output**: `security/security_results.json`
+- **Key Features**: Security scanning, validation, access control
 
-#### Step 13: Website Generation (`13_website.py`)
+#### Step 19: Research (`19_research.py`)
+- **Purpose**: Research tools and experimental features
+- **Input**: Analysis results
+- **Output**: `research/research_results.json`
+- **Key Features**: Experimental analysis, research tools, advanced metrics
+
+#### Step 20: Website Generation (`20_website.py`)
 - **Purpose**: Static HTML website generation from pipeline artifacts
-- **Input**: Pipeline outputs (visualizations, ontology, etc.)
-- **Output**: `website/` directory with static HTML site
-- **Key Features**: Interactive dashboard, result aggregation, artifact navigation
+- **Input**: Visualizations, reports, and analysis
+- **Output**: `website/` with static HTML site
+- **Key Features**: Static site generation, documentation compilation, web interface
 
-#### Step 14: Report Generation (`14_report.py`)
-- **Purpose**: Comprehensive analysis report generation from all pipeline outputs
-- **Input**: All previous pipeline outputs
-- **Output**: `report_processing_step/` with comprehensive analysis reports
-- **Key Features**: Multi-modal analysis, performance metrics, cross-referenced results
+#### Step 21: Report Generation (`21_report.py`)
+- **Purpose**: Comprehensive analysis report generation
+- **Input**: All pipeline artifacts
+- **Output**: `report_processing_step/report_results.json`
+- **Key Features**: Comprehensive reporting, summary generation, final documentation
 
 ## Pipeline Configuration
 
