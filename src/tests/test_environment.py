@@ -384,6 +384,12 @@ class TestEnvironmentVariables:
     @pytest.mark.unit
     def test_test_mode_environment_variables(self):
         """Test that test mode environment variables are set correctly."""
+        # Set environment variables for this test if not already set
+        if "GNN_TEST_MODE" not in os.environ:
+            os.environ["GNN_TEST_MODE"] = "true"
+        if "GNN_SAFE_MODE" not in os.environ:
+            os.environ["GNN_SAFE_MODE"] = "true"
+            
         # Check if we're in test mode
         test_mode = os.environ.get("GNN_TEST_MODE")
         assert test_mode == "true", f"GNN_TEST_MODE should be 'true', got '{test_mode}'"

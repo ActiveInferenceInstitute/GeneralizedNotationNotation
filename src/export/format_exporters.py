@@ -213,9 +213,10 @@ def export_to_json_gnn(gnn_model: dict, output_file_path: str):
         with open(output_file_path, 'w', encoding='utf-8') as f:
             json.dump(gnn_model, f, indent=4, ensure_ascii=False)
         logger.debug(f"Successfully exported GNN model to JSON: {output_file_path}")
+        return True, f"Successfully exported GNN model to JSON: {output_file_path}"
     except Exception as e:
         logger.error(f"Failed to export to JSON: {e}", exc_info=True)
-        raise
+        return False, f"Failed to export to JSON: {e}"
 
 def export_to_xml_gnn(gnn_model: dict, output_file_path: str):
     """Exports the GNN model dictionary to an XML file."""
@@ -230,9 +231,10 @@ def export_to_xml_gnn(gnn_model: dict, output_file_path: str):
         with open(output_file_path, 'w', encoding='utf-8') as f:
             f.write(xml_string)
         logger.debug(f"Successfully exported GNN model to XML: {output_file_path}")
+        return True, f"Successfully exported GNN model to XML: {output_file_path}"
     except Exception as e:
         logger.error(f"Failed to export to XML: {e}", exc_info=True)
-        raise
+        return False, f"Failed to export to XML: {e}"
 
 def export_to_python_pickle(gnn_model: dict, output_file_path: str):
     """Serializes the GNN model dictionary to a Python pickle file."""
@@ -241,9 +243,10 @@ def export_to_python_pickle(gnn_model: dict, output_file_path: str):
         with open(output_file_path, 'wb') as f:
             pickle.dump(gnn_model, f)
         logger.debug(f"Successfully exported GNN model to Pickle: {output_file_path}")
+        return True, f"Successfully exported GNN model to Pickle: {output_file_path}"
     except Exception as e:
         logger.error(f"Failed to export to Pickle: {e}", exc_info=True)
-        raise
+        return False, f"Failed to export to Pickle: {e}"
 
 def _build_networkx_graph(gnn_model: dict) -> 'Optional[nx.DiGraph]':
     if not HAS_NETWORKX: return None
@@ -286,43 +289,52 @@ def _build_networkx_graph(gnn_model: dict) -> 'Optional[nx.DiGraph]':
 def export_to_gexf(gnn_model: dict, output_file_path: str):
     """Exports the GNN model graph to a GEXF file."""
     logger.info(f"Exporting GNN model to GEXF: {output_file_path}")
-    if not HAS_NETWORKX: raise ImportError("NetworkX not available, GEXF export failed.")
+    if not HAS_NETWORKX: 
+        return False, "NetworkX not available, GEXF export failed."
     graph = _build_networkx_graph(gnn_model)
-    if graph is None: return
+    if graph is None: 
+        return False, "Failed to build NetworkX graph from GNN model."
     try:
         nx.write_gexf(graph, output_file_path)
         logger.debug(f"Successfully exported to GEXF: {output_file_path}")
+        return True, f"Successfully exported to GEXF: {output_file_path}"
     except Exception as e:
         logger.error(f"Failed to export to GEXF: {e}", exc_info=True)
-        raise
+        return False, f"Failed to export to GEXF: {e}"
 
 def export_to_graphml(gnn_model: dict, output_file_path: str):
     """Exports the GNN model graph to a GraphML file."""
     logger.info(f"Exporting GNN model to GraphML: {output_file_path}")
-    if not HAS_NETWORKX: raise ImportError("NetworkX not available, GraphML export failed.")
+    if not HAS_NETWORKX: 
+        return False, "NetworkX not available, GraphML export failed."
     graph = _build_networkx_graph(gnn_model)
-    if graph is None: return
+    if graph is None: 
+        return False, "Failed to build NetworkX graph from GNN model."
     try:
         nx.write_graphml(graph, output_file_path)
         logger.debug(f"Successfully exported to GraphML: {output_file_path}")
+        return True, f"Successfully exported to GraphML: {output_file_path}"
     except Exception as e:
         logger.error(f"Failed to export to GraphML: {e}", exc_info=True)
-        raise
+        return False, f"Failed to export to GraphML: {e}"
 
 def export_to_json_adjacency_list(gnn_model: dict, output_file_path: str):
     """Exports the GNN model graph to a JSON adjacency list format."""
     logger.info(f"Exporting GNN model to JSON Adjacency List: {output_file_path}")
-    if not HAS_NETWORKX: raise ImportError("NetworkX not available, JSON adjacency export failed.")
+    if not HAS_NETWORKX: 
+        return False, "NetworkX not available, JSON adjacency export failed."
     graph = _build_networkx_graph(gnn_model)
-    if graph is None: return
+    if graph is None: 
+        return False, "Failed to build NetworkX graph from GNN model."
     try:
         adj_data = nx.readwrite.json_graph.adjacency_data(graph)
         with open(output_file_path, 'w', encoding='utf-8') as f:
             json.dump(adj_data, f, indent=4)
         logger.debug(f"Successfully exported to JSON Adjacency List: {output_file_path}")
+        return True, f"Successfully exported to JSON Adjacency List: {output_file_path}"
     except Exception as e:
         logger.error(f"Failed to export to JSON Adjacency List: {e}", exc_info=True)
-        raise
+        return False, f"Failed to export to JSON Adjacency List: {e}"
 
 def export_to_plaintext_summary(gnn_model: dict, output_file_path: str):
     """Exports a human-readable plain text summary of the GNN model."""
@@ -341,9 +353,10 @@ def export_to_plaintext_summary(gnn_model: dict, output_file_path: str):
                         f.write(f"{content}\n")
                     f.write("\n")
         logger.debug(f"Successfully exported to Plaintext Summary: {output_file_path}")
+        return True, f"Successfully exported to Plaintext Summary: {output_file_path}"
     except Exception as e:
         logger.error(f"Failed to export to Plaintext Summary: {e}", exc_info=True)
-        raise
+        return False, f"Failed to export to Plaintext Summary: {e}"
 
 def export_to_plaintext_dsl(gnn_model: dict, output_file_path: str):
     """Exports the GNN model back to a DSL-like format using the raw sections."""
@@ -354,9 +367,10 @@ def export_to_plaintext_dsl(gnn_model: dict, output_file_path: str):
             for section_name, section_content in raw_sections.items():
                 f.write(f"## {section_name}\n{section_content}\n\n")
         logger.debug(f"Successfully exported to Plaintext DSL: {output_file_path}")
+        return True, f"Successfully exported to Plaintext DSL: {output_file_path}"
     except Exception as e:
         logger.error(f"Failed to export to Plaintext DSL: {e}", exc_info=True)
-        raise
+        return False, f"Failed to export to Plaintext DSL: {e}"
 
 # This file is now the single source of truth for GNN parsing and exporting.
 # The main 5_export.py script should now correctly find and use these functions. 

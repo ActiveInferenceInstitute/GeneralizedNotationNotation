@@ -1,7 +1,7 @@
 """
-MCP (Model Context Protocol) integration for $module utilities.
+MCP (Model Context Protocol) integration for audio utilities.
 
-This module exposes utility functions from the $module module through MCP.
+This module exposes utility functions from the audio module through MCP.
 """
 
 import os
@@ -11,14 +11,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Import utilities from the $module module
-from . import process_$module
+# Import utilities from the audio module
+from . import process_audio
 
-# MCP Tools for $module Utilities Module
+# MCP Tools for Audio Processing Module
 
-def process_$module_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
+def process_audio_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
     """
-    Process $module for GNN files. Exposed via MCP.
+    Process audio for GNN files. Exposed via MCP.
     
     Args:
         target_directory: Directory containing GNN files to process
@@ -29,7 +29,7 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
         Dictionary with operation status and results.
     """
     try:
-        success = process_$module(
+        success = process_audio(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
             verbose=verbose
@@ -38,10 +38,10 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": f"$module processing {'completed successfully' if success else 'failed'}"
+            "message": f"Audio processing {'completed successfully' if success else 'failed'}"
         }
     except Exception as e:
-        logger.error(f"Error in process_$module_mcp for {target_directory}: {e}", exc_info=True)
+        logger.error(f"Error in process_audio_mcp for {target_directory}: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e)
@@ -49,17 +49,17 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
 
 # MCP Registration Function
 def register_tools(mcp_instance):
-    """Register $module utility tools with the MCP."""
+    """Register audio utility tools with the MCP."""
     
     mcp_instance.register_tool(
-        "process_$module",
-        process_$module_mcp,
+        "process_audio",
+        process_audio_mcp,
         {
             "target_directory": {"type": "string", "description": "Directory containing GNN files to process."},
-            "output_directory": {"type": "string", "description": "Directory to save $module results."},
+            "output_directory": {"type": "string", "description": "Directory to save audio results."},
             "verbose": {"type": "boolean", "description": "Enable verbose output. Defaults to false.", "optional": True}
         },
-        f"Process $module for GNN files in the specified directory."
+        "Process audio for GNN files in the specified directory."
     )
     
-    logger.info("$module module MCP tools registered.")
+    logger.info("Audio module MCP tools registered.")

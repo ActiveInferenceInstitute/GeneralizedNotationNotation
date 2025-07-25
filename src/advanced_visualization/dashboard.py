@@ -543,4 +543,25 @@ class DashboardGenerator:
 </html>
 """
         
-        return html 
+        return html
+
+
+def generate_dashboard(content: str, model_name: str, output_dir: Path, 
+                      strict_validation: bool = True) -> Optional[Path]:
+    """
+    Generate a comprehensive dashboard for a GNN model.
+    
+    This is a standalone function that wraps the DashboardGenerator class
+    for direct module-level imports.
+    
+    Args:
+        content: GNN file content as string
+        model_name: Name of the model
+        output_dir: Output directory for generated files
+        strict_validation: Whether to use strict validation during parsing
+        
+    Returns:
+        Path to the generated dashboard file, or None if generation failed
+    """
+    generator = DashboardGenerator(strict_validation=strict_validation)
+    return generator.generate_dashboard(content, model_name, output_dir) 

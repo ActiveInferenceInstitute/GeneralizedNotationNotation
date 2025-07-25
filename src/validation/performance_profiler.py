@@ -267,4 +267,43 @@ class PerformanceProfiler:
         if connection_count > state_block_count * 3:
             warnings.append(f"High connection density: {connection_count} connections for {state_block_count} blocks")
         
-        return warnings 
+        return warnings
+
+
+def profile_performance(model_path: str) -> Dict[str, Any]:
+    """
+    Profile the performance characteristics of a GNN model.
+    
+    Args:
+        model_path: Path to the GNN model file
+        
+    Returns:
+        Performance profile with metrics and warnings
+    """
+    try:
+        from pathlib import Path
+        
+        # Convert string path to Path object
+        model_path = Path(model_path)
+        
+        # Read model content
+        with open(model_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Performance profiling
+        performance_profiler = PerformanceProfiler()
+        profile_result = performance_profiler.profile(content)
+        
+        return {
+            "file_path": str(model_path),
+            "file_name": model_path.name,
+            "metrics": profile_result.get("metrics", {}),
+            "warnings": profile_result.get("warnings", [])
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "file_path": str(model_path),
+            "error": str(e)
+        } 
