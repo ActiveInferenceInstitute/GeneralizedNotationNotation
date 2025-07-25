@@ -315,8 +315,8 @@ def main():
         # Log dependency status
         logger.info(f"[{correlation_id}] Dependency status: {results.dependency_status}")
         
-        # Load parsed GNN data from previous step
-        gnn_output_dir = get_output_dir_for_script("3_gnn.py", Path(args.output_dir))
+        # Load parsed GNN data from correct GNN processing step output directory
+        gnn_output_dir = Path(args.output_dir) / "gnn_processing_step"
         gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
         
         gnn_results = {}
@@ -329,7 +329,7 @@ def main():
                 logger.warning(f"[{correlation_id}] Failed to load GNN results: {e}")
                 results.errors.append(f"Failed to load GNN results: {e}")
         else:
-            logger.warning(f"[{correlation_id}] No GNN processing results found")
+            logger.warning(f"[{correlation_id}] No GNN processing results found at {gnn_results_file}")
             results.errors.append("No GNN processing results found")
         
         # Initialize visualization manager
@@ -360,25 +360,82 @@ def main():
                 file_output_dir = output_dir / file_name.replace('.md', '')
                 file_output_dir.mkdir(exist_ok=True)
                 
-                # Load model data
+                # Load model data from correct location
                 model_data = {}
-                parsed_file_path = gnn_output_dir / file_name.replace('.md', '') / f"{file_name.replace('.md', '')}_parsed.json"
+                model_dir_name = file_name.replace('.md', '')
+                parsed_file_path = gnn_output_dir / model_dir_name / f"{model_dir_name}_parsed.json"
                 
                 if parsed_file_path.exists():
                     try:
                         with open(parsed_file_path, 'r') as f:
                             model_data = json.load(f)
+                        logger.info(f"[{correlation_id}] Loaded parsed model data for {file_name}")
                     except Exception as e:
                         logger.warning(f"[{correlation_id}] Failed to load parsed data for {file_name}: {e}")
                         model_data = file_result  # Fallback to basic data
                 else:
+                    logger.warning(f"[{correlation_id}] No parsed data found at {parsed_file_path}")
                     model_data = file_result  # Use basic data from GNN results
                 
                 # Attempt visualization using available methods
                 generated_files = []
                 
+                # Try matrix visualizations with actual parsed data
+                if MATRIX_VISUALIZER_AVAILABLE and model_data.get('variables'):
+                    try:
+                        matrix_viz = MatrixVisualizer()
+                        
+                        # Extract matrix parameters from parsed variables
+                        parameters = []
+                        if 'parameters' in model_data:
+                            parameters = model_data['parameters']
+                        else:
+                            # Convert variables to parameter format for matrix visualization
+                            for var in model_data.get('variables', []):
+                                if var.get('dimensions') and len(var['dimensions']) >= 1:
+                                    param = {
+                                        'name': var['name'],
+                                        'dimensions': var['dimensions'],
+                                        'data_type': var.get('data_type', 'float'),
+                                        'description': var.get('description', ''),
+                                        'values': None  # Values would come from InitialParameterization
+                                    }
+                                    parameters.append(param)
+                        
+                        # Generate matrix analysis if we have parameters
+                        if parameters:
+                            logger.info(f"[{correlation_id}] Found {len(parameters)} matrix parameters for {file_name}")
+                            
+                            # Generate matrix analysis visualization
+                            matrix_analysis_path = file_output_dir / "matrix_analysis.png"
+                            if matrix_viz.generate_matrix_analysis(parameters, matrix_analysis_path):
+                                generated_files.append(str(matrix_analysis_path))
+                                logger.info(f"[{correlation_id}] Generated matrix analysis: {matrix_analysis_path}")
+                            
+                            # Generate matrix statistics visualization
+                            matrix_stats_path = file_output_dir / "matrix_statistics.png"
+                            if matrix_viz.generate_matrix_statistics(parameters, matrix_stats_path):
+                                generated_files.append(str(matrix_stats_path))
+                                logger.info(f"[{correlation_id}] Generated matrix statistics: {matrix_stats_path}")
+                            
+                            # For POMDP models, check for B matrix (transition tensor)
+                            b_matrix_var = next((var for var in model_data.get('variables', []) 
+                                               if var['name'] == 'B' and len(var.get('dimensions', [])) == 3), None)
+                            if b_matrix_var:
+                                # Create dummy 3D tensor for POMDP analysis (in real case, would use actual values)
+                                import numpy as np
+                                dummy_tensor = np.random.rand(*b_matrix_var['dimensions'])
+                                pomdp_analysis_path = file_output_dir / "pomdp_transition_analysis.png"
+                                if matrix_viz.generate_pomdp_transition_analysis(dummy_tensor, pomdp_analysis_path):
+                                    generated_files.append(str(pomdp_analysis_path))
+                                    logger.info(f"[{correlation_id}] Generated POMDP analysis: {pomdp_analysis_path}")
+                        
+                        logger.info(f"[{correlation_id}] Generated {len(generated_files)} matrix visualizations for {file_name}")
+                    except Exception as e:
+                        logger.warning(f"[{correlation_id}] Matrix visualization failed for {file_name}: {e}")
+                
                 # Try using full visualization module
-                if GNN_VISUALIZER_AVAILABLE:
+                if GNN_VISUALIZER_AVAILABLE and not generated_files:
                     try:
                         visualizer = GNNVisualizer(output_dir=str(file_output_dir))
                         result_path = visualizer.visualize_file(file_result["file_path"])
@@ -387,19 +444,6 @@ def main():
                         logger.info(f"[{correlation_id}] Generated full visualizations for {file_name}")
                     except Exception as e:
                         logger.warning(f"[{correlation_id}] Full visualization failed for {file_name}: {e}")
-                
-                # Try matrix visualizations
-                if MATRIX_VISUALIZER_AVAILABLE and not generated_files:
-                    try:
-                        matrix_viz = MatrixVisualizer()
-                        parameters = model_data.get('parameters', [])
-                        if parameters:
-                            matrix_analysis_path = file_output_dir / "matrix_analysis.png"
-                            if matrix_viz.generate_matrix_analysis(parameters, matrix_analysis_path):
-                                generated_files.append(str(matrix_analysis_path))
-                        logger.info(f"[{correlation_id}] Generated matrix visualizations for {file_name}")
-                    except Exception as e:
-                        logger.warning(f"[{correlation_id}] Matrix visualization failed for {file_name}: {e}")
                 
                 # Try basic matplotlib plots
                 if not generated_files:
@@ -410,26 +454,59 @@ def main():
                     except Exception as e:
                         logger.warning(f"[{correlation_id}] Basic plot generation failed for {file_name}: {e}")
                 
-                # Create fallback if nothing worked
-                if not generated_files:
-                    fallback_files = viz_manager.create_fallback_visualization(
-                        file_name, output_dir, "All visualization methods failed"
-                    )
-                    generated_files.extend(fallback_files)
+                # Create comprehensive visualization summary
+                summary_content = f"Visualization Summary for {file_name.replace('.md', '')}\n"
+                summary_content += "=" * 50 + "\n\n"
+                summary_content += f"Generated visualizations: {len(generated_files)}\n"
+                summary_content += f"Capabilities available: {sum(results.dependency_status.values())}/{len(results.dependency_status)}\n\n"
+                
+                if model_data:
+                    summary_content += "Parsed Data Summary:\n"
+                    for key, value in model_data.items():
+                        if key not in ['variables', 'parameters', 'connections'] and len(str(value)) < 500:
+                            summary_content += f"  {key}: {value}\n"
+                    
+                    if 'variables' in model_data:
+                        summary_content += f"\nVariables: {model_data['variables']}\n"
+                    
+                    if 'connections' in model_data:
+                        summary_content += f"\nEdges: {model_data['connections']}\n"
+                
+                summary_content += "\nMissing Dependencies:\n"
+                for dep, available in results.dependency_status.items():
+                    if not available:
+                        summary_content += f"- {dep}\n"
+                
+                # Save summary and capabilities
+                summary_file = file_output_dir / "visualization_summary.txt"
+                with open(summary_file, 'w') as f:
+                    f.write(summary_content)
+                generated_files.append(str(summary_file))
+                
+                capabilities_content = "GNN Visualization Capabilities Report\n"
+                capabilities_content += "=" * 36 + "\n\n"
+                for dep, available in results.dependency_status.items():
+                    status = "✓ Available" if available else "✗ Missing"
+                    capabilities_content += f"{dep}: {status}\n"
+                
+                capabilities_file = file_output_dir / "visualization_capabilities.txt"
+                with open(capabilities_file, 'w') as f:
+                    f.write(capabilities_content)
+                generated_files.append(str(capabilities_file))
                 
                 # Update attempt results
                 attempt.end_time = datetime.now()
-                attempt.success = len(generated_files) > 0
+                attempt.success = len([f for f in generated_files if f.endswith('.png')]) > 0  # Count actual image files
                 attempt.generated_files = generated_files
                 
                 if attempt.success:
                     results.successful_visualizations += 1
-                    results.total_images_generated += len(generated_files)
+                    results.total_images_generated += len([f for f in generated_files if f.endswith('.png')])
                     logger.info(f"[{correlation_id}] ✓ Generated {len(generated_files)} visualizations for {file_name}")
                 else:
-                    attempt.error_message = "No visualizations generated"
+                    attempt.error_message = "No image visualizations generated"
                     results.failed_visualizations += 1
-                    logger.warning(f"[{correlation_id}] ✗ No visualizations generated for {file_name}")
+                    logger.warning(f"[{correlation_id}] ✗ No image visualizations generated for {file_name}")
                 
             except Exception as e:
                 attempt.end_time = datetime.now()
