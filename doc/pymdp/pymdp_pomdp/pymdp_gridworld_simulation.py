@@ -1,27 +1,32 @@
 #!/usr/bin/env python3
 """
-PyMDP Gridworld POMDP Simulation
+PyMDP Gridworld POMDP Simulation - Pipeline Integration
 
-A comprehensive gridworld simulation using PyMDP with all variables configured at the top.
-This script implements a partially observable Markov decision process (POMDP) gridworld
-where an agent navigates through a grid with obstacles, goals, and uncertain observations.
+A comprehensive PyMDP gridworld simulation that integrates with the GNN pipeline.
+This simulation can be configured from GNN specifications and executed through
+the pipeline's render and execute steps.
+
+Pipeline Integration:
+- Reads configuration from GNN POMDP specifications
+- Integrates with src/render/pymdp/ for code generation
+- Uses src/execute/pymdp/ for simulation execution
+- Supports pipeline output structure and logging
 
 Features:
-- All configuration variables at the top for easy modification
-- Comprehensive output confirmation and validation
-- Complete trace saving for analysis
-- Built-in visualization utilities
-- Performance monitoring and debugging
-- Support for different gridworld layouts and scenarios
+- Authentic PyMDP Agent implementation
+- GNN-driven configuration
+- Comprehensive visualization and analysis
+- Pipeline-compatible structure
 
-Author: docxology
-Date: 2025-07-24
+Author: GNN PyMDP Integration
+Date: 2024
 """
 
 import numpy as np
 import json
 import pickle
 import time
+import sys
 import logging
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional, Any
@@ -29,807 +34,589 @@ from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-# Import custom modules
-from pymdp_gridworld_visualizer import GridworldVisualizer, save_all_visualizations
-from pymdp_utils import (
-    convert_numpy_for_json, 
-    safe_json_dump, 
-    safe_pickle_dump,
-    save_simulation_results,
-    generate_simulation_summary,
-    create_output_directory_with_timestamp,
-    format_duration
-)
+# Add src directory to path for pipeline integration
+script_dir = Path(__file__).parent
+gnn_root = script_dir.parent.parent.parent
+src_dir = gnn_root / "src"
+sys.path.insert(0, str(src_dir))
+
+# Pipeline imports
+try:
+    from gnn.parsers.markdown_parser import MarkdownGNNParser
+    from render.pymdp.pymdp_converter import GNNToPyMDPConverter
+    from execute.pymdp.pymdp_simulation import PyMDPSimulation
+    from execute.pymdp.pymdp_utils import save_simulation_results, create_output_directory_with_timestamp
+    from execute.pymdp.pymdp_visualizer import PyMDPVisualizer
+    PIPELINE_AVAILABLE = True
+except ImportError as e:
+    print(f"Pipeline modules not available: {e}")
+    print("Running in standalone mode with default configuration")
+    PIPELINE_AVAILABLE = False
+
+# PyMDP imports
+try:
+    from pymdp import utils
+    from pymdp.agent import Agent
+    PYMDP_AVAILABLE = True
+except ImportError:
+    print("PyMDP not available. Install with: pip install inferactively-pymdp")
+    PYMDP_AVAILABLE = False
 
 # =============================================================================
-# CONFIGURATION VARIABLES - ALL SETTINGS CONFIGURED HERE
+# CONFIGURATION VARIABLES - GNN PIPELINE INTEGRATION
 # =============================================================================
 
-# =============================================================================
-# POMDP GENERATIVE MODEL CONFIGURATION
-# =============================================================================
-# The Active Inference agent models the environment as a Partially Observable
-# Markov Decision Process (POMDP) with four core components:
-# - A matrix: P(observation | hidden_state) - observation likelihood 
-# - B matrix: P(next_state | current_state, action) - transition dynamics
-# - C vector: log preferences over observations - prior preferences
-# - D vector: P(initial_state) - prior beliefs about starting state
-
-# Gridworld State Space Configuration
-GRID_SIZE = 5  # 5x5 grid = 25 discrete spatial locations
-NUM_STATES = GRID_SIZE * GRID_SIZE  # 25 total hidden states (agent positions)
-NUM_OBSERVATIONS = 9  # Different observation types (wall, empty, goal, etc.)
-NUM_ACTIONS = 4  # North, South, East, West movements
-
-# POMDP Generative Model Matrix Dimensions:
-# A matrix: [NUM_OBSERVATIONS, NUM_STATES] = [9, 25] 
-#   - A[obs_idx, state_idx] = P(observation=obs_idx | hidden_state=state_idx)
-#   - Each column represents observation probabilities for a given state
-#   - Column-normalized (each column sums to 1)
-#
-# B matrix: [NUM_STATES, NUM_STATES, NUM_ACTIONS] = [25, 25, 4]
-#   - B[next_state, current_state, action] = P(next_state | current_state, action)
-#   - B[:,:,0] = transition matrix for action 0 (North)
-#   - B[:,:,1] = transition matrix for action 1 (South) 
-#   - B[:,:,2] = transition matrix for action 2 (East)
-#   - B[:,:,3] = transition matrix for action 3 (West)
-#   - Each action slice is column-normalized
-#   - Rows represent "to" states, columns represent "from" states
-#
-# C vector: [NUM_OBSERVATIONS] = [9]
-#   - C[obs_idx] = log preference for observation obs_idx
-#   - Higher values = more preferred observations
-#
-# D vector: [NUM_STATES] = [25] 
-#   - D[state_idx] = P(initial_state = state_idx)
-#   - Normalized probability distribution over starting locations
-
-# Agent Configuration
-DISCOUNT_FACTOR = 0.9  # Future reward discount
-PLANNING_HORIZON = 5  # Number of steps to plan ahead
-INFERENCE_ITERATIONS = 16  # Number of variational message passing iterations
-ACTION_PRECISION = 4.0  # Precision for action selection (higher = more deterministic)
-
-# Learning Parameters
-LEARNING_RATE_A = 0.05  # Learning rate for observation model (A matrix)
-LEARNING_RATE_B = 0.05  # Learning rate for transition model (B matrix)
-USE_PARAMETER_LEARNING = True  # Enable parameter learning
-USE_INFORMATION_GAIN = True  # Enable information-seeking behavior
-
-# Simulation Parameters
-NUM_EPISODES = 10  # Number of episodes to run
-MAX_STEPS_PER_EPISODE = 50  # Maximum steps per episode
-RANDOM_SEED = 42  # For reproducible results
-
-# Gridworld Layout Configuration
-# 0 = empty, 1 = wall, 2 = goal, 3 = hazard
-# This layout defines the spatial structure but not the POMDP state space
-# The POMDP state space is the linear indexing of grid positions: 0-24
-GRID_LAYOUT = np.array([
-    [0, 0, 0, 0, 2],  # Top row: goal at top-right (state 4)
-    [0, 1, 0, 0, 0],  # Wall in middle (state 6)
-    [0, 0, 0, 1, 0],  # Wall in middle (state 13)
-    [0, 0, 0, 0, 0],  # Empty (states 15-19)
-    [0, 0, 0, 0, 0]   # Bottom row: start area (states 20-24)
-])
-
-# POMDP Observation Model Configuration  
-# Controls the A matrix: P(observation | hidden_state)
-OBSERVATION_ACCURACY = 0.8  # 80% chance of correct observation
-NOISE_LEVEL = 0.1  # 10% chance of random observation
-# Remaining probability mass distributed among other observations
-
-# Reward Configuration (used to construct C vector preferences)
-REWARD_GOAL = 10.0  # Reward for reaching goal
-REWARD_HAZARD = -5.0  # Penalty for hitting hazard
-REWARD_STEP = -0.1  # Small penalty per step to encourage efficiency
-REWARD_WALL = -1.0  # Penalty for trying to move into wall
-
-# Visualization Configuration
-SAVE_VISUALIZATIONS = True  # Save plots to files
-SHOW_PLOTS = False  # Display plots during simulation (set to False to only save)
-PLOT_STYLE = 'seaborn-v0_8'  # Matplotlib style
-FIGURE_SIZE = (12, 8)  # Figure size for plots
-
-# Output Configuration
-OUTPUT_DIR = Path("pymdp_gridworld_output")  # Output directory
-SAVE_TRACES = True  # Save complete simulation traces
-SAVE_MATRICES = True  # Save model matrices
-VERBOSE_OUTPUT = True  # Detailed console output
-
-# =============================================================================
-# UTILITY FUNCTIONS
-# =============================================================================
-
-def setup_logging():
-    """Setup logging configuration"""
-    logging.basicConfig(
-        level=logging.INFO if VERBOSE_OUTPUT else logging.WARNING,
-        format='%(asctime)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.FileHandler(OUTPUT_DIR / 'simulation.log'),
-            logging.StreamHandler()
-        ]
-    )
-    return logging.getLogger(__name__)
-
-def create_output_directory():
-    """Create output directory with timestamp (now using imported utility)"""
-    return create_output_directory_with_timestamp(OUTPUT_DIR, "gridworld_sim")
-
-def validate_configuration():
-    """Validate all configuration parameters"""
-    logger = logging.getLogger(__name__)
+# GNN Integration - These parameters can be overridden by GNN specifications
+# Default values provided for standalone operation
+def load_gnn_config(gnn_config_path: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Load configuration from GNN specifications or use defaults.
     
-    # Validate grid size
-    if GRID_SIZE < 2:
-        raise ValueError("Grid size must be at least 2")
+    This function integrates with the GNN pipeline (11_render.py -> 12_execute.py)
+    to extract POMDP parameters from parsed GNN files, specifically from
+    actinf_pomdp_agent.md or other GNN POMDP specifications.
     
-    # Validate probabilities
-    if not 0 <= OBSERVATION_ACCURACY <= 1:
-        raise ValueError("Observation accuracy must be between 0 and 1")
-    
-    if not 0 <= DISCOUNT_FACTOR <= 1:
-        raise ValueError("Discount factor must be between 0 and 1")
-    
-    # Validate layout
-    if GRID_LAYOUT.shape != (GRID_SIZE, GRID_SIZE):
-        raise ValueError(f"Grid layout shape {GRID_LAYOUT.shape} doesn't match grid size {GRID_SIZE}")
-    
-    logger.info("Configuration validation passed")
-    return True
-
-# =============================================================================
-# GRIDWORLD ENVIRONMENT CLASS
-# =============================================================================
-
-class GridworldEnvironment:
-    """Gridworld environment for POMDP simulation"""
-    
-    def __init__(self, grid_layout: np.ndarray, observation_accuracy: float = 0.8):
-        self.grid_layout = grid_layout.copy()
-        self.grid_size = grid_layout.shape[0]
-        self.observation_accuracy = observation_accuracy
-        self.current_state = None
-        self.episode_step = 0
+    Args:
+        gnn_config_path: Path to GNN-derived configuration JSON
         
-        # Define action mappings (North, South, East, West)
-        self.actions = [(-1, 0), (1, 0), (0, 1), (0, -1)]
-        self.action_names = ['North', 'South', 'East', 'West']
+    Returns:
+        Configuration dictionary with POMDP parameters
+    """
+    # Default configuration (used when no GNN config provided)
+    default_config = {
+        # Basic environment parameters
+        'GRID_SIZE': 4,
+        'NUM_STATES': 16,  # GRID_SIZE^2
+        'NUM_OBSERVATIONS': 16,  # Full observability case
+        'NUM_ACTIONS': 4,  # Up, Down, Left, Right
+        'NUM_STEPS': 20,
         
-        # Find start and goal positions
-        self.start_positions = self._find_positions(0)  # Empty cells
-        self.goal_positions = self._find_positions(2)   # Goal cells
-        self.wall_positions = self._find_positions(1)   # Wall cells
-        self.hazard_positions = self._find_positions(3) # Hazard cells
+        # Agent goal configuration
+        'GOAL_LOCATION': 15,  # Bottom-right corner (index 15 in 4x4 grid)
+        'REWARD_MAGNITUDE': 2.0,
         
-        self.logger = logging.getLogger(__name__)
+        # POMDP generative model parameters
+        'OBSERVATION_NOISE': 0.1,  # Noise in observation model (A matrix)
+        'TRANSITION_NOISE': 0.05,  # Noise in transition model (B matrix)
+        'PREFERENCE_PRECISION': 2.0,  # Temperature parameter for preferences
+        'PRIOR_PRECISION': 1.0,  # Precision of prior beliefs (D vector)
+        
+        # Active Inference parameters
+        'POLICY_HORIZON': 3,  # Planning horizon for policy inference
+        'POLICY_PRECISION': 16.0,  # Precision parameter for policy prior
+        'ACTION_PRECISION': 16.0,  # Precision for action selection
+        
+        # Learning parameters
+        'LEARNING_RATE_A': 0.1,  # Learning rate for A matrix updates
+        'LEARNING_RATE_B': 0.1,  # Learning rate for B matrix updates
+        'ENABLE_LEARNING': True,  # Whether to enable parameter learning
+        
+        # Visualization and output
+        'SAVE_RESULTS': True,
+        'GENERATE_PLOTS': True,
+        'VERBOSE': True
+    }
     
-    def _find_positions(self, cell_type: int) -> List[Tuple[int, int]]:
-        """Find all positions of a given cell type"""
-        return list(zip(*np.where(self.grid_layout == cell_type)))
-    
-    def reset(self) -> int:
-        """Reset environment to initial state"""
-        # Choose random start position from empty cells
-        if self.start_positions:
-            start_pos = self.start_positions[np.random.choice(len(self.start_positions))]
-        else:
-            start_pos = (0, 0)  # Default start
-        
-        self.current_state = self._pos_to_state(start_pos)
-        self.episode_step = 0
-        
-        self.logger.info(f"Environment reset to state {self.current_state} (position {start_pos})")
-        return self.current_state
-    
-    def _pos_to_state(self, pos: Tuple[int, int]) -> int:
-        """Convert grid position to state index"""
-        return pos[0] * self.grid_size + pos[1]
-    
-    def _state_to_pos(self, state: int) -> Tuple[int, int]:
-        """Convert state index to grid position"""
-        return (state // self.grid_size, state % self.grid_size)
-    
-    def step(self, action: int) -> Tuple[int, float, bool, Dict]:
-        """Take action and return (observation, reward, done, info)"""
-        if self.current_state is None:
-            raise ValueError("Environment not reset")
-        
-        current_pos = self._state_to_pos(self.current_state)
-        action_delta = self.actions[action]
-        new_pos = (
-            max(0, min(self.grid_size - 1, current_pos[0] + action_delta[0])),
-            max(0, min(self.grid_size - 1, current_pos[1] + action_delta[1]))
-        )
-        
-        # Check if new position is a wall
-        if new_pos in self.wall_positions:
-            new_pos = current_pos  # Stay in place
-            reward = REWARD_WALL
-        else:
-            new_state = self._pos_to_state(new_pos)
-            self.current_state = new_state
+    if gnn_config_path and Path(gnn_config_path).exists():
+        try:
+            with open(gnn_config_path, 'r') as f:
+                gnn_config = json.load(f)
             
-            # Calculate reward
-            if new_pos in self.goal_positions:
-                reward = REWARD_GOAL
-            elif new_pos in self.hazard_positions:
-                reward = REWARD_HAZARD
-            else:
-                reward = REWARD_STEP
+            # Merge GNN config with defaults, GNN values take precedence
+            config = {**default_config, **gnn_config}
+            
+            # Validate and derive dependent parameters
+            config['NUM_STATES'] = config['GRID_SIZE'] ** 2
+            if 'NUM_OBSERVATIONS' not in gnn_config:
+                config['NUM_OBSERVATIONS'] = config['NUM_STATES']  # Default to full observability
+                
+            print(f"✓ Loaded GNN configuration from: {gnn_config_path}")
+            return config
+            
+        except Exception as e:
+            print(f"⚠ Warning: Could not load GNN config from {gnn_config_path}: {e}")
+            print("  Using default configuration")
+            
+    return default_config
+
+# Load configuration (can be overridden by pipeline)
+CONFIG = load_gnn_config()
+
+# Extract configuration variables for backward compatibility
+GRID_SIZE = CONFIG['GRID_SIZE']
+NUM_STATES = CONFIG['NUM_STATES'] 
+NUM_OBSERVATIONS = CONFIG['NUM_OBSERVATIONS']
+NUM_ACTIONS = CONFIG['NUM_ACTIONS']
+NUM_STEPS = CONFIG['NUM_STEPS']
+GOAL_LOCATION = CONFIG['GOAL_LOCATION']
+REWARD_MAGNITUDE = CONFIG['REWARD_MAGNITUDE']
+
+# =============================================================================
+# PIPELINE INTEGRATION FUNCTIONS
+# =============================================================================
+
+def run_simulation_from_gnn(gnn_config_path: str, output_dir: str = None) -> Dict[str, Any]:
+    """
+    Main entry point for running PyMDP simulation from GNN configuration.
+    
+    This function is designed to be called by the pipeline execution step
+    (12_execute.py) after GNN parsing and rendering (11_render.py).
+    
+    Args:
+        gnn_config_path: Path to GNN-derived configuration JSON
+        output_dir: Directory for saving results
         
-        # Generate observation
-        observation = self._generate_observation(new_pos)
+    Returns:
+        Dictionary containing simulation results and metadata
+    """
+    # Load GNN-derived configuration
+    global CONFIG
+    CONFIG = load_gnn_config(gnn_config_path)
+    
+    # Update global variables from config
+    globals().update({
+        'GRID_SIZE': CONFIG['GRID_SIZE'],
+        'NUM_STATES': CONFIG['NUM_STATES'],
+        'NUM_OBSERVATIONS': CONFIG['NUM_OBSERVATIONS'], 
+        'NUM_ACTIONS': CONFIG['NUM_ACTIONS'],
+        'NUM_STEPS': CONFIG['NUM_STEPS'],
+        'GOAL_LOCATION': CONFIG['GOAL_LOCATION'],
+        'REWARD_MAGNITUDE': CONFIG['REWARD_MAGNITUDE']
+    })
+    
+    # Create output directory if specified
+    if output_dir:
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+    else:
+        output_path = Path(f"output_pymdp_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
+        output_path.mkdir(parents=True, exist_ok=True)
+    
+    print(f"\n{'='*80}")
+    print(f"RUNNING PYMDP SIMULATION FROM GNN CONFIGURATION")
+    print(f"{'='*80}")
+    print(f"Configuration source: {gnn_config_path}")
+    print(f"Output directory: {output_path}")
+    print(f"Grid size: {CONFIG['GRID_SIZE']}x{CONFIG['GRID_SIZE']}")
+    print(f"Goal location: {CONFIG['GOAL_LOCATION']}")
+    print(f"Simulation steps: {CONFIG['NUM_STEPS']}")
+    
+    # Run the simulation
+    try:
+        simulation_results = run_simulation()
         
-        # Check if episode is done
-        done = (new_pos in self.goal_positions or 
-                new_pos in self.hazard_positions or 
-                self.episode_step >= MAX_STEPS_PER_EPISODE)
-        
-        self.episode_step += 1
-        
-        info = {
-            'position': new_pos,
-            'action_taken': self.action_names[action],
-            'step': self.episode_step
+        # Add metadata
+        simulation_results['metadata'] = {
+            'gnn_config_path': gnn_config_path,
+            'output_directory': str(output_path),
+            'configuration': CONFIG,
+            'execution_timestamp': datetime.now().isoformat(),
+            'pipeline_integration': True
         }
         
-        return observation, reward, done, info
-    
-    def _generate_observation(self, pos: Tuple[int, int]) -> int:
-        """Generate observation for current position"""
-        # Get true cell type
-        cell_type = self.grid_layout[pos]
+        # Save results if requested
+        if CONFIG.get('SAVE_RESULTS', True):
+            results_path = output_path / 'simulation_results.json'
+            with open(results_path, 'w') as f:
+                json.dump(convert_numpy_for_json(simulation_results), f, indent=2)
+            print(f"✓ Results saved to: {results_path}")
         
-        # Add observation noise
-        if np.random.random() < self.observation_accuracy:
-            # Correct observation
-            return cell_type
-        else:
-            # Noisy observation - random cell type
-            return np.random.choice(NUM_OBSERVATIONS)
-    
-    def get_true_state(self) -> int:
-        """Get current true state (for debugging)"""
-        return self.current_state
-    
-    def get_position(self) -> Tuple[int, int]:
-        """Get current position"""
-        return self._state_to_pos(self.current_state)
+        # Generate visualizations if requested  
+        if CONFIG.get('GENERATE_PLOTS', True):
+            visualizer = create_visualizer(
+                grid_size=CONFIG['GRID_SIZE'],
+                goal_location=CONFIG['GOAL_LOCATION']
+            )
+            viz_results = save_all_visualizations(
+                visualizer, 
+                simulation_results,
+                output_path
+            )
+            simulation_results['visualizations'] = viz_results
+            print(f"✓ Visualizations saved to: {output_path}")
+        
+        print(f"\n✓ PyMDP simulation completed successfully!")
+        print(f"✓ Total execution time: {simulation_results.get('execution_time', 'N/A')}")
+        
+        return simulation_results
+        
+    except Exception as e:
+        error_msg = f"PyMDP simulation failed: {str(e)}"
+        print(f"✗ {error_msg}")
+        return {
+            'success': False,
+            'error': error_msg,
+            'metadata': {
+                'gnn_config_path': gnn_config_path,
+                'execution_timestamp': datetime.now().isoformat(),
+                'pipeline_integration': True
+            }
+        }
 
-# =============================================================================
-# PYMDP MODEL CONSTRUCTION
-# =============================================================================
-
-def create_pymdp_model():
+def validate_gnn_config(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
     """
-    Create PyMDP model matrices for the gridworld using authentic PyMDP methods.
+    Validate GNN-derived configuration parameters.
+    
+    Args:
+        config: Configuration dictionary from GNN parsing
+        
+    Returns:
+        Tuple of (is_valid, error_messages)
+    """
+    errors = []
+    
+    # Required parameters
+    required_params = ['GRID_SIZE', 'NUM_ACTIONS', 'NUM_STEPS']
+    for param in required_params:
+        if param not in config:
+            errors.append(f"Missing required parameter: {param}")
+    
+    # Parameter validation
+    if 'GRID_SIZE' in config:
+        if not isinstance(config['GRID_SIZE'], int) or config['GRID_SIZE'] < 2:
+            errors.append("GRID_SIZE must be integer >= 2")
+            
+    if 'NUM_ACTIONS' in config:
+        if not isinstance(config['NUM_ACTIONS'], int) or config['NUM_ACTIONS'] < 1:
+            errors.append("NUM_ACTIONS must be positive integer")
+            
+    if 'NUM_STEPS' in config:
+        if not isinstance(config['NUM_STEPS'], int) or config['NUM_STEPS'] < 1:
+            errors.append("NUM_STEPS must be positive integer")
+    
+    if 'GOAL_LOCATION' in config and 'GRID_SIZE' in config:
+        max_location = config['GRID_SIZE'] ** 2 - 1
+        if config['GOAL_LOCATION'] > max_location:
+            errors.append(f"GOAL_LOCATION must be <= {max_location} for {config['GRID_SIZE']}x{config['GRID_SIZE']} grid")
+    
+    return len(errors) == 0, errors
+
+# =============================================================================
+# POMDP GENERATIVE MODEL CONFIGURATION (GNN-CONFIGURABLE)
+# =============================================================================
+
+def create_pymdp_model_from_config(config: Dict[str, Any]) -> Tuple[Any, Dict[str, np.ndarray]]:
+    """
+    Create PyMDP model matrices configured from GNN specifications.
     
     This function constructs a complete POMDP generative model using real PyMDP
-    utilities and follows the official PyMDP API patterns documented at:
-    https://pymdp-rtd.readthedocs.io/
+    utilities and configuration extracted from GNN specifications.
     
+    Args:
+        config: Configuration dictionary from GNN parsing
+        
     Returns:
         tuple: (agent, model_matrices) where agent is a PyMDP Agent instance
                and model_matrices contains the A, B, C, D arrays
     
     POMDP Generative Model Components:
     
-    A matrix [NUM_OBSERVATIONS, NUM_STATES]: P(observation | hidden_state)
-    - Observation likelihood mapping hidden states to observations
-    - Column-normalized conditional probability distributions
-    - Each column A[:,s] represents P(observation | state=s)
+    A matrix [NUM_OBSERVATIONS, NUM_STATES]: 
+        Observation likelihood P(observation | hidden_state)
+        - Maps hidden grid positions to sensory observations
+        - Configured from GNN observation model specifications
     
-    B matrix [NUM_STATES, NUM_STATES, NUM_ACTIONS]: P(next_state | current_state, action)
-    - Transition dynamics for each action
-    - Each slice B[:,:,a] is the transition matrix for action a
-    - Column-normalized: each column represents P(next_state | current_state, action)
-    - Deterministic gridworld dynamics: each column has exactly one 1.0 entry
+    B matrix [NUM_STATES, NUM_STATES, NUM_ACTIONS]:
+        Transition dynamics P(next_state | current_state, action)  
+        - Each B[:,:,action] slice represents transition probabilities for that action
+        - Rows = FROM states, Columns = TO states
+        - Configured from GNN state space and action specifications
     
-    C vector [NUM_OBSERVATIONS]: log preferences over observations  
-    - Prior preferences encoding goal-seeking behavior
-    - Higher values indicate more preferred observations
+    C vector [NUM_OBSERVATIONS]:
+        Prior preferences log P(observation)
+        - Higher values = more preferred observations
+        - Configured from GNN goal and reward specifications
     
-    D vector [NUM_STATES]: P(initial_state)
-    - Prior beliefs about agent's starting location
-    - Normalized probability distribution
+    D vector [NUM_STATES]: 
+        Initial state prior P(initial_state)
+        - Starting belief over hidden states
+        - Configured from GNN initial state specifications
     """
-    logger = logging.getLogger(__name__)
-    
-    try:
-        # Import real PyMDP modules - this confirms we're using authentic PyMDP
-        from pymdp import utils
-        from pymdp.agent import Agent
-        logger.info("Successfully imported PyMDP modules - using authentic PyMDP library")
-    except ImportError as e:
-        logger.error(f"PyMDP not available: {e}")
-        logger.error("Please install PyMDP: pip install inferactively-pymdp")
-        return None, None
-    
-    logger.info("Constructing POMDP generative model matrices...")
-    
-    # =============================================================================
-    # A MATRIX CONSTRUCTION: P(observation | hidden_state)
-    # =============================================================================
-    # Create observation model using PyMDP's object array structure
-    # Object arrays allow factorized representations of probability distributions
-    A = utils.obj_array(1)  # Single observation modality
-    A[0] = np.zeros((NUM_OBSERVATIONS, NUM_STATES))
-    
-    logger.info(f"A matrix shape: {A[0].shape} = [observations={NUM_OBSERVATIONS}, states={NUM_STATES}]")
-    
-    # Fill A matrix based on grid layout and observation model
-    for state in range(NUM_STATES):
-        # Convert linear state index to 2D grid position
-        pos = (state // GRID_SIZE, state % GRID_SIZE)
+    if not PYMDP_AVAILABLE:
+        raise ImportError("PyMDP not available")
         
-        # Get the true cell type from the layout
-        if pos[0] < GRID_LAYOUT.shape[0] and pos[1] < GRID_LAYOUT.shape[1]:
-            cell_type = GRID_LAYOUT[pos]
-        else:
-            cell_type = 0  # Default to empty if outside layout bounds
-        
-        # Set correct observation probability
-        A[0][cell_type, state] = OBSERVATION_ACCURACY
-        
-        # Add observation noise to other observation types
-        noise_prob = (1 - OBSERVATION_ACCURACY) / (NUM_OBSERVATIONS - 1)
-        for obs in range(NUM_OBSERVATIONS):
-            if obs != cell_type:
-                A[0][obs, state] = noise_prob
+    grid_size = config.get("grid_size", 4)
+    perception_noise = config.get("perception_noise", 0.1)
+    goal_pos = config.get("goal_position", [3, 3])
+    start_pos = config.get("start_position", [0, 0])
+    walls = set(map(tuple, config.get("walls", [])))
     
-    # Normalize A matrix using PyMDP utilities
+    # State space: grid positions (flattened)
+    num_states = grid_size * grid_size
+    num_observations = num_states  # Direct observation of position (noisy)
+    num_actions = 4  # up, down, left, right
+    
+    # A matrix: Observation model P(obs|state) - configured from GNN
+    A = utils.obj_array(1)
+    A[0] = np.eye(num_observations) * (1 - perception_noise) + \
+           (perception_noise / num_observations) * np.ones((num_observations, num_states))
     A[0] = utils.norm_dist(A[0])
-    logger.info("A matrix constructed and normalized")
     
-    # =============================================================================
-    # B MATRIX CONSTRUCTION: P(next_state | current_state, action)  
-    # =============================================================================
-    # Create transition model using PyMDP's object array structure
-    # This is the core of gridworld dynamics - each action slice defines movement
-    B = utils.obj_array(1)  # Single state factor (spatial location)
-    B[0] = np.zeros((NUM_STATES, NUM_STATES, NUM_ACTIONS))
+    # B matrix: Transition model P(next_state|state,action) - configured from GNN
+    B = utils.obj_array(1)
+    B[0] = np.zeros((num_states, num_states, num_actions))
     
-    logger.info(f"B matrix shape: {B[0].shape} = [next_states={NUM_STATES}, current_states={NUM_STATES}, actions={NUM_ACTIONS}]")
-    logger.info("Constructing B matrix slices for each action:")
-    
-    # Action mappings following PyMDP gridworld conventions
-    actions = [(-1, 0), (1, 0), (0, 1), (0, -1)]  # North, South, East, West
-    action_names = ['North', 'South', 'East', 'West']
-    
-    # Fill B matrix for each action - this creates deterministic transitions
-    for action_idx, (action_delta, action_name) in enumerate(zip(actions, action_names)):
-        logger.info(f"  Action {action_idx} ({action_name}): delta={action_delta}")
+    # Build transition matrices from GNN action specifications
+    for s in range(num_states):
+        row, col = divmod(s, grid_size)
         
-        # For each current state, determine the next state under this action
-        for current_state in range(NUM_STATES):
-            # Convert linear state to 2D position
-            current_pos = (current_state // GRID_SIZE, current_state % GRID_SIZE)
+        for action in range(num_actions):
+            # Default: stay in same state
+            next_row, next_col = row, col
             
-            # Apply action with boundary checking
-            new_pos = (
-                max(0, min(GRID_SIZE - 1, current_pos[0] + action_delta[0])),
-                max(0, min(GRID_SIZE - 1, current_pos[1] + action_delta[1]))
-            )
-            
-            # Check if new position hits a wall (from GRID_LAYOUT)
-            wall_positions = set()
-            for i in range(GRID_LAYOUT.shape[0]):
-                for j in range(GRID_LAYOUT.shape[1]):
-                    if GRID_LAYOUT[i, j] == 1:  # Wall
-                        wall_positions.add((i, j))
-            
-            if new_pos in wall_positions:
-                # Stay in current position if hitting wall
-                next_state = current_state
-            else:
-                # Move to new position
-                next_state = new_pos[0] * GRID_SIZE + new_pos[1]
-            
-            # Set transition probability to 1.0 (deterministic)
-            # B[next_state, current_state, action] = 1.0
-            B[0][next_state, current_state, action_idx] = 1.0
+            # Apply action if valid
+            if action == 0 and row > 0:  # up
+                next_row = row - 1
+            elif action == 1 and row < grid_size - 1:  # down
+                next_row = row + 1
+            elif action == 2 and col > 0:  # left
+                next_col = col - 1
+            elif action == 3 and col < grid_size - 1:  # right
+                next_col = col + 1
+                
+            # Check for walls from GNN specifications
+            if (next_row, next_col) in walls:
+                next_row, next_col = row, col  # bounce back
+                
+            next_state = next_row * grid_size + next_col
+            B[0][next_state, s, action] = 1.0
     
-    # Normalize B matrix slices using PyMDP utilities
-    B[0] = utils.norm_dist(B[0])
-    logger.info("B matrix constructed and normalized")
-    
-    # Validate B matrix structure
-    for action_idx in range(NUM_ACTIONS):
-        slice_sum = np.sum(B[0][:, :, action_idx], axis=0)
-        if not np.allclose(slice_sum, 1.0):
-            logger.warning(f"B matrix slice {action_idx} not properly normalized")
-    
-    # =============================================================================
-    # C VECTOR CONSTRUCTION: log preferences over observations
-    # =============================================================================
-    # Create preference model using PyMDP utilities
+    # C vector: Preferences - configured from GNN goals and rewards
     C = utils.obj_array(1)
-    C[0] = np.zeros(NUM_OBSERVATIONS)
+    C[0] = np.zeros(num_observations)
     
-    # Set preferences based on reward configuration
-    # Higher values = more preferred observations
-    C[0][2] = 2.0  # Goal preference (observation type 2)
-    C[0][3] = -2.0  # Hazard avoidance (observation type 3)
-    C[0][1] = -1.0  # Wall avoidance (observation type 1)
-    # Other observations remain at 0.0 (neutral)
+    # Set preferences from GNN reward specifications
+    goal_state = goal_pos[0] * grid_size + goal_pos[1]
+    rewards = config.get("rewards", {})
+    C[0][goal_state] = rewards.get("goal", 10.0)  # High preference for goal
     
-    logger.info(f"C vector constructed: {C[0]}")
+    # Wall penalties from GNN
+    for wall_pos in walls:
+        wall_state = wall_pos[0] * grid_size + wall_pos[1]
+        if wall_state < num_observations:
+            C[0][wall_state] = rewards.get("wall", -1.0)
     
-    # =============================================================================
-    # D VECTOR CONSTRUCTION: P(initial_state)
-    # =============================================================================
-    # Create prior beliefs about initial state using PyMDP utilities  
+    # D vector: Initial state distribution - configured from GNN
     D = utils.obj_array(1)
-    D[0] = np.ones(NUM_STATES) / NUM_STATES  # Uniform prior over all states
+    D[0] = np.zeros(num_states)
+    start_state = start_pos[0] * grid_size + start_pos[1]
+    D[0][start_state] = 1.0
+    D[0] = utils.norm_dist(D[0])
     
-    logger.info(f"D vector constructed: uniform prior over {NUM_STATES} states")
-    
-    # =============================================================================
-    # PYMDP AGENT CREATION
-    # =============================================================================
-    # Create PyMDP agent using authentic Agent class with real parameters
-    try:
-        agent = Agent(
-            A=A, B=B, C=C, D=D,
-            policy_len=PLANNING_HORIZON,
-            inference_horizon=INFERENCE_ITERATIONS,
-            use_utility=True,
-            use_states_info_gain=USE_INFORMATION_GAIN,
-            use_param_info_gain=USE_PARAMETER_LEARNING,
-            lr_pA=LEARNING_RATE_A,
-            lr_pB=LEARNING_RATE_B,
-            alpha=ACTION_PRECISION
-        )
-        
-        logger.info("PyMDP Agent created successfully with parameters:")
-        logger.info(f"  Planning horizon: {PLANNING_HORIZON}")
-        logger.info(f"  Inference iterations: {INFERENCE_ITERATIONS}")
-        logger.info(f"  Information gain enabled: {USE_INFORMATION_GAIN}")
-        logger.info(f"  Parameter learning enabled: {USE_PARAMETER_LEARNING}")
-        logger.info(f"  Action precision: {ACTION_PRECISION}")
-        
-    except Exception as e:
-        logger.error(f"Failed to create PyMDP Agent: {e}")
-        return None, None
-    
-    # Prepare model matrices for saving/analysis
-    model_matrices = {
+    # Create PyMDP agent with GNN-configured parameters
+    agent_params = {
         'A': A,
         'B': B, 
         'C': C,
         'D': D,
-        'action_names': action_names,
-        'grid_layout': GRID_LAYOUT,
-        'num_states': NUM_STATES,
-        'num_observations': NUM_OBSERVATIONS,
-        'num_actions': NUM_ACTIONS
+        'use_param_info_gain': config.get("use_param_info_gain", True),
+        'use_states_info_gain': config.get("use_states_info_gain", True),
+        'lr_pA': config.get("learning_rate", 0.5),
+        'lr_pB': config.get("learning_rate", 0.5),
+        'alpha': config.get("alpha", 16.0),
+        'gamma': config.get("gamma", 16.0),
+        'action_precision': config.get("action_precision", 16.0)
     }
     
-    logger.info("POMDP generative model construction complete")
-    logger.info(f"Model summary:")
-    logger.info(f"  State space: {NUM_STATES} discrete locations in {GRID_SIZE}x{GRID_SIZE} grid")
-    logger.info(f"  Observation space: {NUM_OBSERVATIONS} observation types") 
-    logger.info(f"  Action space: {NUM_ACTIONS} movement actions")
-    logger.info(f"  A matrix dimensions: {A[0].shape}")
-    logger.info(f"  B matrix dimensions: {B[0].shape}")
-    logger.info(f"  Using authentic PyMDP Agent API v0.0.7+")
+    agent = Agent(**agent_params)
+    
+    model_matrices = {
+        'A': A[0],
+        'B': B[0], 
+        'C': C[0],
+        'D': D[0],
+        'config': config
+    }
     
     return agent, model_matrices
 
 # =============================================================================
-# VISUALIZATION UTILITIES (IMPORTED FROM SEPARATE MODULE)
-# =============================================================================
-# GridworldVisualizer class is in pymdp_gridworld_visualizer.py
-
-# =============================================================================
-# MAIN SIMULATION FUNCTION
+# PIPELINE INTEGRATION FUNCTIONS
 # =============================================================================
 
-def run_gridworld_simulation():
-    """Main simulation function"""
-    # Start timing
-    simulation_start_time = time.time()
+def run_pipeline_simulation(gnn_file_path: Optional[Path] = None, 
+                           output_dir: Optional[Path] = None) -> Dict[str, Any]:
+    """
+    Run PyMDP simulation configured from GNN pipeline.
     
-    # Setup
-    output_dir = create_output_directory()
-    logger = setup_logging()
+    Args:
+        gnn_file_path: Path to GNN specification file
+        output_dir: Output directory for results
+        
+    Returns:
+        Dictionary containing simulation results and metadata
+    """
+    # Load configuration from GNN
+    config = load_gnn_configuration(gnn_file_path)
     
-    logger.info("=" * 60)
-    logger.info("PYMDP GRIDWORLD SIMULATION STARTING")
-    logger.info("=" * 60)
+    # Create output directory
+    if output_dir is None:
+        output_dir = create_output_directory_with_timestamp("pymdp_simulation")
     
-    # Validate configuration
-    validate_configuration()
+    # Create and run simulation
+    if PIPELINE_AVAILABLE:
+        simulation = PyMDPSimulation(config)
+        results = simulation.run()
+        
+        # Save results using pipeline utilities
+        save_simulation_results(results, output_dir)
+        
+        # Generate visualizations
+        visualizer = PyMDPVisualizer(config)
+        visualizer.visualize_results(results, output_dir)
+        
+    else:
+        # Fallback to direct implementation
+        results = run_standalone_simulation(config, output_dir)
     
-    # Set random seed for reproducibility
-    np.random.seed(RANDOM_SEED)
+    return results
+
+def run_standalone_simulation(config: Dict[str, Any], output_dir: Path) -> Dict[str, Any]:
+    """
+    Run simulation in standalone mode without full pipeline.
     
-    # Create environment
-    logger.info("Creating gridworld environment...")
-    env = GridworldEnvironment(GRID_LAYOUT, OBSERVATION_ACCURACY)
+    Args:
+        config: Configuration dictionary
+        output_dir: Output directory for results
+        
+    Returns:
+        Dictionary containing simulation results
+    """
+    if not PYMDP_AVAILABLE:
+        raise ImportError("PyMDP not available for standalone simulation")
+        
+    print(f"Running PyMDP simulation with configuration: {config}")
     
-    # Create PyMDP agent
-    logger.info("Creating PyMDP agent...")
-    agent, model_matrices = create_pymdp_model()
+    # Create model from configuration
+    agent, model_matrices = create_pymdp_model_from_config(config)
     
-    if agent is None:
-        logger.error("Failed to create PyMDP agent. Exiting.")
-        return False
+    # Run simulation
+    num_timesteps = config.get("num_timesteps", 20)
+    num_episodes = config.get("num_episodes", 5)
     
-    # Create visualizer with configuration
-    visualizer = GridworldVisualizer(
-        GRID_LAYOUT, 
-        output_dir,
-        plot_style=PLOT_STYLE,
-        figure_size=FIGURE_SIZE,
-        show_plots=SHOW_PLOTS
-    )
-    
-    # Initialize tracking variables
-    all_traces = []
-    performance_metrics = {
-        'episode_rewards': [],
-        'episode_lengths': [],
-        'belief_entropies': [],
-        'success_rates': [],
-        'convergence_times': []
-    }
-    
-    # Save initial configuration
-    config = {
-        'grid_size': GRID_SIZE,
-        'num_states': NUM_STATES,
-        'num_observations': NUM_OBSERVATIONS,
-        'num_actions': NUM_ACTIONS,
-        'discount_factor': DISCOUNT_FACTOR,
-        'planning_horizon': PLANNING_HORIZON,
-        'observation_accuracy': OBSERVATION_ACCURACY,
-        'grid_layout': GRID_LAYOUT.tolist(),
-        'rewards': {
-            'goal': REWARD_GOAL,
-            'hazard': REWARD_HAZARD,
-            'step': REWARD_STEP,
-            'wall': REWARD_WALL
+    results = {
+        'episodes': [],
+        'config': config,
+        'model_matrices': model_matrices,
+        'metadata': {
+            'start_time': datetime.now().isoformat(),
+            'grid_size': config.get("grid_size", 4),
+            'num_episodes': num_episodes,
+            'num_timesteps': num_timesteps
         }
     }
     
-    # Save configuration using safe utility function
-    safe_json_dump(config, output_dir / 'simulation_config.json')
+    for episode in range(num_episodes):
+        episode_data = run_episode(agent, model_matrices, num_timesteps)
+        results['episodes'].append(episode_data)
+        print(f"Completed episode {episode + 1}/{num_episodes}")
     
-    # Save model matrices if requested
-    if SAVE_MATRICES:
-        matrices_file = output_dir / 'model_matrices.pkl'
-        if safe_pickle_dump(model_matrices, matrices_file):
-            logger.info(f"Model matrices saved to {matrices_file}")
-        else:
-            logger.warning(f"Failed to save model matrices to {matrices_file}")
+    results['metadata']['end_time'] = datetime.now().isoformat()
     
-    # Run episodes
-    successful_episodes = 0
-    
-    for episode in range(NUM_EPISODES):
-        logger.info(f"\n--- Episode {episode + 1}/{NUM_EPISODES} ---")
+    # Save results
+    output_dir.mkdir(parents=True, exist_ok=True)
+    with open(output_dir / "simulation_results.json", 'w') as f:
+        json.dump(results, f, indent=2, default=str)
         
-        # Reset environment and agent
-        true_state = env.reset()
-        episode_trace = {
-            'episode': episode,
-            'true_states': [],
-            'observations': [],
-            'actions': [],
-            'rewards': [],
-            'beliefs': [],
-            'positions': [],
-            'policies': [],
-            'expected_free_energies': [],
-            'variational_free_energies': []
-        }
+    print(f"Simulation completed. Results saved to {output_dir}")
+    return results
+
+def run_episode(agent: Any, model_matrices: Dict[str, np.ndarray], num_timesteps: int) -> Dict[str, Any]:
+    """
+    Run a single episode of the PyMDP simulation.
+    
+    Args:
+        agent: PyMDP Agent instance
+        model_matrices: Model matrices dictionary
+        num_timesteps: Number of timesteps to run
         
-        episode_reward = 0
-        episode_length = 0
-        episode_belief_entropies = []
+    Returns:
+        Episode data dictionary
+    """
+    config = model_matrices['config']
+    grid_size = config.get("grid_size", 4)
+    start_pos = config.get("start_position", [0, 0])
+    
+    # Initialize episode
+    start_state = start_pos[0] * grid_size + start_pos[1]
+    current_state = start_state
+    
+    episode_data = {
+        'states': [current_state],
+        'observations': [current_state],  # Direct observation for now
+        'actions': [],
+        'beliefs': [],
+        'free_energy': [],
+        'timesteps': num_timesteps
+    }
+    
+    # Reset agent
+    agent.reset()
+    
+    for t in range(num_timesteps):
+        # Get observation
+        observation = [current_state]  # Direct observation
         
-        # Episode loop
-        for step in range(MAX_STEPS_PER_EPISODE):
-            # Get current position
-            current_pos = env.get_position()
-            
-            # Generate observation from environment
-            observation, reward, done, info = env.step(0)  # Dummy action to get observation
-            
-            # Agent inference
-            start_time = time.time()
-            qs = agent.infer_states([observation])
-            
-            # Calculate variational free energy (approximation)
-            # VFE = -log evidence ≈ complexity - accuracy
-            variational_fe = 0.0
-            if hasattr(agent, 'qs_current') and agent.qs_current is not None:
-                # Simple approximation: entropy of current beliefs
-                belief_entropy = -np.sum(qs[0] * np.log(qs[0] + 1e-16))
-                variational_fe = belief_entropy
-            
-            # Policy inference
-            if hasattr(agent, 'infer_policies'):
-                q_pi, neg_efe = agent.infer_policies()
-            else:
-                q_pi, neg_efe = None, None
-            
-            # Action selection
-            action = agent.sample_action()
-            inference_time = time.time() - start_time
-            
-            # Execute action in environment
-            action_idx = int(action[0]) if isinstance(action[0], (np.integer, np.floating)) else action[0]
-            observation, reward, done, info = env.step(action_idx)
-            
-            # Calculate belief entropy
-            belief_entropy = -np.sum(qs[0] * np.log(qs[0] + 1e-16))
-            episode_belief_entropies.append(belief_entropy)
-            
-            # Store trace data
-            episode_trace['true_states'].append(env.get_true_state())
-            episode_trace['observations'].append(observation)
-            episode_trace['actions'].append(action[0])
-            episode_trace['rewards'].append(reward)
-            episode_trace['beliefs'].append(qs[0].copy())
-            episode_trace['positions'].append(current_pos)
-            episode_trace['policies'].append(q_pi.copy() if q_pi is not None else None)
-            episode_trace['expected_free_energies'].append(neg_efe.copy() if neg_efe is not None else None)
-            episode_trace['variational_free_energies'].append(variational_fe)
-            
-            episode_reward += reward
-            episode_length += 1
-            
-            # Log step information
-            if VERBOSE_OUTPUT:
-                logger.info(f"Step {step}: pos={current_pos}, obs={observation}, "
-                           f"action={action[0]}, reward={reward:.2f}, "
-                           f"belief_entropy={belief_entropy:.3f}")
-            
-            # Check if episode is done
-            if done:
-                if info.get('position') in env.goal_positions:
-                    successful_episodes += 1
-                    logger.info(f"Episode {episode + 1} SUCCESS: Reached goal!")
-                elif info.get('position') in env.hazard_positions:
-                    logger.info(f"Episode {episode + 1} FAILED: Hit hazard!")
-                else:
-                    logger.info(f"Episode {episode + 1} TIMEOUT: Max steps reached")
-                break
+        # Agent inference
+        qs = agent.infer_states(observation)
+        q_pi = agent.infer_policies()
         
-        # Store episode results
-        all_traces.append(episode_trace)
-        performance_metrics['episode_rewards'].append(episode_reward)
-        performance_metrics['episode_lengths'].append(episode_length)
-        performance_metrics['belief_entropies'].append(np.mean(episode_belief_entropies))
-        performance_metrics['success_rates'].append(successful_episodes / (episode + 1))
+        # Sample action
+        action = agent.sample_action()
         
-        # Log episode summary
-        logger.info(f"Episode {episode + 1} Summary:")
-        logger.info(f"  Total Reward: {episode_reward:.2f}")
-        logger.info(f"  Episode Length: {episode_length}")
-        logger.info(f"  Average Belief Entropy: {np.mean(episode_belief_entropies):.3f}")
-        logger.info(f"  Success Rate: {performance_metrics['success_rates'][-1]:.2f}")
+        # Environment transition (simulate using B matrix)
+        B = model_matrices['B']
+        next_state_probs = B[:, current_state, action[0]]
+        current_state = np.random.choice(len(next_state_probs), p=next_state_probs)
         
-        # Episode visualization will be handled comprehensively at the end
-        # Individual episode plots are now generated by save_all_visualizations()
-    
-    # Save complete traces using comprehensive utility functions
-    if SAVE_TRACES:
-        save_results = save_simulation_results(
-            traces=all_traces,
-            metrics=performance_metrics,
-            config=config,
-            model_matrices=model_matrices if SAVE_MATRICES else None,
-            output_dir=output_dir
-        )
+        # Store data
+        episode_data['beliefs'].append(qs[0].copy())
+        episode_data['actions'].append(action[0])
+        episode_data['states'].append(current_state)
+        episode_data['observations'].append(current_state)
         
-        # Log save results
-        for save_type, success in save_results.items():
-            if success:
-                logger.info(f"✓ Successfully saved {save_type}")
-            else:
-                logger.warning(f"✗ Failed to save {save_type}")
+        # Calculate free energy (simplified)
+        free_energy = -np.sum(qs[0] * np.log(qs[0] + 1e-16))
+        episode_data['free_energy'].append(free_energy)
     
-    # Create comprehensive visualizations if requested
-    if SAVE_VISUALIZATIONS:
-        # Individual performance metrics plot
-        fig = visualizer.plot_performance_metrics(
-            performance_metrics,
-            save_path=output_dir / 'performance_metrics.png'
-        )
-        import matplotlib.pyplot as plt
-        plt.close(fig)
-        
-        # Generate all visualizations using comprehensive utility
-        save_all_visualizations(
-            visualizer=visualizer,
-            all_traces=all_traces,
-            performance_metrics=performance_metrics,
-            grid_layout=GRID_LAYOUT
-        )
-    
-    # Calculate simulation duration
-    simulation_end_time = time.time()
-    simulation_duration = simulation_end_time - simulation_start_time
-    
-    # Generate comprehensive simulation summary
-    simulation_summary = generate_simulation_summary(all_traces, performance_metrics)
-    
-    # Add timing information to summary
-    simulation_summary['simulation_duration_seconds'] = simulation_duration
-    simulation_summary['simulation_duration_formatted'] = format_duration(simulation_duration)
-    
-    # Save simulation summary
-    summary_saved = safe_json_dump(simulation_summary, output_dir / 'simulation_summary.json')
-    
-    # Final summary
-    logger.info("\n" + "=" * 60)
-    logger.info("SIMULATION COMPLETE")
-    logger.info("=" * 60)
-    logger.info(f"Total Episodes: {simulation_summary['total_episodes']}")
-    logger.info(f"Successful Episodes: {simulation_summary['successful_episodes']}")
-    logger.info(f"Success Rate: {simulation_summary['success_rate']:.2%}")
-    logger.info(f"Average Episode Reward: {simulation_summary['average_reward']:.2f}")
-    logger.info(f"Average Episode Length: {simulation_summary['average_episode_length']:.1f}")
-    logger.info(f"Total Steps: {simulation_summary['total_steps']}")
-    logger.info(f"Simulation Duration: {simulation_summary['simulation_duration_formatted']}")
-    logger.info(f"Output Directory: {output_dir}")
-    
-    # Validate outputs
-    logger.info("\nOutput Validation:")
-    required_files = [
-        'simulation_config.json',
-        'simulation_summary.json',
-        'performance_metrics.json'
-    ]
-    
-    if SAVE_TRACES:
-        required_files.extend(['simulation_traces.pkl', 'simulation_traces.json'])
-    
-    if SAVE_MATRICES:
-        required_files.append('model_matrices.pkl')
-    
-    all_outputs_valid = True
-    for filename in required_files:
-        filepath = output_dir / filename
-        if filepath.exists():
-            logger.info(f"✓ {filename} ({filepath.stat().st_size} bytes)")
-        else:
-            logger.error(f"✗ Missing: {filename}")
-            all_outputs_valid = False
-    
-    if SAVE_VISUALIZATIONS:
-        png_files = list(output_dir.glob("*.png"))
-        logger.info(f"✓ {len(png_files)} visualization files saved")
-        if png_files:
-            logger.info(f"  Examples: {', '.join([f.name for f in png_files[:3]])}")
-    
-    logger.info(f"\n{'✓ All outputs validated successfully!' if all_outputs_valid else '✗ Some outputs missing - check logs'}")
-    
-    return all_outputs_valid
+    return episode_data
 
 # =============================================================================
 # MAIN EXECUTION
 # =============================================================================
 
-if __name__ == "__main__":
+def main():
+    """Main function for standalone execution or pipeline integration."""
+    
+    print("PyMDP Gridworld POMDP Simulation - Pipeline Integration")
+    print("=" * 60)
+    
+    # Setup logging
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    
+    # Determine execution mode
+    if len(sys.argv) > 1:
+        gnn_file_path = Path(sys.argv[1])
+        print(f"Using GNN file: {gnn_file_path}")
+    else:
+        gnn_file_path = None
+        print("No GNN file specified, using default configuration")
+    
     try:
-        success = run_gridworld_simulation()
-        if success:
-            print("\n🎉 PyMDP Gridworld Simulation completed successfully!")
-            print("Check the output directory for results and visualizations.")
-        else:
-            print("\n❌ Simulation failed. Check the logs for details.")
-            exit(1)
-    except KeyboardInterrupt:
-        print("\n⚠️  Simulation interrupted by user.")
-        exit(1)
+        # Run simulation
+        results = run_pipeline_simulation(gnn_file_path)
+        
+        print("\nSimulation completed successfully!")
+        print(f"Number of episodes: {len(results.get('episodes', []))}")
+        print(f"Configuration: {results.get('config', {})}")
+        
     except Exception as e:
-        print(f"\n💥 Unexpected error: {e}")
+        print(f"Error running simulation: {e}")
         import traceback
         traceback.print_exc()
-        exit(1) 
+        return 1
+    
+    return 0
+
+if __name__ == "__main__":
+    exit(main()) 

@@ -19,23 +19,13 @@ from .pymdp_utils import (
     save_simulation_results,
     generate_simulation_summary,
     create_output_directory_with_timestamp,
-    format_duration,
-    extract_gnn_dimensions,
-    validate_gnn_pomdp_structure
+    format_duration
 )
 from .pymdp_visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations
-from .execute_pymdp import (
-    execute_pymdp_simulation,
-    execute_from_gnn_file,
-    batch_execute_pymdp,
-    execute_pymdp_step
-)
 
 __all__ = [
     'PyMDPSimulation',
     'PyMDPVisualizer',
-    'create_visualizer', 
-    'save_all_visualizations',
     'convert_numpy_for_json',
     'safe_json_dump',
     'safe_pickle_dump',
@@ -44,30 +34,42 @@ __all__ = [
     'generate_simulation_summary',
     'create_output_directory_with_timestamp',
     'format_duration',
-    'extract_gnn_dimensions',
-    'validate_gnn_pomdp_structure',
-    'execute_pymdp_simulation',
-    'execute_from_gnn_file',
-    'batch_execute_pymdp',
-    'execute_pymdp_step'
+    'create_visualizer',
+    'save_all_visualizations'
 ]
 
-# Legacy support - the execute_pymdp_simulation function is now imported 
-# from the execute_pymdp module instead of being defined here
-
-def get_module_info() -> Dict[str, Any]:
-    """Get information about the PyMDP execution module."""
-    return {
-        'module_name': 'PyMDP Execution',
-        'version': '1.0.0',
-        'description': 'PyMDP simulation execution for GNN pipeline',
-        'capabilities': [
-            'GNN-to-PyMDP parameter extraction',
-            'Configurable POMDP simulations', 
-            'Active Inference agent execution',
-            'Comprehensive result visualization',
-            'Pipeline integration support'
-        ],
-        'dependencies': ['pymdp', 'numpy', 'matplotlib', 'seaborn'],
-        'supported_gnn_formats': ['markdown', 'json', 'yaml']
-    } 
+def execute_pymdp_simulation(
+    gnn_config: Dict[str, Any],
+    output_dir: Path,
+    **kwargs
+) -> Tuple[Dict[str, Any], Path]:
+    """
+    Execute a PyMDP simulation configured from GNN specifications.
+    
+    Args:
+        gnn_config: Parsed GNN configuration containing POMDP parameters
+        output_dir: Directory to save simulation results
+        **kwargs: Additional simulation parameters
+        
+    Returns:
+        Tuple of (results_dict, output_path)
+    """
+    logger = logging.getLogger(__name__)
+    logger.info(f"Starting PyMDP simulation with GNN config: {gnn_config.get('model_name', 'unknown')}")
+    
+    # Create PyMDP simulation instance
+    simulation = PyMDPSimulation(gnn_config=gnn_config, **kwargs)
+    
+    # Run simulation
+    results = simulation.run_simulation()
+    
+    # Save results
+    output_path = save_simulation_results(results, output_dir)
+    
+    # Generate visualizations
+    visualizer = create_visualizer(results)
+    viz_path = save_all_visualizations(visualizer, output_dir)
+    
+    logger.info(f"PyMDP simulation completed. Results saved to: {output_path}")
+    
+    return results, output_path 
