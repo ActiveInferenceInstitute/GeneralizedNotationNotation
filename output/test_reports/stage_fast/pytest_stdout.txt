@@ -93,14 +93,14 @@ E   TypeError: cannot unpack non-iterable NoneType object
 ------------------------------ Captured log setup ------------------------------
 DEBUG    export.format_exporters:format_exporters.py:95 Parsed matrix string (original: '{1,2,3}') to (processed for eval: '[1,2,3]'): [1, 2, 3]
 ----------------------------- Captured stdout call -----------------------------
-2025-07-25 16:13:53,331 [45f95db8:utils] export.format_exporters - INFO - Exporting GNN model to JSON: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-24/test_export_to_json_gnn0/output.json
+2025-07-25 16:14:46,984 [336d541e:utils] export.format_exporters - INFO - Exporting GNN model to JSON: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-25/test_export_to_json_gnn0/output.json
 ------------------------------ Captured log call -------------------------------
-INFO     export.format_exporters:format_exporters.py:211 Exporting GNN model to JSON: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-24/test_export_to_json_gnn0/output.json
-DEBUG    export.format_exporters:format_exporters.py:215 Successfully exported GNN model to JSON: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-24/test_export_to_json_gnn0/output.json
+INFO     export.format_exporters:format_exporters.py:211 Exporting GNN model to JSON: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-25/test_export_to_json_gnn0/output.json
+DEBUG    export.format_exporters:format_exporters.py:215 Successfully exported GNN model to JSON: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-25/test_export_to_json_gnn0/output.json
 ============================= slowest 10 durations =============================
-1.44s call     src/tests/test_environment.py::TestDependencyAvailability::test_optional_dependencies_graceful_degradation
-0.01s setup    src/tests/test_export.py::test_export_to_json_gnn
+1.26s call     src/tests/test_environment.py::TestDependencyAvailability::test_optional_dependencies_graceful_degradation
 0.01s call     src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing
+0.01s setup    src/tests/test_export.py::test_export_to_json_gnn
 
 (7 durations < 0.005s hidden.  Use -vv to show these durations.)
 =========================== short test summary info ============================
@@ -110,4 +110,4 @@ FAILED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_au
 FAILED src/tests/test_environment.py::TestEnvironmentVariables::test_test_mode_environment_variables
 FAILED src/tests/test_export.py::test_export_to_json_gnn - TypeError: cannot ...
 !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
-================= 5 failed, 49 passed, 332 deselected in 3.51s =================
+================= 5 failed, 49 passed, 332 deselected in 3.14s =================

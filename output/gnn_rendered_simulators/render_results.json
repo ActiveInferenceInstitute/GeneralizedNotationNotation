@@ -1,0 +1,49 @@
+{
+  "timestamp": "2025-07-25T16:14:55.686978",
+  "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators",
+  "files_rendered": [
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "renders": {
+        "pymdp": {
+          "output_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py",
+          "success": true,
+          "file_size": 16716,
+          "lines_of_code": 321
+        },
+        "rxinfer": {
+          "output_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/actinf_pomdp_agent/actinf_pomdp_agent_rxinfer.jl",
+          "success": true,
+          "file_size": 6259,
+          "lines_of_code": 206
+        },
+        "activeinference_jl": {
+          "output_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/actinf_pomdp_agent/actinf_pomdp_agent_activeinference_jl.jl",
+          "success": true,
+          "file_size": 9352,
+          "lines_of_code": 300
+        },
+        "discopy": {
+          "output_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/actinf_pomdp_agent/actinf_pomdp_agent_discopy.py",
+          "success": true,
+          "file_size": 1276,
+          "lines_of_code": 47
+        }
+      },
+      "success": true
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "successful_renders": 1,
+    "failed_renders": 0,
+    "code_files_generated": {
+      "pymdp": 1,
+      "rxinfer": 1,
+      "activeinference_jl": 1,
+      "discopy": 1
+    }
+  }
+}
