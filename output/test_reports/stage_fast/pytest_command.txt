@@ -1,1 +1,0 @@
-/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --verbose --tb=short --maxfail=5 --durations=10 --disable-warnings -c/Users/4d/Documents/GitHub/GeneralizedNotationNotation/pytest.ini -m fast /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/tests

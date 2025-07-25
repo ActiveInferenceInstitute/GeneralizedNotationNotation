@@ -71,8 +71,12 @@ def build_pytest_command(
     
     # Add marker-based test selection
     if test_markers:
-        for marker in test_markers:
-            pytest_cmd.extend(["-m", marker])
+        # Combine multiple markers with 'and' for proper pytest syntax
+        if len(test_markers) == 1:
+            pytest_cmd.extend(["-m", test_markers[0]])
+        else:
+            combined_markers = " and ".join(test_markers)
+            pytest_cmd.extend(["-m", combined_markers])
     elif fast_only:
         pytest_cmd.extend(["-m", "fast"])
     elif not include_slow:
