@@ -7,7 +7,7 @@ pytestmark = [pytest.mark.export, pytest.mark.safe_to_fail, pytest.mark.fast]
 
 # Import export functions
 try:
-    from src.export.format_exporters import (
+    from export.format_exporters import (
         _gnn_model_to_dict, export_to_json_gnn, export_to_xml_gnn,
         export_to_plaintext_summary, export_to_plaintext_dsl,
         export_to_gexf, export_to_graphml, export_to_json_adjacency_list,

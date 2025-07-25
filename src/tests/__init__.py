@@ -8,7 +8,8 @@ from pathlib import Path
 from typing import Dict, Any, List
 import logging
 
-from src.utils.pipeline_template import (
+from utils.pipeline_template import (
+    setup_step_logging,
     log_step_start,
     log_step_success,
     log_step_error,
@@ -17,7 +18,7 @@ from src.utils.pipeline_template import (
 
 # Import performance tracker and other utilities
 try:
-    from src.utils import performance_tracker
+    from utils import performance_tracker
 except ImportError:
     performance_tracker = None
 

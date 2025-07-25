@@ -17,20 +17,20 @@ pytestmark = [pytest.mark.visualization, pytest.mark.safe_to_fail, pytest.mark.f
 
 # Import visualization modules with error handling
 try:
-    from src.visualization.matrix_visualizer import MatrixVisualizer
+    from visualization.matrix_visualizer import MatrixVisualizer
     MATRIX_VISUALIZER_AVAILABLE = True
 except ImportError:
     MATRIX_VISUALIZER_AVAILABLE = False
 
 try:
-    from src.visualization.ontology_visualizer import OntologyVisualizer
+    from visualization.ontology_visualizer import OntologyVisualizer
     ONTOLOGY_VISUALIZER_AVAILABLE = True
 except ImportError:
     ONTOLOGY_VISUALIZER_AVAILABLE = False
 
 try:
-    import src.visualization
-    from src.visualization import (
+    import visualization
+    from visualization import (
         create_graph_visualization,
         create_matrix_visualization,
         visualize_gnn_file,

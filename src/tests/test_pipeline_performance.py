@@ -105,7 +105,7 @@ class TestGNNProcessingPerformance:
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
     def test_processing_scaling(self, mock_environment, create_model_file, model_size):
         """Test GNN processing performance scaling."""
-        from src.gnn import process_gnn_directory
+        from gnn import process_gnn_directory
         
         model_file = create_model_file(model_size)
         
@@ -121,7 +121,7 @@ class TestGNNProcessingPerformance:
         
     def test_parallel_processing(self, mock_environment, create_model_file):
         """Test parallel GNN processing performance."""
-        from src.gnn import process_gnn_directory
+        from gnn import process_gnn_directory
         
         # Create multiple models
         for size in ["small", "medium"]:
@@ -148,7 +148,7 @@ class TestVisualizationPerformance:
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
     def test_visualization_scaling(self, mock_environment, create_model_file, model_size):
         """Test visualization generation performance scaling."""
-        from src.visualization import generate_visualizations
+        from visualization import generate_visualizations
         
         model_file = create_model_file(model_size)
         
@@ -164,7 +164,7 @@ class TestVisualizationPerformance:
         
     def test_visualization_caching(self, mock_environment, create_model_file):
         """Test visualization caching performance."""
-        from src.visualization import generate_visualizations
+        from visualization import generate_visualizations
         
         model_file = create_model_file("medium")
         
@@ -190,7 +190,7 @@ class TestMemoryUsagePatterns:
     
     def test_memory_cleanup(self, mock_environment, create_model_file):
         """Test memory cleanup after processing."""
-        from src.gnn import process_gnn_directory
+        from gnn import process_gnn_directory
         
         model_file = create_model_file("large")
         initial_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
@@ -212,7 +212,7 @@ class TestMemoryUsagePatterns:
         
     def test_peak_memory_tracking(self, mock_environment, create_model_file):
         """Test peak memory usage tracking."""
-        from src.utils.resource_manager import track_peak_memory
+        from utils.resource_manager import track_peak_memory
         
         @track_peak_memory
         def memory_intensive_operation():
@@ -232,7 +232,7 @@ class TestDiskIOPerformance:
     
     def test_file_write_performance(self, mock_environment):
         """Test file write performance."""
-        from src.utils.io_utils import batch_write_files
+        from utils.io_utils import batch_write_files
         
         test_data = {
             f"test_file_{i}.txt": "x" * 1024 * 1024  # 1MB each
@@ -251,7 +251,7 @@ class TestDiskIOPerformance:
         
     def test_export_performance(self, mock_environment, create_model_file):
         """Test export performance for different formats."""
-        from src.export import export_model
+        from export import export_model
         
         model_file = create_model_file("medium")
         formats = ["json", "xml", "yaml"]
@@ -272,7 +272,7 @@ class TestNetworkOperationTiming:
     
     def test_api_request_timing(self, mock_environment):
         """Test API request timing."""
-        from src.utils.network_utils import timed_request
+        from utils.network_utils import timed_request
         
         with performance_tracker() as tracker:
             result = timed_request("https://api.example.com/test")
@@ -283,7 +283,7 @@ class TestNetworkOperationTiming:
             
     def test_batch_request_performance(self, mock_environment):
         """Test batch request performance."""
-        from src.utils.network_utils import batch_request
+        from utils.network_utils import batch_request
         
         urls = [f"https://api.example.com/test/{i}" for i in range(5)]
         
@@ -301,7 +301,7 @@ class TestResourceScaling:
     @pytest.mark.parametrize("num_files", [1, 10, 100])
     def test_pipeline_scaling(self, mock_environment, create_model_file, num_files):
         """Test full pipeline scaling with number of files."""
-        from src.main import run_pipeline
+        from main import run_pipeline
         
         # Create test files
         for i in range(num_files):
@@ -319,7 +319,7 @@ class TestResourceScaling:
         
     def test_resource_estimation(self, mock_environment, create_model_file):
         """Test resource estimation accuracy."""
-        from src.utils.resource_manager import estimate_resources
+        from utils.resource_manager import estimate_resources
         
         model_file = create_model_file("medium")
         

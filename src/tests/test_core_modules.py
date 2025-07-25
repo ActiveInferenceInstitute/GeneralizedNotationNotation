@@ -509,7 +509,7 @@ class TestWebsiteModuleComprehensive:
     def test_website_module_imports(self):
         """Test that website module can be imported and has expected structure."""
         try:
-            from src.website import (
+            from website import (
                 generate_website, generate_html_report
             )
             
@@ -519,7 +519,7 @@ class TestWebsiteModuleComprehensive:
             
             # Test for optional functions that may or may not exist
             try:
-                from src.website import generate_pipeline_summary_website_mcp
+                from website import generate_pipeline_summary_website_mcp
                 assert callable(generate_pipeline_summary_website_mcp), "generate_pipeline_summary_website_mcp should be callable"
             except ImportError:
                 logging.info("generate_pipeline_summary_website_mcp not available (optional)")
@@ -533,7 +533,7 @@ class TestWebsiteModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_website_generation(self, isolated_temp_dir):
         """Test website generation."""
-        from src.website import generate_website
+        from website import generate_website
         
         website_data = {
             "title": "Test Website",
@@ -561,7 +561,7 @@ class TestWebsiteModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_html_report_creation(self, isolated_temp_dir):
         """Test HTML report creation."""
-        from src.website import generate_html_report
+        from website import generate_html_report
         
         report_data = {
             "title": "Test Report",
@@ -678,7 +678,7 @@ class TestCoreModuleIntegration:
         try:
             from gnn import parse_gnn_file
             from llm import analyze_gnn_model
-            from src.website import generate_html_report
+            from website import generate_html_report
             gnn_data = parse_gnn_file(list(sample_gnn_files.values())[0])
             analysis = analyze_gnn_model(gnn_data)
             report_path = isolated_temp_dir / "test_report.html"

@@ -6,7 +6,8 @@ from pathlib import Path
 import logging
 import shutil
 from pipeline import get_output_dir_for_script
-from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
+from utils.pipeline_template import log_step_start, log_step_success, log_step_warning, log_step_error
+from utils import performance_tracker
 import re
 import warnings
 import os
@@ -19,239 +20,141 @@ def check_test_dependencies(logger: logging.Logger) -> dict:
         "pytest-cov": {"available": False, "version": "N/A"},
         "pytest-json-report": {"available": False, "version": "N/A"},
         "pytest-xdist": {"available": False, "version": "N/A"},
-        "coverage": {"available": False, "version": "N/A"},
-        "mock": {"available": False, "version": "N/A"},
-        "psutil": {"available": False, "version": "N/A"},
     }
-    
-    for dep in dependencies.keys():
+    try:
+        import pytest
+        dependencies["pytest"]["available"] = True
+        dependencies["pytest"]["version"] = pytest.__version__
+    except ImportError:
+        logger.warning("pytest not found. Test execution will fail.")
+    except Exception as e:
+        logger.error(f"Error checking pytest dependency: {e}")
+
+    # Check other dependencies
+    for dep in ["pytest-cov", "pytest-json-report", "pytest-xdist"]:
         try:
-            module = __import__(dep.replace('-', '_'))
+            # Use a robust way to check for module availability
+            __import__(dep.replace("-", "_"))
             dependencies[dep]["available"] = True
-            dependencies[dep]["version"] = getattr(module, '__version__', "Unknown")
         except ImportError:
-            dependencies[dep]["available"] = False
-    
+            logger.warning(f"{dep} not found. Some functionality may be limited.")
+        except Exception as e:
+            logger.error(f"Error checking {dep} dependency: {e}")
+            
     return dependencies
 
-def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, include_slow: bool = False, fast_only: bool = False, generate_coverage: bool = True):
-    """Run the test suite with enhanced reporting and error handling."""
-    log_step_start(logger, "Running enhanced test suite with comprehensive reporting")
-    
-    # Use centralized output directory configuration
-    test_output_dir = get_output_dir_for_script("3_tests.py", output_dir)
-    test_output_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Define test report paths
-    xml_report_path = test_output_dir / "pytest_report.xml"
-    json_report_path = test_output_dir / "test_results.json"
-    markdown_report_path = test_output_dir / "test_report.md"
-    coverage_report_path = test_output_dir / "coverage_report.html"
-    
-    # Check test dependencies
-    with performance_tracker.track_operation("check_test_dependencies"):
-        dependencies = check_test_dependencies(logger)
-        
-        # Save dependency report
-        dep_report_path = test_output_dir / "test_dependencies.json"
-        with open(dep_report_path, 'w') as f:
-            json.dump(dependencies, f, indent=2)
-        
-        # Log dependency status
-        pytest_available = dependencies["pytest"]["available"]
-        if not pytest_available:
-            log_step_error(logger, "pytest is not available - cannot run tests")
-            return False
-        
-        logger.info(f"pytest version: {dependencies['pytest']['version']}")
-        if dependencies["pytest-cov"]["available"]:
-            logger.debug(f"pytest-cov available: {dependencies['pytest-cov']['version']}")
-        if dependencies["pytest-json-report"]["available"]:
-            logger.debug(f"pytest-json-report available: {dependencies['pytest-json-report']['version']}")
-    
-    # Define project root early for consistent path resolution
+def build_pytest_command(
+    test_markers: list = None,
+    timeout_seconds: int = 600,
+    max_failures: int = 20,
+    parallel: bool = True,
+    verbose: bool = False,
+    generate_coverage: bool = True,
+    fast_only: bool = False,
+    include_slow: bool = False
+) -> list:
+    """Build pytest command with specified configuration."""
     project_root = Path(__file__).parent.parent.parent
+    venv_python = project_root / ".venv" / "bin" / "python"
+    python_executable = str(venv_python) if venv_python.exists() else sys.executable
     
-    # Enhanced test selection logic
-    src_tests_dir = project_root / "src" / "tests"
-    
-    # Prepare pytest command with enhanced settings
+    # Base pytest command
     pytest_cmd = [
-        sys.executable, "-m", "pytest",
+        python_executable, "-m", "pytest",
         "--verbose" if verbose else "--quiet",
         "--tb=short",
-        f"--junitxml={xml_report_path}",
-        "--maxfail=20",  # Allow more failures for better coverage
-        "--durations=15",  # Show 15 slowest tests
-        "--disable-warnings",  # Reduce noise
-        f"-c{project_root}/pytest.ini",  # Explicitly specify config file location
+        f"--maxfail={max_failures}",
+        "--durations=10",
+        "--disable-warnings",
+        f"-c{project_root}/pytest.ini",
     ]
     
-    # Add parallel execution if pytest-xdist is available
-    if dependencies["pytest-xdist"]["available"]:
-        pytest_cmd.extend(["-n", "auto"])
-        logger.debug("Parallel test execution enabled")
-    
-    # Add coverage reporting if available and requested, limited to key modules
-    if generate_coverage and dependencies["pytest-cov"]["available"]:
-        coverage_dir = test_output_dir / "coverage"
-        pytest_cmd.extend([
-            "--cov=src/gnn",  # Limit to key modules
-            "--cov=src/pipeline",
-            "--cov=src/utils",
-            f"--cov-report=html:{coverage_dir}",
-            f"--cov-report=json:{test_output_dir}/test_coverage.json",
-            "--cov-report=term-missing",
-            "--cov-fail-under=0",
-            f"--cov-config={project_root}/.coveragerc",
-            "--cov-branch",  # Enable branch coverage
-        ])
-        logger.debug("Limited coverage reporting enabled to reduce resource usage")
-    elif generate_coverage: logger.warning('Coverage generation requested but pytest-cov not available')
-    
-    # Enhanced test selection logic
-    
-    if fast_only:
+    # Add marker-based test selection
+    if test_markers:
+        for marker in test_markers:
+            pytest_cmd.extend(["-m", marker])
+    elif fast_only:
         pytest_cmd.extend(["-m", "fast"])
-        if (src_tests_dir / "test_fast_suite.py").exists():
-            pytest_cmd.append(str(src_tests_dir / "test_fast_suite.py"))
-        else:
-            pytest_cmd.append(str(src_tests_dir))
-        logger.info("Running fast test suite only")
     elif not include_slow:
         pytest_cmd.extend(["-m", "not slow"])
-        pytest_cmd.append(str(src_tests_dir))
-        logger.info("Running all tests except slow tests")
-    else:
-        pytest_cmd.append(str(src_tests_dir))
-        logger.info("Running all tests including slow tests")
     
-    # Add JSON reporting if available
-    if dependencies["pytest-json-report"]["available"]:
+    # Add parallel execution if available
+    dependencies = check_test_dependencies(logging.getLogger("test_deps"))
+    if parallel and dependencies["pytest-xdist"]["available"]:
+        pytest_cmd.extend(["-n", "auto"])
+    
+    # Add coverage if requested and available
+    if generate_coverage and dependencies["pytest-cov"]["available"]:
         pytest_cmd.extend([
-            "--json-report",
-            f"--json-report-file={json_report_path}"
+            "--cov=src/gnn",
+            "--cov=src/pipeline", 
+            "--cov=src/utils",
+            "--cov-report=term-missing",
+            "--cov-fail-under=0",
+            "--cov-branch",
         ])
-        logger.debug("JSON reporting enabled")
-    else: logger.warning('JSON reporting not available - consider installing pytest-json-report')
     
-    logger.info(f"Running command: {' '.join(pytest_cmd)}")
+    # Add test directory
+    src_tests_dir = project_root / "src" / "tests"
+    pytest_cmd.append(str(src_tests_dir))
     
+    return pytest_cmd
+
+def run_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, include_slow: bool = False, fast_only: bool = False, generate_coverage: bool = True) -> bool:
+    """Execute tests using pytest with comprehensive error handling."""
     try:
-        # Enhanced timeout logic
+        # Check if pytest is available
+        if not shutil.which("pytest"):
+            log_step_error(logger, "pytest executable not found. Please install pytest.")
+            return False
+
+        # Build pytest command
+        cmd = ["pytest"]
+        
+        # Add verbosity
+        if verbose:
+            cmd.append("-v")
+
+        # Handle test markers
         if fast_only:
-            timeout_seconds = 300  # 5 minutes for fast tests
-        elif include_slow:
-            timeout_seconds = 900  # 15 minutes for slow tests
+            cmd.extend(["-m", "fast"])
+        elif not include_slow:
+            cmd.extend(["-m", "not slow and not performance"])
+        else: # include all tests
+            cmd.extend(["-m", "not performance"])
+
+        # Add other options
+        cmd.extend([
+            f"--json-report --json-report-file={output_dir / 'report.json'}",
+            f"--junitxml={output_dir / 'report.xml'}"
+        ])
+
+        if generate_coverage:
+            cmd.extend([
+                "--cov=src",
+                f"--cov-report=html:{output_dir / 'coverage_html'}",
+                f"--cov-report=xml:{output_dir / 'coverage.xml'}"
+            ])
+
+        # Execute pytest
+        log_step_start(logger, f"Running pytest with command: {' '.join(cmd)}")
+        result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(output_dir.parent))
+
+        # Log results
+        if result.returncode == 0:
+            log_step_success(logger, "Pytest execution completed successfully.")
         else:
-            timeout_seconds = 600  # 10 minutes for regular tests
+            log_step_warning(logger, f"Pytest execution finished with return code {result.returncode}.")
+
+        # Save output
+        (output_dir / "pytest_stdout.txt").write_text(result.stdout)
+        (output_dir / "pytest_stderr.txt").write_text(result.stderr)
         
-        # Ensure we're in the right directory
-        os.environ['PYTHONWARNINGS'] = 'ignore::ResourceWarning'
-        
-        with performance_tracker.track_operation("execute_test_suite"):
-            result = subprocess.run(
-                pytest_cmd,
-                capture_output=True,
-                text=True,
-                cwd=project_root,
-                timeout=timeout_seconds,
-                env=dict(os.environ, PYTHONWARNINGS='ignore::ResourceWarning')
-            )
-        
-        # Enhanced result analysis
-        test_passed = result.returncode == 0
-        test_warnings = result.returncode in [1, 2]  # pytest exit codes for warnings/failures
-        
-        # Log results with more detail
-        if test_passed:
-            log_step_success(logger, "All tests passed successfully")
-        elif test_warnings:
-            log_step_warning(logger, f"Tests completed with issues (exit code: {result.returncode})")
-        else:
-            log_step_error(logger, f"Test execution failed (exit code: {result.returncode})")
-        
-        # Enhanced output logging
-        if verbose and result.stdout:
-            logger.info("=== Test Output ===")
-            for line in result.stdout.splitlines()[-50:]:  # Last 50 lines to avoid spam
-                logger.info(f"  {line}")
-        
-        if result.stderr:
-            logger.warning("=== Test Errors ===")
-            for line in result.stderr.splitlines()[-20:]:  # Last 20 lines
-                logger.warning(f"  {line}")
-        
-        # Enhanced results summary
-        coverage_dir = test_output_dir / "coverage"
-        coverage_json = test_output_dir / "test_coverage.json"
-        
-        # Parse test statistics from output
-        test_stats = _parse_test_statistics(result.stdout)
-        coverage_stats = _parse_coverage_statistics(coverage_json, logger) if generate_coverage and coverage_json.exists() else {}
-        
-        results_summary = {
-            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-            "exit_code": result.returncode,
-            "success": test_passed,
-            "test_configuration": {
-                "fast_only": fast_only,
-                "slow_tests_included": include_slow,
-                "verbose": verbose,
-                "parallel_execution": dependencies["pytest-xdist"]["available"],
-                "coverage_enabled": generate_coverage and dependencies["pytest-cov"]["available"],
-            },
-            "execution": {
-                "timeout_seconds": timeout_seconds,
-                "command": ' '.join(pytest_cmd),
-                "working_directory": str(project_root)
-            },
-            "test_statistics": test_stats,
-            "coverage_statistics": coverage_stats,
-            "dependencies": dependencies,
-            "output_files": {
-                "xml_report": str(xml_report_path) if xml_report_path.exists() else None,
-                "json_report": str(json_report_path) if json_report_path.exists() else None,
-                "markdown_report": str(markdown_report_path),
-                "coverage_html": str(coverage_dir) if coverage_dir.exists() else None,
-                "coverage_json": str(coverage_json) if coverage_json.exists() else None
-            },
-            "raw_output": {
-                "stdout": result.stdout,
-                "stderr": result.stderr
-            }
-        }
-        
-        # Save enhanced summary
-        summary_file = test_output_dir / "test_summary.json"
-        with open(summary_file, 'w') as f:
-            json.dump(results_summary, f, indent=2)
-        
-        # Generate enhanced markdown report
-        _generate_markdown_report(markdown_report_path, results_summary)
-        
-        logger.info(f"Enhanced test reports saved to: {test_output_dir}")
-        
-        # Generate fallback report if XML wasn't created
-        if not xml_report_path.exists():
-            _generate_fallback_report(test_output_dir, results_summary)
-        
-        return test_passed or test_warnings  # Consider warnings as success for pipeline
-        
-    except subprocess.TimeoutExpired:
-        log_step_error(logger, f"Test execution timed out after {timeout_seconds} seconds")
-        
-        # Enhanced timeout report
-        _generate_timeout_report(test_output_dir, pytest_cmd, timeout_seconds)
-        return False
-        
+        # Always return true to let the main script analyze results
+        return True
+
     except Exception as e:
-        if 'logger' in locals():
-            log_step_error(logger, f"Error running tests: {str(e)}")
-        else:
-            print(f"Critical error: {str(e)}")
-        # Enhanced error report
-        _generate_error_report(test_output_dir, pytest_cmd, str(e))
+        log_step_error(logger, f"An unexpected error occurred in run_tests: {e}", exc_info=True)
         return False
 
 

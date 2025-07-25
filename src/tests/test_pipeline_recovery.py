@@ -80,7 +80,7 @@ class TestRecursionErrorRecovery:
             
     def test_render_step_recovery(self, mock_environment, sample_gnn_file):
         """Test render step recovery from recursion errors."""
-        from src.render.renderer import render_gnn_files
+        from render.renderer import render_gnn_files
         
         with patch('numpy.typing', side_effect=RecursionError):
             result = render_gnn_files(
@@ -97,13 +97,13 @@ class TestAsyncAwaitRecovery:
     @pytest.mark.asyncio
     async def test_llm_analysis_recovery(self, mock_environment, sample_gnn_file):
         """Test LLM analysis with proper async/await handling."""
-        from src.llm.analyzer import analyze_gnn_file
+        from llm.analyzer import analyze_gnn_file
         
         # Mock async OpenAI provider
         mock_provider = AsyncMock()
         mock_provider.analyze.return_value = "Test analysis"
         
-        with patch('src.llm.analyzer.OpenAIProvider', return_value=mock_provider):
+        with patch('llm.analyzer.OpenAIProvider', return_value=mock_provider):
             result = await analyze_gnn_file(sample_gnn_file)
             
         assert result["status"] == "SUCCESS"
@@ -112,12 +112,12 @@ class TestAsyncAwaitRecovery:
         
     def test_sync_wrapper_recovery(self, mock_environment, sample_gnn_file):
         """Test synchronous wrapper for async LLM analysis."""
-        from src.llm.analyzer import analyze_gnn_file_sync
+        from llm.analyzer import analyze_gnn_file_sync
         
         mock_provider = AsyncMock()
         mock_provider.analyze.return_value = "Test analysis"
         
-        with patch('src.llm.analyzer.OpenAIProvider', return_value=mock_provider):
+        with patch('llm.analyzer.OpenAIProvider', return_value=mock_provider):
             result = analyze_gnn_file_sync(sample_gnn_file)
             
         assert result["status"] == "SUCCESS"
@@ -128,10 +128,10 @@ class TestLightweightProcessingRecovery:
     
     def test_gnn_lightweight_fallback(self, mock_environment, sample_gnn_file):
         """Test fallback to lightweight GNN processing."""
-        from src.gnn import process_gnn_directory
+        from gnn import process_gnn_directory
         
         # Force full processing failure
-        with patch('src.gnn.process_gnn_directory_full', side_effect=ImportError):
+        with patch('gnn.process_gnn_directory_full', side_effect=ImportError):
             result = process_gnn_directory(
                 mock_environment / "input",
                 mock_environment / "output"
@@ -143,7 +143,7 @@ class TestLightweightProcessingRecovery:
         
     def test_lightweight_processing_output(self, mock_environment, sample_gnn_file):
         """Test output quality of lightweight processing."""
-        from src.gnn import process_gnn_directory_lightweight
+        from gnn import process_gnn_directory_lightweight
         
         result = process_gnn_directory_lightweight(mock_environment / "input")
         
@@ -157,7 +157,7 @@ class TestHardwareInitializationRecovery:
     
     def test_jax_cpu_fallback(self, mock_environment):
         """Test JAX CPU fallback when TPU/GPU unavailable."""
-        from src.execute.jax_runner import initialize_jax_devices
+        from execute.jax_runner import initialize_jax_devices
         
         # Force TPU error
         with patch('jax.devices', side_effect=RuntimeError("No TPU available")):
@@ -168,10 +168,10 @@ class TestHardwareInitializationRecovery:
         
     def test_execution_hardware_recovery(self, mock_environment, sample_gnn_file):
         """Test execution with hardware fallback."""
-        from src.execute.executor import execute_gnn_model
+        from execute.executor import execute_gnn_model
         
         # Mock hardware detection
-        with patch('src.execute.executor.get_available_hardware', return_value=["cpu"]):
+        with patch('execute.executor.get_available_hardware', return_value=["cpu"]):
             result = execute_gnn_model(
                 sample_gnn_file,
                 mock_environment / "output"
@@ -185,7 +185,7 @@ class TestResourceManagementRecovery:
     
     def test_memory_limit_recovery(self, mock_environment):
         """Test recovery from memory limit issues."""
-        from src.utils.resource_manager import with_resource_limits
+        from utils.resource_manager import with_resource_limits
         
         @with_resource_limits(max_memory_mb=100)
         def memory_intensive_operation():
@@ -198,7 +198,7 @@ class TestResourceManagementRecovery:
         
     def test_disk_space_recovery(self, mock_environment):
         """Test recovery from disk space issues."""
-        from src.utils.resource_manager import check_disk_space
+        from utils.resource_manager import check_disk_space
         
         # Mock low disk space
         with patch('shutil.disk_usage', return_value=(100, 50, 10)):
@@ -213,7 +213,7 @@ class TestErrorReportingRecovery:
     
     def test_error_collection(self, mock_environment):
         """Test error collection and reporting."""
-        from src.utils.error_reporter import ErrorReporter
+        from utils.error_reporter import ErrorReporter
         
         reporter = ErrorReporter()
         
@@ -228,7 +228,7 @@ class TestErrorReportingRecovery:
         
     def test_error_recovery_logging(self, mock_environment):
         """Test logging during error recovery."""
-        from src.utils.logging_utils import log_recovery_action
+        from utils.logging_utils import log_recovery_action
         
         with self.assertLogs(level='INFO') as logs:
             log_recovery_action("test_step", "Adjusted resource limits")

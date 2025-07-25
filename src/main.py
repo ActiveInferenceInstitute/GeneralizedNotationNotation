@@ -229,15 +229,16 @@ def main():
             # Enhanced step completion logging with progress tracking
             if ENHANCED_LOGGING_AVAILABLE and progress_tracker:
                 status = step_result["status"]
-                if "WARNING" in step_result.get("stdout", ""):
+                if status == "SUCCESS" and "WARNING" in step_result.get("stdout", ""):
                     status = "SUCCESS_WITH_WARNINGS"
                 
                 completion_summary = progress_tracker.complete_step(step_number, status, step_duration)
                 logger.info(completion_summary)
                 
                 # Use enhanced logging functions that support additional parameters
-                from utils.logging_utils import log_step_success as enhanced_log_step_success
-                enhanced_log_step_success(logger, f"{description} completed", 
+                if status.startswith("SUCCESS"):
+                    from utils.logging_utils import log_step_success as enhanced_log_step_success
+                    enhanced_log_step_success(logger, f"{description} completed", 
                                         step_number=step_number,
                                         duration=step_duration,
                                         status=status)

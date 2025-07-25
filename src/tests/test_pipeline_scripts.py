@@ -487,7 +487,7 @@ class TestStep12AudioComprehensive:
     @pytest.mark.safe_to_fail
     def test_step12_audio_generation(self, isolated_temp_dir):
         """Test website generation functionality."""
-        from src.website import generate_website, generate_html_report
+        from website import generate_website, generate_html_report
         # Test website generation
         try:
             website_data = {"test": "data"}
