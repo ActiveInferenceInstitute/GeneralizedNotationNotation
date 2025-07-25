@@ -1,31 +1,54 @@
 # Pipeline Architecture & Implementation Paradigm
 
 ### Core Pipeline Orchestration
-- **Main Orchestrator**: `src/main.py` dynamically discovers and executes numbered pipeline scripts (1-14)
-- **Script Discovery**: Uses glob patterns to find `*_*.py` files, sorts by number and basename
+- **Main Orchestrator**: `src/main.py` dynamically executes numbered pipeline scripts (0-21)
+- **Script Discovery**: Uses predefined pipeline_steps list to execute 22 steps in order
 - **Execution Model**: Each script runs as subprocess with centralized argument passing
 - **Virtual Environment**: Automatic detection and use of project virtual environment
 - **Dependency Validation**: Comprehensive dependency checking before pipeline execution
 - **Performance Tracking**: Built-in performance monitoring and resource usage tracking
 - **Configuration Management**: YAML-based configuration with CLI argument overrides
 
-### Pipeline Steps (14 Steps - Current Order)
+### Pipeline Steps (22 Steps - Current Order 0-21)
 Each numbered script corresponds to a specific module folder and implements real functionality:
 
+0. **0_template.py** → `src/template/` - Pipeline template and initialization (thin orchestrator)
 1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation (CRITICAL STEP)
-2. **2_gnn.py** → `src/gnn/` - GNN file discovery, multi-format parsing, and comprehensive validation
-3. **3_tests.py** → `src/tests/` - Test suite execution with pytest integration and coverage reporting
-4. **4_type_checker.py** → `src/type_checker/` - GNN syntax validation, type checking, and resource estimation
-5. **5_export.py** → `src/export/` - Multi-format export (JSON, XML, GraphML, GEXF, Pickle, PKL)
-6. **6_visualization.py** → `src/visualization/` - Graph visualization, matrix visualization, and ontology diagrams
-7. **7_mcp.py** → `src/mcp/` - Model Context Protocol operations, tool registration, and MCP system integration
-8. **8_ontology.py** → `src/ontology/` - Active Inference Ontology processing, validation, and semantic mapping
-9. **9_render.py** → `src/render/` - Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, JAX, and DisCoPy environments
-10. **10_execute.py** → `src/execute/` - Execute rendered simulation scripts with comprehensive result capture
-11. **11_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, natural language explanations
-12. **12_audio.py** → `src/audio/` - Audio generation (SAPF, Pedalboard, and other backends)
-13. **13_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts with interactive elements
-14. **14_report.py** → `src/report/` - Comprehensive analysis report generation
+2. **2_tests.py** → `src/tests/` - Test suite execution with pytest integration and coverage reporting
+3. **3_gnn.py** → `src/gnn/` - GNN file discovery, multi-format parsing, and comprehensive validation (CRITICAL STEP)
+4. **4_model_registry.py** → `src/model_registry/` - Model registry management and versioning (thin orchestrator)
+5. **5_type_checker.py** → `src/type_checker/` - GNN syntax validation, type checking, and resource estimation
+6. **6_validation.py** → `src/validation/` - Advanced validation and consistency checking
+7. **7_export.py** → `src/export/` - Multi-format export (JSON, XML, GraphML, GEXF, Pickle, PKL)
+8. **8_visualization.py** → `src/visualization/` - Graph visualization, matrix visualization with comprehensive safe-to-fail patterns
+9. **9_advanced_viz.py** → `src/advanced_visualization/` - Advanced visualization and interactive plots with robust safety patterns
+10. **10_ontology.py** → `src/ontology/` - Active Inference Ontology processing, validation, and semantic mapping (thin orchestrator)
+11. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, JAX, and DisCoPy environments
+12. **12_execute.py** → `src/execute/` - Execute rendered simulation scripts with comprehensive safety patterns and result capture
+13. **13_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, natural language explanations (thin orchestrator)
+14. **14_ml_integration.py** → `src/ml_integration/` - Machine learning integration and model training (thin orchestrator)
+15. **15_audio.py** → `src/audio/` - Audio generation (SAPF, Pedalboard, and other backends) (thin orchestrator)
+16. **16_analysis.py** → `src/analysis/` - Advanced analysis and statistical processing (thin orchestrator)
+17. **17_integration.py** → `src/integration/` - System integration and cross-module coordination (thin orchestrator)
+18. **18_security.py** → `src/security/` - Security validation and access control (thin orchestrator)
+19. **19_research.py** → `src/research/` - Research tools and experimental features (thin orchestrator)
+20. **20_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts (thin orchestrator)
+21. **21_report.py** → `src/report/` - Comprehensive analysis report generation (thin orchestrator)
+
+### Architectural Pattern: Thin Orchestrator Scripts
+**CRITICAL**: Numbered pipeline scripts (especially steps 10, 13-21) must be thin orchestrators that:
+1. **Import and invoke methods** from their corresponding modules (e.g., `src/ontology/`, `src/llm/`)
+2. **NEVER contain long method definitions** - all core logic belongs in the module
+3. **Handle pipeline orchestration** - argument parsing, logging, output directory management, result aggregation
+4. **Delegate core functionality** to module classes and functions
+5. **Maintain separation of concerns** - scripts handle pipeline flow, modules handle domain logic
+
+**Current Implementation Status:**
+- **Thin Orchestrators**: Steps 0, 4, 10, 13-21 (correctly delegate to modules)
+- **Full Implementation**: Steps 1-3, 5-9, 11-12 (contain substantial logic - legacy pattern)
+- **Hybrid Implementation**: Some steps mix approaches
+
+**Target Architecture**: All steps should eventually follow thin orchestrator pattern while maintaining current functionality.
 
 ### Centralized Infrastructure
 
@@ -38,7 +61,7 @@ Each numbered script corresponds to a specific module folder and implements real
 - **config_loader**: YAML configuration loading with validation and CLI argument override support
 
 #### Pipeline Configuration (`src/pipeline/`)
-- **STEP_METADATA**: Centralized metadata for all 13 pipeline steps with dependencies, timeouts, and requirements
+- **STEP_METADATA**: Centralized metadata for all 22 pipeline steps with dependencies, timeouts, and requirements
 - **get_pipeline_config**: Pipeline configuration management with step-specific settings
 - **get_output_dir_for_script**: Standardized output directory structure with automatic creation
 - **execute_pipeline_step**: Centralized step execution with enhanced error handling and performance tracking
@@ -83,10 +106,16 @@ Every numbered script follows this standardized pattern:
 
 #### Error Handling Standards
 - **Graceful Degradation**: Steps continue pipeline unless critical failure occurs
-- **Critical vs Non-Critical**: Steps marked as `required=True` in configuration halt pipeline on failure
+- **Critical vs Non-Critical**: Steps 1 and 3 marked as `required=True` in configuration halt pipeline on failure
 - **Comprehensive Reporting**: All errors logged with context, suggestions, and actionable information
 - **Exit Code Conventions**: 0=success, 1=critical error (stops pipeline), 2=success with warnings (continues pipeline)
 - **Dependency Validation**: Pre-flight dependency checks with clear error messages and installation guidance
+
+#### Safe-to-Fail Implementation
+- **Steps 8, 9, 12**: Comprehensive safe-to-fail patterns with multiple fallback levels
+- **All Steps**: Must return 0 to ensure pipeline continuation regardless of internal failures
+- **Error Recovery**: Multiple fallback systems with detailed diagnostics and recovery suggestions
+- **Output Generation**: All steps must produce outputs even in failure modes
 
 ### Module-Specific Implementation Details
 
@@ -96,77 +125,78 @@ Every numbered script follows this standardized pattern:
 - **System Validation**: Comprehensive system dependency checking with detailed environment reporting
 - **Critical Step**: Pipeline execution depends on successful setup completion
 
-#### GNN Processing (`src/gnn/`) - Step 2  
-- **Multi-Format Support**: Comprehensive parsing for Markdown, JSON, YAML, XML, Binary (PKL), Protobuf, Maxima, and more
+#### GNN Processing (`src/gnn/`) - Step 3
+- **Multi-Format Support**: Comprehensive parsing for 21+ formats (Markdown, JSON, YAML, XML, Binary, Protobuf, Maxima, etc.)
 - **Validation Levels**: BASIC, STANDARD, STRICT, RESEARCH, and ROUND_TRIP validation with configurable depth
 - **Round-Trip Testing**: Semantic preservation testing across format conversions
 - **Cross-Format Validation**: Consistency checking across different format representations
 - **Real Implementation**: Full GNN specification parsing with sophisticated error reporting and recovery
 
-#### Type Checking (`src/type_checker/`) - Step 4
+#### Type Checking (`src/type_checker/`) - Step 5
 - **Syntax Validation**: Complete GNN syntax validation with detailed error reporting and suggestions
 - **Resource Estimation**: Computational resource estimation for model execution planning
 - **Type Consistency**: Variable type checking, dimension validation, and Active Inference conformance
 - **Performance Analysis**: Complexity analysis and optimization recommendations
 
-#### Export Systems (`src/export/`) - Step 5
+#### Export Systems (`src/export/`) - Step 7
 - **Multi-Format Support**: JSON, XML, GraphML, GEXF, Pickle, PKL formats with format-specific optimizations
 - **Network Graph Export**: NetworkX-based graph format exports with rich metadata preservation
 - **Structured Data**: Comprehensive model metadata preservation across format boundaries
 - **Round-Trip Compatibility**: Format exports designed for semantic preservation in round-trip scenarios
 
-#### Visualization (`src/visualization/`) - Step 6
+#### Visualization (`src/visualization/`) - Step 8
+- **Safe-to-Fail Patterns**: Comprehensive fallback systems from full visualization to basic HTML reports
 - **Graph Visualization**: Model structure visualization with matplotlib, networkx, and interactive elements
 - **Matrix Visualization**: A, B, C, D matrix heatmaps, correlation matrices, and statistical visualizations
-- **Ontology Visualization**: Active Inference ontology relationship diagrams with semantic annotations
-- **Interactive Elements**: Support for interactive visualization with export to multiple formats
+- **Correlation ID Tracking**: Complete traceability with unique correlation IDs for debugging
+- **Pipeline Continuation**: Always returns 0 to ensure pipeline never stops on visualization failures
 
-#### Simulation Rendering (`src/render/`) - Step 9
+#### Advanced Visualization (`src/advanced_visualization/`) - Step 9
+- **Comprehensive Safety Patterns**: Multiple fallback levels with detailed HTML reports and dependency status
+- **Interactive Visualization**: Advanced 3D plots, interactive dashboards, and dynamic content
+- **Resource Management**: Safe processing contexts with automatic cleanup and timeout handling
+- **Error Recovery**: Beautiful fallback HTML with recovery suggestions and diagnostics
+- **Performance Tracking**: Detailed timing and resource usage tracking for all attempts
+
+#### Simulation Rendering (`src/render/`) - Step 11
 - **PyMDP Integration**: Complete PyMDP agent and environment code generation with Active Inference semantics
 - **RxInfer Integration**: Full RxInfer.jl model translation with Bayesian inference implementation
 - **ActiveInference.jl**: Native Julia implementation generation for high-performance simulation
+- **DisCoPy Integration**: Categorical diagram generation for theoretical analysis
 - **Template System**: Comprehensive template-based code generation with customizable patterns
-- **Real Code Generation**: Executable simulation code with proper imports, initialization, and execution logic
 
-#### Execution Engine (`src/execute/`) - Step 10
+#### Execution Engine (`src/execute/`) - Step 12
+- **Safe-to-Fail Execution**: Comprehensive safety patterns with circuit breaker implementation
 - **Multi-Backend Support**: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, and custom execution backends
-- **Script Execution**: Real Python and Julia script execution with subprocess management and result capture
-- **Result Analysis**: Output processing, error handling, and comprehensive result reporting
+- **Error Classification**: Detailed error classification (dependency, syntax, resource, timeout, etc.)
+- **Retry Logic**: Exponential backoff retry with intelligent error recovery
 - **Performance Monitoring**: Execution time tracking, memory usage, and convergence analysis
+- **Pipeline Continuation**: Always returns 0 to ensure pipeline continues even on complete execution failure
 
-#### LLM Integration (`src/llm/`) - Step 11
-- **Model Analysis**: AI-powered GNN model interpretation, validation, and enhancement suggestions
+#### AI and ML Integration (`src/llm/`, `src/ml_integration/`) - Steps 13-14
+- **LLM Processing**: AI-powered GNN model interpretation, validation, and enhancement suggestions
 - **Natural Language**: GNN to natural language explanation generation with technical accuracy
-- **Enhancement Recommendations**: Automated model improvement suggestions based on best practices
-- **Real AI Integration**: Functional LLM processing with multiple provider support and robust error handling
+- **ML Integration**: Machine learning pipeline integration with model training capabilities
+- **Thin Orchestrator Pattern**: Delegate to module implementations for core functionality
 
-#### Website Generation (`src/website/`) - Step 12
-- **HTML Generation**: Static HTML site generation from pipeline artifacts with modern responsive design
-- **Report Aggregation**: Comprehensive pipeline summary and results presentation with interactive navigation
-- **Interactive Elements**: Dynamic content, visualization embedding, and user-friendly interfaces
-- **Multi-Format Output**: Support for different website templates and customization options
-
-#### Audio Generation (`src/audio/`) - Step 12
+#### Audio Generation (`src/audio/`) - Step 15
 - **Multi-Backend Support**: SAPF, Pedalboard, and other audio generation backends
 - **Model Sonification**: Converting mathematical structures, matrices, and relationships to audio patterns
 - **Audio Synthesis**: Real-time audio generation, processing, and export with multiple format support
-- **Scientific Sonification**: Mathematically grounded audio representations for model analysis and understanding
+- **Scientific Sonification**: Mathematically grounded audio representations for model analysis
 
-#### Website Generation (`src/website/`) - Step 13
-- **HTML Generation**: Static HTML site generation from pipeline artifacts with modern responsive design
-- **Report Aggregation**: Comprehensive pipeline summary and results presentation with interactive navigation
-- **Interactive Elements**: Dynamic content, visualization embedding, and user-friendly interfaces
-- **Multi-Format Output**: Support for different website templates and customization options
-
-#### Report Generation (`src/report/`) - Step 14
-- **Comprehensive Analysis**: Aggregates data from all pipeline steps into unified reports
-- **Performance Metrics**: Execution time, memory usage, and resource consumption analysis
-- **Quality Assessment**: Validation results, error summaries, and success rate reporting
-- **Multi-Format Reports**: HTML, JSON, and structured data exports for further analysis
+#### Final Processing Chain (Steps 16-21)
+- **Analysis**: Comprehensive statistical analysis and performance metrics aggregation
+- **Integration**: Cross-module coordination and system integration
+- **Security**: Security validation and access control
+- **Research**: Experimental features and advanced research tools
+- **Website**: Static HTML site generation with interactive elements
+- **Report**: Final comprehensive reporting and documentation generation
 
 ### Performance and Quality Standards
 - **Real-Time Monitoring**: Comprehensive performance tracking across all pipeline steps
 - **Resource Optimization**: Memory usage optimization and computational efficiency analysis
 - **Scientific Reproducibility**: Deterministic behavior with full audit trails and version control
 - **Comprehensive Testing**: Unit tests, integration tests, and end-to-end pipeline validation
-- **Error Recovery**: Robust error handling with graceful recovery and detailed diagnostics 
+- **Error Recovery**: Robust error handling with graceful recovery and detailed diagnostics
+- **Safe-to-Fail Implementation**: All steps designed to continue pipeline execution regardless of internal failures 

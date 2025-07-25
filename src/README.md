@@ -54,30 +54,34 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Pipeline Continuation**: Guaranteed ✅
 - **Error Recovery**: Comprehensive ✅
 
-**Output Directory Organization:**
+**Complete Output Directory Organization (22 Steps):**
 ```
 output/
-├── advanced_visualization/          # Step 9 outputs
-├── analysis/                       # Step 16 outputs  
-├── audio_processing_step/          # Step 15 outputs
-├── gnn_exports/                    # Step 7 outputs
-├── gnn_processing_step/            # Step 3 outputs
-├── gnn_rendered_simulators/        # Step 11 outputs
-├── integration/                    # Step 17 outputs
-├── llm_processing_step/            # Step 13 outputs
-├── ml_integration/                 # Step 14 outputs
-├── model_registry/                 # Step 4 outputs
-├── ontology_processing/            # Step 10 outputs
+├── template/                       # Step 0: Template initialization
+├── setup_artifacts/               # Step 1: Environment setup
+├── test_reports/                  # Step 2: Test execution
+├── gnn_processing_step/           # Step 3: GNN file processing
+├── model_registry/                # Step 4: Model registry
+├── type_check/                    # Step 5: Type checking
+├── validation/                    # Step 6: Advanced validation
+├── gnn_exports/                   # Step 7: Multi-format export
+├── visualization/                 # Step 8: Standard visualization
+├── advanced_visualization/        # Step 9: Advanced visualization
+├── ontology_processing/           # Step 10: Ontology processing
+├── gnn_rendered_simulators/       # Step 11: Code rendering
+├── execution_results/             # Step 12: Execution results
+├── llm_processing_step/           # Step 13: LLM analysis
+├── ml_integration/                # Step 14: ML integration
+├── audio_processing_step/         # Step 15: Audio processing
+├── analysis/                      # Step 16: Advanced analysis
+├── integration/                   # Step 17: System integration
+├── security/                      # Step 18: Security validation
+├── research/                      # Step 19: Research tools
+├── website/                       # Step 20: Website generation
+├── report_processing_step/        # Step 21: Report generation
+├── logs/                          # Pipeline execution logs
 ├── pipeline_execution_summary.json # Overall pipeline results
-├── report_processing_step/         # Step 21 outputs
-├── research/                       # Step 19 outputs
-├── security/                       # Step 18 outputs
-├── setup_artifacts/                # Step 1 outputs
-├── template/                       # Step 0 outputs
-├── test_reports/                   # Step 2 outputs
-├── type_check/                     # Step 5 outputs
-├── validation/                     # Step 6 outputs
-└── website/                        # Step 20 outputs
+└── gnn_pipeline_summary_site.html  # Pipeline summary website
 ```
 
 ### 🔧 Technical Implementation Details
@@ -151,5 +155,23 @@ cat output/execution_results.json
 - Dependency status clearly documented in output files
 - Fallback visualizations provide immediate value even when advanced features unavailable
 - Execution failures include detailed classification and retry recommendations
+
+### 📚 Documentation Alignment Status
+
+**IMPORTANT**: As of January 2025, all major documentation files have been updated to reflect the correct 22-step pipeline architecture (0-21):
+
+**Updated Documentation:**
+- ✅ `doc/pipeline/PIPELINE_FLOW.md` - Corrected from 14 to 22 steps with accurate flow diagram
+- ✅ `doc/pipeline/README.md` - Updated with complete step descriptions and output structure
+- ✅ `.cursor_rules/pipeline_architecture.md` - Aligned with actual implementation and architectural patterns
+- ✅ `src/README.md` - Complete output directory structure for all 22 steps
+
+**Previously Outdated (Now Fixed):**
+- ❌ Was showing 14 steps instead of 22
+- ❌ Incorrect step names (e.g., "7_mcp.py" instead of "7_export.py")
+- ❌ Missing steps 15-21 entirely in some documentation
+- ❌ Wrong output directory structure
+
+All documentation now accurately reflects the actual implementation in `src/main.py` and individual numbered scripts.
 
 This implementation ensures the GNN pipeline provides maximum scientific value while maintaining absolute reliability and providing comprehensive diagnostics for any issues encountered during processing. 

@@ -42,6 +42,8 @@ This project implements a comprehensive scientific computing pipeline with real,
 4. **Delegate core functionality** to module classes and functions
 5. **Maintain separation of concerns** - scripts handle pipeline flow, modules handle domain logic
 
+**Note:** Lengthy or complex methods should be defined in modular files within the associated `src/[module_name]/` folder, and only called from the numbered pipeline scripts. Numbered scripts should not contain the implementation of such methods directly.
+
 **Examples of correct pattern:**
 - `8_visualization.py` imports from `src/visualization/` and calls `MatrixVisualizer.generate_matrix_analysis()`
 - `9_advanced_viz.py` imports from `src/advanced_visualization/` and calls `AdvancedVisualizer.process_model()`
