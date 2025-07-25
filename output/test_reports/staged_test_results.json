@@ -1,0 +1,33 @@
+{
+  "execution_start_time": 1753485229.095115,
+  "current_time": 1753485234.205018,
+  "overall_stats": {
+    "total_stages": 1,
+    "successful_stages": 1,
+    "failed_stages": 0,
+    "total_tests_run": 54,
+    "total_tests_passed": 49,
+    "total_tests_failed": 5,
+    "total_execution_time": 0.0
+  },
+  "stage_results": {
+    "fast": {
+      "stage": "fast",
+      "success": true,
+      "duration_seconds": 5.10863995552063,
+      "exit_code": 1,
+      "command": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --verbose --tb=short --maxfail=5 --durations=10 --disable-warnings -c/Users/4d/Documents/GitHub/GeneralizedNotationNotation/pytest.ini -m fast /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/tests",
+      "tests_run": 54,
+      "tests_passed": 49,
+      "tests_failed": 5,
+      "tests_skipped": 0
+    }
+  },
+  "args": {
+    "verbose": true,
+    "fast_only": false,
+    "include_slow": false,
+    "target_dir": "input/gnn_files",
+    "output_dir": "output"
+  }
+}

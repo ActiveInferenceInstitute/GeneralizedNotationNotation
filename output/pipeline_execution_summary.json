@@ -1,0 +1,60 @@
+{
+    "start_time": "2025-07-25T16:13:35.307291",
+    "arguments": {
+        "target_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+        "output_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output",
+        "recursive": true,
+        "verbose": true,
+        "enable_round_trip": true,
+        "enable_cross_format": true,
+        "skip_steps": null,
+        "only_steps": "2",
+        "strict": false,
+        "estimate_resources": true,
+        "ontology_terms_file": "ontology/act_inf_ontology_terms.json",
+        "pipeline_summary_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/pipeline_execution_summary.json",
+        "llm_tasks": "all",
+        "llm_timeout": 360,
+        "website_html_filename": "gnn_pipeline_summary_website.html",
+        "recreate_venv": false,
+        "dev": false,
+        "duration": 30.0,
+        "audio_backend": "auto"
+    },
+    "steps": [
+        {
+            "status": "SUCCESS",
+            "stdout": "2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - \n===== GNN Test Step: Resolved Arguments and Paths =====\n2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - Current working directory: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src\n2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - Script location: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/2_tests.py\n2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - target_dir: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - output_dir: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output\n2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - verbose: True\n2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - fast_only: False\n2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - include_slow: False\n2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - include_performance: False\n2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - =======================================================\n\n2025-07-25 16:13:35,379 [021c2667:utils] tests - INFO - Output directory ensured: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output\n2025-07-25 16:13:35,380 [021c2667:utils] tests - INFO - Test directory found: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/tests\n2025-07-25 16:13:35,380 [021c2667:utils] tests - INFO - Checking dependencies using Python: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python\n2025-07-25 16:13:35,550 [021c2667:utils] tests - INFO - \u2705 pytest available: pytest 8.4.1\n2025-07-25 16:13:35,628 [021c2667:utils] tests - INFO - \u2705 pytest-cov available\n2025-07-25 16:13:35,650 [021c2667:utils] tests - WARNING - \u26a0\ufe0f pytest-json-report not available (some features may be limited)\n2025-07-25 16:13:35,676 [021c2667:utils] tests - WARNING - \u26a0\ufe0f pytest-xdist not available (some features may be limited)\n2025-07-25 16:13:35,676 [021c2667:utils] tests - INFO - \ud83d\ude80 Running staged test suite execution\n2025-07-25 16:13:35,676 [021c2667:utils] tests - INFO - \ud83d\udccb Running 1 test stages: ['fast']\n2025-07-25 16:13:35,676 [021c2667:utils] tests - INFO - \n============================================================\n2025-07-25 16:13:35,676 [021c2667:utils] tests - INFO - \ud83d\udccd Stage 1/1: Fast Tests\n2025-07-25 16:13:35,676 [021c2667:utils] tests - INFO - ============================================================\n2025-07-25 16:13:35,676 [021c2667:utils] tests - INFO - \ud83d\ude80 Starting Fast Tests\n2025-07-25 16:13:35,676 [021c2667:utils] tests - INFO -    \ud83d\udccb Quick validation tests for core functionality\n2025-07-25 16:13:35,676 [021c2667:utils] tests - INFO -    \u23f1\ufe0f  Timeout: 30 seconds\n2025-07-25 16:13:35,676 [021c2667:utils] tests - INFO -    \ud83c\udfaf Markers: fast\n2025-07-25 16:13:35,709 [021c2667:utils] test_deps - WARNING - pytest-json-report not found. Some functionality may be limited.\n2025-07-25 16:13:35,709 [021c2667:utils] test_deps - WARNING - pytest-xdist not found. Some functionality may be limited.\n2025-07-25 16:13:35,709 [021c2667:utils] tests - INFO -    \ud83d\udd27 Command: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --verbose --tb=short --maxfail=5 --durations=10 --disable-warnings -c/Users/4d/Documents/GitHub/GeneralizedNotationNotation/pytest.ini -m fast /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/tests\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO - \u2705 Fast Tests completed successfully in 6.3s\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO -    \ud83d\udcca Tests: 54 run, 49 passed, 5 failed\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO - \n================================================================================\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO - \ud83d\udcca STAGED TEST EXECUTION SUMMARY\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO - ================================================================================\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO - \u2705 All test stages completed successfully\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO - \ud83d\udcc8 Execution Statistics:\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO -    \u2022 Total Duration: 6.3 seconds\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO -    \u2022 Stages: 1/1 successful\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO -    \u2022 Tests: 49/54 passed\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO -    \u2022 Success Rate: 90.7%\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO - \ud83c\udfaf Stage Breakdown:\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO -    \u2705 Fast Tests: 54 tests in 6.3s\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO - \ud83d\udcc1 Detailed reports saved to: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/test_reports\n2025-07-25 16:13:42,022 [021c2667:utils] tests - INFO - ================================================================================\n",
+            "stderr": "",
+            "memory_usage_mb": 0.0,
+            "exit_code": 0,
+            "retry_count": 0,
+            "step_number": 1,
+            "script_name": "2_tests.py",
+            "description": "Test suite execution",
+            "start_time": "2025-07-25T16:13:35.307462",
+            "end_time": "2025-07-25T16:13:42.037399",
+            "duration_seconds": 6.729933023452759
+        }
+    ],
+    "end_time": "2025-07-25T16:13:42.037669",
+    "overall_status": "SUCCESS",
+    "total_duration_seconds": 7.037670850753784,
+    "environment_info": {
+        "python_version": "3.13.5 (main, Jun 11 2025, 15:36:57) [Clang 17.0.0 (clang-1700.0.13.3)]",
+        "platform": "darwin",
+        "cpu_count": 14,
+        "working_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation",
+        "user": "4d",
+        "memory_total_gb": "unavailable (psutil not installed)",
+        "disk_free_gb": "unavailable (psutil not installed)"
+    },
+    "performance_summary": {
+        "peak_memory_mb": 0.0,
+        "total_steps": 1,
+        "failed_steps": 0,
+        "critical_failures": 0,
+        "successful_steps": 1,
+        "warnings": 1
+    }
+}

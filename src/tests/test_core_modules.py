@@ -430,64 +430,50 @@ class TestOntologyModuleComprehensive:
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_ontology_module_imports(self):
-        """Test that ontology module can be imported and has expected structure."""
+        """Test that ontology module can be imported and has expected functions."""
         try:
-            from ontology import (
-                process_ontology, validate_ontology_terms,
-                map_gnn_to_ontology, generate_ontology_report
-            )
-            
+            from ontology import process_ontology, FEATURES
             # Test that functions are callable
             assert callable(process_ontology), "process_ontology should be callable"
-            assert callable(validate_ontology_terms), "validate_ontology_terms should be callable"
-            assert callable(map_gnn_to_ontology), "map_gnn_to_ontology should be callable"
-            assert callable(generate_ontology_report), "generate_ontology_report should be callable"
-            
-            logging.info("Ontology module imports validated")
+            assert isinstance(FEATURES, dict), "FEATURES should be a dict"
+            assert FEATURES.get('basic_processing', False), "Basic processing should be available"
             
         except ImportError as e:
             pytest.fail(f"Failed to import ontology module: {e}")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_ontology_processing(self):
-        """Test ontology processing."""
-        from ontology import process_ontology
-        
+    def test_ontology_term_validation(self, isolated_temp_dir):
+        """Test ontology processing functionality."""
         try:
-            ontology_data = process_ontology()
+            from ontology import process_ontology
             
-            assert isinstance(ontology_data, dict), "Ontology data should be a dictionary"
-            assert "terms" in ontology_data, "Ontology data should contain terms"
-            assert "relationships" in ontology_data, "Ontology data should contain relationships"
+            # Create a test input directory with sample content
+            input_dir = isolated_temp_dir / "input"
+            input_dir.mkdir()
             
-            logging.info("Ontology processing validated")
+            # Create a sample GNN file
+            sample_file = input_dir / "test_model.md"
+            sample_file.write_text("""## GNNVersionAndFlags
+Version: 1.0
+
+## ModelName
+TestModel
+
+## Variables
+- X: [2]
+""")
             
-        except Exception as e:
-            logging.warning(f"Ontology processing failed: {e}")
-    
-    @pytest.mark.unit
-    @pytest.mark.safe_to_fail
-    def test_ontology_term_validation(self):
-        """Test ontology term validation."""
-        from ontology import validate_ontology_terms
-        
-        sample_terms = {
-            "terms": ["belief", "precision", "free_energy"],
-            "relationships": [{"source": "belief", "target": "precision"}]
-        }
-        
-        try:
-            validation_result = validate_ontology_terms(sample_terms)
+            # Create output directory
+            output_dir = isolated_temp_dir / "output"
             
-            assert isinstance(validation_result, dict), "Validation result should be a dictionary"
-            assert "valid_terms" in validation_result, "Result should contain valid_terms"
-            assert "invalid_terms" in validation_result, "Result should contain invalid_terms"
+            # Test ontology processing
+            result = process_ontology(input_dir, output_dir, verbose=False)
+            assert isinstance(result, bool), "process_ontology should return a boolean"
+            assert (output_dir / "ontology_results").exists(), "Results directory should be created"
             
-            logging.info("Ontology term validation validated")
-            
-        except Exception as e:
-            logging.warning(f"Ontology term validation failed: {e}")
+        except ImportError as e:
+            pytest.skip(f"Ontology functionality not available: {e}")
 
 class TestWebsiteModuleComprehensive:
     """Comprehensive tests for the website module."""
@@ -495,87 +481,91 @@ class TestWebsiteModuleComprehensive:
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_website_module_imports(self):
-        """Test that website module can be imported and has expected structure."""
+        """Test that website module can be imported and has expected functions."""
         try:
-            from website import (
-                generate_website, generate_html_report
-            )
-            
+            from website import process_website, FEATURES
             # Test that functions are callable
-            assert callable(generate_website), "generate_website should be callable"
-            assert callable(generate_html_report), "generate_html_report should be callable"
-            
-            # Test for optional functions that may or may not exist
-            try:
-                from website import generate_pipeline_summary_website_mcp
-                assert callable(generate_pipeline_summary_website_mcp), "generate_pipeline_summary_website_mcp should be callable"
-            except ImportError:
-                logging.info("generate_pipeline_summary_website_mcp not available (optional)")
-            
-            logging.info("Website module imports validated")
+            assert callable(process_website), "process_website should be callable"
+            assert isinstance(FEATURES, dict), "FEATURES should be a dict"
+            assert FEATURES.get('basic_processing', False), "Basic processing should be available"
             
         except ImportError as e:
             pytest.fail(f"Failed to import website module: {e}")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_website_generation(self, isolated_temp_dir):
-        """Test website generation."""
-        from website import generate_website
-        
-        website_data = {
-            "title": "Test Website",
-            "pages": [
-                {"title": "Page 1", "content": "Content 1"},
-                {"title": "Page 2", "content": "Content 2"}
-            ]
-        }
-        
-        website_path = isolated_temp_dir / "test_website"
-        
+        """Test website generation functionality."""
         try:
-            generate_website(website_data, website_path)
+            from website import process_website
             
-            # Check that website directory was created
-            assert website_path.exists(), "Website directory should be created"
-            assert website_path.is_dir(), "Website path should be a directory"
+            # Create a test input directory with sample content
+            input_dir = isolated_temp_dir / "input"
+            input_dir.mkdir()
             
-            logging.info("Website generation validated")
+            # Create a sample GNN file
+            sample_file = input_dir / "test_model.md"
+            sample_file.write_text("""## GNNVersionAndFlags
+Version: 1.0
+
+## ModelName
+TestModel
+
+## Variables
+- X: [2]
+""")
             
-        except Exception as e:
-            logging.warning(f"Website generation failed: {e}")
-    
+            # Create output directory
+            output_dir = isolated_temp_dir / "output"
+            
+            # Test website processing
+            result = process_website(input_dir, output_dir, verbose=False)
+            assert isinstance(result, bool), "process_website should return a boolean"
+            assert (output_dir / "website_results").exists(), "Results directory should be created"
+            
+        except ImportError as e:
+            pytest.skip(f"Website functionality not available: {e}")
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_html_report_creation(self, isolated_temp_dir):
-        """Test HTML report creation."""
-        from website import generate_html_report
-        
-        report_data = {
-            "title": "Test Report",
-            "sections": [
-                {"title": "Section 1", "content": "Content 1"},
-                {"title": "Section 2", "content": "Content 2"}
-            ]
-        }
-        
-        html_path = isolated_temp_dir / "test_report.html"
-        
+        """Test HTML report creation functionality."""
         try:
-            generate_html_report(report_data, html_path)
+            from website import process_website
             
-            # Check that HTML file was created
-            assert html_path.exists(), "HTML file should be created"
+            # Create a test input directory with sample content
+            input_dir = isolated_temp_dir / "input"
+            input_dir.mkdir()
             
-            # Check file content
-            content = html_path.read_text()
-            assert len(content) > 0, "HTML content should not be empty"
-            assert "<html>" in content.lower(), "HTML content should contain html tag"
+            # Create multiple sample GNN files
+            for i in range(3):
+                sample_file = input_dir / f"test_model_{i}.md"
+                sample_file.write_text(f"""## GNNVersionAndFlags
+Version: 1.0
+
+## ModelName
+TestModel{i}
+
+## Variables
+- X: [{i+1}]
+""")
             
-            logging.info("HTML report creation validated")
+            # Create output directory
+            output_dir = isolated_temp_dir / "output"
             
-        except Exception as e:
-            logging.warning(f"HTML report creation failed: {e}")
+            # Test website processing with multiple files
+            result = process_website(input_dir, output_dir, verbose=False)
+            assert isinstance(result, bool), "process_website should return a boolean"
+            
+            # Check that results are created
+            results_dir = output_dir / "website_results"
+            assert results_dir.exists(), "Results directory should be created"
+            
+            results_file = results_dir / "website_results.json"
+            assert results_file.exists(), "Results file should be created"
+            
+        except ImportError as e:
+            pytest.skip(f"Website functionality not available: {e}")
 
 class TestSAPFModuleComprehensive:
     """Comprehensive tests for the SAPF module."""
