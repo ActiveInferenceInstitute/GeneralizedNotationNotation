@@ -1,19 +1,13 @@
+#!/usr/bin/env python3
 """
-render module for GNN Processing Pipeline.
+Render Module
 
-This module provides render capabilities with fallback implementations.
+This module provides rendering capabilities for GNN specifications to various
+target languages and simulation environments.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List
-import logging
-
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error,
-    log_step_warning
-)
+from typing import Dict, Any, Optional, Union, Tuple, List
 
 def process_render(
     target_dir: Path,
@@ -22,68 +16,101 @@ def process_render(
     **kwargs
 ) -> bool:
     """
-    Process render for GNN files.
+    Process render step - generate simulation code from GNN files.
     
     Args:
-        target_dir: Directory containing GNN files to process
-        output_dir: Directory to save results
+        target_dir: Directory containing GNN files
+        output_dir: Output directory for rendered code
         verbose: Enable verbose output
         **kwargs: Additional arguments
         
     Returns:
-        True if processing successful, False otherwise
+        True if successful, False otherwise
     """
-    logger = logging.getLogger("render")
+    import logging
+    
+    logger = logging.getLogger(__name__)
     
     try:
-        log_step_start(logger, "Processing render")
+        from .render import render_gnn_files
         
-        # Create results directory
-        results_dir = output_dir / "render_results"
-        results_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Basic render processing
-        results = {
-            "processed_files": 0,
-            "success": True,
-            "errors": []
-        }
-        
-        # Find GNN files
-        gnn_files = list(target_dir.glob("*.md"))
-        if gnn_files:
-            results["processed_files"] = len(gnn_files)
-        
-        # Save results
-        import json
-        results_file = results_dir / "render_results.json"
-        with open(results_file, 'w') as f:
-            json.dump(results, f, indent=2)
-        
-        if results["success"]:
-            log_step_success(logger, "render processing completed successfully")
-        else:
-            log_step_error(logger, "render processing failed")
-        
-        return results["success"]
+        return render_gnn_files(
+            target_dir=target_dir,
+            output_dir=output_dir,
+            logger=logger,
+            verbose=verbose,
+            **kwargs
+        )
         
     except Exception as e:
-        log_step_error(logger, "render processing failed", {"error": str(e)})
+        logger.error(f"Render processing failed: {e}")
         return False
 
-# Module metadata
-__version__ = "1.0.0"
-__author__ = "Active Inference Institute"
-__description__ = "render processing for GNN Processing Pipeline"
-
-# Feature availability flags
-FEATURES = {
-    'basic_processing': True,
-    'fallback_mode': True
-}
+def render_gnn_spec(
+    gnn_spec: Dict[str, Any],
+    target: str,
+    output_directory: Union[str, Path],
+    options: Optional[Dict[str, Any]] = None
+) -> Tuple[bool, str, List[str]]:
+    """
+    Render GNN specification to target format.
+    
+    Args:
+        gnn_spec: Parsed GNN specification
+        target: Target format ('pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy')
+        output_directory: Output directory
+        options: Optional rendering options
+        
+    Returns:
+        Tuple of (success, message, warnings)
+    """
+    output_dir = Path(output_directory)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    if target == 'pymdp':
+        from .pymdp.pymdp_renderer import render_gnn_to_pymdp
+        
+        model_name = gnn_spec.get('model_name', 'GNN_Model')
+        output_file = output_dir / f"{model_name}_pymdp_simulation.py"
+        
+        return render_gnn_to_pymdp(gnn_spec, output_file, options)
+        
+    elif target == 'rxinfer':
+        from .rxinfer.toml_generator import render_gnn_to_rxinfer_toml
+        
+        model_name = gnn_spec.get('model_name', 'GNN_Model')
+        output_file = output_dir / f"{model_name}_rxinfer.jl"
+        
+        return render_gnn_to_rxinfer_toml(gnn_spec, output_file, options)
+        
+    elif target == 'activeinference_jl':
+        from .activeinference_jl.activeinference_renderer import render_gnn_to_activeinference_jl
+        
+        model_name = gnn_spec.get('model_name', 'GNN_Model')
+        output_file = output_dir / f"{model_name}_activeinference.jl"
+        
+        return render_gnn_to_activeinference_jl(gnn_spec, output_file, options)
+        
+    elif target == 'jax':
+        from .jax.jax_renderer import render_gnn_to_jax
+        
+        model_name = gnn_spec.get('model_name', 'GNN_Model')
+        output_file = output_dir / f"{model_name}_jax.py"
+        
+        return render_gnn_to_jax(gnn_spec, output_file, options)
+        
+    elif target == 'discopy':
+        from .discopy.discopy_renderer import render_gnn_to_discopy
+        
+        model_name = gnn_spec.get('model_name', 'GNN_Model')
+        output_file = output_dir / f"{model_name}_discopy.py"
+        
+        return render_gnn_to_discopy(gnn_spec, output_file, options)
+        
+    else:
+        return False, f"Unsupported target: {target}", []
 
 __all__ = [
     'process_render',
-    'FEATURES',
-    '__version__'
+    'render_gnn_spec'
 ]

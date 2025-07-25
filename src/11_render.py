@@ -24,69 +24,133 @@ from utils.argument_utils import EnhancedArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def generate_pymdp_code(model_data: Dict) -> str:
-    """Generate PyMDP simulation code."""
-    # Calculate dimensions
-    state_vars = [var for var in model_data.get('variables', []) if 'state' in var.get('type', '')]
-    obs_vars = [var for var in model_data.get('variables', []) if 'observation' in var.get('type', '')]
-    action_vars = [var for var in model_data.get('variables', []) if 'action' in var.get('type', '')]
+    """Generate PyMDP simulation code using the pipeline's PyMDP renderer."""
+    try:
+        from render import render_gnn_spec
+        
+        # Use the pipeline's PyMDP renderer to generate proper simulation code
+        success, message, warnings = render_gnn_spec(
+            gnn_spec=model_data,
+            target='pymdp',
+            output_directory='temp_render',
+            options={'embedded_mode': True}
+        )
+        
+        if success:
+            # Read the generated code
+            from pathlib import Path
+            model_name = model_data.get('model_name', 'GNN_Model')
+            temp_file = Path('temp_render') / f"{model_name}_pymdp_simulation.py"
+            
+            if temp_file.exists():
+                with open(temp_file, 'r') as f:
+                    code = f.read()
+                # Clean up temp file
+                temp_file.unlink()
+                temp_file.parent.rmdir()
+                return code
+            
+    except Exception as e:
+        logging.warning(f"Failed to use pipeline PyMDP renderer: {e}, falling back to simple generation")
     
-    num_states = max([max(var.get('dimensions', [1])) for var in state_vars]) if state_vars else 3
-    num_obs = max([max(var.get('dimensions', [1])) for var in obs_vars]) if obs_vars else 3
-    num_controls = max([max(var.get('dimensions', [1])) for var in action_vars]) if action_vars else 3
+    # Fallback to simple code generation
+    model_name = model_data.get('model_name', 'Unknown')
+    num_states = model_data.get('model_parameters', {}).get('num_hidden_states', 3)
+    num_obs = model_data.get('model_parameters', {}).get('num_obs', 3) 
+    num_actions = model_data.get('model_parameters', {}).get('num_actions', 3)
     
     code = f"""#!/usr/bin/env python3
 # PyMDP Active Inference Simulation
-# Generated from GNN Model: {model_data.get('model_name', 'Unknown')}
+# Generated from GNN Model: {model_name}
 # Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+# 
+# This is a simplified fallback implementation.
+# For full pipeline integration, use the execute/pymdp module.
 
-import numpy as np
-from pymdp import utils
-from pymdp.agent import Agent
-from pymdp.envs import Env
+import sys
+from pathlib import Path
 
-# Model parameters
-num_states = {num_states}
-num_obs = {num_obs}
-num_controls = {num_controls}
+# Add src to path for pipeline integration
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Initialize likelihood matrix (A matrix)
-A = np.eye(num_obs, num_states)  # Identity mapping for now
-
-# Initialize transition matrix (B matrix) 
-B = np.zeros((num_states, num_states, num_controls))
-for i in range(num_controls):
-    B[:, :, i] = np.eye(num_states)  # Identity transitions for now
-
-# Initialize preference vector (C vector)
-C = np.zeros(num_obs)
-
-# Initialize prior over states (D vector)
-D = np.ones(num_states) / num_states  # Uniform prior
-
-# Create agent
-agent = Agent(A=A, B=B, C=C, D=D)
-
-# Create environment (simple identity mapping)
-env = Env(A=A, B=B)
-
-# Simulation parameters
-T = 10  # Number of time steps
-
-# Run simulation
-for t in range(T):
-    # Get observation from environment
-    obs = env.step()
+try:
+    from src.execute.pymdp import execute_pymdp_simulation
     
-    # Agent inference and action selection
-    qs = agent.infer_states(obs)
-    q_pi, _ = agent.infer_policies()
-    action = agent.sample_action()
-    
-    print(f"Step {{t}}: Observation={{obs}}, Action={{action}}")
-    print(f"  State beliefs: {{qs}}")
-    print(f"  Policy beliefs: {{q_pi}}")
+    def main():
+        \"\"\"Run PyMDP simulation using pipeline integration.\"\"\"
+        
+        # GNN specification (embedded)
+        gnn_spec = {model_data}
+        
+        # Output directory
+        output_dir = Path("output") / "pymdp_simulations" / "{model_name}"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Run simulation using pipeline
+        success, results = execute_pymdp_simulation(
+            gnn_spec=gnn_spec,
+            output_dir=output_dir
+        )
+        
+        if success:
+            print(f"✓ Simulation completed successfully!")
+            print(f"Output: {{results.get('output_directory')}}")
+        else:
+            print(f"✗ Simulation failed: {{results.get('error')}}")
+        
+        return 0 if success else 1
 
-print("Simulation completed!")
+except ImportError:
+    # Fallback for basic PyMDP usage
+    import numpy as np
+    
+    def main():
+        \"\"\"Fallback PyMDP simulation.\"\"\"
+        try:
+            from pymdp import utils
+            from pymdp.agent import Agent
+            
+            print("Running basic PyMDP simulation...")
+            
+            # Model parameters from GNN
+            num_states = {num_states}
+            num_obs = {num_obs}
+            num_actions = {num_actions}
+            
+            # Create simple POMDP matrices
+            A = utils.obj_array(1)
+            A[0] = np.eye(num_obs, num_states)
+            A[0] = utils.norm_dist(A[0])
+            
+            B = utils.obj_array(1) 
+            B[0] = np.random.uniform(0.1, 1.0, (num_states, num_states, num_actions))
+            B[0] = utils.norm_dist(B[0])
+            
+            C = utils.obj_array(1)
+            C[0] = np.random.uniform(-1, 1, num_obs)
+            
+            D = utils.obj_array(1)
+            D[0] = np.ones(num_states) / num_states
+            
+            # Create agent
+            agent = Agent(A=A, B=B, C=C, D=D)
+            
+            # Simple simulation
+            for t in range(10):
+                obs = np.random.choice(num_obs)
+                qs = agent.infer_states([obs])
+                action = agent.sample_action()
+                print(f"Step {{t}}: obs={{obs}}, action={{action[0]}}")
+            
+            print("Basic simulation completed!")
+            return 0
+            
+        except ImportError:
+            print("PyMDP not available. Please install: pip install inferactively-pymdp")
+            return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
 """
     return code
 
