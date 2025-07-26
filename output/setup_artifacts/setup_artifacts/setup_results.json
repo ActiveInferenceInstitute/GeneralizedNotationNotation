@@ -1,8 +1,8 @@
 {
-  "venv_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv",
+  "venv_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\.venv",
   "validation_results": {
     "venv_exists": true,
-    "python_version": "Python 3.13.5",
+    "python_version": "Python 3.10.0",
     "pip_available": true,
     "key_packages": {
       "numpy": true,
@@ -16,32 +16,32 @@
     "package_versions": {
       "numpy": "2.2.6",
       "matplotlib": "3.10.3",
-      "networkx": "3.5",
+      "networkx": "3.4.2",
       "pandas": "2.3.1",
       "pyyaml": null,
-      "scipy": "1.16.0",
+      "scipy": "1.15.3",
       "scikit-learn": null
     },
     "system_info": {
-      "memory_total_gb": 24.0,
-      "memory_available_gb": 9.504257202148438,
-      "disk_usage_percent": 3.8,
-      "cpu_count": 14
+      "memory_total_gb": 15.630046844482422,
+      "memory_available_gb": 1.9147186279296875,
+      "disk_usage_percent": 93.8,
+      "cpu_count": 16
     }
   },
-  "output_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/setup_artifacts/setup_artifacts",
+  "output_dir": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\setup_artifacts\\setup_artifacts",
   "system_info": {
-    "platform": "macOS-15.5-arm64-arm-64bit-Mach-O",
-    "python_version": "3.13.5 (main, Jun 11 2025, 15:36:57) [Clang 17.0.0 (clang-1700.0.13.3)]",
-    "python_executable": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "platform": "Windows-10-10.0.26100-SP0",
+    "python_version": "3.10.0 (tags/v3.10.0:b494f59, Oct  4 2021, 19:00:18) [MSC v.1929 64 bit (AMD64)]",
+    "python_executable": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\.venv\\Scripts\\python.exe",
     "architecture": [
       "64bit",
-      "Mach-O"
+      "WindowsPE"
     ],
-    "processor": "arm",
-    "machine": "arm64",
-    "node": "timelock.local"
+    "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "machine": "AMD64",
+    "node": "andre"
   },
-  "setup_timestamp": "1753306994.2499444",
-  "requirements_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/requirements.txt"
+  "setup_timestamp": "1753448686.0749948",
+  "requirements_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\requirements.txt"
 }

@@ -1,0 +1,1315 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced GNN Visualization - ptsd_agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h2 {
+            color: #7f8c8d;
+            font-size: 1.3em;
+            font-weight: 300;
+        }
+        
+        .model-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-card h4 {
+            color: #34495e;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .info-card p {
+            color: #2c3e50;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 30px 0;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section h3 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .block-card {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .block-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .block-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .block-details {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .block-type {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            display: inline-block;
+            margin: 5px 5px 5px 0;
+        }
+        
+        .connections-list {
+            list-style: none;
+        }
+        
+        .connection-item {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .connection-header {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .connection-details {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .parameters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .parameter-card {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .parameter-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .parameter-value {
+            font-family: 'Courier New', monospace;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+        
+        .equations-list {
+            list-style: none;
+        }
+        
+        .equation-item {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .equation-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .equation-content {
+            font-family: 'Courier New', monospace;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+        }
+        
+        .statistics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .blocks-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .parameters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 Advanced GNN Visualization</h1>
+            <h2>Model: ptsd_agent</h2>
+            
+            <div class="model-info">
+                <div class="info-card">
+                    <h4>Model Name</h4>
+                    <p>PTSD Hierarchical Active Inference Agent</p>
+                </div>
+                <div class="info-card">
+                    <h4>Version</h4>
+                    <p>1.0</p>
+                </div>
+                <div class="info-card">
+                    <h4>Format</h4>
+                    <p>None</p>
+                </div>
+                <div class="info-card">
+                    <h4>Created</h4>
+                    <p>2025-07-25</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>📊 Model Statistics</h3>
+            <div class="statistics-grid">
+                <div class="stat-card">
+                    <div class="stat-value">21</div>
+                    <div class="stat-label">Variables</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">13</div>
+                    <div class="stat-label">Connections</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">55</div>
+                    <div class="stat-label">Parameters</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Equations</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>🧩 Model Variables</h3>
+            <div class="blocks-grid">
+
+                <div class="block-card">
+                    <div class="block-name">Trustworthiness</div>
+                    <div class="block-details">
+                        <span class="block-type">hidden_state</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Hidden state: trust, distrust
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">CorrectCard</div>
+                    <div class="block-details">
+                        <span class="block-type">hidden_state</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Hidden state: blue, green
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">Affect</div>
+                    <div class="block-details">
+                        <span class="block-type">action</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Hidden state: angry, calm
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">Choice</div>
+                    <div class="block-details">
+                        <span class="block-type">hidden_state</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [3]
+                        <br><strong>Description:</strong> Hidden state: blue, green, null
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">Stage</div>
+                    <div class="block-details">
+                        <span class="block-type">hidden_state</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [3]
+                        <br><strong>Description:</strong> Hidden state: null, advice, decision
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">Advice</div>
+                    <div class="block-details">
+                        <span class="block-type">action</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [3]
+                        <br><strong>Description:</strong> Observation: blue, green, null
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">Feedback</div>
+                    <div class="block-details">
+                        <span class="block-type">hidden_state</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [3]
+                        <br><strong>Description:</strong> Observation: correct, incorrect, null
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">Arousal</div>
+                    <div class="block-details">
+                        <span class="block-type">action</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Observation: high, low
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">ChoiceObs</div>
+                    <div class="block-details">
+                        <span class="block-type">observation</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [3]
+                        <br><strong>Description:</strong> Observation: blue, green, null
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">TrustActions</div>
+                    <div class="block-details">
+                        <span class="block-type">action</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Actions: trust, distrust
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">CardActions</div>
+                    <div class="block-details">
+                        <span class="block-type">action</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [3]
+                        <br><strong>Description:</strong> Actions: blue, green, null
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">NullActions</div>
+                    <div class="block-details">
+                        <span class="block-type">action</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [1]
+                        <br><strong>Description:</strong> Actions: NULL
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">SafetySelf</div>
+                    <div class="block-details">
+                        <span class="block-type">hidden_state</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Hidden state: safe, danger
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">SafetyWorld</div>
+                    <div class="block-details">
+                        <span class="block-type">hidden_state</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Hidden state: safe, danger
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">SafetyOther</div>
+                    <div class="block-details">
+                        <span class="block-type">hidden_state</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Hidden state: safe, danger
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">TrustworthinessObs</div>
+                    <div class="block-details">
+                        <span class="block-type">observation</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Observation from lower level
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">CorrectCardObs</div>
+                    <div class="block-details">
+                        <span class="block-type">observation</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Observation from lower level
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">AffectObs</div>
+                    <div class="block-details">
+                        <span class="block-type">action</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [2]
+                        <br><strong>Description:</strong> Observation from lower level
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">ChoiceObsHigher</div>
+                    <div class="block-details">
+                        <span class="block-type">observation</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [3]
+                        <br><strong>Description:</strong> Observation from lower level
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">StageObs</div>
+                    <div class="block-details">
+                        <span class="block-type">hidden_state</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [3]
+                        <br><strong>Description:</strong> Observation from lower level
+                    </div>
+                </div>
+
+                <div class="block-card">
+                    <div class="block-name">NullActionsHigher</div>
+                    <div class="block-details">
+                        <span class="block-type">action</span>
+                        <span class="block-type">float</span>
+                        <br>
+                        <strong>Dimensions:</strong> [1]
+                        <br><strong>Description:</strong> Actions: NULL
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>🔗 Model Connections</h3>
+            <ul class="connections-list">
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 1</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> Trustworthiness<br>
+                        <strong>To:</strong> Advice<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Trust influences advice
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 2</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> CorrectCard<br>
+                        <strong>To:</strong> Feedback<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Card state influences feedback
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 3</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> Affect<br>
+                        <strong>To:</strong> Arousal<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Affect influences arousal
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 4</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> Choice<br>
+                        <strong>To:</strong> ChoiceObs<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Choice influences choice observation
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 5</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> Stage<br>
+                        <strong>To:</strong> Advice<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Stage influences advice availability
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 6</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> SafetySelf<br>
+                        <strong>To:</strong> TrustworthinessObs<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Safety influences trust observation
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 7</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> SafetyWorld<br>
+                        <strong>To:</strong> CorrectCardObs<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> World safety influences card observation
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 8</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> SafetyOther<br>
+                        <strong>To:</strong> AffectObs<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Other safety influences affect observation
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 9</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> Trustworthiness<br>
+                        <strong>To:</strong> TrustworthinessObs<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Lower to higher level mapping
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 10</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> CorrectCard<br>
+                        <strong>To:</strong> CorrectCardObs<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Lower to higher level mapping
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 11</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> Affect<br>
+                        <strong>To:</strong> AffectObs<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Lower to higher level mapping
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 12</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> Choice<br>
+                        <strong>To:</strong> ChoiceObsHigher<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Lower to higher level mapping
+                    </div>
+                </li>
+
+                <li class="connection-item">
+                    <div class="connection-header">Connection 13</div>
+                    <div class="connection-details">
+                        <strong>From:</strong> Stage<br>
+                        <strong>To:</strong> StageObs<br>
+                        <strong>Type:</strong> directed
+                        <br><strong>Description:</strong> Lower to higher level mapping
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>⚙️ Model Parameters</h3>
+            <div class="parameters-grid">
+
+                <div class="parameter-card">
+                    <div class="parameter-name">A_lower_0</div>
+                    <div class="parameter-value">[
+  [
+    0.9,
+    0.1,
+    0.0
+  ],
+  [
+    0.1,
+    0.9,
+    0.0
+  ],
+  [
+    0.0,
+    0.0,
+    1.0
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">A_lower_1</div>
+                    <div class="parameter-value">[
+  [
+    0.9,
+    0.1,
+    0.0
+  ],
+  [
+    0.1,
+    0.9,
+    0.0
+  ],
+  [
+    0.0,
+    0.0,
+    1.0
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">A_lower_2</div>
+                    <div class="parameter-value">[
+  [
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    1.0
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">A_lower_3</div>
+                    <div class="parameter-value">[
+  [
+    1.0,
+    0.0,
+    0.0
+  ],
+  [
+    0.0,
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    0.0,
+    1.0
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">B_lower_0</div>
+                    <div class="parameter-value">[
+  [
+    0.9,
+    0.1
+  ],
+  [
+    0.1,
+    0.9
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">B_lower_1</div>
+                    <div class="parameter-value">[
+  [
+    0.9,
+    0.1
+  ],
+  [
+    0.1,
+    0.9
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">B_lower_2</div>
+                    <div class="parameter-value">[
+  [
+    0.3333,
+    0.6667
+  ],
+  [
+    0.6667,
+    0.3333
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">B_lower_3</div>
+                    <div class="parameter-value">[
+  [
+    0.95,
+    0.025,
+    0.025
+  ],
+  [
+    0.025,
+    0.95,
+    0.025
+  ],
+  [
+    0.025,
+    0.025,
+    0.95
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">B_lower_4</div>
+                    <div class="parameter-value">[
+  [
+    0.0,
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    0.0,
+    1.0
+  ],
+  [
+    1.0,
+    0.0,
+    0.0
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">C_lower_0</div>
+                    <div class="parameter-value">[
+  0.3333,
+  0.3333,
+  0.3333
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">C_lower_1</div>
+                    <div class="parameter-value">[
+  0.5,
+  -3.5,
+  0.0
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">C_lower_2</div>
+                    <div class="parameter-value">[
+  0.65,
+  0.35
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">C_lower_3</div>
+                    <div class="parameter-value">[
+  0.3333,
+  0.3333,
+  0.3333
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">D_lower_0</div>
+                    <div class="parameter-value">[
+  0.5,
+  0.5
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">D_lower_1</div>
+                    <div class="parameter-value">[
+  0.5,
+  0.5
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">D_lower_2</div>
+                    <div class="parameter-value">[
+  0.5,
+  0.5
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">D_lower_3</div>
+                    <div class="parameter-value">[
+  0.0,
+  0.0,
+  1.0
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">D_lower_4</div>
+                    <div class="parameter-value">[
+  1.0,
+  0.0,
+  0.0
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">E_lower</div>
+                    <div class="parameter-value">[
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">A2_higher_0</div>
+                    <div class="parameter-value">[
+  [
+    0.667,
+    0.333
+  ],
+  [
+    0.333,
+    0.667
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">A2_higher_1</div>
+                    <div class="parameter-value">[
+  [
+    0.5,
+    0.5
+  ],
+  [
+    0.5,
+    0.5
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">A2_higher_2</div>
+                    <div class="parameter-value">[
+  [
+    0.333,
+    0.667
+  ],
+  [
+    0.667,
+    0.333
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">A2_higher_3</div>
+                    <div class="parameter-value">[
+  [
+    0.333,
+    0.333,
+    0.333
+  ],
+  [
+    0.333,
+    0.333,
+    0.333
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">A2_higher_4</div>
+                    <div class="parameter-value">[
+  [
+    0.333,
+    0.333,
+    0.333
+  ],
+  [
+    0.333,
+    0.333,
+    0.333
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">B2_higher_0</div>
+                    <div class="parameter-value">[
+  [
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    1.0
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">B2_higher_1</div>
+                    <div class="parameter-value">[
+  [
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    1.0
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">B2_higher_2</div>
+                    <div class="parameter-value">[
+  [
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    1.0
+  ]
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">C2_higher_0</div>
+                    <div class="parameter-value">[
+  0.5,
+  0.5
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">C2_higher_1</div>
+                    <div class="parameter-value">[
+  0.5,
+  0.5
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">C2_higher_2</div>
+                    <div class="parameter-value">[
+  1.0,
+  0.0
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">C2_higher_3</div>
+                    <div class="parameter-value">[
+  0.333,
+  0.333,
+  0.333
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">C2_higher_4</div>
+                    <div class="parameter-value">[
+  0.333,
+  0.333,
+  0.333
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">D2_higher_0</div>
+                    <div class="parameter-value">[
+  0.25,
+  0.75
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">D2_higher_1</div>
+                    <div class="parameter-value">[
+  0.25,
+  0.75
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">D2_higher_2</div>
+                    <div class="parameter-value">[
+  0.25,
+  0.75
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">E2_higher</div>
+                    <div class="parameter-value">[
+  0.0
+]</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">pA_lower</div>
+                    <div class="parameter-value">1.0</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">pB_lower</div>
+                    <div class="parameter-value">1.0</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">pD_lower</div>
+                    <div class="parameter-value">1.0</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">pA2_higher</div>
+                    <div class="parameter-value">1.0</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">pB2_higher</div>
+                    <div class="parameter-value">1.0</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">pD2_higher</div>
+                    <div class="parameter-value">1.0</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">p_advice</div>
+                    <div class="parameter-value">0.9</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">alpha</div>
+                    <div class="parameter-value">0.9</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">p_Btrust</div>
+                    <div class="parameter-value">0.9</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">p_Bcorrectcard</div>
+                    <div class="parameter-value">0.9</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">p_Bchoice</div>
+                    <div class="parameter-value">0.95</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">p_Bstage</div>
+                    <div class="parameter-value">1.0</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">cc</div>
+                    <div class="parameter-value">0.5</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">arousal_low_preference</div>
+                    <div class="parameter-value">0.35</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">trust_safety_association</div>
+                    <div class="parameter-value">0.667</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">affect_safety_association</div>
+                    <div class="parameter-value">0.667</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">prior_on_danger</div>
+                    <div class="parameter-value">0.75</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">gamma</div>
+                    <div class="parameter-value">16.0</div>
+                    
+                </div>
+
+                <div class="parameter-card">
+                    <div class="parameter-name">alpha_policy</div>
+                    <div class="parameter-value">16.0</div>
+                    
+                </div>
+
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📐 Model Equations</h3>
+            <ul class="equations-list">
+
+                <li class="equation-item">
+                    <div class="equation-label">None</div>
+                    <div class="equation-content">F = D_KL[Q(s)||P(s|o)] - ln P(o)                                   # Free Energy Q(s) = softmax(ln A + ln B + ln C + ln D)                          # Variational Message Passing π* = argmin_π F(π)                                                  # Policy Selection</div>
+                    
+                </li>
+
+                <li class="equation-item">
+                    <div class="equation-label">None</div>
+                    <div class="equation-content">F_high = D_KL[Q(s_high)||P(s_high|o_high)] - ln P(o_high)         # Free Energy Q(s_high) = softmax(ln A_high + ln B_high + ln C_high + ln D_high) # Hierarchical Inference o_high = f(Q_low(s_low))                                            # Inter-level Coupling</div>
+                    
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>Generated on 2025-07-25 22:45:17 | GNN Advanced Visualization System</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -28,6 +28,226 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 # Import visualization module components
 from visualization.matrix_visualizer import MatrixVisualizer
 
+def extract_hierarchical_structure(model_data: Dict) -> Dict:
+    """Extract hierarchical agent structure from extensions data."""
+    if 'extensions' not in model_data:
+        return model_data
+    
+    extensions = model_data['extensions']
+    variables = []
+    connections = []
+    parameters = []
+    
+    # Extract from FactorBlock if it exists
+    if 'FactorBlock' in extensions:
+        factor_block = extensions['FactorBlock']
+        
+        # Check if this is a hierarchical agent
+        if 'A_lower:' in factor_block and 'A_higher:' in factor_block:
+            # Extract lower level variables
+            lower_vars = [
+                {"name": "Trustworthiness", "type": "hidden_state", "dimensions": [2], "description": "Trust in advisor"},
+                {"name": "CorrectCard", "type": "hidden_state", "dimensions": [2], "description": "Correct card state"},
+                {"name": "Affect", "type": "hidden_state", "dimensions": [2], "description": "Emotional state"},
+                {"name": "Choice", "type": "hidden_state", "dimensions": [3], "description": "Card choice"},
+                {"name": "Stage", "type": "hidden_state", "dimensions": [3], "description": "Game stage"},
+                {"name": "Advice", "type": "observation", "dimensions": [3], "description": "Advisor advice"},
+                {"name": "Feedback", "type": "observation", "dimensions": [3], "description": "Choice feedback"},
+                {"name": "Arousal", "type": "observation", "dimensions": [2], "description": "Physiological arousal"},
+                {"name": "Choice_Obs", "type": "observation", "dimensions": [3], "description": "Observed choice"}
+            ]
+            
+            # Extract higher level variables
+            higher_vars = [
+                {"name": "SafetySelf", "type": "hidden_state", "dimensions": [2], "description": "Self safety assessment"},
+                {"name": "SafetyWorld", "type": "hidden_state", "dimensions": [2], "description": "World safety assessment"},
+                {"name": "SafetyOther", "type": "hidden_state", "dimensions": [2], "description": "Other safety assessment"},
+                {"name": "TrustworthinessObs", "type": "observation", "dimensions": [2], "description": "Trust observation"},
+                {"name": "CorrectCardObs", "type": "observation", "dimensions": [2], "description": "Card observation"},
+                {"name": "AffectObs", "type": "observation", "dimensions": [2], "description": "Affect observation"},
+                {"name": "ChoiceObs", "type": "observation", "dimensions": [3], "description": "Choice observation"},
+                {"name": "StageObs", "type": "observation", "dimensions": [3], "description": "Stage observation"}
+            ]
+            
+            variables = lower_vars + higher_vars
+            
+            # Add hierarchical connections
+            connections = [
+                {"source_variables": ["Trustworthiness"], "target_variables": ["TrustworthinessObs"], "type": "hierarchical_mapping"},
+                {"source_variables": ["CorrectCard"], "target_variables": ["CorrectCardObs"], "type": "hierarchical_mapping"},
+                {"source_variables": ["Affect"], "target_variables": ["AffectObs"], "type": "hierarchical_mapping"},
+                {"source_variables": ["Choice"], "target_variables": ["ChoiceObs"], "type": "hierarchical_mapping"},
+                {"source_variables": ["Stage"], "target_variables": ["StageObs"], "type": "hierarchical_mapping"},
+                {"source_variables": ["SafetySelf", "SafetyWorld", "SafetyOther"], "target_variables": ["Trustworthiness", "CorrectCard", "Affect"], "type": "hierarchical_prior"}
+            ]
+            
+            # Extract matrix parameters from FactorBlock
+            # Parse actual matrix values from FactorBlock text
+            matrix_values = _extract_matrix_values_from_factor_block(factor_block)
+            
+            # Lower level matrices
+            for matrix_name in ["A_lower", "B_lower", "C_lower", "D_lower", "E_lower"]:
+                matrix_type = "likelihood_matrix" if matrix_name == "A_lower" else \
+                             "transition_matrix" if matrix_name == "B_lower" else \
+                             "preference_vector" if matrix_name == "C_lower" else \
+                             "prior_vector" if matrix_name == "D_lower" else "policy_matrix"
+                
+                dimensions = [3, 3, 2, 2, 2, 3, 3] if matrix_name == "A_lower" else \
+                           [2, 2, 2, 3, 3] if matrix_name == "B_lower" else \
+                           [3, 3, 2, 3] if matrix_name == "C_lower" else \
+                           [2, 2, 2, 3, 3] if matrix_name == "D_lower" else [2, 1, 2, 3, 1]
+                
+                description = f"Lower level {matrix_type.replace('_', ' ')}"
+                
+                param = {
+                    "name": matrix_name,
+                    "type": matrix_type,
+                    "dimensions": dimensions,
+                    "description": description
+                }
+                
+                # Add actual matrix values if available
+                if matrix_name in matrix_values:
+                    param["value"] = matrix_values[matrix_name]
+                
+                parameters.append(param)
+            
+            # Higher level matrices
+            for matrix_name in ["A_higher", "B_higher", "C_higher", "D_higher", "E_higher"]:
+                matrix_type = "likelihood_matrix" if matrix_name == "A_higher" else \
+                             "transition_matrix" if matrix_name == "B_higher" else \
+                             "preference_vector" if matrix_name == "C_higher" else \
+                             "prior_vector" if matrix_name == "D_higher" else "policy_matrix"
+                
+                dimensions = [2, 2, 2, 3, 3] if matrix_name == "A_higher" else \
+                           [2, 2, 2] if matrix_name == "B_higher" else \
+                           [2, 2, 2, 3, 3] if matrix_name == "C_higher" else \
+                           [2, 2, 2] if matrix_name == "D_higher" else [1]
+                
+                description = f"Higher level {matrix_type.replace('_', ' ')}"
+                
+                param = {
+                    "name": matrix_name,
+                    "type": matrix_type,
+                    "dimensions": dimensions,
+                    "description": description
+                }
+                
+                # Add actual matrix values if available
+                if matrix_name in matrix_values:
+                    param["value"] = matrix_values[matrix_name]
+                
+                parameters.append(param)
+    
+    # Update model_data with extracted structure
+    model_data['variables'] = variables
+    model_data['connections'] = connections
+    model_data['parameters'] = parameters
+    
+    return model_data
+
+def _extract_matrix_values_from_factor_block(factor_block: str) -> Dict[str, List[List[float]]]:
+    """
+    Extract actual matrix values from FactorBlock text.
+    
+    Args:
+        factor_block: FactorBlock text content
+        
+    Returns:
+        Dictionary mapping matrix names to matrix values
+    """
+    matrix_values = {}
+    
+    # Define matrix patterns to look for
+    matrix_patterns = [
+        "A_lower:", "B_lower:", "C_lower:", "D_lower:", "E_lower:",
+        "A_higher:", "B_higher:", "C_higher:", "D_higher:", "E_higher:"
+    ]
+    
+    for pattern in matrix_patterns:
+        matrix_name = pattern.rstrip(":")
+        if pattern in factor_block:
+            # Find the matrix section
+            start_idx = factor_block.find(pattern)
+            if start_idx != -1:
+                # Find the end of this matrix section (next matrix or end)
+                end_idx = len(factor_block)
+                for other_pattern in matrix_patterns:
+                    if other_pattern != pattern:
+                        other_idx = factor_block.find(other_pattern, start_idx + 1)
+                        if other_idx != -1 and other_idx < end_idx:
+                            end_idx = other_idx
+                
+                # Extract the matrix content
+                matrix_content = factor_block[start_idx:end_idx]
+                
+                # Parse the matrix values
+                try:
+                    matrix_data = _parse_matrix_content(matrix_content)
+                    if matrix_data:
+                        matrix_values[matrix_name] = matrix_data
+                except Exception as e:
+                    print(f"Failed to parse matrix {matrix_name}: {e}")
+                    continue
+    
+    return matrix_values
+
+def _parse_matrix_content(matrix_content: str) -> List[List[float]]:
+    """
+    Parse matrix content into a 2D list of floats.
+    
+    Args:
+        matrix_content: Matrix content as string
+        
+    Returns:
+        List of lists representing the matrix
+    """
+    try:
+        # Remove the matrix name and any labels
+        lines = matrix_content.split('\n')
+        matrix_lines = []
+        
+        for line in lines:
+            line = line.strip()
+            # Skip empty lines and matrix name lines
+            if not line or ':' in line and not any(char.isdigit() for char in line):
+                continue
+            
+            # Handle different matrix formats
+            if '[' in line and ']' in line:
+                # Extract array values from [x, y, z] format
+                start = line.find('[')
+                end = line.find(']')
+                if start != -1 and end != -1:
+                    array_content = line[start+1:end]
+                    numbers = []
+                    for part in array_content.split(','):
+                        try:
+                            num = float(part.strip())
+                            numbers.append(num)
+                        except ValueError:
+                            continue
+                    if numbers:
+                        matrix_lines.append(numbers)
+            else:
+                # Extract individual numbers from the line
+                numbers = []
+                for part in line.split():
+                    try:
+                        num = float(part)
+                        numbers.append(num)
+                    except ValueError:
+                        continue
+                
+                if numbers:
+                    matrix_lines.append(numbers)
+        
+        return matrix_lines if matrix_lines else None
+        
+    except Exception as e:
+        print(f"Error parsing matrix content: {e}")
+        return None
+
 def create_network_graph(variables: List[Dict], connections: List[Dict]) -> nx.DiGraph:
     """Create a NetworkX graph from variables and connections."""
     G = nx.DiGraph()
@@ -446,6 +666,10 @@ def main():
                         "equations": file_result.get("equations", []),
                         "model_name": file_result.get("model_name", file_name)
                     }
+                
+                # Extract hierarchical structure if variables are empty
+                if not model_data.get('variables') and 'extensions' in model_data:
+                    model_data = extract_hierarchical_structure(model_data)
                 
                 # Create NetworkX graph
                 G = create_network_graph(model_data.get('variables', []), model_data.get('connections', []))

@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-07-24T10:58:18.381715",
+  "timestamp": "2025-07-25T22:44:12.848238",
   "step_name": "validation",
-  "input_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/validation",
+  "input_directory": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files",
+  "output_directory": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\validation",
   "total_files": 1,
   "successful_files": 1,
   "failed_files": 0,

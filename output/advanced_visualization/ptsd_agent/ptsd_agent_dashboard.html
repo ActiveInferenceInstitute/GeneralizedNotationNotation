@@ -1,0 +1,1311 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GNN Dashboard - ptsd_agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header h2 {
+            color: #7f8c8d;
+            font-size: 1.3em;
+            font-weight: 300;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .model-variables {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .variable-item {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .variable-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .variable-details {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .connection-item {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            color: white;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        
+        .parameter-item {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .parameter-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .parameter-value {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px;
+            border-radius: 5px;
+            word-break: break-all;
+        }
+        
+        .equation-item {
+            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+            color: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .equation-label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .equation-content {
+            font-family: 'Courier New', monospace;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+        }
+        
+        .model-info {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .info-item {
+            margin: 8px 0;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            border-bottom-color: #3498db;
+            background: rgba(52, 152, 219, 0.1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>📊 GNN Model Dashboard</h1>
+            <h2>ptsd_agent</h2>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="main-content">
+                <div class="card">
+                    <h3>📈 Model Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">21</div>
+                            <div class="stat-label">Variables</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">13</div>
+                            <div class="stat-label">Connections</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">55</div>
+                            <div class="stat-label">Parameters</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">2</div>
+                            <div class="stat-label">Equations</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>🧩 Model Components</h3>
+                    <div class="tabs">
+                        <div class="tab active" onclick="showTab('variables')">Variables</div>
+                        <div class="tab" onclick="showTab('connections')">Connections</div>
+                        <div class="tab" onclick="showTab('parameters')">Parameters</div>
+                        <div class="tab" onclick="showTab('equations')">Equations</div>
+                    </div>
+                    
+                    <div id="variables" class="tab-content active">
+                        <div class="model-variables">
+
+                            <div class="variable-item">
+                                <div class="variable-name">Trustworthiness</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> hidden_state<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Hidden state: trust, distrust
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">CorrectCard</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> hidden_state<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Hidden state: blue, green
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">Affect</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> action<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Hidden state: angry, calm
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">Choice</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> hidden_state<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [3]
+                                    <br><strong>Description:</strong> Hidden state: blue, green, null
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">Stage</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> hidden_state<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [3]
+                                    <br><strong>Description:</strong> Hidden state: null, advice, decision
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">Advice</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> action<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [3]
+                                    <br><strong>Description:</strong> Observation: blue, green, null
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">Feedback</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> hidden_state<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [3]
+                                    <br><strong>Description:</strong> Observation: correct, incorrect, null
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">Arousal</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> action<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Observation: high, low
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">ChoiceObs</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> observation<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [3]
+                                    <br><strong>Description:</strong> Observation: blue, green, null
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">TrustActions</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> action<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Actions: trust, distrust
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">CardActions</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> action<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [3]
+                                    <br><strong>Description:</strong> Actions: blue, green, null
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">NullActions</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> action<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [1]
+                                    <br><strong>Description:</strong> Actions: NULL
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">SafetySelf</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> hidden_state<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Hidden state: safe, danger
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">SafetyWorld</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> hidden_state<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Hidden state: safe, danger
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">SafetyOther</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> hidden_state<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Hidden state: safe, danger
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">TrustworthinessObs</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> observation<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Observation from lower level
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">CorrectCardObs</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> observation<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Observation from lower level
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">AffectObs</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> action<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [2]
+                                    <br><strong>Description:</strong> Observation from lower level
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">ChoiceObsHigher</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> observation<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [3]
+                                    <br><strong>Description:</strong> Observation from lower level
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">StageObs</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> hidden_state<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [3]
+                                    <br><strong>Description:</strong> Observation from lower level
+                                </div>
+                            </div>
+
+                            <div class="variable-item">
+                                <div class="variable-name">NullActionsHigher</div>
+                                <div class="variable-details">
+                                    <strong>Type:</strong> action<br>
+                                    <strong>Data Type:</strong> float<br>
+                                    <strong>Dimensions:</strong> [1]
+                                    <br><strong>Description:</strong> Actions: NULL
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div id="connections" class="tab-content">
+
+                        <div class="connection-item">
+                            <strong>From:</strong> Trustworthiness → 
+                            <strong>To:</strong> Advice<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Trust influences advice
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> CorrectCard → 
+                            <strong>To:</strong> Feedback<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Card state influences feedback
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> Affect → 
+                            <strong>To:</strong> Arousal<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Affect influences arousal
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> Choice → 
+                            <strong>To:</strong> ChoiceObs<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Choice influences choice observation
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> Stage → 
+                            <strong>To:</strong> Advice<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Stage influences advice availability
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> SafetySelf → 
+                            <strong>To:</strong> TrustworthinessObs<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Safety influences trust observation
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> SafetyWorld → 
+                            <strong>To:</strong> CorrectCardObs<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> World safety influences card observation
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> SafetyOther → 
+                            <strong>To:</strong> AffectObs<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Other safety influences affect observation
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> Trustworthiness → 
+                            <strong>To:</strong> TrustworthinessObs<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Lower to higher level mapping
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> CorrectCard → 
+                            <strong>To:</strong> CorrectCardObs<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Lower to higher level mapping
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> Affect → 
+                            <strong>To:</strong> AffectObs<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Lower to higher level mapping
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> Choice → 
+                            <strong>To:</strong> ChoiceObsHigher<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Lower to higher level mapping
+                        </div>
+
+                        <div class="connection-item">
+                            <strong>From:</strong> Stage → 
+                            <strong>To:</strong> StageObs<br>
+                            <strong>Type:</strong> directed
+                            <br><strong>Description:</strong> Lower to higher level mapping
+                        </div>
+
+                    </div>
+                    
+                    <div id="parameters" class="tab-content">
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">A_lower_0</div>
+                            <div class="parameter-value">[
+  [
+    0.9,
+    0.1,
+    0.0
+  ],
+  [
+    0.1,
+    0.9,
+    0.0
+  ],
+  [
+    0.0,
+    0.0,
+    1.0
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">A_lower_1</div>
+                            <div class="parameter-value">[
+  [
+    0.9,
+    0.1,
+    0.0
+  ],
+  [
+    0.1,
+    0.9,
+    0.0
+  ],
+  [
+    0.0,
+    0.0,
+    1.0
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">A_lower_2</div>
+                            <div class="parameter-value">[
+  [
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    1.0
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">A_lower_3</div>
+                            <div class="parameter-value">[
+  [
+    1.0,
+    0.0,
+    0.0
+  ],
+  [
+    0.0,
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    0.0,
+    1.0
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">B_lower_0</div>
+                            <div class="parameter-value">[
+  [
+    0.9,
+    0.1
+  ],
+  [
+    0.1,
+    0.9
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">B_lower_1</div>
+                            <div class="parameter-value">[
+  [
+    0.9,
+    0.1
+  ],
+  [
+    0.1,
+    0.9
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">B_lower_2</div>
+                            <div class="parameter-value">[
+  [
+    0.3333,
+    0.6667
+  ],
+  [
+    0.6667,
+    0.3333
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">B_lower_3</div>
+                            <div class="parameter-value">[
+  [
+    0.95,
+    0.025,
+    0.025
+  ],
+  [
+    0.025,
+    0.95,
+    0.025
+  ],
+  [
+    0.025,
+    0.025,
+    0.95
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">B_lower_4</div>
+                            <div class="parameter-value">[
+  [
+    0.0,
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    0.0,
+    1.0
+  ],
+  [
+    1.0,
+    0.0,
+    0.0
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">C_lower_0</div>
+                            <div class="parameter-value">[
+  0.3333,
+  0.3333,
+  0.3333
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">C_lower_1</div>
+                            <div class="parameter-value">[
+  0.5,
+  -3.5,
+  0.0
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">C_lower_2</div>
+                            <div class="parameter-value">[
+  0.65,
+  0.35
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">C_lower_3</div>
+                            <div class="parameter-value">[
+  0.3333,
+  0.3333,
+  0.3333
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">D_lower_0</div>
+                            <div class="parameter-value">[
+  0.5,
+  0.5
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">D_lower_1</div>
+                            <div class="parameter-value">[
+  0.5,
+  0.5
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">D_lower_2</div>
+                            <div class="parameter-value">[
+  0.5,
+  0.5
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">D_lower_3</div>
+                            <div class="parameter-value">[
+  0.0,
+  0.0,
+  1.0
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">D_lower_4</div>
+                            <div class="parameter-value">[
+  1.0,
+  0.0,
+  0.0
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">E_lower</div>
+                            <div class="parameter-value">[
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">A2_higher_0</div>
+                            <div class="parameter-value">[
+  [
+    0.667,
+    0.333
+  ],
+  [
+    0.333,
+    0.667
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">A2_higher_1</div>
+                            <div class="parameter-value">[
+  [
+    0.5,
+    0.5
+  ],
+  [
+    0.5,
+    0.5
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">A2_higher_2</div>
+                            <div class="parameter-value">[
+  [
+    0.333,
+    0.667
+  ],
+  [
+    0.667,
+    0.333
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">A2_higher_3</div>
+                            <div class="parameter-value">[
+  [
+    0.333,
+    0.333,
+    0.333
+  ],
+  [
+    0.333,
+    0.333,
+    0.333
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">A2_higher_4</div>
+                            <div class="parameter-value">[
+  [
+    0.333,
+    0.333,
+    0.333
+  ],
+  [
+    0.333,
+    0.333,
+    0.333
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">B2_higher_0</div>
+                            <div class="parameter-value">[
+  [
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    1.0
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">B2_higher_1</div>
+                            <div class="parameter-value">[
+  [
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    1.0
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">B2_higher_2</div>
+                            <div class="parameter-value">[
+  [
+    1.0,
+    0.0
+  ],
+  [
+    0.0,
+    1.0
+  ]
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">C2_higher_0</div>
+                            <div class="parameter-value">[
+  0.5,
+  0.5
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">C2_higher_1</div>
+                            <div class="parameter-value">[
+  0.5,
+  0.5
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">C2_higher_2</div>
+                            <div class="parameter-value">[
+  1.0,
+  0.0
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">C2_higher_3</div>
+                            <div class="parameter-value">[
+  0.333,
+  0.333,
+  0.333
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">C2_higher_4</div>
+                            <div class="parameter-value">[
+  0.333,
+  0.333,
+  0.333
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">D2_higher_0</div>
+                            <div class="parameter-value">[
+  0.25,
+  0.75
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">D2_higher_1</div>
+                            <div class="parameter-value">[
+  0.25,
+  0.75
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">D2_higher_2</div>
+                            <div class="parameter-value">[
+  0.25,
+  0.75
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">E2_higher</div>
+                            <div class="parameter-value">[
+  0.0
+]</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">pA_lower</div>
+                            <div class="parameter-value">1.0</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">pB_lower</div>
+                            <div class="parameter-value">1.0</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">pD_lower</div>
+                            <div class="parameter-value">1.0</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">pA2_higher</div>
+                            <div class="parameter-value">1.0</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">pB2_higher</div>
+                            <div class="parameter-value">1.0</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">pD2_higher</div>
+                            <div class="parameter-value">1.0</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">p_advice</div>
+                            <div class="parameter-value">0.9</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">alpha</div>
+                            <div class="parameter-value">0.9</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">p_Btrust</div>
+                            <div class="parameter-value">0.9</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">p_Bcorrectcard</div>
+                            <div class="parameter-value">0.9</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">p_Bchoice</div>
+                            <div class="parameter-value">0.95</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">p_Bstage</div>
+                            <div class="parameter-value">1.0</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">cc</div>
+                            <div class="parameter-value">0.5</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">arousal_low_preference</div>
+                            <div class="parameter-value">0.35</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">trust_safety_association</div>
+                            <div class="parameter-value">0.667</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">affect_safety_association</div>
+                            <div class="parameter-value">0.667</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">prior_on_danger</div>
+                            <div class="parameter-value">0.75</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">gamma</div>
+                            <div class="parameter-value">16.0</div>
+                            
+                        </div>
+
+                        <div class="parameter-item">
+                            <div class="parameter-name">alpha_policy</div>
+                            <div class="parameter-value">16.0</div>
+                            
+                        </div>
+
+                    </div>
+                    
+                    <div id="equations" class="tab-content">
+
+                        <div class="equation-item">
+                            <div class="equation-label">None</div>
+                            <div class="equation-content">F = D_KL[Q(s)||P(s|o)] - ln P(o)                                   # Free Energy Q(s) = softmax(ln A + ln B + ln C + ln D)                          # Variational Message Passing π* = argmin_π F(π)                                                  # Policy Selection</div>
+                            
+                        </div>
+
+                        <div class="equation-item">
+                            <div class="equation-label">None</div>
+                            <div class="equation-content">F_high = D_KL[Q(s_high)||P(s_high|o_high)] - ln P(o_high)         # Free Energy Q(s_high) = softmax(ln A_high + ln B_high + ln C_high + ln D_high) # Hierarchical Inference o_high = f(Q_low(s_low))                                            # Inter-level Coupling</div>
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="card">
+                    <h3>ℹ️ Model Information</h3>
+                    <div class="model-info">
+
+                        <div class="info-item">
+                            <span class="info-label">Name:</span>
+                            <span>PTSD Hierarchical Active Inference Agent</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Version:</span>
+                            <span>1.0</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Format:</span>
+                            <span>None</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Created:</span>
+                            <span>2025-07-25</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Modified:</span>
+                            <span>2025-07-25</span>
+                        </div>
+
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>📊 Type Distribution</h3>
+                    <div class="stats-grid">
+
+                        <div class="stat-item">
+                            <div class="stat-value">9</div>
+                            <div class="stat-label">Hidden State</div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-value">8</div>
+                            <div class="stat-label">Action</div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-value">4</div>
+                            <div class="stat-label">Observation</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | GNN Dashboard System</p>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabName) {{
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {{
+                content.classList.remove('active');
+            }});
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {{
+                tab.classList.remove('active');
+            }});
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }}
+        
+        // Add some interactivity
+        document.querySelectorAll('.variable-item').forEach(item => {{
+            item.addEventListener('click', function() {{
+                this.style.transform = 'scale(1.05)';
+                setTimeout(() => {{
+                    this.style.transform = 'scale(1)';
+                }}, 200);
+            }});
+        }});
+    </script>
+</body>
+</html>

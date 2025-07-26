@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # PyMDP Active Inference Simulation
-# Generated from GNN Model: Unknown
-# Generated: 2025-07-24 10:58:26
+# Generated from GNN Model: Classic Active Inference POMDP Agent v1
+# Generated: 2025-07-25 20:17:23
 
 import numpy as np
 from pymdp import utils

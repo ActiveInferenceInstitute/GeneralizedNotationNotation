@@ -174,7 +174,7 @@ def install_dependencies(venv_path: Path, requirements_file: Path, logger: loggi
             [str(pip_path), "install", "-r", str(requirements_file)],
             capture_output=True,
             text=True,
-            timeout=300
+            timeout=600
         )
         
         if result.returncode == 0:

@@ -1,541 +1,936 @@
 {
-  "timestamp": "2025-07-24T10:58:26.901286",
+  "timestamp": "2025-07-25T22:45:21.305062",
   "processed_files": 1,
   "success": true,
   "errors": [],
   "analysis_results": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
-      "file_name": "actinf_pomdp_agent.md",
-      "file_size": 4085,
-      "line_count": 127,
+      "file_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files\\ptsd_agent.md",
+      "file_name": "ptsd_agent.md",
+      "file_size": 12705,
+      "line_count": 204,
       "variables": [
         {
-          "name": "Example",
-          "definition": "Example: Active",
-          "line": 1
+          "name": "bidirectionally",
+          "definition": "bidirectionally: lower",
+          "line": 16
         },
         {
-          "name": "Version",
-          "definition": "Version: 1",
+          "name": "state",
+          "definition": "state: trust",
+          "line": 20
+        },
+        {
+          "name": "state",
+          "definition": "state: blue",
+          "line": 21
+        },
+        {
+          "name": "state",
+          "definition": "state: angry",
+          "line": 22
+        },
+        {
+          "name": "state",
+          "definition": "state: blue",
+          "line": 23
+        },
+        {
+          "name": "state",
+          "definition": "state: null",
+          "line": 24
+        },
+        {
+          "name": "Observation",
+          "definition": "Observation: blue",
+          "line": 27
+        },
+        {
+          "name": "Observation",
+          "definition": "Observation: correct",
+          "line": 28
+        },
+        {
+          "name": "Observation",
+          "definition": "Observation: high",
+          "line": 29
+        },
+        {
+          "name": "Observation",
+          "definition": "Observation: blue",
+          "line": 30
+        },
+        {
+          "name": "Actions",
+          "definition": "Actions: trust",
+          "line": 33
+        },
+        {
+          "name": "Actions",
+          "definition": "Actions: blue",
+          "line": 34
+        },
+        {
+          "name": "Actions",
+          "definition": "Actions: NULL",
+          "line": 35
+        },
+        {
+          "name": "state",
+          "definition": "state: safe",
+          "line": 38
+        },
+        {
+          "name": "state",
+          "definition": "state: safe",
+          "line": 39
+        },
+        {
+          "name": "state",
+          "definition": "state: safe",
+          "line": 40
+        },
+        {
+          "name": "Actions",
+          "definition": "Actions: NULL",
+          "line": 50
+        },
+        {
+          "name": "Trustworthiness",
+          "definition": "Trustworthiness:trust",
+          "line": 170
+        },
+        {
+          "name": "CorrectCard",
+          "definition": "CorrectCard:card_state",
+          "line": 171
+        },
+        {
+          "name": "Affect",
+          "definition": "Affect:emotional_state",
+          "line": 172
+        },
+        {
+          "name": "Choice",
+          "definition": "Choice:action_selection",
+          "line": 173
+        },
+        {
+          "name": "Stage",
+          "definition": "Stage:game_stage",
+          "line": 174
+        },
+        {
+          "name": "SafetySelf",
+          "definition": "SafetySelf:self_safety",
+          "line": 175
+        },
+        {
+          "name": "SafetyWorld",
+          "definition": "SafetyWorld:world_safety",
+          "line": 176
+        },
+        {
+          "name": "SafetyOther",
+          "definition": "SafetyOther:other_safety",
+          "line": 177
+        },
+        {
+          "name": "parameters",
+          "definition": "parameters:\n  p_advice",
+          "line": 180
+        },
+        {
+          "name": "alpha",
+          "definition": "alpha: 0",
+          "line": 182
+        },
+        {
+          "name": "p_Btrust",
+          "definition": "p_Btrust: 0",
+          "line": 183
+        },
+        {
+          "name": "p_Bcorrectcard",
+          "definition": "p_Bcorrectcard: 0",
+          "line": 184
+        },
+        {
+          "name": "p_Bchoice",
+          "definition": "p_Bchoice: 0",
+          "line": 185
+        },
+        {
+          "name": "p_Bstage",
+          "definition": "p_Bstage: 1",
+          "line": 186
+        },
+        {
+          "name": "cc",
+          "definition": "cc: 0",
+          "line": 187
+        },
+        {
+          "name": "arousal_low_preference",
+          "definition": "arousal_low_preference: 0",
+          "line": 188
+        },
+        {
+          "name": "trust_safety_association",
+          "definition": "trust_safety_association: 0",
+          "line": 189
+        },
+        {
+          "name": "affect_safety_association",
+          "definition": "affect_safety_association: 0",
+          "line": 190
+        },
+        {
+          "name": "prior_on_danger",
+          "definition": "prior_on_danger: 0",
+          "line": 191
+        },
+        {
+          "name": "gamma",
+          "definition": "gamma: 16",
+          "line": 192
+        },
+        {
+          "name": "alpha_policy",
+          "definition": "alpha_policy: 16",
+          "line": 193
+        },
+        {
+          "name": "signature",
+          "definition": "signature:\n  hash",
+          "line": 199
+        },
+        {
+          "name": "20T00",
+          "definition": "20T00:00",
+          "line": 201
+        },
+        {
+          "name": "flags",
+          "definition": "flags=latex_rendering,graphviz_compatible",
           "line": 2
         },
         {
-          "name": "matrix",
-          "definition": "matrix: A",
+          "name": "type",
+          "definition": "type=float]        # Hidden state: trust, distrust",
+          "line": 20
+        },
+        {
+          "name": "type",
+          "definition": "type=float]           # Hidden state: blue, green",
+          "line": 21
+        },
+        {
+          "name": "type",
+          "definition": "type=float]                # Hidden state: angry, calm",
+          "line": 22
+        },
+        {
+          "name": "type",
+          "definition": "type=float]                # Hidden state: blue, green, null",
           "line": 23
         },
         {
-          "name": "matrix",
-          "definition": "matrix: B",
-          "line": 26
+          "name": "type",
+          "definition": "type=float]                 # Hidden state: null, advice, decision",
+          "line": 24
         },
         {
-          "name": "vector",
-          "definition": "vector: C",
+          "name": "type",
+          "definition": "type=float]                # Observation: blue, green, null",
+          "line": 27
+        },
+        {
+          "name": "type",
+          "definition": "type=float]              # Observation: correct, incorrect, null",
+          "line": 28
+        },
+        {
+          "name": "type",
+          "definition": "type=float]               # Observation: high, low",
           "line": 29
         },
         {
-          "name": "vector",
-          "definition": "vector: D",
-          "line": 32
+          "name": "type",
+          "definition": "type=float]             # Observation: blue, green, null",
+          "line": 30
         },
         {
-          "name": "vector",
-          "definition": "vector: E",
+          "name": "type",
+          "definition": "type=float]          # Actions: trust, distrust",
+          "line": 33
+        },
+        {
+          "name": "type",
+          "definition": "type=float]           # Actions: blue, green, null",
+          "line": 34
+        },
+        {
+          "name": "type",
+          "definition": "type=float]           # Actions: NULL",
           "line": 35
         },
         {
-          "name": "A",
-          "definition": "A: 3",
-          "line": 67
+          "name": "type",
+          "definition": "type=float]            # Hidden state: safe, danger",
+          "line": 38
         },
         {
-          "name": "B",
-          "definition": "B: 3",
+          "name": "type",
+          "definition": "type=float]           # Hidden state: safe, danger",
+          "line": 39
+        },
+        {
+          "name": "type",
+          "definition": "type=float]           # Hidden state: safe, danger",
+          "line": 40
+        },
+        {
+          "name": "type",
+          "definition": "type=float]    # Observation from lower level",
+          "line": 43
+        },
+        {
+          "name": "type",
+          "definition": "type=float]        # Observation from lower level",
+          "line": 44
+        },
+        {
+          "name": "type",
+          "definition": "type=float]             # Observation from lower level",
+          "line": 45
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Observation from lower level",
+          "line": 46
+        },
+        {
+          "name": "type",
+          "definition": "type=float]              # Observation from lower level",
+          "line": 47
+        },
+        {
+          "name": "type",
+          "definition": "type=float]     # Actions: NULL",
+          "line": 50
+        },
+        {
+          "name": "A_lower_0",
+          "definition": "A_lower_0=[[0.9, 0.1, 0.0], [0.1, 0.9, 0.0], [0.0, 0.0, 1.0]]  # Advice modality",
           "line": 74
         },
         {
-          "name": "C",
-          "definition": "C: 3",
-          "line": 81
-        },
-        {
-          "name": "D",
-          "definition": "D: 3",
-          "line": 84
-        },
-        {
-          "name": "E",
-          "definition": "E: 3",
-          "line": 87
-        },
-        {
-          "name": "posterior",
-          "definition": "posterior: action",
-          "line": 94
-        },
-        {
-          "name": "num_hidden_states",
-          "definition": "num_hidden_states: 3",
-          "line": 118
-        },
-        {
-          "name": "num_obs",
-          "definition": "num_obs: 3",
-          "line": 119
-        },
-        {
-          "name": "num_actions",
-          "definition": "num_actions: 3",
-          "line": 120
-        },
-        {
-          "name": "type",
-          "definition": "type=float]   # Likelihood mapping hidden states to observations",
-          "line": 24
-        },
-        {
-          "name": "type",
-          "definition": "type=float]   # State transitions given previous state and action",
-          "line": 27
-        },
-        {
-          "name": "type",
-          "definition": "type=float]       # Log-preferences over observations",
-          "line": 30
-        },
-        {
-          "name": "type",
-          "definition": "type=float]       # Prior over initial hidden states",
-          "line": 33
-        },
-        {
-          "name": "type",
-          "definition": "type=float]       # Initial policy prior (habit) over actions",
-          "line": 36
-        },
-        {
-          "name": "type",
-          "definition": "type=float]     # Current hidden state distribution",
-          "line": 39
-        },
-        {
-          "name": "type",
-          "definition": "type=float] # Next hidden state distribution",
-          "line": 40
-        },
-        {
-          "name": "type",
-          "definition": "type=int]     # Current observation (integer index)",
-          "line": 43
-        },
-        {
-          "name": "type",
-          "definition": "type=float]       # Policy (distribution over actions), no planning",
-          "line": 46
-        },
-        {
-          "name": "type",
-          "definition": "type=int]         # Action taken",
-          "line": 47
-        },
-        {
-          "name": "type",
-          "definition": "type=float]       # Expected Free Energy (per policy)",
-          "line": 48
-        },
-        {
-          "name": "type",
-          "definition": "type=int]         # Discrete time step",
-          "line": 51
-        },
-        {
-          "name": "A",
-          "definition": "A={",
-          "line": 68
-        },
-        {
-          "name": "B",
-          "definition": "B={",
+          "name": "A_lower_1",
+          "definition": "A_lower_1=[[0.9, 0.1, 0.0], [0.1, 0.9, 0.0], [0.0, 0.0, 1.0]]  # Feedback modality  ",
           "line": 75
         },
         {
-          "name": "C",
-          "definition": "C={(0.1, 0.1, 1.0)}",
+          "name": "A_lower_2",
+          "definition": "A_lower_2=[[1.0, 0.0], [0.0, 1.0]]                               # Arousal modality",
+          "line": 76
+        },
+        {
+          "name": "A_lower_3",
+          "definition": "A_lower_3=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]  # Choice modality",
+          "line": 77
+        },
+        {
+          "name": "B_lower_0",
+          "definition": "B_lower_0=[[0.9, 0.1], [0.1, 0.9]]                               # Trustworthiness transitions",
+          "line": 80
+        },
+        {
+          "name": "B_lower_1",
+          "definition": "B_lower_1=[[0.9, 0.1], [0.1, 0.9]]                               # Correct card transitions",
+          "line": 81
+        },
+        {
+          "name": "B_lower_2",
+          "definition": "B_lower_2=[[0.3333, 0.6667], [0.6667, 0.3333]]                   # Affect transitions",
           "line": 82
         },
         {
-          "name": "D",
-          "definition": "D={(0.33333, 0.33333, 0.33333)}",
-          "line": 85
+          "name": "B_lower_3",
+          "definition": "B_lower_3=[[0.95, 0.025, 0.025], [0.025, 0.95, 0.025], [0.025, 0.025, 0.95]]  # Choice transitions",
+          "line": 83
         },
         {
-          "name": "E",
-          "definition": "E={(0.33333, 0.33333, 0.33333)}",
+          "name": "B_lower_4",
+          "definition": "B_lower_4=[[0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0]]  # Stage transitions",
+          "line": 84
+        },
+        {
+          "name": "C_lower_0",
+          "definition": "C_lower_0=[0.3333, 0.3333, 0.3333]                               # Advice preferences",
+          "line": 87
+        },
+        {
+          "name": "C_lower_1",
+          "definition": "C_lower_1=[0.5, -3.5, 0.0]                                        # Feedback preferences",
           "line": 88
         },
         {
-          "name": "Energy",
-          "definition": "Energy = with infer_policies()",
+          "name": "C_lower_2",
+          "definition": "C_lower_2=[0.65, 0.35]                                             # Arousal preferences",
+          "line": 89
+        },
+        {
+          "name": "C_lower_3",
+          "definition": "C_lower_3=[0.3333, 0.3333, 0.3333]                               # Choice preferences",
+          "line": 90
+        },
+        {
+          "name": "D_lower_0",
+          "definition": "D_lower_0=[0.5, 0.5]                                               # Trustworthiness priors",
           "line": 93
         },
         {
-          "name": "action",
-          "definition": "action = sample_action()",
+          "name": "D_lower_1",
+          "definition": "D_lower_1=[0.5, 0.5]                                               # Correct card priors",
           "line": 94
         },
         {
-          "name": "Time",
-          "definition": "Time=t",
+          "name": "D_lower_2",
+          "definition": "D_lower_2=[0.5, 0.5]                                               # Affect priors",
+          "line": 95
+        },
+        {
+          "name": "D_lower_3",
+          "definition": "D_lower_3=[0.0, 0.0, 1.0]                                         # Choice priors",
+          "line": 96
+        },
+        {
+          "name": "D_lower_4",
+          "definition": "D_lower_4=[1.0, 0.0, 0.0]                                         # Stage priors",
           "line": 97
         },
         {
-          "name": "ModelTimeHorizon",
-          "definition": "ModelTimeHorizon=Unbounded # The agent is defined for an unbounded time horizon",
+          "name": "E_lower",
+          "definition": "E_lower=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]                           # Policy priors",
           "line": 100
         },
         {
-          "name": "A",
-          "definition": "A=LikelihoodMatrix",
+          "name": "A2_higher_0",
+          "definition": "A2_higher_0=[[0.667, 0.333], [0.333, 0.667]]                      # Trustworthiness observation mapping",
           "line": 103
         },
         {
-          "name": "B",
-          "definition": "B=TransitionMatrix",
+          "name": "A2_higher_1",
+          "definition": "A2_higher_1=[[0.5, 0.5], [0.5, 0.5]]                              # Correct card observation mapping",
           "line": 104
         },
         {
-          "name": "C",
-          "definition": "C=LogPreferenceVector",
+          "name": "A2_higher_2",
+          "definition": "A2_higher_2=[[0.333, 0.667], [0.667, 0.333]]                      # Affect observation mapping",
           "line": 105
         },
         {
-          "name": "D",
-          "definition": "D=PriorOverHiddenStates",
+          "name": "A2_higher_3",
+          "definition": "A2_higher_3=[[0.333, 0.333, 0.333], [0.333, 0.333, 0.333]]       # Choice observation mapping",
           "line": 106
         },
         {
-          "name": "E",
-          "definition": "E=Habit",
+          "name": "A2_higher_4",
+          "definition": "A2_higher_4=[[0.333, 0.333, 0.333], [0.333, 0.333, 0.333]]       # Stage observation mapping",
           "line": 107
         },
         {
-          "name": "F",
-          "definition": "F=VariationalFreeEnergy",
-          "line": 108
-        },
-        {
-          "name": "G",
-          "definition": "G=ExpectedFreeEnergy",
-          "line": 109
-        },
-        {
-          "name": "s",
-          "definition": "s=HiddenState",
+          "name": "B2_higher_0",
+          "definition": "B2_higher_0=[[1.0, 0.0], [0.0, 1.0]]                              # Safety self transitions",
           "line": 110
         },
         {
-          "name": "s_prime",
-          "definition": "s_prime=NextHiddenState",
+          "name": "B2_higher_1",
+          "definition": "B2_higher_1=[[1.0, 0.0], [0.0, 1.0]]                              # Safety world transitions",
           "line": 111
         },
         {
-          "name": "o",
-          "definition": "o=Observation",
+          "name": "B2_higher_2",
+          "definition": "B2_higher_2=[[1.0, 0.0], [0.0, 1.0]]                              # Safety other transitions",
           "line": 112
         },
         {
-          "name": "\u03c0",
-          "definition": "\u03c0=PolicyVector # Distribution over actions",
-          "line": 113
-        },
-        {
-          "name": "u",
-          "definition": "u=Action       # Chosen action",
-          "line": 114
-        },
-        {
-          "name": "t",
-          "definition": "t=Time",
+          "name": "C2_higher_0",
+          "definition": "C2_higher_0=[0.5, 0.5]                                             # Trustworthiness preferences",
           "line": 115
         },
         {
-          "name": "actions_dim",
-          "definition": "actions_dim=3 (controlled by \u03c0)",
-          "line": 120
+          "name": "C2_higher_1",
+          "definition": "C2_higher_1=[0.5, 0.5]                                             # Correct card preferences",
+          "line": 116
         },
         {
-          "name": "A",
-          "definition": "A[observation_outcomes, hidden_states]",
-          "line": 23
+          "name": "C2_higher_2",
+          "definition": "C2_higher_2=[1.0, 0.0]                                             # Affect preferences",
+          "line": 117
         },
         {
-          "name": "A",
-          "definition": "A[3,3,type=float]",
-          "line": 24
-        },
-        {
-          "name": "B",
-          "definition": "B[states_next, states_previous, actions]",
-          "line": 26
-        },
-        {
-          "name": "B",
-          "definition": "B[3,3,3,type=float]",
-          "line": 27
-        },
-        {
-          "name": "C",
-          "definition": "C[observation_outcomes]",
-          "line": 29
-        },
-        {
-          "name": "C",
-          "definition": "C[3,type=float]",
-          "line": 30
-        },
-        {
-          "name": "D",
-          "definition": "D[states]",
-          "line": 32
-        },
-        {
-          "name": "D",
-          "definition": "D[3,type=float]",
-          "line": 33
-        },
-        {
-          "name": "E",
-          "definition": "E[actions]",
-          "line": 35
-        },
-        {
-          "name": "E",
-          "definition": "E[3,type=float]",
-          "line": 36
-        },
-        {
-          "name": "s",
-          "definition": "s[3,1,type=float]",
-          "line": 39
-        },
-        {
-          "name": "s_prime",
-          "definition": "s_prime[3,1,type=float]",
-          "line": 40
-        },
-        {
-          "name": "o",
-          "definition": "o[3,1,type=int]",
-          "line": 43
-        },
-        {
-          "name": "\u03c0",
-          "definition": "\u03c0[3,type=float]",
-          "line": 46
-        },
-        {
-          "name": "u",
-          "definition": "u[1,type=int]",
-          "line": 47
-        },
-        {
-          "name": "G",
-          "definition": "G[\u03c0,type=float]",
-          "line": 48
-        },
-        {
-          "name": "t",
-          "definition": "t[1,type=int]",
-          "line": 51
-        },
-        {
-          "name": "s",
-          "definition": "s[3]",
+          "name": "C2_higher_3",
+          "definition": "C2_higher_3=[0.333, 0.333, 0.333]                                 # Choice preferences",
           "line": 118
         },
         {
-          "name": "o",
-          "definition": "o[3]",
+          "name": "C2_higher_4",
+          "definition": "C2_higher_4=[0.333, 0.333, 0.333]                                 # Stage preferences",
           "line": 119
+        },
+        {
+          "name": "D2_higher_0",
+          "definition": "D2_higher_0=[0.25, 0.75]                                           # Safety self priors",
+          "line": 122
+        },
+        {
+          "name": "D2_higher_1",
+          "definition": "D2_higher_1=[0.25, 0.75]                                           # Safety world priors",
+          "line": 123
+        },
+        {
+          "name": "D2_higher_2",
+          "definition": "D2_higher_2=[0.25, 0.75]                                           # Safety other priors",
+          "line": 124
+        },
+        {
+          "name": "E2_higher",
+          "definition": "E2_higher=[0.0]                                                     # No policy priors",
+          "line": 127
+        },
+        {
+          "name": "pA_lower",
+          "definition": "pA_lower=1.0                                                        # A matrix learning rate",
+          "line": 130
+        },
+        {
+          "name": "pB_lower",
+          "definition": "pB_lower=1.0                                                        # B matrix learning rate",
+          "line": 131
+        },
+        {
+          "name": "pD_lower",
+          "definition": "pD_lower=1.0                                                        # D matrix learning rate",
+          "line": 132
+        },
+        {
+          "name": "pA2_higher",
+          "definition": "pA2_higher=1.0                                                      # A2 matrix learning rate",
+          "line": 133
+        },
+        {
+          "name": "pB2_higher",
+          "definition": "pB2_higher=1.0                                                      # B2 matrix learning rate",
+          "line": 134
+        },
+        {
+          "name": "pD2_higher",
+          "definition": "pD2_higher=1.0                                                      # D2 matrix learning rate",
+          "line": 135
+        },
+        {
+          "name": "p_advice",
+          "definition": "p_advice=0.9                                                        # Probability of trustworthy advice",
+          "line": 138
+        },
+        {
+          "name": "alpha",
+          "definition": "alpha=0.9                                                           # Precision of feedback mapping",
+          "line": 139
+        },
+        {
+          "name": "p_Btrust",
+          "definition": "p_Btrust=0.9                                                        # Trust transition probability",
+          "line": 140
+        },
+        {
+          "name": "p_Bcorrectcard",
+          "definition": "p_Bcorrectcard=0.9                                                  # Card belief persistence",
+          "line": 141
+        },
+        {
+          "name": "p_Bchoice",
+          "definition": "p_Bchoice=0.95                                                      # Choice belief precision",
+          "line": 142
+        },
+        {
+          "name": "p_Bstage",
+          "definition": "p_Bstage=1.0                                                        # Stage transition determinism",
+          "line": 143
+        },
+        {
+          "name": "cc",
+          "definition": "cc=0.5                                                              # Correct feedback preference",
+          "line": 144
+        },
+        {
+          "name": "arousal_low_preference",
+          "definition": "arousal_low_preference=0.35                                         # Low arousal preference",
+          "line": 145
+        },
+        {
+          "name": "trust_safety_association",
+          "definition": "trust_safety_association=0.667                                      # Trust-safety mapping strength",
+          "line": 146
+        },
+        {
+          "name": "affect_safety_association",
+          "definition": "affect_safety_association=0.667                                     # Affect-safety mapping strength",
+          "line": 147
+        },
+        {
+          "name": "prior_on_danger",
+          "definition": "prior_on_danger=0.75                                                # Higher-level danger bias",
+          "line": 148
+        },
+        {
+          "name": "gamma",
+          "definition": "gamma=16.0                                                          # Policy precision",
+          "line": 149
+        },
+        {
+          "name": "alpha_policy",
+          "definition": "alpha_policy=16.0                                                   # Action selection precision",
+          "line": 150
+        },
+        {
+          "name": "F",
+          "definition": "F = D_KL[Q(s)||P(s|o)] - ln P(o)                                   # Free Energy",
+          "line": 154
+        },
+        {
+          "name": "F_high",
+          "definition": "F_high = D_KL[Q(s_high)||P(s_high|o_high)] - ln P(o_high)         # Free Energy",
+          "line": 159
+        },
+        {
+          "name": "o_high",
+          "definition": "o_high = f(Q_low(s_low))                                            # Inter-level Coupling",
+          "line": 161
+        },
+        {
+          "name": "time_horizon",
+          "definition": "time_horizon=2                                                       # Time horizon",
+          "line": 164
+        },
+        {
+          "name": "time_step",
+          "definition": "time_step=1.0                                                        # Time step",
+          "line": 165
+        },
+        {
+          "name": "time_units",
+          "definition": "time_units=\"timesteps\"                                               # Time units",
+          "line": 166
+        },
+        {
+          "name": "trial_structure",
+          "definition": "trial_structure=[null, advice, decision]                             # Trial structure",
+          "line": 167
+        },
+        {
+          "name": "Trustworthiness",
+          "definition": "Trustworthiness[2,type=float]",
+          "line": 20
+        },
+        {
+          "name": "CorrectCard",
+          "definition": "CorrectCard[2,type=float]",
+          "line": 21
+        },
+        {
+          "name": "Affect",
+          "definition": "Affect[2,type=float]",
+          "line": 22
+        },
+        {
+          "name": "Choice",
+          "definition": "Choice[3,type=float]",
+          "line": 23
+        },
+        {
+          "name": "Stage",
+          "definition": "Stage[3,type=float]",
+          "line": 24
+        },
+        {
+          "name": "Advice",
+          "definition": "Advice[3,type=float]",
+          "line": 27
+        },
+        {
+          "name": "Feedback",
+          "definition": "Feedback[3,type=float]",
+          "line": 28
+        },
+        {
+          "name": "Arousal",
+          "definition": "Arousal[2,type=float]",
+          "line": 29
+        },
+        {
+          "name": "ChoiceObs",
+          "definition": "ChoiceObs[3,type=float]",
+          "line": 30
+        },
+        {
+          "name": "TrustActions",
+          "definition": "TrustActions[2,type=float]",
+          "line": 33
+        },
+        {
+          "name": "CardActions",
+          "definition": "CardActions[3,type=float]",
+          "line": 34
+        },
+        {
+          "name": "NullActions",
+          "definition": "NullActions[1,type=float]",
+          "line": 35
+        },
+        {
+          "name": "SafetySelf",
+          "definition": "SafetySelf[2,type=float]",
+          "line": 38
+        },
+        {
+          "name": "SafetyWorld",
+          "definition": "SafetyWorld[2,type=float]",
+          "line": 39
+        },
+        {
+          "name": "SafetyOther",
+          "definition": "SafetyOther[2,type=float]",
+          "line": 40
+        },
+        {
+          "name": "TrustworthinessObs",
+          "definition": "TrustworthinessObs[2,type=float]",
+          "line": 43
+        },
+        {
+          "name": "CorrectCardObs",
+          "definition": "CorrectCardObs[2,type=float]",
+          "line": 44
+        },
+        {
+          "name": "AffectObs",
+          "definition": "AffectObs[2,type=float]",
+          "line": 45
+        },
+        {
+          "name": "ChoiceObsHigher",
+          "definition": "ChoiceObsHigher[3,type=float]",
+          "line": 46
+        },
+        {
+          "name": "StageObs",
+          "definition": "StageObs[3,type=float]",
+          "line": 47
+        },
+        {
+          "name": "NullActionsHigher",
+          "definition": "NullActionsHigher[1,type=float]",
+          "line": 50
+        },
+        {
+          "name": "D_KL",
+          "definition": "D_KL[Q(s)||P(s|o)]",
+          "line": 154
+        },
+        {
+          "name": "D_KL",
+          "definition": "D_KL[Q(s_high)||P(s_high|o_high)]",
+          "line": 159
         }
       ],
       "connections": [],
       "sections": [
         {
-          "title": "GNN Example: Active Inference POMDP Agent",
+          "title": "GNNVersionAndFlags",
           "level": 1,
           "line": 1
         },
         {
-          "title": "GNN Version: 1.0",
-          "level": 1,
-          "line": 2
-        },
-        {
-          "title": "This file is machine-readable and specifies a classic Active Inference agent for a discrete POMDP with one observation modality and one hidden state factor. The model is suitable for rendering into various simulation or inference backends.",
-          "level": 1,
-          "line": 3
-        },
-        {
           "title": "GNNSection",
           "level": 2,
-          "line": 5
-        },
-        {
-          "title": "GNNVersionAndFlags",
-          "level": 2,
-          "line": 8
+          "line": 4
         },
         {
           "title": "ModelName",
           "level": 2,
-          "line": 11
+          "line": 7
         },
         {
           "title": "ModelAnnotation",
           "level": 2,
-          "line": 14
+          "line": 10
         },
         {
           "title": "StateSpaceBlock",
           "level": 2,
-          "line": 22
+          "line": 18
         },
         {
-          "title": "Likelihood matrix: A[observation_outcomes, hidden_states]",
+          "title": "Lower Level Agent Variables",
           "level": 1,
-          "line": 23
+          "line": 19
         },
         {
-          "title": "Transition matrix: B[states_next, states_previous, actions]",
+          "title": "Lower Level Observations",
           "level": 1,
           "line": 26
         },
         {
-          "title": "Preference vector: C[observation_outcomes]",
-          "level": 1,
-          "line": 29
-        },
-        {
-          "title": "Prior vector: D[states]",
+          "title": "Lower Level Actions",
           "level": 1,
           "line": 32
         },
         {
-          "title": "Habit vector: E[actions]",
+          "title": "Higher Level Agent Variables",
           "level": 1,
-          "line": 35
+          "line": 37
         },
         {
-          "title": "Hidden State",
-          "level": 1,
-          "line": 38
-        },
-        {
-          "title": "Observation",
+          "title": "Higher Level Observations (from lower level posteriors)",
           "level": 1,
           "line": 42
         },
         {
-          "title": "Policy and Control",
+          "title": "Higher Level Actions",
           "level": 1,
-          "line": 45
-        },
-        {
-          "title": "Time",
-          "level": 1,
-          "line": 50
+          "line": 49
         },
         {
           "title": "Connections",
           "level": 2,
+          "line": 52
+        },
+        {
+          "title": "Lower Level Connections",
+          "level": 1,
           "line": 53
+        },
+        {
+          "title": "Higher Level Connections",
+          "level": 1,
+          "line": 60
+        },
+        {
+          "title": "Inter-level Connections",
+          "level": 1,
+          "line": 65
         },
         {
           "title": "InitialParameterization",
           "level": 2,
-          "line": 66
+          "line": 72
         },
         {
-          "title": "A: 3 observations x 3 hidden states. Identity mapping (each state deterministically produces a unique observation). Rows are observations, columns are hidden states.",
+          "title": "Lower Level A Matrix (Likelihood) - 4 modalities x 5 factors",
           "level": 1,
-          "line": 67
+          "line": 73
         },
         {
-          "title": "B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state. For each slice, rows are previous states, columns are next states. Each slice is a transition matrix corresponding to a different action selection.",
+          "title": "Lower Level B Matrix (Transitions) - 5 factors x 5 factors x actions",
           "level": 1,
-          "line": 74
+          "line": 79
         },
         {
-          "title": "C: 3 observations. Preference in terms of log-probabilities over observations.",
+          "title": "Lower Level C Matrix (Preferences) - 4 modalities",
           "level": 1,
-          "line": 81
+          "line": 86
         },
         {
-          "title": "D: 3 states. Uniform prior over hidden states. Rows are hidden states, columns are prior probabilities.",
-          "level": 1,
-          "line": 84
-        },
-        {
-          "title": "E: 3 actions. Uniform habit used as initial policy prior.",
-          "level": 1,
-          "line": 87
-        },
-        {
-          "title": "Equations",
-          "level": 2,
-          "line": 90
-        },
-        {
-          "title": "Standard Active Inference update equations for POMDPs:",
-          "level": 1,
-          "line": 91
-        },
-        {
-          "title": "- State inference using Variational Free Energy with infer_states()",
+          "title": "Lower Level D Matrix (Priors) - 5 factors",
           "level": 1,
           "line": 92
         },
         {
-          "title": "- Policy inference using Expected Free Energy = with infer_policies()",
+          "title": "Lower Level E Matrix (Policy Priors) - 6 policies",
           "level": 1,
-          "line": 93
+          "line": 99
         },
         {
-          "title": "- Action selection from policy posterior: action = sample_action()",
+          "title": "Higher Level A2 Matrix (Likelihood) - 5 modalities x 3 factors",
           "level": 1,
-          "line": 94
+          "line": 102
+        },
+        {
+          "title": "Higher Level B2 Matrix (Transitions) - 3 factors x 3 factors x 1 action",
+          "level": 1,
+          "line": 109
+        },
+        {
+          "title": "Higher Level C2 Matrix (Preferences) - 5 modalities",
+          "level": 1,
+          "line": 114
+        },
+        {
+          "title": "Higher Level D2 Matrix (Priors) - 3 factors",
+          "level": 1,
+          "line": 121
+        },
+        {
+          "title": "Higher Level E2 Matrix (Policy Priors) - No policies for higher level",
+          "level": 1,
+          "line": 126
+        },
+        {
+          "title": "Learning Parameters",
+          "level": 1,
+          "line": 129
+        },
+        {
+          "title": "Model Parameters",
+          "level": 1,
+          "line": 137
+        },
+        {
+          "title": "Equations",
+          "level": 2,
+          "line": 152
+        },
+        {
+          "title": "Lower Level Agent",
+          "level": 1,
+          "line": 153
+        },
+        {
+          "title": "Higher Level Agent",
+          "level": 1,
+          "line": 158
         },
         {
           "title": "Time",
           "level": 2,
-          "line": 96
+          "line": 163
         },
         {
           "title": "ActInfOntologyAnnotation",
           "level": 2,
-          "line": 102
+          "line": 169
         },
         {
           "title": "ModelParameters",
           "level": 2,
-          "line": 117
+          "line": 179
         },
         {
           "title": "Footer",
           "level": 2,
-          "line": 122
+          "line": 195
         },
         {
           "title": "Signature",
           "level": 2,
-          "line": 126
+          "line": 198
         }
       ],
       "semantic_analysis": {
-        "model_type": "POMDP",
+        "model_type": "Active Inference",
         "complexity_level": "complex",
         "domain": "unknown",
         "key_concepts": [
@@ -543,17 +938,18 @@
           "action",
           "observation",
           "transition",
-          "policy"
+          "policy",
+          "belief"
         ],
         "potential_issues": []
       },
       "complexity_metrics": {
-        "variable_count": 70,
+        "variable_count": 147,
         "connection_count": 0,
         "connectivity_ratio": 0.0,
         "complexity_score": 0.0,
         "estimated_computation_time": 0.0,
-        "memory_requirements": 560
+        "memory_requirements": 1176
       },
       "patterns": {
         "design_patterns": [
@@ -567,13 +963,13 @@
           "Consider breaking into smaller modules"
         ]
       },
-      "analysis_timestamp": "2025-07-24T10:58:26.903509"
+      "analysis_timestamp": "2025-07-25T22:45:21.321716"
     }
   ],
   "model_insights": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
-      "model_summary": "This is a complex POMDP model with 70 variables.",
+      "file_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files\\ptsd_agent.md",
+      "model_summary": "This is a complex Active Inference model with 147 variables.",
       "strengths": [
         "Well-defined variable structure",
         "Reasonable coupling between components"
@@ -586,10 +982,10 @@
   ],
   "code_suggestions": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files\\ptsd_agent.md",
       "implementation_suggestions": [
-        "Use PyMDP library for POMDP implementation",
-        "Implement belief state updates"
+        "Use ActiveInference.jl for Julia implementation",
+        "Implement free energy minimization"
       ],
       "optimization_opportunities": [],
       "testing_recommendations": [
@@ -600,14 +996,14 @@
   ],
   "documentation_generated": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
-      "model_description": "\n# actinf_pomdp_agent.md\n\nThis is a complex POMDP model with 70 variables.\n\n## Model Overview\n- **Type**: POMDP\n- **Complexity**: complex\n- **Variables**: 70\n- **Connections**: 0\n\n## Key Components\n",
+      "file_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files\\ptsd_agent.md",
+      "model_description": "\n# ptsd_agent.md\n\nThis is a complex Active Inference model with 147 variables.\n\n## Model Overview\n- **Type**: Active Inference\n- **Complexity**: complex\n- **Variables**: 147\n- **Connections**: 0\n\n## Key Components\n",
       "api_documentation": [
-        "- `Example`: Variable defined at line 1",
-        "- `Version`: Variable defined at line 2",
-        "- `matrix`: Variable defined at line 23",
-        "- `matrix`: Variable defined at line 26",
-        "- `vector`: Variable defined at line 29"
+        "- `bidirectionally`: Variable defined at line 16",
+        "- `state`: Variable defined at line 20",
+        "- `state`: Variable defined at line 21",
+        "- `state`: Variable defined at line 22",
+        "- `state`: Variable defined at line 23"
       ],
       "usage_examples": [
         "```python",

@@ -1,6 +1,6 @@
 # Analysis Summary
 
-Generated on: 2025-07-24T10:58:27.535879
+Generated on: 2025-07-25T22:45:26.458766
 
 ## Overview
 - **Files Processed**: 1
@@ -9,17 +9,17 @@ Generated on: 2025-07-24T10:58:27.535879
 
 ## Statistical Analysis Results
 
-### actinf_pomdp_agent.md
-- **Variables**: 70
+### ptsd_agent.md
+- **Variables**: 147
 - **Connections**: 0
-- **File Size**: 4085 bytes
-- **Lines**: 127
+- **File Size**: 12705 bytes
+- **Lines**: 204
 
 ## Complexity Metrics
 
-### actinf_pomdp_agent.md
+### ptsd_agent.md
 - **Cyclomatic Complexity**: 1.00
-- **Cognitive Complexity**: 35.00
+- **Cognitive Complexity**: 73.50
 - **Structural Complexity**: 0.00
-- **Maintainability Index**: 64.30
-- **Technical Debt**: 12.00
+- **Maintainability Index**: 18.10
+- **Technical Debt**: 19.70

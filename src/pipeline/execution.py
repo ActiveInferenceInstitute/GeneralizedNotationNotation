@@ -24,7 +24,7 @@ try:
     PSUTIL_AVAILABLE = True
 except ImportError:
     PSUTIL_AVAILABLE = False
-import resource
+#import resource
 
 # Fix relative import issue by adding src to path if needed
 current_dir = Path(__file__).resolve().parent

@@ -1,7 +1,7 @@
 {
-  "timestamp": "2025-07-24T10:58:17.133482",
-  "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step",
+  "timestamp": "2025-07-25T22:44:10.735252",
+  "source_directory": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files",
+  "output_directory": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step",
   "processing_config": {
     "recursive": true,
     "verbose": true,
@@ -58,133 +58,133 @@
   },
   "processed_files": [
     {
-      "file_name": "actinf_pomdp_agent.md",
-      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "ptsd_agent.md",
+      "file_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files\\ptsd_agent.md",
       "parse_success": true,
-      "parsed_model_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
+      "parsed_model_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_parsed.json",
       "source_format": null,
       "model_info": {
-        "name": "Classic Active Inference POMDP Agent v1",
+        "name": "PTSD Hierarchical Active Inference Agent",
         "version": "1.0",
-        "variables_count": 12,
-        "connections_count": 11,
-        "parameters_count": 6,
-        "equations_count": 0
+        "variables_count": 21,
+        "connections_count": 13,
+        "parameters_count": 55,
+        "equations_count": 2
       },
       "generated_formats": {
         "markdown": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_markdown.md",
-          "file_size": 1748,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_markdown.md",
+          "file_size": 3874,
           "success": true
         },
         "scala": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_scala.scala",
-          "file_size": 5015,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_scala.scala",
+          "file_size": 10155,
           "success": true
         },
         "lean": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_lean.lean",
-          "file_size": 5399,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_lean.lean",
+          "file_size": 10403,
           "success": true
         },
         "coq": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_coq.v",
-          "file_size": 5162,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_coq.v",
+          "file_size": 9840,
           "success": true
         },
         "python": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_python.py",
-          "file_size": 8794,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_python.py",
+          "file_size": 17309,
           "success": true
         },
         "bnf": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_bnf.bnf",
-          "file_size": 5404,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_bnf.bnf",
+          "file_size": 10733,
           "success": true
         },
         "ebnf": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_ebnf.ebnf",
-          "file_size": 5404,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_ebnf.ebnf",
+          "file_size": 10733,
           "success": true
         },
         "isabelle": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_isabelle.thy",
-          "file_size": 5186,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_isabelle.thy",
+          "file_size": 9926,
           "success": true
         },
         "maxima": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_maxima.max",
-          "file_size": 5669,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_maxima.max",
+          "file_size": 12578,
           "success": true
         },
         "xml": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
-          "file_size": 9306,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_xml.xml",
+          "file_size": 18877,
           "success": true
         },
         "pnml": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_pnml.pnml",
-          "file_size": 9306,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_pnml.pnml",
+          "file_size": 18877,
           "success": true
         },
         "json": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_json.json",
-          "file_size": 9193,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_json.json",
+          "file_size": 19853,
           "success": true
         },
         "protobuf": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_protobuf.proto",
-          "file_size": 7131,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_protobuf.proto",
+          "file_size": 14345,
           "success": true
         },
         "yaml": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_yaml.yaml",
-          "file_size": 5589,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_yaml.yaml",
+          "file_size": 11942,
           "success": true
         },
         "xsd": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_xsd.xsd",
-          "file_size": 6094,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_xsd.xsd",
+          "file_size": 11126,
           "success": true
         },
         "asn1": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_asn1.asn1",
-          "file_size": 7984,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_asn1.asn1",
+          "file_size": 13503,
           "success": true
         },
         "pkl": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_pkl.pkl",
-          "file_size": 11706,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_pkl.pkl",
+          "file_size": 28672,
           "success": true
         },
         "alloy": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_alloy.als",
-          "file_size": 8002,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_alloy.als",
+          "file_size": 17300,
           "success": true
         },
         "z_notation": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_z_notation.z",
-          "file_size": 5726,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_z_notation.z",
+          "file_size": 11011,
           "success": true
         },
         "tla_plus": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_tla_plus.tla",
-          "file_size": 4634,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_tla_plus.tla",
+          "file_size": 9493,
           "success": true
         },
         "agda": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_agda.agda",
-          "file_size": 4642,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_agda.agda",
+          "file_size": 9295,
           "success": true
         },
         "haskell": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_haskell.hs",
-          "file_size": 5426,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_haskell.hs",
+          "file_size": 11091,
           "success": true
         },
         "pickle": {
-          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pkl",
-          "file_size": 3860,
+          "output_file": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_processing_step\\ptsd_agent\\ptsd_agent_pickle.pkl",
+          "file_size": 8456,
           "success": true
         }
       },
@@ -198,7 +198,7 @@
     "failed_parses": 0,
     "total_formats_generated": 23,
     "formats_per_file": {
-      "actinf_pomdp_agent.md": 23
+      "ptsd_agent.md": 23
     }
   }
 }

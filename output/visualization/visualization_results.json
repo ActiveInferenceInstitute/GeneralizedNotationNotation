@@ -1,39 +1,39 @@
 {
-  "timestamp": "2025-07-24T10:58:21.971706",
-  "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/visualization",
+  "timestamp": "2025-07-25T22:58:44.699694",
+  "source_directory": "input\\gnn_files",
+  "output_directory": "output\\visualization",
   "files_visualized": [
     {
-      "file_name": "actinf_pomdp_agent.md",
-      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "ptsd_agent.md",
+      "file_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files\\ptsd_agent.md",
       "visualizations": {
         "network_plot": {
-          "path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/visualization/actinf_pomdp_agent/network_plot.png",
-          "file_size": 393358
+          "path": "output\\visualization\\ptsd_agent\\network_plot.png",
+          "file_size": 561335
         },
         "variable_type_chart": {
-          "path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/visualization/actinf_pomdp_agent/variable_type_chart.png",
-          "file_size": 187416
+          "path": "output\\visualization\\ptsd_agent\\variable_type_chart.png",
+          "file_size": 115130
         },
         "dimension_analysis": {
-          "path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/visualization/actinf_pomdp_agent/dimension_analysis.png",
-          "file_size": 70722
+          "path": "output\\visualization\\ptsd_agent\\dimension_analysis.png",
+          "file_size": 84810
         },
         "connection_analysis": {
-          "path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/visualization/actinf_pomdp_agent/connection_analysis.png",
-          "file_size": 77686
+          "path": "output\\visualization\\ptsd_agent\\connection_analysis.png",
+          "file_size": 79593
         },
         "model_overview": {
-          "path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/visualization/actinf_pomdp_agent/model_overview.png",
-          "file_size": 334141
+          "path": "output\\visualization\\ptsd_agent\\model_overview.png",
+          "file_size": 279606
         },
         "matrix_analysis": {
-          "path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/visualization/actinf_pomdp_agent/matrix_analysis.png",
-          "file_size": 166612
+          "path": "output\\visualization\\ptsd_agent\\matrix_analysis.png",
+          "file_size": 648991
         },
         "matrix_statistics": {
-          "path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/visualization/actinf_pomdp_agent/matrix_statistics.png",
-          "file_size": 188823
+          "path": "output\\visualization\\ptsd_agent\\matrix_statistics.png",
+          "file_size": 294832
         }
       },
       "success": true

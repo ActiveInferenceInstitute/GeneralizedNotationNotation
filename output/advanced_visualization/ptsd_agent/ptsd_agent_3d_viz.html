@@ -1,0 +1,369 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D GNN Visualization - ptsd_agent</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .header {
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .scene {
+            perspective: 1000px;
+            height: 600px;
+            position: relative;
+            margin: 40px 0;
+        }
+        
+        .scene-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 20s infinite linear;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotateY(0deg) rotateX(20deg); }
+            to { transform: rotateY(360deg) rotateX(20deg); }
+        }
+        
+        .node {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8em;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, #a29bfe 0%, #6c5ce7 100%);
+            transform-origin: left center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .controls {
+            margin: 20px 0;
+            color: white;
+        }
+        
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .info-panel {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-panel h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 3D GNN Visualization</h1>
+            <h2>Model: ptsd_agent</h2>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" onclick="toggleRotation()">Pause/Rotate</button>
+            <button class="control-btn" onclick="resetView()">Reset View</button>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-container" id="scene">
+
+                <div class="node" style="transform: translate3d(200.0px, -50px, 0.0px);" 
+                     title="Trustworthiness - hidden_state">
+                    Trustwor
+                </div>
+
+                <div class="node" style="transform: translate3d(191.11456115722814px, 0px, 58.95103488218084px);" 
+                     title="CorrectCard - hidden_state">
+                    CorrectC
+                </div>
+
+                <div class="node" style="transform: translate3d(165.247754863199px, 50px, 112.66401161272441px);" 
+                     title="Affect - action">
+                    Affect
+                </div>
+
+                <div class="node" style="transform: translate3d(124.69796037174672px, -50px, 156.36629649360597px);" 
+                     title="Choice - hidden_state">
+                    Choice
+                </div>
+
+                <div class="node" style="transform: translate3d(73.068204873279px, 0px, 186.17474972884085px);" 
+                     title="Stage - hidden_state">
+                    Stage
+                </div>
+
+                <div class="node" style="transform: translate3d(14.946018717284879px, 50px, 199.44075943623602px);" 
+                     title="Advice - action">
+                    Advice
+                </div>
+
+                <div class="node" style="transform: translate3d(-44.50418679126287px, -50px, 194.98558243636472px);" 
+                     title="Feedback - hidden_state">
+                    Feedback
+                </div>
+
+                <div class="node" style="transform: translate3d(-99.99999999999996px, 0px, 173.20508075688775px);" 
+                     title="Arousal - action">
+                    Arousal
+                </div>
+
+                <div class="node" style="transform: translate3d(-146.61037436596527px, 50px, 136.03454755418386px);" 
+                     title="ChoiceObs - observation">
+                    ChoiceOb
+                </div>
+
+                <div class="node" style="transform: translate3d(-180.19377358048382px, -50px, 86.77674782351164px);" 
+                     title="TrustActions - action">
+                    TrustAct
+                </div>
+
+                <div class="node" style="transform: translate3d(-197.76616524502572px, 0px, 29.808453235234943px);" 
+                     title="CardActions - action">
+                    CardActi
+                </div>
+
+                <div class="node" style="transform: translate3d(-197.76616524502572px, 50px, -29.808453235234804px);" 
+                     title="NullActions - action">
+                    NullActi
+                </div>
+
+                <div class="node" style="transform: translate3d(-180.19377358048382px, -50px, -86.7767478235116px);" 
+                     title="SafetySelf - hidden_state">
+                    SafetySe
+                </div>
+
+                <div class="node" style="transform: translate3d(-146.61037436596524px, 0px, -136.0345475541839px);" 
+                     title="SafetyWorld - hidden_state">
+                    SafetyWo
+                </div>
+
+                <div class="node" style="transform: translate3d(-100.00000000000009px, 50px, -173.2050807568877px);" 
+                     title="SafetyOther - hidden_state">
+                    SafetyOt
+                </div>
+
+                <div class="node" style="transform: translate3d(-44.50418679126292px, -50px, -194.98558243636472px);" 
+                     title="TrustworthinessObs - observation">
+                    Trustwor
+                </div>
+
+                <div class="node" style="transform: translate3d(14.946018717284874px, 0px, -199.44075943623602px);" 
+                     title="CorrectCardObs - observation">
+                    CorrectC
+                </div>
+
+                <div class="node" style="transform: translate3d(73.06820487327907px, 50px, -186.17474972884082px);" 
+                     title="AffectObs - action">
+                    AffectOb
+                </div>
+
+                <div class="node" style="transform: translate3d(124.69796037174667px, -50px, -156.36629649360597px);" 
+                     title="ChoiceObsHigher - observation">
+                    ChoiceOb
+                </div>
+
+                <div class="node" style="transform: translate3d(165.2477548631989px, 0px, -112.66401161272455px);" 
+                     title="StageObs - hidden_state">
+                    StageObs
+                </div>
+
+                <div class="node" style="transform: translate3d(191.1145611572281px, 50px, -58.95103488218094px);" 
+                     title="NullActionsHigher - action">
+                    NullActi
+                </div>
+
+                <div class="connection-line" style="
+                    width: 160.0px;
+                    transform: translate3d(20.0px, 0, 0) rotateY(0deg);
+                "></div>
+
+                <div class="connection-line" style="
+                    width: 160.0px;
+                    transform: translate3d(20.0px, 0, 0) rotateY(36deg);
+                "></div>
+
+                <div class="connection-line" style="
+                    width: 160.0px;
+                    transform: translate3d(20.0px, 0, 0) rotateY(72deg);
+                "></div>
+
+                <div class="connection-line" style="
+                    width: 160.0px;
+                    transform: translate3d(20.0px, 0, 0) rotateY(108deg);
+                "></div>
+
+                <div class="connection-line" style="
+                    width: 160.0px;
+                    transform: translate3d(20.0px, 0, 0) rotateY(144deg);
+                "></div>
+
+                <div class="connection-line" style="
+                    width: 160.0px;
+                    transform: translate3d(20.0px, 0, 0) rotateY(180deg);
+                "></div>
+
+                <div class="connection-line" style="
+                    width: 160.0px;
+                    transform: translate3d(20.0px, 0, 0) rotateY(216deg);
+                "></div>
+
+                <div class="connection-line" style="
+                    width: 160.0px;
+                    transform: translate3d(20.0px, 0, 0) rotateY(252deg);
+                "></div>
+
+                <div class="connection-line" style="
+                    width: 160.0px;
+                    transform: translate3d(20.0px, 0, 0) rotateY(288deg);
+                "></div>
+
+                <div class="connection-line" style="
+                    width: 160.0px;
+                    transform: translate3d(20.0px, 0, 0) rotateY(324deg);
+                "></div>
+
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <h3>📊 Model Statistics</h3>
+            <div class="stats-grid">
+
+                <div class="stat-item">
+                    <div class="stat-value">21</div>
+                    <div class="stat-label">Variables</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-value">13</div>
+                    <div class="stat-label">Connections</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-value">55</div>
+                    <div class="stat-label">Parameters</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Equations</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let isRotating = true;
+        const scene = document.getElementById('scene');
+        
+        function toggleRotation() {{
+            isRotating = !isRotating;
+            if (isRotating) {{
+                scene.style.animationPlayState = 'running';
+            }} else {{
+                scene.style.animationPlayState = 'paused';
+            }}
+        }}
+        
+        function resetView() {{
+            scene.style.transform = 'rotateY(0deg) rotateX(20deg)';
+        }}
+        
+        // Add click handlers for nodes
+        document.querySelectorAll('.node').forEach(node => {{
+            node.addEventListener('click', function() {{
+                alert('Node: ' + this.title);
+            }});
+        }});
+    </script>
+</body>
+</html>

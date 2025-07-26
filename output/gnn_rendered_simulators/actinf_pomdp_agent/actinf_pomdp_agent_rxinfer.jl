@@ -1,6 +1,7 @@
+#!/usr/bin/env julia
 # RxInfer.jl Active Inference Simulation
-# Generated from GNN Model: Unknown
-# Generated: 2025-07-24 10:58:26
+# Generated from GNN Model: Classic Active Inference POMDP Agent v1
+# Generated: 2025-07-25 20:17:23
 
 using RxInfer
 using Distributions
@@ -12,34 +13,38 @@ num_obs = 3
 num_controls = 3
 
 # Define the model
-@model function active_inference_model(n_steps)
-    # Priors
-    s_prior ~ Dirichlet(ones(num_states))
-    A ~ MatrixDirichlet(ones(num_obs, num_states))
-    B ~ ArrayDirichlet(ones(num_states, num_states, num_controls))
-    C ~ Normal(0, 1)
+@model function active_inference_model(num_steps)
+    # State variables
+    s = randomvar(num_steps)
     
-    # State sequence
-    s = randomvar(n_steps)
-    o = datavar(Vector{Float64}, n_steps)
+    # Observation variables
+    o = datavar(Vector{Float64}, num_steps)
     
-    # Initial state
-    s[1] ~ Categorical(s_prior)
+    # Prior distributions
+    s[1] ~ NormalMeanVariance(0.0, 1.0)
     
     # State transitions and observations
-    for t in 2:n_steps
-        s[t] ~ Categorical(B[:, :, 1])  # Assuming single action for now
-        o[t] ~ Normal(A * s[t], 0.1)
+    for t in 2:num_steps
+        s[t] ~ NormalMeanVariance(s[t-1], 0.1)
+        o[t] ~ NormalMeanVariance(s[t], 0.5)
     end
 end
 
-# Inference
-n_steps = 10
+# Simulation parameters
+num_steps = 10
+
+# Create model
+model = active_inference_model(num_steps)
+
+# Generate synthetic data
+observations = randn(num_steps)
+
+# Run inference
 results = inference(
-    model = active_inference_model(n_steps),
-    data = (o = [randn(num_obs) for _ in 1:n_steps],),
-    initmarginals = (s = Categorical(ones(num_states) / num_states),),
-    returnvars = (s = KeepLast(),)
+    model = model,
+    data = (o = observations,),
+    iterations = 10
 )
 
 println("RxInfer.jl simulation completed!")
+println("State estimates: ", results.posteriors[:s])

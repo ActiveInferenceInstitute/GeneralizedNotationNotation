@@ -1,25 +1,44 @@
 {
   "version": "1.0.0",
-  "updated_at": "2025-07-24T10:58:17.214595",
+  "updated_at": "2025-07-25T22:44:11.554818",
   "models": {
     "actinf_pomdp_agent": {
       "model_id": "actinf_pomdp_agent",
       "name": "GNN Example: Active Inference POMDP Agent",
       "description": "ActInfPOMDP",
       "created_at": "2025-07-24T10:58:17.214420",
-      "updated_at": "2025-07-24T10:58:17.214531",
+      "updated_at": "2025-07-25T20:09:11.367819",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
-          "created_at": "2025-07-24T10:58:17.214447",
+          "file_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files\\actinf_pomdp_agent.md",
+          "created_at": "2025-07-25T20:09:11.367819",
           "metadata": {},
-          "hash": "b6a6a614d6af9542e5bca327ea7dfc9d8be6f57ac26b8a98be3a88cf214bdc20"
+          "hash": "503a50f02986ca0f472a5134d1b812b1fd11995111072060ab1dc18d3d30de0c"
         }
       },
       "tags": [],
       "metadata": {},
       "current_version": "1.0"
+    },
+    "ptsd_agent": {
+      "model_id": "ptsd_agent",
+      "name": "GNNVersionAndFlags",
+      "description": "GNN v1.0 flags=latex_rendering,graphviz_compatible",
+      "created_at": "2025-07-25T20:09:11.367819",
+      "updated_at": "2025-07-25T22:44:11.554818",
+      "versions": {
+        "1.0.0": {
+          "version": "1.0.0",
+          "file_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files\\ptsd_agent.md",
+          "created_at": "2025-07-25T22:44:11.554818",
+          "metadata": {},
+          "hash": "ac7b1de7406405b273a975ddd0287004fe726c6d2eba6931c2eff3123f505a08"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0.0"
     }
   }
 }

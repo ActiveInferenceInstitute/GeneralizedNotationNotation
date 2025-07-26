@@ -25,10 +25,33 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 def generate_pymdp_code(model_data: Dict) -> str:
     """Generate PyMDP simulation code."""
-    # Calculate dimensions
-    state_vars = [var for var in model_data.get('variables', []) if 'state' in var.get('type', '')]
-    obs_vars = [var for var in model_data.get('variables', []) if 'observation' in var.get('type', '')]
-    action_vars = [var for var in model_data.get('variables', []) if 'action' in var.get('type', '')]
+    # If model_data is a file result, load the actual parsed data
+    if 'parsed_model_file' in model_data:
+        import json
+        with open(model_data['parsed_model_file'], 'r') as f:
+            parsed_data = json.load(f)
+        model_data = parsed_data
+    
+    # Extract variables from model data or extensions
+    variables = model_data.get('variables', [])
+    
+    # If variables array is empty, try to extract from extensions
+    if not variables and 'extensions' in model_data:
+        extensions = model_data['extensions']
+        
+        # Extract hierarchical agent structure from FactorBlock
+        if 'FactorBlock' in extensions:
+            factor_block = extensions['FactorBlock']
+            
+            # Parse the hierarchical structure
+            if 'A_lower:' in factor_block and 'A_higher:' in factor_block:
+                # This is a hierarchical agent
+                return generate_hierarchical_pymdp_code(model_data)
+    
+    # Calculate dimensions for standard agent
+    state_vars = [var for var in variables if 'state' in var.get('type', '')]
+    obs_vars = [var for var in variables if 'observation' in var.get('type', '')]
+    action_vars = [var for var in variables if 'action' in var.get('type', '')]
     
     num_states = max([max(var.get('dimensions', [1])) for var in state_vars]) if state_vars else 3
     num_obs = max([max(var.get('dimensions', [1])) for var in obs_vars]) if obs_vars else 3
@@ -90,18 +113,134 @@ print("Simulation completed!")
 """
     return code
 
+def generate_hierarchical_pymdp_code(model_data: Dict) -> str:
+    """Generate PyMDP simulation code for hierarchical agents."""
+    model_name = model_data.get('model_name', 'Hierarchical Agent')
+    
+    code = f"""#!/usr/bin/env python3
+# PyMDP Hierarchical Active Inference Simulation
+# Generated from GNN Model: {model_name}
+# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+import numpy as np
+from pymdp import utils
+from pymdp.agent import Agent
+from pymdp.envs import Env
+
+# Hierarchical Agent Parameters
+# Lower Level Agent
+lower_num_states = [2, 2, 2, 3, 3]  # [Trustworthiness, CorrectCard, Affect, Choice, Stage]
+lower_num_obs = [3, 3, 2, 3]        # [Advice, Feedback, Arousal, Choice]
+lower_num_controls = [2, 1, 2, 3, 1]  # [Trust, Null, Trust, Card, Null]
+
+# Higher Level Agent  
+higher_num_states = [2, 2, 2]       # [SafetySelf, SafetyWorld, SafetyOther]
+higher_num_obs = [2, 2, 2, 3, 3]   # [TrustworthinessObs, CorrectCardObs, AffectObs, ChoiceObs, StageObs]
+higher_num_controls = [1]            # [Null]
+
+# Initialize lower level agent matrices
+A_lower = utils.obj_array(len(lower_num_obs))
+B_lower = utils.obj_array(len(lower_num_states))
+C_lower = utils.obj_array_zeros(len(lower_num_obs))
+D_lower = utils.obj_array(len(lower_num_states))
+
+# Initialize higher level agent matrices
+A_higher = utils.obj_array(len(higher_num_obs))
+B_higher = utils.obj_array(len(higher_num_states))
+C_higher = utils.obj_array_zeros(len(higher_num_obs))
+D_higher = utils.obj_array(len(higher_num_states))
+
+# Set up basic matrices (identity mappings for now)
+for i in range(len(lower_num_obs)):
+    A_lower[i] = np.eye(lower_num_obs[i], np.prod(lower_num_states))
+    C_lower[i] = np.zeros(lower_num_obs[i])
+
+for i in range(len(lower_num_states)):
+    B_lower[i] = np.eye(lower_num_states[i], lower_num_states[i], lower_num_controls[i])
+    D_lower[i] = np.ones(lower_num_states[i]) / lower_num_states[i]
+
+for i in range(len(higher_num_obs)):
+    A_higher[i] = np.eye(higher_num_obs[i], np.prod(higher_num_states))
+    C_higher[i] = np.zeros(higher_num_obs[i])
+
+for i in range(len(higher_num_states)):
+    B_higher[i] = np.eye(higher_num_states[i], higher_num_states[i], higher_num_controls[i])
+    D_higher[i] = np.ones(higher_num_states[i]) / higher_num_states[i]
+
+# Create agents
+lower_agent = Agent(A=A_lower, B=B_lower, C=C_lower, D=D_lower)
+higher_agent = Agent(A=A_higher, B=B_higher, C=C_higher, D=D_higher)
+
+# Create environment (simple identity mapping)
+env = Env(A=A_lower, B=B_lower)
+
+# Simulation parameters
+T = 10  # Number of time steps
+
+# Run hierarchical simulation
+for t in range(T):
+    # Get observation from environment
+    obs = env.step()
+    
+    # Lower level agent inference and action selection
+    lower_qs = lower_agent.infer_states(obs)
+    lower_q_pi, _ = lower_agent.infer_policies()
+    lower_action = lower_agent.sample_action()
+    
+    # Higher level agent inference (using lower level posteriors as observations)
+    higher_obs = lower_qs  # Simplified mapping
+    higher_qs = higher_agent.infer_states(higher_obs)
+    higher_q_pi, _ = higher_agent.infer_policies()
+    higher_action = higher_agent.sample_action()
+    
+    print(f"Step {{t}}:")
+    print(f"  Lower Level - Observation: {{obs}}, Action: {{lower_action}}")
+    print(f"    State beliefs: {{lower_qs}}")
+    print(f"    Policy beliefs: {{lower_q_pi}}")
+    print(f"  Higher Level - Observation: {{higher_obs}}, Action: {{higher_action}}")
+    print(f"    State beliefs: {{higher_qs}}")
+    print(f"    Policy beliefs: {{higher_q_pi}}")
+
+print("Hierarchical simulation completed!")
+"""
+    return code
+
 def generate_rxinfer_code(model_data: Dict) -> str:
     """Generate RxInfer.jl simulation code."""
-    # Calculate dimensions
-    state_vars = [var for var in model_data.get('variables', []) if 'state' in var.get('type', '')]
-    obs_vars = [var for var in model_data.get('variables', []) if 'observation' in var.get('type', '')]
-    action_vars = [var for var in model_data.get('variables', []) if 'action' in var.get('type', '')]
+    # If model_data is a file result, load the actual parsed data
+    if 'parsed_model_file' in model_data:
+        import json
+        with open(model_data['parsed_model_file'], 'r') as f:
+            parsed_data = json.load(f)
+        model_data = parsed_data
+    
+    # Extract variables from model data or extensions
+    variables = model_data.get('variables', [])
+    
+    # If variables array is empty, try to extract from extensions
+    if not variables and 'extensions' in model_data:
+        extensions = model_data['extensions']
+        
+        # Extract hierarchical agent structure from FactorBlock
+        if 'FactorBlock' in extensions:
+            factor_block = extensions['FactorBlock']
+            
+            # Parse the hierarchical structure
+            if 'A_lower:' in factor_block and 'A_higher:' in factor_block:
+                # This is a hierarchical agent
+                return generate_hierarchical_rxinfer_code(model_data)
+    
+    # Calculate dimensions for standard agent
+    state_vars = [var for var in variables if 'state' in var.get('type', '')]
+    obs_vars = [var for var in variables if 'observation' in var.get('type', '')]
+    action_vars = [var for var in variables if 'action' in var.get('type', '')]
     
     num_states = max([max(var.get('dimensions', [1])) for var in state_vars]) if state_vars else 3
     num_obs = max([max(var.get('dimensions', [1])) for var in obs_vars]) if obs_vars else 3
     num_controls = max([max(var.get('dimensions', [1])) for var in action_vars]) if action_vars else 3
     
-    code = f"""# RxInfer.jl Active Inference Simulation
+    code = f"""#!/usr/bin/env julia
+# RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: {model_data.get('model_name', 'Unknown')}
 # Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
@@ -115,37 +254,170 @@ num_obs = {num_obs}
 num_controls = {num_controls}
 
 # Define the model
-@model function active_inference_model(n_steps)
-    # Priors
-    s_prior ~ Dirichlet(ones(num_states))
-    A ~ MatrixDirichlet(ones(num_obs, num_states))
-    B ~ ArrayDirichlet(ones(num_states, num_states, num_controls))
-    C ~ Normal(0, 1)
+@model function active_inference_model(num_steps)
+    # State variables
+    s = randomvar(num_steps)
     
-    # State sequence
-    s = randomvar(n_steps)
-    o = datavar(Vector{{Float64}}, n_steps)
+    # Observation variables
+    o = datavar(Vector{{Float64}}, num_steps)
     
-    # Initial state
-    s[1] ~ Categorical(s_prior)
+    # Prior distributions
+    s[1] ~ NormalMeanVariance(0.0, 1.0)
     
     # State transitions and observations
-    for t in 2:n_steps
-        s[t] ~ Categorical(B[:, :, 1])  # Assuming single action for now
-        o[t] ~ Normal(A * s[t], 0.1)
+    for t in 2:num_steps
+        s[t] ~ NormalMeanVariance(s[t-1], 0.1)
+        o[t] ~ NormalMeanVariance(s[t], 0.5)
     end
 end
 
-# Inference
-n_steps = 10
+# Simulation parameters
+num_steps = 10
+
+# Create model
+model = active_inference_model(num_steps)
+
+# Generate synthetic data
+observations = randn(num_steps)
+
+# Run inference
 results = inference(
-    model = active_inference_model(n_steps),
-    data = (o = [randn(num_obs) for _ in 1:n_steps],),
-    initmarginals = (s = Categorical(ones(num_states) / num_states),),
-    returnvars = (s = KeepLast(),)
+    model = model,
+    data = (o = observations,),
+    iterations = 10
 )
 
 println("RxInfer.jl simulation completed!")
+println("State estimates: ", results.posteriors[:s])
+"""
+    return code
+
+def generate_hierarchical_rxinfer_code(model_data: Dict) -> str:
+    """Generate RxInfer.jl simulation code for hierarchical agents."""
+    model_name = model_data.get('model_name', 'Hierarchical Agent')
+    
+    code = f"""#!/usr/bin/env julia
+# RxInfer.jl Hierarchical Active Inference Simulation
+# Generated from GNN Model: {model_name}
+# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+using RxInfer
+using Distributions
+using LinearAlgebra
+
+# Hierarchical Agent Parameters
+# Lower Level Agent
+lower_num_states = [2, 2, 2, 3, 3]  # [Trustworthiness, CorrectCard, Affect, Choice, Stage]
+lower_num_obs = [3, 3, 2, 3]        # [Advice, Feedback, Arousal, Choice]
+
+# Higher Level Agent  
+higher_num_states = [2, 2, 2]       # [SafetySelf, SafetyWorld, SafetyOther]
+higher_num_obs = [2, 2, 2, 3, 3]   # [TrustworthinessObs, CorrectCardObs, AffectObs, ChoiceObs, StageObs]
+
+# Define the hierarchical model
+@model function hierarchical_active_inference_model(num_steps)
+    # Lower level state variables
+    trust = randomvar(num_steps)
+    card = randomvar(num_steps)
+    affect = randomvar(num_steps)
+    choice = randomvar(num_steps)
+    stage = randomvar(num_steps)
+    
+    # Higher level state variables
+    safety_self = randomvar(num_steps)
+    safety_world = randomvar(num_steps)
+    safety_other = randomvar(num_steps)
+    
+    # Lower level observation variables
+    advice = datavar(Vector{{Float64}}, num_steps)
+    feedback = datavar(Vector{{Float64}}, num_steps)
+    arousal = datavar(Vector{{Float64}}, num_steps)
+    choice_obs = datavar(Vector{{Float64}}, num_steps)
+    
+    # Higher level observation variables (from lower level posteriors)
+    trust_obs = datavar(Vector{{Float64}}, num_steps)
+    card_obs = datavar(Vector{{Float64}}, num_steps)
+    affect_obs = datavar(Vector{{Float64}}, num_steps)
+    choice_obs_high = datavar(Vector{{Float64}}, num_steps)
+    stage_obs = datavar(Vector{{Float64}}, num_steps)
+    
+    # Prior distributions for lower level
+    trust[1] ~ Categorical([0.5, 0.5])
+    card[1] ~ Categorical([0.5, 0.5])
+    affect[1] ~ Categorical([0.5, 0.5])
+    choice[1] ~ Categorical([0.0, 0.0, 1.0])
+    stage[1] ~ Categorical([1.0, 0.0, 0.0])
+    
+    # Prior distributions for higher level
+    safety_self[1] ~ Categorical([0.25, 0.75])
+    safety_world[1] ~ Categorical([0.25, 0.75])
+    safety_other[1] ~ Categorical([0.25, 0.75])
+    
+    # State transitions and observations
+    for t in 2:num_steps
+        # Lower level transitions
+        trust[t] ~ Categorical([0.9, 0.1])  # Simplified transition
+        card[t] ~ Categorical([0.9, 0.1])
+        affect[t] ~ Categorical([0.333, 0.667])
+        choice[t] ~ Categorical([0.95, 0.025, 0.025])
+        stage[t] ~ Categorical([0.0, 1.0, 0.0])
+        
+        # Higher level transitions
+        safety_self[t] ~ Categorical([1.0, 0.0])  # Deterministic
+        safety_world[t] ~ Categorical([1.0, 0.0])
+        safety_other[t] ~ Categorical([1.0, 0.0])
+        
+        # Lower level observations
+        advice[t] ~ NormalMeanVariance(trust[t], 0.1)
+        feedback[t] ~ NormalMeanVariance(card[t], 0.1)
+        arousal[t] ~ NormalMeanVariance(affect[t], 0.1)
+        choice_obs[t] ~ NormalMeanVariance(choice[t], 0.1)
+        
+        # Higher level observations (mapped from lower level)
+        trust_obs[t] ~ NormalMeanVariance(safety_self[t], 0.1)
+        card_obs[t] ~ NormalMeanVariance(safety_world[t], 0.1)
+        affect_obs[t] ~ NormalMeanVariance(safety_other[t], 0.1)
+        choice_obs_high[t] ~ NormalMeanVariance(choice[t], 0.1)
+        stage_obs[t] ~ NormalMeanVariance(stage[t], 0.1)
+    end
+end
+
+# Simulation parameters
+num_steps = 10
+
+# Create model
+model = hierarchical_active_inference_model(num_steps)
+
+# Generate synthetic data
+lower_obs = [randn(3), randn(3), randn(2), randn(3)]  # advice, feedback, arousal, choice
+higher_obs = [randn(2), randn(2), randn(2), randn(3), randn(3)]  # trust_obs, card_obs, affect_obs, choice_obs_high, stage_obs
+
+# Run inference
+results = inference(
+    model = model,
+    data = (
+        advice = lower_obs[1],
+        feedback = lower_obs[2],
+        arousal = lower_obs[3],
+        choice_obs = lower_obs[4],
+        trust_obs = higher_obs[1],
+        card_obs = higher_obs[2],
+        affect_obs = higher_obs[3],
+        choice_obs_high = higher_obs[4],
+        stage_obs = higher_obs[5]
+    ),
+    iterations = 10
+)
+
+println("Hierarchical RxInfer.jl simulation completed!")
+println("Lower level state estimates:")
+println("  Trust: ", results.posteriors[:trust])
+println("  Card: ", results.posteriors[:card])
+println("  Affect: ", results.posteriors[:affect])
+println("Higher level state estimates:")
+println("  Safety Self: ", results.posteriors[:safety_self])
+println("  Safety World: ", results.posteriors[:safety_world])
+println("  Safety Other: ", results.posteriors[:safety_other])
 """
     return code
 
@@ -357,7 +629,7 @@ def main():
                     }
                     
                     render_results["summary"]["code_files_generated"][target_name] += 1
-                    logger.info(f"  Generated {target_name}: {code_file.stat().st_size} bytes, {len(code.split('\n'))} lines")
+                    logger.info(f"  Generated {target_name}: {code_file.stat().st_size} bytes, {len(code.split(chr(10)))} lines")
                     
                 except Exception as e:
                     file_render_result["renders"][target_name] = {

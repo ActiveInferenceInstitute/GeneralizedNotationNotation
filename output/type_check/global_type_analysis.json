@@ -1,36 +1,33 @@
 {
   "type_analysis": {
-    "total_variables": 12,
+    "total_variables": 21,
     "type_distribution": {
-      "unknown": 12
+      "unknown": 21
     },
     "dimension_analysis": {
-      "max_dimensions": 3,
-      "avg_dimensions": 1.5,
+      "max_dimensions": 1,
+      "avg_dimensions": 1.0,
       "dimension_distribution": {
-        "2D": 4,
-        "3D": 1,
-        "1D": 7
+        "1D": 21
       }
     },
     "data_type_distribution": {
-      "float": 9,
-      "integer": 3
+      "float": 21
     },
     "complexity_metrics": {
-      "total_elements": 60,
-      "estimated_memory_bytes": 480,
-      "estimated_memory_mb": 0.000457763671875
+      "total_elements": 48,
+      "estimated_memory_bytes": 384,
+      "estimated_memory_mb": 0.0003662109375
     }
   },
   "connection_analysis": {
-    "total_connections": 11,
+    "total_connections": 13,
     "connection_type_distribution": {
-      "unknown": 11
+      "unknown": 13
     },
     "connectivity_metrics": {
-      "avg_connections_per_variable": 1.0,
-      "max_connections_per_variable": 3,
+      "avg_connections_per_variable": 0.7647058823529411,
+      "max_connections_per_variable": 2,
       "isolated_variables": 0
     },
     "graph_metrics": {
@@ -41,8 +38,8 @@
   },
   "complexity_analysis": {
     "inference_complexity": {
-      "operations_per_step": 660,
-      "memory_bandwidth_gb_s": 4.470348358154297e-07,
+      "operations_per_step": 624,
+      "memory_bandwidth_gb_s": 3.5762786865234375e-07,
       "parallelization_potential": "low"
     },
     "learning_complexity": {

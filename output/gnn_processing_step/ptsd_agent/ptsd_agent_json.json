@@ -1,0 +1,951 @@
+{
+  "annotation": "This hierarchical Active Inference agent consists of two levels:\n\n- **Lower Level Agent**: Processes sensorimotor information including trustworthiness, card states, affect, choices, and game stages\n- **Higher Level Agent**: Processes abstract safety concepts (self, world, other) based on lower-level posteriors\n\nThe agents communicate bidirectionally: lower-level posteriors become higher-level observations, and higher-level inferred states become lower-level priors.",
+  "checksum": null,
+  "connections": [
+    {
+      "connection_type": "directed",
+      "description": "Trust influences advice",
+      "source_variables": [
+        "Trustworthiness"
+      ],
+      "target_variables": [
+        "Advice"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Card state influences feedback",
+      "source_variables": [
+        "CorrectCard"
+      ],
+      "target_variables": [
+        "Feedback"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Affect influences arousal",
+      "source_variables": [
+        "Affect"
+      ],
+      "target_variables": [
+        "Arousal"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Choice influences choice observation",
+      "source_variables": [
+        "Choice"
+      ],
+      "target_variables": [
+        "ChoiceObs"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Stage influences advice availability",
+      "source_variables": [
+        "Stage"
+      ],
+      "target_variables": [
+        "Advice"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Safety influences trust observation",
+      "source_variables": [
+        "SafetySelf"
+      ],
+      "target_variables": [
+        "TrustworthinessObs"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "World safety influences card observation",
+      "source_variables": [
+        "SafetyWorld"
+      ],
+      "target_variables": [
+        "CorrectCardObs"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Other safety influences affect observation",
+      "source_variables": [
+        "SafetyOther"
+      ],
+      "target_variables": [
+        "AffectObs"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Lower to higher level mapping",
+      "source_variables": [
+        "Trustworthiness"
+      ],
+      "target_variables": [
+        "TrustworthinessObs"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Lower to higher level mapping",
+      "source_variables": [
+        "CorrectCard"
+      ],
+      "target_variables": [
+        "CorrectCardObs"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Lower to higher level mapping",
+      "source_variables": [
+        "Affect"
+      ],
+      "target_variables": [
+        "AffectObs"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Lower to higher level mapping",
+      "source_variables": [
+        "Choice"
+      ],
+      "target_variables": [
+        "ChoiceObsHigher"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "Lower to higher level mapping",
+      "source_variables": [
+        "Stage"
+      ],
+      "target_variables": [
+        "StageObs"
+      ],
+      "weight": null
+    }
+  ],
+  "created_at": "2025-07-25T22:44:10.752279",
+  "equations": [
+    "Equation(node_type='Equation', source_location=None, metadata={}, id='271d22f5-f15f-4d56-be85-53ba157e29b2', label=None, content='F = D_KL[Q(s)||P(s|o)] - ln P(o)                                   # Free Energy Q(s) = softmax(ln A + ln B + ln C + ln D)                          # Variational Message Passing π* = argmin_π F(π)                                                  # Policy Selection', format='latex', description=None)",
+    "Equation(node_type='Equation', source_location=None, metadata={}, id='054be701-12e4-4fd6-b562-fe833f344316', label=None, content='F_high = D_KL[Q(s_high)||P(s_high|o_high)] - ln P(o_high)         # Free Energy Q(s_high) = softmax(ln A_high + ln B_high + ln C_high + ln D_high) # Hierarchical Inference o_high = f(Q_low(s_low))                                            # Inter-level Coupling', format='latex', description=None)"
+  ],
+  "extensions": {
+    "footer": "This GNN specification defines a hierarchical Active Inference agent for PTSD modeling, with explicit inter-level communication and learning dynamics. The model captures the interaction between sensorimotor processing and abstract safety assessment in trauma-related decision making.",
+    "gnn_section": "PTSDHierarchicalActiveInferenceAgent",
+    "signature": "signature:\n  hash: \"sha256:...\"\n  timestamp: \"2024-12-20T00:00:00Z\"\n  version: \"1.0.0\"\n  author: \"Cooper\"\n  validation_status: \"draft\""
+  },
+  "model_name": "PTSD Hierarchical Active Inference Agent",
+  "modified_at": "2025-07-25T22:44:10.752279",
+  "ontology_mappings": [],
+  "parameters": [
+    {
+      "description": null,
+      "name": "A_lower_0",
+      "type_hint": null,
+      "value": [
+        [
+          0.9,
+          0.1,
+          0.0
+        ],
+        [
+          0.1,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "A_lower_1",
+      "type_hint": null,
+      "value": [
+        [
+          0.9,
+          0.1,
+          0.0
+        ],
+        [
+          0.1,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "A_lower_2",
+      "type_hint": null,
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "A_lower_3",
+      "type_hint": null,
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B_lower_0",
+      "type_hint": null,
+      "value": [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.1,
+          0.9
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B_lower_1",
+      "type_hint": null,
+      "value": [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.1,
+          0.9
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B_lower_2",
+      "type_hint": null,
+      "value": [
+        [
+          0.3333,
+          0.6667
+        ],
+        [
+          0.6667,
+          0.3333
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B_lower_3",
+      "type_hint": null,
+      "value": [
+        [
+          0.95,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.95,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.95
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B_lower_4",
+      "type_hint": null,
+      "value": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "C_lower_0",
+      "type_hint": null,
+      "value": [
+        0.3333,
+        0.3333,
+        0.3333
+      ]
+    },
+    {
+      "description": null,
+      "name": "C_lower_1",
+      "type_hint": null,
+      "value": [
+        0.5,
+        -3.5,
+        0.0
+      ]
+    },
+    {
+      "description": null,
+      "name": "C_lower_2",
+      "type_hint": null,
+      "value": [
+        0.65,
+        0.35
+      ]
+    },
+    {
+      "description": null,
+      "name": "C_lower_3",
+      "type_hint": null,
+      "value": [
+        0.3333,
+        0.3333,
+        0.3333
+      ]
+    },
+    {
+      "description": null,
+      "name": "D_lower_0",
+      "type_hint": null,
+      "value": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "description": null,
+      "name": "D_lower_1",
+      "type_hint": null,
+      "value": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "description": null,
+      "name": "D_lower_2",
+      "type_hint": null,
+      "value": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "description": null,
+      "name": "D_lower_3",
+      "type_hint": null,
+      "value": [
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "description": null,
+      "name": "D_lower_4",
+      "type_hint": null,
+      "value": [
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "description": null,
+      "name": "E_lower",
+      "type_hint": null,
+      "value": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "description": null,
+      "name": "A2_higher_0",
+      "type_hint": null,
+      "value": [
+        [
+          0.667,
+          0.333
+        ],
+        [
+          0.333,
+          0.667
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "A2_higher_1",
+      "type_hint": null,
+      "value": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "A2_higher_2",
+      "type_hint": null,
+      "value": [
+        [
+          0.333,
+          0.667
+        ],
+        [
+          0.667,
+          0.333
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "A2_higher_3",
+      "type_hint": null,
+      "value": [
+        [
+          0.333,
+          0.333,
+          0.333
+        ],
+        [
+          0.333,
+          0.333,
+          0.333
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "A2_higher_4",
+      "type_hint": null,
+      "value": [
+        [
+          0.333,
+          0.333,
+          0.333
+        ],
+        [
+          0.333,
+          0.333,
+          0.333
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B2_higher_0",
+      "type_hint": null,
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B2_higher_1",
+      "type_hint": null,
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B2_higher_2",
+      "type_hint": null,
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "C2_higher_0",
+      "type_hint": null,
+      "value": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "description": null,
+      "name": "C2_higher_1",
+      "type_hint": null,
+      "value": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "description": null,
+      "name": "C2_higher_2",
+      "type_hint": null,
+      "value": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "description": null,
+      "name": "C2_higher_3",
+      "type_hint": null,
+      "value": [
+        0.333,
+        0.333,
+        0.333
+      ]
+    },
+    {
+      "description": null,
+      "name": "C2_higher_4",
+      "type_hint": null,
+      "value": [
+        0.333,
+        0.333,
+        0.333
+      ]
+    },
+    {
+      "description": null,
+      "name": "D2_higher_0",
+      "type_hint": null,
+      "value": [
+        0.25,
+        0.75
+      ]
+    },
+    {
+      "description": null,
+      "name": "D2_higher_1",
+      "type_hint": null,
+      "value": [
+        0.25,
+        0.75
+      ]
+    },
+    {
+      "description": null,
+      "name": "D2_higher_2",
+      "type_hint": null,
+      "value": [
+        0.25,
+        0.75
+      ]
+    },
+    {
+      "description": null,
+      "name": "E2_higher",
+      "type_hint": null,
+      "value": [
+        0.0
+      ]
+    },
+    {
+      "description": null,
+      "name": "pA_lower",
+      "type_hint": null,
+      "value": 1.0
+    },
+    {
+      "description": null,
+      "name": "pB_lower",
+      "type_hint": null,
+      "value": 1.0
+    },
+    {
+      "description": null,
+      "name": "pD_lower",
+      "type_hint": null,
+      "value": 1.0
+    },
+    {
+      "description": null,
+      "name": "pA2_higher",
+      "type_hint": null,
+      "value": 1.0
+    },
+    {
+      "description": null,
+      "name": "pB2_higher",
+      "type_hint": null,
+      "value": 1.0
+    },
+    {
+      "description": null,
+      "name": "pD2_higher",
+      "type_hint": null,
+      "value": 1.0
+    },
+    {
+      "description": null,
+      "name": "p_advice",
+      "type_hint": null,
+      "value": 0.9
+    },
+    {
+      "description": null,
+      "name": "alpha",
+      "type_hint": null,
+      "value": 0.9
+    },
+    {
+      "description": null,
+      "name": "p_Btrust",
+      "type_hint": null,
+      "value": 0.9
+    },
+    {
+      "description": null,
+      "name": "p_Bcorrectcard",
+      "type_hint": null,
+      "value": 0.9
+    },
+    {
+      "description": null,
+      "name": "p_Bchoice",
+      "type_hint": null,
+      "value": 0.95
+    },
+    {
+      "description": null,
+      "name": "p_Bstage",
+      "type_hint": null,
+      "value": 1.0
+    },
+    {
+      "description": null,
+      "name": "cc",
+      "type_hint": null,
+      "value": 0.5
+    },
+    {
+      "description": null,
+      "name": "arousal_low_preference",
+      "type_hint": null,
+      "value": 0.35
+    },
+    {
+      "description": null,
+      "name": "trust_safety_association",
+      "type_hint": null,
+      "value": 0.667
+    },
+    {
+      "description": null,
+      "name": "affect_safety_association",
+      "type_hint": null,
+      "value": 0.667
+    },
+    {
+      "description": null,
+      "name": "prior_on_danger",
+      "type_hint": null,
+      "value": 0.75
+    },
+    {
+      "description": null,
+      "name": "gamma",
+      "type_hint": null,
+      "value": 16.0
+    },
+    {
+      "description": null,
+      "name": "alpha_policy",
+      "type_hint": null,
+      "value": 16.0
+    }
+  ],
+  "time_specification": {
+    "discretization": null,
+    "horizon": null,
+    "step_size": null,
+    "time_type": "Static"
+  },
+  "variables": [
+    {
+      "data_type": "float",
+      "description": "Hidden state: trust, distrust",
+      "dimensions": [
+        2
+      ],
+      "name": "Trustworthiness",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Hidden state: blue, green",
+      "dimensions": [
+        2
+      ],
+      "name": "CorrectCard",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Hidden state: angry, calm",
+      "dimensions": [
+        2
+      ],
+      "name": "Affect",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Hidden state: blue, green, null",
+      "dimensions": [
+        3
+      ],
+      "name": "Choice",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Hidden state: null, advice, decision",
+      "dimensions": [
+        3
+      ],
+      "name": "Stage",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Observation: blue, green, null",
+      "dimensions": [
+        3
+      ],
+      "name": "Advice",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Observation: correct, incorrect, null",
+      "dimensions": [
+        3
+      ],
+      "name": "Feedback",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Observation: high, low",
+      "dimensions": [
+        2
+      ],
+      "name": "Arousal",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Observation: blue, green, null",
+      "dimensions": [
+        3
+      ],
+      "name": "ChoiceObs",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "float",
+      "description": "Actions: trust, distrust",
+      "dimensions": [
+        2
+      ],
+      "name": "TrustActions",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Actions: blue, green, null",
+      "dimensions": [
+        3
+      ],
+      "name": "CardActions",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Actions: NULL",
+      "dimensions": [
+        1
+      ],
+      "name": "NullActions",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Hidden state: safe, danger",
+      "dimensions": [
+        2
+      ],
+      "name": "SafetySelf",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Hidden state: safe, danger",
+      "dimensions": [
+        2
+      ],
+      "name": "SafetyWorld",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Hidden state: safe, danger",
+      "dimensions": [
+        2
+      ],
+      "name": "SafetyOther",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Observation from lower level",
+      "dimensions": [
+        2
+      ],
+      "name": "TrustworthinessObs",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "float",
+      "description": "Observation from lower level",
+      "dimensions": [
+        2
+      ],
+      "name": "CorrectCardObs",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "float",
+      "description": "Observation from lower level",
+      "dimensions": [
+        2
+      ],
+      "name": "AffectObs",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Observation from lower level",
+      "dimensions": [
+        3
+      ],
+      "name": "ChoiceObsHigher",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "float",
+      "description": "Observation from lower level",
+      "dimensions": [
+        3
+      ],
+      "name": "StageObs",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Actions: NULL",
+      "dimensions": [
+        1
+      ],
+      "name": "NullActionsHigher",
+      "var_type": "action"
+    }
+  ],
+  "version": "1.0"
+}

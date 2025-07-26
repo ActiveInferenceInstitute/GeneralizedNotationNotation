@@ -1,34 +1,34 @@
 {
-  "timestamp": "2025-07-24T10:58:26.775495",
-  "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators",
+  "timestamp": "2025-07-25T22:45:19.498305",
+  "source_directory": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files",
+  "output_directory": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_rendered_simulators",
   "files_rendered": [
     {
-      "file_name": "actinf_pomdp_agent.md",
-      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "ptsd_agent.md",
+      "file_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files\\ptsd_agent.md",
       "renders": {
         "pymdp": {
-          "output_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py",
+          "output_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_rendered_simulators\\ptsd_agent\\ptsd_agent_pymdp.py",
           "success": true,
-          "file_size": 1348,
+          "file_size": 1434,
           "lines_of_code": 54
         },
         "rxinfer": {
-          "output_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/actinf_pomdp_agent/actinf_pomdp_agent_rxinfer.jl",
+          "output_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_rendered_simulators\\ptsd_agent\\ptsd_agent_rxinfer.jl",
           "success": true,
-          "file_size": 1134,
-          "lines_of_code": 46
+          "file_size": 1143,
+          "lines_of_code": 51
         },
         "activeinference_jl": {
-          "output_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/actinf_pomdp_agent/actinf_pomdp_agent_activeinference_jl.jl",
+          "output_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_rendered_simulators\\ptsd_agent\\ptsd_agent_activeinference_jl.jl",
           "success": true,
-          "file_size": 1014,
+          "file_size": 1056,
           "lines_of_code": 43
         },
         "discopy": {
-          "output_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/gnn_rendered_simulators/actinf_pomdp_agent/actinf_pomdp_agent_discopy.py",
+          "output_path": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\gnn_rendered_simulators\\ptsd_agent\\ptsd_agent_discopy.py",
           "success": true,
-          "file_size": 1179,
+          "file_size": 1225,
           "lines_of_code": 47
         }
       },

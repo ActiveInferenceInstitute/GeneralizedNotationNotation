@@ -1,7 +1,7 @@
 {
   "status": "completed",
-  "target_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/ml_integration",
+  "target_dir": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\input\\gnn_files",
+  "output_dir": "C:\\Users\\andre\\.cursor\\GeneralizedNotationNotation\\output\\ml_integration",
   "recursive": true,
   "verbose": true,
   "ml_models_trained": 0,

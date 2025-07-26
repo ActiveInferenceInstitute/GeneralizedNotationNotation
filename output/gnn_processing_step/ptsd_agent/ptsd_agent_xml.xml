@@ -1,0 +1,164 @@
+<?xml version="1.0" ?>
+<gnn_model name="PTSD Hierarchical Active Inference Agent" version="1.0">
+  <metadata>
+    <annotation>This hierarchical Active Inference agent consists of two levels:
+- **Lower Level Agent**: Processes sensorimotor information including trustworthiness, card states, affect, choices, and game stages
+- **Higher Level Agent**: Processes abstract safety concepts (self, world, other) based on lower-level posteriors
+The agents communicate bidirectionally: lower-level posteriors become higher-level observations, and higher-level inferred states become lower-level priors.</annotation>
+    <created_at>2025-07-25T22:44:10.752279</created_at>
+    <modified_at>2025-07-25T22:44:10.752279</modified_at>
+  </metadata>
+  <variables>
+    <variable data_type="float" dimensions="3" name="Advice" type="action" description="Observation: blue, green, null"/>
+    <variable data_type="float" dimensions="2" name="Affect" type="action" description="Hidden state: angry, calm"/>
+    <variable data_type="float" dimensions="2" name="AffectObs" type="action" description="Observation from lower level"/>
+    <variable data_type="float" dimensions="2" name="Arousal" type="action" description="Observation: high, low"/>
+    <variable data_type="float" dimensions="3" name="CardActions" type="action" description="Actions: blue, green, null"/>
+    <variable data_type="float" dimensions="3" name="Choice" type="hidden_state" description="Hidden state: blue, green, null"/>
+    <variable data_type="float" dimensions="3" name="ChoiceObs" type="observation" description="Observation: blue, green, null"/>
+    <variable data_type="float" dimensions="3" name="ChoiceObsHigher" type="observation" description="Observation from lower level"/>
+    <variable data_type="float" dimensions="2" name="CorrectCard" type="hidden_state" description="Hidden state: blue, green"/>
+    <variable data_type="float" dimensions="2" name="CorrectCardObs" type="observation" description="Observation from lower level"/>
+    <variable data_type="float" dimensions="3" name="Feedback" type="hidden_state" description="Observation: correct, incorrect, null"/>
+    <variable data_type="float" dimensions="1" name="NullActions" type="action" description="Actions: NULL"/>
+    <variable data_type="float" dimensions="1" name="NullActionsHigher" type="action" description="Actions: NULL"/>
+    <variable data_type="float" dimensions="2" name="SafetyOther" type="hidden_state" description="Hidden state: safe, danger"/>
+    <variable data_type="float" dimensions="2" name="SafetySelf" type="hidden_state" description="Hidden state: safe, danger"/>
+    <variable data_type="float" dimensions="2" name="SafetyWorld" type="hidden_state" description="Hidden state: safe, danger"/>
+    <variable data_type="float" dimensions="3" name="Stage" type="hidden_state" description="Hidden state: null, advice, decision"/>
+    <variable data_type="float" dimensions="3" name="StageObs" type="hidden_state" description="Observation from lower level"/>
+    <variable data_type="float" dimensions="2" name="TrustActions" type="action" description="Actions: trust, distrust"/>
+    <variable data_type="float" dimensions="2" name="Trustworthiness" type="hidden_state" description="Hidden state: trust, distrust"/>
+    <variable data_type="float" dimensions="2" name="TrustworthinessObs" type="observation" description="Observation from lower level"/>
+  </variables>
+  <connections>
+    <connection type="directed">
+      <sources>Affect</sources>
+      <targets>AffectObs</targets>
+      <description>Lower to higher level mapping</description>
+    </connection>
+    <connection type="directed">
+      <sources>Affect</sources>
+      <targets>Arousal</targets>
+      <description>Affect influences arousal</description>
+    </connection>
+    <connection type="directed">
+      <sources>Choice</sources>
+      <targets>ChoiceObs</targets>
+      <description>Choice influences choice observation</description>
+    </connection>
+    <connection type="directed">
+      <sources>Choice</sources>
+      <targets>ChoiceObsHigher</targets>
+      <description>Lower to higher level mapping</description>
+    </connection>
+    <connection type="directed">
+      <sources>CorrectCard</sources>
+      <targets>CorrectCardObs</targets>
+      <description>Lower to higher level mapping</description>
+    </connection>
+    <connection type="directed">
+      <sources>CorrectCard</sources>
+      <targets>Feedback</targets>
+      <description>Card state influences feedback</description>
+    </connection>
+    <connection type="directed">
+      <sources>SafetyOther</sources>
+      <targets>AffectObs</targets>
+      <description>Other safety influences affect observation</description>
+    </connection>
+    <connection type="directed">
+      <sources>SafetySelf</sources>
+      <targets>TrustworthinessObs</targets>
+      <description>Safety influences trust observation</description>
+    </connection>
+    <connection type="directed">
+      <sources>SafetyWorld</sources>
+      <targets>CorrectCardObs</targets>
+      <description>World safety influences card observation</description>
+    </connection>
+    <connection type="directed">
+      <sources>Stage</sources>
+      <targets>Advice</targets>
+      <description>Stage influences advice availability</description>
+    </connection>
+    <connection type="directed">
+      <sources>Stage</sources>
+      <targets>StageObs</targets>
+      <description>Lower to higher level mapping</description>
+    </connection>
+    <connection type="directed">
+      <sources>Trustworthiness</sources>
+      <targets>Advice</targets>
+      <description>Trust influences advice</description>
+    </connection>
+    <connection type="directed">
+      <sources>Trustworthiness</sources>
+      <targets>TrustworthinessObs</targets>
+      <description>Lower to higher level mapping</description>
+    </connection>
+  </connections>
+  <parameters>
+    <parameter name="A2_higher_0">[[0.667, 0.333], [0.333, 0.667]]</parameter>
+    <parameter name="A2_higher_1">[[0.5, 0.5], [0.5, 0.5]]</parameter>
+    <parameter name="A2_higher_2">[[0.333, 0.667], [0.667, 0.333]]</parameter>
+    <parameter name="A2_higher_3">[[0.333, 0.333, 0.333], [0.333, 0.333, 0.333]]</parameter>
+    <parameter name="A2_higher_4">[[0.333, 0.333, 0.333], [0.333, 0.333, 0.333]]</parameter>
+    <parameter name="A_lower_0">[[0.9, 0.1, 0.0], [0.1, 0.9, 0.0], [0.0, 0.0, 1.0]]</parameter>
+    <parameter name="A_lower_1">[[0.9, 0.1, 0.0], [0.1, 0.9, 0.0], [0.0, 0.0, 1.0]]</parameter>
+    <parameter name="A_lower_2">[[1.0, 0.0], [0.0, 1.0]]</parameter>
+    <parameter name="A_lower_3">[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]</parameter>
+    <parameter name="B2_higher_0">[[1.0, 0.0], [0.0, 1.0]]</parameter>
+    <parameter name="B2_higher_1">[[1.0, 0.0], [0.0, 1.0]]</parameter>
+    <parameter name="B2_higher_2">[[1.0, 0.0], [0.0, 1.0]]</parameter>
+    <parameter name="B_lower_0">[[0.9, 0.1], [0.1, 0.9]]</parameter>
+    <parameter name="B_lower_1">[[0.9, 0.1], [0.1, 0.9]]</parameter>
+    <parameter name="B_lower_2">[[0.3333, 0.6667], [0.6667, 0.3333]]</parameter>
+    <parameter name="B_lower_3">[[0.95, 0.025, 0.025], [0.025, 0.95, 0.025], [0.025, 0.025, 0.95]]</parameter>
+    <parameter name="B_lower_4">[[0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0]]</parameter>
+    <parameter name="C2_higher_0">[0.5, 0.5]</parameter>
+    <parameter name="C2_higher_1">[0.5, 0.5]</parameter>
+    <parameter name="C2_higher_2">[1.0, 0.0]</parameter>
+    <parameter name="C2_higher_3">[0.333, 0.333, 0.333]</parameter>
+    <parameter name="C2_higher_4">[0.333, 0.333, 0.333]</parameter>
+    <parameter name="C_lower_0">[0.3333, 0.3333, 0.3333]</parameter>
+    <parameter name="C_lower_1">[0.5, -3.5, 0.0]</parameter>
+    <parameter name="C_lower_2">[0.65, 0.35]</parameter>
+    <parameter name="C_lower_3">[0.3333, 0.3333, 0.3333]</parameter>
+    <parameter name="D2_higher_0">[0.25, 0.75]</parameter>
+    <parameter name="D2_higher_1">[0.25, 0.75]</parameter>
+    <parameter name="D2_higher_2">[0.25, 0.75]</parameter>
+    <parameter name="D_lower_0">[0.5, 0.5]</parameter>
+    <parameter name="D_lower_1">[0.5, 0.5]</parameter>
+    <parameter name="D_lower_2">[0.5, 0.5]</parameter>
+    <parameter name="D_lower_3">[0.0, 0.0, 1.0]</parameter>
+    <parameter name="D_lower_4">[1.0, 0.0, 0.0]</parameter>
+    <parameter name="E2_higher">[0.0]</parameter>
+    <parameter name="E_lower">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</parameter>
+    <parameter name="affect_safety_association">0.667</parameter>
+    <parameter name="alpha">0.9</parameter>
+    <parameter name="alpha_policy">16.0</parameter>
+    <parameter name="arousal_low_preference">0.35</parameter>
+    <parameter name="cc">0.5</parameter>
+    <parameter name="gamma">16.0</parameter>
+    <parameter name="pA2_higher">1.0</parameter>
+    <parameter name="pA_lower">1.0</parameter>
+    <parameter name="pB2_higher">1.0</parameter>
+    <parameter name="pB_lower">1.0</parameter>
+    <parameter name="pD2_higher">1.0</parameter>
+    <parameter name="pD_lower">1.0</parameter>
+    <parameter name="p_Bchoice">0.95</parameter>
+    <parameter name="p_Bcorrectcard">0.9</parameter>
+    <parameter name="p_Bstage">1.0</parameter>
+    <parameter name="p_Btrust">0.9</parameter>
+    <parameter name="p_advice">0.9</parameter>
+    <parameter name="prior_on_danger">0.75</parameter>
+    <parameter name="trust_safety_association">0.667</parameter>
+  </parameters>
+  <equations>
+    <equation format="latex">F = D_KL[Q(s)||P(s|o)] - ln P(o)                                   # Free Energy Q(s) = softmax(ln A + ln B + ln C + ln D)                          # Variational Message Passing π* = argmin_π F(π)                                                  # Policy Selection</equation>
+    <equation format="latex">F_high = D_KL[Q(s_high)||P(s_high|o_high)] - ln P(o_high)         # Free Energy Q(s_high) = softmax(ln A_high + ln B_high + ln C_high + ln D_high) # Hierarchical Inference o_high = f(Q_low(s_low))                                            # Inter-level Coupling</equation>
+  </equations>
+  <time_specification type="Static"/>
+<!-- MODEL_DATA: {"model_name":"PTSD Hierarchical Active Inference Agent","annotation":"This hierarchical Active Inference agent consists of two levels:\n\n- **Lower Level Agent**: Processes sensorimotor information including trustworthiness, card states, affect, choices, and game stages\n- **Higher Level Agent**: Processes abstract safety concepts (self, world, other) based on lower-level posteriors\n\nThe agents communicate bidirectionally: lower-level posteriors become higher-level observations, and higher-level inferred states become lower-level priors.","variables":[{"name":"Trustworthiness","var_type":"hidden_state","data_type":"float","dimensions":[2]},{"name":"CorrectCard","var_type":"hidden_state","data_type":"float","dimensions":[2]},{"name":"Affect","var_type":"action","data_type":"float","dimensions":[2]},{"name":"Choice","var_type":"hidden_state","data_type":"float","dimensions":[3]},{"name":"Stage","var_type":"hidden_state","data_type":"float","dimensions":[3]},{"name":"Advice","var_type":"action","data_type":"float","dimensions":[3]},{"name":"Feedback","var_type":"hidden_state","data_type":"float","dimensions":[3]},{"name":"Arousal","var_type":"action","data_type":"float","dimensions":[2]},{"name":"ChoiceObs","var_type":"observation","data_type":"float","dimensions":[3]},{"name":"TrustActions","var_type":"action","data_type":"float","dimensions":[2]},{"name":"CardActions","var_type":"action","data_type":"float","dimensions":[3]},{"name":"NullActions","var_type":"action","data_type":"float","dimensions":[1]},{"name":"SafetySelf","var_type":"hidden_state","data_type":"float","dimensions":[2]},{"name":"SafetyWorld","var_type":"hidden_state","data_type":"float","dimensions":[2]},{"name":"SafetyOther","var_type":"hidden_state","data_type":"float","dimensions":[2]},{"name":"TrustworthinessObs","var_type":"observation","data_type":"float","dimensions":[2]},{"name":"CorrectCardObs","var_type":"observation","data_type":"float","dimensions":[2]},{"name":"AffectObs","var_type":"action","data_type":"float","dimensions":[2]},{"name":"ChoiceObsHigher","var_type":"observation","data_type":"float","dimensions":[3]},{"name":"StageObs","var_type":"hidden_state","data_type":"float","dimensions":[3]},{"name":"NullActionsHigher","var_type":"action","data_type":"float","dimensions":[1]}],"connections":[{"source_variables":["Trustworthiness"],"target_variables":["Advice"],"connection_type":"directed"},{"source_variables":["CorrectCard"],"target_variables":["Feedback"],"connection_type":"directed"},{"source_variables":["Affect"],"target_variables":["Arousal"],"connection_type":"directed"},{"source_variables":["Choice"],"target_variables":["ChoiceObs"],"connection_type":"directed"},{"source_variables":["Stage"],"target_variables":["Advice"],"connection_type":"directed"},{"source_variables":["SafetySelf"],"target_variables":["TrustworthinessObs"],"connection_type":"directed"},{"source_variables":["SafetyWorld"],"target_variables":["CorrectCardObs"],"connection_type":"directed"},{"source_variables":["SafetyOther"],"target_variables":["AffectObs"],"connection_type":"directed"},{"source_variables":["Trustworthiness"],"target_variables":["TrustworthinessObs"],"connection_type":"directed"},{"source_variables":["CorrectCard"],"target_variables":["CorrectCardObs"],"connection_type":"directed"},{"source_variables":["Affect"],"target_variables":["AffectObs"],"connection_type":"directed"},{"source_variables":["Choice"],"target_variables":["ChoiceObsHigher"],"connection_type":"directed"},{"source_variables":["Stage"],"target_variables":["StageObs"],"connection_type":"directed"}],"parameters":[{"name":"A_lower_0","value":[[0.9,0.1,0.0],[0.1,0.9,0.0],[0.0,0.0,1.0]],"param_type":"constant"},{"name":"A_lower_1","value":[[0.9,0.1,0.0],[0.1,0.9,0.0],[0.0,0.0,1.0]],"param_type":"constant"},{"name":"A_lower_2","value":[[1.0,0.0],[0.0,1.0]],"param_type":"constant"},{"name":"A_lower_3","value":[[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]],"param_type":"constant"},{"name":"B_lower_0","value":[[0.9,0.1],[0.1,0.9]],"param_type":"constant"},{"name":"B_lower_1","value":[[0.9,0.1],[0.1,0.9]],"param_type":"constant"},{"name":"B_lower_2","value":[[0.3333,0.6667],[0.6667,0.3333]],"param_type":"constant"},{"name":"B_lower_3","value":[[0.95,0.025,0.025],[0.025,0.95,0.025],[0.025,0.025,0.95]],"param_type":"constant"},{"name":"B_lower_4","value":[[0.0,1.0,0.0],[0.0,0.0,1.0],[1.0,0.0,0.0]],"param_type":"constant"},{"name":"C_lower_0","value":[0.3333,0.3333,0.3333],"param_type":"constant"},{"name":"C_lower_1","value":[0.5,-3.5,0.0],"param_type":"constant"},{"name":"C_lower_2","value":[0.65,0.35],"param_type":"constant"},{"name":"C_lower_3","value":[0.3333,0.3333,0.3333],"param_type":"constant"},{"name":"D_lower_0","value":[0.5,0.5],"param_type":"constant"},{"name":"D_lower_1","value":[0.5,0.5],"param_type":"constant"},{"name":"D_lower_2","value":[0.5,0.5],"param_type":"constant"},{"name":"D_lower_3","value":[0.0,0.0,1.0],"param_type":"constant"},{"name":"D_lower_4","value":[1.0,0.0,0.0],"param_type":"constant"},{"name":"E_lower","value":[0.0,0.0,0.0,0.0,0.0,0.0],"param_type":"constant"},{"name":"A2_higher_0","value":[[0.667,0.333],[0.333,0.667]],"param_type":"constant"},{"name":"A2_higher_1","value":[[0.5,0.5],[0.5,0.5]],"param_type":"constant"},{"name":"A2_higher_2","value":[[0.333,0.667],[0.667,0.333]],"param_type":"constant"},{"name":"A2_higher_3","value":[[0.333,0.333,0.333],[0.333,0.333,0.333]],"param_type":"constant"},{"name":"A2_higher_4","value":[[0.333,0.333,0.333],[0.333,0.333,0.333]],"param_type":"constant"},{"name":"B2_higher_0","value":[[1.0,0.0],[0.0,1.0]],"param_type":"constant"},{"name":"B2_higher_1","value":[[1.0,0.0],[0.0,1.0]],"param_type":"constant"},{"name":"B2_higher_2","value":[[1.0,0.0],[0.0,1.0]],"param_type":"constant"},{"name":"C2_higher_0","value":[0.5,0.5],"param_type":"constant"},{"name":"C2_higher_1","value":[0.5,0.5],"param_type":"constant"},{"name":"C2_higher_2","value":[1.0,0.0],"param_type":"constant"},{"name":"C2_higher_3","value":[0.333,0.333,0.333],"param_type":"constant"},{"name":"C2_higher_4","value":[0.333,0.333,0.333],"param_type":"constant"},{"name":"D2_higher_0","value":[0.25,0.75],"param_type":"constant"},{"name":"D2_higher_1","value":[0.25,0.75],"param_type":"constant"},{"name":"D2_higher_2","value":[0.25,0.75],"param_type":"constant"},{"name":"E2_higher","value":[0.0],"param_type":"constant"},{"name":"pA_lower","value":1.0,"param_type":"constant"},{"name":"pB_lower","value":1.0,"param_type":"constant"},{"name":"pD_lower","value":1.0,"param_type":"constant"},{"name":"pA2_higher","value":1.0,"param_type":"constant"},{"name":"pB2_higher","value":1.0,"param_type":"constant"},{"name":"pD2_higher","value":1.0,"param_type":"constant"},{"name":"p_advice","value":0.9,"param_type":"constant"},{"name":"alpha","value":0.9,"param_type":"constant"},{"name":"p_Btrust","value":0.9,"param_type":"constant"},{"name":"p_Bcorrectcard","value":0.9,"param_type":"constant"},{"name":"p_Bchoice","value":0.95,"param_type":"constant"},{"name":"p_Bstage","value":1.0,"param_type":"constant"},{"name":"cc","value":0.5,"param_type":"constant"},{"name":"arousal_low_preference","value":0.35,"param_type":"constant"},{"name":"trust_safety_association","value":0.667,"param_type":"constant"},{"name":"affect_safety_association","value":0.667,"param_type":"constant"},{"name":"prior_on_danger","value":0.75,"param_type":"constant"},{"name":"gamma","value":16.0,"param_type":"constant"},{"name":"alpha_policy","value":16.0,"param_type":"constant"}],"equations":["Equation(node_type='Equation', source_location=None, metadata={}, id='271d22f5-f15f-4d56-be85-53ba157e29b2', label=None, content='F = D_KL[Q(s)||P(s|o)] - ln P(o)                                   # Free Energy Q(s) = softmax(ln A + ln B + ln C + ln D)                          # Variational Message Passing \u03c0* = argmin_\u03c0 F(\u03c0)                                                  # Policy Selection', format='latex', description=None)","Equation(node_type='Equation', source_location=None, metadata={}, id='054be701-12e4-4fd6-b562-fe833f344316', label=None, content='F_high = D_KL[Q(s_high)||P(s_high|o_high)] - ln P(o_high)         # Free Energy Q(s_high) = softmax(ln A_high + ln B_high + ln C_high + ln D_high) # Hierarchical Inference o_high = f(Q_low(s_low))                                            # Inter-level Coupling', format='latex', description=None)"],"time_specification":{"time_type":"Static","discretization":null,"horizon":null,"step_size":null},"ontology_mappings":[]} -->
+</gnn_model>

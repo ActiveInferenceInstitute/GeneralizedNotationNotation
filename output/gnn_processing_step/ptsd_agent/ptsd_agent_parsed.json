@@ -1,0 +1,1365 @@
+{
+  "model_name": "PTSD Hierarchical Active Inference Agent",
+  "version": "1.0",
+  "annotation": "This hierarchical Active Inference agent consists of two levels:\n\n- **Lower Level Agent**: Processes sensorimotor information including trustworthiness, card states, affect, choices, and game stages\n- **Higher Level Agent**: Processes abstract safety concepts (self, world, other) based on lower-level posteriors\n\nThe agents communicate bidirectionally: lower-level posteriors become higher-level observations, and higher-level inferred states become lower-level priors.",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "71802a56-8c78-4b0e-bc74-06fef962827d",
+      "name": "Trustworthiness",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Hidden state: trust, distrust",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "33b92de3-0224-4914-8a10-a0bf77c7a228",
+      "name": "CorrectCard",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Hidden state: blue, green",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "358fa16c-27d2-4022-af85-0622b409ed98",
+      "name": "Affect",
+      "var_type": "action",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Hidden state: angry, calm",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "dcb3a271-7202-4e27-92a9-92ae9143f8d1",
+      "name": "Choice",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Hidden state: blue, green, null",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f38d81b5-f0ff-4d79-83cd-7348d189451c",
+      "name": "Stage",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Hidden state: null, advice, decision",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "af52d1d9-ef1c-40c2-8539-3382c7397a65",
+      "name": "Advice",
+      "var_type": "action",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Observation: blue, green, null",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4d0b2762-dae1-42d0-b238-9249085b1d05",
+      "name": "Feedback",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Observation: correct, incorrect, null",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2e2e7267-aabe-4b48-a29c-d95fe6c96118",
+      "name": "Arousal",
+      "var_type": "action",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Observation: high, low",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "31508ece-243e-448c-a1b9-aceb1928528a",
+      "name": "ChoiceObs",
+      "var_type": "observation",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Observation: blue, green, null",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "45ef19b8-5a1b-480c-b166-d06cb153f4b5",
+      "name": "TrustActions",
+      "var_type": "action",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Actions: trust, distrust",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "25eb7a87-fa5c-4347-881b-b53789adbaff",
+      "name": "CardActions",
+      "var_type": "action",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Actions: blue, green, null",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "093dfade-b8c3-4801-ba8e-ac2e63d82c95",
+      "name": "NullActions",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Actions: NULL",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c3cc5e62-efd2-4609-b83c-3dff60ce3a07",
+      "name": "SafetySelf",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Hidden state: safe, danger",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3712ff19-6ba5-444c-8847-94e27a5a9026",
+      "name": "SafetyWorld",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Hidden state: safe, danger",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0f66bece-8a3a-4bf5-b363-c123f5fd5320",
+      "name": "SafetyOther",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Hidden state: safe, danger",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "647b05ec-64df-4cff-ba84-bcb4f36982d6",
+      "name": "TrustworthinessObs",
+      "var_type": "observation",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Observation from lower level",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "05fdb69f-a5e1-4855-919b-7838500cfe29",
+      "name": "CorrectCardObs",
+      "var_type": "observation",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Observation from lower level",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "49bfc0dc-6b40-4e5f-aea8-77098e207f74",
+      "name": "AffectObs",
+      "var_type": "action",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Observation from lower level",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "791c1dc7-5f61-4448-a46d-da809c34b6de",
+      "name": "ChoiceObsHigher",
+      "var_type": "observation",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Observation from lower level",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "47c772d6-5c82-43c0-bff0-2c0e1b9d670e",
+      "name": "StageObs",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Observation from lower level",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "10850ac8-073a-4cbc-a608-51a448320ae5",
+      "name": "NullActionsHigher",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Actions: NULL",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "112f3d7d-2e17-409e-9167-a3dbcdfb9476",
+      "source_variables": [
+        "Trustworthiness"
+      ],
+      "target_variables": [
+        "Advice"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Trust influences advice"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d89f6336-518e-493d-81ff-b480a1f28295",
+      "source_variables": [
+        "CorrectCard"
+      ],
+      "target_variables": [
+        "Feedback"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Card state influences feedback"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a1b14325-ce99-49ff-9a2f-8b6bafdafd12",
+      "source_variables": [
+        "Affect"
+      ],
+      "target_variables": [
+        "Arousal"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Affect influences arousal"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "42346e8d-a67a-49b3-8e57-7d9d596ab215",
+      "source_variables": [
+        "Choice"
+      ],
+      "target_variables": [
+        "ChoiceObs"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Choice influences choice observation"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0091933b-101d-4bdc-b718-3a29ed03e67c",
+      "source_variables": [
+        "Stage"
+      ],
+      "target_variables": [
+        "Advice"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Stage influences advice availability"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0aa1643e-9d10-4916-9c55-75402e2e728e",
+      "source_variables": [
+        "SafetySelf"
+      ],
+      "target_variables": [
+        "TrustworthinessObs"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Safety influences trust observation"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d581d12c-8c25-4768-b838-059140b264bd",
+      "source_variables": [
+        "SafetyWorld"
+      ],
+      "target_variables": [
+        "CorrectCardObs"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "World safety influences card observation"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e7f12f59-c294-4918-b6dd-4065c3003621",
+      "source_variables": [
+        "SafetyOther"
+      ],
+      "target_variables": [
+        "AffectObs"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Other safety influences affect observation"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "8304bc5c-cb42-4f69-a5ff-ba6f43f9eec2",
+      "source_variables": [
+        "Trustworthiness"
+      ],
+      "target_variables": [
+        "TrustworthinessObs"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Lower to higher level mapping"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "89223dae-30d5-411e-846d-8b1e60298778",
+      "source_variables": [
+        "CorrectCard"
+      ],
+      "target_variables": [
+        "CorrectCardObs"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Lower to higher level mapping"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0c4f05aa-e0e9-47aa-a843-07b1725dcf98",
+      "source_variables": [
+        "Affect"
+      ],
+      "target_variables": [
+        "AffectObs"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Lower to higher level mapping"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d77437fa-0fee-4caa-966d-077ee49b154a",
+      "source_variables": [
+        "Choice"
+      ],
+      "target_variables": [
+        "ChoiceObsHigher"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Lower to higher level mapping"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "50ee9b66-2ae0-471f-8bd0-9eb290de06bc",
+      "source_variables": [
+        "Stage"
+      ],
+      "target_variables": [
+        "StageObs"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Lower to higher level mapping"
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7b701b71-17ef-4e57-9ae9-00f07259da9c",
+      "name": "A_lower_0",
+      "value": [
+        [
+          0.9,
+          0.1,
+          0.0
+        ],
+        [
+          0.1,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "8a05fcc8-826e-4f45-9857-466f32743d78",
+      "name": "A_lower_1",
+      "value": [
+        [
+          0.9,
+          0.1,
+          0.0
+        ],
+        [
+          0.1,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "82748a51-1439-464a-acf9-f10d6f74ab8c",
+      "name": "A_lower_2",
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7a3cd9ee-8ecd-410c-b153-4738527da86a",
+      "name": "A_lower_3",
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "37e61e1b-504f-44fb-be4b-3e772f1a5da0",
+      "name": "B_lower_0",
+      "value": [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.1,
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "9a9329f6-7b3c-4a38-8ae3-8d5f33ee3ba0",
+      "name": "B_lower_1",
+      "value": [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.1,
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "9e259329-fa80-43de-96d4-bd4e39c50754",
+      "name": "B_lower_2",
+      "value": [
+        [
+          0.3333,
+          0.6667
+        ],
+        [
+          0.6667,
+          0.3333
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "178e7084-71bd-4b8e-8248-2e33d5fb79cc",
+      "name": "B_lower_3",
+      "value": [
+        [
+          0.95,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.95,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.95
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c00c36fd-65bd-4ec8-9679-01851fe4c6a5",
+      "name": "B_lower_4",
+      "value": [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "db999c73-ba15-4232-9f8d-fd32bbf8f05e",
+      "name": "C_lower_0",
+      "value": [
+        0.3333,
+        0.3333,
+        0.3333
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "67a6c71e-b98a-4887-a5a7-12a9c8a1cccd",
+      "name": "C_lower_1",
+      "value": [
+        0.5,
+        -3.5,
+        0.0
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ff199a19-1558-4072-a6c5-c6748d07bda6",
+      "name": "C_lower_2",
+      "value": [
+        0.65,
+        0.35
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "cba6e0df-960a-494a-8a8e-688fe8759b6a",
+      "name": "C_lower_3",
+      "value": [
+        0.3333,
+        0.3333,
+        0.3333
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "6b7098c8-9870-4864-8f5a-06e3a2f3c359",
+      "name": "D_lower_0",
+      "value": [
+        0.5,
+        0.5
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ac117bf9-9f50-4e35-958c-21b2f189f82d",
+      "name": "D_lower_1",
+      "value": [
+        0.5,
+        0.5
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5ec7b2d1-b9ce-4d3d-b0f2-253df78b8668",
+      "name": "D_lower_2",
+      "value": [
+        0.5,
+        0.5
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "18cbdd21-e544-4d4a-8b12-f2e616e9e0fd",
+      "name": "D_lower_3",
+      "value": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "57bb9d8d-3706-425c-9a3d-c8b80d5dcd83",
+      "name": "D_lower_4",
+      "value": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "4f62669c-d030-46cf-b782-8e88902c112f",
+      "name": "E_lower",
+      "value": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "f479b843-6f89-487b-a9ae-2f72ec8e22b4",
+      "name": "A2_higher_0",
+      "value": [
+        [
+          0.667,
+          0.333
+        ],
+        [
+          0.333,
+          0.667
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "f8f5d3ab-6193-454c-b688-c6f966d060b2",
+      "name": "A2_higher_1",
+      "value": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c13a8e9d-fe7e-4edb-b670-049f318f8494",
+      "name": "A2_higher_2",
+      "value": [
+        [
+          0.333,
+          0.667
+        ],
+        [
+          0.667,
+          0.333
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "447bc6f6-9c0e-4a66-920d-6f1183e0bf73",
+      "name": "A2_higher_3",
+      "value": [
+        [
+          0.333,
+          0.333,
+          0.333
+        ],
+        [
+          0.333,
+          0.333,
+          0.333
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "393e9353-2c03-402c-82a9-b998382df52c",
+      "name": "A2_higher_4",
+      "value": [
+        [
+          0.333,
+          0.333,
+          0.333
+        ],
+        [
+          0.333,
+          0.333,
+          0.333
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ae422763-d73d-414c-90eb-a6e97fa6341d",
+      "name": "B2_higher_0",
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "61387c7f-4a6a-4e54-845d-33836ab9f30f",
+      "name": "B2_higher_1",
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "fe95bdc2-52ff-4ab9-8319-c284b881834a",
+      "name": "B2_higher_2",
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "da381fd1-bfa3-4d14-ad30-bc2467dcd502",
+      "name": "C2_higher_0",
+      "value": [
+        0.5,
+        0.5
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1c4bf0d3-dfad-4b0a-a385-d11ce61e745a",
+      "name": "C2_higher_1",
+      "value": [
+        0.5,
+        0.5
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "6714fb7a-da8b-4f11-86d0-ebaa57825d4d",
+      "name": "C2_higher_2",
+      "value": [
+        1.0,
+        0.0
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "37c10e0d-7f8c-4535-b0da-ae81626e031b",
+      "name": "C2_higher_3",
+      "value": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "2b85ad18-9a5c-4caf-a22d-bf389def8cdc",
+      "name": "C2_higher_4",
+      "value": [
+        0.333,
+        0.333,
+        0.333
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "615c536f-1df4-414b-80ff-f2586bf25b44",
+      "name": "D2_higher_0",
+      "value": [
+        0.25,
+        0.75
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "3bd6a470-7f8b-4a89-b4f6-b7670c50d787",
+      "name": "D2_higher_1",
+      "value": [
+        0.25,
+        0.75
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "9e935a2d-366c-420a-8a68-b0da14197e45",
+      "name": "D2_higher_2",
+      "value": [
+        0.25,
+        0.75
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ae2fe086-64e9-4c7f-9055-50dee5f785c8",
+      "name": "E2_higher",
+      "value": [
+        0.0
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "da10f0ff-f4f3-4ad8-ace5-8817bd4ef987",
+      "name": "pA_lower",
+      "value": 1.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "68ad0b9a-8c03-493c-b143-12ef51b229c6",
+      "name": "pB_lower",
+      "value": 1.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5aba0a9d-4167-4886-a8da-fb7d10cdc7ee",
+      "name": "pD_lower",
+      "value": 1.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5cdbf59d-d126-44b6-bfb1-e181d6041087",
+      "name": "pA2_higher",
+      "value": 1.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1e2570bb-c536-432b-9f4c-0d7e5af17e94",
+      "name": "pB2_higher",
+      "value": 1.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "486eac26-d385-45ab-85d1-80a7f36eb842",
+      "name": "pD2_higher",
+      "value": 1.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "888a407a-a543-4cba-b50a-021fd9293d1d",
+      "name": "p_advice",
+      "value": 0.9,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a3500bdf-22f1-4138-9d6e-31e12c0d4ba1",
+      "name": "alpha",
+      "value": 0.9,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "0b2c7a4e-2324-4a3a-916d-40fa7d869a8e",
+      "name": "p_Btrust",
+      "value": 0.9,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "4f5ad732-af1c-423e-9e34-c629d478798e",
+      "name": "p_Bcorrectcard",
+      "value": 0.9,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "fb1dafaa-a865-4b4c-985f-a491bfbd6904",
+      "name": "p_Bchoice",
+      "value": 0.95,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "d729c85b-6534-481e-98b3-d044487e01dc",
+      "name": "p_Bstage",
+      "value": 1.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "9700ba81-cf0f-4831-ad5d-da78f1b42f6e",
+      "name": "cc",
+      "value": 0.5,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "18a8fda6-e302-4b97-8a2c-c62ec0239629",
+      "name": "arousal_low_preference",
+      "value": 0.35,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "07bf35d1-b9a2-41c7-a227-3cdc660579d0",
+      "name": "trust_safety_association",
+      "value": 0.667,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "49bddade-8d10-4c99-8325-2639db6aada7",
+      "name": "affect_safety_association",
+      "value": 0.667,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ae13c6fb-69a7-4965-bd3b-74ce818f12ad",
+      "name": "prior_on_danger",
+      "value": 0.75,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "81cc8f14-8784-4327-822f-308245c8c9b4",
+      "name": "gamma",
+      "value": 16.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "11e47a21-b3ba-4dbb-b028-9304c11cf43b",
+      "name": "alpha_policy",
+      "value": 16.0,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [
+    {
+      "node_type": "Equation",
+      "source_location": null,
+      "metadata": {},
+      "id": "271d22f5-f15f-4d56-be85-53ba157e29b2",
+      "label": null,
+      "content": "F = D_KL[Q(s)||P(s|o)] - ln P(o)                                   # Free Energy Q(s) = softmax(ln A + ln B + ln C + ln D)                          # Variational Message Passing \u03c0* = argmin_\u03c0 F(\u03c0)                                                  # Policy Selection",
+      "format": "latex",
+      "description": null
+    },
+    {
+      "node_type": "Equation",
+      "source_location": null,
+      "metadata": {},
+      "id": "054be701-12e4-4fd6-b562-fe833f344316",
+      "label": null,
+      "content": "F_high = D_KL[Q(s_high)||P(s_high|o_high)] - ln P(o_high)         # Free Energy Q(s_high) = softmax(ln A_high + ln B_high + ln C_high + ln D_high) # Hierarchical Inference o_high = f(Q_low(s_low))                                            # Inter-level Coupling",
+      "format": "latex",
+      "description": null
+    }
+  ],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "318c713b-45be-483f-84c0-51b596e011ff",
+    "time_type": "Static",
+    "discretization": null,
+    "horizon": null,
+    "step_size": null
+  },
+  "ontology_mappings": [],
+  "source_format": null,
+  "created_at": "2025-07-25T22:44:10.752279",
+  "modified_at": "2025-07-25T22:44:10.752279",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "PTSDHierarchicalActiveInferenceAgent",
+    "footer": "This GNN specification defines a hierarchical Active Inference agent for PTSD modeling, with explicit inter-level communication and learning dynamics. The model captures the interaction between sensorimotor processing and abstract safety assessment in trauma-related decision making.",
+    "signature": "signature:\n  hash: \"sha256:...\"\n  timestamp: \"2024-12-20T00:00:00Z\"\n  version: \"1.0.0\"\n  author: \"Cooper\"\n  validation_status: \"draft\""
+  },
+  "raw_sections": {
+    "GNNSection": "PTSDHierarchicalActiveInferenceAgent",
+    "ModelName": "PTSD Hierarchical Active Inference Agent",
+    "ModelAnnotation": "This hierarchical Active Inference agent consists of two levels:\n\n- **Lower Level Agent**: Processes sensorimotor information including trustworthiness, card states, affect, choices, and game stages\n- **Higher Level Agent**: Processes abstract safety concepts (self, world, other) based on lower-level posteriors\n\nThe agents communicate bidirectionally: lower-level posteriors become higher-level observations, and higher-level inferred states become lower-level priors.",
+    "StateSpaceBlock": "# Lower Level Agent Variables\nTrustworthiness[2,type=float]        # Hidden state: trust, distrust\nCorrectCard[2,type=float]           # Hidden state: blue, green\nAffect[2,type=float]                # Hidden state: angry, calm\nChoice[3,type=float]                # Hidden state: blue, green, null\nStage[3,type=float]                 # Hidden state: null, advice, decision\n\n# Lower Level Observations\nAdvice[3,type=float]                # Observation: blue, green, null\nFeedback[3,type=float]              # Observation: correct, incorrect, null\nArousal[2,type=float]               # Observation: high, low\nChoiceObs[3,type=float]             # Observation: blue, green, null\n\n# Lower Level Actions\nTrustActions[2,type=float]          # Actions: trust, distrust\nCardActions[3,type=float]           # Actions: blue, green, null\nNullActions[1,type=float]           # Actions: NULL\n\n# Higher Level Agent Variables\nSafetySelf[2,type=float]            # Hidden state: safe, danger\nSafetyWorld[2,type=float]           # Hidden state: safe, danger\nSafetyOther[2,type=float]           # Hidden state: safe, danger\n\n# Higher Level Observations (from lower level posteriors)\nTrustworthinessObs[2,type=float]    # Observation from lower level\nCorrectCardObs[2,type=float]        # Observation from lower level\nAffectObs[2,type=float]             # Observation from lower level\nChoiceObsHigher[3,type=float]       # Observation from lower level\nStageObs[3,type=float]              # Observation from lower level\n\n# Higher Level Actions\nNullActionsHigher[1,type=float]     # Actions: NULL",
+    "Connections": "# Lower Level Connections\nTrustworthiness>Advice               # Trust influences advice\nCorrectCard>Feedback                 # Card state influences feedback\nAffect>Arousal                       # Affect influences arousal\nChoice>ChoiceObs                     # Choice influences choice observation\nStage>Advice                         # Stage influences advice availability\n\n# Higher Level Connections\nSafetySelf>TrustworthinessObs        # Safety influences trust observation\nSafetyWorld>CorrectCardObs           # World safety influences card observation\nSafetyOther>AffectObs                # Other safety influences affect observation\n\n# Inter-level Connections\nTrustworthiness>TrustworthinessObs   # Lower to higher level mapping\nCorrectCard>CorrectCardObs           # Lower to higher level mapping\nAffect>AffectObs                     # Lower to higher level mapping\nChoice>ChoiceObsHigher               # Lower to higher level mapping\nStage>StageObs                       # Lower to higher level mapping",
+    "InitialParameterization": "# Lower Level A Matrix (Likelihood) - 4 modalities x 5 factors\nA_lower_0=[[0.9, 0.1, 0.0], [0.1, 0.9, 0.0], [0.0, 0.0, 1.0]]  # Advice modality\nA_lower_1=[[0.9, 0.1, 0.0], [0.1, 0.9, 0.0], [0.0, 0.0, 1.0]]  # Feedback modality  \nA_lower_2=[[1.0, 0.0], [0.0, 1.0]]                               # Arousal modality\nA_lower_3=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]  # Choice modality\n\n# Lower Level B Matrix (Transitions) - 5 factors x 5 factors x actions\nB_lower_0=[[0.9, 0.1], [0.1, 0.9]]                               # Trustworthiness transitions\nB_lower_1=[[0.9, 0.1], [0.1, 0.9]]                               # Correct card transitions\nB_lower_2=[[0.3333, 0.6667], [0.6667, 0.3333]]                   # Affect transitions\nB_lower_3=[[0.95, 0.025, 0.025], [0.025, 0.95, 0.025], [0.025, 0.025, 0.95]]  # Choice transitions\nB_lower_4=[[0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0]]  # Stage transitions\n\n# Lower Level C Matrix (Preferences) - 4 modalities\nC_lower_0=[0.3333, 0.3333, 0.3333]                               # Advice preferences\nC_lower_1=[0.5, -3.5, 0.0]                                        # Feedback preferences\nC_lower_2=[0.65, 0.35]                                             # Arousal preferences\nC_lower_3=[0.3333, 0.3333, 0.3333]                               # Choice preferences\n\n# Lower Level D Matrix (Priors) - 5 factors\nD_lower_0=[0.5, 0.5]                                               # Trustworthiness priors\nD_lower_1=[0.5, 0.5]                                               # Correct card priors\nD_lower_2=[0.5, 0.5]                                               # Affect priors\nD_lower_3=[0.0, 0.0, 1.0]                                         # Choice priors\nD_lower_4=[1.0, 0.0, 0.0]                                         # Stage priors\n\n# Lower Level E Matrix (Policy Priors) - 6 policies\nE_lower=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]                           # Policy priors\n\n# Higher Level A2 Matrix (Likelihood) - 5 modalities x 3 factors\nA2_higher_0=[[0.667, 0.333], [0.333, 0.667]]                      # Trustworthiness observation mapping\nA2_higher_1=[[0.5, 0.5], [0.5, 0.5]]                              # Correct card observation mapping\nA2_higher_2=[[0.333, 0.667], [0.667, 0.333]]                      # Affect observation mapping\nA2_higher_3=[[0.333, 0.333, 0.333], [0.333, 0.333, 0.333]]       # Choice observation mapping\nA2_higher_4=[[0.333, 0.333, 0.333], [0.333, 0.333, 0.333]]       # Stage observation mapping\n\n# Higher Level B2 Matrix (Transitions) - 3 factors x 3 factors x 1 action\nB2_higher_0=[[1.0, 0.0], [0.0, 1.0]]                              # Safety self transitions\nB2_higher_1=[[1.0, 0.0], [0.0, 1.0]]                              # Safety world transitions\nB2_higher_2=[[1.0, 0.0], [0.0, 1.0]]                              # Safety other transitions\n\n# Higher Level C2 Matrix (Preferences) - 5 modalities\nC2_higher_0=[0.5, 0.5]                                             # Trustworthiness preferences\nC2_higher_1=[0.5, 0.5]                                             # Correct card preferences\nC2_higher_2=[1.0, 0.0]                                             # Affect preferences\nC2_higher_3=[0.333, 0.333, 0.333]                                 # Choice preferences\nC2_higher_4=[0.333, 0.333, 0.333]                                 # Stage preferences\n\n# Higher Level D2 Matrix (Priors) - 3 factors\nD2_higher_0=[0.25, 0.75]                                           # Safety self priors\nD2_higher_1=[0.25, 0.75]                                           # Safety world priors\nD2_higher_2=[0.25, 0.75]                                           # Safety other priors\n\n# Higher Level E2 Matrix (Policy Priors) - No policies for higher level\nE2_higher=[0.0]                                                     # No policy priors\n\n# Learning Parameters\npA_lower=1.0                                                        # A matrix learning rate\npB_lower=1.0                                                        # B matrix learning rate\npD_lower=1.0                                                        # D matrix learning rate\npA2_higher=1.0                                                      # A2 matrix learning rate\npB2_higher=1.0                                                      # B2 matrix learning rate\npD2_higher=1.0                                                      # D2 matrix learning rate\n\n# Model Parameters\np_advice=0.9                                                        # Probability of trustworthy advice\nalpha=0.9                                                           # Precision of feedback mapping\np_Btrust=0.9                                                        # Trust transition probability\np_Bcorrectcard=0.9                                                  # Card belief persistence\np_Bchoice=0.95                                                      # Choice belief precision\np_Bstage=1.0                                                        # Stage transition determinism\ncc=0.5                                                              # Correct feedback preference\narousal_low_preference=0.35                                         # Low arousal preference\ntrust_safety_association=0.667                                      # Trust-safety mapping strength\naffect_safety_association=0.667                                     # Affect-safety mapping strength\nprior_on_danger=0.75                                                # Higher-level danger bias\ngamma=16.0                                                          # Policy precision\nalpha_policy=16.0                                                   # Action selection precision",
+    "Equations": "# Lower Level Agent\nF = D_KL[Q(s)||P(s|o)] - ln P(o)                                   # Free Energy\nQ(s) = softmax(ln A + ln B + ln C + ln D)                          # Variational Message Passing\n\u03c0* = argmin_\u03c0 F(\u03c0)                                                  # Policy Selection\n\n# Higher Level Agent\nF_high = D_KL[Q(s_high)||P(s_high|o_high)] - ln P(o_high)         # Free Energy\nQ(s_high) = softmax(ln A_high + ln B_high + ln C_high + ln D_high) # Hierarchical Inference\no_high = f(Q_low(s_low))                                            # Inter-level Coupling",
+    "Time": "time_horizon=2                                                       # Time horizon\ntime_step=1.0                                                        # Time step\ntime_units=\"timesteps\"                                               # Time units\ntrial_structure=[null, advice, decision]                             # Trial structure",
+    "ActInfOntologyAnnotation": "Trustworthiness:trust                                                # Trust variable mapping\nCorrectCard:card_state                                               # Card state variable mapping\nAffect:emotional_state                                               # Emotional state variable mapping\nChoice:action_selection                                              # Action selection variable mapping\nStage:game_stage                                                     # Game stage variable mapping\nSafetySelf:self_safety                                               # Self safety variable mapping\nSafetyWorld:world_safety                                             # World safety variable mapping\nSafetyOther:other_safety                                             # Other safety variable mapping",
+    "ModelParameters": "parameters:\n  p_advice: 0.9                                                     # Probability of trustworthy advice\n  alpha: 0.9                                                        # Precision of feedback mapping\n  p_Btrust: 0.9                                                     # Trust transition probability\n  p_Bcorrectcard: 0.9                                               # Card belief persistence\n  p_Bchoice: 0.95                                                   # Choice belief precision\n  p_Bstage: 1.0                                                     # Stage transition determinism\n  cc: 0.5                                                           # Correct feedback preference\n  arousal_low_preference: 0.35                                      # Low arousal preference\n  trust_safety_association: 0.667                                   # Trust-safety mapping strength\n  affect_safety_association: 0.667                                  # Affect-safety mapping strength\n  prior_on_danger: 0.75                                             # Higher-level danger bias\n  gamma: 16.0                                                       # Policy precision\n  alpha_policy: 16.0                                                # Action selection precision",
+    "Footer": "This GNN specification defines a hierarchical Active Inference agent for PTSD modeling, with explicit inter-level communication and learning dynamics. The model captures the interaction between sensorimotor processing and abstract safety assessment in trauma-related decision making.",
+    "Signature": "signature:\n  hash: \"sha256:...\"\n  timestamp: \"2024-12-20T00:00:00Z\"\n  version: \"1.0.0\"\n  author: \"Cooper\"\n  validation_status: \"draft\""
+  }
+}
