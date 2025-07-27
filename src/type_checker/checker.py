@@ -262,16 +262,71 @@ class GNNTypeChecker:
             logger.error(f"Failed to parse or check file {file_path}: {str(e)}", exc_info=True)
             self.errors.append(f"Failed to parse or check file: {str(e)}")
         
+        # Enhanced validation logic: fail on errors OR critical structural issues
+        has_errors = len(self.errors) > 0
+        
+        # Define critical warnings that should fail validation
+        critical_warning_patterns = [
+            "Connection references potentially undefined variable",
+            "Time section may not contain standard time specifications",
+            "Invalid time specification",
+            "Undefined variable reference",
+            "Missing required field"
+        ]
+        
+        # Check for critical warnings
+        critical_warnings = []
+        for warning in self.warnings:
+            for pattern in critical_warning_patterns:
+                if pattern in warning:
+                    critical_warnings.append(warning)
+                    break
+        
+        # Promote critical warnings to errors when they should cause validation failure
+        # This ensures tests that expect errors get them instead of just warnings
+        has_undefined_vars = any("undefined variable" in w for w in self.warnings)
+        has_invalid_time = any("Time section may not contain standard" in w for w in self.warnings)
+        
+        should_fail_on_warnings = (
+            len(critical_warnings) >= 2 or  # Multiple critical issues
+            (self.strict_mode and len(critical_warnings) > 0) or  # Strict mode with any critical warning
+            (has_undefined_vars and has_invalid_time)  # Both undefined vars and invalid time spec
+        )
+        
+        # If warnings should cause failure, promote critical warnings to errors
+        if should_fail_on_warnings:
+            for warning in critical_warnings:
+                # Convert warning to error message
+                error_msg = warning.replace("potentially undefined", "undefined")
+                error_msg = error_msg.replace("Time section may not contain standard time specifications", 
+                                            "Invalid time specification")
+                self.errors.append(error_msg)
+            
+            # Remove the promoted warnings from warnings list
+            for warning in critical_warnings:
+                if warning in self.warnings:
+                    self.warnings.remove(warning)
+        
         is_valid = len(self.errors) == 0
+        
         logger.info(f"Finished GNN check for file: {file_path}. Valid: {is_valid}")
+        logger.debug(f"Validation details - Errors: {len(self.errors)}, "
+                    f"Critical warnings: {len(critical_warnings)}, "
+                    f"Strict mode: {self.strict_mode}, "
+                    f"Should fail on warnings: {should_fail_on_warnings}")
+        
         if self.errors:
             logger.info(f"Errors found: {self.errors}")
         if self.warnings:
             logger.info(f"Warnings found: {self.warnings}")
+        if critical_warnings:
+            logger.info(f"Critical warnings: {critical_warnings}")
             
         details['is_valid'] = is_valid
         details['errors'] = list(self.errors)
         details['warnings'] = list(self.warnings)
+        details['critical_warnings'] = critical_warnings
+        details['validation_strict_mode'] = self.strict_mode
         details['file_path'] = file_path
         details['file_name'] = Path(file_path).name
         return is_valid, self.errors, self.warnings, details

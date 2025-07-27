@@ -307,4 +307,17 @@ class ConsistencyChecker:
             "invalid_references": invalid_references,
             "isolated_blocks": isolated_blocks,
             "circular_references": cycles
-        } 
+        }
+
+def check_consistency(content: str) -> Dict[str, Any]:
+    """
+    Convenience function for consistency checking.
+    
+    Args:
+        content: GNN model content string
+        
+    Returns:
+        Dictionary with consistency check results
+    """
+    checker = ConsistencyChecker()
+    return checker.check(content)

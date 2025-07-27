@@ -47,7 +47,7 @@ try:
     PYMDP_AVAILABLE = True
 except ImportError:
     PYMDP_AVAILABLE = False
-    logging.warning("PyMDP not available - simulation will use mock mode")
+    logging.warning("PyMDP not available - simulation will gracefully degrade with informative output")
 
 
 class PyMDPSimulation:
