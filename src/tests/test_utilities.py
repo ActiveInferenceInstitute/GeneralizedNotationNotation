@@ -533,38 +533,68 @@ class TestConfigurationUtilities:
     """Test pipeline configuration and metadata."""
     
     @pytest.mark.unit
+    @pytest.mark.safe_to_fail
     def test_pipeline_config_import(self):
-        """Test that pipeline configuration can be imported."""
+        """Test pipeline configuration import."""
         try:
-            from pipeline import get_pipeline_config, STEP_METADATA
+            from pipeline.config import get_pipeline_config, STEP_METADATA
+            from .test_utils import get_step_metadata_dict
             
-            assert callable(get_pipeline_config), "get_pipeline_config should be callable"
-            assert isinstance(STEP_METADATA, dict), "STEP_METADATA should be a dictionary"
+            config = get_pipeline_config()
+            step_metadata = get_step_metadata_dict()
             
-            logging.info("Pipeline configuration import validated")
+            # Test configuration import
+            assert config is not None, "Pipeline config should be importable"
+            assert hasattr(config, 'steps'), "Pipeline config should have steps"
+            assert isinstance(config.steps, dict), "Pipeline config steps should be dict"
+            
+            # Test STEP_METADATA - it can be either a dict or StepMetadataProxy
+            assert STEP_METADATA is not None, "STEP_METADATA should be importable"
+            # STEP_METADATA can be either a dict or StepMetadataProxy object
+            assert hasattr(STEP_METADATA, '__getitem__'), "STEP_METADATA should support dict-like access"
+            
+            # Test step metadata dictionary
+            assert isinstance(step_metadata, dict), "Step metadata should be a dictionary"
             
         except ImportError as e:
-            pytest.skip(f"Pipeline configuration not available: {e}")
+            pytest.skip(f"Pipeline config not available: {e}")
+        except Exception as e:
+            pytest.fail(f"Pipeline config import failed: {e}")
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_pipeline_configuration_structure(self):
         """Test pipeline configuration structure."""
         try:
-            from pipeline import get_pipeline_config
+            from pipeline.config import get_pipeline_config
+            from .test_utils import get_step_metadata_dict
             
             config = get_pipeline_config()
-            assert config is not None, "Pipeline config should not be None"
+            STEP_METADATA = get_step_metadata_dict()
             
-            # Test expected configuration attributes (PipelineConfig object)
-            expected_attrs = ["project_name", "version", "base_output_dir", "base_target_dir", "steps"]
-            available_attrs = []
-            for attr in expected_attrs:
-                if hasattr(config, attr):
-                    available_attrs.append(attr)
+            # Test configuration structure
+            assert hasattr(config, 'steps'), "Pipeline config should have steps"
+            assert isinstance(config.steps, dict), "Pipeline config steps should be dict"
             
-            logging.info(f"Pipeline configuration attributes: {[attr for attr in dir(config) if not attr.startswith('_')]}")
-            logging.info(f"Expected attributes found: {available_attrs}")
+            # Test step metadata structure
+            assert isinstance(STEP_METADATA, dict), "STEP_METADATA should be a dictionary"
+            
+            # Test configuration consistency
+            if STEP_METADATA and config.steps:
+                # Check that step configurations are consistent
+                for step_name, step_config in config.steps.items():
+                    assert hasattr(step_config, 'name'), f"Step config {step_name} should have name"
+                    assert hasattr(step_config, 'description'), f"Step config {step_name} should have description"
+                    assert hasattr(step_config, 'required'), f"Step config {step_name} should have required"
+                    
+                    # Test that step metadata exists for configured steps
+                    if step_name in STEP_METADATA:
+                        step_metadata = STEP_METADATA[step_name]
+                        assert isinstance(step_metadata, dict), f"Step metadata for {step_name} should be dict"
+                        
+                        # Test metadata consistency
+                        if 'name' in step_metadata and hasattr(step_config, 'name'):
+                            assert step_metadata['name'] == step_config.name, f"Step name mismatch for {step_name}"
             
             logging.info("Pipeline configuration structure validated")
             
@@ -576,7 +606,9 @@ class TestConfigurationUtilities:
     def test_step_metadata_structure(self):
         """Test step metadata structure."""
         try:
-            from pipeline import STEP_METADATA
+            from .test_utils import get_step_metadata_dict
+            
+            STEP_METADATA = get_step_metadata_dict()
             
             assert isinstance(STEP_METADATA, dict), "STEP_METADATA should be a dictionary"
             

@@ -51,10 +51,15 @@ def matrix_visualizer(*args, **kwargs):
     """Legacy function name compatibility for matrix visualization."""
     return process_matrix_visualization(*args, **kwargs)
 
+def generate_visualizations(*args, **kwargs):
+    """Legacy function name compatibility for visualization generation."""
+    return process_visualization(*args, **kwargs)
+
 # Add to __all__ for proper exports
 __all__ = [
     'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer',
-    'matrix_visualizer', 'process_matrix_visualization', 'process_visualization'
+    'matrix_visualizer', 'process_matrix_visualization', 'process_visualization',
+    'generate_visualizations'
 ]
 
 # Try to import utils, but provide fallbacks if not available
