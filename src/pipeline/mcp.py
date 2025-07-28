@@ -210,42 +210,30 @@ def register_tools(mcp_instance):
     # Register tools
     mcp_instance.register_tool(
         name="get_pipeline_steps",
-        func=get_steps_wrapper,
+        function=get_steps_wrapper,
         schema={},
-        description="Get information about all available pipeline steps, their metadata, and dependencies.",
-        module="pipeline",
-        category="Pipeline Management",
-        version="1.0.0"
+        description="Get information about all available pipeline steps, their metadata, and dependencies."
     )
     
     mcp_instance.register_tool(
         name="get_pipeline_status",
-        func=get_status_wrapper,
+        function=get_status_wrapper,
         schema={},
-        description="Get current pipeline execution status, recent logs, and execution statistics.",
-        module="pipeline",
-        category="Pipeline Management",
-        version="1.0.0"
+        description="Get current pipeline execution status, recent logs, and execution statistics."
     )
     
     mcp_instance.register_tool(
         name="validate_pipeline_dependencies",
-        func=validate_deps_wrapper,
+        function=validate_deps_wrapper,
         schema={},
-        description="Validate pipeline step dependencies and identify missing or circular dependencies.",
-        module="pipeline",
-        category="Pipeline Validation",
-        version="1.0.0"
+        description="Validate pipeline step dependencies and identify missing or circular dependencies."
     )
     
     mcp_instance.register_tool(
         name="get_pipeline_config_info",
-        func=get_config_wrapper,
+        function=get_config_wrapper,
         schema={},
-        description="Get detailed pipeline configuration information and settings.",
-        module="pipeline",
-        category="Pipeline Configuration",
-        version="1.0.0"
+        description="Get detailed pipeline configuration information and settings."
     )
     
     logger.info("Successfully registered pipeline MCP tools") 

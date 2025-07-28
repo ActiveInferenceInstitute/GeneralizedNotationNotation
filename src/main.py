@@ -354,7 +354,7 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         
         # Monitor process
         try:
-            stdout, stderr = process.communicate(timeout=300)  # 5 minute timeout
+            stdout, stderr = process.communicate(timeout=600)  # 10 minute timeout for modular tests
             step_result["stdout"] = stdout
             step_result["stderr"] = stderr
             step_result["exit_code"] = process.returncode

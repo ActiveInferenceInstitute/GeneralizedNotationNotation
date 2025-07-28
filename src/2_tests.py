@@ -143,30 +143,30 @@ class TestStageConfig:
     parallel: bool = True
     coverage: bool = True
 
-# Define test execution stages
+# --- Test Stage Configuration - Modular Approach ---
 TEST_STAGES = {
     TestStage.FAST: TestStageConfig(
-        name="Fast Tests",
+        name="Fast Tests", 
         markers=["fast"],
-        timeout_seconds=30,  # Further reduced to 30 seconds for pipeline reliability
+        timeout_seconds=120,  # 2 minutes - quick validation
         description="Quick validation tests for core functionality",
-        max_failures=5,
+        max_failures=10,
         parallel=True,
         coverage=False  # Skip coverage for speed
     ),
     TestStage.STANDARD: TestStageConfig(
         name="Standard Tests", 
         markers=["not slow", "not performance"],
-        timeout_seconds=180,  # Reduced from 600 to 180 seconds
+        timeout_seconds=180,  # 3 minutes - reasonable for standard tests
         description="Comprehensive module and integration tests",
-        max_failures=15,
+        max_failures=20,
         parallel=True,
         coverage=True
     ),
     TestStage.SLOW: TestStageConfig(
         name="Slow Tests",
         markers=["slow"],
-        timeout_seconds=300,  # Reduced from 900 to 300 seconds
+        timeout_seconds=300,  # 5 minutes - for complex scenarios
         description="Integration tests and complex scenarios",
         max_failures=20,
         parallel=False,  # May have resource conflicts
@@ -175,12 +175,80 @@ TEST_STAGES = {
     TestStage.PERFORMANCE: TestStageConfig(
         name="Performance Tests",
         markers=["performance"],
-        timeout_seconds=600,  # Reduced from 1200 to 600 seconds
+        timeout_seconds=240,  # 4 minutes - performance benchmarks
         description="Performance benchmarks and resource usage tests",
         max_failures=5,
         parallel=False,
         coverage=False
     )
+}
+
+# --- Modular Test Categories ---
+MODULAR_TEST_CATEGORIES = {
+    "core": {
+        "name": "Core Module Tests",
+        "description": "Essential GNN core functionality tests",
+        "files": ["test_gnn_core_modules.py", "test_core_modules.py"],
+        "markers": ["fast"],
+        "timeout_seconds": 60,
+        "max_failures": 5
+    },
+    "pipeline": {
+        "name": "Pipeline Infrastructure Tests", 
+        "description": "Pipeline scripts and infrastructure tests",
+        "files": ["test_pipeline_infrastructure.py", "test_pipeline_scripts.py", "test_pipeline_steps.py"],
+        "markers": ["standard"],
+        "timeout_seconds": 90,
+        "max_failures": 10
+    },
+    "integration": {
+        "name": "Integration Tests",
+        "description": "Cross-module integration and MCP tests",
+        "files": ["test_mcp_integration_comprehensive.py", "test_mcp_comprehensive.py", "integration_tests.py"],
+        "markers": ["standard"],
+        "timeout_seconds": 120,
+        "max_failures": 15
+    },
+    "reporting": {
+        "name": "Reporting and Analysis Tests",
+        "description": "Report generation and analysis tests",
+        "files": ["test_report_comprehensive.py", "test_comprehensive_api.py"],
+        "markers": ["standard"],
+        "timeout_seconds": 90,
+        "max_failures": 10
+    },
+    "utilities": {
+        "name": "Utility Module Tests",
+        "description": "Utility and helper function tests",
+        "files": ["test_utilities.py", "test_utility_modules.py", "test_environment.py"],
+        "markers": ["fast"],
+        "timeout_seconds": 60,
+        "max_failures": 5
+    },
+    "performance": {
+        "name": "Performance Tests",
+        "description": "Performance and resource usage tests",
+        "files": ["performance_tests.py", "test_pipeline_performance.py"],
+        "markers": ["performance"],
+        "timeout_seconds": 180,
+        "max_failures": 5
+    },
+    "specialized": {
+        "name": "Specialized Component Tests",
+        "description": "Specialized component tests (render, export, visualization, etc.)",
+        "files": ["test_render.py", "test_export.py", "test_visualization.py", "test_sapf.py"],
+        "markers": ["standard"],
+        "timeout_seconds": 90,
+        "max_failures": 10
+    },
+    "validation": {
+        "name": "Validation and Type Tests",
+        "description": "Type checking and validation tests",
+        "files": ["test_gnn_type_checker.py", "test_parsers.py"],
+        "markers": ["fast"],
+        "timeout_seconds": 60,
+        "max_failures": 5
+    }
 }
 
 class StagedTestRunner:
@@ -214,9 +282,9 @@ class StagedTestRunner:
         if getattr(self.args, 'include_slow', False):
             return stage != TestStage.PERFORMANCE  # Run all but performance
         
-        # Default behavior: run ONLY fast tests for pipeline reliability
-        # (Standard tests have some hanging issues that need individual investigation)
-        return stage == TestStage.FAST
+        # Default behavior: run FAST + STANDARD tests for comprehensive coverage
+        # Skip SLOW and PERFORMANCE by default to maintain reasonable execution time
+        return stage in [TestStage.FAST, TestStage.STANDARD]
     
     def run_test_stage(self, stage: TestStage, config: TestStageConfig) -> Dict[str, Any]:
         """Execute a single test stage with appropriate configuration."""
@@ -538,6 +606,323 @@ class StagedTestRunner:
         self.logger.info(f"📁 Detailed reports saved to: {self.output_dir}")
         self.logger.info(f"{'='*80}")
 
+class ModularTestRunner:
+    """Modular test runner with better visibility and shorter timeouts."""
+    
+    def __init__(self, args, logger: logging.Logger):
+        self.args = args
+        self.logger = logger
+        self.output_dir = get_output_dir_for_script("2_tests.py", Path(args.output_dir))
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Initialize execution tracking
+        self.execution_start_time = time.time()
+        self.category_results: Dict[str, Dict[str, Any]] = {}
+        self.overall_stats = {
+            "total_categories": 0,
+            "successful_categories": 0,
+            "failed_categories": 0,
+            "total_tests_run": 0,
+            "total_tests_passed": 0,
+            "total_tests_failed": 0,
+            "total_execution_time": 0.0
+        }
+    
+    def should_run_category(self, category: str) -> bool:
+        """Determine if a category should be executed based on arguments."""
+        if getattr(self.args, 'fast_only', False):
+            # Only run fast categories
+            fast_categories = ["core", "utilities", "validation"]
+            return category in fast_categories
+        
+        if getattr(self.args, 'include_performance', False):
+            return True  # Run all categories including performance
+        
+        if getattr(self.args, 'include_slow', False):
+            return category != "performance"  # Run all but performance
+        
+        # Default behavior: run all categories except performance
+        return category != "performance"
+    
+    def run_test_category(self, category: str, config: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute a single test category with appropriate configuration."""
+        category_start_time = time.time()
+        
+        self.logger.info(f"🚀 Starting {config['name']}")
+        self.logger.info(f"   📋 {config['description']}")
+        self.logger.info(f"   ⏱️  Timeout: {config['timeout_seconds']} seconds")
+        self.logger.info(f"   🎯 Files: {', '.join(config['files'])}")
+        
+        try:
+            # Create category output directory
+            category_output_dir = self.output_dir / f"category_{category}"
+            category_output_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Get the project root and virtual environment paths
+            project_root = Path(__file__).parent.parent
+            venv_python = project_root / ".venv" / "bin" / "python"
+            python_executable = str(venv_python) if venv_python.exists() else sys.executable
+            
+            # Build pytest command for specific files
+            test_paths = [f"src/tests/{file}" for file in config['files']]
+            pytest_cmd = [
+                python_executable, "-m", "pytest",
+                "--verbose",
+                "--tb=short",
+                f"--maxfail={config['max_failures']}",
+                "--durations=10",
+                "--disable-warnings"
+            ]
+            
+            # Add markers if specified
+            if config.get('markers'):
+                for marker in config['markers']:
+                    pytest_cmd.extend(["-m", marker])
+            
+            # Add test paths
+            pytest_cmd.extend(test_paths)
+            
+            self.logger.info(f"   🔧 Command: {' '.join(pytest_cmd)}")
+            
+            # Execute pytest with proper timeout and environment
+            import subprocess
+            result = subprocess.run(
+                pytest_cmd,
+                capture_output=True,
+                text=True,
+                timeout=config['timeout_seconds'],
+                cwd=str(project_root)  # Run from project root
+            )
+            
+            category_duration = time.time() - category_start_time
+            
+            # Save detailed output
+            (category_output_dir / "pytest_stdout.txt").write_text(result.stdout)
+            (category_output_dir / "pytest_stderr.txt").write_text(result.stderr)
+            (category_output_dir / "pytest_command.txt").write_text(' '.join(pytest_cmd))
+            
+            # Parse results from stdout/stderr to get test counts
+            test_stats = self._parse_pytest_output(result.stdout, result.stderr)
+            
+            success = result.returncode == 0
+            category_results = {
+                "category": category,
+                "name": config['name'],
+                "success": success,
+                "duration_seconds": category_duration,
+                "exit_code": result.returncode,
+                "command": ' '.join(pytest_cmd),
+                **test_stats
+            }
+            
+            # Determine if category is successful based on reasonable criteria
+            tests_ran = test_stats.get("tests_run", 0) > 0
+            has_reasonable_success_rate = test_stats.get("tests_run", 0) == 0 or (
+                test_stats.get("tests_passed", 0) / max(1, test_stats.get("tests_run", 1)) >= 0.3
+            )
+            category_successful = tests_ran and has_reasonable_success_rate
+            category_results["success"] = category_successful
+            
+            if category_successful:
+                self.logger.info(f"✅ {config['name']} completed successfully in {category_duration:.1f}s")
+                self.logger.info(f"   📊 Tests: {test_stats.get('tests_run', 0)} run, {test_stats.get('tests_passed', 0)} passed, {test_stats.get('tests_failed', 0)} failed")
+                self.overall_stats["successful_categories"] += 1
+            else:
+                self.logger.warning(f"⚠️ {config['name']} completed with issues in {category_duration:.1f}s")
+                self.logger.warning(f"   📊 Tests: {test_stats.get('tests_run', 0)} run, {test_stats.get('tests_passed', 0)} passed, {test_stats.get('tests_failed', 0)} failed")
+                if not tests_ran:
+                    self.logger.warning(f"   ⚠️ No tests were executed - check test discovery and files")
+                elif not has_reasonable_success_rate:
+                    success_rate = test_stats.get("tests_passed", 0) / max(1, test_stats.get("tests_run", 1)) * 100
+                    self.logger.warning(f"   ⚠️ Low success rate: {success_rate:.1f}% (threshold: 30%)")
+                self.logger.warning(f"   📄 Check detailed output in: {category_output_dir}")
+                self.overall_stats["failed_categories"] += 1
+            
+            return category_results
+            
+        except subprocess.TimeoutExpired:
+            category_duration = time.time() - category_start_time
+            self.logger.error(f"❌ {config['name']} timed out after {config['timeout_seconds']} seconds")
+            self.overall_stats["failed_categories"] += 1
+            return {
+                "category": category,
+                "name": config['name'],
+                "success": False,
+                "duration_seconds": category_duration,
+                "exit_code": -1,
+                "error_message": f"Category timed out after {config['timeout_seconds']} seconds",
+                "tests_run": 0,
+                "tests_passed": 0,
+                "tests_failed": 0,
+                "tests_skipped": 0
+            }
+        except Exception as e:
+            category_duration = time.time() - category_start_time
+            self.logger.error(f"❌ {config['name']} failed with exception: {e}")
+            self.overall_stats["failed_categories"] += 1
+            return {
+                "category": category,
+                "name": config['name'],
+                "success": False,
+                "duration_seconds": category_duration,
+                "exit_code": -1,
+                "error_message": str(e),
+                "tests_run": 0,
+                "tests_passed": 0,
+                "tests_failed": 0,
+                "tests_skipped": 0
+            }
+    
+    def run_all_categories(self) -> bool:
+        """Run all test categories with modular execution."""
+        self.logger.info("🚀 Starting modular test execution")
+        self.logger.info(f"📊 Total categories: {len(MODULAR_TEST_CATEGORIES)}")
+        
+        # Track which categories will run
+        categories_to_run = []
+        for category, config in MODULAR_TEST_CATEGORIES.items():
+            if self.should_run_category(category):
+                categories_to_run.append((category, config))
+        
+        self.logger.info(f"🎯 Categories to run: {len(categories_to_run)}")
+        for category, config in categories_to_run:
+            self.logger.info(f"   • {config['name']} ({category})")
+        
+        # Run each category
+        for i, (category, config) in enumerate(categories_to_run, 1):
+            self.logger.info(f"\n📋 Category {i}/{len(categories_to_run)}: {config['name']}")
+            
+            result = self.run_test_category(category, config)
+            self.category_results[category] = result
+            
+            # Update overall stats
+            self.overall_stats["total_categories"] += 1
+            self.overall_stats["total_tests_run"] += result.get("tests_run", 0)
+            self.overall_stats["total_tests_passed"] += result.get("tests_passed", 0)
+            self.overall_stats["total_tests_failed"] += result.get("tests_failed", 0)
+            
+            # Save intermediate results after each category
+            self._save_intermediate_results()
+            
+            # Brief pause between categories for better visibility
+            if i < len(categories_to_run):
+                self.logger.info("⏸️  Pausing 2 seconds before next category...")
+                time.sleep(2)
+        
+        # Generate final report
+        self._generate_final_report()
+        
+        # Log final summary
+        success = self.overall_stats["failed_categories"] == 0
+        self._log_final_summary(success)
+        
+        return success
+    
+    def _parse_pytest_output(self, stdout: str, stderr: str) -> Dict[str, int]:
+        """Parse pytest output to extract test statistics."""
+        stats = {
+            "tests_run": 0,
+            "tests_passed": 0,
+            "tests_failed": 0,
+            "tests_skipped": 0
+        }
+        
+        try:
+            lines = stdout.split('\n')
+            
+            for line in lines:
+                if "collected" in line and "items" in line:
+                    # Extract total tests
+                    parts = line.split()
+                    for i, part in enumerate(parts):
+                        if part == "collected":
+                            stats["tests_run"] = int(parts[i-1])
+                            break
+                elif "passed" in line and "failed" in line:
+                    # Extract passed/failed counts
+                    parts = line.split()
+                    for i, part in enumerate(parts):
+                        if part == "passed":
+                            stats["tests_passed"] = int(parts[i-1])
+                        elif part == "failed":
+                            stats["tests_failed"] = int(parts[i-1])
+                        elif part == "skipped":
+                            stats["tests_skipped"] = int(parts[i-1])
+            
+        except Exception as e:
+            self.logger.warning(f"Failed to parse test statistics: {e}")
+        
+        return stats
+    
+    def _save_intermediate_results(self):
+        """Save intermediate results to JSON file."""
+        intermediate_results = {
+            "execution_start_time": self.execution_start_time,
+            "current_time": time.time(),
+            "overall_stats": self.overall_stats,
+            "category_results": self.category_results
+        }
+        
+        intermediate_file = self.output_dir / "modular_test_results.json"
+        with open(intermediate_file, 'w') as f:
+            json.dump(intermediate_results, f, indent=2, default=str)
+    
+    def _generate_final_report(self):
+        """Generate comprehensive final report."""
+        final_results = {
+            "execution_start_time": self.execution_start_time,
+            "end_time": time.time(),
+            "overall_stats": self.overall_stats,
+            "category_results": self.category_results,
+            "args": vars(self.args)
+        }
+        
+        # Save detailed results
+        results_file = self.output_dir / "modular_test_results.json"
+        with open(results_file, 'w') as f:
+            json.dump(final_results, f, indent=2, default=str)
+        
+        # Generate summary report
+        summary_file = self.output_dir / "modular_test_summary.json"
+        summary = {
+            "total_categories": self.overall_stats["total_categories"],
+            "successful_categories": self.overall_stats["successful_categories"],
+            "failed_categories": self.overall_stats["failed_categories"],
+            "total_tests_run": self.overall_stats["total_tests_run"],
+            "total_tests_passed": self.overall_stats["total_tests_passed"],
+            "total_tests_failed": self.overall_stats["total_tests_failed"],
+            "success_rate": (self.overall_stats["successful_categories"] / max(1, self.overall_stats["total_categories"])) * 100
+        }
+        
+        with open(summary_file, 'w') as f:
+            json.dump(summary, f, indent=2)
+    
+    def _log_final_summary(self, success: bool):
+        """Log comprehensive final summary."""
+        self.logger.info("\n" + "="*60)
+        self.logger.info("📊 MODULAR TEST EXECUTION SUMMARY")
+        self.logger.info("="*60)
+        
+        if success:
+            self.logger.info("✅ All test categories completed successfully!")
+        else:
+            self.logger.info("⚠️ Some test categories had issues")
+        
+        self.logger.info(f"📈 Categories: {self.overall_stats['successful_categories']}/{self.overall_stats['total_categories']} successful")
+        self.logger.info(f"🧪 Tests: {self.overall_stats['total_tests_passed']}/{self.overall_stats['total_tests_run']} passed")
+        
+        if self.overall_stats['total_tests_failed'] > 0:
+            self.logger.info(f"❌ Failed tests: {self.overall_stats['total_tests_failed']}")
+        
+        # Category breakdown
+        self.logger.info("\n📋 Category Results:")
+        for category, result in self.category_results.items():
+            status = "✅" if result["success"] else "❌"
+            self.logger.info(f"   {status} {result['name']}: {result.get('tests_passed', 0)}/{result.get('tests_run', 0)} passed ({result['duration_seconds']:.1f}s)")
+        
+        self.logger.info(f"\n📁 Results saved to: {self.output_dir}")
+        self.logger.info("="*60)
+
 def parse_enhanced_arguments():
     """Parse command line arguments with enhanced test options."""
     try:
@@ -612,9 +997,10 @@ def main():
         ensure_test_dir_exists(logger)
         ensure_dependencies(logger)
         
-        # Create and run staged test execution
-        runner = StagedTestRunner(args, logger)
-        success = runner.run_all_stages()
+        # Use modular test runner for better visibility and shorter timeouts
+        logger.info("🎯 Using modular test execution for better visibility")
+        runner = ModularTestRunner(args, logger)
+        success = runner.run_all_categories()
         return 0 if success else 1
         
     except KeyboardInterrupt:

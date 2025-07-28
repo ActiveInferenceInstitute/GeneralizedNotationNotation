@@ -307,27 +307,21 @@ def register_tools(mcp_instance):
     # Register tools
     mcp_instance.register_tool(
         name="get_system_info",
-        func=get_system_info_wrapper,
+        function=get_system_info_wrapper,
         schema={},
-        description="Get comprehensive system information including CPU, memory, disk, and platform details.",
-        module="utils",
-        category="System Diagnostics",
-        version="1.0.0"
+        description="Get comprehensive system information including CPU, memory, disk, and platform details."
     )
     
     mcp_instance.register_tool(
         name="get_environment_info",
-        func=get_environment_info_wrapper,
+        function=get_environment_info_wrapper,
         schema={},
-        description="Get environment information including Python packages, environment variables, and paths.",
-        module="utils",
-        category="System Diagnostics",
-        version="1.0.0"
+        description="Get environment information including Python packages, environment variables, and paths."
     )
     
     mcp_instance.register_tool(
         name="get_file_info",
-        func=get_file_info_wrapper,
+        function=get_file_info_wrapper,
         schema={
             "type": "object",
             "properties": {
@@ -338,30 +332,21 @@ def register_tools(mcp_instance):
             },
             "required": ["file_path"]
         },
-        description="Get detailed information about a file or directory including size, permissions, and contents.",
-        module="utils",
-        category="File Operations",
-        version="1.0.0"
+        description="Get detailed information about a file or directory including size, permissions, and contents."
     )
     
     mcp_instance.register_tool(
         name="get_logging_info",
-        func=get_logging_info_wrapper,
+        function=get_logging_info_wrapper,
         schema={},
-        description="Get current logging configuration and status for all loggers.",
-        module="utils",
-        category="System Diagnostics",
-        version="1.0.0"
+        description="Get current logging configuration and status for all loggers."
     )
     
     mcp_instance.register_tool(
         name="validate_dependencies",
-        func=validate_dependencies_wrapper,
+        function=validate_dependencies_wrapper,
         schema={},
-        description="Validate system dependencies and required packages for the GNN pipeline.",
-        module="utils",
-        category="System Validation",
-        version="1.0.0"
+        description="Validate system dependencies and required packages for the GNN pipeline."
     )
     
     logger.info("Successfully registered utils MCP tools") 

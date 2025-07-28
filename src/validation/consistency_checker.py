@@ -307,7 +307,7 @@ class ConsistencyChecker:
             "invalid_references": invalid_references,
             "isolated_blocks": isolated_blocks,
             "circular_references": cycles
-        }
+        } 
 
 def check_consistency(content: str) -> Dict[str, Any]:
     """

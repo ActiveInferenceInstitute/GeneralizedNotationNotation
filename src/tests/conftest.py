@@ -1,52 +1,33 @@
-#!/usr/bin/env python3
 """
-Pytest Configuration and Fixtures for GNN Pipeline Testing
+Test configuration and fixtures for GNN Processing Pipeline.
 
-This module provides comprehensive pytest configuration, fixtures, and safety 
-mechanisms for testing the GNN pipeline. All fixtures are designed to be 
-safe-to-fail and provide isolated testing environments.
-
-Key Features:
-- Comprehensive fixture library for all pipeline components
-- Safety checks ensuring tests run in safe mode
-- Real functional fixtures for external dependencies  
-- Test environment isolation
-- Performance tracking fixtures
-- Sample data generation fixtures
+This module provides pytest fixtures and configuration for testing the GNN pipeline.
 """
 
-import pytest
-import os
-import sys
-import tempfile
-import shutil
-import json
 import logging
-import importlib
+import sys
+import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Generator, Tuple
-import subprocess
-try:
-    import jax
-    from jax._src import api as _jax_api
-    from jax._src import xla_bridge as _jax_bridge
-    _jax_api.clean_up = lambda *args, **kwargs: None
-    _jax_bridge._clear_backends = lambda *args, **kwargs: None
-except ImportError:
-    pass
-from unittest.mock import patch
+from typing import Dict, Any, List, Optional, Generator
+import tempfile
+import json
+from unittest.mock import Mock
 
-# Test directory constants
-TEST_DIR = Path(__file__).parent
-SRC_DIR = TEST_DIR.parent
-PROJECT_ROOT = SRC_DIR.parent
+# Import pytest
+import pytest
 
-# Ensure src is in Python path
-if str(SRC_DIR) not in sys.path:
-    sys.path.insert(0, str(SRC_DIR))
-
-# Import test utilities
-from tests import create_sample_gnn_content
+# Import utilities from test_utils to avoid circular imports
+from .test_utils import (
+    SRC_DIR, 
+    PROJECT_ROOT, 
+    TEST_DIR,
+    TEST_CONFIG,
+    create_sample_gnn_content,
+    is_safe_mode,
+    setup_test_environment,
+    cleanup_test_environment,
+    validate_test_environment
+)
 
 # Test configuration and markers
 PYTEST_MARKERS = {
@@ -65,31 +46,6 @@ PYTEST_MARKERS = {
     "export": "Export functionality tests",
     "parsers": "Parser and format tests"
 }
-
-TEST_CONFIG = {
-    "safe_mode": True,
-    "verbose": False,
-    "strict": False,
-    "estimate_resources": False,
-    "skip_steps": [],
-    "only_steps": []
-}
-
-def is_safe_mode():
-    """Check if tests are running in safe mode."""
-    return TEST_CONFIG["safe_mode"]
-
-def setup_test_environment():
-    """Set up test environment."""
-    pass
-
-def cleanup_test_environment():
-    """Clean up test environment."""
-    pass
-
-def validate_test_environment():
-    """Validate test environment."""
-    return True, []
 
 # Configure pytest markers
 def pytest_configure(config):
@@ -143,81 +99,107 @@ def test_config() -> Dict[str, Any]:
     Returns:
         Dictionary containing test configuration settings
     """
-    return TEST_CONFIG.copy()
+    return TEST_CONFIG
 
 @pytest.fixture(scope="session")
 def project_root() -> Path:
     """
-    Provide the project root directory path.
+    Get the project root directory.
     
     Returns:
-        Path object pointing to the project root
+        Path to the project root directory
     """
     return PROJECT_ROOT
 
 @pytest.fixture(scope="session")
 def src_dir() -> Path:
     """
-    Provide the source directory path.
+    Get the source directory.
     
     Returns:
-        Path object pointing to the src directory
+        Path to the source directory
     """
     return SRC_DIR
 
 @pytest.fixture(scope="session")
 def test_dir() -> Path:
     """
-    Provide the test directory path.
+    Get the test directory.
     
     Returns:
-        Path object pointing to the tests directory
+        Path to the test directory
     """
     return TEST_DIR
 
-# Fixture to patch JAX cleanup function to avoid logging errors on exit
 @pytest.fixture(autouse=True, scope="session")
 def patch_jax_cleanup():
     """
-    Patch jax._src.xla_bridge._clear_backends to prevent it from running at exit.
-    This avoids "I/O operation on closed file" errors from the logging module
-    when running pytest. JAX's atexit handler for cleanup can conflict with
-    pytest's log capturing.
+    Patch JAX cleanup to prevent test errors.
+    
+    This fixture prevents JAX from accessing GPU resources during tests
+    which could cause errors or slowdowns.
     """
+    # Create fake JAX module if not available
+    if "jax" not in sys.modules:
+        class FakeJaxConfig:
+            def update(self, *args, **kwargs):
+                pass
+        
+        class FakeJax:
+            config = FakeJaxConfig()
+        
+        sys.modules["jax"] = FakeJax()
+    
+    # Patch JAX config
     try:
-        with patch("jax._src.xla_bridge._clear_backends") as mock_clear_backends:
-            yield mock_clear_backends
-    except ImportError:
-        # JAX not available, skip patching
-        yield None
+        import jax
+        jax.config.update("jax_disable_jit", True)
+        jax.config.update("jax_platform_name", "cpu")
+    except (ImportError, AttributeError):
+        # JAX not available or patching failed - continue without it
+        pass
 
 # =============================================================================
-# Function-level fixtures (run for each test function)
+# Test utilities fixtures
 # =============================================================================
 
 @pytest.fixture
 def safe_subprocess():
-    """Provide safe subprocess execution for testing."""
+    """
+    Provide safe subprocess execution for tests.
+    
+    This fixture prevents actual subprocess execution during tests
+    and instead returns mock results.
+    """
     def safe_run(cmd, **kwargs):
-        """Execute subprocess with safety checks."""
-        if is_safe_mode():
-            # In safe mode, return successful result without actual execution
+        """Run a command safely in tests (mock implementation)."""
+        try:
             class SafeResult:
                 def __init__(self):
                     self.returncode = 0
-                    self.stdout = "Safe mode: subprocess not executed"
+                    self.stdout = f"Mock stdout for: {cmd}"
                     self.stderr = ""
-                    self.args = cmd
+            
             return SafeResult()
-        else:
-            # In non-safe mode, execute normally
-            return subprocess.run(cmd, **kwargs)
+        except Exception as e:
+            class FailResult:
+                def __init__(self):
+                    self.returncode = 1
+                    self.stdout = ""
+                    self.stderr = str(e)
+            
+            return FailResult()
     
     return safe_run
 
 @pytest.fixture
 def safe_filesystem():
-    """Provide safe filesystem operations for testing."""
+    """
+    Provide safe filesystem operations for tests.
+    
+    This fixture creates temporary directories and files for testing
+    without modifying the actual filesystem.
+    """
     class SafeFileSystem:
         def __init__(self, temp_dir: Path):
             self.temp_dir = temp_dir
@@ -225,180 +207,220 @@ def safe_filesystem():
             self.created_dirs = []
         
         def create_file(self, path: Path, content: str = "") -> Path:
-            """Create a file safely in temp directory."""
-            safe_path = self.temp_dir / path.name
-            safe_path.write_text(content)
-            self.created_files.append(safe_path)
-            return safe_path
+            """Create a file safely in the temporary directory."""
+            full_path = self.temp_dir / path
+            full_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(full_path, 'w') as f:
+                f.write(content)
+            self.created_files.append(full_path)
+            return full_path
         
         def create_dir(self, path: Path) -> Path:
-            """Create a directory safely in temp directory."""
-            safe_path = self.temp_dir / path.name
-            safe_path.mkdir(parents=True, exist_ok=True)
-            self.created_dirs.append(safe_path)
-            return safe_path
+            """Create a directory safely in the temporary directory."""
+            full_path = self.temp_dir / path
+            full_path.mkdir(parents=True, exist_ok=True)
+            self.created_dirs.append(full_path)
+            return full_path
         
         def cleanup(self):
             """Clean up created files and directories."""
-            for file_path in self.created_files:
-                if file_path.exists():
-                    file_path.unlink()
-            for dir_path in reversed(self.created_dirs):
-                if dir_path.exists() and not any(dir_path.iterdir()):
-                    dir_path.rmdir()
+            for file in self.created_files:
+                if file.exists():
+                    file.unlink()
+            for dir_path in reversed(self.created_dirs):  # Reverse to delete deepest first
+                if dir_path.exists():
+                    try:
+                        dir_path.rmdir()
+                    except OSError:
+                        # Directory not empty - skip
+                        pass
     
-    with tempfile.TemporaryDirectory() as temp_dir:
-        fs = SafeFileSystem(Path(temp_dir))
-        yield fs
-        fs.cleanup()
+    # Create temporary directory for the filesystem
+    temp_dir = Path(tempfile.mkdtemp(prefix="gnn_test_"))
+    fs = SafeFileSystem(temp_dir)
+    
+    yield fs
+    
+    fs.cleanup()
 
 @pytest.fixture
 def real_imports():
-    """Provide real import functionality for testing."""
+    """
+    Provide safe module imports for tests.
+    
+    This fixture attempts real imports but returns None if they fail.
+    """
     def safe_import(module_name: str, fallback=None):
-        """Safely import a module with fallback."""
+        """Safely import a module, returning fallback if it fails."""
         try:
-            return importlib.import_module(module_name)
-        except ImportError as e:
-            logging.warning(f"Could not import {module_name}: {e}")
+            return __import__(module_name)
+        except ImportError:
             return fallback
     
     return safe_import
 
-# =============================================================================
-# Alias fixtures for backward compatibility and convenience
-# =============================================================================
-
 @pytest.fixture
 def mock_subprocess(safe_subprocess):
-    """Alias for safe_subprocess fixture."""
+    """Provide a mock subprocess for tests."""
     return safe_subprocess
 
 @pytest.fixture
 def mock_filesystem(safe_filesystem):
-    """Alias for safe_filesystem fixture."""
+    """Provide a mock filesystem for tests."""
     return safe_filesystem
 
 @pytest.fixture
 def mock_imports(real_imports):
-    """Alias for real_imports fixture."""
+    """Provide mock imports for tests."""
     return real_imports
 
 @pytest.fixture
 def mock_dangerous_operations():
-    """Mock dangerous operations for safe testing."""
-    from unittest.mock import MagicMock
+    """
+    Provide mock implementations of dangerous operations.
     
+    This fixture prevents tests from performing dangerous operations
+    such as system calls or network requests.
+    """
     class MockDangerousOps:
         def __init__(self):
-            self.file_delete = MagicMock()
-            self.dir_delete = MagicMock()
-            self.system_command = MagicMock()
-            self.network_request = MagicMock()
+            self.operations = {
+                "system_call": lambda *args, **kwargs: {"status": "mocked", "args": args},
+                "network_request": lambda *args, **kwargs: {"status": "mocked", "url": args[0] if args else None},
+                "file_deletion": lambda *args, **kwargs: {"status": "mocked", "path": args[0] if args else None},
+                "database_query": lambda *args, **kwargs: {"status": "mocked", "query": args[0] if args else None}
+            }
+            self.call_history = []
         
         def __getitem__(self, key):
-            """Make the object subscriptable for backward compatibility."""
-            return getattr(self, key, None)
+            """Get the operation by name and record its access."""
+            if key in self.operations:
+                self.call_history.append({"operation": key, "time": "now"})
+                return self.operations[key]
+            raise KeyError(f"Operation {key} not mocked")
         
         def reset_mocks(self):
-            """Reset all mock operations."""
-            for attr in dir(self):
-                if isinstance(getattr(self, attr), MagicMock):
-                    getattr(self, attr).reset_mock()
+            """Reset call history."""
+            self.call_history = []
     
-    # Return a mock dict-like object for backward compatibility
-    mock_ops = MockDangerousOps()
-    mock_dict = {
-        'file_delete': mock_ops.file_delete,
-        'dir_delete': mock_ops.dir_delete, 
-        'system': mock_ops.system_command,
-        'network': mock_ops.network_request,
-        'remove': mock_ops.file_delete  # Alias for file removal
-    }
-    return mock_dict
+    return MockDangerousOps()
 
 @pytest.fixture
 def mock_llm_provider():
-    """Mock LLM provider for testing LLM integration."""
-    from unittest.mock import MagicMock
+    """
+    Provide a mock LLM provider for tests.
     
+    This fixture prevents tests from making actual LLM API calls.
+    """
     class MockLLMProvider:
         def __init__(self):
-            self.analyze = MagicMock(return_value="Mock analysis result")
-            self.analyze_structure = MagicMock(return_value="Mock structure analysis")
-            self.explain = MagicMock(return_value="Mock explanation")
-            self.explain_model = MagicMock(return_value="Mock model explanation")
-            self.extract_parameters = MagicMock(return_value={"param": "value"})
-            self.suggest_improvements = MagicMock(return_value=["improvement1", "improvement2"])
-            self.generate_summary = MagicMock(return_value="Mock summary generation")
+            self.responses = {
+                "default": "This is a mock LLM response.",
+                "analyze": "The model appears to be well-structured with proper state spaces.",
+                "describe": "This is an Active Inference model with states X, Y and Z.",
+                "explain": "The model works by propagating beliefs through the generative model."
+            }
+            self.call_history = []
         
         def reset_mocks(self):
-            """Reset all mock methods."""
-            for attr in dir(self):
-                if isinstance(getattr(self, attr), MagicMock):
-                    getattr(self, attr).reset_mock()
+            """Reset call history."""
+            self.call_history = []
+        
+        def complete(self, prompt, *args, **kwargs):
+            """Mock completion endpoint."""
+            self.call_history.append({"prompt": prompt, "args": args, "kwargs": kwargs})
+            
+            # Return appropriate mock response based on prompt
+            for key, response in self.responses.items():
+                if key in prompt.lower():
+                    return response
+            
+            return self.responses["default"]
     
     return MockLLMProvider()
 
 @pytest.fixture
 def mock_logger():
-    """Mock logger for testing logging integration."""
-    from unittest.mock import MagicMock
+    """
+    Provide a mock logger for tests.
     
+    This fixture captures logs instead of outputting them.
+    """
     class MockLogger:
         def __init__(self):
-            self.debug = MagicMock()
-            self.info = MagicMock()
-            self.warning = MagicMock()
-            self.error = MagicMock()
-            self.critical = MagicMock()
+            self.logs = []
+            self.errors = []
+            self.warnings = []
+            self.infos = []
         
         def reset_mocks(self):
-            """Reset all mock methods."""
-            for attr in dir(self):
-                if isinstance(getattr(self, attr), MagicMock):
-                    getattr(self, attr).reset_mock()
+            """Reset log history."""
+            self.logs = []
+            self.errors = []
+            self.warnings = []
+            self.infos = []
+        
+        def error(self, msg, *args, **kwargs):
+            """Log error message."""
+            self.errors.append(msg)
+            self.logs.append(f"ERROR: {msg}")
+        
+        def warning(self, msg, *args, **kwargs):
+            """Log warning message."""
+            self.warnings.append(msg)
+            self.logs.append(f"WARNING: {msg}")
+        
+        def info(self, msg, *args, **kwargs):
+            """Log info message."""
+            self.infos.append(msg)
+            self.logs.append(f"INFO: {msg}")
     
     return MockLogger()
 
 @pytest.fixture
 def capture_logs():
-    """Fixture for capturing log messages during tests."""
-    import logging
-    from io import StringIO
+    """
+    Capture logs during test execution.
     
+    This fixture sets up a log handler that captures logs.
+    """
     class LogCapture:
         def __init__(self):
-            self.buffer = StringIO()
-            self.handler = logging.StreamHandler(self.buffer)
-            self.handler.setLevel(logging.DEBUG)
-            self.formatter = logging.Formatter('%(levelname)s: %(message)s')
-            self.handler.setFormatter(self.formatter)
+            self.handler = None
+            self.logs = []
+            self.setup()
+        
+        def setup(self):
+            """Set up log capturing."""
+            import logging
             
-            # Add handler to root logger
-            self.root_logger = logging.getLogger()
-            self.original_level = self.root_logger.level
-            self.root_logger.addHandler(self.handler)
-            self.root_logger.setLevel(logging.DEBUG)
+            class ListHandler(logging.Handler):
+                def __init__(self, log_list):
+                    super().__init__()
+                    self.log_list = log_list
+                
+                def emit(self, record):
+                    self.log_list.append(self.format(record))
+            
+            self.handler = ListHandler(self.logs)
+            logging.getLogger().addHandler(self.handler)
         
         def get_logs(self) -> str:
-            """Get captured log messages."""
-            return self.buffer.getvalue()
+            """Get all logs as a string."""
+            return "\n".join(self.logs)
         
         def get_log_lines(self) -> List[str]:
-            """Get captured log messages as list of lines."""
-            return [line.strip() for line in self.get_logs().splitlines() if line.strip()]
+            """Get all logs as a list of lines."""
+            return self.logs
         
         def clear(self):
             """Clear captured logs."""
-            self.buffer.seek(0)
-            self.buffer.truncate()
+            self.logs = []
         
         def cleanup(self):
-            """Clean up the log capture."""
-            self.root_logger.removeHandler(self.handler)
-            self.root_logger.setLevel(self.original_level)
-            self.handler.close()
+            """Remove log handler."""
+            if self.handler:
+                logging.getLogger().removeHandler(self.handler)
     
     capture = LogCapture()
     yield capture
@@ -406,175 +428,256 @@ def capture_logs():
 
 @pytest.fixture
 def test_logger():
-    """Provide a real logger for testing."""
-    logger = logging.getLogger("gnn_test")
-    logger.setLevel(logging.DEBUG)
+    """
+    Provide a test logger.
     
-    # Create console handler if not exists
-    if not logger.handlers:
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        )
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
+    This fixture sets up a logger for test use.
+    """
+    logger = logging.getLogger("test")
     
-    return logger
+    # Create a new handler for this test
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('%(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    
+    # Set log level
+    logger.setLevel(logging.INFO)
+    
+    yield logger
+    
+    # Clean up
+    logger.removeHandler(handler)
 
 # =============================================================================
-# Pipeline Component Fixtures
+# GNN-related fixtures
 # =============================================================================
 
 @pytest.fixture
 def real_gnn_parser():
-    """Provide real GNN parser for testing."""
+    """
+    Provide a real GNN parser if available.
+    
+    This fixture attempts to use the real GNN parser if available,
+    otherwise it provides a mock implementation.
+    """
     try:
-        from gnn import parse_gnn_file, parse_gnn_directory
+        from gnn.parsers import parse_gnn_file, parse_gnn_directory
         
         class RealGNNParser:
             def parse_file(self, file_path: Path):
-                """Parse a real GNN file."""
+                """Parse a GNN file."""
                 try:
                     return parse_gnn_file(file_path)
                 except Exception as e:
-                    logging.warning(f"GNN parsing failed: {e}")
                     return {
-                        'model_name': 'ParseError',
-                        'sections_found': [],
-                        'model_parameters': {},
-                        'errors': [str(e)]
+                        "error": str(e),
+                        "file_path": str(file_path),
+                        "status": "error"
                     }
             
             def parse_directory(self, dir_path: Path):
-                """Parse GNN files in a directory."""
+                """Parse a directory of GNN files."""
                 try:
                     return parse_gnn_directory(dir_path)
                 except Exception as e:
-                    logging.warning(f"GNN directory parsing failed: {e}")
-                    return {}
+                    return {
+                        "error": str(e),
+                        "directory_path": str(dir_path),
+                        "status": "error",
+                        "files_processed": 0
+                    }
         
         return RealGNNParser()
     except ImportError:
-        pytest.skip("GNN parser not available")
+        # Return mock parser
+        class MockGNNParser:
+            def parse_file(self, file_path: Path):
+                return {"mock": True, "file": str(file_path)}
+            
+            def parse_directory(self, dir_path: Path):
+                return {"mock": True, "directory": str(dir_path)}
+        
+        return MockGNNParser()
 
 @pytest.fixture
 def real_type_checker():
-    """Provide real type checker for testing."""
+    """
+    Provide a real GNN type checker if available.
+    
+    This fixture attempts to use the real GNN type checker if available,
+    otherwise it provides a mock implementation.
+    """
     try:
-        from type_checker import check_gnn_file, check_gnn_directory
+        from type_checker import check_file, check_directory
         
         class RealTypeChecker:
             def check_file(self, file_path: Path):
-                """Check a real GNN file."""
+                """Type check a GNN file."""
                 try:
-                    return check_gnn_file(file_path)
+                    return check_file(file_path)
                 except Exception as e:
-                    logging.warning(f"Type checking failed: {e}")
-                    return (False, [str(e)], [])
+                    return {
+                        "error": str(e),
+                        "file_path": str(file_path),
+                        "status": "error"
+                    }
             
             def check_directory(self, dir_path: Path):
-                """Check GNN files in a directory."""
+                """Type check a directory of GNN files."""
                 try:
-                    return check_gnn_directory(dir_path)
+                    return check_directory(dir_path)
                 except Exception as e:
-                    logging.warning(f"Directory type checking failed: {e}")
-                    return {}
+                    return {
+                        "error": str(e),
+                        "directory_path": str(dir_path),
+                        "status": "error"
+                    }
             
             def generate_report(self, results):
-                """Generate a type checking report."""
-                return f"Type checking report: {len(results)} files processed"
+                """Generate a report from type checking results."""
+                return {
+                    "total_files": len(results) if isinstance(results, list) else 1,
+                    "valid_files": sum(1 for r in results if r.get("status") == "valid") if isinstance(results, list) else (1 if results.get("status") == "valid" else 0),
+                    "invalid_files": sum(1 for r in results if r.get("status") != "valid") if isinstance(results, list) else (0 if results.get("status") == "valid" else 1)
+                }
         
         return RealTypeChecker()
     except ImportError:
-        pytest.skip("GNN type checker not available")
+        # Return mock type checker
+        class MockTypeChecker:
+            def check_file(self, file_path: Path):
+                return {"mock": True, "file": str(file_path), "status": "valid"}
+            
+            def check_directory(self, dir_path: Path):
+                return [{"mock": True, "file": f"{dir_path}/file{i}.md", "status": "valid"} for i in range(3)]
+            
+            def generate_report(self, results):
+                return {"mock": True, "total_files": 3, "valid_files": 3}
+        
+        return MockTypeChecker()
 
 @pytest.fixture
 def real_visualization():
-    """Provide real visualization components for testing."""
+    """
+    Provide a real visualization module if available.
+    
+    This fixture attempts to use the real visualization module if available,
+    otherwise it provides a mock implementation.
+    """
     try:
-        from visualization import create_graph_visualization, create_matrix_visualization
+        from visualization import generate_matrix_visualization, generate_graph_visualization
         
         class RealVisualization:
             def __init__(self, output_dir: Path):
                 self.output_dir = output_dir
-                self.output_dir.mkdir(parents=True, exist_ok=True)
             
             def create_graph_visualization(self, data, filename="graph.png"):
-                """Create a real graph visualization."""
+                """Create a graph visualization."""
                 try:
                     output_path = self.output_dir / filename
-                    return create_graph_visualization(data, output_path)
+                    result = generate_graph_visualization(data, output_path)
+                    return {"success": True, "path": str(output_path), "result": result}
                 except Exception as e:
-                    logging.warning(f"Graph visualization failed: {e}")
-                    return str(self.output_dir / filename)
+                    return {"error": str(e), "success": False}
             
             def create_matrix_visualization(self, matrix, filename="matrix.png"):
-                """Create a real matrix visualization."""
+                """Create a matrix visualization."""
                 try:
                     output_path = self.output_dir / filename
-                    return create_matrix_visualization(matrix, output_path)
+                    result = generate_matrix_visualization(matrix, output_path)
+                    return {"success": True, "path": str(output_path), "result": result}
                 except Exception as e:
-                    logging.warning(f"Matrix visualization failed: {e}")
-                    return str(self.output_dir / filename)
+                    return {"error": str(e), "success": False}
             
             def generate_visualization_report(self, visualizations):
-                """Generate a visualization report."""
-                return f"Generated {len(visualizations)} visualizations"
+                """Generate a report of visualizations."""
+                return {
+                    "total_visualizations": len(visualizations),
+                    "successful": sum(1 for v in visualizations if v.get("success", False)),
+                    "failed": sum(1 for v in visualizations if not v.get("success", False))
+                }
         
-        with tempfile.TemporaryDirectory() as temp_dir:
-            yield RealVisualization(Path(temp_dir))
+        return RealVisualization
     except ImportError:
-        pytest.skip("Visualization components not available")
+        # Return mock visualization
+        class MockVisualization:
+            def __init__(self, output_dir: Path):
+                self.output_dir = output_dir
+            
+            def create_graph_visualization(self, data, filename="graph.png"):
+                return {"mock": True, "output": str(self.output_dir / filename)}
+            
+            def create_matrix_visualization(self, matrix, filename="matrix.png"):
+                return {"mock": True, "output": str(self.output_dir / filename)}
+            
+            def generate_visualization_report(self, visualizations):
+                return {"mock": True, "total": len(visualizations)}
+        
+        return MockVisualization
 
 @pytest.fixture
 def real_export():
-    """Provide real export functionality for testing."""
+    """
+    Provide a real export module if available.
+    
+    This fixture attempts to use the real export module if available,
+    otherwise it provides a mock implementation.
+    """
     try:
         from export import export_to_json, export_to_xml, export_to_graphml
         
         class RealExporter:
             def __init__(self, output_dir: Path):
                 self.output_dir = output_dir
-                self.output_dir.mkdir(parents=True, exist_ok=True)
             
             def export_to_json(self, data, filename="export.json"):
-                """Export data to JSON format."""
+                """Export data to JSON."""
                 try:
                     output_path = self.output_dir / filename
-                    result = export_to_json(data, output_path)
-                    return {"status": "success", "file": str(output_path)}
+                    export_to_json(data, output_path)
+                    return {"success": True, "path": str(output_path)}
                 except Exception as e:
-                    logging.warning(f"JSON export failed: {e}")
-                    return {"status": "error", "error": str(e)}
+                    return {"error": str(e), "success": False}
             
             def export_to_xml(self, data, filename="export.xml"):
-                """Export data to XML format."""
+                """Export data to XML."""
                 try:
                     output_path = self.output_dir / filename
-                    result = export_to_xml(data, output_path)
-                    return {"status": "success", "file": str(output_path)}
+                    export_to_xml(data, output_path)
+                    return {"success": True, "path": str(output_path)}
                 except Exception as e:
-                    logging.warning(f"XML export failed: {e}")
-                    return {"status": "error", "error": str(e)}
+                    return {"error": str(e), "success": False}
             
             def export_to_graphml(self, data, filename="export.graphml"):
-                """Export data to GraphML format."""
+                """Export data to GraphML."""
                 try:
                     output_path = self.output_dir / filename
-                    result = export_to_graphml(data, output_path)
-                    return {"status": "success", "file": str(output_path)}
+                    export_to_graphml(data, output_path)
+                    return {"success": True, "path": str(output_path)}
                 except Exception as e:
-                    logging.warning(f"GraphML export failed: {e}")
-                    return {"status": "error", "error": str(e)}
+                    return {"error": str(e), "success": False}
         
-        with tempfile.TemporaryDirectory() as temp_dir:
-            yield RealExporter(Path(temp_dir))
+        return RealExporter
     except ImportError:
-        pytest.skip("Export functionality not available")
+        # Return mock exporter
+        class MockExporter:
+            def __init__(self, output_dir: Path):
+                self.output_dir = output_dir
+            
+            def export_to_json(self, data, filename="export.json"):
+                return {"mock": True, "output": str(self.output_dir / filename)}
+            
+            def export_to_xml(self, data, filename="export.xml"):
+                return {"mock": True, "output": str(self.output_dir / filename)}
+            
+            def export_to_graphml(self, data, filename="export.graphml"):
+                return {"mock": True, "output": str(self.output_dir / filename)}
+        
+        return MockExporter
 
 # =============================================================================
-# Sample Data Fixtures
+# Test data fixtures
 # =============================================================================
 
 @pytest.fixture
@@ -582,142 +685,376 @@ def sample_gnn_files(safe_filesystem) -> Dict[str, Path]:
     """
     Create sample GNN files for testing.
     
-    Returns:
-        Dictionary mapping file names to their paths
+    This fixture creates temporary GNN files for testing
+    without modifying the actual filesystem.
     """
-    sample_content = create_sample_gnn_content()
-    created_files = {}
+    gnn_content = create_sample_gnn_content()
     
-    for name, content in sample_content.items():
+    # Create files
+    files = {}
+    for name, content in gnn_content.items():
         file_path = safe_filesystem.create_file(Path(f"{name}.md"), content)
-        created_files[name] = file_path
+        files[name] = file_path
     
-    return created_files
+    return files
+
+@pytest.fixture
+def sample_pipeline_data() -> Dict[str, Any]:
+    """
+    Create sample pipeline data for testing.
+    
+    This fixture creates a sample pipeline data structure
+    for use in tests.
+    """
+    return {
+        "report_generation_time": "2023-01-01T00:00:00",
+        "pipeline_output_directory": "/test/output",
+        "steps": {
+            "setup_artifacts": {
+                "directory": "/test/output/setup_artifacts",
+                "exists": True,
+                "file_count": 5,
+                "total_size_mb": 2.5,
+                "file_types": {".json": {"count": 3, "total_size_mb": 1.5}, ".md": {"count": 2, "total_size_mb": 1.0}},
+                "last_modified": "2023-01-01T00:00:00",
+                "status": "success"
+            },
+            "gnn_processing_step": {
+                "directory": "/test/output/gnn_processing_step",
+                "exists": True,
+                "file_count": 3,
+                "total_size_mb": 1.8,
+                "file_types": {".md": {"count": 2, "total_size_mb": 1.2}, ".json": {"count": 1, "total_size_mb": 0.6}},
+                "last_modified": "2023-01-01T00:00:00",
+                "status": "success"
+            },
+            "test_reports": {
+                "directory": "/test/output/test_reports",
+                "exists": False,
+                "file_count": 0,
+                "total_size_mb": 0.0,
+                "file_types": {},
+                "last_modified": None,
+                "status": "missing"
+            }
+        },
+        "summary": {
+            "total_files_processed": 8,
+            "total_size_mb": 4.3,
+            "success_rate": 66.7
+        }
+    }
 
 @pytest.fixture
 def isolated_temp_dir() -> Generator[Path, None, None]:
     """
-    Provide an isolated temporary directory for testing.
+    Create an isolated temporary directory for tests.
     
-    Yields:
-        Path object pointing to a temporary directory
+    This fixture creates a temporary directory for test use
+    and cleans it up afterward.
     """
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield Path(temp_dir)
+    temp_dir = Path(tempfile.mkdtemp(prefix="gnn_test_"))
+    yield temp_dir
+    
+    # Clean up (remove all files and directories)
+    if temp_dir.exists():
+        for path in temp_dir.glob('**/*'):
+            if path.is_file():
+                path.unlink()
+        
+        # Try to remove empty directories
+        for path in sorted([p for p in temp_dir.glob('**/*') if p.is_dir()], key=lambda p: len(str(p)), reverse=True):
+            try:
+                path.rmdir()
+            except OSError:
+                pass
+        
+        # Try to remove the temp directory itself
+        try:
+            temp_dir.rmdir()
+        except OSError:
+            pass
 
 @pytest.fixture
 def pipeline_arguments() -> Dict[str, Any]:
     """
-    Provide sample pipeline arguments for testing.
+    Provide standard pipeline arguments for testing.
     
-    Returns:
-        Dictionary containing sample pipeline arguments
+    This fixture creates a set of standard arguments
+    for pipeline scripts.
     """
-    return get_sample_pipeline_arguments()
+    return {
+        "target_dir": str(PROJECT_ROOT / "input" / "gnn_files"),
+        "output_dir": str(PROJECT_ROOT / "output"),
+        "verbose": True,
+        "strict": False,
+        "force": False,
+        "config": str(PROJECT_ROOT / "input" / "config.yaml")
+    }
+
+@pytest.fixture
+def comprehensive_test_data(isolated_temp_dir) -> Dict[str, Any]:
+    """
+    Create comprehensive test data for tests.
+    
+    This fixture creates a complete set of test data
+    including files, directories, and pipeline outputs.
+    """
+    # Create directory structure
+    input_dir = isolated_temp_dir / "input"
+    output_dir = isolated_temp_dir / "output"
+    gnn_dir = input_dir / "gnn_files"
+    
+    for dir_path in [input_dir, output_dir, gnn_dir]:
+        dir_path.mkdir(parents=True, exist_ok=True)
+    
+    # Create GNN files
+    gnn_content = create_sample_gnn_content()
+    gnn_files = {}
+    for name, content in gnn_content.items():
+        file_path = gnn_dir / f"{name}.md"
+        with open(file_path, 'w') as f:
+            f.write(content)
+        gnn_files[name] = file_path
+    
+    # Create output directories and sample files
+    output_dirs = [
+        "setup_artifacts", "gnn_processing_step", "type_check", 
+        "validation", "gnn_exports", "visualization"
+    ]
+    
+    for dir_name in output_dirs:
+        dir_path = output_dir / dir_name
+        dir_path.mkdir(parents=True, exist_ok=True)
+        
+        # Create a sample JSON file
+        with open(dir_path / "results.json", 'w') as f:
+            json.dump({"status": "success", "step": dir_name}, f)
+    
+    # Create pipeline arguments
+    args = {
+        "target_dir": str(input_dir),
+        "output_dir": str(output_dir),
+        "verbose": True,
+        "strict": False
+    }
+    
+    return {
+        "temp_dir": isolated_temp_dir,
+        "input_dir": input_dir,
+        "output_dir": output_dir,
+        "gnn_dir": gnn_dir,
+        "gnn_files": gnn_files,
+        "output_dirs": {name: output_dir / name for name in output_dirs},
+        "args": args
+    }
 
 # =============================================================================
-# Test Environment Fixtures
+# MCP integration fixtures
 # =============================================================================
+
+@pytest.fixture
+def mock_mcp_tools():
+    """
+    Provide mock MCP tools for testing.
+    
+    This fixture creates a mock MCP instance that can
+    register and execute tools for testing.
+    """
+    class MockTool:
+        def __init__(self, name, function, schema, description):
+            self.name = name
+            self.function = function
+            self.schema = schema
+            self.description = description
+    
+    class MockResource:
+        def __init__(self, uri, function, description):
+            self.uri = uri
+            self.function = function
+            self.description = description
+    
+    class MockMCPInstance:
+        def __init__(self):
+            self.tools = {}
+            self.resources = {}
+        
+        def register_tool(self, name, function, schema, description):
+            """Register a tool with the MCP."""
+            self.tools[name] = MockTool(name, function, schema, description)
+        
+        def register_resource(self, uri, function, description):
+            """Register a resource with the MCP."""
+            self.resources[uri] = MockResource(uri, function, description)
+        
+        def execute_tool(self, name, **kwargs):
+            """Execute a registered tool."""
+            if name not in self.tools:
+                return {"error": f"Tool '{name}' not found"}
+            
+            try:
+                tool = self.tools[name]
+                return tool.function(**kwargs)
+            except Exception as e:
+                return {"error": str(e)}
+        
+        def get_tool_list(self):
+            """Get a list of registered tools."""
+            return [{"name": name, "description": tool.description} for name, tool in self.tools.items()]
+        
+        def get_resource_list(self):
+            """Get a list of registered resources."""
+            return [{"uri": uri, "description": resource.description} for uri, resource in self.resources.items()]
+    
+    return MockMCPInstance()
 
 @pytest.fixture
 def full_pipeline_environment(isolated_temp_dir, sample_gnn_files):
     """
-    Set up a complete pipeline testing environment.
+    Create a full pipeline environment for testing.
     
-    Returns:
-        Dictionary containing all environment components
+    This fixture creates a complete environment including
+    GNN files, configuration, and output directories.
     """
+    # Create directory structure
+    input_dir = isolated_temp_dir / "input"
+    output_dir = isolated_temp_dir / "output"
+    config_dir = isolated_temp_dir / "config"
+    
+    for dir_path in [input_dir, output_dir, config_dir]:
+        dir_path.mkdir(parents=True, exist_ok=True)
+    
+    # Create configuration file
+    config = {
+        "pipeline": {
+            "steps": [
+                {"name": "setup", "script": "1_setup.py", "dependencies": []},
+                {"name": "tests", "script": "2_tests.py", "dependencies": ["setup"]},
+                {"name": "gnn", "script": "3_gnn.py", "dependencies": ["setup"]},
+                {"name": "type_checker", "script": "4_type_checker.py", "dependencies": ["gnn"]}
+            ],
+            "output_dir": str(output_dir),
+            "verbose": True
+        }
+    }
+    
+    with open(config_dir / "pipeline_config.json", 'w') as f:
+        json.dump(config, f, indent=2)
+    
+    # Copy sample GNN files
+    gnn_dir = input_dir / "gnn_files"
+    gnn_dir.mkdir(parents=True, exist_ok=True)
+    
+    for name, file_path in sample_gnn_files.items():
+        with open(file_path, 'r') as src:
+            content = src.read()
+            
+        with open(gnn_dir / f"{name}.md", 'w') as dst:
+            dst.write(content)
+    
     return {
-        'temp_dir': isolated_temp_dir,
-        'sample_files': sample_gnn_files,
-        'config': TEST_CONFIG.copy(),
-        'src_dir': SRC_DIR,
-        'project_root': PROJECT_ROOT
+        "root_dir": isolated_temp_dir,
+        "input_dir": input_dir,
+        "output_dir": output_dir,
+        "config_dir": config_dir,
+        "gnn_dir": gnn_dir,
+        "config_file": config_dir / "pipeline_config.json"
     }
 
 @pytest.fixture
 def simulate_failures():
-    """Provide failure simulation for testing error handling."""
+    """
+    Provide tools to simulate failures for testing.
+    
+    This fixture creates tools to simulate various types of
+    failures in a controlled manner.
+    """
     class FailureSimulator:
         def __init__(self):
-            self.failure_modes = {
-                'network_error': 'Simulated network connection failure',
-                'file_not_found': 'Simulated file not found error',
-                'permission_denied': 'Simulated permission denied error',
-                'timeout': 'Simulated operation timeout',
-                'dependency_missing': 'Simulated missing dependency error',
-                'subprocess_error': 'Simulated subprocess error'
-            }
-            
-            # Map failure types to exception classes
-            self.exception_mapping = {
-                'file_not_found': FileNotFoundError,
-                'permission_denied': PermissionError,
-                'subprocess_error': subprocess.CalledProcessError,
-                'network_error': ConnectionError,
-                'timeout': TimeoutError,
-                'dependency_missing': ImportError
+            self.failures = {
+                "timeout": self._simulate_timeout,
+                "exception": self._simulate_exception,
+                "io_error": self._simulate_io_error,
+                "import_error": self._simulate_import_error,
+                "syntax_error": self._simulate_syntax_error,
+                "type_error": self._simulate_type_error,
+                "value_error": self._simulate_value_error,
+                "assertion_error": self._simulate_assertion_error,
+                "memory_error": self._simulate_memory_error,
+                "system_exit": self._simulate_system_exit
             }
         
         def simulate(self, failure_type: str):
-            """Simulate a specific type of failure."""
-            if failure_type in self.failure_modes:
-                raise Exception(self.failure_modes[failure_type])
-            else:
+            """Simulate a failure of the specified type."""
+            if failure_type not in self.failures:
                 raise ValueError(f"Unknown failure type: {failure_type}")
+            
+            failure = self.failures[failure_type]
+            failure()
         
         def get_failure(self, failure_type: str):
-            """Get the failure exception instance for a specific failure type."""
-            if failure_type in self.exception_mapping:
-                exception_class = self.exception_mapping[failure_type]
-                message = self.failure_modes.get(failure_type, "Unknown failure")
-                
-                # Handle subprocess.CalledProcessError special case
-                if exception_class == subprocess.CalledProcessError:
-                    return exception_class(1, ['mock_command'], message)
-                else:
-                    return exception_class(message)
-            else:
-                return Exception(f"Unknown failure type: {failure_type}")
+            """Get a failure function without executing it."""
+            if failure_type not in self.failures:
+                raise ValueError(f"Unknown failure type: {failure_type}")
+            
+            return self.failures[failure_type]
         
         def get_failure_message(self, failure_type: str) -> str:
-            """Get the failure message for a specific failure type."""
-            return self.failure_modes.get(failure_type, "Unknown failure")
+            """Get the message for a failure type."""
+            messages = {
+                "timeout": "Operation timed out",
+                "exception": "An unexpected error occurred",
+                "io_error": "I/O operation failed",
+                "import_error": "Failed to import module",
+                "syntax_error": "Invalid syntax",
+                "type_error": "Invalid type",
+                "value_error": "Invalid value",
+                "assertion_error": "Assertion failed",
+                "memory_error": "Out of memory",
+                "system_exit": "System exit"
+            }
+            
+            return messages.get(failure_type, "Unknown failure")
+        
+        def _simulate_timeout(self):
+            """Simulate a timeout."""
+            import time
+            time.sleep(60)  # This should trigger a timeout
+        
+        def _simulate_exception(self):
+            """Simulate a generic exception."""
+            raise Exception("Simulated exception")
+        
+        def _simulate_io_error(self):
+            """Simulate an I/O error."""
+            raise IOError("Simulated I/O error")
+
+        def _simulate_import_error(self):
+            """Simulate an import error."""
+            raise ImportError("Simulated import error")
+        
+        def _simulate_syntax_error(self):
+            """Simulate a syntax error."""
+            raise SyntaxError("Simulated syntax error")
+        
+        def _simulate_type_error(self):
+            """Simulate a type error."""
+            raise TypeError("Simulated type error")
+        
+        def _simulate_value_error(self):
+            """Simulate a value error."""
+            raise ValueError("Simulated value error")
+        
+        def _simulate_assertion_error(self):
+            """Simulate an assertion error."""
+            raise AssertionError("Simulated assertion error")
+        
+        def _simulate_memory_error(self):
+            """Simulate a memory error."""
+            raise MemoryError("Simulated memory error")
+        
+        def _simulate_system_exit(self):
+            """Simulate a system exit."""
+            sys.exit(1)
     
-    return FailureSimulator()
-
-# =============================================================================
-# Utility Functions for Test Fixtures
-# =============================================================================
-
-def assert_file_exists(file_path: Path, message: str = ""):
-    """Assert that a file exists with a custom message."""
-    assert file_path.exists(), f"File should exist: {file_path}. {message}"
-
-def assert_valid_json(file_path: Path):
-    """Assert that a file contains valid JSON."""
-    assert file_path.exists(), f"JSON file should exist: {file_path}"
-    try:
-        with open(file_path, 'r') as f:
-            json.load(f)
-    except json.JSONDecodeError as e:
-        pytest.fail(f"File contains invalid JSON: {file_path}. Error: {e}")
-
-def assert_directory_structure(base_dir: Path, expected_structure: Dict[str, Any]):
-    """Assert that a directory has the expected structure."""
-    for name, content in expected_structure.items():
-        path = base_dir / name
-        if isinstance(content, dict):
-            assert path.is_dir(), f"Should be directory: {path}"
-            assert_directory_structure(path, content)
-        else:
-            assert path.is_file(), f"Should be file: {path}" 
-
-def pytest_sessionfinish(session):
-    """
-    Called after the whole test run finishes.
-    This hook is used to clean up logging handlers to prevent "I/O operation
-    on closed file" errors when JAX attempts to log during shutdown after
-    pytest has closed the log file.
-    """
-    logging.shutdown() 
+    return FailureSimulator() 

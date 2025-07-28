@@ -1,7 +1,7 @@
 """
-MCP (Model Context Protocol) integration for $module utilities.
+MCP (Model Context Protocol) integration for llm utilities.
 
-This module exposes utility functions from the $module module through MCP.
+This module exposes utility functions from the llm module through MCP.
 """
 
 import os
@@ -11,14 +11,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Import utilities from the $module module
-from . import process_$module
+# Import utilities from the llm module
+from . import process_llm
 
-# MCP Tools for $module Utilities Module
+# MCP Tools for LLM Utilities Module
 
-def process_$module_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
+def process_llm_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
     """
-    Process $module for GNN files. Exposed via MCP.
+    Process llm for GNN files. Exposed via MCP.
     
     Args:
         target_directory: Directory containing GNN files to process
@@ -29,7 +29,7 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
         Dictionary with operation status and results.
     """
     try:
-        success = process_$module(
+        success = process_llm(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
             verbose=verbose
@@ -38,10 +38,10 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": f"$module processing {'completed successfully' if success else 'failed'}"
+            "message": f"llm processing {'completed successfully' if success else 'failed'}"
         }
     except Exception as e:
-        logger.error(f"Error in process_$module_mcp for {target_directory}: {e}", exc_info=True)
+        logger.error(f"Error in process_llm_mcp for {target_directory}: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e)
@@ -49,17 +49,17 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
 
 # MCP Registration Function
 def register_tools(mcp_instance):
-    """Register $module utility tools with the MCP."""
+    """Register llm utility tools with the MCP."""
     
     mcp_instance.register_tool(
-        "process_$module",
-        process_$module_mcp,
+        "process_llm",
+        process_llm_mcp,
         {
             "target_directory": {"type": "string", "description": "Directory containing GNN files to process."},
-            "output_directory": {"type": "string", "description": "Directory to save $module results."},
+            "output_directory": {"type": "string", "description": "Directory to save llm results."},
             "verbose": {"type": "boolean", "description": "Enable verbose output. Defaults to false.", "optional": True}
         },
-        f"Process $module for GNN files in the specified directory."
+        f"Process llm for GNN files in the specified directory."
     )
     
-    logger.info("$module module MCP tools registered.")
+    logger.info("llm module MCP tools registered.")
