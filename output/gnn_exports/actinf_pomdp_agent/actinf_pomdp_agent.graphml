@@ -1,2 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<graphml xmlns="http://graphml.graphdrawing.org/xmlns"><key id="type" for="node" attr.name="type" attr.type="string" /><key id="dimensions" for="node" attr.name="dimensions" attr.type="string" /><key id="connection_type" for="edge" attr.name="connection_type" attr.type="string" /><graph id="gnn_model" edgedefault="directed" /></graphml>

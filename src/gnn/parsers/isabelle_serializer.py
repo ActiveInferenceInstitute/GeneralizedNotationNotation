@@ -20,8 +20,8 @@ class IsabelleSerializer(BaseGNNSerializer):
         lines.append("")
         
         # Documentation
-        lines.append(f'text \\\<open>{model.model_name}\\\<close>')
-        lines.append(f'text \\\<open>{model.annotation}\\\<close>')
+        lines.append(f'text \\<open>{model.model_name}\\<close>')
+        lines.append(f'text \\<open>{model.annotation}\\<close>')
         lines.append("")
         
         # Variable types

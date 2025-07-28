@@ -4,6 +4,7 @@ Unit tests for GNN Processing Pipeline.
 This module provides unit testing capabilities with fallback implementations.
 """
 
+import pytest
 import logging
 from pathlib import Path
 from typing import Dict, Any
@@ -180,77 +181,76 @@ def run_pipeline_unit_tests(test_results_dir: Path, verbose: bool) -> bool:
         return False
 
 # Test helper functions
-def test_config_functionality() -> bool:
+def test_config_functionality():
     """Test configuration functionality."""
     try:
         from pipeline import get_pipeline_config
         config = get_pipeline_config()
-        return config is not None
-    except Exception:
-        return False
+        assert config is not None, "Pipeline config should not be None"
+    except Exception as e:
+        pytest.fail(f"Configuration test failed: {e}")
 
-def test_logging_functionality() -> bool:
+def test_logging_functionality():
     """Test logging functionality."""
     try:
         from utils import setup_step_logging
         logger = setup_step_logging("test", None)
-        return logger is not None
-    except Exception:
-        return False
+        assert logger is not None, "Logger should not be None"
+    except Exception as e:
+        pytest.fail(f"Logging test failed: {e}")
 
-def test_path_utilities() -> bool:
+def test_path_utilities():
     """Test path utility functions."""
     try:
         from pathlib import Path
         test_path = Path("/tmp/test_path")
-        return True
-    except Exception:
-        return False
+        assert isinstance(test_path, Path), "Should create Path object"
+    except Exception as e:
+        pytest.fail(f"Path utilities test failed: {e}")
 
-def test_file_utilities() -> bool:
+def test_file_utilities():
     """Test file utility functions."""
     try:
         import json
         test_data = {"test": "data"}
         json_str = json.dumps(test_data)
         parsed_data = json.loads(json_str)
-        return parsed_data == test_data
-    except Exception:
-        return False
+        assert parsed_data == test_data, "JSON serialization/deserialization should work"
+    except Exception as e:
+        pytest.fail(f"File utilities test failed: {e}")
 
-def test_validation_utilities() -> bool:
+def test_validation_utilities():
     """Test validation utility functions."""
     try:
         # Basic validation test
         test_value = "test"
-        is_string = isinstance(test_value, str)
-        return is_string
-    except Exception:
-        return False
+        assert isinstance(test_value, str), "Test value should be a string"
+    except Exception as e:
+        pytest.fail(f"Validation utilities test failed: {e}")
 
-def test_step_discovery() -> bool:
+def test_step_discovery():
     """Test pipeline step discovery."""
     try:
         from pipeline.discovery import get_pipeline_scripts
         from pathlib import Path
         scripts = get_pipeline_scripts(Path(__file__).parent.parent)
-        return isinstance(scripts, list)
-    except Exception:
-        return False
+        assert isinstance(scripts, list), "Pipeline scripts should be a list"
+    except Exception as e:
+        pytest.fail(f"Step discovery test failed: {e}")
 
-def test_step_execution() -> bool:
+def test_step_execution():
     """Test pipeline step execution."""
     try:
         # Basic execution test
-        return True
-    except Exception:
-        return False
+        assert True, "Basic execution test should pass"
+    except Exception as e:
+        pytest.fail(f"Step execution test failed: {e}")
 
-def test_step_configuration() -> bool:
+def test_step_configuration():
     """Test pipeline step configuration."""
     try:
         from pipeline import get_pipeline_config
         config = get_pipeline_config()
-        return hasattr(config, 'steps')
-    except Exception:
-        return False 
+        assert hasattr(config, 'steps'), "Config should have steps attribute"
+    except Exception as e:
+        pytest.fail(f"Step configuration test failed: {e}") 

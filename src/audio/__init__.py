@@ -478,6 +478,462 @@ Generated on: {results['timestamp']}
     
     return summary
 
+class SAPFGNNProcessor:
+    """SAPF (Sonification and Audio Processing Framework) GNN Processor."""
+    
+    def __init__(self):
+        self.supported_formats = ['wav', 'mp3', 'flac', 'ogg']
+        self.audio_engines = ['basic', 'sapf', 'pedalboard']
+    
+    def process_gnn_content(self, gnn_content: str) -> Dict[str, Any]:
+        """Process GNN content for audio generation."""
+        try:
+            # Extract variables and connections
+            variables = extract_variables_for_audio(gnn_content)
+            connections = extract_connections_for_audio(gnn_content)
+            
+            return {
+                "success": True,
+                "variables": variables,
+                "connections": connections,
+                "audio_ready": True
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+    
+    def generate_audio(self, model_data: Dict[str, Any], output_dir: Path) -> Dict[str, Any]:
+        """Generate audio from model data."""
+        try:
+            # Generate different audio representations
+            tonal_audio = generate_tonal_representation(
+                model_data.get("variables", []), 
+                model_data.get("connections", [])
+            )
+            
+            rhythmic_audio = generate_rhythmic_representation(
+                model_data.get("variables", []), 
+                model_data.get("connections", [])
+            )
+            
+            ambient_audio = generate_ambient_representation(
+                model_data.get("variables", []), 
+                model_data.get("connections", [])
+            )
+            
+            # Save audio files
+            output_dir.mkdir(parents=True, exist_ok=True)
+            
+            save_audio_file(tonal_audio, output_dir / "tonal.wav")
+            save_audio_file(rhythmic_audio, output_dir / "rhythmic.wav")
+            save_audio_file(ambient_audio, output_dir / "ambient.wav")
+            
+            return {
+                "success": True,
+                "audio_files": {
+                    "tonal": str(output_dir / "tonal.wav"),
+                    "rhythmic": str(output_dir / "rhythmic.wav"),
+                    "ambient": str(output_dir / "ambient.wav")
+                }
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+
+def get_module_info() -> Dict[str, Any]:
+    """Get comprehensive information about the audio module and its capabilities."""
+    info = {
+        'version': __version__,
+        'description': __description__,
+        'features': FEATURES,
+        'audio_capabilities': [],
+        'sonification_methods': [],
+        'supported_formats': []
+    }
+    
+    # Audio capabilities
+    info['audio_capabilities'].extend([
+        'Tonal generation',
+        'Rhythmic generation',
+        'Ambient generation',
+        'Sonification',
+        'Audio analysis'
+    ])
+    
+    # Sonification methods
+    info['sonification_methods'].extend([
+        'Variable-to-frequency mapping',
+        'Connection-to-rhythm mapping',
+        'Model-dynamics-to-ambient mapping'
+    ])
+    
+    # Supported formats
+    info['supported_formats'].extend(['wav', 'mp3', 'flac', 'ogg'])
+    
+    return info
+
+def get_audio_generation_options() -> Dict[str, Any]:
+    """Get audio generation options and capabilities."""
+    return {
+        'audio_formats': ['wav', 'mp3', 'flac', 'ogg'],
+        'generation_types': ['tonal', 'rhythmic', 'ambient', 'sonification'],
+        'sample_rates': [22050, 44100, 48000],
+        'bit_depths': [16, 24, 32],
+        'channels': [1, 2],
+        'duration_options': ['short', 'medium', 'long', 'variable'],
+        'oscillators': ['sine', 'square', 'sawtooth', 'triangle', 'noise'],
+        'envelopes': ['ADSR', 'AR', 'ASR', 'AD', 'custom'],
+        'effects': ['reverb', 'delay', 'chorus', 'flanger', 'distortion', 'filter'],
+        'output_formats': ['wav', 'mp3', 'flac', 'ogg', 'aiff', 'wma']
+    }
+
+def process_gnn_to_audio(gnn_content: str, model_name: str, output_dir: str) -> Dict[str, Any]:
+    """
+    Process GNN content to audio.
+    
+    Args:
+        gnn_content: GNN file content
+        model_name: Name of the model
+        output_dir: Output directory for audio files
+        
+    Returns:
+        Dictionary with processing results
+    """
+    try:
+        # Validate input
+        if not gnn_content.strip():
+            return {
+                "success": False,
+                "error": "Empty GNN content provided"
+            }
+        
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+        
+        # Create processor
+        processor = SAPFGNNProcessor()
+        
+        # Process GNN content
+        model_data = processor.process_gnn_content(gnn_content)
+        if not model_data["success"]:
+            return model_data
+        
+        # Generate audio
+        audio_result = processor.generate_audio(model_data, output_path)
+        
+        if audio_result["success"]:
+            return {
+                "success": True,
+                "model_name": model_name,
+                "output_dir": str(output_path),
+                "audio_files": audio_result["audio_files"]
+            }
+        else:
+            return audio_result
+            
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Audio processing failed: {str(e)}"
+        }
+
+def convert_gnn_to_sapf(gnn_content: str, output_dir: Path) -> Dict[str, Any]:
+    """
+    Convert GNN content to SAPF format.
+    
+    Args:
+        gnn_content: GNN file content
+        output_dir: Output directory for SAPF files
+        
+    Returns:
+        Dictionary with conversion results
+    """
+    try:
+        # Create processor
+        processor = SAPFGNNProcessor()
+        
+        # Process GNN content
+        model_data = processor.process_gnn_content(gnn_content)
+        if not model_data["success"]:
+            return model_data
+        
+        # Generate SAPF-specific output
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Create SAPF configuration file
+        sapf_config = {
+            "model_type": "gnn",
+            "audio_engines": processor.audio_engines,
+            "supported_formats": processor.supported_formats,
+            "variables": model_data.get("variables", []),
+            "connections": model_data.get("connections", [])
+        }
+        
+        config_file = output_dir / "sapf_config.json"
+        import json
+        with open(config_file, 'w') as f:
+            json.dump(sapf_config, f, indent=2)
+        
+        return {
+            "success": True,
+            "output_dir": str(output_dir),
+            "sapf_config": str(config_file),
+            "model_data": model_data
+        }
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"SAPF conversion failed: {str(e)}"
+        }
+
+def generate_audio_from_sapf(sapf_config: Dict[str, Any], output_dir: Path) -> Dict[str, Any]:
+    """
+    Generate audio from SAPF configuration.
+    
+    Args:
+        sapf_config: SAPF configuration dictionary
+        output_dir: Output directory for audio files
+        
+    Returns:
+        Dictionary with generation results
+    """
+    try:
+        # Create processor
+        processor = SAPFGNNProcessor()
+        
+        # Extract model data from SAPF config
+        model_data = {
+            "variables": sapf_config.get("variables", []),
+            "connections": sapf_config.get("connections", [])
+        }
+        
+        # Generate audio
+        audio_result = processor.generate_audio(model_data, output_dir)
+        
+        if audio_result["success"]:
+            return {
+                "success": True,
+                "output_dir": str(output_dir),
+                "audio_files": audio_result["audio_files"],
+                "sapf_config": sapf_config
+            }
+        else:
+            return audio_result
+            
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"SAPF audio generation failed: {str(e)}"
+        }
+
+def validate_sapf_code(sapf_code: str) -> Dict[str, Any]:
+    """
+    Validate SAPF code.
+    
+    Args:
+        sapf_code: SAPF code string to validate
+        
+    Returns:
+        Dictionary with validation results
+    """
+    try:
+        # Basic validation
+        if not sapf_code.strip():
+            return {
+                "valid": False,
+                "errors": ["Empty SAPF code provided"]
+            }
+        
+        # Check for required sections
+        required_sections = ["oscillators", "envelopes", "effects"]
+        missing_sections = []
+        
+        for section in required_sections:
+            if section not in sapf_code.lower():
+                missing_sections.append(section)
+        
+        if missing_sections:
+            return {
+                "valid": False,
+                "errors": [f"Missing required sections: {', '.join(missing_sections)}"]
+            }
+        
+        return {
+            "valid": True,
+            "errors": []
+        }
+        
+    except Exception as e:
+        return {
+            "valid": False,
+            "errors": [f"Validation error: {str(e)}"]
+        }
+
+class SyntheticAudioGenerator:
+    """Synthetic Audio Generator for creating artificial sounds."""
+    
+    def __init__(self):
+        self.supported_formats = ['wav', 'mp3', 'flac', 'ogg']
+        self.oscillator_types = ['sine', 'square', 'sawtooth', 'triangle', 'noise']
+        self.envelope_types = ['ADSR', 'AR', 'ASR', 'AD', 'custom']
+    
+    def generate_synthetic_audio(self, config: Dict[str, Any]) -> np.ndarray:
+        """Generate synthetic audio based on configuration."""
+        try:
+            # Extract parameters
+            frequency = config.get('frequency', 440.0)
+            duration = config.get('duration', 1.0)
+            sample_rate = config.get('sample_rate', 44100)
+            oscillator_type = config.get('oscillator_type', 'sine')
+            
+            # Generate time array
+            t = np.linspace(0, duration, int(sample_rate * duration), False)
+            
+            # Generate waveform based on oscillator type
+            if oscillator_type == 'sine':
+                audio = np.sin(2 * np.pi * frequency * t)
+            elif oscillator_type == 'square':
+                audio = np.sign(np.sin(2 * np.pi * frequency * t))
+            elif oscillator_type == 'sawtooth':
+                audio = 2 * (t * frequency - np.floor(t * frequency + 0.5))
+            elif oscillator_type == 'triangle':
+                audio = 2 * np.abs(2 * (t * frequency - np.floor(t * frequency + 0.5))) - 1
+            elif oscillator_type == 'noise':
+                audio = np.random.uniform(-1, 1, len(t))
+            else:
+                audio = np.sin(2 * np.pi * frequency * t)  # Default to sine
+            
+            return audio
+            
+        except Exception as e:
+            # Return silence on error
+            return np.zeros(int(config.get('sample_rate', 44100) * config.get('duration', 1.0)))
+    
+    def apply_envelope(self, audio: np.ndarray, envelope_type: str = 'ADSR') -> np.ndarray:
+        """Apply envelope to audio."""
+        try:
+            if envelope_type == 'ADSR':
+                # Simple ADSR envelope
+                attack_samples = int(len(audio) * 0.1)
+                decay_samples = int(len(audio) * 0.1)
+                release_samples = int(len(audio) * 0.2)
+                sustain_samples = len(audio) - attack_samples - decay_samples - release_samples
+                
+                # Create envelope
+                envelope = np.ones(len(audio))
+                envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
+                envelope[attack_samples:attack_samples+decay_samples] = np.linspace(1, 0.7, decay_samples)
+                envelope[attack_samples+decay_samples:attack_samples+decay_samples+sustain_samples] = 0.7
+                envelope[-release_samples:] = np.linspace(0.7, 0, release_samples)
+                
+                return audio * envelope
+            else:
+                return audio
+                
+        except Exception:
+            return audio
+
+def generate_oscillator_audio(frequency: float, duration: float, oscillator_type: str = 'sine', sample_rate: int = 44100) -> np.ndarray:
+    """
+    Generate oscillator audio.
+    
+    Args:
+        frequency: Frequency in Hz
+        duration: Duration in seconds
+        oscillator_type: Type of oscillator ('sine', 'square', 'sawtooth', 'triangle', 'noise')
+        sample_rate: Sample rate in Hz
+        
+    Returns:
+        Audio array
+    """
+    try:
+        # Create generator
+        generator = SyntheticAudioGenerator()
+        
+        # Generate audio
+        config = {
+            'frequency': frequency,
+            'duration': duration,
+            'oscillator_type': oscillator_type,
+            'sample_rate': sample_rate
+        }
+        
+        return generator.generate_synthetic_audio(config)
+        
+    except Exception as e:
+        # Return silence on error
+        return np.zeros(int(sample_rate * duration))
+
+def apply_envelope(audio: np.ndarray, envelope_type: str = 'ADSR') -> np.ndarray:
+    """
+    Apply envelope to audio.
+    
+    Args:
+        audio: Audio array
+        envelope_type: Type of envelope ('ADSR', 'AR', 'ASR', 'AD', 'custom')
+        
+    Returns:
+        Audio array with envelope applied
+    """
+    try:
+        # Create generator
+        generator = SyntheticAudioGenerator()
+        
+        # Apply envelope
+        return generator.apply_envelope(audio, envelope_type)
+        
+    except Exception:
+        return audio
+
+def mix_audio_channels(channels: List[np.ndarray], mix_mode: str = 'add') -> np.ndarray:
+    """
+    Mix multiple audio channels.
+    
+    Args:
+        channels: List of audio arrays
+        mix_mode: Mixing mode ('add', 'average', 'max')
+        
+    Returns:
+        Mixed audio array
+    """
+    try:
+        if not channels:
+            return np.array([])
+        
+        # Ensure all channels have the same length
+        max_length = max(len(channel) for channel in channels)
+        padded_channels = []
+        
+        for channel in channels:
+            if len(channel) < max_length:
+                # Pad with zeros
+                padded = np.zeros(max_length)
+                padded[:len(channel)] = channel
+                padded_channels.append(padded)
+            else:
+                padded_channels.append(channel)
+        
+        # Mix channels based on mode
+        if mix_mode == 'add':
+            mixed = np.sum(padded_channels, axis=0)
+        elif mix_mode == 'average':
+            mixed = np.mean(padded_channels, axis=0)
+        elif mix_mode == 'max':
+            mixed = np.maximum.reduce(padded_channels)
+        else:
+            mixed = np.sum(padded_channels, axis=0)  # Default to add
+        
+        return mixed
+        
+    except Exception:
+        # Return first channel or empty array on error
+        return channels[0] if channels else np.array([])
+
 # Module metadata
 __version__ = "1.0.0"
 __author__ = "Active Inference Institute"
@@ -489,7 +945,8 @@ FEATURES = {
     'rhythmic_generation': True,
     'ambient_generation': True,
     'sonification': True,
-    'audio_analysis': True
+    'audio_analysis': True,
+    'mcp_integration': True
 }
 
 __all__ = [
@@ -497,6 +954,17 @@ __all__ = [
     'generate_audio_from_gnn',
     'create_sonification',
     'analyze_audio_characteristics',
+    'SAPFGNNProcessor',
+    'SyntheticAudioGenerator',
+    'get_module_info',
+    'get_audio_generation_options',
+    'process_gnn_to_audio',
+    'convert_gnn_to_sapf',
+    'generate_audio_from_sapf',
+    'validate_sapf_code',
+    'generate_oscillator_audio',
+    'apply_envelope',
+    'mix_audio_channels',
     'FEATURES',
     '__version__'
 ]

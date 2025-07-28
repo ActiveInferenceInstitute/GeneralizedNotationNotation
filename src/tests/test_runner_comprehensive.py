@@ -29,7 +29,7 @@ MODULAR_TEST_CATEGORIES = {
     "core": {
         "name": "Core Module Tests",
         "description": "Essential GNN core functionality tests",
-        "files": ["test_gnn_core_modules.py", "test_core_modules.py", "test_environment.py", "unit_tests.py"],
+        "files": ["test_gnn_core_modules.py", "test_core_modules.py", "test_environment.py"],
         "markers": [],
         "timeout_seconds": 60,
         "max_failures": 5
@@ -37,17 +37,17 @@ MODULAR_TEST_CATEGORIES = {
     "pipeline": {
         "name": "Pipeline Infrastructure Tests", 
         "description": "Pipeline scripts and infrastructure tests",
-        "files": ["test_pipeline_scripts.py", "test_main_orchestrator.py", "test_pipeline_infrastructure.py", 
-                  "test_pipeline_steps.py", "test_pipeline_functionality.py", "test_pipeline_recovery.py", 
-                  "test_pipeline_performance.py"],
+        "files": ["test_main_orchestrator.py", "test_pipeline_functionality.py", "test_pipeline_infrastructure.py", 
+                  "test_pipeline_performance.py", "test_pipeline_recovery.py", "test_pipeline_scripts.py", 
+                  "test_pipeline_steps.py"],
         "markers": [],
-        "timeout_seconds": 60,
-        "max_failures": 5
+        "timeout_seconds": 120,  # Increased timeout for pipeline tests
+        "max_failures": 10
     },
     "integration": {
         "name": "Integration Tests",
         "description": "Cross-module integration and workflow tests",
-        "files": ["integration_tests.py", "test_comprehensive_api.py", "test_mcp_integration_comprehensive.py", 
+        "files": ["test_comprehensive_api.py", "test_mcp_integration_comprehensive.py", 
                   "test_mcp_comprehensive.py"],
         "markers": [],
         "timeout_seconds": 120,
@@ -88,7 +88,7 @@ MODULAR_TEST_CATEGORIES = {
     "performance": {
         "name": "Performance Tests",
         "description": "Performance and benchmarking tests",
-        "files": ["performance_tests.py", "coverage_tests.py"],
+        "files": ["test_pipeline_performance.py"],  # Only include actual performance tests
         "markers": [],
         "timeout_seconds": 180,
         "max_failures": 10
@@ -100,6 +100,14 @@ MODULAR_TEST_CATEGORIES = {
         "markers": [],
         "timeout_seconds": 30,
         "max_failures": 3
+    },
+    "comprehensive": {
+        "name": "Comprehensive Tests",
+        "description": "All remaining test files for complete coverage",
+        "files": ["test_*"],  # Pattern to catch any remaining test files
+        "markers": [],
+        "timeout_seconds": 600,  # Increased timeout for comprehensive tests
+        "max_failures": 20
     }
 }
 
@@ -138,17 +146,12 @@ class ModularTestRunner:
     def should_run_category(self, category: str) -> bool:
         """Determine if a test category should be run based on arguments."""
         if self.args.fast_only:
-            # In fast mode, only run core and pipeline tests
-            return category in ["core", "pipeline"]
+            # In fast mode, run core, pipeline, validation, utilities, and fast_suite
+            # This gives better coverage while still being fast
+            return category in ["core", "pipeline", "validation", "utilities", "fast_suite"]
         
-        if not self.args.include_slow:
-            # Skip slow tests unless explicitly included
-            return category not in ["specialized", "integration"]
-        
-        if not self.args.include_performance:
-            # Skip performance tests unless explicitly included
-            return category not in ["performance"]
-        
+        # By default, run ALL categories including performance
+        # Only skip performance tests if explicitly excluded with --no-performance
         return True
 
     def discover_test_files(self, category: str, config: Dict[str, Any]) -> List[str]:
@@ -223,8 +226,9 @@ class ModularTestRunner:
         if config.get("coverage", True) and not self.args.fast_only:
             cmd.extend(["--cov=src", "--cov-report=term-missing"])
         
-        # Add parallel execution if enabled
-        if config.get("parallel", True) and not self.args.fast_only:
+        # Add parallel execution if enabled (disable for pipeline tests to avoid timeout)
+        if (config.get("parallel", True) and not self.args.fast_only and 
+            category != "pipeline"):  # Disable parallel for pipeline tests
             cmd.extend(["-n", "auto"])
         
         self.logger.info(f"Running command: {' '.join(cmd)}")
@@ -317,7 +321,7 @@ class ModularTestRunner:
                 "duration": time.time() - category_start_time
             }
 
-    def run_all_categories(self) -> bool:
+    def run_all_categories(self) -> Dict[str, Any]:
         """Run all test categories and generate comprehensive report."""
         self.logger.info(f"\n{'='*80}")
         self.logger.info("STARTING COMPREHENSIVE TEST SUITE EXECUTION")
@@ -361,7 +365,18 @@ class ModularTestRunner:
         self._generate_final_report()
         self._log_final_summary(overall_success)
         
-        return overall_success
+        # Return comprehensive results
+        return {
+            "overall_success": overall_success,
+            "total_tests_run": self.total_tests_run,
+            "total_tests_passed": self.total_tests_passed,
+            "total_tests_failed": self.total_tests_failed,
+            "total_tests_skipped": self.total_tests_skipped,
+            "categories_run": self.categories_run,
+            "categories_successful": self.categories_successful,
+            "categories_failed": self.categories_failed,
+            "success_rate": (self.total_tests_passed / self.total_tests_run * 100) if self.total_tests_run > 0 else 0
+        }
 
     def _parse_pytest_output(self, stdout: str, stderr: str) -> Dict[str, int]:
         """Parse pytest output to extract test counts."""

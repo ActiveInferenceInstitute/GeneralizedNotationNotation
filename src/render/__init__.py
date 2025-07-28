@@ -124,6 +124,110 @@ def process_render(
         logger.error(f"Render processing failed: {e}")
         return False
 
+def main():
+    """Main entry point for the render module."""
+    import sys
+    from pathlib import Path
+    
+    if len(sys.argv) < 3:
+        print("Usage: render <gnn_file> <output_dir> [target]")
+        return 1
+    
+    gnn_file = Path(sys.argv[1])
+    output_dir = Path(sys.argv[2])
+    target = sys.argv[3] if len(sys.argv) > 3 else "pymdp"
+    
+    if not gnn_file.exists():
+        print(f"Error: GNN file {gnn_file} not found")
+        return 1
+    
+    try:
+        # Read GNN file
+        with open(gnn_file, 'r') as f:
+            gnn_content = f.read()
+        
+        # Parse GNN content (simplified)
+        gnn_spec = {
+            "model_name": gnn_file.stem,
+            "content": gnn_content
+        }
+        
+        # Render
+        success, message, warnings = render_gnn_spec(gnn_spec, target, output_dir)
+        
+        if success:
+            print(f"Successfully rendered to {target}")
+            return 0
+        else:
+            print(f"Error: {message}")
+            return 1
+            
+    except Exception as e:
+        print(f"Error: {e}")
+        return 1
+
+def get_module_info() -> Dict[str, Any]:
+    """Get comprehensive information about the render module and its capabilities."""
+    info = {
+        'version': __version__,
+        'description': __description__,
+        'features': FEATURES,
+        'available_targets': [],
+        'supported_formats': []
+    }
+    
+    # Available targets
+    info['available_targets'].extend([
+        'pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy'
+    ])
+    
+    # Supported formats
+    info['supported_formats'].extend([
+        'Python', 'Julia', 'JAX', 'DisCoPy'
+    ])
+    
+    return info
+
+def get_available_renderers() -> Dict[str, Dict[str, Any]]:
+    """Get available renderers and their capabilities."""
+    return {
+        'pymdp': {
+            'function': 'render_gnn_to_pymdp',
+            'description': 'PyMDP simulation code generator',
+            'output_format': 'Python',
+            'available': True,
+            'features': ['discrete_state', 'discrete_action', 'belief_state']
+        },
+        'rxinfer': {
+            'function': 'render_gnn_to_rxinfer',
+            'description': 'RxInfer.jl inference code generator',
+            'output_format': 'Julia',
+            'available': True,
+            'features': ['probabilistic_inference', 'message_passing']
+        },
+        'activeinference_jl': {
+            'function': 'render_gnn_to_activeinference_jl',
+            'description': 'ActiveInference.jl simulation code generator',
+            'output_format': 'Julia',
+            'available': True,
+            'features': ['active_inference', 'free_energy']
+        },
+        'jax': {
+            'function': 'render_gnn_to_jax',
+            'description': 'JAX-based simulation code generator',
+            'output_format': 'Python',
+            'available': True,
+            'features': ['automatic_differentiation', 'gpu_acceleration']
+        },
+        'discopy': {
+            'function': 'render_gnn_to_discopy',
+            'description': 'DisCoPy categorical diagram generator',
+            'output_format': 'Python',
+            'available': True,
+            'features': ['categorical_diagrams', 'tensor_networks']
+        }
+    }
+
 def render_gnn_spec(
     gnn_spec: Dict[str, Any],
     target: str,
@@ -188,7 +292,27 @@ def render_gnn_spec(
     else:
         return False, f"Unsupported target: {target}", []
 
+# Module metadata
+__version__ = "1.0.0"
+__author__ = "Active Inference Institute"
+__description__ = "Rendering for GNN Processing Pipeline"
+
+# Feature availability flags
+FEATURES = {
+    'pymdp_rendering': True,
+    'rxinfer_rendering': True,
+    'activeinference_jl_rendering': True,
+    'discopy_rendering': True,
+    'jax_rendering': True,
+    'mcp_integration': True
+}
+
 __all__ = [
     'process_render',
-    'render_gnn_spec'
+    'render_gnn_spec',
+    'main',
+    'get_module_info',
+    'get_available_renderers',
+    'FEATURES',
+    '__version__'
 ]

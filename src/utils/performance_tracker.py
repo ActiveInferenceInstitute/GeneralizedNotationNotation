@@ -26,6 +26,8 @@ class PerformanceTracker:
     def __init__(self):
         self._metrics: Dict[str, List[Dict[str, Any]]] = {}
         self._lock = threading.Lock()
+        self._memory_usage: List[float] = []
+        self._max_memory_mb: float = 0.0
     
     def record_timing(self, operation: str, duration: float, metadata: Optional[Dict[str, Any]] = None):
         """Record timing information for an operation."""
@@ -63,6 +65,29 @@ class PerformanceTracker:
                     'max_duration': max(durations) if durations else 0
                 }
             return summary
+    
+    def record_memory_usage(self, memory_mb: float):
+        """Record memory usage in MB."""
+        with self._lock:
+            self._memory_usage.append(memory_mb)
+            if memory_mb > self._max_memory_mb:
+                self._max_memory_mb = memory_mb
+    
+    @property
+    def max_memory_mb(self) -> float:
+        """Get maximum memory usage in MB."""
+        return self._max_memory_mb
+    
+    @property
+    def current_memory_mb(self) -> float:
+        """Get current memory usage in MB."""
+        if PSUTIL_AVAILABLE:
+            try:
+                process = psutil.Process()
+                return process.memory_info().rss / (1024 * 1024)
+            except:
+                return 0.0
+        return 0.0
 
     def get_timestamp(self) -> str:
         """Get current timestamp as ISO format string."""

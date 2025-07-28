@@ -29,6 +29,7 @@ from unittest.mock import patch, Mock, MagicMock, call
 import tempfile
 import argparse
 import importlib.util
+import re
 
 # Test markers
 pytestmark = [pytest.mark.pipeline, pytest.mark.safe_to_fail]
@@ -49,39 +50,57 @@ class TestPipelineScriptDiscovery:
     
     @pytest.mark.unit
     def test_all_pipeline_scripts_exist(self):
-        """Verify all expected pipeline scripts exist."""
-        expected_scripts = {
-            1: "1_setup.py",
-            2: "2_gnn.py", 
-            3: "3_tests.py",
-            4: "4_type_checker.py",
-            5: "5_export.py",
-            6: "6_visualization.py",
-            7: "7_mcp.py",
-            8: "8_ontology.py",
-            9: "9_render.py",
-            10: "10_execute.py",
-            11: "11_llm.py",
-            12: "12_audio.py",
-            13: "13_website.py",
-            14: "14_report.py"
-        }
-        
+        """Test that all expected pipeline scripts exist."""
+        # Get all numbered scripts in src directory
+        script_pattern = r"^(\d+)_.*\.py$"
+        existing_scripts = []
         missing_scripts = []
-        existing_scripts = {}
         
-        for step_num, script_name in expected_scripts.items():
-            script_path = SRC_DIR / script_name
-            if script_path.exists():
-                existing_scripts[step_num] = script_path
-            else:
-                missing_scripts.append((step_num, script_name))
+        for script_path in SRC_DIR.iterdir():
+            if script_path.is_file() and script_path.name.endswith('.py'):
+                match = re.match(script_pattern, script_path.name)
+                if match:
+                    script_num = int(match.group(1))
+                    existing_scripts.append((script_num, script_path.name))
+        
+        # Sort by script number
+        existing_scripts.sort(key=lambda x: x[0])
+        
+        # Check for expected scripts (based on actual pipeline structure)
+        expected_scripts = [
+            (0, "0_template.py"),
+            (1, "1_setup.py"), 
+            (2, "2_tests.py"),
+            (3, "3_gnn.py"),
+            (4, "4_model_registry.py"),
+            (5, "5_type_checker.py"),
+            (6, "6_validation.py"),
+            (7, "7_export.py"),
+            (8, "8_visualization.py"),
+            (9, "9_advanced_viz.py"),
+            (10, "10_ontology.py"),
+            (11, "11_render.py"),
+            (12, "12_execute.py"),
+            (13, "13_llm.py"),
+            (14, "14_ml_integration.py"),
+            (15, "15_audio.py"),
+            (16, "16_analysis.py"),
+            (17, "17_integration.py"),
+            (18, "18_security.py"),
+            (19, "19_research.py"),
+            (20, "20_website.py"),
+            (21, "21_report.py")
+        ]
+        
+        # Find missing scripts
+        existing_nums = {num for num, _ in existing_scripts}
+        missing_scripts = [(num, name) for num, name in expected_scripts if num not in existing_nums]
         
         if missing_scripts:
             logging.warning(f"Missing pipeline scripts: {missing_scripts}")
         
         # At minimum, we expect core scripts to exist
-        core_scripts = [1, 2, 3, 4, 5]  # Core pipeline steps
+        core_scripts = [0, 1, 2, 3, 4, 5]  # Core pipeline steps
         missing_core = [num for num, _ in missing_scripts if num in core_scripts]
         
         assert not missing_core, f"Core pipeline scripts missing: {missing_core}"

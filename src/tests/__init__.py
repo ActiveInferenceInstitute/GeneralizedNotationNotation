@@ -74,6 +74,28 @@ from .test_utils import (
     generate_comprehensive_report
 )
 
+# Import pytest markers from conftest
+try:
+    from .conftest import PYTEST_MARKERS
+except ImportError:
+    # Fallback definition if conftest import fails
+    PYTEST_MARKERS = {
+        "unit": "Unit tests for individual components",
+        "integration": "Integration tests for component interactions", 
+        "performance": "Performance and resource usage tests",
+        "slow": "Tests that take significant time to complete",
+        "fast": "Quick tests for rapid feedback",
+        "safe_to_fail": "Tests safe to run without side effects",
+        "destructive": "Tests that may modify system state",
+        "external": "Tests requiring external dependencies",
+        "core": "Core module tests",
+        "utilities": "Utility function tests",
+        "environment": "Environment validation tests",
+        "render": "Rendering and code generation tests",
+        "export": "Export functionality tests",
+        "parsers": "Parser and format tests"
+    }
+
 # Export public interface
 __all__ = [
     # Core test constants
@@ -84,6 +106,7 @@ __all__ = [
     "TEST_CATEGORIES",
     "TEST_STAGES", 
     "COVERAGE_TARGETS",
+    "PYTEST_MARKERS",
     
     # Utility functions
     "is_safe_mode",

@@ -97,6 +97,9 @@ class PipelineArguments:
     duration: float = 30.0
     audio_backend: str = "auto"
     
+    # Test options
+    fast_only: bool = False
+    
     def __post_init__(self):
         """Post-initialization validation and path resolution."""
         # Ensure Path objects
@@ -277,6 +280,11 @@ class ArgumentParser:
             arg_type=str,
             default='auto',
             help_text='Audio backend to use (auto, sapf, pedalboard, default: auto)'
+        ),
+        'fast_only': ArgumentDefinition(
+            flag='--fast-only',
+            action='store_true',
+            help_text='Run only fast tests, skip slow and performance tests'
         )
     }
     
@@ -284,7 +292,7 @@ class ArgumentParser:
     STEP_ARGUMENTS = {
         "0_template.py": ["target_dir", "output_dir", "verbose"],
         "1_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
-        "2_tests.py": ["target_dir", "output_dir", "verbose"],
+        "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only"],
         "3_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
         "4_model_registry.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "5_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
@@ -539,7 +547,7 @@ class StepConfiguration:
         },
         "2_tests": {
             "required_args": [],
-            "optional_args": ["target_dir", "output_dir", "verbose"],
+            "optional_args": ["target_dir", "output_dir", "verbose", "fast_only"],
             "defaults": {"verbose": False},
             "description": "Test Execution & Validation"
         },
