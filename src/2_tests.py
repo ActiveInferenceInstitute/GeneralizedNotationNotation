@@ -831,26 +831,48 @@ class ModularTestRunner:
             lines = stdout.split('\n')
             
             for line in lines:
-                if "collected" in line and "items" in line:
-                    # Extract total tests
+                # Look for the final summary line
+                if "failed" in line and "passed" in line and "skipped" in line:
+                    # Example: "5 failed, 31 passed, 11 skipped in 0.38s"
                     parts = line.split()
                     for i, part in enumerate(parts):
-                        if part == "collected":
-                            stats["tests_run"] = int(parts[i-1])
+                        if part.isdigit():
+                            if i > 0 and parts[i-1] == "failed":
+                                stats["tests_failed"] = int(part)
+                            elif i > 0 and parts[i-1] == "passed":
+                                stats["tests_passed"] = int(part)
+                            elif i > 0 and parts[i-1] == "skipped":
+                                stats["tests_skipped"] = int(part)
+                
+                # Also look for the collected line
+                elif "collected" in line and "items" in line:
+                    # Example: "collected 52 items"
+                    parts = line.split()
+                    for i, part in enumerate(parts):
+                        if part == "collected" and i > 0:
+                            try:
+                                stats["tests_run"] = int(parts[i-1])
+                            except ValueError:
+                                pass
                             break
-                elif "passed" in line and "failed" in line:
-                    # Extract passed/failed counts
-                    parts = line.split()
-                    for i, part in enumerate(parts):
-                        if part == "passed":
-                            stats["tests_passed"] = int(parts[i-1])
-                        elif part == "failed":
-                            stats["tests_failed"] = int(parts[i-1])
-                        elif part == "skipped":
-                            stats["tests_skipped"] = int(parts[i-1])
             
+            # Calculate total tests run if not found
+            if stats["tests_run"] == 0:
+                stats["tests_run"] = stats["tests_passed"] + stats["tests_failed"] + stats["tests_skipped"]
+        
         except Exception as e:
             self.logger.warning(f"Failed to parse test statistics: {e}")
+            # Fallback: try to count from the output
+            try:
+                passed_count = stdout.count("PASSED")
+                failed_count = stdout.count("FAILED")
+                skipped_count = stdout.count("SKIPPED")
+                stats["tests_passed"] = passed_count
+                stats["tests_failed"] = failed_count
+                stats["tests_skipped"] = skipped_count
+                stats["tests_run"] = passed_count + failed_count + skipped_count
+            except:
+                pass
         
         return stats
     
