@@ -1,0 +1,159 @@
+{
+  "timestamp": "2025-07-28T07:42:40.484573",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "analysis_results": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "file_size": 587,
+      "line_count": 26,
+      "variables": [
+        {
+          "name": "A",
+          "definition": "A={{0.8, 0.1, 0.1}, {0.1, 0.8, 0.1}, {0.1, 0.1, 0.8}}",
+          "line": 12
+        },
+        {
+          "name": "B",
+          "definition": "B={{{{0.9, 0.05, 0.05}, {0.05, 0.9, 0.05}, {0.05, 0.05, 0.9}}, {{0.8, 0.1, 0.1}, {0.1, 0.8, 0.1}, {0.1, 0.1, 0.8}}, {{0.7, 0.15, 0.15}, {0.15, 0.7, 0.15}, {0.15, 0.15, 0.7}}}}",
+          "line": 13
+        },
+        {
+          "name": "C",
+          "definition": "C={0.1, 0.1, 0.8}",
+          "line": 14
+        },
+        {
+          "name": "D",
+          "definition": "D={0.33, 0.33, 0.34}",
+          "line": 15
+        },
+        {
+          "name": "E",
+          "definition": "E={0.33, 0.33, 0.34}",
+          "line": 16
+        },
+        {
+          "name": "A",
+          "definition": "A[3, 3]",
+          "line": 5
+        },
+        {
+          "name": "B",
+          "definition": "B[3, 3, 3]",
+          "line": 6
+        },
+        {
+          "name": "C",
+          "definition": "C[3]",
+          "line": 7
+        },
+        {
+          "name": "D",
+          "definition": "D[3]",
+          "line": 8
+        },
+        {
+          "name": "E",
+          "definition": "E[3]",
+          "line": 9
+        }
+      ],
+      "connections": [],
+      "sections": [
+        {
+          "title": "ModelName",
+          "level": 2,
+          "line": 1
+        },
+        {
+          "title": "StateSpaceBlock",
+          "level": 2,
+          "line": 4
+        },
+        {
+          "title": "InitialParameterization",
+          "level": 2,
+          "line": 11
+        },
+        {
+          "title": "Connections",
+          "level": 2,
+          "line": 18
+        }
+      ],
+      "semantic_analysis": {
+        "model_type": "POMDP",
+        "complexity_level": "moderate",
+        "domain": "unknown",
+        "key_concepts": [
+          "state",
+          "transition",
+          "policy"
+        ],
+        "potential_issues": []
+      },
+      "complexity_metrics": {
+        "variable_count": 10,
+        "connection_count": 0,
+        "connectivity_ratio": 0.0,
+        "complexity_score": 0.0,
+        "estimated_computation_time": 0.0,
+        "memory_requirements": 80
+      },
+      "patterns": {
+        "design_patterns": [],
+        "anti_patterns": [],
+        "recommendations": []
+      },
+      "analysis_timestamp": "2025-07-28T07:42:40.485143"
+    }
+  ],
+  "model_insights": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "model_summary": "This is a moderate POMDP model with 10 variables.",
+      "strengths": [
+        "Well-defined variable structure",
+        "Reasonable coupling between components"
+      ],
+      "weaknesses": [],
+      "improvement_opportunities": []
+    }
+  ],
+  "code_suggestions": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "implementation_suggestions": [
+        "Use PyMDP library for POMDP implementation",
+        "Implement belief state updates"
+      ],
+      "optimization_opportunities": [],
+      "testing_recommendations": [
+        "Create unit tests for each variable",
+        "Implement integration tests for connections"
+      ]
+    }
+  ],
+  "documentation_generated": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "model_description": "\n# actinf_pomdp_agent.md\n\nThis is a moderate POMDP model with 10 variables.\n\n## Model Overview\n- **Type**: POMDP\n- **Complexity**: moderate\n- **Variables**: 10\n- **Connections**: 0\n\n## Key Components\n",
+      "api_documentation": [
+        "- `A`: Variable defined at line 12",
+        "- `B`: Variable defined at line 13",
+        "- `C`: Variable defined at line 14",
+        "- `D`: Variable defined at line 15",
+        "- `E`: Variable defined at line 16"
+      ],
+      "usage_examples": [
+        "```python",
+        "# Example usage will be generated here",
+        "```"
+      ],
+      "troubleshooting": []
+    }
+  ]
+}

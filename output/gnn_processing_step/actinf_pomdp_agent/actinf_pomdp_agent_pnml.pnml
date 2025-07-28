@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<gnn_model name="Classic Active Inference POMDP Agent v1" version="1.0">
+  <metadata>
+    <annotation/>
+    <created_at>2025-07-28T07:42:28.758675</created_at>
+    <modified_at>2025-07-28T07:42:28.758676</modified_at>
+  </metadata>
+  <variables>
+    <variable data_type="float" dimensions="3,3" name="A" type="likelihood_matrix" description="likelihood_matrix"/>
+    <variable data_type="float" dimensions="3,3,3" name="B" type="transition_matrix" description="transition_matrix"/>
+    <variable data_type="float" dimensions="3" name="C" type="preference_vector" description="preference_vector"/>
+    <variable data_type="float" dimensions="3" name="D" type="prior_vector" description="prior_vector"/>
+    <variable data_type="float" dimensions="3" name="E" type="policy" description="policy"/>
+  </variables>
+  <connections>
+    <connection type="directed">
+      <sources>A</sources>
+      <targets>s</targets>
+    </connection>
+    <connection type="directed">
+      <sources>B</sources>
+      <targets>s_prime</targets>
+    </connection>
+    <connection type="directed">
+      <sources>C</sources>
+      <targets>o</targets>
+    </connection>
+    <connection type="directed">
+      <sources>D</sources>
+      <targets>s</targets>
+    </connection>
+    <connection type="directed">
+      <sources>E</sources>
+      <targets>π</targets>
+    </connection>
+    <connection type="directed">
+      <sources>s</sources>
+      <targets>o</targets>
+    </connection>
+    <connection type="directed">
+      <sources>u</sources>
+      <targets>s_prime</targets>
+    </connection>
+    <connection type="directed">
+      <sources>π</sources>
+      <targets>u</targets>
+    </connection>
+  </connections>
+  <parameters>
+    <parameter name="A">[]</parameter>
+    <parameter name="B">[]</parameter>
+    <parameter name="C">[]</parameter>
+    <parameter name="D">[]</parameter>
+    <parameter name="E">[]</parameter>
+  </parameters>
+<!-- MODEL_DATA: {"model_name":"Classic Active Inference POMDP Agent v1","annotation":"","variables":[{"name":"A","var_type":"likelihood_matrix","data_type":"float","dimensions":[3,3]},{"name":"B","var_type":"transition_matrix","data_type":"float","dimensions":[3,3,3]},{"name":"C","var_type":"preference_vector","data_type":"float","dimensions":[3]},{"name":"D","var_type":"prior_vector","data_type":"float","dimensions":[3]},{"name":"E","var_type":"policy","data_type":"float","dimensions":[3]}],"connections":[{"source_variables":["A"],"target_variables":["s"],"connection_type":"directed"},{"source_variables":["B"],"target_variables":["s_prime"],"connection_type":"directed"},{"source_variables":["C"],"target_variables":["o"],"connection_type":"directed"},{"source_variables":["D"],"target_variables":["s"],"connection_type":"directed"},{"source_variables":["E"],"target_variables":["\u03c0"],"connection_type":"directed"},{"source_variables":["s"],"target_variables":["o"],"connection_type":"directed"},{"source_variables":["\u03c0"],"target_variables":["u"],"connection_type":"directed"},{"source_variables":["u"],"target_variables":["s_prime"],"connection_type":"directed"}],"parameters":[{"name":"A","value":[],"param_type":"constant"},{"name":"B","value":[],"param_type":"constant"},{"name":"C","value":[],"param_type":"constant"},{"name":"D","value":[],"param_type":"constant"},{"name":"E","value":[],"param_type":"constant"}],"equations":[],"time_specification":null,"ontology_mappings":[]} -->
+</gnn_model>

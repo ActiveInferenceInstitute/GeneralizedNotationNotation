@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive GNN Visualization - actinf_pomdp_agent</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .visualization-area {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .control-btn.active {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+        }
+        
+        .graph-container {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+        
+        .node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.7em;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .node.selected {
+            transform: scale(1.2);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        .connection {
+            position: absolute;
+            height: 3px;
+            background: linear-gradient(90deg, #a29bfe 0%, #6c5ce7 100%);
+            transform-origin: left center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .info-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-panel h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .node-info {
+            display: none;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .node-info.show {
+            display: block;
+        }
+        
+        .filter-panel {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-group {
+            display: inline-block;
+            margin: 0 15px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .filter-group select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Interactive GNN Visualization</h1>
+            <h2>Model: actinf_pomdp_agent</h2>
+        </div>
+        
+        <div class="visualization-area">
+            <div class="controls">
+                <button class="control-btn" onclick="toggleLayout()">Toggle Layout</button>
+                <button class="control-btn" onclick="resetView()">Reset View</button>
+                <button class="control-btn" onclick="toggleConnections()">Toggle Connections</button>
+                <button class="control-btn" onclick="highlightSelected()">Highlight Selected</button>
+            </div>
+            
+            <div class="filter-panel">
+                <div class="filter-group">
+                    <label>Variable Type:</label>
+                    <select id="typeFilter" onchange="filterNodes()">
+                        <option value="">All Types</option>
+                        <option value="hidden_state">Hidden State</option>
+                        <option value="observation">Observation</option>
+                        <option value="action">Action</option>
+                        <option value="policy">Policy</option>
+                        <option value="likelihood_matrix">Likelihood Matrix</option>
+                        <option value="transition_matrix">Transition Matrix</option>
+                        <option value="preference_vector">Preference Vector</option>
+                        <option value="prior_vector">Prior Vector</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Data Type:</label>
+                    <select id="dataTypeFilter" onchange="filterNodes()">
+                        <option value="">All Data Types</option>
+                        <option value="categorical">Categorical</option>
+                        <option value="continuous">Continuous</option>
+                        <option value="binary">Binary</option>
+                        <option value="integer">Integer</option>
+                        <option value="float">Float</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="graph-container" id="graphContainer">
+
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <h3>📋 Node Information</h3>
+            <div class="node-info" id="nodeInfo">
+                <p><strong>Click on a node to see details</strong></p>
+            </div>
+            
+            <h3 style="margin-top: 30px;">📊 Model Overview</h3>
+            <p><strong>Total Variables:</strong> 5</p>
+            <p><strong>Total Connections:</strong> 8</p>
+            <p><strong>Total Parameters:</strong> 5</p>
+            <p><strong>Total Equations:</strong> 0</p>
+        </div>
+    </div>
+    
+    <script>
+        // Model data
+        const modelData = {
+            nodes: [{"name": "A", "type": "likelihood_matrix", "data_type": "float", "dimensions": [3, 3], "description": "likelihood_matrix", "constraints": {}}, {"name": "B", "type": "transition_matrix", "data_type": "float", "dimensions": [3, 3, 3], "description": "transition_matrix", "constraints": {}}, {"name": "C", "type": "preference_vector", "data_type": "float", "dimensions": [3], "description": "preference_vector", "constraints": {}}, {"name": "D", "type": "prior_vector", "data_type": "float", "dimensions": [3], "description": "prior_vector", "constraints": {}}, {"name": "E", "type": "policy", "data_type": "float", "dimensions": [3], "description": "policy", "constraints": {}}],
+            connections: [{"from": ["A"], "to": ["s"], "type": "directed", "weight": null, "description": ""}, {"from": ["B"], "to": ["s_prime"], "type": "directed", "weight": null, "description": ""}, {"from": ["C"], "to": ["o"], "type": "directed", "weight": null, "description": ""}, {"from": ["D"], "to": ["s"], "type": "directed", "weight": null, "description": ""}, {"from": ["E"], "to": ["\u03c0"], "type": "directed", "weight": null, "description": ""}, {"from": ["s"], "to": ["o"], "type": "directed", "weight": null, "description": ""}, {"from": ["\u03c0"], "to": ["u"], "type": "directed", "weight": null, "description": ""}, {"from": ["u"], "to": ["s_prime"], "type": "directed", "weight": null, "description": ""}],
+            modelName: "actinf_pomdp_agent"
+        };
+        
+        let currentLayout = 'circular';
+        let showConnections = true;
+        let selectedNodes = [];
+        
+        // Initialize visualization
+        function initializeVisualization() {
+            createNodes();
+            createConnections();
+        }
+        
+        function createNodes() {
+            const container = document.getElementById('graphContainer');
+            const nodes = modelData.nodes;
+            
+            nodes.forEach((node, index) => {
+                const nodeElement = document.createElement('div');
+                nodeElement.className = 'node';
+                nodeElement.id = `node-${index}`;
+                nodeElement.setAttribute('data-type', node.type);
+                nodeElement.setAttribute('data-data-type', node.data_type);
+                nodeElement.innerHTML = node.name.substring(0, 8);
+                nodeElement.title = `${node.name} - ${node.type}`;
+                
+                // Position nodes in circular layout
+                const angle = (2 * Math.PI * index) / nodes.length;
+                const radius = 150;
+                const x = 250 + radius * Math.cos(angle);
+                const y = 250 + radius * Math.sin(angle);
+                
+                nodeElement.style.left = x + 'px';
+                nodeElement.style.top = y + 'px';
+                nodeElement.style.backgroundColor = getNodeColor(node.type);
+                
+                nodeElement.addEventListener('click', () => showNodeInfo(node, index));
+                
+                container.appendChild(nodeElement);
+            });
+        }
+        
+        function createConnections() {
+            const container = document.getElementById('graphContainer');
+            const connections = modelData.connections;
+            
+            connections.forEach((conn, index) => {
+                if (conn.from && conn.to && conn.from.length > 0 && conn.to.length > 0) {
+                    const connectionElement = document.createElement('div');
+                    connectionElement.className = 'connection';
+                    connectionElement.id = `connection-${index}`;
+                    
+                    // Simple connection visualization
+                    connectionElement.style.width = '100px';
+                    connectionElement.style.left = '200px';
+                    connectionElement.style.top = '200px';
+                    connectionElement.style.transform = `rotate(${index * 30}deg)`;
+                    
+                    container.appendChild(connectionElement);
+                }
+            });
+        }
+        
+        function getNodeColor(type) {
+            const colors = {
+                'hidden_state': 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)',
+                'observation': 'linear-gradient(135deg, #00b894 0%, #00a085 100%)',
+                'action': 'linear-gradient(135deg, #fd79a8 0%, #e84393 100%)',
+                'policy': 'linear-gradient(135deg, #fdcb6e 0%, #e17055 100%)',
+                'likelihood_matrix': 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)',
+                'transition_matrix': 'linear-gradient(135deg, #fd79a8 0%, #e84393 100%)',
+                'preference_vector': 'linear-gradient(135deg, #00b894 0%, #00a085 100%)',
+                'prior_vector': 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)'
+            };
+            return colors[type] || 'linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%)';
+        }
+        
+        function showNodeInfo(node, index) {
+            const nodeInfo = document.getElementById('nodeInfo');
+            nodeInfo.innerHTML = `
+                <h4>${node.name}</h4>
+                <p><strong>Type:</strong> ${node.type}</p>
+                <p><strong>Data Type:</strong> ${node.data_type}</p>
+                <p><strong>Dimensions:</strong> ${JSON.stringify(node.dimensions)}</p>
+                ${node.description ? `<p><strong>Description:</strong> ${node.description}</p>` : ''}
+            `;
+            nodeInfo.classList.add('show');
+            
+            // Highlight selected node
+            document.querySelectorAll('.node').forEach(n => n.classList.remove('selected'));
+            document.getElementById(`node-${index}`).classList.add('selected');
+        }
+        
+        function toggleLayout() {
+            currentLayout = currentLayout === 'circular' ? 'grid' : 'circular';
+            applyLayout();
+        }
+        
+        function applyLayout() {
+            const nodes = document.querySelectorAll('.node');
+            const container = document.getElementById('graphContainer');
+            
+            if (currentLayout === 'grid') {
+                const cols = Math.ceil(Math.sqrt(nodes.length));
+                nodes.forEach((node, index) => {
+                    const row = Math.floor(index / cols);
+                    const col = index % cols;
+                    const x = 50 + col * 120;
+                    const y = 50 + row * 120;
+                    node.style.left = x + 'px';
+                    node.style.top = y + 'px';
+                });
+            } else {
+                nodes.forEach((node, index) => {
+                    const angle = (2 * Math.PI * index) / nodes.length;
+                    const radius = 150;
+                    const x = 250 + radius * Math.cos(angle);
+                    const y = 250 + radius * Math.sin(angle);
+                    node.style.left = x + 'px';
+                    node.style.top = y + 'px';
+                });
+            }
+        }
+        
+        function resetView() {
+            currentLayout = 'circular';
+            applyLayout();
+            document.querySelectorAll('.node').forEach(n => n.classList.remove('selected'));
+            document.getElementById('nodeInfo').classList.remove('show');
+        }
+        
+        function toggleConnections() {
+            showConnections = !showConnections;
+            document.querySelectorAll('.connection').forEach(conn => {
+                conn.style.display = showConnections ? 'block' : 'none';
+            });
+        }
+        
+        function highlightSelected() {
+            const selected = document.querySelector('.node.selected');
+            if (selected) {
+                selected.style.transform = 'scale(1.5)';
+                setTimeout(() => {
+                    selected.style.transform = 'scale(1.2)';
+                }, 1000);
+            }
+        }
+        
+        function filterNodes() {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const dataTypeFilter = document.getElementById('dataTypeFilter').value;
+            
+            document.querySelectorAll('.node').forEach((node, index) => {
+                const nodeData = modelData.nodes[index];
+                const typeMatch = !typeFilter || nodeData.type === typeFilter;
+                const dataTypeMatch = !dataTypeFilter || nodeData.data_type === dataTypeFilter;
+                
+                if (typeMatch && dataTypeMatch) {
+                    node.style.display = 'block';
+                    node.style.opacity = '1';
+                } else {
+                    node.style.display = 'none';
+                    node.style.opacity = '0.3';
+                }
+            });
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', initializeVisualization);
+    </script>
+</body>
+</html>

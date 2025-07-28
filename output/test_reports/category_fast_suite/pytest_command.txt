@@ -1,0 +1,3 @@
+Category: fast_suite
+Success: True
+Duration: 5.53s

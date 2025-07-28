@@ -1,0 +1,85 @@
+[
+  {
+    "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+    "file_name": "actinf_pomdp_agent.md",
+    "validation_level": "standard",
+    "semantic_validation": {
+      "is_valid": true,
+      "validation_level": "standard",
+      "errors": [],
+      "warnings": [
+        "Missing ModelName definition"
+      ]
+    },
+    "performance_profile": {
+      "metrics": {
+        "state_block_count": 0,
+        "connection_count": 0,
+        "total_dimensions": 0,
+        "max_dimension": 0,
+        "avg_dimension": 0,
+        "estimated_memory_bytes": 0,
+        "estimated_memory_mb": 0.0,
+        "computational_complexity": {
+          "inference_operations": 0,
+          "learning_operations": 0,
+          "complexity_class": "O(1)",
+          "bottleneck_block": null,
+          "bottleneck_operations": 0
+        },
+        "parallelization_potential": {
+          "parallelizable_blocks": 0,
+          "sequential_dependencies": 0,
+          "parallel_efficiency": 0.0,
+          "gpu_amenable": false,
+          "distributed_amenable": false
+        }
+      },
+      "warnings": [
+        "Low parallelization potential: 0.00"
+      ]
+    },
+    "consistency_check": {
+      "is_consistent": true,
+      "warnings": [],
+      "checks": {
+        "naming_conventions": {
+          "is_consistent": true,
+          "warnings": [],
+          "dominant_style": "camelCase",
+          "mixed_styles": false,
+          "duplicate_names": [],
+          "non_descriptive_names": []
+        },
+        "style_consistency": {
+          "is_consistent": true,
+          "warnings": [],
+          "indentation_patterns": 0,
+          "block_format_styles": [],
+          "field_order_consistency": false
+        },
+        "structural_integrity": {
+          "is_consistent": true,
+          "warnings": [],
+          "balanced_braces": true,
+          "empty_blocks": 0,
+          "empty_connections": 0,
+          "missing_state_fields": [],
+          "missing_connection_fields": []
+        },
+        "reference_consistency": {
+          "is_consistent": true,
+          "warnings": [],
+          "invalid_references": [],
+          "isolated_blocks": [],
+          "circular_references": []
+        }
+      }
+    },
+    "warnings": [
+      "Low parallelization potential: 0.00"
+    ],
+    "errors": [],
+    "status": "warnings"
+  }
+]

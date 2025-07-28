@@ -1,0 +1,75 @@
+{
+  "timestamp": "2025-07-28T07:42:40.692873",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "audio_files_generated": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "audio_files": {
+        "tonal": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/audio_processing_step/audio_results/actinf_pomdp_agent_tonal.wav",
+        "rhythmic": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/audio_processing_step/audio_results/actinf_pomdp_agent_rhythmic.wav",
+        "ambient": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/audio_processing_step/audio_results/actinf_pomdp_agent_ambient.wav"
+      },
+      "variables_count": 10,
+      "connections_count": 0,
+      "generation_timestamp": "2025-07-28T07:42:40.739376"
+    }
+  ],
+  "sonification_results": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "sonification_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/audio_processing_step/audio_results/actinf_pomdp_agent_sonification.wav",
+      "dynamics_analyzed": 0,
+      "sonification_type": "model_dynamics",
+      "generation_timestamp": "2025-07-28T07:42:40.742987"
+    }
+  ],
+  "audio_analysis": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "audio_characteristics": {
+        "tonal": {
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.096649169921875,
+          "rms_amplitude": 0.022350799428902956
+        },
+        "rhythmic": {
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0,
+          "rms_amplitude": 0.0
+        },
+        "ambient": {
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.17254638671875,
+          "rms_amplitude": 0.05700891427123889
+        }
+      },
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 440.0,
+          "spectral_centroid": 985.5245428829189,
+          "spectral_bandwidth": 2225.830497837741
+        },
+        "rhythmic": {
+          "dominant_frequency": 0.0,
+          "spectral_centroid": 0.0,
+          "spectral_bandwidth": 0.0
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 325.13808803920585,
+          "spectral_bandwidth": 718.1221653467969
+        }
+      },
+      "temporal_analysis": {}
+    }
+  ]
+}

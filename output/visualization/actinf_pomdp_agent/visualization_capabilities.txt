@@ -1,0 +1,7 @@
+GNN Visualization Capabilities Report
+====================================
+
+matplotlib: ✓ Available
+networkx: ✓ Available
+matrix_visualizer: ✓ Available
+gnn_visualizer: ✓ Available

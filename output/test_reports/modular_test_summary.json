@@ -1,0 +1,26 @@
+{
+  "total_categories": 7,
+  "successful_categories": 2,
+  "failed_categories": 5,
+  "total_tests_run": 232,
+  "total_tests_passed": 156,
+  "total_tests_failed": 47,
+  "total_tests_skipped": 29,
+  "success_rate": 67.24137931034483,
+  "total_duration": 50.81844711303711,
+  "category_times": {
+    "core": 8.21103310585022,
+    "pipeline": 3.7154417037963867,
+    "validation": 5.542660713195801,
+    "utilities": 19.652005910873413,
+    "reporting": 4.123572111129761,
+    "performance": 4.033871173858643,
+    "fast_suite": 5.534790992736816
+  },
+  "error_categories": {
+    "pathlib_errors": [],
+    "sapf_errors": [],
+    "import_errors": [],
+    "runtime_errors": []
+  }
+}

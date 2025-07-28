@@ -1,0 +1,26 @@
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/analysis/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+<unknown>:23: SyntaxWarning: invalid escape sequence '\<'
+<unknown>:23: SyntaxWarning: invalid escape sequence '\<'
+<unknown>:24: SyntaxWarning: invalid escape sequence '\<'
+<unknown>:24: SyntaxWarning: invalid escape sequence '\<'
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/gnn/parsers/isabelle_serializer.py:23: SyntaxWarning: invalid escape sequence '\<'
+  lines.append(f'text \\\<open>{model.model_name}\\\<close>')
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/gnn/parsers/isabelle_serializer.py:23: SyntaxWarning: invalid escape sequence '\<'
+  lines.append(f'text \\\<open>{model.model_name}\\\<close>')
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/gnn/parsers/isabelle_serializer.py:24: SyntaxWarning: invalid escape sequence '\<'
+  lines.append(f'text \\\<open>{model.annotation}\\\<close>')
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/gnn/parsers/isabelle_serializer.py:24: SyntaxWarning: invalid escape sequence '\<'
+  lines.append(f'text \\\<open>{model.annotation}\\\<close>')
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/integration/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/ontology/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/report/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/research/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/security/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/website/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
