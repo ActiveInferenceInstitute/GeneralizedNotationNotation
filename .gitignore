@@ -26,16 +26,4 @@ __pycache__/
 *$py.class
 /src/execute/activeinference_jl/.julia
 *.pyc
-*.wgw4
-*.wgw5
-*.wgw8
-*.wgw10
-*.wgw7
-*.wgw3
-*.wgw2
-*.wgw1
-*.wgw11
-*.wgw13
-*.wgw6
-*.wgw9
-*.wgw12
+*.timelock.*

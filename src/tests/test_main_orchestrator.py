@@ -629,7 +629,7 @@ class TestConfigurationValidation:
             actual_value = os.environ.get(var_name)
             # Don't fail if environment variable is not set
             if actual_value is not None:
-            assert actual_value == expected_value, \
+                assert actual_value == expected_value, \
                     f"Environment variable {var_name} should be {expected_value}, got {actual_value}"
         
         logging.info("Environment variable consistency validated")

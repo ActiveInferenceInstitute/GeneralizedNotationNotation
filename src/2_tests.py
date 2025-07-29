@@ -39,8 +39,8 @@ from utils.pipeline_template import (
 from utils.argument_utils import EnhancedArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
-# Import the comprehensive test runner
-from tests.test_runner_comprehensive import create_test_runner
+# Import the test runner
+from tests.runner import create_test_runner
 
 # --- Fix for Python 3.13 pathlib recursion issue ---
 def apply_pathlib_patch():
@@ -78,8 +78,10 @@ def apply_pathlib_patch():
 # Apply the patch early
 apply_pathlib_patch()
 
+
 # --- Robust Path and Argument Logging ---
 def log_resolved_paths_and_args(args, logger):
+    """Log resolved paths and arguments with enhanced validation."""
     logger.info("\n===== GNN Test Step: Resolved Arguments and Paths =====")
     logger.info(f"Current working directory: {os.getcwd()}")
     logger.info(f"Script location: {Path(__file__).resolve()}")
@@ -89,18 +91,33 @@ def log_resolved_paths_and_args(args, logger):
     logger.info(f"fast_only: {getattr(args, 'fast_only', None)}")
     logger.info(f"include_slow: {getattr(args, 'include_slow', None)}")
     logger.info(f"include_performance: {getattr(args, 'include_performance', None)}")
+    
+    # Validate paths exist
+    if args.target_dir and not args.target_dir.exists():
+        logger.warning(f"Warning: target_dir does not exist: {args.target_dir}")
+    
     logger.info("=======================================================\n")
 
 # --- Robust Output Directory Creation ---
 def ensure_output_dir(output_dir: Path, logger):
+    """Ensure output directory exists with enhanced error handling."""
     try:
         output_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"Output directory ensured: {output_dir.resolve()}")
+        
+        # Test write permissions
+        test_file = output_dir / ".write_test"
+        test_file.write_text("test")
+        test_file.unlink()
+        logger.info("Output directory is writable")
+    except PermissionError as e:
+        logger.error(f"Permission denied creating output directory {output_dir}: {e}")
+        logger.error("Action: Check that you have write permissions to the output directory.")
+        sys.exit(1)
     except Exception as e:
         logger.error(f"Failed to create output directory {output_dir}: {e}")
         logger.error("Action: Check that the output directory is writable and not locked.")
         sys.exit(1)
-
 # --- Robust Test Directory Check ---
 def ensure_test_dir_exists(logger):
     project_root = Path(__file__).parent.parent
@@ -186,6 +203,12 @@ def parse_enhanced_arguments():
         "--include-performance",
         action="store_true",
         help="Include performance test categories"
+    )
+    
+    parser.add_argument(
+        "--comprehensive",
+        action="store_true",
+        help="Run all test categories including comprehensive suite"
     )
     
     args = parser.parse_args()
