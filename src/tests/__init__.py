@@ -36,9 +36,9 @@ if str(SRC_DIR) not in sys.path:
 # Import necessary utilities and helpers from test_utils
 from .test_utils import (
     # Constants
-    TEST_DIR,
     SRC_DIR,
     PROJECT_ROOT,
+    TEST_DIR,
     TEST_CONFIG,
     TEST_CATEGORIES,
     TEST_STAGES,
@@ -99,9 +99,9 @@ except ImportError:
 # Export public interface
 __all__ = [
     # Core test constants
-    "TEST_DIR",
     "SRC_DIR",
     "PROJECT_ROOT",
+    "TEST_DIR",
     "TEST_CONFIG",
     "TEST_CATEGORIES",
     "TEST_STAGES", 

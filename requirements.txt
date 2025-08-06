@@ -1,4 +1,8 @@
-# Core scientific computing
+# =============================================================================
+# CORE DEPENDENCIES (Essential for basic functionality)
+# =============================================================================
+
+# Core scientific computing (lightweight)
 numpy>=1.21.0
 matplotlib>=3.5.0
 networkx>=2.6.0
@@ -7,13 +11,8 @@ pyyaml>=6.0
 pathlib2>=2.3.0; python_version < "3.4"
 scipy>=1.7.0
 scikit-learn>=1.0.0
-plotly>=5.0.0
-seaborn>=0.11.0
 
-# Active Inference and simulation
-pymdp>=0.0.1
-
-# Testing and development
+# Testing and development (essential)
 pytest>=6.0.0
 pytest-cov>=3.0.0
 pytest-asyncio>=0.21.0
@@ -23,44 +22,52 @@ black>=22.0.0
 flake8>=4.0.0
 mypy>=0.950
 
-# Audio processing
-librosa>=0.9.0
-soundfile>=0.10.0
-
-# Graph visualization
-igraph>=0.9.0
-graphviz>=0.19.0
-
-# System monitoring
+# System monitoring and utilities
 psutil>=5.8.0
-
-# Advanced visualization
-bokeh>=2.4.0
-holoviews>=1.14.0
-panel>=0.13.0
-
-# LLM integration
-openai>=1.0.0
-anthropic>=0.5.0
-transformers>=4.20.0
-torch>=1.12.0
-
-# Audio backends
-pedalboard>=0.5.0
-# sapf  # Temporarily commented out - package not available in PyPI
-
-# Configuration and serialization
 toml>=0.10.0
 defusedxml>=0.7.0
 
-# Additional dependencies for rendering and processing
-jax>=0.4.0
-jaxlib>=0.4.0
-
-# Security
+# Security tools
 bandit>=1.7.0
 safety>=2.3.0
 
-# Research tools
-jupyter>=1.0.0
-ipywidgets>=7.6.0
+# =============================================================================
+# OPTIONAL HEAVY PACKAGES (Install separately if needed)
+# =============================================================================
+
+# Uncomment the sections below based on your needs:
+
+# === MACHINE LEARNING & AI (Heavy packages) ===
+# torch>=1.12.0         # ~1.5GB - PyTorch (CPU version available)
+# jax>=0.4.0            # ~500MB - JAX for GPU acceleration
+# jaxlib>=0.4.0         # ~300MB - JAX libraries
+
+# === LLM INTEGRATION (API clients) ===
+# openai>=1.0.0         # ~50MB - OpenAI API client
+# anthropic>=0.5.0      # ~30MB - Anthropic API client
+
+# === ADVANCED VISUALIZATION (Heavy) ===
+# plotly>=5.0.0         # ~200MB - Interactive plotting
+# seaborn>=0.11.0       # ~100MB - Statistical visualization
+# bokeh>=2.4.0          # ~150MB - Web-based visualization
+# holoviews>=1.14.0     # ~100MB - High-level plotting
+# panel>=0.13.0         # ~80MB - Dashboard framework
+
+# === AUDIO PROCESSING (Heavy) ===
+# librosa>=0.9.0        # ~300MB - Audio analysis
+# soundfile>=0.10.0     # ~50MB - Audio file I/O
+# pedalboard>=0.5.0     # ~200MB - Audio effects
+
+# === GRAPH VISUALIZATION ===
+# igraph>=0.9.0         # ~100MB - Graph algorithms
+# graphviz>=0.19.0      # ~50MB - Graph visualization
+
+# === RESEARCH TOOLS ===
+# jupyter>=1.0.0        # ~500MB - Jupyter notebook
+# ipywidgets>=7.6.0     # ~100MB - Interactive widgets
+
+# === ACTIVE INFERENCE ===
+# pymdp>=0.0.1          # ~50MB - Active inference library
+
+# === SAPF (Audio backend) ===
+# sapf                  # Temporarily unavailable in PyPI

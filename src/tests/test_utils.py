@@ -19,6 +19,7 @@ from contextlib import contextmanager
 # Ensure src is in Python path for imports
 SRC_DIR = Path(__file__).parent.parent
 PROJECT_ROOT = SRC_DIR.parent
+TEST_DIR = SRC_DIR / "tests"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
     

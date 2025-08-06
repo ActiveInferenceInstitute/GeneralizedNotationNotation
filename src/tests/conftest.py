@@ -20,7 +20,6 @@ import pytest
 from .test_utils import (
     SRC_DIR, 
     PROJECT_ROOT, 
-    TEST_DIR,
     TEST_CONFIG,
     create_sample_gnn_content,
     is_safe_mode,
@@ -47,7 +46,11 @@ PYTEST_MARKERS = {
     "render": "Rendering and code generation tests",
     "export": "Export functionality tests",
     "parsers": "Parser and format tests",
-    "main_orchestrator": "Main orchestrator tests"
+    "main_orchestrator": "Main orchestrator tests",
+    "type_checking": "Type checking tests",
+    "mcp": "Model Context Protocol tests",
+    "sapf": "SAPF audio generation tests",
+    "visualization": "Visualization tests"
 }
 
 # Configure pytest markers
@@ -132,7 +135,7 @@ def test_dir() -> Path:
     Returns:
         Path to the test directory
     """
-    return TEST_DIR
+    return SRC_DIR / "tests"
 
 @pytest.fixture(autouse=True, scope="session")
 def patch_jax_cleanup():

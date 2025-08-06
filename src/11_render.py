@@ -420,7 +420,8 @@ def main():
                     }
                     
                     render_results["summary"]["code_files_generated"][target_name] += 1
-                    logger.info(f"  Generated {target_name}: {code_file.stat().st_size} bytes, {len(code.split('\n'))} lines")
+                    newline_count = len(code.split('\n'))
+                    logger.info(f"  Generated {target_name}: {code_file.stat().st_size} bytes, {newline_count} lines")
                     
                 except Exception as e:
                     file_render_result["renders"][target_name] = {

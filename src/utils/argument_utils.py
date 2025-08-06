@@ -285,6 +285,10 @@ class ArgumentParser:
             flag='--fast-only',
             action='store_true',
             help_text='Run only fast tests, skip slow and performance tests'
+        ),
+        'install_optional': ArgumentDefinition(
+            flag='--install-optional',
+            help_text='Install optional package groups (comma-separated): ml_ai,llm,visualization,audio,graphs,research,active_inference'
         )
     }
     

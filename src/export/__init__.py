@@ -391,7 +391,8 @@ Variables ({len(model_data.get("variables", []))}):
         for var in model_data.get("variables", []):
             summary += f"  - {var}\n"
         
-        summary += f"\nConnections ({len(model_data.get("connections", []))}):\n"
+        connections_count = len(model_data.get("connections", []))
+        summary += f"\nConnections ({connections_count}):\n"
         for conn in model_data.get("connections", []):
             summary += f"  - {conn}\n"
         

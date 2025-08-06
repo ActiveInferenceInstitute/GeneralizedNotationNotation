@@ -332,9 +332,39 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         
         # Prepare command using the enhanced argument builder
         from utils.argument_utils import build_enhanced_step_command_args
+        
+        # Convert relative paths to absolute paths for subprocess execution
+        # Create a copy of args with absolute paths
+        import copy
+        args_copy = copy.deepcopy(args)
+        
+        # Convert target_dir to absolute path if it's relative
+        if args_copy.target_dir and not args_copy.target_dir.is_absolute():
+            # Handle paths that start with ../
+            if str(args_copy.target_dir).startswith('../'):
+                args_copy.target_dir = project_root / str(args_copy.target_dir)[3:]
+            else:
+                args_copy.target_dir = project_root / args_copy.target_dir
+        
+        # Convert output_dir to absolute path if it's relative  
+        if args_copy.output_dir and not args_copy.output_dir.is_absolute():
+            # Handle paths that start with ../
+            if str(args_copy.output_dir).startswith('../'):
+                args_copy.output_dir = project_root / str(args_copy.output_dir)[3:]
+            else:
+                args_copy.output_dir = project_root / args_copy.output_dir
+            
+        # Convert ontology_terms_file to absolute path if it's relative
+        if args_copy.ontology_terms_file and not args_copy.ontology_terms_file.is_absolute():
+            # Handle paths that start with ../
+            if str(args_copy.ontology_terms_file).startswith('../'):
+                args_copy.ontology_terms_file = project_root / str(args_copy.ontology_terms_file)[3:]
+            else:
+                args_copy.ontology_terms_file = project_root / args_copy.ontology_terms_file
+            
         cmd = build_enhanced_step_command_args(
             script_name.replace('.py', ''),
-            args,
+            args_copy,
             python_executable,
             script_path
         )
@@ -343,13 +373,14 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         if args.verbose:
             logger.info(f"Executing command: {' '.join(cmd)}")
         
-        # Execute step
+        # Execute step with proper working directory (project root)
+        project_root = Path(__file__).parent.parent
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            cwd=Path(__file__).parent
+            cwd=project_root
         )
         
         # Monitor process
