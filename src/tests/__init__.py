@@ -33,8 +33,8 @@ SRC_DIR = Path(__file__).parent.parent
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-# Import necessary utilities and helpers from test_utils
-from .test_utils import (
+# Import necessary utilities and helpers from utils.test_utils
+from utils.test_utils import (
     # Constants
     SRC_DIR,
     PROJECT_ROOT,

@@ -38,104 +38,230 @@ import json
 
 # Test category definitions for modular test execution
 MODULAR_TEST_CATEGORIES = {
-    "core": {
-        "name": "Core Module Tests",
-        "description": "Essential GNN core functionality tests",
-        "files": ["test_gnn_core_modules.py", "test_core_modules.py", "test_environment.py"],
+    "gnn": {
+        "name": "GNN Module Tests",
+        "description": "GNN processing and validation tests",
+        "files": ["test_gnn_overall.py", "test_gnn_parsing.py", "test_gnn_validation.py", 
+                  "test_gnn_processing.py", "test_gnn_integration.py"],
         "markers": [],
-        "timeout_seconds": 60,
-        "max_failures": 5,
+        "timeout_seconds": 120,
+        "max_failures": 8,
+        "parallel": True
+    },
+    "render": {
+        "name": "Render Module Tests", 
+        "description": "Code generation and rendering tests",
+        "files": ["test_render_overall.py", "test_render_integration.py", "test_render_performance.py"],
+        "markers": [],
+        "timeout_seconds": 120,
+        "max_failures": 8,
+        "parallel": True
+    },
+    "mcp": {
+        "name": "MCP Module Tests",
+        "description": "Model Context Protocol tests",
+        "files": ["test_mcp_overall.py", "test_mcp_tools.py", "test_mcp_transport.py", 
+                  "test_mcp_integration.py", "test_mcp_performance.py"],
+        "markers": [],
+        "timeout_seconds": 120,
+        "max_failures": 8,
+        "parallel": True
+    },
+    "audio": {
+        "name": "Audio Module Tests",
+        "description": "Audio generation and SAPF tests",
+        "files": ["test_audio_overall.py", "test_audio_sapf.py", "test_audio_generation.py", 
+                  "test_audio_integration.py"],
+        "markers": [],
+        "timeout_seconds": 120,
+        "max_failures": 8,
+        "parallel": True
+    },
+    "visualization": {
+        "name": "Visualization Module Tests",
+        "description": "Graph and matrix visualization tests",
+        "files": ["test_visualization_overall.py", "test_visualization_matrices.py", 
+                  "test_visualization_ontology.py"],
+        "markers": [],
+        "timeout_seconds": 120,
+        "max_failures": 8,
         "parallel": True
     },
     "pipeline": {
-        "name": "Pipeline Infrastructure Tests",
-        "description": "Pipeline scripts and infrastructure tests",
-        "files": ["test_main_orchestrator.py", "test_pipeline_functionality.py", "test_pipeline_infrastructure.py",
-                  "test_pipeline_performance.py", "test_pipeline_recovery.py", "test_pipeline_scripts.py",
-                  "test_pipeline_steps.py"],
+        "name": "Pipeline Module Tests",
+        "description": "Pipeline orchestration and step tests",
+        "files": ["test_pipeline_overall.py", "test_pipeline_integration.py", 
+                  "test_pipeline_orchestration.py", "test_pipeline_performance.py", 
+                  "test_pipeline_recovery.py", "test_pipeline_scripts.py", 
+                  "test_pipeline_infrastructure.py", "test_pipeline_functionality.py"],
         "markers": [],
-        "timeout_seconds": 120,  # Increased timeout for pipeline tests
+        "timeout_seconds": 180,
         "max_failures": 10,
-        "parallel": False  # Disable parallel for pipeline tests to avoid timeout
+        "parallel": False
     },
-    "integration": {
-        "name": "Integration Tests",
-        "description": "Cross-module integration and workflow tests",
-        "files": ["test_comprehensive_api.py", "test_mcp_integration_comprehensive.py",
-                  "test_mcp_comprehensive.py"],
+    "export": {
+        "name": "Export Module Tests",
+        "description": "Multi-format export tests",
+        "files": ["test_export_overall.py"],
+        "markers": [],
+        "timeout_seconds": 90,
+        "max_failures": 6,
+        "parallel": True
+    },
+    "execute": {
+        "name": "Execute Module Tests",
+        "description": "Execution and simulation tests",
+        "files": ["test_execute_overall.py"],
         "markers": [],
         "timeout_seconds": 120,
-        "max_failures": 10,
+        "max_failures": 8,
+        "parallel": True
+    },
+    "llm": {
+        "name": "LLM Module Tests",
+        "description": "LLM integration and analysis tests",
+        "files": ["test_llm_overall.py"],
+        "markers": [],
+        "timeout_seconds": 120,
+        "max_failures": 8,
+        "parallel": True
+    },
+    "ontology": {
+        "name": "Ontology Module Tests",
+        "description": "Ontology processing and validation tests",
+        "files": ["test_ontology_overall.py"],
+        "markers": [],
+        "timeout_seconds": 90,
+        "max_failures": 6,
+        "parallel": True
+    },
+    "website": {
+        "name": "Website Module Tests",
+        "description": "Website generation tests",
+        "files": ["test_website_overall.py"],
+        "markers": [],
+        "timeout_seconds": 90,
+        "max_failures": 6,
+        "parallel": True
+    },
+    "report": {
+        "name": "Report Module Tests",
+        "description": "Report generation and formatting tests",
+        "files": ["test_report_overall.py", "test_report_generation.py", 
+                  "test_report_integration.py", "test_report_formats.py"],
+        "markers": [],
+        "timeout_seconds": 90,
+        "max_failures": 6,
+        "parallel": True
+    },
+    "environment": {
+        "name": "Environment Module Tests",
+        "description": "Environment setup and validation tests",
+        "files": ["test_environment_overall.py", "test_environment_dependencies.py",
+                  "test_environment_integration.py", "test_environment_python.py",
+                  "test_environment_system.py"],
+        "markers": [],
+        "timeout_seconds": 90,
+        "max_failures": 6,
+        "parallel": True
+    },
+    "type_checker": {
+        "name": "Type Checker Module Tests",
+        "description": "Type checking and validation tests",
+        "files": ["test_type_checker_overall.py"],
+        "markers": [],
+        "timeout_seconds": 90,
+        "max_failures": 6,
         "parallel": True
     },
     "validation": {
-        "name": "Validation Tests",
-        "description": "GNN validation and type checking tests",
-        "files": ["test_gnn_type_checker.py", "test_parsers.py"],
+        "name": "Validation Module Tests",
+        "description": "Validation and consistency tests",
+        "files": ["test_validation_overall.py"],
         "markers": [],
         "timeout_seconds": 90,
-        "max_failures": 8,
+        "max_failures": 6,
         "parallel": True
     },
-    "utilities": {
-        "name": "Utility Tests",
-        "description": "Utility functions and helper tests",
-        "files": ["test_utils.py", "test_utilities.py", "test_utility_modules.py", "test_runner_helper.py"],
+    "model_registry": {
+        "name": "Model Registry Module Tests",
+        "description": "Model registry and versioning tests",
+        "files": ["test_model_registry_overall.py"],
         "markers": [],
-        "timeout_seconds": 60,
-        "max_failures": 5,
+        "timeout_seconds": 90,
+        "max_failures": 6,
         "parallel": True
     },
-    "specialized": {
-        "name": "Specialized Module Tests",
-        "description": "Specialized module tests (audio, visualization, etc.)",
-        "files": ["test_visualization.py", "test_sapf.py", "test_export.py", "test_render.py"],
+    "analysis": {
+        "name": "Analysis Module Tests",
+        "description": "Analysis and statistical tests",
+        "files": ["test_analysis_overall.py"],
         "markers": [],
         "timeout_seconds": 120,
         "max_failures": 8,
         "parallel": True
     },
-    "reporting": {
-        "name": "Reporting Tests",
-        "description": "Report generation and output tests",
-        "files": ["test_report_comprehensive.py"],
+    "integration": {
+        "name": "Integration Module Tests",
+        "description": "System integration tests",
+        "files": ["test_integration_overall.py"],
         "markers": [],
-        "timeout_seconds": 60,
-        "max_failures": 5,
+        "timeout_seconds": 120,
+        "max_failures": 8,
         "parallel": True
     },
-    "performance": {
-        "name": "Performance Tests",
-        "description": "Performance and benchmarking tests",
-        "files": ["test_pipeline_performance.py"],  # Only include actual performance tests
+    "security": {
+        "name": "Security Module Tests",
+        "description": "Security validation tests",
+        "files": ["test_security_overall.py"],
         "markers": [],
-        "timeout_seconds": 300,  # Increased timeout to 5 minutes
-        "max_failures": 10,
-        "parallel": False  # Disable parallel for performance tests
+        "timeout_seconds": 90,
+        "max_failures": 6,
+        "parallel": True
     },
-    "fast_suite": {
-        "name": "Fast Test Suite",
-        "description": "Fast execution test suite",
-        "files": ["test_fast_suite.py"],
+    "research": {
+        "name": "Research Module Tests",
+        "description": "Research tools tests",
+        "files": ["test_research_overall.py"],
         "markers": [],
-        "timeout_seconds": 30,
-        "max_failures": 3,
+        "timeout_seconds": 90,
+        "max_failures": 6,
+        "parallel": True
+    },
+    "ml_integration": {
+        "name": "ML Integration Module Tests",
+        "description": "Machine learning integration tests",
+        "files": ["test_ml_integration_overall.py"],
+        "markers": [],
+        "timeout_seconds": 120,
+        "max_failures": 8,
+        "parallel": True
+    },
+    "advanced_visualization": {
+        "name": "Advanced Visualization Module Tests",
+        "description": "Advanced visualization tests",
+        "files": ["test_advanced_visualization_overall.py"],
+        "markers": [],
+        "timeout_seconds": 120,
+        "max_failures": 8,
         "parallel": True
     },
     "comprehensive": {
-        "name": "Comprehensive Tests",
-        "description": "All remaining test files for complete coverage",
-        "files": ["test_*"],  # Pattern to catch any remaining test files
+        "name": "Comprehensive API Tests",
+        "description": "Comprehensive API and integration tests",
+        "files": ["test_comprehensive_api.py", "test_core_modules.py", "test_fast_suite.py",
+                  "test_main_orchestrator.py", "test_coverage_overall.py", "test_performance_overall.py",
+                  "test_unit_overall.py"],
         "markers": [],
-        "timeout_seconds": 600,  # Increased timeout for comprehensive tests
-        "max_failures": 20,
-        "parallel": True
+        "timeout_seconds": 300,
+        "max_failures": 15,
+        "parallel": False
     }
 }
 
 # Import test utilities
 from .conftest import project_root
-from .test_utils import TEST_DIR
+from utils.test_utils import TEST_DIR
 from utils.pipeline_template import (
     setup_step_logging,
     log_step_start,

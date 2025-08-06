@@ -93,6 +93,45 @@ try:
         get_system_info
     )
     
+    from .test_utils import (
+        TEST_CATEGORIES,
+        TEST_STAGES,
+        COVERAGE_TARGETS,
+        TEST_CONFIG,
+        get_step_metadata_dict,
+        is_safe_mode,
+        create_missing_test_files,
+        setup_test_environment,
+        cleanup_test_environment,
+        validate_test_environment,
+        get_test_args,
+        get_sample_pipeline_arguments,
+        create_test_gnn_files,
+        create_test_files,
+        create_sample_gnn_content,
+        get_mock_filesystem_structure,
+        run_all_tests,
+        run_fast_tests,
+        run_standard_tests,
+        run_slow_tests,
+        run_performance_tests,
+        run_coverage_tests,
+        assert_file_exists,
+        assert_valid_json,
+        assert_directory_structure,
+        validate_report_data,
+        run_all_tests_mcp,
+        register_tools,
+        generate_html_report_file,
+        generate_markdown_report_file,
+        generate_json_report_file,
+        generate_comprehensive_report,
+        performance_tracker,
+        get_memory_usage,
+        track_peak_memory,
+        with_resource_limits
+    )
+    
     from .shared_functions import (
         find_gnn_files,
         parse_gnn_sections,
