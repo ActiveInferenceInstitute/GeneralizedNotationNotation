@@ -30,7 +30,7 @@ class TestGNNCoreProcessor:
     def test_core_processor_imports(self):
         """Test that core processor can be imported."""
         try:
-            from gnn import core_processor
+            from src.gnn import core_processor
             assert hasattr(core_processor, 'GNNProcessor')
             assert hasattr(core_processor, 'create_processor')
             assert hasattr(core_processor, 'ProcessingContext')
@@ -42,7 +42,7 @@ class TestGNNCoreProcessor:
     def test_gnn_processor_basic_imports(self, sample_gnn_files, comprehensive_test_data):
         """Test basic GNN processor imports without heavy instantiation."""
         try:
-            from gnn.core_processor import GNNProcessor, ProcessingContext
+            from src.gnn.core_processor import GNNProcessor, ProcessingContext
             
             # Test that we can create a ProcessingContext (lightweight)
             context = ProcessingContext(
@@ -68,7 +68,7 @@ class TestGNNCoreProcessor:
     def test_process_gnn_directory(self, isolated_temp_dir, sample_gnn_files):
         """Test directory processing functionality."""
         try:
-            from gnn.core_processor import process_gnn_directory
+            from src.gnn.core_processor import process_gnn_directory
             
             # Create directory with sample files
             gnn_dir = isolated_temp_dir / "gnn_models"
@@ -100,11 +100,11 @@ class TestGNNDiscovery:
     def test_discovery_imports(self):
         """Test that discovery module can be imported."""
         try:
-            from gnn import discovery
+            from src.gnn import discovery
             assert hasattr(discovery, 'FileDiscoveryStrategy')
             assert hasattr(discovery, 'DiscoveryResult')
             # Test that we can also import the main function from gnn package
-            from gnn import discover_gnn_files
+            from src.gnn import discover_gnn_files
             assert callable(discover_gnn_files)
         except ImportError:
             pytest.skip("GNN discovery not available")
@@ -114,7 +114,7 @@ class TestGNNDiscovery:
     def test_discover_gnn_files(self, isolated_temp_dir, sample_gnn_files):
         """Test GNN file discovery functionality."""
         try:
-            from gnn.discovery import discover_gnn_files
+            from src.gnn.discovery import discover_gnn_files
             
             # Create test directory with GNN files
             test_dir = isolated_temp_dir / "test_models"
@@ -147,7 +147,7 @@ class TestGNNDiscovery:
     def test_scan_directory_recursive(self, isolated_temp_dir):
         """Test recursive directory scanning."""
         try:
-            from gnn.discovery import scan_directory
+            from src.gnn.discovery import scan_directory
             
             # Create nested directory structure
             root_dir = isolated_temp_dir / "nested_models"
@@ -182,10 +182,10 @@ class TestGNNReporting:
     def test_reporting_imports(self):
         """Test that reporting module can be imported."""
         try:
-            from gnn import reporting
+            from src.gnn import reporting
             assert hasattr(reporting, 'ReportGenerator')
             # Test that we can also import the main function from gnn package
-            from gnn import generate_gnn_report
+            from src.gnn import generate_gnn_report
             assert callable(generate_gnn_report)
         except ImportError:
             pytest.skip("GNN reporting not available")
@@ -195,7 +195,7 @@ class TestGNNReporting:
     def test_generate_report(self, comprehensive_test_data, isolated_temp_dir):
         """Test report generation functionality."""
         try:
-            from gnn.reporting import generate_report
+            from src.gnn.reporting import generate_report
             
             # Use test data for report generation
             test_data = comprehensive_test_data['models']['simple_model']
@@ -219,7 +219,7 @@ class TestGNNReporting:
     def test_create_summary(self, comprehensive_test_data):
         """Test summary creation functionality."""
         try:
-            from gnn.reporting import create_summary
+            from src.gnn.reporting import create_summary
             
             # Use test models for summary
             models_data = comprehensive_test_data['models']
@@ -245,10 +245,10 @@ class TestGNNValidation:
     def test_validation_imports(self):
         """Test that validation module can be imported."""
         try:
-            from gnn import validation
+            from src.gnn import validation
             assert hasattr(validation, 'ValidationStrategy')
             # Test that we can also import the main functions from gnn package
-            from gnn import validate_gnn_file, validate_gnn_structure
+            from src.gnn import validate_gnn_file, validate_gnn_structure
             assert callable(validate_gnn_file)
             assert callable(validate_gnn_structure)
         except ImportError:
@@ -259,7 +259,7 @@ class TestGNNValidation:
     def test_validate_gnn_model(self, comprehensive_test_data):
         """Test GNN model validation."""
         try:
-            from gnn.validation import validate_gnn_model
+            from src.gnn.validation import validate_gnn_model
             
             # Test with valid model
             test_model = comprehensive_test_data['models']['simple_model']
@@ -283,7 +283,7 @@ class TestGNNValidation:
     def test_check_consistency(self, comprehensive_test_data):
         """Test consistency checking functionality."""
         try:
-            from gnn.validation import check_consistency
+            from src.gnn.validation import check_consistency
             
             # Test with model data
             test_model = comprehensive_test_data['models']['complex_model']
@@ -309,7 +309,7 @@ class TestGNNSimpleValidator:
     def test_simple_validator_imports(self):
         """Test that simple validator can be imported."""
         try:
-            from gnn import simple_validator
+            from src.gnn import simple_validator
             assert hasattr(simple_validator, 'SimpleValidator')
         except ImportError:
             pytest.skip("GNN simple validator not available")
@@ -319,7 +319,7 @@ class TestGNNSimpleValidator:
     def test_simple_validator_instantiation(self):
         """Test SimpleValidator instantiation."""
         try:
-            from gnn.simple_validator import SimpleValidator
+            from src.gnn.simple_validator import SimpleValidator
             
             validator = SimpleValidator()
             
@@ -339,7 +339,7 @@ class TestGNNSimpleValidator:
     def test_simple_validation(self, sample_gnn_files):
         """Test simple validation functionality."""
         try:
-            from gnn.simple_validator import SimpleValidator
+            from src.gnn.simple_validator import SimpleValidator
             
             validator = SimpleValidator()
             

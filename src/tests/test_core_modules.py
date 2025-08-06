@@ -49,7 +49,7 @@ class TestGNNModuleComprehensive:
     def test_gnn_module_imports(self):
         """Test that GNN module can be imported and has expected structure."""
         try:
-            from gnn import (
+            from src.gnn import (
                 discover_gnn_files, parse_gnn_file, validate_gnn_structure,
                 process_gnn_directory, generate_gnn_report
             )
@@ -70,7 +70,7 @@ class TestGNNModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_gnn_file_discovery(self, sample_gnn_files):
         """Test GNN file discovery functionality."""
-        from gnn import discover_gnn_files
+        from src.gnn import discover_gnn_files
         
         # Test discovery in directory with GNN files
         gnn_dir = list(sample_gnn_files.values())[0].parent
@@ -90,7 +90,7 @@ class TestGNNModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_gnn_file_parsing(self, sample_gnn_files):
         """Test GNN file parsing functionality."""
-        from gnn import parse_gnn_file
+        from src.gnn import parse_gnn_file
         
         for file_path in sample_gnn_files.values():
             try:
@@ -141,7 +141,7 @@ class TestGNNModuleComprehensive:
     @pytest.mark.safe_to_fail
     def test_gnn_directory_processing(self, sample_gnn_files, isolated_temp_dir):
         """Test GNN directory processing."""
-        from gnn import process_gnn_directory, generate_gnn_report
+        from src.gnn import process_gnn_directory, generate_gnn_report
         
         gnn_dir = list(sample_gnn_files.values())[0].parent
         output_dir = isolated_temp_dir / "gnn_processing"
@@ -713,9 +713,9 @@ class TestCoreModuleIntegration:
     def test_module_coordination(self, sample_gnn_files, isolated_temp_dir):
         """Test coordination between core modules."""
         try:
-            from gnn import parse_gnn_file
-            from render import render_gnn_to_pymdp
-            from execute import execute_gnn_model
+            from src.gnn import parse_gnn_file
+            from src.render import render_gnn_to_pymdp
+            from src.execute import execute_gnn_model
             gnn_data = parse_gnn_file(list(sample_gnn_files.values())[0])
             pymdp_path = isolated_temp_dir / "test_pymdp.py"
             render_gnn_to_pymdp({list(sample_gnn_files.values())[0]: gnn_data}, pymdp_path)
@@ -730,9 +730,9 @@ class TestCoreModuleIntegration:
     def test_module_data_flow(self, sample_gnn_files, isolated_temp_dir):
         """Test data flow between modules."""
         try:
-            from gnn import parse_gnn_file
-            from llm import analyze_gnn_model
-            from website import generate_html_report
+            from src.gnn import parse_gnn_file
+            from src.llm import analyze_gnn_model
+            from src.website import generate_html_report
             gnn_data = parse_gnn_file(list(sample_gnn_files.values())[0])
             analysis = analyze_gnn_model(gnn_data)
             report_path = isolated_temp_dir / "test_report.html"
