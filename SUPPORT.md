@@ -36,7 +36,7 @@ python --version
 **📦 Dependency Issues**
 ```bash
 # Force reinstall dependencies
-python src/main.py --only-steps 2 --recreate-venv --dev
+uv run python src/main.py --only-steps 2 --recreate-uv-env --dev
 ```
 
 **🔧 Pipeline Failures**

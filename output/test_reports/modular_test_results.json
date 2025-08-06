@@ -5,31 +5,24 @@
     "tests_passed": 0,
     "tests_failed": 0,
     "tests_skipped": 0,
-    "duration": 0.422804594039917,
-    "stdout": "",
-    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
-    "returncode": 4,
+    "duration": 1.0886461734771729,
     "resource_usage": {
       "memory_mb": 30.6640625,
       "cpu_percent": 0.0,
       "threads": 1
-    }
+    },
+    "stdout": "2025-08-06 15:02:42,546 [cf99c7fc:utils] root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output\n2025-08-06 15:02:42,547 [cf99c7fc:utils] execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'execute.discopy_translator_module'\n2025-08-06 15:02:42,559 [cf99c7fc:utils] mcp - INFO - Enhanced MCP server initialized\n",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
   },
   "pipeline": {
     "success": false,
+    "error": "Test category 'pipeline' timed out after 120 seconds",
     "tests_run": 0,
     "tests_passed": 0,
     "tests_failed": 0,
     "tests_skipped": 0,
-    "duration": 0.3999476432800293,
-    "stdout": "",
-    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
-    "returncode": 4,
-    "resource_usage": {
-      "memory_mb": 30.6640625,
-      "cpu_percent": 0.0,
-      "threads": 1
-    }
+    "duration": 120.01478791236877
   },
   "validation": {
     "success": false,
@@ -37,15 +30,15 @@
     "tests_passed": 0,
     "tests_failed": 0,
     "tests_skipped": 0,
-    "duration": 0.3373682498931885,
-    "stdout": "",
-    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
-    "returncode": 4,
+    "duration": 2.437464475631714,
     "resource_usage": {
-      "memory_mb": 30.6640625,
+      "memory_mb": 30.7890625,
       "cpu_percent": 0.0,
       "threads": 1
-    }
+    },
+    "stdout": "2025-08-06 15:04:44,680 [5773244e:utils] root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output\n2025-08-06 15:04:44,684 [5773244e:utils] execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'execute.discopy_translator_module'\n2025-08-06 15:04:44,706 [5773244e:utils] mcp - INFO - Enhanced MCP server initialized\n",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
   },
   "utilities": {
     "success": false,
@@ -53,15 +46,15 @@
     "tests_passed": 0,
     "tests_failed": 0,
     "tests_skipped": 0,
-    "duration": 0.31389904022216797,
-    "stdout": "",
-    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
-    "returncode": 4,
+    "duration": 2.3376049995422363,
     "resource_usage": {
-      "memory_mb": 30.6640625,
+      "memory_mb": 30.7890625,
       "cpu_percent": 0.0,
       "threads": 1
-    }
+    },
+    "stdout": "2025-08-06 15:04:47,012 [abb83f69:utils] root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output\n2025-08-06 15:04:47,015 [abb83f69:utils] execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'execute.discopy_translator_module'\n2025-08-06 15:04:47,037 [abb83f69:utils] mcp - INFO - Enhanced MCP server initialized\n",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
   },
   "reporting": {
     "success": false,
@@ -69,15 +62,15 @@
     "tests_passed": 0,
     "tests_failed": 0,
     "tests_skipped": 0,
-    "duration": 0.38128185272216797,
-    "stdout": "",
-    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
-    "returncode": 4,
+    "duration": 2.290191888809204,
     "resource_usage": {
-      "memory_mb": 30.6640625,
+      "memory_mb": 30.7890625,
       "cpu_percent": 0.0,
       "threads": 1
-    }
+    },
+    "stdout": "2025-08-06 15:04:49,275 [eabc9d66:utils] root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output\n2025-08-06 15:04:49,278 [eabc9d66:utils] execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'execute.discopy_translator_module'\n2025-08-06 15:04:49,301 [eabc9d66:utils] mcp - INFO - Enhanced MCP server initialized\n",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
   },
   "fast_suite": {
     "success": false,
@@ -85,15 +78,15 @@
     "tests_passed": 0,
     "tests_failed": 0,
     "tests_skipped": 0,
-    "duration": 0.30277490615844727,
-    "stdout": "",
-    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
-    "returncode": 4,
+    "duration": 2.315303325653076,
     "resource_usage": {
-      "memory_mb": 30.6640625,
+      "memory_mb": 30.7890625,
       "cpu_percent": 0.0,
       "threads": 1
-    }
+    },
+    "stdout": "2025-08-06 15:04:51,589 [e4e2c75d:utils] root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output\n2025-08-06 15:04:51,592 [e4e2c75d:utils] execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'execute.discopy_translator_module'\n2025-08-06 15:04:51,655 [e4e2c75d:utils] mcp - INFO - Enhanced MCP server initialized\n",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
   },
   "comprehensive": {
     "success": false,
@@ -101,14 +94,14 @@
     "tests_passed": 0,
     "tests_failed": 0,
     "tests_skipped": 0,
-    "duration": 0.30495738983154297,
-    "stdout": "",
-    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
-    "returncode": 4,
+    "duration": 3.0335962772369385,
     "resource_usage": {
-      "memory_mb": 30.6640625,
+      "memory_mb": 30.7890625,
       "cpu_percent": 0.0,
       "threads": 1
-    }
+    },
+    "stdout": "2025-08-06 15:04:54,505 [59a0e0ef:utils] root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output\n2025-08-06 15:04:54,512 [59a0e0ef:utils] execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'execute.discopy_translator_module'\n2025-08-06 15:04:54,554 [59a0e0ef:utils] mcp - INFO - Enhanced MCP server initialized\n",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
   }
 }

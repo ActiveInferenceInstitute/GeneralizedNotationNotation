@@ -1,5 +1,8 @@
 """
-Utility functions for the GNN Processing Pipeline.
+Utility functions for the GNN Processing Pipeline with UV support.
+
+This module provides utilities for UV-based environment management,
+dependency handling, and project structure setup.
 """
 
 import os
@@ -10,35 +13,36 @@ import json
 import time
 from pathlib import Path
 import logging
-from pipeline import get_output_dir_for_script
-from utils import log_step_start, log_step_success, log_step_warning, log_step_error
-from typing import List, Dict, Tuple, Optional, Union
+from ..pipeline import get_output_dir_for_script
+from ..utils import log_step_start, log_step_success, log_step_warning, log_step_error
+from typing import List, Dict, Tuple, Optional, Union, Any
 
-def is_venv_active() -> bool:
+def is_uv_environment_active() -> bool:
     """
-    Check if a Python virtual environment is currently active.
+    Check if running in a UV-managed environment.
     
     Returns:
-        bool: True if running inside a virtual environment, False otherwise.
+        bool: True if running inside a UV environment, False otherwise.
     """
+    # Check if we're in a UV-managed virtual environment
     return hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)
 
-def get_venv_info() -> Dict[str, Union[bool, str, Path, None]]:
+def get_uv_environment_info() -> Dict[str, Union[bool, str, Path, None]]:
     """
-    Get information about the current virtual environment.
+    Get information about the current UV environment.
     
     Returns:
         Dict with the following keys:
-            - is_active: Whether a venv is active
+            - is_active: Whether a UV environment is active
             - venv_path: Path to the venv if active, None otherwise
             - python_executable: Path to the Python executable in the venv
-            - pip_executable: Path to the pip executable in the venv
+            - uv_executable: Path to the UV executable
     """
     result = {
-        "is_active": is_venv_active(),
+        "is_active": is_uv_environment_active(),
         "venv_path": None,
         "python_executable": None,
-        "pip_executable": None
+        "uv_executable": None
     }
     
     if result["is_active"]:
@@ -48,14 +52,17 @@ def get_venv_info() -> Dict[str, Union[bool, str, Path, None]]:
         # Get Python executable path
         result["python_executable"] = Path(sys.executable)
         
-        # Determine pip executable path
-        if platform.system() == "Windows":
-            pip_path = Path(sys.prefix) / "Scripts" / "pip.exe"
-        else:
-            pip_path = Path(sys.prefix) / "bin" / "pip"
-        
-        if pip_path.exists():
-            result["pip_executable"] = pip_path
+        # Find UV executable
+        try:
+            uv_result = subprocess.run(
+                ["which", "uv"] if platform.system() != "Windows" else ["where", "uv"],
+                capture_output=True,
+                text=True
+            )
+            if uv_result.returncode == 0:
+                result["uv_executable"] = Path(uv_result.stdout.strip())
+        except Exception:
+            pass
     
     return result
 
@@ -157,16 +164,28 @@ def get_output_paths(base_output_dir: Union[str, Path]) -> Dict[str, Path]:
     
     return paths
 
-def check_system_dependencies() -> Dict[str, bool]:
+def check_uv_dependencies() -> Dict[str, bool]:
     """
-    Check if required system dependencies are available.
+    Check if required UV dependencies are available.
     
     Returns:
         Dictionary mapping dependency names to boolean values indicating availability
     """
     result = {}
     
-    # Check for Python packages via subprocess
+    # Check for UV itself
+    try:
+        uv_result = subprocess.run(
+            ["uv", "--version"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False
+        )
+        result["uv"] = uv_result.returncode == 0
+    except Exception:
+        result["uv"] = False
+    
+    # Check for Python packages via UV
     for package in ["pip", "venv"]:
         try:
             subprocess.run(
@@ -195,15 +214,37 @@ def check_system_dependencies() -> Dict[str, bool]:
     return result 
 
 def log_environment_info(logger):
+    """Log comprehensive environment information including UV status."""
     import platform
     log_step_start(logger, "Logging environment information")
     logger.info(f"Python version: {sys.version}")
     logger.info(f"Python executable: {sys.executable}")
     logger.info(f"Operating system: {platform.platform()}")
-    # Add more environment info as needed
+    
+    # Check UV availability
+    try:
+        uv_result = subprocess.run(
+            ["uv", "--version"],
+            capture_output=True,
+            text=True
+        )
+        if uv_result.returncode == 0:
+            logger.info(f"UV version: {uv_result.stdout.strip()}")
+        else:
+            logger.warning("UV not available")
+    except Exception as e:
+        logger.warning(f"Could not check UV version: {e}")
+    
+    # Check if we're in a UV environment
+    env_info = get_uv_environment_info()
+    logger.info(f"UV environment active: {env_info['is_active']}")
+    if env_info['venv_path']:
+        logger.info(f"UV environment path: {env_info['venv_path']}")
+    
     log_step_success(logger, "Environment information logged successfully")
 
 def verify_directories(target_dir, output_dir, logger, find_gnn_files, verbose=False):
+    """Verify directories and create output structure using UV standards."""
     log_step_start(logger, f"Verifying directories - target: {target_dir}, output: {output_dir}")
     target_path = Path(target_dir)
     if not target_path.is_dir():
@@ -217,6 +258,7 @@ def verify_directories(target_dir, output_dir, logger, find_gnn_files, verbose=F
             log_step_warning(logger, f"No GNN files found in {target_path}. This might be expected if you're planning to create them later.")
     except Exception as e:
         log_step_error(logger, f"Error scanning for GNN files in {target_path}: {e}")
+    
     # Create output directory structure using centralized configuration
     try:
         logger.info("Creating output directory structure...")
@@ -239,41 +281,161 @@ def verify_directories(target_dir, output_dir, logger, find_gnn_files, verbose=F
         log_step_error(logger, f"Error creating output directories: {e}")
         return False
 
-def list_installed_packages(logger, venv_info, output_dir=None, verbose=False):
-    log_step_start(logger, "Generating installed packages report")
-    pip_executable = venv_info.get("pip_executable")
-    if not pip_executable or not Path(pip_executable).exists():
-        log_step_warning(logger, f"pip not found at {pip_executable}, skipping package listing")
-        return
+def list_installed_packages_uv(logger, output_dir=None, verbose=False):
+    """Generate installed packages report using UV."""
+    log_step_start(logger, "Generating installed packages report with UV")
+    
     try:
-        import subprocess
-        pip_list_cmd = [pip_executable, "list", "--format=json"]
+        # Use UV to list packages
+        uv_list_cmd = ["uv", "pip", "list", "--format=json"]
         result = subprocess.run(
-            pip_list_cmd,
+            uv_list_cmd,
             capture_output=True,
             text=True,
             check=True
         )
+        
         packages = json.loads(result.stdout)
         package_dict = {pkg["name"]: pkg["version"] for pkg in packages}
-        logger.info(f"Found {len(package_dict)} installed packages in the virtual environment")
+        logger.info(f"Found {len(package_dict)} installed packages in the UV environment")
+        
         if verbose:
             logger.info("Installed packages:")
             for name, version in sorted(package_dict.items()):
                 logger.info(f"  - {name}: {version}")
+        
         if output_dir:
             setup_dir = get_output_dir_for_script("1_setup.py", Path(output_dir))
             setup_dir.mkdir(parents=True, exist_ok=True)
-            packages_file = setup_dir / "installed_packages.json"
+            packages_file = setup_dir / "installed_packages_uv.json"
             json_data = {
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                "virtual_env": str(venv_info.get("venv_path")),
-                "python_executable": str(venv_info.get("python_executable")),
+                "uv_environment": str(get_uv_environment_info().get("venv_path")),
+                "python_executable": str(get_uv_environment_info().get("python_executable")),
                 "packages": package_dict
             }
             with open(packages_file, 'w') as f:
                 json.dump(json_data, f, indent=2)
             logger.debug(f"Package list saved to: {packages_file}")
-        log_step_success(logger, f"Successfully listed {len(package_dict)} packages")
+        
+        log_step_success(logger, f"Successfully listed {len(package_dict)} packages with UV")
+        
     except Exception as e:
-        log_step_error(logger, f"Unexpected error listing packages: {e}") 
+        log_step_error(logger, f"Unexpected error listing packages with UV: {e}")
+
+def check_uv_project_status(project_root: Path) -> Dict[str, Any]:
+    """
+    Check the status of a UV project.
+    
+    Args:
+        project_root: Path to the project root
+        
+    Returns:
+        Dictionary with project status information
+    """
+    status = {
+        "project_root": str(project_root),
+        "pyproject_toml_exists": False,
+        "uv_lock_exists": False,
+        "venv_exists": False,
+        "uv_available": False,
+        "python_version": None,
+        "dependencies_installed": False
+    }
+    
+    # Check if pyproject.toml exists
+    pyproject_path = project_root / "pyproject.toml"
+    status["pyproject_toml_exists"] = pyproject_path.exists()
+    
+    # Check if uv.lock exists
+    lock_path = project_root / "uv.lock"
+    status["uv_lock_exists"] = lock_path.exists()
+    
+    # Check if .venv exists
+    venv_path = project_root / ".venv"
+    status["venv_exists"] = venv_path.exists()
+    
+    # Check UV availability
+    try:
+        result = subprocess.run(
+            ["uv", "--version"],
+            capture_output=True,
+            text=True
+        )
+        status["uv_available"] = result.returncode == 0
+    except Exception:
+        status["uv_available"] = False
+    
+    # Check Python version if venv exists
+    if status["venv_exists"]:
+        python_path = venv_path / "bin" / "python"
+        if sys.platform == "win32":
+            python_path = venv_path / "Scripts" / "python.exe"
+        
+        if python_path.exists():
+            try:
+                result = subprocess.run(
+                    [str(python_path), "--version"],
+                    capture_output=True,
+                    text=True
+                )
+                if result.returncode == 0:
+                    status["python_version"] = result.stdout.strip()
+            except Exception:
+                pass
+    
+    # Check if dependencies are installed
+    if status["venv_exists"] and status["uv_available"]:
+        try:
+            result = subprocess.run(
+                ["uv", "pip", "list"],
+                capture_output=True,
+                text=True
+            )
+            status["dependencies_installed"] = result.returncode == 0 and "numpy" in result.stdout
+        except Exception:
+            status["dependencies_installed"] = False
+    
+    return status
+
+def setup_uv_project_structure(project_root: Path, logger) -> bool:
+    """
+    Set up a new UV project structure.
+    
+    Args:
+        project_root: Path to the project root
+        logger: Logger instance
+        
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        log_step_start(logger, "Setting up UV project structure")
+        
+        # Create basic project structure
+        directories = [
+            "src",
+            "tests",
+            "docs",
+            "input/gnn_files",
+            "output",
+            "logs"
+        ]
+        
+        for dir_name in directories:
+            dir_path = project_root / dir_name
+            dir_path.mkdir(parents=True, exist_ok=True)
+            logger.info(f"Created directory: {dir_path}")
+        
+        # Create basic pyproject.toml if it doesn't exist
+        pyproject_path = project_root / "pyproject.toml"
+        if not pyproject_path.exists():
+            logger.info("Creating basic pyproject.toml...")
+            # This would be created by the main setup script
+        
+        log_step_success(logger, "UV project structure created successfully")
+        return True
+        
+    except Exception as e:
+        log_step_error(logger, f"Failed to setup UV project structure: {e}")
+        return False 

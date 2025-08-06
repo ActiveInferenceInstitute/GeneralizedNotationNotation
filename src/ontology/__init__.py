@@ -141,7 +141,8 @@ def get_module_info() -> Dict[str, Any]:
         'features': FEATURES,
         'ontology_capabilities': [],
         'processing_methods': [],
-        'processing_capabilities': []
+        'processing_capabilities': [],
+        'supported_formats': []
     }
     
     # Ontology capabilities
@@ -170,6 +171,15 @@ def get_module_info() -> Dict[str, Any]:
         'Export to multiple formats'
     ])
     
+    # Supported formats
+    info['supported_formats'].extend([
+        'JSON',
+        'XML',
+        'RDF',
+        'OWL',
+        'Plaintext'
+    ])
+    
     return info
 
 def get_ontology_processing_options() -> Dict[str, Any]:
@@ -179,7 +189,10 @@ def get_ontology_processing_options() -> Dict[str, Any]:
         'output_formats': ['json', 'xml', 'rdf', 'owl'],
         'validation_levels': ['none', 'basic', 'strict'],
         'extraction_methods': ['section', 'pattern', 'semantic'],
-        'parsing_options': ['include_metadata', 'validate_terms', 'extract_relationships']
+        'parsing_options': ['include_metadata', 'validate_terms', 'extract_relationships'],
+        'validation_options': ['term_validation', 'relationship_validation', 'consistency_check'],
+        'report_formats': ['json', 'xml', 'html', 'plaintext'],
+        'output_options': ['detailed', 'summary', 'validation_only']
     }
 
 def process_gnn_ontology(gnn_file: str) -> Dict[str, Any]:
@@ -264,6 +277,129 @@ def load_defined_ontology_terms() -> Dict[str, List[str]]:
         ]
     }
 
+def validate_annotations(annotations: List[str], ontology_terms: Dict[str, List[str]] = None) -> Dict[str, Any]:
+    """
+    Validate annotations against ontology terms.
+    
+    Args:
+        annotations: List of annotations to validate
+        ontology_terms: Dictionary of ontology terms (optional)
+        
+    Returns:
+        Dictionary with validation results
+    """
+    try:
+        if ontology_terms is None:
+            ontology_terms = load_defined_ontology_terms()
+        
+        results = {
+            "valid": [],
+            "invalid": [],
+            "suggestions": {},
+            "coverage": 0.0
+        }
+        
+        total_annotations = len(annotations)
+        valid_count = 0
+        
+        for annotation in annotations:
+            # Check if annotation exists in any category
+            found = False
+            for category, terms in ontology_terms.items():
+                if annotation in terms:
+                    results["valid"].append(annotation)
+                    valid_count += 1
+                    found = True
+                    break
+            
+            if not found:
+                results["invalid"].append(annotation)
+                # Generate suggestions based on similarity
+                suggestions = []
+                for category, terms in ontology_terms.items():
+                    for term in terms:
+                        if annotation.lower() in term.lower() or term.lower() in annotation.lower():
+                            suggestions.append(term)
+                if suggestions:
+                    results["suggestions"][annotation] = suggestions[:3]  # Top 3 suggestions
+        
+        if total_annotations > 0:
+            results["coverage"] = valid_count / total_annotations
+        
+        return results
+        
+    except Exception as e:
+        logging.getLogger("ontology").error(f"Failed to validate annotations: {e}")
+        return {"valid": [], "invalid": annotations, "suggestions": {}, "coverage": 0.0}
+
+def generate_ontology_report_for_file(gnn_file: Path, output_dir: Path) -> Dict[str, Any]:
+    """
+    Generate ontology report for a GNN file.
+    
+    Args:
+        gnn_file: Path to GNN file
+        output_dir: Directory to save report
+        
+    Returns:
+        Dictionary with report results
+    """
+    try:
+        if not gnn_file.exists():
+            return {"success": False, "error": "File not found"}
+        
+        # Read GNN content
+        with open(gnn_file, 'r') as f:
+            content = f.read()
+        
+        # Parse ontology section
+        ontology_data = parse_gnn_ontology_section(content)
+        
+        # Load ontology terms
+        ontology_terms = load_defined_ontology_terms()
+        
+        # Generate report
+        report = {
+            "file": str(gnn_file),
+            "ontology_data": ontology_data,
+            "validation": validate_annotations(ontology_data.get("concepts", []), ontology_terms),
+            "timestamp": str(Path(__file__).stat().st_mtime)
+        }
+        
+        # Save report
+        report_file = output_dir / f"{gnn_file.stem}_ontology_report.json"
+        import json
+        with open(report_file, 'w') as f:
+            json.dump(report, f, indent=2)
+        
+        return {"success": True, "report_file": str(report_file)}
+        
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+def get_mcp_interface() -> Dict[str, Any]:
+    """
+    Get MCP interface for ontology module.
+    
+    Returns:
+        Dictionary with MCP interface information
+    """
+    return {
+        "module": "ontology",
+        "version": __version__,
+        "tools": [
+            "validate_annotations",
+            "generate_ontology_report_for_file",
+            "load_defined_ontology_terms",
+            "parse_gnn_ontology_section"
+        ],
+        "capabilities": [
+            "annotation_validation",
+            "ontology_reporting",
+            "term_loading",
+            "gnn_parsing"
+        ]
+    }
+
 # Module metadata
 __version__ = "1.0.0"
 __author__ = "Active Inference Institute"
@@ -283,6 +419,9 @@ __all__ = [
     'get_ontology_processing_options',
     'process_gnn_ontology',
     'load_defined_ontology_terms',
+    'validate_annotations',
+    'generate_ontology_report_for_file',
+    'get_mcp_interface',
     'FEATURES',
     '__version__'
 ]

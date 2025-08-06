@@ -396,7 +396,7 @@ Variables ({len(model_data.get("variables", []))}):
         for conn in model_data.get("connections", []):
             summary += f"  - {conn}\n"
         
-        summary += f"\nEquations ({len(model_data.get("equations", []))}):\n"
+        summary += f"\nEquations ({len(model_data.get('equations', []))}):\n"
         for eq in model_data.get("equations", []):
             summary += f"  - {eq}\n"
         

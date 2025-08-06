@@ -1,5 +1,4 @@
 Category: pipeline
 Success: False
-Duration: 0.40s
-Peak Memory: 30.66 MB
-CPU Usage: 0.0%
+Duration: 120.01s
+Error: Test category 'pipeline' timed out after 120 seconds

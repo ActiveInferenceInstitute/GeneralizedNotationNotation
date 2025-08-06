@@ -1,7 +1,5 @@
-ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.
-src/__init__.py:16: in <module>
-    import export
-E     File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py", line 399
-E       summary += f"\nEquations ({len(model_data.get("equations", []))}):\n"
-E                                                      ^^^^^^^^^
-E   SyntaxError: f-string: unmatched '('
+ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]
+__main__.py: error: unrecognized arguments: -n auto
+  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini
+  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation
+

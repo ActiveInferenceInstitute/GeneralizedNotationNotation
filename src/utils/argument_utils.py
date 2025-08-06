@@ -90,7 +90,7 @@ class PipelineArguments:
     website_html_filename: str = "gnn_pipeline_summary_website.html"
     
     # Setup options
-    recreate_venv: bool = False
+    recreate_venv: bool = False  # renamed from recreate_venv but keeping for compatibility
     dev: bool = False
     
     # Audio generation options
@@ -260,9 +260,9 @@ class ArgumentParser:
             help_text='Filename for generated HTML website'
         ),
         'recreate_venv': ArgumentDefinition(
-            flag='--recreate-venv',
+            flag='--recreate-uv-env',
             action='store_true',
-            help_text='Recreate virtual environment'
+            help_text='Recreate UV virtual environment'
         ),
         'dev': ArgumentDefinition(
             flag='--dev',
@@ -295,7 +295,7 @@ class ArgumentParser:
     # Define which arguments each step supports
     STEP_ARGUMENTS = {
         "0_template.py": ["target_dir", "output_dir", "verbose"],
-        "1_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev"],
+        "1_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev", "install_optional"],
         "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only"],
         "3_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
         "4_model_registry.py": ["target_dir", "output_dir", "recursive", "verbose"],
@@ -316,6 +316,7 @@ class ArgumentParser:
         "19_research.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "20_website.py": ["target_dir", "output_dir", "recursive", "verbose", "website_html_filename"],
         "21_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "22_mcp.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys())
     }
     
@@ -668,6 +669,12 @@ class StepConfiguration:
             "optional_args": ["recursive", "verbose"],
             "defaults": {"recursive": True, "verbose": False},
             "description": "Comprehensive Analysis Report Generation"
+        },
+        "22_mcp": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Model Context Protocol Processing"
         }
     }
     

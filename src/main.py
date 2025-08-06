@@ -102,7 +102,7 @@ def main():
         "environment_info": get_environment_info(),
         "performance_summary": {
             "peak_memory_mb": 0.0,
-            "total_steps": 22,
+            "total_steps": 23,
             "failed_steps": 0,
             "critical_failures": 0,
             "successful_steps": 0,
@@ -116,7 +116,7 @@ def main():
             EnhancedPipelineLogger.log_structured(
                 logger, logging.INFO,
                 "🚀 Starting GNN Processing Pipeline",
-                total_steps=22,
+                total_steps=23,
                 target_dir=str(args.target_dir),
                 output_dir=str(args.output_dir),
                 event_type="pipeline_start"
@@ -147,7 +147,8 @@ def main():
             ("18_security.py", "Security"),
             ("19_research.py", "Research"),
             ("20_website.py", "Website generation"),
-            ("21_report.py", "Report generation")
+            ("21_report.py", "Report generation"),
+            ("22_mcp.py", "Model Context Protocol processing")
         ]
         
         # Handle step filtering

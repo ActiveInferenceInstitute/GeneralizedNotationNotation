@@ -352,7 +352,7 @@ python src/main.py --help
 - `--site-html-filename NAME`: Generated HTML site filename
 - `--duration`: Audio duration for audio generation (default: 30.0)
 - `--audio-backend`: Audio backend to use (auto, sapf, pedalboard, default: auto)
-- `--recreate-venv`: Recreate virtual environment
+- `--recreate-uv-env`: Recreate UV environment
 - `--dev`: Install development dependencies
 
 </details>
@@ -500,7 +500,7 @@ python --version
 **📦 Dependency Issues**
 ```bash
 # Force reinstall dependencies
-python src/main.py --only-steps 2 --recreate-venv --dev
+uv run python src/main.py --only-steps 2 --recreate-uv-env --dev
 ```
 
 **🔧 Pipeline Failures**

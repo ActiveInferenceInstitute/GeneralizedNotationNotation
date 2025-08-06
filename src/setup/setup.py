@@ -1,8 +1,8 @@
 """
-Main setup script for the GNN project.
+Main setup script for the GNN project with UV support.
 
-This script handles the creation of a virtual environment and the installation
-of project dependencies when called directly or via its perform_full_setup function.
+This script handles the creation of a UV environment and the installation
+of project dependencies using modern Python packaging standards.
 """
 
 import os
@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 # --- End Logger Setup ---
 
 # --- Configuration ---
-VENV_DIR = ".venv"  # Name of the virtual environment directory
-REQUIREMENTS_FILE = "requirements.txt"
-REQUIREMENTS_DEV_FILE = "requirements-dev.txt"
+VENV_DIR = ".venv"  # Name of the virtual environment directory (UV standard)
+PYPROJECT_FILE = "pyproject.toml"
+LOCK_FILE = "uv.lock"
 
 # PROJECT_ROOT should be the repository root directory.
 # Since this script is in 'src/setup/', Path(__file__).parent is 'src/setup'.
@@ -33,16 +33,14 @@ REQUIREMENTS_DEV_FILE = "requirements-dev.txt"
 PROJECT_ROOT = Path(__file__).parent.parent.parent.resolve()
 
 VENV_PATH = PROJECT_ROOT / VENV_DIR
-REQUIREMENTS_PATH = PROJECT_ROOT / REQUIREMENTS_FILE
-REQUIREMENTS_DEV_PATH = PROJECT_ROOT / REQUIREMENTS_DEV_FILE
+PYPROJECT_PATH = PROJECT_ROOT / PYPROJECT_FILE
+LOCK_PATH = PROJECT_ROOT / LOCK_FILE
 
 # Determine the correct Python interpreter path for the virtual environment
 if sys.platform == "win32":
     VENV_PYTHON = VENV_PATH / "Scripts" / "python.exe"
-    VENV_PIP = VENV_PATH / "Scripts" / "pip.exe"
 else:
     VENV_PYTHON = VENV_PATH / "bin" / "python"
-    VENV_PIP = VENV_PATH / "bin" / "pip"
 
 # Minimum required versions of system packages
 MIN_PYTHON_VERSION = (3, 9)  # Python 3.9 or higher
@@ -121,24 +119,17 @@ def check_system_requirements(verbose: bool = False) -> bool:
         logger.info(f"✅ Python version check passed: {python_version.major}.{python_version.minor}.{python_version.micro}")
         sys.stdout.flush()
     
-    # Check pip availability
+    # Check UV availability
     try:
-        logger.debug("Checking pip availability...")
-        pip_process = run_command([sys.executable, "-m", "pip", "--version"], check=True, verbose=verbose)
-        logger.info(f"✅ pip is available: {pip_process.stdout.strip()}")
+        logger.debug("Checking UV availability...")
+        uv_process = run_command(["uv", "--version"], check=True, verbose=verbose)
+        logger.info(f"✅ UV is available: {uv_process.stdout.strip()}")
         sys.stdout.flush()
     except Exception as e:
-        logger.error(f"❌ Error checking pip: {e}")
-        return False
-    
-    # Check for venv module
-    try:
-        logger.debug("Checking venv module availability...")
-        run_command([sys.executable, "-c", "import venv"], check=True, verbose=verbose)
-        logger.info("✅ venv module is available")
-        sys.stdout.flush()
-    except Exception as e:
-        logger.error(f"❌ Error: venv module not available: {e}")
+        logger.error(f"❌ Error checking UV: {e}")
+        logger.error("Please install UV first:")
+        logger.error("  curl -LsSf https://astral.sh/uv/install.sh | sh")
+        logger.error("  or visit: https://docs.astral.sh/uv/getting-started/installation/")
         return False
     
     # Check disk space (at least 1GB free in the project directory)
@@ -155,9 +146,40 @@ def check_system_requirements(verbose: bool = False) -> bool:
     
     return True
 
-def create_virtual_environment(verbose: bool = False, recreate: bool = False) -> bool:
+def check_uv_availability(verbose: bool = False) -> bool:
     """
-    Creates a virtual environment if it doesn't already exist, or recreates it if specified.
+    Check if UV is available and properly installed.
+    
+    Args:
+        verbose: If True, enables detailed logging.
+        
+    Returns:
+        True if UV is available, False otherwise.
+    """
+    try:
+        logger.debug("Checking UV availability...")
+        uv_process = run_command(["uv", "--version"], check=True, verbose=verbose)
+        logger.info(f"✅ UV is available: {uv_process.stdout.strip()}")
+        
+        # Check if UV is up to date
+        try:
+            update_result = run_command(["uv", "self", "update", "--check"], check=False, verbose=verbose)
+            if update_result.returncode == 0:
+                logger.info("✅ UV is up to date")
+            else:
+                logger.warning("⚠️ UV update available")
+        except Exception as e:
+            logger.warning(f"⚠️ Could not check UV update status: {e}")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"❌ UV not available: {e}")
+        return False
+
+def create_uv_environment(verbose: bool = False, recreate: bool = False) -> bool:
+    """
+    Creates a UV environment if it doesn't already exist, or recreates it if specified.
 
     Args:
         verbose: If True, enables detailed (DEBUG level) logging for this setup process.
@@ -167,92 +189,75 @@ def create_virtual_environment(verbose: bool = False, recreate: bool = False) ->
         True if successful, False otherwise.
     """
     if VENV_PATH.exists() and recreate:
-        logger.info(f"🔄 Recreating virtual environment in {VENV_PATH}...")
+        logger.info(f"🔄 Recreating UV environment in {VENV_PATH}...")
         sys.stdout.flush()
         try:
             shutil.rmtree(VENV_PATH)
-            logger.info(f"Removed existing virtual environment at {VENV_PATH}")
+            logger.info(f"Removed existing UV environment at {VENV_PATH}")
             sys.stdout.flush()
         except Exception as e:
-            logger.error(f"❌ Failed to remove existing virtual environment: {e}")
+            logger.error(f"❌ Failed to remove existing UV environment: {e}")
             return False
     
     if not VENV_PATH.exists():
-        logger.info(f"🔧 Creating virtual environment in {VENV_PATH}...")
+        logger.info(f"🔧 Creating UV environment in {VENV_PATH}...")
         sys.stdout.flush()
         try:
             start_time = time.time()
-            run_command([sys.executable, "-m", "venv", VENV_DIR], cwd=PROJECT_ROOT, verbose=verbose)
+            # Initialize UV environment (creates .venv and uv.lock)
+            run_command(["uv", "init", "--python", "3.12"], verbose=verbose)
             duration = time.time() - start_time
-            logger.info(f"✅ Virtual environment created successfully at {VENV_PATH} (took {duration:.1f}s)")
+            logger.info(f"✅ UV environment created successfully at {VENV_PATH} (took {duration:.1f}s)")
             sys.stdout.flush()
             return True
         except Exception as e:
-            logger.error(f"❌ Failed to create virtual environment: {e}")
+            logger.error(f"❌ Failed to create UV environment: {e}")
             return False
     else:
-        logger.info(f"✓ Using existing virtual environment at {VENV_PATH}")
+        logger.info(f"✓ Using existing UV environment at {VENV_PATH}")
         sys.stdout.flush()
         return True
 
-def install_dependencies(verbose: bool = False, dev: bool = False) -> bool:
+def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: list = None) -> bool:
     """
-    Installs dependencies from requirements.txt into the virtual environment.
-    Uses a streaming approach to show progress during installation.
+    Installs dependencies using UV from pyproject.toml.
+    Uses UV's sync command for fast, reliable dependency installation.
 
     Args:
         verbose: If True, enables detailed logging.
         dev: If True, also installs development dependencies.
+        extras: List of optional dependency groups to install.
         
     Returns:
         True if successful, False otherwise.
     """
-    if not VENV_PIP.exists():
-        logger.error(f"❌ pip not found in virtual environment at {VENV_PIP}")
+    if not PYPROJECT_PATH.exists():
+        logger.error(f"❌ pyproject.toml not found at {PYPROJECT_PATH}")
         return False
 
-    if not REQUIREMENTS_PATH.exists():
-        logger.error(f"❌ Requirements file not found at {REQUIREMENTS_PATH}")
-        return False
-
-    logger.info(f"📦 Installing dependencies from {REQUIREMENTS_PATH}...")
+    logger.info(f"📦 Installing dependencies from {PYPROJECT_PATH} using UV...")
     sys.stdout.flush()
     
     try:
-        # First upgrade pip itself
-        logger.info("📦 Upgrading pip in virtual environment...")
-        sys.stdout.flush()
-        upgrade_pip_cmd = [str(VENV_PYTHON), "-m", "pip", "install", "--upgrade", "pip"]
-        process = subprocess.Popen(
-            upgrade_pip_cmd,
-            cwd=PROJECT_ROOT,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            bufsize=1,  # Line buffered
-            universal_newlines=True
-        )
+        # Build UV sync command
+        sync_cmd = ["uv", "sync"]
         
-        # Stream output in real-time
-        while True:
-            line = process.stdout.readline()
-            if not line and process.poll() is not None:
-                break
-            if line:
-                logger.debug(line.strip())
-                if "Successfully installed" in line:
-                    logger.info("✅ pip upgraded successfully")
-                    sys.stdout.flush()
+        if dev:
+            sync_cmd.append("--extra")
+            sync_cmd.append("dev")
         
-        # Install main dependencies with progress reporting
-        logger.info("📦 Installing main dependencies (this may take several minutes)...")
+        if extras:
+            for extra in extras:
+                sync_cmd.extend(["--extra", extra])
+        
+        logger.info(f"📦 Running: {' '.join(sync_cmd)}")
         sys.stdout.flush()
         
-        install_cmd = [str(VENV_PIP), "install", "-r", str(REQUIREMENTS_PATH)]
         start_time = time.time()
         
+        # Use subprocess.Popen for real-time output streaming
         process = subprocess.Popen(
-            install_cmd,
+            sync_cmd,
             cwd=PROJECT_ROOT,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -265,7 +270,6 @@ def install_dependencies(verbose: bool = False, dev: bool = False) -> bool:
         last_progress_time = start_time
         progress_interval = 15  # seconds
         completed = False
-        installing_package = None
         
         # Stream output and provide periodic progress updates
         while True:
@@ -279,17 +283,11 @@ def install_dependencies(verbose: bool = False, dev: bool = False) -> bool:
                 logger.debug(line)
                 
                 # Extract package being installed
-                if "Collecting" in line:
-                    package = line.split("Collecting ")[1].split()[0]
-                    installing_package = package
-                    logger.info(f"📦 Collecting {package}...")
+                if "Installing" in line or "Collecting" in line:
+                    logger.info(f"📦 {line}")
                     sys.stdout.flush()
-                elif "Installing" in line and ".whl" in line:
-                    logger.info(f"📦 Installing wheel for {installing_package or 'package'}...")
-                    sys.stdout.flush()
-                elif "Successfully installed" in line:
-                    packages = line.replace("Successfully installed", "").strip()
-                    logger.info(f"✅ Successfully installed: {packages}")
+                elif "Successfully installed" in line or "Resolved" in line:
+                    logger.info(f"✅ {line}")
                     sys.stdout.flush()
                     completed = True
             
@@ -309,31 +307,8 @@ def install_dependencies(verbose: bool = False, dev: bool = False) -> bool:
         if not completed:
             logger.info("✅ Dependencies installation completed")
         
-        # Install dev dependencies if requested
-        if dev and REQUIREMENTS_DEV_PATH.exists():
-            logger.info(f"📦 Installing development dependencies from {REQUIREMENTS_DEV_PATH}...")
-            sys.stdout.flush()
-            
-            dev_install_cmd = [str(VENV_PIP), "install", "-r", str(REQUIREMENTS_DEV_PATH)]
-            dev_process = subprocess.run(
-                dev_install_cmd, 
-                cwd=PROJECT_ROOT,
-                capture_output=True,
-                text=True,
-                check=False
-            )
-            
-            if dev_process.returncode == 0:
-                logger.info("✅ Development dependencies installed successfully")
-                sys.stdout.flush()
-            else:
-                logger.warning(f"⚠️ Some development dependencies failed to install")
-                if verbose:
-                    logger.warning(f"Details: {dev_process.stderr}")
-                sys.stdout.flush()
-        
         duration = time.time() - start_time
-        logger.info(f"✅ All dependencies installed successfully (took {duration:.1f}s)")
+        logger.info(f"✅ All dependencies installed successfully using UV (took {duration:.1f}s)")
         sys.stdout.flush()
         
         # Report installed package versions
@@ -342,13 +317,13 @@ def install_dependencies(verbose: bool = False, dev: bool = False) -> bool:
         return True
         
     except Exception as e:
-        logger.error(f"❌ Error during dependency installation: {e}")
+        logger.error(f"❌ Error during UV dependency installation: {e}")
         sys.stdout.flush()
         return False
 
 def get_installed_package_versions(verbose: bool = False) -> dict:
     """
-    Get a list of all installed packages and their versions in the virtual environment.
+    Get a list of all installed packages and their versions using UV.
     
     Args:
         verbose: If True, logs the full package list.
@@ -356,16 +331,12 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
     Returns:
         A dictionary of package names and their versions.
     """
-    if not VENV_PIP.exists():
-        logger.warning("⚠️ Cannot list packages: pip not found in virtual environment")
-        return {}
-    
-    logger.info("📋 Getting list of installed packages...")
+    logger.info("📋 Getting list of installed packages using UV...")
     sys.stdout.flush()
     
     try:
-        # Get list of installed packages
-        list_cmd = [str(VENV_PIP), "list", "--format=json"]
+        # Get list of installed packages using UV
+        list_cmd = ["uv", "pip", "list", "--format=json"]
         result = subprocess.run(
             list_cmd,
             cwd=PROJECT_ROOT,
@@ -387,7 +358,7 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
             
             # Count and log summary
             package_count = len(package_dict)
-            logger.info(f"📦 Found {package_count} installed packages in the virtual environment")
+            logger.info(f"📦 Found {package_count} installed packages using UV")
             
             # Log all packages if verbose
             if verbose:
@@ -403,7 +374,7 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
                         logger.info(f"  - {pkg}: {package_dict[pkg]}")
             
             # Save package list to a file in the virtual environment directory
-            package_list_file = VENV_PATH / "installed_packages.json"
+            package_list_file = VENV_PATH / "installed_packages_uv.json"
             with open(package_list_file, 'w') as f:
                 json.dump(package_dict, f, indent=2, sort_keys=True)
             logger.info(f"📄 Full package list saved to: {package_list_file}")
@@ -422,8 +393,8 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
 
 def install_jax_and_test(verbose: bool = False) -> bool:
     """
-    Ensure JAX, Optax, and Flax are installed and working. Detect hardware and install the correct JAX version if needed.
-    After install, run a self-test: import JAX, print device info, check Optax/Flax, log results, and raise errors if not successful.
+    Ensure JAX, Optax, and Flax are installed and working using UV.
+    After install, run a self-test: import JAX, print device info, check Optax/Flax, log results.
     """
     import importlib.util
     import platform
@@ -508,43 +479,29 @@ def install_jax_and_test(verbose: bool = False) -> bool:
     except ImportError as e:
         logger.warning(f"JAX, Optax, or Flax not installed: {e}")
         
-        # Try to install JAX
+        # Try to install JAX using UV
         try:
-            logger.info("Attempting to install JAX...")
+            logger.info("Attempting to install JAX using UV...")
             
-            # Detect hardware
-            if platform.system() == "Darwin":  # macOS
-                install_cmd = ["pip", "install", "--upgrade", "jax[cpu]"]
-            else:
-                # Check for CUDA
-                try:
-                    subprocess.run(["nvidia-smi"], capture_output=True, check=True)
-                    logger.info("CUDA detected, installing JAX with CUDA support")
-                    install_cmd = ["pip", "install", "--upgrade", "jax[cuda12]", "-f", "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"]
-                except (subprocess.CalledProcessError, FileNotFoundError):
-                    logger.info("No CUDA detected, installing CPU-only JAX")
-                    install_cmd = ["pip", "install", "--upgrade", "jax[cpu]"]
+            # Install JAX using UV
+            install_cmd = ["uv", "add", "jax[cpu]", "optax", "flax"]
             
             if verbose:
                 logger.info(f"Running: {' '.join(install_cmd)}")
             
-            result = subprocess.run(install_cmd, capture_output=True, text=True)
+            result = subprocess.run(install_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True)
             
             if result.returncode == 0:
-                logger.info("JAX installed successfully")
-                
-                # Install Optax and Flax
-                subprocess.run(["pip", "install", "--upgrade", "optax", "flax"], check=True)
-                logger.info("Optax and Flax installed successfully")
+                logger.info("JAX, Optax, and Flax installed successfully using UV")
                 
                 # Test again
                 return install_jax_and_test(verbose)
             else:
-                logger.error(f"Failed to install JAX: {result.stderr}")
+                logger.error(f"Failed to install JAX using UV: {result.stderr}")
                 return False
                 
         except Exception as install_error:
-            logger.error(f"Failed to install JAX: {install_error}")
+            logger.error(f"Failed to install JAX using UV: {install_error}")
             return False
     
     except Exception as e:
@@ -552,15 +509,17 @@ def install_jax_and_test(verbose: bool = False) -> bool:
         return False
 
 # --- Callable Main Function ---
-def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: bool = False, skip_jax_test: bool = False):
+def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: bool = False, 
+                      extras: list = None, skip_jax_test: bool = False):
     """
-    Performs the full setup: creates virtual environment and installs dependencies.
+    Performs the full setup using UV: creates environment and installs dependencies.
     This function is intended to be called by other scripts.
 
     Args:
         verbose (bool): If True, enables detailed (DEBUG level) logging for this setup process.
-        recreate_venv (bool): If True, recreates the virtual environment even if it already exists.
+        recreate_venv (bool): If True, recreates the UV environment even if it already exists.
         dev (bool): If True, also installs development dependencies.
+        extras (list): List of optional dependency groups to install.
         skip_jax_test (bool): If True, skips JAX/Optax/Flax installation testing (faster setup).
         
     Returns:
@@ -578,9 +537,9 @@ def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: 
         logger.propagate = False
 
     start_time = time.time()
-    logger.info("🚀 Starting environment setup...")
+    logger.info("🚀 Starting UV environment setup...")
     logger.info(f"📁 Project root: {PROJECT_ROOT}")
-    logger.info(f"⚙️ Configuration: verbose={verbose}, recreate_venv={recreate_venv}, dev={dev}, skip_jax_test={skip_jax_test}")
+    logger.info(f"⚙️ Configuration: verbose={verbose}, recreate_venv={recreate_venv}, dev={dev}, extras={extras}, skip_jax_test={skip_jax_test}")
     sys.stdout.flush()
     
     try:
@@ -594,31 +553,31 @@ def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: 
         logger.info("✅ System requirements check passed")
         sys.stdout.flush()
         
-        # Phase 2: Virtual Environment
-        logger.info("\n📋 Phase 2/3: Setting up virtual environment...")
+        # Phase 2: UV Environment
+        logger.info("\n📋 Phase 2/3: Setting up UV environment...")
         sys.stdout.flush()
         venv_start = time.time()
-        if not create_virtual_environment(verbose, recreate_venv):
-            logger.error("❌ Failed to create virtual environment")
+        if not create_uv_environment(verbose, recreate_venv):
+            logger.error("❌ Failed to create UV environment")
             sys.stdout.flush()
             return 1
         venv_duration = time.time() - venv_start
-        logger.info(f"✅ Virtual environment setup completed in {venv_duration:.1f}s")
+        logger.info(f"✅ UV environment setup completed in {venv_duration:.1f}s")
         sys.stdout.flush()
         
         # Phase 3: Dependencies
-        logger.info("\n📋 Phase 3/3: Installing dependencies...")
+        logger.info("\n📋 Phase 3/3: Installing dependencies using UV...")
         logger.info("⏳ This may take several minutes...")
         sys.stdout.flush()
         deps_start = time.time()
         
-        if not install_dependencies(verbose, dev):
-            logger.error("❌ Failed to install dependencies")
+        if not install_uv_dependencies(verbose, dev, extras):
+            logger.error("❌ Failed to install dependencies using UV")
             sys.stdout.flush()
             return 1
             
         deps_duration = time.time() - deps_start
-        logger.info(f"✅ Dependencies installed in {deps_duration:.1f}s")
+        logger.info(f"✅ Dependencies installed using UV in {deps_duration:.1f}s")
         sys.stdout.flush()
         
         # After dependency install, ensure JAX/Optax/Flax are present and working
@@ -629,18 +588,21 @@ def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: 
             logger.warning("JAX/Optax/Flax testing was skipped. JAX functionality may not be available.")
         
         total_duration = time.time() - start_time
-        logger.info("\n🎉 Setup completed successfully!")
+        logger.info("\n🎉 UV setup completed successfully!")
         logger.info(f"⏱️ Total time: {total_duration:.1f}s")
-        logger.info("\nTo activate the virtual environment:")
+        logger.info("\nTo activate the UV environment:")
         if sys.platform == "win32":
             logger.info(f"  .\\{VENV_DIR}\\Scripts\\activate")
         else:
             logger.info(f"  source {VENV_DIR}/bin/activate")
+        logger.info("\nTo run commands in the UV environment:")
+        logger.info("  uv run python src/main.py --help")
+        logger.info("  uv run pytest src/tests/")
         sys.stdout.flush()
         return 0
         
     except Exception as e:
-        logger.error(f"❌ Setup failed: {e}")
+        logger.error(f"❌ UV setup failed: {e}")
         if verbose:
             import traceback
             logger.error(traceback.format_exc())
@@ -651,10 +613,11 @@ def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: 
 
 if __name__ == "__main__":
     # Basic argument parsing for direct execution
-    parser = argparse.ArgumentParser(description="Direct execution of GNN project setup script (venv and dependencies).")
+    parser = argparse.ArgumentParser(description="Direct execution of GNN project setup script with UV (environment and dependencies).")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose (DEBUG level) logging.")
-    parser.add_argument("--recreate-venv", action="store_true", help="Recreate virtual environment even if it already exists.")
+    parser.add_argument("--recreate-venv", action="store_true", help="Recreate UV environment even if it already exists.")
     parser.add_argument("--dev", action="store_true", help="Install development dependencies.")
+    parser.add_argument("--extras", nargs="+", help="Install optional dependency groups (e.g., ml-ai llm visualization).")
     cli_args = parser.parse_args()
 
     # Setup basic logging for direct run if not already configured by perform_full_setup's internal check
@@ -666,22 +629,30 @@ if __name__ == "__main__":
             stream=sys.stdout
         )
 
-    logger.info("Running src/setup/setup.py directly...")
-    exit_code = perform_full_setup(verbose=cli_args.verbose, recreate_venv=cli_args.recreate_venv, dev=cli_args.dev)
+    logger.info("Running src/setup/setup.py directly with UV...")
+    exit_code = perform_full_setup(
+        verbose=cli_args.verbose, 
+        recreate_venv=cli_args.recreate_venv, 
+        dev=cli_args.dev,
+        extras=cli_args.extras
+    )
     if exit_code == 0:
-        logger.info("Direct execution of setup.py completed.")
+        logger.info("Direct execution of setup.py with UV completed.")
     else:
-        logger.error("Direct execution of setup.py failed.")
-    sys.exit(exit_code) 
+        logger.error("Direct execution of setup.py with UV failed.")
+    sys.exit(exit_code)
 
-def setup_environment(verbose: bool = False, recreate: bool = False, dev: bool = False) -> bool:
+# --- UV-specific setup functions ---
+
+def setup_uv_environment(verbose: bool = False, recreate: bool = False, dev: bool = False, extras: list = None) -> bool:
     """
-    Set up the complete GNN environment.
+    Set up the complete GNN environment using UV.
     
     Args:
         verbose: Enable verbose logging
-        recreate: Recreate virtual environment if it exists
+        recreate: Recreate UV environment if it exists
         dev: Install development dependencies
+        extras: List of optional dependency groups to install
     
     Returns:
         True if setup successful, False otherwise
@@ -691,36 +662,35 @@ def setup_environment(verbose: bool = False, recreate: bool = False, dev: bool =
         if not check_system_requirements(verbose):
             return False
         
-        # Create virtual environment
-        if not create_virtual_environment(verbose, recreate):
+        # Create UV environment
+        if not create_uv_environment(verbose, recreate):
             return False
         
-        # Install dependencies
-        if not install_dependencies(verbose, dev):
+        # Install dependencies using UV
+        if not install_uv_dependencies(verbose, dev, extras):
             return False
         
         # Test JAX installation
         if not install_jax_and_test(verbose):
             logger.warning("JAX installation test failed, but continuing...")
         
-        logger.info("✅ GNN environment setup completed successfully")
+        logger.info("✅ GNN environment setup completed successfully using UV")
         return True
         
     except Exception as e:
-        logger.error(f"❌ Setup failed: {e}")
+        logger.error(f"❌ UV setup failed: {e}")
         return False
 
-
-def validate_setup() -> Dict[str, Any]:
+def validate_uv_setup() -> Dict[str, Any]:
     """
-    Validate the current setup and return status information.
+    Validate the current UV setup and return status information.
     
     Returns:
-        Dictionary with setup validation results
+        Dictionary with UV setup validation results
     """
     validation_results = {
         "system_requirements": False,
-        "virtual_environment": False,
+        "uv_environment": False,
         "dependencies": False,
         "jax_installation": False,
         "overall_status": False
@@ -730,9 +700,9 @@ def validate_setup() -> Dict[str, Any]:
         # Check system requirements
         validation_results["system_requirements"] = check_system_requirements()
         
-        # Check virtual environment
+        # Check UV environment
         if VENV_PATH.exists():
-            validation_results["virtual_environment"] = True
+            validation_results["uv_environment"] = True
         
         # Check dependencies
         try:
@@ -752,29 +722,28 @@ def validate_setup() -> Dict[str, Any]:
         # Overall status
         validation_results["overall_status"] = all([
             validation_results["system_requirements"],
-            validation_results["virtual_environment"],
+            validation_results["uv_environment"],
             validation_results["dependencies"]
         ])
         
     except Exception as e:
-        logger.error(f"Validation error: {e}")
+        logger.error(f"UV validation error: {e}")
     
     return validation_results
 
-
-def get_setup_info() -> Dict[str, Any]:
+def get_uv_setup_info() -> Dict[str, Any]:
     """
-    Get comprehensive information about the current setup.
+    Get comprehensive information about the current UV setup.
     
     Returns:
-        Dictionary with setup information
+        Dictionary with UV setup information
     """
     info = {
         "project_root": str(PROJECT_ROOT),
-        "virtual_environment_path": str(VENV_PATH),
+        "uv_environment_path": str(VENV_PATH),
         "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
         "platform": platform.platform(),
-        "setup_status": validate_setup()
+        "uv_setup_status": validate_uv_setup()
     }
     
     # Add package versions if available
@@ -785,10 +754,9 @@ def get_setup_info() -> Dict[str, Any]:
     
     return info
 
-
-def cleanup_setup() -> bool:
+def cleanup_uv_setup() -> bool:
     """
-    Clean up the setup (remove virtual environment).
+    Clean up the UV setup (remove virtual environment).
     
     Returns:
         True if cleanup successful, False otherwise
@@ -796,19 +764,18 @@ def cleanup_setup() -> bool:
     try:
         if VENV_PATH.exists():
             shutil.rmtree(VENV_PATH)
-            logger.info(f"Removed virtual environment at {VENV_PATH}")
+            logger.info(f"Removed UV environment at {VENV_PATH}")
             return True
         else:
-            logger.info("No virtual environment to clean up")
+            logger.info("No UV environment to clean up")
             return True
     except Exception as e:
-        logger.error(f"Failed to clean up setup: {e}")
+        logger.error(f"Failed to clean up UV setup: {e}")
         return False
-
 
 def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
     """
-    Set up a new GNN project at the specified path.
+    Set up a new GNN project at the specified path using UV.
     
     Args:
         project_path: Path where the project should be set up
@@ -826,17 +793,16 @@ def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
         (project_path / "output").mkdir(parents=True, exist_ok=True)
         (project_path / "src").mkdir(parents=True, exist_ok=True)
         
-        # Create basic configuration files
-        config_file = project_path / "config.yaml"
-        if not config_file.exists():
-            with open(config_file, 'w') as f:
-                f.write("# GNN Project Configuration\n")
-                f.write("project_name: gnn_project\n")
-                f.write("version: 1.0.0\n")
+        # Initialize UV project
+        try:
+            subprocess.run(["uv", "init"], cwd=project_path, check=True)
+            logger.info(f"UV project initialized at {project_path}")
+        except Exception as e:
+            logger.warning(f"Could not initialize UV project: {e}")
         
         logger.info(f"GNN project structure created at {project_path}")
         return True
         
     except Exception as e:
-        logger.error(f"Failed to set up GNN project: {e}")
+        logger.error(f"Failed to set up GNN project with UV: {e}")
         return False 

@@ -449,35 +449,53 @@ def _get_step_metadata():
     return get_step_metadata_dict()
 
 # Create a property-like access for STEP_METADATA for backward compatibility
-class StepMetadataProxy:
+class StepMetadataProxy(dict):
     """Proxy class to provide STEP_METADATA as a dict while using dataclass config."""
     
+    def __init__(self):
+        super().__init__()
+        self._update_dict()
+    
+    def _update_dict(self):
+        """Update the internal dict with current metadata."""
+        self.clear()
+        self.update(get_step_metadata_dict())
+    
     def __getitem__(self, key):
-        return get_step_metadata_dict()[key]
+        self._update_dict()  # Always get fresh data
+        return super().__getitem__(key)
     
     def __contains__(self, key):
-        return key in get_step_metadata_dict()
+        self._update_dict()  # Always get fresh data
+        return super().__contains__(key)
     
     def __iter__(self):
-        return iter(get_step_metadata_dict())
+        self._update_dict()  # Always get fresh data
+        return super().__iter__()
     
     def keys(self):
-        return get_step_metadata_dict().keys()
+        self._update_dict()  # Always get fresh data
+        return super().keys()
     
     def values(self):
-        return get_step_metadata_dict().values()
+        self._update_dict()  # Always get fresh data
+        return super().values()
     
     def items(self):
-        return get_step_metadata_dict().items()
+        self._update_dict()  # Always get fresh data
+        return super().items()
     
     def get(self, key, default=None):
-        return get_step_metadata_dict().get(key, default)
+        self._update_dict()  # Always get fresh data
+        return super().get(key, default)
     
     def __len__(self):
-        return len(get_step_metadata_dict())
+        self._update_dict()  # Always get fresh data
+        return super().__len__()
     
     def __bool__(self):
-        return len(get_step_metadata_dict()) > 0
+        self._update_dict()  # Always get fresh data
+        return super().__bool__()
 
 # Provide STEP_METADATA for backward compatibility
 STEP_METADATA = StepMetadataProxy() 

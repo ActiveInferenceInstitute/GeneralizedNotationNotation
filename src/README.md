@@ -2,7 +2,7 @@
 
 ## Pipeline Safety and Reliability
 
-This README documents the comprehensive safety enhancements implemented across all 22 numbered pipeline scripts (0-21) to ensure safe-to-fail operation with robust error handling, monitoring, and recovery capabilities.
+This README documents the comprehensive safety enhancements implemented across all 23 numbered pipeline scripts (0-22) to ensure safe-to-fail operation with robust error handling, monitoring, and recovery capabilities.
 
 ### ✅ Safety Enhancements Completed
 
@@ -48,13 +48,13 @@ This README documents the comprehensive safety enhancements implemented across a
 ### 📊 Pipeline Execution Analysis
 
 **Current Status (Verified):**
-- **Total Steps**: 22 (0-21)
+- **Total Steps**: 23 (0-22)
 - **Safe-to-Fail Implemented**: All steps ✅
 - **Output Directory Structure**: Fully organized ✅
 - **Pipeline Continuation**: Guaranteed ✅
 - **Error Recovery**: Comprehensive ✅
 
-**Complete Output Directory Organization (22 Steps):**
+**Complete Output Directory Organization (23 Steps):**
 ```
 output/
 ├── template/                       # Step 0: Template initialization
@@ -79,6 +79,7 @@ output/
 ├── research/                      # Step 19: Research tools
 ├── website/                       # Step 20: Website generation
 ├── report_processing_step/        # Step 21: Report generation
+├── mcp_processing_step/           # Step 22: Model Context Protocol processing
 ├── logs/                          # Pipeline execution logs
 ├── pipeline_execution_summary.json # Overall pipeline results
 └── gnn_pipeline_summary_site.html  # Pipeline summary website
@@ -158,18 +159,18 @@ cat output/execution_results.json
 
 ### 📚 Documentation Alignment Status
 
-**IMPORTANT**: As of January 2025, all major documentation files have been updated to reflect the correct 22-step pipeline architecture (0-21):
+**IMPORTANT**: As of January 2025, all major documentation files have been updated to reflect the correct 23-step pipeline architecture (0-22):
 
 **Updated Documentation:**
-- ✅ `doc/pipeline/PIPELINE_FLOW.md` - Corrected from 14 to 22 steps with accurate flow diagram
+- ✅ `doc/pipeline/PIPELINE_FLOW.md` - Corrected from 14 to 23 steps with accurate flow diagram
 - ✅ `doc/pipeline/README.md` - Updated with complete step descriptions and output structure
 - ✅ `.cursor_rules/pipeline_architecture.md` - Aligned with actual implementation and architectural patterns
-- ✅ `src/README.md` - Complete output directory structure for all 22 steps
+- ✅ `src/README.md` - Complete output directory structure for all 23 steps
 
 **Previously Outdated (Now Fixed):**
-- ❌ Was showing 14 steps instead of 22
+- ❌ Was showing 14 steps instead of 23
 - ❌ Incorrect step names (e.g., "7_mcp.py" instead of "7_export.py")
-- ❌ Missing steps 15-21 entirely in some documentation
+- ❌ Missing steps 15-22 entirely in some documentation
 - ❌ Wrong output directory structure
 
 All documentation now accurately reflects the actual implementation in `src/main.py` and individual numbered scripts.

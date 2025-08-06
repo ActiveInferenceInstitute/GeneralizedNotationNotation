@@ -40,6 +40,15 @@ except NameError:
     # If audio module is not available, create a placeholder
     class AudioPlaceholder:
         """Placeholder for audio module when not available."""
+        __version__ = "0.0.0"
+        FEATURES = {"placeholder": True, "mcp_integration": False}
+        
+        def get_module_info(self):
+            return {
+                "version": self.__version__,
+                "description": "Audio placeholder module",
+                "features": self.FEATURES
+            }
         pass
     sapf = AudioPlaceholder()
 

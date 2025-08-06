@@ -44,8 +44,12 @@ GNN has comprehensive documentation to help you understand the project:
     ```
 3.  **Set Up Your Environment**: Ensure you have Python installed. It's recommended to use a virtual environment.
     ```bash
-    python -m venv .venv
-    source .venv/bin/activate  # On Windows use `.venv\Scripts\activate`
+    # Install UV if not already installed
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Initialize UV environment
+uv init
+uv sync
     pip install -r requirements.txt
     ```
     Refer to **[SETUP.md](doc/SETUP.md)** for comprehensive setup instructions and the **[Configuration Guide](doc/configuration/README.md)** for detailed configuration options.

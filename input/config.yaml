@@ -1,65 +1,113 @@
-# GNN Pipeline Configuration
-# This file configures the processing of GNN files through the pipeline
+# GNN Processing Pipeline Configuration
+# This file contains configuration settings for the GNN processing pipeline
 
-# Pipeline Configuration
+# Pipeline execution settings
 pipeline:
-  # Target directory for GNN files (relative to project root)
-  target_dir: "input/gnn_files"
+  # Enable/disable pipeline execution
+  enabled: true
   
-  # Output directory (relative to project root)
+  # Pipeline steps to execute (0-21)
+  # Leave empty to run all steps
+  steps: []
+  
+  # Skip specific steps
+  skip_steps: []
+  
+  # Force execution of specific steps
+  force_steps: []
+  
+  # Parallel execution settings
+  parallel:
+    enabled: false
+    max_workers: 4
+  
+  # Timeout settings (in seconds)
+  timeout:
+    step: 3600  # 1 hour per step
+    total: 7200  # 2 hours total
+
+# UV environment settings
+uv:
+  # UV environment management
+  recreate_uv_env: false
+  
+  # UV environment directory (UV standard)
+  uv_env_dir: ".venv"
+  
+  # UV sync settings
+  sync:
+    # Install development dependencies
+    dev: false
+    
+    # Install optional dependency groups
+    extras: []
+    
+    # Upgrade packages
+    upgrade: false
+    
+    # Fast sync mode
+    fast: true
+
+# Input/output settings
+io:
+  # Input directory for GNN files
+  input_dir: "input/gnn_files"
+  
+  # Output directory for pipeline artifacts
   output_dir: "output"
   
-  # Processing options
-  recursive: true
-  verbose: true
+  # Temporary directory
+  temp_dir: "temp"
   
-  # Enhanced validation options (enabled by default for comprehensive testing)
-  enable_round_trip: true      # Enable round-trip testing across all 21 formats
-  enable_cross_format: true    # Enable cross-format consistency validation
-  
-  # Step control - which steps to run or skip
-  skip_steps: []  # e.g., ["7_mcp", "11_llm"] to skip MCP and LLM steps
-  only_steps: []  # e.g., ["1_gnn", "4_type_checker"] to run only specific steps
-  
-  # Pipeline summary file
-  pipeline_summary_file: "output/pipeline_execution_summary.json"
+  # Log directory
+  log_dir: "logs"
 
-# Type Checking Configuration
-type_checker:
+# Logging settings
+logging:
+  # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+  level: "INFO"
+  
+  # Log format
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Log file settings
+  file:
+    enabled: true
+    max_size: "10MB"
+    backup_count: 5
+
+# Validation settings
+validation:
+  # Enable validation checks
+  enabled: true
+  
+  # Strict validation mode
   strict: false
-  estimate_resources: true
-
-# Ontology Configuration
-ontology:
-  terms_file: "src/ontology/act_inf_ontology_terms.json"
-
-# LLM Configuration
-llm:
-  tasks: "all"  # or specific tasks like "summarize,explain_structure"
-  timeout: 360  # seconds
-
-# Site Generation Configuration
-site:
-  html_filename: "gnn_pipeline_summary_site.html"
-
-# Setup Configuration
-setup:
-  recreate_venv: true
-  dev: false
-
-# SAPF Audio Configuration
-sapf:
-  duration: 30.0  # seconds
-
-# Model-specific configurations
-models:
-  # Global settings applied to all models
-  global:
-    enable_visualization: true
-    enable_export: true
-    enable_execution: true
   
-  # Model-specific overrides (optional)
-  # model_name:
-  #   skip_steps: ["11_llm"]
-  #   custom_output_dir: "../output/custom_model" 
+  # Validation timeout (seconds)
+  timeout: 300
+
+# Performance settings
+performance:
+  # Memory limit (MB)
+  memory_limit: 4096
+  
+  # CPU limit (cores)
+  cpu_limit: 4
+  
+  # Cache settings
+  cache:
+    enabled: true
+    max_size: "1GB"
+    ttl: 3600  # 1 hour
+
+# Security settings
+security:
+  # Enable security checks
+  enabled: true
+  
+  # Allow network access
+  network_access: true
+  
+  # File permissions
+  file_permissions: "644" 
