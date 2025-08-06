@@ -84,9 +84,9 @@ class TestMainOrchestratorImport:
             import logging
             import json
             
-            # Test project-specific imports
-            from utils import setup_main_logging
-            from pipeline import get_pipeline_config
+                        # Test project-specific imports
+            from src.utils import setup_main_logging
+            from src.pipeline import get_pipeline_config
             
             logging.info("Main orchestrator imports validated")
             

@@ -127,10 +127,10 @@ class TestPipelineStepCommonInterface:
     @pytest.mark.safe_to_fail
     def test_pipeline_step_common_imports(self):
         """Test that pipeline steps can import common utilities."""
-        # Test that utils can be imported (this is critical for all steps)
+                # Test that utils can be imported (this is critical for all steps)
         try:
-            from utils import setup_step_logging, EnhancedArgumentParser
-            from pipeline import get_pipeline_config, STEP_METADATA
+            from src.utils import setup_step_logging, EnhancedArgumentParser
+            from src.pipeline import get_pipeline_config, STEP_METADATA
             
             # Test basic functionality
             logger = setup_step_logging("test_step", verbose=False)

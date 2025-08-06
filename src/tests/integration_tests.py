@@ -94,7 +94,7 @@ def run_pipeline_integration_tests(target_dir: Path, test_results_dir: Path, ver
         
         # Test pipeline configuration
         try:
-            from pipeline import get_pipeline_config
+            from src.pipeline import get_pipeline_config
             config = get_pipeline_config()
             if not config:
                 log_step_error(logger, "Pipeline configuration test failed")
@@ -183,7 +183,7 @@ def run_end_to_end_integration_tests(target_dir: Path, test_results_dir: Path, v
 def test_utils_import() -> bool:
     """Test utils module import."""
     try:
-        from utils import setup_step_logging
+        from src.utils import setup_step_logging
         return True
     except Exception:
         return False
@@ -191,7 +191,7 @@ def test_utils_import() -> bool:
 def test_pipeline_import() -> bool:
     """Test pipeline module import."""
     try:
-        from pipeline import get_pipeline_config
+        from src.pipeline import get_pipeline_config
         return True
     except Exception:
         return False
@@ -199,7 +199,7 @@ def test_pipeline_import() -> bool:
 def test_type_checker_import() -> bool:
     """Test type_checker module import."""
     try:
-        from type_checker import validate_gnn_files
+        from src.type_checker import validate_gnn_files
         return True
     except Exception:
         return False
@@ -207,7 +207,7 @@ def test_type_checker_import() -> bool:
 def test_export_import() -> bool:
     """Test export module import."""
     try:
-        from export import generate_exports
+        from src.export import generate_exports
         return True
     except Exception:
         return False

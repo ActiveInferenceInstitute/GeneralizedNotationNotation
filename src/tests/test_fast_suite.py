@@ -152,7 +152,7 @@ class TestFastExport:
     def test_basic_export_functionality(self, isolated_temp_dir):
         """Test basic export functionality."""
         try:
-            from export import export_to_json_gnn
+            from src.export import export_to_json_gnn
             
             # Create simple test data
             test_data = {

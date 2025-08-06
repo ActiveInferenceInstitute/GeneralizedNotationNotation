@@ -50,7 +50,7 @@ class TestRenderModuleImports:
     def test_render_module_imports(self):
         """Test that render module can be imported and has expected structure."""
         try:
-            from render import render
+            from src.render import render
             
             # Test that the module has expected attributes
             assert hasattr(render, 'render_gnn_spec'), "render_gnn_spec should be available"

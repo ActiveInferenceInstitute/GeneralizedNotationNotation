@@ -1,0 +1,71 @@
+{
+  "total_categories": 7,
+  "successful_categories": 0,
+  "failed_categories": 7,
+  "total_tests_run": 0,
+  "total_tests_passed": 0,
+  "total_tests_failed": 0,
+  "total_tests_skipped": 0,
+  "success_rate": 0.0,
+  "total_duration": 2.4657883644104004,
+  "category_times": {
+    "core": 0.422804594039917,
+    "pipeline": 0.3999476432800293,
+    "validation": 0.3373682498931885,
+    "utilities": 0.31389904022216797,
+    "reporting": 0.38128185272216797,
+    "fast_suite": 0.30277490615844727,
+    "comprehensive": 0.30495738983154297
+  },
+  "resource_usage": {
+    "core": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "pipeline": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "validation": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "utilities": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "reporting": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "fast_suite": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "comprehensive": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "error_categories": {
+    "pathlib_errors": [],
+    "sapf_errors": [],
+    "import_errors": [
+      "core",
+      "pipeline",
+      "validation",
+      "utilities",
+      "reporting",
+      "fast_suite",
+      "comprehensive"
+    ],
+    "runtime_errors": []
+  }
+}

@@ -94,7 +94,7 @@ class TestGNNMCP:
     def test_gnn_mcp_imports(self):
         """Test GNN MCP imports."""
         try:
-            from gnn import mcp
+            from src.gnn import mcp
             assert hasattr(mcp, 'register_tools')
         except ImportError:
             pytest.skip("GNN MCP not available")
@@ -129,7 +129,7 @@ class TestExportMCP:
     def test_export_mcp_imports(self):
         """Test Export MCP imports."""
         try:
-            from export import mcp
+            from src.export import mcp
             assert hasattr(mcp, 'register_tools')
         except ImportError:
             pytest.skip("Export MCP not available")
@@ -163,7 +163,7 @@ class TestVisualizationMCP:
     def test_visualization_mcp_imports(self):
         """Test Visualization MCP imports."""
         try:
-            from visualization import mcp
+            from src.visualization import mcp
             assert hasattr(mcp, 'register_tools')
         except ImportError:
             pytest.skip("Visualization MCP not available")
@@ -197,7 +197,7 @@ class TestRenderMCP:
     def test_render_mcp_imports(self):
         """Test Render MCP imports."""
         try:
-            from render import mcp
+            from src.render import mcp
             assert hasattr(mcp, 'register_tools')
         except ImportError:
             pytest.skip("Render MCP not available")
@@ -231,7 +231,7 @@ class TestExecuteMCP:
     def test_execute_mcp_imports(self):
         """Test Execute MCP imports."""
         try:
-            from execute import mcp
+            from src.execute import mcp
             assert hasattr(mcp, 'register_tools')
         except ImportError:
             pytest.skip("Execute MCP not available")
@@ -265,7 +265,7 @@ class TestLLMMCP:
     def test_llm_mcp_imports(self):
         """Test LLM MCP imports."""
         try:
-            from llm import mcp
+            from src.llm import mcp
             assert hasattr(mcp, 'register_tools')
         except ImportError:
             pytest.skip("LLM MCP not available")
@@ -299,7 +299,7 @@ class TestAudioMCP:
     def test_audio_mcp_imports(self):
         """Test Audio MCP imports."""
         try:
-            from audio import mcp
+            from src.audio import mcp
             assert hasattr(mcp, 'register_tools')
         except ImportError:
             pytest.skip("Audio MCP not available")
@@ -333,7 +333,7 @@ class TestUtilsMCP:
     def test_utils_mcp_imports(self):
         """Test Utils MCP imports."""
         try:
-            from utils import mcp
+            from src.utils import mcp
             assert hasattr(mcp, 'register_tools')
         except ImportError:
             pytest.skip("Utils MCP not available")
@@ -367,7 +367,7 @@ class TestPipelineMCP:
     def test_pipeline_mcp_imports(self):
         """Test Pipeline MCP imports."""
         try:
-            from pipeline import mcp
+            from src.pipeline import mcp
             assert hasattr(mcp, 'register_tools')
         except ImportError:
             pytest.skip("Pipeline MCP not available")

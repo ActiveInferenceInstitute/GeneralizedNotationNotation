@@ -377,7 +377,7 @@ class TestGNNParsersSerializers:
     def test_serializers_imports(self):
         """Test that serializers can be imported."""
         try:
-            from gnn.parsers import serializers
+            from src.gnn.parsers import serializers
             # Check for actual serializer classes that exist
             assert hasattr(serializers, 'GNNSerializer')
             assert hasattr(serializers, 'JSONSerializer')
@@ -391,7 +391,7 @@ class TestGNNParsersSerializers:
     def test_serialize_to_format(self, comprehensive_test_data):
         """Test serialization to different formats."""
         try:
-            from gnn.parsers.serializers import serialize_to_format
+            from src.gnn.parsers.serializers import serialize_to_format
             
             test_data = comprehensive_test_data['models']['simple_model']
             
@@ -415,7 +415,7 @@ class TestGNNParsersSerializers:
     def test_deserialize_from_format(self, comprehensive_test_data):
         """Test deserialization from different formats."""
         try:
-            from gnn.parsers.serializers import deserialize_from_format
+            from src.gnn.parsers.serializers import deserialize_from_format
             
             # Test with JSON format (most likely to be supported)
             test_data = json.dumps(comprehensive_test_data['models']['simple_model'])
@@ -441,8 +441,8 @@ class TestGNNCoreIntegration:
     def test_discovery_and_processing_integration(self, isolated_temp_dir, sample_gnn_files):
         """Test integration between discovery and processing."""
         try:
-            from gnn.discovery import discover_gnn_files
-            from gnn.core_processor import process_gnn_file
+            from src.gnn.discovery import discover_gnn_files
+            from src.gnn.core_processor import process_gnn_file
             
             # Create test directory
             test_dir = isolated_temp_dir / "integration_test"
@@ -473,8 +473,8 @@ class TestGNNCoreIntegration:
     def test_processing_and_validation_integration(self, comprehensive_test_data):
         """Test integration between processing and validation."""
         try:
-            from gnn.core_processor import process_gnn_file
-            from gnn.validation import validate_gnn_model
+            from src.gnn.core_processor import process_gnn_file
+            from src.gnn.validation import validate_gnn_model
             
             # Process model data
             test_model = comprehensive_test_data['models']['simple_model']
@@ -502,7 +502,7 @@ def test_gnn_core_modules_performance():
     
     # Test core module imports
     try:
-        from gnn import core_processor, discovery, reporting, validation
+        from src.gnn import core_processor, discovery, reporting, validation
         import_time = time.time() - start_time
         
         # Should import reasonably quickly
@@ -525,7 +525,7 @@ def test_gnn_core_modules_completeness():
     
     for module_name in expected_modules:
         try:
-            module = __import__(f'gnn.{module_name}', fromlist=[module_name])
+            module = __import__(f'src.gnn.{module_name}', fromlist=[module_name])
             available_modules.append(module_name)
         except ImportError:
             pass

@@ -84,7 +84,7 @@ class TestArgumentParsing:
     def test_enhanced_argument_parser_import(self):
         """Test that EnhancedArgumentParser can be imported."""
         try:
-            from utils import EnhancedArgumentParser
+            from src.utils import EnhancedArgumentParser
             
             # Test that the class is available
             assert EnhancedArgumentParser is not None, "Should be able to import EnhancedArgumentParser"
@@ -123,7 +123,7 @@ class TestArgumentParsing:
         """Test argument parsing fallback mechanisms."""
         # Test that fallback argument parsing works
         try:
-            from utils import EnhancedArgumentParser
+            from src.utils import EnhancedArgumentParser
             
             parser = EnhancedArgumentParser()
             
@@ -170,7 +170,7 @@ class TestLoggingUtilities:
     def test_logging_setup_import(self):
         """Test that logging utilities can be imported."""
         try:
-            from utils import setup_step_logging, setup_main_logging
+            from src.utils import setup_step_logging, setup_main_logging
             
             # Test basic import functionality
             assert callable(setup_step_logging), "setup_step_logging should be callable"
@@ -186,7 +186,7 @@ class TestLoggingUtilities:
     def test_step_logging_setup(self):
         """Test step logging setup functionality."""
         try:
-            from utils import setup_step_logging
+            from src.utils import setup_step_logging
             
             # Test basic step logging setup
             logger = setup_step_logging("test_step", verbose=False)
@@ -209,7 +209,7 @@ class TestLoggingUtilities:
     def test_logging_verbosity_control(self):
         """Test logging verbosity control."""
         try:
-            from utils import setup_step_logging
+            from src.utils import setup_step_logging
             
             # Test different verbosity levels
             quiet_logger = setup_step_logging("quiet_test", verbose=False)
@@ -235,7 +235,7 @@ class TestLoggingUtilities:
     def test_step_logging_functions(self):
         """Test step logging functions (log_step_start, log_step_success, etc.)."""
         try:
-            from utils import log_step_start, log_step_success, log_step_warning, log_step_error
+            from src.utils import log_step_start, log_step_success, log_step_warning, log_step_error
             
             # Test that logging functions are callable
             logging_functions = [log_step_start, log_step_success, log_step_warning, log_step_error]
@@ -360,7 +360,7 @@ class TestPerformanceTracking:
     def test_performance_tracker_import(self):
         """Test that performance tracking utilities can be imported."""
         try:
-            from utils import performance_tracker
+            from src.utils import performance_tracker
             
             # Test basic import functionality
             assert performance_tracker is not None, "performance_tracker should be importable"
@@ -451,7 +451,7 @@ class TestDependencyValidation:
     def test_dependency_validator_import(self):
         """Test that dependency validation utilities can be imported."""
         try:
-            from utils import validate_pipeline_dependencies
+            from src.utils import validate_pipeline_dependencies
             
             # Test that function is callable
             assert callable(validate_pipeline_dependencies), "validate_pipeline_dependencies should be callable"
@@ -638,7 +638,7 @@ class TestUtilityIntegration:
     def test_argument_parsing_and_logging_integration(self):
         """Test integration between argument parsing and logging."""
         try:
-            from utils import EnhancedArgumentParser, setup_step_logging
+            from src.utils import EnhancedArgumentParser, setup_step_logging
             
             # Test integration workflow
             parser = EnhancedArgumentParser()

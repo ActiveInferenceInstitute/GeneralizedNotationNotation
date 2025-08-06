@@ -225,7 +225,7 @@ class TestStep2GNNComprehensive:
     def test_step2_gnn_file_discovery(self, sample_gnn_files, isolated_temp_dir):
         """Test GNN file discovery functionality."""
         try:
-            from gnn import discover_gnn_files, parse_gnn_file
+            from src.gnn import discover_gnn_files, parse_gnn_file
             
             # Test file discovery
             gnn_files = discover_gnn_files(list(sample_gnn_files.values())[0].parent)
@@ -248,7 +248,7 @@ class TestStep2GNNComprehensive:
     def test_step2_gnn_validation(self, sample_gnn_files):
         """Test GNN validation functionality."""
         try:
-            from gnn import validate_gnn_structure
+            from src.gnn import validate_gnn_structure
             
             for file_path in sample_gnn_files.values():
                 try:
@@ -268,7 +268,7 @@ class TestStep1SetupComprehensive:
     def test_step1_environment_validation(self, mock_subprocess):
         """Test environment validation functionality."""
         try:
-            from setup import validate_environment, check_dependencies
+            from src.setup import validate_environment, check_dependencies
             
             # Test environment validation
             try:
@@ -296,7 +296,7 @@ class TestStep4TypeCheckerComprehensive:
     def test_step4_type_checking(self, sample_gnn_files):
         """Test type checking functionality."""
         try:
-            from type_checker import check_gnn_file, generate_type_report
+            from src.type_checker import check_gnn_file, generate_type_report
             
             for file_path in sample_gnn_files.values():
                 try:
@@ -322,7 +322,7 @@ class TestStep5ExportComprehensive:
     def test_step5_export_formats(self, sample_gnn_files, isolated_temp_dir):
         """Test export to various formats."""
         try:
-            from export import export_gnn_data
+            from src.export import export_gnn_data
             
             # Create sample data
             sample_data = {
@@ -359,7 +359,7 @@ class TestStep6VisualizationComprehensive:
     def test_step6_visualization_generation(self, sample_gnn_files, isolated_temp_dir):
         """Test visualization generation."""
         try:
-            from visualization import create_graph_visualization, create_matrix_visualization
+            from src.visualization import create_graph_visualization, create_matrix_visualization
             
             # Test graph visualization
             try:
@@ -411,7 +411,7 @@ class TestStep8OntologyComprehensive:
     @pytest.mark.safe_to_fail
     def test_step8_ontology_processing(self):
         """Test ontology processing functionality."""
-        from ontology import process_ontology, validate_ontology_terms
+        from src.ontology import process_ontology, validate_ontology_terms
         
         try:
             # Test ontology processing
@@ -433,7 +433,7 @@ class TestStep9RenderComprehensive:
     @pytest.mark.safe_to_fail
     def test_step9_code_rendering(self, sample_gnn_files, isolated_temp_dir):
         """Test code rendering functionality."""
-        from render import render_gnn_to_pymdp, render_gnn_to_rxinfer_toml
+        from src.render import render_gnn_to_pymdp, render_gnn_to_rxinfer_toml
         # Test PyMDP rendering
         try:
             pymdp_path = isolated_temp_dir / "test_pymdp.py"
@@ -456,7 +456,7 @@ class TestStep10ExecuteComprehensive:
     @pytest.mark.safe_to_fail
     def test_step10_execution_safety(self, mock_subprocess, mock_dangerous_operations):
         """Test execution safety mechanisms."""
-        from execute import execute_script_safely, validate_execution_environment
+        from src.execute import execute_script_safely, validate_execution_environment
         
         # Test execution environment validation
         try:
@@ -481,7 +481,7 @@ class TestStep11LLMComprehensive:
     @pytest.mark.safe_to_fail
     def test_step11_llm_operations(self, mock_llm_provider):
         """Test LLM operations."""
-        from llm import analyze_gnn_model, generate_model_description
+        from src.llm import analyze_gnn_model, generate_model_description
         
         # Test model analysis
         try:
@@ -506,7 +506,7 @@ class TestStep12AudioComprehensive:
     @pytest.mark.safe_to_fail
     def test_step12_audio_generation(self, isolated_temp_dir):
         """Test website generation functionality."""
-        from website import generate_website, generate_html_report
+        from src.website import generate_website, generate_html_report
         # Test website generation
         try:
             website_data = {"test": "data"}
@@ -555,7 +555,7 @@ class TestStep14ReportComprehensive:
     @pytest.mark.safe_to_fail
     def test_step14_report_generation(self, sample_gnn_files, isolated_temp_dir):
         """Test report generation."""
-        from report import generate_report, analyze_pipeline_data
+        from src.report import generate_report, analyze_pipeline_data
         
         try:
             # Test report generation

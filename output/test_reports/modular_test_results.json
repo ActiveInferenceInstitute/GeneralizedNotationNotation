@@ -1,0 +1,114 @@
+{
+  "core": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.422804594039917,
+    "stdout": "",
+    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
+    "returncode": 4,
+    "resource_usage": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "pipeline": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.3999476432800293,
+    "stdout": "",
+    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
+    "returncode": 4,
+    "resource_usage": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "validation": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.3373682498931885,
+    "stdout": "",
+    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
+    "returncode": 4,
+    "resource_usage": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "utilities": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.31389904022216797,
+    "stdout": "",
+    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
+    "returncode": 4,
+    "resource_usage": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "reporting": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.38128185272216797,
+    "stdout": "",
+    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
+    "returncode": 4,
+    "resource_usage": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "fast_suite": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.30277490615844727,
+    "stdout": "",
+    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
+    "returncode": 4,
+    "resource_usage": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "comprehensive": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.30495738983154297,
+    "stdout": "",
+    "stderr": "ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.\nsrc/__init__.py:16: in <module>\n    import export\nE     File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py\", line 399\nE       summary += f\"\\nEquations ({len(model_data.get(\"equations\", []))}):\\n\"\nE                                                      ^^^^^^^^^\nE   SyntaxError: f-string: unmatched '('\n",
+    "returncode": 4,
+    "resource_usage": {
+      "memory_mb": 30.6640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  }
+}

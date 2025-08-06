@@ -76,10 +76,10 @@ def run_core_unit_tests(test_results_dir: Path, verbose: bool) -> bool:
     try:
         log_step_start(logger, "Running core unit tests")
         
-        # Test basic imports
+                # Test basic imports
         try:
-            from utils import setup_step_logging
-            from pipeline import get_pipeline_config
+            from src.utils import setup_step_logging
+            from src.pipeline import get_pipeline_config
             log_step_success(logger, "Core imports successful")
         except ImportError as e:
             log_step_error(logger, f"Core import test failed: {e}")
@@ -184,7 +184,7 @@ def run_pipeline_unit_tests(test_results_dir: Path, verbose: bool) -> bool:
 def test_config_functionality():
     """Test configuration functionality."""
     try:
-        from pipeline import get_pipeline_config
+        from src.pipeline import get_pipeline_config
         config = get_pipeline_config()
         assert config is not None, "Pipeline config should not be None"
     except Exception as e:
@@ -193,7 +193,7 @@ def test_config_functionality():
 def test_logging_functionality():
     """Test logging functionality."""
     try:
-        from utils import setup_step_logging
+        from src.utils import setup_step_logging
         logger = setup_step_logging("test", None)
         assert logger is not None, "Logger should not be None"
     except Exception as e:
@@ -231,7 +231,7 @@ def test_validation_utilities():
 def test_step_discovery():
     """Test pipeline step discovery."""
     try:
-        from pipeline.discovery import get_pipeline_scripts
+        from src.pipeline.discovery import get_pipeline_scripts
         from pathlib import Path
         scripts = get_pipeline_scripts(Path(__file__).parent.parent)
         assert isinstance(scripts, list), "Pipeline scripts should be a list"
@@ -249,7 +249,7 @@ def test_step_execution():
 def test_step_configuration():
     """Test pipeline step configuration."""
     try:
-        from pipeline import get_pipeline_config
+        from src.pipeline import get_pipeline_config
         config = get_pipeline_config()
         assert hasattr(config, 'steps'), "Config should have steps attribute"
     except Exception as e:

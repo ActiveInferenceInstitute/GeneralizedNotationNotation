@@ -30,7 +30,7 @@ except ImportError:
 
 try:
     import visualization
-    from visualization import (
+    from src.visualization import (
         create_graph_visualization,
         create_matrix_visualization,
         visualize_gnn_file,

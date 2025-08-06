@@ -1,0 +1,7 @@
+ImportError while loading conftest '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/conftest.py'.
+src/__init__.py:16: in <module>
+    import export
+E     File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py", line 399
+E       summary += f"\nEquations ({len(model_data.get("equations", []))}):\n"
+E                                                      ^^^^^^^^^
+E   SyntaxError: f-string: unmatched '('

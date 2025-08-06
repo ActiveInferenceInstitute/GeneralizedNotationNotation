@@ -515,7 +515,7 @@ def real_type_checker():
     otherwise it provides a mock implementation.
     """
     try:
-        from type_checker import check_file, check_directory
+        from src.type_checker import check_file, check_directory
         
         class RealTypeChecker:
             def check_file(self, file_path: Path):
@@ -572,7 +572,7 @@ def real_visualization():
     otherwise it provides a mock implementation.
     """
     try:
-        from visualization import generate_matrix_visualization, generate_graph_visualization
+        from src.visualization import generate_matrix_visualization, generate_graph_visualization
         
         class RealVisualization:
             def __init__(self, output_dir: Path):
@@ -631,7 +631,7 @@ def real_export():
     otherwise it provides a mock implementation.
     """
     try:
-        from export import export_to_json, export_to_xml, export_to_graphml
+        from src.export import export_to_json, export_to_xml, export_to_graphml
         
         class RealExporter:
             def __init__(self, output_dir: Path):

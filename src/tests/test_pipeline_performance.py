@@ -108,7 +108,7 @@ class TestGNNProcessingPerformance:
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
     def test_processing_scaling(self, mock_environment, create_model_file, model_size):
         """Test GNN processing performance scaling."""
-        from gnn import process_gnn_directory
+        from src.gnn import process_gnn_directory
         
         model_file = create_model_file(model_size)
         
@@ -128,7 +128,7 @@ class TestGNNProcessingPerformance:
         
     def test_parallel_processing(self, mock_environment, create_model_file):
         """Test parallel GNN processing performance."""
-        from gnn import process_gnn_directory
+        from src.gnn import process_gnn_directory
         
         # Create multiple models
         for size in ["small", "medium"]:
@@ -155,7 +155,7 @@ class TestVisualizationPerformance:
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
     def test_visualization_scaling(self, mock_environment, create_model_file, model_size):
         """Test visualization generation performance scaling."""
-        from visualization import generate_visualizations
+        from src.visualization import generate_visualizations
         
         model_file = create_model_file(model_size)
         
@@ -180,7 +180,7 @@ class TestVisualizationPerformance:
         
     def test_visualization_caching(self, mock_environment, create_model_file):
         """Test visualization caching performance."""
-        from visualization import generate_visualizations
+        from src.visualization import generate_visualizations
         
         model_file = create_model_file("medium")
         
@@ -212,7 +212,7 @@ class TestMemoryUsagePatterns:
     
     def test_memory_cleanup(self, mock_environment, create_model_file):
         """Test memory cleanup after processing."""
-        from gnn import process_gnn_directory
+        from src.gnn import process_gnn_directory
         
         model_file = create_model_file("large")
         initial_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
@@ -274,7 +274,7 @@ class TestDiskIOPerformance:
         
     def test_export_performance(self, mock_environment, create_model_file):
         """Test export performance for different formats."""
-        from export import export_model
+        from src.export import export_model
         
         model_file = create_model_file("medium")
         

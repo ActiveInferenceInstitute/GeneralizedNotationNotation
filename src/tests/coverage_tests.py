@@ -280,13 +280,13 @@ def test_module_function_coverage() -> bool:
         
         # Check if optional modules exist
         try:
-            from type_checker import validate_gnn_files
+            from src.type_checker import validate_gnn_files
             type_checker_available = True
         except ImportError:
             type_checker_available = False
             
         try:
-            from export import generate_exports
+            from src.export import generate_exports
             export_available = True
         except ImportError:
             export_available = True  # Export module is optional

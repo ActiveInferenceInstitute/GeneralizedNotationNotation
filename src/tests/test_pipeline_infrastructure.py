@@ -34,7 +34,7 @@ class TestPipelineDiscovery:
     def test_discovery_imports(self):
         """Test that pipeline discovery can be imported."""
         try:
-            from pipeline import discovery
+            from src.pipeline import discovery
             assert hasattr(discovery, 'get_pipeline_scripts')
             # Test that the function is callable
             assert callable(discovery.get_pipeline_scripts)
@@ -46,7 +46,7 @@ class TestPipelineDiscovery:
     def test_get_pipeline_scripts(self, project_root):
         """Test pipeline script discovery."""
         try:
-            from pipeline.discovery import get_pipeline_scripts
+            from src.pipeline.discovery import get_pipeline_scripts
             
             # Test with project src directory
             src_dir = project_root / "src"
@@ -73,7 +73,7 @@ class TestPipelineDiscovery:
     def test_discover_steps(self, project_root):
         """Test step discovery using available function."""
         try:
-            from pipeline.discovery import get_pipeline_scripts
+            from src.pipeline.discovery import get_pipeline_scripts
             
             src_dir = project_root / "src"
             scripts = get_pipeline_scripts(src_dir)
@@ -102,7 +102,7 @@ class TestPipelineStepTemplate:
     def test_step_template_imports(self):
         """Test that step template can be imported."""
         try:
-            from pipeline import pipeline_step_template
+            from src.pipeline import pipeline_step_template
             assert hasattr(pipeline_step_template, 'validate_step_requirements')
             assert hasattr(pipeline_step_template, 'process_single_file')
             assert hasattr(pipeline_step_template, 'main')
@@ -114,7 +114,7 @@ class TestPipelineStepTemplate:
     def test_pipeline_step_class(self):
         """Test PipelineStep class functionality."""
         try:
-            from pipeline.pipeline_step_template import PipelineStep
+            from src.pipeline.pipeline_step_template import PipelineStep
             
             # Test step instantiation
             step = PipelineStep("test_step", "Test Step Description")
@@ -162,7 +162,7 @@ class TestPipelineValidation:
     def test_validation_imports(self):
         """Test that pipeline validation can be imported."""
         try:
-            from pipeline import pipeline_validation
+            from src.pipeline import pipeline_validation
             assert hasattr(pipeline_validation, 'validate_module_imports')
             assert hasattr(pipeline_validation, 'validate_dependency_cycles')
             assert hasattr(pipeline_validation, 'generate_validation_report')
@@ -218,7 +218,7 @@ class TestVerifyPipeline:
     def test_verify_imports(self):
         """Test that verify pipeline can be imported."""
         try:
-            from pipeline import verify_pipeline
+            from src.pipeline import verify_pipeline
             assert hasattr(verify_pipeline, 'verify_module_imports')
             assert hasattr(verify_pipeline, 'verify_pipeline_config')
             assert hasattr(verify_pipeline, 'verify_step_files')
@@ -275,7 +275,7 @@ class TestUtilsMigrationHelper:
     def test_migration_imports(self):
         """Test that migration helper can be imported."""
         try:
-            from utils import migration_helper
+            from src.utils import migration_helper
             assert hasattr(migration_helper, 'PipelineMigrationHelper')
             assert hasattr(migration_helper, 'main')
             # Test that the class is callable
@@ -344,7 +344,7 @@ class TestUtilsPipelineMonitor:
     def test_monitor_imports(self):
         """Test that pipeline monitor can be imported."""
         try:
-            from utils import pipeline_monitor
+            from src.utils import pipeline_monitor
             assert hasattr(pipeline_monitor, 'PipelineMonitor')
             assert hasattr(pipeline_monitor, 'get_pipeline_health_status')
             assert hasattr(pipeline_monitor, 'start_pipeline_monitoring')
@@ -408,7 +408,7 @@ class TestUtilsResourceManager:
     def test_resource_manager_imports(self):
         """Test that resource manager can be imported."""
         try:
-            from utils import resource_manager
+            from src.utils import resource_manager
             # Check that the module exists, even if psutil is missing
             assert resource_manager is not None
             # If we can import it, check for expected structure
@@ -469,7 +469,7 @@ class TestUtilsScriptValidator:
     def test_script_validator_imports(self):
         """Test that script validator can be imported."""
         try:
-            from utils import script_validator
+            from src.utils import script_validator
             assert hasattr(script_validator, 'PipelineScriptValidator')
             assert hasattr(script_validator, 'validate_pipeline_scripts')
             assert hasattr(script_validator, 'ScriptValidationResult')
@@ -590,10 +590,10 @@ def test_pipeline_infrastructure_performance():
     
     start_time = time.time()
     
-    # Test infrastructure module imports
+        # Test infrastructure module imports
     try:
-        from pipeline import discovery, pipeline_validation
-        from utils import resource_manager, script_validator
+        from src.pipeline import discovery, pipeline_validation
+        from src.utils import resource_manager, script_validator
         import_time = time.time() - start_time
         
         # Should import reasonably quickly
