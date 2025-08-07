@@ -33,6 +33,13 @@
 - **Path Management**: Consistent path handling with pathlib.Path and centralized output management
 - **Configuration Management**: YAML-based configuration with CLI override support
 
+### Documentation and Communication Standards
+- **Direct Documentation**: Update existing documentation files directly rather than creating separate report files
+- **Functional Improvements**: Focus on making smart functional improvements to code and documentation
+- **Inline Updates**: Add documentation directly to relevant files (README.md, docstrings, etc.)
+- **Show Not Tell**: Demonstrate functionality through working code and real outputs rather than separate reports
+- **Understated Communication**: Use concrete examples and functional demonstrations over promotional language
+
 ### Enhanced Error Handling Philosophy
 - **Fail Fast with Recovery**: Early detection of issues with intelligent recovery mechanisms
 - **Informative Diagnostics**: Clear error messages with actionable suggestions and context

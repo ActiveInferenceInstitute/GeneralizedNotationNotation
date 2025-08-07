@@ -6,7 +6,7 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
-[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-14-blue.svg)](#%EF%B8%8F-processing-pipeline)
+[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-23-blue.svg)](#%EF%B8%8F-processing-pipeline)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-4-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
@@ -256,7 +256,7 @@ doc/
 
 ## ⚙️ Processing Pipeline
 
-The GNN processing pipeline consists of **14 dynamically discovered stages**, each handling a specific aspect of model processing from parsing to final report generation.
+The GNN processing pipeline consists of **23 comprehensive steps (0-22)**, each handling a specific aspect of model processing from parsing to final report generation. The pipeline follows a **thin orchestrator pattern** where numbered scripts orchestrate execution while delegating core functionality to modular components.
 
 ```mermaid
 flowchart TD
@@ -315,6 +315,60 @@ flowchart TD
     style C fill:#fff3e0,stroke:#f57c00
     style L fill:#e8f5e8,stroke:#388e3c
 ```
+
+### 🏗️ Pipeline Architecture: Three-Tier Pattern
+
+The pipeline follows a **three-tier architectural pattern** for maintainability and modularity:
+
+```
+main.py → Numbered Scripts (Thin Orchestrators) → Modular Scripts in Folders
+```
+
+#### 🏛️ Architectural Components
+
+1. **Main Pipeline Orchestrator** (`src/main.py`): Central coordinator that executes numbered scripts in sequence
+2. **Thin Orchestrators** (`src/0_template.py`, `src/1_setup.py`, etc.): Minimal scripts that delegate to modules
+3. **Modular Scripts** (`src/template/`, `src/setup/`, etc.): Core functionality implementation
+
+#### 📋 Current Status
+
+**✅ Compliant Scripts (7/23):**
+- `src/0_template.py` → `src/template/`
+- `src/1_setup.py` → `src/setup/`
+- `src/6_validation.py` → `src/validation/`
+- `src/7_export.py` → `src/export/`
+- `src/8_visualization.py` → `src/visualization/`
+- `src/10_ontology.py` → `src/ontology/`
+- `src/11_render.py` → `src/render/`
+
+**🔄 Pending Refactoring (16/23):**
+- `src/2_tests.py` → `src/tests/` (8 functions)
+- `src/3_gnn.py` → `src/gnn/` (1 function)
+- `src/4_model_registry.py` → `src/model_registry/` (3 functions)
+- `src/5_type_checker.py` → `src/type_checker/` (4 functions)
+- `src/9_advanced_viz.py` → `src/advanced_visualization/` (10 functions)
+- `src/12_execute.py` → `src/execute/` (14 functions)
+- And 10 more scripts...
+
+#### 📁 Example Structure
+
+```
+src/
+├── main.py                          # Main pipeline orchestrator
+├── 0_template.py                    # Thin orchestrator - imports from template/
+├── template/                        # Modular template implementation
+│   ├── __init__.py                 # Module exports and initialization
+│   ├── processor.py                # Core template processing logic
+│   └── mcp.py                      # Model Context Protocol integration
+└── tests/
+    └── test_template_integration.py # Tests for template module
+```
+
+#### 📚 Documentation
+
+For comprehensive architectural documentation, see:
+- `src/template/README.md`: Reference implementation and pattern documentation
+- `THIN_ORCHESTRATOR_ARCHITECTURAL_DOCUMENTATION.md`: Complete architectural guide
 
 ### 🚀 Running the Pipeline
 

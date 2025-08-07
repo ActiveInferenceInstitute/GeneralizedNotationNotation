@@ -1,4 +1,0 @@
-Category: pipeline
-Success: False
-Duration: 120.01s
-Error: Test category 'pipeline' timed out after 120 seconds

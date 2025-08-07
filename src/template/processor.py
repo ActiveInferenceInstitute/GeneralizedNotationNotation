@@ -47,6 +47,198 @@ except ImportError:
 # Initialize logger
 logger = logging.getLogger(__name__)
 
+def generate_correlation_id() -> str:
+    """Generate a unique correlation ID for this execution."""
+    import uuid
+    return str(uuid.uuid4())[:8]
+
+from contextlib import contextmanager
+
+@contextmanager
+def safe_template_execution(logger, correlation_id: str):
+    """
+    Context manager for safe template execution with comprehensive error handling.
+    
+    Demonstrates safe-to-fail patterns that should be used across all pipeline steps.
+    """
+    import time
+    import traceback
+    from contextlib import contextmanager
+    
+    start_time = time.time()
+    error_recovery = None
+    resource_tracker = None
+    
+    try:
+        # Try to import enhanced infrastructure
+        try:
+            from utils.error_recovery import ErrorRecoverySystem
+            from utils.resource_manager import ResourceTracker, get_system_info
+            from utils.logging_utils import set_correlation_context
+            
+            # Initialize error recovery system
+            error_recovery = ErrorRecoverySystem()
+            
+            # Initialize resource tracking
+            resource_tracker = ResourceTracker()
+            
+            # Set correlation context for enhanced logging
+            set_correlation_context(correlation_id, "template")
+            
+            logger.info(f"🎯 Template execution started with correlation ID: {correlation_id}")
+            logger.info(f"📊 Initial system resources: {get_system_info()}")
+            
+        except ImportError:
+            logger.info(f"🎯 Template execution started with correlation ID: {correlation_id}")
+        
+        yield {
+            "error_recovery": error_recovery,
+            "resource_tracker": resource_tracker,
+            "correlation_id": correlation_id
+        }
+        
+    except Exception as e:
+        execution_time = time.time() - start_time
+        
+        if error_recovery:
+            # Demonstrate error recovery capabilities
+            error_analysis = error_recovery.analyze_error(str(e), traceback.format_exc())
+            recovery_actions = error_recovery.suggest_recovery_actions(error_analysis)
+            
+            logger.error(f"Template execution failed after {execution_time:.2f}s")
+            logger.error(f"Error: {str(e)}")
+            logger.error(f"Recovery actions: {recovery_actions}")
+        else:
+            logger.error(f"Template execution failed after {execution_time:.2f}s")
+            logger.error(f"Error: {str(e)}")
+        
+        raise
+
+def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, Any]:
+    """
+    Demonstrate various utility patterns and infrastructure capabilities.
+    
+    This function showcases the comprehensive infrastructure available
+    for pipeline steps, including error recovery, resource tracking,
+    and enhanced logging.
+    """
+    import time
+    import json
+    from datetime import datetime
+    
+    demonstration_results = {
+        "timestamp": datetime.now().isoformat(),
+        "correlation_id": context.get("correlation_id", "unknown"),
+        "patterns_demonstrated": [],
+        "infrastructure_status": {},
+        "performance_metrics": {}
+    }
+    
+    # Demonstrate error recovery system
+    if context.get("error_recovery"):
+        try:
+            # Simulate an error for demonstration
+            error_recovery = context["error_recovery"]
+            test_error = "Demonstration error for pattern testing"
+            error_analysis = error_recovery.analyze_error(test_error, "Test traceback")
+            recovery_actions = error_recovery.suggest_recovery_actions(error_analysis)
+            
+            demonstration_results["patterns_demonstrated"].append("error_recovery")
+            demonstration_results["infrastructure_status"]["error_recovery"] = {
+                "available": True,
+                "analysis_capabilities": len(error_analysis),
+                "recovery_actions": len(recovery_actions)
+            }
+            
+            logger.info("✅ Error recovery system demonstrated")
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error recovery demonstration failed: {e}")
+            demonstration_results["infrastructure_status"]["error_recovery"] = {
+                "available": False,
+                "error": str(e)
+            }
+    
+    # Demonstrate resource tracking
+    if context.get("resource_tracker"):
+        try:
+            resource_tracker = context["resource_tracker"]
+            
+            # Track a sample operation
+            with resource_tracker.track_operation("demonstration_operation"):
+                time.sleep(0.1)  # Simulate work
+            
+            performance_summary = resource_tracker.get_summary()
+            
+            demonstration_results["patterns_demonstrated"].append("resource_tracking")
+            demonstration_results["infrastructure_status"]["resource_tracking"] = {
+                "available": True,
+                "operations_tracked": len(performance_summary.get("operations", {}))
+            }
+            demonstration_results["performance_metrics"] = performance_summary
+            
+            logger.info("✅ Resource tracking system demonstrated")
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Resource tracking demonstration failed: {e}")
+            demonstration_results["infrastructure_status"]["resource_tracking"] = {
+                "available": False,
+                "error": str(e)
+            }
+    
+    # Demonstrate enhanced logging
+    try:
+        logger.info("🎯 Demonstrating enhanced logging patterns")
+        logger.debug("Debug level logging for detailed troubleshooting")
+        logger.info("Info level logging for general progress")
+        logger.warning("Warning level logging for potential issues")
+        
+        demonstration_results["patterns_demonstrated"].append("enhanced_logging")
+        demonstration_results["infrastructure_status"]["enhanced_logging"] = {
+            "available": True,
+            "levels_supported": ["DEBUG", "INFO", "WARNING", "ERROR"]
+        }
+        
+        logger.info("✅ Enhanced logging system demonstrated")
+        
+    except Exception as e:
+        logger.warning(f"⚠️ Enhanced logging demonstration failed: {e}")
+        demonstration_results["infrastructure_status"]["enhanced_logging"] = {
+            "available": False,
+            "error": str(e)
+        }
+    
+    # Demonstrate safe-to-fail patterns
+    try:
+        logger.info("🛡️ Demonstrating safe-to-fail patterns")
+        
+        # Simulate a potentially failing operation
+        try:
+            # This would normally be a real operation
+            result = "demonstration_success"
+            logger.info("✅ Safe-to-fail operation completed successfully")
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Safe-to-fail operation failed gracefully: {e}")
+            result = "demonstration_fallback"
+        
+        demonstration_results["patterns_demonstrated"].append("safe_to_fail")
+        demonstration_results["infrastructure_status"]["safe_to_fail"] = {
+            "available": True,
+            "result": result
+        }
+        
+    except Exception as e:
+        logger.warning(f"⚠️ Safe-to-fail demonstration failed: {e}")
+        demonstration_results["infrastructure_status"]["safe_to_fail"] = {
+            "available": False,
+            "error": str(e)
+        }
+    
+    logger.info(f"🎯 Template demonstration completed with {len(demonstration_results['patterns_demonstrated'])} patterns")
+    
+    return demonstration_results
+
 def process_template_standardized(
     target_dir: Path,
     output_dir: Path,

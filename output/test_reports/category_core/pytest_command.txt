@@ -1,5 +1,0 @@
-Category: core
-Success: False
-Duration: 1.09s
-Peak Memory: 30.66 MB
-CPU Usage: 0.0%

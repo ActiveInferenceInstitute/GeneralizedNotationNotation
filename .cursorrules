@@ -1,7 +1,7 @@
 # .cursorrules - High-Level Rules for AI Code Assistant (Cursor) - GNN Project
 
 ## Project Overview and Context
-GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive 22-step pipeline that transforms GNN specifications into executable simulations, visualizations, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
+GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive 23-step pipeline that transforms GNN specifications into executable simulations, visualizations, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
 
 ## Overall AI Behavior & Persona
 - Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications and pipeline architecture
@@ -42,20 +42,49 @@ This project implements a comprehensive scientific computing pipeline with real,
 4. **Delegate core functionality** to module classes and functions
 5. **Maintain separation of concerns** - scripts handle pipeline flow, modules handle domain logic
 
+**Module Structure Pattern:**
+- **Numbered Scripts** (e.g., `11_render.py`): Thin orchestrators that import from modules
+- **Module `__init__.py`**: Imports and exposes functions from modular files within the module folder
+- **Modular Files** (e.g., `src/render/renderer.py`, `src/ontology/processor.py`): Contain the actual implementation of core methods
+- **Tests**: All methods are tested in `src/tests/` with comprehensive test coverage
+
+**File Organization:**
+```
+src/
+├── 11_render.py                    # Thin orchestrator - imports from render/
+├── render/
+│   ├── __init__.py                 # Imports from renderer.py, pymdp/, etc.
+│   ├── renderer.py                 # Core rendering functions
+│   ├── pymdp/                      # PyMDP-specific rendering
+│   ├── rxinfer/                    # RxInfer.jl-specific rendering
+│   └── discopy/                    # DisCoPy-specific rendering
+├── 10_ontology.py                  # Thin orchestrator - imports from ontology/
+├── ontology/
+│   ├── __init__.py                 # Imports from processor.py
+│   └── processor.py                # Core ontology processing functions
+└── tests/
+    ├── test_render_integration.py  # Tests for render module
+    └── test_ontology_integration.py # Tests for ontology module
+```
+
 **Note:** Lengthy or complex methods should be defined in modular files within the associated `src/[module_name]/` folder, and only called from the numbered pipeline scripts. Numbered scripts should not contain the implementation of such methods directly.
 
 **Examples of correct pattern:**
 - `8_visualization.py` imports from `src/visualization/` and calls `MatrixVisualizer.generate_matrix_analysis()`
 - `9_advanced_viz.py` imports from `src/advanced_visualization/` and calls `AdvancedVisualizer.process_model()`
+- `11_render.py` imports from `src/render/` and calls `generate_pymdp_code()`, `generate_rxinfer_code()`, etc.
+- `10_ontology.py` imports from `src/ontology/` and calls `process_ontology_file()`, `extract_ontology_terms()`, etc.
 - Scripts contain only orchestration logic, not domain-specific visualization or processing code
 
 **Examples of incorrect pattern:**
 - Defining `generate_matrix_heatmap()` function directly in `8_visualization.py`
 - Implementing `extract_visualization_data()` directly in `9_advanced_viz.py`
+- Defining `generate_pymdp_code()` directly in `11_render.py`
+- Defining `process_ontology_file()` directly in `10_ontology.py`
 - Any long method definitions (>20 lines) in numbered scripts
 
-## 22-Step Pipeline Structure (CURRENT)
-The pipeline consists of exactly 22 steps (steps 0-21), executed in order:
+## 23-Step Pipeline Structure (CURRENT)
+The pipeline consists of exactly 23 steps (steps 0-22), executed in order:
 0. **0_template.py** → `src/template/` - Pipeline template and initialization
 1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation
 2. **2_tests.py** → `src/tests/` - Comprehensive test suite execution
@@ -78,6 +107,7 @@ The pipeline consists of exactly 22 steps (steps 0-21), executed in order:
 19. **19_research.py** → `src/research/` - Research tools and experimental features
 20. **20_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts
 21. **21_report.py** → `src/report/` - Comprehensive analysis report generation
+22. **22_mcp.py** → `src/mcp/` - Model Context Protocol processing and tool registration
 
 ## Detailed Guidelines
 For more targeted guidelines, refer to the files in the .cursor_rules/ directory:

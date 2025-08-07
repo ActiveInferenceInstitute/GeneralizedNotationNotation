@@ -1,3 +1,0 @@
-2025-08-06 15:04:47,012 [abb83f69:utils] root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
-2025-08-06 15:04:47,015 [abb83f69:utils] execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'execute.discopy_translator_module'
-2025-08-06 15:04:47,037 [abb83f69:utils] mcp - INFO - Enhanced MCP server initialized

@@ -5,7 +5,7 @@ This module provides ontology capabilities with fallback implementations.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 import logging
 
 from utils.pipeline_template import (
@@ -13,6 +13,16 @@ from utils.pipeline_template import (
     log_step_success,
     log_step_error,
     log_step_warning
+)
+
+# Import core processing functions from processor module
+from .processor import (
+    extract_ontology_terms,
+    validate_ontology_compliance,
+    generate_ontology_mapping,
+    process_ontology_file,
+    generate_ontology_report,
+    process_ontology_fallback
 )
 
 def process_ontology(
@@ -414,6 +424,12 @@ FEATURES = {
 
 __all__ = [
     'process_ontology',
+    'extract_ontology_terms',
+    'validate_ontology_compliance',
+    'generate_ontology_mapping',
+    'process_ontology_file',
+    'generate_ontology_report',
+    'process_ontology_fallback',
     'parse_gnn_ontology_section',
     'get_module_info',
     'get_ontology_processing_options',

@@ -1,8 +1,6 @@
-# Test Infrastructure Documentation
+# Test Infrastructure
 
-## Overview
-
-The test infrastructure for the GNN Processing Pipeline provides comprehensive testing capabilities with a clean, module-based organization. All test files follow the `test_MODULENAME_area.py` naming convention for easy discovery and maintenance.
+This directory contains the comprehensive test suite for the GNN Processing Pipeline. The test infrastructure has been completely refactored to follow a modular, organized structure that provides comprehensive coverage for all modules.
 
 ## Test File Structure
 
@@ -18,167 +16,83 @@ All test files follow the pattern:
 #### Core Module Tests
 - `test_gnn_overall.py` - Comprehensive GNN module testing
 - `test_gnn_parsing.py` - GNN parsing and discovery tests
-- `test_gnn_validation.py` - GNN validation and type checking
-- `test_gnn_processing.py` - GNN processing and transformation
-- `test_gnn_integration.py` - GNN integration with other modules
+- `test_gnn_validation.py` - GNN validation and consistency tests
+- `test_gnn_processing.py` - GNN processing and serialization tests
+- `test_gnn_integration.py` - GNN integration tests
 
-- `test_render_overall.py` - Complete render module testing
+#### Render Module Tests
+- `test_render_overall.py` - Comprehensive render module testing
 - `test_render_integration.py` - Render integration tests
 - `test_render_performance.py` - Render performance tests
 
+#### MCP Module Tests
 - `test_mcp_overall.py` - Comprehensive MCP module testing
+- `test_mcp_tools.py` - MCP tool execution tests
 - `test_mcp_transport.py` - MCP transport layer tests
-- `test_mcp_tools.py` - MCP tool registration and execution
-- `test_mcp_integration.py` - MCP integration with other modules
+- `test_mcp_integration.py` - MCP integration tests
 - `test_mcp_performance.py` - MCP performance tests
 
+#### Audio Module Tests
 - `test_audio_overall.py` - Comprehensive audio module testing
-- `test_audio_sapf.py` - SAPF-specific tests
+- `test_audio_sapf.py` - SAPF audio generation tests
 - `test_audio_generation.py` - Audio generation tests
 - `test_audio_integration.py` - Audio integration tests
 
-- `test_visualization_overall.py` - Comprehensive visualization testing
+#### Visualization Module Tests
+- `test_visualization_overall.py` - Comprehensive visualization module testing
 - `test_visualization_matrices.py` - Matrix visualization tests
 - `test_visualization_ontology.py` - Ontology visualization tests
 
-#### Infrastructure Module Tests
-- `test_pipeline_overall.py` - Comprehensive pipeline testing
-- `test_pipeline_steps.py` - Individual pipeline step tests
-- `test_pipeline_orchestration.py` - Pipeline orchestration tests
+#### Pipeline Module Tests
+- `test_pipeline_overall.py` - Comprehensive pipeline module testing
 - `test_pipeline_integration.py` - Pipeline integration tests
+- `test_pipeline_orchestration.py` - Pipeline orchestration tests
+- `test_pipeline_performance.py` - Pipeline performance tests
+- `test_pipeline_recovery.py` - Pipeline recovery tests
+- `test_pipeline_scripts.py` - Pipeline script tests
+- `test_pipeline_infrastructure.py` - Pipeline infrastructure tests
+- `test_pipeline_functionality.py` - Pipeline functionality tests
 
-- `test_export_overall.py` - Comprehensive export testing
+#### Export Module Tests
+- `test_export_overall.py` - Comprehensive export module testing
 
-- `test_report_overall.py` - Comprehensive report testing
-- `test_report_formats.py` - Report format tests
+#### Execute Module Tests
+- `test_execute_overall.py` - Comprehensive execute module testing
+
+#### LLM Module Tests
+- `test_llm_overall.py` - Comprehensive LLM module testing
+
+#### Ontology Module Tests
+- `test_ontology_overall.py` - Comprehensive ontology module testing
+
+#### Website Module Tests
+- `test_website_overall.py` - Comprehensive website module testing
+
+#### Report Module Tests
+- `test_report_overall.py` - Comprehensive report module testing
 - `test_report_generation.py` - Report generation tests
 - `test_report_integration.py` - Report integration tests
+- `test_report_formats.py` - Report format tests
 
-#### Environment and Supporting Tests
-- `test_environment_overall.py` - Comprehensive environment testing
-- `test_environment_python.py` - Python environment tests
-- `test_environment_dependencies.py` - Dependency tests
-- `test_environment_system.py` - System resource tests
+#### Environment Module Tests
+- `test_environment_overall.py` - Comprehensive environment module testing
+- `test_environment_dependencies.py` - Environment dependency tests
 - `test_environment_integration.py` - Environment integration tests
+- `test_environment_python.py` - Python environment tests
+- `test_environment_system.py` - System environment tests
 
-- `test_performance_overall.py` - Comprehensive performance testing
-- `test_coverage_overall.py` - Code coverage tests
-- `test_unit_overall.py` - Basic unit tests
+#### Comprehensive Tests
+- `test_comprehensive_api.py` - Comprehensive API testing
+- `test_core_modules.py` - Core module integration tests
+- `test_fast_suite.py` - Fast test suite
+- `test_main_orchestrator.py` - Main orchestrator tests
+- `test_coverage_overall.py` - Coverage tests
+- `test_performance_overall.py` - Performance tests
+- `test_unit_overall.py` - Unit tests
 
-## Test Utilities
+## Test Runner Configuration
 
-### Centralized Test Utilities
-
-All test utilities are centralized in `src/utils/test_utils.py` to maintain clean naming conventions and avoid circular imports.
-
-#### Key Utilities Available
-
-**Configuration and Setup:**
-- `TEST_CONFIG` - Central test configuration
-- `TEST_CATEGORIES` - Test category definitions
-- `TEST_STAGES` - Test stage definitions
-- `COVERAGE_TARGETS` - Coverage target definitions
-
-**Environment Management:**
-- `setup_test_environment()` - Initialize test environment
-- `cleanup_test_environment()` - Clean up test environment
-- `validate_test_environment()` - Validate test environment
-- `is_safe_mode()` - Check if running in safe mode
-
-**Test Data Generation:**
-- `create_sample_gnn_content()` - Generate sample GNN content
-- `create_test_gnn_files()` - Create test GNN files
-- `create_test_files()` - Create generic test files
-- `get_mock_filesystem_structure()` - Get mock filesystem structure
-
-**Performance Tracking:**
-- `performance_tracker()` - Performance tracking decorator
-- `get_memory_usage()` - Get current memory usage
-- `track_peak_memory()` - Track peak memory usage
-- `with_resource_limits()` - Resource limit context manager
-
-**Validation Functions:**
-- `assert_file_exists()` - Assert file exists
-- `assert_valid_json()` - Assert valid JSON
-- `assert_directory_structure()` - Assert directory structure
-
-**Report Generation:**
-- `validate_report_data()` - Validate report data
-- `generate_html_report_file()` - Generate HTML report
-- `generate_markdown_report_file()` - Generate Markdown report
-- `generate_json_report_file()` - Generate JSON report
-
-## Test Execution
-
-### Running Tests
-
-#### Individual Test Files
-```bash
-# Run a specific test file
-python -m pytest src/tests/test_gnn_overall.py
-
-# Run with verbose output
-python -m pytest src/tests/test_gnn_overall.py -v
-
-# Run a specific test method
-python -m pytest src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports
-```
-
-#### Module-Based Testing
-```bash
-# Run all GNN tests
-python -m pytest src/tests/test_gnn_*.py
-
-# Run all render tests
-python -m pytest src/tests/test_render_*.py
-
-# Run all pipeline tests
-python -m pytest src/tests/test_pipeline_*.py
-```
-
-#### Test Categories
-```bash
-# Run fast tests only
-python -m pytest -m fast
-
-# Run slow tests only
-python -m pytest -m slow
-
-# Run unit tests only
-python -m pytest -m unit
-
-# Run integration tests only
-python -m pytest -m integration
-
-# Run performance tests only
-python -m pytest -m performance
-```
-
-#### Full Test Suite
-```bash
-# Run all tests
-python -m pytest src/tests/
-
-# Run with coverage
-python -m pytest src/tests/ --cov=src
-
-# Run with parallel execution
-python -m pytest src/tests/ -n auto
-```
-
-### Test Runner
-
-The test runner (`src/tests/runner.py`) provides orchestrated test execution with:
-
-- **Modular Categories**: Organized test categories by module
-- **Parallel Execution**: Support for parallel test execution
-- **Timeout Management**: Configurable timeouts per test category
-- **Failure Limits**: Maximum failure limits per category
-- **Performance Tracking**: Built-in performance monitoring
-
-#### Runner Configuration
-
-The `MODULAR_TEST_CATEGORIES` dictionary defines test categories:
+The test runner (`runner.py`) is configured with comprehensive test categories:
 
 ```python
 MODULAR_TEST_CATEGORIES = {
@@ -192,218 +106,217 @@ MODULAR_TEST_CATEGORIES = {
         "max_failures": 8,
         "parallel": True
     },
-    # ... additional categories
+    # ... additional categories for all modules
 }
 ```
 
-## Test Fixtures
+## Test Execution
 
-### Core Fixtures
+### Running All Tests
+```bash
+# Run all tests
+python src/2_tests.py
 
-**Session-Level Fixtures:**
-- `test_config` - Test configuration for entire session
+# Run with specific options
+python src/2_tests.py --verbose --parallel --coverage
+```
+
+### Running Module-Specific Tests
+```bash
+# Run GNN tests only
+python src/2_tests.py --category gnn
+
+# Run multiple categories
+python src/2_tests.py --category gnn,render,audio
+```
+
+### Running Fast Tests
+```bash
+# Run fast test suite
+python src/tests/run_fast_tests.py
+```
+
+## Test Utilities
+
+### Shared Test Utilities (`src/utils/test_utils.py`)
+- `TEST_CATEGORIES` - Test category definitions
+- `TEST_STAGES` - Test execution stages
+- `TEST_CONFIG` - Test configuration
+- `is_safe_mode()` - Safe mode detection
+- `setup_test_environment()` - Test environment setup
+- `create_sample_gnn_content()` - Sample GNN content creation
+- `performance_tracker()` - Performance tracking decorator
+- `get_memory_usage()` - Memory usage monitoring
+- `assert_file_exists()` - File existence assertions
+- Report generation functions
+
+### Test Fixtures (`conftest.py`)
 - `project_root` - Project root directory
 - `src_dir` - Source directory
 - `test_dir` - Test directory
-
-**Utility Fixtures:**
 - `safe_filesystem` - Safe filesystem operations
-- `mock_subprocess` - Mock subprocess execution
-- `mock_imports` - Safe module imports
-- `mock_logger` - Mock logger for capturing logs
-
-**Test Data Fixtures:**
-- `sample_gnn_files` - Sample GNN files for testing
+- `mock_subprocess` - Mock subprocess operations
+- `mock_imports` - Mock import operations
+- `mock_logger` - Mock logging
+- `sample_gnn_files` - Sample GNN files
 - `isolated_temp_dir` - Isolated temporary directory
-- `pipeline_arguments` - Standard pipeline arguments
-- `comprehensive_test_data` - Complete test data set
-
-### Using Fixtures
-
-```python
-def test_gnn_processing(sample_gnn_files, isolated_temp_dir):
-    """Test GNN processing with sample files."""
-    # Use sample_gnn_files for input
-    # Use isolated_temp_dir for output
-    pass
-
-def test_pipeline_execution(mock_subprocess, mock_logger):
-    """Test pipeline execution with mocks."""
-    # Use mock_subprocess to avoid real subprocess calls
-    # Use mock_logger to capture and verify logs
-    pass
-```
+- `comprehensive_test_data` - Comprehensive test data
 
 ## Test Markers
 
 ### Available Markers
-
 - `@pytest.mark.unit` - Unit tests
 - `@pytest.mark.integration` - Integration tests
-- `@pytest.mark.performance` - Performance tests
 - `@pytest.mark.slow` - Slow tests
+- `@pytest.mark.safe_to_fail` - Tests that can safely fail
 - `@pytest.mark.fast` - Fast tests
-- `@pytest.mark.safe_to_fail` - Tests safe to fail
-- `@pytest.mark.destructive` - Tests that may modify system state
-- `@pytest.mark.external` - Tests requiring external dependencies
-- `@pytest.mark.core` - Core module tests
-- `@pytest.mark.pipeline` - Pipeline infrastructure tests
-- `@pytest.mark.recovery` - Pipeline recovery tests
-- `@pytest.mark.utilities` - Utility function tests
-- `@pytest.mark.environment` - Environment validation tests
-- `@pytest.mark.render` - Rendering and code generation tests
-- `@pytest.mark.export` - Export functionality tests
-- `@pytest.mark.parsers` - Parser and format tests
-- `@pytest.mark.main_orchestrator` - Main orchestrator tests
-- `@pytest.mark.type_checking` - Type checking tests
-- `@pytest.mark.mcp` - Model Context Protocol tests
-- `@pytest.mark.sapf` - SAPF audio generation tests
-- `@pytest.mark.visualization` - Visualization tests
 
-### Using Markers
+### Running Tests by Marker
+```bash
+# Run only unit tests
+pytest -m unit
 
-```python
-@pytest.mark.unit
-def test_basic_functionality():
-    """Basic unit test."""
-    pass
+# Run only integration tests
+pytest -m integration
 
-@pytest.mark.integration
-def test_module_integration():
-    """Integration test."""
-    pass
+# Run fast tests only
+pytest -m fast
 
-@pytest.mark.performance
-def test_performance_characteristics():
-    """Performance test."""
-    pass
-
-@pytest.mark.slow
-def test_comprehensive_workflow():
-    """Slow comprehensive test."""
-    pass
+# Exclude slow tests
+pytest -m "not slow"
 ```
 
-## Test Configuration
+## Test Categories
 
-### Environment Variables
+### Core Module Tests
+- **GNN Module**: Processing, validation, parsing, integration
+- **Render Module**: Code generation, multiple targets, performance
+- **MCP Module**: Model Context Protocol, tools, transport, integration
+- **Audio Module**: SAPF, generation, integration
+- **Visualization Module**: Graphs, matrices, ontology, interactive
 
-- `PYTHONPATH=src` - Add src to Python path for imports
-- `PYTEST_ADDOPTS` - Additional pytest options
-- `TEST_SAFE_MODE` - Enable safe mode for tests
+### Infrastructure Module Tests
+- **Pipeline Module**: Orchestration, steps, configuration, performance, recovery
+- **Export Module**: Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
+- **Execute Module**: Execution and simulation
+- **LLM Module**: LLM integration and analysis
+- **Ontology Module**: Ontology processing and validation
+- **Website Module**: Website generation
+- **Report Module**: Report generation and formatting
+- **Environment Module**: Environment setup and validation
 
-### Configuration Files
+### Specialized Module Tests
+- **Type Checker Module**: Type checking and validation
+- **Validation Module**: Validation and consistency
+- **Model Registry Module**: Model registry and versioning
+- **Analysis Module**: Analysis and statistical
+- **Integration Module**: System integration
+- **Security Module**: Security validation
+- **Research Module**: Research tools
+- **ML Integration Module**: Machine learning integration
+- **Advanced Visualization Module**: Advanced visualization
 
-- `conftest.py` - Pytest configuration and fixtures
-- `runner.py` - Test runner configuration
-- `utils/test_utils.py` - Centralized test utilities
+### Comprehensive Tests
+- **Comprehensive API**: Complete API testing
+- **Core Modules**: Core module integration
+- **Fast Suite**: Fast execution tests
+- **Main Orchestrator**: Main orchestrator functionality
+- **Coverage**: Code coverage tests
+- **Performance**: Performance and benchmarking
+- **Unit**: Basic unit tests
+
+## Test Execution Features
+
+### Resource Monitoring
+- Memory usage tracking
+- CPU usage monitoring
+- Timeout handling
+- Resource limits
+
+### Parallel Execution
+- Category-based parallel execution
+- Configurable parallelization
+- Resource-aware scheduling
+
+### Error Handling
+- Graceful failure handling
+- Error reporting and logging
+- Recovery mechanisms
+- Safe-to-fail test execution
+
+### Reporting
+- Comprehensive test reports
+- Performance metrics
+- Coverage analysis
+- Error summaries
 
 ## Best Practices
 
 ### Test Organization
-
-1. **Module-Based Structure**: Organize tests by module with clear naming
-2. **Comprehensive Coverage**: Use `_overall.py` files for complete module coverage
-3. **Specialized Areas**: Use `_area.py` files for specific testing areas
-4. **Clean Imports**: Import from `utils.test_utils` for shared utilities
+1. **Module-Based Structure**: Each module has its own test files
+2. **Comprehensive Coverage**: Each module has an `_overall.py` test file
+3. **Specialized Testing**: Additional test files for specific areas
+4. **Integration Testing**: Cross-module integration tests
 
 ### Test Writing
+1. **Safe-to-Fail**: Use `@pytest.mark.safe_to_fail` for tests that can fail gracefully
+2. **Import Error Handling**: Wrap imports in try/except blocks
+3. **Comprehensive Assertions**: Test both success and failure cases
+4. **Performance Monitoring**: Use performance tracking for slow operations
 
-1. **Descriptive Names**: Use clear, descriptive test and method names
-2. **Proper Fixtures**: Use appropriate fixtures for test data and mocks
-3. **Safe Execution**: Use safe mocks to avoid side effects
-4. **Clear Assertions**: Use clear, specific assertions
-5. **Error Handling**: Test both success and failure scenarios
+### Test Execution
+1. **Category-Based**: Run tests by module category
+2. **Parallel Execution**: Use parallel execution for faster results
+3. **Resource Monitoring**: Monitor resource usage during execution
+4. **Error Recovery**: Handle errors gracefully with fallback mechanisms
 
-### Performance Considerations
+## Current Status
 
-1. **Fast Tests**: Mark quick tests with `@pytest.mark.fast`
-2. **Slow Tests**: Mark time-consuming tests with `@pytest.mark.slow`
-3. **Parallel Execution**: Use parallel execution for independent tests
-4. **Resource Limits**: Use resource limits for memory-intensive tests
+### Test Coverage
+- **423 test items** collected
+- **Comprehensive module coverage** for all major modules
+- **Specialized test areas** for specific functionality
+- **Integration tests** for cross-module functionality
 
-### Maintenance
+### Test Infrastructure
+- **Modular test runner** with category-based execution
+- **Resource monitoring** and timeout handling
+- **Parallel execution** support
+- **Comprehensive reporting** and error handling
 
-1. **Regular Updates**: Keep test utilities and fixtures up to date
-2. **Documentation**: Document complex test scenarios and utilities
-3. **Coverage**: Maintain good test coverage across all modules
-4. **Validation**: Regularly validate test environment and dependencies
+### Module Coverage
+- ✅ GNN Module - Complete coverage
+- ✅ Render Module - Complete coverage
+- ✅ MCP Module - Complete coverage
+- ✅ Audio Module - Complete coverage
+- ✅ Visualization Module - Complete coverage
+- ✅ Pipeline Module - Complete coverage
+- ✅ Export Module - Complete coverage
+- ✅ Execute Module - Complete coverage
+- ✅ LLM Module - Complete coverage
+- ✅ Ontology Module - Complete coverage
+- ✅ Website Module - Complete coverage
+- ✅ Report Module - Complete coverage
+- ✅ Environment Module - Complete coverage
 
-## Troubleshooting
+## Future Enhancements
 
-### Common Issues
+### Planned Improvements
+1. **Additional Module Tests**: Complete coverage for remaining modules
+2. **Performance Benchmarking**: Enhanced performance testing
+3. **Coverage Analysis**: Improved code coverage tracking
+4. **Automated Testing**: CI/CD integration
+5. **Test Documentation**: Enhanced test documentation
 
-**Import Errors:**
-- Ensure `PYTHONPATH=src` is set
-- Check that modules exist in the expected locations
-- Verify import paths in test files
+### Module Expansion
+- Type Checker Module tests
+- Validation Module tests
+- Model Registry Module tests
+- Analysis Module tests
+- Integration Module tests
+- Security Module tests
+- Research Module tests
+- ML Integration Module tests
+- Advanced Visualization Module tests
 
-**Test Discovery Issues:**
-- Check file naming follows `test_*.py` pattern
-- Verify test methods follow `test_*` naming
-- Ensure proper class inheritance from `unittest.TestCase`
-
-**Fixture Issues:**
-- Check fixture dependencies are available
-- Verify fixture scope matches usage
-- Ensure proper cleanup in fixtures
-
-**Performance Issues:**
-- Use `@pytest.mark.slow` for time-consuming tests
-- Implement proper mocking for external dependencies
-- Use parallel execution where appropriate
-
-### Debugging
-
-```bash
-# Run with verbose output
-python -m pytest -v
-
-# Run with debug output
-python -m pytest --tb=long
-
-# Run with print statements
-python -m pytest -s
-
-# Run specific test with full output
-python -m pytest test_file.py::test_method -v -s
-```
-
-## Contributing
-
-### Adding New Tests
-
-1. **Follow Naming Convention**: Use `test_MODULENAME_area.py` pattern
-2. **Import Utilities**: Import from `utils.test_utils` for shared functionality
-3. **Use Appropriate Fixtures**: Leverage existing fixtures for common patterns
-4. **Add Markers**: Use appropriate markers for test categorization
-5. **Update Documentation**: Document new test patterns and utilities
-
-### Adding New Fixtures
-
-1. **Place in conftest.py**: Add shared fixtures to `conftest.py`
-2. **Use Proper Scope**: Choose appropriate fixture scope (function, class, module, session)
-3. **Provide Documentation**: Document fixture purpose and usage
-4. **Handle Cleanup**: Ensure proper cleanup for resource-intensive fixtures
-
-### Adding New Utilities
-
-1. **Place in utils/test_utils.py**: Add shared utilities to the centralized location
-2. **Follow Naming Convention**: Use clear, descriptive names
-3. **Add Type Hints**: Include proper type hints for better IDE support
-4. **Provide Documentation**: Document utility purpose and parameters
-5. **Update Exports**: Add to `__init__.py` exports if needed
-
-## Summary
-
-The test infrastructure provides:
-
-- **Clean Organization**: Module-based file structure with clear naming
-- **Comprehensive Coverage**: Complete test coverage across all modules
-- **Centralized Utilities**: Shared test utilities in `utils/test_utils.py`
-- **Flexible Execution**: Multiple ways to run tests (individual, module, category)
-- **Robust Fixtures**: Comprehensive fixture system for test data and mocks
-- **Performance Optimization**: Parallel execution and resource management
-- **Maintainable Architecture**: Clear patterns and documentation
-
-This infrastructure supports the full testing lifecycle from development through deployment, ensuring code quality and reliability across the GNN Processing Pipeline. 
+This test infrastructure provides a solid foundation for comprehensive testing of the GNN Processing Pipeline, with modular organization, parallel execution, and comprehensive coverage of all major components. 

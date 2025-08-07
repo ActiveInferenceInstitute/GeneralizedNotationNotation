@@ -103,7 +103,7 @@ _monitoring_lock = threading.Lock()
 __all__ = [
     'PerformanceTracker',
     'performance_tracker',
-    'track_operation',
+    'track_operation_standalone',
     'get_performance_metrics',
     'start_performance_monitoring',
     'stop_performance_monitoring',
@@ -111,7 +111,7 @@ __all__ = [
 ]
 
 @contextmanager
-def track_operation(operation: str, metadata: dict = None):
+def track_operation_standalone(operation: str, metadata: dict = None):
     """
     Context manager to track the duration of an operation using the global performance_tracker.
     Args:

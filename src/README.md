@@ -1,5 +1,48 @@
 # GNN Processing Pipeline - Comprehensive Documentation
 
+## Pipeline Architecture: Thin Orchestrator Pattern
+
+The GNN processing pipeline follows a **thin orchestrator pattern** for maintainability, modularity, and testability:
+
+### 🏗️ Architectural Pattern
+
+- **Numbered Scripts** (e.g., `11_render.py`, `10_ontology.py`): Thin orchestrators that handle pipeline orchestration, argument parsing, logging, and result aggregation
+- **Module `__init__.py`**: Imports and exposes functions from modular files within the module folder  
+- **Modular Files** (e.g., `src/render/renderer.py`, `src/ontology/processor.py`): Contain the actual implementation of core methods
+- **Tests**: All methods are tested in `src/tests/` with comprehensive test coverage
+
+### 📁 File Organization Example
+
+```
+src/
+├── 11_render.py                    # Thin orchestrator - imports from render/
+├── render/
+│   ├── __init__.py                 # Imports from renderer.py, pymdp/, etc.
+│   ├── renderer.py                 # Core rendering functions
+│   ├── pymdp/                      # PyMDP-specific rendering
+│   ├── rxinfer/                    # RxInfer.jl-specific rendering
+│   └── discopy/                    # DisCoPy-specific rendering
+├── 10_ontology.py                  # Thin orchestrator - imports from ontology/
+├── ontology/
+│   ├── __init__.py                 # Imports from processor.py
+│   └── processor.py                # Core ontology processing functions
+└── tests/
+    ├── test_render_integration.py  # Tests for render module
+    └── test_ontology_integration.py # Tests for ontology module
+```
+
+### ✅ Correct Pattern Examples
+
+- `11_render.py` imports from `src/render/` and calls `generate_pymdp_code()`, `generate_rxinfer_code()`, etc.
+- `10_ontology.py` imports from `src/ontology/` and calls `process_ontology_file()`, `extract_ontology_terms()`, etc.
+- Scripts contain only orchestration logic, not domain-specific processing code
+
+### ❌ Incorrect Pattern Examples
+
+- Defining `generate_pymdp_code()` directly in `11_render.py`
+- Defining `process_ontology_file()` directly in `10_ontology.py`
+- Any long method definitions (>20 lines) in numbered scripts
+
 ## Pipeline Safety and Reliability
 
 This README documents the comprehensive safety enhancements implemented across all 23 numbered pipeline scripts (0-22) to ensure safe-to-fail operation with robust error handling, monitoring, and recovery capabilities.
@@ -119,7 +162,7 @@ output/
 **Verification Results:**
 - **Visualization Steps**: ✅ Generate outputs in all dependency scenarios
 - **Execute Step**: ✅ Handles all execution failures gracefully
-- **Pipeline Flow**: ✅ Continues through all 22 steps regardless of individual failures
+- **Pipeline Flow**: ✅ Continues through all 23 steps regardless of individual failures
 - **Output Organization**: ✅ Systematic output directory structure maintained
 - **Error Reporting**: ✅ Comprehensive error documentation without pipeline termination
 
@@ -127,7 +170,7 @@ output/
 
 **Running the Pipeline:**
 ```bash
-# Full pipeline execution (guaranteed to complete all 22 steps)
+# Full pipeline execution (guaranteed to complete all 23 steps)
 cd src && python main.py
 
 # Individual step execution (safe-to-fail)

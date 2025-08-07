@@ -199,4 +199,11 @@ Every numbered script follows this standardized pattern:
 - **Scientific Reproducibility**: Deterministic behavior with full audit trails and version control
 - **Comprehensive Testing**: Unit tests, integration tests, and end-to-end pipeline validation
 - **Error Recovery**: Robust error handling with graceful recovery and detailed diagnostics
-- **Safe-to-Fail Implementation**: All steps designed to continue pipeline execution regardless of internal failures 
+- **Safe-to-Fail Implementation**: All steps designed to continue pipeline execution regardless of internal failures
+
+### Documentation and Communication Standards
+- **Direct Documentation Updates**: Update existing README.md, docstrings, and documentation files directly
+- **Functional Improvements**: Focus on making smart functional improvements to code and documentation
+- **Inline Updates**: Add documentation directly to relevant files rather than creating separate report files
+- **Concrete Demonstrations**: Show functionality through working code, real outputs, and measurable results
+- **Understated Communication**: Use specific examples and functional demonstrations over promotional language 

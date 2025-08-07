@@ -412,6 +412,13 @@ class TestModulePattern:
 
 ## Quality Assurance Patterns
 
+### Documentation and Communication Standards
+- **Direct Updates**: Update existing documentation files directly rather than creating separate report files
+- **Functional Focus**: Make smart functional improvements to code and documentation inline
+- **Real Demonstrations**: Show functionality through working code and actual outputs
+- **Concrete Examples**: Use specific file sizes, execution times, and measurable results
+- **Understated Approach**: Avoid promotional language, focus on concrete functionality
+
 ### Input Validation Pattern
 
 ```python

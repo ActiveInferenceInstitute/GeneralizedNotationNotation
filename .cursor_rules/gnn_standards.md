@@ -229,31 +229,6 @@ The `ProcessingContext` class manages:
 - Performance metrics and phase timing
 - Processing state and results
 
-## MCP Integration
-
-### Available Functions
-The GNN module provides comprehensive MCP integration:
-
-- **get_gnn_documentation**: Retrieve GNN documentation resources
-- **validate_gnn_content**: Multi-level content validation
-- **parse_gnn_content**: Content parsing with format detection
-- **analyze_gnn_model**: Comprehensive model analysis
-- **validate_cross_format_consistency_content**: Cross-format validation
-- **validate_schema_definitions_consistency**: Schema consistency checking
-- **process_gnn_directory**: Directory processing with reporting
-- **run_round_trip_tests**: Round-trip testing execution
-- **validate_directory_cross_format_consistency**: Directory cross-format validation
-- **get_gnn_schema_info**: Schema information retrieval
-- **get_gnn_module_info**: Module capability information
-
-### Documentation Resources
-Available documentation includes:
-- **file_structure**: GNN file structure specifications
-- **punctuation**: Syntax and punctuation rules
-- **schema_json**: JSON schema specifications
-- **schema_yaml**: YAML schema specifications
-- **grammar**: Grammar specifications
-
 ## Testing and Quality Assurance
 
 ### Round-Trip Testing
@@ -285,6 +260,13 @@ Comprehensive round-trip testing validates semantic preservation:
 - **Error Handling**: Graceful degradation and robust error recovery
 - **Performance Optimization**: Efficient processing and memory management
 - **Extensibility**: Modular architecture for future enhancements
+
+### Documentation and Communication Standards
+- **Direct Documentation Updates**: Update existing README.md, docstrings, and documentation files directly
+- **Functional Improvements**: Focus on making smart functional improvements to code and documentation
+- **Inline Updates**: Add documentation directly to relevant files rather than creating separate report files
+- **Concrete Demonstrations**: Show functionality through working code, real outputs, and measurable results
+- **Understated Communication**: Use specific examples and functional demonstrations over promotional language
 
 ### Scientific Computing Standards
 - **Reproducibility**: Deterministic results with semantic checksums

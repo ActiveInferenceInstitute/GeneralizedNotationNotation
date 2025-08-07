@@ -1,5 +1,0 @@
-Category: fast_suite
-Success: False
-Duration: 2.32s
-Peak Memory: 30.79 MB
-CPU Usage: 0.0%

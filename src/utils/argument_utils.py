@@ -110,7 +110,7 @@ class PipelineArguments:
             
         # Set defaults for optional paths
         if self.ontology_terms_file is None:
-            self.ontology_terms_file = Path("ontology/act_inf_ontology_terms.json")
+            self.ontology_terms_file = Path("src/ontology/act_inf_ontology_terms.json")
         elif isinstance(self.ontology_terms_file, str):
             self.ontology_terms_file = Path(self.ontology_terms_file)
             

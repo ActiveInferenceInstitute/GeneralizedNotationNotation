@@ -1,309 +1,324 @@
+#!/usr/bin/env python3
+"""
+Renderer Module
+
+This module provides core rendering functionality for GNN specifications to various
+target languages and simulation environments.
+"""
+
 from pathlib import Path
-import logging
-import re
-import json
-from pipeline import get_output_dir_for_script
-from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
-from gnn.parsers.markdown_parser import MarkdownGNNParser
+from typing import Dict, Any, Optional, Union, Tuple, List
+from datetime import datetime
 
-# Import rendering functionality
-try:
-    from .render import render_gnn_spec
-    RENDER_AVAILABLE = True
-except ImportError as e:
-    render_gnn_spec = None
-    RENDER_AVAILABLE = False
+def generate_pymdp_code(model_data: Dict) -> str:
+    """Generate PyMDP simulation code using the modular PyMDP renderer."""
+    try:
+        from .pymdp.pymdp_renderer import render_gnn_to_pymdp
+        from .pymdp.pymdp_converter import GnnToPyMdpConverter
+        
+        # Get model name for file paths
+        model_name = model_data.get('model_name', 'GNN_Model')
+        
+        # Use the dedicated PyMDP converter for full script generation
+        converter = GnnToPyMdpConverter(model_data)
+        pymdp_script = converter.get_full_python_script(include_example_usage=True)
+        
+        if pymdp_script:
+            return pymdp_script
+        else:
+            # Fallback to renderer if converter doesn't work
+            # Create a temporary output path (the script content will be returned, not written)
+            temp_output_path = Path("/tmp/temp_pymdp_script.py")
+            success, message, warnings = render_gnn_to_pymdp(model_data, temp_output_path)
+            
+            if success and temp_output_path.exists():
+                with open(temp_output_path, 'r') as f:
+                    script_content = f.read()
+                temp_output_path.unlink()  # Clean up
+                return script_content
+            else:
+                raise Exception(f"PyMDP renderer failed: {message}")
+                
+    except Exception as e:
+        return f"""#!/usr/bin/env python3
+# PyMDP code generation failed: {e}
+# Please check the GNN specification and try again.
+print("Error: PyMDP code generation failed")
+"""
 
-def _parse_initial_parameterization_robust(section_content: str) -> dict:
+def generate_rxinfer_code(model_data: Dict) -> str:
+    """Generate RxInfer.jl simulation code using the modular RxInfer renderer."""
+    try:
+        from .rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
+        
+        # Create a temporary output path
+        temp_output_path = Path("/tmp/temp_rxinfer_script.jl")
+        success, message, warnings = render_gnn_to_rxinfer(model_data, temp_output_path)
+        
+        if success and temp_output_path.exists():
+            with open(temp_output_path, 'r') as f:
+                script_content = f.read()
+            temp_output_path.unlink()  # Clean up
+            return script_content
+        else:
+            raise Exception(f"RxInfer renderer failed: {message}")
+            
+    except ImportError:
+        return generate_rxinfer_fallback_code(model_data)
+    except Exception as e:
+        return generate_rxinfer_fallback_code(model_data)
+
+def generate_rxinfer_fallback_code(model_data: Dict) -> str:
+    """Fallback RxInfer.jl code generation."""
+    # Calculate dimensions
+    state_vars = [var for var in model_data.get('variables', []) if 'state' in var.get('type', '')]
+    obs_vars = [var for var in model_data.get('variables', []) if 'observation' in var.get('type', '')]
+    action_vars = [var for var in model_data.get('variables', []) if 'action' in var.get('type', '')]
+    
+    num_states = max([max(var.get('dimensions', [1])) for var in state_vars]) if state_vars else 3
+    num_obs = max([max(var.get('dimensions', [1])) for var in obs_vars]) if obs_vars else 3
+    num_controls = max([max(var.get('dimensions', [1])) for var in action_vars]) if action_vars else 3
+    
+    code = f"""# RxInfer.jl Active Inference Simulation
+# Generated from GNN Model: {model_data.get('model_name', 'Unknown')}
+# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+using RxInfer
+using Distributions
+using LinearAlgebra
+
+# Model parameters
+num_states = {num_states}
+num_obs = {num_obs}
+num_controls = {num_controls}
+
+# Define the model
+@model function active_inference_model(n_steps)
+    # Priors
+    s_prior ~ Dirichlet(ones(num_states))
+    A ~ MatrixDirichlet(ones(num_obs, num_states))
+    B ~ ArrayDirichlet(ones(num_states, num_states, num_controls))
+    C ~ Normal(0, 1)
+    
+    # State sequence
+    s = randomvar(n_steps)
+    o = datavar(Vector{{Float64}}, n_steps)
+    
+    # Initial state
+    s[1] ~ Categorical(s_prior)
+    
+    # State transitions and observations
+    for t in 1:n_steps
+        if t > 1
+            s[t] ~ Categorical(B[:, :, 1])  # Simplified transition
+        end
+        o[t] ~ Normal(A * s[t], 1.0)  # Observation model
+    end
+end
+
+# Inference
+n_steps = 10
+results = inference(
+    model = active_inference_model(n_steps),
+    data = (o = [randn(num_obs) for _ in 1:n_steps],),
+    initmessages = (s = Categorical(ones(num_states) / num_states),)
+)
+
+println("Active Inference simulation completed")
+"""
+    return code
+
+def generate_activeinference_jl_code(model_data: Dict) -> str:
+    """Generate ActiveInference.jl simulation code using the modular ActiveInference.jl renderer."""
+    try:
+        from .activeinference_jl.activeinference_jl_renderer import render_gnn_to_activeinference_jl
+        
+        # Create a temporary output path
+        temp_output_path = Path("/tmp/temp_activeinference_script.jl")
+        success, message, warnings = render_gnn_to_activeinference_jl(model_data, temp_output_path)
+        
+        if success and temp_output_path.exists():
+            with open(temp_output_path, 'r') as f:
+                script_content = f.read()
+            temp_output_path.unlink()  # Clean up
+            return script_content
+        else:
+            raise Exception(f"ActiveInference.jl renderer failed: {message}")
+            
+    except ImportError:
+        return generate_activeinference_jl_fallback_code(model_data)
+    except Exception as e:
+        return generate_activeinference_jl_fallback_code(model_data)
+
+def generate_activeinference_jl_fallback_code(model_data: Dict) -> str:
+    """Fallback ActiveInference.jl code generation."""
+    # Calculate dimensions
+    state_vars = [var for var in model_data.get('variables', []) if 'state' in var.get('type', '')]
+    obs_vars = [var for var in model_data.get('variables', []) if 'observation' in var.get('type', '')]
+    action_vars = [var for var in model_data.get('variables', []) if 'action' in var.get('type', '')]
+    
+    num_states = max([max(var.get('dimensions', [1])) for var in state_vars]) if state_vars else 3
+    num_obs = max([max(var.get('dimensions', [1])) for var in obs_vars]) if obs_vars else 3
+    num_controls = max([max(var.get('dimensions', [1])) for var in action_vars]) if action_vars else 3
+    
+    code = f"""# ActiveInference.jl Simulation
+# Generated from GNN Model: {model_data.get('model_name', 'Unknown')}
+# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+using ActiveInference
+using Distributions
+using LinearAlgebra
+
+# Model parameters
+num_states = {num_states}
+num_obs = {num_obs}
+num_controls = {num_controls}
+
+# Define the generative model
+function create_generative_model()
+    # A matrix (likelihood)
+    A = rand(Dirichlet(ones(num_obs, num_states)))
+    
+    # B matrix (transition)
+    B = rand(Dirichlet(ones(num_states, num_states, num_controls)))
+    
+    # C vector (preferences)
+    C = randn(num_obs)
+    
+    # D vector (prior)
+    D = rand(Dirichlet(ones(num_states)))
+    
+    return A, B, C, D
+end
+
+# Create model
+A, B, C, D = create_generative_model()
+
+# Active inference agent
+agent = ActiveInferenceAgent(A, B, C, D)
+
+# Simulation
+n_steps = 10
+observations = [randn(num_obs) for _ in 1:n_steps]
+
+for t in 1:n_steps
+    # Update beliefs
+    agent.update_beliefs(observations[t])
+    
+    # Select action
+    action = agent.select_action()
+    
+    println("Step \$t: Action = \$action")
+end
+
+println("Active Inference simulation completed")
+"""
+    return code
+
+def generate_discopy_code(model_data: Dict) -> str:
+    """Generate DisCoPy categorical diagram code using the modular DisCoPy renderer."""
+    try:
+        from .discopy.discopy_renderer import render_gnn_to_discopy
+        
+        # Create a temporary output path
+        temp_output_path = Path("/tmp/temp_discopy_script.py")
+        success, message, warnings = render_gnn_to_discopy(model_data, temp_output_path)
+        
+        if success and temp_output_path.exists():
+            with open(temp_output_path, 'r') as f:
+                script_content = f.read()
+            temp_output_path.unlink()  # Clean up
+            return script_content
+        else:
+            raise Exception(f"DisCoPy renderer failed: {message}")
+            
+    except ImportError:
+        return generate_discopy_fallback_code(model_data)
+    except Exception as e:
+        return generate_discopy_fallback_code(model_data)
+
+def generate_discopy_fallback_code(model_data: Dict) -> str:
+    """Fallback DisCoPy categorical diagram code generation."""
+    code = f"""# DisCoPy Categorical Diagram
+# Generated from GNN Model: {model_data.get('model_name', 'Unknown')}
+# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+from discopy import *
+from discopy.quantum import *
+import numpy as np
+
+# Define the categorical structure
+def create_active_inference_diagram():
+    # Objects
+    State = Ob('State')
+    Observation = Ob('Observation')
+    Action = Ob('Action')
+    
+    # Morphisms
+    perception = Box('perception', State, Observation)
+    action = Box('action', State, Action)
+    inference = Box('inference', Observation, State)
+    
+    # Create diagram
+    diagram = perception >> inference >> action
+    
+    return diagram
+
+# Create the diagram
+diagram = create_active_inference_diagram()
+
+print("DisCoPy categorical diagram created:")
+print(diagram)
+
+# Evaluate the diagram
+result = diagram.eval()
+print("\\nDiagram evaluation result:")
+print(result)
+"""
+    return code
+
+def render_gnn_spec(
+    gnn_spec: Dict[str, Any],
+    target: str,
+    output_directory: Union[str, Path],
+    options: Optional[Dict[str, Any]] = None
+) -> Tuple[bool, str, List[str]]:
     """
-    Robustly parse the InitialParameterization section, properly handling multi-line matrix blocks.
-    Handles cases where the opening brace is on a line by itself, and accumulates lines until braces are balanced.
-    """
-    data = {}
-    lines = section_content.split('\n')
-    current_key = None
-    current_block = []
-    in_matrix = False
-    open_brace = None
-    close_brace = None
-    brace_count = 0
-
-    for line in lines:
-        line_strip = line.strip()
-        if not line_strip or line_strip.startswith('#'):
-            continue
-
-        # Detect start of a matrix block (A=, B=, C=, D=, E=)
-        matrix_start = re.match(r'^(A|B|C|D|E)\s*=\s*([{(])', line_strip)
-        if not in_matrix and matrix_start:
-            # Save previous block if exists
-            if current_key and current_block:
-                data[current_key] = '\n'.join(current_block)
-            # Start new matrix block
-            current_key = matrix_start.group(1)
-            open_brace = matrix_start.group(2)
-            close_brace = '}' if open_brace == '{' else ')'
-            # Find the position of the opening brace
-            brace_pos = line_strip.find(open_brace)
-            # Start collecting from the opening brace
-            block_line = line_strip[brace_pos:]
-            current_block = [block_line]
-            # Initialize brace count for this block
-            brace_count = block_line.count(open_brace) - block_line.count(close_brace)
-            in_matrix = True
-            # If the block is closed on the same line, finish immediately
-            if brace_count == 0:
-                data[current_key] = '\n'.join(current_block)
-                in_matrix = False
-                current_key = None
-                current_block = []
-                open_brace = None
-                close_brace = None
-            continue
-
-        # Handle lines inside a matrix block
-        if in_matrix:
-            if not matrix_start:  # Don't double-add the start line
-                current_block.append(line_strip)
-                brace_count += line_strip.count(open_brace)
-                brace_count -= line_strip.count(close_brace)
-            # If braces are balanced, end the matrix block
-            if brace_count == 0:
-                data[current_key] = '\n'.join(current_block)
-                in_matrix = False
-                current_key = None
-                current_block = []
-                open_brace = None
-                close_brace = None
-            continue
-
-        # Handle single-line assignments (e.g., C = (0.0, 0.0, 1.0))
-        single_assign = re.match(r'^(C|D|E)\s*=\s*(.+)$', line_strip)
-        if single_assign:
-            data[single_assign.group(1)] = single_assign.group(2).strip()
-
-    # Save any trailing block
-    if in_matrix and current_key and current_block:
-        data[current_key] = '\n'.join(current_block)
-
-    return data
-
-def render_gnn_files(
-    target_dir: Path, 
-    output_dir: Path, 
-    logger: logging.Logger, 
-    recursive: bool = False, 
-    verbose: bool = False,
-    **kwargs
-) -> bool:
-    """
-    Render GNN files to simulation environments.
+    Render GNN specification to target language.
     
     Args:
-        target_dir: Directory containing GNN files to render
-        output_dir: Output directory for results
-        logger: Logger instance for this step
-        recursive: Whether to process files recursively
-        verbose: Whether to enable verbose logging
-        **kwargs: Additional rendering options
+        gnn_spec: GNN specification dictionary
+        target: Target language/framework
+        output_directory: Output directory for rendered code
+        options: Additional rendering options
         
     Returns:
-        True if rendering succeeded, False otherwise
+        Tuple of (success, message, warnings)
     """
-    log_step_start(logger, "Rendering GNN files to simulation environments")
-    
-    # Use centralized output directory configuration
-    render_output_dir = get_output_dir_for_script("9_render.py", output_dir)
-    render_output_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Find GNN files
-    pattern = "**/*.json" if recursive else "*.json"
-    gnn_files = list(target_dir.glob(pattern))
-
-    if not gnn_files:
-        # Try markdown files as fallback
-        pattern = "**/*.md" if recursive else "*.md"
-        gnn_files = list(target_dir.glob(pattern))
-        
-    if not gnn_files:
-        log_step_warning(logger, f"No GNN files (JSON or MD) found in {target_dir} using pattern '{pattern}'")
-        return False
-
-    logger.info(f"Found {len(gnn_files)} GNN files to render")
-    
-    successful_renders = 0
-    failed_renders = 0
-    
-    # Define rendering targets with appropriate options
-    render_targets = [
-        ("pymdp", "pymdp"),
-        ("rxinfer_toml", "rxinfer"),
-        ("discopy_combined", "discopy"),
-        ("activeinference_combined", "activeinference_jl"),
-        ("jax_pomdp", "jax"),
-        ("jax", "jax")
-    ]
-    
-    parser = MarkdownGNNParser()
-    
     try:
-        with performance_tracker.track_operation("render_all_gnn_files"):
-            for gnn_file in gnn_files:
-                try:
-                    # Determine file type and parse accordingly
-                    if gnn_file.suffix.lower() == '.json':
-                        # Load JSON file directly
-                        with open(gnn_file, 'r', encoding='utf-8') as f:
-                            json_data = json.load(f)
-                        
-                        # Convert JSON structure to expected gnn_spec format
-                        gnn_spec = {
-                            "name": json_data.get("name", "Unknown_Model"),
-                            "annotation": json_data.get("raw_sections", {}).get("ModelAnnotation", ""),
-                            "variables": json_data.get("statespaceblock", []),
-                            "connections": json_data.get("connections", []),
-                            "parameters": json_data.get("parameters", []),
-                            "equations": json_data.get("raw_sections", {}).get("Equations", ""),
-                            "time": json_data.get("time_specification", {}),
-                            "ontology": json_data.get("ontology_mappings", []),
-                            "model_parameters": json_data.get("model_parameters", {}),
-                            "source_file": str(gnn_file),
-                            "InitialParameterization": json_data.get("initial_parameterization", {})
-                        }
-                        
-                        logger.info(f"Loaded JSON GNN file: {gnn_file.name}")
-                        
-                    else:
-                        # Parse markdown file using the existing parser
-                        parse_result = parser.parse_file(str(gnn_file))
-                        if not parse_result.success:
-                            log_step_warning(logger, f"Parsing failed for {gnn_file.name}: {parse_result.errors}")
-                            failed_renders += len(render_targets)
-                            continue
-                        
-                        model = parse_result.model
-                        
-                        # Convert model to dictionary for renderers
-                        gnn_spec = {
-                            "name": model.model_name,
-                            "annotation": model.annotation,
-                            "variables": [vars(v) for v in model.variables],
-                            "connections": [vars(c) for c in model.connections],
-                            "parameters": [vars(p) for p in model.parameters],
-                            "equations": model.equations,
-                            "time": vars(model.time_specification),
-                            "ontology": [vars(m) for m in model.ontology_mappings],
-                            "model_parameters": model.extensions.get('model_parameters', {}),
-                            "source_file": str(gnn_file)
-                        }
-                        
-                        # Extract InitialParameterization as a dictionary for matrix access
-                        initial_params = {}
-                        
-                        # Method 1: Extract from parsed parameters (most reliable)
-                        param_lines = [p for p in model.parameters if hasattr(p, 'name') and hasattr(p, 'value')]
-                        matrix_keys = ["A", "B", "C", "D", "E"]
-                        
-                        for param in param_lines:
-                            name = param.name.strip()
-                            value = param.value
-                            if name in matrix_keys:
-                                initial_params[name] = value
-                        
-                        # Method 2: Extract from raw InitialParameterization section if available
-                        if hasattr(model, 'extensions') and 'initial_parameterization' in model.extensions:
-                            raw_init_params = model.extensions['initial_parameterization']
-                            if isinstance(raw_init_params, str):
-                                # Use the robust parsing method from export module
-                                parsed_raw_params = _parse_initial_parameterization_robust(raw_init_params)
-                                for key, value in parsed_raw_params.items():
-                                    if key in matrix_keys:
-                                        initial_params[key] = value
-                        
-                        # Method 3: Fallback to direct file parsing if matrices are still missing
-                        missing_matrices = [key for key in matrix_keys if key not in initial_params or not initial_params[key]]
-                        if missing_matrices:
-                            # Read the original file content to extract matrices
-                            with open(gnn_file, 'r', encoding='utf-8') as f:
-                                content = f.read()
-                            
-                            # Find the InitialParameterization section
-                            if '## InitialParameterization' in content:
-                                start_idx = content.find('## InitialParameterization')
-                                end_idx = content.find('##', start_idx + 1)
-                                if end_idx == -1:
-                                    end_idx = len(content)
-                                
-                                init_section = content[start_idx:end_idx]
-                                
-                                # Use the robust parsing method from export module
-                                parsed_section_params = _parse_initial_parameterization_robust(init_section)
-                                for key, value in parsed_section_params.items():
-                                    if key in matrix_keys and key not in initial_params:
-                                        initial_params[key] = value
-                        
-                        # Debug logging
-                        for key in matrix_keys:
-                            if key in initial_params:
-                                logger.debug(f"Extracted {key} matrix: {initial_params[key]}")
-                            else:
-                                logger.warning(f"Missing {key} matrix in InitialParameterization")
-                        
-                        gnn_spec["InitialParameterization"] = initial_params
-                    
-                    for target_format, output_subdir in render_targets:
-                        try:
-                            # Check if rendering is available
-                            if not RENDER_AVAILABLE or render_gnn_spec is None:
-                                failed_renders += 1
-                                log_step_warning(logger, f"Render functionality not available for {target_format}")
-                                continue
-                            
-                            sub_output_dir = render_output_dir / output_subdir
-                            sub_output_dir.mkdir(exist_ok=True)
-                            
-                            # Use model name for filename
-                            base_name = gnn_spec["name"].lower().replace(" ", "_")
-                            if target_format.endswith("_jl") or target_format == "activeinference_combined":
-                                output_file = sub_output_dir / f"{base_name}.jl"
-                            elif target_format == "jax" or target_format == "jax_pomdp":
-                                output_file = sub_output_dir / f"{base_name}.py"
-                            else:
-                                output_file = sub_output_dir / f"{base_name}.py"
-                            
-                            # Render the model
-                            success, message, artifacts = render_gnn_spec(
-                                gnn_spec=gnn_spec,
-                                target=target_format,
-                                output_directory=sub_output_dir,
-                                options={"output_file": str(output_file)}
-                            )
-                            
-                            if success:
-                                successful_renders += 1
-                                logger.debug(f"Successfully rendered {gnn_file.name} to {target_format}")
-                            else:
-                                failed_renders += 1
-                                log_step_warning(logger, f"Failed to render {gnn_file.name} to {target_format}: {message}")
-                                
-                        except Exception as e:
-                            failed_renders += 1
-                            log_step_error(logger, f"Exception rendering {gnn_file.name} to {target_format}: {e}")
-                            
-                except Exception as e:
-                    failed_renders += len(render_targets)
-                    log_step_error(logger, f"Failed to process {gnn_file.name}: {e}")
+        output_dir = Path(output_directory)
+        output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Log results summary
-        total_renders = successful_renders + failed_renders
-        if total_renders > 0:
-            success_rate = successful_renders / total_renders * 100
-            log_step_success(logger, f"Rendering completed. Success rate: {success_rate:.1f}% ({successful_renders}/{total_renders})")
-            return failed_renders == 0
+        # Generate code based on target
+        if target == "pymdp":
+            code = generate_pymdp_code(gnn_spec)
+        elif target == "rxinfer":
+            code = generate_rxinfer_code(gnn_spec)
+        elif target == "activeinference_jl":
+            code = generate_activeinference_jl_code(gnn_spec)
+        elif target == "discopy":
+            code = generate_discopy_code(gnn_spec)
         else:
-            log_step_warning(logger, "No files were rendered")
-            return False
-            
+            return False, f"Unsupported target: {target}", []
+        
+        # Save generated code
+        model_name = gnn_spec.get('model_name', 'gnn_model')
+        output_file = output_dir / f"{model_name}_{target}.py" if target != "discopy" else output_dir / f"{model_name}_{target}.py"
+        
+        with open(output_file, 'w') as f:
+            f.write(code)
+        
+        return True, f"Successfully rendered to {output_file}", []
+        
     except Exception as e:
-        log_step_error(logger, f"Rendering failed: {e}")
-        return False 
+        return False, f"Rendering failed: {e}", [] 

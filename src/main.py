@@ -2,7 +2,52 @@
 """
 Main GNN Processing Pipeline
 
-This script orchestrates the complete 22-step GNN processing pipeline.
+This script orchestrates the complete 23-step GNN processing pipeline (steps 0-22).
+The pipeline transforms GNN specifications into executable simulations, visualizations,
+and advanced representations including audio sonification.
+
+Pipeline Steps:
+0. Template initialization (0_template.py)
+1. Environment setup (1_setup.py)
+2. Test suite execution (2_tests.py)
+3. GNN file processing (3_gnn.py)
+4. Model registry (4_model_registry.py)
+5. Type checking (5_type_checker.py)
+6. Validation (6_validation.py)
+7. Multi-format export (7_export.py)
+8. Visualization (8_visualization.py)
+9. Advanced visualization (9_advanced_viz.py)
+10. Ontology processing (10_ontology.py)
+11. Code rendering (11_render.py)
+12. Execution (12_execute.py)
+13. LLM processing (13_llm.py)
+14. ML integration (14_ml_integration.py)
+15. Audio processing (15_audio.py)
+16. Analysis (16_analysis.py)
+17. Integration (17_integration.py)
+18. Security (18_security.py)
+19. Research (19_research.py)
+20. Website generation (20_website.py)
+21. Report generation (21_report.py)
+22. Model Context Protocol processing (22_mcp.py)
+
+Usage:
+    python src/main.py [options]
+    
+Examples:
+    # Run full pipeline
+    python src/main.py --target-dir input/gnn_files --verbose
+    
+    # Run specific steps only
+    python src/main.py --only-steps "0,1,2,3" --verbose
+    
+    # Skip certain steps
+    python src/main.py --skip-steps "15,16" --verbose
+
+For complete usage information, see:
+- README.md: Project overview and quick start
+- doc/pipeline/README.md: Detailed pipeline documentation
+- src/README.md: Pipeline safety and reliability documentation
 """
 
 import sys

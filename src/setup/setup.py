@@ -773,6 +773,106 @@ def cleanup_uv_setup() -> bool:
         logger.error(f"Failed to clean up UV setup: {e}")
         return False
 
+def log_system_info(logger: logging.Logger) -> Dict[str, Any]:
+    """Log comprehensive system information."""
+    try:
+        logger.info("Logging system information")
+        
+        system_info = {
+            "platform": platform.platform(),
+            "python_version": sys.version,
+            "python_executable": sys.executable,
+            "architecture": platform.architecture(),
+            "processor": platform.processor(),
+            "machine": platform.machine(),
+            "node": platform.node()
+        }
+        
+        logger.info(f"System Platform: {system_info['platform']}")
+        logger.info(f"Python Version: {system_info['python_version']}")
+        logger.info(f"Python Executable: {system_info['python_executable']}")
+        logger.info(f"Architecture: {system_info['architecture']}")
+        logger.info(f"Processor: {system_info['processor']}")
+        logger.info(f"Machine: {system_info['machine']}")
+        logger.info(f"Node: {system_info['node']}")
+        
+        logger.info("System information logged")
+        return system_info
+        
+    except Exception as e:
+        logger.error(f"Failed to log system information: {e}")
+        return {}
+
+def install_optional_dependencies(project_root: Path, logger: logging.Logger, 
+                                package_groups: List[str] = None) -> bool:
+    """Install optional dependencies for the project."""
+    try:
+        logger.info("Installing optional dependencies")
+        
+        if not package_groups:
+            package_groups = ["dev", "test", "docs"]
+        
+        for group in package_groups:
+            try:
+                logger.info(f"Installing {group} dependencies")
+                result = run_command(["uv", "pip", "install", "-e", ".[" + group + "]"], 
+                                   cwd=project_root, check=False, verbose=True)
+                
+                if result.returncode == 0:
+                    logger.info(f"✅ {group} dependencies installed successfully")
+                else:
+                    logger.warning(f"⚠️ {group} dependencies installation failed")
+                    
+            except Exception as e:
+                logger.warning(f"⚠️ Failed to install {group} dependencies: {e}")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Failed to install optional dependencies: {e}")
+        return False
+
+def create_project_structure(output_dir: Path, logger: logging.Logger) -> bool:
+    """Create the standard project structure."""
+    try:
+        logger.info("Creating project structure")
+        
+        # Create standard directories
+        directories = [
+            "input/gnn_files",
+            "output",
+            "output/logs",
+            "output/temp",
+            "doc",
+            "tests"
+        ]
+        
+        for directory in directories:
+            dir_path = output_dir / directory
+            dir_path.mkdir(parents=True, exist_ok=True)
+            logger.debug(f"Created directory: {dir_path}")
+        
+        # Create basic configuration files
+        config_files = {
+            "input/config.yaml": "# GNN Pipeline Configuration\n",
+            "output/.gitkeep": "",
+            "tests/__init__.py": "# Tests package\n"
+        }
+        
+        for file_path, content in config_files.items():
+            full_path = output_dir / file_path
+            full_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(full_path, 'w') as f:
+                f.write(content)
+            logger.debug(f"Created file: {full_path}")
+        
+        logger.info("Project structure created successfully")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Failed to create project structure: {e}")
+        return False
+
 def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
     """
     Set up a new GNN project at the specified path using UV.

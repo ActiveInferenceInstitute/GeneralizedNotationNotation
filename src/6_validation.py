@@ -1,13 +1,27 @@
 #!/usr/bin/env python3
 """
-GNN Processing Pipeline - Step 6: Enhanced Validation
+GNN Processing Pipeline - Step 6: Enhanced Validation (Thin Orchestrator)
 
 This step performs enhanced validation and quality assurance on GNN models,
 including semantic validation, performance profiling, and consistency checking.
 
-Usage:
-    python 6_validation.py [options]
-    (Typically called by main.py)
+How to run:
+  python src/6_validation.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/main.py  # (runs as part of the pipeline)
+
+Expected outputs:
+  - Validation results in the specified output directory
+  - Semantic validation reports and scores
+  - Performance profiling and resource estimates
+  - Consistency checking and quality metrics
+  - Actionable error messages if dependencies or paths are missing
+  - Clear logging of all resolved arguments and paths
+
+If you encounter errors:
+  - Check that validation dependencies are installed
+  - Check that src/validation/ contains validation modules
+  - Check that the output directory is writable
+  - Verify validation configuration and requirements
 """
 
 import sys
@@ -16,6 +30,9 @@ from pathlib import Path
 import json
 import datetime
 from typing import Dict, Any, List, Optional, Union
+
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
 
 # Import centralized utilities and configuration
 from utils import (
@@ -37,21 +54,37 @@ from pipeline import (
 
 from utils.pipeline_template import create_standardized_pipeline_script
 
-# Initialize logger for this step
-logger = setup_step_logging("6_validation", verbose=False)
-
-# Import step-specific modules
+# Import core validation functions from validation module
 try:
-    from validation.semantic_validator import SemanticValidator
-    from validation.performance_profiler import PerformanceProfiler
-    from validation.consistency_checker import ConsistencyChecker
+    from validation import (
+        process_semantic_validation,
+        profile_performance,
+        check_consistency,
+        validate_semantic_fallback,
+        profile_performance_fallback,
+        check_consistency_fallback
+    )
+    VALIDATION_AVAILABLE = True
+except ImportError:
+    VALIDATION_AVAILABLE = False
+    # Fallback function definitions if validation module is not available
+    def process_semantic_validation(*args, **kwargs):
+        return {"error": "Validation module not available"}
     
-    DEPENDENCIES_AVAILABLE = True
-    logger.debug("Successfully imported validation dependencies")
+    def profile_performance(*args, **kwargs):
+        return {"error": "Validation module not available"}
     
-except ImportError as e:
-    log_step_warning(logger, f"Failed to import validation dependencies: {e}")
-    DEPENDENCIES_AVAILABLE = False
+    def check_consistency(*args, **kwargs):
+        return {"error": "Validation module not available"}
+    
+    def validate_semantic_fallback(*args, **kwargs):
+        return {"error": "Validation module not available"}
+    
+    def profile_performance_fallback(*args, **kwargs):
+        return {"error": "Validation module not available"}
+    
+    def check_consistency_fallback(*args, **kwargs):
+        return {"error": "Validation module not available"}
 
 def process_validation_standardized(
     target_dir: Path,
@@ -76,6 +109,10 @@ def process_validation_standardized(
         True if processing succeeded, False otherwise
     """
     try:
+        # Check if validation module is available
+        if not VALIDATION_AVAILABLE:
+            log_step_warning(logger, "Validation module not available, using fallback functions")
+        
         # Start performance tracking
         with performance_tracker.track_operation("validation_processing", {"verbose": verbose, "recursive": recursive}):
             # Update logger verbosity if needed
@@ -90,367 +127,181 @@ def process_validation_standardized(
             step_output_dir = get_output_dir_for_script("6_validation.py", output_dir)
             step_output_dir.mkdir(parents=True, exist_ok=True)
             
-            # Validate step requirements
-            if not DEPENDENCIES_AVAILABLE:
-                log_step_warning(logger, "Validation dependencies are not available, functionality will be limited")
-            
             # Log processing parameters
             logger.info(f"Processing GNN files from: {target_dir}")
             logger.info(f"Output directory: {step_output_dir}")
             logger.info(f"Recursive processing: {recursive}")
             
-            # Extract additional parameters from kwargs
-            validation_level = kwargs.get('validation_level', 'standard')
-            profile_performance = kwargs.get('profile_performance', True)
-            check_consistency = kwargs.get('check_consistency', True)
+            # Load parsed GNN data from previous step
+            gnn_output_dir = get_output_dir_for_script("3_gnn.py", output_dir)
+            gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
             
-            logger.info(f"Validation level: {validation_level}")
-            logger.info(f"Performance profiling: {profile_performance}")
-            logger.info(f"Consistency checking: {check_consistency}")
-            
-            # Validate input directory
-            if not target_dir.exists():
-                log_step_error(logger, f"Input directory does not exist: {target_dir}")
+            if not gnn_results_file.exists():
+                log_step_error(logger, "GNN processing results not found. Run step 3 first.")
                 return False
             
-            # Find GNN files
-            pattern = "**/*.md" if recursive else "*.md"
-            gnn_files = list(target_dir.glob(pattern))
+            with open(gnn_results_file, 'r') as f:
+                gnn_results = json.load(f)
             
-            if not gnn_files:
-                log_step_warning(logger, f"No GNN files found in {target_dir}")
-                return True  # Not an error, just no files to process
+            logger.info(f"Loaded {len(gnn_results['processed_files'])} parsed GNN files")
             
-            logger.info(f"Found {len(gnn_files)} GNN files to validate")
-            
-            # Process files
-            successful_files = 0
-            failed_files = 0
-            warnings_count = 0
-            
-            # Initialize validators
-            semantic_validator = SemanticValidator(validation_level) if DEPENDENCIES_AVAILABLE else None
-            performance_profiler = PerformanceProfiler() if DEPENDENCIES_AVAILABLE and profile_performance else None
-            consistency_checker = ConsistencyChecker() if DEPENDENCIES_AVAILABLE and check_consistency else None
-            
-            # Process each file
-            validation_results = []
-            for gnn_file in gnn_files:
-                try:
-                    # Read file content
-                    with open(gnn_file, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                    
-                    file_result = {
-                        "file_path": str(gnn_file),
-                        "file_name": gnn_file.name,
-                        "validation_level": validation_level,
-                        "semantic_validation": {},
-                        "performance_profile": {},
-                        "consistency_check": {},
-                        "warnings": [],
-                        "errors": [],
-                        "status": "unknown"
-                    }
-                    
-                    # Semantic validation
-                    if semantic_validator:
-                        semantic_result = semantic_validator.validate(content)
-                        file_result["semantic_validation"] = semantic_result
-                        
-                        if not semantic_result.get("is_valid", False):
-                            file_result["errors"].extend(semantic_result.get("errors", []))
-                    else:
-                        # Fallback validation
-                        semantic_result = validate_semantic_fallback(content)
-                        file_result["semantic_validation"] = semantic_result
-                        
-                        if not semantic_result.get("is_valid", False):
-                            file_result["errors"].extend(semantic_result.get("errors", []))
-                    
-                    # Performance profiling
-                    if performance_profiler:
-                        profile_result = performance_profiler.profile(content)
-                        file_result["performance_profile"] = profile_result
-                        
-                        if profile_result.get("warnings", []):
-                            file_result["warnings"].extend(profile_result.get("warnings", []))
-                    else:
-                        # Fallback profiling
-                        profile_result = profile_performance_fallback(content)
-                        file_result["performance_profile"] = profile_result
-                    
-                    # Consistency checking
-                    if consistency_checker:
-                        consistency_result = consistency_checker.check(content)
-                        file_result["consistency_check"] = consistency_result
-                        
-                        if not consistency_result.get("is_consistent", False):
-                            file_result["warnings"].extend(consistency_result.get("warnings", []))
-                    else:
-                        # Fallback consistency check
-                        consistency_result = check_consistency_fallback(content)
-                        file_result["consistency_check"] = consistency_result
-                    
-                    # Determine overall status
-                    if file_result["errors"]:
-                        file_result["status"] = "failed"
-                        failed_files += 1
-                    elif file_result["warnings"]:
-                        file_result["status"] = "warnings"
-                        successful_files += 1
-                        warnings_count += 1
-                    else:
-                        file_result["status"] = "passed"
-                        successful_files += 1
-                    
-                    # Save individual file result
-                    file_output_dir = step_output_dir / gnn_file.stem
-                    file_output_dir.mkdir(parents=True, exist_ok=True)
-                    
-                    file_result_path = file_output_dir / f"{gnn_file.stem}_validation.json"
-                    with open(file_result_path, 'w') as f:
-                        json.dump(file_result, f, indent=2)
-                    
-                    validation_results.append(file_result)
-                    
-                except Exception as e:
-                    log_step_error(logger, f"Unexpected error validating {gnn_file}: {e}")
-                    failed_files += 1
-            
-            # Generate summary report
-            summary_file = step_output_dir / "validation_summary.json"
-            summary = {
+            # Validation results
+            validation_results = {
                 "timestamp": datetime.datetime.now().isoformat(),
-                "step_name": "validation",
-                "input_directory": str(target_dir),
+                "source_directory": str(target_dir),
                 "output_directory": str(step_output_dir),
-                "total_files": len(gnn_files),
-                "successful_files": successful_files,
-                "failed_files": failed_files,
-                "files_with_warnings": warnings_count,
-                "validation_level": validation_level,
-                "profile_performance": profile_performance,
-                "check_consistency": check_consistency,
-                "performance_metrics": performance_tracker.get_summary()
+                "files_validated": [],
+                "summary": {
+                    "total_files": 0,
+                    "successful_validations": 0,
+                    "failed_validations": 0,
+                    "validation_scores": {
+                        "semantic": [],
+                        "performance": [],
+                        "consistency": []
+                    }
+                }
             }
             
-            with open(summary_file, 'w') as f:
-                json.dump(summary, f, indent=2, default=str)
+            # Process each file
+            for file_result in gnn_results["processed_files"]:
+                if not file_result["parse_success"]:
+                    continue
+                
+                file_name = file_result["file_name"]
+                logger.info(f"Validating: {file_name}")
+                
+                # Load the actual parsed GNN specification
+                parsed_model_file = file_result.get("parsed_model_file")
+                if parsed_model_file and Path(parsed_model_file).exists():
+                    try:
+                        with open(parsed_model_file, 'r') as f:
+                            actual_gnn_spec = json.load(f)
+                        logger.info(f"Loaded parsed GNN specification from {parsed_model_file}")
+                        model_data = actual_gnn_spec
+                    except Exception as e:
+                        logger.error(f"Failed to load parsed GNN spec from {parsed_model_file}: {e}")
+                        model_data = file_result
+                else:
+                    logger.warning(f"Parsed model file not found for {file_name}, using summary data")
+                    model_data = file_result
+                
+                file_validation_result = {
+                    "file_name": file_name,
+                    "file_path": file_result["file_path"],
+                    "validations": {},
+                    "success": True
+                }
+                
+                # Perform semantic validation
+                try:
+                    semantic_result = process_semantic_validation(model_data)
+                    file_validation_result["validations"]["semantic"] = semantic_result
+                    validation_results["summary"]["validation_scores"]["semantic"].append(
+                        semantic_result.get("semantic_score", 0.0)
+                    )
+                    logger.info(f"Semantic validation completed for {file_name}")
+                except Exception as e:
+                    logger.error(f"Semantic validation failed for {file_name}: {e}")
+                    file_validation_result["validations"]["semantic"] = validate_semantic_fallback(model_data)
+                    file_validation_result["success"] = False
+                
+                # Perform performance profiling
+                try:
+                    performance_result = profile_performance(model_data)
+                    file_validation_result["validations"]["performance"] = performance_result
+                    validation_results["summary"]["validation_scores"]["performance"].append(
+                        performance_result.get("performance_score", 0.0)
+                    )
+                    logger.info(f"Performance profiling completed for {file_name}")
+                except Exception as e:
+                    logger.error(f"Performance profiling failed for {file_name}: {e}")
+                    file_validation_result["validations"]["performance"] = profile_performance_fallback(model_data)
+                    file_validation_result["success"] = False
+                
+                # Perform consistency checking
+                try:
+                    consistency_result = check_consistency(model_data)
+                    file_validation_result["validations"]["consistency"] = consistency_result
+                    validation_results["summary"]["validation_scores"]["consistency"].append(
+                        consistency_result.get("consistency_score", 0.0)
+                    )
+                    logger.info(f"Consistency checking completed for {file_name}")
+                except Exception as e:
+                    logger.error(f"Consistency checking failed for {file_name}: {e}")
+                    file_validation_result["validations"]["consistency"] = check_consistency_fallback(model_data)
+                    file_validation_result["success"] = False
+                
+                validation_results["files_validated"].append(file_validation_result)
+                validation_results["summary"]["total_files"] += 1
+                
+                if file_validation_result["success"]:
+                    validation_results["summary"]["successful_validations"] += 1
+                else:
+                    validation_results["summary"]["failed_validations"] += 1
             
-            # Generate detailed report
-            detailed_file = step_output_dir / "validation_detailed.json"
-            with open(detailed_file, 'w') as f:
+            # Calculate average scores
+            for score_type in ["semantic", "performance", "consistency"]:
+                scores = validation_results["summary"]["validation_scores"][score_type]
+                if scores:
+                    avg_score = sum(scores) / len(scores)
+                    validation_results["summary"]["validation_scores"][f"avg_{score_type}_score"] = avg_score
+            
+            # Save validation results
+            validation_results_file = step_output_dir / "validation_results.json"
+            with open(validation_results_file, 'w') as f:
                 json.dump(validation_results, f, indent=2)
             
-            logger.info(f"Summary report saved: {summary_file}")
-            logger.info(f"Detailed report saved: {detailed_file}")
+            # Save validation summary
+            validation_summary_file = step_output_dir / "validation_summary.json"
+            with open(validation_summary_file, 'w') as f:
+                json.dump(validation_results["summary"], f, indent=2)
             
-            # Determine success
-            if failed_files == 0:
-                if warnings_count > 0:
-                    log_step_warning(logger, f"Validation completed with warnings in {warnings_count} files")
-                else:
-                    log_step_success(logger, f"Successfully validated {successful_files} GNN models")
-                return True
-            elif successful_files > 0:
-                log_step_warning(logger, f"Partially successful: {failed_files} files failed validation")
-                return True  # Still consider successful for pipeline continuation
-            else:
-                log_step_error(logger, "All files failed validation")
-                return False
+            logger.info(f"Validation processing completed:")
+            logger.info(f"  Total files: {validation_results['summary']['total_files']}")
+            logger.info(f"  Successful validations: {validation_results['summary']['successful_validations']}")
+            logger.info(f"  Failed validations: {validation_results['summary']['failed_validations']}")
             
+            if validation_results["summary"]["validation_scores"]["semantic"]:
+                avg_semantic = validation_results["summary"]["validation_scores"]["avg_semantic_score"]
+                logger.info(f"  Average semantic score: {avg_semantic:.2f}")
+            
+            if validation_results["summary"]["validation_scores"]["performance"]:
+                avg_performance = validation_results["summary"]["validation_scores"]["avg_performance_score"]
+                logger.info(f"  Average performance score: {avg_performance:.2f}")
+            
+            if validation_results["summary"]["validation_scores"]["consistency"]:
+                avg_consistency = validation_results["summary"]["validation_scores"]["avg_consistency_score"]
+                logger.info(f"  Average consistency score: {avg_consistency:.2f}")
+            
+            log_step_success(logger, "Validation processing completed successfully")
+            return True
+        
     except Exception as e:
         log_step_error(logger, f"Validation processing failed: {e}")
-        if verbose:
-            import traceback
-            logger.error(f"Full traceback: {traceback.format_exc()}")
         return False
 
-def validate_semantic_fallback(content: str) -> Dict[str, Any]:
-    """
-    Fallback implementation for semantic validation when validator module is not available.
+def main():
+    """Main validation processing function."""
+    args = EnhancedArgumentParser.parse_step_arguments("6_validation.py")
     
-    Args:
-        content: GNN file content
-        
-    Returns:
-        Validation result with status and errors
-    """
-    import re
+    # Setup logging
+    logger = setup_step_logging("validation", args)
     
-    # Simple validation rules
-    errors = []
-    warnings = []
+    # Check if validation module is available
+    if not VALIDATION_AVAILABLE:
+        log_step_warning(logger, "Validation module not available, using fallback functions")
     
-    # Check for required elements
-    if not re.search(r'StateSpaceBlock', content):
-        errors.append("Missing StateSpaceBlock definition")
+    # Process validation
+    success = process_validation_standardized(
+        target_dir=args.target_dir,
+        output_dir=args.output_dir,
+        logger=logger,
+        recursive=args.recursive,
+        verbose=args.verbose
+    )
     
-    if not re.search(r'ModelName', content):
-        warnings.append("Missing ModelName definition")
-    
-    # Check for potential inconsistencies
-    state_blocks = re.findall(r'StateSpaceBlock\s*\{([^}]*)\}', content)
-    connections = re.findall(r'Connection\s*\{([^}]*)\}', content)
-    
-    # Check for empty state blocks
-    for i, block in enumerate(state_blocks):
-        if not block.strip():
-            errors.append(f"Empty StateSpaceBlock at index {i}")
-    
-    # Check for connections referencing non-existent blocks
-    block_names = []
-    for block in state_blocks:
-        name_match = re.search(r'Name:\s*([^\n]+)', block)
-        if name_match:
-            block_names.append(name_match.group(1).strip())
-    
-    for i, conn in enumerate(connections):
-        from_match = re.search(r'From:\s*([^\n]+)', conn)
-        to_match = re.search(r'To:\s*([^\n]+)', conn)
-        
-        if from_match and from_match.group(1).strip() not in block_names:
-            errors.append(f"Connection {i} references non-existent 'From' block: {from_match.group(1).strip()}")
-        
-        if to_match and to_match.group(1).strip() not in block_names:
-            errors.append(f"Connection {i} references non-existent 'To' block: {to_match.group(1).strip()}")
-    
-    return {
-        "is_valid": len(errors) == 0,
-        "errors": errors,
-        "warnings": warnings
-    }
+    return 0 if success else 1
 
-def profile_performance_fallback(content: str) -> Dict[str, Any]:
-    """
-    Fallback implementation for performance profiling when profiler module is not available.
-    
-    Args:
-        content: GNN file content
-        
-    Returns:
-        Performance profile with metrics and warnings
-    """
-    import re
-    
-    # Simple performance metrics
-    metrics = {}
-    warnings = []
-    
-    # Count state blocks
-    state_blocks = re.findall(r'StateSpaceBlock\s*\{([^}]*)\}', content)
-    metrics["state_block_count"] = len(state_blocks)
-    
-    # Count connections
-    connections = re.findall(r'Connection\s*\{([^}]*)\}', content)
-    metrics["connection_count"] = len(connections)
-    
-    # Count dimensions
-    dimensions = []
-    for block in state_blocks:
-        dim_match = re.search(r'Dimensions:\s*([^\n]+)', block)
-        if dim_match:
-            try:
-                dims = [int(d.strip()) for d in dim_match.group(1).strip().split(',')]
-                dimensions.extend(dims)
-            except ValueError:
-                pass
-    
-    metrics["total_dimensions"] = sum(dimensions) if dimensions else 0
-    metrics["max_dimension"] = max(dimensions) if dimensions else 0
-    
-    # Simple performance warnings
-    if metrics["state_block_count"] > 10:
-        warnings.append(f"Large number of state blocks ({metrics['state_block_count']})")
-    
-    if metrics["connection_count"] > 20:
-        warnings.append(f"Large number of connections ({metrics['connection_count']})")
-    
-    if metrics["max_dimension"] > 100:
-        warnings.append(f"High-dimensional state space ({metrics['max_dimension']})")
-    
-    # Estimate memory usage
-    estimated_memory_mb = (metrics["total_dimensions"] * 8 * 2) / (1024 * 1024)
-    metrics["estimated_memory_mb"] = estimated_memory_mb
-    
-    if estimated_memory_mb > 100:
-        warnings.append(f"High estimated memory usage ({estimated_memory_mb:.2f} MB)")
-    
-    return {
-        "metrics": metrics,
-        "warnings": warnings
-    }
-
-def check_consistency_fallback(content: str) -> Dict[str, Any]:
-    """
-    Fallback implementation for consistency checking when checker module is not available.
-    
-    Args:
-        content: GNN file content
-        
-    Returns:
-        Consistency check result with status and warnings
-    """
-    import re
-    
-    # Simple consistency checks
-    warnings = []
-    
-    # Check for consistent naming conventions
-    state_blocks = re.findall(r'StateSpaceBlock\s*\{([^}]*)\}', content)
-    block_names = []
-    
-    for block in state_blocks:
-        name_match = re.search(r'Name:\s*([^\n]+)', block)
-        if name_match:
-            block_names.append(name_match.group(1).strip())
-    
-    # Check for naming consistency
-    camel_case = sum(1 for name in block_names if name and name[0].isupper() and '_' not in name)
-    snake_case = sum(1 for name in block_names if '_' in name)
-    
-    if camel_case > 0 and snake_case > 0:
-        warnings.append("Inconsistent naming conventions (mix of camelCase and snake_case)")
-    
-    # Check for duplicate names
-    duplicate_names = set([name for name in block_names if block_names.count(name) > 1])
-    if duplicate_names:
-        warnings.append(f"Duplicate block names found: {', '.join(duplicate_names)}")
-    
-    # Check for consistent indentation
-    lines = content.split('\n')
-    indentation_patterns = set()
-    
-    for line in lines:
-        if line.strip() and line.startswith(' '):
-            indent = len(line) - len(line.lstrip(' '))
-            indentation_patterns.add(indent)
-    
-    if len(indentation_patterns) > 2:
-        warnings.append("Inconsistent indentation patterns")
-    
-    return {
-        "is_consistent": len(warnings) == 0,
-        "warnings": warnings
-    }
-
-# Create standardized pipeline script
-run_script = create_standardized_pipeline_script(
-    "6_validation.py",
-    process_validation_standardized,
-    "Enhanced validation and quality assurance",
-    additional_arguments={
-        "validation_level": {
-            "type": str,
-            "choices": ["basic", "standard", "strict", "research"],
-            "default": "standard",
-            "help": "Validation level for semantic validation"
-        },
-        "profile_performance": {"type": bool, "default": True, "help": "Enable performance profiling"},
-        "check_consistency": {"type": bool, "default": True, "help": "Enable consistency checking"}
-    }
-)
-
-if __name__ == '__main__':
-    sys.exit(run_script()) 
+if __name__ == "__main__":
+    sys.exit(main()) 

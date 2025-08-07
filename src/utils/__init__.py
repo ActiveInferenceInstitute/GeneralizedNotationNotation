@@ -82,7 +82,7 @@ try:
     from .performance_tracker import (
         PerformanceTracker,
         performance_tracker,
-        track_operation
+        track_operation_standalone
     )
     
     from .venv_utils import (
@@ -126,7 +126,6 @@ try:
         generate_markdown_report_file,
         generate_json_report_file,
         generate_comprehensive_report,
-        performance_tracker,
         get_memory_usage,
         track_peak_memory,
         with_resource_limits

@@ -6,7 +6,50 @@
 > **Cross-References**: [Main Documentation](../README.md) | [API Reference](../api/README.md)
 
 ## Overview
-The GNN Processing Pipeline is a comprehensive 22-step system for processing Generalized Notation Notation files from initialization through execution, analysis, and comprehensive reporting.
+The GNN Processing Pipeline is a comprehensive 23-step system for processing Generalized Notation Notation files from initialization through execution, analysis, and comprehensive reporting.
+
+## Pipeline Architecture: Thin Orchestrator Pattern
+
+The pipeline follows a **thin orchestrator pattern** for maintainability, modularity, and testability:
+
+### 🏗️ Architectural Pattern
+
+- **Numbered Scripts** (e.g., `11_render.py`, `10_ontology.py`): Thin orchestrators that handle pipeline orchestration, argument parsing, logging, and result aggregation
+- **Module `__init__.py`**: Imports and exposes functions from modular files within the module folder  
+- **Modular Files** (e.g., `src/render/renderer.py`, `src/ontology/processor.py`): Contain the actual implementation of core methods
+- **Tests**: All methods are tested in `src/tests/` with comprehensive test coverage
+
+### 📁 File Organization Example
+
+```
+src/
+├── 11_render.py                    # Thin orchestrator - imports from render/
+├── render/
+│   ├── __init__.py                 # Imports from renderer.py, pymdp/, etc.
+│   ├── renderer.py                 # Core rendering functions
+│   ├── pymdp/                      # PyMDP-specific rendering
+│   ├── rxinfer/                    # RxInfer.jl-specific rendering
+│   └── discopy/                    # DisCoPy-specific rendering
+├── 10_ontology.py                  # Thin orchestrator - imports from ontology/
+├── ontology/
+│   ├── __init__.py                 # Imports from processor.py
+│   └── processor.py                # Core ontology processing functions
+└── tests/
+    ├── test_render_integration.py  # Tests for render module
+    └── test_ontology_integration.py # Tests for ontology module
+```
+
+### ✅ Correct Pattern Examples
+
+- `11_render.py` imports from `src/render/` and calls `generate_pymdp_code()`, `generate_rxinfer_code()`, etc.
+- `10_ontology.py` imports from `src/ontology/` and calls `process_ontology_file()`, `extract_ontology_terms()`, etc.
+- Scripts contain only orchestration logic, not domain-specific processing code
+
+### ❌ Incorrect Pattern Examples
+
+- Defining `generate_pymdp_code()` directly in `11_render.py`
+- Defining `process_ontology_file()` directly in `10_ontology.py`
+- Any long method definitions (>20 lines) in numbered scripts
 
 ## Complete Pipeline Steps (0-21)
 
@@ -183,7 +226,7 @@ python main.py --estimate-resources --strict
 python main.py --target-dir /path/to/gnn/files --output-dir /custom/output
 ```
 
-## Complete Output Structure (22 Steps)
+## Complete Output Structure (23 Steps)
 ```
 output/
 ├── template/                        # Step 0: Template initialization

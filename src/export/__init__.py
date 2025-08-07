@@ -477,6 +477,224 @@ def get_supported_formats() -> Dict[str, List[str]]:
         'graph_formats': ['GraphML', 'GEXF']
     }
 
+def export_to_json(model_data: Dict, output_path: Path) -> bool:
+    """Export model to JSON format."""
+    try:
+        import json
+        with open(output_path, 'w') as f:
+            json.dump(model_data, f, indent=2, default=str)
+        return True
+    except Exception as e:
+        print(f"JSON export failed: {e}")
+        return False
+
+def export_to_xml(model_data: Dict, output_path: Path) -> bool:
+    """Export model to XML format."""
+    try:
+        import xml.etree.ElementTree as ET
+        from datetime import datetime
+        
+        # Create root element
+        root = ET.Element("gnn_model")
+        root.set("name", model_data.get("model_name", "Unknown"))
+        root.set("version", model_data.get("model_version", "1.0"))
+        root.set("exported", datetime.now().isoformat())
+        
+        # Add variables
+        variables_elem = ET.SubElement(root, "variables")
+        for var in model_data.get("variables", []):
+            var_elem = ET.SubElement(variables_elem, "variable")
+            var_elem.set("name", var.get("name", ""))
+            var_elem.set("type", var.get("type", ""))
+            var_elem.set("data_type", var.get("data_type", ""))
+            var_elem.set("dimensions", str(var.get("dimensions", [])))
+            if var.get("description"):
+                desc_elem = ET.SubElement(var_elem, "description")
+                desc_elem.text = var["description"]
+        
+        # Add connections
+        connections_elem = ET.SubElement(root, "connections")
+        for conn in model_data.get("connections", []):
+            conn_elem = ET.SubElement(connections_elem, "connection")
+            conn_elem.set("type", conn.get("type", ""))
+            source_elem = ET.SubElement(conn_elem, "source")
+            source_elem.text = str(conn.get("source", []))
+            target_elem = ET.SubElement(conn_elem, "target")
+            target_elem.text = str(conn.get("target", []))
+            if conn.get("description"):
+                desc_elem = ET.SubElement(conn_elem, "description")
+                desc_elem.text = conn["description"]
+        
+        # Add parameters
+        parameters_elem = ET.SubElement(root, "parameters")
+        for param in model_data.get("parameters", []):
+            param_elem = ET.SubElement(parameters_elem, "parameter")
+            param_elem.set("name", param.get("name", ""))
+            param_elem.set("value_type", param.get("value_type", ""))
+            if param.get("description"):
+                desc_elem = ET.SubElement(param_elem, "description")
+                desc_elem.text = param["description"]
+        
+        # Write XML
+        tree = ET.ElementTree(root)
+        tree.write(output_path, encoding='utf-8', xml_declaration=True)
+        return True
+    except Exception as e:
+        print(f"XML export failed: {e}")
+        return False
+
+def export_to_graphml(model_data: Dict, output_path: Path) -> bool:
+    """Export model to GraphML format."""
+    try:
+        import xml.etree.ElementTree as ET
+        
+        # Create GraphML structure
+        graphml = ET.Element("graphml")
+        graphml.set("xmlns", "http://graphml.graphdrawing.org/xmlns")
+        
+        # Add key definitions
+        key_node_type = ET.SubElement(graphml, "key")
+        key_node_type.set("id", "type")
+        key_node_type.set("for", "node")
+        key_node_type.set("attr.name", "type")
+        key_node_type.set("attr.type", "string")
+        
+        key_edge_type = ET.SubElement(graphml, "key")
+        key_edge_type.set("id", "connection_type")
+        key_edge_type.set("for", "edge")
+        key_edge_type.set("attr.name", "connection_type")
+        key_edge_type.set("attr.type", "string")
+        
+        # Create graph element
+        graph = ET.SubElement(graphml, "graph")
+        graph.set("id", model_data.get("model_name", "gnn_model"))
+        graph.set("edgedefault", "directed")
+        
+        # Add nodes (variables)
+        node_id_map = {}
+        for i, var in enumerate(model_data.get("variables", [])):
+            node = ET.SubElement(graph, "node")
+            node_id = f"n{i}"
+            node.set("id", node_id)
+            node_id_map[var.get("name", f"var_{i}")] = node_id
+            
+            # Add node data
+            data = ET.SubElement(node, "data")
+            data.set("key", "type")
+            data.text = var.get("type", "unknown")
+        
+        # Add edges (connections)
+        for i, conn in enumerate(model_data.get("connections", [])):
+            edge = ET.SubElement(graph, "edge")
+            edge.set("id", f"e{i}")
+            
+            # Set source and target
+            sources = conn.get("source", [])
+            targets = conn.get("target", [])
+            
+            if sources and targets:
+                source_name = sources[0] if isinstance(sources, list) else sources
+                target_name = targets[0] if isinstance(targets, list) else targets
+                
+                source_id = node_id_map.get(source_name, f"n{len(model_data.get('variables', []))}")
+                target_id = node_id_map.get(target_name, f"n{len(model_data.get('variables', []))}")
+                
+                edge.set("source", source_id)
+                edge.set("target", target_id)
+                
+                # Add edge data
+                data = ET.SubElement(edge, "data")
+                data.set("key", "connection_type")
+                data.text = conn.get("type", "unknown")
+        
+        # Write GraphML
+        tree = ET.ElementTree(graphml)
+        tree.write(output_path, encoding='utf-8', xml_declaration=True)
+        return True
+    except Exception as e:
+        print(f"GraphML export failed: {e}")
+        return False
+
+def export_to_gexf(model_data: Dict, output_path: Path) -> bool:
+    """Export model to GEXF format."""
+    try:
+        import xml.etree.ElementTree as ET
+        from datetime import datetime
+        
+        # Create GEXF structure
+        gexf = ET.Element("gexf")
+        gexf.set("version", "1.2")
+        gexf.set("xmlns", "http://www.gexf.net/1.2draft")
+        
+        # Add meta element
+        meta = ET.SubElement(gexf, "meta")
+        meta.set("lastmodifieddate", datetime.now().strftime("%Y-%m-%d"))
+        creator = ET.SubElement(meta, "creator")
+        creator.text = "GNN Pipeline"
+        description = ET.SubElement(meta, "description")
+        description.text = f"GNN Model: {model_data.get('model_name', 'Unknown')}"
+        
+        # Add graph element
+        graph = ET.SubElement(gexf, "graph")
+        graph.set("mode", "static")
+        graph.set("defaultedgetype", "directed")
+        
+        # Add nodes
+        nodes = ET.SubElement(graph, "nodes")
+        node_id_map = {}
+        for i, var in enumerate(model_data.get("variables", [])):
+            node = ET.SubElement(nodes, "node")
+            node_id = f"n{i}"
+            node.set("id", node_id)
+            node.set("label", var.get("name", f"var_{i}"))
+            node_id_map[var.get("name", f"var_{i}")] = node_id
+            
+            # Add node attributes
+            attrs = ET.SubElement(node, "attvalues")
+            attr = ET.SubElement(attrs, "attvalue")
+            attr.set("for", "type")
+            attr.set("value", var.get("type", "unknown"))
+        
+        # Add edges
+        edges = ET.SubElement(graph, "edges")
+        for i, conn in enumerate(model_data.get("connections", [])):
+            edge = ET.SubElement(edges, "edge")
+            edge.set("id", f"e{i}")
+            
+            # Set source and target
+            sources = conn.get("source", [])
+            targets = conn.get("target", [])
+            
+            if sources and targets:
+                source_name = sources[0] if isinstance(sources, list) else sources
+                target_name = targets[0] if isinstance(targets, list) else targets
+                
+                source_id = node_id_map.get(source_name, f"n{len(model_data.get('variables', []))}")
+                target_id = node_id_map.get(target_name, f"n{len(model_data.get('variables', []))}")
+                
+                edge.set("source", source_id)
+                edge.set("target", target_id)
+                edge.set("label", conn.get("type", "connection"))
+        
+        # Write GEXF
+        tree = ET.ElementTree(gexf)
+        tree.write(output_path, encoding='utf-8', xml_declaration=True)
+        return True
+    except Exception as e:
+        print(f"GEXF export failed: {e}")
+        return False
+
+def export_to_pickle(model_data: Dict, output_path: Path) -> bool:
+    """Export model to Pickle format."""
+    try:
+        import pickle
+        with open(output_path, 'wb') as f:
+            pickle.dump(model_data, f)
+        return True
+    except Exception as e:
+        print(f"Pickle export failed: {e}")
+        return False
+
 def export_gnn_model(model_data: Dict[str, Any], output_dir: Path, formats: List[str] = None) -> Dict[str, Any]:
     """
     Export GNN model to multiple formats (alias for export_model).

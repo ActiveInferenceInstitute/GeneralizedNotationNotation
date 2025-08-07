@@ -17,7 +17,10 @@ from .setup import (
     check_system_requirements,
     install_uv_dependencies,
     get_installed_package_versions,
-    check_uv_availability
+    check_uv_availability,
+    log_system_info,
+    install_optional_dependencies,
+    create_project_structure
 )
 
 # Module metadata
@@ -55,6 +58,9 @@ __all__ = [
     'install_uv_dependencies',
     'get_installed_package_versions',
     'check_uv_availability',
+    'log_system_info',
+    'install_optional_dependencies',
+    'create_project_structure',
     'setup_environment',  # Alias for setup_uv_environment
     'install_dependencies',  # Alias for install_uv_dependencies
     'validate_system',
