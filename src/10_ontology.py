@@ -36,7 +36,8 @@ from utils.pipeline_template import (
     log_step_start,
     log_step_success,
     log_step_error,
-    log_step_warning
+    log_step_warning,
+    create_standardized_pipeline_script,
 )
 from utils.argument_utils import EnhancedArgumentParser
 from utils import performance_tracker
@@ -50,8 +51,7 @@ try:
         validate_ontology_compliance,
         generate_ontology_mapping,
         process_ontology_file,
-        generate_ontology_report,
-        process_ontology_fallback
+        generate_ontology_report
     )
     ONTOLOGY_AVAILABLE = True
 except ImportError:
@@ -120,72 +120,25 @@ def process_ontology_standardized(
             
             logger.info(f"Found {len(gnn_files)} GNN files to process")
             
-            # Process ontology if available
-            if ONTOLOGY_AVAILABLE:
-                logger.info("Ontology module available, processing files...")
-                
-                # Process each file
-                processed_files = []
-                ontology_results = []
-                
-                for gnn_file in gnn_files:
-                    try:
-                        logger.debug(f"Processing ontology for: {gnn_file}")
-                        
-                        # Process ontology for this file using module function
-                        file_result = process_ontology_file(gnn_file, step_output_dir, logger)
-                        
-                        if file_result:
-                            processed_files.append(gnn_file)
-                            ontology_results.append(file_result)
-                        
-                    except Exception as e:
-                        log_step_error(logger, f"Failed to process ontology for {gnn_file}: {e}")
-                        continue
-                
-                # Generate comprehensive ontology report using module function
-                if processed_files:
-                    generate_ontology_report(processed_files, ontology_results, step_output_dir, logger)
-                    log_step_success(logger, f"Successfully processed ontology for {len(processed_files)} files")
-                else:
-                    log_step_warning(logger, "No files were successfully processed")
-                
-                return len(processed_files) > 0
-            else:
-                logger.warning("Ontology module not available, using fallback processing")
-                return process_ontology_fallback(gnn_files, step_output_dir, logger)
+            # Process ontology via module API
+            logger.info("Ontology module available, processing files...")
+            return process_ontology(target_dir=target_dir, output_dir=step_output_dir, verbose=verbose)
                 
     except Exception as e:
         log_step_error(logger, f"Ontology processing failed: {e}")
         return False
 
+run_script = create_standardized_pipeline_script(
+    "10_ontology.py",
+    process_ontology_standardized,
+    "Ontology processing and validation",
+    additional_arguments={
+        "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file", "flag": "--ontology-terms-file"}
+    }
+)
+
 def main():
-    """Main ontology processing function."""
-    args = EnhancedArgumentParser.parse_step_arguments("10_ontology")
-    
-    # Setup logging
-    logger = setup_step_logging("ontology", args)
-    
-    try:
-        # Get pipeline configuration
-        config = get_pipeline_config()
-        output_dir = get_output_dir_for_script("10_ontology.py", Path(args.output_dir))
-        
-        # Process using standardized pattern
-        success = process_ontology_standardized(
-            target_dir=Path(args.target_dir) if hasattr(args, 'target_dir') else Path("input/gnn_files"),
-            output_dir=output_dir,
-            logger=logger,
-            recursive=getattr(args, 'recursive', False),
-            verbose=getattr(args, 'verbose', False),
-            ontology_terms_file=getattr(args, 'ontology_terms_file', None)
-        )
-        
-        return 0 if success else 1
-        
-    except Exception as e:
-        log_step_error(logger, f"Ontology processing failed: {e}")
-        return 1
+    return run_script()
 
 if __name__ == "__main__":
     sys.exit(main())

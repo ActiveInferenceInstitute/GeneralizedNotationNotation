@@ -143,8 +143,8 @@ print(result.stdout)
 
 The JAX renderer is fully integrated with the GNN Processing Pipeline:
 
-1. **Step 9 (Render)**: Generates JAX code from GNN specifications
-2. **Step 10 (Execute)**: Runs generated JAX scripts with performance monitoring
+1. **Step 11 (Render)**: Generates JAX code from GNN specifications
+2. **Step 12 (Execute)**: Runs generated JAX scripts with performance monitoring
 3. **Setup**: Automatically installs and validates JAX dependencies
 
 ## Resources

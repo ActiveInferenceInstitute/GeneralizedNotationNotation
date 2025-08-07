@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Test Mcp Overall Tests
+Test MCP Overall Tests
 
-This file contains tests migrated from test_mcp_comprehensive.py.
+This file contains comprehensive tests for the MCP (Model Context Protocol) module.
 """
 
 import pytest
@@ -17,7 +17,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from tests.conftest import *
 
 
-# Migrated from test_mcp_comprehensive.py
 class TestMCPCoreComprehensive:
     """Comprehensive tests for the enhanced MCP server implementation."""
     
@@ -35,19 +34,33 @@ class TestMCPCoreComprehensive:
             )
             
             # Test that classes and functions are available
-            assert MCP is not None, "MCP 
+            assert MCP is not None, "MCP class should be available"
+            assert MCPTool is not None, "MCPTool class should be available"
+            assert MCPError is not None, "MCPError class should be available"
+            
+        except ImportError:
+            pytest.skip("MCP module not available")
 
-# Migrated from test_mcp_comprehensive.py
+
 class TestMCPErrorHandling:
     """Comprehensive tests for MCP error handling."""
     
     @pytest.mark.unit
     def test_mcp_error_classes(self):
-        """Test MCP error 
-
-# Migrated from test_mcp_integration_comprehensive.py
-class TestMCPErrorHandling:
-    """Test MCP error handling and edge cases."""
+        """Test MCP error classes are available."""
+        try:
+            from mcp import (
+                MCPError, MCPToolNotFoundError, MCPResourceNotFoundError,
+                MCPInvalidParamsError, MCPToolExecutionError, MCPSDKNotFoundError,
+                MCPValidationError, MCPModuleLoadError, MCPPerformanceError
+            )
+            
+            # Test that error classes are available
+            assert MCPError is not None, "MCPError class should be available"
+            assert MCPToolNotFoundError is not None, "MCPToolNotFoundError class should be available"
+            
+        except ImportError:
+            pytest.skip("MCP module not available")
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
@@ -84,8 +97,6 @@ class TestMCPErrorHandling:
             pytest.skip("GNN MCP not available")
 
 
-
-# Migrated from test_mcp_integration_comprehensive.py
 class TestMCPResourceManagement:
     """Test MCP resource management and cleanup."""
     
@@ -108,5 +119,79 @@ class TestMCPResourceManagement:
         except Exception as e:
             # Should handle resource registration errors gracefully
             assert "error" in str(e).lower()
+
+
+class TestMCPModuleComprehensive:
+    """Comprehensive tests for MCP module functionality."""
+    
+    @pytest.mark.unit
+    @pytest.mark.safe_to_fail
+    def test_mcp_module_imports(self):
+        """Test that MCP module can be imported."""
+        try:
+            from mcp import MCP
+            assert MCP is not None, "MCP module should be available"
+        except ImportError:
+            pytest.skip("MCP module not available")
+    
+    @pytest.mark.unit
+    @pytest.mark.safe_to_fail
+    def test_mcp_server_instantiation(self):
+        """Test MCP server instantiation."""
+        try:
+            from mcp import MCPServer
+            server = MCPServer()
+            assert server is not None, "MCPServer should be instantiable"
+        except ImportError:
+            pytest.skip("MCP module not available")
+        except Exception as e:
+            # Server instantiation might fail, but should not crash
+            assert "error" in str(e).lower()
+    
+    @pytest.mark.unit
+    @pytest.mark.safe_to_fail
+    def test_mcp_module_info(self):
+        """Test MCP module information."""
+        try:
+            from mcp import get_module_info
+            info = get_module_info()
+            assert isinstance(info, dict), "Module info should be a dictionary"
+        except ImportError:
+            pytest.skip("MCP module not available")
+        except AttributeError:
+            pytest.skip("get_module_info not available")
+    
+    @pytest.mark.unit
+    @pytest.mark.safe_to_fail
+    def test_mcp_tools_registration(self):
+        """Test MCP tools registration."""
+        try:
+            from mcp import register_tools
+            # Test that register_tools function exists
+            assert callable(register_tools), "register_tools should be callable"
+        except ImportError:
+            pytest.skip("MCP module not available")
+    
+    @pytest.mark.unit
+    @pytest.mark.safe_to_fail
+    def test_mcp_initialization(self):
+        """Test MCP initialization."""
+        try:
+            from mcp import initialize
+            # Test that initialize function exists
+            assert callable(initialize), "initialize should be callable"
+        except ImportError:
+            pytest.skip("MCP module not available")
+    
+    @pytest.mark.unit
+    @pytest.mark.safe_to_fail
+    def test_mcp_instance_retrieval(self):
+        """Test MCP instance retrieval."""
+        try:
+            from mcp import get_mcp_instance
+            # Test that get_mcp_instance function exists
+            assert callable(get_mcp_instance), "get_mcp_instance should be callable"
+        except ImportError:
+            pytest.skip("MCP module not available")
 
 

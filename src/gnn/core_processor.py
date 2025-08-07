@@ -17,7 +17,8 @@ from enum import Enum, auto
 from .types import ValidationLevel, ValidationResult, GNNFormat
 from .discovery import FileDiscoveryStrategy
 from .validation import ValidationStrategy
-from .testing import RoundTripTestStrategy
+# Import testing strategy lazily to avoid circular imports
+# from .testing import RoundTripTestStrategy
 from .cross_format import CrossFormatValidationStrategy
 from .reporting import ReportGenerator
 
@@ -86,7 +87,8 @@ class GNNProcessor:
         # Initialize processing strategies
         self.discovery_strategy = FileDiscoveryStrategy()
         self.validation_strategy = ValidationStrategy()
-        self.round_trip_strategy = RoundTripTestStrategy()
+        # Initialize round trip strategy lazily to avoid circular imports
+        self.round_trip_strategy = None
         self.cross_format_strategy = CrossFormatValidationStrategy()
         self.report_generator = ReportGenerator()
     
@@ -194,6 +196,15 @@ class GNNProcessor:
         self.logger.info("Phase 3: Round-trip testing")
         
         try:
+            # Lazy import to avoid circular dependencies
+            if self.round_trip_strategy is None:
+                try:
+                    from .testing import RoundTripTestStrategy
+                    self.round_trip_strategy = RoundTripTestStrategy()
+                except ImportError:
+                    self.logger.warning("RoundTripTestStrategy not available, skipping round-trip tests")
+                    return True
+            
             # Configure round-trip strategy
             self.round_trip_strategy.configure(
                 test_subset=context.test_subset,

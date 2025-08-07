@@ -1,330 +1,349 @@
 #!/usr/bin/env python3
 """
-Ontology Processor Module
+Ontology processor module for GNN Processing Pipeline.
 
-This module provides core ontology processing functionality for GNN files.
+This module provides the main ontology processing functionality.
 """
 
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import logging
 import json
-import time
-from collections import Counter
 
-def extract_ontology_terms(content: str) -> List[str]:
+from utils.pipeline_template import (
+    log_step_start,
+    log_step_success,
+    log_step_error,
+    log_step_warning
+)
+
+# Import core processing functions from processor module
+# Note: Core functions are defined in this module; avoid self-import
+
+def process_ontology(
+    target_dir: Path,
+    output_dir: Path,
+    verbose: bool = False,
+    **kwargs
+) -> bool:
     """
-    Extract ontology terms from GNN content.
+    Process ontology for GNN files.
+    
+    Args:
+        target_dir: Directory containing GNN files to process
+        output_dir: Directory to save results
+        verbose: Enable verbose output
+        **kwargs: Additional arguments
+        
+    Returns:
+        True if processing successful, False otherwise
+    """
+    logger = logging.getLogger("ontology")
+    
+    try:
+        log_step_start(logger, "Processing ontology")
+        
+        # Create results directory
+        results_dir = output_dir / "ontology_results"
+        results_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Process each .md file and generate a per-file ontology report
+        gnn_files = list(Path(target_dir).glob("**/*.md"))
+        results = {"processed_files": len(gnn_files), "reports": [], "success": True, "errors": []}
+        for gnn_file in gnn_files:
+            file_report = generate_ontology_report_for_file(Path(gnn_file), results_dir)
+            if not file_report.get("success", False):
+                results["success"] = False
+                results["errors"].append({"file": str(gnn_file), "error": file_report.get("error", "unknown")})
+            else:
+                results["reports"].append(file_report["report_file"])
+        # Save aggregate results
+        results_file = results_dir / "ontology_results.json"
+        with open(results_file, 'w') as f:
+            json.dump(results, f, indent=2)
+        
+        if results["success"]:
+            log_step_success(logger, "Ontology processing completed successfully")
+        else:
+            log_step_error(logger, "Ontology processing failed")
+        
+        return results["success"]
+        
+    except Exception as e:
+        log_step_error(logger, f"Ontology processing failed: {e}")
+        return False
+
+def parse_gnn_ontology_section(content: str) -> Dict[str, Any]:
+    """
+    Parse GNN ontology section from content.
     
     Args:
         content: GNN file content
         
     Returns:
-        List of ontology terms found
+        Dictionary with parsed ontology information
     """
-    terms = []
-    
-    # Extract terms from different sections
-    sections = content.split('\n## ')
-    
-    for section in sections:
-        if section.strip():
-            # Extract section name as potential term
-            lines = section.split('\n')
-            if lines:
-                section_name = lines[0].strip()
-                if section_name:
-                    terms.append(section_name.lower())
-    
-    # Extract specific ontology terms
-    ontology_keywords = [
-        'state', 'observation', 'action', 'reward', 'belief', 'policy',
-        'transition', 'likelihood', 'prior', 'posterior', 'evidence',
-        'free energy', 'surprise', 'entropy', 'information', 'uncertainty'
-    ]
-    
-    content_lower = content.lower()
-    for keyword in ontology_keywords:
-        if keyword in content_lower:
-            terms.append(keyword)
-    
-    return list(set(terms))  # Remove duplicates
-
-def validate_ontology_compliance(terms: List[str]) -> Dict[str, Any]:
-    """
-    Validate ontology compliance for extracted terms.
-    
-    Args:
-        terms: List of ontology terms
+    try:
+        if not content.strip():
+            return {}
         
-    Returns:
-        Validation result dictionary
-    """
-    # Define Active Inference ontology standards
-    required_terms = ['state', 'observation', 'action']
-    recommended_terms = ['belief', 'policy', 'free energy']
-    
-    validation_result = {
-        "compliance_score": 0.0,
-        "required_terms_found": [],
-        "required_terms_missing": [],
-        "recommended_terms_found": [],
-        "recommended_terms_missing": [],
-        "compliance_level": "unknown"
-    }
-    
-    # Check required terms
-    for term in required_terms:
-        if term in terms:
-            validation_result["required_terms_found"].append(term)
-        else:
-            validation_result["required_terms_missing"].append(term)
-    
-    # Check recommended terms
-    for term in recommended_terms:
-        if term in terms:
-            validation_result["recommended_terms_found"].append(term)
-        else:
-            validation_result["recommended_terms_missing"].append(term)
-    
-    # Calculate compliance score
-    required_found = len(validation_result["required_terms_found"])
-    required_total = len(required_terms)
-    
-    if required_total > 0:
-        validation_result["compliance_score"] = required_found / required_total
-    
-    # Determine compliance level
-    if validation_result["compliance_score"] >= 0.8:
-        validation_result["compliance_level"] = "high"
-    elif validation_result["compliance_score"] >= 0.5:
-        validation_result["compliance_level"] = "medium"
-    else:
-        validation_result["compliance_level"] = "low"
-    
-    return validation_result
-
-def generate_ontology_mapping(terms: List[str]) -> Dict[str, Any]:
-    """
-    Generate ontology mapping for extracted terms.
-    
-    Args:
-        terms: List of ontology terms
+        # Basic ontology parsing
+        ontology_data = {
+            "concepts": [],
+            "relations": [],
+            "properties": [],
+            "annotations": []
+        }
         
-    Returns:
-        Mapping result dictionary
-    """
-    # Define ontology relationships
-    ontology_relationships = {
-        "state": ["observation", "belief", "transition"],
-        "observation": ["state", "likelihood", "evidence"],
-        "action": ["policy", "reward", "transition"],
-        "belief": ["state", "prior", "posterior"],
-        "policy": ["action", "reward", "free energy"],
-        "free energy": ["surprise", "entropy", "uncertainty"]
-    }
-    
-    mapping_result = {
-        "terms": terms,
-        "relationships": {},
-        "hierarchical_structure": {},
-        "semantic_clusters": []
-    }
-    
-    # Generate relationships for found terms
-    for term in terms:
-        if term in ontology_relationships:
-            mapping_result["relationships"][term] = ontology_relationships[term]
-    
-    # Create semantic clusters
-    clusters = {
-        "perception": ["observation", "evidence", "likelihood"],
-        "cognition": ["belief", "state", "uncertainty"],
-        "action": ["action", "policy", "reward"],
-        "learning": ["free energy", "surprise", "entropy"]
-    }
-    
-    for cluster_name, cluster_terms in clusters.items():
-        found_terms = [term for term in terms if term in cluster_terms]
-        if found_terms:
-            mapping_result["semantic_clusters"].append({
-                "cluster": cluster_name,
-                "terms": found_terms
-            })
-    
-    return mapping_result
+        lines = content.split('\n')
+        current_section = None
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+                
+            # Check for ontology section
+            if line.startswith('## Ontology') or line.startswith('## ontology') or line.startswith('## ActInfOntologyAnnotation'):
+                current_section = 'ontology'
+                continue
+            elif line.startswith('##'):
+                current_section = None
+                continue
+                
+            if current_section == 'ontology':
+                # Parse ontology content
+                if '=' in line:
+                    # Handle A=LikelihoodMatrix style annotations
+                    key, value = line.split('=', 1)
+                    key = key.strip()
+                    value = value.strip()
+                    ontology_data["annotations"].append(f"{key}={value}")
+                elif ':' in line:
+                    key, value = line.split(':', 1)
+                    key = key.strip()
+                    value = value.strip()
+                    
+                    if key.lower() in ['concept', 'concepts']:
+                        ontology_data["concepts"].append(value)
+                    elif key.lower() in ['relation', 'relations']:
+                        ontology_data["relations"].append(value)
+                    elif key.lower() in ['property', 'properties']:
+                        ontology_data["properties"].append(value)
+                    elif key.lower() in ['annotation', 'annotations']:
+                        ontology_data["annotations"].append(value)
+        
+        return ontology_data
+        
+    except Exception as e:
+        return {
+            "error": str(e),
+            "concepts": [],
+            "relations": [],
+            "properties": [],
+            "annotations": []
+        }
 
-def process_ontology_file(gnn_file: Path, output_dir: Path, logger: logging.Logger) -> Optional[Dict[str, Any]]:
+def process_gnn_ontology(gnn_file: str) -> Dict[str, Any]:
     """
     Process ontology for a single GNN file.
     
     Args:
         gnn_file: Path to the GNN file
-        output_dir: Output directory for results
-        logger: Logger instance
         
     Returns:
-        Dictionary with ontology processing results or None if failed
+        Dictionary with ontology processing results
     """
     try:
-        # Read GNN file content
-        with open(gnn_file, 'r', encoding='utf-8') as f:
+        file_path = Path(gnn_file)
+        
+        if not file_path.exists():
+            return {
+                "success": False,
+                "error": f"File not found: {gnn_file}"
+            }
+        
+        # Read file content
+        with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Extract ontology terms from content
-        ontology_terms = extract_ontology_terms(content)
+        # Parse ontology section
+        ontology_data = parse_gnn_ontology_section(content)
         
-        # Validate ontology compliance
-        validation_result = validate_ontology_compliance(ontology_terms)
+        # Load defined ontology terms
+        ontology_terms = load_defined_ontology_terms()
         
-        # Generate ontology mapping
-        mapping_result = generate_ontology_mapping(ontology_terms)
+        # Validate annotations
+        validation_result = validate_annotations(
+            ontology_data.get("annotations", []),
+            ontology_terms
+        )
         
-        # Create result structure
-        result = {
-            "file": str(gnn_file),
-            "ontology_terms": ontology_terms,
-            "validation": validation_result,
-            "mapping": mapping_result,
-            "timestamp": time.time()
+        return {
+            "success": True,
+            "file_path": str(file_path),
+            "ontology_data": ontology_data,
+            "validation_result": validation_result,
+            "ontology_terms": ontology_terms
         }
         
-        # Save individual file result
-        output_file = output_dir / f"{gnn_file.stem}_ontology.json"
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(result, f, indent=2)
-        
-        logger.debug(f"Saved ontology result to: {output_file}")
-        return result
-        
     except Exception as e:
-        logger.error(f"Failed to process ontology for {gnn_file}: {e}")
-        return None
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
-def generate_ontology_report(processed_files: List[Path], ontology_results: List[Dict[str, Any]], 
-                           output_dir: Path, logger: logging.Logger) -> None:
+def load_defined_ontology_terms() -> Dict[str, List[str]]:
     """
-    Generate comprehensive ontology report.
+    Load defined ontology terms from the ontology terms file.
     
-    Args:
-        processed_files: List of processed files
-        ontology_results: List of ontology results
-        output_dir: Output directory
-        logger: Logger instance
+    Returns:
+        Dictionary mapping categories to lists of terms
     """
     try:
-        # Aggregate results
-        total_files = len(processed_files)
-        total_terms = sum(len(result["ontology_terms"]) for result in ontology_results)
+        # Try to load from the ontology terms file
+        ontology_file = Path("input/ontology_terms.json")
         
-        # Calculate compliance statistics
-        compliance_scores = [result["validation"]["compliance_score"] for result in ontology_results]
-        avg_compliance = sum(compliance_scores) / len(compliance_scores) if compliance_scores else 0
-        
-        # Generate report
-        report = {
-            "summary": {
-                "total_files_processed": total_files,
-                "total_ontology_terms": total_terms,
-                "average_compliance_score": avg_compliance,
-                "processing_timestamp": time.time()
-            },
-            "compliance_distribution": {
-                "high": len([r for r in ontology_results if r["validation"]["compliance_level"] == "high"]),
-                "medium": len([r for r in ontology_results if r["validation"]["compliance_level"] == "medium"]),
-                "low": len([r for r in ontology_results if r["validation"]["compliance_level"] == "low"])
-            },
-            "common_terms": {},
-            "semantic_clusters": {},
-            "files": [str(f) for f in processed_files]
-        }
-        
-        # Count common terms
-        all_terms = []
-        for result in ontology_results:
-            all_terms.extend(result["ontology_terms"])
-        
-        term_counts = Counter(all_terms)
-        report["common_terms"] = dict(term_counts.most_common(10))
-        
-        # Aggregate semantic clusters
-        all_clusters = {}
-        for result in ontology_results:
-            for cluster in result["mapping"]["semantic_clusters"]:
-                cluster_name = cluster["cluster"]
-                if cluster_name not in all_clusters:
-                    all_clusters[cluster_name] = []
-                all_clusters[cluster_name].extend(cluster["terms"])
-        
-        # Remove duplicates from clusters
-        for cluster_name in all_clusters:
-            all_clusters[cluster_name] = list(set(all_clusters[cluster_name]))
-        
-        report["semantic_clusters"] = all_clusters
-        
-        # Save report
-        report_file = output_dir / "ontology_report.json"
-        with open(report_file, 'w', encoding='utf-8') as f:
-            json.dump(report, f, indent=2)
-        
-        logger.info(f"Generated comprehensive ontology report: {report_file}")
-        
+        if ontology_file.exists():
+            with open(ontology_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        else:
+            # Return default ontology terms
+            return {
+                "cognitive_processes": [
+                    "attention", "memory", "learning", "reasoning", "decision_making",
+                    "perception", "language", "emotion", "consciousness"
+                ],
+                "neural_mechanisms": [
+                    "synaptic_plasticity", "neurotransmission", "neural_oscillations",
+                    "cortical_columns", "neural_networks", "brain_regions"
+                ],
+                "active_inference": [
+                    "free_energy", "variational_inference", "generative_models",
+                    "predictive_coding", "belief_propagation", "precision_weighting"
+                ],
+                "mathematical_concepts": [
+                    "probability", "information_theory", "optimization", "dynamics",
+                    "geometry", "topology", "category_theory"
+                ]
+            }
+            
     except Exception as e:
-        logger.error(f"Failed to generate ontology report: {e}")
+        # Return minimal default terms on error
+        return {
+            "cognitive_processes": ["attention", "memory", "learning"],
+            "neural_mechanisms": ["synaptic_plasticity", "neural_networks"],
+            "active_inference": ["free_energy", "predictive_coding"],
+            "mathematical_concepts": ["probability", "optimization"]
+        }
 
-def process_ontology_fallback(gnn_files: List[Path], output_dir: Path, logger: logging.Logger) -> bool:
+def validate_annotations(annotations: List[str], ontology_terms: Dict[str, List[str]] = None) -> Dict[str, Any]:
     """
-    Fallback ontology processing when ontology module is not available.
+    Validate annotations against ontology terms.
     
     Args:
-        gnn_files: List of GNN files to process
-        output_dir: Output directory
-        logger: Logger instance
+        annotations: List of annotations to validate
+        ontology_terms: Dictionary of ontology terms (loaded if not provided)
         
     Returns:
-        True if processing succeeded, False otherwise
+        Dictionary with validation results
     """
     try:
-        logger.info("Using fallback ontology processing")
+        if ontology_terms is None:
+            ontology_terms = load_defined_ontology_terms()
         
-        # Basic ontology processing
-        processed_count = 0
+        # Flatten all ontology terms
+        all_terms = []
+        for category, terms in ontology_terms.items():
+            all_terms.extend(terms)
         
-        for gnn_file in gnn_files:
-            try:
-                # Read file content
-                with open(gnn_file, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                
-                # Basic ontology extraction
-                terms = extract_ontology_terms(content)
-                validation = validate_ontology_compliance(terms)
-                mapping = generate_ontology_mapping(terms)
-                
-                # Create basic result
-                result = {
-                    "file": str(gnn_file),
-                    "ontology_terms": terms,
-                    "validation": validation,
-                    "mapping": mapping,
-                    "timestamp": time.time(),
-                    "processing_mode": "fallback"
-                }
-                
-                # Save result
-                output_file = output_dir / f"{gnn_file.stem}_ontology_fallback.json"
-                with open(output_file, 'w', encoding='utf-8') as f:
-                    json.dump(result, f, indent=2)
-                
-                processed_count += 1
-                
-            except Exception as e:
-                logger.error(f"Failed to process {gnn_file} in fallback mode: {e}")
-                continue
+        validation_result = {
+            "valid_annotations": [],
+            "invalid_annotations": [],
+            "suggestions": [],
+            "coverage_score": 0.0
+        }
         
-        logger.info(f"Fallback processing completed: {processed_count} files processed")
-        return processed_count > 0
+        for annotation in annotations:
+            annotation_lower = annotation.lower().replace(' ', '_')
+            
+            if annotation_lower in all_terms:
+                validation_result["valid_annotations"].append(annotation)
+            else:
+                validation_result["invalid_annotations"].append(annotation)
+                
+                # Find similar terms for suggestions
+                for term in all_terms:
+                    if annotation_lower in term or term in annotation_lower:
+                        validation_result["suggestions"].append({
+                            "annotation": annotation,
+                            "suggested_term": term
+                        })
+        
+        # Calculate coverage score
+        total_annotations = len(annotations)
+        if total_annotations > 0:
+            validation_result["coverage_score"] = len(validation_result["valid_annotations"]) / total_annotations
+        
+        return validation_result
         
     except Exception as e:
-        logger.error(f"Fallback ontology processing failed: {e}")
-        return False 
+        return {
+            "error": str(e),
+            "valid_annotations": [],
+            "invalid_annotations": annotations,
+            "suggestions": [],
+            "coverage_score": 0.0
+        }
+
+def generate_ontology_report_for_file(gnn_file: Path, output_dir: Path) -> Dict[str, Any]:
+    """
+    Generate ontology report for a single GNN file.
+    
+    Args:
+        gnn_file: Path to the GNN file
+        output_dir: Output directory for reports
+        
+    Returns:
+        Dictionary with report generation results
+    """
+    try:
+        # Process ontology for the file
+        ontology_result = process_gnn_ontology(str(gnn_file))
+        
+        if not ontology_result["success"]:
+            return ontology_result
+        
+        # Create report
+        report = {
+            "file_path": str(gnn_file),
+            "file_name": gnn_file.name,
+            "ontology_data": ontology_result["ontology_data"],
+            "validation_result": ontology_result["validation_result"],
+            "summary": {
+                "total_concepts": len(ontology_result["ontology_data"]["concepts"]),
+                "total_relations": len(ontology_result["ontology_data"]["relations"]),
+                "total_properties": len(ontology_result["ontology_data"]["properties"]),
+                "total_annotations": len(ontology_result["ontology_data"]["annotations"]),
+                "valid_annotations": len(ontology_result["validation_result"]["valid_annotations"]),
+                "invalid_annotations": len(ontology_result["validation_result"]["invalid_annotations"]),
+                "coverage_score": ontology_result["validation_result"]["coverage_score"]
+            }
+        }
+        
+        # Save report
+        report_file = output_dir / f"{gnn_file.stem}_ontology_report.json"
+        with open(report_file, 'w') as f:
+            json.dump(report, f, indent=2)
+        
+        return {
+            "success": True,
+            "report_file": str(report_file),
+            "report": report
+        }
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        } 

@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-08-07T11:42:52.367222",
+  "processed_files": 1,
+  "success": true,
+  "errors": [
+    {
+      "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "error": "name 'perform_statistical_analysis' is not defined",
+      "error_type": "NameError"
+    }
+  ],
+  "statistical_analysis": [],
+  "complexity_metrics": [],
+  "performance_benchmarks": [],
+  "model_comparisons": []
+}

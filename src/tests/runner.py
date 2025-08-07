@@ -1,5 +1,5 @@
 """
-Enhanced Test Runner for GNN Processing Pipeline.
+Test Runner for GNN Processing Pipeline.
 
 This module provides comprehensive test execution capabilities with:
 - Staged test execution (fast, standard, slow, performance)
@@ -359,7 +359,7 @@ class ResourceMonitor:
         }
 
 class TestRunner:
-    """Enhanced test runner with comprehensive monitoring and reporting."""
+    """Test runner with comprehensive monitoring and reporting."""
     
     def __init__(self, config: TestExecutionConfig):
         self.config = config
@@ -918,7 +918,7 @@ def _generate_error_report(output_dir: Path, cmd: List[str], error_msg: str):
         logging.error(f"Failed to generate error report: {e}")
 
 class ModularTestRunner:
-    """Enhanced test runner with comprehensive error handling and reporting."""
+    """Test runner with comprehensive error handling and reporting."""
     
     def __init__(self, args, logger: logging.Logger):
         self.args = args
@@ -928,7 +928,7 @@ class ModularTestRunner:
         self.results = {}
         self.start_time = time.time()
         
-        # Enhanced error tracking
+        # Error tracking
         self.total_tests_run = 0
         self.total_tests_passed = 0
         self.total_tests_failed = 0
@@ -1199,7 +1199,7 @@ class ModularTestRunner:
         
         self.logger.info(f"🐍 Using Python: {python_executable}")
         
-        # Build pytest command with enhanced options and plugin isolation
+        # Build pytest command with options and plugin isolation
         cmd = [
             python_executable, "-m", "pytest",
             "--tb=short",  # Shorter traceback

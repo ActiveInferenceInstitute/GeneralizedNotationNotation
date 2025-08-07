@@ -2,7 +2,7 @@
 """
 Step 13: LLM Processing (Thin Orchestrator)
 
-This step orchestrates LLM-enhanced analysis and processing for GNN models.
+This step orchestrates LLM analysis and processing for GNN models.
 It is a thin orchestrator that delegates core functionality to the llm module.
 
 How to run:

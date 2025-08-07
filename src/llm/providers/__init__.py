@@ -12,8 +12,9 @@ from .base_provider import (
     ProviderType,
     LLMResponse,
     LLMMessage,
-    LLMConfig
+    LLMConfig,
 )
+from .ollama_provider import OllamaProvider
 from .openai_provider import OpenAIProvider
 from .openrouter_provider import OpenRouterProvider
 from .perplexity_provider import PerplexityProvider
@@ -21,10 +22,11 @@ from .perplexity_provider import PerplexityProvider
 __all__ = [
     'BaseLLMProvider',
     'ProviderType',
-    'LLMResponse', 
+    'LLMResponse',
     'LLMMessage',
     'LLMConfig',
     'OpenAIProvider',
-    'OpenRouterProvider', 
-    'PerplexityProvider'
-] 
+    'OpenRouterProvider',
+    'PerplexityProvider',
+    'OllamaProvider',
+]

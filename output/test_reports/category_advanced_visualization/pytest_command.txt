@@ -1,4 +1,0 @@
-Category: advanced_visualization
-Success: False
-Duration: 0.00s
-Error: No test files found

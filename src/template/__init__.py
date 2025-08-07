@@ -31,6 +31,11 @@ from .processor import (
     demonstrate_utility_patterns
 )
 
+# Import utility functions
+from .utils import (
+    get_version_info
+)
+
 # Version information
 VERSION_INFO = {
     "version": __version__,
@@ -39,6 +44,13 @@ VERSION_INFO = {
     "author": __author__
 }
 
-def get_version_info():
-    """Get version information for the template step."""
-    return VERSION_INFO 
+__all__ = [
+    'process_template_standardized',
+    'process_single_file',
+    'validate_file',
+    'generate_correlation_id',
+    'safe_template_execution',
+    'demonstrate_utility_patterns',
+    'get_version_info',
+    'VERSION_INFO'
+] 

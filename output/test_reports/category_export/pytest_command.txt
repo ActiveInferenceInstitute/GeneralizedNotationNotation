@@ -1,5 +1,0 @@
-Category: export
-Success: False
-Duration: 0.46s
-Peak Memory: 33.28 MB
-CPU Usage: 0.0%

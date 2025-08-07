@@ -1,6 +1,6 @@
 # Pipeline Module
 
-This module provides core pipeline orchestration, configuration management, and step coordination for the GNN processing pipeline. It manages the 22-step pipeline execution, configuration handling, and inter-module communication.
+This module provides core pipeline orchestration, configuration management, and step coordination for the GNN processing pipeline. It manages the 23-step pipeline execution, configuration handling, and inter-module communication.
 
 ## Module Structure
 
@@ -248,8 +248,8 @@ print(f"Pipeline status: {pipeline_status}")
 
 ## Pipeline Structure
 
-### 22-Step Pipeline (Current)
-The pipeline consists of exactly 22 steps (steps 0-21), executed in order:
+### 23-Step Pipeline (Current)
+The pipeline consists of exactly 23 steps (steps 0-22), executed in order:
 
 1. **0_template.py** → `src/template/` - Pipeline template and initialization
 2. **1_setup.py** → `src/setup/` - UV environment setup and dependency management
@@ -273,6 +273,7 @@ The pipeline consists of exactly 22 steps (steps 0-21), executed in order:
 20. **19_research.py** → `src/research/` - Research tools and experimental features
 21. **20_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts
 22. **21_report.py** → `src/report/` - Comprehensive analysis report generation
+23. **22_mcp.py** → `src/mcp/` - Model Context Protocol processing and tool registration
 
 ### Pipeline Execution Flow
 
@@ -519,7 +520,7 @@ logging.getLogger('pipeline').setLevel(logging.DEBUG)
 
 ## Summary
 
-The Pipeline module provides core pipeline orchestration, configuration management, and step coordination for the GNN processing pipeline. The module manages the 22-step pipeline execution, ensures proper step sequencing and dependency management, and provides comprehensive error handling and performance optimization. The pipeline architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards.
+The Pipeline module provides core pipeline orchestration, configuration management, and step coordination for the GNN processing pipeline. The module manages the 23-step pipeline execution, ensures proper step sequencing and dependency management, and provides comprehensive error handling and performance optimization. The pipeline architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards.
 
 ## License and Citation
 

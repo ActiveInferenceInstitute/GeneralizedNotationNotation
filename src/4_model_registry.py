@@ -26,8 +26,7 @@ from utils import (
     log_step_error,
     validate_output_directory,
     EnhancedArgumentParser,
-    performance_tracker,
-    UTILS_AVAILABLE
+    performance_tracker
 )
 
 from pipeline import (

@@ -1,213 +1,269 @@
+#!/usr/bin/env python3
 """
-Audio Generator Module
+Audio generator module for GNN Processing Pipeline.
 
-Core module for converting GNN models to audio representations using
-multiple backends (SAPF, Pedalboard, etc).
+This module provides audio generation functionality.
 """
 
-import logging
+import numpy as np
+from typing import Dict, Any, List
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Union, Tuple
-from dataclasses import dataclass
-import importlib
 
-logger = logging.getLogger(__name__)
+def generate_tonal_representation(variables: List[Dict], connections: List[Dict]) -> np.ndarray:
+    """Generate tonal audio representation of the model."""
+    # Create a tonal sequence based on variables
+    sample_rate = 44100
+    duration = 5.0  # 5 seconds
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    
+    # Map variables to frequencies
+    base_freq = 440  # A4
+    audio = np.zeros_like(t)
+    
+    for i, var in enumerate(variables):
+        # Map variable index to frequency
+        freq = base_freq * (2 ** (i / 12))  # Chromatic scale
+        amplitude = 0.1 / len(variables)  # Normalize amplitude
+        
+        # Create tone for this variable
+        tone = amplitude * np.sin(2 * np.pi * freq * t)
+        audio += tone
+    
+    return audio
 
-@dataclass
-class AudioGenerationResult:
-    """Result of audio generation process."""
-    success: bool
-    audio_file: Optional[Path] = None
-    backend_used: str = ""
-    duration: float = 0.0
-    error_message: str = ""
-    visualization_file: Optional[Path] = None
-    metadata: Dict[str, Any] = None
+def generate_rhythmic_representation(variables: List[Dict], connections: List[Dict]) -> np.ndarray:
+    """Generate rhythmic audio representation of the model."""
+    sample_rate = 44100
+    duration = 5.0  # 5 seconds
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    
+    # Create rhythmic pattern based on connections
+    audio = np.zeros_like(t)
+    
+    for i, conn in enumerate(connections):
+        # Create rhythmic pulse for each connection
+        pulse_freq = 2.0 + (i % 4)  # Different pulse rates
+        pulse = np.sin(2 * np.pi * pulse_freq * t) * 0.1
+        
+        # Add envelope
+        envelope = np.exp(-t * 2)  # Decay envelope
+        pulse *= envelope
+        
+        audio += pulse
+    
+    return audio
 
-def get_available_backends() -> Dict[str, bool]:
+def generate_ambient_representation(variables: List[Dict], connections: List[Dict]) -> np.ndarray:
+    """Generate ambient audio representation of the model."""
+    sample_rate = 44100
+    duration = 10.0  # 10 seconds for ambient
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    
+    # Create ambient soundscape
+    audio = np.zeros_like(t)
+    
+    # Add low-frequency drone
+    drone_freq = 55  # A1
+    drone = 0.05 * np.sin(2 * np.pi * drone_freq * t)
+    audio += drone
+    
+    # Add variable-based harmonics
+    for i, var in enumerate(variables):
+        freq = drone_freq * (i + 2)  # Harmonic series
+        harmonic = 0.02 * np.sin(2 * np.pi * freq * t)
+        audio += harmonic
+    
+    # Add connection-based modulation
+    for conn in connections:
+        mod_freq = 0.5  # Slow modulation
+        modulation = 0.01 * np.sin(2 * np.pi * mod_freq * t)
+        audio *= (1 + modulation)
+    
+    return audio
+
+def generate_sonification_audio(dynamics: List[Dict[str, Any]]) -> np.ndarray:
+    """Generate sonification audio from model dynamics."""
+    sample_rate = 44100
+    duration = 8.0  # 8 seconds
+    t = np.linspace(0, duration, int(sample_rate * duration), False)
+    
+    audio = np.zeros_like(t)
+    
+    for i, dynamic in enumerate(dynamics):
+        # Create dynamic sound for each element
+        base_freq = 220 + (i * 50)  # Different base frequency for each element
+        
+        # Add frequency modulation
+        mod_freq = 0.5 + (i * 0.2)
+        freq_mod = base_freq * (1 + 0.1 * np.sin(2 * np.pi * mod_freq * t))
+        
+        # Generate tone with frequency modulation
+        tone = 0.05 * np.sin(2 * np.pi * freq_mod * t)
+        
+        # Add envelope
+        envelope = np.exp(-t * 0.5)  # Decay
+        tone *= envelope
+        
+        audio += tone
+    
+    return audio
+
+def generate_oscillator_audio(frequency: float, duration: float, oscillator_type: str = 'sine', sample_rate: int = 44100) -> np.ndarray:
     """
-    Get information about available audio backends.
-    
-    Returns:
-        Dictionary mapping backend names to availability status
-    """
-    backends = {
-        'sapf': False,
-        'pedalboard': False
-    }
-    
-    # Check SAPF availability
-    try:
-        from .sapf import SAPFGenerator
-        backends['sapf'] = True
-    except ImportError:
-        pass
-    
-    # Check Pedalboard availability
-    try:
-        from .pedalboard import PedalboardGenerator
-        backends['pedalboard'] = True
-    except ImportError:
-        pass
-    
-    return backends
-
-def select_backend(requested_backend: str = 'auto') -> str:
-    """
-    Select an appropriate audio backend based on availability and request.
+    Generate oscillator audio.
     
     Args:
-        requested_backend: Requested backend ('auto', 'sapf', 'pedalboard')
+        frequency: Frequency in Hz
+        duration: Duration in seconds
+        oscillator_type: Type of oscillator ('sine', 'square', 'sawtooth', 'triangle', 'noise')
+        sample_rate: Sample rate in Hz
         
     Returns:
-        Selected backend name
-    """
-    available = get_available_backends()
-    
-    if requested_backend == 'auto':
-        # Prefer Pedalboard if available, otherwise SAPF
-        if available.get('pedalboard', False):
-            return 'pedalboard'
-        elif available.get('sapf', False):
-            return 'sapf'
-        else:
-            raise ImportError("No audio backends available")
-    else:
-        # Use specifically requested backend
-        if requested_backend not in available:
-            raise ValueError(f"Requested backend '{requested_backend}' is not recognized")
-        
-        if not available.get(requested_backend, False):
-            raise ImportError(f"Requested backend '{requested_backend}' is not available")
-        
-        return requested_backend
-
-def generate_audio(
-    gnn_content: str,
-    output_file: Union[str, Path],
-    model_name: str = "",
-    duration: float = 30.0,
-    backend: str = 'auto',
-    visualization: bool = True,
-    **kwargs
-) -> bool:
-    """
-    Generate audio from GNN content using the specified backend.
-    
-    Args:
-        gnn_content: GNN model content
-        output_file: Output audio file path
-        model_name: Name of the model (extracted from content if not provided)
-        duration: Audio duration in seconds
-        backend: Backend to use ('auto', 'sapf', 'pedalboard')
-        visualization: Whether to create visualizations
-        **kwargs: Additional backend-specific parameters
-        
-    Returns:
-        True if generation succeeded, False otherwise
+        Audio array
     """
     try:
-        # Convert output_file to Path
-        if isinstance(output_file, str):
-            output_file = Path(output_file)
+        # Create generator
+        generator = SyntheticAudioGenerator()
         
-        # Ensure output directory exists
-        output_file.parent.mkdir(parents=True, exist_ok=True)
+        # Generate audio
+        config = {
+            'frequency': frequency,
+            'duration': duration,
+            'oscillator_type': oscillator_type,
+            'sample_rate': sample_rate
+        }
         
-        # Extract model_name from content if not provided
-        if not model_name:
-            import re
-            name_match = re.search(r'## ModelName\s*\n([^\n]+)', gnn_content)
-            if name_match:
-                model_name = name_match.group(1).strip()
-            else:
-                model_name = output_file.stem
-        
-        # Select backend
-        try:
-            selected_backend = select_backend(backend)
-        except (ImportError, ValueError) as e:
-            logger.error(f"Backend selection failed: {e}")
-            return False
-        
-        logger.info(f"Using audio backend: {selected_backend}")
-        
-        # Generate audio using selected backend
-        if selected_backend == 'sapf':
-            from .sapf import SAPFGenerator
-            generator = SAPFGenerator()
-            result = generator.generate_audio(
-                gnn_content=gnn_content,
-                output_file=output_file,
-                model_name=model_name,
-                duration=duration,
-                visualization=visualization,
-                **kwargs
-            )
-        elif selected_backend == 'pedalboard':
-            from .pedalboard import PedalboardGenerator
-            generator = PedalboardGenerator()
-            result = generator.generate_audio(
-                gnn_content=gnn_content,
-                output_file=output_file,
-                model_name=model_name,
-                duration=duration,
-                visualization=visualization,
-                **kwargs
-            )
-        else:
-            logger.error(f"Unknown backend: {selected_backend}")
-            return False
-        
-        if not result.success:
-            logger.error(f"Audio generation failed with {selected_backend}: {result.error_message}")
-            return False
-        
-        logger.info(f"Successfully generated audio using {selected_backend}: {output_file}")
-        return True
+        return generator.generate_synthetic_audio(config)
         
     except Exception as e:
-        logger.error(f"Error generating audio: {e}")
-        return False
+        # Return silence on error
+        return np.zeros(int(sample_rate * duration))
 
-def get_audio_generation_options() -> Dict[str, Dict[str, str]]:
+def apply_envelope(audio: np.ndarray, envelope_type: str = 'ADSR') -> np.ndarray:
     """
-    Get information about available audio generation options.
+    Apply envelope to audio.
     
+    Args:
+        audio: Audio array
+        envelope_type: Type of envelope ('ADSR', 'AR', 'ASR', 'AD', 'custom')
+        
     Returns:
-        Dictionary of available options by category
+        Audio array with envelope applied
     """
-    options = {
-        'backends': {
-            'sapf': 'Sound As Pure Form audio generation',
-            'pedalboard': 'Spotify Pedalboard audio processing'
-        },
-        'output_formats': {
-            'wav': 'WAV audio format'
-        },
-        'visualization_types': {
-            'waveform': 'Audio waveform visualization',
-            'spectrogram': 'Audio spectrogram visualization'
-        }
-    }
+    try:
+        # Create generator
+        generator = SyntheticAudioGenerator()
+        
+        # Apply envelope
+        return generator.apply_envelope(audio, envelope_type)
+        
+    except Exception:
+        return audio
+
+def mix_audio_channels(channels: List[np.ndarray], mix_mode: str = 'add') -> np.ndarray:
+    """
+    Mix multiple audio channels.
     
-    # Add backend-specific options
-    available = get_available_backends()
+    Args:
+        channels: List of audio arrays
+        mix_mode: Mixing mode ('add', 'average', 'max')
+        
+    Returns:
+        Mixed audio array
+    """
+    try:
+        if not channels:
+            return np.array([])
+        
+        # Ensure all channels have the same length
+        max_length = max(len(channel) for channel in channels)
+        padded_channels = []
+        
+        for channel in channels:
+            if len(channel) < max_length:
+                # Pad with zeros
+                padded = np.zeros(max_length)
+                padded[:len(channel)] = channel
+                padded_channels.append(padded)
+            else:
+                padded_channels.append(channel)
+        
+        # Mix channels based on mode
+        if mix_mode == 'add':
+            mixed = np.sum(padded_channels, axis=0)
+        elif mix_mode == 'average':
+            mixed = np.mean(padded_channels, axis=0)
+        elif mix_mode == 'max':
+            mixed = np.maximum.reduce(padded_channels)
+        else:
+            mixed = np.sum(padded_channels, axis=0)  # Default to add
+        
+        return mixed
+        
+    except Exception:
+        # Return first channel or empty array on error
+        return channels[0] if channels else np.array([])
+
+class SyntheticAudioGenerator:
+    """Synthetic Audio Generator for creating artificial sounds."""
     
-    if available.get('sapf', False):
+    def __init__(self):
+        self.supported_formats = ['wav', 'mp3', 'flac', 'ogg']
+        self.oscillator_types = ['sine', 'square', 'sawtooth', 'triangle', 'noise']
+        self.envelope_types = ['ADSR', 'AR', 'ASR', 'AD', 'custom']
+    
+    def generate_synthetic_audio(self, config: Dict[str, Any]) -> np.ndarray:
+        """Generate synthetic audio based on configuration."""
         try:
-            from .sapf import SAPFGenerator
-            sapf_options = SAPFGenerator.get_options()
-            options.update(sapf_options)
-        except (ImportError, AttributeError):
-            pass
+            # Extract parameters
+            frequency = config.get('frequency', 440.0)
+            duration = config.get('duration', 1.0)
+            sample_rate = config.get('sample_rate', 44100)
+            oscillator_type = config.get('oscillator_type', 'sine')
+            
+            # Generate time array
+            t = np.linspace(0, duration, int(sample_rate * duration), False)
+            
+            # Generate waveform based on oscillator type
+            if oscillator_type == 'sine':
+                audio = np.sin(2 * np.pi * frequency * t)
+            elif oscillator_type == 'square':
+                audio = np.sign(np.sin(2 * np.pi * frequency * t))
+            elif oscillator_type == 'sawtooth':
+                audio = 2 * (t * frequency - np.floor(t * frequency + 0.5))
+            elif oscillator_type == 'triangle':
+                audio = 2 * np.abs(2 * (t * frequency - np.floor(t * frequency + 0.5))) - 1
+            elif oscillator_type == 'noise':
+                audio = np.random.uniform(-1, 1, len(t))
+            else:
+                audio = np.sin(2 * np.pi * frequency * t)  # Default to sine
+            
+            return audio
+            
+        except Exception as e:
+            # Return silence on error
+            return np.zeros(int(config.get('sample_rate', 44100) * config.get('duration', 1.0)))
     
-    if available.get('pedalboard', False):
+    def apply_envelope(self, audio: np.ndarray, envelope_type: str = 'ADSR') -> np.ndarray:
+        """Apply envelope to audio."""
         try:
-            from .pedalboard import PedalboardGenerator
-            pedalboard_options = PedalboardGenerator.get_options()
-            options.update(pedalboard_options)
-        except (ImportError, AttributeError):
-            pass
-    
-    return options 
+            if envelope_type == 'ADSR':
+                # Simple ADSR envelope
+                attack_samples = int(len(audio) * 0.1)
+                decay_samples = int(len(audio) * 0.1)
+                release_samples = int(len(audio) * 0.2)
+                sustain_samples = len(audio) - attack_samples - decay_samples - release_samples
+                
+                # Create envelope
+                envelope = np.ones(len(audio))
+                envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
+                envelope[attack_samples:attack_samples+decay_samples] = np.linspace(1, 0.7, decay_samples)
+                envelope[attack_samples+decay_samples:attack_samples+decay_samples+sustain_samples] = 0.7
+                envelope[-release_samples:] = np.linspace(0.7, 0, release_samples)
+                
+                return audio * envelope
+            else:
+                return audio
+                
+        except Exception:
+            return audio 

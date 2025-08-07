@@ -1,0 +1,568 @@
+{
+  "timestamp": "2025-08-07T12:25:08.505063",
+  "processed_files": 1,
+  "success": true,
+  "errors": [
+    {
+      "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "error": "name 'connections' is not defined",
+      "error_type": "NameError"
+    }
+  ],
+  "analysis_results": [
+    {
+      "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "file_size": 4085,
+      "line_count": 127,
+      "variables": [
+        {
+          "name": "Example",
+          "definition": "Example: Active",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 2
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: A",
+          "line": 23
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: B",
+          "line": 26
+        },
+        {
+          "name": "vector",
+          "definition": "vector: C",
+          "line": 29
+        },
+        {
+          "name": "vector",
+          "definition": "vector: D",
+          "line": 32
+        },
+        {
+          "name": "vector",
+          "definition": "vector: E",
+          "line": 35
+        },
+        {
+          "name": "A",
+          "definition": "A: 3",
+          "line": 67
+        },
+        {
+          "name": "B",
+          "definition": "B: 3",
+          "line": 74
+        },
+        {
+          "name": "C",
+          "definition": "C: 3",
+          "line": 81
+        },
+        {
+          "name": "D",
+          "definition": "D: 3",
+          "line": 84
+        },
+        {
+          "name": "E",
+          "definition": "E: 3",
+          "line": 87
+        },
+        {
+          "name": "posterior",
+          "definition": "posterior: action",
+          "line": 94
+        },
+        {
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 3",
+          "line": 118
+        },
+        {
+          "name": "num_obs",
+          "definition": "num_obs: 3",
+          "line": 119
+        },
+        {
+          "name": "num_actions",
+          "definition": "num_actions: 3",
+          "line": 120
+        },
+        {
+          "name": "type",
+          "definition": "type=float]   # Likelihood mapping hidden states to observations",
+          "line": 24
+        },
+        {
+          "name": "type",
+          "definition": "type=float]   # State transitions given previous state and action",
+          "line": 27
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Log-preferences over observations",
+          "line": 30
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Prior over initial hidden states",
+          "line": 33
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Initial policy prior (habit) over actions",
+          "line": 36
+        },
+        {
+          "name": "type",
+          "definition": "type=float]     # Current hidden state distribution",
+          "line": 39
+        },
+        {
+          "name": "type",
+          "definition": "type=float] # Next hidden state distribution",
+          "line": 40
+        },
+        {
+          "name": "type",
+          "definition": "type=int]     # Current observation (integer index)",
+          "line": 43
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Policy (distribution over actions), no planning",
+          "line": 46
+        },
+        {
+          "name": "type",
+          "definition": "type=int]         # Action taken",
+          "line": 47
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Expected Free Energy (per policy)",
+          "line": 48
+        },
+        {
+          "name": "type",
+          "definition": "type=int]         # Discrete time step",
+          "line": 51
+        },
+        {
+          "name": "A",
+          "definition": "A={",
+          "line": 68
+        },
+        {
+          "name": "B",
+          "definition": "B={",
+          "line": 75
+        },
+        {
+          "name": "C",
+          "definition": "C={(0.1, 0.1, 1.0)}",
+          "line": 82
+        },
+        {
+          "name": "D",
+          "definition": "D={(0.33333, 0.33333, 0.33333)}",
+          "line": 85
+        },
+        {
+          "name": "E",
+          "definition": "E={(0.33333, 0.33333, 0.33333)}",
+          "line": 88
+        },
+        {
+          "name": "Energy",
+          "definition": "Energy = with infer_policies()",
+          "line": 93
+        },
+        {
+          "name": "action",
+          "definition": "action = sample_action()",
+          "line": 94
+        },
+        {
+          "name": "Time",
+          "definition": "Time=t",
+          "line": 97
+        },
+        {
+          "name": "ModelTimeHorizon",
+          "definition": "ModelTimeHorizon=Unbounded # The agent is defined for an unbounded time horizon",
+          "line": 100
+        },
+        {
+          "name": "A",
+          "definition": "A=LikelihoodMatrix",
+          "line": 103
+        },
+        {
+          "name": "B",
+          "definition": "B=TransitionMatrix",
+          "line": 104
+        },
+        {
+          "name": "C",
+          "definition": "C=LogPreferenceVector",
+          "line": 105
+        },
+        {
+          "name": "D",
+          "definition": "D=PriorOverHiddenStates",
+          "line": 106
+        },
+        {
+          "name": "E",
+          "definition": "E=Habit",
+          "line": 107
+        },
+        {
+          "name": "F",
+          "definition": "F=VariationalFreeEnergy",
+          "line": 108
+        },
+        {
+          "name": "G",
+          "definition": "G=ExpectedFreeEnergy",
+          "line": 109
+        },
+        {
+          "name": "s",
+          "definition": "s=HiddenState",
+          "line": 110
+        },
+        {
+          "name": "s_prime",
+          "definition": "s_prime=NextHiddenState",
+          "line": 111
+        },
+        {
+          "name": "o",
+          "definition": "o=Observation",
+          "line": 112
+        },
+        {
+          "name": "\u03c0",
+          "definition": "\u03c0=PolicyVector # Distribution over actions",
+          "line": 113
+        },
+        {
+          "name": "u",
+          "definition": "u=Action       # Chosen action",
+          "line": 114
+        },
+        {
+          "name": "t",
+          "definition": "t=Time",
+          "line": 115
+        },
+        {
+          "name": "actions_dim",
+          "definition": "actions_dim=3 (controlled by \u03c0)",
+          "line": 120
+        },
+        {
+          "name": "A",
+          "definition": "A[observation_outcomes, hidden_states]",
+          "line": 23
+        },
+        {
+          "name": "A",
+          "definition": "A[3,3,type=float]",
+          "line": 24
+        },
+        {
+          "name": "B",
+          "definition": "B[states_next, states_previous, actions]",
+          "line": 26
+        },
+        {
+          "name": "B",
+          "definition": "B[3,3,3,type=float]",
+          "line": 27
+        },
+        {
+          "name": "C",
+          "definition": "C[observation_outcomes]",
+          "line": 29
+        },
+        {
+          "name": "C",
+          "definition": "C[3,type=float]",
+          "line": 30
+        },
+        {
+          "name": "D",
+          "definition": "D[states]",
+          "line": 32
+        },
+        {
+          "name": "D",
+          "definition": "D[3,type=float]",
+          "line": 33
+        },
+        {
+          "name": "E",
+          "definition": "E[actions]",
+          "line": 35
+        },
+        {
+          "name": "E",
+          "definition": "E[3,type=float]",
+          "line": 36
+        },
+        {
+          "name": "s",
+          "definition": "s[3,1,type=float]",
+          "line": 39
+        },
+        {
+          "name": "s_prime",
+          "definition": "s_prime[3,1,type=float]",
+          "line": 40
+        },
+        {
+          "name": "o",
+          "definition": "o[3,1,type=int]",
+          "line": 43
+        },
+        {
+          "name": "\u03c0",
+          "definition": "\u03c0[3,type=float]",
+          "line": 46
+        },
+        {
+          "name": "u",
+          "definition": "u[1,type=int]",
+          "line": 47
+        },
+        {
+          "name": "G",
+          "definition": "G[\u03c0,type=float]",
+          "line": 48
+        },
+        {
+          "name": "t",
+          "definition": "t[1,type=int]",
+          "line": 51
+        },
+        {
+          "name": "s",
+          "definition": "s[3]",
+          "line": 118
+        },
+        {
+          "name": "o",
+          "definition": "o[3]",
+          "line": 119
+        }
+      ],
+      "connections": [],
+      "sections": [
+        {
+          "name": "GNN Example: Active Inference POMDP Agent",
+          "line": 1
+        },
+        {
+          "name": "GNN Version: 1.0",
+          "line": 2
+        },
+        {
+          "name": "This file is machine-readable and specifies a classic Active Inference agent for a discrete POMDP with one observation modality and one hidden state factor. The model is suitable for rendering into various simulation or inference backends.",
+          "line": 3
+        },
+        {
+          "name": "GNNSection",
+          "line": 5
+        },
+        {
+          "name": "GNNVersionAndFlags",
+          "line": 8
+        },
+        {
+          "name": "ModelName",
+          "line": 11
+        },
+        {
+          "name": "ModelAnnotation",
+          "line": 14
+        },
+        {
+          "name": "StateSpaceBlock",
+          "line": 22
+        },
+        {
+          "name": "Likelihood matrix: A[observation_outcomes, hidden_states]",
+          "line": 23
+        },
+        {
+          "name": "Transition matrix: B[states_next, states_previous, actions]",
+          "line": 26
+        },
+        {
+          "name": "Preference vector: C[observation_outcomes]",
+          "line": 29
+        },
+        {
+          "name": "Prior vector: D[states]",
+          "line": 32
+        },
+        {
+          "name": "Habit vector: E[actions]",
+          "line": 35
+        },
+        {
+          "name": "Hidden State",
+          "line": 38
+        },
+        {
+          "name": "Observation",
+          "line": 42
+        },
+        {
+          "name": "Policy and Control",
+          "line": 45
+        },
+        {
+          "name": "Time",
+          "line": 50
+        },
+        {
+          "name": "Connections",
+          "line": 53
+        },
+        {
+          "name": "InitialParameterization",
+          "line": 66
+        },
+        {
+          "name": "A: 3 observations x 3 hidden states. Identity mapping (each state deterministically produces a unique observation). Rows are observations, columns are hidden states.",
+          "line": 67
+        },
+        {
+          "name": "B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state. For each slice, rows are previous states, columns are next states. Each slice is a transition matrix corresponding to a different action selection.",
+          "line": 74
+        },
+        {
+          "name": "C: 3 observations. Preference in terms of log-probabilities over observations.",
+          "line": 81
+        },
+        {
+          "name": "D: 3 states. Uniform prior over hidden states. Rows are hidden states, columns are prior probabilities.",
+          "line": 84
+        },
+        {
+          "name": "E: 3 actions. Uniform habit used as initial policy prior.",
+          "line": 87
+        },
+        {
+          "name": "Equations",
+          "line": 90
+        },
+        {
+          "name": "Standard Active Inference update equations for POMDPs:",
+          "line": 91
+        },
+        {
+          "name": "- State inference using Variational Free Energy with infer_states()",
+          "line": 92
+        },
+        {
+          "name": "- Policy inference using Expected Free Energy = with infer_policies()",
+          "line": 93
+        },
+        {
+          "name": "- Action selection from policy posterior: action = sample_action()",
+          "line": 94
+        },
+        {
+          "name": "Time",
+          "line": 96
+        },
+        {
+          "name": "ActInfOntologyAnnotation",
+          "line": 102
+        },
+        {
+          "name": "ModelParameters",
+          "line": 117
+        },
+        {
+          "name": "Footer",
+          "line": 122
+        },
+        {
+          "name": "Signature",
+          "line": 126
+        }
+      ],
+      "semantic_analysis": {
+        "variable_count": 70,
+        "connection_count": 0,
+        "complexity_score": 70,
+        "semantic_patterns": [],
+        "variable_types": {
+          "Active": 1,
+          "1": 1,
+          "A": 1,
+          "B": 1,
+          "C": 1,
+          "D": 1,
+          "E": 1,
+          "3": 8,
+          "action": 1,
+          "unknown": 54
+        },
+        "connection_types": {}
+      },
+      "complexity_metrics": {
+        "total_elements": 70,
+        "variable_complexity": 70,
+        "connection_complexity": 0,
+        "density": 0.0,
+        "cyclomatic_complexity": -68
+      },
+      "patterns": {
+        "patterns": [
+          "High variable count - complex model"
+        ],
+        "anti_patterns": [
+          "No connections defined"
+        ],
+        "suggestions": [
+          "Consider breaking down into smaller modules"
+        ]
+      },
+      "analysis_timestamp": "2025-08-07T12:25:08.567208",
+      "llm_summary": "This GNN model represents a **classic Active Inference agent designed for a Discrete Probabilistic Hidden Markov Model (POMDP)**.  Here's a breakdown:\n\n**Model Purpose and Domain:** The model aims to simulate an agent making decisions based on observed data in a dynamic environment with unknown hidden states. This agent uses active inference principles to learn optimal actions, seeking to maximize its expected free energy (free from constraints). \n\n**Key Components and Structure:**\n\n* **Discrete POMDP Setup:**  The agent operates within a discrete time step structure where the observations are drawn from a pre-defined likelihood matrix and hidden states transition according to state transitions defined by the transition matrix. The model uses these elements to represent an environment with possible states, their initial probabilities, and interactions that shape the future states of the system. \n* **Hidden State Control:**  The agent has full control over its hidden state (location) through a set of discrete actions, influencing the likelihoods of observations and impacting how it updates the model based on observed data. The hidden state is represented as a probability distribution over three possible states using a prior probability distribution D.\n* **Log-Probabilities:**  Preferences are encoded in log-probabilities (C), representing which observations are more or less desirable, influencing action selection during inference.  \n* **Policy Prior (Habit):** The model begins with an initial policy prior (E) that represents a uniform choice over actions. This helps the agent establish its starting point for decision-making. \n\n**Notable Features and Complexity:**\n\n* **Active Inference Core:** This GNN model embodies the core principles of active inference by incorporating updates to both the hidden state and policy based on observed data and a variational free energy objective. \n* **Discrete Action Choices:** The agent relies on discrete actions, limited to specific options controlled by an initial habit prior.  This constrains the possible outcomes, but allows for more focused exploration of available actions.\n* **Model Simplification:** This GNN model is simplified for clarity. Real-world implementations would likely require sophisticated techniques like state-space decomposition or hierarchical models to handle complex dynamics and decision-making processes. \n\n\n**Scientific Accuracy:**\n\nThe model accurately reflects the essence of active inference by:\n\n1. **Formalizing Bayesian Inference:** The probabilistic nature of likelihood, prior probability distributions, and action selection are central to this approach.\n2. **Addressing Uncertainty:** The hidden state and its transitions represent uncertainty about the environment's current state, which is a core aspect of decision-making based on incomplete information. \n3. **Optimizing for Free Energy:**  The model attempts to maximize free energy, an important element in achieving optimal decisions under uncertainty, as it reflects the expected rewards over time by making the most informed choices.\n\n**Further Considerations:**\n\n* **Simulation and Validation:** This GNN model can be used to simulate decision-making processes within the specified domain using techniques like simulation and inference for data analysis. \n* **Model Complexity:** Expanding this model would require incorporating factors like uncertainty about environmental dynamics, including the possibility of long-term hidden states that impact future states, as well as more complex action selection rules and planning algorithms to handle longer decision horizons. \n\n\n\nThis summary provides a concise overview of the GNN model for an Active Inference POMDP agent. It highlights its core components, key features, and scientific accuracy. The model serves as a template for understanding and implementing active inference in various contexts involving hidden states, uncertainty, and dynamic environments."
+    }
+  ],
+  "model_insights": [
+    {
+      "model_complexity": "high",
+      "recommendations": [
+        "Consider breaking down into smaller modules",
+        "High variable count - consider grouping related variables",
+        "Consider breaking down into smaller modules"
+      ],
+      "strengths": [],
+      "weaknesses": [
+        "Complex model may be difficult to understand",
+        "No connections defined"
+      ],
+      "generation_timestamp": "2025-08-07T12:29:27.128407"
+    }
+  ],
+  "code_suggestions": [],
+  "documentation_generated": []
+}

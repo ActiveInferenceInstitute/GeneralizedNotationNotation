@@ -1,13 +1,14 @@
 """
 Semantic Validator
 
-This module provides semantic validation for GNN models beyond basic syntax checking.
-It validates compliance with Active Inference principles, mathematical consistency,
-and causal relationship validation.
+This module provides semantic validation for GNN models, including
+structure validation, type checking, and consistency verification.
 """
 
 import re
+import math
 from typing import Dict, Any, List, Optional, Union
+from pathlib import Path
 
 class SemanticValidator:
     """Validator for semantic aspects of GNN models."""
@@ -384,69 +385,135 @@ class SemanticValidator:
         }
 
 
-def process_semantic_validation(target_dir, output_dir, **kwargs):
+def process_semantic_validation(model_data: Union[str, Path, Dict[str, Any]], **kwargs) -> Dict[str, Any]:
     """
-    Process semantic validation for GNN files in the target directory.
+    Process semantic validation for a GNN model.
     
     Args:
-        target_dir: Directory containing GNN files
-        output_dir: Directory to save validation results
+        model_data: Path to GNN file, Path object, or model data dictionary
         **kwargs: Additional arguments including validation_level
         
     Returns:
         Dictionary with validation results
     """
-    from pathlib import Path
     import json
     
-    target_dir = Path(target_dir)
-    output_dir = Path(output_dir)
     validation_level = kwargs.get('validation_level', 'standard')
-    
     validator = SemanticValidator(validation_level)
     
-    results = {
-        "processed_files": 0,
-        "valid_files": 0,
-        "total_errors": 0,
-        "total_warnings": 0,
-        "files": {}
-    }
-    
-    # Find all GNN files
-    gnn_extensions = ['.md', '.gnn', '.json', '.yaml', '.yml']
-    gnn_files = []
-    
-    for ext in gnn_extensions:
-        gnn_files.extend(target_dir.glob(f"**/*{ext}"))
-    
-    for gnn_file in gnn_files:
-        try:
-            with open(gnn_file, 'r', encoding='utf-8') as f:
+    try:
+        # Handle different input types
+        if isinstance(model_data, dict):
+            # If it's already a dictionary, extract content from it
+            content = _extract_content_from_dict(model_data)
+            file_path = model_data.get("file_path", "unknown")
+        else:
+            # Convert string path to Path object
+            model_data = Path(model_data)
+            file_path = str(model_data)
+            
+            # Read model content
+            with open(model_data, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
-            validation_result = validator.validate(content)
-            
-            results["processed_files"] += 1
-            if validation_result["is_valid"]:
-                results["valid_files"] += 1
-            
-            results["total_errors"] += len(validation_result["errors"])
-            results["total_warnings"] += len(validation_result["warnings"])
-            results["files"][str(gnn_file)] = validation_result
-            
-        except Exception as e:
-            results["files"][str(gnn_file)] = {
-                "is_valid": False,
-                "errors": [f"Failed to process file: {e}"],
-                "warnings": []
-            }
-            results["total_errors"] += 1
+        
+        # Perform validation
+        validation_result = validator.validate(content)
+        
+        # Calculate semantic score
+        semantic_score = _calculate_semantic_score(validation_result)
+        
+        return {
+            "file_path": file_path,
+            "file_name": Path(file_path).name if file_path != "unknown" else "unknown",
+            "valid": validation_result["is_valid"],
+            "errors": validation_result["errors"],
+            "warnings": validation_result["warnings"],
+            "semantic_score": semantic_score,
+            "fallback": False
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "file_path": str(model_data) if not isinstance(model_data, dict) else "unknown",
+            "error": str(e),
+            "valid": False,
+            "errors": [str(e)],
+            "warnings": [],
+            "semantic_score": 0.0,
+            "fallback": True
+        }
+
+def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
+    """Extract content from model data dictionary."""
+    # Try to get raw sections first
+    raw_sections = model_data.get("raw_sections", {})
+    if raw_sections:
+        # Reconstruct the original content from raw sections
+        content_parts = []
+        
+        # Add model name
+        if "ModelName" in raw_sections:
+            content_parts.append(f"ModelName: {raw_sections['ModelName']}")
+        
+        # Add state space block
+        if "StateSpaceBlock" in raw_sections:
+            content_parts.append(f"StateSpaceBlock: {raw_sections['StateSpaceBlock']}")
+        
+        # Add initial parameterization
+        if "InitialParameterization" in raw_sections:
+            content_parts.append(f"InitialParameterization: {raw_sections['InitialParameterization']}")
+        
+        # Add connections
+        if "Connections" in raw_sections:
+            content_parts.append(f"Connections: {raw_sections['Connections']}")
+        
+        return "\n\n".join(content_parts)
     
-    # Save results
-    output_dir.mkdir(parents=True, exist_ok=True)
-    results_file = output_dir / "semantic_validation_results.json"
-    with open(results_file, 'w') as f:
-        json.dump(results, f, indent=2)
+    # Fallback: try to get variables and connections
+    variables = model_data.get("variables", [])
+    connections = model_data.get("connections", [])
     
-    return results 
+    if variables or connections:
+        content_parts = []
+        
+        # Add variables
+        if variables:
+            var_lines = []
+            for var in variables:
+                name = var.get("name", "Unknown")
+                var_type = var.get("var_type", "unknown")
+                dimensions = var.get("dimensions", [])
+                dim_str = "[" + ", ".join(map(str, dimensions)) + "]" if dimensions else ""
+                var_lines.append(f"{name}{dim_str} # {var_type}")
+            content_parts.append("StateSpaceBlock:\n" + "\n".join(var_lines))
+        
+        # Add connections
+        if connections:
+            conn_lines = []
+            for conn in connections:
+                source = conn.get("source_variables", ["?"])[0] if conn.get("source_variables") else "?"
+                target = conn.get("target_variables", ["?"])[0] if conn.get("target_variables") else "?"
+                conn_lines.append(f"{source} > {target}")
+            content_parts.append("Connections:\n" + "\n".join(conn_lines))
+        
+        return "\n\n".join(content_parts)
+    
+    # Final fallback: return empty string
+    return ""
+
+def _calculate_semantic_score(validation_result: Dict[str, Any]) -> float:
+    """Calculate a semantic score from validation results."""
+    # Base score starts at 1.0
+    score = 1.0
+    
+    # Deduct points for errors
+    errors = validation_result.get("errors", [])
+    score -= len(errors) * 0.2
+    
+    # Deduct points for warnings
+    warnings = validation_result.get("warnings", [])
+    score -= len(warnings) * 0.05
+    
+    # Ensure score is between 0 and 1
+    return max(0.0, min(1.0, score)) 

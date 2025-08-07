@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Step 0: Enhanced Pipeline Template with Comprehensive Infrastructure Demonstration (Thin Orchestrator)
+Step 0: Pipeline Template with Infrastructure Demonstration (Thin Orchestrator)
 
 This step demonstrates the thin orchestrator pattern in the GNN pipeline architecture.
 
@@ -44,7 +44,7 @@ from contextlib import contextmanager
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-# Enhanced pipeline utilities with comprehensive error handling
+# Pipeline utilities with error handling
 try:
     from utils.pipeline_template import (
         setup_step_logging,
@@ -56,7 +56,7 @@ try:
     from utils.argument_utils import EnhancedArgumentParser
     from pipeline.config import get_output_dir_for_script, get_pipeline_config
     
-    # Enhanced infrastructure imports
+    # Infrastructure imports
     from utils.error_recovery import ErrorRecoverySystem, ErrorSeverity, RecoveryStrategy
     from utils.resource_manager import ResourceTracker, performance_tracker as resource_performance_tracker, get_system_info
     from utils.performance_tracker import performance_tracker
@@ -76,7 +76,7 @@ except ImportError as e:
     def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
     
     ENHANCED_INFRASTRUCTURE_AVAILABLE = False
-    print(f"⚠️ Enhanced infrastructure not available: {e}")
+    print(f"⚠️ Infrastructure not available: {e}")
 
 # Import core template functions from template module
 try:

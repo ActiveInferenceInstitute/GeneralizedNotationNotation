@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-GNN Processing Pipeline - Step 6: Enhanced Validation (Thin Orchestrator)
+GNN Processing Pipeline - Step 6: Validation (Thin Orchestrator)
 
-This step performs enhanced validation and quality assurance on GNN models,
+This step performs validation and quality assurance on GNN models,
 including semantic validation, performance profiling, and consistency checking.
 
 How to run:
@@ -43,8 +43,7 @@ from utils import (
     log_step_error,
     validate_output_directory,
     EnhancedArgumentParser,
-    performance_tracker,
-    UTILS_AVAILABLE
+    performance_tracker
 )
 
 from pipeline import (
@@ -60,31 +59,10 @@ try:
         process_semantic_validation,
         profile_performance,
         check_consistency,
-        validate_semantic_fallback,
-        profile_performance_fallback,
-        check_consistency_fallback
     )
     VALIDATION_AVAILABLE = True
 except ImportError:
     VALIDATION_AVAILABLE = False
-    # Fallback function definitions if validation module is not available
-    def process_semantic_validation(*args, **kwargs):
-        return {"error": "Validation module not available"}
-    
-    def profile_performance(*args, **kwargs):
-        return {"error": "Validation module not available"}
-    
-    def check_consistency(*args, **kwargs):
-        return {"error": "Validation module not available"}
-    
-    def validate_semantic_fallback(*args, **kwargs):
-        return {"error": "Validation module not available"}
-    
-    def profile_performance_fallback(*args, **kwargs):
-        return {"error": "Validation module not available"}
-    
-    def check_consistency_fallback(*args, **kwargs):
-        return {"error": "Validation module not available"}
 
 def process_validation_standardized(
     target_dir: Path,
@@ -109,9 +87,10 @@ def process_validation_standardized(
         True if processing succeeded, False otherwise
     """
     try:
-        # Check if validation module is available
+        # Require validation module
         if not VALIDATION_AVAILABLE:
-            log_step_warning(logger, "Validation module not available, using fallback functions")
+            log_step_error(logger, "Validation module not available")
+            return False
         
         # Start performance tracking
         with performance_tracker.track_operation("validation_processing", {"verbose": verbose, "recursive": recursive}):
@@ -203,7 +182,6 @@ def process_validation_standardized(
                     logger.info(f"Semantic validation completed for {file_name}")
                 except Exception as e:
                     logger.error(f"Semantic validation failed for {file_name}: {e}")
-                    file_validation_result["validations"]["semantic"] = validate_semantic_fallback(model_data)
                     file_validation_result["success"] = False
                 
                 # Perform performance profiling
@@ -216,7 +194,6 @@ def process_validation_standardized(
                     logger.info(f"Performance profiling completed for {file_name}")
                 except Exception as e:
                     logger.error(f"Performance profiling failed for {file_name}: {e}")
-                    file_validation_result["validations"]["performance"] = profile_performance_fallback(model_data)
                     file_validation_result["success"] = False
                 
                 # Perform consistency checking
@@ -229,7 +206,6 @@ def process_validation_standardized(
                     logger.info(f"Consistency checking completed for {file_name}")
                 except Exception as e:
                     logger.error(f"Consistency checking failed for {file_name}: {e}")
-                    file_validation_result["validations"]["consistency"] = check_consistency_fallback(model_data)
                     file_validation_result["success"] = False
                 
                 validation_results["files_validated"].append(file_validation_result)

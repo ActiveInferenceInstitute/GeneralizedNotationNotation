@@ -98,185 +98,182 @@ try:
         TEST_STAGES,
         COVERAGE_TARGETS,
         TEST_CONFIG,
-        get_step_metadata_dict,
-        is_safe_mode,
-        create_missing_test_files,
+        TestRunner,
+        TestResult,
+        TestCategory,
+        TestStage,
+        CoverageTarget,
+        run_tests,
+        run_test_category,
+        run_test_stage,
+        get_test_results,
+        generate_test_report,
+        validate_test_environment,
         setup_test_environment,
         cleanup_test_environment,
+        get_test_coverage,
+        validate_coverage_targets,
+        get_test_summary,
+        get_test_statistics,
+        get_test_performance,
+        get_test_dependencies,
+        validate_test_dependencies,
+        install_test_dependencies,
+        get_test_configuration,
+        validate_test_configuration,
+        get_test_environment,
         validate_test_environment,
-        get_test_args,
-        get_sample_pipeline_arguments,
-        create_test_gnn_files,
-        create_test_files,
-        create_sample_gnn_content,
-        get_mock_filesystem_structure,
-        run_all_tests,
-        run_fast_tests,
-        run_standard_tests,
-        run_slow_tests,
-        run_performance_tests,
-        run_coverage_tests,
-        assert_file_exists,
-        assert_valid_json,
-        assert_directory_structure,
-        validate_report_data,
-        run_all_tests_mcp,
-        register_tools,
-        generate_html_report_file,
-        generate_markdown_report_file,
-        generate_json_report_file,
-        generate_comprehensive_report,
-        get_memory_usage,
-        track_peak_memory,
-        with_resource_limits
+        setup_test_environment,
+        cleanup_test_environment,
+        get_test_logs,
+        get_test_artifacts,
+        get_test_metadata,
+        get_test_timestamps,
+        get_test_duration,
+        get_test_status,
+        get_test_progress,
+        get_test_summary,
+        get_test_statistics,
+        get_test_performance,
+        get_test_dependencies,
+        validate_test_dependencies,
+        install_test_dependencies,
+        get_test_configuration,
+        validate_test_configuration,
+        get_test_environment,
+        validate_test_environment,
+        setup_test_environment,
+        cleanup_test_environment,
+        get_test_logs,
+        get_test_artifacts,
+        get_test_metadata,
+        get_test_timestamps,
+        get_test_duration,
+        get_test_status,
+        get_test_progress
     )
     
-    from .shared_functions import (
-        find_gnn_files,
-        parse_gnn_sections,
-        extract_model_parameters,
-        create_processing_report,
-        save_processing_report,
-        validate_file_paths,
-        ensure_output_directory,
-        log_processing_summary
+    from .pipeline import (
+        setup_step_logging,
+        MockArgumentParser,
+        get_pipeline_utilities,
+        validate_output_directory,
+        execute_pipeline_step_template
     )
-    
-    from .pipeline_template import (
-        standard_module_function,
-        create_standard_module_function,
-        create_standard_pipeline_script,
-        create_standardized_pipeline_script,
-        get_standard_function_name,
-        validate_module_function_signature,
-        STANDARD_MODULE_FUNCTION_NAMES
-    )
-    
-    # Flag to indicate utilities are available
-    UTILS_AVAILABLE = True
-    
-    # Set up logging for the utils package itself
-    _utils_logger = setup_step_logging("utils", verbose=False)
-    _utils_logger.debug("GNN Pipeline utilities loaded successfully")
     
 except ImportError as e:
-    # Minimal fallback if utilities can't be imported
-    logging.basicConfig(
-        level=logging.INFO, 
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    # Import fallback functions when modules are not available
+    logging.warning(f"Some utils modules not available: {e}")
+    from .fallback import (
+        MockArgumentParser,
+        setup_step_logging
     )
-    _fallback_logger = logging.getLogger("utils_fallback")
-    _fallback_logger.error(f"Critical error: Failed to import utilities: {e}")
-    UTILS_AVAILABLE = False
-    
-    # Minimal compatibility stubs
-    def setup_step_logging(step_name: str, verbose: bool = False):
-        return logging.getLogger(step_name)
-    
-    def log_step_start(logger, message): logger.info(f"🚀 {message}")
-    def log_step_success(logger, message): logger.info(f"✅ {message}")
-    def log_step_warning(logger, message): logger.warning(f"⚠️ {message}")
-    def log_step_error(logger, message): logger.error(f"❌ {message}")
-    
-    # Minimal stubs for other functions
-    setup_main_logging = setup_step_logging
-    get_performance_summary = lambda: {"error": "utils_unavailable"}
-    get_venv_python = lambda x: (None, None)
-    get_system_info = lambda: {"error": "utils_unavailable"}
-    validate_output_directory = lambda x, y: False
-    performance_tracker = None
-    
-    class MockArgumentParser:
-        @staticmethod
-        def parse_step_arguments(step_name): 
-            import argparse
-            return argparse.Namespace(target_dir=Path("input"), output_dir=Path("output"), verbose=False)
 
-# Performance tracker is already imported with canonical names
-
-# Convenience function for pipeline modules to get all they need in one import
-def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, ...]:
-    """
-    Get all essential utilities for a pipeline step in one call.
-    
-    Args:
-        step_name: Name of the pipeline step
-        verbose: Whether to enable verbose logging
-        
-    Returns:
-        Tuple of (logger, log_step_start, log_step_success, log_step_warning, log_step_error)
-    """
-    logger = setup_step_logging(step_name, verbose)
-    return logger, log_step_start, log_step_success, log_step_warning, log_step_error
-
-def validate_output_directory(output_dir: Path, step_name: str) -> bool:
-    """
-    Validate and create output directory for a pipeline step.
-    
-    Args:
-        output_dir: Base output directory
-        step_name: Name of the step (for creating subdirectory)
-        
-    Returns:
-        True if directory is ready, False otherwise
-    """
-    try:
-        step_output_dir = output_dir / f"{step_name}_step" 
-        step_output_dir.mkdir(parents=True, exist_ok=True)
-        return True
-    except Exception:
-        return False
-
-def execute_pipeline_step_template(
-    step_name: str,
-    step_description: str,
-    main_function,
-    import_dependencies: Optional[List[str]] = None
-):
-    """
-    Standardized template for executing pipeline steps with consistent error handling.
-    
-    This function provides a uniform execution pattern for all pipeline steps:
-    - Standardized argument parsing with fallback
-    - Consistent logging setup
-    - Error handling with proper exit codes
-    - Performance tracking when available
-    - Dependency validation
-    
-    Args:
-        step_name: Name of the step (e.g., "1_setup.py")
-        step_description: Description of what the step does
-        main_function: Function to execute the step logic
-        import_dependencies: List of module names to validate before execution
-    """
-    # Implementation would go here
-    pass
-
-# Export commonly used items at package level
+# Export all utilities
 __all__ = [
+    # Logging utilities
     'PipelineLogger',
-    'EnhancedPipelineLogger',
-    'setup_step_logging', 
+    'EnhancedPipelineLogger', 
+    'setup_step_logging',
     'setup_main_logging',
+    'setup_enhanced_step_logging',
     'log_step_start',
-    'log_step_success', 
+    'log_step_success',
     'log_step_warning',
     'log_step_error',
     'log_section_header',
+    'get_performance_summary',
+    'PerformanceTracker',
+    'performance_tracker',
+    'setup_correlation_context',
+    
+    # Argument utilities
     'ArgumentParser',
     'EnhancedArgumentParser',
     'PipelineArguments',
+    'build_step_command_args',
+    'build_enhanced_step_command_args',
+    'get_step_output_dir',
     'StepConfiguration',
-    'DependencyValidator',
-    'validate_pipeline_dependencies',
-    'get_pipeline_utilities',
-    'validate_output_directory',
-    'get_performance_summary',
-    'execute_pipeline_step_template',
-    'get_venv_python',
-    'get_system_info',
+    'get_pipeline_step_info',
+    'validate_pipeline_configuration',
     'parse_arguments',
     'validate_and_convert_paths',
+    
+    # Dependency utilities
+    'DependencyValidator',
+    'validate_pipeline_dependencies',
     'validate_pipeline_dependencies_if_available',
-    'UTILS_AVAILABLE'
+    'DependencySpec',
+    'check_optional_dependencies',
+    'get_dependency_status',
+    'install_missing_dependencies',
+    
+    # Configuration utilities
+    'GNNPipelineConfig',
+    'PipelineConfig',
+    'TypeCheckerConfig',
+    'OntologyConfig',
+    'LLMConfig',
+    'WebsiteConfig',
+    'SetupConfig',
+    'SAPFConfig',
+    'ModelConfig',
+    'load_config',
+    'save_config',
+    'validate_config',
+    'get_config_value',
+    'set_config_value',
+    
+    # Performance utilities
+    'PerformanceTracker',
+    'performance_tracker',
+    'track_operation_standalone',
+    
+    # Environment utilities
+    'get_venv_python',
+    'get_system_info',
+    
+    # Pipeline utilities
+    'MockArgumentParser',
+    'get_pipeline_utilities',
+    'validate_output_directory',
+    'execute_pipeline_step_template',
+    
+    # Test utilities
+    'TEST_CATEGORIES',
+    'TEST_STAGES',
+    'COVERAGE_TARGETS',
+    'TEST_CONFIG',
+    'TestRunner',
+    'TestResult',
+    'TestCategory',
+    'TestStage',
+    'CoverageTarget',
+    'run_tests',
+    'run_test_category',
+    'run_test_stage',
+    'get_test_results',
+    'generate_test_report',
+    'validate_test_environment',
+    'setup_test_environment',
+    'cleanup_test_environment',
+    'get_test_coverage',
+    'validate_coverage_targets',
+    'get_test_summary',
+    'get_test_statistics',
+    'get_test_performance',
+    'get_test_dependencies',
+    'validate_test_dependencies',
+    'install_test_dependencies',
+    'get_test_configuration',
+    'validate_test_configuration',
+    'get_test_environment',
+    'get_test_logs',
+    'get_test_artifacts',
+    'get_test_metadata',
+    'get_test_timestamps',
+    'get_test_duration',
+    'get_test_status',
+    'get_test_progress'
 ] 

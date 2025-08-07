@@ -71,7 +71,7 @@ from utils.pipeline_template import (
 from utils.argument_utils import EnhancedArgumentParser, PipelineArguments
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
-# Import enhanced logging and progress tracking
+# Optional logging and progress tracking
 try:
     from utils.logging_utils import (
         PipelineProgressTracker,
@@ -156,7 +156,7 @@ def main():
     }
     
     try:
-        # Enhanced pipeline start logging
+        # Pipeline start logging
         if ENHANCED_LOGGING_AVAILABLE:
             EnhancedPipelineLogger.log_structured(
                 logger, logging.INFO,

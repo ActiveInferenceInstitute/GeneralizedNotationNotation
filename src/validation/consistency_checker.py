@@ -7,6 +7,7 @@ naming conventions, style consistency, and structural integrity.
 
 import re
 from typing import Dict, Any, List, Optional, Union
+from pathlib import Path
 
 class ConsistencyChecker:
     """Checker for consistency aspects of GNN models."""
@@ -309,15 +310,137 @@ class ConsistencyChecker:
             "circular_references": cycles
         } 
 
-def check_consistency(content: str) -> Dict[str, Any]:
+def check_consistency(model_data: Union[str, Path, Dict[str, Any]]) -> Dict[str, Any]:
     """
-    Convenience function for consistency checking.
+    Check consistency for a GNN model.
     
     Args:
-        content: GNN model content string
+        model_data: Path to GNN file, Path object, or model data dictionary
         
     Returns:
         Dictionary with consistency check results
     """
-    checker = ConsistencyChecker()
-    return checker.check(content)
+    
+    try:
+        # Handle different input types
+        if isinstance(model_data, dict):
+            # If it's already a dictionary, extract content from it
+            content = _extract_content_from_dict(model_data)
+            file_path = model_data.get("file_path", "unknown")
+        else:
+            # Convert string path to Path object
+            model_data = Path(model_data)
+            file_path = str(model_data)
+            
+            # Read model content
+            with open(model_data, 'r', encoding='utf-8') as f:
+                content = f.read()
+        
+        # Perform consistency checking
+        checker = ConsistencyChecker()
+        consistency_result = checker.check(content)
+        
+        # Calculate consistency score
+        consistency_score = _calculate_consistency_score(consistency_result)
+        
+        return {
+            "file_path": file_path,
+            "file_name": Path(file_path).name if file_path != "unknown" else "unknown",
+            "consistent": consistency_result["is_consistent"],
+            "warnings": consistency_result["warnings"],
+            "consistency_score": consistency_score,
+            "fallback": False
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "file_path": str(model_data) if not isinstance(model_data, dict) else "unknown",
+            "error": str(e),
+            "consistent": False,
+            "warnings": [str(e)],
+            "consistency_score": 0.0,
+            "fallback": True
+        }
+
+def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
+    """Extract content from model data dictionary."""
+    # Try to get raw sections first
+    raw_sections = model_data.get("raw_sections", {})
+    if raw_sections:
+        # Reconstruct the original content from raw sections
+        content_parts = []
+        
+        # Add model name
+        if "ModelName" in raw_sections:
+            content_parts.append(f"ModelName: {raw_sections['ModelName']}")
+        
+        # Add state space block
+        if "StateSpaceBlock" in raw_sections:
+            content_parts.append(f"StateSpaceBlock: {raw_sections['StateSpaceBlock']}")
+        
+        # Add initial parameterization
+        if "InitialParameterization" in raw_sections:
+            content_parts.append(f"InitialParameterization: {raw_sections['InitialParameterization']}")
+        
+        # Add connections
+        if "Connections" in raw_sections:
+            content_parts.append(f"Connections: {raw_sections['Connections']}")
+        
+        return "\n\n".join(content_parts)
+    
+    # Fallback: try to get variables and connections
+    variables = model_data.get("variables", [])
+    connections = model_data.get("connections", [])
+    
+    if variables or connections:
+        content_parts = []
+        
+        # Add variables
+        if variables:
+            var_lines = []
+            for var in variables:
+                name = var.get("name", "Unknown")
+                var_type = var.get("var_type", "unknown")
+                dimensions = var.get("dimensions", [])
+                dim_str = "[" + ", ".join(map(str, dimensions)) + "]" if dimensions else ""
+                var_lines.append(f"{name}{dim_str} # {var_type}")
+            content_parts.append("StateSpaceBlock:\n" + "\n".join(var_lines))
+        
+        # Add connections
+        if connections:
+            conn_lines = []
+            for conn in connections:
+                source = conn.get("source_variables", ["?"])[0] if conn.get("source_variables") else "?"
+                target = conn.get("target_variables", ["?"])[0] if conn.get("target_variables") else "?"
+                conn_lines.append(f"{source} > {target}")
+            content_parts.append("Connections:\n" + "\n".join(conn_lines))
+        
+        return "\n\n".join(content_parts)
+    
+    # Final fallback: return empty string
+    return ""
+
+def _calculate_consistency_score(consistency_result: Dict[str, Any]) -> float:
+    """Calculate a consistency score from consistency results."""
+    # Base score starts at 1.0
+    score = 1.0
+    
+    # Deduct points for warnings
+    warnings = consistency_result.get("warnings", [])
+    score -= len(warnings) * 0.1
+    
+    # Deduct points for invalid references
+    invalid_references = consistency_result.get("invalid_references", [])
+    score -= len(invalid_references) * 0.2
+    
+    # Deduct points for isolated blocks
+    isolated_blocks = consistency_result.get("isolated_blocks", [])
+    score -= len(isolated_blocks) * 0.1
+    
+    # Deduct points for circular references
+    circular_references = consistency_result.get("circular_references", [])
+    score -= len(circular_references) * 0.3
+    
+    # Ensure score is between 0 and 1
+    return max(0.0, min(1.0, score))

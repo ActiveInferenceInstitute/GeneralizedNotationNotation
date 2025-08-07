@@ -19,6 +19,7 @@ class ProviderType(Enum):
     OPENAI = "openai"
     OPENROUTER = "openrouter"
     PERPLEXITY = "perplexity"
+    OLLAMA = "ollama"
 
 @dataclass
 class LLMResponse:

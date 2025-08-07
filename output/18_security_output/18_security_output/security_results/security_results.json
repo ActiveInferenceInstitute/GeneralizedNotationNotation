@@ -1,0 +1,35 @@
+{
+  "timestamp": "2025-08-07T11:42:52.788617",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "security_checks": [
+    {
+      "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "file_hash": "b6a6a614d6af9542e5bca327ea7dfc9d8be6f57ac26b8a98be3a88cf214bdc20",
+      "file_size": 4085,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2025-08-07T11:42:52.790179"
+    }
+  ],
+  "vulnerabilities": [],
+  "recommendations": [
+    {
+      "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    }
+  ]
+}

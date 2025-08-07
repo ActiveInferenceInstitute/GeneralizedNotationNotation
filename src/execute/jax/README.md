@@ -119,16 +119,16 @@ logging.basicConfig(level=logging.INFO)
 
 ## Integration with Pipeline
 
-### Step 10 Integration
+### Step 12 Integration
 
 The JAX executor is integrated into the main pipeline:
 
 ```python
-# In 10_execute.py
+# In 12_execute.py
 from execute.jax import run_jax_scripts
 
 def execute_jax_step(pipeline_output_dir, verbose=False):
-    """Execute JAX scripts as part of pipeline step 10."""
+    """Execute JAX scripts as part of pipeline step 12."""
     return run_jax_scripts(
         pipeline_output_dir=pipeline_output_dir,
         recursive_search=True,

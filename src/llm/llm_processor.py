@@ -18,6 +18,7 @@ from .providers import (
     OpenAIProvider,
     OpenRouterProvider,
     PerplexityProvider,
+    OllamaProvider,
     ProviderType,
     LLMResponse,
     LLMMessage,
@@ -74,6 +75,10 @@ def load_api_keys_from_env() -> Dict[str, str]:
     if perplexity_key := os.getenv('PERPLEXITY_API_KEY'):
         api_keys['perplexity'] = perplexity_key
     
+    # Ollama runs locally and doesn't need an API key; detect via env toggle
+    if os.getenv('OLLAMA_DISABLED', '0') not in ('1', 'true', 'True'):
+        api_keys['ollama'] = 'local'
+    
     logger.info(f"Loaded API keys for providers: {list(api_keys.keys())}")
     return api_keys
 
@@ -117,7 +122,8 @@ def get_preferred_providers_from_env() -> List[ProviderType]:
     provider_map = {
         'openai': ProviderType.OPENAI,
         'openrouter': ProviderType.OPENROUTER,
-        'perplexity': ProviderType.PERPLEXITY
+        'perplexity': ProviderType.PERPLEXITY,
+        'ollama': ProviderType.OLLAMA
     }
     
     # Create preferred order with default first
@@ -125,9 +131,9 @@ def get_preferred_providers_from_env() -> List[ProviderType]:
     if default_provider in provider_map:
         preferred.append(provider_map[default_provider])
     
-    # Add remaining providers (excluding Perplexity for now since no API key)
+    # Add remaining providers
     for provider_type in ProviderType:
-        if provider_type not in preferred and provider_type != ProviderType.PERPLEXITY:
+        if provider_type not in preferred:
             preferred.append(provider_type)
     
     return preferred
@@ -158,7 +164,8 @@ class LLMProcessor:
         self.preferred_providers = preferred_providers or [
             ProviderType.OPENAI,
             ProviderType.OPENROUTER,
-            ProviderType.PERPLEXITY
+            ProviderType.PERPLEXITY,
+            ProviderType.OLLAMA,
         ]
         self.api_keys = api_keys or {}
         self.provider_configs = provider_configs or {}
@@ -214,6 +221,8 @@ class LLMProcessor:
             return OpenRouterProvider(api_key=api_key, **config)
         elif provider_type == ProviderType.PERPLEXITY:
             return PerplexityProvider(api_key=api_key, **config)
+        elif provider_type == ProviderType.OLLAMA:
+            return OllamaProvider(**config)
         else:
             logger.error(f"Unknown provider type: {provider_type}")
             return None

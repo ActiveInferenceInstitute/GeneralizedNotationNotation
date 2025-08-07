@@ -1,0 +1,17 @@
+Advanced Visualization Error Report
+===================================
+
+File: actinf_pomdp_agent.md
+Timestamp: 2025-08-07T11:42:37.227925
+Visualization Type: all
+Export Formats: ['html', 'json']
+Error: Advanced visualization modules unavailable
+
+Dependency Status:
+- AdvancedVisualizer: False
+- DashboardGenerator: True
+- DataExtractor: True
+
+Generated Files (2):
+1. /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_advanced_viz.html
+2. /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_viz_data.json

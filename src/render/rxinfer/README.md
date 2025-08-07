@@ -4,7 +4,7 @@ This module handles the integration between GNN specifications and [RxInfer.jl](
 
 ## Overview
 
-The RxInfer module is part of the GNN Processing Pipeline and works in conjunction with the rendering pipeline step (`9_render.py`) and execution pipeline step (`10_execute.py`). It provides tools for:
+The RxInfer module is part of the GNN Processing Pipeline and works in conjunction with the rendering pipeline step (`11_render.py`) and execution pipeline step (`12_execute.py`). It provides tools for:
 
 1. Parsing GNN files into structured representations
 2. Generating RxInfer.jl configuration files (TOML)
@@ -15,8 +15,8 @@ The RxInfer module is part of the GNN Processing Pipeline and works in conjuncti
 
 This module integrates with the GNN pipeline in the following ways:
 
-- **Rendering (Step 9)**: The `9_render.py` script uses the functionality in `src/render/rxinfer.py` to render GNN specifications to RxInfer.jl configurations and scripts.
-- **Execution (Step 10)**: The `10_execute.py` script uses the `src/execute/rxinfer_runner.py` to execute the generated RxInfer.jl simulations.
+- **Rendering (Step 11)**: The `11_render.py` script uses the functionality in `src/render/rxinfer.py` to render GNN specifications to RxInfer.jl configurations and scripts.
+- **Execution (Step 12)**: The `12_execute.py` script uses the `src/execute/rxinfer_runner.py` to execute the generated RxInfer.jl simulations.
 - **Standalone Usage**: The `src/rxinfer.py` script provides a standalone interface for processing GNN files directly to RxInfer.jl configurations.
 
 ## Standalone Usage

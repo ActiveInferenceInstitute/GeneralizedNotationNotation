@@ -26,8 +26,7 @@ from utils import (
     log_step_error,
     validate_output_directory,
     EnhancedArgumentParser,
-    performance_tracker,
-    UTILS_AVAILABLE
+    performance_tracker
 )
 
 from pipeline import (
@@ -553,8 +552,7 @@ def process_advanced_viz_standardized(
                 dependency_status={
                     "advanced_visualizer": ADVANCED_VISUALIZER_AVAILABLE,
                     "dashboard_generator": DASHBOARD_GENERATOR_AVAILABLE,
-                    "data_extractor": DATA_EXTRACTOR_AVAILABLE,
-                    "utils_available": UTILS_AVAILABLE
+                    "data_extractor": DATA_EXTRACTOR_AVAILABLE
                 }
             )
             

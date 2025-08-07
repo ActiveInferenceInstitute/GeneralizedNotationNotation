@@ -75,8 +75,8 @@ def process_mcp_standardized(
         config = get_pipeline_config()
         step_config = config.get_step_config("22_mcp.py")
         
-        # Set up output directory
-        step_output_dir = get_output_dir_for_script("22_mcp.py", output_dir)
+        # Set up output directory - use the output_dir directly since it's already the step-specific directory
+        step_output_dir = output_dir
         step_output_dir.mkdir(parents=True, exist_ok=True)
         
         # Log processing parameters

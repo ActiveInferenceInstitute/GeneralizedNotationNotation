@@ -66,7 +66,7 @@ class PipelineArguments:
     recursive: bool = True
     verbose: bool = True
     
-    # Enhanced validation options (enabled by default for comprehensive testing)
+    # Validation options (enabled by default for comprehensive testing)
     enable_round_trip: bool = True      # Enable round-trip testing across all 21 formats
     enable_cross_format: bool = True    # Enable cross-format consistency validation
     
@@ -472,7 +472,7 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
     cmd = [python_executable, str(script_path)]
     
     # Get supported arguments for this step
-    supported_args = cls.STEP_ARGUMENTS.get(step_name, [])
+    supported_args = ArgumentParser.STEP_ARGUMENTS.get(step_name, [])
     
     # Build arguments
     for arg_name in supported_args:
@@ -483,7 +483,7 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
         if value is None:
             continue
             
-        arg_def = cls.ARGUMENT_DEFINITIONS.get(arg_name)
+        arg_def = ArgumentParser.ARGUMENT_DEFINITIONS.get(arg_name)
         if not arg_def:
             continue
             
@@ -581,7 +581,7 @@ class StepConfiguration:
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["recursive", "verbose"],
             "defaults": {"recursive": True, "verbose": False},
-            "description": "Enhanced Validation & Quality Assurance"
+            "description": "Validation & Quality Assurance"
         },
         "7_export": {
             "required_args": ["target_dir", "output_dir"],
@@ -735,7 +735,7 @@ class StepConfiguration:
 
 # Enhanced argument parser with step awareness
 class EnhancedArgumentParser(ArgumentParser):
-    """Enhanced argument parser with step-specific validation and defaults."""
+    """Argument parser with step-specific validation and defaults."""
     
     @classmethod
     def create_step_parser(cls, step_name: str, description: str = None) -> argparse.ArgumentParser:

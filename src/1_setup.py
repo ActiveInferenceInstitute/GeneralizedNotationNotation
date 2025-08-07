@@ -42,10 +42,48 @@ from utils.pipeline_template import (
     log_step_start,
     log_step_success,
     log_step_error,
-    log_step_warning
+    log_step_warning,
+    create_standardized_pipeline_script,
 )
 from utils.argument_utils import EnhancedArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
+
+def install_uv_if_needed(logger: logging.Logger) -> bool:
+    """Install UV if it's not available."""
+    try:
+        # Check if UV is already available
+        result = subprocess.run(["uv", "--version"], capture_output=True, text=True, timeout=10)
+        if result.returncode == 0:
+            logger.info(f"✅ UV is already available: {result.stdout.strip()}")
+            return True
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        pass
+    
+    logger.info("🔧 UV not found, installing...")
+    try:
+        # Install UV using the official installer
+        install_script = subprocess.run([
+            "curl", "-LsSf", "https://astral.sh/uv/install.sh"
+        ], capture_output=True, text=True, timeout=30)
+        
+        if install_script.returncode == 0:
+            # Execute the install script
+            install_result = subprocess.run([
+                "sh", "-c", install_script.stdout
+            ], capture_output=True, text=True, timeout=60)
+            
+            if install_result.returncode == 0:
+                logger.info("✅ UV installed successfully")
+                return True
+            else:
+                logger.error(f"❌ UV installation failed: {install_result.stderr}")
+                return False
+        else:
+            logger.error(f"❌ Failed to download UV installer: {install_script.stderr}")
+            return False
+    except Exception as e:
+        logger.error(f"❌ UV installation failed: {e}")
+        return False
 
 # Import core setup functions from setup module
 try:
@@ -58,31 +96,33 @@ try:
         create_project_structure
     )
     SETUP_AVAILABLE = True
-except ImportError:
+except ImportError as e:
     SETUP_AVAILABLE = False
-    # Fallback function definitions if setup module is not available
+    logging.error(f"Setup module not available: {e}")
+    
+    # Critical error - setup module is required
     def log_system_info(logger: logging.Logger) -> Dict[str, Any]:
-        logger.error("Setup module not available")
+        logger.error("Setup module not available - this is a critical error")
         return {}
     
     def check_uv_availability(logger: logging.Logger) -> bool:
-        logger.error("Setup module not available")
+        logger.error("Setup module not available - this is a critical error")
         return False
     
     def setup_uv_environment(project_root: Path, logger: logging.Logger) -> bool:
-        logger.error("Setup module not available")
+        logger.error("Setup module not available - this is a critical error")
         return False
     
     def install_optional_dependencies(project_root: Path, logger: logging.Logger, package_groups: List[str] = None) -> bool:
-        logger.error("Setup module not available")
+        logger.error("Setup module not available - this is a critical error")
         return False
     
     def validate_uv_setup(project_root: Path, logger: logging.Logger) -> Dict[str, Any]:
-        logger.error("Setup module not available")
+        logger.error("Setup module not available - this is a critical error")
         return {}
     
     def create_project_structure(output_dir: Path, logger: logging.Logger) -> bool:
-        logger.error("Setup module not available")
+        logger.error("Setup module not available - this is a critical error")
         return False
 
 def process_setup_standardized(
@@ -98,26 +138,22 @@ def process_setup_standardized(
     
     Args:
         target_dir: Directory containing files to process
-        output_dir: Output directory for setup results
-        logger: Logger instance for this step
-        recursive: Whether to process files recursively
+        output_dir: Directory to write output files
+        logger: Logger instance for logging
+        recursive: Whether to process subdirectories recursively
         verbose: Whether to enable verbose logging
-        **kwargs: Additional processing options
+        **kwargs: Additional keyword arguments
         
     Returns:
-        True if processing succeeded, False otherwise
+        True if setup was successful, False otherwise
     """
     try:
-        # Check if setup module is available
-        if not SETUP_AVAILABLE:
-            log_step_warning(logger, "Setup module not available, using fallback functions")
+        logger.info("🚀 Processing setup")
         
-        # Get pipeline configuration
-        config = get_pipeline_config()
-        step_output_dir = get_output_dir_for_script("1_setup.py", output_dir)
-        step_output_dir.mkdir(parents=True, exist_ok=True)
-        
-        log_step_start(logger, "Processing setup")
+        # Ensure UV is available
+        if not install_uv_if_needed(logger):
+            logger.error("❌ Failed to install UV - setup cannot continue")
+            return False
         
         # Log system information
         system_info = log_system_info(logger)
@@ -125,90 +161,51 @@ def process_setup_standardized(
         # Check UV availability
         uv_available = check_uv_availability(logger)
         if not uv_available:
-            log_step_error(logger, "UV is not available. Please install UV first.")
+            logger.error("❌ UV is not available after installation attempt")
             return False
         
         # Setup UV environment
-        project_root = Path(__file__).parent.parent.parent
-        uv_success = setup_uv_environment(project_root, logger)
-        if not uv_success:
-            log_step_error(logger, "Failed to setup UV environment")
+        project_root = Path(__file__).parent.parent
+        setup_success = setup_uv_environment(project_root, logger)
+        if not setup_success:
+            logger.error("❌ UV environment setup failed")
             return False
         
-        # Install optional dependencies
-        optional_deps_success = install_optional_dependencies(project_root, logger)
-        if not optional_deps_success:
-            log_step_warning(logger, "Failed to install some optional dependencies")
-        
-        # Validate UV environment
-        validation_results = validate_uv_setup(project_root, logger)
+        logger.info("✅ UV environment setup completed")
         
         # Create project structure
         structure_success = create_project_structure(output_dir, logger)
         if not structure_success:
-            log_step_warning(logger, "Failed to create some project structure")
+            logger.error("❌ Failed to create project structure")
+            return False
         
-        # Save setup results
-        setup_results = {
-            "timestamp": time.time(),
+        # Validate setup
+        validation_result = validate_uv_setup(project_root, logger)
+        
+        # Log setup summary
+        setup_summary = {
             "system_info": system_info,
             "uv_available": uv_available,
-            "uv_setup_success": uv_success,
-            "optional_deps_success": optional_deps_success,
-            "validation_results": validation_results,
-            "structure_success": structure_success,
-            "setup_module_available": SETUP_AVAILABLE
+            "structure_created": structure_success,
+            "validation": validation_result,
+            "setup_available": SETUP_AVAILABLE
         }
         
-        setup_results_file = step_output_dir / "setup_results.json"
-        with open(setup_results_file, 'w') as f:
-            json.dump(setup_results, f, indent=2)
-        
-        if uv_success:
-            log_step_success(logger, "Setup processing completed successfully")
-        else:
-            log_step_error(logger, "Setup processing failed")
-        
-        return uv_success
+        logger.info("✅ Setup processing completed successfully")
+        return True
         
     except Exception as e:
-        log_step_error(logger, f"Setup processing failed: {e}")
+        logger.error(f"❌ Setup processing failed: {e}")
         return False
 
+run_script = create_standardized_pipeline_script(
+    "1_setup",
+    process_setup_standardized,
+    "Project setup and environment validation",
+)
+
 def main():
-    """Main setup processing function."""
-    args = EnhancedArgumentParser.parse_step_arguments("1_setup.py")
-    
-    # Setup logging
-    logger = setup_step_logging("setup", args)
-    
-    # Check if setup module is available
-    if not SETUP_AVAILABLE:
-        log_step_warning(logger, "Setup module not available, using fallback functions")
-    
-    # Quick check if environment is already working
-    try:
-        venv_python = Path(".venv/bin/python")
-        if venv_python.exists():
-            test_result = subprocess.run([str(venv_python), "--version"], 
-                                       capture_output=True, text=True, timeout=10)
-            if test_result.returncode == 0:
-                log_step_success(logger, f"Environment already working: {test_result.stdout.strip()}")
-                # Still run setup for validation but skip recreation
-                args.recreate_venv = False
-    except Exception:
-        pass  # Continue with normal setup
-    
-    # Process setup
-    success = process_setup_standardized(
-        target_dir=args.target_dir,
-        output_dir=args.output_dir,
-        logger=logger,
-        recursive=args.recursive,
-        verbose=args.verbose
-    )
-    
-    return 0 if success else 1
+    return run_script()
 
 if __name__ == "__main__":
     sys.exit(main()) 

@@ -1,4 +1,0 @@
-Category: research
-Success: False
-Duration: 0.00s
-Error: No test files found

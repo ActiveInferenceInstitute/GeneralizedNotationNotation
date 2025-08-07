@@ -9,6 +9,7 @@ identification of potential performance bottlenecks.
 import re
 import math
 from typing import Dict, Any, List, Optional, Union
+from pathlib import Path
 
 class PerformanceProfiler:
     """Profiler for performance aspects of GNN models."""
@@ -270,40 +271,139 @@ class PerformanceProfiler:
         return warnings
 
 
-def profile_performance(model_path: str) -> Dict[str, Any]:
+def profile_performance(model_path: Union[str, Path, Dict[str, Any]]) -> Dict[str, Any]:
     """
     Profile the performance characteristics of a GNN model.
     
     Args:
-        model_path: Path to the GNN model file
+        model_path: Path to the GNN model file, Path object, or model data dictionary
         
     Returns:
         Performance profile with metrics and warnings
     """
     try:
-        from pathlib import Path
-        
-        # Convert string path to Path object
-        model_path = Path(model_path)
-        
-        # Read model content
-        with open(model_path, 'r', encoding='utf-8') as f:
-            content = f.read()
+        # Handle different input types
+        if isinstance(model_path, dict):
+            # If it's already a dictionary, extract content from it
+            content = _extract_content_from_dict(model_path)
+            model_path_str = model_path.get("file_path", "unknown")
+        else:
+            # Convert string path to Path object
+            model_path = Path(model_path)
+            model_path_str = str(model_path)
+            
+            # Read model content
+            with open(model_path, 'r', encoding='utf-8') as f:
+                content = f.read()
         
         # Performance profiling
         performance_profiler = PerformanceProfiler()
         profile_result = performance_profiler.profile(content)
         
         return {
-            "file_path": str(model_path),
-            "file_name": model_path.name,
+            "file_path": model_path_str,
+            "file_name": Path(model_path_str).name if model_path_str != "unknown" else "unknown",
             "metrics": profile_result.get("metrics", {}),
-            "warnings": profile_result.get("warnings", [])
+            "warnings": profile_result.get("warnings", []),
+            "performance_score": _calculate_performance_score(profile_result)
         }
         
     except Exception as e:
         return {
             "status": "error",
-            "file_path": str(model_path),
+            "file_path": str(model_path) if not isinstance(model_path, dict) else "unknown",
             "error": str(e)
-        } 
+        }
+
+def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
+    """Extract content from model data dictionary."""
+    # Try to get raw sections first
+    raw_sections = model_data.get("raw_sections", {})
+    if raw_sections:
+        # Reconstruct the original content from raw sections
+        content_parts = []
+        
+        # Add model name
+        if "ModelName" in raw_sections:
+            content_parts.append(f"ModelName: {raw_sections['ModelName']}")
+        
+        # Add state space block
+        if "StateSpaceBlock" in raw_sections:
+            content_parts.append(f"StateSpaceBlock: {raw_sections['StateSpaceBlock']}")
+        
+        # Add initial parameterization
+        if "InitialParameterization" in raw_sections:
+            content_parts.append(f"InitialParameterization: {raw_sections['InitialParameterization']}")
+        
+        # Add connections
+        if "Connections" in raw_sections:
+            content_parts.append(f"Connections: {raw_sections['Connections']}")
+        
+        return "\n\n".join(content_parts)
+    
+    # Fallback: try to get variables and connections
+    variables = model_data.get("variables", [])
+    connections = model_data.get("connections", [])
+    
+    if variables or connections:
+        content_parts = []
+        
+        # Add variables
+        if variables:
+            var_lines = []
+            for var in variables:
+                name = var.get("name", "Unknown")
+                var_type = var.get("var_type", "unknown")
+                dimensions = var.get("dimensions", [])
+                dim_str = "[" + ", ".join(map(str, dimensions)) + "]" if dimensions else ""
+                var_lines.append(f"{name}{dim_str} # {var_type}")
+            content_parts.append("StateSpaceBlock:\n" + "\n".join(var_lines))
+        
+        # Add connections
+        if connections:
+            conn_lines = []
+            for conn in connections:
+                source = conn.get("source_variables", ["?"])[0] if conn.get("source_variables") else "?"
+                target = conn.get("target_variables", ["?"])[0] if conn.get("target_variables") else "?"
+                conn_lines.append(f"{source} > {target}")
+            content_parts.append("Connections:\n" + "\n".join(conn_lines))
+        
+        return "\n\n".join(content_parts)
+    
+    # Final fallback: return empty string
+    return ""
+
+def _calculate_performance_score(profile_result: Dict[str, Any]) -> float:
+    """Calculate a performance score from profile results."""
+    metrics = profile_result.get("metrics", {})
+    warnings = profile_result.get("warnings", [])
+    
+    # Base score starts at 1.0
+    score = 1.0
+    
+    # Deduct points for warnings
+    score -= len(warnings) * 0.1
+    
+    # Deduct points for high memory usage
+    memory_mb = metrics.get("estimated_memory_mb", 0)
+    if memory_mb > 1000:
+        score -= 0.3
+    elif memory_mb > 100:
+        score -= 0.1
+    
+    # Deduct points for high computational complexity
+    complexity = metrics.get("computational_complexity", {})
+    complexity_class = complexity.get("complexity_class", "Unknown")
+    if complexity_class in ["O(n³) or higher"]:
+        score -= 0.3
+    elif complexity_class in ["O(n²)"]:
+        score -= 0.1
+    
+    # Deduct points for low parallelization potential
+    parallelization = metrics.get("parallelization_potential", {})
+    parallel_efficiency = parallelization.get("parallel_efficiency", 1.0)
+    if parallel_efficiency < 0.5:
+        score -= 0.2
+    
+    # Ensure score is between 0 and 1
+    return max(0.0, min(1.0, score)) 

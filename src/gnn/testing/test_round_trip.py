@@ -167,71 +167,68 @@ logging.basicConfig(
 # Add the src directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-# Import the proper types from the correct location
-try:
-    from gnn.types import RoundTripResult, ComprehensiveTestReport
-except ImportError:
-    # Fallback: define simple types if import fails
-    @dataclass
-    class RoundTripResult:
-        source_format: Any = None
-        target_format: Any = None
-        success: bool = True
-        original_model: Any = None
-        converted_content: str = ""
-        parsed_back_model: Any = None
-        checksum_original: str = ""
-        checksum_converted: str = ""
-        test_time: float = 0.0
-        errors: List[str] = field(default_factory=list)
-        warnings: List[str] = field(default_factory=list)
-        differences: List[str] = field(default_factory=list)
-        
-        def add_error(self, error: str):
-            self.errors.append(error)
-            self.success = False
-            
-        def add_warning(self, warning: str):
-            self.warnings.append(warning)
-            
-        def add_difference(self, difference: str):
-            self.differences.append(difference)
+# Define types locally to avoid circular imports
+# Fallback: define simple types to avoid import issues
+@dataclass
+class RoundTripResult:
+    source_format: Any = None
+    target_format: Any = None
+    success: bool = True
+    original_model: Any = None
+    converted_content: str = ""
+    parsed_back_model: Any = None
+    checksum_original: str = ""
+    checksum_converted: str = ""
+    test_time: float = 0.0
+    errors: List[str] = field(default_factory=list)
+    warnings: List[str] = field(default_factory=list)
+    differences: List[str] = field(default_factory=list)
     
-    @dataclass
-    class ComprehensiveTestReport:
-        reference_file: str = ""
-        test_timestamp: datetime = field(default_factory=datetime.now)
-        round_trip_results: List[RoundTripResult] = field(default_factory=list)
-        critical_errors: List[str] = field(default_factory=list)
+    def add_error(self, error: str):
+        self.errors.append(error)
+        self.success = False
         
-        def add_result(self, result: RoundTripResult):
-            self.round_trip_results.append(result)
-            
-        @property
-        def total_tests(self) -> int:
-            return len(self.round_trip_results)
-            
-        @property
-        def successful_tests(self) -> int:
-            return sum(1 for r in self.round_trip_results if r.success)
-            
-        @property
-        def failed_tests(self) -> int:
-            return self.total_tests - self.successful_tests
-            
-        def get_success_rate(self) -> float:
-            return (self.successful_tests / self.total_tests * 100) if self.total_tests > 0 else 0.0
-            
-        def get_format_summary(self) -> Dict[Any, Dict[str, int]]:
-            summary = {}
-            for result in self.round_trip_results:
-                fmt = result.target_format
-                if fmt not in summary:
-                    summary[fmt] = {"success": 0, "total": 0}
-                summary[fmt]["total"] += 1
-                if result.success:
-                    summary[fmt]["success"] += 1
-            return summary
+    def add_warning(self, warning: str):
+        self.warnings.append(warning)
+        
+    def add_difference(self, difference: str):
+        self.differences.append(difference)
+
+@dataclass
+class ComprehensiveTestReport:
+    reference_file: str = ""
+    test_timestamp: datetime = field(default_factory=datetime.now)
+    round_trip_results: List[RoundTripResult] = field(default_factory=list)
+    critical_errors: List[str] = field(default_factory=list)
+    
+    def add_result(self, result: RoundTripResult):
+        self.round_trip_results.append(result)
+        
+    @property
+    def total_tests(self) -> int:
+        return len(self.round_trip_results)
+        
+    @property
+    def successful_tests(self) -> int:
+        return sum(1 for r in self.round_trip_results if r.success)
+        
+    @property
+    def failed_tests(self) -> int:
+        return self.total_tests - self.successful_tests
+        
+    def get_success_rate(self) -> float:
+        return (self.successful_tests / self.total_tests * 100) if self.total_tests > 0 else 0.0
+        
+    def get_format_summary(self) -> Dict[Any, Dict[str, int]]:
+        summary = {}
+        for result in self.round_trip_results:
+            fmt = result.target_format
+            if fmt not in summary:
+                summary[fmt] = {"success": 0, "total": 0}
+            summary[fmt]["total"] += 1
+            if result.success:
+                summary[fmt]["success"] += 1
+        return summary
 
 try:
     # Use proper absolute imports from src

@@ -33,7 +33,7 @@ This module provides comprehensive execution and analysis capabilities for Activ
 
 ## Usage
 
-The module is typically used through the main pipeline (`10_execute.py`) but can also be used directly:
+The module is typically used through the main pipeline (`12_execute.py`) but can also be used directly:
 
 ```python
 from execute.activeinference_jl import run_activeinference_analysis
