@@ -16,6 +16,9 @@ from .schema_validator import (
     validate_gnn_file
 )
 
+# Core processor
+from .core_processor import GNNProcessor
+
 # Import parsers for additional functionality
 try:
     from .parsers import parse_gnn_file as parse_gnn_file_parser

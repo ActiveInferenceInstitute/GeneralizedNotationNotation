@@ -13,8 +13,25 @@ import json
 import time
 from pathlib import Path
 import logging
-from ..pipeline import get_output_dir_for_script
-from ..utils import log_step_start, log_step_success, log_step_warning, log_step_error
+try:
+    from ..pipeline import get_output_dir_for_script
+    from ..utils import log_step_start, log_step_success, log_step_warning, log_step_error
+except ImportError:
+    # Fallback for when running as standalone module
+    def get_output_dir_for_script(script_name, base_output_dir):
+        return Path(base_output_dir) / script_name.replace('.py', '')
+    
+    def log_step_start(logger, message):
+        logger.info(f"🚀 {message}")
+    
+    def log_step_success(logger, message):
+        logger.info(f"✅ {message}")
+    
+    def log_step_warning(logger, message):
+        logger.warning(f"⚠️ {message}")
+    
+    def log_step_error(logger, message):
+        logger.error(f"❌ {message}")
 from typing import List, Dict, Tuple, Optional, Union, Any
 
 def is_uv_environment_active() -> bool:

@@ -90,7 +90,7 @@ from .binary_serializer import BinarySerializer
 # Import converters and validators
 from .converters import FormatConverter, ConversionError
 from .validators import GNNValidator, ValidationError, ValidationWarning
-from .common import GNNInternalRepresentation, ASTNode, ParseError
+from .common import GNNInternalRepresentation, ASTNode, ParseError, GNNParser
 
 # Configure logging
 logger = logging.getLogger(__name__)

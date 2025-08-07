@@ -201,11 +201,13 @@ class ArgumentParser:
         'recursive': ArgumentDefinition(
             flag='--recursive',
             action=argparse.BooleanOptionalAction,
+            default=True,
             help_text='Recursively process directories'
         ),
         'verbose': ArgumentDefinition(
             flag='--verbose',
-            action=argparse.BooleanOptionalAction, 
+            action=argparse.BooleanOptionalAction,
+            default=True,
             help_text='Enable verbose output'
         ),
         'enable_round_trip': ArgumentDefinition(
@@ -234,6 +236,7 @@ class ArgumentParser:
         'estimate_resources': ArgumentDefinition(
             flag='--estimate-resources',
             action=argparse.BooleanOptionalAction,
+            default=True,
             help_text='Estimate computational resources'
         ),
         'ontology_terms_file': ArgumentDefinition(
@@ -294,8 +297,8 @@ class ArgumentParser:
     
     # Define which arguments each step supports
     STEP_ARGUMENTS = {
-        "0_template.py": ["target_dir", "output_dir", "verbose"],
-        "1_setup.py": ["target_dir", "output_dir", "verbose", "recreate_venv", "dev", "install_optional"],
+        "0_template.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "1_setup.py": ["target_dir", "output_dir", "recursive", "verbose", "recreate_venv", "dev", "install_optional"],
         "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only"],
         "3_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
         "4_model_registry.py": ["target_dir", "output_dir", "recursive", "verbose"],

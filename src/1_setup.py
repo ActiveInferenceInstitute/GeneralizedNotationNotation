@@ -54,7 +54,7 @@ try:
         check_uv_availability,
         setup_uv_environment,
         install_optional_dependencies,
-        validate_uv_environment,
+        validate_uv_setup,
         create_project_structure
     )
     SETUP_AVAILABLE = True
@@ -77,7 +77,7 @@ except ImportError:
         logger.error("Setup module not available")
         return False
     
-    def validate_uv_environment(project_root: Path, logger: logging.Logger) -> Dict[str, Any]:
+    def validate_uv_setup(project_root: Path, logger: logging.Logger) -> Dict[str, Any]:
         logger.error("Setup module not available")
         return {}
     
@@ -141,7 +141,7 @@ def process_setup_standardized(
             log_step_warning(logger, "Failed to install some optional dependencies")
         
         # Validate UV environment
-        validation_results = validate_uv_environment(project_root, logger)
+        validation_results = validate_uv_setup(project_root, logger)
         
         # Create project structure
         structure_success = create_project_structure(output_dir, logger)

@@ -16,7 +16,7 @@ import logging
 import argparse
 import time
 import json
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 # --- Logger Setup ---
 logger = logging.getLogger(__name__)
@@ -204,8 +204,14 @@ def create_uv_environment(verbose: bool = False, recreate: bool = False) -> bool
         sys.stdout.flush()
         try:
             start_time = time.time()
-            # Initialize UV environment (creates .venv and uv.lock)
-            run_command(["uv", "init", "--python", "3.12"], verbose=verbose)
+            # Check if project is already initialized
+            if PYPROJECT_PATH.exists():
+                # Project is already initialized, just sync dependencies
+                logger.info(f"📦 Project already initialized, syncing dependencies...")
+                run_command(["uv", "sync"], verbose=verbose)
+            else:
+                # Initialize UV environment (creates .venv and uv.lock)
+                run_command(["uv", "init", "--python", "3.12"], verbose=verbose)
             duration = time.time() - start_time
             logger.info(f"✅ UV environment created successfully at {VENV_PATH} (took {duration:.1f}s)")
             sys.stdout.flush()
