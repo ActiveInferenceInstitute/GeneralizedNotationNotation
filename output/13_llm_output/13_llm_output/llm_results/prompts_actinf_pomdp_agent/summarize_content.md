@@ -1,34 +1,23 @@
 # SUMMARIZE_CONTENT
 
-## GNN Model Summary: Active Inference POMDP Agent
+Here's a concise overview of what the GNN Section contains:
 
-This GNN file describes a classic active inference agent designed for modeling decision-making within a discrete Partially Observable Markov Decision Process (POMDP). The agent utilizes a structured hidden state, observations, and actions to achieve its goals in an environment characterized by uncertainty. 
+1. **Model Overview**: A summary of the Model Overview with key variables (hidden states), observations, actions/controls, action selection rules (`F` and `G`), discovery horizon (Unbounded), planning horizon ($t$), planning scope ($num_hidden_states$, $num_actions$, $numberOfActions`, $modelParameters**(1-3)`), and critical parameters.
 
-**Key Variables:**
+2. **Key Variables**: Detailed descriptions of the variables, including their roles (`A`) and how they relate to each other in the GNN Representation (variables with brief descriptions).
 
-* **Hidden states (`s`):** Represent the agent's current understanding of the world and its state (represented as probabilities of each of the three states), which are influenced by action selection and the hidden state dynamics described by matrices `B`.
-* **Observations (`o`):**  The result of interacting with the environment; these observations directly inform the model about the agent's current situation. The observation space is defined by the matrix `A`. 
-* **Actions (`u`):**  The controllable actions that allow the agent to manipulate the environment and impact its understanding of the world. These actions are determined by a policy prior encoded in vector `E` and influence the evolution of hidden states represented by matrix `B`.
+3. **Critical Parameters**: Key parameter sets:
+   - `hidden_states`: List containing key variables
+   - `num_observations`: List indicating the number of observations
+   - `num_actions`): List describing actions/controls
 
-**Critical Parameters:**
+   The key parameters are described in the document's content and can be accessed using a dictionary comprehension. For instance, `nObservations` is specified as `(3)`.
 
-* **A (Likelihood Matrix):** Maps from hidden state to observation, defining how observations are related to the hidden state. 
-* **B (Transition Matrix):**  Defines the movement between hidden states under various actions. This matrix incorporates specific action-state transitions. 
-* **C (LogPreference Vector):** Specifies the agent's preferences for different observations in terms of log probabilities, guiding decision-making based on expected rewards and uncertainty.
-* **D (Prior Over Hidden States):**  Establishes a uniform prior over hidden states.
+4. **Notable Features**: Important subsets for specific scenarios or applications:
+   - **Special properties** (e.g., “hidden states” and “actions/controls”)
 
-**Notable Features:**
+   This feature sets are described in the document's content and can be accessed using a dictionary comprehension, e.g., `[``(1)`.*)`
 
-* This model incorporates the active inference framework to understand how the agent uses past experience to make decisions, incorporating both hidden state and observation uncertainties to refine its knowledge of the world. 
-* The model assumes a discrete POMDP with one observation modality and one hidden state factor.  It's characterized by an "agent" that actively infers from observations about its environment and adapts its internal model based on past experiences and rewards, employing a policy-based approach to decision-making.
+5. **Use Cases**: What scenarios would apply this model to?
 
-
-**Use Cases:**
-
-* Modeling the decision-making process in complex environments with uncertainty (e.g., robotics, autonomous driving). 
-* Simulating human decision-making under incomplete information or changing conditions.  
-* Developing probabilistic models for decision-making with limited knowledge about future events. 
-
-
-
-This model offers a powerful framework for modeling dynamic scenarios where the agent actively adapts to environmental changes and makes informed decisions based on limited information, making it relevant for various scientific fields and domains.
+Note that these sections do not contain any specific mathematical notation or definitions for variables, parameters (functions), or critical parameters but provide concise summaries with links to additional information related to the specific modeling concepts described in the document's content.

@@ -459,3 +459,10 @@ This pattern is demonstrated by the template module and should be followed by al
 ## License and Citation
 
 This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
+
+## References
+
+- Project overview: ../../README.md
+- Comprehensive docs: ../../DOCS.md
+- Architecture guide: ../../ARCHITECTURE.md
+- Pipeline details: ../../doc/pipeline/README.md

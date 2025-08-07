@@ -500,3 +500,10 @@ The Research module provides comprehensive research tools and experimental featu
 ## License and Citation
 
 This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
+
+## References
+
+- Project overview: ../../README.md
+- Comprehensive docs: ../../DOCS.md
+- Architecture guide: ../../ARCHITECTURE.md
+- Pipeline details: ../../doc/pipeline/README.md

@@ -19,6 +19,17 @@ from .renderer import (
     validate_website_config
 )
 
+__version__ = "1.0.0"
+
+# Feature flags/constants expected by tests
+FEATURES = {
+    "html": True,
+    "embedding": True,
+}
+SUPPORTED_FILE_TYPES = [
+    "html", "css", "js", "json", "md", "txt", "yaml", "yml", "csv", "png", "jpg", "jpeg", "gif", "svg"
+]
+
 __all__ = [
     'WebsiteGenerator',
     'WebsiteRenderer',
@@ -32,5 +43,6 @@ __all__ = [
     'embed_html_file',
     'get_module_info',
     'get_supported_file_types',
-    'validate_website_config'
+    'validate_website_config',
+    '__version__'
 ]

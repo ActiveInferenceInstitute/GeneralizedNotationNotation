@@ -518,6 +518,18 @@ class ErrorRecoverySystem:
             "most_common_error": max(error_types.items(), key=lambda x: x[1])[0] if error_types else None
         }
 
+
+class ErrorReporter:
+    """Simple error reporter used by tests to collect errors."""
+    def __init__(self):
+        self._errors: list[dict[str, Any]] = []
+
+    def collect_error(self, error_type: str, message: str) -> None:
+        self._errors.append({"type": error_type, "message": message})
+
+    def get_errors(self) -> list[dict[str, Any]]:
+        return list(self._errors)
+
 # Global instance for easy access
 error_recovery = ErrorRecoverySystem()
 

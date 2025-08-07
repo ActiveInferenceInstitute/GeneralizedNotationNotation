@@ -578,3 +578,10 @@ The Utils module provides core utilities used throughout the GNN pipeline, inclu
 ## License and Citation
 
 This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
+
+## References
+
+- Project overview: ../../README.md
+- Comprehensive docs: ../../DOCS.md
+- Architecture guide: ../../ARCHITECTURE.md
+- Pipeline details: ../../doc/pipeline/README.md

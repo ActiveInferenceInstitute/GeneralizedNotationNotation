@@ -128,10 +128,10 @@ def process_llm(
                         per_file_dir.mkdir(parents=True, exist_ok=True)
 
                         prompt_outputs = {}
-                        # Optional model override for Ollama
-                        ollama_model = os.getenv('OLLAMA_TEST_MODEL', 'gemma2:2b')
+                        # Optional model override for Ollama; prefer smallest fast default
+                        ollama_model = os.getenv('OLLAMA_MODEL', os.getenv('OLLAMA_TEST_MODEL', 'smollm2:135m-instruct-q4_K_S'))
 
-                        for ptype in prompt_sequence:
+                        for idx, ptype in enumerate(prompt_sequence, start=1):
                             prompt_cfg = get_prompt(ptype, gnn_content)
                             messages = [
                                 LLMMessage(role="system", content=prompt_cfg["system_message"]),
@@ -145,15 +145,17 @@ def process_llm(
                                         resp = await processor.get_response(
                                             messages=messages,
                                             model_name=ollama_model,
-                                            max_tokens=prompt_cfg.get("max_tokens", 1200),
+                                            max_tokens=min(512, prompt_cfg.get("max_tokens", 512)),
                                             temperature=0.2,
-                                            config=LLMConfig()
+                                            config=LLMConfig(timeout=60)
                                         )
                                         return resp.content
                                     except Exception as e:
                                         return f"Prompt execution failed: {e}"
                                 return asyncio.run(_inner())
 
+                            # Log which prompt we're running
+                            logger.info(f"Running structured prompt {idx}/{len(prompt_sequence)}: {ptype.value} for {gnn_file.name}")
                             content = _run_prompt()
                             prompt_outputs[ptype.value] = content
 
@@ -176,15 +178,16 @@ def process_llm(
                                         resp = await processor.get_response(
                                             messages=messages,
                                             model_name=ollama_model,
-                                            max_tokens=1800,
+                                            max_tokens=512,
                                             temperature=0.2,
-                                            config=LLMConfig()
+                                            config=LLMConfig(timeout=60)
                                         )
                                         return resp.content
                                     except Exception as e:
                                         return f"Prompt execution failed: {e}"
                                 return asyncio.run(_inner())
 
+                            logger.info(f"Running custom prompt: {key} for {gnn_file.name}")
                             content = _run_custom()
                             prompt_outputs[key] = content
                             out_path = per_file_dir / f"{key}.md"

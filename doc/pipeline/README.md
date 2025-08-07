@@ -51,7 +51,7 @@ src/
 - Defining `process_ontology_file()` directly in `10_ontology.py`
 - Any long method definitions (>20 lines) in numbered scripts
 
-## Complete Pipeline Steps (0-21)
+## Complete Pipeline Steps (0-22)
 
 ### Foundation and Setup
 
@@ -285,9 +285,9 @@ output/
 
 ### Safe-to-Fail Implementation
 - **Steps 8, 9, 12**: Comprehensive safe-to-fail patterns
-- **All Steps**: Guaranteed pipeline continuation (return 0)
+- **Continuation Policy**: Standard exit codes (0=success, 1=critical, 2=warnings); continuation is config-driven (fail-fast vs continue)
 - **Error Recovery**: Multiple fallback levels with detailed diagnostics
-- **Output Generation**: All steps produce outputs regardless of internal success/failure
+- **Output Generation**: Steps strive to produce useful outputs even under partial failure
 
 ### Non-Critical Failures
 - Most steps log errors but allow pipeline continuation

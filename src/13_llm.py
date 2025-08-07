@@ -148,7 +148,7 @@ def main():
             recursive=getattr(args, 'recursive', False),
             verbose=getattr(args, 'verbose', False),
             llm_tasks=getattr(args, 'llm_tasks', 'all'),
-            llm_timeout=getattr(args, 'llm_timeout', 360)
+            llm_timeout=getattr(args, 'llm_timeout', 60)
         )
         
         return 0 if success else 1

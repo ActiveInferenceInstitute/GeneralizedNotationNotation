@@ -132,6 +132,16 @@ class MatrixVisualizer:
             print(f"Error generating matrix heatmap for {matrix_name}: {e}")
             plt.close()
             return False
+
+    # Backwards-compat API expected by tests
+    def create_heatmap(self, matrix: List[List[float]] | np.ndarray) -> bool:
+        try:
+            arr = np.array(matrix, dtype=float)
+            # Save to a temporary path inside CWD to satisfy function shape
+            tmp_path = Path("matrix_heatmap.png")
+            return self.generate_matrix_heatmap("matrix", arr, tmp_path)
+        except Exception:
+            return False
     
     def generate_3d_tensor_visualization(self, tensor_name: str, tensor: np.ndarray, output_path: Path,
                                        title: Optional[str] = None, tensor_type: str = "transition") -> bool:
@@ -446,7 +456,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             plt.close()
             return False
     
-    def generate_matrix_analysis(self, parameters: List[Dict], output_path: Path) -> bool:
+    def generate_matrix_analysis(self, parameters: List[Dict] | List[List[float]], output_path: Path | None = None) -> bool:
         """
         Generate comprehensive matrix analysis from parameters.
         
@@ -457,6 +467,15 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         Returns:
             bool: True if analysis was generated successfully
         """
+        # Convenience: if called with raw matrix-like and no output_path
+        if isinstance(parameters, list) and parameters and isinstance(parameters[0], list) and output_path is None:
+            output_path = Path("matrix_analysis.png")
+            try:
+                arr = np.array(parameters, dtype=float)
+                return self.generate_matrix_heatmap("matrix", arr, output_path)
+            except Exception:
+                return False
+
         if not MATPLOTLIB_AVAILABLE or not NUMPY_AVAILABLE:
             # Create a simple text report instead
             try:
@@ -478,7 +497,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         
         try:
             # Extract matrix data from parameters
-            matrices = self.extract_matrix_data_from_parameters(parameters)
+            matrices = self.extract_matrix_data_from_parameters(parameters) if isinstance(parameters, list) and parameters and isinstance(parameters[0], dict) else {}
             
             if not matrices:
                 return False

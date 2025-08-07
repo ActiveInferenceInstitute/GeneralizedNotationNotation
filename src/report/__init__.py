@@ -24,11 +24,14 @@ from .processor import (
     generate_markdown_report
 )
 
+__version__ = "1.0.0"
+
 __all__ = [
     # Processor functions
     'process_report',
     'generate_comprehensive_report',
     'analyze_gnn_file',
     'generate_html_report',
-    'generate_markdown_report'
+    'generate_markdown_report',
+    '__version__'
 ]

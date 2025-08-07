@@ -210,7 +210,8 @@ def export_model(model_data: Dict[str, Any], output_dir: Path, formats: List[str
         results = {
             "success": True,
             "exports": {},
-            "errors": []
+            "errors": [],
+            "formats": {}
         }
         
         for format_type in formats:
@@ -238,6 +239,7 @@ def export_model(model_data: Dict[str, Any], output_dir: Path, formats: List[str
                     "success": success,
                     "file": str(output_file)
                 }
+                results["formats"][format_type] = success
                 
                 if not success:
                     results["success"] = False

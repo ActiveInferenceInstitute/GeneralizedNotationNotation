@@ -80,6 +80,8 @@ def load_api_keys_from_env() -> Dict[str, str]:
         api_keys['ollama'] = 'local'
     
     logger.info(f"Loaded API keys for providers: {list(api_keys.keys())}")
+    if 'ollama' in api_keys and all(k not in api_keys for k in ('openai','openrouter','perplexity')):
+        logger.info("No cloud API keys detected. Defaulting to local Ollama for LLM operations.")
     return api_keys
 
 def get_default_provider_configs() -> Dict[str, Dict[str, Any]]:
@@ -100,7 +102,15 @@ def get_default_provider_configs() -> Dict[str, Dict[str, Any]]:
         },
         'perplexity': {
             # Perplexity-specific configs can be added here
-        }
+        },
+        'ollama': {
+            # Fast small default; override with OLLAMA_MODEL
+            'default_model': os.getenv('OLLAMA_MODEL', os.getenv('OLLAMA_TEST_MODEL', 'smollm2:135m-instruct-q4_K_S')),
+            # Enforce low latency
+            'default_max_tokens': int(os.getenv('OLLAMA_MAX_TOKENS', '256')),
+            'timeout': float(os.getenv('OLLAMA_TIMEOUT', '60')),
+            'base_url': os.getenv('OLLAMA_HOST')
+        },
     }
     
     # Remove None values

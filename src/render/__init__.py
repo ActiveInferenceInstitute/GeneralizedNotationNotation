@@ -65,3 +65,5 @@ __all__ = [
     'discopy_renderer',
     'pymdp_converter'
 ]
+
+__version__ = "1.0.0"

@@ -132,7 +132,7 @@ class OntologyVisualizer:
         mappings = []
         
         # Split content into lines and process each line
-        for line in ontology_content.split('\n'):
+        for line in str(ontology_content).split('\n'):
             line = line.strip()
             if not line or line.startswith('#') or '=' not in line:
                 continue
@@ -154,6 +154,10 @@ class OntologyVisualizer:
                 mappings.append((variable, concept))
         
         return mappings
+
+    # Backwards-compat name expected by tests
+    def extract_ontology_mappings(self, ontology_content: str) -> List[Tuple[str, str]]:
+        return self._extract_ontology_mappings(ontology_content)
     
     def _create_ontology_table(self, mappings: List[Tuple[str, str]], output_dir: Path) -> Optional[str]:
         """
@@ -228,3 +232,10 @@ class OntologyVisualizer:
         except Exception as e:
             logger.error(f"Failed to create ontology table: {e}")
             return None 
+
+    # Public wrappers expected by tests
+    def extract_ontology_mappings(self, ontology_content: str | dict) -> List[Tuple[str, str]]:
+        return self._extract_ontology_mappings(ontology_content)
+
+    def create_ontology_table(self, mappings: List[Tuple[str, str]], output_dir: Path) -> Optional[str]:
+        return self._create_ontology_table(mappings, output_dir)

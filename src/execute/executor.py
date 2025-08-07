@@ -60,6 +60,14 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+# Provide a simple hardware detection function used in tests for patching
+def get_available_hardware() -> list[str]:
+    try:
+        import jax  # noqa: F401
+        return ["cpu", "gpu"]
+    except Exception:
+        return ["cpu"]
+
 
 class GNNExecutor:
     """

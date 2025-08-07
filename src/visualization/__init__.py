@@ -7,7 +7,7 @@ including matrix visualizations, network graphs, and combined analysis plots.
 
 # Import main classes
 from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
-from .visualizer import GNNVisualizer
+from .visualizer import GNNVisualizer, generate_graph_visualization, generate_matrix_visualization
 from .ontology_visualizer import OntologyVisualizer
 
 # Import processor functions
@@ -29,8 +29,10 @@ from .legacy import (
 )
 
 # Add to __all__ for proper exports
+__version__ = "1.0.0"
 __all__ = [
     'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer',
     'matrix_visualizer', 'process_matrix_visualization', 'process_visualization',
-    'generate_visualizations'
+    'generate_visualizations', 'generate_graph_visualization', 'generate_matrix_visualization',
+    '__version__'
 ]

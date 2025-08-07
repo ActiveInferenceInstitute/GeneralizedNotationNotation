@@ -343,3 +343,10 @@ The GNN module provides comprehensive infrastructure for Active Inference model 
 ## License and Citation
 
 This implementation follows the GNN specification v1.0+ and is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
+
+## References
+
+- Project overview: ../../README.md
+- Comprehensive docs: ../../DOCS.md
+- Architecture guide: ../../ARCHITECTURE.md
+- Pipeline details: ../../doc/pipeline/README.md

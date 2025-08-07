@@ -138,7 +138,7 @@ GNN defines a specific file structure, typically using Markdown, to organize mod
 graph TB
     subgraph "🏗️ GNN Project Architecture"
         subgraph "📁 Source Code (src/)"
-            A[⚙️ Pipeline Scripts<br/>1_setup.py → 14_report.py]
+            A[⚙️ Pipeline Scripts<br/>0_template.py → 22_mcp.py]
             B[🧠 Core Modules<br/>gnn/, render/, llm/]
             C[🔧 Utilities<br/>utils/, pipeline/]
             D[🧪 Testing<br/>tests/]
@@ -176,48 +176,17 @@ graph TB
 <details>
 <summary><strong>📂 src/ Directory Structure</strong></summary>
 
-The `src/` directory contains all the Python scripts and modules that constitute the GNN processing pipeline and related tools.
+The `src/` directory contains the 23-step pipeline scripts (`0_template.py` → `22_mcp.py`), their corresponding modules, and shared infrastructure. See `DOCS.md` and `doc/pipeline/README.md` for the full step-by-step mapping.
 
 ```
 src/
-├── 📜 Pipeline Scripts (1-13)
-│   ├── 1_setup.py                  # Setup & Dependencies ⚠️ Critical
-│   ├── 2_gnn.py                    # GNN Discovery & Parsing
-│   ├── 3_tests.py                  # Test Suite Execution
-│   ├── 4_type_checker.py          # Type Checking & Validation
-│   ├── 5_export.py                # Multi-Format Export
-│   ├── 6_visualization.py         # Visualization Generation
-│   ├── 7_mcp.py                   # Model Context Protocol
-│   ├── 8_ontology.py              # Ontology Processing
-│   ├── 9_render.py                # Code Rendering
-│   ├── 10_execute.py              # Simulation Execution
-│   ├── 11_llm.py                  # LLM Analysis
-│   ├── 12_audio.py                # Audio Generation (SAPF, Pedalboard, etc.)
-│   ├── 13_website.py              # Static Site Generation
-│   └── 14_report.py               # Report Generation
+├── 📜 Pipeline Scripts (0-22)
+│   ├── 0_template.py … 22_mcp.py   # Thin orchestrators (0–22)
 ├── 🧠 Core Modules
-│   ├── gnn/                       # GNN processing core
-│   ├── render/                    # Code generation
-│   ├── llm/                       # AI analysis
-│   ├── execute/                   # Simulation execution
-│   ├── visualization/             # Graph generation
-│   ├── export/                    # Multi-format export
-│   ├── type_checker/              # Syntax validation
-│   ├── ontology/                  # Ontology processing
-│   ├── mcp/                       # Model Context Protocol
-│   ├── setup/                     # Environment setup
-│   ├── tests/                     # Test suite
-│   ├── site/                      # HTML generation
-│   ├── audio/                     # Audio generation (SAPF, Pedalboard, etc.)
-│   └── report/                    # Report generation
-├── 🔧 Infrastructure
-│   ├── utils/                     # Shared utilities
-│   ├── pipeline/                  # Pipeline orchestration
-│   └── main.py                    # Main pipeline orchestrator
-└── 📋 Configuration
-    ├── pipeline_step_template.py  # Step template
-    ├── pipeline_validation.py     # Validation script
-    └── requirements.txt           # Dependencies
+│   ├── gnn/ render/ execute/ llm/ visualization/ export/ type_checker/ ontology/ mcp/
+│   ├── setup/ tests/ website/ audio/ analysis/ integration/ security/ research/ report/
+├── 🔧 Infrastructure: utils/ pipeline/
+└── 🗂️ Orchestrator: main.py
 ```
 
 </details>
@@ -260,28 +229,34 @@ The GNN processing pipeline consists of **23 comprehensive steps (0-22)**, each 
 
 ```mermaid
 flowchart TD
-    A["🚀 Start Pipeline"] --> B["1️⃣ Setup & Dependencies<br/>src/setup/<br/>⚠️ Critical Step"]
-    B --> C["2️⃣ GNN Discovery & Parsing<br/>src/gnn/"]
-    C --> D["3️⃣ Test Suite Execution<br/>src/tests/"]
-    D --> E["4️⃣ Type Checking & Validation<br/>src/type_checker/"]
-    E --> F["5️⃣ Multi-Format Export<br/>src/export/"]
-    F --> G["6️⃣ Visualization Generation<br/>src/visualization/"]
-    G --> H["7️⃣ Model Context Protocol<br/>src/mcp/"]
-    H --> I["8️⃣ Ontology Processing<br/>src/ontology/"]
-    I --> J["9️⃣ Code Rendering<br/>src/render/"]
-    J --> K["🔟 Simulation Execution<br/>src/execute/"]
-    K --> L["1️⃣1️⃣ LLM Analysis<br/>src/llm/"]
-    L --> M["1️⃣2️⃣ Audio Generation<br/>src/audio/"]
-    M --> N["1️⃣3️⃣ Static Site Generation<br/>src/website/"]
-    N --> O["1️⃣4️⃣ Report Generation<br/>src/report/"]
-    O --> P["✅ Pipeline Complete<br/>📊 Comprehensive Analysis Generated"]
-    
-    B -->|❌ Failure| P["🛑 Pipeline Halted<br/>Setup Required"]
-    
+    A["🚀 Start Pipeline"] --> B["0️⃣ Template Init<br/>src/template/"]
+    B --> C["1️⃣ Setup & Dependencies<br/>src/setup/"]
+    C --> D["2️⃣ Tests<br/>src/tests/"]
+    D --> E["3️⃣ GNN Discovery & Parsing<br/>src/gnn/"]
+    E --> F["4️⃣ Model Registry<br/>src/model_registry/"]
+    F --> G["5️⃣ Type Checking<br/>src/type_checker/"]
+    G --> H["6️⃣ Validation<br/>src/validation/"]
+    H --> I["7️⃣ Export<br/>src/export/"]
+    I --> J["8️⃣ Visualization<br/>src/visualization/"]
+    J --> K["9️⃣ Advanced Viz<br/>src/advanced_visualization/"]
+    K --> L["1️⃣0️⃣ Ontology<br/>src/ontology/"]
+    L --> M["1️⃣1️⃣ Rendering<br/>src/render/"]
+    M --> N["1️⃣2️⃣ Execution<br/>src/execute/"]
+    N --> O["1️⃣3️⃣ LLM Analysis<br/>src/llm/"]
+    O --> P["1️⃣4️⃣ ML Integration<br/>src/ml_integration/"]
+    P --> Q["1️⃣5️⃣ Audio<br/>src/audio/"]
+    Q --> R["1️⃣6️⃣ Analysis<br/>src/analysis/"]
+    R --> S["1️⃣7️⃣ Integration<br/>src/integration/"]
+    S --> T["1️⃣8️⃣ Security<br/>src/security/"]
+    T --> U["1️⃣9️⃣ Research<br/>src/research/"]
+    U --> V["2️⃣0️⃣ Website<br/>src/website/"]
+    V --> W["2️⃣1️⃣ Report<br/>src/report/"]
+    W --> X["2️⃣2️⃣ MCP<br/>src/mcp/"]
+    X --> Y["✅ Complete"]
+
     style A fill:#e1f5fe
-    style C fill:#fff3e0,stroke:#ff9800,stroke-width:3px
-    style P fill:#ffebee,stroke:#f44336
-    style O fill:#e8f5e8,stroke:#4caf50
+    style G fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    style Y fill:#e8f5e8,stroke:#4caf50
 ```
 
 ### 🎯 GNN Processing Workflow
@@ -368,7 +343,7 @@ src/
 
 For comprehensive architectural documentation, see:
 - `src/template/README.md`: Reference implementation and pattern documentation
-- `THIN_ORCHESTRATOR_ARCHITECTURAL_DOCUMENTATION.md`: Complete architectural guide
+- `ARCHITECTURE.md`: Complete architectural guide
 
 ### 🚀 Running the Pipeline
 
@@ -510,7 +485,7 @@ cd GeneralizedNotationNotation
 Run the setup pipeline step to configure dependencies:
 
 ```bash
-python src/main.py --only-steps 2 --dev
+python src/main.py --only-steps 1 --dev
 ```
 
 This will:
@@ -595,6 +570,8 @@ Comprehensive documentation is organized in the `doc/` directory. Here are the k
 | [**Syntax Guide**](./doc/gnn/gnn_syntax.md) | Detailed GNN syntax specification |
 | [**File Structure**](./doc/gnn/gnn_file_structure_doc.md) | GNN file organization guide |
 | [**Quick Start Tutorial**](./doc/gnn/quickstart_tutorial.md) | Step-by-step beginner guide |
+| [**Comprehensive Project Docs**](./DOCS.md) | Full architecture, pipeline, and dataflow diagrams |
+| [**Architecture Guide**](./ARCHITECTURE.md) | Implementation-oriented architecture and extension patterns |
 
 ### 🎯 Specialized Guides
 

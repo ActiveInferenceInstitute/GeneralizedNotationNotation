@@ -57,7 +57,7 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Multiple Fallback Levels**: Full visualizer → Matrix visualizer → Basic plots → HTML fallback
 - **Correlation ID Tracking**: Each visualization attempt has unique tracking for debugging
 - **Robust Output Management**: All outputs saved to `/output/visualization/` regardless of success/failure
-- **Pipeline Continuation**: Always returns 0 to ensure pipeline never stops on visualization failures
+- **Pipeline Continuation**: Non-blocking failures with graceful degradation; continuation governed by configuration
 
 **Step 9: Advanced Visualization**
 - **Modular Dependency Handling**: Safe imports with fallback handling for all advanced visualization components
@@ -66,14 +66,14 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Interactive Fallback**: Beautiful HTML visualizations with dependency status and recovery suggestions
 - **Performance Tracking**: Detailed timing and resource usage tracking for all visualization attempts
 
-#### 2. **Execute Step (12) - Advanced Safe-to-Fail Patterns**
+#### 2. **Execute Step (12) - Robust Execution Patterns**
 - **Circuit Breaker Implementation**: Prevents cascading failures with intelligent retry mechanisms
 - **Execution Environment Validation**: Pre-execution checks for dependencies, resources, and permissions
 - **Comprehensive Error Classification**: Dependency, syntax, resource, timeout, permission, runtime, and network errors
 - **Retry Logic with Exponential Backoff**: Up to 3 attempts with intelligent backoff timing
 - **Resource Monitoring**: Memory, CPU, and execution time tracking for all simulation attempts
 - **Correlation ID System**: Complete execution traceability across all attempts and frameworks
-- **Pipeline Continuation**: **CRITICAL FIX** - Now always returns 0 to ensure pipeline continues even on complete execution failure
+- **Pipeline Continuation**: Non-blocking error handling with standard exit codes; continuation governed by configuration
 
 #### 3. **Output Management and Data Persistence**
 - **Comprehensive Output Directory Structure**: All outputs organized in `/output/` with step-specific subdirectories
@@ -83,10 +83,10 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Execution Reporting**: Detailed markdown reports with execution results, timing, and recovery suggestions
 
 #### 4. **Pipeline Continuation Logic**
-- **Zero Exit Codes**: All pipeline scripts now return 0 to ensure continuation regardless of internal failures
-- **Warning-Based Error Reporting**: Failed operations logged as warnings rather than errors to prevent pipeline termination
+- **Exit Codes**: Standardized exit codes (0=success, 1=critical error, 2=success with warnings) with graceful degradation policies
+- **Warning-Based Error Reporting**: Failed operations logged with clear severity to avoid unnecessary termination
 - **Graceful Degradation**: Each step provides maximum functionality possible given available dependencies
-- **Comprehensive Logging**: All failures tracked with detailed context but don't block subsequent steps
+- **Comprehensive Logging**: All failures tracked with detailed context; continuation policy controlled via config
 
 ### 📊 Pipeline Execution Analysis
 
@@ -145,7 +145,7 @@ output/
 5. **Framework Support**: Safe handling of PyMDP, RxInfer, ActiveInference.jl, JAX, and DisCoPy
 
 **Pipeline Continuation Guarantees:**
-1. **Zero Exit Codes**: All steps return 0 regardless of internal success/failure
+1. **Standard Exit Codes**: Steps follow 0 (success), 1 (critical error), 2 (success with warnings); continuation controlled via configuration and graceful-degradation policies
 2. **Warning-Based Logging**: Failures logged as warnings to prevent pipeline termination
 3. **Comprehensive Output**: Every step generates outputs even in failure modes
 4. **Error Documentation**: Detailed error reports with recovery guidance
@@ -170,13 +170,13 @@ output/
 
 **Running the Pipeline:**
 ```bash
-# Full pipeline execution (guaranteed to complete all 23 steps)
-cd src && python main.py
+# Full pipeline execution
+python src/main.py
 
-# Individual step execution (safe-to-fail)
-python 8_visualization.py --verbose
-python 9_advanced_viz.py --interactive
-python 12_execute.py --verbose
+# Individual step execution
+python src/8_visualization.py --verbose
+python src/9_advanced_viz.py --interactive
+python src/12_execute.py --verbose
 ```
 
 **Output Verification:**

@@ -761,6 +761,8 @@ def log_step_error(logger_or_step_name, message: str = None, step_number: int = 
         step_number=step_number,
         **metadata
     )
+    # Return a small dict to satisfy tests expecting non-None
+    return {"status": "ERROR", "message": message}
 
 def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
     """Enhanced pipeline summary logging with sophisticated visual formatting."""

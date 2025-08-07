@@ -320,3 +320,10 @@ pytest -m "not slow"
 - Advanced Visualization Module tests
 
 This test infrastructure provides a solid foundation for comprehensive testing of the GNN Processing Pipeline, with modular organization, parallel execution, and comprehensive coverage of all major components. 
+
+## References
+
+- Project overview: ../../README.md
+- Comprehensive docs: ../../DOCS.md
+- Architecture guide: ../../ARCHITECTURE.md
+- Pipeline details: ../../doc/pipeline/README.md

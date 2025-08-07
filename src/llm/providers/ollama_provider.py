@@ -29,19 +29,27 @@ logger = logging.getLogger(__name__)
 class OllamaProvider(BaseLLMProvider):
     """Ollama implementation of the LLM provider interface."""
 
+    # Include tiny models for low-latency defaults; larger ones stay optional
     AVAILABLE_MODELS = [
+        "smollm2:135m-instruct-q4_K_S",
+        "smollm2:360m",
+        "tinyllama:1.1b",
+        "smollm2:1.7b",
+        "gemma2:2b",
+        "mistral:7b",
         "llama3.1:8b",
         "llama3.1:70b",
-        "mistral:7b",
-        "gemma2:2b",
         "qwen2:7b",
     ]
 
-    DEFAULT_MODEL = "gemma2:2b"
+    DEFAULT_MODEL = "smollm2:135m-instruct-q4_K_S"
 
     def __init__(self, **kwargs):
         super().__init__(api_key=None, **kwargs)
         self.base_url = kwargs.get("base_url")  # optional custom host
+        self.default_model_override = kwargs.get("default_model")
+        self.default_max_tokens = kwargs.get("default_max_tokens", 256)
+        self.default_timeout = kwargs.get("timeout", 60.0)
         self._ollama = None
         self._use_cli = False
 
@@ -51,7 +59,7 @@ class OllamaProvider(BaseLLMProvider):
 
     @property
     def default_model(self) -> str:
-        return self.DEFAULT_MODEL
+        return self.default_model_override or self.DEFAULT_MODEL
 
     @property
     def available_models(self) -> List[str]:
@@ -123,7 +131,13 @@ class OllamaProvider(BaseLLMProvider):
                     try:
                         completed = subprocess.run(
                             ["ollama", "chat", model, "--json"],
-                            input=json.dumps({"messages": [{"role": m.role, "content": m.content} for m in messages]}),
+                            input=json.dumps({
+                                "messages": [{"role": m.role, "content": m.content} for m in messages],
+                                "options": {
+                                    "num_predict": config.max_tokens or self.default_max_tokens,
+                                    "temperature": config.temperature if config.temperature is not None else 0.2,
+                                }
+                            }),
                             capture_output=True,
                             text=True,
                             check=False,
@@ -148,6 +162,10 @@ class OllamaProvider(BaseLLMProvider):
                     return self._ollama.chat(
                         model=config.model or self.default_model,
                         messages=ollama_messages,
+                        options={
+                            "num_predict": config.max_tokens or self.default_max_tokens,
+                            "temperature": config.temperature if config.temperature is not None else 0.2,
+                        },
                     )
                 response = await asyncio.to_thread(_call_py)
 
@@ -204,6 +222,10 @@ class OllamaProvider(BaseLLMProvider):
                         model=config.model or self.default_model,
                         prompt="\n\n".join(m.content for m in messages if m.role in ("system", "user")),
                         stream=True,
+                        options={
+                            "num_predict": config.max_tokens or self.default_max_tokens,
+                            "temperature": config.temperature if config.temperature is not None else 0.2,
+                        },
                     )
                 iterator = await asyncio.to_thread(_iter)
                 for chunk in iterator:

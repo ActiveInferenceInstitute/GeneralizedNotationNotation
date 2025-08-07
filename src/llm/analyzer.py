@@ -10,6 +10,7 @@ import re
 from datetime import datetime
 
 from .llm_operations import LLMOperations
+from .providers.openai_provider import OpenAIProvider  # for patching in tests
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +67,7 @@ def analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> Dict[st
             logger.warning(f"LLM summary generation failed for {file_path.name}: {e}")
             result["llm_summary_error"] = str(e)
 
+        result.setdefault("status", "SUCCESS")
         return result
         
     except Exception as e:

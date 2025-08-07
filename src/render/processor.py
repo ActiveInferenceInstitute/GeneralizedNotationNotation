@@ -155,6 +155,7 @@ def get_module_info() -> Dict[str, Any]:
         "version": "1.0.0",
         "description": "Code generation for GNN specifications",
         "supported_targets": ["pymdp", "rxinfer", "activeinference_jl", "discopy"],
+        "available_targets": ["pymdp", "rxinfer", "activeinference_jl", "discopy"],
         "features": [
             "PyMDP code generation",
             "RxInfer.jl code generation", 
@@ -171,27 +172,31 @@ def get_available_renderers() -> Dict[str, Dict[str, Any]]:
             "description": "Python Markov Decision Process library",
             "language": "Python",
             "file_extension": ".py",
-            "supported_features": ["POMDP", "MDP", "Belief State Updates"]
+            "supported_features": ["POMDP", "MDP", "Belief State Updates"],
+            "function": "render_gnn_to_pymdp"
         },
         "rxinfer": {
             "name": "RxInfer.jl",
             "description": "Julia reactive message passing inference engine",
             "language": "Julia",
             "file_extension": ".jl",
-            "supported_features": ["Message Passing", "Probabilistic Programming"]
+            "supported_features": ["Message Passing", "Probabilistic Programming"],
+            "function": "render_gnn_to_rxinfer"
         },
         "activeinference_jl": {
             "name": "ActiveInference.jl",
             "description": "Julia Active Inference library",
             "language": "Julia", 
             "file_extension": ".jl",
-            "supported_features": ["Free Energy Minimization", "Active Inference"]
+            "supported_features": ["Free Energy Minimization", "Active Inference"],
+            "function": "render_gnn_to_activeinference_jl"
         },
         "discopy": {
             "name": "DisCoPy",
             "description": "Python library for computing with string diagrams",
             "language": "Python",
             "file_extension": ".py",
-            "supported_features": ["Categorical Diagrams", "String Diagrams"]
+            "supported_features": ["Categorical Diagrams", "String Diagrams"],
+            "function": "render_gnn_to_discopy"
         }
     }

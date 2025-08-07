@@ -47,6 +47,10 @@ def render_gnn_to_rxinfer(*args, **kwargs):
     from .generators import generate_rxinfer_code
     return generate_rxinfer_code(*args, **kwargs)
 
+def render_gnn_to_rxinfer_toml(*args, **kwargs):
+    """Legacy alias expected by tests for RxInfer TOML generation; reuse rxinfer code generator."""
+    return render_gnn_to_rxinfer(*args, **kwargs)
+
 def render_gnn_to_discopy(*args, **kwargs):
     """
     Render GNN to DisCoPy categorical diagram (legacy wrapper).

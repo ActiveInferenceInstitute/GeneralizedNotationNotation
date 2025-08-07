@@ -31,8 +31,8 @@ Primary configuration file: `config.yaml` (create in project root)
 
 # Global Pipeline Settings
 pipeline:
-  # Which steps to run (1-13, or "all")
-steps: "all"  # or [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+  # Which steps to run (0-22, or "all")
+steps: "all"  # or a subset, e.g., [1, 4, 5, 6]
   
   # Steps to skip
   skip_steps: []  # e.g., [11, 12, 13] to skip LLM and DisCoPy steps
@@ -216,7 +216,7 @@ ontology:
   auto_annotate: true
   confidence_threshold: 0.8
 
-# Step 9: Code Rendering
+# Step 11: Code Rendering
 rendering:
   # Target backends
   backends: ["pymdp", "rxinfer"]  # Available: pymdp, rxinfer, jax, custom
@@ -246,7 +246,7 @@ rendering:
   include_docs: true
   include_tests: true
 
-# Step 10: Simulation Execution
+# Step 12: Simulation Execution
 execution:
   # Execution modes
   dry_run: false

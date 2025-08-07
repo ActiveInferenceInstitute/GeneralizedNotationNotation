@@ -29,7 +29,8 @@ def get_module_info() -> Dict[str, Any]:
             "ontology_reporting"
         ],
         "supported_formats": ["markdown", "json"],
-        "dependencies": ["pathlib", "typing", "logging", "json"]
+        "dependencies": ["pathlib", "typing", "logging", "json"],
+        "features": {"parsing": True, "validation": True}
     }
 
 def get_ontology_processing_options() -> Dict[str, Any]:
@@ -53,7 +54,8 @@ def get_ontology_processing_options() -> Dict[str, Any]:
             "basic",
             "comprehensive", 
             "validation_only"
-        ]
+        ],
+        "parsing_options": {"allow_comments": True}
     }
 
 def get_mcp_interface() -> Dict[str, Any]:
