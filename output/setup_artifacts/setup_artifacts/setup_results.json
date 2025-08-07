@@ -1,0 +1,27 @@
+{
+  "timestamp": 1754531022.5203538,
+  "system_info": {
+    "platform": "Linux-6.12.10-76061203-generic-x86_64-with-glibc2.35",
+    "python_version": "3.10.12 (main, May 27 2025, 17:12:29) [GCC 11.4.0]",
+    "python_executable": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "architecture": [
+      "64bit",
+      "ELF"
+    ],
+    "processor": "x86_64",
+    "machine": "x86_64",
+    "node": "pop-os"
+  },
+  "uv_available": true,
+  "uv_setup_success": true,
+  "optional_deps_success": true,
+  "validation_results": {
+    "system_requirements": true,
+    "uv_environment": true,
+    "dependencies": true,
+    "jax_installation": true,
+    "overall_status": true
+  },
+  "structure_success": true,
+  "setup_module_available": true
+}

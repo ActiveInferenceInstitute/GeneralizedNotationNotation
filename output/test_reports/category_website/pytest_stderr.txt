@@ -1,0 +1,5 @@
+ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]
+__main__.py: error: unrecognized arguments: -n auto
+  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini
+  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation
+

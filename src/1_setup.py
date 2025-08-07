@@ -186,6 +186,19 @@ def main():
     if not SETUP_AVAILABLE:
         log_step_warning(logger, "Setup module not available, using fallback functions")
     
+    # Quick check if environment is already working
+    try:
+        venv_python = Path(".venv/bin/python")
+        if venv_python.exists():
+            test_result = subprocess.run([str(venv_python), "--version"], 
+                                       capture_output=True, text=True, timeout=10)
+            if test_result.returncode == 0:
+                log_step_success(logger, f"Environment already working: {test_result.stdout.strip()}")
+                # Still run setup for validation but skip recreation
+                args.recreate_venv = False
+    except Exception:
+        pass  # Continue with normal setup
+    
     # Process setup
     success = process_setup_standardized(
         target_dir=args.target_dir,

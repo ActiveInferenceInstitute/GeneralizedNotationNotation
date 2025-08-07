@@ -1,0 +1,291 @@
+{
+  "gnn": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.36925792694091797,
+    "resource_usage": {
+      "memory_mb": 33.15625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "render": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.40014123916625977,
+    "resource_usage": {
+      "memory_mb": 33.15625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "mcp": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.29514002799987793,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "audio": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.33929920196533203,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "visualization": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.4132091999053955,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "pipeline": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.6877965927124023,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "============================= test session starts ==============================\ncollected 138 items\n\nsrc/tests/test_pipeline_functionality.py FFFFFFF                         [  5%]\nsrc/tests/test_pipeline_infrastructure.py ....ss.ss.ss.ss..s.ss.ssss..   [ 25%]\nsrc/tests/test_pipeline_overall.py FssFF\n\n=================================== FAILURES ===================================\n________ TestPipelineFunctionality.test_visualization_generates_images _________\nsrc/tests/test_pipeline_functionality.py:21: in test_visualization_generates_images\n    assert viz_dir.exists(), \"Visualization directory should exist\"\nE   AssertionError: Visualization directory should exist\nE   assert False\nE    +  where False = exists()\nE    +    where exists = PosixPath('output/visualization/actinf_pomdp_agent').exists\n_____ TestPipelineFunctionality.test_gnn_processing_generates_parsed_data ______\nsrc/tests/test_pipeline_functionality.py:42: in test_gnn_processing_generates_parsed_data\n    assert parsed_file.exists(), \"Parsed GNN data file should exist\"\nE   AssertionError: Parsed GNN data file should exist\nE   assert False\nE    +  where False = exists()\nE    +    where exists = PosixPath('output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json').exists\n______ TestPipelineFunctionality.test_multi_format_export_generates_files ______\nsrc/tests/test_pipeline_functionality.py:64: in test_multi_format_export_generates_files\n    assert export_dir.exists(), \"Export directory should exist\"\nE   AssertionError: Export directory should exist\nE   assert False\nE    +  where False = exists()\nE    +    where exists = PosixPath('output/gnn_exports/actinf_pomdp_agent').exists\n_______ TestPipelineFunctionality.test_audio_generation_produces_output ________\nsrc/tests/test_pipeline_functionality.py:80: in test_audio_generation_produces_output\n    assert audio_dir.exists(), \"Audio output directory should exist\"\nE   AssertionError: Audio output directory should exist\nE   assert False\nE    +  where False = exists()\nE    +    where exists = PosixPath('output/audio_processing_step/audio_results').exists\n________ TestPipelineFunctionality.test_pipeline_results_are_valid_json ________\nsrc/tests/test_pipeline_functionality.py:101: in test_pipeline_results_are_valid_json\n    assert path.exists(), f\"Result file should exist: {result_file}\"\nE   AssertionError: Result file should exist: output/gnn_processing_step/gnn_processing_results.json\nE   assert False\nE    +  where False = exists()\nE    +    where exists = PosixPath('output/gnn_processing_step/gnn_processing_results.json').exists\n______ TestPipelineFunctionality.test_visualization_results_show_success _______\nsrc/tests/test_pipeline_functionality.py:113: in test_visualization_results_show_success\n    with open(results_file) as f:\nE   FileNotFoundError: [Errno 2] No such file or directory: 'output/visualization/visualization_results.json'\n______ TestPipelineFunctionality.test_core_pipeline_functionality_metrics ______\nsrc/tests/test_pipeline_functionality.py:132: in test_core_pipeline_functionality_metrics\n    assert png_count >= 2, f\"Should generate multiple visualizations. Found: {png_count}\"\nE   AssertionError: Should generate multiple visualizations. Found: 0\nE   assert 0 >= 2\n_________ TestPipelineModuleComprehensive.test_pipeline_module_imports _________\nsrc/tests/test_pipeline_overall.py:30: in test_pipeline_module_imports\n    assert hasattr(pipeline, 'PipelineOrchestrator')\nE   AssertionError: assert False\nE    +  where False = hasattr(<module 'pipeline' from '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/pipeline/__init__.py'>, 'PipelineOrchestrator')\n__________ TestPipelineModuleComprehensive.test_pipeline_module_info ___________\nsrc/tests/test_pipeline_overall.py:72: in test_pipeline_module_info\n    assert 'pipeline_steps' in info\nE   AssertionError: assert 'pipeline_steps' in {'description': 'GNN pipeline orchestration and execution', 'execution_modes': ['Sequential execution', 'Parallel exec...ation management', 'Performance monitoring and tracking', 'Error handling and recovery', 'Dependency validation'], ...}\n_____________ TestPipelineModuleComprehensive.test_pipeline_config _____________\nsrc/tests/test_pipeline_overall.py:83: in test_pipeline_config\n    assert isinstance(config, dict)\nE   AssertionError: assert False\nE    +  where False = isinstance(PipelineConfig(project_name='GeneralizedNotationNotation', version='1.0.0', base_output_dir=PosixPath('output'), base_...h='main.py', dependencies=[], output_subdir='pipeline_logs', timeout=None, required=True, performance_tracking=False)}), dict)\n=============================== warnings summary ===============================\nsrc/tests/test_pipeline_recovery.py:97\n  /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_recovery.py:97: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html\n    @pytest.mark.asyncio\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n============================= slowest 10 durations =============================\n0.01s call     src/tests/test_pipeline_infrastructure.py::TestUtilsMigrationHelper::test_migration_imports\n\n(9 durations < 0.005s hidden.  Use -vv to show these durations.)\n=========================== short test summary info ============================\nFAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_visualization_generates_images\nFAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_gnn_processing_generates_parsed_data\nFAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_multi_format_export_generates_files\nFAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_audio_generation_produces_output\nFAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_pipeline_results_are_valid_json\nFAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_visualization_results_show_success\nFAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_core_pipeline_functionality_metrics\nFAILED src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_module_imports\nFAILED src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_module_info\nFAILED src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_config\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 10 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n============= 10 failed, 13 passed, 17 skipped, 1 warning in 0.27s =============\n",
+    "stderr": "",
+    "return_code": 1
+  },
+  "export": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.45741701126098633,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "execute": {
+    "success": false,
+    "error": "No test files found",
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0
+  },
+  "llm": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.32447290420532227,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "ontology": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.28903722763061523,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "website": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.37743592262268066,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "report": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.3568763732910156,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "environment": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0.3037259578704834,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "",
+    "stderr": "ERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: -n auto\n  inifile: /home/trim/Documents/GitHub/GeneralizedNotationNotation/pytest.ini\n  rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation\n\n",
+    "return_code": 4
+  },
+  "type_checker": {
+    "success": false,
+    "error": "No test files found",
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0
+  },
+  "validation": {
+    "success": false,
+    "error": "No test files found",
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0
+  },
+  "model_registry": {
+    "success": false,
+    "error": "No test files found",
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0
+  },
+  "analysis": {
+    "success": false,
+    "error": "No test files found",
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0
+  },
+  "security": {
+    "success": false,
+    "error": "No test files found",
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0
+  },
+  "research": {
+    "success": false,
+    "error": "No test files found",
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0
+  },
+  "ml_integration": {
+    "success": false,
+    "error": "No test files found",
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0
+  },
+  "advanced_visualization": {
+    "success": false,
+    "error": "No test files found",
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 0
+  },
+  "comprehensive": {
+    "success": false,
+    "tests_run": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "duration": 1.0300829410552979,
+    "resource_usage": {
+      "memory_mb": 33.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "stdout": "============================= test session starts ==============================\ncollected 80 items / 1 error\n\n==================================== ERRORS ====================================\n_____________ ERROR collecting src/tests/test_comprehensive_api.py _____________\nsrc/tests/test_comprehensive_api.py:20: in <module>\n    import src.gnn\nsrc/gnn/__init__.py:20: in <module>\n    from .core_processor import GNNProcessor\nsrc/gnn/core_processor.py:20: in <module>\n    from .testing import RoundTripTestStrategy\nsrc/gnn/testing/__init__.py:11: in <module>\n    from .test_round_trip import ComprehensiveTestReport, RoundTripResult\n<frozen importlib._bootstrap>:1027: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1006: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:688: in _load_unlocked\n    ???\n.venv/lib/python3.10/site-packages/_pytest/assertion/rewrite.py:186: in exec_module\n    exec(co, module.__dict__)\nsrc/gnn/testing/test_round_trip.py:172: in <module>\n    from gnn.types import RoundTripResult, ComprehensiveTestReport\nsrc/gnn/__init__.py:13: in <module>\n    from .schema_validator import (\nsrc/gnn/schema_validator.py:27: in <module>\n    from .types import (\n<frozen importlib._bootstrap>:1027: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1002: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:945: in _find_spec\n    ???\n.venv/lib/python3.10/site-packages/_pytest/assertion/rewrite.py:100: in find_spec\n    if self._early_rewrite_bailout(name, state):\n.venv/lib/python3.10/site-packages/_pytest/assertion/rewrite.py:211: in _early_rewrite_bailout\n    path = PurePath(*parts).with_suffix(\".py\")\n/usr/lib/python3.10/pathlib.py:562: in __new__\n    return cls._from_parts(args)\n/usr/lib/python3.10/pathlib.py:594: in _from_parts\n    drv, root, parts = self._parse_args(args)\n/usr/lib/python3.10/pathlib.py:587: in _parse_args\n    return cls._flavour.parse_parts(parts)\n/usr/lib/python3.10/pathlib.py:67: in parse_parts\n    drv, root, rel = self.splitroot(part)\n/usr/lib/python3.10/pathlib.py:240: in splitroot\n    if part and part[0] == sep:\nE   RecursionError: maximum recursion depth exceeded in comparison\n=========================== short test summary info ============================\nERROR src/tests/test_comprehensive_api.py - RecursionError: maximum recursion...\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n=============================== 1 error in 0.64s ===============================\n",
+    "stderr": "",
+    "return_code": 2
+  }
+}

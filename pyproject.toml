@@ -31,13 +31,12 @@ classifiers = [
 dependencies = [
     # Core scientific computing (lightweight)
     "numpy>=1.21.0",
-    "matplotlib>=3.5.0", 
+    "matplotlib>=3.5.0",
     "networkx>=2.6.0",
     "pandas>=1.3.0",
     "pyyaml>=6.0",
     "scipy>=1.7.0",
     "scikit-learn>=1.0.0",
-    
     # Testing and development (essential)
     "pytest>=6.0.0",
     "pytest-cov>=3.0.0",
@@ -47,32 +46,25 @@ dependencies = [
     "black>=22.0.0",
     "flake8>=4.0.0",
     "mypy>=0.950",
-    
     # System monitoring and utilities
     "psutil>=5.8.0",
     "toml>=0.10.0",
     "defusedxml>=0.7.0",
-    
     # Security tools
     "bandit>=1.7.0",
     "safety>=2.3.0",
-    
     # HTTP and async communication
     "aiohttp>=3.9.0",
     "httpx>=0.27.0",
-    
     # GNN processing
     "markdown>=3.0.0",
-    
     # Active Inference ecosystem
     "pymdp>=0.0.1",
-    
     # High-performance computing
-    "jax>=0.4.0",
+    "jax[cpu]>=0.4.0",
     "jaxlib>=0.4.0",
     "flax>=0.7.0",
     "optax>=0.1.0",
-    
     # Visualization and diagramming
     "discopy[matrix]>=1.0.0",
     "altair>=5.0.0",
