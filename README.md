@@ -572,6 +572,7 @@ Comprehensive documentation is organized in the `doc/` directory. Here are the k
 | [**Quick Start Tutorial**](./doc/gnn/quickstart_tutorial.md) | Step-by-step beginner guide |
 | [**Comprehensive Project Docs**](./DOCS.md) | Full architecture, pipeline, and dataflow diagrams |
 | [**Architecture Guide**](./ARCHITECTURE.md) | Implementation-oriented architecture and extension patterns |
+| [**Machine-Readable Indices**](./doc/api/README.md) | API index and generator |
 
 ### 🎯 Specialized Guides
 

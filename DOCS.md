@@ -191,4 +191,38 @@ flowchart LR
 - `src/main.py` — orchestrator implementation
 - `doc/pipeline/README.md` — step details and flow
 - `ARCHITECTURE.md` — implementation-oriented architecture
+- `doc/pipeline/steps_index.json` — machine-readable step index (0–22)
+- `doc/api/api_index.json` — machine-generated API index
+
+## Machine-Readable Step Index
+
+```json
+{
+  "steps": [
+    {"n": 0,  "script": "0_template.py",        "module": "template",          "output": "template/"},
+    {"n": 1,  "script": "1_setup.py",           "module": "setup",             "output": "setup_artifacts/"},
+    {"n": 2,  "script": "2_tests.py",           "module": "tests",             "output": "test_reports/"},
+    {"n": 3,  "script": "3_gnn.py",             "module": "gnn",               "output": "gnn_processing_step/"},
+    {"n": 4,  "script": "4_model_registry.py",  "module": "model_registry",    "output": "model_registry/"},
+    {"n": 5,  "script": "5_type_checker.py",    "module": "type_checker",      "output": "type_check/"},
+    {"n": 6,  "script": "6_validation.py",      "module": "validation",        "output": "validation/"},
+    {"n": 7,  "script": "7_export.py",          "module": "export",            "output": "gnn_exports/"},
+    {"n": 8,  "script": "8_visualization.py",   "module": "visualization",     "output": "visualization/"},
+    {"n": 9,  "script": "9_advanced_viz.py",    "module": "advanced_visualization", "output": "advanced_visualization/"},
+    {"n": 10, "script": "10_ontology.py",       "module": "ontology",          "output": "ontology_processing/"},
+    {"n": 11, "script": "11_render.py",         "module": "render",            "output": "gnn_rendered_simulators/"},
+    {"n": 12, "script": "12_execute.py",        "module": "execute",           "output": "execution_results/"},
+    {"n": 13, "script": "13_llm.py",            "module": "llm",               "output": "llm_processing_step/"},
+    {"n": 14, "script": "14_ml_integration.py", "module": "ml_integration",    "output": "ml_integration/"},
+    {"n": 15, "script": "15_audio.py",          "module": "audio",             "output": "audio_processing_step/"},
+    {"n": 16, "script": "16_analysis.py",       "module": "analysis",          "output": "analysis/"},
+    {"n": 17, "script": "17_integration.py",    "module": "integration",       "output": "integration/"},
+    {"n": 18, "script": "18_security.py",       "module": "security",          "output": "security/"},
+    {"n": 19, "script": "19_research.py",       "module": "research",          "output": "research/"},
+    {"n": 20, "script": "20_website.py",        "module": "website",           "output": "website/"},
+    {"n": 21, "script": "21_report.py",         "module": "report",            "output": "report_processing_step/"},
+    {"n": 22, "script": "22_mcp.py",            "module": "mcp",               "output": "mcp_processing_step/"}
+  ]
+}
+```
 

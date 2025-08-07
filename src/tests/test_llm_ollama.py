@@ -25,7 +25,7 @@ def _ollama_available() -> bool:
         return shutil.which("ollama") is not None
 
 
-OLLAMA_TEST_MODEL = os.getenv("OLLAMA_TEST_MODEL", "gemma2:2b")
+OLLAMA_TEST_MODEL = os.getenv("OLLAMA_TEST_MODEL", os.getenv("OLLAMA_MODEL", "smollm2:135m-instruct-q4_K_S"))
 
 
 @pytest.mark.unit

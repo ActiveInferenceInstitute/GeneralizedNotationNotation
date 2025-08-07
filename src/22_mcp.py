@@ -73,7 +73,7 @@ def process_mcp_standardized(
         
         # Get configuration
         config = get_pipeline_config()
-        step_config = config.get_step_config("22_mcp.py")
+        step_config = config.get_step_config("22_mcp") if hasattr(config, 'get_step_config') else None
         
         # Set up output directory - use the output_dir directly since it's already the step-specific directory
         step_output_dir = output_dir

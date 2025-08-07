@@ -19,7 +19,8 @@ src/llm/
     ├── base_provider.py         # Base provider interface
     ├── openai_provider.py       # OpenAI provider
     ├── openrouter_provider.py   # OpenRouter provider
-    └── perplexity_provider.py   # Perplexity provider
+    ├── perplexity_provider.py   # Perplexity provider
+    └── ollama_provider.py       # Ollama (local) provider
 ```
 
 ## Core Components
@@ -466,12 +467,13 @@ def test_provider_selection():
 ## Dependencies
 
 ### Required Dependencies
-- **openai**: OpenAI API integration
+- **ollama**: Local LLM client (recommended for default runs)
 - **requests**: HTTP requests for API calls
 - **json**: JSON data handling
 - **pathlib**: Path handling
 
 ### Optional Dependencies
+- **openai**: OpenAI API integration
 - **perplexity**: Perplexity AI integration
 - **openrouter**: OpenRouter integration
 - **tiktoken**: Token counting for OpenAI
@@ -528,6 +530,28 @@ Solution: Adjust prompts or use different provider with better context
 # Enable debug mode for detailed LLM information
 analysis = analyze_gnn_model_with_llm(content, model_name, debug=True, verbose=True)
 ```
+
+## Configuration for Fast Local Runs (Ollama)
+
+Set these environment variables to use small, fast models locally:
+
+```
+OLLAMA_MODEL=smollm2:135m-instruct-q4_K_S
+OLLAMA_MAX_TOKENS=256
+OLLAMA_TIMEOUT=60
+```
+
+You can also point to a different host:
+
+```
+OLLAMA_HOST=http://127.0.0.1:11434
+```
+
+See models like `smollm2`, `smollm`, and `tinyllama` in the Ollama library.
+
+- `smollm2` tiny variants: smollm2:135m-instruct-q4_K_S, 360m, 1.7b
+- `smollm` family (older): smollm:135m, smollm:360m, smollm:1.7b
+- `tinyllama`: tinyllama:1.1b
 
 ## Future Enhancements
 

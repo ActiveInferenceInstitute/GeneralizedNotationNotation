@@ -30,7 +30,9 @@ def get_module_info() -> Dict[str, Any]:
         ],
         "supported_formats": ["markdown", "json"],
         "dependencies": ["pathlib", "typing", "logging", "json"],
-        "features": {"parsing": True, "validation": True}
+        "features": {"parsing": True, "validation": True},
+        "processing_capabilities": ["parse", "validate", "report"],
+        "ontology_types": ["ActInf", "GNNAnnotations"]
     }
 
 def get_ontology_processing_options() -> Dict[str, Any]:
@@ -55,7 +57,11 @@ def get_ontology_processing_options() -> Dict[str, Any]:
             "comprehensive", 
             "validation_only"
         ],
-        "parsing_options": {"allow_comments": True}
+        "parsing_options": {"allow_comments": True},
+        "validation_options": {"allow_unknown_terms": True},
+        "report_formats": ["json", "markdown"],
+        "output_options": {"directory_structure": "flat"},
+        "validation_levels": ["basic", "strict"]
     }
 
 def get_mcp_interface() -> Dict[str, Any]:

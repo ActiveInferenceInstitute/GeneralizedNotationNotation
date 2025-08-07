@@ -73,7 +73,7 @@ def process_integration_standardized(
         
         # Get configuration
         config = get_pipeline_config()
-        step_config = config.get_step_config("17_integration.py")
+        step_config = config.get_step_config("17_integration") if hasattr(config, 'get_step_config') else None
         
         # Set up output directory
         step_output_dir = get_output_dir_for_script("17_integration.py", output_dir)

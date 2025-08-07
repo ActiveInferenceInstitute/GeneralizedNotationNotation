@@ -905,3 +905,10 @@ def setup_correlation_context(step_name: str, correlation_id: Optional[str] = No
         The correlation ID that was set
     """
     return PipelineLogger.set_correlation_context(step_name, correlation_id) 
+
+# --- Backwards compatibility alias ---
+# Some modules import set_correlation_context directly from this module.
+# Provide a thin wrapper that delegates to PipelineLogger.set_correlation_context.
+def set_correlation_context(step_name: str, correlation_id: Optional[str] = None) -> str:
+    """Compatibility alias. Prefer setup_correlation_context or PipelineLogger.set_correlation_context."""
+    return PipelineLogger.set_correlation_context(step_name, correlation_id)

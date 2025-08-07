@@ -384,6 +384,9 @@ def get_module_info():
             "Structure validation",
             "Report generation"
         ],
+        "available_validators": ["structure", "syntax"],
+        "available_parsers": ["markdown", "json"],
+        "schema_formats": ["markdown-schema", "json-schema"],
         "supported_formats": ["Markdown", "GNN", "Text"],
         "capabilities": {
             "file_discovery": True,

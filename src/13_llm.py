@@ -73,7 +73,7 @@ def process_llm_standardized(
         
         # Get configuration
         config = get_pipeline_config()
-        step_config = config.get_step_config("13_llm.py")
+        step_config = config.get_step_config("13_llm") if hasattr(config, 'get_step_config') else None
         
         # Set up output directory
         step_output_dir = get_output_dir_for_script("13_llm.py", output_dir)
@@ -86,7 +86,7 @@ def process_llm_standardized(
         
         # Extract LLM-specific parameters
         llm_tasks = kwargs.get('llm_tasks', 'all')
-        llm_timeout = kwargs.get('llm_timeout', 360)
+        llm_timeout = int(kwargs.get('llm_timeout', 60))
         
         logger.info(f"LLM tasks: {llm_tasks}")
         logger.info(f"LLM timeout: {llm_timeout}s")
@@ -148,7 +148,7 @@ def main():
             recursive=getattr(args, 'recursive', False),
             verbose=getattr(args, 'verbose', False),
             llm_tasks=getattr(args, 'llm_tasks', 'all'),
-            llm_timeout=getattr(args, 'llm_timeout', 60)
+            llm_timeout=int(getattr(args, 'llm_timeout', 60))
         )
         
         return 0 if success else 1

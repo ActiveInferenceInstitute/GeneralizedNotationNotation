@@ -72,7 +72,7 @@ def process_analysis_standardized(
         
         # Get configuration
         config = get_pipeline_config()
-        step_config = config.get_step_config("16_analysis.py")
+        step_config = config.get_step_config("16_analysis") if hasattr(config, 'get_step_config') else None
         
         # Set up output directory
         step_output_dir = get_output_dir_for_script("16_analysis.py", output_dir)

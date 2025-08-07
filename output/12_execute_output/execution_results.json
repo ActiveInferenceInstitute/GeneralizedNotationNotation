@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-08-07T11:42:44.532845",
-  "correlation_id": "0b620b53",
+  "timestamp": "2025-08-07T16:54:21.138210",
+  "correlation_id": "047b257f",
   "source_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
   "output_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output",
   "environment_validation": {
-    "timestamp": "2025-08-07T11:42:38.855507",
+    "timestamp": "2025-08-07T16:54:18.519088",
     "overall_status": "healthy",
     "summary": {
       "total_checks": 14,
@@ -16,9 +16,9 @@
       {
         "component": "python_version",
         "status": "pass",
-        "message": "Python 3.10 is supported",
+        "message": "Python 3.11 is supported",
         "details": {
-          "version": "3.10.12"
+          "version": "3.11.7"
         },
         "suggestion": null
       },
@@ -28,16 +28,16 @@
         "message": "Sufficient memory: 62.5GB available",
         "details": {
           "total_gb": 62.499149322509766,
-          "available_gb": 33.50761413574219
+          "available_gb": 2.462940216064453
         },
         "suggestion": null
       },
       {
         "component": "disk_space",
         "status": "pass",
-        "message": "Sufficient disk space: 93.3GB free",
+        "message": "Sufficient disk space: 85.0GB free",
         "details": {
-          "free_gb": 93.34730911254883,
+          "free_gb": 85.01966094970703,
           "total_gb": 459.5024719238281
         },
         "suggestion": null
@@ -45,20 +45,20 @@
       {
         "component": "cpu_usage",
         "status": "pass",
-        "message": "Normal CPU usage: 74.3%",
+        "message": "Normal CPU usage: 20.5%",
         "details": {
           "cpu_count": 6,
-          "cpu_percent": 74.3
+          "cpu_percent": 20.5
         },
         "suggestion": null
       },
       {
         "component": "dependency_numpy",
         "status": "pass",
-        "message": "numpy 2.2.6 is available",
+        "message": "numpy 2.3.2 is available",
         "details": {
           "package": "numpy",
-          "version": "2.2.6",
+          "version": "2.3.2",
           "min_version": "1.19.0"
         },
         "suggestion": null
@@ -77,10 +77,10 @@
       {
         "component": "dependency_networkx",
         "status": "pass",
-        "message": "networkx 3.4.2 is available",
+        "message": "networkx 3.5 is available",
         "details": {
           "package": "networkx",
-          "version": "3.4.2",
+          "version": "3.5",
           "min_version": "2.5"
         },
         "suggestion": null
@@ -110,10 +110,10 @@
       {
         "component": "dependency_scipy",
         "status": "pass",
-        "message": "scipy 1.15.3 is available",
+        "message": "scipy 1.16.1 is available",
         "details": {
           "package": "scipy",
-          "version": "1.15.3",
+          "version": "1.16.1",
           "min_version": "1.5.0"
         },
         "suggestion": null
@@ -158,7 +158,7 @@
     {
       "script_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py",
       "script_name": "actinf_pomdp_agent_pymdp.py",
-      "correlation_id": "0b620b53-actinf_pomdp_agent_pymdp",
+      "correlation_id": "047b257f-actinf_pomdp_agent_pymdp",
       "execution_success": false,
       "gnn_based": true,
       "output_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pymdp_actinf_pomdp_agent_pymdp",
@@ -166,7 +166,7 @@
       "attempts": [
         {
           "attempt_number": 1,
-          "duration_seconds": 0.033678,
+          "duration_seconds": 0.020823,
           "success": false,
           "error_type": "syntax_error",
           "error_message": "  File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 12\n    def create_classic active inference pomdp agent v1_",
@@ -174,7 +174,7 @@
         },
         {
           "attempt_number": 2,
-          "duration_seconds": 0.042676,
+          "duration_seconds": 0.018922,
           "success": false,
           "error_type": "syntax_error",
           "error_message": "  File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 12\n    def create_classic active inference pomdp agent v1_",
@@ -182,14 +182,14 @@
         },
         {
           "attempt_number": 3,
-          "duration_seconds": 0.037842,
+          "duration_seconds": 0.031279,
           "success": false,
           "error_type": "syntax_error",
           "error_message": "  File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 12\n    def create_classic active inference pomdp agent v1_",
           "resource_usage": {}
         }
       ],
-      "execution_time_seconds": 6.147068738937378,
+      "execution_time_seconds": 6.07397723197937,
       "resource_usage": {}
     }
   ],

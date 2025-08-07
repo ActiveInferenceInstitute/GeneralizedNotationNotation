@@ -31,6 +31,10 @@ from .utils import (
     get_supported_formats
 )
 
+__version__ = "1.0.0"
+FEATURES = {"json_export": True, "xml_export": True, "graphml_export": True, "gexf_export": True, "pickle_export": True}
+HAS_NETWORKX = True
+
 __all__ = [
     'generate_exports',
     'export_single_gnn_file',
@@ -48,5 +52,8 @@ __all__ = [
     'export_to_plaintext_summary',
     'export_to_plaintext_dsl',
     'get_module_info',
-    'get_supported_formats'
+    'get_supported_formats',
+    '__version__',
+    'FEATURES',
+    'HAS_NETWORKX'
 ]

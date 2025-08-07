@@ -1,17 +1,31 @@
 # IDENTIFY_COMPONENTS
 
-You have a good understanding of the structure of your model specification and can use this to create better code, provide more detailed explanations, and help you build upon your ideas when presenting them to others. 
+You've provided a comprehensive overview of the active inference framework you described.
 
-Regarding your specific requirements:
+To summarize your analysis, here are some key points:
 
-1. **State Variables (Hidden States)**: You've identified the essential concepts that need to be considered when describing your model. This includes states, actions, observables, etc. 
+1. **State Variables (Hidden States)**:
+   - What each state represents conceptually
+   - State space structure (discrete/continuous, finite/infinite)
+   - State transitions and actions as a sequence of states-based transitions
+   - Control policies and decision variables 
 
-2. **Observation Variables**: These refer to the individual observation data points used for inference during the analysis process. They represent the actual data points being collected from sensors or other sources of information.
+2. **Observation Variables**:
+   - What are available actions and their effects
+   - Actions and control policies as distributions over actions
 
-3. **Action/Control Variables**: These represent specific actions that will influence future states in your model's policy and decision variables.
+3. **Action/Control Variables**:
+   - Available actions and their effects
+   - Actions, decisions (action), and policy components using a Bayesian framework
 
-4. **Model Matrices**: You've provided a comprehensive overview of how to describe different components within the model. This is also relevant to your code flow, as you can use similar notation for various parts of your code throughout.
+4. **Model Matrices**:
+   - A matrix: Observation models P(o|s)
+   - B matrices: Transition dynamics P(s'|s,u)
+   - C matrices: Preferences/goals P(S')
+   - D matrices: Prior beliefs P(O), P(G'), and P(π))
 
-Please provide more details on what you think are key steps or components that need consideration, such as:
-   - What specific states represent concepts (e.g., a state represents an observation), and
-   - What types of actions influence certain observations/observations?
+5. **Parameters and Hyperparameters**:
+   - Precision parameters (γ, α, etc.)
+   - Learning rates and adaptation parameters
+
+   Each parameter has their specific meaning and interpretation based on the given action selection problem setup.

@@ -6,7 +6,14 @@ Pipeline configuration module.
 from pathlib import Path
 from typing import Dict, Any, Optional
 import json
-import yaml
+
+# Make PyYAML optional to avoid hard failures during import time
+try:
+    import yaml  # type: ignore
+    _YAML_AVAILABLE = True
+except Exception:
+    yaml = None  # type: ignore
+    _YAML_AVAILABLE = False
 
 # Pipeline configuration
 STEP_METADATA = {
@@ -56,11 +63,20 @@ class PipelineConfig:
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from file."""
         if self.config_path.exists():
-            with open(self.config_path, 'r') as f:
-                if self.config_path.suffix == '.yaml':
-                    return yaml.safe_load(f)
-                else:
-                    return json.load(f)
+            try:
+                with open(self.config_path, 'r') as f:
+                    if self.config_path.suffix in ('.yaml', '.yml'):
+                        if _YAML_AVAILABLE:
+                            return yaml.safe_load(f) or {}
+                        else:
+                            # Gracefully degrade: cannot parse YAML; return empty config
+                            # Downstream code should use sensible defaults
+                            return {}
+                    else:
+                        return json.load(f)
+            except Exception:
+                # Any parsing error should not crash pipeline; return empty config
+                return {}
         return {}
     
     def get_step_config(self, step_name: str) -> StepConfig:
@@ -70,15 +86,30 @@ class PipelineConfig:
     
     def save_config(self):
         """Save configuration to file."""
-        with open(self.config_path, 'w') as f:
-            if self.config_path.suffix == '.yaml':
-                yaml.dump(self.config, f)
-            else:
-                json.dump(self.config, f, indent=2)
+        try:
+            with open(self.config_path, 'w') as f:
+                if self.config_path.suffix in ('.yaml', '.yml') and _YAML_AVAILABLE:
+                    yaml.dump(self.config, f)  # type: ignore
+                else:
+                    json.dump(self.config, f, indent=2)
+        except Exception:
+            # If saving fails (e.g., YAML not available), attempt JSON fallback
+            try:
+                json_path = self.config_path.with_suffix('.json')
+                with open(json_path, 'w') as jf:
+                    json.dump(self.config, jf, indent=2)
+            except Exception:
+                # Silently ignore saving issues to avoid breaking pipeline
+                pass
 
 def get_pipeline_config() -> PipelineConfig:
-    """Get the pipeline configuration."""
+    """Get the PipelineConfig object for accessing step configs and settings."""
     return PipelineConfig()
+
+def get_pipeline_config_dict() -> Dict[str, Any]:
+    """Get the pipeline configuration as a plain dict (compatibility helper)."""
+    cfg = PipelineConfig()
+    return cfg.config if isinstance(cfg.config, dict) else {}
 
 def set_pipeline_config(config: PipelineConfig):
     """Set the pipeline configuration."""

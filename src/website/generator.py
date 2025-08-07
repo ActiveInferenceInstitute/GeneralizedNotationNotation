@@ -262,6 +262,14 @@ def generate_website(logger, input_dir: Path, output_dir: Path) -> Dict[str, Any
             "visualization_results": [],
             "render_results": []
         }
+        # Validate input directory
+        if not input_dir.exists():
+            return {
+                "success": False,
+                "pages_created": 0,
+                "errors": [f"Input directory not found: {input_dir}"],
+                "warnings": []
+            }
         
         # Find analysis results
         analysis_dir = input_dir / "analysis"

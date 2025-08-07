@@ -141,6 +141,7 @@ class OllamaProvider(BaseLLMProvider):
                             capture_output=True,
                             text=True,
                             check=False,
+                            timeout=self.default_timeout,
                         )
                         if completed.returncode == 0 and completed.stdout.strip():
                             return json.loads(completed.stdout)
@@ -152,6 +153,7 @@ class OllamaProvider(BaseLLMProvider):
                         capture_output=True,
                         text=True,
                         check=False,
+                        timeout=self.default_timeout,
                     )
                     return {"model": model, "message": {"content": completed.stdout.strip()}}
 
@@ -212,6 +214,7 @@ class OllamaProvider(BaseLLMProvider):
                         capture_output=True,
                         text=True,
                         check=False,
+                        timeout=self.default_timeout,
                     )
                     return completed.stdout
                 text = await asyncio.to_thread(_call_cli_once)

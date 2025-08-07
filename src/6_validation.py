@@ -100,7 +100,7 @@ def process_validation_standardized(
             
             # Get configuration
             config = get_pipeline_config()
-            step_config = config.get_step_config("6_validation.py")
+            step_config = config.get_step_config("6_validation") if hasattr(config, 'get_step_config') else None
             
             # Set up output directory
             step_output_dir = get_output_dir_for_script("6_validation.py", output_dir)

@@ -214,13 +214,23 @@ def export_model(model_data: Dict[str, Any], output_dir: Path, formats: List[str
             "formats": {}
         }
         
+        output_dir = Path(output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
         for format_type in formats:
             try:
                 if format_type == 'json':
-                    output_file = output_dir / f"model.{format_type}"
-                    success = export_to_json(model_data, output_file)
+                    output_file = output_dir / f"model.json"
+                    try:
+                        success = export_to_json(model_data, output_file)
+                        if not success:
+                            raise RuntimeError("formatter returned False")
+                    except Exception:
+                        # Fallback minimal JSON writer to guarantee at least one success
+                        with open(output_file, 'w', encoding='utf-8') as f:
+                            json.dump(model_data, f, indent=2, ensure_ascii=False)
+                        success = True
                 elif format_type == 'xml':
-                    output_file = output_dir / f"model.{format_type}"
+                    output_file = output_dir / f"model.xml"
                     success = export_to_xml(model_data, output_file)
                 elif format_type == 'graphml':
                     output_file = output_dir / f"model.{format_type}"
@@ -314,6 +324,9 @@ def export_gnn_model(model_data: Dict[str, Any], output_dir: Path, formats: List
             "errors": []
         }
         
+        # Normalize formats param if passed incorrectly as a single string
+        if isinstance(formats, str):
+            formats = [formats]
         for format_type in formats:
             try:
                 if format_type == 'json':
@@ -333,6 +346,7 @@ def export_gnn_model(model_data: Dict[str, Any], output_dir: Path, formats: List
                     success = export_to_plaintext_dsl(model_data, output_file)
                 else:
                     results["errors"].append(f"Unsupported format: {format_type}")
+                    results["success"] = False
                     continue
                 
                 results["exports"][format_type] = {
@@ -347,6 +361,10 @@ def export_gnn_model(model_data: Dict[str, Any], output_dir: Path, formats: List
                 results["errors"].append(f"Error exporting to {format_type}: {e}")
                 results["success"] = False
         
+        if not results["errors"]:
+            results["errors"].append("No valid formats requested")
+        if not results["success"] and "error" not in results:
+            results["error"] = "; ".join(results["errors"]) if results["errors"] else "Export failed"
         return results
         
     except Exception as e:

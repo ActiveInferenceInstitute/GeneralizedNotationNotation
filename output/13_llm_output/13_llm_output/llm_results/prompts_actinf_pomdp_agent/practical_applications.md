@@ -1,15 +1,58 @@
 # PRACTICAL_APPLICATIONS
 
-Here are the key points regarding GNN Section, GNN VersionAndFlags, ModelName, ModelAnnotation, ModelAnnotations, ExpectedFreeEnergy, GNNVersionAndFlags, ModelAnnotation, ModelAnnotations, HiddenState, StateSpaceBlock, ActionInfActionSetModelType, ActionsetDataStructure, DecisionSetModelType, and Time:
-- **GNNSection**: The Active Inference POMDP agent is the canonical example of this type, with action choices conditioned on observed actions. This model is designed for solving discrete decision problems where agents can choose to take a given action based on a set of available options in a bounded horizon.
-- **ModelName**: This name refers back to the parameterization (hidden state variables) and the inference strategy used by the POMDP agent, while "GNN VersionAndFlags" is related to the type of model that this class implements. The variant names refer to different implementations or variants of these models that utilize different architectures or approaches.
-- **ModelAnnotation**: This annotation describes the actions taken (choices) and hidden states/actions for each observation in the graph represented by a dictionary called `GNN`. 
-   - The action types are based on the parameterizations presented earlier, while the action assignments are related to the model type. For instance, the first row of GNN represents choosing 2 actions out of 4 available, and the second row represents applying action 1 to observe observation A (first choice), then 1 to observe Observation B (second choice). The third row indicates that for all possible choices at each observation, the agent will choose one of them based on a given action. 
-   - There are instances where actions are chosen by the same observation and vice versa. This is often referred as "policy selection" constraints.
-- **InitialParameterization**: This annotation describes the initial parameterizations used for GNNs:
-   - The first row represents choosing 2 actions out of 4 available from a set, which corresponds to the action type choice option (action = sample_action()). The second row is related to choosing one of them based on another observation. For all other choices, the agent chooses one of them based on a given action.
-- **InitialPolicyPrior**: This annotation describes how policies are assigned for each observation:
-   - Policy assignment starts with an initial policy value based on a chosen action type ("policy" option in action = sample_action()). For actions that do not have any available options (e.g., "don't choose"), the default is to use state space blocks, where we assign a probability of choosing one of them from each block. This results in a graph structure with 3-dimensional edges representing policies and states/actions at each observation.
-- **InitialPolicy**: This annotation describes how actions are assigned based on policy prior:
-   - Policies begin by assigning a probability to choose one of the available options, which corresponds to action = sample_action(). For all other choices, the agent chooses one of them based on a given choice (available option). 
-   - This example demonstrates that policies can be used for choosing actions with varying levels of confidence. For instance, policy 1 assigns high probability to choose "don't choose", while policy 2 does not specify any actions available from the graph structure at each observation.
+You've outlined a comprehensive understanding of the AI model based on Active Inference, Bayesian inference, and GNN versions. Here's an overview of the key concepts, technical aspects, applications, performance analysis, advantages, disadvantages, benefits, and challenges:
+
+1. **Key Concepts**:
+   - Active Inference (AI)
+    - A probabilistic graphical model for a discrete POMDP agent that describes its behavior based on observable actions.
+   - Bayesian inference
+      - Probability-based inference
+      - Model acceptance/disfavor ratio
+   
+   - GNN
+    - Generalized Notation Notation (GNN)
+      - Model representation
+        - Representation of Active Inference Agents
+          - GNN types
+            - Sequential GNN (g)
+              - Bayesian inference
+                - GNN semantics
+                  - Bayesian inference
+                    - GNN semantics
+                      - Bayes-based inference
+                     - Model acceptance/disfavor ratio
+                   - Probability distribution
+                      - GNNs
+                      - Generalized Notation Notations
+                       - Bayes-based
+                    - Bayesian inference
+                    - GNN ensembles
+
+   - Implementation
+    - Computational requirements and scalability
+                  - Computational resources
+                  - Data quality
+                  - Scalability
+                  - Integration with existing systems
+
+2. **Patterns**:
+   - Model Parameterization
+  - Model Annotation
+  - Expected Free Energy
+  - Belief Updates
+  - POMDP Representations
+ 
+**Applications:**
+
+   - **Open-domain applications**:
+    - Healthcare (e.g., diagnosing diseases, monitoring patient outcomes)
+    - Finance (e.g., predicting stock prices or portfolio returns)
+    - Research (e.g., scientific modeling and analysis)
+
+3. **Implementation Considerations**:
+   - Computational requirements
+  - Data requirements and collection strategies
+
+  **Benefits:**
+
+   - Provides a flexible framework for designing agent models with the goal of improving performance in real-world applications, such as data exploration, machine learning research, AI systems development, etc..

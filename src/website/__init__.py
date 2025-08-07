@@ -26,9 +26,14 @@ FEATURES = {
     "html": True,
     "embedding": True,
 }
-SUPPORTED_FILE_TYPES = [
-    "html", "css", "js", "json", "md", "txt", "yaml", "yml", "csv", "png", "jpg", "jpeg", "gif", "svg"
-]
+SUPPORTED_FILE_TYPES = {
+    "html": ["html", "htm", "css", "js"],
+    "text": ["md", "markdown", "txt", "rst"],
+    "markdown": ["md", "markdown"],
+    "json": ["json"],
+    "data": ["json", "yaml", "yml", "csv"],
+    "images": ["png", "jpg", "jpeg", "gif", "svg"]
+}
 
 __all__ = [
     'WebsiteGenerator',

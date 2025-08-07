@@ -165,8 +165,9 @@ def process_setup_standardized(
             return False
         
         # Setup UV environment
-        project_root = Path(__file__).parent.parent
-        setup_success = setup_uv_environment(project_root, logger)
+        # Use module API that manages its own project_root internally
+        # Keep it fast and resilient: avoid long JAX checks in this standardized path
+        setup_success = setup_uv_environment(verbose=verbose, recreate=False, dev=False, extras=None)
         if not setup_success:
             logger.error("❌ UV environment setup failed")
             return False
@@ -180,7 +181,8 @@ def process_setup_standardized(
             return False
         
         # Validate setup
-        validation_result = validate_uv_setup(project_root, logger)
+        # Keep validation lightweight; avoid strict failures on missing heavy deps
+        validation_result = validate_uv_setup()
         
         # Log setup summary
         setup_summary = {

@@ -81,7 +81,7 @@ def process_model_registry_standardized(
             
             # Get configuration
             config = get_pipeline_config()
-            step_config = config.get_step_config("4_model_registry.py")
+            step_config = config.get_step_config("4_model_registry") if hasattr(config, 'get_step_config') else None
             
             # Set up output directory
             step_output_dir = get_output_dir_for_script("4_model_registry.py", output_dir)

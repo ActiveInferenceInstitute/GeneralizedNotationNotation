@@ -29,6 +29,7 @@ from .legacy import (
     render_gnn_to_pymdp,
     render_gnn_to_activeinference_jl,
     render_gnn_to_rxinfer,
+    render_gnn_to_rxinfer_toml,
     render_gnn_to_discopy,
     pymdp_renderer,
     activeinference_jl_renderer,
@@ -67,3 +68,6 @@ __all__ = [
 ]
 
 __version__ = "1.0.0"
+FEATURES = {"pymdp_rendering": True, "rxinfer_rendering": True, "activeinference_jl_rendering": True, "discopy_rendering": True, "jax_rendering": True, "mcp_integration": True}
+
+from .render import main  # expose CLI entry as attribute for tests

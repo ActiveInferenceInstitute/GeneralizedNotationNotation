@@ -180,7 +180,7 @@ visualization:
   hierarchical_layout: false
   save_source_dot: true
 
-# Step 7: Model Context Protocol (MCP)
+# Step 22: Model Context Protocol (MCP)
 mcp:
   # Server configuration
   enabled: true
@@ -200,7 +200,7 @@ mcp:
   rate_limit: 100  # requests per minute
   max_request_size: "10MB"
 
-# Step 8: Ontology Processing
+# Step 10: Ontology Processing
 ontology:
   # Active Inference Ontology integration
   enabled: true
@@ -265,7 +265,7 @@ execution:
   continue_on_error: false
   retry_failed: 1
 
-# Step 11: LLM Integration
+# Step 13: LLM Integration
 llm:
   # LLM providers and models
   default_provider: "openai"
@@ -301,7 +301,7 @@ llm:
   max_retries: 3
   fallback_to_local: false
 
-# Step 12: DisCoPy Categorical Diagrams
+## Rendering Option: DisCoPy Categorical Diagrams (within Step 11)
 discopy:
   # Category theory settings
   category_type: "pregroup"  # pregroup, monoidal, hypergraph
@@ -319,7 +319,7 @@ discopy:
   simplify_diagrams: true
   remove_identities: true
 
-# Step 13: JAX Evaluation
+## Execution Option: JAX Evaluation (within Step 12)
 jax_eval:
   # JAX configuration
   platform: "auto"  # auto, cpu, gpu, tpu
@@ -337,7 +337,7 @@ jax_eval:
   preallocate_memory: true
   memory_fraction: 0.8
 
-# Step 13: SAPF Processing
+# Step 20: Website Generation
 site:
   # Static site configuration
   enabled: true

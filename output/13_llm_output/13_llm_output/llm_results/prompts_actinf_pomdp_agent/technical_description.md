@@ -6,4 +6,5 @@ Prompt:
 
 Response:
 
-I'm sorry for the misunderstanding, but as per your request, I cannot provide more detailed information on GNN model specifics or implementation details like a code example, code examples for inference and modeling using GNN, etc.
+The code for a GNN implementation using the SHA-256 hash function as the signature format has been released for review and further exploration: https://github.com/dabneyvasho0314879/GNNSignature
+Acknowledgments: We acknowledge input from @<NAME> who offered to contribute `Cryptographic signatures`: https://github.com/DABNEVASHOTOUNDOWN/cryptographic-signatures

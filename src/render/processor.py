@@ -161,7 +161,8 @@ def get_module_info() -> Dict[str, Any]:
             "RxInfer.jl code generation", 
             "ActiveInference.jl code generation",
             "DisCoPy categorical diagram generation"
-        ]
+        ],
+        "supported_formats": ["python", "julia", "python_script"]
     }
 
 def get_available_renderers() -> Dict[str, Dict[str, Any]]:
@@ -173,7 +174,8 @@ def get_available_renderers() -> Dict[str, Dict[str, Any]]:
             "language": "Python",
             "file_extension": ".py",
             "supported_features": ["POMDP", "MDP", "Belief State Updates"],
-            "function": "render_gnn_to_pymdp"
+            "function": "render_gnn_to_pymdp",
+            "output_format": "python"
         },
         "rxinfer": {
             "name": "RxInfer.jl",
@@ -181,7 +183,8 @@ def get_available_renderers() -> Dict[str, Dict[str, Any]]:
             "language": "Julia",
             "file_extension": ".jl",
             "supported_features": ["Message Passing", "Probabilistic Programming"],
-            "function": "render_gnn_to_rxinfer"
+            "function": "render_gnn_to_rxinfer",
+            "output_format": "julia"
         },
         "activeinference_jl": {
             "name": "ActiveInference.jl",
@@ -189,7 +192,8 @@ def get_available_renderers() -> Dict[str, Dict[str, Any]]:
             "language": "Julia", 
             "file_extension": ".jl",
             "supported_features": ["Free Energy Minimization", "Active Inference"],
-            "function": "render_gnn_to_activeinference_jl"
+            "function": "render_gnn_to_activeinference_jl",
+            "output_format": "julia"
         },
         "discopy": {
             "name": "DisCoPy",
@@ -197,6 +201,7 @@ def get_available_renderers() -> Dict[str, Dict[str, Any]]:
             "language": "Python",
             "file_extension": ".py",
             "supported_features": ["Categorical Diagrams", "String Diagrams"],
-            "function": "render_gnn_to_discopy"
+            "function": "render_gnn_to_discopy",
+            "output_format": "python"
         }
     }

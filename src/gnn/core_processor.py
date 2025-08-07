@@ -164,6 +164,10 @@ def process_gnn_directory_lightweight(target_dir: Path) -> dict:
     """Very lightweight processing returning a mapping of file path to status, expected by tests."""
     files = list(Path(target_dir).glob("**/*.md"))
     return {str(p): {"status": "processed", "format": "markdown", "size": p.stat().st_size} for p in files}
+
+def process_gnn_directory_full(target_dir: Path, output_dir: Path | None = None) -> dict:
+    """Full processing placeholder exposed for tests to patch; delegates to process()."""
+    return process_gnn_directory(target_dir, output_dir=output_dir or Path.cwd(), recursive=True)
     
     def _execute_discovery_phase(self, context: ProcessingContext) -> bool:
         """Execute file discovery phase."""

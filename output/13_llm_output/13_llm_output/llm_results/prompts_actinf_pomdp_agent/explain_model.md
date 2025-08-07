@@ -1,53 +1,35 @@
 # EXPLAIN_MODEL
 
-Your answer:
+You're on the right track! Here's a step-by-step guide to understanding the GNN framework:
 
-Here is a summary of the key concepts and components required to implement this Active Inference POMDP agent:
+1. **Initialization**: The GNN consists of two main components:
+   - **StatePossession**: Each observation is assigned to one hidden state and that hidden state has an associated probability distribution over actions (`H[y,x]`) or policy (`G[h(s), y=1]`, where `g(s)` denotes the GNN transition operator).
 
-1. **Key Components**:
-   - **Input data**: The input consists of observed observation variables (e.g., actions, policies), previous observations, and hidden state distribution matrices.
+   - **Initialization**: The initial state of each observation is initialized with a random value and then mapped to hidden states. Each observation has an associated probability distribution over actions, which maps to a policy vector (`H[y])`.
 
-   - **State Space Block**: A set of states with a unique action assignment for each observation variable. Each state is uniquely determined by all other states.
+2. **Model Representation**: This model represents a general type of active inference agent:
+   - **Single-observation**: It assigns beliefs (facts) or decisions based on observed observations ($p(x)) and probabilities $P$ for the chosen action ([π]).
 
-2. **Log-Probabilities**:
-   - **Transition Matrix**: This represents the probability distribution over actions from policy-generated policies, based on a random sequence of actions chosen in the initial belief prior. The transition matrices encode all possible outcomes for each action selection.
+   - **Multiple-observations**: It generates policies, actions, and hidden states in parallel using probability distributions. Each observation has an associated probability distribution over actions/policies with uniform policy prior (`g(s)`.
 
-   - **Transition Matrix**: A set of log-probabilities (e.g., p[u] = exp(p[q][k])) over observed observations to generate new observable values.
+3. **Constraints**: This model enforces bounds on beliefs based on observed data. The goal is to generate beliefs that are consistent with each action chosen by the agent, i.e., beliefs for all actions:
 
-3. **Action Vector**:
-   - **Initial Policy Prior** and "habit" vector: These represent the policy and habit distributions, respectively for each observation variable and action selection.
+   - **One-step history**: It generates histories of how the agents (and their policies/actions) change over time due to changes in observations and hidden states. It updates these beliefs based on a sequence of policy transitions (`G[g(s), y=1]`) until it reaches an empty horizon after each step:
 
-   - **Previous Observation**: A sequence of observed observations that provide information about previous state transitions and actions taken by the agent through a planning horizon (T).
+   - **One-step History**: The goal is to generate the transition matrix $(A, B)$ for each observation whose action ($y$) has been seen before. This can be done in a greedy way by choosing actions based on observed observations and then moving forward to other possible decisions.
 
-4. **Habitability Vector**:
-   - **Random Value** vector or "action" vectors: These represent all possible actions taken based on the policy distribution over actions, including actions chosen for specific outcomes ("choices").
+4. **Model Dynamics**: It implements Active Inference principles:
+   - **Policies**: Policies are defined based on the available data, i.e., there is no prior knowledge about what action will happen next for all actions. That is, it only knows of 3 options and doesn't know which one to choose.
 
-   - **Generated Action Vector**: A sequence of observed observations and subsequent generated actions that capture new information about previous state transitions.
+   - **Actions**: Actions can be defined by using a sequence of policy transitions or other initial guesses (actions) that are given at each time step in the history. There could potentially exist multiple policies with different objectives. This allows for a probabilistic graphical representation, where actions/policies change based on probability distributions and actions are constrained to take one action out of possible options:
 
-5. **Policy Probability**:
-   - **Probability** matrix representing the probability distribution over all action selection in a policy-generating policy posterior (i.e., from input data).
+    - **One-step History**: This is the most intuitive scenario (every choice is made independently). In this case, there could be no prior knowledge about what action will happen next for all actions.
 
-6. **Action History**: A set of observation variables, each with unique initial and final actions, to generate observed observations for subsequent actions taken during training or evaluation processes.
+5. **Active Inference Context**: It generates Actions/Policy histories based on its data collection strategy and initial beliefs ($p(x)$. Each observation can have a unique history, but each policy is defined in terms of previous policies with associated probabilities).
 
-Here is a possible description:
+Please keep the following concepts:
 
-1. **Key Relationships**:
-   - **Initial Policy Prior**: A probability distribution over action selection that maps observed actions to the "habitability vector" of corresponding observation variables (e.g., "u"). This represents a set of possible choices based on policy-generated policies and habit distributions, with probabilities representing uncertainty about future outcomes for each choice.
-
-2. **Action History**:
-   - A sequence of observations from input data that captures information about prior actions taken during training/evaluation processes. These actions are generated after the initial belief distribution has been updated through a planning horizon to represent all possible actions and policy choices.
-
-3. **Activation Functions**:
-   - **Information Gain (AI)**: A probability map representing the likelihood of each observed observation value, with higher values indicating more favorable outcomes based on action selection from prior policies.
-
-4. **Random Action Vector**: A sequence of actions chosen during training/evaluation processes to generate observable observations for later actions taken based on policy-generated policies and habit distributions, represented as a probability distribution over the "habitability vector".
-
-To summarize:
-
-1. **Initial Policy Prior** is a probability distribution that represents the probability distribution over action selection in a planning horizon (T), providing information about potential choices when training/evaluation processes are initiated.
-
-2. **Action History** can represent all possible actions taken based on policy-generated policies and habit distributions, including chosen actions for specific outcomes ("choices").
-
-3. **Activation Functions** allow generating actions from prior beliefs or a knowledge graph in order to optimize the algorithm by learning the values of observed actions that are favorable under certain probability conditions (AI).
-
-Please provide more detailed information on any key components if you need it so I can better understand your question and ask for further details.
+  *   **StatePossession** – What are the states (observations)?
+  *   **Observable Data** and **Data Collection**: How does it get data?
+  *   **Initial History**: What is a history of what actions were given at each time step in the history?
+  *   **Constraints**: What policies/actions must be defined to ensure that beliefs are consistent with actions.

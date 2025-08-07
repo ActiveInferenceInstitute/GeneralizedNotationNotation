@@ -73,7 +73,7 @@ def process_report_standardized(
         
         # Get configuration
         config = get_pipeline_config()
-        step_config = config.get_step_config("21_report.py")
+        step_config = config.get_step_config("21_report") if hasattr(config, 'get_step_config') else None
         
         # Set up output directory
         step_output_dir = get_output_dir_for_script("21_report.py", output_dir)
