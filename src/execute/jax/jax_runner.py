@@ -95,7 +95,7 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
     if missing_deps:
         logger.error(f"Missing required JAX dependencies: {', '.join(missing_deps)}")
         logger.error("Please install missing dependencies:")
-        logger.error(f"pip install {' '.join(missing_deps)}")
+        logger.error(f"uv pip install {' '.join(missing_deps)}")
         return False
     
     # Validate script syntax

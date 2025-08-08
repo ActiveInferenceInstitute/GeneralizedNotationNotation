@@ -158,19 +158,20 @@ def ensure_dependencies(logger):
     # Check pytest availability using the correct Python
     try:
         import subprocess
+        # Prefer uv to query pytest when available
         result = subprocess.run(
-            [python_executable, "-c", "import pytest; print(f'pytest {pytest.__version__}')"],
-            capture_output=True, text=True, timeout=10
+            ["uv", "run", python_executable, "-c", "import pytest; print(f'pytest {pytest.__version__}')"],
+            capture_output=True, text=True, timeout=20
         )
         if result.returncode == 0:
             logger.info(f"✅ pytest available: {result.stdout.strip()}")
         else:
             logger.error(f"❌ pytest not available: {result.stderr}")
-            logger.error("Action: Install pytest with: pip install pytest pytest-cov pytest-xdist pytest-json-report")
+            logger.error("Action: Ensure pytest is specified in pyproject and run: uv sync --extra dev")
             sys.exit(1)
     except Exception as e:
         logger.error(f"❌ Failed to check pytest: {e}")
-        logger.error("Action: Install pytest with: pip install pytest pytest-cov pytest-xdist pytest-json-report")
+        logger.error("Action: Ensure pytest is specified in pyproject and run: uv sync --extra dev")
         sys.exit(1)
 
 # --- Argument Parsing ---
@@ -299,7 +300,7 @@ def process_tests_standardized(
             logger.warning("⚠️ pytest not available, skipping tests")
             return True
         
-        # Run basic tests if test runner is available
+        # Run tests if test runner is available
         if TEST_RUNNER_AVAILABLE:
             try:
                 # Create test runner
@@ -307,15 +308,23 @@ def process_tests_standardized(
                     'target_dir': target_dir,
                     'output_dir': test_output_dir,
                     'recursive': recursive,
-                    'verbose': verbose
+                    'verbose': verbose,
+                    'fast_only': kwargs.get('fast_only', False),
+                    'include_slow': kwargs.get('include_slow', False),
+                    'include_performance': kwargs.get('include_performance', False),
+                    'comprehensive': kwargs.get('comprehensive', False),
                 }), logger)
                 
                 if runner:
-                    # Run tests
-                    if hasattr(runner, 'run_all_tests'):
-                        success = runner.run_all_tests()
+                    # Prefer modular comprehensive category runner if available
+                    success = False
+                    if hasattr(runner, 'run_all_categories'):
+                        results = runner.run_all_categories()
+                        success = bool(results.get('overall_success', False))
+                    elif hasattr(runner, 'run_all_tests'):
+                        success = bool(runner.run_all_tests())
                     elif hasattr(runner, 'run_tests'):
-                        success = runner.run_tests()
+                        success = bool(runner.run_tests())
                     else:
                         logger.warning("⚠️ No test execution method available")
                         success = True

@@ -1,1 +1,1 @@
-# Error generating ActiveInference.jl code: name 'Float64' is not defined
+# Error generating ActiveInference.jl code: name 'model_pascal' is not defined

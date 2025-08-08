@@ -4,12 +4,43 @@ Render generators module for GNN code generation.
 """
 
 from typing import Dict, Any
+import re
+
+def _sanitize_identifier(base: str, *, lowercase: bool = True, allow_empty_fallback: str = "model") -> str:
+    """Sanitize an arbitrary string into a safe Python/Julia identifier (snake_case).
+    - Replace non-alphanumeric chars with underscores
+    - Collapse repeated underscores
+    - Lowercase if requested
+    - Prefix with fallback if it would start with a digit or be empty
+    """
+    s = base.lower() if lowercase else base
+    s = re.sub(r"\W+", "_", s)
+    s = re.sub(r"_+", "_", s).strip("_")
+    if not s:
+        s = allow_empty_fallback
+    if s[0].isdigit():
+        s = f"{allow_empty_fallback}_{s}"
+    return s
+
+def _to_pascal_case(base: str, *, allow_empty_fallback: str = "Model") -> str:
+    """Convert arbitrary string to PascalCase for Julia struct/type names.
+    Non-alphanumeric separators are treated as word boundaries.
+    """
+    parts = re.split(r"\W+", base)
+    parts = [p for p in parts if p]
+    if not parts:
+        parts = [allow_empty_fallback]
+    name = "".join(p.capitalize() for p in parts)
+    if name[0].isdigit():
+        name = f"{allow_empty_fallback}{name}"
+    return name
 
 def generate_pymdp_code(model_data: Dict) -> str:
     """Generate PyMDP simulation code using the modular PyMDP renderer."""
     try:
-        # Get model name for file paths
-        model_name = model_data.get('model_name', 'GNN_Model')
+        # Get model name for file paths and sanitize for identifiers
+        model_name = model_data.get('model_name', 'GNN Model')
+        model_snake = _sanitize_identifier(model_name, lowercase=True, allow_empty_fallback="model")
         
         # Generate PyMDP code
         code = f'''#!/usr/bin/env python3
@@ -23,7 +54,7 @@ from pymdp import utils
 from pymdp.agent import Agent
 from pymdp.envs import Env
 
-def create_{model_name.lower().replace('-', '_')}_agent():
+def create_{model_snake}_agent():
     """Create a PyMDP agent for {model_name}."""
     
     # Define observation space
@@ -53,7 +84,7 @@ def create_{model_name.lower().replace('-', '_')}_agent():
     
     return agent
 
-def create_{model_name.lower().replace('-', '_')}_environment():
+def create_{model_snake}_environment():
     """Create a PyMDP environment for {model_name}."""
     
     # Define environment parameters
@@ -72,12 +103,12 @@ def create_{model_name.lower().replace('-', '_')}_environment():
     
     return env
 
-def run_{model_name.lower().replace('-', '_')}_simulation(num_steps=100):
+def run_{model_snake}_simulation(num_steps=100):
     """Run a simulation of {model_name}."""
     
     # Create agent and environment
-    agent = create_{model_name.lower().replace('-', '_')}_agent()
-    env = create_{model_name.lower().replace('-', '_')}_environment()
+    agent = create_{model_snake}_agent()
+    env = create_{model_snake}_environment()
     
     # Initialize
     obs = env.reset()
@@ -101,7 +132,7 @@ def run_{model_name.lower().replace('-', '_')}_simulation(num_steps=100):
 
 if __name__ == "__main__":
     # Run simulation
-    reward = run_{model_name.lower().replace('-', '_')}_simulation()
+    reward = run_{model_snake}_simulation()
     print(f"Simulation completed with total reward: {{reward}}")
 '''
         
@@ -113,7 +144,9 @@ if __name__ == "__main__":
 def generate_rxinfer_code(model_data: Dict) -> str:
     """Generate RxInfer.jl simulation code."""
     try:
-        model_name = model_data.get('model_name', 'GNN_Model')
+        model_name = model_data.get('model_name', 'GNN Model')
+        model_snake = _sanitize_identifier(model_name, lowercase=True, allow_empty_fallback="model")
+        model_pascal = _to_pascal_case(model_name, allow_empty_fallback="Model")
         
         code = f'''#!/usr/bin/env julia
 """
@@ -125,7 +158,7 @@ using RxInfer
 using Distributions
 using LinearAlgebra
 
-@model function {model_name.lower().replace('-', '_')}_model(n)
+@model function {model_snake}_model(n)
     # Define variables
     x = randomvar(n)
     y = datavar(Float64, n)
@@ -140,11 +173,11 @@ using LinearAlgebra
     end
 end
 
-function run_{model_name.lower().replace('-', '_')}_inference(data, n)
+function run_{model_snake}_inference(data, n)
     """Run inference for {model_name}."""
     
     # Create model
-    model = {model_name.lower().replace('-', '_')}_model(n)
+    model = {model_snake}_model(n)
     
     # Set up constraints
     constraints = @constraints begin
@@ -172,7 +205,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
     data = true_x .+ 0.1 .* randn(n)
     
     # Run inference
-    result = run_{model_name.lower().replace('-', '_')}_inference(data, n)
+    result = run_{model_snake}_inference(data, n)
     
     println("Inference completed successfully")
     println("Posterior mean of x_prior: ", mean(result.posteriors[:x_prior]))
@@ -187,7 +220,8 @@ end
 def generate_rxinfer_fallback_code(model_data: Dict) -> str:
     """Generate fallback RxInfer.jl code when main generator fails."""
     try:
-        model_name = model_data.get('model_name', 'GNN_Model')
+        model_name = model_data.get('model_name', 'GNN Model')
+        model_snake = _sanitize_identifier(model_name, lowercase=True, allow_empty_fallback="model")
         
         code = f'''#!/usr/bin/env julia
 """
@@ -261,14 +295,14 @@ using ActiveInference
 using Distributions
 using LinearAlgebra
 
-struct {model_name}Agent
+struct {model_pascal}Agent
     A::Matrix{Float64}  # Likelihood matrix
     B::Array{Float64, 3}  # Transition matrices
     C::Vector{Float64}  # Preferences
     D::Vector{Float64}  # Prior over states
 end
 
-function create_{model_name.lower().replace('-', '_')}_agent()
+function create_{model_snake}_agent()
     """Create an ActiveInference agent for {model_name}."""
     
     # Define dimensions
@@ -293,10 +327,10 @@ function create_{model_name.lower().replace('-', '_')}_agent()
     # Create prior over states D
     D = ones(num_states) / num_states
     
-    return {model_name}Agent(A, B, C, D)
+    return {model_pascal}Agent(A, B, C, D)
 end
 
-function run_{model_name.lower().replace('-', '_')}_simulation(agent, num_steps=100)
+function run_{model_snake}_simulation(agent, num_steps=100)
     """Run ActiveInference simulation for {model_name}."""
     
     # Initialize
@@ -332,8 +366,8 @@ end
 
 if abspath(PROGRAM_FILE) == @__FILE__
     # Create agent and run simulation
-    agent = create_{model_name.lower().replace('-', '_')}_agent()
-    free_energy = run_{model_name.lower().replace('-', '_')}_simulation(agent)
+    agent = create_{model_snake}_agent()
+    free_energy = run_{model_snake}_simulation(agent)
     
     println("ActiveInference simulation completed")
     println("Total free energy: ", free_energy)
@@ -427,7 +461,7 @@ from discopy import *
 from discopy.quantum import *
 import numpy as np
 
-def create_{model_name.lower().replace('-', '_')}_diagram():
+def create_{model_snake}_diagram():
     """Create a DisCoPy categorical diagram for {model_name}."""
     
     # Define types
@@ -444,7 +478,7 @@ def create_{model_name.lower().replace('-', '_')}_diagram():
     
     return diagram
 
-def create_{model_name.lower().replace('-', '_')}_quantum_diagram():
+def create_{model_snake}_quantum_diagram():
     """Create a quantum-inspired diagram for {model_name}."""
     
     # Define quantum types
@@ -459,12 +493,12 @@ def create_{model_name.lower().replace('-', '_')}_quantum_diagram():
     
     return circuit
 
-def run_{model_name.lower().replace('-', '_')}_simulation():
+def run_{model_snake}_simulation():
     """Run DisCoPy simulation for {model_name}."""
     
     # Create diagrams
-    classical_diagram = create_{model_name.lower().replace('-', '_')}_diagram()
-    quantum_diagram = create_{model_name.lower().replace('-', '_')}_quantum_diagram()
+    classical_diagram = create_{model_snake}_diagram()
+    quantum_diagram = create_{model_snake}_quantum_diagram()
     
     print("Classical diagram:")
     print(classical_diagram)
@@ -474,7 +508,7 @@ def run_{model_name.lower().replace('-', '_')}_simulation():
     return classical_diagram, quantum_diagram
 
 if __name__ == "__main__":
-    classical, quantum = run_{model_name.lower().replace('-', '_')}_simulation()
+    classical, quantum = run_{model_snake}_simulation()
     print("\\nDisCoPy simulation completed successfully")
 '''
         

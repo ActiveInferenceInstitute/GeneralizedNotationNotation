@@ -17,6 +17,13 @@ from utils.pipeline_template import (
     log_step_error,
     log_step_warning
 )
+from .analyzer import (
+    perform_statistical_analysis,
+    calculate_complexity_metrics,
+    run_performance_benchmarks,
+    perform_model_comparisons,
+    generate_analysis_summary,
+)
 
 def process_analysis(
     target_dir: Path,
@@ -114,7 +121,8 @@ def process_analysis(
         return results["success"]
         
     except Exception as e:
-        log_step_error(logger, "Analysis processing failed", {"error": str(e)})
+        # Use supported signature for log_step_error
+        log_step_error(logger, f"Analysis processing failed: {e}")
         return False
 
 def convert_numpy_types(obj):

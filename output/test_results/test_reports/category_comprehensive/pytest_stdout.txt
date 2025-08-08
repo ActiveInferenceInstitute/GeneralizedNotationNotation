@@ -1,0 +1,90 @@
+============================= test session starts ==============================
+collected 127 items
+
+src/tests/test_comprehensive_api.py ......F............................. [ 28%]
+......F.FFF                                                              [ 37%]
+src/tests/test_core_modules.py ...s....F.....F.........s......           [ 61%]
+src/tests/test_fast_suite.py .................s....                      [ 78%]
+src/tests/test_main_orchestrator.py ...F.F..E
+
+==================================== ERRORS ====================================
+_ ERROR at setup of TestVirtualEnvironmentHandling.test_virtual_environment_detection _
+file /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_main_orchestrator.py, line 240
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_virtual_environment_detection(self, mock_filesystem):
+E       fixture 'mock_filesystem' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, json_metadata, mock_imports, mock_logger, mock_subprocess, monkeypatch, no_cover, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_files, sample_markdown, sample_scala, src_dir, test_config, test_dir, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_main_orchestrator.py:240
+=================================== FAILURES ===================================
+_________________ TestExportModule.test_get_supported_formats __________________
+src/tests/test_comprehensive_api.py:204: in test_get_supported_formats
+    assert isinstance(formats, dict)
+E   AssertionError: assert False
+E    +  where False = isinstance(['json', 'xml', 'graphml', 'gexf', 'pickle', 'txt', ...], dict)
+________________ TestMCPIntegration.test_mcp_availability_flags ________________
+src/tests/test_comprehensive_api.py:623: in test_mcp_availability_flags
+    assert 'mcp_integration' in module.FEATURES
+E   AssertionError: assert 'mcp_integration' in {'content_parsing': True, 'core_validation': True, 'file_discovery': True, 'report_generation': True, ...}
+E    +  where {'content_parsing': True, 'core_validation': True, 'file_discovery': True, 'report_generation': True, ...} = <module 'src.gnn' from '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/gnn/__init__.py'>.FEATURES
+________________ TestModuleConsistency.test_version_consistency ________________
+src/tests/test_comprehensive_api.py:650: in test_version_consistency
+    assert hasattr(module, '__version__')
+E   AssertionError: assert False
+E    +  where False = hasattr(<src._Shim object at 0x7b0fdaebe6d0>, '__version__')
+_____________ TestModuleConsistency.test_feature_flags_consistency _____________
+src/tests/test_comprehensive_api.py:663: in test_feature_flags_consistency
+    assert hasattr(module, 'FEATURES')
+E   AssertionError: assert False
+E    +  where False = hasattr(<src._Shim object at 0x7b0fdaebe6d0>, 'FEATURES')
+______________ TestModuleConsistency.test_module_info_consistency ______________
+src/tests/test_comprehensive_api.py:676: in test_module_info_consistency
+    assert hasattr(module, 'get_module_info')
+E   AssertionError: assert False
+E    +  where False = hasattr(<src._Shim object at 0x7b0fdaebe6d0>, 'get_module_info')
+_____________ TestRenderModuleComprehensive.test_discopy_rendering _____________
+src/tests/test_core_modules.py:231: in test_discopy_rendering
+    assert isinstance(result, dict), "render_gnn_to_discopy should return a dict"
+E   AssertionError: render_gnn_to_discopy should return a dict
+E   assert False
+E    +  where False = isinstance("# Error generating DisCoPy code: name 'model_snake' is not defined", dict)
+__________ TestLLMModuleComprehensive.test_llm_description_generation __________
+src/tests/test_core_modules.py:351: in test_llm_description_generation
+    assert "file_path" in docs, "Documentation should contain file_path"
+E   AssertionError: Documentation should contain file_path
+E   assert 'file_path' in {'connection_documentation': [], 'generation_timestamp': '2025-08-08T09:01:28.763662', 'model_overview': '\n# test.md ... Example variable usage\nX = ...\nY = ...', 'description': 'Example variables: X, Y', 'title': 'Variable Usage'}], ...}
+_________ TestArgumentParsing.test_argument_parser_basic_functionality _________
+src/tests/test_main_orchestrator.py:129: in test_argument_parser_basic_functionality
+    assert isinstance(sample_args["target_dir"], str), "target_dir should be string"
+E   AssertionError: target_dir should be string
+E   assert False
+E    +  where False = isinstance(PosixPath('input/gnn_files'), str)
+__________________ TestArgumentParsing.test_argument_defaults __________________
+src/tests/test_main_orchestrator.py:171: in test_argument_defaults
+    assert sample_args["verbose"] is False, "verbose should default to False for safety"
+E   AssertionError: verbose should default to False for safety
+E   assert True is False
+============================= slowest 10 durations =============================
+76.46s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+1.17s call     src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports
+0.14s call     src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports
+0.08s call     src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
+0.01s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
+0.01s call     src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports
+
+(4 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ============================
+FAILED src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats
+FAILED src/tests/test_comprehensive_api.py::TestMCPIntegration::test_mcp_availability_flags
+FAILED src/tests/test_comprehensive_api.py::TestModuleConsistency::test_version_consistency
+FAILED src/tests/test_comprehensive_api.py::TestModuleConsistency::test_feature_flags_consistency
+FAILED src/tests/test_comprehensive_api.py::TestModuleConsistency::test_module_info_consistency
+FAILED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering
+FAILED src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation
+FAILED src/tests/test_main_orchestrator.py::TestArgumentParsing::test_argument_parser_basic_functionality
+FAILED src/tests/test_main_orchestrator.py::TestArgumentParsing::test_argument_defaults
+ERROR src/tests/test_main_orchestrator.py::TestVirtualEnvironmentHandling::test_virtual_environment_detection
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 10 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+========= 9 failed, 96 passed, 3 skipped, 1 error in 81.06s (0:01:21) ==========

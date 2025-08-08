@@ -19,6 +19,12 @@ from utils.pipeline_template import (
     log_step_error,
     log_step_warning
 )
+from .generator import (
+    generate_tonal_representation,
+    generate_rhythmic_representation,
+    generate_ambient_representation,
+    generate_sonification_audio
+)
 
 def process_audio(
     target_dir: Path,
@@ -113,7 +119,7 @@ def process_audio(
         log_step_error(logger, "Audio processing failed", {"error": str(e)})
         return False
 
-def generate_audio_from_gnn(file_path: Path, output_dir: Path, verbose: bool = False) -> Dict[str, Any]:
+def generate_audio_from_gnn(file_path_or_content, output_dir: Path | None = None, verbose: bool = False) -> Dict[str, Any]:
     """
     Generate audio from a GNN model.
     
@@ -126,8 +132,14 @@ def generate_audio_from_gnn(file_path: Path, output_dir: Path, verbose: bool = F
         Dictionary containing audio generation results
     """
     try:
-        with open(file_path, 'r') as f:
-            content = f.read()
+        # Accept either a path or raw content per tests
+        if isinstance(file_path_or_content, (str, bytes)) and ("\n" in str(file_path_or_content) or len(str(file_path_or_content)) < 256 and not Path(str(file_path_or_content)).exists()):
+            content = str(file_path_or_content)
+            file_path = Path("gnn_input.md")
+        else:
+            file_path = Path(file_path_or_content)
+            with open(file_path, 'r') as f:
+                content = f.read()
         
         # Extract model structure for audio generation
         variables = extract_variables_for_audio(content)
@@ -138,6 +150,9 @@ def generate_audio_from_gnn(file_path: Path, output_dir: Path, verbose: bool = F
         
         # 1. Generate tonal representation
         tonal_audio = generate_tonal_representation(variables, connections)
+        if output_dir is None:
+            output_dir = Path("output/audio")
+        output_dir.mkdir(parents=True, exist_ok=True)
         tonal_path = output_dir / f"{file_path.stem}_tonal.wav"
         save_audio_file(tonal_audio, tonal_path, sample_rate=44100)
         audio_files["tonal"] = str(tonal_path)

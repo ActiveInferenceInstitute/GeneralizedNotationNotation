@@ -9,7 +9,7 @@ from pymdp import utils
 from pymdp.agent import Agent
 from pymdp.envs import Env
 
-def create_classic active inference pomdp agent v1_agent():
+def create_classic_active_inference_pomdp_agent_v1_agent():
     """Create a PyMDP agent for Classic Active Inference POMDP Agent v1."""
     
     # Define observation space
@@ -39,7 +39,7 @@ def create_classic active inference pomdp agent v1_agent():
     
     return agent
 
-def create_classic active inference pomdp agent v1_environment():
+def create_classic_active_inference_pomdp_agent_v1_environment():
     """Create a PyMDP environment for Classic Active Inference POMDP Agent v1."""
     
     # Define environment parameters
@@ -58,12 +58,12 @@ def create_classic active inference pomdp agent v1_environment():
     
     return env
 
-def run_classic active inference pomdp agent v1_simulation(num_steps=100):
+def run_classic_active_inference_pomdp_agent_v1_simulation(num_steps=100):
     """Run a simulation of Classic Active Inference POMDP Agent v1."""
     
     # Create agent and environment
-    agent = create_classic active inference pomdp agent v1_agent()
-    env = create_classic active inference pomdp agent v1_environment()
+    agent = create_classic_active_inference_pomdp_agent_v1_agent()
+    env = create_classic_active_inference_pomdp_agent_v1_environment()
     
     # Initialize
     obs = env.reset()
@@ -87,5 +87,5 @@ def run_classic active inference pomdp agent v1_simulation(num_steps=100):
 
 if __name__ == "__main__":
     # Run simulation
-    reward = run_classic active inference pomdp agent v1_simulation()
+    reward = run_classic_active_inference_pomdp_agent_v1_simulation()
     print(f"Simulation completed with total reward: {reward}")

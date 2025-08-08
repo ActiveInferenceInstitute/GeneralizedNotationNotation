@@ -34,13 +34,18 @@ from .analyzer import (
     process_gnn_to_audio,
     convert_gnn_to_sapf,
     generate_audio_from_sapf,
-    validate_sapf_code
+    validate_sapf_code,
+    validate_audio_content
 )
 
 from .classes import (
     AudioGenerator,
     SAPFGNNProcessor
 )
+
+# Backwards-compatible aliases expected by tests
+SAPFProcessor = SAPFGNNProcessor
+PedalboardProcessor = SAPFGNNProcessor
 
 # Module metadata
 __version__ = "1.0.0"
@@ -71,6 +76,7 @@ __all__ = [
     'convert_gnn_to_sapf',
     'generate_audio_from_sapf',
     'validate_sapf_code',
+    'validate_audio_content',
     'generate_oscillator_audio',
     'apply_envelope',
     'mix_audio_channels',

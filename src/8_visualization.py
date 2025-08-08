@@ -166,7 +166,8 @@ def process_visualization_standardized(
                 model_data = file_result
             
             # Create file-specific output directory
-            file_output_dir = step_output_dir / file_name.replace('.md', '')
+            # Align with tests expecting PNGs under output/visualization/<model>
+            file_output_dir = step_output_dir / Path(file_name).stem
             file_output_dir.mkdir(exist_ok=True)
             
             file_visualization_result = {
@@ -226,6 +227,31 @@ def process_visualization_standardized(
                     "error": str(e)
                 }
                 file_visualization_result["success"] = False
+
+            # Ensure expected top-level PNGs exist in file_output_dir for tests
+            try:
+                from visualization.matrix_visualizer import MatrixVisualizer
+                visualizer = MatrixVisualizer()
+                parameters = model_data.get("parameters", []) if isinstance(model_data, dict) else []
+                # Generate matrix_analysis.png at top-level
+                matrix_analysis_path = file_output_dir / "matrix_analysis.png"
+                if parameters:
+                    if visualizer.generate_matrix_analysis(parameters, matrix_analysis_path):
+                        visualization_results["summary"]["total_images_generated"] += 1
+                # Generate pomdp_transition_analysis.png if B tensor present
+                matrices = visualizer.extract_matrix_data_from_parameters(parameters) if parameters else {}
+                if isinstance(matrices, dict) and 'B' in matrices:
+                    B = matrices['B']
+                    try:
+                        import numpy as _np
+                        if hasattr(B, 'ndim') and B.ndim == 3:
+                            pomdp_path = file_output_dir / "pomdp_transition_analysis.png"
+                            if visualizer.generate_pomdp_transition_analysis(B, pomdp_path):
+                                visualization_results["summary"]["total_images_generated"] += 1
+                    except Exception:
+                        pass
+            except Exception as e:
+                logger.warning(f"Could not generate expected summary PNGs: {e}")
             
             visualization_results["files_visualized"].append(file_visualization_result)
             visualization_results["summary"]["total_files"] += 1

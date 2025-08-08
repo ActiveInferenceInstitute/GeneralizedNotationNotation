@@ -465,8 +465,11 @@ class MCP:
         self._result_cache: Dict[str, Tuple[Any, float]] = {}
         self._cache_lock = threading.Lock()
         
-        # Remove thread pool
-        self._executor = None
+        # Thread pool for parallel module loading (fallback to single-thread if init fails)
+        try:
+            self._executor = ThreadPoolExecutor(max_workers=4)
+        except Exception:
+            self._executor = None
         # Disable advanced features by default
         self._enable_caching = False
         self._enable_rate_limiting = False
@@ -493,8 +496,50 @@ class MCP:
     def performance_metrics(self) -> MCPPerformanceMetrics:
         """Get performance metrics."""
         return self._performance_metrics
+
+    # --- Compatibility: simple listings used by reporting and diagnostics ---
+    def list_available_tools(self, include_metadata: bool = True) -> List[Dict[str, Any]] | List[str]:
+        """
+        Return a list of registered tools. If include_metadata is True, returns a list of
+        dictionaries with metadata; otherwise returns tool names.
+        """
+        with self._lock:
+            if include_metadata:
+                result: List[Dict[str, Any]] = []
+                for name, tool in self.tools.items():
+                    result.append({
+                        "name": name,
+                        "description": getattr(tool, "description", ""),
+                        "module": getattr(tool, "module", ""),
+                        "category": getattr(tool, "category", ""),
+                        "version": getattr(tool, "version", "1.0.0")
+                    })
+                return sorted(result, key=lambda t: t["name"])
+            else:
+                return sorted(self.tools.keys())
+
+    def list_available_resources(self, include_metadata: bool = True) -> List[Dict[str, Any]] | List[str]:
+        """
+        Return a list of registered resources. If include_metadata is True, returns a list of
+        dictionaries with metadata; otherwise returns resource URIs.
+        """
+        with self._lock:
+            if include_metadata:
+                result: List[Dict[str, Any]] = []
+                for uri, res in self.resources.items():
+                    result.append({
+                        "uri": uri,
+                        "description": getattr(res, "description", ""),
+                        "module": getattr(res, "module", ""),
+                        "category": getattr(res, "category", ""),
+                        "version": getattr(res, "version", "1.0.0")
+                    })
+                return sorted(result, key=lambda r: r["uri"])
+            else:
+                return sorted(self.resources.keys())
     
-    def discover_modules(self, force_refresh: bool = False) -> bool:
+    def discover_modules(self, force_refresh: bool = False, modules_allowlist: Optional[List[str]] = None,
+                         per_module_timeout: float = 10.0, overall_timeout: float = 30.0) -> bool:
         """
         Enhanced module discovery with caching and thread safety.
         
@@ -532,38 +577,48 @@ class MCP:
             # Get list of directories to scan
             directories = [d for d in root_dir.iterdir() 
                           if d.is_dir() and not d.name.startswith('_')]
+            if modules_allowlist:
+                allow = set(modules_allowlist)
+                directories = [d for d in directories if d.name in allow or d.name == 'mcp']
             
-            # Use thread pool for parallel module loading
-            module_load_futures = {}
-            
-            for directory in directories:
-                mcp_file = directory / "mcp.py"
-                if not mcp_file.exists():
-                    logger.debug(f"No MCP module found in {directory}")
-                    continue
-                
-                # Submit module loading to thread pool
-                future = self._executor.submit(self._load_module, directory, mcp_file)
-                module_load_futures[directory.name] = future
-            
-            # Wait for all modules to load
-            for module_name, future in module_load_futures.items():
-                try:
-                    success = future.result(timeout=30.0)  # 30 second timeout per module
+            # Use thread pool if available, otherwise load sequentially
+            if self._executor is not None:
+                module_load_futures = {}
+                for directory in directories:
+                    mcp_file = directory / "mcp.py"
+                    if not mcp_file.exists():
+                        logger.debug(f"No MCP module found in {directory}")
+                        continue
+                    future = self._executor.submit(self._load_module, directory, mcp_file)
+                    module_load_futures[directory.name] = future
+
+                start_wait = time.time()
+                for module_name, future in list(module_load_futures.items()):
+                    remaining = max(0.0, overall_timeout - (time.time() - start_wait))
+                    try:
+                        success = future.result(timeout=min(per_module_timeout, remaining) if remaining > 0 else 0.001)
+                        if not success:
+                            all_modules_loaded_successfully = False
+                    except Exception as e:
+                        logger.error(f"Failed to load module {module_name}: {e}")
+                        all_modules_loaded_successfully = False
+                        self.modules[module_name] = MCPModuleInfo(
+                            name=f"src.{module_name}.mcp",
+                            path=Path(__file__).parent.parent / module_name / "mcp.py",
+                            status="error",
+                            error_message=str(e),
+                            last_updated=time.time()
+                        )
+            else:
+                # Fallback sequential loading
+                for directory in directories:
+                    mcp_file = directory / "mcp.py"
+                    if not mcp_file.exists():
+                        logger.debug(f"No MCP module found in {directory}")
+                        continue
+                    success = self._load_module(directory, mcp_file)
                     if not success:
                         all_modules_loaded_successfully = False
-                except Exception as e:
-                    logger.error(f"Failed to load module {module_name}: {e}")
-                    all_modules_loaded_successfully = False
-                    
-                    # Create error module info
-                    self.modules[module_name] = MCPModuleInfo(
-                        name=f"src.{module_name}.mcp",
-                        path=Path(__file__).parent.parent / module_name / "mcp.py",
-                        status="error",
-                        error_message=str(e),
-                        last_updated=time.time()
-                    )
 
             # Special handling for core MCP tools in the mcp directory itself
             mcp_dir = Path(__file__).parent
@@ -698,13 +753,17 @@ class MCP:
             )
             return False
 
-    def register_tool(self, name: str, func: Callable, schema: Dict[str, Any], description: str, 
+    def register_tool(self, name: str, func: Callable = None, schema: Dict[str, Any] = None, description: str = "", 
                      module: str = "", category: str = "", version: str = "1.0.0",
                      tags: Optional[List[str]] = None, examples: Optional[List[Dict[str, Any]]] = None,
                      deprecated: bool = False, experimental: bool = False,
                      timeout: Optional[float] = None, max_concurrent: int = 1, requires_auth: bool = False,
-                     rate_limit: Optional[float] = None, cache_ttl: Optional[float] = None,
-                     input_validation: bool = True, output_validation: bool = True):
+                      rate_limit: Optional[float] = None, cache_ttl: Optional[float] = None,
+                      input_validation: bool = True, output_validation: bool = True,
+                      # Compatibility keywords accepted by some module mcp files
+                      function: Optional[Callable] = None,
+                      parameters: Optional[List[Dict[str, Any]]] = None,
+                      returns: Optional[Dict[str, Any]] = None):
         """
         Register a new tool with the MCP server.
         
@@ -732,6 +791,40 @@ class MCP:
             if name in self.tools:
                 logger.warning(f"Tool '{name}' already registered, overwriting")
             
+            # Backward-compatible signature: allow modules to pass function via keyword 'function'
+            if func is None and function is not None:
+                func = function
+            if schema is None:
+                schema = {}
+            # Convert older "parameters" list format into JSON schema if provided
+            if parameters and not schema:
+                props: Dict[str, Any] = {}
+                required_fields: List[str] = []
+                type_map = {
+                    'string': 'string',
+                    'boolean': 'boolean',
+                    'integer': 'integer',
+                    'number': 'number',
+                    'array': 'array',
+                    'object': 'object'
+                }
+                for p in parameters:
+                    pname = p.get('name') or p.get('param')
+                    ptype = type_map.get(p.get('type', 'string'), 'string')
+                    prop: Dict[str, Any] = {'type': ptype}
+                    if 'description' in p:
+                        prop['description'] = p['description']
+                    if 'enum' in p:
+                        prop['enum'] = p['enum']
+                    if 'default' in p:
+                        prop['default'] = p['default']
+                    props[pname] = prop
+                    if p.get('required', False):
+                        required_fields.append(pname)
+                schema = {'type': 'object', 'properties': props}
+                if required_fields:
+                    schema['required'] = required_fields
+
             tool = MCPTool(
                 name=name,
                 func=func,
@@ -844,6 +937,7 @@ class MCP:
                             raise MCPInvalidParamsError(f"Missing required param: {req}")
             
             # Synchronous execution
+            start_time = time.time()
             try:
                 with self._track_performance(f"tool_execution_{tool_name}"):
                     result = tool.func(**params)
@@ -852,7 +946,7 @@ class MCP:
                 logger.debug(f"Tool {tool_name} executed successfully")
                 return result
             except Exception as e:
-                execution_time = time.time() - execution_start
+                execution_time = time.time() - start_time
                 self._performance_metrics.failed_requests += 1
                 self._performance_metrics.error_counts[tool_name] = \
                     self._performance_metrics.error_counts.get(tool_name, 0) + 1
@@ -1553,7 +1647,11 @@ class MCP:
 mcp_instance = MCP()
 
 # --- Initialization Function ---
-def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = False) -> Tuple[MCP, bool, bool]:
+def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = False,
+               performance_mode: str = "low",
+               modules_allowlist: Optional[List[str]] = None,
+               per_module_timeout: float = 5.0,
+               overall_timeout: float = 10.0) -> Tuple[MCP, bool, bool]:
     """
     Initialize the MCP by discovering modules and checking SDK status.
     
@@ -1586,8 +1684,19 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
                 "MCP SDK not found or failed to load, but proceeding with limited functionality."
             )
     
-    # Perform module discovery
-    all_modules_loaded = mcp_instance.discover_modules()
+    # Apply performance mode
+    try:
+        mcp_instance.set_performance_mode(performance_mode)
+    except Exception:
+        pass
+
+    # Perform module discovery with fast settings
+    all_modules_loaded = mcp_instance.discover_modules(
+        force_refresh=False,
+        modules_allowlist=modules_allowlist,
+        per_module_timeout=per_module_timeout,
+        overall_timeout=overall_timeout
+    )
     
     if all_modules_loaded:
         logger.info("MCP initialization completed successfully")

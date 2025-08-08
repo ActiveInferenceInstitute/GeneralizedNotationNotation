@@ -30,41 +30,28 @@ def register_module_tools(module_name: str) -> bool:
     """
     try:
         logger.info(f"Registering tools for module: {module_name}")
-        
+
         # Import MCP instance
-        from .mcp import mcp_instance, MCPTool
-        
-        # Define module-specific tools
-        module_tools = {
-            "gnn": [
-                MCPTool("parse_gnn", "Parse GNN file", "gnn_parser"),
-                MCPTool("validate_gnn", "Validate GNN syntax", "gnn_validator"),
-                MCPTool("convert_gnn", "Convert GNN format", "gnn_converter")
-            ],
-            "ontology": [
-                MCPTool("process_ontology", "Process ontology", "ontology_processor"),
-                MCPTool("validate_ontology", "Validate ontology", "ontology_validator")
-            ],
-            "audio": [
-                MCPTool("generate_audio", "Generate audio from GNN", "audio_generator"),
-                MCPTool("process_sapf", "Process SAPF audio", "sapf_processor")
-            ],
-            "visualization": [
-                MCPTool("create_visualization", "Create visualization", "viz_creator"),
-                MCPTool("generate_plot", "Generate plot", "plot_generator")
-            ]
-        }
-        
-        if module_name in module_tools:
-            tools = module_tools[module_name]
-            for tool in tools:
-                mcp_instance.register_tool(tool)
-                logger.debug(f"Registered tool: {tool.name}")
-            
-            logger.info(f"Successfully registered {len(tools)} tools for {module_name}")
-            return True
+        from .mcp import mcp_instance
+
+        # Attempt to import the module's mcp.py and call its register_tools(mcp_instance)
+        import importlib
+        try:
+            module = importlib.import_module(f"src.{module_name}.mcp")
+        except Exception as e:
+            logger.warning(f"Module src.{module_name}.mcp not importable: {e}")
+            return False
+
+        if hasattr(module, "register_tools") and callable(module.register_tools):
+            try:
+                module.register_tools(mcp_instance)
+                logger.info(f"Registered tools for module: {module_name}")
+                return True
+            except Exception as e:
+                logger.error(f"register_tools failed for module {module_name}: {e}")
+                return False
         else:
-            logger.warning(f"No tools defined for module: {module_name}")
+            logger.warning(f"Module src.{module_name}.mcp has no register_tools function")
             return False
             
     except Exception as e:
@@ -190,10 +177,15 @@ def process_mcp(
         
         # Initialize MCP
         from .mcp import initialize
-        initialize()
+        # Proceed even if SDK is missing to allow degraded mode in pipeline
+        initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
         
-        # Register tools for all modules
-        modules = ["gnn", "ontology", "audio", "visualization"]
+        # Register tools for all modules that provide MCP adapters
+        modules = [
+            "gnn", "ontology", "audio", "visualization", "export", "execute", "render",
+            "llm", "website", "report", "template", "validation", "setup", "model_registry",
+            "integration", "security", "research", "pipeline", "tests", "type_checker", "utils"
+        ]
         registered_count = 0
         
         for module in modules:

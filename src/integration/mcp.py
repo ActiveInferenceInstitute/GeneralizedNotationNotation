@@ -1,7 +1,7 @@
 """
-MCP (Model Context Protocol) integration for $module utilities.
+Integration MCP Integration
 
-This module exposes utility functions from the $module module through MCP.
+This module exposes integration processing tools via MCP using the integration module API.
 """
 
 import os
@@ -11,12 +11,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Import utilities from the $module module
-from . import process_$module
+# Import utilities from the integration module
+from . import process_integration
 
 # MCP Tools for $module Utilities Module
 
-def process_$module_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
+def process_integration_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
     """
     Process $module for GNN files. Exposed via MCP.
     
@@ -29,7 +29,7 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
         Dictionary with operation status and results.
     """
     try:
-        success = process_$module(
+        success = process_integration(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
             verbose=verbose
@@ -38,7 +38,7 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": f"$module processing {'completed successfully' if success else 'failed'}"
+            "message": f"integration processing {'completed successfully' if success else 'failed'}"
         }
     except Exception as e:
         logger.error(f"Error in process_$module_mcp for {target_directory}: {e}", exc_info=True)
@@ -49,17 +49,17 @@ def process_$module_mcp(target_directory: str, output_directory: str, verbose: b
 
 # MCP Registration Function
 def register_tools(mcp_instance):
-    """Register $module utility tools with the MCP."""
+    """Register integration utility tools with the MCP."""
     
     mcp_instance.register_tool(
-        "process_$module",
-        process_$module_mcp,
+        "process_integration",
+        process_integration_mcp,
         {
             "target_directory": {"type": "string", "description": "Directory containing GNN files to process."},
-            "output_directory": {"type": "string", "description": "Directory to save $module results."},
+            "output_directory": {"type": "string", "description": "Directory to save integration results."},
             "verbose": {"type": "boolean", "description": "Enable verbose output. Defaults to false.", "optional": True}
         },
-        f"Process $module for GNN files in the specified directory."
+        "Process integration for GNN files in the specified directory."
     )
     
-    logger.info("$module module MCP tools registered.")
+    logger.info("integration module MCP tools registered.")

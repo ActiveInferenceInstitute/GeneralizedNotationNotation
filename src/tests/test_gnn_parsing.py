@@ -15,6 +15,9 @@ from typing import Dict, Any, List, Optional, Tuple
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from tests.conftest import *
+from gnn.parsers.markdown_parser import MarkdownGNNParser
+from gnn.parsers.scala_parser import ScalaGNNParser
+from gnn.parsers.lean_parser import LeanGNNParser
 
 
 # Migrated from test_gnn_core_modules.py

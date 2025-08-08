@@ -11,8 +11,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Import utilities from the tests module
-from . import run_all_tests, run_unit_tests, run_integration_tests
+# Import utilities from the test_utils public API
+from utils.test_utils import (
+    run_all_tests,
+    run_test_category,
+    get_test_summary,
+    get_test_statistics,
+    get_test_performance,
+    TEST_CATEGORIES,
+)
 
 # MCP Tools for Tests Utilities Module
 
@@ -59,10 +66,7 @@ def run_unit_tests_mcp(output_directory: str, verbose: bool = False) -> Dict[str
         Dictionary with operation status and test results.
     """
     try:
-        success = run_unit_tests(
-            test_results_dir=Path(output_directory),
-            verbose=verbose
-        )
+        success = run_test_category("unit", test_results_dir=Path(output_directory), verbose=verbose)
         return {
             "success": success,
             "output_directory": output_directory,
@@ -88,11 +92,8 @@ def run_integration_tests_mcp(target_directory: str, output_directory: str, verb
         Dictionary with operation status and test results.
     """
     try:
-        success = run_integration_tests(
-            target_dir=Path(target_directory),
-            test_results_dir=Path(output_directory),
-            verbose=verbose
-        )
+        # For backward compatibility, map to generic category runner
+        success = run_test_category("integration", target_dir=Path(target_directory), test_results_dir=Path(output_directory), verbose=verbose)
         return {
             "success": success,
             "target_directory": target_directory,

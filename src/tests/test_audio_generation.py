@@ -157,6 +157,7 @@ class TestAudioGeneration:
     def test_audio_quality_metrics(self):
         """Test audio quality metrics."""
         # Test signal-to-noise ratio calculation
+        import math
         signal = [0.5] * 1000  # Clean signal
         noise = [0.1] * 1000   # Noise
         
@@ -165,6 +166,7 @@ class TestAudioGeneration:
         noise_power = sum(n**2 for n in noise) / len(noise)
         
         if noise_power > 0:
+            import math
             snr = 10 * math.log10(signal_power / noise_power)
             assert snr > 0  # SNR should be positive for clean signal
     

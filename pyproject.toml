@@ -119,9 +119,15 @@ visualization = [
 ]
 
 audio = [
-    "librosa>=0.9.0",
-    "soundfile>=0.10.0",
-    "pedalboard>=0.5.0",
+    # Librosa 0.10.x supports Python 3.11 with a newer numba/llvmlite stack
+    "librosa>=0.10.1",
+    # Ensure compatible JIT stack on Python 3.11+
+    "numba>=0.59; python_version >= '3.11'",
+    "llvmlite>=0.42; python_version >= '3.11'",
+    # I/O backends
+    "soundfile>=0.12.1",
+    # Audio effects
+    "pedalboard>=0.6.0",
 ]
 
 graphs = [

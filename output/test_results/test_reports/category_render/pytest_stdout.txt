@@ -1,0 +1,135 @@
+============================= test session starts ==============================
+created: 6/6 workers
+6 workers [14 items]
+
+....EE.EEEEEs.
+WARNING: Failed to generate report: Couldn't use data file '/home/trim/Documents/GitHub/GeneralizedNotationNotation/.coverage': no such table: tracer
+
+                                                                         [100%]
+==================================== ERRORS ====================================
+_______ ERROR at setup of TestRenderTargets.test_render_to_rxinfer_toml ________
+[gw4] linux -- Python 3.11.7 /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+file /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py, line 40
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_render_to_rxinfer_toml(self, tmp_path, sample_gnn_spec, mock_render_module):
+E       fixture 'sample_gnn_spec' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, json_metadata, mock_imports, mock_logger, mock_subprocess, monkeypatch, no_cover, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_files, sample_markdown, sample_scala, src_dir, test_config, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py:40
+_____ ERROR at setup of TestRenderTargets.test_render_to_discopy_combined ______
+[gw5] linux -- Python 3.11.7 /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+file /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py, line 66
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_render_to_discopy_combined(self, tmp_path, sample_gnn_spec, mock_render_module):
+E       fixture 'sample_gnn_spec' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, json_metadata, mock_imports, mock_logger, mock_subprocess, monkeypatch, no_cover, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_files, sample_markdown, sample_scala, src_dir, test_config, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py:66
+____________ ERROR at setup of TestRenderTargets.test_render_to_jax ____________
+[gw2] linux -- Python 3.11.7 /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+file /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py, line 92
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_render_to_jax(self, tmp_path, sample_gnn_spec, mock_render_module):
+E       fixture 'sample_gnn_spec' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, json_metadata, mock_imports, mock_logger, mock_subprocess, monkeypatch, no_cover, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_files, sample_markdown, sample_scala, src_dir, test_config, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py:92
+____ ERROR at setup of TestRenderTargets.test_render_to_activeinference_jl _____
+[gw5] linux -- Python 3.11.7 /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+file /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py, line 79
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_render_to_activeinference_jl(self, tmp_path, sample_gnn_spec, mock_render_module):
+E       fixture 'sample_gnn_spec' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, json_metadata, mock_imports, mock_logger, mock_subprocess, monkeypatch, no_cover, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_files, sample_markdown, sample_scala, src_dir, test_config, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py:79
+__________ ERROR at setup of TestRenderTargets.test_render_to_discopy __________
+[gw4] linux -- Python 3.11.7 /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+file /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py, line 53
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_render_to_discopy(self, tmp_path, sample_gnn_spec, mock_render_module):
+E       fixture 'sample_gnn_spec' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, json_metadata, mock_imports, mock_logger, mock_subprocess, monkeypatch, no_cover, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_files, sample_markdown, sample_scala, src_dir, test_config, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py:53
+___________ ERROR at setup of TestRenderTargets.test_render_to_pymdp ___________
+[gw1] linux -- Python 3.11.7 /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+file /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py, line 24
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_render_to_pymdp(self, tmp_path, sample_gnn_spec, mock_render_module):
+E       fixture 'sample_gnn_spec' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, json_metadata, mock_imports, mock_logger, mock_subprocess, monkeypatch, no_cover, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_files, sample_markdown, sample_scala, src_dir, test_config, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py:24
+_________ ERROR at setup of TestRenderTargets.test_render_to_jax_pomdp _________
+[gw3] linux -- Python 3.11.7 /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+file /home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py, line 105
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_render_to_jax_pomdp(self, tmp_path, sample_gnn_spec, mock_render_module):
+E       fixture 'sample_gnn_spec' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, json_metadata, mock_imports, mock_logger, mock_subprocess, monkeypatch, no_cover, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_files, sample_markdown, sample_scala, src_dir, test_config, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_render_overall.py:105
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.11.7-final-0 ________________
+
+Name                       Stmts   Miss  Cover   Missing
+--------------------------------------------------------
+src/0_template.py             79     79     0%   35-217
+src/1_setup.py                90     90     0%   27-217
+src/2_tests.py               226    226     0%   23-526
+src/3_gnn.py                   8      8     0%   9-27
+src/4_model_registry.py      104    104     0%   13-259
+src/5_type_checker.py         93     93     0%   8-195
+src/6_validation.py          122    122     0%   27-280
+src/7_export.py              112    112     0%   25-272
+src/8_visualization.py       149    149     0%   26-316
+src/10_ontology.py            46     46     0%   26-141
+src/11_render.py             106    106     0%   26-287
+src/12_execute.py            317    317     0%   9-564
+src/13_llm.py                 55     55     0%   26-158
+src/14_ml_integration.py      51     51     0%   26-150
+src/15_audio.py               55     55     0%   26-158
+src/16_analysis.py            51     51     0%   25-149
+src/17_integration.py         51     51     0%   26-150
+src/18_security.py            51     51     0%   26-150
+src/19_research.py            51     51     0%   26-150
+src/20_website.py             53     53     0%   26-155
+src/21_report.py              51     51     0%   26-150
+src/22_mcp.py                 59     59     0%   26-170
+--------------------------------------------------------
+TOTAL                       1980   1980     0%
+============================= slowest 10 durations =============================
+0.66s call     src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available
+0.02s call     src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage
+0.02s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml
+0.01s setup    src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering
+0.01s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy
+0.01s teardown src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage
+0.01s setup    src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage
+0.01s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined
+0.01s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp
+0.01s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp
+=========================== short test summary info ============================
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp
+==================== 6 passed, 1 skipped, 7 errors in 4.88s ====================

@@ -272,3 +272,24 @@ def comprehensive_test_data(isolated_temp_dir) -> Dict[str, Any]:
             "safe_mode": True
         }
     } 
+
+# Parser sample inputs used in tests expecting fixtures
+@pytest.fixture
+def sample_markdown() -> str:
+    return (
+        "# TestModel\n\n"
+        "## ModelName\nTestModel\n\n"
+        "## StateSpaceBlock\ns[2,1,type=int]\n\n"
+        "## Connections\ns->o\n\n"
+        "## InitialParameterization\nA={(1,0),(0,1)}\n"
+    )
+
+@pytest.fixture
+def sample_scala() -> str:
+    return (
+        "object MyModel {\n"
+        "  val a_m: Matrix(Fin 2, Fin 3) = ???\n"
+        "  val b_f: Matrix(Fin 2, Fin 2) = ???\n"
+        "  // EFE = G + F\n"
+        "}\n"
+    )

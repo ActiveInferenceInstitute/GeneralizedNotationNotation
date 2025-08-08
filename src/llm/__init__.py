@@ -21,6 +21,21 @@ from .generator import (
     generate_llm_summary
 )
 
+__version__ = "1.0.0"
+
+
+class LLMProcessor:
+    """Simple facade expected by tests to expose processing capability."""
+
+    def analyze(self, content: str) -> dict:
+        # Use analyzer functions to produce a compact analysis result
+        return {
+            "variables": extract_variables(content),
+            "connections": extract_connections(content),
+            "sections": extract_sections(content),
+        }
+
+
 __all__ = [
     'process_llm',
     'analyze_gnn_file_with_llm',
@@ -33,5 +48,7 @@ __all__ = [
     'generate_model_insights',
     'generate_code_suggestions',
     'generate_documentation',
-    'generate_llm_summary'
+    'generate_llm_summary',
+    'LLMProcessor',
+    '__version__'
 ]

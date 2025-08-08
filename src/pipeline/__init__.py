@@ -65,8 +65,9 @@ class PipelineStep:
 def get_module_info() -> dict:
     return {
         "version": __version__,
+        "description": "GNN pipeline orchestration and execution",
         "features": FEATURES,
-        "steps": list(STEP_METADATA.keys()),
+        "pipeline_steps": list(STEP_METADATA.keys()),
         "author": "Active Inference Institute"
     }
 

@@ -133,7 +133,7 @@ class ExecutionManager:
     def get_recovery_suggestion(self, error_type: ExecutionErrorType) -> str:
         """Get recovery suggestion based on error type."""
         suggestions = {
-            ExecutionErrorType.DEPENDENCY_MISSING: "Install missing dependencies with pip install or conda install",
+            ExecutionErrorType.DEPENDENCY_MISSING: "Install missing dependencies by adding to pyproject and running 'uv sync' or use 'uv pip install'",
             ExecutionErrorType.SYNTAX_ERROR: "Check script syntax and fix syntax errors",
             ExecutionErrorType.RESOURCE_EXHAUSTED: "Reduce batch size or increase available memory",
             ExecutionErrorType.TIMEOUT: "Increase timeout or optimize script performance",

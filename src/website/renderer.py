@@ -369,25 +369,22 @@ def get_module_info() -> Dict[str, Any]:
         "embedding_capabilities": {"images": True, "markdown": True, "json": True, "html": True, "text": True}
     }
 
-def get_supported_file_types() -> List[str] | Dict[str, List[str]]:
-    """Get supported file types. Some tests expect category dict, others a flat list."""
-    try:
-        # Prefer dict of categories to satisfy comprehensive_api tests
-        return {
-            "text": ["md", "markdown", "txt", "rst"],
-            "data": ["json", "yaml", "yml", "csv"],
-            "images": ["png", "jpg", "jpeg", "gif", "svg"],
-            "html": ["html", "htm", "css", "js"],
-            "markdown": ["md", "markdown"]
-        }
-    except Exception:
-        # Fallback flat list
-        return [
-            "txt", "md", "rst",
-            "json", "yaml", "yml", "csv",
-            "png", "jpg", "jpeg", "gif", "svg",
-            "html", "htm", "css", "js"
-        ]
+def get_supported_file_types() -> List[str]:
+    """Return a flat list of supported file types/extensions.
+
+    Tests expect this function to return a list (not a dict) and to include
+    common types like 'html', 'css', 'js', and 'json'.
+    """
+    return [
+        # Text/Markdown
+        "txt", "md", "markdown", "rst",
+        # Data formats
+        "json", "yaml", "yml", "csv",
+        # Images
+        "png", "jpg", "jpeg", "gif", "svg",
+        # Web assets
+        "html", "htm", "css", "js",
+    ]
 
 def validate_website_config(config: Dict[str, Any] | str) -> bool | Dict[str, Any]:
     """Validate website configuration. Accepts dict or dummy string for tests.

@@ -37,23 +37,47 @@ def validate_ontology_terms(terms: List[str] | str = None) -> bool:
     return True
 
 # Feature flags expected by tests
-FEATURES = {"parsing": True, "validation": True, "reporting": True}
+FEATURES = {"parsing": True, "validation": True, "reporting": True, "basic_processing": True}
 __version__ = "1.0.0"
 
 # Minimal classes expected by tests
 class OntologyProcessor:
-    """Basic ontology processor placeholder for tests."""
+    """Ontology processor with methods expected by tests."""
     def __init__(self):
         self.logger = logging.getLogger(__name__)
+
     def run(self, *args, **kwargs) -> bool:
         return True
 
+    def process_ontology(self, data: dict | str) -> dict:
+        """Process ontology data or content and return a normalized result."""
+        if isinstance(data, dict):
+            content = data.get('content', '')
+        else:
+            content = str(data)
+        parsed = parse_gnn_ontology_section(content)
+        terms = load_defined_ontology_terms()
+        validation = validate_annotations(parsed.get('annotations', []), terms)
+        return {
+            "ontology_data": parsed,
+            "validation_result": validation,
+            "success": True,
+        }
+
 class OntologyValidator:
-    """Basic ontology validator placeholder for tests."""
+    """Ontology validator exposing validate_ontology as required by tests."""
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-    def validate(self, *args, **kwargs) -> Dict[str, Any]:
-        return {"valid": True, "errors": [], "warnings": []}
+
+    def validate(self, annotations: list[str] | None = None) -> Dict[str, Any]:
+        annotations = annotations or []
+        terms = load_defined_ontology_terms()
+        res = validate_annotations(annotations, terms)
+        return {"valid": len(res.get("invalid_annotations", [])) == 0, "details": res, "errors": [], "warnings": []}
+
+    def validate_ontology(self, content: str) -> Dict[str, Any]:
+        parsed = parse_gnn_ontology_section(content)
+        return self.validate(parsed.get('annotations', []))
 
 __all__ = [
     # Core processing functions

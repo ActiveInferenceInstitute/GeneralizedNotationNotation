@@ -8,7 +8,7 @@ using RxInfer
 using Distributions
 using LinearAlgebra
 
-@model function classic active inference pomdp agent v1_model(n)
+@model function classic_active_inference_pomdp_agent_v1_model(n)
     # Define variables
     x = randomvar(n)
     y = datavar(Float64, n)
@@ -23,11 +23,11 @@ using LinearAlgebra
     end
 end
 
-function run_classic active inference pomdp agent v1_inference(data, n)
+function run_classic_active_inference_pomdp_agent_v1_inference(data, n)
     """Run inference for Classic Active Inference POMDP Agent v1."""
     
     # Create model
-    model = classic active inference pomdp agent v1_model(n)
+    model = classic_active_inference_pomdp_agent_v1_model(n)
     
     # Set up constraints
     constraints = @constraints begin
@@ -55,7 +55,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
     data = true_x .+ 0.1 .* randn(n)
     
     # Run inference
-    result = run_classic active inference pomdp agent v1_inference(data, n)
+    result = run_classic_active_inference_pomdp_agent_v1_inference(data, n)
     
     println("Inference completed successfully")
     println("Posterior mean of x_prior: ", mean(result.posteriors[:x_prior]))

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-07T16:54:17.811968",
+  "timestamp": "2025-08-08T09:01:43.790484",
   "source_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
   "output_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output",
   "files_rendered": [
@@ -20,12 +20,12 @@
         "activeinference_jl": {
           "success": true,
           "code_file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_activeinference_jl.jl",
-          "code_length": 73
+          "code_length": 78
         },
         "discopy": {
           "success": true,
           "code_file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_discopy.py",
-          "code_length": 1888
+          "code_length": 66
         }
       },
       "success": true

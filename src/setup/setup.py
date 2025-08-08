@@ -273,165 +273,50 @@ def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: li
         logger.error(f"❌ pyproject.toml not found at {PYPROJECT_PATH}")
         return False
 
-    logger.info(f"📦 Installing dependencies from {PYPROJECT_PATH} using UV...")
+    logger.info(f"📦 Installing dependencies from {PYPROJECT_PATH} using UV sync")
     sys.stdout.flush()
-    
+
     try:
-        # First, check if we can skip sync entirely by testing the environment
-        if VENV_PYTHON.exists():
-            try:
-                # Test if basic packages are already available
-                test_cmd = [str(VENV_PYTHON), "-c", 
-                           "import sys; import pathlib; import json; print('Basic packages available')"]
-                test_result = subprocess.run(test_cmd, capture_output=True, text=True, timeout=30)
-                if test_result.returncode == 0:
-                    logger.info(f"✅ Basic packages already available, skipping sync")
-                    return True
-            except Exception:
-                pass  # Continue with sync if test fails
-        
-        # Build UV sync command with shorter timeout and better output
-        sync_cmd = ["uv", "sync", "--quiet"]  # Use quiet mode for cleaner output
-        
+        # Build a single uv sync command including requested extras
+        sync_cmd = ["uv", "sync"]
         if dev:
-            sync_cmd.append("--extra")
-            sync_cmd.append("dev")
-        
+            sync_cmd.extend(["--extra", "dev"])
         if extras:
             for extra in extras:
-                sync_cmd.extend(["--extra", extra])
-        
-        logger.info(f"📦 Running: {' '.join(sync_cmd)}")
-        logger.info(f"📦 This may take several minutes for first-time setup...")
-        sys.stdout.flush()
-        
+                sync_cmd.extend(["--extra", str(extra)])
+
         start_time = time.time()
-        timeout_seconds = 300  # 5 minutes timeout (reduced from 10)
-        
-        # Use subprocess.Popen with timeout
-        process = subprocess.Popen(
+        result = subprocess.run(
             sync_cmd,
             cwd=PROJECT_ROOT,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
+            capture_output=True,
             text=True,
-            bufsize=1
+            check=False,
         )
-        
-        # Progress tracking variables
-        last_progress_time = start_time
-        progress_interval = 30  # seconds
-        last_output_time = start_time
-        output_timeout = 60  # 1 minute without output = potential hang (reduced from 2 minutes)
-        
-        logger.info(f"⏳ Starting dependency installation...")
-        sys.stdout.flush()
-        
-        # Stream output with timeout handling
-        while True:
-            # Check for timeout
-            current_time = time.time()
-            if current_time - start_time > timeout_seconds:
-                logger.error(f"❌ Dependency installation timed out after {timeout_seconds}s")
-                process.terminate()
-                return False
-            
-            # Check for output timeout (potential hang)
-            if current_time - last_output_time > output_timeout:
-                logger.warning(f"⚠️ No output for {output_timeout}s, checking if process is still alive...")
-                if process.poll() is None:
-                    logger.warning(f"⚠️ Process appears to be hanging, terminating...")
-                    process.terminate()
-                    return False
-                last_output_time = current_time
-            
-            # Try to read output with timeout
-            try:
-                import select
-                ready, _, _ = select.select([process.stdout], [], [], 1.0)
-                if ready:
-                    line = process.stdout.readline()
-                    if line:
-                        line = line.strip()
-                        last_output_time = current_time
-                        
-                        # Enhanced progress logging
-                        if verbose:
-                            logger.debug(f"UV: {line}")
-                        elif any(keyword in line.lower() for keyword in ["installing", "collecting", "resolving", "downloading"]):
-                            logger.info(f"📦 {line}")
-                            sys.stdout.flush()
-                        elif any(keyword in line.lower() for keyword in ["successfully", "resolved", "installed"]):
-                            logger.info(f"✅ {line}")
-                            sys.stdout.flush()
-                        
-                        # Check for completion indicators
-                        if any(keyword in line.lower() for keyword in ["successfully installed", "resolved", "complete"]):
-                            logger.info(f"✅ Dependency installation progressing well...")
-                            sys.stdout.flush()
-                    else:
-                        # No more output, check if process finished
-                        if process.poll() is not None:
-                            break
-                else:
-                    # No output available, check process status
-                    if process.poll() is not None:
-                        break
-                        
-            except (OSError, ValueError) as e:
-                logger.warning(f"⚠️ Error reading process output: {e}")
-                break
-            
-            # Periodic progress updates
-            if current_time - last_progress_time >= progress_interval:
-                elapsed = current_time - start_time
-                logger.info(f"⏳ Still installing dependencies... (elapsed: {elapsed:.1f}s)")
-                sys.stdout.flush()
-                last_progress_time = current_time
-        
-        # Check final status
-        return_code = process.returncode
-        if return_code != 0:
-            logger.error(f"❌ Failed to install dependencies (exit code: {return_code})")
-            # Try fallback approach
-            logger.info(f"🔄 Attempting fallback installation method...")
-            try:
-                # Try with pip as fallback
-                fallback_cmd = [str(VENV_PYTHON), "-m", "pip", "install", "--upgrade", "pip"]
-                fallback_result = subprocess.run(fallback_cmd, capture_output=True, text=True, timeout=60)
-                if fallback_result.returncode == 0:
-                    logger.info(f"✅ Fallback pip installation successful")
-                    return True
-                else:
-                    logger.error(f"❌ Fallback installation also failed")
-                    return False
-            except Exception as e:
-                logger.error(f"❌ Fallback installation failed: {e}")
-                return False
-        
+
+        if result.returncode != 0:
+            logger.error("❌ Failed to install dependencies via uv sync")
+            if verbose:
+                logger.error(result.stdout)
+                logger.error(result.stderr)
+            return False
+
         duration = time.time() - start_time
-        logger.info(f"✅ All dependencies installed successfully using UV (took {duration:.1f}s)")
-        sys.stdout.flush()
-        
-        # Verify installation by checking key packages
-        try:
-            test_cmd = [str(VENV_PYTHON), "-c", "import sys; print('Python:', sys.version)"]
-            test_result = subprocess.run(test_cmd, capture_output=True, text=True, timeout=30)
-            if test_result.returncode == 0:
-                logger.info(f"✅ Environment verification successful")
-            else:
-                logger.warning(f"⚠️ Environment verification failed: {test_result.stderr}")
-        except Exception as e:
-            logger.warning(f"⚠️ Could not verify environment: {e}")
-        
-        # Report installed package versions
+        logger.info(f"✅ Dependencies installed using UV in {duration:.1f}s")
+
+        # Light verification without emitting warnings on success paths
+        if verbose:
+            logger.debug("Verifying environment Python executable")
+        verify = subprocess.run([str(VENV_PYTHON), "--version"], capture_output=True, text=True)
+        if verify.returncode == 0 and verbose:
+            logger.debug(f"Python in venv: {verify.stdout.strip() or verify.stderr.strip()}")
+
+        # Report installed package versions (no warnings on parse failures)
         get_installed_package_versions(verbose)
-        
         return True
-        
+
     except Exception as e:
         logger.error(f"❌ Error during UV dependency installation: {e}")
-        sys.stdout.flush()
         return False
 
 def get_installed_package_versions(verbose: bool = False) -> dict:
@@ -776,7 +661,13 @@ if __name__ == "__main__":
 
 # --- UV-specific setup functions ---
 
-def setup_uv_environment(verbose: bool = False, recreate: bool = False, dev: bool = False, extras: list = None) -> bool:
+def setup_uv_environment(
+    verbose: bool = False,
+    recreate: bool = False,
+    dev: bool = False,
+    extras: list = None,
+    skip_jax_test: bool = False,
+) -> bool:
     """
     Set up the complete GNN environment using UV.
     
@@ -812,19 +703,15 @@ def setup_uv_environment(verbose: bool = False, recreate: bool = False, dev: boo
         # Only attempt dependency installation if environment is working
         if VENV_PYTHON.exists():
             logger.info("📦 Installing core dependencies...")
-            if not install_uv_dependencies(verbose=verbose):
+            # Perform a single uv sync including requested extras
+            if not install_uv_dependencies(verbose=verbose, dev=dev, extras=extras):
                 logger.warning("⚠️ Core dependency installation had issues, but continuing...")
             
-            # Install JAX and test it
-            logger.info("🧠 Installing JAX and testing...")
-            if not install_jax_and_test(verbose):
-                logger.warning("⚠️ JAX installation had issues, but continuing...")
-            
-            # Install optional dependencies if requested
-            if dev or extras:
-                logger.info("🔧 Installing optional dependencies...")
-                if not install_optional_dependencies(PROJECT_ROOT, logger, extras or ["dev"]):
-                    logger.warning("⚠️ Optional dependency installation had issues, but continuing...")
+            # Optionally install and test JAX (can be noisy on CPU-only systems)
+            if not skip_jax_test:
+                logger.info("🧠 Installing JAX and testing...")
+                if not install_jax_and_test(verbose):
+                    logger.warning("⚠️ JAX installation had issues, but continuing...")
             
             # Final validation
             logger.info("✅ Validating environment...")
@@ -860,7 +747,9 @@ def validate_uv_setup(project_root: Path = None, logger: logging.Logger = None) 
         "uv_environment": False,
         "dependencies": False,
         "jax_installation": False,
-        "overall_status": False
+        "overall_status": False,
+        # Add python_version key expected by tests
+        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
     }
     
     try:
@@ -982,21 +871,14 @@ def install_optional_dependencies(project_root: Path, logger: logging.Logger,
         
         for group in package_groups:
             try:
-                logger.info(f"Installing {group} dependencies")
-                # Use the virtual environment Python for installation
-                if VENV_PYTHON.exists():
-                    result = run_command([str(VENV_PYTHON), "-m", "pip", "install", "-e", ".[" + group + "]"], 
-                                       cwd=project_root, check=False, verbose=True)
-                else:
-                    # Fallback to uv if virtual environment not available
-                    result = run_command(["uv", "pip", "install", "-e", ".[" + group + "]"], 
-                                       cwd=project_root, check=False, verbose=True)
-                
+                logger.info(f"Installing {group} dependencies via UV")
+                # Use UV consistently for optional groups
+                result = run_command(["uv", "pip", "install", "-e", ".[" + group + "]"], 
+                                    cwd=project_root, check=False, verbose=True)
                 if result.returncode == 0:
                     logger.info(f"✅ {group} dependencies installed successfully")
                 else:
-                    logger.warning(f"⚠️ {group} dependencies installation failed")
-                    
+                    logger.warning(f"⚠️ {group} dependencies installation failed (exit {result.returncode})")
             except Exception as e:
                 logger.warning(f"⚠️ Failed to install {group} dependencies: {e}")
         

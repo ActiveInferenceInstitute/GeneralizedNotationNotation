@@ -437,16 +437,21 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             fig.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.95, hspace=0.4, wspace=0.3)
             
             try:
-                plt.savefig(output_path, dpi=300, bbox_inches='tight')
-                print("DEBUG: POMDP analysis saved successfully")
+                # Some environments miscompute figure pixel size; use a safe backend call
+                import matplotlib
+                backend = matplotlib.get_backend()
+                # Force a sane canvas size before saving
+                fig.set_size_inches(12, 9)
+                plt.savefig(output_path, dpi=150, bbox_inches='tight')
+                print("DEBUG: POMDP analysis saved successfully (safe mode)")
             except Exception as e:
                 print(f"DEBUG: Error saving POMDP analysis: {e}")
-                # Try with different parameters
                 try:
-                    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-                    print("DEBUG: POMDP analysis saved with reduced DPI")
+                    fig.set_size_inches(10, 7.5)
+                    plt.savefig(output_path, dpi=96)
+                    print("DEBUG: POMDP analysis saved with fallback DPI")
                 except Exception as e2:
-                    print(f"DEBUG: Error saving with reduced DPI: {e2}")
+                    print(f"DEBUG: Error saving with fallback DPI: {e2}")
                     return False
             plt.close()
             return True

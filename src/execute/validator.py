@@ -229,7 +229,7 @@ def check_dependencies() -> List[ValidationResult]:
                 status="fail",
                 message=f"{package} is not available",
                 details={"package": package, "min_version": min_version},
-                suggestion=f"Install {package}>={min_version} with: pip install {package}>={min_version}"
+                suggestion=f"Install {package}>={min_version} with: uv pip install {package}>={min_version} or add to pyproject and run uv sync"
             ))
     
     return results

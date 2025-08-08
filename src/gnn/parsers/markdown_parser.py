@@ -68,12 +68,24 @@ class MarkdownGNNParser(BaseGNNParser):
     def parse_string(self, content: str) -> ParseResult:
         """Parse GNN Markdown content from string."""
         try:
+            # Handle empty or whitespace-only content as invalid
+            if content is None or not str(content).strip():
+                result = ParseResult(model=self.create_empty_model())
+                result.success = False
+                result.add_error("Empty content")
+                return result
             # Create result container
             result = ParseResult(model=self.create_empty_model())
             
             # Split content into sections
             sections = self._split_into_sections(content)
             
+            # If no headers/sections found, treat as invalid
+            if not sections:
+                result.success = False
+                result.add_error("No sections found in markdown content")
+                return result
+
             # Parse each section
             for section_name, section_content in sections.items():
                 try:

@@ -151,8 +151,23 @@ def main():
         return 0 if success else 1
         
     except Exception as e:
-        log_step_error(logger, f"MCP processing failed: {e}")
-        return 1
+        # Gracefully degrade if MCP SDK is missing: attempt re-initialize allowing proceed
+        try:
+            from mcp.mcp import initialize as mcp_initialize
+            mcp_initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
+            # Retry once in degraded mode
+            success = process_mcp_standardized(
+                target_dir=Path(args.target_dir) if hasattr(args, 'target_dir') else Path("input/gnn_files"),
+                output_dir=output_dir,
+                logger=logger,
+                recursive=getattr(args, 'recursive', False),
+                verbose=getattr(args, 'verbose', False),
+                performance_mode=getattr(args, 'performance_mode', 'low')
+            )
+            return 0 if success else 1
+        except Exception:
+            log_step_error(logger, f"MCP processing failed: {e}")
+            return 1
 
 if __name__ == "__main__":
     sys.exit(main()) 

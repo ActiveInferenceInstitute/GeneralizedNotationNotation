@@ -11,7 +11,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-def ensure_directory(directory_path: Path) -> bool:
+def ensure_directory(directory_path: Path) -> Path:
     """
     Ensure a directory exists, creating it if necessary.
     
@@ -23,12 +23,12 @@ def ensure_directory(directory_path: Path) -> bool:
     """
     try:
         directory_path.mkdir(parents=True, exist_ok=True)
-        return True
+        return directory_path
     except Exception as e:
         logger.error(f"Failed to ensure directory {directory_path}: {e}")
         return False
 
-def find_gnn_files(directory: Path) -> List[Path]:
+def find_gnn_files(directory: Path, recursive: bool = True) -> List[Path]:
     """
     Find GNN files in the specified directory.
     
@@ -40,7 +40,8 @@ def find_gnn_files(directory: Path) -> List[Path]:
     """
     gnn_files = []
     try:
-        for file_path in directory.rglob("*.md"):
+        iterator = directory.rglob("*.md") if recursive else directory.glob("*.md")
+        for file_path in iterator:
             if file_path.is_file():
                 gnn_files.append(file_path)
     except Exception as e:

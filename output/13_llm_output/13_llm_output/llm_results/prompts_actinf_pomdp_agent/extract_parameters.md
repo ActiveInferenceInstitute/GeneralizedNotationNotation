@@ -1,38 +1,9 @@
 # EXTRACT_PARAMETERS
 
-I'll do the following:
+You can provide the following steps to calculate the model parameters for your GNN, POMDP agent:
 
-1. **Model Matrices and Vector Fields**:
-   - A matrix representing a model parameterized by `s` and `o`.
-   
-   - A vector field for each input observation, where each column is initialized with the corresponding value at that observation time step (based on sequence) or the action taken (base to which they are mapped).
+1.   For each observation modality "state_observation", apply a set of probability distributions to predict the state and then update these probabilities with action selection from policy. This provides 3-step predictions based on prior beliefs over observable states (policy), actions selected via habit/prior belief distribution, and initial parameters for learning.
 
-2. **Precision Parameters**:
-   - γ = α * s^(1/n), where n is the number of observations and σ*n denotes precision parameter range.
-   
-   - Alpha=α*(s+o)*(x/(n-1))
+2.   Apply similar logic to all observation modalities in order to infer posterior knowledge about next observed states and subsequent action selections. 
 
-   - In practice, α is a small value to ensure that the prediction accuracy remains low for all cases.
-
-3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
-4. **Temporal Parameters**:
-   - Time horizons (T)
-   
-   - Temporal dependencies and windows to ensure the model is updated by a specific sequence of actions in a finite horizon.
-
-5. **Initial Conditions**:
-   - Initial parameter values
-   
-   
-       - γ = α*(s+o)*(x/(n-1))
-       
-       - alpha * s^(1/n)
-          
-         - α*β
-           
-            0
-6. **Configuration Summary**:
-   - Parameter file format recommendations and initialization strategies for each parameters and fields.
+3.   Iterate through all actions using a decision tree-based algorithm or a greedy mechanism until convergence of the model is reached (see GNN example below).

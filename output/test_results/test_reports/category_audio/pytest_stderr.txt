@@ -1,0 +1,38 @@
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.11/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/analysis/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.11/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/integration/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+<unknown>:172: DeprecationWarning: invalid escape sequence '\$'
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:172: DeprecationWarning: invalid escape sequence '\$'
+  code = f"""# ActiveInference.jl Simulation
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.11/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/research/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.11/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/security/mcp.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+<unknown>:172: DeprecationWarning: invalid escape sequence '\$'
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:172: DeprecationWarning: invalid escape sequence '\$'
+  code = f"""# ActiveInference.jl Simulation
+<unknown>:172: DeprecationWarning: invalid escape sequence '\$'
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:172: DeprecationWarning: invalid escape sequence '\$'
+  code = f"""# ActiveInference.jl Simulation
+<unknown>:172: DeprecationWarning: invalid escape sequence '\$'
+<unknown>:172: DeprecationWarning: invalid escape sequence '\$'
+<unknown>:172: DeprecationWarning: invalid escape sequence '\$'
+/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:172: DeprecationWarning: invalid escape sequence '\$'
+  code = f"""# ActiveInference.jl Simulation
+<unknown>:172: DeprecationWarning: invalid escape sequence '\$'
+<unknown>:172: DeprecationWarning: invalid escape sequence '\$'

@@ -99,6 +99,9 @@ class PipelineArguments:
     
     # Test options
     fast_only: bool = False
+    include_slow: bool = False
+    include_performance: bool = False
+    comprehensive: bool = False
     
     def __post_init__(self):
         """Post-initialization validation and path resolution."""
@@ -262,6 +265,13 @@ class ArgumentParser:
             flag='--website-html-filename',
             help_text='Filename for generated HTML website'
         ),
+        'performance_mode': ArgumentDefinition(
+            flag='--performance-mode',
+            arg_type=str,
+            default='low',
+            help_text='Performance mode for applicable steps (low, medium, high)',
+            choices=['low', 'medium', 'high']
+        ),
         'recreate_venv': ArgumentDefinition(
             flag='--recreate-uv-env',
             action='store_true',
@@ -289,6 +299,21 @@ class ArgumentParser:
             action='store_true',
             help_text='Run only fast tests, skip slow and performance tests'
         ),
+        'include_slow': ArgumentDefinition(
+            flag='--include-slow',
+            action='store_true',
+            help_text='Include slow test categories'
+        ),
+        'include_performance': ArgumentDefinition(
+            flag='--include-performance',
+            action='store_true',
+            help_text='Include performance test categories'
+        ),
+        'comprehensive': ArgumentDefinition(
+            flag='--comprehensive',
+            action='store_true',
+            help_text='Run all test categories including comprehensive suite'
+        ),
         'install_optional': ArgumentDefinition(
             flag='--install-optional',
             help_text='Install optional package groups (comma-separated): ml_ai,llm,visualization,audio,graphs,research,active_inference'
@@ -300,6 +325,8 @@ class ArgumentParser:
         "0_template.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "1_setup.py": ["target_dir", "output_dir", "recursive", "verbose", "recreate_venv", "dev", "install_optional"],
         "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only"],
+        # Extend step 2 to accept comprehensive test selection flags
+        "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only", "include_slow", "include_performance", "comprehensive"],
         "3_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
         "4_model_registry.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "5_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
@@ -319,7 +346,7 @@ class ArgumentParser:
         "19_research.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "20_website.py": ["target_dir", "output_dir", "recursive", "verbose", "website_html_filename"],
         "21_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "22_mcp.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "22_mcp.py": ["target_dir", "output_dir", "recursive", "verbose", "performance_mode"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys())
     }
     
@@ -555,8 +582,16 @@ class StepConfiguration:
         },
         "2_tests": {
             "required_args": [],
-            "optional_args": ["target_dir", "output_dir", "verbose", "fast_only"],
-            "defaults": {"verbose": False},
+            "optional_args": [
+                "target_dir",
+                "output_dir",
+                "verbose",
+                "fast_only",
+                "include_slow",
+                "include_performance",
+                "comprehensive"
+            ],
+            "defaults": {"verbose": False, "fast_only": False, "include_slow": False, "include_performance": False, "comprehensive": False},
             "description": "Test Execution & Validation"
         },
         "3_gnn": {
@@ -675,8 +710,8 @@ class StepConfiguration:
         },
         "22_mcp": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose"],
-            "defaults": {"recursive": True, "verbose": False},
+            "optional_args": ["recursive", "verbose", "performance_mode"],
+            "defaults": {"recursive": True, "verbose": False, "performance_mode": "low"},
             "description": "Model Context Protocol Processing"
         }
     }

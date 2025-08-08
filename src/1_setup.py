@@ -167,7 +167,14 @@ def process_setup_standardized(
         # Setup UV environment
         # Use module API that manages its own project_root internally
         # Keep it fast and resilient: avoid long JAX checks in this standardized path
-        setup_success = setup_uv_environment(verbose=verbose, recreate=False, dev=False, extras=None)
+        # Ensure dev and test extras are installed so tests can run in step 2
+        setup_success = setup_uv_environment(
+            verbose=verbose,
+            recreate=False,
+            dev=True,
+            extras=["llm", "visualization", "audio"],
+            skip_jax_test=True
+        )
         if not setup_success:
             logger.error("❌ UV environment setup failed")
             return False

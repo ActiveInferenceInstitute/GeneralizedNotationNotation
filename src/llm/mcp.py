@@ -4,19 +4,53 @@ MCP (Model Context Protocol) integration for llm utilities.
 This module exposes utility functions from the llm module through MCP.
 """
 
-import os
-from pathlib import Path
-from typing import Dict, Any, List, Optional
+import importlib
+import inspect
 import logging
+from pathlib import Path
+from . import process_llm
 
 logger = logging.getLogger(__name__)
 
-# Import utilities from the llm module
-from . import process_llm
+def _get_module_pkg():
+    try:
+        return importlib.import_module(__package__)
+    except Exception:
+        import sys
+        return sys.modules.get(__package__)
 
-# MCP Tools for LLM Utilities Module
+def list_functions_mcp() -> dict:
+    module_pkg = _get_module_pkg()
+    public_names = getattr(module_pkg, "__all__", []) or [n for n in dir(module_pkg) if not n.startswith("_")]
+    funcs = []
+    for name in public_names:
+        obj = getattr(module_pkg, name, None)
+        if inspect.isfunction(obj):
+            funcs.append(name)
+    return {"success": True, "module": __package__, "functions": sorted(set(funcs))}
 
-def process_llm_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
+def call_function_mcp(function_name: str, arguments: dict | None = None) -> dict:
+    from pathlib import Path
+    module_pkg = _get_module_pkg()
+    func = getattr(module_pkg, function_name, None)
+    if not callable(func):
+        return {"success": False, "error": f"Function not found or not callable: {function_name}"}
+    arguments = arguments or {}
+    converted: dict = {}
+    for key, value in arguments.items():
+        if isinstance(value, str) and any(token in key.lower() for token in ["dir", "path", "file", "output", "input"]):
+            converted[key] = Path(value)
+        else:
+            converted[key] = value
+    try:
+        result = func(**converted)
+        return {"success": True, "result": result}
+    except TypeError as e:
+        return {"success": False, "error": f"TypeError: {e}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+"""MCP Tools for LLM Utilities Module"""
+def process_llm_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> dict:
     """
     Process llm for GNN files. Exposed via MCP.
     
@@ -51,6 +85,23 @@ def process_llm_mcp(target_directory: str, output_directory: str, verbose: bool 
 def register_tools(mcp_instance):
     """Register llm utility tools with the MCP."""
     
+    # Generic namespaced tools
+    mcp_instance.register_tool(
+        f"{__package__}.list_functions",
+        list_functions_mcp,
+        {},
+        "List callable functions exported by the module public API."
+    )
+    mcp_instance.register_tool(
+        f"{__package__}.call_function",
+        call_function_mcp,
+        {
+            "function_name": {"type": "string", "description": "Function name exported by the module"},
+            "arguments": {"type": "object", "description": "Keyword arguments for the function", "default": {}}
+        },
+        "Call any public function in the module with keyword arguments."
+    )
+
     mcp_instance.register_tool(
         "process_llm",
         process_llm_mcp,
@@ -59,7 +110,6 @@ def register_tools(mcp_instance):
             "output_directory": {"type": "string", "description": "Directory to save llm results."},
             "verbose": {"type": "boolean", "description": "Enable verbose output. Defaults to false.", "optional": True}
         },
-        f"Process llm for GNN files in the specified directory."
+        "Process llm for GNN files in the specified directory."
     )
-    
     logger.info("llm module MCP tools registered.")

@@ -78,13 +78,13 @@ class DependencyValidator:
                 DependencySpec(
                     name="aiohttp",
                     version_min="3.9.0",
-                    install_command="pip install aiohttp>=3.9.0",
+                    install_command="uv pip install aiohttp>=3.9.0",
                     description="Async HTTP client/server for LLM providers"
                 ),
                 DependencySpec(
                     name="httpx",
                     version_min="0.27.0", 
-                    install_command="pip install httpx>=0.27.0",
+                    install_command="uv pip install httpx>=0.27.0",
                     description="HTTP client library"
                 ),
             ],
@@ -92,14 +92,14 @@ class DependencyValidator:
                 DependencySpec(
                     name="markdown",
                     version_min="3.0.0",
-                    install_command="pip install markdown",
+                    install_command="uv pip install markdown",
                     description="Markdown processing for GNN files"
                 ),
                 DependencySpec(
                     name="pyyaml",
                     module_name="yaml",
                     version_min="5.0.0",
-                    install_command="pip install pyyaml",
+                    install_command="uv pip install pyyaml",
                     description="YAML processing"
                 ),
             ],
@@ -107,13 +107,13 @@ class DependencyValidator:
                 DependencySpec(
                     name="matplotlib",
                     version_min="3.5.0",
-                    install_command="pip install matplotlib",
+                    install_command="uv pip install matplotlib",
                     description="Plotting and visualization"
                 ),
                 DependencySpec(
                     name="networkx",
                     version_min="2.8.0",
-                    install_command="pip install networkx",
+                    install_command="uv pip install networkx",
                     description="Graph visualization"
                 ),
                 DependencySpec(
@@ -127,14 +127,14 @@ class DependencyValidator:
                 DependencySpec(
                     name="pymdp",
                     version_min="0.0.1",
-                    install_command="pip install pymdp",
+                    install_command="uv pip install pymdp",
                     is_optional=True,
                     description="PyMDP Active Inference library"
                 ),
                 DependencySpec(
                     name="scipy",
                     version_min="1.7.0",
-                    install_command="pip install scipy",
+                    install_command="uv pip install scipy",
                     description="Scientific computing library"
                 ),
             ],
@@ -151,7 +151,7 @@ class DependencyValidator:
                 DependencySpec(
                     name="lxml",
                     version_min="4.6.0",
-                    install_command="pip install lxml",
+                    install_command="uv pip install lxml",
                     description="XML processing"
                 ),
             ],
@@ -159,7 +159,7 @@ class DependencyValidator:
                 DependencySpec(
                     name="pytest",
                     version_min="6.0.0",
-                    install_command="pip install pytest",
+                    install_command="uv pip install pytest",
                     description="Testing framework"
                 ),
             ]
@@ -352,7 +352,7 @@ class DependencyValidator:
                     if dep.install_command:
                         instructions.append(f"  {dep.install_command}")
                     else:
-                        instructions.append(f"  pip install {dep.name}")
+                        instructions.append(f"  uv pip install {dep.name}")
                 instructions.append("")
             
             if system_deps:

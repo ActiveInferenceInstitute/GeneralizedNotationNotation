@@ -1,0 +1,209 @@
+{
+  "timestamp": "2025-08-08T09:01:47.886865",
+  "correlation_id": "a05aa44b",
+  "source_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/execution_results",
+  "environment_validation": {
+    "timestamp": "2025-08-08T09:01:44.948833",
+    "overall_status": "healthy",
+    "summary": {
+      "total_checks": 14,
+      "total_passed": 14,
+      "total_warnings": 0,
+      "total_errors": 0
+    },
+    "results": [
+      {
+        "component": "python_version",
+        "status": "pass",
+        "message": "Python 3.11 is supported",
+        "details": {
+          "version": "3.11.7"
+        },
+        "suggestion": null
+      },
+      {
+        "component": "memory",
+        "status": "pass",
+        "message": "Sufficient memory: 62.5GB available",
+        "details": {
+          "total_gb": 62.499149322509766,
+          "available_gb": 30.259510040283203
+        },
+        "suggestion": null
+      },
+      {
+        "component": "disk_space",
+        "status": "pass",
+        "message": "Sufficient disk space: 82.5GB free",
+        "details": {
+          "free_gb": 82.50398254394531,
+          "total_gb": 459.5024719238281
+        },
+        "suggestion": null
+      },
+      {
+        "component": "cpu_usage",
+        "status": "pass",
+        "message": "Normal CPU usage: 35.3%",
+        "details": {
+          "cpu_count": 6,
+          "cpu_percent": 35.3
+        },
+        "suggestion": null
+      },
+      {
+        "component": "dependency_numpy",
+        "status": "pass",
+        "message": "numpy 2.2.6 is available",
+        "details": {
+          "package": "numpy",
+          "version": "2.2.6",
+          "min_version": "1.19.0"
+        },
+        "suggestion": null
+      },
+      {
+        "component": "dependency_matplotlib",
+        "status": "pass",
+        "message": "matplotlib 3.10.5 is available",
+        "details": {
+          "package": "matplotlib",
+          "version": "3.10.5",
+          "min_version": "3.3.0"
+        },
+        "suggestion": null
+      },
+      {
+        "component": "dependency_networkx",
+        "status": "pass",
+        "message": "networkx 3.5 is available",
+        "details": {
+          "package": "networkx",
+          "version": "3.5",
+          "min_version": "2.5"
+        },
+        "suggestion": null
+      },
+      {
+        "component": "dependency_pandas",
+        "status": "pass",
+        "message": "pandas 2.3.1 is available",
+        "details": {
+          "package": "pandas",
+          "version": "2.3.1",
+          "min_version": "1.1.0"
+        },
+        "suggestion": null
+      },
+      {
+        "component": "dependency_pyyaml",
+        "status": "pass",
+        "message": "pyyaml 6.0.2 is available",
+        "details": {
+          "package": "pyyaml",
+          "version": "6.0.2",
+          "min_version": "5.4.0"
+        },
+        "suggestion": null
+      },
+      {
+        "component": "dependency_scipy",
+        "status": "pass",
+        "message": "scipy 1.16.1 is available",
+        "details": {
+          "package": "scipy",
+          "version": "1.16.1",
+          "min_version": "1.5.0"
+        },
+        "suggestion": null
+      },
+      {
+        "component": "dependency_scikit-learn",
+        "status": "pass",
+        "message": "scikit-learn 1.7.1 is available",
+        "details": {
+          "package": "scikit-learn",
+          "version": "1.7.1",
+          "min_version": "0.24.0"
+        },
+        "suggestion": null
+      },
+      {
+        "component": "write_permissions",
+        "status": "pass",
+        "message": "Write permissions verified",
+        "details": {
+          "location": "/home/trim/Documents/GitHub/GeneralizedNotationNotation"
+        },
+        "suggestion": null
+      },
+      {
+        "component": "execute_permissions",
+        "status": "pass",
+        "message": "Execute permissions verified",
+        "details": {},
+        "suggestion": null
+      },
+      {
+        "component": "network_connectivity",
+        "status": "pass",
+        "message": "Network connectivity verified",
+        "details": {},
+        "suggestion": null
+      }
+    ]
+  },
+  "executions": [
+    {
+      "script_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py",
+      "script_name": "actinf_pomdp_agent_pymdp.py",
+      "correlation_id": "a05aa44b-actinf_pomdp_agent_pymdp",
+      "execution_success": false,
+      "gnn_based": true,
+      "output_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/pymdp_actinf_pomdp_agent_pymdp",
+      "error": "dependency_missing: Traceback (most recent call last):\n  File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 8, in <module>\n    from",
+      "attempts": [
+        {
+          "attempt_number": 1,
+          "duration_seconds": 0.310046,
+          "success": false,
+          "error_type": "dependency_missing",
+          "error_message": "Traceback (most recent call last):\n  File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 8, in <module>\n    from",
+          "resource_usage": {}
+        },
+        {
+          "attempt_number": 2,
+          "duration_seconds": 0.247973,
+          "success": false,
+          "error_type": "dependency_missing",
+          "error_message": "Traceback (most recent call last):\n  File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 8, in <module>\n    from",
+          "resource_usage": {}
+        },
+        {
+          "attempt_number": 3,
+          "duration_seconds": 0.238865,
+          "success": false,
+          "error_type": "dependency_missing",
+          "error_message": "Traceback (most recent call last):\n  File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 8, in <module>\n    from",
+          "resource_usage": {}
+        }
+      ],
+      "execution_time_seconds": 6.798130512237549,
+      "resource_usage": {}
+    }
+  ],
+  "summary": {
+    "total_scripts": 1,
+    "successful_executions": 0,
+    "failed_executions": 1,
+    "gnn_based_executions": 0,
+    "total_attempts": 3
+  },
+  "executor_stats": {
+    "total_executions": 0,
+    "successful_executions": 0,
+    "failed_executions": 1,
+    "retry_attempts": 3
+  }
+}

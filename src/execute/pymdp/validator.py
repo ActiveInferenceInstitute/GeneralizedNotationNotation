@@ -41,7 +41,7 @@ def validate_pymdp_environment() -> Dict[str, Any]:
             "available": False,
             "error": str(e)
         }
-        validation_results["errors"].append("PyMDP not available - install with: pip install pymdp")
+        validation_results["errors"].append("PyMDP not available - install with: uv pip install pymdp")
         logger.error("PyMDP not available for execution")
     
     # Check numpy availability
@@ -56,7 +56,7 @@ def validate_pymdp_environment() -> Dict[str, Any]:
             "available": False,
             "error": "NumPy not available"
         }
-        validation_results["errors"].append("NumPy not available - install with: pip install numpy")
+        validation_results["errors"].append("NumPy not available - install with: uv pip install numpy")
     
     # Check matplotlib for visualizations
     try:

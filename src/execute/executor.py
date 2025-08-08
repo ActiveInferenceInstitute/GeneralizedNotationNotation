@@ -719,7 +719,7 @@ def execute_rendered_simulators(
                 f.write("### Install Missing Dependencies\n\n")
                 for issue in execution_results["dependency_issues"]:
                     if "Python dependencies" in issue:
-                        f.write("- Install missing Python packages: `pip install <package_name>`\n")
+                        f.write("- Install missing Python packages: `uv pip install <package_name>` or add to pyproject and run `uv sync`\n")
                     elif "Julia" in issue:
                         f.write("- Install Julia from https://julialang.org/downloads/\n")
                 f.write("\n")

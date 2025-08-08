@@ -11,8 +11,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Import utilities from the type_checker module
-from . import validate_gnn_files, validate_single_gnn_file
+# Import utilities from the type_checker module via class API exposed in __init__
+from . import GNNTypeChecker
 
 # MCP Tools for Type Checker Utilities Module
 
@@ -31,11 +31,10 @@ def validate_gnn_files_mcp(target_directory: str, output_directory: str, strict:
         Dictionary with operation status and validation results.
     """
     try:
-        success = validate_gnn_files(
+        checker = GNNTypeChecker()
+        success = checker.validate_gnn_files(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
-            strict=strict,
-            estimate_resources=estimate_resources,
             verbose=verbose
         )
         return {
@@ -66,10 +65,9 @@ def validate_single_gnn_file_mcp(gnn_file_path: str, strict: bool = False, estim
         Dictionary with validation results.
     """
     try:
-        result = validate_single_gnn_file(
-            gnn_file=Path(gnn_file_path),
-            strict=strict,
-            estimate_resources=estimate_resources
+        checker = GNNTypeChecker()
+        result = checker.validate_single_gnn_file(
+            file_path=Path(gnn_file_path),
         )
         return {
             "success": result["valid"],

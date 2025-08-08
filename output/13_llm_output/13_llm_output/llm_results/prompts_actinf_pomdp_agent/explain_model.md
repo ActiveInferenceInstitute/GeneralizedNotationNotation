@@ -1,35 +1,37 @@
 # EXPLAIN_MODEL
 
-You're on the right track! Here's a step-by-step guide to understanding the GNN framework:
+This is a comprehensive overview of the Generative Model (GNN) presented as part of the Machine Learning Foundation's GCN framework for Active Inference and GNN-based models for generative neural networks like DeepMind's AI agent model Ai2019POMDPs.
 
-1. **Initialization**: The GNN consists of two main components:
-   - **StatePossession**: Each observation is assigned to one hidden state and that hidden state has an associated probability distribution over actions (`H[y,x]`) or policy (`G[h(s), y=1]`, where `g(s)` denotes the GNN transition operator).
+**Signature** 
 
-   - **Initialization**: The initial state of each observation is initialized with a random value and then mapped to hidden states. Each observation has an associated probability distribution over actions, which maps to a policy vector (`H[y])`.
+This model represents a classic Active Inference agent for discrete POMDP with two hidden states (states_next, states_previous). The agents are initialized to the same observation and action distributions, but their behavior is influenced by actions taken during each iteration of the simulation. A sequence of policy transitions will steer them toward different actions, while a sequence of state choices in each path corresponds to a specific action selection.
 
-2. **Model Representation**: This model represents a general type of active inference agent:
-   - **Single-observation**: It assigns beliefs (facts) or decisions based on observed observations ($p(x)) and probabilities $P$ for the chosen action ([π]).
+**Core Components** 
+   - **Likelihood Matrix**: A dictionary representing the likelihood maps over available actions for each observation and hidden states. This matrix encodes probabilities across multiple actions and their corresponding states.
+   - **Transition Matrix**: A list of tuples containing one observation, one or more possible observables (outputs) from a given action selection, and the previous state/observation associated with that action.
+   
+   - **Probabilities**: The probability distribution over all observed observations over different actions across multiple actions based on these transition matrices. This matrix provides input for inference.
+**Model Dynamics** 
+   - **Actions**: Policy transitions (one policy each) that steer the agents toward specific actions and their associated observables, while also allowing for depth exploration of the network.
+   - **State Transition**: Transition from one observable to a new observable based on previous states/observations or other transitions over actions leading back to previous action(s).
+**Active Inference Context** 
+   - **Initialization**: Initializing the network by assigning initial policy parameters (habit) and then starting inference. The inference is done iteratively until convergence in accuracy, learning rate, and evaluation metrics are reached.
 
-   - **Multiple-observations**: It generates policies, actions, and hidden states in parallel using probability distributions. Each observation has an associated probability distribution over actions/policies with uniform policy prior (`g(s)`.
+Key Concepts:
+   - **GNN**: Generative Neural Network models for neural networks like DeepMind's Ai2019POMDPs.
 
-3. **Constraints**: This model enforces bounds on beliefs based on observed data. The goal is to generate beliefs that are consistent with each action chosen by the agent, i.e., beliefs for all actions:
+ **Active Inference** 
+   - **Permute** **Initialization** *FIRST* *DIFFERENTLY* (every action selection is independent).
+   - **Decay**: Decrease the cost of updating policy parameters based on past observations and actions, which helps to stabilize the network with an increase in training accuracy.
 
-   - **One-step history**: It generates histories of how the agents (and their policies/actions) change over time due to changes in observations and hidden states. It updates these beliefs based on a sequence of policy transitions (`G[g(s), y=1]`) until it reaches an empty horizon after each step:
+**Practical Implications** 
+   - **Learning Curves**: A continuous learning curve where the algorithm's performance improves or stabilizes over time as more information is available/learned from it (e.g., through a generative neural network like DeepMind).
 
-   - **One-step History**: The goal is to generate the transition matrix $(A, B)$ for each observation whose action ($y$) has been seen before. This can be done in a greedy way by choosing actions based on observed observations and then moving forward to other possible decisions.
+ **Decision Curves**: The rate at which the agent learns based on its actions and their corresponding observables changes depending on how well they learn. This can help predict when to update or stop learning.
 
-4. **Model Dynamics**: It implements Active Inference principles:
-   - **Policies**: Policies are defined based on the available data, i.e., there is no prior knowledge about what action will happen next for all actions. That is, it only knows of 3 options and doesn't know which one to choose.
-
-   - **Actions**: Actions can be defined by using a sequence of policy transitions or other initial guesses (actions) that are given at each time step in the history. There could potentially exist multiple policies with different objectives. This allows for a probabilistic graphical representation, where actions/policies change based on probability distributions and actions are constrained to take one action out of possible options:
-
-    - **One-step History**: This is the most intuitive scenario (every choice is made independently). In this case, there could be no prior knowledge about what action will happen next for all actions.
-
-5. **Active Inference Context**: It generates Actions/Policy histories based on its data collection strategy and initial beliefs ($p(x)$. Each observation can have a unique history, but each policy is defined in terms of previous policies with associated probabilities).
-
-Please keep the following concepts:
-
-  *   **StatePossession** – What are the states (observations)?
-  *   **Observable Data** and **Data Collection**: How does it get data?
-  *   **Initial History**: What is a history of what actions were given at each time step in the history?
-  *   **Constraints**: What policies/actions must be defined to ensure that beliefs are consistent with actions.
+**Example** 
+   - **Initialization**: Initializing the network with all observed observations (observations).
+   - **Decay**: Decreasing training accuracy by learning rate proportional to an observation value.
+ 
+   
+   - **Learning Curves**: Plotting the learning curve over time and exploring how well the algorithm improves or stabilizes as more information is learned from it, which helps predict when to update/stop learning.

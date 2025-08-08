@@ -1,0 +1,47 @@
+{
+  "timestamp": "2025-08-08T09:08:41.712224",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "audio_files_generated": [
+    {
+      "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "audio_files": {
+        "tonal": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/audio_processing_step/audio_processing_step/audio_results/actinf_pomdp_agent_tonal.wav",
+        "rhythmic": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/audio_processing_step/audio_processing_step/audio_results/actinf_pomdp_agent_rhythmic.wav",
+        "ambient": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/audio_processing_step/audio_processing_step/audio_results/actinf_pomdp_agent_ambient.wav"
+      },
+      "variables_count": 70,
+      "connections_count": 0,
+      "generation_timestamp": "2025-08-08T09:08:43.420195"
+    }
+  ],
+  "sonification_results": [
+    {
+      "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "sonification_file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/audio_processing_step/audio_processing_step/audio_results/actinf_pomdp_agent_sonification.wav",
+      "dynamics_analyzed": 1,
+      "sonification_type": "model_dynamics",
+      "generation_timestamp": "2025-08-08T09:08:43.475585"
+    }
+  ],
+  "audio_analysis": [
+    {
+      "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "audio_characteristics": {
+        "tonal": {
+          "error": "No module named 'soundfile'"
+        },
+        "rhythmic": {
+          "error": "No module named 'soundfile'"
+        },
+        "ambient": {
+          "error": "No module named 'soundfile'"
+        }
+      },
+      "spectral_analysis": {},
+      "temporal_analysis": {}
+    }
+  ]
+}
