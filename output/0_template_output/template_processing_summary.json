@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-08-08T08:51:38.593195",
+  "timestamp": "2025-08-08T14:36:32.296025",
   "step_name": "template",
-  "input_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/0_template_output",
+  "input_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/0_template_output",
   "total_files": 1,
   "successful_files": 1,
   "failed_files": 0,

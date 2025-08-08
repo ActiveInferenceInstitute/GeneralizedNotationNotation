@@ -1,5 +1,0 @@
-Category: report
-Success: True
-Duration: 52.65s
-Peak Memory: 35.77 MB
-CPU Usage: 0.0%

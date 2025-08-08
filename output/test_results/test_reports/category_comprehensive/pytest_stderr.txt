@@ -1,2 +1,0 @@
-Cannot read termcap database;
-using dumb terminal settings.

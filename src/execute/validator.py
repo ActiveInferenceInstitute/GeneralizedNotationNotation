@@ -10,7 +10,13 @@ import sys
 import os
 import platform
 import subprocess
-import psutil
+# psutil is optional; fall back gracefully if unavailable
+try:
+    import psutil  # type: ignore
+    _PSUTIL_AVAILABLE = True
+except Exception:
+    psutil = None  # type: ignore
+    _PSUTIL_AVAILABLE = False
 import logging
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
@@ -89,80 +95,109 @@ def check_system_resources() -> List[ValidationResult]:
     results = []
     
     try:
-        # Memory check
-        memory = psutil.virtual_memory()
-        memory_gb = memory.total / (1024 ** 3)
-        
-        if memory_gb < 2:
-            results.append(ValidationResult(
-                component="memory",
-                status="fail",
-                message=f"Insufficient memory: {memory_gb:.1f}GB available",
-                details={"total_gb": memory_gb, "available_gb": memory.available / (1024 ** 3)},
-                suggestion="Increase system memory to at least 4GB"
-            ))
-        elif memory_gb < 4:
-            results.append(ValidationResult(
-                component="memory",
-                status="warn",
-                message=f"Low memory: {memory_gb:.1f}GB available",
-                details={"total_gb": memory_gb, "available_gb": memory.available / (1024 ** 3)},
-                suggestion="Consider increasing memory for better performance"
-            ))
+        # Memory check (only if psutil available)
+        if _PSUTIL_AVAILABLE:
+            memory = psutil.virtual_memory()
+            memory_gb = memory.total / (1024 ** 3)
+            if memory_gb < 2:
+                results.append(ValidationResult(
+                    component="memory",
+                    status="fail",
+                    message=f"Insufficient memory: {memory_gb:.1f}GB available",
+                    details={"total_gb": memory_gb, "available_gb": memory.available / (1024 ** 3)},
+                    suggestion="Increase system memory to at least 4GB"
+                ))
+            elif memory_gb < 4:
+                results.append(ValidationResult(
+                    component="memory",
+                    status="warn",
+                    message=f"Low memory: {memory_gb:.1f}GB available",
+                    details={"total_gb": memory_gb, "available_gb": memory.available / (1024 ** 3)},
+                    suggestion="Consider increasing memory for better performance"
+                ))
+            else:
+                results.append(ValidationResult(
+                    component="memory",
+                    status="pass",
+                    message=f"Sufficient memory: {memory_gb:.1f}GB available",
+                    details={"total_gb": memory_gb, "available_gb": memory.available / (1024 ** 3)}
+                ))
         else:
             results.append(ValidationResult(
                 component="memory",
-                status="pass",
-                message=f"Sufficient memory: {memory_gb:.1f}GB available",
-                details={"total_gb": memory_gb, "available_gb": memory.available / (1024 ** 3)}
+                status="warn",
+                message="psutil not available; memory check skipped",
+                suggestion="Install psutil for detailed resource checks (uv pip install psutil)"
             ))
-        
-        # Disk space check
-        disk = psutil.disk_usage('/')
-        disk_free_gb = disk.free / (1024 ** 3)
-        
-        if disk_free_gb < 1:
-            results.append(ValidationResult(
-                component="disk_space",
-                status="fail",
-                message=f"Insufficient disk space: {disk_free_gb:.1f}GB free",
-                details={"free_gb": disk_free_gb, "total_gb": disk.total / (1024 ** 3)},
-                suggestion="Free up at least 2GB of disk space"
-            ))
-        elif disk_free_gb < 5:
+
+        # Disk space check (fallback to shutil if psutil unavailable)
+        try:
+            if _PSUTIL_AVAILABLE:
+                disk = psutil.disk_usage('/')
+                total = disk.total
+                free = disk.free
+            else:
+                import shutil as _shutil
+                usage = _shutil.disk_usage('/')
+                total = usage.total
+                free = usage.free
+            disk_free_gb = free / (1024 ** 3)
+            if disk_free_gb < 1:
+                results.append(ValidationResult(
+                    component="disk_space",
+                    status="fail",
+                    message=f"Insufficient disk space: {disk_free_gb:.1f}GB free",
+                    details={"free_gb": disk_free_gb, "total_gb": total / (1024 ** 3)},
+                    suggestion="Free up at least 2GB of disk space"
+                ))
+            elif disk_free_gb < 5:
+                results.append(ValidationResult(
+                    component="disk_space",
+                    status="warn",
+                    message=f"Low disk space: {disk_free_gb:.1f}GB free",
+                    details={"free_gb": disk_free_gb, "total_gb": total / (1024 ** 3)},
+                    suggestion="Consider freeing up more disk space"
+                ))
+            else:
+                results.append(ValidationResult(
+                    component="disk_space",
+                    status="pass",
+                    message=f"Sufficient disk space: {disk_free_gb:.1f}GB free",
+                    details={"free_gb": disk_free_gb, "total_gb": total / (1024 ** 3)}
+                ))
+        except Exception as disk_e:
             results.append(ValidationResult(
                 component="disk_space",
                 status="warn",
-                message=f"Low disk space: {disk_free_gb:.1f}GB free",
-                details={"free_gb": disk_free_gb, "total_gb": disk.total / (1024 ** 3)},
-                suggestion="Consider freeing up more disk space"
+                message=f"Failed to determine disk space: {disk_e}",
+                suggestion="Ensure disk usage tools are available"
             ))
+
+        # CPU check (only if psutil available)
+        if _PSUTIL_AVAILABLE:
+            cpu_count = psutil.cpu_count(logical=False)
+            cpu_percent = psutil.cpu_percent(interval=1)
+            if cpu_percent > 90:
+                results.append(ValidationResult(
+                    component="cpu_usage",
+                    status="warn",
+                    message=f"High CPU usage: {cpu_percent}%",
+                    details={"cpu_count": cpu_count, "cpu_percent": cpu_percent},
+                    suggestion="Wait for CPU usage to decrease before running intensive tasks"
+                ))
+            else:
+                results.append(ValidationResult(
+                    component="cpu_usage",
+                    status="pass",
+                    message=f"Normal CPU usage: {cpu_percent}%",
+                    details={"cpu_count": cpu_count, "cpu_percent": cpu_percent}
+                ))
         else:
-            results.append(ValidationResult(
-                component="disk_space",
-                status="pass",
-                message=f"Sufficient disk space: {disk_free_gb:.1f}GB free",
-                details={"free_gb": disk_free_gb, "total_gb": disk.total / (1024 ** 3)}
-            ))
-        
-        # CPU check
-        cpu_count = psutil.cpu_count(logical=False)
-        cpu_percent = psutil.cpu_percent(interval=1)
-        
-        if cpu_percent > 90:
             results.append(ValidationResult(
                 component="cpu_usage",
                 status="warn",
-                message=f"High CPU usage: {cpu_percent}%",
-                details={"cpu_count": cpu_count, "cpu_percent": cpu_percent},
-                suggestion="Wait for CPU usage to decrease before running intensive tasks"
-            ))
-        else:
-            results.append(ValidationResult(
-                component="cpu_usage",
-                status="pass",
-                message=f"Normal CPU usage: {cpu_percent}%",
-                details={"cpu_count": cpu_count, "cpu_percent": cpu_percent}
+                message="psutil not available; CPU usage check skipped",
+                suggestion="Install psutil for CPU metrics (uv pip install psutil)"
             ))
             
     except Exception as e:

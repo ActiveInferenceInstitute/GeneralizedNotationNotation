@@ -1,25 +1,17 @@
 {
-  "timestamp": "2025-08-08T08:51:38.596571",
-  "correlation_id": "a3c608a1",
-  "source_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/0_template_output",
+  "timestamp": "2025-08-08T14:36:32.296221",
+  "correlation_id": "f559011f",
+  "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/0_template_output",
   "success": true,
   "demonstration_results": {
-    "timestamp": "2025-08-08T08:51:38.583319",
-    "correlation_id": "a3c608a1",
+    "timestamp": "2025-08-08T14:36:32.295450",
+    "correlation_id": "f559011f",
     "patterns_demonstrated": [
       "enhanced_logging",
       "safe_to_fail"
     ],
     "infrastructure_status": {
-      "error_recovery": {
-        "available": false,
-        "error": "'ErrorRecoverySystem' object has no attribute 'suggest_recovery_actions'"
-      },
-      "resource_tracking": {
-        "available": false,
-        "error": "'ResourceTracker' object has no attribute 'track_operation'"
-      },
       "enhanced_logging": {
         "available": true,
         "levels_supported": [
@@ -36,6 +28,6 @@
     },
     "performance_metrics": {}
   },
-  "infrastructure_available": true,
+  "infrastructure_available": false,
   "template_module_available": true
 }

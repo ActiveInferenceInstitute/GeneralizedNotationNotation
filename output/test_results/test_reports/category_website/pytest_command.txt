@@ -1,5 +1,0 @@
-Category: website
-Success: True
-Duration: 51.88s
-Peak Memory: 35.77 MB
-CPU Usage: 0.0%

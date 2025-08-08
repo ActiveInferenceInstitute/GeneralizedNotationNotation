@@ -92,6 +92,8 @@ class PipelineArguments:
     # Setup options
     recreate_venv: bool = False  # renamed from recreate_venv but keeping for compatibility
     dev: bool = False
+    # Optional setup groups to install (comma-separated), used by step 1
+    install_optional: Optional[str] = None
     
     # Audio generation options
     duration: float = 30.0
@@ -102,6 +104,9 @@ class PipelineArguments:
     include_slow: bool = False
     include_performance: bool = False
     comprehensive: bool = False
+
+    # MCP/performance mode (used by step 22)
+    performance_mode: str = "low"
     
     def __post_init__(self):
         """Post-initialization validation and path resolution."""
