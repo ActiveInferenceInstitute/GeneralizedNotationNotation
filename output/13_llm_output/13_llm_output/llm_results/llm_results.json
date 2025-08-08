@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-08T14:45:42.403425",
+  "timestamp": "2025-08-08T14:55:13.278282",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -537,7 +537,7 @@
           "Consider breaking down into smaller modules"
         ]
       },
-      "analysis_timestamp": "2025-08-08T14:45:42.405906",
+      "analysis_timestamp": "2025-08-08T14:55:13.280590",
       "llm_summary": "Error: LLM processor not initialized",
       "status": "SUCCESS",
       "analysis": "LLM-assisted analysis complete"
@@ -556,7 +556,7 @@
         "Complex model may be difficult to understand",
         "No connections defined"
       ],
-      "generation_timestamp": "2025-08-08T14:45:42.406659"
+      "generation_timestamp": "2025-08-08T14:55:13.281298"
     }
   ],
   "code_suggestions": [
@@ -569,7 +569,7 @@
         "Use descriptive variable names",
         "Group related variables together"
       ],
-      "generation_timestamp": "2025-08-08T14:45:42.406662"
+      "generation_timestamp": "2025-08-08T14:55:13.281301"
     }
   ],
   "documentation_generated": [
@@ -1005,7 +1005,7 @@
           "code": "# Example variable usage\nExample = ...\nVersion = ...\nmatrix = ..."
         }
       ],
-      "generation_timestamp": "2025-08-08T14:45:42.406673"
+      "generation_timestamp": "2025-08-08T14:55:13.281310"
     }
   ]
 }
