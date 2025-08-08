@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "processing_mode": "fallback",
+    "error_message": "Advanced visualization modules unavailable",
+    "timestamp": "2025-08-08T14:45:33.213104",
+    "content_length": 4078,
+    "line_count": 127
+  },
+  "structure": {
+    "sections": [
+      "GNN Example: Active Inference POMDP Agent",
+      "GNN Version: 1.0",
+      "This file is machine-readable and specifies a classic Active Inference agent for a discrete POMDP with one observation modality and one hidden state factor. The model is suitable for rendering into various simulation or inference backends.",
+      "GNNSection",
+      "GNNVersionAndFlags",
+      "ModelName",
+      "ModelAnnotation",
+      "StateSpaceBlock",
+      "Likelihood matrix: A[observation_outcomes, hidden_states]",
+      "Transition matrix: B[states_next, states_previous, actions]",
+      "Preference vector: C[observation_outcomes]",
+      "Prior vector: D[states]",
+      "Habit vector: E[actions]",
+      "Hidden State",
+      "Observation",
+      "Policy and Control",
+      "Time",
+      "Connections",
+      "InitialParameterization",
+      "A: 3 observations x 3 hidden states. Identity mapping (each state deterministically produces a unique observation). Rows are observations, columns are hidden states.",
+      "B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state. For each slice, rows are previous states, columns are next states. Each slice is a transition matrix corresponding to a different action selection.",
+      "C: 3 observations. Preference in terms of log-probabilities over observations.",
+      "D: 3 states. Uniform prior over hidden states. Rows are hidden states, columns are prior probabilities.",
+      "E: 3 actions. Uniform habit used as initial policy prior.",
+      "Equations",
+      "Standard Active Inference update equations for POMDPs:",
+      "- State inference using Variational Free Energy with infer_states()",
+      "- Policy inference using Expected Free Energy = with infer_policies()",
+      "- Action selection from policy posterior: action = sample_action()",
+      "Time",
+      "ActInfOntologyAnnotation",
+      "ModelParameters",
+      "Footer",
+      "Signature"
+    ],
+    "section_count": 34
+  },
+  "elements": {
+    "variables": [
+      "ActInfPOMDP",
+      "Classic Active Inference POMDP Agent v1",
+      "This model describes a classic Active Inference agent for a discrete POMDP:",
+      "A[3,3,type=float]   # Likelihood mapping hidden states to observations",
+      "B[3,3,3,type=float]   # State transitions given previous state and action",
+      "C[3,type=float]       # Log-preferences over observations",
+      "D[3,type=float]       # Prior over initial hidden states",
+      "s[3,1,type=float]     # Current hidden state distribution",
+      "o[3,1,type=int]     # Current observation (integer index)",
+      "u[1,type=int]         # Action taken"
+    ],
+    "variable_count": 33,
+    "connections": [],
+    "connection_count": 0
+  },
+  "statistics": {
+    "total_lines": 127,
+    "word_count": 540,
+    "character_count": 4078,
+    "has_gnn_structure": true
+  },
+  "visualization_status": {
+    "advanced_visualizer_available": false,
+    "dashboard_generator_available": true,
+    "data_extractor_available": true
+  }
+}

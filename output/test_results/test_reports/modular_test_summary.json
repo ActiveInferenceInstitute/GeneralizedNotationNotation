@@ -1,0 +1,85 @@
+{
+  "total_categories": 22,
+  "successful_categories": 22,
+  "failed_categories": 0,
+  "total_tests_run": 353,
+  "total_tests_passed": 273,
+  "total_tests_failed": 29,
+  "total_tests_skipped": 51,
+  "success_rate": 77.33711048158641,
+  "total_duration": 102.07154297828674,
+  "category_times": {},
+  "resource_usage": {
+    "gnn": {
+      "memory_mb": 35.609375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "render": {
+      "memory_mb": 35.65625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "mcp": {
+      "memory_mb": 35.71875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "audio": {
+      "memory_mb": 35.84375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "visualization": {
+      "memory_mb": 35.859375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "pipeline": {
+      "memory_mb": 35.859375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "export": {
+      "memory_mb": 35.890625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "llm": {
+      "memory_mb": 35.890625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "ontology": {
+      "memory_mb": 35.921875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "website": {
+      "memory_mb": 36.015625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "report": {
+      "memory_mb": 36.078125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "environment": {
+      "memory_mb": 36.140625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "comprehensive": {
+      "memory_mb": 36.203125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "error_categories": {
+    "pathlib_errors": [],
+    "sapf_errors": [],
+    "import_errors": [],
+    "runtime_errors": []
+  }
+}

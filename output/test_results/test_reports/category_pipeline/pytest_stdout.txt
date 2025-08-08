@@ -1,0 +1,107 @@
+============================= test session starts ==============================
+collected 138 items
+
+src/tests/test_pipeline_functionality.py FFFFFFF                         [  5%]
+src/tests/test_pipeline_infrastructure.py ...ssssss.ss.ss..s.ss.sssss.   [ 25%]
+src/tests/test_pipeline_overall.py ............                          [ 34%]
+src/tests/test_pipeline_performance.py F...F.............                [ 47%]
+src/tests/test_pipeline_recovery.py F
+
+=================================== FAILURES ===================================
+________ TestPipelineFunctionality.test_visualization_generates_images _________
+src/tests/test_pipeline_functionality.py:21: in test_visualization_generates_images
+    assert viz_dir.exists(), "Visualization directory should exist"
+E   AssertionError: Visualization directory should exist
+E   assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('output/visualization/actinf_pomdp_agent').exists
+_____ TestPipelineFunctionality.test_gnn_processing_generates_parsed_data ______
+src/tests/test_pipeline_functionality.py:42: in test_gnn_processing_generates_parsed_data
+    assert parsed_file.exists(), "Parsed GNN data file should exist"
+E   AssertionError: Parsed GNN data file should exist
+E   assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('output/gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json').exists
+______ TestPipelineFunctionality.test_multi_format_export_generates_files ______
+src/tests/test_pipeline_functionality.py:64: in test_multi_format_export_generates_files
+    assert export_dir.exists(), "Export directory should exist"
+E   AssertionError: Export directory should exist
+E   assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('output/gnn_exports/actinf_pomdp_agent').exists
+_______ TestPipelineFunctionality.test_audio_generation_produces_output ________
+src/tests/test_pipeline_functionality.py:80: in test_audio_generation_produces_output
+    assert audio_dir.exists(), "Audio output directory should exist"
+E   AssertionError: Audio output directory should exist
+E   assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('output/audio_processing_step/audio_results').exists
+________ TestPipelineFunctionality.test_pipeline_results_are_valid_json ________
+src/tests/test_pipeline_functionality.py:101: in test_pipeline_results_are_valid_json
+    assert path.exists(), f"Result file should exist: {result_file}"
+E   AssertionError: Result file should exist: output/gnn_processing_step/gnn_processing_results.json
+E   assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('output/gnn_processing_step/gnn_processing_results.json').exists
+______ TestPipelineFunctionality.test_visualization_results_show_success _______
+src/tests/test_pipeline_functionality.py:113: in test_visualization_results_show_success
+    with open(results_file) as f:
+         ^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: 'output/visualization/visualization_results.json'
+______ TestPipelineFunctionality.test_core_pipeline_functionality_metrics ______
+src/tests/test_pipeline_functionality.py:132: in test_core_pipeline_functionality_metrics
+    assert png_count >= 2, f"Should generate multiple visualizations. Found: {png_count}"
+E   AssertionError: Should generate multiple visualizations. Found: 0
+E   assert 0 >= 2
+_________ TestGNNProcessingPerformance.test_processing_scaling[small] __________
+src/tests/test_pipeline_performance.py:127: in test_processing_scaling
+    assert tracker.peak_memory_mb < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
+E   assert 200.0 < 100
+E    +  where 200.0 = <utils.test_utils.performance_tracker.<locals>.PerformanceTracker object at 0x1071b2f90>.peak_memory_mb
+________ TestVisualizationPerformance.test_visualization_scaling[small] ________
+src/tests/test_pipeline_performance.py:179: in test_visualization_scaling
+    assert tracker.peak_memory_mb < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
+E   assert 208.40625 < 100
+E    +  where 208.40625 = <utils.test_utils.performance_tracker.<locals>.PerformanceTracker object at 0x113c4b230>.peak_memory_mb
+------------------------------ Captured log call -------------------------------
+WARNING  visualization:pipeline_template.py:48 ⚠️ No GNN files found for visualization
+____________ TestRecursionErrorRecovery.test_numpy_import_recovery _____________
+src/tests/test_pipeline_recovery.py:72: in test_numpy_import_recovery
+    with patch('numpy.typing._array_like', side_effect=RecursionError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py:1497: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/unittest/mock.py:1467: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'numpy.typing' from '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/numpy/typing/__init__.py'> does not have the attribute '_array_like'
+=============================== warnings summary ===============================
+src/tests/test_pipeline_recovery.py:97
+  /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_recovery.py:97: PytestUnknownMarkWarning: Unknown pytest.mark.asyncio - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asyncio
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================= slowest 10 durations =============================
+2.05s call     src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_api_request_timing
+1.61s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_resource_estimation
+1.10s call     src/tests/test_pipeline_performance.py::TestVisualizationPerformance::test_visualization_scaling[small]
+0.27s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[3]
+0.26s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[10]
+0.26s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[1]
+0.12s call     src/tests/test_pipeline_performance.py::TestMemoryUsagePatterns::test_peak_memory_tracking
+0.03s call     src/tests/test_pipeline_performance.py::TestMemoryUsagePatterns::test_memory_cleanup
+0.01s call     src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_batch_request_performance
+0.01s call     src/tests/test_pipeline_infrastructure.py::TestUtilsMigrationHelper::test_migration_imports
+=========================== short test summary info ============================
+FAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_visualization_generates_images
+FAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_gnn_processing_generates_parsed_data
+FAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_multi_format_export_generates_files
+FAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_audio_generation_produces_output
+FAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_pipeline_results_are_valid_json
+FAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_visualization_results_show_success
+FAILED src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_core_pipeline_functionality_metrics
+FAILED src/tests/test_pipeline_performance.py::TestGNNProcessingPerformance::test_processing_scaling[small]
+FAILED src/tests/test_pipeline_performance.py::TestVisualizationPerformance::test_visualization_scaling[small]
+FAILED src/tests/test_pipeline_recovery.py::TestRecursionErrorRecovery::test_numpy_import_recovery
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 10 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+============= 10 failed, 38 passed, 18 skipped, 1 warning in 5.99s =============

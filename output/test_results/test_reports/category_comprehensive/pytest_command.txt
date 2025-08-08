@@ -1,0 +1,5 @@
+Category: comprehensive
+Success: True
+Duration: 2.45s
+Peak Memory: 36.20 MB
+CPU Usage: 0.0%
