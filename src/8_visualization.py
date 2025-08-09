@@ -51,7 +51,9 @@ try:
     from visualization import (
         process_visualization,
         process_matrix_visualization,
-        generate_visualizations,
+        generate_matrix_visualizations,
+        generate_network_visualizations,
+        generate_combined_analysis,
         MatrixVisualizer,
         GNNVisualizer
     )
@@ -65,7 +67,13 @@ except ImportError:
     def process_matrix_visualization(*args, **kwargs):
         return False
     
-    def generate_visualizations(*args, **kwargs):
+    def generate_matrix_visualizations(*args, **kwargs):
+        return []
+    
+    def generate_network_visualizations(*args, **kwargs):
+        return []
+    
+    def generate_combined_analysis(*args, **kwargs):
         return False
     
     class MatrixVisualizer:
@@ -142,6 +150,52 @@ def process_visualization_standardized(
             }
         }
         
+        # Helper to normalize parsed model (from step 3 JSON) into the structure
+        # expected by visualization.processor functions
+        def _normalize_model_to_parsed_data(model: Dict[str, Any]) -> Dict[str, Any]:
+            parsed: Dict[str, Any] = {
+                "sections": {},
+                "variables": [],
+                "connections": [],
+                "matrices": [],
+                "metadata": {}
+            }
+            try:
+                # Variables
+                for v in model.get("variables", []):
+                    name = v.get("name")
+                    vtype = v.get("var_type") or v.get("data_type") or ""
+                    if name:
+                        parsed["variables"].append({"name": name, "type": vtype})
+                # Connections: flatten source/target lists into individual edges
+                for c in model.get("connections", []):
+                    sources = c.get("source_variables", []) or []
+                    targets = c.get("target_variables", []) or []
+                    for s in sources:
+                        for t in targets:
+                            if s and t:
+                                parsed["connections"].append({"source": s, "target": t})
+                # Matrices from parameters
+                for p in model.get("parameters", []):
+                    value = p.get("value")
+                    if value is None:
+                        continue
+                    try:
+                        import numpy as _np
+                        arr = _np.array(value, dtype=float)
+                        parsed["matrices"].append({"data": arr, "name": p.get("name", "matrix")})
+                    except Exception:
+                        continue
+                # Sections/metadata
+                if model.get("model_name"):
+                    parsed["sections"]["ModelName"] = model["model_name"]
+                if model.get("raw_sections"):
+                    parsed["sections"].update(model.get("raw_sections", {}))
+            except Exception:
+                # Best-effort; return what we have
+                pass
+            return parsed
+
         # Process each file
         for file_result in gnn_results["processed_files"]:
             if not file_result["parse_success"]:
@@ -179,10 +233,27 @@ def process_visualization_standardized(
             
             # Generate matrix visualizations
             try:
-                matrix_result = process_matrix_visualization(model_data, file_output_dir)
+                parameters = model_data.get("parameters", []) if isinstance(model_data, dict) else []
+                matrix_png = file_output_dir / "matrix_analysis.png"
+                matrix_stats_png = file_output_dir / "matrix_statistics.png"
+                mv = MatrixVisualizer()
+                ok1 = mv.generate_matrix_analysis(parameters, matrix_png)
+                ok2 = mv.generate_matrix_statistics(parameters, matrix_stats_png)
+                # Specialized POMDP transition analysis if B tensor present
+                matrices = mv.extract_matrix_data_from_parameters(parameters) if parameters else {}
+                if isinstance(matrices, dict) and 'B' in matrices:
+                    B = matrices['B']
+                    try:
+                        import numpy as _np
+                        if hasattr(B, 'ndim') and B.ndim == 3:
+                            pomdp_path = file_output_dir / "pomdp_transition_analysis.png"
+                            if mv.generate_pomdp_transition_analysis(B, pomdp_path):
+                                visualization_results["summary"]["total_images_generated"] += 1
+                    except Exception:
+                        pass
                 file_visualization_result["visualizations"]["matrix"] = {
-                    "success": True,
-                    "result": matrix_result
+                    "success": bool(ok1 or ok2),
+                    "result": [str(matrix_png), str(matrix_stats_png)]
                 }
                 visualization_results["summary"]["visualization_types"]["matrix"] += 1
                 logger.info(f"Matrix visualization completed for {file_name}")
@@ -194,12 +265,13 @@ def process_visualization_standardized(
                 }
                 file_visualization_result["success"] = False
             
-            # Generate network visualizations
+            # Generate network and combined visualizations via processor API
             try:
-                network_result = process_visualization(file_output_dir, file_output_dir, verbose=verbose)
+                parsed_for_viz = _normalize_model_to_parsed_data(model_data)
+                net_files = generate_network_visualizations(parsed_for_viz, file_output_dir, Path(file_name).stem)
                 file_visualization_result["visualizations"]["network"] = {
-                    "success": True,
-                    "result": network_result
+                    "success": len(net_files) > 0,
+                    "result": net_files
                 }
                 visualization_results["summary"]["visualization_types"]["network"] += 1
                 logger.info(f"Network visualization completed for {file_name}")
@@ -213,10 +285,11 @@ def process_visualization_standardized(
             
             # Generate combined visualizations
             try:
-                combined_result = generate_visualizations(model_data, file_output_dir)
+                parsed_for_viz = _normalize_model_to_parsed_data(model_data)
+                combined_files = generate_combined_analysis(parsed_for_viz, file_output_dir, Path(file_name).stem)
                 file_visualization_result["visualizations"]["combined"] = {
-                    "success": True,
-                    "result": combined_result
+                    "success": len(combined_files) > 0,
+                    "result": combined_files
                 }
                 visualization_results["summary"]["visualization_types"]["combined"] += 1
                 logger.info(f"Combined visualization completed for {file_name}")
@@ -228,30 +301,19 @@ def process_visualization_standardized(
                 }
                 file_visualization_result["success"] = False
 
-            # Ensure expected top-level PNGs exist in file_output_dir for tests
+            # Count images we know we attempted above
             try:
-                from visualization.matrix_visualizer import MatrixVisualizer
-                visualizer = MatrixVisualizer()
-                parameters = model_data.get("parameters", []) if isinstance(model_data, dict) else []
-                # Generate matrix_analysis.png at top-level
-                matrix_analysis_path = file_output_dir / "matrix_analysis.png"
-                if parameters:
-                    if visualizer.generate_matrix_analysis(parameters, matrix_analysis_path):
+                for candidate in [
+                    file_output_dir / "matrix_analysis.png",
+                    file_output_dir / "matrix_statistics.png",
+                    file_output_dir / "pomdp_transition_analysis.png",
+                    file_output_dir / f"{Path(file_name).stem}_network_graph.png",
+                    file_output_dir / f"{Path(file_name).stem}_combined_analysis.png",
+                ]:
+                    if candidate.exists():
                         visualization_results["summary"]["total_images_generated"] += 1
-                # Generate pomdp_transition_analysis.png if B tensor present
-                matrices = visualizer.extract_matrix_data_from_parameters(parameters) if parameters else {}
-                if isinstance(matrices, dict) and 'B' in matrices:
-                    B = matrices['B']
-                    try:
-                        import numpy as _np
-                        if hasattr(B, 'ndim') and B.ndim == 3:
-                            pomdp_path = file_output_dir / "pomdp_transition_analysis.png"
-                            if visualizer.generate_pomdp_transition_analysis(B, pomdp_path):
-                                visualization_results["summary"]["total_images_generated"] += 1
-                    except Exception:
-                        pass
-            except Exception as e:
-                logger.warning(f"Could not generate expected summary PNGs: {e}")
+            except Exception:
+                pass
             
             visualization_results["files_visualized"].append(file_visualization_result)
             visualization_results["summary"]["total_files"] += 1

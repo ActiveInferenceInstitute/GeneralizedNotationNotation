@@ -275,7 +275,7 @@ def process_type_checker(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/type_checker_processing/
+output/5_type_checker_output/
 ├── type_analysis.json             # Type analysis results
 ├── type_inference.json            # Type inference results
 ├── syntax_validation.json         # Syntax validation results

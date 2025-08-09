@@ -64,7 +64,7 @@ python src/main.py --target-dir path/to/my_first_model.md --only-steps 1,4
 python src/main.py --target-dir path/to/my_first_model.md --only-steps 6
 ```
 
-Check `output/visualization/` for generated diagrams.
+Check `output/8_visualization_output/` for generated diagrams.
 
 ## Step 4: Export Model
 ```bash

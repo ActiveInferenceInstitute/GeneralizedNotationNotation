@@ -205,7 +205,7 @@ def process_ml_integration(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/ml_integration/
+output/14_ml_integration_output/
 ├── trained_models/                 # Trained ML models
 ├── training_results.json           # Training results and metrics
 ├── evaluation_results.json         # Model evaluation results

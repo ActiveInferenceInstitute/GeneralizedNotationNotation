@@ -259,7 +259,7 @@ def process_research(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/research_processing/
+output/19_research_output/
 ├── research_analysis.json          # Research analysis results
 ├── experimental_results.json       # Experimental results
 ├── statistical_tests.json         # Statistical test results

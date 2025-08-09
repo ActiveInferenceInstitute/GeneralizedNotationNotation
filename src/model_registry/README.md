@@ -289,7 +289,7 @@ def process_model_registry(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/model_registry/
+output/4_model_registry_output/
 ├── registry.json                   # Complete registry data
 ├── model_index.json               # Searchable model index
 ├── version_history.json           # Version history data

@@ -66,7 +66,7 @@ from src.execute.jax.jax_runner import execute_jax_script
 from pathlib import Path
 
 # Execute single JAX script
-script_path = Path("output/gnn_rendered_simulators/jax/pomdp_solver.py")
+script_path = Path("output/11_render_output/jax/pomdp_solver.py")
 success = execute_jax_script(script_path, verbose=True, device="cpu")
 ```
 
@@ -277,7 +277,7 @@ else:
 from src.execute.jax.jax_runner import find_jax_scripts, execute_jax_script
 
 # Find specific scripts
-scripts = find_jax_scripts("output/gnn_rendered_simulators/jax/", recursive=False)
+scripts = find_jax_scripts("output/11_render_output/jax/", recursive=False)
 
 # Execute with custom options
 for script in scripts:

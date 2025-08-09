@@ -926,13 +926,6 @@ def build_enhanced_step_command_args(step_name: str, pipeline_args: PipelineArgu
             if arg_value is None and arg_name not in config.get("required_args", []):
                 continue
             
-            # Special handling for output_dir to use step-specific output directory
-            if arg_name == 'output_dir':
-                # Use the step-specific output directory
-                step_output_dir = get_step_output_dir(config_key, pipeline_args.output_dir)
-                cmd.extend(['--output-dir', str(step_output_dir)])
-                continue
-            
             # Get argument definition for proper formatting
             if arg_name in EnhancedArgumentParser.ARGUMENT_DEFINITIONS:
                 arg_def = EnhancedArgumentParser.ARGUMENT_DEFINITIONS[arg_name]

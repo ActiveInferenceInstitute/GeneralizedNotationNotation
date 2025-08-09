@@ -316,7 +316,7 @@ def process_visualization(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/visualization_processing/
+output/8_visualization_output/
 ├── graph_visualizations/           # Graph visualization files
 ├── matrix_visualizations/          # Matrix visualization files
 ├── interactive_plots/              # Interactive plot files

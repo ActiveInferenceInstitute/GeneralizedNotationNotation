@@ -386,7 +386,7 @@ def process_audio(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/audio_processing_step/
+output/15_audio_output/
 ├── model_audio.wav                # Generated audio file
 ├── audio_visualization.png        # Audio waveform visualization
 ├── audio_analysis.json            # Audio characteristics analysis

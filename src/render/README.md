@@ -347,7 +347,7 @@ def process_render(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/gnn_rendered_simulators/
+output/11_render_output/
 ├── pymdp/                         # PyMDP generated code
 │   ├── simulation_script.py       # Main simulation script
 │   ├── config.py                  # Configuration file

@@ -371,7 +371,7 @@ def process_export(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/gnn_exports/
+output/7_export_output/
 ├── model_name.json                # JSON export
 ├── model_name.xml                 # XML export
 ├── model_name.graphml             # GraphML export

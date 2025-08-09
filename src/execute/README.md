@@ -14,7 +14,7 @@ The execute module is now organized into subfolders for each execution environme
 
 This script is the primary runner for PyMDP-based simulations. Its main responsibilities include:
 
--   **Discovering Scripts**: It searches for Python scripts (typically `*_rendered.py`) within a designated directory structure, usually `output/gnn_rendered_simulators/pymdp/`.
+-   **Discovering Scripts**: It searches for Python scripts (typically `*_pymdp.py`) within `output/11_render_output/`.
 -   **Environment Setup**: It attempts to use the Python interpreter from the project's virtual environment (`src/.venv/bin/python`) to ensure that the necessary dependencies (like `inferactively-pymdp`) are available.
 -   **Execution**: It executes each discovered PyMDP script as a separate subprocess.
 -   **Output Handling**: It captures `stdout` and `stderr` from the executed scripts and logs success or failure for each.

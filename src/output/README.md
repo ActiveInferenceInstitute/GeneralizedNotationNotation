@@ -192,10 +192,10 @@ else:
 from output import manage_output_files
 
 # Manage output files
-file_paths = [
-    Path("output/validation/results.json"),
-    Path("output/export/model.xml"),
-    Path("output/visualization/graph.png")
+    file_paths = [
+    Path("output/6_validation_output/validation_results.json"),
+    Path("output/7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml"),
+    Path("output/8_visualization_output/actinf_pomdp_agent/graph.png")
 ]
 
 success = manage_output_files(

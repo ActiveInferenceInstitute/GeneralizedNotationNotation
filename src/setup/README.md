@@ -292,7 +292,7 @@ def process_setup(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/setup_processing/
+output/1_setup_output/
 ├── uv_environment_info.json        # UV environment information
 ├── uv_dependency_status.json       # UV dependency status
 ├── system_requirements.json        # System requirements

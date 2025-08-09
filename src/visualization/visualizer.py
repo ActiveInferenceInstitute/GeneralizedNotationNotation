@@ -793,11 +793,15 @@ def generate_visualizations(
         def log_step_error(logger, msg): logger.error(f"❌ {msg}")
         def get_output_dir_for_script(script, output_dir): return output_dir / "visualization"
         performance_tracker = None
+    from contextlib import contextmanager
+    @contextmanager
+    def _noop_context():
+        yield
     
     log_step_start(logger, f"Generating visualizations for GNN files in: {target_dir}")
     
     # Use centralized output directory configuration
-    viz_output_dir = get_output_dir_for_script("6_visualization.py", output_dir)
+    viz_output_dir = get_output_dir_for_script("8_visualization.py", output_dir)
     
     try:
         # Create GNN visualizer instance
@@ -807,7 +811,8 @@ def generate_visualizations(
         results = {'success': False, 'files_processed': 0}
         
         # Use performance tracking for visualization generation
-        with performance_tracker.track_operation("generate_all_visualizations"):
+        ctx = performance_tracker.track_operation("generate_all_visualizations") if performance_tracker else _noop_context()
+        with ctx:
             # Find GNN files
             if recursive:
                 gnn_files = list(target_dir.rglob("*.md"))
@@ -832,13 +837,14 @@ def generate_visualizations(
         # Generate matrix visualizations if available
         if MatrixVisualizer:
             try:
-                with performance_tracker.track_operation("generate_matrix_visualizations"):
+                ctx2 = performance_tracker.track_operation("generate_matrix_visualizations") if performance_tracker else _noop_context()
+                with ctx2:
                     matrix_viz = MatrixVisualizer()
-                    matrix_results = matrix_viz.visualize_directory(
-                        target_dir=target_dir,
+                    matrix_files = matrix_viz.visualize_directory(
+                        input_dir=target_dir,
                         output_dir=viz_output_dir / "matrices"
                     )
-                    results.update(matrix_results)
+                    results['matrix_files'] = matrix_files
                 log_step_success(logger, "Matrix visualizations completed")
             except Exception as e:
                 log_step_warning(logger, f"Matrix visualization failed: {e}")
@@ -846,13 +852,14 @@ def generate_visualizations(
         # Generate ontology visualizations if available
         if OntologyVisualizer:
             try:
-                with performance_tracker.track_operation("generate_ontology_visualizations"):
+                ctx3 = performance_tracker.track_operation("generate_ontology_visualizations") if performance_tracker else _noop_context()
+                with ctx3:
                     ontology_viz = OntologyVisualizer()
-                    ontology_results = ontology_viz.visualize_directory(
-                        target_dir=target_dir,
+                    ontology_files = ontology_viz.visualize_directory(
+                        input_dir=target_dir,
                         output_dir=viz_output_dir / "ontology"
                     )
-                    results.update(ontology_results)
+                    results['ontology_files'] = ontology_files
                 log_step_success(logger, "Ontology visualizations completed")
             except Exception as e:
                 log_step_warning(logger, f"Ontology visualization failed: {e}")

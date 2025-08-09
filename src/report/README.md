@@ -270,7 +270,7 @@ def process_report(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/report_processing_step/
+output/21_report_output/
 ├── executive_summary.md            # Executive summary report
 ├── detailed_analysis.md            # Detailed analysis report
 ├── performance_report.md           # Performance analysis report

@@ -126,34 +126,49 @@ def set_pipeline_config(config: PipelineConfig):
 
 def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
     """Get output directory for a specific script.
-
-    Maps numbered pipeline scripts to the directories expected by tests and
-    other modules. Defaults to a '<stem>_output' folder when no explicit
-    mapping is defined.
+    
+    Use a consistent numbered '<N_name>_output' directory for every step to
+    keep the pipeline coherent and simple.
     """
     script_stem = Path(script_name).stem
-    mapping = {
-        # Core steps used by tests
-        # Align with actual orchestrator outputs (e.g., output/3_gnn_output)
+    normalized = script_stem  # e.g., '7_export'
+
+    # Map stems to standardized numbered output directories
+    strict_mapping = {
+        "0_template": base_output_dir / "0_template_output",
+        "1_setup": base_output_dir / "1_setup_output",
+        "2_tests": base_output_dir / "2_tests_output",
         "3_gnn": base_output_dir / "3_gnn_output",
-        "5_type_checker": base_output_dir / "type_check",
-        "7_export": base_output_dir / "gnn_exports",
-        "8_visualization": base_output_dir / "visualization",
-        "12_execute": base_output_dir / "execution_results",
-        "15_audio": base_output_dir / "audio_processing_step",
-        # Common aliases if called without .py
-        "3_gnn.py": base_output_dir / "3_gnn_output",
-        "5_type_checker.py": base_output_dir / "type_check",
-        "7_export.py": base_output_dir / "gnn_exports",
-        "8_visualization.py": base_output_dir / "visualization",
-        "12_execute.py": base_output_dir / "execution_results",
-        "15_audio.py": base_output_dir / "audio_processing_step",
+        "4_model_registry": base_output_dir / "4_model_registry_output",
+        "5_type_checker": base_output_dir / "5_type_checker_output",
+        "6_validation": base_output_dir / "6_validation_output",
+        "7_export": base_output_dir / "7_export_output",
+        "8_visualization": base_output_dir / "8_visualization_output",
+        "9_advanced_viz": base_output_dir / "9_advanced_viz_output",
+        "10_ontology": base_output_dir / "10_ontology_output",
+        "11_render": base_output_dir / "11_render_output",
+        "12_execute": base_output_dir / "12_execute_output",
+        "13_llm": base_output_dir / "13_llm_output",
+        "14_ml_integration": base_output_dir / "14_ml_integration_output",
+        "15_audio": base_output_dir / "15_audio_output",
+        "16_analysis": base_output_dir / "16_analysis_output",
+        "17_integration": base_output_dir / "17_integration_output",
+        "18_security": base_output_dir / "18_security_output",
+        "19_research": base_output_dir / "19_research_output",
+        "20_website": base_output_dir / "20_website_output",
+        "21_report": base_output_dir / "21_report_output",
+        "22_mcp": base_output_dir / "22_mcp_output",
     }
-    # Exact match first
-    if script_name in mapping:
-        return mapping[script_name]
-    # Match by stem
-    if script_stem in mapping:
-        return mapping[script_stem]
+
+    # Accept '.py' suffix keys as well
+    if script_name.endswith('.py'):
+        normalized = script_name[:-3]
+
+    # Exact matches
+    if script_name in strict_mapping:
+        return strict_mapping[script_name]
+    if normalized in strict_mapping:
+        return strict_mapping[normalized]
+
+    # Default fallback
     return base_output_dir / f"{script_stem}_output"
-    return base_output_dir / f"{script_stem}_output" 

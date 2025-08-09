@@ -100,32 +100,30 @@ This README documents the comprehensive safety enhancements implemented across a
 **Complete Output Directory Organization (23 Steps):**
 ```
 output/
-├── template/                       # Step 0: Template initialization
-├── setup_artifacts/               # Step 1: Environment setup
-├── test_reports/                  # Step 2: Test execution
-├── gnn_processing_step/           # Step 3: GNN file processing
-├── model_registry/                # Step 4: Model registry
-├── type_check/                    # Step 5: Type checking
-├── validation/                    # Step 6: Advanced validation
-├── gnn_exports/                   # Step 7: Multi-format export
-├── visualization/                 # Step 8: Standard visualization
-├── advanced_visualization/        # Step 9: Advanced visualization
-├── ontology_processing/           # Step 10: Ontology processing
-├── gnn_rendered_simulators/       # Step 11: Code rendering
-├── execution_results/             # Step 12: Execution results
-├── llm_processing_step/           # Step 13: LLM analysis
-├── ml_integration/                # Step 14: ML integration
-├── audio_processing_step/         # Step 15: Audio processing
-├── analysis/                      # Step 16: Advanced analysis
-├── integration/                   # Step 17: System integration
-├── security/                      # Step 18: Security validation
-├── research/                      # Step 19: Research tools
-├── website/                       # Step 20: Website generation
-├── report_processing_step/        # Step 21: Report generation
-├── mcp_processing_step/           # Step 22: Model Context Protocol processing
-├── logs/                          # Pipeline execution logs
-├── pipeline_execution_summary.json # Overall pipeline results
-└── gnn_pipeline_summary_site.html  # Pipeline summary website
+├── 0_template_output/
+├── 1_setup_output/
+├── 2_tests_output/
+├── 3_gnn_output/
+├── 4_model_registry_output/
+├── 5_type_checker_output/
+├── 6_validation_output/
+├── 7_export_output/
+├── 8_visualization_output/
+├── 9_advanced_viz_output/
+├── 10_ontology_output/
+├── 11_render_output/
+├── 12_execute_output/
+├── 13_llm_output/
+├── 14_ml_integration_output/
+├── 15_audio_output/
+├── 16_analysis_output/
+├── 17_integration_output/
+├── 18_security_output/
+├── 19_research_output/
+├── 20_website_output/
+├── 21_report_output/
+├── 22_mcp_output/
+└── pipeline_execution_summary.json
 ```
 
 ### 🔧 Technical Implementation Details
@@ -190,7 +188,7 @@ ls output/advanced_visualization/
 ls output/visualization/
 
 # Check execution results
-ls output/gnn_rendered_simulators/
+ls output/11_render_output/
 cat output/execution_results.json
 ```
 

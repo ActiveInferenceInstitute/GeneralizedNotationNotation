@@ -419,15 +419,13 @@ python src/main.py --target-dir path/to/gnn_files
 
 #### 📁 Output Structure
 
-When executed, the type checker creates outputs in `output/type_check/`:
+When executed, the type checker writes to `output/5_type_checker_output/`:
 
 ```
-output/type_check/
-├── type_check_report.md                    # Main Markdown report
-├── html_vis/
-│   └── type_checker_visualization_report.html  # HTML visualizations
-└── resources/
-    └── type_check_data.json               # JSON data for analysis
+output/5_type_checker_output/
+├── type_check_results.json
+├── type_check_summary.json
+└── global_type_analysis.json
 ```
 
 ### 🎨 Visualization
@@ -504,14 +502,13 @@ python src/main.py --target-dir src/gnn/examples --verbose
 
 **5️⃣ Explore Results**
 
-Check the generated outputs in the `output/` directory:
+Check the generated outputs in the `output/` directory. The static site is under the numbered website folder:
 
 ```bash
 ls -la output/
-# View the generated site
-open output/gnn_pipeline_summary_site.html  # macOS
+open output/20_website_output/website/index.html  # macOS
 # or
-xdg-open output/gnn_pipeline_summary_site.html  # Linux
+xdg-open output/20_website_output/website/index.html  # Linux
 ```
 
 ### 🆘 Need Help?

@@ -343,7 +343,7 @@ def process_analysis(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/analysis/
+output/16_analysis_output/
 ├── statistical_analysis.json       # Comprehensive analysis results
 ├── performance_benchmarks.json     # Performance metrics
 ├── complexity_metrics.json         # Complexity analysis

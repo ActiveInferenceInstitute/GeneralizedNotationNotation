@@ -1,27 +1,39 @@
 """
-Advanced visualization module for GNN Processing Pipeline.
+Advanced visualization package for GNN Processing Pipeline.
 
-This module provides advanced visualization and interactive plots for GNN models.
+Exports real advanced visualization components.
 """
 
 from .visualizer import (
-    visualizer,
-    dashboard,
+    AdvancedVisualizer,
     create_visualization_from_data,
     create_dashboard_section,
     create_network_visualization,
     create_timeline_visualization,
     create_heatmap_visualization,
-    create_default_visualization
+    create_default_visualization,
+)
+
+from .dashboard import (
+    DashboardGenerator,
+    generate_dashboard,
+)
+
+from .data_extractor import (
+    VisualizationDataExtractor,
+    extract_visualization_data,
 )
 
 __all__ = [
-    'visualizer',
-    'dashboard',
+    'AdvancedVisualizer',
     'create_visualization_from_data',
     'create_dashboard_section',
     'create_network_visualization',
     'create_timeline_visualization',
     'create_heatmap_visualization',
-    'create_default_visualization'
+    'create_default_visualization',
+    'DashboardGenerator',
+    'generate_dashboard',
+    'VisualizationDataExtractor',
+    'extract_visualization_data',
 ]

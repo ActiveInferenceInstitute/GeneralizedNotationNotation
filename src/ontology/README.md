@@ -216,7 +216,7 @@ def process_ontology(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/ontology_processing/
+output/10_ontology_output/
 ├── ontology_validation.json        # Ontology validation results
 ├── term_mapping.json              # Term mapping results
 ├── semantic_analysis.json         # Semantic analysis results

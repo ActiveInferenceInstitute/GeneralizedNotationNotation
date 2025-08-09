@@ -264,7 +264,7 @@ def process_validation(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/validation_processing/
+output/6_validation_output/
 ├── consistency_analysis.json       # Consistency analysis results
 ├── semantic_validation.json       # Semantic validation results
 ├── quality_assessment.json        # Quality assessment results

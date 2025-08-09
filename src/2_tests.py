@@ -285,8 +285,11 @@ def process_tests_standardized(
     try:
         logger.info("🚀 Processing tests")
         
-        # Create test output directory
-        test_output_dir = output_dir / "test_results"
+        # Use standardized numbered output directory for this step
+        tests_root = get_output_dir_for_script("2_tests.py", output_dir)
+        tests_root.mkdir(parents=True, exist_ok=True)
+        # Place results under a stable subfolder to avoid clutter at root
+        test_output_dir = tests_root / "test_results"
         test_output_dir.mkdir(parents=True, exist_ok=True)
         
         # Check if pytest is available

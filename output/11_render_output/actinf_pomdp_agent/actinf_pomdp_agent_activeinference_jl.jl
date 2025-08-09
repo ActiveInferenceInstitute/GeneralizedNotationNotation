@@ -1,1 +1,0 @@
-# Error generating ActiveInference.jl code: name 'model_pascal' is not defined

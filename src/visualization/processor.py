@@ -324,28 +324,44 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
                 
                 visualizations.append(str(plot_file))
         
-        # Generate correlation matrix for variables
-        variables = parsed_data.get("variables", [])
-        if len(variables) > 1:
-            # Create correlation matrix
-            n_vars = len(variables)
-            corr_matrix = np.random.rand(n_vars, n_vars)  # Placeholder
-            corr_matrix = (corr_matrix + corr_matrix.T) / 2  # Make symmetric
-            np.fill_diagonal(corr_matrix, 1)  # Diagonal = 1
-            
-            plt.figure(figsize=(10, 8))
-            sns.heatmap(corr_matrix, 
-                       xticklabels=[v["name"] for v in variables],
-                       yticklabels=[v["name"] for v in variables],
-                       annot=True, cmap='coolwarm', center=0)
-            plt.title(f"{model_name} - Variable Correlation Matrix")
-            plt.tight_layout()
-            
-            plot_file = output_dir / f"{model_name}_variable_correlation.png"
-            plt.savefig(plot_file, dpi=300, bbox_inches='tight')
-            plt.close()
-            
-            visualizations.append(str(plot_file))
+        # Matrix-to-matrix correlation based on flattened numeric values (real data, no randomness)
+        matrices_list = [m for m in matrices if m.get("data") is not None]
+        if len(matrices_list) > 1:
+            try:
+                names = [m.get("definition", f"M{i+1}") for i, m in enumerate(matrices_list)]
+                data_flat = []
+                max_len = max(m["data"].size for m in matrices_list)
+                for m in matrices_list:
+                    flat = m["data"].astype(float).flatten()
+                    # Pad with NaNs to equal length for fair correlation on overlapping indices
+                    if flat.size < max_len:
+                        pad = np.full((max_len - flat.size,), np.nan)
+                        flat = np.concatenate([flat, pad])
+                    data_flat.append(flat)
+                data_mat = np.vstack(data_flat)
+                # Compute pairwise correlations ignoring NaNs
+                def nan_corrcoef(arr):
+                    # arr shape: num_matrices x max_len
+                    with np.errstate(invalid='ignore'):
+                        mean = np.nanmean(arr, axis=1, keepdims=True)
+                        std = np.nanstd(arr, axis=1, keepdims=True)
+                        norm = (arr - mean) / (std + 1e-12)
+                        cov = np.nanmean(norm[:, None, :] * norm[None, :, :], axis=2)
+                        return cov
+                corr_matrix = nan_corrcoef(data_mat)
+                plt.figure(figsize=(10, 8))
+                sns.heatmap(corr_matrix, 
+                           xticklabels=[f"M{i+1}" for i in range(len(names))],
+                           yticklabels=[f"M{i+1}" for i in range(len(names))],
+                           annot=True if len(names) <= 10 else False, cmap='coolwarm', vmin=-1, vmax=1)
+                plt.title(f"{model_name} - Matrix Correlation (flattened)")
+                plt.tight_layout()
+                plot_file = output_dir / f"{model_name}_matrix_correlation.png"
+                plt.savefig(plot_file, dpi=300, bbox_inches='tight')
+                plt.close()
+                visualizations.append(str(plot_file))
+            except Exception as _:
+                pass
         
     except Exception as e:
         print(f"Error generating matrix visualizations: {e}")

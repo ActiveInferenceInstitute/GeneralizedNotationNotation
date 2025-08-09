@@ -286,7 +286,7 @@ def process_llm(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/llm_processing_step/
+output/13_llm_output/
 ├── model_analysis.json            # LLM analysis results
 ├── model_insights.json            # Model insights and recommendations
 ├── optimization_suggestions.json  # Optimization suggestions

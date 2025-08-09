@@ -230,7 +230,7 @@ def process_integration(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/integration/
+output/17_integration_output/
 ├── module_coordination.json        # Module coordination results
 ├── data_flow_management.json      # Data flow management results
 ├── system_integration.json        # System integration results

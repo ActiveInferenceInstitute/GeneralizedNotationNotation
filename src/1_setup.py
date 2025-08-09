@@ -181,8 +181,12 @@ def process_setup_standardized(
         
         logger.info("✅ UV environment setup completed")
         
-        # Create project structure
-        structure_success = create_project_structure(output_dir, logger)
+        # Use standardized numbered output folder for this step
+        step_output_dir = get_output_dir_for_script("1_setup.py", output_dir)
+        step_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Create project structure inside the step output directory
+        structure_success = create_project_structure(step_output_dir, logger)
         if not structure_success:
             logger.error("❌ Failed to create project structure")
             return False

@@ -146,7 +146,7 @@ from website import embed_visualizations
 
 # Embed pipeline visualizations
 success = embed_visualizations(
-    visualization_dir=Path("output/visualization/"),
+    visualization_dir=Path("output/8_visualization_output/"),
     website_dir=Path("website/")
 )
 
@@ -163,7 +163,7 @@ from website import embed_reports
 
 # Embed pipeline reports
 success = embed_reports(
-    report_dir=Path("output/report/"),
+    report_dir=Path("output/21_report_output/"),
     website_dir=Path("website/")
 )
 
@@ -180,7 +180,7 @@ from website import embed_analysis_results
 
 # Embed analysis results
 success = embed_analysis_results(
-    analysis_dir=Path("output/analysis/"),
+    analysis_dir=Path("output/16_analysis_output/"),
     website_dir=Path("website/")
 )
 

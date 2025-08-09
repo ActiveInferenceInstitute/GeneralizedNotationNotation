@@ -273,7 +273,7 @@ def process_security(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/security_processing/
+output/18_security_output/
 ├── security_analysis.json          # Security analysis results
 ├── vulnerability_assessment.json   # Vulnerability assessment
 ├── compliance_report.json          # Compliance report
