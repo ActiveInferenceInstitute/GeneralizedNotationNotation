@@ -223,6 +223,11 @@ def check_dependencies() -> List[ValidationResult]:
         ("scipy", "1.5.0"),
         ("scikit-learn", "0.24.0")
     ]
+
+    # Optional execution-time dependencies (do not fail overall if missing)
+    optional_packages = [
+        ("pymdp", "0.0.8")
+    ]
     
     for package, min_version in required_packages:
         try:
@@ -267,6 +272,26 @@ def check_dependencies() -> List[ValidationResult]:
                 suggestion=f"Install {package}>={min_version} with: uv pip install {package}>={min_version} or add to pyproject and run uv sync"
             ))
     
+    # Check optional packages as warnings
+    for package, min_version in optional_packages:
+        try:
+            module = __import__(package)
+            version = getattr(module, '__version__', 'unknown')
+            results.append(ValidationResult(
+                component=f"dependency_optional_{package}",
+                status="pass",
+                message=f"{package} {version} is available",
+                details={"package": package, "version": version, "min_version": min_version}
+            ))
+        except ImportError:
+            results.append(ValidationResult(
+                component=f"dependency_optional_{package}",
+                status="warn",
+                message=f"Optional dependency {package} is not available; some executions may be skipped",
+                details={"package": package, "min_version": min_version},
+                suggestion=f"Install {package}>={min_version} with: uv pip install {package}>={min_version}"
+            ))
+
     return results
 
 def check_file_permissions() -> List[ValidationResult]:

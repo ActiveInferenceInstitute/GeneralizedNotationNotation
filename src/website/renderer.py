@@ -108,6 +108,7 @@ def process_website(
     target_dir: Path,
     output_dir: Path,
     verbose: bool = False,
+    pipeline_output_root: Path | None = None,
     **kwargs
 ) -> bool:
     """
@@ -133,7 +134,7 @@ def process_website(
         from .generator import generate_website
         if not Path(target_dir).exists():
             return {"success": False, "errors": [f"Target directory not found: {target_dir}"], "warnings": [], "pages_created": 0}
-        result = generate_website(logger, target_dir, website_dir)
+        result = generate_website(logger, target_dir, website_dir, pipeline_output_root=pipeline_output_root)
         
         if result["success"]:
             logger.info(f"Website generated successfully with {result['pages_created']} pages")

@@ -31,10 +31,81 @@ class WebsiteGenerator:
             # Extract data
             output_dir = Path(website_data.get("output_dir", "output/website"))
             input_dir = Path(website_data.get("input_dir", "output"))
+            pipeline_root: Path = Path(website_data.get("pipeline_output_root", input_dir))
             
             # Create output directory
             output_dir.mkdir(parents=True, exist_ok=True)
             
+            # Collect artifacts from pipeline for richer website content
+            analysis_dir = pipeline_root / "16_analysis_output" / "16_analysis_output" / "analysis_results"
+            visualization_dir = pipeline_root / "visualization"
+            advanced_viz_dir = pipeline_root / "9_advanced_viz_output" / "actinf_pomdp_agent"
+            execution_dir = pipeline_root / "execution_results"
+
+            if not website_data.get("analysis_results") and analysis_dir.exists():
+                try:
+                    import json as _json
+                    analysis_results_file = analysis_dir / "analysis_results.json"
+                    if analysis_results_file.exists():
+                        with open(analysis_results_file, 'r') as f:
+                            parsed = _json.load(f)
+                        website_data["analysis_results"] = parsed.get("statistical_analysis", [])
+                        website_data["complexity_metrics"] = parsed.get("complexity_metrics", [])
+                except Exception as e:
+                    result["warnings"].append(f"Could not load analysis results: {e}")
+
+            # Build visualization entries
+            if not website_data.get("visualization_results") and visualization_dir.exists():
+                try:
+                    viz_entries = []
+                    img_dir = visualization_dir / "actinf_pomdp_agent"
+                    for img in [img_dir / "matrix_analysis.png", img_dir / "pomdp_transition_analysis.png"]:
+                        if img.exists():
+                            # Copy into website assets for stable linking
+                            assets = output_dir / "assets"
+                            assets.mkdir(parents=True, exist_ok=True)
+                            dest = assets / img.name
+                            try:
+                                shutil.copy2(img, dest)
+                                rel_path = str(dest.relative_to(output_dir))
+                            except Exception:
+                                rel_path = str(img)
+                            viz_entries.append({
+                                "title": img.stem,
+                                "file_path": rel_path,
+                                "description": "Visualization artifact"
+                            })
+                    # Advanced viz HTML
+                    adv_html = advanced_viz_dir / "actinf_pomdp_agent_advanced_viz.html"
+                    if adv_html.exists():
+                        dest_html = output_dir / "assets" / adv_html.name
+                        dest_html.parent.mkdir(parents=True, exist_ok=True)
+                        try:
+                            shutil.copy2(adv_html, dest_html)
+                            rel_html = str(dest_html.relative_to(output_dir))
+                        except Exception:
+                            rel_html = str(adv_html)
+                        viz_entries.append({
+                            "title": "Advanced Visualization",
+                            "file_path": rel_html,
+                            "description": "Interactive advanced visualization"
+                        })
+                    website_data["visualization_results"] = viz_entries
+                except Exception as e:
+                    result["warnings"].append(f"Could not aggregate visualizations: {e}")
+
+            # Execution results summary
+            if execution_dir.exists():
+                try:
+                    import json as _json
+                    exec_file = execution_dir / "execution_results.json"
+                    if exec_file.exists():
+                        with open(exec_file, 'r') as f:
+                            exec_json = _json.load(f)
+                        website_data["execution_summary"] = exec_json.get("summary", {})
+                except Exception as e:
+                    result["warnings"].append(f"Could not load execution results: {e}")
+
             # Create pages
             pages_result = self.create_pages(output_dir, website_data)
             result["pages_created"] = pages_result.get("pages_created", 0)
@@ -95,6 +166,20 @@ class WebsiteGenerator:
     
     def _generate_index_page(self, data: dict) -> str:
         """Generate the main index page."""
+        exec_summary = data.get('execution_summary', {})
+        exec_block = ""
+        if exec_summary:
+            exec_block = f"""
+    <div class="section">
+        <h2>Execution Summary</h2>
+        <ul>
+            <li>Total Scripts: {exec_summary.get('total_scripts', 0)}</li>
+            <li>Successful: {exec_summary.get('successful_executions', 0)}</li>
+            <li>Failed: {exec_summary.get('failed_executions', 0)}</li>
+            <li>Attempts: {exec_summary.get('total_attempts', 0)}</li>
+        </ul>
+    </div>
+"""
         return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -123,7 +208,6 @@ class WebsiteGenerator:
         <ul>
             <li><a href="analysis.html" class="link">Analysis Results</a></li>
             <li><a href="visualization.html" class="link">Visualizations</a></li>
-            <li><a href="render.html" class="link">Generated Code</a></li>
         </ul>
     </div>
     
@@ -135,6 +219,7 @@ class WebsiteGenerator:
             <li>Visualizations: {len(data.get('visualization_results', []))}</li>
         </ul>
     </div>
+{exec_block}
 </body>
 </html>"""
     
@@ -249,7 +334,7 @@ class WebsiteGenerator:
         
         return html
 
-def generate_website(logger, input_dir: Path, output_dir: Path) -> Dict[str, Any]:
+def generate_website(logger, input_dir: Path, output_dir: Path, *, pipeline_output_root: Path | None = None) -> Dict[str, Any]:
     """Generate a website from pipeline artifacts."""
     try:
         generator = WebsiteGenerator()
@@ -258,6 +343,7 @@ def generate_website(logger, input_dir: Path, output_dir: Path) -> Dict[str, Any
         website_data = {
             "input_dir": input_dir,
             "output_dir": output_dir,
+            "pipeline_output_root": str(pipeline_output_root) if pipeline_output_root else str(output_dir.parent),
             "analysis_results": [],
             "visualization_results": [],
             "render_results": []

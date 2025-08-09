@@ -78,6 +78,32 @@ def process_website_standardized(
         # Set up output directory
         step_output_dir = get_output_dir_for_script("20_website.py", output_dir)
         step_output_dir.mkdir(parents=True, exist_ok=True)
+
+        # Clean up legacy nested directories from previous runs
+        legacy_nested = step_output_dir / "20_website_output"
+        try:
+            if legacy_nested.exists() and legacy_nested.is_dir():
+                nested_site = legacy_nested / "website"
+                current_site = step_output_dir / "website"
+                if nested_site.exists() and nested_site.is_dir():
+                    current_site.mkdir(parents=True, exist_ok=True)
+                    # Move files out of nested website directory
+                    for item in nested_site.iterdir():
+                        target_path = current_site / item.name
+                        if target_path.exists():
+                            continue
+                        item.rename(target_path)
+                # Attempt to remove the legacy nested directory tree if empty
+                for candidate in [nested_site, legacy_nested]:
+                    try:
+                        if candidate.exists():
+                            candidate.rmdir()
+                    except OSError:
+                        # Non-empty; leave as-is
+                        pass
+        except Exception:
+            # Non-fatal cleanup failure
+            pass
         
         # Log processing parameters
         logger.info(f"Processing GNN files from: {target_dir}")
@@ -146,7 +172,8 @@ def main():
             logger=logger,
             recursive=getattr(args, 'recursive', False),
             verbose=getattr(args, 'verbose', False),
-            website_html_filename=getattr(args, 'website_html_filename', 'gnn_pipeline_summary_website.html')
+            website_html_filename=getattr(args, 'website_html_filename', 'gnn_pipeline_summary_website.html'),
+            pipeline_output_root=output_dir
         )
         
         return 0 if success else 1

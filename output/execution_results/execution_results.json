@@ -1,14 +1,14 @@
 {
-  "timestamp": "2025-08-08T14:55:06.857012",
-  "correlation_id": "464dc66c",
+  "timestamp": "2025-08-09T13:36:07.002755",
+  "correlation_id": "9bd30266",
   "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
   "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results",
   "environment_validation": {
-    "timestamp": "2025-08-08T14:55:05.709537",
+    "timestamp": "2025-08-09T13:36:05.704055",
     "overall_status": "healthy",
     "summary": {
-      "total_checks": 14,
-      "total_passed": 14,
+      "total_checks": 15,
+      "total_passed": 15,
       "total_warnings": 0,
       "total_errors": 0
     },
@@ -28,16 +28,16 @@
         "message": "Sufficient memory: 24.0GB available",
         "details": {
           "total_gb": 24.0,
-          "available_gb": 12.938751220703125
+          "available_gb": 8.821075439453125
         },
         "suggestion": null
       },
       {
         "component": "disk_space",
         "status": "pass",
-        "message": "Sufficient disk space: 257.4GB free",
+        "message": "Sufficient disk space: 258.8GB free",
         "details": {
-          "free_gb": 257.3942756652832,
+          "free_gb": 258.7633857727051,
           "total_gb": 460.4317207336426
         },
         "suggestion": null
@@ -45,10 +45,10 @@
       {
         "component": "cpu_usage",
         "status": "pass",
-        "message": "Normal CPU usage: 9.9%",
+        "message": "Normal CPU usage: 47.3%",
         "details": {
           "cpu_count": 14,
-          "cpu_percent": 9.9
+          "cpu_percent": 47.3
         },
         "suggestion": null
       },
@@ -130,6 +130,17 @@
         "suggestion": null
       },
       {
+        "component": "dependency_optional_pymdp",
+        "status": "pass",
+        "message": "pymdp unknown is available",
+        "details": {
+          "package": "pymdp",
+          "version": "unknown",
+          "min_version": "0.0.8"
+        },
+        "suggestion": null
+      },
+      {
         "component": "write_permissions",
         "status": "pass",
         "message": "Write permissions verified",
@@ -158,7 +169,7 @@
     {
       "script_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py",
       "script_name": "actinf_pomdp_agent_pymdp.py",
-      "correlation_id": "464dc66c-actinf_pomdp_agent_pymdp",
+      "correlation_id": "9bd30266-actinf_pomdp_agent_pymdp",
       "execution_success": false,
       "gnn_based": true,
       "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/execution_results/pymdp_actinf_pomdp_agent_pymdp",
@@ -166,7 +177,7 @@
       "attempts": [
         {
           "attempt_number": 1,
-          "duration_seconds": 0.051585,
+          "duration_seconds": 0.05529,
           "success": false,
           "error_type": "dependency_missing",
           "error_message": "Traceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 8, in <module>\n    from ",
@@ -174,7 +185,7 @@
         },
         {
           "attempt_number": 2,
-          "duration_seconds": 0.053061,
+          "duration_seconds": 0.100867,
           "success": false,
           "error_type": "dependency_missing",
           "error_message": "Traceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 8, in <module>\n    from ",
@@ -182,14 +193,14 @@
         },
         {
           "attempt_number": 3,
-          "duration_seconds": 0.070887,
+          "duration_seconds": 0.107587,
           "success": false,
           "error_type": "dependency_missing",
           "error_message": "Traceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 8, in <module>\n    from ",
           "resource_usage": {}
         }
       ],
-      "execution_time_seconds": 6.181412935256958,
+      "execution_time_seconds": 6.275559902191162,
       "resource_usage": {}
     }
   ],
