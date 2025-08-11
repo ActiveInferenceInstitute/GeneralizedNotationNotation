@@ -1,0 +1,17 @@
+2025-08-11 15:43:37,952 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:259: SyntaxWarning: invalid escape sequence '\$'
+  def create_active_inference_diagram():
+<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:259: SyntaxWarning: invalid escape sequence '\$'
+  def create_active_inference_diagram():
+<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:259: SyntaxWarning: invalid escape sequence '\$'
+  def create_active_inference_diagram():
+<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
+<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
+<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:259: SyntaxWarning: invalid escape sequence '\$'
+  def create_active_inference_diagram():
+<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
+<unknown>:259: SyntaxWarning: invalid escape sequence '\$'

@@ -219,9 +219,13 @@ class SandvedSmithModel:
         
         # Precision-weighted likelihood mapping
         A1_bar = precision_weighted_likelihood(self.A1, self.gamma_A1[t])
+        if A1_bar is None:
+            A1_bar = self.A1.astype(float)
+        else:
+            A1_bar = np.asarray(A1_bar, dtype=float)
         
-        # Observation prior
-        self.O1[:, t] = np.inner(A1_bar, self.X1[:, t])
+        # Observation prior (matrix-vector product)
+        self.O1[:, t] = np.dot(A1_bar, self.X1[:, t])
         
         # Perceptual state posterior
         log_likelihood = self.gamma_A1[t] * np.log(self.A1[int(self.O[t]), :])
@@ -240,6 +244,7 @@ class SandvedSmithModel:
         
         # Attentional state posterior
         precision_ratio = (self.beta_A1m - AtC) / self.beta_A1m * beta_A1 / beta_A1_bar
+        precision_ratio = np.maximum(precision_ratio, 1e-16)
         log_precision_evidence = -1.0 * np.log(precision_ratio)
         self.X2_bar[:, t] = softmax(np.log(self.X2[:, t]) + log_precision_evidence)
     
@@ -251,6 +256,10 @@ class SandvedSmithModel:
         )
         self.gamma_A2[t] = self.beta_A2m[int(self.x3[t])] ** -1
         A2_bar = precision_weighted_likelihood(self.A2, self.gamma_A2[t])
+        if A2_bar is None:
+            A2_bar = self.A2.astype(float)
+        else:
+            A2_bar = np.asarray(A2_bar, dtype=float)
         
         # Set true lower-level attentional states as observations
         self.O2_bar[int(self.x2[t]), t] = 1
@@ -261,9 +270,13 @@ class SandvedSmithModel:
         )
         self.gamma_A1[t] = self.beta_A1m[int(self.x2[t])] ** -1
         A1_bar = precision_weighted_likelihood(self.A1, self.gamma_A1[t])
+        if A1_bar is None:
+            A1_bar = self.A1.astype(float)
+        else:
+            A1_bar = np.asarray(A1_bar, dtype=float)
         
         # Perceptual level (Level 1)
-        self.O1[:, t] = np.inner(A1_bar, self.X1[:, t])
+        self.O1[:, t] = np.dot(A1_bar, self.X1[:, t])
         log_likelihood = self.gamma_A1[t] * np.log(self.A1[int(self.O[t]), :])
         self.X1_bar[:, t] = softmax(np.log(self.X1[:, t]) + log_likelihood)
         
@@ -314,9 +327,11 @@ class SandvedSmithModel:
         # Predict observations under each policy
         A2_current = self.A2bar_fixed if not self.three_level else \
                     precision_weighted_likelihood(self.A2, self.gamma_A2[t])
+        if A2_current is None:
+            A2_current = self.A2.astype(float)
         
-        O2a = np.inner(A2_current, X2a)
-        O2b = np.inner(A2_current, X2b)
+        O2a = np.dot(A2_current, X2a)
+        O2b = np.dot(A2_current, X2b)
         
         # Compute expected free energy for each policy
         self.G2[0, t] = expected_free_energy(O2a, self.C2, X2a, self.H2)
@@ -338,8 +353,8 @@ class SandvedSmithModel:
         self.X2[:, t+1] = np.inner(B2, self.X2_bar[:, t])
         self.X1[:, t+1] = np.inner(self.B1, self.X1_bar[:, t])
         
-        # Discrete action selection
-        self.u2[t] = discrete_choice(self.Pi2[:, t])
+        # Deterministic action selection for reproducibility
+        self.u2[t] = int(np.argmax(self.Pi2[:, t]))
         
         # Update true states based on figure mode or policy
         if figure_mode == 'fig7':
@@ -348,9 +363,10 @@ class SandvedSmithModel:
         else:
             # Normal simulation: stochastic transitions
             if self.u2[t] == 0:  # Stay policy
-                self.x2[t+1] = np.random.choice([0, 1], p=self.B2a[:, int(self.x2[t])])
+                # Deterministic next state selection
+                self.x2[t+1] = int(np.argmax(self.B2a[:, int(self.x2[t])]))
             else:  # Switch policy
-                self.x2[t+1] = np.random.choice([0, 1], p=self.B2b[:, int(self.x2[t])])
+                self.x2[t+1] = int(np.argmax(self.B2b[:, int(self.x2[t])]))
         
         # Update meta-awareness states (if three-level)
         if self.three_level:
@@ -359,7 +375,7 @@ class SandvedSmithModel:
                 self.x3[t+1] = 0 if (t+1) < self.T//2 else 1
             else:
                 # Normal simulation: stochastic transitions
-                self.x3[t+1] = np.random.choice([0, 1], p=self.B3[:, int(self.x3[t])])
+                self.x3[t+1] = int(np.argmax(self.B3[:, int(self.x3[t])]))
     
     def _compute_final_free_energies(self):
         """Compute final variational free energies for policy posteriors."""
@@ -378,19 +394,23 @@ class SandvedSmithModel:
                 if AtC > self.beta_A1m[0]:
                     AtC = self.beta_A1m[0] - 1e-5
                 
-                beta_A1 = bayesian_model_average(
-                    self.beta_A1m, self.X2[:, t], 
-                    self.A2bar_fixed if not self.three_level else 
-                    precision_weighted_likelihood(self.A2, self.gamma_A2[t])
-                )
+                try:
+                    beta_A1 = bayesian_model_average(
+                        self.beta_A1m, self.X2[:, t], 
+                        self.A2bar_fixed if not self.three_level else 
+                        precision_weighted_likelihood(self.A2, self.gamma_A2[t])
+                    )
+                except TypeError:
+                    beta_A1 = bayesian_model_average(self.beta_A1m, self.X2[:, t])
                 beta_A1_bar = beta_A1 - AtC
                 
                 # Update state predictions with precision evidence
                 precision_ratio = (self.beta_A1m - AtC) / self.beta_A1m * beta_A1 / beta_A1_bar
+                precision_ratio = np.maximum(precision_ratio, 1e-16)
                 log_precision_evidence = -1.0 * np.log(precision_ratio)
                 
-                X2a_bar = softmax(np.log(X2a) + log_precision_evidence)
-                X2b_bar = softmax(np.log(X2b) + log_precision_evidence)
+                X2a_bar = softmax(np.log(np.maximum(X2a, 1e-16)) + log_precision_evidence)
+                X2b_bar = softmax(np.log(np.maximum(X2b, 1e-16)) + log_precision_evidence)
                 
                 # Compute variational free energy
                 self.F2[0, t-1] = variational_free_energy(

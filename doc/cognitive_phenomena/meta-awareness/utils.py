@@ -66,6 +66,7 @@ def setup_likelihood_matrices():
     return A1, A2, A3
 
 def precision_weighted_likelihood(A: np.ndarray, gamma: float) -> np.ndarray:
+    A = np.asarray(A, dtype=float)
     return softmax_dim2(np.log(np.clip(A, 1e-16, 1.0)) * gamma)
 
 def expected_free_energy(O_pred: np.ndarray, C: np.ndarray, X_pred: np.ndarray, H: np.ndarray) -> float:
@@ -170,15 +171,9 @@ def normalise(X: np.ndarray) -> np.ndarray:
 def precision_weighted_likelihood(A: np.ndarray, gamma: float) -> np.ndarray:
     """
     Apply precision weighting to likelihood matrix.
-    
-    Args:
-        A: Likelihood matrix
-        gamma: Precision parameter (inverse variance)
-        
-    Returns:
-        Precision-weighted likelihood matrix
     """
-    return softmax_dim2(np.log(A) * gamma)
+    A = np.asarray(A, dtype=float)
+    return softmax_dim2(np.log(np.clip(A, 1e-16, 1.0)) * gamma)
 
 def bayesian_model_average(beta_values: np.ndarray, state_beliefs: np.ndarray, 
                           likelihood_matrix: np.ndarray) -> float:

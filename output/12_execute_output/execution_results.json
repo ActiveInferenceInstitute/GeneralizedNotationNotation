@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-08-11T10:26:34.854434",
-  "correlation_id": "e47334e0",
+  "timestamp": "2025-08-11T15:46:53.137611",
+  "correlation_id": "4cf0db5c",
   "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
   "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output",
   "environment_validation": {
-    "timestamp": "2025-08-11T10:26:32.683725",
+    "timestamp": "2025-08-11T15:46:51.530926",
     "overall_status": "healthy",
     "summary": {
       "total_checks": 15,
@@ -28,16 +28,16 @@
         "message": "Sufficient memory: 24.0GB available",
         "details": {
           "total_gb": 24.0,
-          "available_gb": 11.70196533203125
+          "available_gb": 10.99383544921875
         },
         "suggestion": null
       },
       {
         "component": "disk_space",
         "status": "pass",
-        "message": "Sufficient disk space: 231.2GB free",
+        "message": "Sufficient disk space: 181.5GB free",
         "details": {
-          "free_gb": 231.15878295898438,
+          "free_gb": 181.54502868652344,
           "total_gb": 460.4317207336426
         },
         "suggestion": null
@@ -45,10 +45,10 @@
       {
         "component": "cpu_usage",
         "status": "pass",
-        "message": "Normal CPU usage: 11.1%",
+        "message": "Normal CPU usage: 11.2%",
         "details": {
           "cpu_count": 14,
-          "cpu_percent": 11.1
+          "cpu_percent": 11.2
         },
         "suggestion": null
       },
@@ -169,7 +169,7 @@
     {
       "script_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py",
       "script_name": "actinf_pomdp_agent_pymdp.py",
-      "correlation_id": "e47334e0-actinf_pomdp_agent_pymdp",
+      "correlation_id": "4cf0db5c-actinf_pomdp_agent_pymdp",
       "execution_success": false,
       "gnn_based": true,
       "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/pymdp_actinf_pomdp_agent_pymdp",
@@ -177,7 +177,7 @@
       "attempts": [
         {
           "attempt_number": 1,
-          "duration_seconds": 0.069754,
+          "duration_seconds": 0.053095,
           "success": false,
           "error_type": "dependency_missing",
           "error_message": "Traceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 8, in <module>\n    from ",
@@ -185,7 +185,7 @@
         },
         {
           "attempt_number": 2,
-          "duration_seconds": 0.070692,
+          "duration_seconds": 0.060294,
           "success": false,
           "error_type": "dependency_missing",
           "error_message": "Traceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 8, in <module>\n    from ",
@@ -193,14 +193,14 @@
         },
         {
           "attempt_number": 3,
-          "duration_seconds": 0.079455,
+          "duration_seconds": 0.072386,
           "success": false,
           "error_type": "dependency_missing",
           "error_message": "Traceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py\", line 8, in <module>\n    from ",
           "resource_usage": {}
         }
       ],
-      "execution_time_seconds": 6.229938983917236,
+      "execution_time_seconds": 6.195027828216553,
       "resource_usage": {}
     }
   ],

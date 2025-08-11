@@ -53,7 +53,13 @@ def generate_oddball_sequence(length=10):
     return _np.zeros(length, dtype=int)
 
 def discrete_choice(values, temperature: float = 1.0):
-    probs = softmax(_np.asarray(values, dtype=float) / (temperature or 1.0))
+    vals = _np.asarray(values, dtype=float)
+    scaled = vals / (temperature if temperature and temperature > 0 else 1.0)
+    probs = softmax(scaled)
+    # Guard against NaNs
+    if not _np.isfinite(probs).all() or probs.sum() == 0:
+        probs = _np.ones_like(probs) / len(probs)
+    probs = probs / probs.sum()
     return int(_np.random.choice(len(probs), p=probs))
 
 def setup_transition_matrices():
