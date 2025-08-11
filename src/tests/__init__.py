@@ -32,6 +32,14 @@ from typing import Dict, Any, List, Optional, Generator
 SRC_DIR = Path(__file__).parent.parent
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
+    # Also expose tests as a top-level import alias so 'from tests.conftest import *' works
+    try:
+        import types as _types
+        pkg = _types.ModuleType('tests')
+        pkg.__path__ = [str(Path(__file__).parent)]  # type: ignore[attr-defined]
+        sys.modules.setdefault('tests', pkg)
+    except Exception:
+        pass
 
 # Import necessary utilities and helpers from utils.test_utils (guarded)
 try:

@@ -64,7 +64,7 @@ class PipelineArguments:
     
     # Processing options
     recursive: bool = True
-    verbose: bool = True
+    verbose: bool = False
     
     # Validation options (enabled by default for comprehensive testing)
     enable_round_trip: bool = True      # Enable round-trip testing across all 21 formats
@@ -215,7 +215,7 @@ class ArgumentParser:
         'verbose': ArgumentDefinition(
             flag='--verbose',
             action=argparse.BooleanOptionalAction,
-            default=True,
+            default=False,
             help_text='Enable verbose output'
         ),
         'enable_round_trip': ArgumentDefinition(

@@ -81,9 +81,11 @@ class OntologyValidator:
         res = validate_annotations(annotations, terms)
         return {"valid": len(res.get("invalid_annotations", [])) == 0, "details": res, "errors": [], "warnings": []}
 
-    def validate_ontology(self, content: str) -> Dict[str, Any]:
+    def validate_ontology(self, content: str) -> bool | Dict[str, Any]:
         parsed = parse_gnn_ontology_section(content)
-        return self.validate(parsed.get('annotations', []))
+        result = self.validate(parsed.get('annotations', []))
+        # Some tests expect a boolean True/False
+        return result.get("valid", False)
 
     # Additional method expected by tests
     def check_consistency(self, annotations: list[str] | None = None) -> bool:

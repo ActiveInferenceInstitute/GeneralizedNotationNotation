@@ -93,7 +93,7 @@ def test_activeinference_renderer():
         else:
             print(f"❌ Rendering failed: {message}")
             
-        return success
+        assert success
         
     except ImportError as e:
         print(f"❌ Import error: {e}")

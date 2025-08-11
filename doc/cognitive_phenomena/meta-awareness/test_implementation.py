@@ -9,6 +9,10 @@ with the computational phenomenology paper.
 
 import numpy as np
 import matplotlib.pyplot as plt
+# Ensure local imports resolve when running from repo root
+import sys, pathlib as _p
+_here = _p.Path(__file__).parent
+sys.path.insert(0, str(_here))
 from sandved_smith_2021 import SandvedSmithModel, run_figure_7_simulation, run_figure_10_simulation, run_figure_11_simulation
 from utils import softmax, softmax_dim2, compute_attentional_charge
 from visualizations import display_results_summary

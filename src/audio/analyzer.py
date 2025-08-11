@@ -5,6 +5,7 @@ Audio analyzer module for GNN Processing Pipeline.
 This module provides audio analysis functionality.
 """
 
+from __future__ import annotations
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import json

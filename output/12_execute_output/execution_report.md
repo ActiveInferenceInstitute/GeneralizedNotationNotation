@@ -1,7 +1,7 @@
 # Execution Report
 
-**Correlation ID:** e98f0ec0
-**Generated:** 2025-08-11T07:55:17.589378
+**Correlation ID:** e47334e0
+**Generated:** 2025-08-11T10:26:34.854434
 **Total Scripts:** 1
 **Successful:** 0
 **Failed:** 1
@@ -17,7 +17,7 @@
 ### ❌ actinf_pomdp_agent_pymdp.py
 - **Success:** False
 - **GNN-based:** True
-- **Execution Time:** 6.24s
+- **Execution Time:** 6.23s
 - **Attempts:** 3
 - **Error:** dependency_missing: Traceback (most recent call last):
   File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/actinf_pomdp_agent_pymdp.py", line 8, in <module>

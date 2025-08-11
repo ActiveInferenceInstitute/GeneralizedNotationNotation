@@ -16,6 +16,16 @@ from unittest.mock import Mock
 # Import pytest
 import pytest
 
+# Ensure top-level 'tests' alias exists for imports like 'from tests.conftest import *'
+try:
+    import types as _types
+    _pkg = _types.ModuleType('tests')
+    _pkg.__path__ = [str(Path(__file__).parent)]  # type: ignore[attr-defined]
+    sys.modules.setdefault('tests', _pkg)
+    sys.modules['tests.conftest'] = sys.modules.get(__name__)
+except Exception:
+    pass
+
 # Test configuration and markers
 PYTEST_MARKERS = {
     "unit": "Unit tests for individual components",

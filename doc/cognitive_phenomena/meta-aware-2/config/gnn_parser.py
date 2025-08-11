@@ -425,7 +425,19 @@ def load_gnn_config(config_path: Union[str, Path]) -> ModelConfig:
     Returns:
         Parsed ModelConfig object
     """
-    parser = GNNConfigParser(config_path)
+    # Resolve configuration path robustly for different working directories
+    cp = Path(config_path)
+    if not cp.exists():
+        # Try alongside this module (the config directory)
+        candidates = [
+            Path(__file__).parent / cp,
+            Path(__file__).parent / cp.name,
+        ]
+        for c in candidates:
+            if c.exists():
+                cp = c
+                break
+    parser = GNNConfigParser(cp)
     return parser.parse_config()
 
 # Example usage

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 """
 Matrix Visualization Module for GNN Processing Pipeline
 

@@ -13,16 +13,18 @@ from typing import List, Dict, Any, Optional, Union, AsyncGenerator
 from enum import Enum
 import logging
 
-from .providers import (
+from .providers.base_provider import (
     BaseLLMProvider,
-    OpenAIProvider,
-    OpenRouterProvider,
-    PerplexityProvider,
-    OllamaProvider,
     ProviderType,
     LLMResponse,
     LLMMessage,
-    LLMConfig
+    LLMConfig,
+)
+from .providers import (
+    get_openai_provider_class,
+    get_openrouter_provider_class,
+    get_perplexity_provider_class,
+    get_ollama_provider_class,
 )
 
 logger = logging.getLogger(__name__)
@@ -226,13 +228,13 @@ class LLMProcessor:
         config = self.provider_configs.get(provider_type.value, {})
         
         if provider_type == ProviderType.OPENAI:
-            return OpenAIProvider(api_key=api_key, **config)
+            return get_openai_provider_class()(api_key=api_key, **config)
         elif provider_type == ProviderType.OPENROUTER:
-            return OpenRouterProvider(api_key=api_key, **config)
+            return get_openrouter_provider_class()(api_key=api_key, **config)
         elif provider_type == ProviderType.PERPLEXITY:
-            return PerplexityProvider(api_key=api_key, **config)
+            return get_perplexity_provider_class()(api_key=api_key, **config)
         elif provider_type == ProviderType.OLLAMA:
-            return OllamaProvider(**config)
+            return get_ollama_provider_class()(**config)
         else:
             logger.error(f"Unknown provider type: {provider_type}")
             return None

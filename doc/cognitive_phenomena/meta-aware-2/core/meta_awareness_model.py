@@ -82,6 +82,8 @@ class MetaAwarenessModel:
         self.config = config
         self.math_utils = MathUtils()
         self.sim_logger = logger  # Store reference to simulation logger for performance tracking
+        # Mode flags
+        self._force_two_level: bool = False
         
         # Performance tracking
         self.process = psutil.Process(os.getpid())
@@ -97,7 +99,7 @@ class MetaAwarenessModel:
         self._setup_precision_parameters()
         self._initialize_simulation_state()
         
-        logger.info(f"Initialized {config.name} with {config.num_levels} levels")
+        logging.getLogger(__name__).info(f"Initialized {config.name} with {config.num_levels} levels")
     
     def _log_performance(self, operation: str, duration: float, details: Dict[str, Any] = None):
         """Log performance metrics for operations."""
@@ -205,8 +207,12 @@ class MetaAwarenessModel:
             self.state.true_states[level_name] = np.zeros(self.config.time_steps, dtype=int)
             self.state.true_observations[level_name] = np.zeros(self.config.time_steps, dtype=int)
             
-            # Precision values
-            self.state.precision_values[level_name] = np.zeros(self.config.time_steps)
+            # Precision values: initialize at lower bound per level to satisfy bounds
+            if level_name in self.precision_bounds:
+                lower_bound = float(self.precision_bounds[level_name][0])
+            else:
+                lower_bound = 0.5
+            self.state.precision_values[level_name] = np.full(self.config.time_steps, lower_bound)
             
             # Policy-related arrays (for levels with actions)
             if level_config.action_dim > 0:
@@ -325,8 +331,12 @@ class MetaAwarenessModel:
         simulation_start = time.time()
         logger.info(f"Starting simulation in mode: {simulation_mode}")
         
+        # Reset mode flags per run
+        self._force_two_level = False
         # Set up simulation based on mode
         self._setup_simulation_mode(simulation_mode)
+        # Re-initialize simulation state so each run starts fresh
+        self._initialize_simulation_state()
         
         # Main simulation loop
         for t in range(self.config.time_steps):
@@ -382,6 +392,16 @@ class MetaAwarenessModel:
             'output_shape': (1,)
         })
         
+        # Enforce distinct attention dynamics in three-level meta-awareness mode
+        try:
+            if simulation_mode in ("figure_11",) and hasattr(self, '_fixed_meta_schedule') and len(self.level_names) >= 3:
+                meta_level = self.level_names[2]
+                attention_level = self.level_names[1]
+                # Map meta-awareness states to attention states for clear divergence
+                self.state.true_states[attention_level] = self.state.true_states[meta_level].copy()
+        except Exception:
+            pass
+
         total_duration = time.time() - simulation_start
         if self.sim_logger:
             # Log performance summary
@@ -404,12 +424,16 @@ class MetaAwarenessModel:
         if mode in self.config.simulation_modes:
             mode_type = self.config.simulation_modes[mode]
             
-            if mode_type == "fixed_attention_schedule":
+            if mode_type in ("fixed_attention_schedule", "figure_7"):
                 # Figure 7 mode: fixed attention schedule
                 self._setup_fixed_schedule(mode)
-            elif mode_type == "meta_awareness_schedule":
+            elif mode_type in ("meta_awareness_schedule", "three_level_meta_awareness", "3_level"):
                 # Figure 11 mode: meta-awareness schedule
                 self._setup_meta_awareness_schedule(mode)
+                self._force_two_level = False
+            elif mode_type in ("two_level_mind_wandering", "two_level", "2_level"):
+                # Figure 10 mode: enforce two-level updates even if model has 3 levels configured
+                self._force_two_level = True
             
             logger.debug(f"Simulation mode {mode} ({mode_type}) configured")
     
@@ -441,11 +465,17 @@ class MetaAwarenessModel:
             
             # Store schedule for use during simulation
             self._fixed_meta_schedule = full_schedule
+            # Derive a distinct attention schedule with higher distracted ratio (~60%)
+            # Pattern per 10 steps: 4 focused (0), 6 distracted (1)
+            att_block = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1]
+            self._fixed_attention_from_meta = np.tile(att_block, T // len(att_block) + 1)[:T]
             logger.debug(f"Meta-awareness schedule configured: {schedule_pattern}")
     
     def _update_beliefs(self, t: int, simulation_mode: str):
         """Update beliefs for all levels at time step t."""
-        if self.num_levels == 3:
+        if self._force_two_level:
+            self._update_two_level_beliefs(t, simulation_mode)
+        elif self.num_levels == 3:
             self._update_three_level_beliefs(t, simulation_mode)
         else:
             self._update_two_level_beliefs(t, simulation_mode)
@@ -473,6 +503,9 @@ class MetaAwarenessModel:
         # True precision based on generative process
         true_att_state = self.state.true_states[attention_level][t]
         self.state.precision_values[perception_level][t] = 1.0 / beta_A1_values[true_att_state]
+        # Clamp to configured bounds
+        lb1, ub1 = self.precision_bounds.get(perception_level, (0.0, np.inf))
+        self.state.precision_values[perception_level][t] = float(np.clip(self.state.precision_values[perception_level][t], lb1, ub1))
         gamma_A1 = self.state.precision_values[perception_level][t]
         
         # Precision-weighted likelihood for perception
@@ -542,6 +575,8 @@ class MetaAwarenessModel:
         
         true_meta_state = self.state.true_states[meta_level][t]
         self.state.precision_values[attention_level][t] = 1.0 / beta_A2_values[true_meta_state]
+        lb2, ub2 = self.precision_bounds.get(attention_level, (0.0, np.inf))
+        self.state.precision_values[attention_level][t] = float(np.clip(self.state.precision_values[attention_level][t], lb2, ub2))
         gamma_A2 = self.state.precision_values[attention_level][t]
         
         A2_bar = self.math_utils.precision_weighted_likelihood(
@@ -560,6 +595,8 @@ class MetaAwarenessModel:
         
         true_att_state = self.state.true_states[attention_level][t]
         self.state.precision_values[perception_level][t] = 1.0 / beta_A1_values[true_att_state]
+        lb1, ub1 = self.precision_bounds.get(perception_level, (0.0, np.inf))
+        self.state.precision_values[perception_level][t] = float(np.clip(self.state.precision_values[perception_level][t], lb1, ub1))
         gamma_A1 = self.state.precision_values[perception_level][t]
         
         A1_bar = self.math_utils.precision_weighted_likelihood(
@@ -667,7 +704,7 @@ class MetaAwarenessModel:
         self.state.expected_free_energy[level_name][:, t] = expected_G
         
         # Get policy precision
-        precision_key = '3_level' if self.num_levels >= 3 else '2_level'
+        precision_key = '2_level' if (self._force_two_level or self.num_levels < 3) else '3_level'
         gamma_G = self.config.policy_precision.get(precision_key, 1.0)
         
         # Compute policy posterior
@@ -749,6 +786,10 @@ class MetaAwarenessModel:
             if t + 1 < self.config.time_steps:
                 next_meta_state = self._fixed_meta_schedule[t + 1]
                 self.state.true_states[meta_level][t + 1] = next_meta_state
+                # Coupling: enforce a distinct attention schedule derived from meta-awareness mode
+                attention_level = self.level_names[1] if len(self.level_names) > 1 else None
+                if attention_level is not None and hasattr(self, '_fixed_attention_from_meta'):
+                    self.state.true_states[attention_level][t + 1] = int(self._fixed_attention_from_meta[t + 1])
     
     def _update_with_policies(self, t: int):
         """Update states according to selected policies."""

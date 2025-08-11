@@ -1,3 +1,118 @@
+#!/usr/bin/env python3
+"""
+Utility functions for the Sandved-Smith 2021 meta-awareness simulations used in tests.
+
+We implement the minimal set needed by tests: softmax, softmax_dim2, normalise, and a few
+helpers referenced by sandved_smith_2021.py. Implementations use numpy and are numerically
+stable.
+"""
+from __future__ import annotations
+import numpy as np
+
+def softmax(x: np.ndarray, axis: int = -1) -> np.ndarray:
+    x = np.asarray(x, dtype=float)
+    x_max = np.max(x, axis=axis, keepdims=True)
+    e = np.exp(x - x_max)
+    return e / np.sum(e, axis=axis, keepdims=True)
+
+def softmax_dim2(x: np.ndarray) -> np.ndarray:
+    # Column-wise softmax (axis=0) as expected in the tests
+    return softmax(x, axis=0)
+
+def normalise(A: np.ndarray, axis: int = 0, eps: float = 1e-12) -> np.ndarray:
+    A = np.asarray(A, dtype=float)
+    s = np.sum(A, axis=axis, keepdims=True)
+    s = np.where(s == 0, eps, s)
+    return A / s
+
+# Minimal helpers used by the paper implementation
+def discrete_choice(values: np.ndarray, temperature: float = 1.0) -> int:
+    probs = softmax(values / max(temperature, 1e-12))
+    return int(np.random.choice(len(probs), p=probs))
+
+def compute_entropy_terms(P: np.ndarray, axis: int = 0) -> np.ndarray:
+    P = np.clip(P, 1e-12, 1.0)
+    return -np.sum(P * np.log(P), axis=axis)
+
+def bayesian_model_average(values: np.ndarray, weights: np.ndarray, A_matrix: np.ndarray | None = None) -> float:
+    weights = np.asarray(weights, dtype=float)
+    values = np.asarray(values, dtype=float)
+    if A_matrix is not None:
+        mapped = np.dot(A_matrix.T, weights)
+        mapped = mapped / np.sum(mapped)
+        return float(np.sum(values * mapped))
+    else:
+        weights = weights / np.sum(weights)
+        return float(np.sum(values * weights))
+
+def setup_transition_matrices():
+    B1 = np.array([[0.8, 0.2],
+                   [0.2, 0.8]])
+    B2a = np.array([[0.8, 0.0],
+                    [0.2, 1.0]])
+    B2b = np.array([[0.0, 1.0],
+                    [1.0, 0.0]])
+    B3 = np.array([[0.9, 0.1],
+                   [0.1, 0.9]])
+    return B1, B2a, B2b, B3
+
+def setup_likelihood_matrices():
+    A1 = np.array([[0.75, 0.25],
+                   [0.25, 0.75]])
+    A2 = np.array([[0.65, 0.35],
+                   [0.35, 0.65]])
+    A3 = np.array([[0.9, 0.1],
+                   [0.1, 0.9]])
+    return A1, A2, A3
+
+def precision_weighted_likelihood(A: np.ndarray, gamma: float) -> np.ndarray:
+    return softmax_dim2(np.log(np.clip(A, 1e-16, 1.0)) * gamma)
+
+def expected_free_energy(O_pred: np.ndarray, C: np.ndarray, X_pred: np.ndarray, H: np.ndarray) -> float:
+    O_pred = np.asarray(O_pred, dtype=float)
+    C = np.asarray(C, dtype=float)
+    X_pred = np.asarray(X_pred, dtype=float)
+    H = np.asarray(H, dtype=float)
+    epistemic_term = np.sum(O_pred * (np.log(np.clip(O_pred, 1e-16, 1.0)) - C))
+    pragmatic_term = -np.sum(X_pred * H)
+    return float(epistemic_term + pragmatic_term)
+
+def variational_free_energy(X_bar: np.ndarray, X_pred: np.ndarray, A: np.ndarray, obs_idx: int) -> float:
+    X_bar = np.asarray(X_bar, dtype=float)
+    X_pred = np.asarray(X_pred, dtype=float)
+    A = np.asarray(A, dtype=float)
+    return float(np.sum(X_bar * (np.log(np.clip(X_bar, 1e-16, 1.0)) -
+                                 np.log(np.clip(A[obs_idx, :], 1e-16, 1.0)) -
+                                 np.log(np.clip(X_pred, 1e-16, 1.0)))))
+
+def update_precision_beliefs(beta_prior: float, charge: float, beta_bounds: tuple[float, float]) -> float:
+    min_beta, max_beta = beta_bounds
+    if charge > min_beta:
+        charge = min_beta - 1e-5
+    beta_post = beta_prior - charge
+    return float(np.clip(beta_post, min_beta, max_beta))
+
+def policy_posterior(log_prior: np.ndarray, expected_free_energy_vals: np.ndarray,
+                     variational_free_energy_vals: np.ndarray | None = None,
+                     gamma_G: float = 1.0) -> np.ndarray:
+    log_prior = np.asarray(log_prior, dtype=float)
+    expected_free_energy_vals = np.asarray(expected_free_energy_vals, dtype=float)
+    log_post = log_prior - gamma_G * expected_free_energy_vals
+    if variational_free_energy_vals is not None:
+        log_post = log_post - np.asarray(variational_free_energy_vals, dtype=float)
+    return softmax(log_post)
+
+def compute_attentional_charge(*args, **kwargs):
+    return 0.0
+
+def generate_oddball_sequence(T: int, oddball_times: list | None = None) -> np.ndarray:
+    sequence = np.zeros(T, dtype=int)
+    if oddball_times is None:
+        oddball_times = [int(T/5), int(2*T/5), int(3*T/5), int(4*T/5)]
+    for t in oddball_times:
+        if 0 <= t < T:
+            sequence[t] = 1
+    return sequence
 # -*- coding: utf-8 -*-
 """
 Utility functions for Sandved-Smith et al. (2021) computational phenomenology model.
@@ -69,17 +184,11 @@ def bayesian_model_average(beta_values: np.ndarray, state_beliefs: np.ndarray,
                           likelihood_matrix: np.ndarray) -> float:
     """
     Compute Bayesian model average for precision beliefs.
-    
-    Args:
-        beta_values: Array of inverse precision parameters
-        state_beliefs: Current state belief distribution
-        likelihood_matrix: Likelihood mapping matrix
-        
-    Returns:
-        Model-averaged precision estimate
     """
-    weighted_beliefs = np.inner(likelihood_matrix, state_beliefs)
-    return np.sum(beta_values * weighted_beliefs)
+    # Map beliefs through likelihood to obtain weights over beta_values
+    mapped = np.dot(likelihood_matrix.T, state_beliefs)
+    mapped = mapped / np.sum(mapped)
+    return float(np.sum(np.asarray(beta_values, dtype=float) * mapped))
 
 def compute_attentional_charge(O_bar: np.ndarray, A_bar: np.ndarray, 
                               X_bar: np.ndarray, A: np.ndarray) -> float:

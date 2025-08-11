@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 report module for GNN Processing Pipeline.
 

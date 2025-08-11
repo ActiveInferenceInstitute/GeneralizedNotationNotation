@@ -5,6 +5,7 @@ Audio processor module for GNN Processing Pipeline.
 This module provides the main audio processing functionality.
 """
 
+from __future__ import annotations
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import logging

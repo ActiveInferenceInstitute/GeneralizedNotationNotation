@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 """
 Base LLM Provider
 
@@ -27,28 +28,29 @@ class LLMResponse:
     content: str
     model_used: str
     provider: str
-    usage: Optional[Dict[str, int]] = None
-    finish_reason: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
+    # Avoid Optional[...] due to Python 3.9 typing recursion bug in some environments
+    usage: Dict[str, int] = None  # type: ignore[assignment]
+    finish_reason: str = None  # type: ignore[assignment]
+    metadata: Dict[str, Any] = None  # type: ignore[assignment]
 
 @dataclass
 class LLMMessage:
     """Standardized message format for LLM conversations."""
     role: str  # 'system', 'user', 'assistant'
     content: str
-    name: Optional[str] = None
+    name: str = None  # type: ignore[assignment]
 
 @dataclass
 class LLMConfig:
     """Configuration parameters for LLM requests."""
-    model: Optional[str] = None
-    max_tokens: Optional[int] = None
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    frequency_penalty: Optional[float] = None
-    presence_penalty: Optional[float] = None
+    model: str = None  # type: ignore[assignment]
+    max_tokens: int = None  # type: ignore[assignment]
+    temperature: float = None  # type: ignore[assignment]
+    top_p: float = None  # type: ignore[assignment]
+    frequency_penalty: float = None  # type: ignore[assignment]
+    presence_penalty: float = None  # type: ignore[assignment]
     stream: bool = False
-    timeout: Optional[float] = None
+    timeout: float = None  # type: ignore[assignment]
 
 class BaseLLMProvider(ABC):
     """

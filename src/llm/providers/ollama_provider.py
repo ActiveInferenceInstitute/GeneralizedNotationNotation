@@ -9,6 +9,7 @@ Requirements:
 - Run `ollama serve` and ensure a model is pulled, e.g. `ollama pull gemma2:2b`
 """
 
+from __future__ import annotations
 from typing import List, Dict, Any, Optional, AsyncGenerator
 import logging
 import shutil

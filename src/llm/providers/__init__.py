@@ -14,10 +14,23 @@ from .base_provider import (
     LLMMessage,
     LLMConfig,
 )
-from .ollama_provider import OllamaProvider
-from .openai_provider import OpenAIProvider
-from .openrouter_provider import OpenRouterProvider
-from .perplexity_provider import PerplexityProvider
+
+# Lazy accessors to avoid importing heavy/optional dependencies at module import time
+def get_openai_provider_class():
+    from .openai_provider import OpenAIProvider
+    return OpenAIProvider
+
+def get_openrouter_provider_class():
+    from .openrouter_provider import OpenRouterProvider
+    return OpenRouterProvider
+
+def get_perplexity_provider_class():
+    from .perplexity_provider import PerplexityProvider
+    return PerplexityProvider
+
+def get_ollama_provider_class():
+    from .ollama_provider import OllamaProvider
+    return OllamaProvider
 
 __all__ = [
     'BaseLLMProvider',
@@ -25,8 +38,8 @@ __all__ = [
     'LLMResponse',
     'LLMMessage',
     'LLMConfig',
-    'OpenAIProvider',
-    'OpenRouterProvider',
-    'PerplexityProvider',
-    'OllamaProvider',
+    'get_openai_provider_class',
+    'get_openrouter_provider_class',
+    'get_perplexity_provider_class',
+    'get_ollama_provider_class',
 ]

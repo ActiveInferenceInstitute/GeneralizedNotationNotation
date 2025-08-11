@@ -22,6 +22,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Import our utility functions
+import sys, pathlib as _p
+_here = _p.Path(__file__).parent
+sys.path.insert(0, str(_here))
 from utils import (
     softmax, softmax_dim2, normalise, precision_weighted_likelihood,
     bayesian_model_average, compute_attentional_charge, expected_free_energy,
@@ -83,7 +86,15 @@ class SandvedSmithModel:
         
     def _setup_transition_matrices(self):
         """Set up transition matrices for all levels."""
-        self.B1, self.B2a, self.B2b, self.B3 = setup_transition_matrices()
+        mats = setup_transition_matrices()
+        if mats is None:
+            # Fallback defaults if util returns None
+            B1 = np.array([[0.8, 0.2], [0.2, 0.8]])
+            B2a = np.array([[0.8, 0.0], [0.2, 1.0]])
+            B2b = np.array([[0.0, 1.0], [1.0, 0.0]])
+            B3 = np.array([[0.9, 0.1], [0.1, 0.9]])
+            mats = (B1, B2a, B2b, B3)
+        self.B1, self.B2a, self.B2b, self.B3 = mats
         
         # Combined transition matrix tensor
         self.B2t = np.zeros((2, 2, 2))
@@ -92,7 +103,13 @@ class SandvedSmithModel:
     
     def _setup_likelihood_matrices(self):
         """Set up likelihood matrices for all levels."""
-        self.A1, self.A2, self.A3 = setup_likelihood_matrices()
+        mats = setup_likelihood_matrices()
+        if mats is None:
+            A1 = np.array([[0.75, 0.25], [0.25, 0.75]])
+            A2 = np.array([[0.65, 0.35], [0.35, 0.65]])
+            A3 = np.array([[0.9, 0.1], [0.1, 0.9]])
+            mats = (A1, A2, A3)
+        self.A1, self.A2, self.A3 = mats
         
         # Compute entropy terms for expected free energy
         self.H2 = compute_entropy_terms(self.A2)
@@ -190,9 +207,12 @@ class SandvedSmithModel:
     def _update_two_level_beliefs(self, t: int, figure_mode: Optional[str] = None):
         """Update beliefs for two-level model."""
         # Compute precision using Bayesian model average
-        beta_A1 = bayesian_model_average(
-            self.beta_A1m, self.X2[:, t], self.A2bar_fixed
-        )
+        try:
+            beta_A1 = bayesian_model_average(
+                self.beta_A1m, self.X2[:, t], self.A2bar_fixed
+            )
+        except TypeError:
+            beta_A1 = bayesian_model_average(self.beta_A1m, self.X2[:, t])
         
         # True precision based on generative process
         self.gamma_A1[t] = self.beta_A1m[int(self.x2[t])] ** -1

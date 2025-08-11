@@ -105,6 +105,8 @@ class SimulationRunner:
         complete_results = {
             'config': self.config,
             'simulation_results': {},
+            # Compatibility alias expected by tests
+            'results': {},
             'analysis_summary': {},
             'figure_paths': {},
             'execution_info': {
@@ -154,6 +156,8 @@ class SimulationRunner:
             
             self.logger.info("Complete analysis pipeline finished successfully")
             self.logger.info(f"Total duration: {complete_results['execution_info']['total_duration']:.2f} seconds")
+            # Keep alias in sync at the end
+            complete_results['results'] = complete_results['simulation_results']
             
             return complete_results
             
@@ -209,6 +213,9 @@ class SimulationRunner:
             
             # Compute additional analysis
             analysis_results = self._compute_additional_analysis(results)
+            # Expose under a top-level 'analysis' key for consumers/tests
+            results['analysis'] = analysis_results
+            # Also merge for backward compatibility where flat keys were expected
             results.update(analysis_results)
             
             # Log simulation completion
@@ -371,6 +378,24 @@ class SimulationRunner:
             })
         
         return analysis
+    
+    def _get_perception_level_name(self, results: Dict[str, Any]) -> str:
+        """Infer the perception level name from results or configuration.
+        Preference order:
+        - If results contain precision_values for a config level, use that level
+        - Otherwise, select the first level in config with action_dim == 0
+        - Fallback to the first configured level name or 'perception'
+        """
+        precision_values = results.get('precision_values', {})
+        if isinstance(precision_values, dict):
+            for level in self.config.levels.keys():
+                if level in precision_values:
+                    return level
+        for level_name, lvl in self.config.levels.items():
+            if getattr(lvl, 'action_dim', 0) == 0:
+                return level_name
+        names = list(self.config.levels.keys())
+        return names[0] if names else 'perception'
     
     def _generate_mode_figures(self, results: Dict[str, Any], mode: str) -> Dict[str, Path]:
         """Generate figures for a specific simulation mode."""

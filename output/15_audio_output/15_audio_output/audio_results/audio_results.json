@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-11T07:55:24.089982",
+  "timestamp": "2025-08-11T10:26:41.387845",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -14,7 +14,7 @@
       },
       "variables_count": 70,
       "connections_count": 0,
-      "generation_timestamp": "2025-08-11T07:55:24.333562"
+      "generation_timestamp": "2025-08-11T10:26:41.647920"
     }
   ],
   "sonification_results": [
@@ -23,7 +23,7 @@
       "sonification_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/15_audio_output/audio_results/actinf_pomdp_agent_sonification.wav",
       "dynamics_analyzed": 1,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2025-08-11T07:55:24.342754"
+      "generation_timestamp": "2025-08-11T10:26:41.658186"
     }
   ],
   "audio_analysis": [

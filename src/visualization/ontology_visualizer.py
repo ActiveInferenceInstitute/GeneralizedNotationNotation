@@ -234,7 +234,7 @@ class OntologyVisualizer:
             return None 
 
     # Public wrappers expected by tests
-    def extract_ontology_mappings(self, ontology_content: str | dict) -> List[Tuple[str, str]]:
+    def extract_ontology_mappings(self, ontology_content: "str | dict") -> List[Tuple[str, str]]:
         return self._extract_ontology_mappings(ontology_content)
 
     def create_ontology_table(self, mappings: List[Tuple[str, str]], output_dir: Path) -> Optional[str]:
