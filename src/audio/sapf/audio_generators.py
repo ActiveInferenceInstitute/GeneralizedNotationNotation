@@ -14,8 +14,7 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-from scipy import signal
-from scipy.fft import fft, fftfreq
+# Use NumPy FFT implementations to avoid optional SciPy dependency at import-time
 
 logger = logging.getLogger(__name__)
 
@@ -414,14 +413,11 @@ class SyntheticAudioGenerator:
             # 3. Frequency spectrum
             # Use only first second for FFT to avoid memory issues
             fft_samples = min(self.sample_rate, len(audio_array))
-            frequencies = fftfreq(fft_samples, 1/self.sample_rate)
-            fft_magnitude = np.abs(fft(audio_array[:fft_samples]))
+            frequencies = np.fft.rfftfreq(fft_samples, 1/self.sample_rate)
+            fft_magnitude = np.abs(np.fft.rfft(audio_array[:fft_samples]))
             
             # Only plot positive frequencies up to Nyquist
-            pos_freqs = frequencies[:fft_samples//2]
-            pos_magnitudes = fft_magnitude[:fft_samples//2]
-            
-            ax3.loglog(pos_freqs[1:], pos_magnitudes[1:], color='#F18F01', linewidth=1.5)
+            ax3.loglog(frequencies[1:], fft_magnitude[1:], color='#F18F01', linewidth=1.5)
             ax3.set_title('Frequency Spectrum', fontweight='bold')
             ax3.set_xlabel('Frequency (Hz)')
             ax3.set_ylabel('Magnitude')
@@ -439,21 +435,23 @@ class SyntheticAudioGenerator:
                 downsample_factor = max(1, len(audio_array) // 50000)
                 spec_audio = audio_array[::downsample_factor]
                 spec_sample_rate = self.sample_rate // downsample_factor
-                
-                f_spec, t_spec, Sxx = signal.spectrogram(
-                    spec_audio, 
-                    fs=spec_sample_rate,
-                    nperseg=min(1024, len(spec_audio)//4),
-                    noverlap=None
+
+                nfft = min(1024, max(64, len(spec_audio)//4))
+                noverlap = int(nfft * 0.5)
+
+                Pxx, f_spec, t_spec, im = ax4.specgram(
+                    spec_audio,
+                    NFFT=nfft,
+                    Fs=spec_sample_rate,
+                    noverlap=noverlap,
+                    cmap='plasma'
                 )
-                
-                im = ax4.pcolormesh(t_spec, f_spec, 10 * np.log10(Sxx + 1e-10), 
-                                   shading='gouraud', cmap='plasma')
+
                 ax4.set_title('Spectrogram', fontweight='bold')
                 ax4.set_xlabel('Time (seconds)')
                 ax4.set_ylabel('Frequency (Hz)')
                 ax4.set_ylim(0, min(2000, spec_sample_rate/2))  # Limit to 2kHz for clarity
-                
+
                 # Add colorbar
                 cbar = plt.colorbar(im, ax=ax4)
                 cbar.set_label('Power (dB)', rotation=270, labelpad=15)

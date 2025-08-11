@@ -44,11 +44,11 @@ from utils.pipeline_template import (
 from utils.argument_utils import EnhancedArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
-# Import the test runner with fallback
+# Import the test runner with fallback. Make psutil optional inside the runner to avoid import failures.
 try:
     from tests.runner import create_test_runner
     TEST_RUNNER_AVAILABLE = True
-except ImportError as e:
+except Exception as e:
     TEST_RUNNER_AVAILABLE = False
     logging.warning(f"Test runner not available: {e}")
     
@@ -93,6 +93,35 @@ def apply_pathlib_patch():
 # Apply the patch early
 apply_pathlib_patch()
 
+
+# --- Ensure unbuffered, verbose, and progressive pytest output ---
+def _configure_live_pytest_output(logger: logging.Logger):
+    """Set environment to encourage live, detailed pytest progress output.
+
+    We do not overwrite existing PYTEST_ADDOPTS; we append desired flags if missing.
+    """
+    try:
+        desired_opts = [
+            "-vv",
+            "-rA",  # report all statuses
+            "-s",   # disable capture for live stdout
+            "--durations=15",
+            "-o",
+            "console_output_style=progress",
+        ]
+
+        existing = os.environ.get("PYTEST_ADDOPTS", "").split()
+        merged = existing[:]
+        for opt in desired_opts:
+            if opt not in merged:
+                merged.append(opt)
+        os.environ["PYTEST_ADDOPTS"] = " ".join(merged).strip()
+
+        # Ensure unbuffered Python for children
+        os.environ.setdefault("PYTHONUNBUFFERED", "1")
+        logger.info(f"Configured PYTEST_ADDOPTS: {os.environ['PYTEST_ADDOPTS']}")
+    except Exception as e:
+        logger.warning(f"Could not set live pytest output configuration: {e}")
 
 # --- Robust Path and Argument Logging ---
 def log_resolved_paths_and_args(args, logger):
@@ -284,6 +313,8 @@ def process_tests_standardized(
     """
     try:
         logger.info("🚀 Processing tests")
+        # Configure environment for live pytest streaming
+        _configure_live_pytest_output(logger)
         
         # Use standardized numbered output directory for this step
         tests_root = get_output_dir_for_script("2_tests.py", output_dir)
@@ -292,9 +323,12 @@ def process_tests_standardized(
         test_output_dir = tests_root / "test_results"
         test_output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Check if pytest is available
+        # Check if pytest is available (use venv Python if present)
         try:
-            result = subprocess.run(["python", "-m", "pytest", "--version"], 
+            project_root = Path(__file__).parent.parent
+            venv_python = project_root / ".venv" / "bin" / "python"
+            python_exec = str(venv_python) if venv_python.exists() else sys.executable
+            result = subprocess.run([python_exec, "-m", "pytest", "--version"], 
                                   capture_output=True, text=True, timeout=10)
             if result.returncode != 0:
                 logger.warning("⚠️ pytest not available, skipping tests")
@@ -348,29 +382,88 @@ def process_tests_standardized(
             try:
                 test_dir = Path(__file__).parent / "tests"
                 if test_dir.exists():
-                    cmd = ["python", "-m", "pytest", str(test_dir), "-v"]
+                    # Build pytest command; PYTEST_ADDOPTS will add -vv -rA -s and progress style
+                    cmd = [
+                        python_exec,
+                        "-m",
+                        "pytest",
+                        str(test_dir),
+                        "--tb=short",
+                        "--maxfail=10",
+                        "--durations=15",
+                        "-o",
+                        "console_output_style=progress",
+                    ]
                     if verbose:
-                        cmd.append("--tb=short")
-                    
-                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
-                    
+                        cmd.append("-q")
+
+                    # Stream output live while teeing to files
+                    stdout_path = test_output_dir / "pytest_stdout.log"
+                    stderr_path = test_output_dir / "pytest_stderr.log"
+                    # Ensure unbuffered child python for prompt streaming
+                    import os as _os
+                    _env = _os.environ.copy()
+                    _env.setdefault("PYTHONUNBUFFERED", "1")
+
+                    with open(stdout_path, "w") as f_out, open(stderr_path, "w") as f_err:
+                        process = subprocess.Popen(
+                            cmd,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            text=True,
+                            bufsize=1,
+                            env=_env,
+                        )
+
+                        import threading
+                        collected_stdout: list[str] = []
+                        collected_stderr: list[str] = []
+
+                        def _stream(pipe, sink_file, log_func, collect):
+                            try:
+                                for line in iter(pipe.readline, ""):
+                                    sink_file.write(line)
+                                    sink_file.flush()
+                                    stripped = line.rstrip("\n")
+                                    collect.append(stripped)
+                                    log_func(stripped)
+                            finally:
+                                try:
+                                    pipe.close()
+                                except Exception:
+                                    pass
+
+                        t_out = threading.Thread(target=_stream, args=(process.stdout, f_out, logger.info, collected_stdout), daemon=True)
+                        t_err = threading.Thread(target=_stream, args=(process.stderr, f_err, logger.error, collected_stderr), daemon=True)
+                        t_out.start(); t_err.start()
+
+                        try:
+                            process.wait(timeout=3600)
+                            t_out.join(timeout=5)
+                            t_err.join(timeout=5)
+                        except subprocess.TimeoutExpired:
+                            process.kill()
+
                     # Save test results
+                    result_returncode = process.returncode
+                    stdout_text = "\n".join(collected_stdout)
+                    stderr_text = "\n".join(collected_stderr)
                     test_results = {
                         "timestamp": time.time(),
-                        "returncode": result.returncode,
-                        "stdout": result.stdout,
-                        "stderr": result.stderr,
+                        "returncode": result_returncode,
+                        "stdout": stdout_text,
+                        "stderr": stderr_text,
                         "tests_run": True
                     }
-                    
+
                     with open(test_output_dir / "test_results.json", 'w') as f:
                         json.dump(test_results, f, indent=2)
-                    
-                    if result.returncode == 0:
+
+                    if result_returncode == 0:
                         logger.info("✅ Basic tests completed successfully")
                     else:
                         logger.warning("⚠️ Some basic tests failed")
-                    
+
                     return True  # Don't fail the pipeline for test failures
                 else:
                     logger.warning("⚠️ No test directory found")

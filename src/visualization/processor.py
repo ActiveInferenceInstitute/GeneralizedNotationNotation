@@ -11,6 +11,9 @@ import logging
 import re
 import json
 import numpy as np
+import matplotlib
+# Force non-interactive backend to avoid GUI/dpi hangs in headless environments
+matplotlib.use('Agg')
 
 # Import visualization libraries with error handling for testing
 try:
@@ -19,7 +22,7 @@ try:
     from matplotlib import cm
     import seaborn as sns
     MATPLOTLIB_AVAILABLE = True
-except (ImportError, RecursionError) as e:
+except (ImportError, RecursionError):
     plt = None
     patches = None
     cm = None

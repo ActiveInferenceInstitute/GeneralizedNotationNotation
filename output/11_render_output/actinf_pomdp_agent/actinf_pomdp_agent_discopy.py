@@ -1,0 +1,1 @@
+# Error generating DisCoPy code: name 'model_snake' is not defined

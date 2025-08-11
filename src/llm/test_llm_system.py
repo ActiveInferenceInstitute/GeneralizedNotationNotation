@@ -17,8 +17,11 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 # Load environment variables from .env file
-from dotenv import load_dotenv
-load_dotenv(Path(__file__).parent / '.env')
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).parent / '.env')
+except Exception:
+    pass
 
 from src.llm import (
     LLMProcessor,

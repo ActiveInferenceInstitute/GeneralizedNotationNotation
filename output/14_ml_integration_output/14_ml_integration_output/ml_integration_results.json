@@ -1,0 +1,10 @@
+{
+  "status": "completed",
+  "target_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/14_ml_integration_output/14_ml_integration_output",
+  "recursive": true,
+  "verbose": true,
+  "ml_models_trained": 0,
+  "ml_models_evaluated": 0,
+  "ml_models_deployed": 0
+}

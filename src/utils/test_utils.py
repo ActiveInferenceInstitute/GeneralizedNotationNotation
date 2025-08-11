@@ -351,18 +351,18 @@ def get_test_args() -> Dict[str, Any]:
 def get_sample_pipeline_arguments() -> Dict[str, Any]:
     """Get sample pipeline arguments for testing."""
     return {
-        "target_dir": Path("input/gnn_files"),
-        "output_dir": Path("output"),
+        "target_dir": "input/gnn_files",
+        "output_dir": "output",
         "recursive": True,
-        "verbose": True,
+        "verbose": False,
         "enable_round_trip": True,
         "enable_cross_format": True,
-        "skip_steps": None,
-        "only_steps": None,
+        "skip_steps": [],
+        "only_steps": [],
         "strict": False,
-        "estimate_resources": True,
-        "ontology_terms_file": Path("input/ontology_terms.json"),
-        "pipeline_summary_file": Path("output/pipeline_execution_summary.json"),
+        "estimate_resources": False,
+        "ontology_terms_file": "input/ontology_terms.json",
+        "pipeline_summary_file": "output/pipeline_execution_summary.json",
         "llm_tasks": "all",
         "llm_timeout": 360,
         "website_html_filename": "gnn_pipeline_summary_website.html",
@@ -370,6 +370,7 @@ def get_sample_pipeline_arguments() -> Dict[str, Any]:
         "dev": False,
         "duration": 30.0,
         "audio_backend": "auto",
+        "test_data_dir": "src/tests/test_data",
     }
 
 def get_step_metadata_dict() -> Dict[str, Any]:

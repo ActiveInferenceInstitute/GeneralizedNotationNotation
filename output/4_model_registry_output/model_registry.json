@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2025-08-11T07:11:29.079497",
+  "models": {
+    "actinf_pomdp_agent": {
+      "model_id": "actinf_pomdp_agent",
+      "name": "GNN Example: Active Inference POMDP Agent",
+      "description": "ActInfPOMDP",
+      "created_at": "2025-08-11T07:11:29.079325",
+      "updated_at": "2025-08-11T07:11:29.079435",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+          "created_at": "2025-08-11T07:11:29.079353",
+          "metadata": {},
+          "hash": "b6a6a614d6af9542e5bca327ea7dfc9d8be6f57ac26b8a98be3a88cf214bdc20"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    }
+  }
+}

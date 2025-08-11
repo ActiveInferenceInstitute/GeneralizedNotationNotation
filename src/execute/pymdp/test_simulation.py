@@ -23,7 +23,17 @@ from pathlib import Path
 from typing import Dict, Any
 
 # Pipeline imports
-from ...utils.testing import create_test_temp_dir, cleanup_test_temp_dir
+# Local simple temp helpers to avoid cross-package test import issues
+def create_test_temp_dir(prefix: str) -> Path:
+    d = Path(tempfile.mkdtemp(prefix=f"{prefix}_"))
+    return d
+
+def cleanup_test_temp_dir(path: Path) -> None:
+    try:
+        import shutil
+        shutil.rmtree(path)
+    except Exception:
+        pass
 from .pymdp_simulation import PyMDPSimulation
 from .pymdp_visualizer import PyMDPVisualizer
 from .pymdp_utils import convert_numpy_for_json, safe_json_dump

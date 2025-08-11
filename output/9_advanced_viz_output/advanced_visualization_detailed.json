@@ -1,0 +1,43 @@
+{
+  "timestamp": "2025-08-11T07:11:33.503400",
+  "correlation_id": "507f9e98",
+  "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output",
+  "configuration": {
+    "visualization_type": "all",
+    "interactive": true,
+    "export_formats": [
+      "html",
+      "json"
+    ]
+  },
+  "summary": {
+    "total_files": 1,
+    "successful_visualizations": 1,
+    "failed_visualizations": 0,
+    "fallback_visualizations": 0,
+    "total_files_generated": 4,
+    "success_rate": "100.0%"
+  },
+  "dependency_status": {
+    "advanced_visualizer": true,
+    "dashboard_generator": true,
+    "data_extractor": true
+  },
+  "processing_details": [
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "success": true,
+      "fallback_used": false,
+      "duration_seconds": 0.712735,
+      "generated_files": [
+        "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+        "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+        "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_advanced_summary.html",
+        "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_advanced_viz_manifest.json"
+      ],
+      "error": null
+    }
+  ],
+  "errors": []
+}

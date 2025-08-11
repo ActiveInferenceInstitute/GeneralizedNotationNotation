@@ -427,25 +427,85 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         
         # Execute step with proper working directory (project root)
         project_root = Path(__file__).parent.parent
+        # Ensure unbuffered output from children
+        import os as _os
+        _env = _os.environ.copy()
+        _env.setdefault("PYTHONUNBUFFERED", "1")
+
+        proc_start_time = time.time()
+
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            cwd=project_root
+            bufsize=1,
+            cwd=project_root,
+            env=_env
         )
-        
+
+        # Stream output live to the logger to avoid perceived hangs, especially for long-running tests
+        import threading
+        from collections import deque
+
+        stdout_lines: list[str] = []
+        stderr_lines: list[str] = []
+        last_output_time = time.time()
+
+        def _stream_pipe(pipe, is_error: bool, collect: list[str]):
+            nonlocal last_output_time
+            try:
+                for line in iter(pipe.readline, ""):
+                    stripped = line.rstrip("\n")
+                    collect.append(stripped)
+                    if is_error:
+                        logger.error(stripped)
+                    else:
+                        logger.info(stripped)
+                    # Update activity timestamp for heartbeat
+                    last_output_time = time.time()
+            finally:
+                try:
+                    pipe.close()
+                except Exception:
+                    pass
+
+        stdout_thread = threading.Thread(target=_stream_pipe, args=(process.stdout, False, stdout_lines), daemon=True)
+        stderr_thread = threading.Thread(target=_stream_pipe, args=(process.stderr, True, stderr_lines), daemon=True)
+        stdout_thread.start()
+        stderr_thread.start()
+
+        # Heartbeat to indicate progress during long quiet periods (e.g., collecting tests)
+        def _heartbeat():
+            nonlocal last_output_time
+            while True:
+                if process.poll() is not None:
+                    break
+                # If no output for 10s, emit a concise status line
+                quiet_for = time.time() - last_output_time
+                if quiet_for > 10:
+                    elapsed = int(time.time() - proc_start_time)
+                    logger.info(f"… {script_name} running; elapsed {elapsed}s; quiet {int(quiet_for)}s")
+                    last_output_time = time.time()
+                time.sleep(3)
+
+        heartbeat_thread = threading.Thread(target=_heartbeat, daemon=True)
+        heartbeat_thread.start()
+
         # Monitor process with step-aware timeout
         try:
             # Use a higher timeout for the comprehensive tests step
             step_timeout_seconds = 3600 if script_name == "2_tests.py" else 600
-            stdout, stderr = process.communicate(timeout=step_timeout_seconds)
-            step_result["stdout"] = stdout
-            step_result["stderr"] = stderr
+            process.wait(timeout=step_timeout_seconds)
+
+            # Ensure all output is consumed
+            stdout_thread.join(timeout=5)
+            stderr_thread.join(timeout=5)
+
+            step_result["stdout"] = "\n".join(stdout_lines)
+            step_result["stderr"] = "\n".join(stderr_lines)
             step_result["exit_code"] = process.returncode
-            
-            # Process completed successfully
-            
+
             # Get memory usage if available
             try:
                 import psutil
@@ -453,16 +513,16 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                     proc = psutil.Process(process.pid)
                     step_result["memory_usage_mb"] = proc.memory_info().rss / 1024 / 1024
             except ImportError:
-                # psutil not available
                 pass
             except Exception:
-                # Other psutil-related errors
                 pass
-            
+
         except subprocess.TimeoutExpired:
-            process.kill()
-            step_result["status"] = "TIMEOUT"
-            step_result["exit_code"] = -1
+            try:
+                process.kill()
+            finally:
+                step_result["status"] = "TIMEOUT"
+                step_result["exit_code"] = -1
             return step_result
         
         # Determine status

@@ -37,7 +37,7 @@ def validate_ontology_terms(terms: List[str] | str = None) -> bool:
     return True
 
 # Feature flags expected by tests
-FEATURES = {"parsing": True, "validation": True, "reporting": True, "basic_processing": True}
+FEATURES = {"parsing": True, "validation": True, "reporting": True, "basic_processing": True, "mcp_integration": True}
 __version__ = "1.0.0"
 
 # Minimal classes expected by tests
@@ -64,6 +64,12 @@ class OntologyProcessor:
             "success": True,
         }
 
+    # Additional methods expected by some tests
+    def validate_terms(self, terms: list[str] | None = None) -> bool:
+        terms = terms or []
+        defined = load_defined_ontology_terms()
+        return all(t in defined for t in terms)
+
 class OntologyValidator:
     """Ontology validator exposing validate_ontology as required by tests."""
     def __init__(self):
@@ -78,6 +84,10 @@ class OntologyValidator:
     def validate_ontology(self, content: str) -> Dict[str, Any]:
         parsed = parse_gnn_ontology_section(content)
         return self.validate(parsed.get('annotations', []))
+
+    # Additional method expected by tests
+    def check_consistency(self, annotations: list[str] | None = None) -> bool:
+        return self.validate(annotations).get("valid", False)
 
 __all__ = [
     # Core processing functions

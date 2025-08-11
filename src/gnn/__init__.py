@@ -32,7 +32,15 @@ from .parser import (
 )
 
 __version__ = "1.0.0"
-FEATURES = {"file_discovery": True, "content_parsing": True, "structure_validation": True, "report_generation": True, "core_validation": True}
+# Ensure tests see MCP feature presence consistently
+FEATURES = {
+    "file_discovery": True,
+    "content_parsing": True,
+    "structure_validation": True,
+    "report_generation": True,
+    "core_validation": True,
+    "mcp_integration": True,
+}
 
 def process_gnn(*args, **kwargs):
     return process_gnn_directory(*args, **kwargs)

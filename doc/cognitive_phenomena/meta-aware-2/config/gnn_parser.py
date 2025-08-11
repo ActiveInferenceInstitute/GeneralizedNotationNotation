@@ -10,7 +10,16 @@ Part of the meta-aware-2 "golden spike" GNN-specified executable implementation.
 """
 
 import os
-import toml
+try:
+    import toml
+except ImportError:  # Fallback for environments without toml
+    # Provide a minimal loader using JSON if file is JSON-compatible
+    class _TomlFallback:
+        @staticmethod
+        def load(f):
+            import json
+            return json.load(f)
+    toml = _TomlFallback()  # type: ignore
 import numpy as np
 from typing import Dict, Any, List, Tuple, Optional, Union
 from dataclasses import dataclass, field

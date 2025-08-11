@@ -54,6 +54,53 @@ def pytest_unconfigure(config):
     """Clean up test environment after all tests complete."""
     pass
 
+# Ensure certain optional attributes exist for compatibility with patches used in tests
+def pytest_sessionstart(session):
+    """Session start hook to prepare environment quirks required by tests."""
+    try:
+        import numpy.typing as _npt  # type: ignore
+        # Some tests patch numpy.typing._array_like; ensure attribute exists
+        if not hasattr(_npt, "_array_like"):
+            setattr(_npt, "_array_like", object())
+    except Exception:
+        # Best-effort; do not fail session startup
+        pass
+
+    # Prepare essential pipeline artifacts when running directly after setup
+    try:
+        project_root = Path(__file__).parent.parent.parent
+        output_dir = project_root / "output"
+        # Expected artifacts used by functionality tests
+        expected_paths = [
+            output_dir / "gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
+            output_dir / "type_check/type_check_results.json",
+            output_dir / "gnn_exports/actinf_pomdp_agent",
+            output_dir / "visualization/actinf_pomdp_agent",
+            output_dir / "execution_results/execution_results.json",
+            output_dir / "audio_processing_step/audio_results",
+        ]
+
+        if not all(p.exists() for p in expected_paths):
+            # Run a minimal set of pipeline steps to generate artifacts
+            import subprocess, sys as _sys
+            main_py = project_root / "src" / "main.py"
+            cmd = [
+                _sys.executable,
+                str(main_py),
+                "--only-steps",
+                "3,5,7,8,12,15",
+                "--target-dir",
+                str(project_root / "input/gnn_files"),
+                "--output-dir",
+                str(output_dir),
+                "--verbose",
+            ]
+            # Best-effort run; tests should still pass locally even if some steps warn
+            subprocess.run(cmd, cwd=str(project_root), capture_output=True, text=True, timeout=900)
+    except Exception:
+        # Do not fail test collection if preparation fails
+        pass
+
 def pytest_collection_modifyitems(config, items):
     """Modify test collection to add automatic markers and safety checks."""
     for item in items:
@@ -159,6 +206,68 @@ def mock_subprocess():
         return SafeResult()
     
     return safe_run
+
+@pytest.fixture
+def mock_filesystem():
+    """Back-compat alias to safe_filesystem expected by some tests."""
+    from typing import Generator as _Gen
+    # Reuse the safe_filesystem fixture implementation
+    temp_dir = Path(tempfile.mkdtemp())
+    class SafeFileSystem:
+        def __init__(self, temp_dir: Path):
+            self.temp_dir = temp_dir
+            self.created_files = []
+            self.created_dirs = []
+        def create_file(self, path: Path, content: str = "") -> Path:
+            full_path = self.temp_dir / path
+            full_path.parent.mkdir(parents=True, exist_ok=True)
+            full_path.write_text(content)
+            self.created_files.append(full_path)
+            return full_path
+        def create_dir(self, path: Path) -> Path:
+            full_path = self.temp_dir / path
+            full_path.mkdir(parents=True, exist_ok=True)
+            self.created_dirs.append(full_path)
+            return full_path
+        def cleanup(self):
+            for file_path in self.created_files:
+                if file_path.exists():
+                    try:
+                        file_path.unlink()
+                    except Exception:
+                        pass
+            if self.temp_dir.exists():
+                try:
+                    import shutil
+                    shutil.rmtree(self.temp_dir)
+                except Exception:
+                    pass
+    fs = SafeFileSystem(temp_dir)
+    try:
+        yield fs
+    finally:
+        fs.cleanup()
+
+@pytest.fixture
+def full_pipeline_environment(tmp_path) -> Dict[str, Any]:
+    """Provide a basic environment dict used by some integration tests."""
+    return {
+        "project_root": tmp_path,
+        "input_dir": tmp_path / "input",
+        "output_dir": tmp_path / "output",
+        "temp_dir": tmp_path,
+        "env": {"PYTHONUNBUFFERED": "1"},
+    }
+
+@pytest.fixture
+def simulate_failures() -> Dict[str, Any]:
+    """Fixture to simulate step failures in pipeline tests."""
+    return {"simulate": True, "failed_steps": ["render", "execute"]}
+
+@pytest.fixture
+def capture_logs(caplog):
+    """Alias fixture to expose pytest's caplog as capture_logs expected by some tests."""
+    return caplog
 
 @pytest.fixture
 def mock_imports():
@@ -272,6 +381,147 @@ def comprehensive_test_data(isolated_temp_dir) -> Dict[str, Any]:
             "safe_mode": True
         }
     } 
+
+# =============================================================================
+# Additional fixtures expected by migrated tests
+# =============================================================================
+
+@pytest.fixture
+def temp_output_dir() -> Generator[Path, None, None]:
+    """Temporary output directory for visualization tests."""
+    directory = Path(tempfile.mkdtemp()) / "viz_output"
+    directory.mkdir(parents=True, exist_ok=True)
+    yield directory
+    try:
+        import shutil
+        shutil.rmtree(directory.parent)
+    except Exception:
+        pass
+
+def _write_sample_gnn_markdown(target: Path):
+    """Write a sample GNN markdown with ontology annotations to target path."""
+    content = """
+# Active Inference Model
+
+## ActInfOntologyAnnotation
+s = HiddenState
+s_prime = NextHiddenState
+o = Observation
+π = PolicyVector
+u = Action
+t = Time
+A = LikelihoodMatrix
+B = TransitionMatrix
+C = LogPreferenceVector
+D = PriorOverHiddenStates
+E = Habit
+F = VariationalFreeEnergy
+G = ExpectedFreeEnergy
+
+## Connections
+s -> o
+""".strip()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(content)
+
+@pytest.fixture
+def test_data_dir() -> Generator[Path, None, None]:
+    """Directory containing sample GNN files for directory-based tests."""
+    base = Path(tempfile.mkdtemp())
+    sample = base / "samples" / "actinf_pomdp_agent.md"
+    _write_sample_gnn_markdown(sample)
+    yield sample.parent
+    try:
+        import shutil
+        shutil.rmtree(base)
+    except Exception:
+        pass
+
+@pytest.fixture
+def sample_gnn_file() -> Generator[Path, None, None]:
+    """Path to a sample GNN markdown file used in tests."""
+    tmp = Path(tempfile.mkdtemp())
+    path = tmp / "actinf_pomdp_agent.md"
+    _write_sample_gnn_markdown(path)
+    yield path
+    try:
+        import shutil
+        shutil.rmtree(tmp)
+    except Exception:
+        pass
+
+@pytest.fixture
+def sample_gnn_spec() -> Dict[str, Any]:
+    """Minimal in-memory GNN spec object for render tests."""
+    return {
+        "name": "actinf_pomdp_agent",
+        "states": ["s"],
+        "observations": ["o"],
+        "parameters": {"A": [[0.5, 0.5]]}
+    }
+
+@pytest.fixture
+def mock_render_module():
+    """Mock render module exposing render_gnn_spec(spec, target, outdir)."""
+    m = Mock()
+    # Default behavior can be overridden in tests
+    def _render(spec, target, outdir):
+        outdir = Path(outdir)
+        outdir.mkdir(parents=True, exist_ok=True)
+        artifact_name = f"{target}_artifact.txt"
+        (outdir / artifact_name).write_text("ok")
+        return True, "Success", [artifact_name]
+    m.render_gnn_spec.side_effect = _render
+    return m
+
+@pytest.fixture
+def mock_mcp_tools():
+    """Simple MCP tools registry used by MCP tests.
+
+    Supports both positional and keyword-based registration styles used across modules
+    (func/function), and basic resource registration expected by tests.
+    """
+    class _MCPTools:
+        def __init__(self):
+            self.tools: Dict[str, Any] = {}
+            self.resources: Dict[str, Any] = {}
+
+        # Accept both legacy (name, func, schema, description) and modern keyword style
+        def register_tool(self, name: str, *args, **kwargs):
+            # Parse inputs
+            function = kwargs.get("function")
+            schema = kwargs.get("schema")
+            description = kwargs.get("description", "")
+
+            if function is None:
+                # Positional style: register_tool(name, func, schema=None, description="")
+                if len(args) >= 1:
+                    function = args[0]
+                if len(args) >= 2 and schema is None:
+                    schema = args[1]
+                if len(args) >= 3 and not description:
+                    description = args[2]
+
+            self.tools[name] = {
+                "function": function,
+                "func": function,
+                "schema": schema or {},
+                "description": description,
+            }
+
+        def register_resource(self, pattern: str, handler, description: str = ""):
+            self.resources[pattern] = {
+                "handler": handler,
+                "description": description,
+            }
+
+        def execute_tool(self, name: str, **kwargs):
+            if name not in self.tools:
+                return {"error": "tool_not_found", "name": name}
+            func = self.tools[name].get("function") or self.tools[name].get("func")
+            return func(**kwargs)
+
+    return _MCPTools()
 
 # Parser sample inputs used in tests expecting fixtures
 @pytest.fixture

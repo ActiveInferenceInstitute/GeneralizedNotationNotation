@@ -10,12 +10,19 @@ import json
 import re
 from datetime import datetime
 
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error,
-    log_step_warning
-)
+# Import logging helpers with fallback to keep tests import-safe
+try:
+    from utils.pipeline_template import (
+        log_step_start,
+        log_step_success,
+        log_step_error,
+        log_step_warning
+    )
+except Exception:
+    def log_step_start(logger, msg): logger.info(f"🚀 {msg}")
+    def log_step_success(logger, msg): logger.info(f"✅ {msg}")
+    def log_step_error(logger, msg): logger.error(f"❌ {msg}")
+    def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
 
 def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = False) -> Dict[str, Any]:
     """

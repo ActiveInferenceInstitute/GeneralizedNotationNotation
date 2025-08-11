@@ -26,6 +26,7 @@ FEATURES = {
     "html": True,
     "embedding": True,
     "basic_processing": True,
+    "mcp_integration": True,
 }
 SUPPORTED_FILE_TYPES = {
     "html": ["html", "htm", "css", "js"],

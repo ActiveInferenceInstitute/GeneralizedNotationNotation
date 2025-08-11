@@ -25,7 +25,13 @@ import subprocess
 import sys
 import time
 import json
-import psutil
+# psutil is optional; tests should not fail to import if it's missing
+try:
+    import psutil as _psutil  # type: ignore
+    PSUTIL_AVAILABLE = True
+except Exception:
+    _psutil = None  # type: ignore
+    PSUTIL_AVAILABLE = False
 import gc
 import os
 from pathlib import Path
@@ -35,6 +41,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 import signal
 import json
+import re
 
 # Test category definitions for modular test execution
 MODULAR_TEST_CATEGORIES = {
@@ -310,6 +317,10 @@ class ResourceMonitor:
         
     def start_monitoring(self):
         """Start resource monitoring in background thread."""
+        if not PSUTIL_AVAILABLE:
+            # No-op if psutil is not available
+            self.monitoring = False
+            return
         self.monitoring = True
         self.monitor_thread = threading.Thread(target=self._monitor_resources)
         self.monitor_thread.daemon = True
@@ -323,7 +334,15 @@ class ResourceMonitor:
             
     def _monitor_resources(self):
         """Monitor system resources in background."""
-        process = psutil.Process()
+        if not PSUTIL_AVAILABLE:
+            # Passive sleep loop to avoid busy spin when psutil missing
+            while self.monitoring:
+                try:
+                    time.sleep(0.5)
+                except Exception:
+                    break
+            return
+        process = _psutil.Process()
         
         while self.monitoring:
             try:
@@ -351,11 +370,18 @@ class ResourceMonitor:
                 
     def get_stats(self) -> Dict[str, float]:
         """Get current resource statistics."""
+        if not PSUTIL_AVAILABLE:
+            return {
+                "peak_memory_mb": self.peak_memory,
+                "peak_cpu_percent": self.peak_cpu,
+                "current_memory_mb": 0.0,
+                "current_cpu_percent": 0.0,
+            }
         return {
             "peak_memory_mb": self.peak_memory,
             "peak_cpu_percent": self.peak_cpu,
-            "current_memory_mb": psutil.Process().memory_info().rss / 1024 / 1024,
-            "current_cpu_percent": psutil.Process().cpu_percent()
+            "current_memory_mb": _psutil.Process().memory_info().rss / 1024 / 1024,
+            "current_cpu_percent": _psutil.Process().cpu_percent(),
         }
 
 class TestRunner:
@@ -1293,33 +1319,104 @@ class ModularTestRunner:
             signal.alarm(config.get("timeout_seconds", 60))
             
             try:
-                # Set environment variables to avoid dependency conflicts
+                # Set environment variables to avoid dependency conflicts and promote live streaming
                 env = os.environ.copy()
                 env["PYTHONPATH"] = str(self.project_root / "src")
                 env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"  # Disable automatic plugin loading
-                
+                # Encourage live, detailed progress output
+                desired_addopts = ["-vv", "-rA", "-s", "--durations=15", "-o", "console_output_style=progress"]
+                existing_addopts = env.get("PYTEST_ADDOPTS", "").split()
+                for opt in desired_addopts:
+                    if opt not in existing_addopts:
+                        existing_addopts.append(opt)
+                env["PYTEST_ADDOPTS"] = " ".join(existing_addopts).strip()
+                env.setdefault("PYTHONUNBUFFERED", "1")
+
                 self.logger.info(f"⏱️ Starting test execution at {time.strftime('%H:%M:%S')}")
-                
-                result = subprocess.run(
+
+                # Stream output live and tee to files
+                category_output_dir = Path(self.args.output_dir) / "test_reports" / f"category_{category}"
+                stdout_path = category_output_dir / "pytest_stdout.txt"
+                stderr_path = category_output_dir / "pytest_stderr.txt"
+
+                process = subprocess.Popen(
                     cmd,
-                    capture_output=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
                     text=True,
+                    bufsize=1,
                     cwd=self.project_root,
-                    timeout=config.get("timeout_seconds", 60),
                     env=env
                 )
-                
-                # Cancel timeout
+
+                collected_stdout: List[str] = []
+                collected_stderr: List[str] = []
+                progress_counts = {"passed": 0, "failed": 0, "skipped": 0}
+                last_output_time = time.time()
+
+                def _log_progress_line(line: str):
+                    nonlocal progress_counts
+                    lower = line.lower()
+                    # Update quick counters on common keywords
+                    if "passed" in lower:
+                        progress_counts["passed"] += lower.count("passed")
+                    if "failed" in lower or "error" in lower:
+                        progress_counts["failed"] += lower.count("failed") + lower.count("error")
+                    if "skipped" in lower:
+                        progress_counts["skipped"] += lower.count("skipped")
+
+                with open(stdout_path, "w") as f_out, open(stderr_path, "w") as f_err:
+                    def _stream(pipe, sink, is_err: bool):
+                        nonlocal last_output_time
+                        try:
+                            for raw in iter(pipe.readline, ""):
+                                line = raw.rstrip("\n")
+                                sink.write(raw)
+                                sink.flush()
+                                if is_err:
+                                    self.logger.error(line)
+                                    collected_stderr.append(line)
+                                else:
+                                    self.logger.info(line)
+                                    collected_stdout.append(line)
+                                    _log_progress_line(line)
+                                last_output_time = time.time()
+                        finally:
+                            try:
+                                pipe.close()
+                            except Exception:
+                                pass
+
+                    t_out = threading.Thread(target=_stream, args=(process.stdout, f_out, False), daemon=True)
+                    t_err = threading.Thread(target=_stream, args=(process.stderr, f_err, True), daemon=True)
+                    t_out.start(); t_err.start()
+
+                    # Emit heartbeat if quiet too long
+                    while process.poll() is None:
+                        if time.time() - last_output_time > 10:
+                            elapsed = time.time() - category_start_time
+                            self.logger.info(
+                                f"… pytest running [{category}] — elapsed {int(elapsed)}s; "
+                                f"progress: {progress_counts['passed']} passed, {progress_counts['failed']} failed, {progress_counts['skipped']} skipped"
+                            )
+                            last_output_time = time.time()
+                        time.sleep(2)
+
+                    # ensure threads finish
+                    t_out.join(timeout=5)
+                    t_err.join(timeout=5)
+
+                # Cancel timeout and restore handler
                 signal.alarm(0)
                 signal.signal(signal.SIGALRM, old_handler)
-                
+
                 execution_time = time.time() - category_start_time
                 self.logger.info(f"⏱️ Test execution completed in {execution_time:.2f} seconds")
-                
+
                 # Monitor resources after test execution
                 final_resources = self._monitor_resources_during_test()
                 self.logger.info(f"💾 Final resource usage: {final_resources}")
-                
+
                 # Store resource usage (absolute values only)
                 resource_usage = {
                     "memory_mb": final_resources.get("memory_mb", 0),
@@ -1327,42 +1424,46 @@ class ModularTestRunner:
                     "threads": final_resources.get("threads", 0)
                 }
                 self.resource_usage[category] = resource_usage
-                
+
+                # Join collected output
+                stdout_text = "\n".join(collected_stdout)
+                stderr_text = "\n".join(collected_stderr)
+
                 # Handle pytest internal errors with fallback
-                if result.returncode == 3 and ("INTERNALERROR" in result.stdout or "INTERNALERROR" in result.stderr):
+                if process.returncode == 3 and ("INTERNALERROR" in stdout_text or "INTERNALERROR" in stderr_text):
                     self.logger.warning(f"⚠️ Pytest internal error detected for category '{category}', attempting fallback...")
                     return self._run_fallback_tests(category, test_files, python_executable, category_start_time)
-                
+
                 # Parse test results
-                test_stats = self._parse_pytest_output(result.stdout, result.stderr)
-                
+                test_stats = self._parse_pytest_output(stdout_text, stderr_text)
+
                 # Log detailed results
                 self.logger.info(f"📊 Test Results for {category}:")
                 self.logger.info(f"  ✅ Passed: {test_stats.get('passed', 0)}")
                 self.logger.info(f"  ❌ Failed: {test_stats.get('failed', 0)}")
                 self.logger.info(f"  ⏭️ Skipped: {test_stats.get('skipped', 0)}")
                 self.logger.info(f"  📈 Total: {test_stats.get('total', 0)}")
-                
+
                 # Log slowest tests if available
-                if "slowest" in result.stdout:
-                    slowest_lines = [line for line in result.stdout.split('\n') if "slowest" in line.lower()]
+                if "slowest" in stdout_text.lower():
+                    slowest_lines = [line for line in stdout_text.split('\n') if "slowest" in line.lower()]
                     if slowest_lines:
                         self.logger.info("🐌 Slowest tests:")
                         for line in slowest_lines[:3]:  # Show top 3
                             self.logger.info(f"  {line.strip()}")
-                
+
                 # Determine success based on test results
                 total_tests = test_stats.get('total', 0)
                 failed_tests = test_stats.get('failed', 0)
                 passed_tests = test_stats.get('passed', 0)
-                
+
                 success = (total_tests > 0 and failed_tests == 0) or (passed_tests > 0 and failed_tests <= config.get('max_failures', 10))
-                
+
                 if success:
                     self.logger.info(f"✅ Category '{category}' completed successfully")
                 else:
                     self.logger.warning(f"⚠️ Category '{category}' completed with failures")
-                
+
                 return {
                     "success": success,
                     "tests_run": total_tests,
@@ -1371,11 +1472,11 @@ class ModularTestRunner:
                     "tests_skipped": test_stats.get('skipped', 0),
                     "duration": execution_time,
                     "resource_usage": resource_usage,
-                    "stdout": result.stdout,
-                    "stderr": result.stderr,
-                    "return_code": result.returncode
+                    "stdout": stdout_text,
+                    "stderr": stderr_text,
+                    "return_code": process.returncode
                 }
-                
+
             except subprocess.TimeoutExpired:
                 signal.alarm(0)
                 signal.signal(signal.SIGALRM, old_handler)
