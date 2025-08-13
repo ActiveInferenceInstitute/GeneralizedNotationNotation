@@ -1,0 +1,93 @@
+2025-08-13 07:53:44,453 - visualization - INFO - 🚀 Processing visualizations
+2025-08-13 07:53:45,259 - visualization - INFO - ✅ Generated 3 visualizations
+2025-08-13 07:53:45,292 - gnn.schema_validator - INFO - Enhanced multi-format parsing system initialized
+2025-08-13 07:53:45,292 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2025-08-13 07:53:45,292 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2025-08-13 07:53:45,292 - gnn.core_processor.wrapper - INFO - Starting GNN processing pipeline
+2025-08-13 07:53:45,292 - gnn.core_processor.wrapper - INFO - Phase 1: File discovery and basic analysis
+2025-08-13 07:53:45,292 - gnn.discovery - INFO - Starting file discovery in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv3c5l53b
+2025-08-13 07:53:45,293 - gnn.discovery - INFO - Discovery completed: 0/0 potential GNN files in 0.000s
+2025-08-13 07:53:45,293 - gnn.core_processor.wrapper - INFO - Discovered 0 GNN files
+2025-08-13 07:53:45,295 - export - INFO - 🚀 Generating multi-format exports
+2025-08-13 07:53:45,298 - export - INFO - ✅ All exports generated successfully
+2025-08-13 07:53:45,300 - visualization - INFO - 🚀 Processing visualizations
+2025-08-13 07:53:45,808 - visualization - INFO - ✅ Generated 2 visualizations
+2025-08-13 07:53:45,808 - export - INFO - 🚀 Generating multi-format exports
+2025-08-13 07:53:45,809 - export - INFO - ✅ All exports generated successfully
+2025-08-13 07:53:45,811 - visualization - INFO - 🚀 Processing visualizations
+2025-08-13 07:53:46,355 - visualization - INFO - ✅ Generated 2 visualizations
+2025-08-13 07:53:46,413 - visualization - INFO - 🚀 Processing visualizations
+2025-08-13 07:53:46,413 - visualization - WARNING - ⚠️ No GNN files found for visualization
+2025-08-13 07:53:46,415 - visualization - INFO - 🚀 Processing visualizations
+2025-08-13 07:53:46,415 - visualization - WARNING - ⚠️ No GNN files found for visualization
+2025-08-13 07:53:46,417 - visualization - INFO - 🚀 Processing visualizations
+2025-08-13 07:53:46,417 - visualization - WARNING - ⚠️ No GNN files found for visualization
+2025-08-13 07:53:46,418 - visualization - INFO - 🚀 Processing visualizations
+2025-08-13 07:53:46,418 - visualization - WARNING - ⚠️ No GNN files found for visualization
+2025-08-13 07:53:46,418 - visualization - INFO - 🚀 Processing visualizations
+2025-08-13 07:53:46,418 - visualization - WARNING - ⚠️ No GNN files found for visualization
+2025-08-13 07:53:53,157 - render.pymdp.pymdp_converter - INFO - ModelName not found in GNN spec, using default 'pymdp_agent_model'.
+2025-08-13 07:53:53,157 - render.pymdp.pymdp_converter - INFO - Starting GNN data extraction.
+2025-08-13 07:53:53,157 - render.pymdp.pymdp_converter - INFO - Found parsed GNN data with 0 variables.
+2025-08-13 07:53:53,157 - render.pymdp.pymdp_converter - INFO - Processing 0 variables from GNN data
+2025-08-13 07:53:53,157 - render.pymdp.pymdp_converter - WARNING - No observation modalities or state factors found in variables
+2025-08-13 07:53:53,157 - render.pymdp.pymdp_converter - INFO - ModelParameters not found or empty in GNN spec.
+2025-08-13 07:53:53,157 - render.pymdp.pymdp_converter - WARNING - Warning: Missing required data - modalities: 0, factors: 0
+2025-08-13 07:53:53,157 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-13 07:53:53,157 - render.pymdp.pymdp_converter - INFO - Finished GNN data extraction.
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - Matrix definitions not generated yet. Generating matrices...
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - DEBUG: convert_A_matrix: type(self.A_spec) = <class 'NoneType'>, value = None
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - A_matrix: No observation modalities defined. 'A' will be None.
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - DEBUG: convert_B_matrix: type(self.B_spec) = <class 'NoneType'>, value = None
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - B_matrix: No hidden state factors defined. 'B' will be None.
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - DEBUG: convert_C_vector: self.C_spec = None
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - C_vector: No observation modalities defined. 'C' will be None.
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - DEBUG: convert_D_vector: self.D_spec = None
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - D_vector: No hidden state factors defined. 'D' will be None.
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - DEBUG: convert_E_vector: self.E_spec = None
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - E_vector: No E (policy prior) specification found. Defaulting to None.
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - Agent instantiation code not generated yet. Generating...
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - ERROR - Cannot generate agent instantiation with no observation modalities or hidden state factors.
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - Example usage code not generated yet. Generating...
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - Skipping example usage code due to missing modalities or state factors.
+2025-08-13 07:53:53,158 - render.pymdp.pymdp_converter - INFO - Generated full Python script (9609 characters)
+2025-08-13 07:53:53,168 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-13 07:53:53,168 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-13 07:53:53,168 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-13 07:53:53,170 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-13 07:53:53,170 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-13 07:53:53,170 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-13 07:53:53,171 - llm.providers.openai_provider - WARNING - OpenAI API key not provided
+2025-08-13 07:53:53,171 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-08-13 07:53:53,238 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-08-13 07:53:53,238 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-08-13 07:53:53,238 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-08-13 07:53:53,238 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-08-13 07:53:53,239 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-08-13 07:53:53,239 - llm.llm_processor - WARNING - Failed to initialize ollama provider
+2025-08-13 07:53:53,239 - llm.llm_processor - WARNING - No LLM providers could be initialized
+2025-08-13 07:53:53,240 - llm.llm_operations - ERROR - Async summarization failed: Processor not initialized
+2025-08-13 07:53:53,240 - llm.providers.openai_provider - WARNING - OpenAI API key not provided
+2025-08-13 07:53:53,240 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-08-13 07:53:53,240 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-08-13 07:53:53,240 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-08-13 07:53:53,240 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-08-13 07:53:53,240 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-08-13 07:53:53,240 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-08-13 07:53:53,240 - llm.llm_processor - WARNING - Failed to initialize ollama provider
+2025-08-13 07:53:53,240 - llm.llm_processor - WARNING - No LLM providers could be initialized
+2025-08-13 07:53:53,243 - gnn.schema_validator - INFO - Enhanced multi-format parsing system initialized
+2025-08-13 07:53:53,243 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2025-08-13 07:53:53,243 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2025-08-13 07:53:53,243 - gnn.core_processor.wrapper - INFO - Starting GNN processing pipeline
+2025-08-13 07:53:53,243 - gnn.core_processor.wrapper - INFO - Phase 1: File discovery and basic analysis
+2025-08-13 07:53:53,243 - gnn.discovery - INFO - Starting file discovery in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpvwv2p3yk/input
+2025-08-13 07:53:53,243 - gnn.discovery - INFO - Discovery completed: 0/1 potential GNN files in 0.000s
+2025-08-13 07:53:53,243 - gnn.core_processor.wrapper - INFO - Discovered 0 GNN files
+2025-08-13 07:53:53,247 - root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
+2025-08-13 07:53:53,249 - execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'execute.discopy_translator_module'

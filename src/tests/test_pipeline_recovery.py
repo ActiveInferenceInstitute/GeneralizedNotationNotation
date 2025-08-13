@@ -68,15 +68,21 @@ class TestRecursionErrorRecovery:
     """Test suite for NumPy recursion error recovery."""
     
     def test_numpy_import_recovery(self, mock_environment):
-        """Test recovery from NumPy import recursion error."""
-        with patch('numpy.typing._array_like', side_effect=RecursionError):
+        """Test recovery from NumPy import recursion error.
+
+        Patch numpy.typing module import itself to raise RecursionError first,
+        then increase recursion limit and import again to simulate recovery.
+        """
+        with patch('numpy.typing', side_effect=RecursionError):
             with pytest.raises(RecursionError):
-                import numpy as np
-                
-            # Should recover by increasing recursion limit
-            sys.setrecursionlimit(3000)
-            import numpy as np
-            assert np is not None
+                __import__('numpy.typing')
+
+        # Should recover by increasing recursion limit
+        sys.setrecursionlimit(3000)
+        # Remove any cached failed import so retry occurs
+        sys.modules.pop('numpy.typing', None)
+        import numpy as np  # noqa: F401
+        assert 'numpy' in sys.modules
             
     def test_render_step_recovery(self, mock_environment, sample_gnn_file):
         """Test render step recovery from recursion errors."""

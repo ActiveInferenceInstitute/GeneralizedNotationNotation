@@ -87,7 +87,7 @@ class PerplexityProvider(BaseLLMProvider):
             return False
             
         if not self.api_key:
-            logger.error("Perplexity API key not provided")
+            logger.warning("Perplexity API key not provided")
             return False
             
         try:

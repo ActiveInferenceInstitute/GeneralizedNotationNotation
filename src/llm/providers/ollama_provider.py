@@ -85,7 +85,7 @@ class OllamaProvider(BaseLLMProvider):
                 self._is_initialized = True
                 logger.info("Ollama provider initialized (CLI fallback)")
                 return True
-            logger.error("Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai")
+            logger.warning("Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai")
             return False
         except Exception as e:
             logger.error(f"Failed to initialize Ollama: {e}")

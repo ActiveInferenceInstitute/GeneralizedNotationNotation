@@ -294,10 +294,13 @@ def main():
                                         duration=step_duration,
                                             status=status_for_logging)
             else:
-                if step_result["status"] == "SUCCESS":
-                    logger.info(f"✅ Step {step_number} completed successfully in {step_duration:.2f}s")
+                status_for_logging = step_result["status"]
+                if str(status_for_logging).startswith("SUCCESS"):
+                    logger.info(f"✅ Step {step_number} completed with {status_for_logging} in {step_duration:.2f}s")
+                elif status_for_logging == "PARTIAL_SUCCESS":
+                    logger.warning(f"⚠️ Step {step_number} completed with PARTIAL_SUCCESS in {step_duration:.2f}s")
                 else:
-                    logger.error(f"❌ Step {step_number} failed with status: {step_result['status']}")
+                    logger.error(f"❌ Step {step_number} failed with status: {status_for_logging}")
         
         # Complete pipeline summary
         pipeline_summary["end_time"] = datetime.now().isoformat()
@@ -459,7 +462,20 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                     stripped = line.rstrip("\n")
                     collect.append(stripped)
                     if is_error:
-                        logger.error(stripped)
+                        # Avoid logging non-errors as errors; classify stderr lines
+                        lower = stripped.lower()
+                        if (
+                            "traceback" in lower
+                            or lower.startswith("e   ")
+                            or "= fail" in lower
+                            or "failed" in lower
+                            or "error" in lower
+                        ):
+                            logger.error(stripped)
+                        elif ("warning" in lower) or ("⚠️" in stripped):
+                            logger.warning(stripped)
+                        else:
+                            logger.info(stripped)
                     else:
                         logger.info(stripped)
                     # Update activity timestamp for heartbeat

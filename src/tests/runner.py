@@ -853,7 +853,7 @@ def _parse_coverage_statistics(coverage_json_path: Path, logger: logging.Logger)
         }
         
     except Exception as e:
-        logger.error(f"Failed to parse coverage statistics: {e}")
+        logger.warning(f"Failed to parse coverage statistics: {e}")
         return {"error": str(e)}
 
 def _generate_markdown_report(report_path: Path, summary: Dict[str, Any]):
@@ -891,7 +891,7 @@ def _generate_markdown_report(report_path: Path, summary: Dict[str, Any]):
         logging.info(f"✅ Markdown report generated: {report_path}")
         
     except Exception as e:
-        logging.error(f"Failed to generate markdown report: {e}")
+        logging.warning(f"Failed to generate markdown report: {e}")
 
 def _generate_fallback_report(output_dir: Path, summary: Dict[str, Any]):
     """Generate fallback report when main report generation fails."""
@@ -909,7 +909,7 @@ def _generate_fallback_report(output_dir: Path, summary: Dict[str, Any]):
         logging.info(f"✅ Fallback report generated: {fallback_file}")
         
     except Exception as e:
-        logging.error(f"Failed to generate fallback report: {e}")
+        logging.warning(f"Failed to generate fallback report: {e}")
 
 def _generate_timeout_report(output_dir: Path, cmd: List[str], timeout: int):
     """Generate report for timeout scenarios."""
@@ -925,7 +925,7 @@ def _generate_timeout_report(output_dir: Path, cmd: List[str], timeout: int):
         logging.warning(f"⚠️ Timeout report generated: {timeout_file}")
         
     except Exception as e:
-        logging.error(f"Failed to generate timeout report: {e}")
+        logging.warning(f"Failed to generate timeout report: {e}")
 
 def _generate_error_report(output_dir: Path, cmd: List[str], error_msg: str):
     """Generate report for error scenarios."""
@@ -938,10 +938,10 @@ def _generate_error_report(output_dir: Path, cmd: List[str], error_msg: str):
             f.write(f"Command: {' '.join(cmd)}\n")
             f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
         
-        logging.error(f"❌ Error report generated: {error_file}")
+        logging.info(f"❌ Error report generated: {error_file}")
         
     except Exception as e:
-        logging.error(f"Failed to generate error report: {e}")
+        logging.warning(f"Failed to generate error report: {e}")
 
 class ModularTestRunner:
     """Test runner with comprehensive error handling and reporting."""
@@ -1044,7 +1044,7 @@ class ModularTestRunner:
             except Exception as e:
                 total_tests += 1
                 failed_tests += 1
-                self.logger.error(f"  ❌ {Path(test_file).name}: Error {e}")
+                self.logger.warning(f"  ❌ {Path(test_file).name}: Error {e}")
         
         duration = time.time() - start_time
         self.category_times[category] = duration
@@ -1202,7 +1202,8 @@ class ModularTestRunner:
         self.logger.info(f"\n{'='*60}")
         self.logger.info(f"🧪 Running category: {config['name']}")
         self.logger.info(f"📝 Description: {config['description']}")
-        self.logger.info(f"⏱️ Timeout: {config.get('timeout_seconds', 60)} seconds")
+        effective_timeout_seconds = int(config.get('timeout_seconds', 120))
+        self.logger.info(f"⏱️ Category timeout budget: {effective_timeout_seconds} seconds")
         self.logger.info(f"🔄 Parallel: {config.get('parallel', True)}")
         self.logger.info(f"{'='*60}")
         
@@ -1258,18 +1259,43 @@ class ModularTestRunner:
         category_output_dir.mkdir(parents=True, exist_ok=True)
 
         # Build pytest command with options and plugin isolation
-        cmd = [
-            python_executable, "-m", "pytest",
-            "--tb=short",  # Shorter traceback
-            "--maxfail=10",  # Stop after 10 failures
-            "--durations=10",  # Show 10 slowest tests
-            "--no-header",  # Skip pytest header
-            "-p", "no:randomly",  # Disable pytest-randomly plugin
-            "-p", "no:sugar",    # Disable pytest-sugar plugin
-            "-p", "no:cacheprovider",  # Disable cache to avoid corruption
-        ]
+        import shutil as _shutil
+        uv_path = _shutil.which("uv")
+        if uv_path:
+            # Prefer uv-managed execution to ensure declared deps (including pytest-timeout) are available
+            cmd = [
+                uv_path, "run", "pytest",
+                "--tb=short",
+                f"--maxfail=10",
+                "--durations=10",
+                "--no-header",
+                "-p", "no:randomly",
+                "-p", "no:sugar",
+                "-p", "no:cacheprovider",
+                # Explicitly enable timeout plugin and set per-test timeout
+                "-p", "pytest_timeout",
+                "--timeout=10", "--timeout-method=thread",
+            ]
+        else:
+            cmd = [
+                python_executable, "-m", "pytest",
+                "--tb=short",  # Shorter traceback
+                "--maxfail=10",  # Stop after 10 failures
+                "--durations=10",  # Show 10 slowest tests
+                "--no-header",  # Skip pytest header
+                "-p", "no:randomly",  # Disable pytest-randomly plugin
+                "-p", "no:sugar",    # Disable pytest-sugar plugin
+                "-p", "no:cacheprovider",  # Disable cache to avoid corruption
+            ]
         
         # Load and enable optional plugins explicitly since autoload is disabled
+        # Ensure timeout plugin is enabled with 10s per-test limit (unconditionally pass plugin to subprocess)
+        cmd.extend(["-p", "pytest_timeout", "--timeout=10", "--timeout-method=thread"])  
+        self.logger.info("⏳ Per-test timeout enforced (10s)")
+
+        # Explicitly enable asyncio plugin for async tests (do not gate on parent import)
+        cmd.extend(["-p", "pytest_asyncio"])  
+        self.logger.info("✅ pytest-asyncio requested")
         if has_jsonreport:
             cmd.extend(["-p", "pytest_jsonreport", "--json-report", "--json-report-file=none"])
             self.logger.info("📊 JSON reporting enabled")
@@ -1310,13 +1336,8 @@ class ModularTestRunner:
             initial_resources = self._monitor_resources_during_test()
             self.logger.info(f"💾 Initial resource usage: {initial_resources}")
             
-            # Set up timeout
-            def timeout_handler(signum, frame):
-                raise TimeoutError(f"Test category '{category}' timed out after {config.get('timeout_seconds', 60)} seconds")
-            
-            # Set signal handler for timeout
-            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
-            signal.alarm(config.get("timeout_seconds", 60))
+            # Avoid global SIGALRM; rely on per-test timeouts and inactivity-based aborts
+            old_handler = None
             
             try:
                 # Set environment variables to avoid dependency conflicts and promote live streaming
@@ -1353,6 +1374,7 @@ class ModularTestRunner:
                 collected_stderr: List[str] = []
                 progress_counts = {"passed": 0, "failed": 0, "skipped": 0}
                 last_output_time = time.time()
+                collected_seen: bool = False
 
                 def _log_progress_line(line: str):
                     nonlocal progress_counts
@@ -1364,17 +1386,38 @@ class ModularTestRunner:
                         progress_counts["failed"] += lower.count("failed") + lower.count("error")
                     if "skipped" in lower:
                         progress_counts["skipped"] += lower.count("skipped")
+                    if ("collected" in lower) and ("items" in lower):
+                        collected_seen = True
 
-                with open(stdout_path, "w") as f_out, open(stderr_path, "w") as f_err:
+                f_out = open(stdout_path, "w")
+                f_err = open(stderr_path, "w")
+                try:
                     def _stream(pipe, sink, is_err: bool):
                         nonlocal last_output_time
                         try:
                             for raw in iter(pipe.readline, ""):
                                 line = raw.rstrip("\n")
-                                sink.write(raw)
-                                sink.flush()
+                                try:
+                                    sink.write(raw)
+                                    sink.flush()
+                                except Exception:
+                                    # Sink might be closing; stop streaming
+                                    break
                                 if is_err:
-                                    self.logger.error(line)
+                                    # Classify stderr lines to avoid error-level logs for non-errors
+                                    lower_line = line.lower()
+                                    if (
+                                        "traceback" in lower_line
+                                        or lower_line.startswith("e   ")
+                                        or "= fail" in lower_line
+                                        or "failed" in lower_line
+                                        or re.search(r"\b(error|exception)\b", lower_line)
+                                    ):
+                                        self.logger.error(line)
+                                    elif "warn" in lower_line:
+                                        self.logger.warning(line)
+                                    else:
+                                        self.logger.info(line)
                                     collected_stderr.append(line)
                                 else:
                                     self.logger.info(line)
@@ -1387,11 +1430,12 @@ class ModularTestRunner:
                             except Exception:
                                 pass
 
-                    t_out = threading.Thread(target=_stream, args=(process.stdout, f_out, False), daemon=True)
-                    t_err = threading.Thread(target=_stream, args=(process.stderr, f_err, True), daemon=True)
+                    t_out = threading.Thread(target=_stream, args=(process.stdout, f_out, False))
+                    t_err = threading.Thread(target=_stream, args=(process.stderr, f_err, True))
                     t_out.start(); t_err.start()
 
-                    # Emit heartbeat if quiet too long
+                    # Emit heartbeat if quiet too long; abort only on true inactivity
+                    collection_stall_limit = 25
                     while process.poll() is None:
                         if time.time() - last_output_time > 10:
                             elapsed = time.time() - category_start_time
@@ -1400,15 +1444,35 @@ class ModularTestRunner:
                                 f"progress: {progress_counts['passed']} passed, {progress_counts['failed']} failed, {progress_counts['skipped']} skipped"
                             )
                             last_output_time = time.time()
+                        # Abort only if no output whatsoever for stall_limit seconds
+                        if time.time() - last_output_time > collection_stall_limit:
+                            self.logger.warning(f"⛔ Aborting category '{category}' due to inactivity > {collection_stall_limit}s")
+                            try:
+                                process.kill()
+                            except Exception:
+                                pass
+                            break
                         time.sleep(2)
 
-                    # ensure threads finish
-                    t_out.join(timeout=5)
-                    t_err.join(timeout=5)
+                    # ensure threads finish completely before closing sinks
+                    t_out.join()
+                    t_err.join()
+                finally:
+                    try:
+                        f_out.close()
+                    except Exception:
+                        pass
+                    try:
+                        f_err.close()
+                    except Exception:
+                        pass
 
-                # Cancel timeout and restore handler
-                signal.alarm(0)
-                signal.signal(signal.SIGALRM, old_handler)
+                # Restore any previous handler if one was set
+                if old_handler is not None:
+                    try:
+                        signal.signal(signal.SIGALRM, old_handler)
+                    except Exception:
+                        pass
 
                 execution_time = time.time() - category_start_time
                 self.logger.info(f"⏱️ Test execution completed in {execution_time:.2f} seconds")
@@ -1478,17 +1542,20 @@ class ModularTestRunner:
                 }
 
             except subprocess.TimeoutExpired:
-                signal.alarm(0)
-                signal.signal(signal.SIGALRM, old_handler)
-                self.logger.error(f"⏰ Test category '{category}' timed out after {config.get('timeout_seconds', 60)} seconds")
+                if old_handler is not None:
+                    try:
+                        signal.signal(signal.SIGALRM, old_handler)
+                    except Exception:
+                        pass
+                self.logger.error(f"⏰ Test category '{category}' reached subprocess timeout")
                 return {
                     "success": False,
-                    "error": f"Timeout after {config.get('timeout_seconds', 60)} seconds",
+                    "error": "Subprocess timeout",
                     "tests_run": 0,
                     "tests_passed": 0,
                     "tests_failed": 0,
                     "tests_skipped": 0,
-                    "duration": config.get('timeout_seconds', 60)
+                    "duration": time.time() - category_start_time
                 }
                 
         except Exception as e:
@@ -1744,7 +1811,8 @@ def create_test_runner(args, logger: logging.Logger) -> ModularTestRunner:
 def monitor_memory(logger: logging.Logger, threshold_mb: int = 2000):
     """Monitor memory usage and log warnings if threshold exceeded."""
     try:
-        process = psutil.Process()
+        import psutil as _ps  # local import to avoid top-level dependency
+        process = _ps.Process()
         memory_info = process.memory_info()
         memory_mb = memory_info.rss / 1024 / 1024
         

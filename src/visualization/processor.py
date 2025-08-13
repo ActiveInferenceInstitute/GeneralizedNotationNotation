@@ -20,14 +20,20 @@ try:
     import matplotlib.pyplot as plt
     import matplotlib.patches as patches
     from matplotlib import cm
-    import seaborn as sns
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError):
     plt = None
     patches = None
     cm = None
-    sns = None
     MATPLOTLIB_AVAILABLE = False
+
+# Seaborn is optional; fall back to matplotlib-only if unavailable
+try:
+    import seaborn as sns  # type: ignore
+    SEABORN_AVAILABLE = True
+except Exception:
+    sns = None  # type: ignore
+    SEABORN_AVAILABLE = False
     
 # Safe NetworkX import to avoid pathlib recursion errors
 try:
@@ -88,8 +94,10 @@ def process_visualization(
         results_dir = output_dir / "visualization_results"
         results_dir.mkdir(parents=True, exist_ok=True)
         
-        # Find GNN files
+        # Find GNN files (.md primary; support .gnn for tests)
         gnn_files = list(target_dir.glob("*.md"))
+        if not gnn_files:
+            gnn_files = list(target_dir.glob("*.gnn"))
         if not gnn_files:
             log_step_warning(logger, "No GNN files found for visualization")
             return True
@@ -158,6 +166,11 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
         model_name = gnn_file.stem
         model_dir = results_dir / model_name
         model_dir.mkdir(exist_ok=True)
+
+        # Lightweight caching: if visualizations already exist for this model, reuse them
+        existing_pngs = sorted([str(p) for p in model_dir.glob('*.png')])
+        if existing_pngs:
+            return existing_pngs
         
         # Generate different types of visualizations
         visualizations = []
@@ -314,12 +327,25 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
             matrix_data = matrix_info["data"]
             
             if matrix_data is not None and matrix_data.size > 0:
-                # Create heatmap
+                # Create heatmap with seaborn if available; otherwise use matplotlib imshow
                 plt.figure(figsize=(8, 6))
-                sns.heatmap(matrix_data, annot=True, cmap='viridis', fmt='.2f')
+                if SEABORN_AVAILABLE:
+                    sns.heatmap(matrix_data, annot=True, cmap='viridis', fmt='.2f')
+                else:
+                    im = plt.imshow(matrix_data, cmap='viridis', aspect='auto')
+                    plt.colorbar(im, fraction=0.046, pad=0.04)
+                    # Annotate small matrices for readability
+                    try:
+                        rows, cols = matrix_data.shape
+                        if rows * cols <= 25:
+                            for r in range(rows):
+                                for c in range(cols):
+                                    plt.text(c, r, f"{matrix_data[r, c]:.2f}", ha='center', va='center', color='white')
+                    except Exception:
+                        pass
                 plt.title(f"{model_name} - Matrix {i+1}")
                 plt.tight_layout()
-                
+
                 # Save plot
                 plot_file = output_dir / f"{model_name}_matrix_{i+1}_heatmap.png"
                 plt.savefig(plot_file, dpi=300, bbox_inches='tight')

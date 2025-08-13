@@ -28,7 +28,7 @@ keywords:
   - "gnn"
   - "python"
 
-license: MIT
+license: CC-BY-NC-SA-4.0
 
 repository-code: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
 url: "https://activeinference.institute/" # General URL for the institute

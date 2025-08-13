@@ -90,6 +90,7 @@ def generate_code_suggestions(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
 def generate_documentation(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     """Generate documentation for the GNN model."""
     documentation = {
+        "file_path": file_analysis.get("file_path", file_analysis.get("file_name", "Unknown")),
         "model_overview": "",
         "variable_documentation": [],
         "connection_documentation": [],

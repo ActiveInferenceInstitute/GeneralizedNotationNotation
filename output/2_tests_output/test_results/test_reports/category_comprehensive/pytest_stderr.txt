@@ -1,0 +1,97 @@
+2025-08-13 07:57:13,039 - root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
+2025-08-13 07:57:13,041 - src.execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'src.execute.discopy_translator_module'
+2025-08-13 07:57:13,046 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-13 07:57:13,046 - src.llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-13 07:57:13,046 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-08-13 07:57:13,055 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:57:13,132 - src.type_checker.checker - INFO - GNNTypeChecker initialized. Strict mode: False
+2025-08-13 07:57:13,144 - root - INFO - GNN module imports validated
+2025-08-13 07:57:13,145 - root - INFO - GNN file discovery validated: 1 files found
+2025-08-13 07:57:13,147 - root - WARNING - Failed to parse simple.gnn: Parsed data should contain ModelName
+assert 'ModelName' in {'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7olzto0o/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-08-13T07:57:13.147310'}
+2025-08-13 07:57:13,148 - root - WARNING - Validation check failed for simple.gnn: Valid GNN file should have basic structure: simple.gnn
+assert False
+2025-08-13 07:57:13,151 - root - WARNING - GNN directory processing failed: Results should contain errors
+assert 'errors' in {'status': 'SUCCESS', 'files': ['timestamp', 'target_directory', 'files_found', 'files_processed', 'success', 'errors', 'parsed_files', 'validation_results'], 'processed_files': ['timestamp', 'target_directory', 'files_found', 'files_processed', 'success', 'errors', 'parsed_files', 'validation_results']}
+2025-08-13 07:57:13,166 - root - INFO - Render module imports validated
+2025-08-13 07:57:13,167 - root - WARNING - PyMDP rendering failed: generate_pymdp_code() takes 1 positional argument but 2 were given
+2025-08-13 07:57:13,169 - root - WARNING - RxInfer rendering failed: generate_rxinfer_code() takes 1 positional argument but 2 were given
+2025-08-13 07:57:13,172 - root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
+2025-08-13 07:57:13,173 - execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'execute.discopy_translator_module'
+2025-08-13 07:57:13,174 - root - WARNING - Execution environment validation failed: Status should contain python_version
+assert 'python_version' in {'summary': {'total_errors': 0}, 'overall_status': 'unknown'}
+2025-08-13 07:57:13,178 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-13 07:57:13,178 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-13 07:57:13,178 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-13 07:57:13,180 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-13 07:57:13,180 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-13 07:57:13,180 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-13 07:57:13,181 - llm.providers.openai_provider - WARNING - OpenAI API key not provided
+2025-08-13 07:57:13,181 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-08-13 07:57:13,262 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-08-13 07:57:13,262 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-08-13 07:57:13,262 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-08-13 07:57:13,262 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-08-13 07:57:13,263 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-08-13 07:57:13,263 - llm.llm_processor - WARNING - Failed to initialize ollama provider
+2025-08-13 07:57:13,264 - llm.llm_processor - WARNING - No LLM providers could be initialized
+2025-08-13 07:57:13,264 - llm.llm_operations - ERROR - Async summarization failed: Processor not initialized
+2025-08-13 07:57:13,264 - llm.providers.openai_provider - WARNING - OpenAI API key not provided
+2025-08-13 07:57:13,264 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-08-13 07:57:13,264 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-08-13 07:57:13,264 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-08-13 07:57:13,264 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-08-13 07:57:13,264 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-08-13 07:57:13,264 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-08-13 07:57:13,265 - llm.llm_processor - WARNING - Failed to initialize ollama provider
+2025-08-13 07:57:13,265 - llm.llm_processor - WARNING - No LLM providers could be initialized
+2025-08-13 07:57:13,270 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:57:13,270 - root - INFO - MCP module imports validated
+2025-08-13 07:57:13,271 - root - WARNING - MCP tool registration failed: Tools should be a list
+assert False
+ +  where False = isinstance(True, list)
+2025-08-13 07:57:13,271 - mcp.processor - INFO - Handling MCP request: tools/list
+2025-08-13 07:57:13,271 - root - INFO - MCP request handling validated
+2025-08-13 07:57:13,273 - ontology - INFO - 🚀 Processing ontology
+2025-08-13 07:57:13,274 - ontology - INFO - ✅ Ontology processing completed successfully
+2025-08-13 07:57:13,277 - website - INFO - Website generated successfully with 1 pages
+2025-08-13 07:57:13,279 - website - INFO - Website generated successfully with 1 pages
+2025-08-13 07:57:13,282 - root - INFO - SAPF module imports validated successfully
+2025-08-13 07:57:13,282 - root - WARNING - GNN to SAPF conversion failed: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
+2025-08-13 07:57:13,283 - root - INFO - SAPF validation functionality confirmed
+2025-08-13 07:57:13,284 - root - INFO - SAPF audio generation functionality confirmed
+2025-08-13 07:57:13,285 - root - WARNING - Core module coordination failed: cannot import name 'execute_gnn_model' from 'src.execute' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/execute/__init__.py)
+2025-08-13 07:57:13,286 - root - WARNING - Module data flow failed: cannot import name 'analyze_gnn_model' from 'src.llm' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/llm/__init__.py)
+2025-08-13 07:57:13,287 - root - INFO - Core module completeness test passed
+2025-08-13 07:57:13,288 - root - INFO - Core module performance test completed
+2025-08-13 07:57:13,314 - root - INFO - Fast test suite completeness validated
+2025-08-13 07:57:13,314 - root - INFO - Main orchestrator file structure validated
+2025-08-13 07:57:13,315 - root - INFO - Main orchestrator imports validated
+2025-08-13 07:57:13,316 - root - INFO - All 3 main orchestrator components available
+2025-08-13 07:57:13,316 - root - INFO - Argument parser basic functionality validated
+2025-08-13 07:57:13,317 - root - INFO - Argument validation logic tested
+2025-08-13 07:57:13,318 - root - INFO - Argument defaults validated
+2025-08-13 07:57:13,320 - root - INFO - Pipeline script discovery logic validated
+2025-08-13 07:57:13,320 - root - INFO - Pipeline script sorting logic validated
+2025-08-13 07:57:13,322 - root - INFO - Virtual environment detection logic validated
+2025-08-13 07:57:13,322 - root - INFO - Python executable detection validated: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+2025-08-13 07:57:13,323 - root - INFO - Step execution interface validated
+2025-08-13 07:57:13,324 - root - INFO - Step argument building logic validated
+2025-08-13 07:57:13,327 - root - INFO - Pipeline coordination flow validated
+2025-08-13 07:57:13,328 - root - INFO - Pipeline configuration consistency validated
+2025-08-13 07:57:13,328 - root - INFO - System info collection validated
+2025-08-13 07:57:13,329 - root - INFO - Performance metrics structure validated
+2025-08-13 07:57:13,330 - root - INFO - Output directory structure validated
+2025-08-13 07:57:13,331 - root - INFO - Pipeline summary generation validated
+2025-08-13 07:57:13,332 - root - INFO - Step failure handling validated
+2025-08-13 07:57:13,332 - root - INFO - Graceful degradation validated for 4 scenarios
+2025-08-13 07:57:13,333 - test_error_reporting - WARNING - Test warning message
+2025-08-13 07:57:13,333 - test_error_reporting - ERROR - Test error message
+2025-08-13 07:57:13,333 - test_error_reporting - CRITICAL - Test critical message
+2025-08-13 07:57:13,333 - root - INFO - Error reporting functionality validated
+2025-08-13 07:57:13,334 - root - INFO - Configuration schema validation passed
+2025-08-13 07:57:13,334 - root - INFO - Environment variable consistency validated
+2025-08-13 07:57:13,336 - root - INFO - Minimal pipeline execution validated
+2025-08-13 07:57:13,336 - root - INFO - Pipeline with failures validated: 2 success, 1 failures
+2025-08-13 07:57:13,337 - root - INFO - Main orchestrator help functionality validated for 4 sections
+2025-08-13 07:57:13,337 - root - INFO - Main orchestrator performance characteristics validated for 4 metrics

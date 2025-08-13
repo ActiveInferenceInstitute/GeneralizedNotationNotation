@@ -4,120 +4,120 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
-src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
 src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
 src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports 
-src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
 src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration 
 src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
+src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration 
 src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval 
-[gw3] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
 src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution 
+[gw1] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
+[gw3] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
 [gw6] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
-[gw1] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
+[gw2] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
+src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage 
 src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters 
 src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling 
-[gw10] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval 
-[gw8] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
-[gw12] PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports 
-[gw5] PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
-[gw2] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage 
-src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
-[gw13] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
 [gw11] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
-[gw1] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling 
+[gw1] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
 [gw3] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage 
 [gw9] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration 
-[gw8] SKIPPED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
-[gw0] SKIPPED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
-src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
-[gw12] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
+[gw5] PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
+[gw10] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval 
 src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
-src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
-[gw13] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
-src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
-[gw11] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
-src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
-[gw5] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
+[gw8] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
+src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration 
+[gw2] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling 
+[gw12] PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports 
+[gw13] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports 
 src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization 
 [gw9] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization 
-src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration 
-[gw4] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
+src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
+[gw11] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
+[gw0] SKIPPED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
+src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
+src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
+[gw5] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
+[gw8] SKIPPED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
+src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
+src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
+src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
+[gw13] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
 src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration 
 [gw0] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
-[gw2] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
-[gw3] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration 
-[gw1] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
+[gw12] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
+[gw4] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
+[gw3] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
+[gw1] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration 
 src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation 
 [gw4] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation 
-[gw10] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
-[gw6] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters 
+[gw2] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
 [gw7] PASSED src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration 
-src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
-src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
 src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports 
-[gw10] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
-[gw6] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
+[gw6] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters 
+src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
 [gw7] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports 
+[gw6] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
+[gw10] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
 
 ==================================== PASSES ====================================
-____________ TestMCPModuleComprehensive.test_mcp_instance_retrieval ____________
-[gw10] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
------------------------------- Captured log call -------------------------------
-INFO     mcp:mcp.py:478 Enhanced MCP server initialized
-___________ TestMCPModuleComprehensive.test_mcp_server_instantiation ___________
-[gw8] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
------------------------------- Captured log call -------------------------------
-INFO     mcp:mcp.py:478 Enhanced MCP server initialized
-_______________ TestMCPTransportLayers.test_stdio_server_imports _______________
-[gw12] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
------------------------------- Captured log call -------------------------------
-INFO     mcp:mcp.py:478 Enhanced MCP server initialized
-________________ TestMCPCoreComprehensive.test_mcp_core_imports ________________
-[gw5] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
------------------------------- Captured log call -------------------------------
-INFO     mcp:mcp.py:478 Enhanced MCP server initialized
 _______________ TestMCPToolExecution.test_export_tool_execution ________________
-[gw11] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+[gw11] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     export.mcp:mcp.py:161 Export module MCP tools registered.
 ____________ TestMCPModuleComprehensive.test_mcp_tools_registration ____________
-[gw9] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+[gw9] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+------------------------------ Captured log call -------------------------------
+INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+________________ TestMCPCoreComprehensive.test_mcp_core_imports ________________
+[gw5] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+------------------------------ Captured log call -------------------------------
+INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+____________ TestMCPModuleComprehensive.test_mcp_instance_retrieval ____________
+[gw10] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+------------------------------ Captured log call -------------------------------
+INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+___________ TestMCPModuleComprehensive.test_mcp_server_instantiation ___________
+[gw8] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+------------------------------ Captured log call -------------------------------
+INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+_______________ TestMCPTransportLayers.test_stdio_server_imports _______________
+[gw12] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     mcp:mcp.py:478 Enhanced MCP server initialized
 ____________ TestMCPToolExecution.test_utils_system_info_execution _____________
-[gw11] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+[gw11] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     utils.mcp:mcp.py:289 Registering utils MCP tools
 INFO     utils.mcp:mcp.py:352 Successfully registered utils MCP tools
-____________ TestMCPToolExecution.test_gnn_validate_tool_execution _____________
-[gw10] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+___________ TestMCPResourceManagement.test_mcp_resource_registration ___________
+[gw7] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
 INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
 _______ TestMCPErrorHandling.test_tool_execution_with_invalid_parameters _______
-[gw6] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
------------------------------- Captured log call -------------------------------
-INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
-INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
-___________ TestMCPResourceManagement.test_mcp_resource_registration ___________
-[gw7] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+[gw6] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
 INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
 ______________ TestMCPModuleComprehensive.test_mcp_module_imports ______________
-[gw7] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+[gw7] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+____________ TestMCPToolExecution.test_gnn_validate_tool_execution _____________
+[gw10] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+------------------------------ Captured log call -------------------------------
+INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
+INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
 --------------------------------- JSON report ----------------------------------
 report auto-save skipped
 ================================ tests coverage ================================
@@ -127,7 +127,7 @@ Name                                                               Stmts   Miss 
 ------------------------------------------------------------------------------------------------
 src/0_template.py                                                     79     79     0%   35-217
 src/1_setup.py                                                        92     92     0%   27-221
-src/2_tests.py                                                       278    278     0%   23-622
+src/2_tests.py                                                       278    278     0%   23-626
 src/3_gnn.py                                                           8      8     0%   9-27
 src/4_model_registry.py                                              104    104     0%   13-259
 src/5_type_checker.py                                                 93     93     0%   8-195
@@ -200,12 +200,12 @@ src/export/core.py                                                    89     89 
 src/export/format_exporters.py                                       282    282     0%   9-373
 src/export/formatters.py                                             210    194     8%   17-22, 26-60, 64-111, 115-158, 162-167, 171-176, 180-225, 229-234, 238-268, 272-303
 src/export/mcp.py                                                     61     43    30%   20-24, 27-34, 37-55, 71-85, 101-114
-src/export/processor.py                                              167    156     7%   36-75, 88-126, 142-189, 206-264, 281-300, 317-371
+src/export/processor.py                                              168    156     7%   45-84, 97-135, 151-198, 215-273, 290-309, 326-380
 src/export/utils.py                                                   12      9    25%   12-55, 59
 src/gnn/__init__.py                                                   13      5    62%   46, 50-51, 55-56
-src/gnn/core_processor.py                                             94     94     0%   10-307
+src/gnn/core_processor.py                                            167    167     0%   10-416
 src/gnn/cross_format.py                                               14     14     0%   10-35
-src/gnn/cross_format_validator.py                                    268    230    14%   48-50, 54-58, 66-85, 90-143, 148-204, 209-238, 242-268, 272-305, 309-321, 326-338, 343-367, 372-392, 396-447, 452-494, 500-501, 506-507
+src/gnn/cross_format_validator.py                                    283    245    13%   48-50, 54-58, 66-85, 90-145, 150-215, 220-249, 253-279, 283-316, 320-332, 337-349, 354-378, 383-403, 407-465, 470-512, 518-519, 524-525
 src/gnn/discovery.py                                                  47     47     0%   9-112
 src/gnn/documentation/__init__.py                                      1      1     0%   8
 src/gnn/formal_specs/__init__.py                                       1      1     0%   8
@@ -262,7 +262,7 @@ src/gnn/parsers/znotation_serializer.py                               52     41 
 src/gnn/processor.py                                                 158    141    11%   21-25, 39-87, 100-110, 114-130, 143-180, 192-227, 244-285, 307-322, 335-380, 384
 src/gnn/processors.py                                                401    379     5%   35-62, 78-128, 163-355, 369-403, 408-430, 435-461, 466-504, 537-672, 697-872
 src/gnn/reporting.py                                                 188    188     0%   9-461
-src/gnn/schema_validator.py                                          730    659    10%   45-46, 74-80, 85-105, 110-133, 137-162, 166-176, 196-214, 234-244, 248-277, 296-302, 307-315, 319-367, 371-398, 402-433, 437-467, 471-479, 483-490, 494-513, 517-540, 544-564, 568-590, 594-622, 626-647, 651-680, 684-705, 709-719, 723-732, 736-742, 752-782, 790-820, 830-913, 917-928, 932-964, 968-987, 991-1006, 1010-1028, 1032-1053, 1057-1094, 1098-1109, 1113-1160, 1164-1207, 1211, 1216-1235, 1240, 1245-1268, 1273-1294, 1300-1316, 1321-1322
+src/gnn/schema_validator.py                                          732    661    10%   45-46, 74-80, 85-105, 110-133, 137-162, 166-176, 196-214, 234-244, 248-277, 296-302, 307-315, 319-367, 371-398, 402-433, 437-467, 471-479, 483-490, 494-513, 517-540, 544-564, 568-590, 594-622, 626-647, 651-680, 684-705, 709-719, 723-732, 736-742, 753-785, 793-823, 833-916, 920-931, 935-967, 971-990, 994-1009, 1013-1031, 1035-1056, 1060-1097, 1101-1112, 1116-1163, 1167-1210, 1214, 1219-1238, 1243, 1248-1271, 1276-1297, 1303-1319, 1324-1325
 src/gnn/schemas/__init__.py                                            1      1     0%   8
 src/gnn/simple_validator.py                                           57     57     0%   10-162
 src/gnn/testing.py                                                   197    197     0%   10-413
@@ -279,7 +279,7 @@ src/integration/processor.py                                          26     26 
 src/llm/__init__.py                                                   78     78     0%   9-149
 src/llm/analyzer.py                                                   87     87     0%   6-213
 src/llm/demo_enhanced_llm.py                                         124    124     0%   9-304
-src/llm/generator.py                                                  89     89     0%   6-210
+src/llm/generator.py                                                  89     89     0%   6-211
 src/llm/llm_operations.py                                            191    191     0%   12-482
 src/llm/llm_processor.py                                             320    320     0%   10-873
 src/llm/mcp.py                                                        53     53     0%   7-115
@@ -291,7 +291,7 @@ src/llm/providers/ollama_provider.py                                 123    123 
 src/llm/providers/openai_provider.py                                 155    155     0%   2-364
 src/llm/providers/openrouter_provider.py                             191    191     0%   2-450
 src/llm/providers/perplexity_provider.py                             171    171     0%   9-434
-src/main.py                                                          267    267     0%   53-601
+src/main.py                                                          275    275     0%   53-617
 src/mcp/__init__.py                                                   11      0   100%
 src/mcp/cli.py                                                       201    201     0%   16-314
 src/mcp/mcp.py                                                       825    603    27%   51-62, 67, 77, 88, 99, 114, 124, 134, 147, 182-197, 201, 226-237, 261-266, 293-296, 300-307, 324-378, 382-403, 407, 471-472, 483, 488, 493, 498, 506-519, 526-539, 556-653, 667-754, 790-850, 879-902, 921-964, 979-1011, 1015-1057, 1073-1087, 1110-1128, 1146-1156, 1190-1224, 1240-1398, 1407-1428, 1433-1438, 1442-1447, 1456-1484, 1545-1552, 1568-1594, 1614-1633, 1637-1644, 1671-1706, 1714, 1718, 1722, 1726-1738, 1771-1777, 1781-1787, 1799-1830, 1834, 1845, 1849, 1853-1860, 1864, 1868-1874, 1878-1879, 1883-1884, 1888-1894, 1898-1909, 1913, 1917-1918, 1922-1928
@@ -354,7 +354,7 @@ src/render/rxinfer/__init__.py                                         2      2 
 src/render/rxinfer/gnn_parser.py                                     117    117     0%   5-256
 src/render/rxinfer/rxinfer_renderer.py                                82     82     0%   18-398
 src/render/rxinfer/toml_generator.py                                 388    388     0%   8-1002
-src/report/__init__.py                                                33     33     0%   1-74
+src/report/__init__.py                                                39     39     0%   1-89
 src/report/analyzer.py                                               184    184     0%   9-502
 src/report/formatters.py                                             124    124     0%   9-599
 src/report/generator.py                                              150    150     0%   9-380
@@ -363,6 +363,7 @@ src/report/processor.py                                               87     87 
 src/research/__init__.py                                              10     10     0%   7-34
 src/research/mcp.py                                                   16     16     0%   7-65
 src/research/processor.py                                             26     26     0%   8-75
+src/sapf/__init__.py                                                   2      2     0%   6-16
 src/security/__init__.py                                               2      2     0%   7-16
 src/security/mcp.py                                                   16     16     0%   7-65
 src/security/processor.py                                            140    140     0%   6-362
@@ -385,7 +386,7 @@ src/type_checker/output_utils.py                                     170    170 
 src/type_checker/processor.py                                        129    129     0%   6-335
 src/type_checker/resource_estimator.py                               583    583     0%   11-1738
 src/utils/__init__.py                                                 17      3    82%   164-167
-src/utils/argument_utils.py                                          505    421    17%   34-55, 114-128, 132-180, 184-190, 361-370, 375-391, 396-415, 420-488, 504-534, 548-568, 727, 732-774, 784-833, 838-850, 855-881, 903-947, 952-963, 968, 972-983, 987-992, 1001-1018, 1022-1032, 1037-1161, 1164-1196
+src/utils/argument_utils.py                                          505    421    17%   34-55, 114-128, 132-180, 184-190, 363-372, 377-393, 398-417, 422-490, 506-536, 550-570, 729, 734-776, 786-835, 840-852, 857-883, 905-949, 954-965, 970, 974-985, 989-994, 1003-1020, 1024-1034, 1039-1163, 1166-1198
 src/utils/config_loader.py                                           212    145    32%   10-12, 47-54, 68-69, 115-126, 131-186, 190, 213-243, 255-279, 290-311, 319-326, 333-341, 348-355
 src/utils/dependency_validator.py                                    216    180    17%   44-51, 55, 172-259, 263-272, 276-294, 306-336, 340-367, 383-416, 425-435, 443-455, 468-490, 533-534
 src/utils/error_recovery.py                                          201    201     0%   10-593
@@ -400,7 +401,7 @@ src/utils/performance_tracker.py                                      95     58 
 src/utils/pipeline.py                                                 69     58    16%   22-32, 50-56, 69-84, 97-115, 132-162
 src/utils/pipeline_monitor.py                                        303    303     0%   9-623
 src/utils/pipeline_template.py                                       200    166    17%   29, 42-44, 51-55, 79-146, 150-173, 216-271, 286, 304-374, 396-473, 477, 481-491
-src/utils/resource_manager.py                                         92     92     0%   9-199
+src/utils/resource_manager.py                                         93     93     0%   9-208
 src/utils/script_validator.py                                        207    207     0%   12-490
 src/utils/shared_functions.py                                        100    100     0%   8-268
 src/utils/system_utils.py                                             22     11    50%   11-12, 20-44
@@ -411,67 +412,67 @@ src/validation/legacy.py                                              16     16 
 src/validation/mcp.py                                                123    123     0%   8-417
 src/validation/performance_profiler.py                               207    207     0%   9-409
 src/validation/semantic_validator.py                                 245    245     0%   8-519
-src/visualization/__init__.py                                         21     21     0%   9-60
+src/visualization/__init__.py                                         12      2    83%   38, 45
 src/visualization/__main__.py                                          2      2     0%   8-9
 src/visualization/cli.py                                              33     33     0%   7-83
-src/visualization/legacy.py                                            6      6     0%   8-16
-src/visualization/matrix_visualizer.py                               494    494     0%   2-988
+src/visualization/legacy.py                                            6      4    33%   10-11, 15-16
+src/visualization/matrix_visualizer.py                               506    473     7%   17-21, 26-28, 32, 52, 64-79, 96-140, 144-152, 169-250, 264-297, 310-470, 484-595, 608-707, 720-811, 824-873, 885-913, 925-939, 953-980, 998-1002
 src/visualization/mcp.py                                              53     53     0%   7-122
-src/visualization/ontology_visualizer.py                             105    105     0%   8-241
-src/visualization/parser.py                                          136    136     0%   8-249
-src/visualization/processor.py                                       347    347     0%   8-643
+src/visualization/ontology_visualizer.py                             105     88    16%   28-36, 54-91, 104-120, 132-156, 160, 173-234, 238, 241
+src/visualization/parser.py                                          136    119    12%   23, 35-42, 46-72, 77-92, 96-136, 140-200, 204-237, 249
+src/visualization/processor.py                                       367    330    10%   24-28, 33, 49-51, 62-68, 88-143, 157-193, 205-261, 280-304, 318-398, 412-467, 481-553, 567-669
 src/visualization/run_visualization.py                                42     42     0%   9-76
-src/visualization/visualizer.py                                      450    450     0%   1-878
+src/visualization/visualizer.py                                      450    400    11%   22-24, 30-33, 38-40, 46-48, 53-55, 60-62, 84-124, 136-225, 229-238, 242-251, 263-272, 276-284, 287, 292-319, 324-347, 351-396, 400-476, 480-586, 590-593, 605-628, 641-652, 666-672, 686-697, 711-717, 732-761, 786-878
 src/website/__init__.py                                                6      6     0%   7-40
 src/website/generator.py                                             159    159     0%   2-393
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142    142     0%   2-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38703  36274     6%
+TOTAL                                                              38834  36238     7%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_mcp/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_mcp/coverage.json
 ============================= slowest 10 durations =============================
-0.10s call     src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration
-0.09s call     src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters
-0.09s call     src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution
+0.05s call     src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution
+0.05s call     src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters
+0.05s call     src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration
 0.02s call     src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations
-0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools
+0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup
 0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports
-0.01s call     src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports
-0.01s call     src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration
-0.01s setup    src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution
-0.01s setup    src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports
+0.01s call     src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available
+0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports
+0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling
+0.01s call     src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation
 =========================== short test summary info ============================
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer
 PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance
 PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution
 PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format
-PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval
-PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation
-PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports
-PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports
-PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer
 PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution
-PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format
 PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage
 PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration
+PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports
+PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval
+PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling
+PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports
+PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization
 PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution
 PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes
-PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization
-PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations
 PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration
-PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations
 PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation
-PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution
-PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters
 PASSED src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration
+PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters
 PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports
+PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution
 SKIPPED [1] src/tests/test_mcp_transport.py:60: MCP WebSocket server not available
-SKIPPED [1] src/tests/test_mcp_overall.py:160: MCP module not available
 SKIPPED [1] src/tests/test_mcp_integration.py:28: MCP module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:47: MCP TCP server not available
+SKIPPED [1] src/tests/test_mcp_overall.py:160: MCP module not available
 SKIPPED [1] src/tests/test_mcp_transport.py:77: MCP transport module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:90: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:47: MCP TCP server not available
 SKIPPED [1] src/tests/test_mcp_transport.py:121: MCP transport module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:134: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:90: MCP transport module not available
 SKIPPED [1] src/tests/test_mcp_transport.py:103: MCP transport module not available
-=================== 23 passed, 9 skipped in 63.51s (0:01:03) ===================
+SKIPPED [1] src/tests/test_mcp_transport.py:134: MCP transport module not available
+======================== 23 passed, 9 skipped in 18.28s ========================

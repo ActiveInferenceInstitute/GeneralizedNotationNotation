@@ -55,17 +55,17 @@ When reporting a vulnerability, please provide:
 
 ### Security-Specific Concerns
 
-**LLM Integration Security** (Pipeline Step 11):
+**LLM Integration Security** (Pipeline Step 13):
 - API key exposure in configuration files
 - Prompt injection attacks through GNN files  
 - Unsafe code generation from LLM outputs
 
-**MCP Security** (Pipeline Step 7):
+**MCP Security** (Pipeline Step 22):
 - Model Context Protocol authentication issues
 - Unsafe resource access patterns
 - Data leakage through model context
 
-**Pipeline Security** (All 14 Steps):
+**Pipeline Security** (All 23 Steps):
 - Code injection through GNN file parsing
 - Unsafe file operations in output generation
 - Privilege escalation in execution steps

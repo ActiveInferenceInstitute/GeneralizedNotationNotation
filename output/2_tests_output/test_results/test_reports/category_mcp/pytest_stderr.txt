@@ -1,40 +1,23 @@
-2025-08-11 15:45:55,256 - mcp - INFO - Enhanced MCP server initialized
-2025-08-11 15:45:55,256 - mcp - INFO - Enhanced MCP server initialized
-2025-08-11 15:45:55,257 - mcp - INFO - Enhanced MCP server initialized
-2025-08-11 15:45:55,257 - mcp - INFO - Enhanced MCP server initialized
-2025-08-11 15:45:55,257 - mcp - INFO - Enhanced MCP server initialized
-2025-08-11 15:45:55,258 - mcp - INFO - Enhanced MCP server initialized
-2025-08-11 15:45:55,259 - mcp - INFO - Enhanced MCP server initialized
-2025-08-11 15:45:55,260 - export.mcp - INFO - Export module MCP tools registered.
-2025-08-11 15:45:55,266 - utils.mcp - INFO - Registering utils MCP tools
-2025-08-11 15:45:55,266 - utils.mcp - INFO - Successfully registered utils MCP tools
-2025-08-11 15:45:55,271 - mcp - INFO - Enhanced MCP server initialized
-2025-08-11 15:45:55,275 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,369 - export.mcp - INFO - Export module MCP tools registered.
+2025-08-13 07:52:25,371 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,371 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,371 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,371 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,372 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,372 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,372 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,374 - utils.mcp - INFO - Registering utils MCP tools
+2025-08-13 07:52:25,375 - utils.mcp - INFO - Successfully registered utils MCP tools
+2025-08-13 07:52:25,378 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,379 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,384 - mcp - INFO - Enhanced MCP server initialized
 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
   self._warn("No data was collected.", slug="no-data-collected")
-/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
-  self._warn("No data was collected.", slug="no-data-collected")
-2025-08-11 15:45:55,350 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
-2025-08-11 15:45:55,350 - gnn.mcp - INFO - Enhanced capabilities available: True
-2025-08-11 15:45:55,350 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
-2025-08-11 15:45:55,350 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
-2025-08-11 15:45:55,351 - gnn.mcp - INFO - Enhanced capabilities available: True
-2025-08-11 15:45:55,351 - gnn.mcp - INFO - Enhanced capabilities available: True
-2025-08-11 15:45:55,359 - mcp - INFO - Enhanced MCP server initialized
-2025-08-11 15:45:55,364 - mcp - INFO - Enhanced MCP server initialized
-<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
-/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:259: SyntaxWarning: invalid escape sequence '\$'
-  def create_active_inference_diagram():
-<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
-/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:259: SyntaxWarning: invalid escape sequence '\$'
-  def create_active_inference_diagram():
-<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
-/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:259: SyntaxWarning: invalid escape sequence '\$'
-  def create_active_inference_diagram():
-<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
-<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
-<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
-/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/render/renderer.py:259: SyntaxWarning: invalid escape sequence '\$'
-  def create_active_inference_diagram():
-<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
-<unknown>:259: SyntaxWarning: invalid escape sequence '\$'
+2025-08-13 07:52:25,413 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2025-08-13 07:52:25,413 - gnn.mcp - INFO - Enhanced capabilities available: True
+2025-08-13 07:52:25,417 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2025-08-13 07:52:25,417 - gnn.mcp - INFO - Enhanced capabilities available: True
+2025-08-13 07:52:25,420 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,425 - mcp - INFO - Enhanced MCP server initialized
+2025-08-13 07:52:25,430 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2025-08-13 07:52:25,430 - gnn.mcp - INFO - Enhanced capabilities available: True

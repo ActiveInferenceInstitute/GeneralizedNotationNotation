@@ -2,8 +2,8 @@
 
 <div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](./LICENSE.md)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-23-blue.svg)](#%EF%B8%8F-processing-pipeline)
@@ -465,10 +465,10 @@ python src/main.py --only-steps 6 --target-dir path/to/gnn_file.md
 
 **1️⃣ Prerequisites**
 
-Ensure you have **Python 3.8+** installed:
+Ensure you have **Python 3.9+** installed:
 
 ```bash
-python --version  # Should show 3.8 or higher
+python --version  # Should show 3.9 or higher
 ```
 
 **2️⃣ Clone Repository**
@@ -730,15 +730,15 @@ All contributors will be recognized in our [contributors list](https://github.co
 
 ## 📄 License
 
-This project is licensed under the **MIT License**. See the [LICENSE.md](./LICENSE.md) file for full details.
+This project is licensed under **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)**. See [LICENSE.md](./LICENSE.md) for full terms.
 
 ### 📋 License Summary
 
-- ✅ **Commercial use** permitted
-- ✅ **Modification** permitted  
-- ✅ **Distribution** permitted
+- ✅ **Attribution** required
+- ✅ **Adaptation/Redistribution** permitted under the same license
 - ✅ **Private use** permitted
-- ❗ **License and copyright notice** required
+- ❌ **Commercial use** not permitted without explicit permission
+- ❗ **Include license and changes notice** in redistributions
 
 ---
 
@@ -761,7 +761,7 @@ This project is licensed under the **MIT License**. See the [LICENSE.md](./LICEN
 
 ---
 
-**Built with ❤️ by the Active Inference community**
+**Built by the Active Inference community**
 
 [⬆️ Back to top](#generalizednotationnotation-gnn)
 

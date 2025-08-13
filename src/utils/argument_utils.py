@@ -76,7 +76,7 @@ class PipelineArguments:
     
     # Type checking options
     strict: bool = False
-    estimate_resources: bool = True
+    estimate_resources: bool = False
     
     # File references
     ontology_terms_file: Optional[Path] = None
@@ -230,10 +230,12 @@ class ArgumentParser:
         ),
         'skip_steps': ArgumentDefinition(
             flag='--skip-steps',
+            default=[],
             help_text='Comma-separated list of steps to skip'
         ),
         'only_steps': ArgumentDefinition(
             flag='--only-steps',
+            default=[],
             help_text='Comma-separated list of steps to run exclusively'
         ),
         'strict': ArgumentDefinition(
@@ -244,7 +246,7 @@ class ArgumentParser:
         'estimate_resources': ArgumentDefinition(
             flag='--estimate-resources',
             action=argparse.BooleanOptionalAction,
-            default=True,
+            default=False,
             help_text='Estimate computational resources'
         ),
         'ontology_terms_file': ArgumentDefinition(

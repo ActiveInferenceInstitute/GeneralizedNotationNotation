@@ -748,7 +748,8 @@ class GNNValidator:
     def __init__(self, schema_path: Optional[Path] = None, 
                  use_formal_parser: bool = True, 
                  enable_round_trip_testing: bool = False,
-                 validation_level: ValidationLevel = ValidationLevel.STANDARD):
+                 validation_level: ValidationLevel = ValidationLevel.STANDARD,
+                 enable_cross_validation: bool = True):
         if schema_path is None:
             schema_path = Path(__file__).parent / "schemas/json.json"
         
@@ -774,12 +775,14 @@ class GNNValidator:
                 logger.warning(f"Could not initialize round-trip tester: {e}")
                 self.enable_round_trip_testing = False
         
-        # Initialize cross-format validator
-        try:
-            from .cross_format_validator import CrossFormatValidator
-            self.cross_validator = CrossFormatValidator()
-        except ImportError:
-            self.cross_validator = None
+        # Initialize cross-format validator (optionally, to avoid recursion)
+        self.cross_validator = None
+        if enable_cross_validation:
+            try:
+                from .cross_format_validator import CrossFormatValidator
+                self.cross_validator = CrossFormatValidator()
+            except ImportError:
+                self.cross_validator = None
     
     def _load_schema(self):
         """

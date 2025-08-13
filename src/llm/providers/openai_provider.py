@@ -73,7 +73,7 @@ class OpenAIProvider(BaseLLMProvider):
             True if initialization successful, False otherwise
         """
         if not self.api_key:
-            logger.error("OpenAI API key not provided")
+            logger.warning("OpenAI API key not provided")
             return False
             
         try:

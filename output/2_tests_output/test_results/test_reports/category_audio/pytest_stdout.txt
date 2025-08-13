@@ -4,66 +4,66 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available 
-src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration 
-src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance 
 src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation 
-src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation 
-src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_invalid 
-src/tests/test_audio_overall.py::test_audio_module_performance 
-src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation 
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports 
 src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics 
 src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection 
-src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info 
+src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion 
+src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_invalid 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance 
+src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration 
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available 
 src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation 
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info 
 [gw1] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation 
+src/tests/test_audio_overall.py::test_audio_module_performance 
+[gw5] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection 
 [gw2] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation 
 [gw6] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports 
-[gw5] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection 
 [gw4] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion 
-[gw13] SKIPPED src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_invalid 
-[gw8] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation 
-[gw7] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation 
-[gw1] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion 
 [gw0] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available 
+[gw11] PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration 
+[gw7] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation 
+[gw8] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion 
+[gw1] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling 
+[gw13] SKIPPED src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_invalid 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation 
+[gw4] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations 
+[gw2] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling 
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options 
+[gw0] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation 
+[gw8] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options 
+src/tests/test_audio_overall.py::test_audio_module_completeness 
+[gw11] PASSED src/tests/test_audio_overall.py::test_audio_module_completeness 
 src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation 
 [gw6] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling 
-[gw2] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations 
-[gw4] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations 
-[gw11] PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration 
 src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation 
 src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation 
 [gw7] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation 
-src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function 
 [gw3] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance 
-src/tests/test_audio_overall.py::test_audio_module_completeness 
-src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function 
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function 
+[gw10] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation 
+[gw9] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion 
+[gw12] PASSED src/tests/test_audio_overall.py::test_audio_module_performance 
 src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_convert_gnn_to_sapf_function 
 [gw13] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_convert_gnn_to_sapf_function 
-src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options 
-[gw8] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options 
-[gw11] PASSED src/tests/test_audio_overall.py::test_audio_module_completeness 
-[gw6] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function 
-[gw12] PASSED src/tests/test_audio_overall.py::test_audio_module_performance 
-[gw0] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation 
 src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage 
-[gw9] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion 
-[gw2] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function 
-[gw10] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation 
-[gw1] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function 
-src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_valid 
-[gw5] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation 
-src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation 
-[gw9] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation 
 src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration 
+src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_valid 
+src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation 
+[gw5] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation 
+[gw9] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation 
+[gw1] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function 
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function 
+[gw2] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function 
 [gw12] SKIPPED src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_valid 
+[gw5] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function 
 [gw10] PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration 
 [gw3] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage 
 
@@ -77,7 +77,7 @@ Name                                                               Stmts   Miss 
 ------------------------------------------------------------------------------------------------
 src/0_template.py                                                     79     79     0%   35-217
 src/1_setup.py                                                        92     92     0%   27-221
-src/2_tests.py                                                       278    278     0%   23-622
+src/2_tests.py                                                       278    278     0%   23-626
 src/3_gnn.py                                                           8      8     0%   9-27
 src/4_model_registry.py                                              104    104     0%   13-259
 src/5_type_checker.py                                                 93     93     0%   8-195
@@ -150,12 +150,12 @@ src/export/core.py                                                    89     89 
 src/export/format_exporters.py                                       282    282     0%   9-373
 src/export/formatters.py                                             210    210     0%   8-303
 src/export/mcp.py                                                     61     61     0%   7-161
-src/export/processor.py                                              167    167     0%   8-371
+src/export/processor.py                                              168    168     0%   8-380
 src/export/utils.py                                                   12     12     0%   8-59
 src/gnn/__init__.py                                                   13     13     0%   7-58
-src/gnn/core_processor.py                                             94     94     0%   10-307
+src/gnn/core_processor.py                                            167    167     0%   10-416
 src/gnn/cross_format.py                                               14     14     0%   10-35
-src/gnn/cross_format_validator.py                                    268    268     0%   16-507
+src/gnn/cross_format_validator.py                                    283    283     0%   16-525
 src/gnn/discovery.py                                                  47     47     0%   9-112
 src/gnn/documentation/__init__.py                                      1      1     0%   8
 src/gnn/formal_specs/__init__.py                                       1      1     0%   8
@@ -212,7 +212,7 @@ src/gnn/parsers/znotation_serializer.py                               52     52 
 src/gnn/processor.py                                                 158    158     0%   6-384
 src/gnn/processors.py                                                401    401     0%   15-872
 src/gnn/reporting.py                                                 188    188     0%   9-461
-src/gnn/schema_validator.py                                          730    730     0%   16-1322
+src/gnn/schema_validator.py                                          732    732     0%   16-1325
 src/gnn/schemas/__init__.py                                            1      1     0%   8
 src/gnn/simple_validator.py                                           57     57     0%   10-162
 src/gnn/testing.py                                                   197    197     0%   10-413
@@ -229,7 +229,7 @@ src/integration/processor.py                                          26     26 
 src/llm/__init__.py                                                   78     78     0%   9-149
 src/llm/analyzer.py                                                   87     87     0%   6-213
 src/llm/demo_enhanced_llm.py                                         124    124     0%   9-304
-src/llm/generator.py                                                  89     89     0%   6-210
+src/llm/generator.py                                                  89     89     0%   6-211
 src/llm/llm_operations.py                                            191    191     0%   12-482
 src/llm/llm_processor.py                                             320    320     0%   10-873
 src/llm/mcp.py                                                        53     53     0%   7-115
@@ -241,7 +241,7 @@ src/llm/providers/ollama_provider.py                                 123    123 
 src/llm/providers/openai_provider.py                                 155    155     0%   2-364
 src/llm/providers/openrouter_provider.py                             191    191     0%   2-450
 src/llm/providers/perplexity_provider.py                             171    171     0%   9-434
-src/main.py                                                          267    267     0%   53-601
+src/main.py                                                          275    275     0%   53-617
 src/mcp/__init__.py                                                   11     11     0%   8-85
 src/mcp/cli.py                                                       201    201     0%   16-314
 src/mcp/mcp.py                                                       825    825     0%   24-1928
@@ -304,7 +304,7 @@ src/render/rxinfer/__init__.py                                         2      2 
 src/render/rxinfer/gnn_parser.py                                     117    117     0%   5-256
 src/render/rxinfer/rxinfer_renderer.py                                82     82     0%   18-398
 src/render/rxinfer/toml_generator.py                                 388    388     0%   8-1002
-src/report/__init__.py                                                33     33     0%   1-74
+src/report/__init__.py                                                39     39     0%   1-89
 src/report/analyzer.py                                               184    184     0%   9-502
 src/report/formatters.py                                             124    124     0%   9-599
 src/report/generator.py                                              150    150     0%   9-380
@@ -313,6 +313,7 @@ src/report/processor.py                                               87     87 
 src/research/__init__.py                                              10     10     0%   7-34
 src/research/mcp.py                                                   16     16     0%   7-65
 src/research/processor.py                                             26     26     0%   8-75
+src/sapf/__init__.py                                                   2      0   100%
 src/security/__init__.py                                               2      2     0%   7-16
 src/security/mcp.py                                                   16     16     0%   7-65
 src/security/processor.py                                            140    140     0%   6-362
@@ -335,7 +336,7 @@ src/type_checker/output_utils.py                                     170    170 
 src/type_checker/processor.py                                        129    129     0%   6-335
 src/type_checker/resource_estimator.py                               583    583     0%   11-1738
 src/utils/__init__.py                                                 17      3    82%   164-167
-src/utils/argument_utils.py                                          505    421    17%   34-55, 114-128, 132-180, 184-190, 361-370, 375-391, 396-415, 420-488, 504-534, 548-568, 727, 732-774, 784-833, 838-850, 855-881, 903-947, 952-963, 968, 972-983, 987-992, 1001-1018, 1022-1032, 1037-1161, 1164-1196
+src/utils/argument_utils.py                                          505    421    17%   34-55, 114-128, 132-180, 184-190, 363-372, 377-393, 398-417, 422-490, 506-536, 550-570, 729, 734-776, 786-835, 840-852, 857-883, 905-949, 954-965, 970, 974-985, 989-994, 1003-1020, 1024-1034, 1039-1163, 1166-1198
 src/utils/config_loader.py                                           212    145    32%   10-12, 47-54, 68-69, 115-126, 131-186, 190, 213-243, 255-279, 290-311, 319-326, 333-341, 348-355
 src/utils/dependency_validator.py                                    216    180    17%   44-51, 55, 172-259, 263-272, 276-294, 306-336, 340-367, 383-416, 425-435, 443-455, 468-490, 533-534
 src/utils/error_recovery.py                                          201    201     0%   10-593
@@ -350,7 +351,7 @@ src/utils/performance_tracker.py                                      95     58 
 src/utils/pipeline.py                                                 69     58    16%   22-32, 50-56, 69-84, 97-115, 132-162
 src/utils/pipeline_monitor.py                                        303    303     0%   9-623
 src/utils/pipeline_template.py                                       200    166    17%   29, 42-44, 51-55, 79-146, 150-173, 216-271, 286, 304-374, 396-473, 477, 481-491
-src/utils/resource_manager.py                                         92     92     0%   9-199
+src/utils/resource_manager.py                                         93     93     0%   9-208
 src/utils/script_validator.py                                        207    207     0%   12-490
 src/utils/shared_functions.py                                        100    100     0%   8-268
 src/utils/system_utils.py                                             22     11    50%   11-12, 20-44
@@ -361,66 +362,66 @@ src/validation/legacy.py                                              16     16 
 src/validation/mcp.py                                                123    123     0%   8-417
 src/validation/performance_profiler.py                               207    207     0%   9-409
 src/validation/semantic_validator.py                                 245    245     0%   8-519
-src/visualization/__init__.py                                         21     21     0%   9-60
+src/visualization/__init__.py                                         12      2    83%   38, 45
 src/visualization/__main__.py                                          2      2     0%   8-9
 src/visualization/cli.py                                              33     33     0%   7-83
-src/visualization/legacy.py                                            6      6     0%   8-16
-src/visualization/matrix_visualizer.py                               494    494     0%   2-988
+src/visualization/legacy.py                                            6      4    33%   10-11, 15-16
+src/visualization/matrix_visualizer.py                               506    473     7%   17-21, 26-28, 32, 52, 64-79, 96-140, 144-152, 169-250, 264-297, 310-470, 484-595, 608-707, 720-811, 824-873, 885-913, 925-939, 953-980, 998-1002
 src/visualization/mcp.py                                              53     53     0%   7-122
-src/visualization/ontology_visualizer.py                             105    105     0%   8-241
-src/visualization/parser.py                                          136    136     0%   8-249
-src/visualization/processor.py                                       347    347     0%   8-643
+src/visualization/ontology_visualizer.py                             105     88    16%   28-36, 54-91, 104-120, 132-156, 160, 173-234, 238, 241
+src/visualization/parser.py                                          136    119    12%   23, 35-42, 46-72, 77-92, 96-136, 140-200, 204-237, 249
+src/visualization/processor.py                                       367    330    10%   24-28, 33, 49-51, 62-68, 88-143, 157-193, 205-261, 280-304, 318-398, 412-467, 481-553, 567-669
 src/visualization/run_visualization.py                                42     42     0%   9-76
-src/visualization/visualizer.py                                      450    450     0%   1-878
+src/visualization/visualizer.py                                      450    400    11%   22-24, 30-33, 38-40, 46-48, 53-55, 60-62, 84-124, 136-225, 229-238, 242-251, 263-272, 276-284, 287, 292-319, 324-347, 351-396, 400-476, 480-586, 590-593, 605-628, 641-652, 666-672, 686-697, 711-717, 732-761, 786-878
 src/website/__init__.py                                                6      6     0%   7-40
 src/website/generator.py                                             159    159     0%   2-393
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142    142     0%   2-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38703  38003     2%
+TOTAL                                                              38834  37966     2%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_audio/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_audio/coverage.json
 ============================= slowest 10 durations =============================
 0.05s call     src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage
-0.03s call     src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration
-0.02s call     src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation
+0.02s call     src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration
 0.01s call     src/tests/test_audio_overall.py::test_audio_module_performance
 0.01s call     src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance
 0.01s call     src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation
+0.01s call     src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation
 0.01s call     src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion
-0.01s call     src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration
-0.01s call     src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available
-0.01s setup    src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion
+0.01s call     src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function
+0.01s call     src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function
+0.01s call     src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function
 =========================== short test summary info ============================
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation
 PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports
-PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics
-PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info
-PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation
-PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available
-PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation
-PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling
-PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations
 PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration
-PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation
-PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation
 PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options
 PASSED src/tests/test_audio_overall.py::test_audio_module_completeness
-PASSED src/tests/test_audio_overall.py::test_audio_module_performance
-PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation
-PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance
 PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation
+PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion
+PASSED src/tests/test_audio_overall.py::test_audio_module_performance
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation
 PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation
 PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage
 SKIPPED [1] src/tests/test_audio_sapf.py:51: SAPF validation not available
 SKIPPED [1] src/tests/test_audio_sapf.py:90: SAPF conversion function not available
-SKIPPED [1] src/tests/test_audio_sapf.py:153: SAPF mixing function not available
-SKIPPED [1] src/tests/test_audio_sapf.py:134: SAPF envelope function not available
 SKIPPED [1] src/tests/test_audio_sapf.py:119: SAPF oscillator function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:153: SAPF mixing function not available
 SKIPPED [1] src/tests/test_audio_sapf.py:30: SAPF validation not available
-======================== 25 passed, 6 skipped in 21.98s ========================
+SKIPPED [1] src/tests/test_audio_sapf.py:134: SAPF envelope function not available
+======================== 25 passed, 6 skipped in 18.28s ========================

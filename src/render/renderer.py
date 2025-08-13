@@ -216,7 +216,7 @@ for t in 1:n_steps
     # Select action
     action = agent.select_action()
     
-    println("Step \$t: Action = \$action")
+    println("Step $t: Action = $action")
 end
 
 println("Active Inference simulation completed")

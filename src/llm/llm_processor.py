@@ -210,7 +210,7 @@ class LLMProcessor:
         if self._initialized:
             logger.info(f"LLM Processor initialized with {initialized_count} providers")
         else:
-            logger.error("No LLM providers could be initialized")
+            logger.warning("No LLM providers could be initialized")
             
         return self._initialized
     

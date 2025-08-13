@@ -42,7 +42,7 @@ GNN has comprehensive documentation to help you understand the project:
     git clone https://github.com/YourUsername/GeneralizedNotationNotation.git
     cd GeneralizedNotationNotation
     ```
-3.  **Set Up Your Environment**: Ensure you have Python installed. It's recommended to use a virtual environment.
+3.  **Set Up Your Environment**: Ensure you have Python 3.9+ installed. It's recommended to use a virtual environment.
     ```bash
     # Install UV if not already installed
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -70,7 +70,7 @@ uv sync
 ### 🧪 Testing Requirements
 
 - **Comprehensive Testing**: If you add new features, please include corresponding tests in the `src/tests/` directory. 
-- **14-Step Pipeline Testing**: Ensure all tests pass before submitting your changes:
+- **Pipeline Testing**: Ensure tests pass before submitting your changes:
     ```bash
     python src/main.py --only-steps 3
     ```
@@ -140,7 +140,7 @@ See the **[Testing Guide](doc/testing/README.md)** for comprehensive testing str
 - **DisCoPy**: Reference **[DisCoPy documentation](doc/discopy/)** for categorical diagram contributions
 
 ### **Pipeline Development**
-- **14-Step Pipeline**: Understand the **[Pipeline Architecture](doc/pipeline/PIPELINE_ARCHITECTURE.md)**
+- **23-Step Pipeline**: Understand the **[Pipeline Architecture](doc/pipeline/PIPELINE_ARCHITECTURE.md)**
 - **New Pipeline Steps**: Follow the **[Development Guide](doc/development/README.md)** for adding new numbered scripts
 - **Configuration**: Use the **[Configuration Guide](doc/configuration/README.md)** for proper parameter handling
 

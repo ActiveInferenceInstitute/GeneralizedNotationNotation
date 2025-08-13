@@ -125,6 +125,11 @@ class MatrixVisualizer:
             plt.yticks(range(matrix.shape[0]))
             
             plt.tight_layout()
+            # Ensure parent directory exists
+            try:
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+            except Exception:
+                pass
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
             return True
@@ -138,8 +143,10 @@ class MatrixVisualizer:
     def create_heatmap(self, matrix: List[List[float]] | np.ndarray) -> bool:
         try:
             arr = np.array(matrix, dtype=float)
-            # Save to a temporary path inside CWD to satisfy function shape
-            tmp_path = Path("matrix_heatmap.png")
+            # Save to project output/test_artifacts to avoid polluting repo root
+            base_dir = Path.cwd() / "output" / "test_artifacts"
+            base_dir.mkdir(parents=True, exist_ok=True)
+            tmp_path = base_dir / "matrix_heatmap.png"
             return self.generate_matrix_heatmap("matrix", arr, tmp_path)
         except Exception:
             return False
@@ -475,7 +482,10 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         """
         # Convenience: if called with raw matrix-like and no output_path
         if isinstance(parameters, list) and parameters and isinstance(parameters[0], list) and output_path is None:
-            output_path = Path("matrix_analysis.png")
+            # Default to project output/test_artifacts directory
+            base_dir = Path.cwd() / "output" / "test_artifacts"
+            base_dir.mkdir(parents=True, exist_ok=True)
+            output_path = base_dir / "matrix_analysis.png"
             try:
                 arr = np.array(parameters, dtype=float)
                 return self.generate_matrix_heatmap("matrix", arr, output_path)
@@ -564,6 +574,10 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 axes[i].set_visible(False)
             
             plt.tight_layout()
+            try:
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+            except Exception:
+                pass
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
             

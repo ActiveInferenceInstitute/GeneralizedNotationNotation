@@ -30,21 +30,21 @@ Before seeking direct support, please check the extensive documentation provided
 ```bash
 # Check Python version
 python --version
-# If < 3.8, install Python 3.8+ from python.org
+# If < 3.9, install Python 3.9+ from python.org
 ```
 
 **📦 Dependency Issues**
 ```bash
 # Force reinstall dependencies
-uv run python src/main.py --only-steps 2 --recreate-uv-env --dev
+uv run python src/main.py --only-steps 1 --recreate-uv-env --dev
 ```
 
 **🔧 Pipeline Failures**
 ```bash
 # Run with verbose logging
 python src/main.py --verbose
-# Check specific step
-python src/main.py --only-steps 4 --verbose
+# Check specific step (e.g., type checker)
+python src/main.py --only-steps 5 --verbose
 ```
 
 **💾 Disk Space Issues**
@@ -122,7 +122,7 @@ Currently, there is no official commercial support offered for GeneralizedNotati
 - [MCP Integration](./doc/mcp/) - Model Context Protocol
 
 ### 🔧 Pipeline and Tools
-- [Pipeline Architecture](./doc/pipeline/PIPELINE_ARCHITECTURE.md) - 14-step pipeline overview
+- [Pipeline Architecture](./doc/pipeline/PIPELINE_ARCHITECTURE.md) - 23-step pipeline overview
 - [API Reference](./doc/api/README.md) - Complete API documentation
 - [Testing Guide](./doc/testing/README.md) - Testing strategies
 

@@ -60,6 +60,10 @@ def pytest_configure(config):
             "markers", f"{marker_name}: {marker_description}"
         )
 
+    # Expose commonly used classes directly for wildcard imports in migrated tests
+    from visualization.ontology_visualizer import OntologyVisualizer as _OntologyVisualizer  # type: ignore
+    globals()['OntologyVisualizer'] = _OntologyVisualizer
+
 def pytest_unconfigure(config):
     """Clean up test environment after all tests complete."""
     pass
@@ -216,6 +220,40 @@ def mock_subprocess():
         return SafeResult()
     
     return safe_run
+
+@pytest.fixture
+def mock_dangerous_operations(monkeypatch):
+    """Provide no-op replacements for potentially dangerous operations during tests.
+
+    This avoids side effects while allowing tests to request the fixture.
+    """
+    try:
+        # Best-effort: if execute.executor has a dangerous operation hook, neutralize it
+        import execute.executor as _executor  # type: ignore
+        def _noop(*args, **kwargs):
+            return {"status": "SAFE"}
+        monkeypatch.setattr(_executor, "execute_dangerous_operation", _noop, raising=False)
+    except Exception:
+        # If the module or attribute doesn't exist, proceed without failing the test
+        pass
+    yield
+
+@pytest.fixture
+def mock_llm_provider(monkeypatch):
+    """Provide a lightweight LLM provider mock used by some pipeline tests.
+
+    Ensures that code paths expecting an async provider can run without external deps.
+    """
+    try:
+        import llm.analyzer as _analyzer  # type: ignore
+        class _FakeProvider:
+            async def analyze(self, *_, **__):
+                return "Test analysis"
+        # Patch the provider factory used by tests
+        monkeypatch.setattr(_analyzer, "OpenAIProvider", lambda *_, **__: _FakeProvider(), raising=False)
+    except Exception:
+        pass
+    yield
 
 @pytest.fixture
 def mock_filesystem():

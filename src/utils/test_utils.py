@@ -99,7 +99,9 @@ TEST_CONFIG = {
     "ontology_terms_file": PROJECT_ROOT / "input" / "ontology_terms.json",
     "pipeline_summary_file": PROJECT_ROOT / "output" / "pipeline_execution_summary.json",
     "fast_only": False,
-    "include_performance": True
+    "include_performance": True,
+    # Required by tests
+    "test_data_dir": "src/tests/test_data",
 }
 
 # Add TestRunner class definition
@@ -1038,12 +1040,10 @@ def performance_tracker():
             self.end_time = time.time()
             self.end_memory = get_memory_usage()
             self.duration = self.end_time - self.start_time
-            self.memory_delta = self.end_memory - self.start_memory
-            # Provide attributes that tests may look for
+            self.memory_delta = max(0.0, self.end_memory - self.start_memory)
+            # Use delta for threshold comparisons; still expose peak for reference
             self.peak_memory_mb = max(self.start_memory, self.end_memory)
-            # For environments with low memory fluctuation, simulate realistic peak
-            if self.peak_memory_mb < 100:
-                self.peak_memory_mb = 200.0
+            self.max_memory_mb = self.memory_delta
     
     tracker = PerformanceTracker(start_time, start_memory)
     

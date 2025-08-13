@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-08-11T15:46:50.155570",
+  "timestamp": "2025-08-13T07:57:01.502051",
   "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
   "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output",
   "files_visualized": [
@@ -15,12 +15,16 @@
           ]
         },
         "network": {
-          "success": false,
-          "result": []
+          "success": true,
+          "result": [
+            "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png"
+          ]
         },
         "combined": {
-          "success": false,
-          "result": []
+          "success": true,
+          "result": [
+            "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png"
+          ]
         }
       },
       "success": true
@@ -30,7 +34,7 @@
     "total_files": 1,
     "successful_visualizations": 1,
     "failed_visualizations": 0,
-    "total_images_generated": 8,
+    "total_images_generated": 10,
     "visualization_types": {
       "matrix": 1,
       "network": 1,

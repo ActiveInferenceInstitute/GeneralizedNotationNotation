@@ -113,7 +113,7 @@ class OpenRouterProvider(BaseLLMProvider):
             return False
             
         if not self.api_key:
-            logger.error("OpenRouter API key not provided")
+            logger.warning("OpenRouter API key not provided")
             return False
             
         try:

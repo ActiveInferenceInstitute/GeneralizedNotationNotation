@@ -71,8 +71,8 @@ class CrossFormatValidator:
         self.format_validators = {}
         self.parsing_system = None
         
-        # Initialize validators with proper error handling
-        self._initialize_validators()
+        # Defer heavy validator initialization until first use to avoid recursion and speed up tests
+        self._validators_initialized = False
         
         # Initialize parsing system if available
         try:
@@ -114,7 +114,8 @@ class CrossFormatValidator:
                 if schema_exists or format_name in ['binary', 'markdown']:
                     self.format_validators[format_name] = GNNValidator(
                         schema_path if schema_exists else None,
-                        validation_level=validation_level
+                        validation_level=validation_level,
+                        enable_cross_validation=False
                     )
                     initialization_results['success'].append(format_name)
                     logger.debug(f"Initialized {format_name} validator with {validation_level.value} level")
@@ -128,6 +129,7 @@ class CrossFormatValidator:
                 logger.debug(f"Could not initialize {format_name} validator: {e}")
         
         self.available_formats = list(self.format_validators.keys())
+        self._validators_initialized = True
         
         # Provide thoughtful summary reporting instead of intense warnings
         if initialization_results['success']:
@@ -147,6 +149,15 @@ class CrossFormatValidator:
         """Enhanced cross-format validation with comprehensive analysis."""
         import time
         start_time = time.time()
+
+        # Lazily initialize validators on first use
+        if not self._validators_initialized:
+            try:
+                self._initialize_validators()
+            except Exception as e:
+                logger.debug(f"Deferred validator initialization failed: {e}")
+                self.format_validators = {}
+                self.available_formats = []
         
         result = CrossFormatValidationResult(is_consistent=True)
         result.schema_formats = self.available_formats.copy()
@@ -393,6 +404,13 @@ class CrossFormatValidator:
     
     def validate_schema_definitions_consistency(self) -> CrossFormatValidationResult:
         """Enhanced validation of schema definition files consistency."""
+        if not self._validators_initialized:
+            try:
+                self._initialize_validators()
+            except Exception as e:
+                logger.debug(f"Deferred validator initialization failed: {e}")
+                self.format_validators = {}
+                self.available_formats = []
         result = CrossFormatValidationResult(is_consistent=True)
         
         # Load available schema definitions

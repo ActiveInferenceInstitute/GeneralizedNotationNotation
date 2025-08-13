@@ -17,6 +17,15 @@ from utils.pipeline_template import (
     log_step_warning
 )
 
+# Import actual formatter implementations
+from .formatters import (
+    export_to_json,
+    export_to_xml,
+    export_to_graphml,
+    export_to_gexf,
+    export_to_pickle,
+)
+
 def generate_exports(
     target_dir: Path,
     output_dir: Path,
