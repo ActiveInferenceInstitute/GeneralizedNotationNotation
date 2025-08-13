@@ -32,7 +32,9 @@ graph TD
     S -->|Security Validated| T[19_research.py]
     I -->|Visualizations Ready| U[20_website.py]
     K -->|Ontology Mapped| U
-    Q -->|Analysis Complete| V[21_report.py]
+    Q -->|Analysis Complete| V[21_mcp.py]
+    V -->|MCP Ready| W[22_gui.py]
+    W -->|GUI Artifacts| X[23_report.py]
     K -->|Ontology Mapped| V
     P -->|Audio Generated| V
     
@@ -42,7 +44,7 @@ graph TD
     style C fill:#e6f3ff,stroke:#0066cc
 ```
 
-## Complete 22-Step Pipeline
+## Complete 24-Step Pipeline
 
 ### Critical Path
 1. **0_template.py** → **1_setup.py** → **3_gnn.py** → **4_model_registry.py** → **5_type_checker.py** → **6_validation.py** → **7_export.py**
@@ -57,7 +59,7 @@ graph TD
 4. **Group 4**: 12_execute.py (depends on render)
 5. **Group 5**: 16_analysis.py (depends on visualization, ontology, audio)
 6. **Group 6**: 17_integration.py → 18_security.py → 19_research.py (sequential integration chain)
-7. **Group 7**: 20_website.py, 21_report.py (final output generation)
+7. **Group 7**: 20_website.py, 21_mcp.py, 22_gui.py, 23_report.py (final output generation)
 
 ## Step Details (22 Steps: 0-21)
 
@@ -187,7 +189,19 @@ graph TD
 - **Timeout**: 5 minutes
 - **Recovery**: Generate minimal site
 
-### 21. Report (21_report.py)
+### 21. MCP (21_mcp.py)
+- **Critical**: No
+- **Dependencies**: 10_ontology.py, 15_audio.py, 16_analysis.py
+- **Timeout**: 5 minutes
+- **Recovery**: Degraded MCP tools
+
+### 22. GUI (22_gui.py)
+- **Critical**: No
+- **Dependencies**: 21_mcp.py (optional)
+- **Timeout**: 10 minutes
+- **Recovery**: Headless artifact generation
+
+### 23. Report (23_report.py)
 - **Critical**: No
 - **Dependencies**: 10_ontology.py, 15_audio.py, 16_analysis.py
 - **Timeout**: 5 minutes
@@ -217,7 +231,7 @@ python src/main.py --verbose
 python src/8_visualization.py --verbose --target-dir test_files/
 
 # Generate comprehensive reports
-python src/21_report.py --verbose
+python src/23_report.py --verbose
 ```
 
 ## Contributing

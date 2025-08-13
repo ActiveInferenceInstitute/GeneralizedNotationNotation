@@ -352,8 +352,9 @@ class ArgumentParser:
         "18_security.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "19_research.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "20_website.py": ["target_dir", "output_dir", "recursive", "verbose", "website_html_filename"],
-        "21_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "22_mcp.py": ["target_dir", "output_dir", "recursive", "verbose", "performance_mode"],
+        "21_mcp.py": ["target_dir", "output_dir", "recursive", "verbose", "performance_mode"],
+        "22_gui.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "23_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys())
     }
     
@@ -709,17 +710,23 @@ class StepConfiguration:
             "defaults": {"recursive": True, "verbose": False, "website_html_filename": "gnn_pipeline_summary_website.html"},
             "description": "HTML Website Generation"
         },
-        "21_report": {
-            "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose"],
-            "defaults": {"recursive": True, "verbose": False},
-            "description": "Comprehensive Analysis Report Generation"
-        },
-        "22_mcp": {
+        "21_mcp": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["recursive", "verbose", "performance_mode"],
             "defaults": {"recursive": True, "verbose": False, "performance_mode": "low"},
             "description": "Model Context Protocol Processing"
+        },
+        "22_gui": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Interactive GUI for Constructing/Editing GNN Models"
+        },
+        "23_report": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
+            "description": "Comprehensive Analysis Report Generation"
         }
     }
     

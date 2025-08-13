@@ -21,7 +21,8 @@
     {"n": 18, "script": "18_security.py",       "module": "security",          "output": "security/"},
     {"n": 19, "script": "19_research.py",       "module": "research",          "output": "research/"},
     {"n": 20, "script": "20_website.py",        "module": "website",           "output": "website/"},
-    {"n": 21, "script": "21_report.py",         "module": "report",            "output": "report_processing_step/"},
-    {"n": 22, "script": "22_mcp.py",            "module": "mcp",               "output": "mcp_processing_step/"}
+    {"n": 21, "script": "21_mcp.py",            "module": "mcp",               "output": "mcp_processing_step/"},
+    {"n": 22, "script": "22_gui.py",            "module": "gui",               "output": "gui_processing_step/"},
+    {"n": 23, "script": "23_report.py",         "module": "report",            "output": "report_processing_step/"}
   ]
 }

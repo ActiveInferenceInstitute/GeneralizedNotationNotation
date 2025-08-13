@@ -176,12 +176,12 @@ graph TB
 <details>
 <summary><strong>📂 src/ Directory Structure</strong></summary>
 
-The `src/` directory contains the 23-step pipeline scripts (`0_template.py` → `22_mcp.py`), their corresponding modules, and shared infrastructure. See `DOCS.md` and `doc/pipeline/README.md` for the full step-by-step mapping.
+The `src/` directory contains the 24-step pipeline scripts (`0_template.py` → `23_report.py`), their corresponding modules, and shared infrastructure. See `DOCS.md` and `doc/pipeline/README.md` for the full step-by-step mapping.
 
 ```
 src/
-├── 📜 Pipeline Scripts (0-22)
-│   ├── 0_template.py … 22_mcp.py   # Thin orchestrators (0–22)
+├── 📜 Pipeline Scripts (0-23)
+│   ├── 0_template.py … 23_report.py   # Thin orchestrators (0–23)
 ├── 🧠 Core Modules
 │   ├── gnn/ render/ execute/ llm/ visualization/ export/ type_checker/ ontology/ mcp/
 │   ├── setup/ tests/ website/ audio/ analysis/ integration/ security/ research/ report/
@@ -225,7 +225,7 @@ doc/
 
 ## ⚙️ Processing Pipeline
 
-The GNN processing pipeline consists of **23 comprehensive steps (0-22)**, each handling a specific aspect of model processing from parsing to final report generation. The pipeline follows a **thin orchestrator pattern** where numbered scripts orchestrate execution while delegating core functionality to modular components.
+The GNN processing pipeline consists of **24 comprehensive steps (0-23)**, each handling a specific aspect of model processing from parsing to final report generation. The pipeline follows a **thin orchestrator pattern** where numbered scripts orchestrate execution while delegating core functionality to modular components.
 
 ```mermaid
 flowchart TD

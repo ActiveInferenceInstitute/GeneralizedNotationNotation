@@ -15,7 +15,7 @@ This guide details the architecture of the Generalized Notation Notation (GNN) s
 ```mermaid
 graph TB
   A["User"] --> B["main.py"]
-  B --> C["Numbered Scripts 0..22"]
+  B --> C["Numbered Scripts 0..23"]
   C --> D["Modules in src/*/"]
   D --> E["Outputs in output/*/"]
   B --> F["utils/, pipeline/"]
@@ -72,8 +72,9 @@ graph LR
   INT --> SEC[security]
   SEC --> RES[research]
   RES --> WEB[website]
-  WEB --> REP[report]
-  REP --> MCP[mcp]
+  WEB --> MCP[mcp]
+  MCP --> GUI[gui]
+  GUI --> REP[report]
 ```
 
 ## Logging Architecture
@@ -93,7 +94,7 @@ flowchart LR
   CFG["config.yaml"] --> Merge
   ENV["Env Vars"] --> Merge
   Merge["Configuration Resolver"] --> Eff["Effective Config"]
-  Eff --> Steps["Steps 0..22"]
+  Eff --> Steps["Steps 0..23"]
 ```
 
 ## Output Management

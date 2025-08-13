@@ -31,7 +31,7 @@ Primary configuration file: `config.yaml` (create in project root)
 
 # Global Pipeline Settings
 pipeline:
-  # Which steps to run (0-22, or "all")
+  # Which steps to run (0-23, or "all")
 steps: "all"  # or a subset, e.g., [1, 4, 5, 6]
   
   # Steps to skip

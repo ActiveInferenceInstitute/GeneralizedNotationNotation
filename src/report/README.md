@@ -254,7 +254,7 @@ save_reports(output_dir, {
 
 ### Pipeline Step 21: Report Generation
 ```python
-# Called from 21_report.py
+# Called from 23_report.py
 def process_report(target_dir, output_dir, verbose=False, **kwargs):
     # Analyze pipeline results
     analysis_results = analyze_pipeline_results(target_dir, verbose)
@@ -270,7 +270,7 @@ def process_report(target_dir, output_dir, verbose=False, **kwargs):
 
 ### Output Structure
 ```
-output/21_report_output/
+output/23_report_output/
 ├── executive_summary.md            # Executive summary report
 ├── detailed_analysis.md            # Detailed analysis report
 ├── performance_report.md           # Performance analysis report

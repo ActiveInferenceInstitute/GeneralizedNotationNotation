@@ -172,7 +172,7 @@ def process_setup_standardized(
             verbose=verbose,
             recreate=False,
             dev=True,
-            extras=["llm", "visualization", "audio"],
+            extras=["llm", "visualization", "audio", "gui"],
             skip_jax_test=True
         )
         if not setup_success:

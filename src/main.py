@@ -2,7 +2,7 @@
 """
 Main GNN Processing Pipeline
 
-This script orchestrates the complete 23-step GNN processing pipeline (steps 0-22).
+This script orchestrates the complete 24-step GNN processing pipeline (steps 0-23).
 The pipeline transforms GNN specifications into executable simulations, visualizations,
 and advanced representations including audio sonification.
 
@@ -28,8 +28,9 @@ Pipeline Steps:
 18. Security (18_security.py)
 19. Research (19_research.py)
 20. Website generation (20_website.py)
-21. Report generation (21_report.py)
-22. Model Context Protocol processing (22_mcp.py)
+21. Model Context Protocol processing (21_mcp.py)
+22. GUI (Interactive GNN Constructor) (22_gui.py)
+23. Report generation (23_report.py)
 
 Usage:
     python src/main.py [options]
@@ -147,7 +148,7 @@ def main():
         "environment_info": get_environment_info(),
         "performance_summary": {
             "peak_memory_mb": 0.0,
-            "total_steps": 23,
+             "total_steps": 24,
             "failed_steps": 0,
             "critical_failures": 0,
             "successful_steps": 0,
@@ -161,7 +162,7 @@ def main():
             EnhancedPipelineLogger.log_structured(
                 logger, logging.INFO,
                 "🚀 Starting GNN Processing Pipeline",
-                total_steps=23,
+                 total_steps=24,
                 target_dir=str(args.target_dir),
                 output_dir=str(args.output_dir),
                 event_type="pipeline_start"
@@ -192,8 +193,9 @@ def main():
             ("18_security.py", "Security"),
             ("19_research.py", "Research"),
             ("20_website.py", "Website generation"),
-            ("21_report.py", "Report generation"),
-            ("22_mcp.py", "Model Context Protocol processing")
+            ("21_mcp.py", "Model Context Protocol processing"),
+            ("22_gui.py", "GUI (Interactive GNN Constructor)"),
+            ("23_report.py", "Report generation")
         ]
         
         # Handle step filtering

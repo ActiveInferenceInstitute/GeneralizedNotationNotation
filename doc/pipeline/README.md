@@ -6,7 +6,7 @@
 > **Cross-References**: [Main Documentation](../README.md) | [API Reference](../api/README.md)
 
 ## Overview
-The GNN Processing Pipeline is a comprehensive 23-step system for processing Generalized Notation Notation files from initialization through execution, analysis, and comprehensive reporting.
+The GNN Processing Pipeline is a comprehensive 24-step system for processing Generalized Notation Notation files from initialization through execution, analysis, GUI construction, and comprehensive reporting.
 
 ## Pipeline Architecture: Thin Orchestrator Pattern
 
@@ -51,7 +51,7 @@ src/
 - Defining `process_ontology_file()` directly in `10_ontology.py`
 - Any long method definitions (>20 lines) in numbered scripts
 
-## Complete Pipeline Steps (0-22)
+## Complete Pipeline Steps (0-23)
 
 ### Foundation and Setup
 
@@ -194,10 +194,22 @@ src/
 - **Output**: `20_website_output/website/` (static HTML site)
 - **Key Features**: Static site generation, documentation compilation, web interface
 
-#### Step 21: Report Generation (`21_report.py`)
+#### Step 21: MCP (`21_mcp.py`)
+- **Purpose**: Model Context Protocol processing and tool registration
+- **Input**: GNN files and available tools
+- **Output**: `21_mcp_output/`
+- **Key Features**: Tool discovery, registration, protocol validation
+
+#### Step 22: GUI (`22_gui.py`)
+- **Purpose**: Interactive GUI for constructing/editing GNN models
+- **Input**: GNN models and templates
+- **Output**: `22_gui_output/`
+- **Key Features**: Two-pane UI (controls + markdown editor), headless artifact mode
+
+#### Step 23: Report Generation (`23_report.py`)
 - **Purpose**: Comprehensive analysis report generation
 - **Input**: All pipeline artifacts
-- **Output**: `21_report_output/`
+- **Output**: `23_report_output/`
 - **Key Features**: Comprehensive reporting, summary generation, final documentation
 
 ## Pipeline Configuration
@@ -226,7 +238,7 @@ python main.py --estimate-resources --strict
 python main.py --target-dir /path/to/gnn/files --output-dir /custom/output
 ```
 
-## Complete Output Structure (23 Steps)
+## Complete Output Structure (24 Steps)
 ```
 output/
 ├── 0_template_output/
@@ -250,8 +262,9 @@ output/
 ├── 18_security_output/
 ├── 19_research_output/
 ├── 20_website_output/
-├── 21_report_output/
-├── 22_mcp_output/
+├── 21_mcp_output/
+├── 22_gui_output/
+├── 23_report_output/
 └── pipeline_execution_summary.json
 ```
 

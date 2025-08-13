@@ -163,7 +163,7 @@ from website import embed_reports
 
 # Embed pipeline reports
 success = embed_reports(
-    report_dir=Path("output/21_report_output/"),
+    report_dir=Path("output/23_report_output/"),
     website_dir=Path("website/")
 )
 

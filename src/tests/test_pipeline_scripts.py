@@ -89,7 +89,9 @@ class TestPipelineScriptDiscovery:
             (18, "18_security.py"),
             (19, "19_research.py"),
             (20, "20_website.py"),
-            (21, "21_report.py")
+            (21, "21_mcp.py"),
+            (22, "22_gui.py"),
+            (23, "23_report.py")
         ]
         
         # Find missing scripts

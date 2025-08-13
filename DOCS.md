@@ -6,7 +6,7 @@ This document provides a complete, machine-parsable and human-accessible overvie
 
 - A standardized, text-based language for specifying Active Inference generative models.
 - Unifies model communication across natural language, math, diagrams, and executable code.
-- Enables end-to-end processing via a 23-step pipeline (0–22) from specification to simulation, analysis, and reporting.
+- Enables end-to-end processing via a 24-step pipeline (0–23) from specification to simulation, analysis, GUI construction, and reporting.
 
 ## Why GNN?
 
@@ -23,7 +23,7 @@ mindmap
       Markdown files
       Schemas & grammars
     Processing
-      23-step pipeline
+      24-step pipeline
       Thin orchestrators
       Modular implementations
     Outputs
@@ -39,11 +39,11 @@ mindmap
       LLMs (analysis)
 ```
 
-## Pipeline Overview (0–22)
+## Pipeline Overview (0–23)
 
 ```mermaid
 flowchart LR
-  subgraph Pipeline (0–22)
+  subgraph Pipeline (0–23)
     S0[0 Template] --> S1[1 Setup]
     S1 --> S2[2 Tests]
     S2 --> S3[3 GNN]
@@ -64,8 +64,9 @@ flowchart LR
     S17 --> S18[18 Security]
     S18 --> S19[19 Research]
     S19 --> S20[20 Website]
-    S20 --> S21[21 Report]
-    S21 --> S22[22 MCP]
+    S20 --> S21[21 MCP]
+    S21 --> S22[22 GUI]
+    S22 --> S23[23 Report]
   end
 ```
 
@@ -73,7 +74,7 @@ flowchart LR
 
 ```mermaid
 graph TB
-  A[main.py] --> B[0_template.py..22_mcp.py\nThin orchestrators]
+  A[main.py] --> B[0_template.py..23_report.py\nThin orchestrators]
   B --> C[Modules in src/*/\nCore implementations]
   C --> D[Tests in src/tests/]
   A --> E[utils/, pipeline/\nShared infra]
@@ -150,8 +151,9 @@ graph LR
   INT --> SEC[security/]
   SEC --> RES[research/]
   RES --> WEB[website/]
-  WEB --> REP[report/]
-  REP --> MCP[mcp/]
+  WEB --> MCP[mcp/]
+  MCP --> GUI[gui/]
+  GUI --> REP[report/]
 ```
 
 ## Error Handling and Continuation
@@ -187,11 +189,11 @@ flowchart LR
 
 ## References
 
-- `.cursorrules` — canonical pipeline description (0–22)
+- `.cursorrules` — canonical pipeline description (0–23)
 - `src/main.py` — orchestrator implementation
 - `doc/pipeline/README.md` — step details and flow
 - `ARCHITECTURE.md` — implementation-oriented architecture
-- `doc/pipeline/steps_index.json` — machine-readable step index (0–22)
+- `doc/pipeline/steps_index.json` — machine-readable step index (0–23)
 - `doc/api/api_index.json` — machine-generated API index
 
 ## Machine-Readable Step Index
@@ -220,8 +222,9 @@ flowchart LR
     {"n": 18, "script": "18_security.py",       "module": "security",          "output": "security/"},
     {"n": 19, "script": "19_research.py",       "module": "research",          "output": "research/"},
     {"n": 20, "script": "20_website.py",        "module": "website",           "output": "website/"},
-    {"n": 21, "script": "21_report.py",         "module": "report",            "output": "report_processing_step/"},
-    {"n": 22, "script": "22_mcp.py",            "module": "mcp",               "output": "mcp_processing_step/"}
+    {"n": 21, "script": "21_mcp.py",            "module": "mcp",               "output": "mcp_processing_step/"},
+    {"n": 22, "script": "22_gui.py",            "module": "gui",               "output": "gui_processing_step/"},
+    {"n": 23, "script": "23_report.py",         "module": "report",            "output": "report_processing_step/"}
   ]
 }
 ```
