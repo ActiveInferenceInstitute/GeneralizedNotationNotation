@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the gui module.
 
 Pipeline Flow:
-    main.py → 22_22_gui.py (this script) → gui/ (modular implementation)
+    main.py → 22_gui.py (this script) → gui/ (modular implementation)
 
 How to run:
-  python src/22_22_gui.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/22_gui.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

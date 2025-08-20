@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the execute module.
 
 Pipeline Flow:
-    main.py → 12_12_execute.py (this script) → execute/ (modular implementation)
+    main.py → 12_execute.py (this script) → execute/ (modular implementation)
 
 How to run:
-  python src/12_12_execute.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/12_execute.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

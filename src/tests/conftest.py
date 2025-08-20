@@ -60,9 +60,14 @@ def pytest_configure(config):
             "markers", f"{marker_name}: {marker_description}"
         )
 
-    # Expose commonly used classes directly for wildcard imports in migrated tests
-    from visualization.ontology_visualizer import OntologyVisualizer as _OntologyVisualizer  # type: ignore
-    globals()['OntologyVisualizer'] = _OntologyVisualizer
+    # Expose commonly used classes directly for wildcard imports in migrated tests.
+    # Do a guarded import because visualization may require optional deps (networkx, seaborn)
+    # which should not break test collection.
+    try:
+        from visualization.ontology_visualizer import OntologyVisualizer as _OntologyVisualizer  # type: ignore
+        globals()['OntologyVisualizer'] = _OntologyVisualizer
+    except Exception:
+        globals()['OntologyVisualizer'] = None
 
 def pytest_unconfigure(config):
     """Clean up test environment after all tests complete."""

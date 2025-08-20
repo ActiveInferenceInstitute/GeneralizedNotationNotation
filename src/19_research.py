@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the research module.
 
 Pipeline Flow:
-    main.py → 19_19_research.py (this script) → research/ (modular implementation)
+    main.py → 19_research.py (this script) → research/ (modular implementation)
 
 How to run:
-  python src/19_19_research.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/19_research.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

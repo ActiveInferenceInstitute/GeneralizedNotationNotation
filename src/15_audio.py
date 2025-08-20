@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the audio module.
 
 Pipeline Flow:
-    main.py → 15_15_audio.py (this script) → audio/ (modular implementation)
+    main.py → 15_audio.py (this script) → audio/ (modular implementation)
 
 How to run:
-  python src/15_15_audio.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/15_audio.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

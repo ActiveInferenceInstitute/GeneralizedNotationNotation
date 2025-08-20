@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the llm module.
 
 Pipeline Flow:
-    main.py → 13_13_llm.py (this script) → llm/ (modular implementation)
+    main.py → 13_llm.py (this script) → llm/ (modular implementation)
 
 How to run:
-  python src/13_13_llm.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/13_llm.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

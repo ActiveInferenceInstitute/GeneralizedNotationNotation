@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the render module.
 
 Pipeline Flow:
-    main.py → 11_11_render.py (this script) → render/ (modular implementation)
+    main.py → 11_render.py (this script) → render/ (modular implementation)
 
 How to run:
-  python src/11_11_render.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/11_render.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

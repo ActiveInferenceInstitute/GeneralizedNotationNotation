@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the integration module.
 
 Pipeline Flow:
-    main.py → 17_17_integration.py (this script) → integration/ (modular implementation)
+    main.py → 17_integration.py (this script) → integration/ (modular implementation)
 
 How to run:
-  python src/17_17_integration.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/17_integration.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

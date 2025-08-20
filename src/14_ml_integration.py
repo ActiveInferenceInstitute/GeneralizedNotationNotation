@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the ml_integration module.
 
 Pipeline Flow:
-    main.py → 14_14_ml_integration.py (this script) → ml_integration/ (modular implementation)
+    main.py → 14_ml_integration.py (this script) → ml_integration/ (modular implementation)
 
 How to run:
-  python src/14_14_ml_integration.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/14_ml_integration.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

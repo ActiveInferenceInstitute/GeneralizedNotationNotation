@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the website module.
 
 Pipeline Flow:
-    main.py → 20_20_website.py (this script) → website/ (modular implementation)
+    main.py → 20_website.py (this script) → website/ (modular implementation)
 
 How to run:
-  python src/20_20_website.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/20_website.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

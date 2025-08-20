@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the analysis module.
 
 Pipeline Flow:
-    main.py → 16_16_analysis.py (this script) → analysis/ (modular implementation)
+    main.py → 16_analysis.py (this script) → analysis/ (modular implementation)
 
 How to run:
-  python src/16_16_analysis.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/16_analysis.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

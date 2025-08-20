@@ -5,13 +5,29 @@ This module provides comprehensive visualization capabilities for GNN files,
 including matrix visualizations, network graphs, and combined analysis plots.
 """
 
-# Import main classes
-from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
-from .visualizer import GNNVisualizer, generate_graph_visualization, generate_matrix_visualization
+# Import main classes with guarded optional-dependency handling so test collection
+# does not fail when heavy visualization dependencies (networkx, matplotlib)
+# are not installed in the environment.
+try:
+    from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
+except Exception:
+    MatrixVisualizer = None
+    process_matrix_visualization = None
 
-# Basic GraphVisualizer alias for tests
+try:
+    from .visualizer import GNNVisualizer, generate_graph_visualization, generate_matrix_visualization
+except Exception:
+    GNNVisualizer = None
+    generate_graph_visualization = None
+    generate_matrix_visualization = None
+
+# Basic GraphVisualizer alias for tests (may be None if unavailable)
 GraphVisualizer = GNNVisualizer
-from .ontology_visualizer import OntologyVisualizer
+
+try:
+    from .ontology_visualizer import OntologyVisualizer
+except Exception:
+    OntologyVisualizer = None
 
 # Import processor functions
 from .processor import (

@@ -1,0 +1,381 @@
+2025-08-20 07:41:50,112 - root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
+2025-08-20 07:41:50,113 - src.execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'src.execute.discopy_translator_module'
+2025-08-20 07:41:50,117 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:41:50,117 - src.llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:41:50,117 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:41:50,122 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 07:41:50,336 - src.type_checker.checker - INFO - GNNTypeChecker initialized. Strict mode: False
+2025-08-20 07:41:50,352 - root - INFO - GNN module imports validated
+2025-08-20 07:41:50,353 - root - INFO - GNN file discovery validated: 1 files found
+2025-08-20 07:41:50,354 - root - WARNING - Failed to parse simple.gnn: Parsed data should contain ModelName
+assert 'ModelName' in {'file_name': 'simple.gnn', 'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyezezora/simple.gnn', 'file_size': 136, 'parse_timestamp': '2025-08-20T07:41:50.354149', ...}
+2025-08-20 07:41:50,354 - root - WARNING - Validation check failed for simple.gnn: Valid GNN file should have basic structure: simple.gnn
+assert False
+2025-08-20 07:41:50,356 - root - WARNING - GNN directory processing failed: Results should contain errors
+assert 'errors' in {'files': ['timestamp', 'target_directory', 'files_found', 'files_processed', 'success', 'errors', ...], 'processed_files': ['timestamp', 'target_directory', 'files_found', 'files_processed', 'success', 'errors', ...], 'status': 'SUCCESS'}
+2025-08-20 07:41:50,358 - root - INFO - Render module imports validated
+2025-08-20 07:41:50,359 - root - INFO - PyMDP rendering validated
+2025-08-20 07:41:50,360 - root - WARNING - RxInfer rendering failed: generate_rxinfer_code() takes 1 positional argument but 2 were given
+2025-08-20 07:41:50,362 - root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
+2025-08-20 07:41:50,362 - execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'execute.discopy_translator_module'
+2025-08-20 07:41:50,363 - root - WARNING - Execution environment validation failed: Status should contain python_version
+assert 'python_version' in {'overall_status': 'unknown', 'summary': {'total_errors': 0}}
+2025-08-20 07:41:50,366 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:41:50,366 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:41:50,366 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:41:50,368 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:41:50,368 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:41:50,368 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:41:50,368 - llm.providers.openai_provider - WARNING - OpenAI API key not provided
+2025-08-20 07:41:50,368 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-08-20 07:41:50,452 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-08-20 07:41:50,453 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-08-20 07:41:50,453 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-08-20 07:41:50,453 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-08-20 07:41:50,454 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-08-20 07:41:50,454 - llm.llm_processor - WARNING - Failed to initialize ollama provider
+2025-08-20 07:41:50,454 - llm.llm_processor - WARNING - No LLM providers could be initialized
+2025-08-20 07:41:50,454 - llm.llm_operations - ERROR - Async summarization failed: Processor not initialized
+2025-08-20 07:41:50,454 - llm.providers.openai_provider - WARNING - OpenAI API key not provided
+2025-08-20 07:41:50,454 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-08-20 07:41:50,454 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-08-20 07:41:50,454 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-08-20 07:41:50,454 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-08-20 07:41:50,454 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-08-20 07:41:50,455 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-08-20 07:41:50,455 - llm.llm_processor - WARNING - Failed to initialize ollama provider
+2025-08-20 07:41:50,455 - llm.llm_processor - WARNING - No LLM providers could be initialized
+2025-08-20 07:41:50,458 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 07:41:50,459 - root - INFO - MCP module imports validated
+2025-08-20 07:41:50,459 - root - WARNING - MCP tool registration failed: Tools should be a list
+assert False
+ +  where False = isinstance(True, list)
+2025-08-20 07:41:50,459 - mcp.processor - INFO - Handling MCP request: tools/list
+2025-08-20 07:41:50,459 - root - INFO - MCP request handling validated
+2025-08-20 07:41:50,460 - ontology - INFO - 🚀 Processing ontology
+2025-08-20 07:41:50,461 - ontology - INFO - ✅ Ontology processing completed successfully
+2025-08-20 07:41:50,463 - website - INFO - Website generated successfully with 1 pages
+2025-08-20 07:41:50,464 - website - INFO - Website generated successfully with 1 pages
+2025-08-20 07:41:50,465 - root - INFO - SAPF module imports validated successfully
+2025-08-20 07:41:50,465 - root - WARNING - GNN to SAPF conversion failed: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
+2025-08-20 07:41:50,466 - root - INFO - SAPF validation functionality confirmed
+2025-08-20 07:41:50,466 - root - INFO - SAPF audio generation functionality confirmed
+2025-08-20 07:41:50,467 - root - WARNING - Core module coordination failed: cannot import name 'execute_gnn_model' from 'src.execute' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/execute/__init__.py)
+2025-08-20 07:41:50,468 - root - WARNING - Module data flow failed: cannot import name 'analyze_gnn_model' from 'src.llm' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/llm/__init__.py)
+2025-08-20 07:41:50,468 - root - INFO - Core module completeness test passed
+2025-08-20 07:41:50,468 - root - INFO - Core module performance test completed
+2025-08-20 07:41:50,477 - setup.setup - INFO - 🔍 Checking system requirements...
+2025-08-20 07:41:50,477 - setup.setup - INFO - ✅ Python version check passed: 3.13.5
+2025-08-20 07:41:50,486 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-08-20 07:41:50,487 - setup.setup - INFO - ✅ Disk space check passed: 13.43GB free
+2025-08-20 07:41:50,487 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-08-20 07:41:50,498 - setup.setup - INFO - 📦 Found 126 installed packages using UV
+2025-08-20 07:41:50,498 - setup.setup - INFO - 📋 Key installed packages:
+2025-08-20 07:41:50,498 - setup.setup - INFO -   - pip: 25.1.1
+2025-08-20 07:41:50,498 - setup.setup - INFO -   - pytest: 8.4.1
+2025-08-20 07:41:50,498 - setup.setup - INFO -   - numpy: 2.3.2
+2025-08-20 07:41:50,498 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-08-20 07:41:50,498 - setup.setup - INFO -   - scipy: 1.16.1
+2025-08-20 07:41:50,499 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+2025-08-20 07:41:50,665 - setup.setup - INFO - 📦 Installing dependencies from /Users/4d/Documents/GitHub/GeneralizedNotationNotation/pyproject.toml using UV sync
+2025-08-20 07:41:50,691 - setup.setup - INFO - ✅ Dependencies installed using UV in 0.0s
+2025-08-20 07:41:50,702 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-08-20 07:41:50,714 - setup.setup - INFO - 📦 Found 126 installed packages using UV
+2025-08-20 07:41:50,714 - setup.setup - INFO - 📋 Installed packages:
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - amalgkit: 0.12.19
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - appnope: 0.1.4
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - archspec: 0.2.5
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - argcomplete: 3.6.2
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - argh: 0.31.3
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - asttokens: 3.0.0
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - attrs: 25.3.0
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - beautifulsoup4: 4.13.4
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - biopython: 1.85
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - black: 25.1.0
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - boltons: 25.0.0
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - brotli: 1.1.0
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - cachetools: 5.0.0
+2025-08-20 07:41:50,714 - setup.setup - INFO -   - certifi: 2025.8.3
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - cffi: 1.17.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - charset-normalizer: 3.4.2
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - click: 8.2.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - colorama: 0.4.6
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - comm: 0.2.3
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - conda: 25.7.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - conda-libmamba-solver: 25.3.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - conda-package-handling: 2.4.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - conda-package-streaming: 0.12.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - contourpy: 1.3.3
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - coverage: 7.10.2
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - cycler: 0.12.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - debugpy: 1.8.16
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - decorator: 5.2.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - distro: 1.9.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - docopt: 0.6.2
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - et-xmlfile: 2.0.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - ete3: 3.1.3
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - executing: 2.2.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - fonttools: 4.59.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - frozendict: 2.4.6
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - ftpretty: 0.4.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - gffutils: 0.10.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - goatools: 1.4.12
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - h2: 4.2.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - hpack: 4.1.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - hyperframe: 6.1.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - idna: 3.10
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - iniconfig: 2.1.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - ipykernel: 6.30.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - ipython: 9.4.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - ipython-pygments-lexers: 1.1.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - jedi: 0.19.2
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - jinja2: 3.0.3
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - joblib: 1.5.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - jsonlines: 3.0.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - jsonpatch: 1.33
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - jsonpointer: 3.0.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - jupyter-client: 8.6.3
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - jupyter-core: 5.8.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - kiwisolver: 1.4.8
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - libmambapy: 2.1.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - lxml: 6.0.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - markdown-it-py: 3.0.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - markupsafe: 3.0.2
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - matplotlib-inline: 0.1.7
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - mdurl: 0.1.2
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - menuinst: 2.3.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - metainformant: 0.1.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - mypy: 1.17.1
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - mypy-extensions: 1.1.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - ncbi-datasets-pylib: 13.8.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - nest-asyncio: 1.6.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - numpy: 2.3.2
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - openpyxl: 3.1.5
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - packaging: 25.0
+2025-08-20 07:41:50,715 - setup.setup - INFO -   - pandas: 2.3.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - parallel-fastq-dump: 0.6.5
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - parso: 0.8.4
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pathspec: 0.12.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - patsy: 1.0.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pexpect: 4.9.0
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pillow: 11.3.0
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pip: 25.1.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - platformdirs: 4.3.8
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pluggy: 1.6.0
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - prompt-toolkit: 3.0.51
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - protobuf: 3.19.4
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - psutil: 7.0.0
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - psycopg2-binary: 2.9.10
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - ptyprocess: 0.7.0
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pure-eval: 0.2.3
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pycosat: 0.6.6
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pycparser: 2.22
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pydot: 4.0.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pyfaidx: 0.8.1.4
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pygments: 2.19.2
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pyparsing: 3.2.3
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pysocks: 1.7.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pytest: 8.4.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pytest-cov: 6.2.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - python-dateutil: 2.8.2
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pytz: 2025.2
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pyyaml: 6.0.2
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - pyzmq: 27.0.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - requests: 2.32.4
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - rich: 14.1.0
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - ruamel-yaml: 0.18.14
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - ruamel-yaml-clib: 0.2.8
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - ruff: 0.12.8
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - scikit-learn: 1.7.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - scipy: 1.16.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - seaborn: 0.13.2
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - setuptools: 80.9.0
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - simplejson: 3.20.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - six: 1.17.0
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - soupsieve: 2.7
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - stack-data: 0.6.3
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - statsmodels: 0.14.5
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - threadpoolctl: 3.6.0
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - tornado: 6.5.2
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - tqdm: 4.67.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - traitlets: 5.14.3
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - truststore: 0.10.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - typing-extensions: 4.14.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - tzdata: 2025.2
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - urllib3: 1.26.18
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - wcwidth: 0.2.13
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - wheel: 0.45.1
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - xlsxwriter: 3.2.5
+2025-08-20 07:41:50,716 - setup.setup - INFO -   - zstandard: 0.23.0
+2025-08-20 07:41:50,717 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+2025-08-20 07:41:50,718 - setup.setup - INFO - 🔍 Checking system requirements...
+2025-08-20 07:41:50,718 - setup.setup - INFO - ✅ Python version check passed: 3.13.5
+2025-08-20 07:41:50,727 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-08-20 07:41:50,727 - setup.setup - INFO - ✅ Disk space check passed: 13.43GB free
+2025-08-20 07:41:50,728 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-08-20 07:41:50,740 - setup.setup - INFO - 📦 Found 126 installed packages using UV
+2025-08-20 07:41:50,741 - setup.setup - INFO - 📋 Key installed packages:
+2025-08-20 07:41:50,741 - setup.setup - INFO -   - pip: 25.1.1
+2025-08-20 07:41:50,741 - setup.setup - INFO -   - pytest: 8.4.1
+2025-08-20 07:41:50,741 - setup.setup - INFO -   - numpy: 2.3.2
+2025-08-20 07:41:50,741 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-08-20 07:41:50,741 - setup.setup - INFO -   - scipy: 1.16.1
+2025-08-20 07:41:50,741 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+2025-08-20 07:41:50,743 - setup.setup - INFO - 🔍 Checking system requirements...
+2025-08-20 07:41:50,743 - setup.setup - INFO - ✅ Python version check passed: 3.13.5
+2025-08-20 07:41:50,752 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-08-20 07:41:50,753 - setup.setup - INFO - ✅ Disk space check passed: 13.43GB free
+2025-08-20 07:41:50,753 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-08-20 07:41:50,765 - setup.setup - INFO - 📦 Found 126 installed packages using UV
+2025-08-20 07:41:50,766 - setup.setup - INFO - 📋 Key installed packages:
+2025-08-20 07:41:50,766 - setup.setup - INFO -   - pip: 25.1.1
+2025-08-20 07:41:50,766 - setup.setup - INFO -   - pytest: 8.4.1
+2025-08-20 07:41:50,766 - setup.setup - INFO -   - numpy: 2.3.2
+2025-08-20 07:41:50,766 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-08-20 07:41:50,766 - setup.setup - INFO -   - scipy: 1.16.1
+2025-08-20 07:41:50,766 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+2025-08-20 07:41:50,799 - root - INFO - Fast test suite completeness validated
+2025-08-20 07:41:50,810 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2025-08-20 07:41:50,820 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-08-20 07:41:50,823 - llm.providers.openai_provider - WARNING - OpenAI API key not provided
+2025-08-20 07:41:50,823 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-08-20 07:41:50,823 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-08-20 07:41:50,823 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-08-20 07:41:50,823 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-08-20 07:41:50,823 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-08-20 07:41:50,823 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-08-20 07:41:50,823 - llm.llm_processor - WARNING - Failed to initialize ollama provider
+2025-08-20 07:41:50,823 - llm.llm_processor - WARNING - No LLM providers could be initialized
+2025-08-20 07:41:50,827 - root - INFO - Main orchestrator file structure validated
+2025-08-20 07:41:50,827 - root - INFO - Main orchestrator imports validated
+2025-08-20 07:41:50,827 - root - INFO - All 3 main orchestrator components available
+2025-08-20 07:41:50,827 - root - INFO - Argument parser basic functionality validated
+2025-08-20 07:41:50,827 - root - INFO - Argument validation logic tested
+2025-08-20 07:41:50,828 - root - INFO - Argument defaults validated
+2025-08-20 07:41:50,829 - root - INFO - Pipeline script discovery logic validated
+2025-08-20 07:41:50,829 - root - INFO - Pipeline script sorting logic validated
+2025-08-20 07:41:50,830 - root - INFO - Virtual environment detection logic validated
+2025-08-20 07:41:50,830 - root - INFO - Python executable detection validated: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+2025-08-20 07:41:50,830 - root - INFO - Step execution interface validated
+2025-08-20 07:41:50,831 - root - INFO - Step argument building logic validated
+2025-08-20 07:41:50,832 - root - INFO - Pipeline coordination flow validated
+2025-08-20 07:41:50,832 - root - INFO - Pipeline configuration consistency validated
+2025-08-20 07:41:50,832 - root - INFO - System info collection validated
+2025-08-20 07:41:50,832 - root - INFO - Performance metrics structure validated
+2025-08-20 07:41:50,833 - root - INFO - Output directory structure validated
+2025-08-20 07:41:50,833 - root - INFO - Pipeline summary generation validated
+2025-08-20 07:41:50,833 - root - INFO - Step failure handling validated
+2025-08-20 07:41:50,834 - root - INFO - Graceful degradation validated for 4 scenarios
+2025-08-20 07:41:50,834 - test_error_reporting - WARNING - Test warning message
+2025-08-20 07:41:50,834 - test_error_reporting - ERROR - Test error message
+2025-08-20 07:41:50,834 - test_error_reporting - CRITICAL - Test critical message
+2025-08-20 07:41:50,834 - root - INFO - Error reporting functionality validated
+2025-08-20 07:41:50,834 - root - INFO - Configuration schema validation passed
+2025-08-20 07:41:50,834 - root - INFO - Environment variable consistency validated
+2025-08-20 07:41:50,835 - root - INFO - Minimal pipeline execution validated
+2025-08-20 07:41:50,835 - root - INFO - Pipeline with failures validated: 2 success, 1 failures
+2025-08-20 07:41:50,835 - root - INFO - Main orchestrator help functionality validated for 4 sections
+2025-08-20 07:41:50,836 - root - INFO - Main orchestrator performance characteristics validated for 4 metrics
+2025-08-20 07:41:50,854 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2025-08-20 07:41:50,854 - gnn.mcp - INFO - Enhanced capabilities available: True
+2025-08-20 07:41:50,854 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2025-08-20 07:41:50,854 - gnn.mcp - INFO - Enhanced capabilities available: True
+2025-08-20 07:41:50,856 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2025-08-20 07:41:50,856 - gnn.mcp - INFO - Enhanced capabilities available: True
+2025-08-20 07:41:50,856 - export.mcp - INFO - Export module MCP tools registered.
+2025-08-20 07:41:50,857 - utils.mcp - INFO - Registering utils MCP tools
+2025-08-20 07:41:50,857 - utils.mcp - INFO - Successfully registered utils MCP tools
+2025-08-20 07:41:50,862 - visualization - INFO - 🚀 Processing visualizations
+2025-08-20 07:41:51,536 - visualization - INFO - ✅ Generated 3 visualizations
+2025-08-20 07:41:51,540 - gnn.schema_validator - INFO - Enhanced multi-format parsing system initialized
+2025-08-20 07:41:51,540 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2025-08-20 07:41:51,540 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2025-08-20 07:41:51,540 - gnn.core_processor.wrapper - INFO - Starting GNN processing pipeline
+2025-08-20 07:41:51,540 - gnn.core_processor.wrapper - INFO - Phase 1: File discovery and basic analysis
+2025-08-20 07:41:51,541 - gnn.discovery - INFO - Starting file discovery in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpjsgjbnmj
+2025-08-20 07:41:51,541 - gnn.discovery - INFO - Discovery completed: 0/0 potential GNN files in 0.000s
+2025-08-20 07:41:51,541 - gnn.core_processor.wrapper - INFO - Discovered 0 GNN files
+2025-08-20 07:41:51,542 - export - INFO - 🚀 Generating multi-format exports
+2025-08-20 07:41:51,543 - export - INFO - ✅ All exports generated successfully
+2025-08-20 07:41:51,545 - visualization - INFO - 🚀 Processing visualizations
+2025-08-20 07:41:51,978 - visualization - INFO - ✅ Generated 2 visualizations
+2025-08-20 07:41:51,978 - export - INFO - 🚀 Generating multi-format exports
+2025-08-20 07:41:51,979 - export - INFO - ✅ All exports generated successfully
+2025-08-20 07:41:51,981 - visualization - INFO - 🚀 Processing visualizations
+2025-08-20 07:41:52,415 - visualization - INFO - ✅ Generated 2 visualizations
+2025-08-20 07:41:52,440 - visualization - INFO - 🚀 Processing visualizations
+2025-08-20 07:41:52,440 - visualization - WARNING - ⚠️ No GNN files found for visualization
+2025-08-20 07:41:52,441 - visualization - INFO - 🚀 Processing visualizations
+2025-08-20 07:41:52,441 - visualization - WARNING - ⚠️ No GNN files found for visualization
+2025-08-20 07:41:52,442 - visualization - INFO - 🚀 Processing visualizations
+2025-08-20 07:41:52,442 - visualization - WARNING - ⚠️ No GNN files found for visualization
+2025-08-20 07:41:52,443 - visualization - INFO - 🚀 Processing visualizations
+2025-08-20 07:41:52,443 - visualization - WARNING - ⚠️ No GNN files found for visualization
+2025-08-20 07:41:52,443 - visualization - INFO - 🚀 Processing visualizations
+2025-08-20 07:41:52,443 - visualization - WARNING - ⚠️ No GNN files found for visualization
+2025-08-20 07:42:00,422 - render.pymdp.pymdp_converter - INFO - ModelName not found in GNN spec, using default 'pymdp_agent_model'.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - Starting GNN data extraction.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - Found parsed GNN data with 0 variables.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - Processing 0 variables from GNN data
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - WARNING - No observation modalities or state factors found in variables
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - ModelParameters not found or empty in GNN spec.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - WARNING - Warning: Missing required data - modalities: 0, factors: 0
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - Finished GNN data extraction.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - Matrix definitions not generated yet. Generating matrices...
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: convert_A_matrix: type(self.A_spec) = <class 'NoneType'>, value = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - A_matrix: No observation modalities defined. 'A' will be None.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: convert_B_matrix: type(self.B_spec) = <class 'NoneType'>, value = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - B_matrix: No hidden state factors defined. 'B' will be None.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: convert_C_vector: self.C_spec = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - C_vector: No observation modalities defined. 'C' will be None.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: convert_D_vector: self.D_spec = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - D_vector: No hidden state factors defined. 'D' will be None.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: convert_E_vector: self.E_spec = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - DEBUG: _extract_initial_parameterization_matrices: initial_params = None
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - E_vector: No E (policy prior) specification found. Defaulting to None.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - Agent instantiation code not generated yet. Generating...
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - ERROR - Cannot generate agent instantiation with no observation modalities or hidden state factors.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - Example usage code not generated yet. Generating...
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - Skipping example usage code due to missing modalities or state factors.
+2025-08-20 07:42:00,423 - render.pymdp.pymdp_converter - INFO - Generated full Python script (9609 characters)
+2025-08-20 07:42:00,425 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:42:00,425 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:42:00,425 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:42:00,425 - llm.llm_operations - ERROR - Async summarization failed: asyncio.run() cannot be called from a running event loop
+2025-08-20 07:42:00,425 - llm.llm_operations - ERROR - Async LLM call failed: asyncio.run() cannot be called from a running event loop
+2025-08-20 07:42:00,429 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:42:00,429 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:42:00,430 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:42:00,430 - llm.providers.openai_provider - WARNING - OpenAI API key not provided
+2025-08-20 07:42:00,430 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-08-20 07:42:00,430 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-08-20 07:42:00,430 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-08-20 07:42:00,430 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-08-20 07:42:00,430 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-08-20 07:42:00,430 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-08-20 07:42:00,430 - llm.llm_processor - WARNING - Failed to initialize ollama provider
+2025-08-20 07:42:00,430 - llm.llm_processor - WARNING - No LLM providers could be initialized
+2025-08-20 07:42:00,431 - llm.llm_operations - ERROR - Async summarization failed: Processor not initialized
+2025-08-20 07:42:00,431 - llm.providers.openai_provider - WARNING - OpenAI API key not provided
+2025-08-20 07:42:00,431 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-08-20 07:42:00,431 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-08-20 07:42:00,431 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-08-20 07:42:00,431 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-08-20 07:42:00,431 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-08-20 07:42:00,431 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-08-20 07:42:00,431 - llm.llm_processor - WARNING - Failed to initialize ollama provider
+2025-08-20 07:42:00,431 - llm.llm_processor - WARNING - No LLM providers could be initialized
+2025-08-20 07:42:00,433 - gnn.schema_validator - INFO - Enhanced multi-format parsing system initialized
+2025-08-20 07:42:00,433 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2025-08-20 07:42:00,433 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2025-08-20 07:42:00,433 - gnn.core_processor.wrapper - INFO - Starting GNN processing pipeline
+2025-08-20 07:42:00,433 - gnn.core_processor.wrapper - INFO - Phase 1: File discovery and basic analysis
+2025-08-20 07:42:00,433 - gnn.discovery - INFO - Starting file discovery in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpm36kl3of/input
+2025-08-20 07:42:00,433 - gnn.discovery - INFO - Discovery completed: 0/1 potential GNN files in 0.000s
+2025-08-20 07:42:00,433 - gnn.core_processor.wrapper - INFO - Discovered 0 GNN files

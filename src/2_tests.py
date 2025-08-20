@@ -90,8 +90,10 @@ def apply_pathlib_patch():
     except Exception as e:
         logging.getLogger(__name__).warning(f"Could not apply pathlib patch: {e}")
 
-# Apply the patch early
-apply_pathlib_patch()
+# The pathlib recursion patch is intended only when running this script directly
+# (e.g., `python src/2_tests.py`). Avoid applying it during normal imports
+# such as when pytest collects test modules to prevent interfering with pytest
+# internals.
 
 
 # --- Ensure unbuffered, verbose, and progressive pytest output ---
@@ -383,18 +385,18 @@ def process_tests_standardized(
                 test_dir = Path(__file__).parent / "tests"
                 if test_dir.exists():
                     # Build pytest command; PYTEST_ADDOPTS will add -vv -rA -s and progress style
+                    # Disable plugins known to cause duplicate-registration in some environments
+                    # (e.g. pytest_timeout sometimes registers twice via entrypoints)
                     cmd = [
                         python_exec,
                         "-m",
                         "pytest",
                         "-p",
-                        "pytest_timeout",
+                        "no:pytest_timeout",
                         str(test_dir),
                         "--tb=short",
                         "--maxfail=10",
                         "--durations=15",
-                        "--timeout=10",
-                        "--timeout-method=thread",
                         "-o",
                         "console_output_style=progress",
                     ]
@@ -522,8 +524,8 @@ def execute_test_suite(test_files: List[Path], verbose: bool = False) -> Dict[st
         venv_python = Path(".venv/bin/python")
         python_executable = str(venv_python) if venv_python.exists() else sys.executable
         
-        # Build pytest command
-        cmd = [python_executable, "-m", "pytest"]
+        # Build pytest command and disable pytest_timeout plugin to avoid duplicate-registration
+        cmd = [python_executable, "-m", "pytest", "-p", "no:pytest_timeout"]
         if verbose:
             cmd.append("-v")
         cmd.extend(["--tb=short", "--maxfail=10", "--color=no"])

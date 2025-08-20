@@ -39,19 +39,27 @@ def run_gui(
     GNN markdown file to output_dir without launching a server.
     """
     try:
-        output_dir.mkdir(parents=True, exist_ok=True)
+        # Normalize output directory to the pipeline standard (nest under step output) when available
+        try:
+            from pipeline.config import get_output_dir_for_script
+            output_root = get_output_dir_for_script("22_gui.py", output_dir)
+        except Exception:
+            output_root = output_dir
+
+        output_root.mkdir(parents=True, exist_ok=True)
 
         # Starter markdown assembled from any existing file in target_dir if present
         starter_md = _load_first_markdown(target_dir)
         if starter_md is None:
             starter_md = """# GNN Model\n\ncomponents:\n  - name: example_component\n    type: observation\n    states: [s1, s2]\n\n"""
 
-        starter_path = output_dir / export_filename
+        starter_path = output_root / export_filename
         starter_path.write_text(starter_md)
 
         if headless or _GUI_BACKEND is None:
             # Persist a small artifact describing GUI availability
-            (output_dir / "gui_status.json").write_text(json.dumps({
+            (output_root / "22_gui_output" / "gui_status.json").parent.mkdir(parents=True, exist_ok=True)
+            (output_root / "22_gui_output" / "gui_status.json").write_text(json.dumps({
                 "backend": _GUI_BACKEND or "none",
                 "launched": False,
                 "export_file": str(starter_path)
@@ -72,7 +80,8 @@ def run_gui(
         )
 
         # Record availability artifact
-        (output_dir / "gui_status.json").write_text(json.dumps({
+        (output_root / "22_gui_output" / "gui_status.json").parent.mkdir(parents=True, exist_ok=True)
+        (output_root / "22_gui_output" / "gui_status.json").write_text(json.dumps({
             "backend": _GUI_BACKEND,
             "launched": True,
             "export_file": str(starter_path)

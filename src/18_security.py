@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the security module.
 
 Pipeline Flow:
-    main.py → 18_18_security.py (this script) → security/ (modular implementation)
+    main.py → 18_security.py (this script) → security/ (modular implementation)
 
 How to run:
-  python src/18_18_security.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/18_security.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
