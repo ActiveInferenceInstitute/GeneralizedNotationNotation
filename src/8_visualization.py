@@ -5,6 +5,14 @@ Step 8: Visualization Processing (Thin Orchestrator)
 This step handles visualization processing for GNN files with comprehensive
 safe-to-fail patterns and robust output management.
 
+Architectural Role:
+    This is a "thin orchestrator" - a minimal script that delegates core functionality
+    to the corresponding module (src/visualization/). It handles argument parsing, logging
+    setup, and calls the actual processing functions from the visualization module.
+
+Pipeline Flow:
+    main.py → 8_visualization.py (this script) → visualization/ (modular implementation)
+
 How to run:
   python src/8_visualization.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
@@ -24,358 +32,24 @@ If you encounter errors:
 """
 
 import sys
-import json
-import time
-import traceback
 from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, field
-from contextlib import contextmanager
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.pipeline_template import (
-    setup_step_logging,
-    log_step_start,
-    log_step_success,
-    log_step_error,
-    log_step_warning
+from utils.pipeline_template import create_standardized_pipeline_script
+from visualization import process_visualization_main
+
+# Create the standardized pipeline script
+run_script = create_standardized_pipeline_script(
+    "8_visualization.py",
+    process_visualization_main,
+    "Matrix and network visualization processing"
 )
-from utils.argument_utils import EnhancedArgumentParser
-from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
-# Import core visualization functions from visualization module
-try:
-    from visualization import (
-        process_visualization,
-        process_matrix_visualization,
-        generate_matrix_visualizations,
-        generate_network_visualizations,
-        generate_combined_analysis,
-        MatrixVisualizer,
-        GNNVisualizer
-    )
-    VISUALIZATION_AVAILABLE = True
-except ImportError:
-    VISUALIZATION_AVAILABLE = False
-    # Fallback function definitions if visualization module is not available
-    def process_visualization(*args, **kwargs):
-        return False
-    
-    def process_matrix_visualization(*args, **kwargs):
-        return False
-    
-    def generate_matrix_visualizations(*args, **kwargs):
-        return []
-    
-    def generate_network_visualizations(*args, **kwargs):
-        return []
-    
-    def generate_combined_analysis(*args, **kwargs):
-        return False
-    
-    class MatrixVisualizer:
-        def __init__(self):
-            pass
-    
-    class GNNVisualizer:
-        def __init__(self):
-            pass
-
-def process_visualization_standardized(
-    target_dir: Path,
-    output_dir: Path,
-    logger,
-    recursive: bool = False,
-    verbose: bool = False,
-    **kwargs
-) -> bool:
-    """
-    Standardized visualization processing function.
-    
-    Args:
-        target_dir: Directory containing GNN files to visualize
-        output_dir: Output directory for visualization results
-        logger: Logger instance for this step
-        recursive: Whether to process files recursively
-        verbose: Whether to enable verbose logging
-        **kwargs: Additional processing options
-        
-    Returns:
-        True if processing succeeded, False otherwise
-    """
-    try:
-        # Check if visualization module is available
-        if not VISUALIZATION_AVAILABLE:
-            log_step_warning(logger, "Visualization module not available, using fallback functions")
-        
-        # Get pipeline configuration
-        config = get_pipeline_config()
-        step_output_dir = get_output_dir_for_script("8_visualization.py", output_dir)
-        step_output_dir.mkdir(parents=True, exist_ok=True)
-        
-        log_step_start(logger, "Processing visualization")
-        
-        # Load parsed GNN data from previous step
-        gnn_output_dir = get_output_dir_for_script("3_gnn.py", output_dir)
-        gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
-        
-        if not gnn_results_file.exists():
-            log_step_error(logger, "GNN processing results not found. Run step 3 first.")
-            return False
-        
-        with open(gnn_results_file, 'r') as f:
-            gnn_results = json.load(f)
-        
-        logger.info(f"Loaded {len(gnn_results['processed_files'])} parsed GNN files")
-        
-        # Visualization results
-        visualization_results = {
-            "timestamp": datetime.now().isoformat(),
-            "source_directory": str(target_dir),
-            "output_directory": str(step_output_dir),
-            "files_visualized": [],
-            "summary": {
-                "total_files": 0,
-                "successful_visualizations": 0,
-                "failed_visualizations": 0,
-                "total_images_generated": 0,
-                "visualization_types": {
-                    "matrix": 0,
-                    "network": 0,
-                    "combined": 0
-                }
-            }
-        }
-        
-        # Helper to normalize parsed model (from step 3 JSON) into the structure
-        # expected by visualization.processor functions
-        def _normalize_model_to_parsed_data(model: Dict[str, Any]) -> Dict[str, Any]:
-            parsed: Dict[str, Any] = {
-                "sections": {},
-                "variables": [],
-                "connections": [],
-                "matrices": [],
-                "metadata": {}
-            }
-            try:
-                # Variables
-                for v in model.get("variables", []):
-                    name = v.get("name")
-                    vtype = v.get("var_type") or v.get("data_type") or ""
-                    if name:
-                        parsed["variables"].append({"name": name, "type": vtype})
-                # Connections: flatten source/target lists into individual edges
-                for c in model.get("connections", []):
-                    sources = c.get("source_variables", []) or []
-                    targets = c.get("target_variables", []) or []
-                    for s in sources:
-                        for t in targets:
-                            if s and t:
-                                parsed["connections"].append({"source": s, "target": t})
-                # Matrices from parameters
-                for p in model.get("parameters", []):
-                    value = p.get("value")
-                    if value is None:
-                        continue
-                    try:
-                        import numpy as _np
-                        arr = _np.array(value, dtype=float)
-                        parsed["matrices"].append({"data": arr, "name": p.get("name", "matrix")})
-                    except Exception:
-                        continue
-                # Sections/metadata
-                if model.get("model_name"):
-                    parsed["sections"]["ModelName"] = model["model_name"]
-                if model.get("raw_sections"):
-                    parsed["sections"].update(model.get("raw_sections", {}))
-            except Exception:
-                # Best-effort; return what we have
-                pass
-            return parsed
-
-        # Process each file
-        for file_result in gnn_results["processed_files"]:
-            if not file_result["parse_success"]:
-                continue
-            
-            file_name = file_result["file_name"]
-            logger.info(f"Visualizing: {file_name}")
-            
-            # Load the actual parsed GNN specification
-            parsed_model_file = file_result.get("parsed_model_file")
-            if parsed_model_file and Path(parsed_model_file).exists():
-                try:
-                    with open(parsed_model_file, 'r') as f:
-                        actual_gnn_spec = json.load(f)
-                    logger.info(f"Loaded parsed GNN specification from {parsed_model_file}")
-                    model_data = actual_gnn_spec
-                except Exception as e:
-                    logger.error(f"Failed to load parsed GNN spec from {parsed_model_file}: {e}")
-                    model_data = file_result
-            else:
-                logger.warning(f"Parsed model file not found for {file_name}, using summary data")
-                model_data = file_result
-            
-            # Create file-specific output directory
-            # Align with tests expecting PNGs under output/visualization/<model>
-            file_output_dir = step_output_dir / Path(file_name).stem
-            file_output_dir.mkdir(exist_ok=True)
-            
-            file_visualization_result = {
-                "file_name": file_name,
-                "file_path": file_result["file_path"],
-                "visualizations": {},
-                "success": True
-            }
-            
-            # Generate matrix visualizations
-            try:
-                parameters = model_data.get("parameters", []) if isinstance(model_data, dict) else []
-                matrix_png = file_output_dir / "matrix_analysis.png"
-                matrix_stats_png = file_output_dir / "matrix_statistics.png"
-                mv = MatrixVisualizer()
-                ok1 = mv.generate_matrix_analysis(parameters, matrix_png)
-                ok2 = mv.generate_matrix_statistics(parameters, matrix_stats_png)
-                # Specialized POMDP transition analysis if B tensor present
-                matrices = mv.extract_matrix_data_from_parameters(parameters) if parameters else {}
-                if isinstance(matrices, dict) and 'B' in matrices:
-                    B = matrices['B']
-                    try:
-                        import numpy as _np
-                        if hasattr(B, 'ndim') and B.ndim == 3:
-                            pomdp_path = file_output_dir / "pomdp_transition_analysis.png"
-                            if mv.generate_pomdp_transition_analysis(B, pomdp_path):
-                                visualization_results["summary"]["total_images_generated"] += 1
-                    except Exception:
-                        pass
-                file_visualization_result["visualizations"]["matrix"] = {
-                    "success": bool(ok1 or ok2),
-                    "result": [str(matrix_png), str(matrix_stats_png)]
-                }
-                visualization_results["summary"]["visualization_types"]["matrix"] += 1
-                logger.info(f"Matrix visualization completed for {file_name}")
-            except Exception as e:
-                logger.error(f"Matrix visualization failed for {file_name}: {e}")
-                file_visualization_result["visualizations"]["matrix"] = {
-                    "success": False,
-                    "error": str(e)
-                }
-                file_visualization_result["success"] = False
-            
-            # Generate network and combined visualizations via processor API
-            try:
-                parsed_for_viz = _normalize_model_to_parsed_data(model_data)
-                net_files = generate_network_visualizations(parsed_for_viz, file_output_dir, Path(file_name).stem)
-                file_visualization_result["visualizations"]["network"] = {
-                    "success": len(net_files) > 0,
-                    "result": net_files
-                }
-                visualization_results["summary"]["visualization_types"]["network"] += 1
-                logger.info(f"Network visualization completed for {file_name}")
-            except Exception as e:
-                logger.error(f"Network visualization failed for {file_name}: {e}")
-                file_visualization_result["visualizations"]["network"] = {
-                    "success": False,
-                    "error": str(e)
-                }
-                file_visualization_result["success"] = False
-            
-            # Generate combined visualizations
-            try:
-                parsed_for_viz = _normalize_model_to_parsed_data(model_data)
-                combined_files = generate_combined_analysis(parsed_for_viz, file_output_dir, Path(file_name).stem)
-                file_visualization_result["visualizations"]["combined"] = {
-                    "success": len(combined_files) > 0,
-                    "result": combined_files
-                }
-                visualization_results["summary"]["visualization_types"]["combined"] += 1
-                logger.info(f"Combined visualization completed for {file_name}")
-            except Exception as e:
-                logger.error(f"Combined visualization failed for {file_name}: {e}")
-                file_visualization_result["visualizations"]["combined"] = {
-                    "success": False,
-                    "error": str(e)
-                }
-                file_visualization_result["success"] = False
-
-            # Count images we know we attempted above
-            try:
-                for candidate in [
-                    file_output_dir / "matrix_analysis.png",
-                    file_output_dir / "matrix_statistics.png",
-                    file_output_dir / "pomdp_transition_analysis.png",
-                    file_output_dir / f"{Path(file_name).stem}_network_graph.png",
-                    file_output_dir / f"{Path(file_name).stem}_combined_analysis.png",
-                ]:
-                    if candidate.exists():
-                        visualization_results["summary"]["total_images_generated"] += 1
-            except Exception:
-                pass
-            
-            visualization_results["files_visualized"].append(file_visualization_result)
-            visualization_results["summary"]["total_files"] += 1
-            
-            if file_visualization_result["success"]:
-                visualization_results["summary"]["successful_visualizations"] += 1
-            else:
-                visualization_results["summary"]["failed_visualizations"] += 1
-            
-            # Count generated images
-            for viz_type, viz_result in file_visualization_result["visualizations"].items():
-                if viz_result.get("success", False):
-                    if isinstance(viz_result.get("result"), list):
-                        visualization_results["summary"]["total_images_generated"] += len(viz_result["result"])
-                    else:
-                        visualization_results["summary"]["total_images_generated"] += 1
-        
-        # Save visualization results
-        visualization_results_file = step_output_dir / "visualization_results.json"
-        with open(visualization_results_file, 'w') as f:
-            json.dump(visualization_results, f, indent=2)
-        
-        # Save visualization summary
-        visualization_summary_file = step_output_dir / "visualization_summary.json"
-        with open(visualization_summary_file, 'w') as f:
-            json.dump(visualization_results["summary"], f, indent=2)
-        
-        logger.info(f"Visualization processing completed:")
-        logger.info(f"  Total files: {visualization_results['summary']['total_files']}")
-        logger.info(f"  Successful visualizations: {visualization_results['summary']['successful_visualizations']}")
-        logger.info(f"  Failed visualizations: {visualization_results['summary']['failed_visualizations']}")
-        logger.info(f"  Total images generated: {visualization_results['summary']['total_images_generated']}")
-        logger.info(f"  Visualization types: {visualization_results['summary']['visualization_types']}")
-        
-        log_step_success(logger, "Visualization processing completed successfully")
-        return True
-        
-    except Exception as e:
-        log_step_error(logger, f"Visualization processing failed: {e}")
-        return False
-
-def main():
-    """Main visualization processing function."""
-    args = EnhancedArgumentParser.parse_step_arguments("8_visualization.py")
-    
-    # Setup logging
-    logger = setup_step_logging("visualization", args)
-    
-    # Check if visualization module is available
-    if not VISUALIZATION_AVAILABLE:
-        log_step_warning(logger, "Visualization module not available, using fallback functions")
-    
-    # Process visualization
-    success = process_visualization_standardized(
-        target_dir=args.target_dir,
-        output_dir=args.output_dir,
-        logger=logger,
-        recursive=args.recursive,
-        verbose=args.verbose
-    )
-    
-    return 0 if success else 1
+def main() -> int:
+    """Main entry point for the visualization step."""
+    return run_script()
 
 if __name__ == "__main__":
     sys.exit(main())

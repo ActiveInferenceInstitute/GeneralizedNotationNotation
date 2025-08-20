@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 """
-Step 5: Type Checking and Validation
+Step 5: Type Checking and Validation (Thin Orchestrator)
 
 This step performs type checking and validation on GNN files.
+
+Architectural Role:
+    This is a "thin orchestrator" - a minimal script that delegates core functionality
+    to the corresponding module (src/type_checker/). It handles argument parsing, logging
+    setup, and calls the actual processing functions from the type_checker module.
+
+Pipeline Flow:
+    main.py → 5_type_checker.py (this script) → type_checker/ (modular implementation)
 """
 
 import sys

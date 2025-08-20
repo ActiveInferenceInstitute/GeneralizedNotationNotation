@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-08-19T20:59:53.045776",
+  "step_name": "template",
+  "input_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/0_template_output",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  },
+  "performance_metrics": {}
+}

@@ -47,9 +47,222 @@ def get_visualization_options() -> dict:
         "graph_types": ["connections", "combined"],
         "output_formats": ["png", "json"]
     }
+def process_visualization_main(target_dir, output_dir, verbose: bool = False, **kwargs) -> bool:
+    """
+    Main visualization processing function for GNN models.
+
+    This function orchestrates the complete visualization workflow including:
+    - Matrix visualizations
+    - Network graphs
+    - Combined analysis plots
+    - Output management and error handling
+
+    Args:
+        target_dir: Directory containing GNN files to visualize
+        output_dir: Output directory for visualization results
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional processing options
+
+    Returns:
+        True if visualization succeeded, False otherwise
+    """
+    import json
+    import datetime
+    import logging
+    from pathlib import Path
+
+    # Setup logging
+    logger = logging.getLogger(__name__)
+    if verbose:
+        logger.setLevel(logging.DEBUG)
+
+    try:
+        # Load parsed GNN data from previous step
+        gnn_output_dir = output_dir.parent / "3_gnn_output"
+        gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
+
+        if not gnn_results_file.exists():
+            logger.error("GNN processing results not found. Run step 3 first.")
+            return False
+
+        with open(gnn_results_file, 'r') as f:
+            gnn_results = json.load(f)
+
+        logger.info(f"Loaded {len(gnn_results['processed_files'])} parsed GNN files")
+
+        # Visualization results
+        visualization_results = {
+            "timestamp": datetime.datetime.now().isoformat(),
+            "source_directory": str(target_dir),
+            "output_directory": str(output_dir),
+            "files_visualized": [],
+            "summary": {
+                "total_files": 0,
+                "successful_visualizations": 0,
+                "failed_visualizations": 0,
+                "total_images_generated": 0,
+                "visualization_types": {
+                    "matrix": 0,
+                    "network": 0,
+                    "combined": 0
+                }
+            }
+        }
+
+        # Process each file
+        for file_result in gnn_results["processed_files"]:
+            if not file_result["parse_success"]:
+                continue
+
+            file_name = file_result["file_name"]
+            logger.info(f"Visualizing: {file_name}")
+
+            # Load the actual parsed GNN specification
+            parsed_model_file = file_result.get("parsed_model_file")
+            if parsed_model_file and Path(parsed_model_file).exists():
+                try:
+                    with open(parsed_model_file, 'r') as f:
+                        actual_gnn_spec = json.load(f)
+                    logger.info(f"Loaded parsed GNN specification from {parsed_model_file}")
+                    model_data = actual_gnn_spec
+                except Exception as e:
+                    logger.error(f"Failed to load parsed GNN spec from {parsed_model_file}: {e}")
+                    model_data = file_result
+            else:
+                logger.warning(f"Parsed model file not found for {file_name}, using summary data")
+                model_data = file_result
+
+            # Create file-specific output directory
+            file_output_dir = output_dir / Path(file_name).stem
+            file_output_dir.mkdir(exist_ok=True)
+
+            file_visualization_result = {
+                "file_name": file_name,
+                "file_path": file_result["file_path"],
+                "visualizations": {},
+                "success": True
+            }
+
+            # Generate matrix visualizations
+            try:
+                parameters = model_data.get("parameters", []) if isinstance(model_data, dict) else []
+                matrix_png = file_output_dir / "matrix_analysis.png"
+                matrix_stats_png = file_output_dir / "matrix_statistics.png"
+                mv = MatrixVisualizer()
+                ok1 = mv.generate_matrix_analysis(parameters, matrix_png)
+                ok2 = mv.generate_matrix_statistics(parameters, matrix_stats_png)
+
+                # Specialized POMDP transition analysis if B tensor present
+                matrices = mv.extract_matrix_data_from_parameters(parameters) if parameters else {}
+                if isinstance(matrices, dict) and 'B' in matrices:
+                    B = matrices['B']
+                    try:
+                        import numpy as _np
+                        if hasattr(B, 'ndim') and B.ndim == 3:
+                            pomdp_path = file_output_dir / "pomdp_transition_analysis.png"
+                            if mv.generate_pomdp_transition_analysis(B, pomdp_path):
+                                visualization_results["summary"]["total_images_generated"] += 1
+                    except Exception:
+                        pass
+
+                file_visualization_result["visualizations"]["matrix"] = {
+                    "success": bool(ok1 or ok2),
+                    "result": [str(matrix_png), str(matrix_stats_png)]
+                }
+                visualization_results["summary"]["visualization_types"]["matrix"] += 1
+                logger.info(f"Matrix visualization completed for {file_name}")
+            except Exception as e:
+                logger.error(f"Matrix visualization failed for {file_name}: {e}")
+                file_visualization_result["visualizations"]["matrix"] = {
+                    "success": False,
+                    "error": str(e)
+                }
+                file_visualization_result["success"] = False
+
+            # Generate network visualizations
+            try:
+                net_files = generate_network_visualizations(model_data, file_output_dir, Path(file_name).stem)
+                file_visualization_result["visualizations"]["network"] = {
+                    "success": len(net_files) > 0,
+                    "result": net_files
+                }
+                visualization_results["summary"]["visualization_types"]["network"] += 1
+                logger.info(f"Network visualization completed for {file_name}")
+            except Exception as e:
+                logger.error(f"Network visualization failed for {file_name}: {e}")
+                file_visualization_result["visualizations"]["network"] = {
+                    "success": False,
+                    "error": str(e)
+                }
+                file_visualization_result["success"] = False
+
+            # Generate combined visualizations
+            try:
+                combined_files = generate_combined_analysis(model_data, file_output_dir, Path(file_name).stem)
+                file_visualization_result["visualizations"]["combined"] = {
+                    "success": len(combined_files) > 0,
+                    "result": combined_files
+                }
+                visualization_results["summary"]["visualization_types"]["combined"] += 1
+                logger.info(f"Combined visualization completed for {file_name}")
+            except Exception as e:
+                logger.error(f"Combined visualization failed for {file_name}: {e}")
+                file_visualization_result["visualizations"]["combined"] = {
+                    "success": False,
+                    "error": str(e)
+                }
+                file_visualization_result["success"] = False
+
+            # Count generated images
+            try:
+                for candidate in [
+                    file_output_dir / "matrix_analysis.png",
+                    file_output_dir / "matrix_statistics.png",
+                    file_output_dir / "pomdp_transition_analysis.png",
+                    file_output_dir / f"{Path(file_name).stem}_network_graph.png",
+                    file_output_dir / f"{Path(file_name).stem}_combined_analysis.png",
+                ]:
+                    if candidate.exists():
+                        visualization_results["summary"]["total_images_generated"] += 1
+            except Exception:
+                pass
+
+            visualization_results["files_visualized"].append(file_visualization_result)
+            visualization_results["summary"]["total_files"] += 1
+
+            if file_visualization_result["success"]:
+                visualization_results["summary"]["successful_visualizations"] += 1
+            else:
+                visualization_results["summary"]["failed_visualizations"] += 1
+
+        # Save visualization results
+        visualization_results_file = output_dir / "visualization_results.json"
+        with open(visualization_results_file, 'w') as f:
+            json.dump(visualization_results, f, indent=2)
+
+        # Save visualization summary
+        visualization_summary_file = output_dir / "visualization_summary.json"
+        with open(visualization_summary_file, 'w') as f:
+            json.dump(visualization_results["summary"], f, indent=2)
+
+        logger.info(f"Visualization processing completed:")
+        logger.info(f"  Total files: {visualization_results['summary']['total_files']}")
+        logger.info(f"  Successful visualizations: {visualization_results['summary']['successful_visualizations']}")
+        logger.info(f"  Failed visualizations: {visualization_results['summary']['failed_visualizations']}")
+        logger.info(f"  Total images generated: {visualization_results['summary']['total_images_generated']}")
+        logger.info(f"  Visualization types: {visualization_results['summary']['visualization_types']}")
+
+        success = visualization_results["summary"]["successful_visualizations"] > 0
+        return success
+
+    except Exception as e:
+        logger.error(f"Visualization processing failed: {e}")
+        return False
+
+
 __all__ = [
     'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer', 'GraphVisualizer',
     'matrix_visualizer', 'process_matrix_visualization', 'process_visualization',
     'generate_visualizations', 'generate_graph_visualization', 'generate_matrix_visualization',
-    '__version__'
+    '__version__', 'process_visualization_main'
 ]

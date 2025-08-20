@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 """
-GNN Processing Pipeline - Step 9: Advanced Visualization
+Step 9: Advanced Visualization (Thin Orchestrator)
 
 This step provides advanced visualization capabilities for GNN models with
 comprehensive safe-to-fail patterns and robust output management.
+
+Architectural Role:
+    This is a "thin orchestrator" - a minimal script that delegates core functionality
+    to the corresponding module (src/advanced_visualization/). It handles argument parsing, logging
+    setup, and calls the actual processing functions from the advanced_visualization module.
+
+Pipeline Flow:
+    main.py → 9_advanced_viz.py (this script) → advanced_visualization/ (modular implementation)
 """
 
 import sys

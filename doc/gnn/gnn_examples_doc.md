@@ -478,4 +478,4 @@ When implementing these models:
 
 1. Smith, R., Friston, K.J., & Whyte, C.J. (2022). A step-by-step tutorial on active inference and its application to empirical data. Journal of Mathematical Psychology, 107, 102632.
 2. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. https://doi.org/10.5281/zenodo.7803328
-3. Machine-readable examples: [GNN Step-by-Step Examples](../src/gnn/examples/gnn_examples_step-by-step.md) 
+3. Machine-readable examples: [GNN Examples](../src/gnn/gnn_examples/) 

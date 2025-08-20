@@ -1,0 +1,5 @@
+2025-08-19 21:04:45,120 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/gui/__init__.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/pipeline_step_template.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")

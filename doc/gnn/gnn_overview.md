@@ -162,7 +162,7 @@ graph LR
 - **Active Inference Theory**: Provides the theoretical foundation for GNN models
 - **Active Inference Ontology**: Defines standardized terms that GNN variables map to
 - **Model Repositories**: Collections of GNN models for reference and reuse
-- **Software Tools**: Implementations that can parse, visualize, and execute GNN models. In this project, these tools are primarily accessed and orchestrated via the `src/main.py` processing pipeline.
+- **Software Tools**: Implementations that can parse, visualize, and execute GNN models. The main tools are accessed through the `src/main.py` orchestrator and individual numbered pipeline scripts (0-23).
 
 ## Related Documentation
 

@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 """
-GNN Processing Pipeline - Step 4: Model Registry
+GNN Processing Pipeline - Step 4: Model Registry (Thin Orchestrator)
 
 This step implements a centralized model registry for GNN models with versioning,
 metadata management, and model lifecycle tracking.
+
+Architectural Role:
+    This is a "thin orchestrator" - a minimal script that delegates core functionality
+    to the corresponding module (src/model_registry/). It handles argument parsing, logging
+    setup, and calls the actual processing functions from the model_registry module.
+
+Pipeline Flow:
+    main.py → 4_model_registry.py (this script) → model_registry/ (modular implementation)
 
 Usage:
     python 4_model_registry.py [options]

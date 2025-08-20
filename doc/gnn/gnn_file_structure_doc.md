@@ -336,7 +336,7 @@ When creating GNN files:
 
 ## Machine-Readable Format
 
-For automated processing, GNN file structures are available in a machine-readable CSV format at `src/gnn/gnn_file_structure.md`, which defines each section and its expected content.
+For automated processing, GNN file structures are available in a machine-readable format at `src/gnn/documentation/file_structure.md`, which defines each section and its expected content.
 
 ## References
 

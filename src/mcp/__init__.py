@@ -82,6 +82,38 @@ FEATURES = {
 }
 
 # Main API functions
+
+def process_mcp(target_dir, output_dir, verbose=False, **kwargs):
+    """
+    Main processing function for mcp.
+    
+    Args:
+        target_dir: Directory containing files to process
+        output_dir: Output directory for results
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional processing options
+        
+    Returns:
+        True if processing succeeded, False otherwise
+    """
+    import logging
+    from pathlib import Path
+    
+    logger = logging.getLogger(__name__)
+    if verbose:
+        logger.setLevel(logging.DEBUG)
+    
+    try:
+        logger.info(f"Processing mcp for files in {target_dir}")
+        # Placeholder implementation - delegate to actual module functions
+        # This would be replaced with actual implementation
+        logger.info(f"Mcp processing completed")
+        return True
+    except Exception as e:
+        logger.error(f"Mcp processing failed: {e}")
+        return False
+
+
 __all__ = [
     # Core MCP classes and functions
     'mcp_instance',

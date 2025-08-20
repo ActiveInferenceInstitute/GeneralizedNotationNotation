@@ -118,7 +118,7 @@ G>π_f1
 G=ExpectedFreeEnergy
 t=Time
 ```
-*(Note: The example shows grouped variables like `(D_f0,D_f1)`. The current parser logic described focuses on single source/target per line. Grouped variables might be handled by pre-processing or a more complex parsing step not detailed in `src/visualization/parser.py`'s `_process_connections` regex. The documentation here reflects the identified regex capability.)*
+*(Note: The example shows grouped variables like `(D_f0,D_f1)`. The current parser logic described focuses on single source/target per line. Grouped variables might be handled by pre-processing or a more complex parsing step not detailed in `src/gnn/parser.py`'s `_process_connections` regex. The documentation here reflects the identified regex capability.)*
 
 ### 3.3. `InitialParameterization`
 
@@ -126,14 +126,14 @@ This section provides the initial numerical or symbolic values for the variables
 
 **Syntax:**
 
-The content of this section is generally free-form text that describes the parameter settings. While the main parser (`src/visualization/parser.py`) captures this section's content as a single block of text, specific conventions are often followed in practice, as seen in example GNN files. These conventions might involve:
+The content of this section is generally free-form text that describes the parameter settings. While the main parser (`src/gnn/parser.py`) captures this section's content as a single block of text, specific conventions are often followed in practice, as seen in example GNN files. These conventions might involve:
 -   Comments (`#`) explaining the parameterization logic.
 -   Assignments using `=` to set variable values.
 -   Multi-dimensional arrays or matrices represented using nested curly braces `{}` or parentheses `()`, with comma-separated values.
 
 **Parser Behavior:**
 
--   The primary GNN parser (`src/visualization/parser.py`) treats the entire content under `## InitialParameterization` as a text block.
+-   The primary GNN parser (`src/gnn/parser.py`) treats the entire content under `## InitialParameterization` as a text block.
 -   Downstream tools or specialized parsers might further process this text block to extract specific values based on conventions used within the GNN file.
 
 **Example:**
@@ -161,7 +161,7 @@ The content is typically written in LaTeX format for clear mathematical represen
 
 **Parser Behavior:**
 
--   Similar to `InitialParameterization`, the primary GNN parser (`src/visualization/parser.py`) captures the content of the `## Equations` section as a single block of text.
+-   Similar to `InitialParameterization`, the primary GNN parser (`src/gnn/parser.py`) captures the content of the `## Equations` section as a single block of text.
 -   Rendering or interpretation of these LaTeX equations is handled by other tools (e.g., for display in documentation or potentially for symbolic processing).
 
 **Example:**
@@ -183,7 +183,7 @@ The `Time` section describes how the model handles the concept of time, which is
 
 This section uses controlled terms to specify the model's temporal nature. The content is a free-form text block, but specific keywords are interpreted by downstream tools or by convention.
 
-**Controlled Terms (from `gnn_file_structure.md`):**
+**Controlled Terms (from `src/gnn/documentation/file_structure.md`):**
 
 -   `Static`: Indicates the model is static and does not evolve over time.
 -   `Dynamic`: Indicates the model is dynamic.
@@ -244,7 +244,7 @@ G=ExpectedFreeEnergy
 
 ### 3.7 Other Standard Sections
 
-The GNN specification includes several other standard sections. The main parser (`src/visualization/parser.py`) generally treats these sections by capturing their content as a block of text under the section name. Their specific meaning and usage are defined by convention and the `gnn_file_structure.md`.
+The GNN specification includes several other standard sections. The main parser (`src/gnn/parser.py`) generally treats these sections by capturing their content as a block of text under the section name. Their specific meaning and usage are defined by convention and the `src/gnn/documentation/file_structure.md`.
 
 -   **`ImageFromPaper`**: Contains a link or embedded image of the model's graphical representation from a publication. Content is free-form.
 -   **`GNNVersionAndFlags`**: Specifies the GNN version (e.g., `GNN v1`) and any flags affecting interpretation. Content is a text string.

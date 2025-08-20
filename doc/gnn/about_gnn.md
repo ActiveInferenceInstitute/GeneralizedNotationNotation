@@ -15,7 +15,7 @@ GNN addresses the lack of a unified representation for Active Inference models, 
 
 ## GNN Syntax and Punctuation
 
-GNN leverages standard ASCII symbols to denote variables, operations, and causal relationships in generative models. The complete specification is maintained in machine-readable format at `src/gnn/gnn_punctuation.md`. 
+GNN leverages standard ASCII symbols to denote variables, operations, and causal relationships in generative models. The complete specification is maintained in machine-readable format at `src/gnn/documentation/punctuation.md`. 
 
 The syntax is designed to be both human-readable and machine-parsable, making it suitable for documentation and automated processing. Key symbols include:
 
@@ -48,7 +48,7 @@ When writing GNN expressions:
 
 ## GNN Source File Structure
 
-A GNN source file follows a Markdown-like organization that segments model metadata, variables, connections, and equations. The complete specification is maintained in machine-readable format at `src/gnn/gnn_file_structure.md`. 
+A GNN source file follows a Markdown-like organization that segments model metadata, variables, connections, and equations. The complete specification is maintained in machine-readable format at `src/gnn/documentation/file_structure.md`. 
 
 Each GNN file is organized into the following sections:
 
@@ -91,7 +91,7 @@ GNN supports an incremental approach to model development, allowing practitioner
 4. Incorporating temporal components for dynamic models
 5. Adding policy selection mechanisms for active inference
 
-The examples in `src/gnn/examples/gnn_examples_step-by-step.md` demonstrate this progression from simple to complex models, following the tutorial by Smith et al. (2022).
+The examples in `src/gnn/gnn_examples/` demonstrate this progression from simple to complex models, following the tutorial by Smith et al. (2022).
 
 ## Step-by-Step Example: Static to Dynamic Models
 
