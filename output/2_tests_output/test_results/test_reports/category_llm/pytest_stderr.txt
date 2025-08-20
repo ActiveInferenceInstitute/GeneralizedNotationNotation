@@ -1,0 +1,40 @@
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+2025-08-20 07:01:04,724 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,724 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,725 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,725 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,725 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,725 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,725 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,725 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,725 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,725 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,725 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,725 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,725 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,725 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,726 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,726 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,726 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,726 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,726 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,727 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,726 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,727 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,727 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,727 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,727 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,727 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,727 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,727 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,728 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,727 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,728 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,728 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,728 - llm.llm_operations - INFO - Created new LLM processor
+2025-08-20 07:01:04,728 - llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:01:04,728 - llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:01:04,728 - llm.llm_operations - INFO - Created new LLM processor

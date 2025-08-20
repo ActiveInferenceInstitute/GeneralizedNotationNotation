@@ -40,7 +40,7 @@ from audio import process_audio
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "15_15_audio.py",
+    "15_audio.py",
     process_audio,
     "Audio processing"
 )

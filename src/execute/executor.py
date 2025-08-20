@@ -313,6 +313,39 @@ class GNNExecutor:
             }
 
 
+# Backwards-compatible adapter for older callers that expect an 'ExecutionEngine'
+class ExecutionEngine:
+    """Compatibility wrapper exposing execute_simulation_from_gnn.
+
+    This wraps the newer `GNNExecutor` class so code that imports
+    `ExecutionEngine` continues to work without changing callers.
+    """
+
+    def __init__(self, output_dir: Optional[str] = None):
+        self._executor = GNNExecutor(output_dir)
+
+    def execute_simulation_from_gnn(self, gnn_file: Union[str, Path], output_dir: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
+        """Execute a simulation originating from a GNN file path.
+
+        Args:
+            gnn_file: Path to the GNN file (str or Path)
+            output_dir: Optional output directory for results
+        Returns:
+            Execution result dictionary (same shape as GNNExecutor.run_simulation)
+        """
+        # Normalize inputs
+        gnn_path = Path(gnn_file) if not isinstance(gnn_file, Path) else gnn_file
+        out_dir = Path(output_dir) if output_dir is not None else self._executor.output_dir
+
+        sim_cfg = {
+            "model_path": str(gnn_path),
+            "execution_type": "pymdp",
+            "options": {"output_dir": str(out_dir)}
+        }
+
+        return self._executor.run_simulation(sim_cfg)
+
+
 def execute_gnn_model(model_path: str, execution_type: str = "pymdp", 
                      options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """

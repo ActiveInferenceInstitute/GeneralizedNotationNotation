@@ -78,7 +78,8 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
 
     try:
         # Load parsed GNN data from previous step
-        gnn_output_dir = output_dir.parent / "3_gnn_output"
+        from pipeline.config import get_output_dir_for_script
+        gnn_output_dir = get_output_dir_for_script("3_gnn.py", output_dir)
         gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
 
         if not gnn_results_file.exists():

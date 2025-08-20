@@ -40,7 +40,7 @@ from security import process_security
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "18_18_security.py",
+    "18_security.py",
     process_security,
     "Security processing"
 )

@@ -63,6 +63,7 @@ __all__ = [
     "add_state_space_entry",
     "update_state_space_entry",
     "remove_state_space_entry",
-, 'process_gui']
+    'process_gui'
+]
 
 

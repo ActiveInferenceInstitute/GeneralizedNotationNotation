@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-08-20T04:51:45.804614",
+  "timestamp": "2025-08-20T07:02:54.505827",
   "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
   "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output",
   "processing_config": {
     "recursive": true,
-    "verbose": false,
+    "verbose": true,
     "supported_formats": [
       "markdown",
       "scala",

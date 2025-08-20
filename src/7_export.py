@@ -37,6 +37,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
+from export import process_export
+
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
     "7_export.py",

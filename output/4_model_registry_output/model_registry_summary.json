@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-08-20T07:02:54.617449",
+  "step_name": "model_registry",
+  "input_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/4_model_registry_output",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "registry_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/4_model_registry_output/model_registry.json",
+  "performance_metrics": {}
+}

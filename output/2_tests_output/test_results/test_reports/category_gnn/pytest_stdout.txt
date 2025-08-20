@@ -4,70 +4,70 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_gnn_parsing.py::TestMarkdownParser::test_invalid_parsing 
-src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_scan_directory_recursive 
-src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports 
-src/tests/test_gnn_parsing.py::TestCoqParser::test_valid_parsing 
-src/tests/test_gnn_validation.py::TestGNNValidation::test_check_consistency 
-src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discovery_imports 
-src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serialize_to_format 
-src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_memory_usage 
-src/tests/test_gnn_parsing.py::TestScalaParser::test_valid_parsing 
-[gw1] PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_invalid_parsing 
-[gw8] PASSED src/tests/test_gnn_parsing.py::TestCoqParser::test_valid_parsing 
-src/tests/test_gnn_validation.py::TestGNNValidation::test_validation_imports 
-[gw11] PASSED src/tests/test_gnn_parsing.py::TestScalaParser::test_valid_parsing 
-src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_error_handling 
-[gw3] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_error_handling 
 src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_import_available 
 src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_validation 
-[gw2] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_validation 
-[gw12] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_memory_usage 
+src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports 
+src/tests/test_gnn_parsing.py::TestCoqParser::test_valid_parsing 
+src/tests/test_gnn_parsing.py::TestScalaParser::test_valid_parsing 
 src/tests/test_gnn_overall.py::TestGNNReporting::test_generate_report 
-[gw7] PASSED src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discovery_imports 
-[gw4] SKIPPED src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_scan_directory_recursive 
-[gw6] SKIPPED src/tests/test_gnn_overall.py::TestGNNReporting::test_generate_report 
+src/tests/test_gnn_validation.py::TestGNNValidation::test_validation_imports 
+src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_scan_directory_recursive 
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_memory_usage 
+src/tests/test_gnn_validation.py::TestGNNValidation::test_check_consistency 
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_error_handling 
+src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serialize_to_format 
+src/tests/test_gnn_parsing.py::TestMarkdownParser::test_invalid_parsing 
+src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discovery_imports 
+[gw1] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_validation 
 [gw0] SKIPPED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_import_available 
-[gw9] SKIPPED src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serialize_to_format 
-src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_format_conversion 
-[gw2] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_format_conversion 
-src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_deserialize_from_format 
-src/tests/test_gnn_parsing.py::TestMarkdownParser::test_valid_parsing 
-[gw9] SKIPPED src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_deserialize_from_format 
-src/tests/test_gnn_parsing.py::TestLeanParser::test_valid_parsing 
+[gw3] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_memory_usage 
+[gw2] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_error_handling 
+[gw8] PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_invalid_parsing 
+[gw9] PASSED src/tests/test_gnn_parsing.py::TestCoqParser::test_valid_parsing 
+[gw10] PASSED src/tests/test_gnn_parsing.py::TestScalaParser::test_valid_parsing 
+[gw7] PASSED src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discovery_imports 
+[gw5] SKIPPED src/tests/test_gnn_overall.py::TestGNNReporting::test_generate_report 
+[gw6] SKIPPED src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_scan_directory_recursive 
 src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_file_processing 
-[gw0] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_file_processing 
-src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_performance 
-[gw3] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_performance 
-src/tests/test_gnn_overall.py::TestGNNReporting::test_create_summary 
 src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports 
-src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serializers_imports 
-[gw13] SKIPPED src/tests/test_gnn_validation.py::TestGNNValidation::test_check_consistency 
-[gw6] SKIPPED src/tests/test_gnn_overall.py::TestGNNReporting::test_create_summary 
-src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discover_gnn_files 
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_performance 
+[gw0] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_file_processing 
+[gw2] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_performance 
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_format_conversion 
 src/tests/test_gnn_parsing.py::TestMarkdownParser::test_empty_string 
-[gw1] PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_empty_string 
-[gw4] PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_valid_parsing 
-[gw5] PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports 
-[gw10] PASSED src/tests/test_gnn_validation.py::TestGNNValidation::test_validation_imports 
-[gw7] SKIPPED src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discover_gnn_files 
-[gw11] PASSED src/tests/test_gnn_parsing.py::TestLeanParser::test_valid_parsing 
-[gw8] PASSED src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serializers_imports 
-src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validation 
+[gw1] PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_format_conversion 
+src/tests/test_gnn_parsing.py::TestLeanParser::test_valid_parsing 
+[gw10] PASSED src/tests/test_gnn_parsing.py::TestLeanParser::test_valid_parsing 
+src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serializers_imports 
+src/tests/test_gnn_overall.py::TestGNNReporting::test_create_summary 
 src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_instantiation 
-[gw8] PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validation 
-src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_imports 
-[gw1] PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_instantiation 
-[gw13] PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_imports 
-src/tests/test_gnn_overall.py::TestGNNReporting::test_reporting_imports 
+[gw8] PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_empty_string 
+src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discover_gnn_files 
+[gw7] SKIPPED src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discover_gnn_files 
+[gw5] SKIPPED src/tests/test_gnn_overall.py::TestGNNReporting::test_create_summary 
+src/tests/test_gnn_parsing.py::TestMarkdownParser::test_valid_parsing 
+[gw6] PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_valid_parsing 
+[gw0] PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_instantiation 
+[gw13] PASSED src/tests/test_gnn_validation.py::TestGNNValidation::test_validation_imports 
+[gw11] SKIPPED src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serialize_to_format 
 src/tests/test_gnn_validation.py::TestGNNValidation::test_validate_gnn_model 
-[gw10] SKIPPED src/tests/test_gnn_validation.py::TestGNNValidation::test_validate_gnn_model 
-[gw5] PASSED src/tests/test_gnn_overall.py::TestGNNReporting::test_reporting_imports 
-[gw12] PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports 
+src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_deserialize_from_format 
+[gw4] PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports 
+[gw11] SKIPPED src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_deserialize_from_format 
+[gw9] PASSED src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serializers_imports 
+[gw12] SKIPPED src/tests/test_gnn_validation.py::TestGNNValidation::test_check_consistency 
+[gw13] SKIPPED src/tests/test_gnn_validation.py::TestGNNValidation::test_validate_gnn_model 
+src/tests/test_gnn_overall.py::TestGNNReporting::test_reporting_imports 
+src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_imports 
+[gw4] PASSED src/tests/test_gnn_overall.py::TestGNNReporting::test_reporting_imports 
+[gw12] PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_imports 
+[gw3] PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports 
+src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validation 
+[gw3] PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validation 
 
 ==================================== PASSES ====================================
 ____________________ TestMarkdownParser.test_valid_parsing _____________________
-[gw4] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+[gw6] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 WARNING  gnn.parsers.markdown_parser:markdown_parser.py:780 Connection references unknown target variables: ['o']
 --------------------------------- JSON report ----------------------------------
@@ -83,8 +83,8 @@ src/2_tests.py                                                       278    278 
 src/3_gnn.py                                                           8      8     0%   9-27
 src/4_model_registry.py                                              104    104     0%   21-267
 src/5_type_checker.py                                                 93     93     0%   16-203
-src/6_validation.py                                                    6      6     0%   35-50
-src/7_export.py                                                        7      7     0%   33-49
+src/6_validation.py                                                    8      8     0%   35-54
+src/7_export.py                                                        8      8     0%   33-51
 src/8_visualization.py                                                 8      8     0%   34-52
 src/9_advanced_viz.py                                                273    273     0%   17-742
 src/10_ontology.py                                                    46     46     0%   26-141
@@ -128,7 +128,7 @@ src/execute/activeinference_jl/__init__.py                             2      2 
 src/execute/activeinference_jl/activeinference_runner.py             258    258     0%   16-556
 src/execute/discopy/__init__.py                                        2      2     0%   7-9
 src/execute/discopy/discopy_executor.py                              124    124     0%   9-295
-src/execute/executor.py                                              371    371     0%   8-771
+src/execute/executor.py                                              379    379     0%   8-804
 src/execute/fallback.py                                               35     35     0%   8-171
 src/execute/install_dependencies.py                                   56     56     0%   8-126
 src/execute/jax/__init__.py                                            2      2     0%   14-21
@@ -148,7 +148,7 @@ src/execute/pymdp/validator.py                                        49     49 
 src/execute/rxinfer/__init__.py                                        2      2     0%   7-9
 src/execute/rxinfer/rxinfer_runner.py                                 86     86     0%   9-205
 src/execute/validator.py                                             179    179     0%   9-466
-src/export/__init__.py                                               126    126     0%   7-292
+src/export/__init__.py                                               127    127     0%   7-293
 src/export/core.py                                                    89     89     0%   1-159
 src/export/format_exporters.py                                       282    282     0%   9-373
 src/export/formatters.py                                             210    210     0%   8-303
@@ -226,6 +226,7 @@ src/gnn/testing/simple_round_trip_test.py                            119    119 
 src/gnn/type_systems/__init__.py                                       1      1     0%   8
 src/gnn/types.py                                                     189     48    75%   19-22, 25-33, 50-53, 56-59, 139-140, 143, 172-173, 176, 179-180, 196-204, 207, 210-220
 src/gnn/validation.py                                                173    150    13%   30-33, 38-44, 48-58, 70-100, 112-134, 138-166, 170-177, 181-187, 191-197, 201-217, 221-234, 238-262, 266-291, 295-327
+src/gui/__init__.py                                                   16     16     0%   12-56
 src/gui/markdown.py                                                  187    187     0%   1-251
 src/gui/mcp.py                                                        13     13     0%   5-27
 src/gui/processor.py                                                  43     43     0%   1-96
@@ -280,6 +281,7 @@ src/pipeline/pipeline_validation.py                                  380    380 
 src/pipeline/update_version.py                                       129    129     0%   8-244
 src/pipeline/validate_documentation.py                               197    197     0%   18-398
 src/pipeline/verify_pipeline.py                                      102    102     0%   8-263
+src/pipeline_step_template.py                                         10     10     0%   24-50
 src/render/__init__.py                                                 7      7     0%   9-73
 src/render/activeinference_jl/__init__.py                              2      2     0%   8-15
 src/render/activeinference_jl/activeinference_jl_renderer.py          82     82     0%   18-492
@@ -363,13 +365,13 @@ src/utils/script_validator.py                                        207    207 
 src/utils/shared_functions.py                                        100    100     0%   8-268
 src/utils/system_utils.py                                             22     11    50%   11-12, 20-44
 src/utils/venv_utils.py                                               35     29    17%   18-68
-src/validation/__init__.py                                           101    101     0%   8-203
+src/validation/__init__.py                                           102    102     0%   8-204
 src/validation/consistency_checker.py                                227    227     0%   8-446
 src/validation/legacy.py                                              16     16     0%   8-102
 src/validation/mcp.py                                                123    123     0%   8-417
 src/validation/performance_profiler.py                               207    207     0%   9-409
 src/validation/semantic_validator.py                                 245    245     0%   8-519
-src/visualization/__init__.py                                        121    110     9%   38, 45, 69-260
+src/visualization/__init__.py                                        122    111     9%   38, 45, 69-261
 src/visualization/__main__.py                                          2      2     0%   8-9
 src/visualization/cli.py                                              33     33     0%   7-83
 src/visualization/legacy.py                                            6      4    33%   10-11, 15-16
@@ -377,7 +379,7 @@ src/visualization/matrix_visualizer.py                               506    475 
 src/visualization/mcp.py                                              53     53     0%   7-122
 src/visualization/ontology_visualizer.py                             105     88    16%   28-36, 54-91, 104-120, 132-156, 160, 173-234, 238, 241
 src/visualization/parser.py                                          136    119    12%   23, 35-42, 46-72, 77-92, 96-136, 140-200, 204-237, 249
-src/visualization/processor.py                                       367    332    10%   24-28, 34-36, 49-51, 62-68, 88-143, 157-193, 205-261, 280-304, 318-398, 412-467, 481-553, 567-669
+src/visualization/processor.py                                       382    346     9%   24-28, 34-36, 49-51, 62-68, 77-90, 110-165, 179-215, 227-283, 302-326, 340-420, 434-489, 503-575, 589-691
 src/visualization/run_visualization.py                                42     42     0%   9-76
 src/visualization/visualizer.py                                      450    400    11%   22-24, 30-33, 38-40, 46-48, 53-55, 60-62, 84-124, 136-225, 229-238, 242-251, 263-272, 276-284, 287, 292-319, 324-347, 351-396, 400-476, 480-586, 590-593, 605-628, 641-652, 666-672, 686-697, 711-717, 732-761, 786-878
 src/website/__init__.py                                                6      6     0%   7-40
@@ -385,49 +387,49 @@ src/website/generator.py                                             159    159 
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142    142     0%   2-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38302  35518     7%
+TOTAL                                                              38357  35572     7%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_gnn/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_gnn/coverage.json
 ============================= slowest 10 durations =============================
-0.59s call     src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports
-0.44s call     src/tests/test_gnn_validation.py::TestGNNValidation::test_validation_imports
-0.44s call     src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports
-0.30s call     src/tests/test_gnn_validation.py::TestGNNValidation::test_check_consistency
-0.19s call     src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serialize_to_format
-0.15s call     src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serializers_imports
-0.09s call     src/tests/test_gnn_parsing.py::TestLeanParser::test_valid_parsing
-0.05s call     src/tests/test_gnn_parsing.py::TestMarkdownParser::test_valid_parsing
-0.04s setup    src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serialize_to_format
-0.03s call     src/tests/test_gnn_parsing.py::TestScalaParser::test_valid_parsing
+0.04s call     src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports
+0.03s call     src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports
+0.03s call     src/tests/test_gnn_validation.py::TestGNNValidation::test_check_consistency
+0.03s call     src/tests/test_gnn_validation.py::TestGNNValidation::test_validation_imports
+0.03s call     src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serializers_imports
+0.03s call     src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serialize_to_format
+0.00s setup    src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serialize_to_format
+0.00s call     src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_instantiation
+0.00s setup    src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports
+0.00s setup    src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_scan_directory_recursive
 =========================== short test summary info ============================
+PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_validation
+PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_memory_usage
+PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_error_handling
 PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_invalid_parsing
 PASSED src/tests/test_gnn_parsing.py::TestCoqParser::test_valid_parsing
 PASSED src/tests/test_gnn_parsing.py::TestScalaParser::test_valid_parsing
-PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_error_handling
-PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_validation
-PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_memory_usage
 PASSED src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discovery_imports
-PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_format_conversion
 PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_file_processing
 PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_performance
+PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_format_conversion
+PASSED src/tests/test_gnn_parsing.py::TestLeanParser::test_valid_parsing
 PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_empty_string
 PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_valid_parsing
-PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports
-PASSED src/tests/test_gnn_validation.py::TestGNNValidation::test_validation_imports
-PASSED src/tests/test_gnn_parsing.py::TestLeanParser::test_valid_parsing
-PASSED src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serializers_imports
-PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validation
 PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_instantiation
-PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_imports
+PASSED src/tests/test_gnn_validation.py::TestGNNValidation::test_validation_imports
+PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports
+PASSED src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serializers_imports
 PASSED src/tests/test_gnn_overall.py::TestGNNReporting::test_reporting_imports
+PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_imports
 PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports
-SKIPPED [1] src/tests/test_gnn_parsing.py:101: GNN discovery not available
-SKIPPED [1] src/tests/test_gnn_overall.py:94: GNN reporting not available
+PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validation
 SKIPPED [1] src/tests/test_gnn_integration.py:28: GNN module not available
+SKIPPED [1] src/tests/test_gnn_overall.py:94: GNN reporting not available
+SKIPPED [1] src/tests/test_gnn_parsing.py:101: GNN discovery not available
+SKIPPED [1] src/tests/test_gnn_parsing.py:69: GNN discovery not available
+SKIPPED [1] src/tests/test_gnn_overall.py:117: GNN reporting not available
 SKIPPED [1] src/tests/test_gnn_processing.py:60: GNN serializers not available
 SKIPPED [1] src/tests/test_gnn_processing.py:80: GNN serializers not available
 SKIPPED [1] src/tests/test_gnn_validation.py:80: GNN validation not available
-SKIPPED [1] src/tests/test_gnn_overall.py:117: GNN reporting not available
-SKIPPED [1] src/tests/test_gnn_parsing.py:69: GNN discovery not available
 SKIPPED [1] src/tests/test_gnn_validation.py:57: GNN validation not available
-=================== 21 passed, 9 skipped in 98.05s (0:01:38) ===================
+======================== 21 passed, 9 skipped in 15.49s ========================

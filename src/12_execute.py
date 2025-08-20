@@ -40,7 +40,7 @@ from execute import process_execute
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "12_12_execute.py",
+    "12_execute.py",
     process_execute,
     "Execute processing"
 )

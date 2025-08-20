@@ -40,7 +40,7 @@ from render import process_render
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "11_11_render.py",
+    "11_render.py",
     process_render,
     "Render processing"
 )

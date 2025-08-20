@@ -40,7 +40,7 @@ from integration import process_integration
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "17_17_integration.py",
+    "17_integration.py",
     process_integration,
     "Integration processing"
 )

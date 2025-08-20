@@ -40,9 +40,9 @@ from mcp import process_mcp
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "21_21_mcp.py",
+    "21_mcp.py",
     process_mcp,
-    "Mcp processing"
+    "MCP processing"
 )
 
 def main() -> int:

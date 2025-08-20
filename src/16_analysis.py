@@ -40,7 +40,7 @@ from analysis import process_analysis
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "16_16_analysis.py",
+    "16_analysis.py",
     process_analysis,
     "Analysis processing"
 )

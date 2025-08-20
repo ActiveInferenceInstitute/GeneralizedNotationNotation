@@ -67,6 +67,28 @@ except ImportError:
     def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
     UTILS_AVAILABLE = False
 
+
+# Safe plot saving helper to avoid crashes due to extreme DPI or backend issues
+def _save_plot_safely(plot_path: Path, dpi: int = 300, **savefig_kwargs) -> bool:
+    """Attempt to save a matplotlib figure with fallback DPI strategies.
+
+    Returns True on success, False on failure.
+    """
+    try:
+        plt.savefig(plot_path, dpi=dpi, **savefig_kwargs)
+        return True
+    except Exception:
+        try:
+            fallback_dpi = int(matplotlib.rcParams.get('savefig.dpi', 100))
+            plt.savefig(plot_path, dpi=fallback_dpi, **savefig_kwargs)
+            return True
+        except Exception:
+            try:
+                plt.savefig(plot_path, **savefig_kwargs)
+                return True
+            except Exception:
+                return False
+
 def process_visualization(
     target_dir: Path,
     output_dir: Path,
@@ -348,7 +370,7 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
 
                 # Save plot
                 plot_file = output_dir / f"{model_name}_matrix_{i+1}_heatmap.png"
-                plt.savefig(plot_file, dpi=300, bbox_inches='tight')
+                _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
                 plt.close()
                 
                 visualizations.append(str(plot_file))
@@ -386,7 +408,7 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
                 plt.title(f"{model_name} - Matrix Correlation (flattened)")
                 plt.tight_layout()
                 plot_file = output_dir / f"{model_name}_matrix_correlation.png"
-                plt.savefig(plot_file, dpi=300, bbox_inches='tight')
+                _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
                 plt.close()
                 visualizations.append(str(plot_file))
             except Exception as _:
@@ -456,7 +478,7 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
             plt.tight_layout()
             
             plot_file = output_dir / f"{model_name}_network_graph.png"
-            plt.savefig(plot_file, dpi=300, bbox_inches='tight')
+            _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
             plt.close()
             
             visualizations.append(str(plot_file))
@@ -542,7 +564,7 @@ def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, mo
         plt.tight_layout()
         
         plot_file = output_dir / f"{model_name}_combined_analysis.png"
-        plt.savefig(plot_file, dpi=300, bbox_inches='tight')
+        _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
         plt.close()
         
         visualizations.append(str(plot_file))
@@ -658,7 +680,7 @@ def generate_combined_visualizations(gnn_files: List[Path], results_dir: Path, v
         plt.tight_layout()
         
         plot_file = results_dir / "combined_analysis.png"
-        plt.savefig(plot_file, dpi=300, bbox_inches='tight')
+        _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
         plt.close()
         
         visualizations.append(str(plot_file))

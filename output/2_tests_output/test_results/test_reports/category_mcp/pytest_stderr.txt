@@ -1,0 +1,23 @@
+2025-08-20 06:59:12,620 - export.mcp - INFO - Export module MCP tools registered.
+2025-08-20 06:59:12,621 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,621 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,621 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,621 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,621 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,622 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,623 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,624 - utils.mcp - INFO - Registering utils MCP tools
+2025-08-20 06:59:12,624 - utils.mcp - INFO - Successfully registered utils MCP tools
+2025-08-20 06:59:12,631 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,632 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,632 - mcp - INFO - Enhanced MCP server initialized
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+2025-08-20 06:59:12,670 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2025-08-20 06:59:12,670 - gnn.mcp - INFO - Enhanced capabilities available: True
+2025-08-20 06:59:12,670 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2025-08-20 06:59:12,670 - gnn.mcp - INFO - Enhanced capabilities available: True
+2025-08-20 06:59:12,678 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,679 - mcp - INFO - Enhanced MCP server initialized
+2025-08-20 06:59:12,682 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2025-08-20 06:59:12,682 - gnn.mcp - INFO - Enhanced capabilities available: True

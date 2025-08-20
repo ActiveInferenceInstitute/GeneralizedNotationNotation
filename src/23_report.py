@@ -40,7 +40,7 @@ from report import process_report
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "23_23_report.py",
+    "23_report.py",
     process_report,
     "Report processing"
 )

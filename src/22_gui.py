@@ -40,7 +40,7 @@ from gui import process_gui
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "22_22_gui.py",
+    "22_gui.py",
     process_gui,
     "Gui processing"
 )

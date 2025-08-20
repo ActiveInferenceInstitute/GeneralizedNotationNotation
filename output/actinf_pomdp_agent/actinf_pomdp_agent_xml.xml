@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<gnn_model>
+  <sections/>
+  <variables>
+    <variable name="A" type=""/>
+    <variable name="B" type=""/>
+    <variable name="C" type=""/>
+    <variable name="D" type=""/>
+    <variable name="E" type=""/>
+    <variable name="s" type=""/>
+    <variable name="s_prime" type=""/>
+    <variable name="o" type=""/>
+    <variable name="π" type=""/>
+    <variable name="u" type=""/>
+    <variable name="G" type=""/>
+    <variable name="t" type=""/>
+  </variables>
+  <connections>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+  </connections>
+</gnn_model>

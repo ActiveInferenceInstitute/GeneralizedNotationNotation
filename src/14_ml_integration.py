@@ -40,9 +40,9 @@ from ml_integration import process_ml_integration
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "14_14_ml_integration.py",
+    "14_ml_integration.py",
     process_ml_integration,
-    "Ml_Integration processing"
+    "ML integration processing"
 )
 
 def main() -> int:

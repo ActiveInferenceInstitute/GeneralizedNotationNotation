@@ -40,9 +40,9 @@ from llm import process_llm
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "13_13_llm.py",
+    "13_llm.py",
     process_llm,
-    "Llm processing"
+    "LLM processing"
 )
 
 def main() -> int:

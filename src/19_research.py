@@ -40,7 +40,7 @@ from research import process_research
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "19_19_research.py",
+    "19_research.py",
     process_research,
     "Research processing"
 )

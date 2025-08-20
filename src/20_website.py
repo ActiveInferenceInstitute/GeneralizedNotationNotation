@@ -40,7 +40,7 @@ from website import process_website
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "20_20_website.py",
+    "20_website.py",
     process_website,
     "Website processing"
 )

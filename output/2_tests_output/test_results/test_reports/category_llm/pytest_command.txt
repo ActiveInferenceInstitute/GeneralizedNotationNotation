@@ -1,0 +1,5 @@
+Category: llm
+Success: True
+Duration: 22.08s
+Peak Memory: 21.45 MB
+CPU Usage: 0.0%

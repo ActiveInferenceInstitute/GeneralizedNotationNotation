@@ -28,12 +28,20 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
-from [module_name] import [main_function]
 
-# Create the standardized pipeline script
+# Replace the placeholders below when creating a new step from this template.
+# Example usage:
+# from mymodule import my_main_function
+# run_script = create_standardized_pipeline_script("05_my_step.py", my_main_function, "My step description")
+
+# Create the standardized pipeline script (placeholder no-op that returns a function)
+def _placeholder_module(target_dir, output_dir, logger, **kwargs):
+    logger.info("Placeholder module called; replace with real implementation")
+    return True
+
 run_script = create_standardized_pipeline_script(
     "[N]_step_name.py",
-    [main_function],
+    _placeholder_module,
     "[Brief step description]"
 )
 

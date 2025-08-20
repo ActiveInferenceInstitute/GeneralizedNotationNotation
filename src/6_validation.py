@@ -38,9 +38,13 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Import standardized pipeline helper and module function
+from utils.pipeline_template import create_standardized_pipeline_script
+from validation import process_validation
+
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "6_validation.py",
+    "6_validation",
     process_validation,
     "Validation and quality assurance processing"
 )
