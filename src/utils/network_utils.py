@@ -7,7 +7,21 @@ batch operations, and network timing measurements.
 
 import time
 import logging
-import requests
+try:
+    import requests
+except Exception:
+    # Provide minimal in-repo fallback for tests that don't perform real HTTP calls
+    class _DummyResponse:
+        status_code = 0
+        content = b''
+        headers = {}
+
+    class _DummyRequests:
+        @staticmethod
+        def request(method, url, **kwargs):
+            raise RuntimeError('requests library not available in test environment')
+
+    requests = _DummyRequests()
 from typing import Dict, Any, List, Optional, Union
 from pathlib import Path
 import json

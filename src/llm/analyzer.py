@@ -14,7 +14,7 @@ from .providers.openai_provider import OpenAIProvider  # for patching in tests
 
 logger = logging.getLogger(__name__)
 
-def analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> Dict[str, Any]:
+async def analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> Dict[str, Any]:
     """
     Analyze a GNN file using LLM-enhanced techniques.
     
@@ -59,8 +59,14 @@ def analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> Dict[st
 
         # Attempt LLM-based summary using multi-provider system (with Ollama fallback)
         try:
+            # Use async-aware API when available
             ops = LLMOperations(use_legacy=False)
-            summary_text = ops.summarize_gnn(content, max_length=500)
+            # ops.summarize_gnn may return a coroutine if async available; await if so
+            summary_candidate = ops.summarize_gnn(content, max_length=500)
+            if hasattr(summary_candidate, '__await__'):
+                summary_text = await summary_candidate
+            else:
+                summary_text = summary_candidate
             result["llm_summary"] = summary_text
         except Exception as e:
             # Do not fail the analysis pipeline if LLM is unavailable

@@ -1,5 +1,0 @@
-Category: mcp
-Success: True
-Duration: 22.05s
-Peak Memory: 20.64 MB
-CPU Usage: 0.0%

@@ -11,6 +11,7 @@ import argparse
 import logging
 from pathlib import Path
 from typing import Optional, Any, Callable, List, Dict
+from pipeline.config import get_output_dir_for_script
 
 # Standard import pattern for all pipeline modules
 try:
@@ -126,10 +127,16 @@ def create_standard_pipeline_script(
             else:
                 recursive_default = False
             
-            # Call the module function
+            # Normalize the output directory to the standardized numbered step folder
+            try:
+                step_output_dir = get_output_dir_for_script(step_name if not step_name.endswith('.py') else step_name[:-3], output_dir)
+            except Exception:
+                step_output_dir = output_dir
+
+            # Call the module function with the standardized step output dir
             success = module_function(
                 target_dir=target_dir,
-                output_dir=output_dir,
+                output_dir=step_output_dir,
                 logger=logger,
                 recursive=getattr(parsed_args, 'recursive', recursive_default),
                 verbose=getattr(parsed_args, 'verbose', False),
@@ -453,10 +460,17 @@ def create_standardized_pipeline_script(
             else:
                 recursive_default = False
             
-            # Call the module function
+            # Normalize the output directory to the standardized numbered step folder
+            try:
+                normalized_step = step_name if not step_name.endswith('.py') else step_name[:-3]
+                step_output_dir = get_output_dir_for_script(normalized_step, output_dir)
+            except Exception:
+                step_output_dir = output_dir
+
+            # Call the module function with the standardized step output dir
             success = module_function(
                 target_dir=target_dir,
-                output_dir=output_dir,
+                output_dir=step_output_dir,
                 logger=logger,
                 recursive=getattr(parsed_args, 'recursive', recursive_default),
                 verbose=getattr(parsed_args, 'verbose', False),

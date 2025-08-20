@@ -381,7 +381,7 @@ def execute_activeinference_script(
         return False
 
 def find_activeinference_scripts(
-    search_dir: Path, 
+    search_dir: Union[str, Path], 
     recursive: bool = True,
     include_patterns: List[str] = None
 ) -> List[Path]:
@@ -399,8 +399,10 @@ def find_activeinference_scripts(
     if include_patterns is None:
         include_patterns = ["*.jl"]
     
+    # Accept either str or Path and normalize
     script_files = []
-    
+    search_dir = Path(search_dir) if not isinstance(search_dir, Path) else search_dir
+
     if not search_dir.exists():
         logger.warning(f"Search directory does not exist: {search_dir}")
         return script_files

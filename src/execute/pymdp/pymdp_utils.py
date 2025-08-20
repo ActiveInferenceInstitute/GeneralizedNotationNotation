@@ -328,7 +328,7 @@ def format_duration(seconds: float) -> str:
         return f"{hours:.2f} hours"
 
 
-def create_output_directory_with_timestamp(base_dir: Path, 
+def create_output_directory_with_timestamp(base_dir: Union[str, Path], 
                                           prefix: str = "simulation") -> Path:
     """
     Create output directory with timestamp.
@@ -342,6 +342,8 @@ def create_output_directory_with_timestamp(base_dir: Path,
     """
     from datetime import datetime
     
+    # Accept str paths as well as Path
+    base_dir = Path(base_dir) if not isinstance(base_dir, Path) else base_dir
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = base_dir / f"{prefix}_{timestamp}"
     output_dir.mkdir(parents=True, exist_ok=True)

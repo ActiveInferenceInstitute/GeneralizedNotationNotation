@@ -12,6 +12,7 @@ import time
 import datetime
 import logging
 from pathlib import Path
+from pipeline.config import get_output_dir_for_script
 from typing import Dict, List, Tuple, Any, Optional, Union
 import re
 
@@ -107,19 +108,24 @@ class GNNVisualizer:
         }
         
         # Create timestamped output directory if not provided
+        # Prefer centralized, numbered step output folder under project `output/`.
+        # If no explicit `output_dir` is provided, we place results under
+        # `<project_root>/output/8_visualization_output/gnn_visualization_<timestamp>`
         if output_dir is None:
-            # Default to project_root/output
-            # Assumes script is run from a subdirectory of the project root (e.g. src/)
-            # or that current working directory is project root.
-            # Path.cwd() will be /path/to/GeneralizedNotationNotation/src
-            # Path.cwd().parent will be /path/to/GeneralizedNotationNotation
+            # Determine project root (assume src/ is current working directory when running steps)
             project_root_output_dir = Path.cwd().parent / 'output'
+            viz_step_output = get_output_dir_for_script("8_visualization.py", project_root_output_dir)
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            # Keep timestamp for uniqueness if multiple runs without specific output dir
-            output_dir = project_root_output_dir / f'gnn_visualization_{timestamp}'
+            # Create a timestamped subdirectory inside the standardized step folder
+            output_dir = viz_step_output / f'gnn_visualization_{timestamp}'
         
         self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+        # Ensure parent numeric step directory exists (e.g., 8_visualization_output)
+        try:
+            self.output_dir.mkdir(parents=True, exist_ok=True)
+        except Exception:
+            # Best-effort create; if this fails, raise so callers are made aware
+            raise
         
         self.project_root = Path(project_root).resolve() if project_root else None
         

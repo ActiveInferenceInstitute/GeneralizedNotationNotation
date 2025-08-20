@@ -145,6 +145,10 @@ class GNNParsingSystem:
                 for match in matches:
                     var_name = match.group(1)
                     var_value = match.group(2)
+                    # Normalize dimensions: strip type=... parts and filter out empty
+                    if isinstance(var_value, str) and 'type=' in var_value:
+                        dims = [d for d in var_value.split(',') if not d.strip().startswith('type=')]
+                        var_value = ','.join(dims)
                     parsed.add_variable(var_name, "", var_value)
             
             # Extract connections

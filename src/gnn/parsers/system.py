@@ -131,6 +131,8 @@ class GNNParsingSystem:
         """
         self.strict_validation = strict_validation
         self.parsers: Dict[GNNFormat, GNNParser] = {}
+        # Maintain legacy alias for older callers/tests that expect `_parsers`
+        self._parsers = self.parsers
         self.serializers: Dict[GNNFormat, Any] = {}
         self.converter = FormatConverter()
         self.validator = GNNValidator()
@@ -179,7 +181,14 @@ class GNNParsingSystem:
         parser = self.parsers.get(format_hint)
         if parser is None:
             raise ValueError(f"Unsupported format: {format_hint}")
-        return parser.parse_file(str(file_path))
+        # Ensure parsers accept either str or Path
+        if hasattr(parser, 'parse_file'):
+            return parser.parse_file(file_path)
+        else:
+            # Fallback: call parse_string on file content
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            return parser.parse_string(content)
     
     def parse_string(self, content: str, 
                      format: GNNFormat) -> ParseResult:

@@ -58,7 +58,8 @@ class GNNParser:
     SECTION_PATTERN = re.compile(r'^## (.+)$')
     VARIABLE_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$')
     CONNECTION_PATTERN = re.compile(r'^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$')
-    PARAMETER_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*=\s*)(.+?)(?:\s*#\s*(.*))?$')
+    # Accept both '=' and ':' as assignment separators to support legacy files
+    PARAMETER_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*[:=]\s*)(.+?)(?:\s*#\s*(.*))?$')
     ONTOLOGY_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*=\s*)([a-zA-Z_][a-zA-Z0-9_]*)(?:\s*#\s*(.*))?$')
     COMMENT_PATTERN = re.compile(r'^\s*#\s*(.*)$')
     
@@ -78,6 +79,21 @@ class GNNParser:
         else:
             self.parsing_system = None
             logger.info("Basic GNN parser initialized")
+        # Expose basic schema metadata expected by tests and legacy callers
+        try:
+            self.schema = self.parsing_system.validator.schema if self.parsing_system else {}
+        except Exception:
+            self.schema = {}
+
+    def validate_file(self, file_path: Union[str, Path], validation_level: Optional[ValidationLevel] = None) -> 'ValidationResult':
+        """Compatibility shim: allow GNNParser to act as a validator for tests that
+        historically constructed a `GNNParser()` and called `validate_file()` on it.
+
+        Delegates to the richer `GNNValidator` implementation while keeping the
+        class API backward-compatible.
+        """
+        validator = GNNValidator()
+        return validator.validate_file(file_path, validation_level=validation_level)
 
     def parse_file(self, file_path: Union[str, Path], 
                    format_hint: Optional[str] = None) -> ParsedGNN:
@@ -413,12 +429,18 @@ class GNNParser:
                 
                 # Parse dimensions
                 dimensions = []
-                for dim in dims_str.split(','):
-                    dim = dim.strip()
-                    if dim.isdigit():
-                        dimensions.append(int(dim))
-                    else:
-                        dimensions.append(dim)
+                if dims_str:
+                    for dim in dims_str.split(','):
+                        dim = dim.strip()
+                        # Ignore type=... fragments and non-numeric 'type' annotations
+                        if dim.startswith('type='):
+                            continue
+                        # Only count numeric dimensions for tests that expect numeric length
+                        if dim.isdigit():
+                            dimensions.append(int(dim))
+                        else:
+                            # Keep string dimensions but do not count them as numeric dims
+                            dimensions.append(dim)
                 
                 variable = GNNVariable(
                     name=name,
@@ -826,6 +848,23 @@ class GNNValidator:
                 "type": "object",
                 "additionalProperties": True
             }
+
+    def _level_rank(self, level: Union[ValidationLevel, str]) -> int:
+        """Map validation level to an integer rank for safe comparisons."""
+        mapping = {
+            ValidationLevel.BASIC: 10,
+            ValidationLevel.STANDARD: 20,
+            ValidationLevel.STRICT: 30,
+            ValidationLevel.RESEARCH: 40,
+            ValidationLevel.ROUND_TRIP: 50,
+        }
+        if isinstance(level, ValidationLevel):
+            return mapping.get(level, 0)
+        try:
+            # allow passing a string
+            return mapping.get(ValidationLevel(level), 0)
+        except Exception:
+            return 0
     
     def validate_file(self, file_path: Union[str, Path], 
                      validation_level: Optional[ValidationLevel] = None) -> ValidationResult:
@@ -875,25 +914,27 @@ class GNNValidator:
                 parsed_gnn = None
             
             # Step 3: Validation based on level
-            if validation_level >= ValidationLevel.BASIC:
+            # Use safe rank comparisons to avoid Enum comparison issues
+            if self._level_rank(validation_level) >= self._level_rank(ValidationLevel.BASIC):
                 self._validate_basic_structure(content, result, file_format)
-            
-            if validation_level >= ValidationLevel.STANDARD and parsed_gnn:
+
+            if self._level_rank(validation_level) >= self._level_rank(ValidationLevel.STANDARD) and parsed_gnn:
                 self._validate_semantics(parsed_gnn, result)
-            
-            if validation_level >= ValidationLevel.STRICT:
+
+            if self._level_rank(validation_level) >= self._level_rank(ValidationLevel.STRICT):
                 self._validate_strict_requirements(parsed_gnn, content, result)
-            
-            if validation_level >= ValidationLevel.RESEARCH:
+
+            if self._level_rank(validation_level) >= self._level_rank(ValidationLevel.RESEARCH):
                 self._validate_research_standards(parsed_gnn, content, result)
             
             # Step 4: Round-trip testing if enabled and requested
-            if (validation_level == ValidationLevel.ROUND_TRIP and 
+            if ( (isinstance(validation_level, ValidationLevel) and validation_level == ValidationLevel.ROUND_TRIP) and 
                 self.enable_round_trip_testing and parsed_gnn):
                 self._perform_round_trip_validation(parsed_gnn, result)
             
             # Step 5: Cross-format consistency if available
-            if (validation_level >= ValidationLevel.STRICT and 
+            # Use safe comparison via rank to avoid Enum ordering errors
+            if (self._level_rank(validation_level) >= self._level_rank(ValidationLevel.STRICT) and 
                 self.cross_validator and parsed_gnn):
                 self._validate_cross_format_consistency(content, result)
             
@@ -1183,6 +1224,26 @@ class GNNValidator:
         missing_sections = set(required_sections) - set(found_sections)
         for section in missing_sections:
             result.errors.append(f"Required section missing: {section}")
+
+        # Also check for required sections that exist but have no substantive content
+        try:
+            for section in required_sections:
+                # Find header and extract following content until next header
+                pattern = rf"^##\s+{re.escape(section)}\s*$"
+                matches = list(re.finditer(pattern, content, re.MULTILINE))
+                if matches:
+                    m = matches[0]
+                    start = m.end()
+                    # Find next header
+                    next_header = re.search(r"^##\s+.+$", content[start:], re.MULTILINE)
+                    end = start + next_header.start() if next_header else len(content)
+                    section_text = content[start:end].strip()
+                    # Consider comments-only or short markers as missing
+                    if not section_text or section_text.strip().startswith('#') or len(section_text) < 3:
+                        result.errors.append(f"Required section missing: {section}")
+        except Exception:
+            # Non-fatal parsing of content; do not stop validation
+            pass
         
         # Additional validation can be added here
         if self.use_formal_parser and self.formal_parser:

@@ -149,12 +149,21 @@ class LLMOperations:
         if self.use_legacy:
             return self._get_legacy_response(prompt, model, max_tokens)
         
-        # Use async method in sync wrapper
+        # Use async method correctly: if running inside an event loop, create a task and await
         try:
-            return asyncio.run(self._get_async_response(prompt, model, max_tokens))
-        except Exception as e:
-            logger.error(f"Async LLM call failed: {e}")
-            return f"Error: LLM call failed - {str(e)}"
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if loop and loop.is_running():
+            # Running inside existing event loop; return coroutine for caller to await
+            return self._get_async_response(prompt, model, max_tokens)
+        else:
+            try:
+                return asyncio.run(self._get_async_response(prompt, model, max_tokens))
+            except Exception as e:
+                logger.error(f"Async LLM call failed: {e}")
+                return f"Error: LLM call failed - {str(e)}"
     
     async def _get_async_response(self, prompt: str, model: str = DEFAULT_MODEL, max_tokens: int = DEFAULT_MAX_TOKENS) -> str:
         """Async version of get_llm_response."""
@@ -212,7 +221,17 @@ class LLMOperations:
         if not self.use_legacy and self.processor:
             # Use the new analysis system
             try:
-                return asyncio.run(self._async_summarize_gnn(gnn_content, max_length))
+                loop = None
+                try:
+                    loop = asyncio.get_running_loop()
+                except RuntimeError:
+                    loop = None
+
+                if loop and loop.is_running():
+                    # Return coroutine for the caller to await
+                    return self._async_summarize_gnn(gnn_content, max_length)
+                else:
+                    return asyncio.run(self._async_summarize_gnn(gnn_content, max_length))
             except Exception as e:
                 logger.error(f"Async summarization failed: {e}")
                 # Fall back to legacy method
@@ -248,7 +267,16 @@ class LLMOperations:
         if not self.use_legacy and self.processor:
             # Use the new analysis system
             try:
-                return asyncio.run(self._async_analyze_structure(gnn_content))
+                loop = None
+                try:
+                    loop = asyncio.get_running_loop()
+                except RuntimeError:
+                    loop = None
+
+                if loop and loop.is_running():
+                    return self._async_analyze_structure(gnn_content)
+                else:
+                    return asyncio.run(self._async_analyze_structure(gnn_content))
             except Exception as e:
                 logger.error(f"Async structure analysis failed: {e}")
                 # Fall back to legacy method
