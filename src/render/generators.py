@@ -3,7 +3,8 @@
 Render generators module for GNN code generation.
 """
 
-from typing import Dict, Any
+from typing import Dict, Any, Optional, Union
+from pathlib import Path
 import re
 
 def _sanitize_identifier(base: str, *, lowercase: bool = True, allow_empty_fallback: str = "model") -> str:
@@ -35,7 +36,7 @@ def _to_pascal_case(base: str, *, allow_empty_fallback: str = "Model") -> str:
         name = f"{allow_empty_fallback}{name}"
     return name
 
-def generate_pymdp_code(model_data: Dict) -> str:
+def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
     """Generate PyMDP simulation code using the modular PyMDP renderer."""
     try:
         # Get model name for file paths and sanitize for identifiers
@@ -136,6 +137,16 @@ if __name__ == "__main__":
     print(f"Simulation completed with total reward: {{reward}}")
 '''
         
+        # If caller provided an output path, write the code there as a convenience
+        if output_path:
+            try:
+                p = Path(output_path)
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(code)
+            except Exception:
+                # Fall back to returning code if writing fails
+                pass
+
         return code
         
     except Exception as e:

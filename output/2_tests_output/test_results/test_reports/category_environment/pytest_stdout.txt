@@ -4,39 +4,39 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info 
-src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation 
-src/tests/test_environment_overall.py::test_environment_module_completeness 
-src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation 
-src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration 
-src/tests/test_environment_overall.py::test_environment_module_performance 
-src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation 
 src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration 
 src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check 
 src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports 
-src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation 
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation 
+src/tests/test_environment_overall.py::test_environment_module_completeness 
+src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration 
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation 
 src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup 
-[gw10] PASSED src/tests/test_environment_overall.py::test_environment_module_completeness 
-[gw2] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation 
-[gw1] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation 
-[gw3] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info 
-[gw4] PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup 
-[gw0] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports 
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info 
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation 
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation 
+src/tests/test_environment_overall.py::test_environment_module_performance 
+[gw2] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation 
 [gw7] PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check 
+[gw10] PASSED src/tests/test_environment_overall.py::test_environment_module_completeness 
+[gw1] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation 
+[gw3] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info 
+[gw0] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports 
+[gw4] PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup 
 [gw8] SKIPPED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration 
-[gw11] PASSED src/tests/test_environment_overall.py::test_environment_module_performance 
-[gw9] PASSED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration 
 [gw5] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation 
+[gw9] PASSED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration 
+[gw11] PASSED src/tests/test_environment_overall.py::test_environment_module_performance 
 [gw6] PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation 
 
 ==================================== PASSES ====================================
-_____________________ test_environment_module_performance ______________________
-[gw11] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+________ TestEnvironmentModuleComprehensive.test_environment_validation ________
+[gw5] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
 INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.13.5
 INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
-INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 13.44GB free
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 13.41GB free
 INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
 INFO     setup.setup:setup.py:359 📦 Found 276 installed packages using UV
 INFO     setup.setup:setup.py:369 📋 Key installed packages:
@@ -51,7 +51,7 @@ _______ TestEnvironmentIntegration.test_environment_pipeline_integration _______
 INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
 INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.13.5
 INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
-INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 13.44GB free
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 13.41GB free
 INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
 INFO     setup.setup:setup.py:359 📦 Found 276 installed packages using UV
 INFO     setup.setup:setup.py:369 📋 Key installed packages:
@@ -60,13 +60,13 @@ INFO     setup.setup:setup.py:372   - numpy: 2.2.6
 INFO     setup.setup:setup.py:372   - matplotlib: 3.10.5
 INFO     setup.setup:setup.py:372   - scipy: 1.16.1
 INFO     setup.setup:setup.py:378 📄 Full package list saved to: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
-________ TestEnvironmentModuleComprehensive.test_environment_validation ________
-[gw5] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+_____________________ test_environment_module_performance ______________________
+[gw11] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
 INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.13.5
 INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
-INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 13.44GB free
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 13.41GB free
 INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
 INFO     setup.setup:setup.py:359 📦 Found 276 installed packages using UV
 INFO     setup.setup:setup.py:369 📋 Key installed packages:
@@ -436,14 +436,14 @@ src/render/discopy/__init__.py                                         8      8 
 src/render/discopy/discopy_renderer.py                                88     88     0%   18-503
 src/render/discopy/translator.py                                     703    703     0%   7-1518
 src/render/discopy/visualize_jax_output.py                           130    130     0%   1-172
-src/render/generators.py                                              72     72     0%   6-624
+src/render/generators.py                                              80     80     0%   6-635
 src/render/jax/__init__.py                                             2      2     0%   9-15
 src/render/jax/jax_renderer.py                                       557    557     0%   15-1392
 src/render/jax/templates/__init__.py                                   4      4     0%   8-12
 src/render/jax/templates/combined_template.py                          0      0   100%
 src/render/jax/templates/general_template.py                           0      0   100%
 src/render/jax/templates/pomdp_template.py                             0      0   100%
-src/render/legacy.py                                                  28     28     0%   8-139
+src/render/legacy.py                                                  28     28     0%   8-140
 src/render/mcp.py                                                     53     53     0%   7-122
 src/render/processor.py                                               65     65     0%   6-170
 src/render/pymdp/__init__.py                                           2      2     0%   5-7
@@ -531,31 +531,31 @@ src/website/generator.py                                             159    159 
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142    142     0%   2-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38357  37444     2%
+TOTAL                                                              38365  37452     2%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_environment/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_environment/coverage.json
 ============================= slowest 10 durations =============================
 1.78s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
-0.59s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
-0.56s call     src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
-0.56s call     src/tests/test_environment_overall.py::test_environment_module_performance
+0.62s call     src/tests/test_environment_overall.py::test_environment_module_performance
+0.60s call     src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
+0.54s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
 0.01s call     src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration
-0.01s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports
 0.01s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info
+0.01s teardown src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
+0.00s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports
+0.00s setup    src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup
 0.00s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check
-0.00s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup
-0.00s call     src/tests/test_environment_overall.py::test_environment_module_completeness
 =========================== short test summary info ============================
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation
+PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check
 PASSED src/tests/test_environment_overall.py::test_environment_module_completeness
 PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation
-PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation
 PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info
-PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup
 PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports
-PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check
-PASSED src/tests/test_environment_overall.py::test_environment_module_performance
-PASSED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
+PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup
 PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
+PASSED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
+PASSED src/tests/test_environment_overall.py::test_environment_module_performance
 PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
 SKIPPED [1] src/tests/test_environment_overall.py:158: Environment MCP not available
-======================== 11 passed, 1 skipped in 16.84s ========================
+======================== 11 passed, 1 skipped in 17.20s ========================

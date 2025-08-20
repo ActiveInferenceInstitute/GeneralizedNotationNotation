@@ -4,88 +4,92 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
+src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution 
 src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
-src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
+src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
 src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
+src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
 src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports 
 src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration 
-src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
 src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
-src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval 
-[gw1] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
 [gw2] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
-[gw3] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
+[gw0] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
 [gw6] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution 
-[gw11] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
+[gw3] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
 src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage 
-[gw9] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
-[gw10] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval 
-src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters 
-src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
-[gw3] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage 
-[gw1] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
-[gw5] PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
 src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling 
+[gw0] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage 
+src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters 
 [gw2] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling 
-[gw12] PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports 
-[gw0] SKIPPED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
-[gw11] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
+[gw9] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval 
+[gw3] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage 
 [gw13] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports 
-src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
-[gw8] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration 
+[gw8] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
 src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration 
-src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
-src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
-[gw5] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
-[gw9] SKIPPED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
-src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration 
-src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
-[gw0] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization 
-src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
-[gw12] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
-[gw8] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization 
-[gw13] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
-[gw2] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
-[gw1] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration 
-[gw4] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
-[gw3] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation 
-[gw4] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation 
-[gw7] PASSED src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration 
-[gw6] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports 
+[gw10] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration 
+[gw4] PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
+src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
+[gw11] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
+[gw12] PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports 
+[gw1] SKIPPED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
 src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization 
+src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
+src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
+[gw13] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration 
+src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
+[gw0] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
+[gw8] SKIPPED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
+src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
+[gw4] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
+[gw10] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization 
+[gw2] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration 
+[gw5] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
+[gw11] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
+src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
+[gw12] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
+[gw1] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration 
+[gw3] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation 
+[gw5] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation 
+[gw6] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters 
+[gw7] PASSED src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration 
+src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports 
+[gw9] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
+[gw6] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
 [gw7] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports 
-[gw10] PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
-[gw6] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
 
 ==================================== PASSES ====================================
-_______________ TestMCPToolExecution.test_export_tool_execution ________________
-[gw11] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
------------------------------- Captured log call -------------------------------
-INFO     export.mcp:mcp.py:161 Export module MCP tools registered.
-___________ TestMCPModuleComprehensive.test_mcp_server_instantiation ___________
+____________ TestMCPModuleComprehensive.test_mcp_instance_retrieval ____________
 [gw9] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     mcp:mcp.py:478 Enhanced MCP server initialized
-____________ TestMCPModuleComprehensive.test_mcp_instance_retrieval ____________
+___________ TestMCPModuleComprehensive.test_mcp_server_instantiation ___________
+[gw8] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+------------------------------ Captured log call -------------------------------
+INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+____________ TestMCPModuleComprehensive.test_mcp_tools_registration ____________
 [gw10] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     mcp:mcp.py:478 Enhanced MCP server initialized
 ________________ TestMCPCoreComprehensive.test_mcp_core_imports ________________
-[gw5] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+[gw4] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+_______________ TestMCPToolExecution.test_export_tool_execution ________________
+[gw11] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+------------------------------ Captured log call -------------------------------
+INFO     export.mcp:mcp.py:161 Export module MCP tools registered.
 _______________ TestMCPTransportLayers.test_stdio_server_imports _______________
 [gw12] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
@@ -95,17 +99,18 @@ ____________ TestMCPToolExecution.test_utils_system_info_execution _____________
 ------------------------------ Captured log call -------------------------------
 INFO     utils.mcp:mcp.py:289 Registering utils MCP tools
 INFO     utils.mcp:mcp.py:352 Successfully registered utils MCP tools
-____________ TestMCPModuleComprehensive.test_mcp_tools_registration ____________
-[gw8] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+_______ TestMCPErrorHandling.test_tool_execution_with_invalid_parameters _______
+[gw6] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
-INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
+INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
 ___________ TestMCPResourceManagement.test_mcp_resource_registration ___________
 [gw7] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
 INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
-_______ TestMCPErrorHandling.test_tool_execution_with_invalid_parameters _______
-[gw6] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+____________ TestMCPToolExecution.test_gnn_validate_tool_execution _____________
+[gw9] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
 INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
@@ -113,11 +118,6 @@ ______________ TestMCPModuleComprehensive.test_mcp_module_imports ______________
 [gw7] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     mcp:mcp.py:478 Enhanced MCP server initialized
-____________ TestMCPToolExecution.test_gnn_validate_tool_execution _____________
-[gw10] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
------------------------------- Captured log call -------------------------------
-INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
-INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
 --------------------------------- JSON report ----------------------------------
 report auto-save skipped
 ================================ tests coverage ================================
@@ -340,14 +340,14 @@ src/render/discopy/__init__.py                                         8      8 
 src/render/discopy/discopy_renderer.py                                88     88     0%   18-503
 src/render/discopy/translator.py                                     703    703     0%   7-1518
 src/render/discopy/visualize_jax_output.py                           130    130     0%   1-172
-src/render/generators.py                                              72     72     0%   6-624
+src/render/generators.py                                              80     80     0%   6-635
 src/render/jax/__init__.py                                             2      2     0%   9-15
 src/render/jax/jax_renderer.py                                       557    557     0%   15-1392
 src/render/jax/templates/__init__.py                                   4      4     0%   8-12
 src/render/jax/templates/combined_template.py                          0      0   100%
 src/render/jax/templates/general_template.py                           0      0   100%
 src/render/jax/templates/pomdp_template.py                             0      0   100%
-src/render/legacy.py                                                  28     28     0%   8-139
+src/render/legacy.py                                                  28     28     0%   8-140
 src/render/mcp.py                                                     53     53     0%   7-122
 src/render/processor.py                                               65     65     0%   6-170
 src/render/pymdp/__init__.py                                           2      2     0%   5-7
@@ -435,51 +435,51 @@ src/website/generator.py                                             159    159 
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142    142     0%   2-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38357  35760     7%
+TOTAL                                                              38365  35768     7%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_mcp/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_mcp/coverage.json
 ============================= slowest 10 durations =============================
+0.06s call     src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration
 0.05s call     src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution
-0.05s call     src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration
 0.05s call     src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters
 0.02s call     src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations
-0.01s call     src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration
-0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration
-0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup
-0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling
-0.01s call     src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports
+0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports
 0.01s call     src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available
+0.01s call     src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation
+0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools
+0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports
+0.01s call     src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports
 =========================== short test summary info ============================
-PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer
 PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format
-PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer
 PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution
-PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution
-PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling
 PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval
 PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage
-PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format
-PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports
-PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling
-PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports
-PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution
+PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation
 PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration
+PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports
+PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution
+PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports
 PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes
-PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration
 PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization
 PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations
+PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration
 PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation
-PASSED src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration
 PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters
-PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports
+PASSED src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration
 PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution
-SKIPPED [1] src/tests/test_mcp_integration.py:28: MCP module not available
+PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports
 SKIPPED [1] src/tests/test_mcp_transport.py:60: MCP WebSocket server not available
-SKIPPED [1] src/tests/test_mcp_overall.py:160: MCP module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:47: MCP TCP server not available
+SKIPPED [1] src/tests/test_mcp_integration.py:28: MCP module not available
 SKIPPED [1] src/tests/test_mcp_transport.py:77: MCP transport module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:121: MCP transport module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:90: MCP transport module not available
 SKIPPED [1] src/tests/test_mcp_transport.py:103: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_overall.py:160: MCP module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:90: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:47: MCP TCP server not available
 SKIPPED [1] src/tests/test_mcp_transport.py:134: MCP transport module not available
-======================== 23 passed, 9 skipped in 15.46s ========================
+SKIPPED [1] src/tests/test_mcp_transport.py:121: MCP transport module not available
+======================== 23 passed, 9 skipped in 15.69s ========================

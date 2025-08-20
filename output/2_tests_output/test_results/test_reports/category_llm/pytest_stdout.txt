@@ -4,40 +4,40 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers 
-src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports 
-src/tests/test_llm_overall.py::test_llm_module_completeness 
-src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation 
-src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis 
-src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration 
 src/tests/test_llm_overall.py::test_llm_module_performance 
 src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration 
 src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis 
-src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation 
-src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info 
 src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation 
-[gw10] PASSED src/tests/test_llm_overall.py::test_llm_module_completeness 
+src/tests/test_llm_overall.py::test_llm_module_completeness 
+src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis 
+src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration 
+src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation 
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation 
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info 
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports 
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers 
 [gw1] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation 
+[gw6] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis 
 [gw2] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation 
-[gw7] PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration 
-[gw12] PASSED src/tests/test_llm_overall.py::test_llm_module_performance 
-[gw5] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis 
-[gw6] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation 
-[gw0] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports 
 [gw8] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis 
+[gw0] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports 
+[gw7] PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration 
+[gw10] PASSED src/tests/test_llm_overall.py::test_llm_module_completeness 
 [gw9] PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration 
-[gw3] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers 
-[gw4] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info 
+[gw5] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation 
+[gw11] PASSED src/tests/test_llm_overall.py::test_llm_module_performance 
+[gw4] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers 
+[gw3] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info 
 
 ==================================== PASSES ====================================
-_________________________ test_llm_module_completeness _________________________
-[gw10] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+_________ TestLLMModuleComprehensive.test_llm_processor_instantiation __________
+[gw1] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
 INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
 INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
-_________ TestLLMModuleComprehensive.test_llm_processor_instantiation __________
-[gw1] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+___________________ TestLLMFunctionality.test_model_analysis ___________________
+[gw6] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
 INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
@@ -48,26 +48,8 @@ __________ TestLLMModuleComprehensive.test_llm_analyzer_instantiation __________
 INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
 INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
 INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
-_______________ TestLLMIntegration.test_llm_pipeline_integration _______________
-[gw7] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
------------------------------- Captured log call -------------------------------
-INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
-INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
-INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
-_________________________ test_llm_module_performance __________________________
-[gw12] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
------------------------------- Captured log call -------------------------------
-INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
-INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
-INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
-___________________ TestLLMFunctionality.test_model_analysis ___________________
-[gw5] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
------------------------------- Captured log call -------------------------------
-INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
-INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
-INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
-_______________ TestLLMFunctionality.test_description_generation _______________
-[gw6] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+__________________ TestLLMFunctionality.test_content_analysis __________________
+[gw8] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
 INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
@@ -78,8 +60,14 @@ ______________ TestLLMModuleComprehensive.test_llm_module_imports ______________
 INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
 INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
 INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
-__________________ TestLLMFunctionality.test_content_analysis __________________
-[gw8] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+_______________ TestLLMIntegration.test_llm_pipeline_integration _______________
+[gw7] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+------------------------------ Captured log call -------------------------------
+INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
+INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
+_________________________ test_llm_module_completeness _________________________
+[gw10] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
 INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
@@ -90,14 +78,26 @@ _________________ TestLLMIntegration.test_llm_mcp_integration __________________
 INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
 INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
 INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
+_______________ TestLLMFunctionality.test_description_generation _______________
+[gw5] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+------------------------------ Captured log call -------------------------------
+INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
+INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
+_________________________ test_llm_module_performance __________________________
+[gw11] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+------------------------------ Captured log call -------------------------------
+INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
+INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
 ________________ TestLLMModuleComprehensive.test_llm_providers _________________
-[gw3] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+[gw4] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
 INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
 INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
 _______________ TestLLMModuleComprehensive.test_llm_module_info ________________
-[gw4] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
+[gw3] darwin -- Python 3.13.5 /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python3
 ------------------------------ Captured log call -------------------------------
 INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['ollama']
 INFO     llm.llm_processor:llm_processor.py:86 No cloud API keys detected. Defaulting to local Ollama for LLM operations.
@@ -324,14 +324,14 @@ src/render/discopy/__init__.py                                         8      8 
 src/render/discopy/discopy_renderer.py                                88     88     0%   18-503
 src/render/discopy/translator.py                                     703    703     0%   7-1518
 src/render/discopy/visualize_jax_output.py                           130    130     0%   1-172
-src/render/generators.py                                              72     72     0%   6-624
+src/render/generators.py                                              80     80     0%   6-635
 src/render/jax/__init__.py                                             2      2     0%   9-15
 src/render/jax/jax_renderer.py                                       557    557     0%   15-1392
 src/render/jax/templates/__init__.py                                   4      4     0%   8-12
 src/render/jax/templates/combined_template.py                          0      0   100%
 src/render/jax/templates/general_template.py                           0      0   100%
 src/render/jax/templates/pomdp_template.py                             0      0   100%
-src/render/legacy.py                                                  28     28     0%   8-139
+src/render/legacy.py                                                  28     28     0%   8-140
 src/render/mcp.py                                                     53     53     0%   7-122
 src/render/processor.py                                               65     65     0%   6-170
 src/render/pymdp/__init__.py                                           2      2     0%   5-7
@@ -419,31 +419,31 @@ src/website/generator.py                                             159    159 
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142    142     0%   2-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38357  37296     3%
+TOTAL                                                              38365  37304     3%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_llm/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_llm/coverage.json
 ============================= slowest 10 durations =============================
-0.16s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers
-0.16s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info
-0.01s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports
+0.17s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers
+0.17s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info
+0.02s call     src/tests/test_llm_overall.py::test_llm_module_performance
 0.01s call     src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration
-0.01s call     src/tests/test_llm_overall.py::test_llm_module_performance
+0.01s call     src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration
 0.01s call     src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation
-0.01s call     src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis
+0.01s call     src/tests/test_llm_overall.py::test_llm_module_completeness
+0.01s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports
 0.01s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation
-0.01s call     src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis
-0.01s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation
+0.01s call     src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis
 =========================== short test summary info ============================
-PASSED src/tests/test_llm_overall.py::test_llm_module_completeness
 PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation
-PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation
-PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration
-PASSED src/tests/test_llm_overall.py::test_llm_module_performance
 PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis
-PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation
-PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports
+PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation
 PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis
+PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports
+PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration
+PASSED src/tests/test_llm_overall.py::test_llm_module_completeness
 PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration
+PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation
+PASSED src/tests/test_llm_overall.py::test_llm_module_performance
 PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers
 PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info
-============================= 12 passed in 15.11s ==============================
+============================= 12 passed in 15.71s ==============================

@@ -17,6 +17,7 @@ def render_gnn_to_pymdp(*args, **kwargs):
         PyMDP code generation result
     """
     from .generators import generate_pymdp_code
+    # Legacy callers may pass (gnn_spec, output_path). New signature supports optional output_path.
     return generate_pymdp_code(*args, **kwargs)
 
 def render_gnn_to_activeinference_jl(*args, **kwargs):

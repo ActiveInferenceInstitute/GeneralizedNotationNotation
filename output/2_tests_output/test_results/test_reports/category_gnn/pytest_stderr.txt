@@ -1,1 +1,1 @@
-2025-08-20 06:58:28,859 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2025-08-20 07:12:30,430 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']

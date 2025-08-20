@@ -4,29 +4,29 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_website_overall.py::test_website_module_performance 
-src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types 
-src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration 
-src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration 
-src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation 
-src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering 
 src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation 
-src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation 
+src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration 
 src/tests/test_website_overall.py::test_website_module_completeness 
 src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports 
-src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info 
+src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation 
+src/tests/test_website_overall.py::test_website_module_performance 
+src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration 
 src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation 
-[gw7] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation 
-[gw0] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports 
-[gw10] PASSED src/tests/test_website_overall.py::test_website_module_completeness 
-[gw12] PASSED src/tests/test_website_overall.py::test_website_module_performance 
-[gw6] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering 
-[gw3] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info 
-[gw9] PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration 
+src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types 
+src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info 
+src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering 
+src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation 
 [gw2] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation 
-[gw5] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation 
+[gw9] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation 
+[gw5] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering 
+[gw11] PASSED src/tests/test_website_overall.py::test_website_module_completeness 
+[gw10] PASSED src/tests/test_website_overall.py::test_website_module_performance 
+[gw6] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types 
+[gw0] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports 
+[gw3] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info 
 [gw1] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation 
-[gw4] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types 
+[gw7] PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration 
+[gw4] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation 
 [gw8] PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration 
 
 ==================================== PASSES ====================================
@@ -252,14 +252,14 @@ src/render/discopy/__init__.py                                         8      8 
 src/render/discopy/discopy_renderer.py                                88     88     0%   18-503
 src/render/discopy/translator.py                                     703    703     0%   7-1518
 src/render/discopy/visualize_jax_output.py                           130    130     0%   1-172
-src/render/generators.py                                              72     72     0%   6-624
+src/render/generators.py                                              80     80     0%   6-635
 src/render/jax/__init__.py                                             2      2     0%   9-15
 src/render/jax/jax_renderer.py                                       557    557     0%   15-1392
 src/render/jax/templates/__init__.py                                   4      4     0%   8-12
 src/render/jax/templates/combined_template.py                          0      0   100%
 src/render/jax/templates/general_template.py                           0      0   100%
 src/render/jax/templates/pomdp_template.py                             0      0   100%
-src/render/legacy.py                                                  28     28     0%   8-139
+src/render/legacy.py                                                  28     28     0%   8-140
 src/render/mcp.py                                                     53     53     0%   7-122
 src/render/processor.py                                               65     65     0%   6-170
 src/render/pymdp/__init__.py                                           2      2     0%   5-7
@@ -347,31 +347,31 @@ src/website/generator.py                                             159    101 
 src/website/mcp.py                                                    53     41    23%   19-23, 26-33, 36-54, 70-80, 90-117
 src/website/renderer.py                                              142    105    26%   127-162, 166-177, 181-209, 213-249, 253-285, 289-324, 328-362, 411-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38357  37516     2%
+TOTAL                                                              38365  37524     2%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_website/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_website/coverage.json
 ============================= slowest 10 durations =============================
-0.01s setup    src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation
-0.00s call     src/tests/test_website_overall.py::test_website_module_performance
-0.00s call     src/tests/test_website_overall.py::test_website_module_completeness
-0.00s call     src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering
-0.00s setup    src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration
-0.00s call     src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration
-0.00s call     src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation
-0.00s call     src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation
-0.00s call     src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types
 0.00s call     src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration
+0.00s call     src/tests/test_website_overall.py::test_website_module_completeness
+0.00s call     src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration
+0.00s call     src/tests/test_website_overall.py::test_website_module_performance
+0.00s call     src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation
+0.00s call     src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports
+0.00s call     src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation
+0.00s setup    src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation
+0.00s call     src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info
+0.00s setup    src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration
 =========================== short test summary info ============================
+PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation
 PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation
-PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports
+PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering
 PASSED src/tests/test_website_overall.py::test_website_module_completeness
 PASSED src/tests/test_website_overall.py::test_website_module_performance
-PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering
-PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info
-PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration
-PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation
-PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation
-PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation
 PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types
+PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports
+PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info
+PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation
+PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration
+PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation
 PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration
-============================= 12 passed in 15.08s ==============================
+============================= 12 passed in 15.48s ==============================

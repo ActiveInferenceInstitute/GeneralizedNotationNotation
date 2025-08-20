@@ -157,7 +157,7 @@ INFO     root:test_core_modules.py:87 GNN file discovery validated: 1 files foun
 _______________ TestGNNModuleComprehensive.test_gnn_file_parsing _______________
 ------------------------------ Captured log call -------------------------------
 WARNING  root:test_core_modules.py:109 Failed to parse simple.gnn: Parsed data should contain ModelName
-assert 'ModelName' in {'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp44cd2alw/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-08-20T07:02:47.314342'}
+assert 'ModelName' in {'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp66hjvphr/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-08-20T07:16:52.344766'}
 ___________ TestGNNModuleComprehensive.test_gnn_directory_processing ___________
 ------------------------------ Captured log call -------------------------------
 WARNING  root:test_core_modules.py:166 GNN directory processing failed: Results should contain errors
@@ -167,7 +167,7 @@ ___________ TestRenderModuleComprehensive.test_render_module_imports ___________
 INFO     root:test_core_modules.py:186 Render module imports validated
 ______________ TestRenderModuleComprehensive.test_pymdp_rendering ______________
 ------------------------------ Captured log call -------------------------------
-WARNING  root:test_core_modules.py:204 PyMDP rendering failed: generate_pymdp_code() takes 1 positional argument but 2 were given
+INFO     root:test_core_modules.py:202 PyMDP rendering validated
 _____________ TestRenderModuleComprehensive.test_rxinfer_rendering _____________
 ------------------------------ Captured log call -------------------------------
 WARNING  root:test_core_modules.py:219 RxInfer rendering failed: generate_rxinfer_code() takes 1 positional argument but 2 were given
@@ -561,14 +561,14 @@ src/render/discopy/__init__.py                                         8      1 
 src/render/discopy/discopy_renderer.py                                88     76    14%   37-38, 51-73, 77-105, 119-452, 456, 475-503
 src/render/discopy/translator.py                                     703    703     0%   7-1518
 src/render/discopy/visualize_jax_output.py                           130    130     0%   1-172
-src/render/generators.py                                              72     60    17%   16-23, 29-36, 40-142, 146-218, 222-281, 285-380, 384-447, 451-518, 522-556, 624
+src/render/generators.py                                              80     52    35%   21, 23, 30-37, 146-148, 152-153, 157-229, 233-292, 296-391, 395-458, 462-529, 533-567, 635
 src/render/jax/__init__.py                                             2      0   100%
 src/render/jax/jax_renderer.py                                       557    536     4%   40-49, 67-76, 93-102, 108-199, 203-549, 554-621, 627-676, 680, 685-713, 718-734, 739-945, 965-1191, 1211-1392
 src/render/jax/templates/__init__.py                                   4      4     0%   8-12
 src/render/jax/templates/combined_template.py                          0      0   100%
 src/render/jax/templates/general_template.py                           0      0   100%
 src/render/jax/templates/pomdp_template.py                             0      0   100%
-src/render/legacy.py                                                  28     10    64%   33-34, 52, 69, 82, 95, 108, 121, 134, 139
+src/render/legacy.py                                                  28     10    64%   34-35, 53, 70, 83, 96, 109, 122, 135, 140
 src/render/mcp.py                                                     53     53     0%   7-122
 src/render/processor.py                                               65     56    14%   28-102, 122-149
 src/render/pymdp/__init__.py                                           2      0   100%
@@ -656,17 +656,17 @@ src/website/generator.py                                             159     94 
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142     90    37%   19, 23, 42-48, 52, 137, 148-149, 154-156, 160-162, 166-177, 181-209, 213-249, 253-285, 289-324, 328-362, 392, 410, 421-422, 428-429, 437-439
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38357  31367    18%
+TOTAL                                                              38365  31359    18%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_comprehensive/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_comprehensive/coverage.json
 ============================= slowest 10 durations =============================
-0.09s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+0.10s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
 0.02s call     src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats
 0.02s call     src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
 0.01s call     src/tests/test_coverage_overall.py::TestCoverageOverall::test_gnn_core_imports
 0.00s call     src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports
-0.00s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
 0.00s call     src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports
+0.00s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
 0.00s setup    src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_pipeline_coordination_flow
 0.00s call     src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports
 0.00s setup    src/tests/test_comprehensive_api.py::TestExportModule::test_export_gnn_model_invalid_format
@@ -804,4 +804,4 @@ PASSED src/tests/test_main_orchestrator.py::test_main_orchestrator_performance_c
 SKIPPED [1] src/tests/test_core_modules.py:138: Validation test skipped due to: Valid GNN file should have basic structure: simple.gnn
 assert False
 SKIPPED [1] src/tests/test_core_modules.py:651: SAPF conversion not available: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
-================== 130 passed, 2 skipped, 3 warnings in 5.48s ==================
+================== 130 passed, 2 skipped, 3 warnings in 5.36s ==================

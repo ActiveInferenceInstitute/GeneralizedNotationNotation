@@ -63,7 +63,7 @@ src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_batch_r
 src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[1] PASSED
 src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[3] PASSED
 src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[10] PASSED
-src/tests/test_pipeline_performance.py::TestResourceScaling::test_resource_estimation PASSED
+src/tests/test_pipeline_performance.py::TestResourceScaling::test_resource_estimation FAILED
 src/tests/test_pipeline_recovery.py::TestRecursionErrorRecovery::test_numpy_import_recovery FAILED
 src/tests/test_pipeline_recovery.py::TestRecursionErrorRecovery::test_render_step_recovery PASSED
 src/tests/test_pipeline_recovery.py::TestAsyncAwaitRecovery::test_llm_analysis_recovery FAILED
@@ -75,11 +75,11 @@ src/tests/test_pipeline_recovery.py::TestHardwareInitializationRecovery::test_ex
 src/tests/test_pipeline_recovery.py::TestResourceManagementRecovery::test_memory_limit_recovery PASSED
 src/tests/test_pipeline_recovery.py::TestResourceManagementRecovery::test_disk_space_recovery PASSED
 src/tests/test_pipeline_recovery.py::TestErrorReportingRecovery::test_error_collection PASSED
-src/tests/test_pipeline_recovery.py::TestErrorReportingRecovery::test_error_recovery_logging 2025-08-20 07:00:21,014 [MAIN:pipeline] test_step - ERROR - ❌ Test error occurred [step_number=None]
+src/tests/test_pipeline_recovery.py::TestErrorReportingRecovery::test_error_recovery_logging 2025-08-20 07:14:25,886 [MAIN:pipeline] test_step - ERROR - ❌ Test error occurred [step_number=None]
 PASSED
-src/tests/test_pipeline_scripts.py::TestPipelineScriptDiscovery::test_all_pipeline_scripts_exist 2025-08-20 07:00:21,016 [MAIN:pipeline] root - INFO - Found 24 pipeline scripts
+src/tests/test_pipeline_scripts.py::TestPipelineScriptDiscovery::test_all_pipeline_scripts_exist 2025-08-20 07:14:25,887 [MAIN:pipeline] root - INFO - Found 24 pipeline scripts
 PASSED
-src/tests/test_pipeline_scripts.py::TestPipelineScriptDiscovery::test_pipeline_script_structure[1_setup.py] 2025-08-20 07:00:21,017 [MAIN:pipeline] root - INFO - Script 1_setup.py structure validated
+src/tests/test_pipeline_scripts.py::TestPipelineScriptDiscovery::test_pipeline_script_structure[1_setup.py] 2025-08-20 07:14:25,888 [MAIN:pipeline] root - INFO - Script 1_setup.py structure validated
 PASSED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptDiscovery::test_pipeline_script_structure[2_gnn.py] SKIPPED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptDiscovery::test_pipeline_script_structure[3_tests.py] SKIPPED
@@ -94,7 +94,7 @@ src/tests/test_pipeline_scripts.py::TestPipelineScriptDiscovery::test_pipeline_s
 src/tests/test_pipeline_scripts.py::TestPipelineScriptDiscovery::test_pipeline_script_structure[12_audio.py] SKIPPED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptDiscovery::test_pipeline_script_structure[13_website.py] SKIPPED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptDiscovery::test_pipeline_script_structure[14_report.py] SKIPPED
-src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_import_capability[1_setup.py] 2025-08-20 07:00:21,029 [MAIN:pipeline] root - INFO - Script 1_setup.py imports successfully
+src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_import_capability[1_setup.py] 2025-08-20 07:14:25,901 [MAIN:pipeline] root - INFO - Script 1_setup.py imports successfully
 PASSED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_import_capability[2_gnn.py] SKIPPED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_import_capability[3_tests.py] SKIPPED
@@ -109,7 +109,7 @@ src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_impor
 src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_import_capability[12_audio.py] SKIPPED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_import_capability[13_website.py] SKIPPED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_import_capability[14_report.py] SKIPPED
-src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_execution_with_mocks[1_setup.py] 2025-08-20 07:00:21,040 [MAIN:pipeline] root - INFO - Script 1_setup.py executed successfully with exit code 0
+src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_execution_with_mocks[1_setup.py] 2025-08-20 07:14:25,912 [MAIN:pipeline] root - INFO - Script 1_setup.py executed successfully with exit code 0
 PASSED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_execution_with_mocks[2_gnn.py] SKIPPED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_execution_with_mocks[3_tests.py] SKIPPED
@@ -124,61 +124,66 @@ src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_exe
 src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_execution_with_mocks[12_audio.py] SKIPPED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_execution_with_mocks[13_website.py] SKIPPED
 src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_execution_with_mocks[14_report.py] SKIPPED
-src/tests/test_pipeline_scripts.py::TestStep2GNNComprehensive::test_step2_gnn_file_discovery 2025-08-20 07:00:21,055 [MAIN:pipeline] root - WARNING - Failed to parse simple.gnn: Parsed data should contain ModelName
-assert 'ModelName' in {'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpotiz8n38/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-08-20T07:00:21.055343'}
+src/tests/test_pipeline_scripts.py::TestStep2GNNComprehensive::test_step2_gnn_file_discovery 2025-08-20 07:14:25,928 [MAIN:pipeline] root - WARNING - Failed to parse simple.gnn: Parsed data should contain ModelName
+assert 'ModelName' in {'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpb8_lcxwc/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-08-20T07:14:25.928658'}
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep2GNNComprehensive::test_step2_gnn_validation 2025-08-20 07:00:21,056 [MAIN:pipeline] root - WARNING - Validation failed for simple.gnn: Validation should return boolean
+src/tests/test_pipeline_scripts.py::TestStep2GNNComprehensive::test_step2_gnn_validation 2025-08-20 07:14:25,930 [MAIN:pipeline] root - WARNING - Validation failed for simple.gnn: Validation should return boolean
 assert False
- +  where False = isinstance({'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpfb4qo_kj/simple.gnn', 'file_name': 'simple.gnn', 'valid': True, 'errors': [], 'warnings': [], 'validation_timestamp': '2025-08-20T07:00:21.056627'}, bool)
+ +  where False = isinstance({'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0uyke2m5/simple.gnn', 'file_name': 'simple.gnn', 'valid': True, 'errors': [], 'warnings': [], 'validation_timestamp': '2025-08-20T07:14:25.930086'}, bool)
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep1SetupComprehensive::test_step1_environment_validation 2025-08-20 07:00:21,058 [MAIN:pipeline] root - WARNING - Setup module functions not available: cannot import name 'check_dependencies' from 'src.setup' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/setup/__init__.py)
+src/tests/test_pipeline_scripts.py::TestStep1SetupComprehensive::test_step1_environment_validation 2025-08-20 07:14:25,932 [MAIN:pipeline] root - WARNING - Setup module functions not available: cannot import name 'check_dependencies' from 'src.setup' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/setup/__init__.py)
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep4TypeCheckerComprehensive::test_step4_type_checking 2025-08-20 07:00:21,059 [MAIN:pipeline] root - WARNING - Type checker module functions not available: cannot import name 'check_gnn_file' from 'src.type_checker' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/type_checker/__init__.py)
+src/tests/test_pipeline_scripts.py::TestStep4TypeCheckerComprehensive::test_step4_type_checking 2025-08-20 07:14:25,933 [MAIN:pipeline] root - WARNING - Type checker module functions not available: cannot import name 'check_gnn_file' from 'src.type_checker' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/type_checker/__init__.py)
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep5ExportComprehensive::test_step5_export_formats 2025-08-20 07:00:21,061 [MAIN:pipeline] root - WARNING - Export module functions not available: cannot import name 'export_gnn_data' from 'src.export' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py)
+src/tests/test_pipeline_scripts.py::TestStep5ExportComprehensive::test_step5_export_formats 2025-08-20 07:14:25,935 [MAIN:pipeline] root - WARNING - Export module functions not available: cannot import name 'export_gnn_data' from 'src.export' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py)
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep6VisualizationComprehensive::test_step6_visualization_generation 2025-08-20 07:00:21,062 [MAIN:pipeline] root - WARNING - Visualization module functions not available: cannot import name 'create_graph_visualization' from 'src.visualization' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/visualization/__init__.py)
+src/tests/test_pipeline_scripts.py::TestStep6VisualizationComprehensive::test_step6_visualization_generation 2025-08-20 07:14:25,936 [MAIN:pipeline] root - WARNING - Visualization module functions not available: cannot import name 'create_graph_visualization' from 'src.visualization' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/visualization/__init__.py)
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep7MCPComprehensive::test_step7_mcp_tools 2025-08-20 07:00:21,067 [MAIN:pipeline] mcp - INFO - Enhanced MCP server initialized
-2025-08-20 07:00:21,067 [MAIN:pipeline] root - WARNING - MCP tools test failed: Tools should be a list
+src/tests/test_pipeline_scripts.py::TestStep7MCPComprehensive::test_step7_mcp_tools 2025-08-20 07:14:25,940 [MAIN:pipeline] mcp - INFO - Enhanced MCP server initialized
+2025-08-20 07:14:25,941 [MAIN:pipeline] root - WARNING - MCP tools test failed: Tools should be a list
 assert False
  +  where False = isinstance(True, list)
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep8OntologyComprehensive::test_step8_ontology_processing 2025-08-20 07:00:21,069 [MAIN:pipeline] root - WARNING - Ontology processing test failed: process_ontology() missing 2 required positional arguments: 'target_dir' and 'output_dir'
+src/tests/test_pipeline_scripts.py::TestStep8OntologyComprehensive::test_step8_ontology_processing 2025-08-20 07:14:25,943 [MAIN:pipeline] root - WARNING - Ontology processing test failed: process_ontology() missing 2 required positional arguments: 'target_dir' and 'output_dir'
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep9RenderComprehensive::test_step9_code_rendering 2025-08-20 07:00:21,087 [MAIN:pipeline] root - WARNING - PyMDP rendering test failed: generate_pymdp_code() takes 1 positional argument but 2 were given
-2025-08-20 07:00:21,087 [MAIN:pipeline] root - WARNING - RxInfer rendering test failed: generate_rxinfer_code() takes 1 positional argument but 2 were given
+src/tests/test_pipeline_scripts.py::TestStep9RenderComprehensive::test_step9_code_rendering 2025-08-20 07:14:25,961 [MAIN:pipeline] root - INFO - PyMDP rendering test completed
+2025-08-20 07:14:25,961 [MAIN:pipeline] root - WARNING - RxInfer rendering test failed: generate_rxinfer_code() takes 1 positional argument but 2 were given
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep10ExecuteComprehensive::test_step10_execution_safety 2025-08-20 07:00:21,090 [MAIN:pipeline] root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
-2025-08-20 07:00:21,091 [MAIN:pipeline] src.execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'src.execute.discopy_translator_module'
+src/tests/test_pipeline_scripts.py::TestStep10ExecuteComprehensive::test_step10_execution_safety 2025-08-20 07:14:25,964 [MAIN:pipeline] root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
+2025-08-20 07:14:25,965 [MAIN:pipeline] src.execute.discopy.discopy_executor - WARNING - DisCoPy translator module not available: No module named 'src.execute.discopy_translator_module'
 FAILED
-src/tests/test_pipeline_scripts.py::TestStep11LLMComprehensive::test_step11_llm_operations 2025-08-20 07:00:21,105 [MAIN:pipeline] src.llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
-2025-08-20 07:00:21,105 [MAIN:pipeline] src.llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
-2025-08-20 07:00:21,105 [MAIN:pipeline] src.llm.llm_operations - INFO - Created new LLM processor
+src/tests/test_pipeline_scripts.py::TestStep11LLMComprehensive::test_step11_llm_operations 2025-08-20 07:14:25,977 [MAIN:pipeline] src.llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2025-08-20 07:14:25,977 [MAIN:pipeline] src.llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2025-08-20 07:14:25,977 [MAIN:pipeline] src.llm.llm_operations - INFO - Created new LLM processor
 FAILED
-src/tests/test_pipeline_scripts.py::TestStep12AudioComprehensive::test_step12_audio_generation 2025-08-20 07:00:21,116 [MAIN:pipeline] root - WARNING - Website generation test failed: generate_website() missing 1 required positional argument: 'output_dir'
-2025-08-20 07:00:21,116 [MAIN:pipeline] root - INFO - HTML report creation test completed
+src/tests/test_pipeline_scripts.py::TestStep12AudioComprehensive::test_step12_audio_generation 2025-08-20 07:14:25,987 [MAIN:pipeline] root - WARNING - Website generation test failed: generate_website() missing 1 required positional argument: 'output_dir'
+2025-08-20 07:14:25,987 [MAIN:pipeline] root - INFO - HTML report creation test completed
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep13WebsiteComprehensive::test_step13_website_generation 2025-08-20 07:00:21,119 [MAIN:pipeline] root - WARNING - GNN to SAPF conversion test failed: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
-2025-08-20 07:00:21,119 [MAIN:pipeline] audio.sapf.processor - ERROR - Failed to generate SAPF audio: 'SAPFGNNProcessor' object has no attribute 'generate_audio_from_sapf'
-2025-08-20 07:00:21,119 [MAIN:pipeline] root - INFO - SAPF audio generation test completed
+src/tests/test_pipeline_scripts.py::TestStep13WebsiteComprehensive::test_step13_website_generation 2025-08-20 07:14:25,991 [MAIN:pipeline] root - WARNING - GNN to SAPF conversion test failed: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
+2025-08-20 07:14:25,991 [MAIN:pipeline] audio.sapf.processor - ERROR - Failed to generate SAPF audio: 'SAPFGNNProcessor' object has no attribute 'generate_audio_from_sapf'
+2025-08-20 07:14:25,991 [MAIN:pipeline] root - INFO - SAPF audio generation test completed
 PASSED
-src/tests/test_pipeline_scripts.py::TestStep14ReportComprehensive::test_step14_report_generation 2025-08-20 07:00:21,122 [MAIN:pipeline] report - INFO - 🚀 Generating comprehensive report
-2025-08-20 07:00:21,122 [MAIN:pipeline] report - ERROR - ❌ Failed to generate comprehensive report: 'dict' object has no attribute 'glob'
-2025-08-20 07:00:21,122 [MAIN:pipeline] root - INFO - Step 14 report generation validated
+src/tests/test_pipeline_scripts.py::TestStep14ReportComprehensive::test_step14_report_generation 2025-08-20 07:14:25,993 [MAIN:pipeline] report - INFO - 🚀 Generating comprehensive report
+2025-08-20 07:14:25,994 [MAIN:pipeline] report - ERROR - ❌ Failed to generate comprehensive report: 'dict' object has no attribute 'glob'
+2025-08-20 07:14:25,994 [MAIN:pipeline] root - INFO - Step 14 report generation validated
 PASSED
-src/tests/test_pipeline_scripts.py::TestPipelineScriptIntegration::test_pipeline_script_coordination 2025-08-20 07:00:21,124 [MAIN:pipeline] root - INFO - Script 1_setup.py coordination test passed
+src/tests/test_pipeline_scripts.py::TestPipelineScriptIntegration::test_pipeline_script_coordination 2025-08-20 07:14:25,995 [MAIN:pipeline] root - INFO - Script 1_setup.py coordination test passed
 PASSED
-src/tests/test_pipeline_scripts.py::TestPipelineScriptIntegration::test_pipeline_argument_consistency 2025-08-20 07:00:21,124 [MAIN:pipeline] root - INFO - Testing pipeline argument consistency
-2025-08-20 07:00:21,124 [MAIN:pipeline] root - INFO - Script 1_setup.py uses standardized pipeline template - arguments handled automatically
-2025-08-20 07:00:21,125 [MAIN:pipeline] root - INFO - Script 1_setup.py argument consistency validated
+src/tests/test_pipeline_scripts.py::TestPipelineScriptIntegration::test_pipeline_argument_consistency 2025-08-20 07:14:25,996 [MAIN:pipeline] root - INFO - Testing pipeline argument consistency
+2025-08-20 07:14:25,996 [MAIN:pipeline] root - INFO - Script 1_setup.py uses standardized pipeline template - arguments handled automatically
+2025-08-20 07:14:25,996 [MAIN:pipeline] root - INFO - Script 1_setup.py argument consistency validated
 PASSED
-src/tests/test_pipeline_scripts.py::test_pipeline_script_completeness 2025-08-20 07:00:21,125 [MAIN:pipeline] root - INFO - Pipeline script completeness test passed
+src/tests/test_pipeline_scripts.py::test_pipeline_script_completeness 2025-08-20 07:14:25,997 [MAIN:pipeline] root - INFO - Pipeline script completeness test passed
 PASSED
-src/tests/test_pipeline_scripts.py::test_pipeline_script_performance 2025-08-20 07:00:21,126 [MAIN:pipeline] root - INFO - Pipeline script performance test completed
+src/tests/test_pipeline_scripts.py::test_pipeline_script_performance 2025-08-20 07:14:25,997 [MAIN:pipeline] root - INFO - Pipeline script performance test completed
 PASSED
 
 =================================== FAILURES ===================================
+_________________ TestResourceScaling.test_resource_estimation _________________
+src/tests/test_pipeline_performance.py:391: in test_resource_estimation
+    assert memory_attr >= estimate["memory_mb"] * 0.5  # Allow 50% tolerance
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   assert 0.03125 >= (351 * 0.5)
 ____________ TestRecursionErrorRecovery.test_numpy_import_recovery _____________
 src/tests/test_pipeline_recovery.py:77: in test_numpy_import_recovery
     with pytest.raises(RecursionError):
@@ -226,7 +231,7 @@ INFO     gnn.cross_format_validator:cross_format_validator.py:82 Enhanced parsin
 INFO     gnn.cross_format_validator:cross_format_validator.py:82 Enhanced parsing system initialized for cross-format validation
 INFO     gnn.core_processor.wrapper:core_processor.py:106 Starting GNN processing pipeline
 INFO     gnn.core_processor.wrapper:core_processor.py:141 Phase 1: File discovery and basic analysis
-INFO     gnn.discovery:discovery.py:63 Starting file discovery in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxpqhmwtd
+INFO     gnn.discovery:discovery.py:63 Starting file discovery in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpr4j_t4ti
 INFO     gnn.discovery:discovery.py:83 Discovery completed: 0/0 potential GNN files in 0.001s
 INFO     gnn.core_processor.wrapper:core_processor.py:148 Discovered 0 GNN files
 ______ TestPipelineFunctionality.test_multi_format_export_generates_files ______
@@ -327,7 +332,7 @@ INFO     gnn.cross_format_validator:cross_format_validator.py:82 Enhanced parsin
 INFO     gnn.cross_format_validator:cross_format_validator.py:82 Enhanced parsing system initialized for cross-format validation
 INFO     gnn.core_processor.wrapper:core_processor.py:106 Starting GNN processing pipeline
 INFO     gnn.core_processor.wrapper:core_processor.py:141 Phase 1: File discovery and basic analysis
-INFO     gnn.discovery:discovery.py:63 Starting file discovery in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpae2c447j/input
+INFO     gnn.discovery:discovery.py:63 Starting file discovery in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpfl80d4qo/input
 INFO     gnn.discovery:discovery.py:83 Discovery completed: 0/1 potential GNN files in 0.000s
 INFO     gnn.core_processor.wrapper:core_processor.py:148 Discovered 0 GNN files
 ___________ TestHardwareInitializationRecovery.test_jax_cpu_fallback ___________
@@ -349,12 +354,12 @@ INFO     root:test_pipeline_scripts.py:220 Script 1_setup.py executed successful
 ___________ TestStep2GNNComprehensive.test_step2_gnn_file_discovery ____________
 ------------------------------ Captured log call -------------------------------
 WARNING  root:test_pipeline_scripts.py:244 Failed to parse simple.gnn: Parsed data should contain ModelName
-assert 'ModelName' in {'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpotiz8n38/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-08-20T07:00:21.055343'}
+assert 'ModelName' in {'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpb8_lcxwc/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-08-20T07:14:25.928658'}
 _____________ TestStep2GNNComprehensive.test_step2_gnn_validation ______________
 ------------------------------ Captured log call -------------------------------
 WARNING  root:test_pipeline_scripts.py:261 Validation failed for simple.gnn: Validation should return boolean
 assert False
- +  where False = isinstance({'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpfb4qo_kj/simple.gnn', 'file_name': 'simple.gnn', 'valid': True, 'errors': [], 'warnings': [], 'validation_timestamp': '2025-08-20T07:00:21.056627'}, bool)
+ +  where False = isinstance({'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0uyke2m5/simple.gnn', 'file_name': 'simple.gnn', 'valid': True, 'errors': [], 'warnings': [], 'validation_timestamp': '2025-08-20T07:14:25.930086'}, bool)
 ________ TestStep1SetupComprehensive.test_step1_environment_validation _________
 ------------------------------ Captured log call -------------------------------
 WARNING  root:test_pipeline_scripts.py:291 Setup module functions not available: cannot import name 'check_dependencies' from 'src.setup' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/setup/__init__.py)
@@ -378,7 +383,7 @@ ________ TestStep8OntologyComprehensive.test_step8_ontology_processing _________
 WARNING  root:test_pipeline_scripts.py:429 Ontology processing test failed: process_ontology() missing 2 required positional arguments: 'target_dir' and 'output_dir'
 ____________ TestStep9RenderComprehensive.test_step9_code_rendering ____________
 ------------------------------ Captured log call -------------------------------
-WARNING  root:test_pipeline_scripts.py:445 PyMDP rendering test failed: generate_pymdp_code() takes 1 positional argument but 2 were given
+INFO     root:test_pipeline_scripts.py:443 PyMDP rendering test completed
 WARNING  root:test_pipeline_scripts.py:452 RxInfer rendering test failed: generate_rxinfer_code() takes 1 positional argument but 2 were given
 __________ TestStep12AudioComprehensive.test_step12_audio_generation ___________
 ------------------------------ Captured log call -------------------------------
@@ -630,14 +635,14 @@ src/render/discopy/__init__.py                                         8      1 
 src/render/discopy/discopy_renderer.py                                88     76    14%   37-38, 51-73, 77-105, 119-452, 456, 475-503
 src/render/discopy/translator.py                                     703    703     0%   7-1518
 src/render/discopy/visualize_jax_output.py                           130    130     0%   1-172
-src/render/generators.py                                              72     60    17%   16-23, 29-36, 40-142, 146-218, 222-281, 285-380, 384-447, 451-518, 522-556, 624
+src/render/generators.py                                              80     52    35%   21, 23, 30-37, 146-148, 152-153, 157-229, 233-292, 296-391, 395-458, 462-529, 533-567, 635
 src/render/jax/__init__.py                                             2      0   100%
 src/render/jax/jax_renderer.py                                       557    536     4%   40-49, 67-76, 93-102, 108-199, 203-549, 554-621, 627-676, 680, 685-713, 718-734, 739-945, 965-1191, 1211-1392
 src/render/jax/templates/__init__.py                                   4      4     0%   8-12
 src/render/jax/templates/combined_template.py                          0      0   100%
 src/render/jax/templates/general_template.py                           0      0   100%
 src/render/jax/templates/pomdp_template.py                             0      0   100%
-src/render/legacy.py                                                  28     12    57%   33-34, 65-69, 82, 95, 108, 121, 134, 139
+src/render/legacy.py                                                  28     12    57%   34-35, 66-70, 83, 96, 109, 122, 135, 140
 src/render/mcp.py                                                     53     53     0%   7-122
 src/render/processor.py                                               65     58    11%   28-102, 122-149, 153, 170
 src/render/pymdp/__init__.py                                           2      0   100%
@@ -725,18 +730,18 @@ src/website/generator.py                                             159    140 
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142    102    28%   127-162, 176-177, 181-209, 213-249, 253-285, 289-324, 328-362, 366, 392, 409-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38357  30603    20%
+TOTAL                                                              38365  30595    20%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_pipeline/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_pipeline/coverage.json
 ============================= slowest 10 durations =============================
-4.52s call     src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_api_request_timing
-1.62s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_resource_estimation
-0.73s call     src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_visualization_generates_images
-0.57s call     src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_preflight_metrics
-0.54s call     src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_results_json_are_valid
+4.05s call     src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_api_request_timing
+1.61s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_resource_estimation
+0.75s call     src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_visualization_generates_images
+0.58s call     src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_preflight_metrics
+0.55s call     src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_results_json_are_valid
 0.27s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[10]
+0.27s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[3]
 0.26s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[1]
-0.26s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[3]
 0.23s call     src/tests/test_pipeline_recovery.py::TestHardwareInitializationRecovery::test_jax_cpu_fallback
 0.12s call     src/tests/test_pipeline_performance.py::TestMemoryUsagePatterns::test_peak_memory_tracking
 =========================== short test summary info ============================
@@ -784,7 +789,6 @@ PASSED src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_
 PASSED src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[1]
 PASSED src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[3]
 PASSED src/tests/test_pipeline_performance.py::TestResourceScaling::test_pipeline_scaling[10]
-PASSED src/tests/test_pipeline_performance.py::TestResourceScaling::test_resource_estimation
 PASSED src/tests/test_pipeline_recovery.py::TestRecursionErrorRecovery::test_render_step_recovery
 PASSED src/tests/test_pipeline_recovery.py::TestAsyncAwaitRecovery::test_sync_wrapper_recovery
 PASSED src/tests/test_pipeline_recovery.py::TestLightweightProcessingRecovery::test_gnn_lightweight_fallback
@@ -872,6 +876,7 @@ SKIPPED [1] src/tests/test_pipeline_scripts.py:193: Script 11_llm.py not found
 SKIPPED [1] src/tests/test_pipeline_scripts.py:193: Script 12_audio.py not found
 SKIPPED [1] src/tests/test_pipeline_scripts.py:193: Script 13_website.py not found
 SKIPPED [1] src/tests/test_pipeline_scripts.py:193: Script 14_report.py not found
+FAILED src/tests/test_pipeline_performance.py::TestResourceScaling::test_resource_estimation - assert 0.03125 >= (351 * 0.5)
 FAILED src/tests/test_pipeline_recovery.py::TestRecursionErrorRecovery::test_numpy_import_recovery - Failed: DID NOT RAISE <class 'RecursionError'>
 FAILED src/tests/test_pipeline_recovery.py::TestAsyncAwaitRecovery::test_llm_analysis_recovery - Failed: async def functions are not natively supported.
 You need to install a suitable plugin for your async framework, for example:
@@ -882,4 +887,4 @@ You need to install a suitable plugin for your async framework, for example:
   - pytest-twisted
 FAILED src/tests/test_pipeline_scripts.py::TestStep10ExecuteComprehensive::test_step10_execution_safety - ImportError: cannot import name 'execute_script_safely' from 'src.execute' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/execute/__init__.py)
 FAILED src/tests/test_pipeline_scripts.py::TestStep11LLMComprehensive::test_step11_llm_operations - ImportError: cannot import name 'analyze_gnn_model' from 'src.llm' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/llm/__init__.py)
-============= 4 failed, 75 passed, 57 skipped, 1 warning in 14.82s =============
+============= 5 failed, 74 passed, 57 skipped, 1 warning in 14.73s =============

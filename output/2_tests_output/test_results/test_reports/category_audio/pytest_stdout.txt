@@ -4,68 +4,68 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics 
 src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available 
-src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion 
-src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation 
 src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_invalid 
-src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation 
-src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance 
-src/tests/test_audio_overall.py::test_audio_module_performance 
 src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation 
+src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics 
 src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance 
+src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration 
+src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation 
+src/tests/test_audio_overall.py::test_audio_module_performance 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection 
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports 
 [gw5] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection 
-[gw0] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation 
-[gw4] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics 
 [gw1] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation 
-[gw2] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available 
-[gw10] PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration 
-[gw7] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion 
+[gw0] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available 
+[gw4] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics 
 [gw8] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations 
-[gw1] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling 
-[gw0] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling 
-[gw4] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations 
+[gw7] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation 
+[gw3] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation 
 [gw6] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports 
-src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation 
-[gw2] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation 
+[gw11] PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration 
 src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion 
 src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation 
-[gw13] SKIPPED src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_invalid 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation 
+[gw0] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation 
 src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options 
 [gw8] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options 
-[gw7] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation 
 src/tests/test_audio_overall.py::test_audio_module_completeness 
-[gw10] PASSED src/tests/test_audio_overall.py::test_audio_module_completeness 
+[gw11] PASSED src/tests/test_audio_overall.py::test_audio_module_completeness 
+[gw1] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion 
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling 
+[gw3] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling 
+[gw4] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations 
+[gw13] SKIPPED src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_invalid 
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation 
+[gw6] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation 
+[gw7] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation 
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function 
+[gw2] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance 
 src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function 
 src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_convert_gnn_to_sapf_function 
 [gw13] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_convert_gnn_to_sapf_function 
-src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function 
-src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation 
-[gw6] PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation 
-src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function 
-[gw3] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance 
 src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage 
-[gw0] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function 
-[gw1] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function 
-[gw4] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function 
 [gw5] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation 
-[gw3] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage 
-[gw9] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion 
+[gw1] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function 
+[gw0] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function 
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function 
+[gw5] SKIPPED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function 
+[gw2] PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage 
 [gw12] PASSED src/tests/test_audio_overall.py::test_audio_module_performance 
+[gw10] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation 
+[gw9] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion 
+src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration 
 src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_valid 
+[gw12] SKIPPED src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_valid 
 src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation 
 [gw9] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation 
-[gw11] PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation 
-[gw12] SKIPPED src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_valid 
-src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration 
-[gw11] PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration 
+[gw10] PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration 
 
 ==================================== PASSES ====================================
 --------------------------------- JSON report ----------------------------------
@@ -290,14 +290,14 @@ src/render/discopy/__init__.py                                         8      8 
 src/render/discopy/discopy_renderer.py                                88     88     0%   18-503
 src/render/discopy/translator.py                                     703    703     0%   7-1518
 src/render/discopy/visualize_jax_output.py                           130    130     0%   1-172
-src/render/generators.py                                              72     72     0%   6-624
+src/render/generators.py                                              80     80     0%   6-635
 src/render/jax/__init__.py                                             2      2     0%   9-15
 src/render/jax/jax_renderer.py                                       557    557     0%   15-1392
 src/render/jax/templates/__init__.py                                   4      4     0%   8-12
 src/render/jax/templates/combined_template.py                          0      0   100%
 src/render/jax/templates/general_template.py                           0      0   100%
 src/render/jax/templates/pomdp_template.py                             0      0   100%
-src/render/legacy.py                                                  28     28     0%   8-139
+src/render/legacy.py                                                  28     28     0%   8-140
 src/render/mcp.py                                                     53     53     0%   7-122
 src/render/processor.py                                               65     65     0%   6-170
 src/render/pymdp/__init__.py                                           2      2     0%   5-7
@@ -385,50 +385,50 @@ src/website/generator.py                                             159    159 
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142    142     0%   2-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38357  37509     2%
+TOTAL                                                              38365  37517     2%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_audio/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_audio/coverage.json
 ============================= slowest 10 durations =============================
-0.21s call     src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation
-0.20s call     src/tests/test_audio_overall.py::test_audio_module_performance
-0.20s call     src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion
-0.05s call     src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration
+0.22s call     src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation
+0.22s call     src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion
+0.22s call     src/tests/test_audio_overall.py::test_audio_module_performance
 0.04s call     src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage
+0.04s call     src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration
 0.01s call     src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation
 0.01s call     src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance
-0.01s call     src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function
 0.01s call     src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function
 0.01s call     src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function
+0.01s call     src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_valid
 =========================== short test summary info ============================
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection
-PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation
-PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available
-PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration
-PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics
 PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports
+PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options
+PASSED src/tests/test_audio_overall.py::test_audio_module_completeness
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations
-PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports
-PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation
-PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options
-PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation
-PASSED src/tests/test_audio_overall.py::test_audio_module_completeness
 PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation
 PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage
-PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion
 PASSED src/tests/test_audio_overall.py::test_audio_module_performance
-PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation
 PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation
+PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion
+PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation
 PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration
 SKIPPED [1] src/tests/test_audio_sapf.py:51: SAPF validation not available
 SKIPPED [1] src/tests/test_audio_sapf.py:90: SAPF conversion function not available
-SKIPPED [1] src/tests/test_audio_sapf.py:119: SAPF oscillator function not available
 SKIPPED [1] src/tests/test_audio_sapf.py:134: SAPF envelope function not available
 SKIPPED [1] src/tests/test_audio_sapf.py:153: SAPF mixing function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:119: SAPF oscillator function not available
 SKIPPED [1] src/tests/test_audio_sapf.py:30: SAPF validation not available
-======================== 25 passed, 6 skipped in 15.32s ========================
+======================== 25 passed, 6 skipped in 15.44s ========================

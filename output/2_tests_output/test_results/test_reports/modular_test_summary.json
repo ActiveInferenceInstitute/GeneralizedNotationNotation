@@ -3,75 +3,75 @@
   "successful_categories": 22,
   "failed_categories": 0,
   "total_tests_run": 463,
-  "total_tests_passed": 374,
-  "total_tests_failed": 4,
+  "total_tests_passed": 373,
+  "total_tests_failed": 5,
   "total_tests_skipped": 85,
-  "success_rate": 80.77753779697623,
-  "total_duration": 281.0104739665985,
+  "success_rate": 80.56155507559394,
+  "total_duration": 284.8168959617615,
   "category_times": {},
   "resource_usage": {
     "gnn": {
-      "memory_mb": 34.75,
+      "memory_mb": 35.234375,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "render": {
-      "memory_mb": 18.296875,
+      "memory_mb": 20.03125,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "mcp": {
-      "memory_mb": 18.359375,
+      "memory_mb": 20.640625,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "audio": {
-      "memory_mb": 18.890625,
+      "memory_mb": 21.328125,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "visualization": {
-      "memory_mb": 19.15625,
+      "memory_mb": 21.515625,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "pipeline": {
-      "memory_mb": 19.84375,
+      "memory_mb": 21.984375,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "export": {
-      "memory_mb": 21.203125,
+      "memory_mb": 22.5625,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "llm": {
-      "memory_mb": 21.453125,
+      "memory_mb": 22.203125,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "ontology": {
-      "memory_mb": 20.1875,
+      "memory_mb": 20.875,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "website": {
-      "memory_mb": 20.390625,
+      "memory_mb": 21.140625,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "report": {
-      "memory_mb": 20.203125,
+      "memory_mb": 19.890625,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "environment": {
-      "memory_mb": 20.453125,
+      "memory_mb": 20.3125,
       "cpu_percent": 0.0,
       "threads": 1
     },
     "comprehensive": {
-      "memory_mb": 21.25,
+      "memory_mb": 21.234375,
       "cpu_percent": 0.0,
       "threads": 1
     }

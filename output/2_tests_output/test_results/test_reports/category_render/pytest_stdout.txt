@@ -4,34 +4,34 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering 
-src/tests/test_render_integration.py::TestRenderIntegration::test_render_error_handling 
-src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl 
-src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined 
-src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax 
-src/tests/test_render_integration.py::TestRenderIntegration::test_pymdp_rendering 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp 
-src/tests/test_render_integration.py::TestRenderIntegration::test_render_performance 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy 
 src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp 
+src/tests/test_render_integration.py::TestRenderIntegration::test_render_performance 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp 
+src/tests/test_render_integration.py::TestRenderIntegration::test_render_error_handling 
 [gw4] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_error_handling 
-[gw3] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering 
-[gw0] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_pymdp_rendering 
-[gw11] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined 
-[gw8] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml 
-[gw2] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering 
-[gw12] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp 
-[gw5] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage 
-[gw10] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl 
-[gw6] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_performance 
-[gw13] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax 
-[gw9] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy 
+src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl 
+[gw5] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_performance 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax 
 [gw7] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp 
-[gw1] SKIPPED src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available 
+src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering 
+[gw2] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering 
+src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available 
+src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage 
+[gw6] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage 
+[gw9] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy 
+src/tests/test_render_integration.py::TestRenderIntegration::test_pymdp_rendering 
+[gw1] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_pymdp_rendering 
+[gw13] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax 
+[gw3] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering 
+[gw8] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml 
+[gw12] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp 
+[gw10] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl 
+[gw11] PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined 
+[gw0] SKIPPED src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available 
 
 ==================================== PASSES ====================================
 --------------------------------- JSON report ----------------------------------
@@ -256,14 +256,14 @@ src/render/discopy/__init__.py                                         8      1 
 src/render/discopy/discopy_renderer.py                                88     76    14%   37-38, 51-73, 77-105, 119-452, 456, 475-503
 src/render/discopy/translator.py                                     703    703     0%   7-1518
 src/render/discopy/visualize_jax_output.py                           130    130     0%   1-172
-src/render/generators.py                                              72     60    17%   16-23, 29-36, 40-142, 146-218, 222-281, 285-380, 384-447, 451-518, 522-556, 624
+src/render/generators.py                                              80     67    16%   17-24, 30-37, 41-153, 157-229, 233-292, 296-391, 395-458, 462-529, 533-567, 635
 src/render/jax/__init__.py                                             2      0   100%
 src/render/jax/jax_renderer.py                                       557    536     4%   40-49, 67-76, 93-102, 108-199, 203-549, 554-621, 627-676, 680, 685-713, 718-734, 739-945, 965-1191, 1211-1392
 src/render/jax/templates/__init__.py                                   4      4     0%   8-12
 src/render/jax/templates/combined_template.py                          0      0   100%
 src/render/jax/templates/general_template.py                           0      0   100%
 src/render/jax/templates/pomdp_template.py                             0      0   100%
-src/render/legacy.py                                                  28     17    39%   19-20, 33-34, 47-48, 52, 65-69, 82, 95, 108, 121, 134, 139
+src/render/legacy.py                                                  28     17    39%   19-21, 34-35, 48-49, 53, 66-70, 83, 96, 109, 122, 135, 140
 src/render/mcp.py                                                     53     53     0%   7-122
 src/render/processor.py                                               65     58    11%   28-102, 122-149, 153, 170
 src/render/pymdp/__init__.py                                           2      0   100%
@@ -351,33 +351,33 @@ src/website/generator.py                                             159    159 
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142    142     0%   2-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38357  36329     5%
+TOTAL                                                              38365  36336     5%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_render/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_render/coverage.json
 ============================= slowest 10 durations =============================
 0.07s call     src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available
-0.01s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy
+0.01s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax
+0.01s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml
+0.00s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy
 0.00s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl
-0.00s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax
 0.00s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp
 0.00s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp
-0.00s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml
 0.00s setup    src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined
+0.00s setup    src/tests/test_render_integration.py::TestRenderIntegration::test_pymdp_rendering
 0.00s setup    src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available
-0.00s setup    src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering
 =========================== short test summary info ============================
 PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_error_handling
-PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering
-PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_pymdp_rendering
-PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined
-PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml
-PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering
-PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp
-PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage
-PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl
 PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_performance
-PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax
-PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy
 PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp
+PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering
+PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage
+PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy
+PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_pymdp_rendering
+PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax
+PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering
+PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml
+PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp
+PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl
+PASSED src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined
 SKIPPED [1] src/tests/test_render_integration.py:28: Render module not available
-======================== 13 passed, 1 skipped in 15.06s ========================
+======================== 13 passed, 1 skipped in 16.36s ========================

@@ -4,30 +4,30 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_export_overall.py::test_export_module_performance 
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats 
 src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation 
 src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation 
+src/tests/test_export_overall.py::test_export_module_performance 
 src/tests/test_export_overall.py::test_export_module_completeness 
-src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation 
-src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info 
-src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats 
 src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export 
+src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration 
+src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation 
+src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration 
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info 
 src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports 
 src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model 
-src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration 
-src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration 
 [gw2] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation 
 [gw10] PASSED src/tests/test_export_overall.py::test_export_module_completeness 
-[gw3] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info 
-[gw1] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation 
+[gw12] PASSED src/tests/test_export_overall.py::test_export_module_performance 
 [gw9] PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration 
-[gw6] PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration 
+[gw4] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info 
+[gw1] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation 
 [gw0] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports 
+[gw3] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model 
+[gw7] PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration 
 [gw8] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export 
-[gw11] PASSED src/tests/test_export_overall.py::test_export_module_performance 
-[gw5] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model 
-[gw4] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats 
-[gw7] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation 
+[gw5] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats 
+[gw6] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation 
 
 ==================================== PASSES ====================================
 --------------------------------- JSON report ----------------------------------
@@ -252,14 +252,14 @@ src/render/discopy/__init__.py                                         8      8 
 src/render/discopy/discopy_renderer.py                                88     88     0%   18-503
 src/render/discopy/translator.py                                     703    703     0%   7-1518
 src/render/discopy/visualize_jax_output.py                           130    130     0%   1-172
-src/render/generators.py                                              72     72     0%   6-624
+src/render/generators.py                                              80     80     0%   6-635
 src/render/jax/__init__.py                                             2      2     0%   9-15
 src/render/jax/jax_renderer.py                                       557    557     0%   15-1392
 src/render/jax/templates/__init__.py                                   4      4     0%   8-12
 src/render/jax/templates/combined_template.py                          0      0   100%
 src/render/jax/templates/general_template.py                           0      0   100%
 src/render/jax/templates/pomdp_template.py                             0      0   100%
-src/render/legacy.py                                                  28     28     0%   8-139
+src/render/legacy.py                                                  28     28     0%   8-140
 src/render/mcp.py                                                     53     53     0%   7-122
 src/render/processor.py                                               65     65     0%   6-170
 src/render/pymdp/__init__.py                                           2      2     0%   5-7
@@ -347,31 +347,31 @@ src/website/generator.py                                             159    159 
 src/website/mcp.py                                                    53     53     0%   7-117
 src/website/renderer.py                                              142    142     0%   2-441
 ------------------------------------------------------------------------------------------------
-TOTAL                                                              38357  37471     2%
+TOTAL                                                              38365  37479     2%
 Coverage HTML written to dir /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_export/htmlcov
 Coverage JSON written to file /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/2_tests_output/test_results/test_reports/category_export/coverage.json
 ============================= slowest 10 durations =============================
 0.04s call     src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation
 0.02s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats
-0.01s call     src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export
-0.00s call     src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model
-0.00s setup    src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model
-0.00s call     src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration
-0.00s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation
+0.01s setup    src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration
+0.01s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation
+0.00s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports
+0.00s call     src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export
 0.00s call     src/tests/test_export_overall.py::test_export_module_performance
-0.00s call     src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration
-0.00s setup    src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration
+0.00s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info
+0.00s setup    src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model
+0.00s call     src/tests/test_export_overall.py::test_export_module_completeness
 =========================== short test summary info ============================
 PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation
 PASSED src/tests/test_export_overall.py::test_export_module_completeness
+PASSED src/tests/test_export_overall.py::test_export_module_performance
+PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration
 PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info
 PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation
-PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration
-PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration
 PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports
-PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export
-PASSED src/tests/test_export_overall.py::test_export_module_performance
 PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model
+PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration
+PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export
 PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats
 PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation
-============================= 12 passed in 15.30s ==============================
+============================= 12 passed in 15.54s ==============================
