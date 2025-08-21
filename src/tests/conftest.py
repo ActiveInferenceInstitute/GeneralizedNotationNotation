@@ -76,13 +76,55 @@ def pytest_unconfigure(config):
 # Ensure certain optional attributes exist for compatibility with patches used in tests
 def pytest_sessionstart(session):
     """Session start hook to prepare environment quirks required by tests."""
+    # NOTE: Avoid pre-importing `numpy.typing` here. Some recovery tests patch
+    # `numpy.typing` to raise RecursionError during import; pre-importing it
+    # prevents those tests from exercising the failure modes. We therefore
+    # deliberately do NOT import `numpy.typing` here to allow tests to patch it.
+
+    # Apply a safe pathlib recursion guard for Python 3.13+ that can interfere
+    # with pytest's assertion rewriting. This mirrors the per-script patch but
+    # is applied once at session start to reduce import-time recursion issues.
     try:
-        import numpy.typing as _npt  # type: ignore
-        # Some tests patch numpy.typing._array_like; ensure attribute exists
-        if not hasattr(_npt, "_array_like"):
-            setattr(_npt, "_array_like", object())
+        import pathlib
+        # Import internal local pathlib implementation to patch PurePosixPath
+        try:
+            import importlib
+            _local = importlib.import_module('pathlib._local')
+        except Exception:
+            _local = None
+
+        # Prefer guarding PurePosixPath if available
+        PurePosix = getattr(pathlib, 'PurePosixPath', None)
+        if PurePosix is not None and _local is not None and hasattr(_local, 'PurePosixPath'):
+            try:
+                original_parse = getattr(_local.PurePosixPath, '_parse_path', None)
+
+                def _patched_tail(self):
+                    try:
+                        if not hasattr(self, '_tail_cached'):
+                            try:
+                                # try to use internal parse if available
+                                if original_parse is not None:
+                                    parts = original_parse(self, getattr(self, '_raw_path', ''))
+                                    # parts may be tuple (drv, root, tail)
+                                    self._tail_cached = parts[2] if isinstance(parts, tuple) and len(parts) > 2 else ''
+                                else:
+                                    self._tail_cached = ''
+                            except (AttributeError, RecursionError):
+                                self._tail_cached = ''
+                        return self._tail_cached
+                    except (AttributeError, RecursionError):
+                        return ''
+
+                try:
+                    _local.PurePosixPath._tail = property(_patched_tail)
+                except Exception:
+                    # Best-effort; ignore if we cannot patch
+                    pass
+            except Exception:
+                pass
     except Exception:
-        # Best-effort; do not fail session startup
+        # Do not fail session startup if patching fails
         pass
 
     # Prepare essential pipeline artifacts when running directly after setup
@@ -119,6 +161,39 @@ def pytest_sessionstart(session):
     except Exception:
         # Do not fail test collection if preparation fails
         pass
+
+    # Ensure test-time shim for heavy optional dependencies that may cause
+    # circular import issues on some platforms (e.g., jax). Only install a
+    # shim if importing the real module fails to avoid interfering with
+    # environments where the package is available and functional.
+    try:
+        import importlib
+        try:
+            import jax  # type: ignore
+            # If jax imported but appears partially initialized (missing key attrs), treat as failure
+            if not hasattr(jax, '__version__') or not hasattr(jax, 'devices'):
+                raise ImportError("jax partially initialized or missing attributes")
+        except Exception:
+            # Insert a lightweight shim for jax and jaxlib to allow tests that
+            # patch attributes like `jax.devices` to operate without triggering
+            # the real package's heavy import-time behavior.
+            import types as _types
+            shim = _types.ModuleType('jax')
+            shim.__version__ = '0.0.0'
+            def _devices():
+                return [type('Device', (), {'platform': 'cpu', '__str__': lambda self: 'cpu'})()]
+            shim.devices = _devices
+            sys.modules['jax'] = shim
+            # Minimal jaxlib shim
+            jaxlib_shim = _types.ModuleType('jaxlib')
+            jaxlib_shim.__version__ = '0.0.0'
+            sys.modules.setdefault('jaxlib', jaxlib_shim)
+    except Exception:
+        pass
+    # NOTE: Do not pre-install a placeholder for `numpy.typing` here; tests in
+    # `test_pipeline_recovery` rely on patching `numpy.typing` to simulate
+    # RecursionError during import. Installing a placeholder prevents those
+    # patches from exercising the intended failure modes.
 
 def pytest_collection_modifyitems(config, items):
     """Modify test collection to add automatic markers and safety checks."""

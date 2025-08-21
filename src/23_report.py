@@ -10,10 +10,10 @@ Architectural Role:
     setup, and calls the actual processing functions from the report module.
 
 Pipeline Flow:
-    main.py → 23_23_report.py (this script) → report/ (modular implementation)
+    main.py → 23_report.py (this script) → report/ (modular implementation)
 
 How to run:
-  python src/23_23_report.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/23_report.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

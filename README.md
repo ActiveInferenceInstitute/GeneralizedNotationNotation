@@ -6,7 +6,7 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
-[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-23-blue.svg)](#%EF%B8%8F-processing-pipeline)
+[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-24-blue.svg)](#%EF%B8%8F-processing-pipeline)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-4-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
@@ -492,12 +492,20 @@ This will:
 - 🧪 Install development dependencies (with `--dev`)
 - ✅ Validate system requirements
 
-**4️⃣ Run Your First Pipeline**
+**4️⃣ Run Your First Pipeline (using `uv`)**
 
-Process the example GNN files:
+Use `uv` to run the pipeline inside the managed project environment:
 
 ```bash
-python src/main.py --target-dir src/gnn/examples --verbose
+uv sync                # ensure dependencies from pyproject.toml are installed
+uv run python src/main.py -- --target-dir src/gnn/examples --verbose
+```
+
+You can also run individual commands under `uv` (recommended):
+
+```bash
+uv run pytest          # run tests inside uv-managed venv
+uv run python -m pytest
 ```
 
 **5️⃣ Explore Results**

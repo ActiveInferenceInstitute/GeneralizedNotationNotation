@@ -58,8 +58,10 @@ def run_gui(
 
         if headless or _GUI_BACKEND is None:
             # Persist a small artifact describing GUI availability
-            (output_root / "22_gui_output" / "gui_status.json").parent.mkdir(parents=True, exist_ok=True)
-            (output_root / "22_gui_output" / "gui_status.json").write_text(json.dumps({
+            # `output_root` is already the step-specific output directory
+            gui_output_dir = output_root
+            gui_output_dir.mkdir(parents=True, exist_ok=True)
+            (gui_output_dir / "gui_status.json").write_text(json.dumps({
                 "backend": _GUI_BACKEND or "none",
                 "launched": False,
                 "export_file": str(starter_path)

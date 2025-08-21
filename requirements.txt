@@ -45,8 +45,8 @@ safety>=2.3.0
 # === LLM INTEGRATION (API clients) ===
 # openai>=1.0.0         # ~50MB - OpenAI API client
 # anthropic>=0.5.0      # ~30MB - Anthropic API client
-ollama>=0.3.0           # ~small - Local LLM client for Ollama
-python-dotenv>=1.0.0    # ~small - Load env vars for LLM configs
+# ollama>=0.3.0           # ~small - Local LLM client for Ollama (optional)
+# python-dotenv>=1.0.0    # ~small - Load env vars for LLM configs (optional)
 
 # === ADVANCED VISUALIZATION (Heavy) ===
 # plotly>=5.0.0         # ~200MB - Interactive plotting

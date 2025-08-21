@@ -44,10 +44,8 @@ def process_gui(target_dir, output_dir, verbose=False, **kwargs):
     
     try:
         logger.info(f"Processing gui for files in {target_dir}")
-        # Placeholder implementation - delegate to actual module functions
-        # This would be replaced with actual implementation
-        logger.info(f"Gui processing completed")
-        return True
+        # Delegate to run_gui for actual behavior; preserve headless semantics
+        return run_gui(target_dir=Path(target_dir), output_dir=Path(output_dir), logger=logger, verbose=verbose, headless=kwargs.get('headless', True))
     except Exception as e:
         logger.error(f"Gui processing failed: {e}")
         return False

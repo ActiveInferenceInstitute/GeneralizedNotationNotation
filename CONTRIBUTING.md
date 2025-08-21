@@ -42,15 +42,16 @@ GNN has comprehensive documentation to help you understand the project:
     git clone https://github.com/YourUsername/GeneralizedNotationNotation.git
     cd GeneralizedNotationNotation
     ```
-3.  **Set Up Your Environment**: Ensure you have Python 3.9+ installed. It's recommended to use a virtual environment.
+3.  **Set Up Your Environment**: Ensure you have Python 3.9+ installed. We use `uv` to manage the project environment and run commands consistently.
     ```bash
-    # Install UV if not already installed
-curl -LsSf https://astral.sh/uv/install.sh | sh
+    # Install uv if not already installed (see https://astral.sh/uv)
+    curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Initialize UV environment
-uv init
-uv sync
-    pip install -r requirements.txt
+    # Sync the project environment with pyproject.toml
+    uv sync
+
+    # Run tests in the uv-managed environment
+    uv run pytest
     ```
     Refer to **[SETUP.md](doc/SETUP.md)** for comprehensive setup instructions and the **[Configuration Guide](doc/configuration/README.md)** for detailed configuration options.
 

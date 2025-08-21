@@ -12,11 +12,7 @@ from datetime import datetime
 import json
 import logging
 
-# Pre-import numpy.typing so that tests patching numpy.typing don't trigger recursion via numpy.__getattr__
-try:
-    import numpy.typing as _numpy_typing  # noqa: F401
-except Exception:
-    pass
+"""Renderer core functions."""
 
 def generate_pymdp_code(model_data: Dict) -> str:
     """Generate PyMDP simulation code using the modular PyMDP renderer."""
@@ -305,7 +301,8 @@ def render_gnn_files(target_dir: Path, output_dir: Path) -> Dict[str, Any]:
         # Ensure presence of recovery marker for tests that only check inclusion
         if "recursion_limit_adjusted" not in recovery_actions:
             recovery_actions.append("recursion_limit_adjusted")
-        files = list(Path(target_dir).glob("**/*.json")) + list(Path(target_dir).glob("**/*.md"))
+        # Use safe glob with string conversion to avoid pathlib recursion edge cases
+        files = list(Path(str(target_dir)).glob("**/*.json")) + list(Path(str(target_dir)).glob("**/*.md"))
         output_dir.mkdir(parents=True, exist_ok=True)
         summary = {"rendered": 0}
         for fp in files:
