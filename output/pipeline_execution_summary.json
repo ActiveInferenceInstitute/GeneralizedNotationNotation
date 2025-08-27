@@ -1,0 +1,66 @@
+{
+    "start_time": "2025-08-27T11:00:35.824941",
+    "arguments": {
+        "target_dir": "input/gnn_files",
+        "output_dir": "output",
+        "recursive": true,
+        "verbose": true,
+        "enable_round_trip": true,
+        "enable_cross_format": true,
+        "skip_steps": [],
+        "only_steps": "1",
+        "strict": false,
+        "estimate_resources": false,
+        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+        "pipeline_summary_file": "output/pipeline_execution_summary.json",
+        "llm_tasks": "all",
+        "llm_timeout": 360,
+        "website_html_filename": "gnn_pipeline_summary_website.html",
+        "recreate_venv": false,
+        "dev": false,
+        "install_optional": null,
+        "duration": 30.0,
+        "audio_backend": "auto",
+        "fast_only": false,
+        "include_slow": false,
+        "include_performance": false,
+        "comprehensive": false,
+        "performance_mode": "low"
+    },
+    "steps": [
+        {
+            "status": "SUCCESS",
+            "stdout": "",
+            "stderr": "usage: 1_setup.py [-h]\n1_setup.py: error: unrecognized arguments: --target-dir input/gnn_files --output-dir output --verbose\n2025-08-27 11:00:35,933 - utils.argument_utils - ERROR - Argument parsing failed for step 1_setup: 2\n2025-08-27 11:00:35,933 - 1_setup - INFO - \ud83d\ude80 Processing setup\n2025-08-27 11:00:35,942 - 1_setup - INFO - \u2705 UV is already available: uv 0.8.5\n2025-08-27 11:00:35,943 - 1_setup - INFO - Logging system information\n2025-08-27 11:00:35,949 - 1_setup - INFO - System Platform: Linux-6.12.10-76061203-generic-x86_64-with-glibc2.35\n2025-08-27 11:00:35,949 - 1_setup - INFO - Python Version: 3.11.7 (main, Jan  8 2024, 05:55:31) [Clang 17.0.6 ]\n2025-08-27 11:00:35,949 - 1_setup - INFO - Python Executable: /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python\n2025-08-27 11:00:35,949 - 1_setup - INFO - Architecture: ('64bit', 'ELF')\n2025-08-27 11:00:35,949 - 1_setup - INFO - Processor: x86_64\n2025-08-27 11:00:35,949 - 1_setup - INFO - Machine: x86_64\n2025-08-27 11:00:35,949 - 1_setup - INFO - Node: pop-os\n2025-08-27 11:00:35,949 - 1_setup - INFO - System information logged\n2025-08-27 11:00:35,959 - setup.setup - INFO - \u2705 UV is available: uv 0.8.5\n2025-08-27 11:00:35,959 - setup.setup - INFO - \u2705 UV is available and ready to use\n2025-08-27 11:00:35,959 - setup.setup - INFO - \ud83d\udd27 Starting comprehensive UV environment setup...\n2025-08-27 11:00:35,959 - setup.setup - INFO - \ud83d\udd0d Checking system requirements...\n2025-08-27 11:00:35,959 - setup.setup - INFO - \u2705 Python version check passed: 3.11.7\n2025-08-27 11:00:35,965 - setup.setup - INFO - \u2705 UV is available: uv 0.8.5\n2025-08-27 11:00:35,966 - setup.setup - INFO - \u2705 Disk space check passed: 25.52GB free\n2025-08-27 11:00:35,966 - setup.setup - INFO - \u2713 Using existing UV environment at /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv\n2025-08-27 11:00:35,970 - setup.setup - INFO - \u2705 Existing environment is working: Python 3.11.7\n2025-08-27 11:00:36,003 - setup.setup - INFO - \u2705 Core packages are available in existing environment\n2025-08-27 11:00:36,004 - setup.setup - INFO - \ud83d\udce6 Installing core dependencies...\n2025-08-27 11:00:36,004 - setup.setup - INFO - \ud83d\udce6 Installing dependencies from /home/trim/Documents/GitHub/GeneralizedNotationNotation/pyproject.toml using UV sync\n2025-08-27 11:00:36,984 - setup.setup - INFO - \u2705 Dependencies installed using UV in 1.0s\n2025-08-27 11:00:36,992 - setup.setup - INFO - \ud83d\udccb Getting list of installed packages using UV...\n2025-08-27 11:00:37,004 - setup.setup - INFO - \ud83d\udce6 Found 286 installed packages using UV\n2025-08-27 11:00:37,004 - setup.setup - INFO - \ud83d\udccb Key installed packages:\n2025-08-27 11:00:37,004 - setup.setup - INFO -   - pytest: 8.4.1\n2025-08-27 11:00:37,004 - setup.setup - INFO -   - numpy: 2.2.6\n2025-08-27 11:00:37,004 - setup.setup - INFO -   - matplotlib: 3.10.5\n2025-08-27 11:00:37,005 - setup.setup - INFO -   - scipy: 1.16.1\n2025-08-27 11:00:37,006 - setup.setup - INFO - \ud83d\udcc4 Full package list saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json\n2025-08-27 11:00:37,006 - setup.setup - INFO - \u2705 Validating environment...\n2025-08-27 11:00:37,006 - setup.setup - INFO - \ud83d\udd0d Checking system requirements...\n2025-08-27 11:00:37,006 - setup.setup - INFO - \u2705 Python version check passed: 3.11.7\n2025-08-27 11:00:37,013 - setup.setup - INFO - \u2705 UV is available: uv 0.8.5\n2025-08-27 11:00:37,014 - setup.setup - INFO - \u2705 Disk space check passed: 25.52GB free\n2025-08-27 11:00:37,014 - setup.setup - INFO - \ud83d\udccb Getting list of installed packages using UV...\n2025-08-27 11:00:37,026 - setup.setup - INFO - \ud83d\udce6 Found 286 installed packages using UV\n2025-08-27 11:00:37,026 - setup.setup - INFO - \ud83d\udccb Key installed packages:\n2025-08-27 11:00:37,026 - setup.setup - INFO -   - pytest: 8.4.1\n2025-08-27 11:00:37,026 - setup.setup - INFO -   - numpy: 2.2.6\n2025-08-27 11:00:37,026 - setup.setup - INFO -   - matplotlib: 3.10.5\n2025-08-27 11:00:37,026 - setup.setup - INFO -   - scipy: 1.16.1\n2025-08-27 11:00:37,026 - setup.setup - INFO - \ud83d\udcc4 Full package list saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json\n2025-08-27 11:00:37,667 - setup.setup - INFO - \u2705 GNN environment setup completed successfully using UV\n2025-08-27 11:00:37,667 - 1_setup - INFO - \u2705 UV environment setup completed\n2025-08-27 11:00:37,667 - 1_setup - INFO - Creating project structure\n2025-08-27 11:00:37,668 - 1_setup - INFO - Project structure created successfully\n2025-08-27 11:00:37,668 - setup.setup - INFO - \ud83d\udccb Getting list of installed packages using UV...\n2025-08-27 11:00:37,681 - setup.setup - INFO - \ud83d\udce6 Found 286 installed packages using UV\n2025-08-27 11:00:37,681 - setup.setup - INFO - \ud83d\udccb Key installed packages:\n2025-08-27 11:00:37,681 - setup.setup - INFO -   - pytest: 8.4.1\n2025-08-27 11:00:37,681 - setup.setup - INFO -   - numpy: 2.2.6\n2025-08-27 11:00:37,681 - setup.setup - INFO -   - matplotlib: 3.10.5\n2025-08-27 11:00:37,681 - setup.setup - INFO -   - scipy: 1.16.1\n2025-08-27 11:00:37,681 - setup.setup - INFO - \ud83d\udcc4 Full package list saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json\n2025-08-27 11:00:37,681 - setup.setup - INFO - \ud83d\udd0d Checking system requirements...\n2025-08-27 11:00:37,681 - setup.setup - INFO - \u2705 Python version check passed: 3.11.7\n2025-08-27 11:00:37,687 - setup.setup - INFO - \u2705 UV is available: uv 0.8.5\n2025-08-27 11:00:37,687 - setup.setup - INFO - \u2705 Disk space check passed: 25.52GB free\n2025-08-27 11:00:37,687 - setup.setup - INFO - \ud83d\udccb Getting list of installed packages using UV...\n2025-08-27 11:00:37,700 - setup.setup - INFO - \ud83d\udce6 Found 286 installed packages using UV\n2025-08-27 11:00:37,700 - setup.setup - INFO - \ud83d\udccb Key installed packages:\n2025-08-27 11:00:37,700 - setup.setup - INFO -   - pytest: 8.4.1\n2025-08-27 11:00:37,700 - setup.setup - INFO -   - numpy: 2.2.6\n2025-08-27 11:00:37,700 - setup.setup - INFO -   - matplotlib: 3.10.5\n2025-08-27 11:00:37,700 - setup.setup - INFO -   - scipy: 1.16.1\n2025-08-27 11:00:37,701 - setup.setup - INFO - \ud83d\udcc4 Full package list saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json\n2025-08-27 11:00:37,701 - 1_setup - INFO - \u2705 Setup processing completed successfully\n",
+            "memory_usage_mb": 0.0,
+            "exit_code": 0,
+            "retry_count": 0,
+            "step_number": 1,
+            "script_name": "1_setup.py",
+            "description": "Environment setup",
+            "start_time": "2025-08-27T11:00:35.825808",
+            "end_time": "2025-08-27T11:00:37.838753",
+            "duration_seconds": 2.0129425525665283
+        }
+    ],
+    "end_time": "2025-08-27T11:00:37.839096",
+    "overall_status": "SUCCESS",
+    "total_duration_seconds": 2.8391005992889404,
+    "environment_info": {
+        "python_version": "3.11.7 (main, Jan  8 2024, 05:55:31) [Clang 17.0.6 ]",
+        "platform": "linux",
+        "cpu_count": 12,
+        "working_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation",
+        "user": "trim",
+        "memory_total_gb": "62.5",
+        "disk_free_gb": "25.5"
+    },
+    "performance_summary": {
+        "peak_memory_mb": 0.0,
+        "total_steps": 1,
+        "failed_steps": 0,
+        "critical_failures": 0,
+        "successful_steps": 1,
+        "warnings": 0
+    }
+}

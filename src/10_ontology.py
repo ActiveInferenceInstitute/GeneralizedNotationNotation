@@ -39,7 +39,7 @@ from utils.pipeline_template import (
     log_step_warning,
     create_standardized_pipeline_script,
 )
-from utils.argument_utils import EnhancedArgumentParser
+from utils.argument_utils import ArgumentParser
 from utils import performance_tracker
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 

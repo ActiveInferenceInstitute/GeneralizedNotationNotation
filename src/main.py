@@ -69,7 +69,7 @@ from utils.pipeline_template import (
     log_step_error,
     log_step_warning
 )
-from utils.argument_utils import EnhancedArgumentParser, PipelineArguments
+from utils.argument_utils import ArgumentParser, PipelineArguments
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 # Optional logging and progress tracking
@@ -77,65 +77,36 @@ try:
     from utils.logging_utils import (
         PipelineProgressTracker,
         VisualLoggingEnhancer,
-        EnhancedPipelineLogger,
+        PipelineLogger,
         log_pipeline_summary,
         reset_progress_tracker,
-        setup_enhanced_step_logging
+        setup_step_logging
     )
-    ENHANCED_LOGGING_AVAILABLE = True
+    STRUCTURED_LOGGING_AVAILABLE = True
 except ImportError:
-    ENHANCED_LOGGING_AVAILABLE = False
+    STRUCTURED_LOGGING_AVAILABLE = False
 
 def main():
     """Main pipeline orchestration function."""
-    # Handle path resolution before argument validation
-    import argparse
-    
-    # Create a simple parser to get the basic arguments first
-    temp_parser = argparse.ArgumentParser(add_help=False)
-    temp_parser.add_argument('--target-dir', type=Path, default=Path("input/gnn_files"))
-    temp_parser.add_argument('--output-dir', type=Path, default=Path("output"))
-    
-    # Parse just these arguments to check paths
-    temp_args, remaining = temp_parser.parse_known_args()
-    
-    # Fix path resolution - ensure we're working from the project root
-    project_root = Path(__file__).parent.parent
-    
-    # Always use project root paths for consistency
-    if (project_root / temp_args.target_dir).exists():
-        temp_args.target_dir = project_root / temp_args.target_dir
-    
-    # For output_dir, always use project root path (create if needed)
-    temp_args.output_dir = project_root / temp_args.output_dir
-    
-    # Now parse all arguments with the corrected paths
-    parser = EnhancedArgumentParser.create_main_parser()
+    # Parse arguments
+    parser = ArgumentParser.create_main_parser()
     parsed = parser.parse_args()
-    
-    # Convert to PipelineArguments with corrected paths
+
+    # Convert to PipelineArguments
     kwargs = {}
     for key, value in vars(parsed).items():
         if value is not None:
             kwargs[key] = value
-    
-    # Override with corrected paths
-    kwargs['target_dir'] = temp_args.target_dir
-    kwargs['output_dir'] = temp_args.output_dir
-    
+
     args = PipelineArguments(**kwargs)
     
-    # Ensure the paths are correctly set
-    args.target_dir = temp_args.target_dir
-    args.output_dir = temp_args.output_dir
-    
-    # Setup enhanced logging if available
-    if ENHANCED_LOGGING_AVAILABLE:
-        logger = setup_enhanced_step_logging("pipeline", args.verbose, enable_structured=True)
+    # Setup logging
+    if STRUCTURED_LOGGING_AVAILABLE:
+        logger = setup_step_logging("pipeline", args.verbose, enable_structured=True)
         # Reset progress tracker for new pipeline run
         reset_progress_tracker()
     else:
-        logger = setup_step_logging("pipeline", args)
+        logger = setup_step_logging("pipeline", args.verbose)
     
     # Initialize pipeline execution summary
     pipeline_summary = {
@@ -158,8 +129,8 @@ def main():
     
     try:
         # Pipeline start logging
-        if ENHANCED_LOGGING_AVAILABLE:
-            EnhancedPipelineLogger.log_structured(
+        if STRUCTURED_LOGGING_AVAILABLE:
+            PipelineLogger.log_structured(
                 logger, logging.INFO,
                 "🚀 Starting GNN Processing Pipeline",
                  total_steps=24,
@@ -212,7 +183,7 @@ def main():
         
         # Initialize progress tracker if enhanced logging is available
         progress_tracker = None
-        if ENHANCED_LOGGING_AVAILABLE:
+        if STRUCTURED_LOGGING_AVAILABLE:
             progress_tracker = PipelineProgressTracker(len(steps_to_execute))
         
         # Execute each step
@@ -220,14 +191,14 @@ def main():
             step_start_time = time.time()
             step_start_datetime = datetime.now()
             
-            # Enhanced step start logging with progress tracking
-            if ENHANCED_LOGGING_AVAILABLE and progress_tracker:
+            # Step start logging with progress tracking
+            if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
                 progress_header = progress_tracker.start_step(step_number, description)
                 logger.info(progress_header)
-                # Use enhanced logging functions that support additional parameters
-                from utils.logging_utils import log_step_start as enhanced_log_step_start
-                enhanced_log_step_start(logger, f"Starting {description}", 
-                                      step_number=step_number, 
+                # Use structured logging functions that support additional parameters
+                from utils.logging_utils import log_step_start as structured_log_step_start
+                structured_log_step_start(logger, f"Starting {description}",
+                                      step_number=step_number,
                                       total_steps=len(steps_to_execute),
                                       script_name=script_name)
             else:
@@ -282,16 +253,16 @@ def main():
             # Update total steps count
             pipeline_summary["performance_summary"]["total_steps"] = len(steps_to_execute)
             
-            # Enhanced step completion logging with progress tracking
-            if ENHANCED_LOGGING_AVAILABLE and progress_tracker:
+            # Step completion logging with progress tracking
+            if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
                 status_for_logging = step_result["status"]
                 completion_summary = progress_tracker.complete_step(step_number, status_for_logging, step_duration)
                 logger.info(completion_summary)
-                
-                # Use enhanced logging functions that support additional parameters
+
+                # Use structured logging functions that support additional parameters
                 if status_for_logging.startswith("SUCCESS"):
-                    from utils.logging_utils import log_step_success as enhanced_log_step_success
-                    enhanced_log_step_success(logger, f"{description} completed", 
+                    from utils.logging_utils import log_step_success as structured_log_step_success
+                    structured_log_step_success(logger, f"{description} completed",
                                         step_number=step_number,
                                         duration=step_duration,
                                             status=status_for_logging)
@@ -326,13 +297,13 @@ def main():
             json.dump(pipeline_summary, f, indent=4)
         logger.info(f"Pipeline summary saved successfully")
         
-        # Enhanced final status logging
-        if ENHANCED_LOGGING_AVAILABLE:
+        # Final status logging
+        if STRUCTURED_LOGGING_AVAILABLE:
             # Log overall progress summary
             if progress_tracker:
                 overall_progress = progress_tracker.get_overall_progress()
                 logger.info(overall_progress)
-            
+
             # Log detailed pipeline summary
             log_pipeline_summary(logger, pipeline_summary)
         else:
@@ -387,41 +358,12 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         # Use virtual environment Python if available, otherwise fall back to system Python
         python_executable = str(venv_python) if venv_python.exists() else sys.executable
         
-        # Prepare command using the enhanced argument builder
-        from utils.argument_utils import build_enhanced_step_command_args
+        # Prepare command using the argument builder
+        from utils.argument_utils import build_step_command_args
         
-        # Convert relative paths to absolute paths for subprocess execution
-        # Create a copy of args with absolute paths
-        import copy
-        args_copy = copy.deepcopy(args)
-        
-        # Convert target_dir to absolute path if it's relative
-        if args_copy.target_dir and not args_copy.target_dir.is_absolute():
-            # Handle paths that start with ../
-            if str(args_copy.target_dir).startswith('../'):
-                args_copy.target_dir = project_root / str(args_copy.target_dir)[3:]
-            else:
-                args_copy.target_dir = project_root / args_copy.target_dir
-        
-        # Convert output_dir to absolute path if it's relative  
-        if args_copy.output_dir and not args_copy.output_dir.is_absolute():
-            # Handle paths that start with ../
-            if str(args_copy.output_dir).startswith('../'):
-                args_copy.output_dir = project_root / str(args_copy.output_dir)[3:]
-            else:
-                args_copy.output_dir = project_root / args_copy.output_dir
-            
-        # Convert ontology_terms_file to absolute path if it's relative
-        if args_copy.ontology_terms_file and not args_copy.ontology_terms_file.is_absolute():
-            # Handle paths that start with ../
-            if str(args_copy.ontology_terms_file).startswith('../'):
-                args_copy.ontology_terms_file = project_root / str(args_copy.ontology_terms_file)[3:]
-            else:
-                args_copy.ontology_terms_file = project_root / args_copy.ontology_terms_file
-            
-        cmd = build_enhanced_step_command_args(
+        cmd = build_step_command_args(
             script_name.replace('.py', ''),
-            args_copy,
+            args,
             python_executable,
             script_path
         )
@@ -437,110 +379,34 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         _env = _os.environ.copy()
         _env.setdefault("PYTHONUNBUFFERED", "1")
 
-        proc_start_time = time.time()
-
-        process = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            bufsize=1,
-            cwd=project_root,
-            env=_env
-        )
-
-        # Stream output live to the logger to avoid perceived hangs, especially for long-running tests
-        import threading
-        from collections import deque
-
-        stdout_lines: list[str] = []
-        stderr_lines: list[str] = []
-        last_output_time = time.time()
-
-        def _stream_pipe(pipe, is_error: bool, collect: list[str]):
-            nonlocal last_output_time
-            try:
-                for line in iter(pipe.readline, ""):
-                    stripped = line.rstrip("\n")
-                    collect.append(stripped)
-                    if is_error:
-                        # Avoid logging non-errors as errors; classify stderr lines
-                        lower = stripped.lower()
-                        if (
-                            "traceback" in lower
-                            or lower.startswith("e   ")
-                            or "= fail" in lower
-                            or "failed" in lower
-                            or "error" in lower
-                        ):
-                            logger.error(stripped)
-                        elif ("warning" in lower) or ("⚠️" in stripped):
-                            logger.warning(stripped)
-                        else:
-                            logger.info(stripped)
-                    else:
-                        logger.info(stripped)
-                    # Update activity timestamp for heartbeat
-                    last_output_time = time.time()
-            finally:
-                try:
-                    pipe.close()
-                except Exception:
-                    pass
-
-        stdout_thread = threading.Thread(target=_stream_pipe, args=(process.stdout, False, stdout_lines), daemon=True)
-        stderr_thread = threading.Thread(target=_stream_pipe, args=(process.stderr, True, stderr_lines), daemon=True)
-        stdout_thread.start()
-        stderr_thread.start()
-
-        # Heartbeat to indicate progress during long quiet periods (e.g., collecting tests)
-        def _heartbeat():
-            nonlocal last_output_time
-            while True:
-                if process.poll() is not None:
-                    break
-                # If no output for 10s, emit a concise status line
-                quiet_for = time.time() - last_output_time
-                if quiet_for > 10:
-                    elapsed = int(time.time() - proc_start_time)
-                    logger.info(f"… {script_name} running; elapsed {elapsed}s; quiet {int(quiet_for)}s")
-                    last_output_time = time.time()
-                time.sleep(3)
-
-        heartbeat_thread = threading.Thread(target=_heartbeat, daemon=True)
-        heartbeat_thread.start()
-
-        # Monitor process with step-aware timeout
+        # Execute step with timeout
         try:
-            # Use a higher timeout for the comprehensive tests step
-            step_timeout_seconds = 3600 if script_name == "2_tests.py" else 600
-            process.wait(timeout=step_timeout_seconds)
+            # Use a higher timeout for the tests step
+            step_timeout_seconds = 300 if script_name == "2_tests.py" else 60
 
-            # Ensure all output is consumed
-            stdout_thread.join(timeout=5)
-            stderr_thread.join(timeout=5)
+            result = subprocess.run(
+                cmd,
+                cwd=project_root,
+                env=_env,
+                capture_output=True,
+                text=True,
+                timeout=step_timeout_seconds
+            )
 
-            step_result["stdout"] = "\n".join(stdout_lines)
-            step_result["stderr"] = "\n".join(stderr_lines)
-            step_result["exit_code"] = process.returncode
+            step_result["stdout"] = result.stdout
+            step_result["stderr"] = result.stderr
+            step_result["exit_code"] = result.returncode
 
-            # Get memory usage if available
-            try:
-                import psutil
-                if process.pid:
-                    proc = psutil.Process(process.pid)
-                    step_result["memory_usage_mb"] = proc.memory_info().rss / 1024 / 1024
-            except ImportError:
-                pass
-            except Exception:
-                pass
+            # Log output if verbose
+            if args.verbose:
+                if result.stdout:
+                    logger.info(f"Step output:\n{result.stdout}")
+                if result.stderr:
+                    logger.warning(f"Step errors:\n{result.stderr}")
 
         except subprocess.TimeoutExpired:
-            try:
-                process.kill()
-            finally:
-                step_result["status"] = "TIMEOUT"
-                step_result["exit_code"] = -1
+            step_result["status"] = "TIMEOUT"
+            step_result["exit_code"] = -1
             return step_result
         
         # Determine status
@@ -550,25 +416,7 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
             # Respect the child process exit code to avoid masking failures
             step_result["status"] = "FAILED"
 
-        # Steps themselves determine their output directories via get_output_dir_for_script.
-        # Avoid post-processing or symlink tricks here to keep the orchestrator thin.
-
-        # Create legacy compatibility symlinks/directories for tests
-        try:
-            legacy_map = {
-                "3_gnn.py": (project_root / "output" / "3_gnn_output", project_root / "output" / "gnn_processing_step"),
-                "15_audio.py": (project_root / "output" / "audio", project_root / "output" / "audio_processing_step"),
-            }
-            if script_name in legacy_map:
-                src_dir, dst_dir = legacy_map[script_name]
-                if src_dir.exists():
-                    dst_dir.mkdir(parents=True, exist_ok=True)
-                    # Best-effort copy expected files if symlinks are not ideal in CI
-                    # Create marker files to satisfy simple existence assertions
-                    marker = dst_dir / ".compat"
-                    marker.write_text("compat")
-        except Exception:
-            pass
+        # Steps determine their own output directories via get_output_dir_for_script
         
         return step_result
         

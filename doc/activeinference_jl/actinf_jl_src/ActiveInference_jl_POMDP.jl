@@ -255,11 +255,9 @@ function create_gridworld_pomdp()
         end
     end
     
-    # Initialize B matrices (transition model) for each action
+    # Initialize B matrix (transition model) across actions for the single state factor
+    # B[1] has shape (n_states, n_states, n_actions)
     for action in 1:4
-        B[action] = zeros(GRID_SIZE * GRID_SIZE, GRID_SIZE * GRID_SIZE)
-        
-        # Fill B matrix based on action effects
         for state in 1:(GRID_SIZE * GRID_SIZE)
             row, col = state_to_position(state)
             
@@ -277,25 +275,25 @@ function create_gridworld_pomdp()
             # Check if new position is valid
             if is_valid_position(new_row, new_col) && !is_obstacle(new_row, new_col)
                 new_state = position_to_state(new_row, new_col)
-                B[action][new_state, state] = 1.0
+                B[1][new_state, state, action] = 1.0
             else
                 # Stay in same position if invalid move
-                B[action][state, state] = 1.0
+                B[1][state, state, action] = 1.0
             end
         end
     end
     
-    # Initialize C vector (preferences)
-    C = zeros(4)
-    C[3] = GOAL_REWARD  # Prefer goal observations
+    # Initialize C preferences per observation modality
+    C[1] = zeros(4)
+    C[1][3] = GOAL_REWARD  # Prefer goal observations
     
-    # Initialize D vector (prior beliefs about initial state)
-    D = zeros(GRID_SIZE * GRID_SIZE)
+    # Initialize D prior over initial state (single state factor)
+    D[1] = zeros(GRID_SIZE * GRID_SIZE)
     start_state = position_to_state(START_POSITION[1], START_POSITION[2])
-    D[start_state] = 1.0
+    D[1][start_state] = 1.0
     
-    # Initialize E vector (action preferences)
-    E = zeros(4)  # No strong action preferences
+    # Initialize E action preferences (single control factor)
+    E[1] = zeros(4)  # No strong action preferences
     
     @info "POMDP model created" n_states=GRID_SIZE*GRID_SIZE n_observations=4 n_actions=4
     
@@ -496,7 +494,7 @@ function analyze_simulation_results(positions, observations, actions, beliefs, r
     analysis_file = joinpath(output_dir, "analysis", "simulation_analysis.txt")
     open(analysis_file, "w") do f
         println(f, "ActiveInference.jl POMDP Gridworld Simulation Analysis")
-        println(f, "=" * 60)
+        println(f, repeat("=", 60))
         println(f, "Generated: $(now())")
         println(f, "")
         println(f, "SIMULATION OVERVIEW:")
@@ -540,7 +538,7 @@ end
 function main()
     """Main execution function."""
     println("ActiveInference.jl POMDP Gridworld Simulation")
-    println("=" * 50)
+    println(repeat("=", 50))
     
     try
         # Setup output directories and logging

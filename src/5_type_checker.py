@@ -29,7 +29,7 @@ from utils.pipeline_template import (
     log_step_error,
     create_standardized_pipeline_script,
 )
-from utils.argument_utils import EnhancedArgumentParser
+from utils.argument_utils import ArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 from type_checker.analysis_utils import (
@@ -48,7 +48,7 @@ run_script = create_standardized_pipeline_script(
 
 
 def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> bool:
-    args = EnhancedArgumentParser.parse_step_arguments("5_type_checker.py")
+    args = ArgumentParser.parse_step_arguments("5_type_checker.py")
     # Load parsed GNN data from previous step
     gnn_output_dir = get_output_dir_for_script("3_gnn.py", Path(args.output_dir))
     gnn_results_file = gnn_output_dir / "gnn_processing_results.json"

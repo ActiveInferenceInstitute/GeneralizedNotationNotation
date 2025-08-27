@@ -39,8 +39,8 @@ class CorrelationFormatter(logging.Formatter):
         
         return super().format(record)
 
-class PipelineLogger:
-    """Centralized logger for the GNN pipeline with correlation support."""
+class BasicPipelineLogger:
+    """Basic centralized logger for the GNN pipeline with correlation support."""
     
     _loggers: Dict[str, logging.Logger] = {}
     _initialized = False
@@ -253,13 +253,13 @@ class StructuredFormatter(CorrelationFormatter):
         # Continue with correlation formatting
         return super().format(record)
 
-class EnhancedPipelineLogger(PipelineLogger):
-    """Enhanced pipeline logger with structured logging support."""
+class PipelineLogger(BasicPipelineLogger):
+    """Pipeline logger with structured logging support."""
     
     @classmethod
-    def initialize(cls, log_dir: Optional[Path] = None, console_level: int = logging.INFO, 
+    def initialize(cls, log_dir: Optional[Path] = None, console_level: int = logging.INFO,
                   file_level: int = logging.DEBUG, enable_structured: bool = True) -> None:
-        """Initialize enhanced logging with structured data support."""
+        """Initialize logging with structured data support."""
         if cls._initialized:
             return
             
@@ -270,7 +270,7 @@ class EnhancedPipelineLogger(PipelineLogger):
         
         # Choose formatter based on structured logging preference
         if enable_structured:
-            console_formatter = EnhancedVisualFormatter(
+            console_formatter = VisualFormatter(
                 '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s',
                 include_performance=True
             )
@@ -302,7 +302,7 @@ class EnhancedPipelineLogger(PipelineLogger):
                 root_logger.addHandler(cls._log_file_handler)
             except Exception as e:
                 console_handler.emit(logging.LogRecord(
-                    name="EnhancedPipelineLogger", level=logging.ERROR, pathname="", lineno=0,
+                    name="PipelineLogger", level=logging.ERROR, pathname="", lineno=0,
                     msg=f"Failed to setup file logging: {e}", args=(), exc_info=None
                 ))
         
@@ -366,11 +366,11 @@ class EnhancedPipelineLogger(PipelineLogger):
             )
             raise
 
-def setup_enhanced_step_logging(step_name: str, verbose: bool = False, 
+def setup_step_logging(step_name: str, verbose: bool = False,
                                enable_structured: bool = True) -> logging.Logger:
     """
-    Setup enhanced logging for a pipeline step with structured data support.
-    
+    Setup logging for a pipeline step with structured data support.
+
     Args:
         step_name: Name of the pipeline step
         verbose: Whether to enable verbose logging
@@ -380,16 +380,16 @@ def setup_enhanced_step_logging(step_name: str, verbose: bool = False,
         Configured logger for the step
     """
     # Initialize enhanced pipeline logger
-    EnhancedPipelineLogger.initialize(enable_structured=enable_structured)
+    PipelineLogger.initialize(enable_structured=enable_structured)
     
     # Set correlation context
-    correlation_id = EnhancedPipelineLogger.set_correlation_context(step_name.replace('.py', ''))
+    correlation_id = PipelineLogger.set_correlation_context(step_name.replace('.py', ''))
     
     # Configure verbosity
-    EnhancedPipelineLogger.set_verbosity(verbose)
+    PipelineLogger.set_verbosity(verbose)
     
     # Get logger instance
-    logger = EnhancedPipelineLogger.get_logger(step_name)
+    logger = PipelineLogger.get_logger(step_name)
     
     # Add step-specific attributes
     logger.step_name = step_name
@@ -605,8 +605,8 @@ class PipelineProgressTracker:
         
         return f"{progress_bar}\nStats: {' | '.join(stats)}"
 
-class EnhancedVisualFormatter(StructuredFormatter):
-    """Enhanced formatter with visual improvements and performance context."""
+class VisualFormatter(StructuredFormatter):
+    """Formatter with visual improvements and performance context."""
     
     def __init__(self, format_string, include_performance=True, use_colors=True):
         super().__init__(format_string)
@@ -656,7 +656,7 @@ def log_step_start(logger_or_step_name, message: str = None, step_number: int = 
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
         message = message or f"Starting {step_name}"
-        logger = EnhancedPipelineLogger.get_logger(step_name)
+        logger = PipelineLogger.get_logger(step_name)
     else:
         logger = logger_or_step_name
         message = message or "Starting step"
@@ -670,7 +670,7 @@ def log_step_start(logger_or_step_name, message: str = None, step_number: int = 
         progress_header = _global_progress_tracker.start_step(step_number, step_name if isinstance(logger_or_step_name, str) else f"Step {step_number}")
         message = f"{progress_header}\n    {message}"
     
-    EnhancedPipelineLogger.log_structured(
+    PipelineLogger.log_structured(
         logger, logging.INFO,
         message,
         event_type="step_start",
@@ -685,7 +685,7 @@ def log_step_success(logger_or_step_name, message: str = None, step_number: int 
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
         message = message or f"{step_name} completed successfully"
-        logger = EnhancedPipelineLogger.get_logger(step_name)
+        logger = PipelineLogger.get_logger(step_name)
     else:
         logger = logger_or_step_name
         message = message or "Step completed successfully"
@@ -716,7 +716,7 @@ def log_step_warning(logger_or_step_name, message: str = None, step_number: int 
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
         message = message or f"Warning in {step_name}"
-        logger = EnhancedPipelineLogger.get_logger(step_name)
+        logger = PipelineLogger.get_logger(step_name)
     else:
         logger = logger_or_step_name
         message = message or "Step warning"
@@ -727,7 +727,7 @@ def log_step_warning(logger_or_step_name, message: str = None, step_number: int 
         completion_summary = _global_progress_tracker.complete_step(step_number, "SUCCESS_WITH_WARNINGS")
         message = f"{completion_summary}\n    {message}"
     
-    EnhancedPipelineLogger.log_structured(
+    PipelineLogger.log_structured(
         logger, logging.WARNING,
         f"⚠️ {message}",
         event_type="step_warning",
@@ -740,7 +740,7 @@ def log_step_error(logger_or_step_name, message: str = None, step_number: int = 
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
         message = message or f"Error in {step_name}"
-        logger = EnhancedPipelineLogger.get_logger(step_name)
+        logger = PipelineLogger.get_logger(step_name)
     else:
         logger = logger_or_step_name
         message = message or "Step error"
@@ -754,7 +754,7 @@ def log_step_error(logger_or_step_name, message: str = None, step_number: int = 
     # Extract event_type if provided, otherwise use default
     event_type = metadata.pop("event_type", "step_error") if metadata else "step_error"
     
-    EnhancedPipelineLogger.log_structured(
+    PipelineLogger.log_structured(
         logger, logging.ERROR,
         f"❌ {message}",
         event_type=event_type,

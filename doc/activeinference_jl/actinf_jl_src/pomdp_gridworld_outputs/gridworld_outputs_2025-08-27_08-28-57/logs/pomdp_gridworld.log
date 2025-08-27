@@ -1,0 +1,18 @@
+┌ Info: ActiveInference.jl POMDP Gridworld Simulation Started
+└ @ Main /home/trim/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/ActiveInference_jl_POMDP.jl:118
+┌ Info: Configuration
+│   grid_size = 5
+│   n_states = [25]
+│   n_observations = [4]
+└ @ Main /home/trim/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/ActiveInference_jl_POMDP.jl:119
+┌ Info: Output directory: pomdp_gridworld_outputs/gridworld_outputs_2025-08-27_08-28-57
+└ @ Main /home/trim/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/ActiveInference_jl_POMDP.jl:120
+┌ Info: Configuration loaded
+│   grid_size = 5
+│   n_steps = 50
+└ @ Main /home/trim/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/ActiveInference_jl_POMDP.jl:548
+┌ Info: Creating gridworld POMDP model
+└ @ Main /home/trim/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/ActiveInference_jl_POMDP.jl:235
+┌ Error: Simulation failed
+│   exception = MethodError(convert, (Float64, [0.0, 0.0, 0.0, 0.0]), 0x00000000000069da)
+└ @ Main /home/trim/Documents/GitHub/GeneralizedNotationNotation/doc/activeinference_jl/actinf_jl_src/ActiveInference_jl_POMDP.jl:585

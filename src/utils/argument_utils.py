@@ -782,13 +782,12 @@ class StepConfiguration:
         
         return errors
 
-# Enhanced argument parser with step awareness
-class EnhancedArgumentParser(ArgumentParser):
+class StepAwareArgumentParser:
     """Argument parser with step-specific validation and defaults."""
     
     @classmethod
     def create_step_parser(cls, step_name: str, description: str = None) -> argparse.ArgumentParser:
-        """Create an enhanced parser for a specific pipeline step."""
+        """Create a parser for a specific pipeline step."""
         # Remove .py extension for config lookup if present
         config_key = step_name.replace('.py', '') if step_name.endswith('.py') else step_name
         config = StepConfiguration.get_step_config(config_key)
@@ -814,14 +813,14 @@ Examples:
         
         # Add arguments supported by this step
         # Check both with and without .py extension for STEP_ARGUMENTS lookup
-        step_args_key = step_name if step_name in cls.STEP_ARGUMENTS else f"{step_name}.py"
-        supported_args = cls.STEP_ARGUMENTS.get(step_args_key, [])
+        step_args_key = step_name if step_name in ArgumentParser.STEP_ARGUMENTS else f"{step_name}.py"
+        supported_args = ArgumentParser.STEP_ARGUMENTS.get(step_args_key, [])
         for arg_name in supported_args:
-            if arg_name in cls.ARGUMENT_DEFINITIONS:
+            if arg_name in ArgumentParser.ARGUMENT_DEFINITIONS:
                 # Get step-specific default if available
                 step_defaults = config.get("defaults", {})
-                arg_def = cls.ARGUMENT_DEFINITIONS[arg_name]
-                
+                arg_def = ArgumentParser.ARGUMENT_DEFINITIONS[arg_name]
+
                 # Override default with step-specific value
                 if arg_name in step_defaults:
                     modified_arg_def = ArgumentDefinition(
@@ -838,7 +837,7 @@ Examples:
                     arg_def.add_to_parser(parser)
             else:
                 logger.warning(f"Unknown argument '{arg_name}' for step {step_name}")
-                
+
         return parser
     
     @classmethod
@@ -873,8 +872,8 @@ Examples:
         if req_args:
             help_text.append("\nRequired arguments:")
             for arg in req_args:
-                if arg in cls.ARGUMENT_DEFINITIONS:
-                    arg_def = cls.ARGUMENT_DEFINITIONS[arg]
+                if arg in ArgumentParser.ARGUMENT_DEFINITIONS:
+                    arg_def = ArgumentParser.ARGUMENT_DEFINITIONS[arg]
                     help_text.append(f"  {arg_def.flag}: {arg_def.help_text}")
         
         # Optional arguments
@@ -882,15 +881,15 @@ Examples:
         if opt_args:
             help_text.append("\nOptional arguments:")
             for arg in opt_args:
-                if arg in cls.ARGUMENT_DEFINITIONS:
-                    arg_def = cls.ARGUMENT_DEFINITIONS[arg]
+                if arg in ArgumentParser.ARGUMENT_DEFINITIONS:
+                    arg_def = ArgumentParser.ARGUMENT_DEFINITIONS[arg]
                     default = config.get("defaults", {}).get(arg, arg_def.default)
                     help_text.append(f"  {arg_def.flag}: {arg_def.help_text} (default: {default})")
         
         return "\n".join(help_text)
 
-# Enhanced command building with validation
-def build_enhanced_step_command_args(step_name: str, pipeline_args: PipelineArguments, 
+# Command building with validation
+def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
                                    python_executable: str, script_path: Path) -> List[str]:
     """
     Build validated command line arguments for a pipeline step.
@@ -936,8 +935,8 @@ def build_enhanced_step_command_args(step_name: str, pipeline_args: PipelineArgu
                 continue
             
             # Get argument definition for proper formatting
-            if arg_name in EnhancedArgumentParser.ARGUMENT_DEFINITIONS:
-                arg_def = EnhancedArgumentParser.ARGUMENT_DEFINITIONS[arg_name]
+            if arg_name in ArgumentParser.ARGUMENT_DEFINITIONS:
+                arg_def = ArgumentParser.ARGUMENT_DEFINITIONS[arg_name]
                 flag = arg_def.flag
                 
                 # Handle different argument types
@@ -974,7 +973,7 @@ def get_pipeline_step_info() -> Dict[str, Any]:
 # Validation utility for the entire pipeline
 def parse_step_arguments(step_name: str, args: Optional[List[str]] = None) -> argparse.Namespace:
     """Parse arguments for a specific pipeline step (standalone function)."""
-    return EnhancedArgumentParser.parse_step_arguments(step_name, args)
+    return ArgumentParser.parse_step_arguments(step_name, args)
 
 def validate_arguments(args: argparse.Namespace) -> List[str]:
     """Validate parsed arguments and return list of errors."""

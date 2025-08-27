@@ -41,7 +41,7 @@ from utils.pipeline_template import (
     log_step_warning,
     create_standardized_pipeline_script,
 )
-from utils.argument_utils import EnhancedArgumentParser
+from utils.argument_utils import ArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 # Import the test runner with fallback. Make psutil optional inside the runner to avoid import failures.

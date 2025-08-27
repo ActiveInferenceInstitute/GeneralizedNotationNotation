@@ -28,7 +28,7 @@ try:
     
     # Enhanced imports for more complex modules
     from utils import (
-        EnhancedArgumentParser,
+        ArgumentParser,
         PipelineArguments,
         PerformanceTracker,
         performance_tracker
@@ -91,7 +91,7 @@ def create_standard_pipeline_script(
             # Parse arguments
             if UTILS_AVAILABLE:
                 try:
-                    parsed_args = EnhancedArgumentParser.parse_step_arguments(step_name)
+                    parsed_args = ArgumentParser.parse_step_arguments(step_name)
                 except Exception as e:
                     logging.warning(f"Failed to use enhanced argument parser: {e}")
                     parsed_args = _create_fallback_parser(fallback_parser_description, additional_arguments).parse_args()
@@ -193,8 +193,8 @@ import logging
 from typing import Callable, Optional, Dict, Any, List, Union
 # Import utilities - these are already imported above
 # from . import (
-#     setup_step_logging, log_step_start, log_step_success, 
-#     log_step_warning, log_step_error, EnhancedArgumentParser, UTILS_AVAILABLE
+#     setup_step_logging, log_step_start, log_step_success,
+#     log_step_warning, log_step_error, ArgumentParser, UTILS_AVAILABLE
 # )
 # from ..pipeline import STEP_METADATA, get_output_dir_for_script
 
@@ -414,8 +414,8 @@ def create_standardized_pipeline_script(
             # Parse arguments - try enhanced first, fall back gracefully
             try:
                 # Import enhanced parser locally to avoid import issues
-                from utils import EnhancedArgumentParser
-                parsed_args = EnhancedArgumentParser.parse_step_arguments(step_name)
+                from utils import ArgumentParser
+                parsed_args = ArgumentParser.parse_step_arguments(step_name)
             except Exception as e:
                 # Create fallback parser with step-specific arguments
                 fallback_additional_args = additional_arguments or {}
