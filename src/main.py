@@ -547,13 +547,8 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         if step_result["exit_code"] == 0:
             step_result["status"] = "SUCCESS"
         else:
-            # Check if the step actually succeeded despite the exit code
-            stdout = step_result.get("stdout", "")
-            if ("✅" in stdout or "completed" in stdout.lower() or "success" in stdout.lower()) and "❌" not in stdout:
-                step_result["status"] = "SUCCESS"
-                step_result["exit_code"] = 0  # Override exit code
-            else:
-                step_result["status"] = "FAILED"
+            # Respect the child process exit code to avoid masking failures
+            step_result["status"] = "FAILED"
 
         # Steps themselves determine their output directories via get_output_dir_for_script.
         # Avoid post-processing or symlink tricks here to keep the orchestrator thin.

@@ -21,7 +21,6 @@ import time
 import os
 from pathlib import Path
 from typing import Dict, Any, List
-from unittest.mock import Mock, patch, MagicMock
 
 # Test markers
 pytestmark = [pytest.mark.pipeline, pytest.mark.safe_to_fail, pytest.mark.fast]
@@ -136,7 +135,7 @@ class TestPipelineStepTemplate:
     def test_create_step_template(self, isolated_temp_dir):
         """Test step template creation."""
         try:
-            from pipeline.pipeline_step_template import create_step_template
+            from src.pipeline.pipeline_step_template import create_step_template
             
             # Create test step template
             template_file = isolated_temp_dir / "test_step.py"
@@ -174,7 +173,7 @@ class TestPipelineValidation:
     def test_validate_pipeline(self, project_root):
         """Test pipeline validation functionality."""
         try:
-            from pipeline.pipeline_validation import validate_pipeline
+            from src.pipeline.pipeline_validation import validate_pipeline
             
             src_dir = project_root / "src"
             result = validate_pipeline(src_dir)
@@ -195,7 +194,7 @@ class TestPipelineValidation:
     def test_check_step_dependencies(self, project_root):
         """Test step dependency checking."""
         try:
-            from pipeline.pipeline_validation import check_step_dependencies
+            from src.pipeline.pipeline_validation import check_step_dependencies
             
             src_dir = project_root / "src"
             dependencies = check_step_dependencies(src_dir)
@@ -230,7 +229,7 @@ class TestVerifyPipeline:
     def test_verify_pipeline_integrity(self, project_root):
         """Test pipeline integrity verification."""
         try:
-            from pipeline.verify_pipeline import verify_pipeline_integrity
+            from src.pipeline.verify_pipeline import verify_pipeline_integrity
             
             src_dir = project_root / "src"
             result = verify_pipeline_integrity(src_dir)
@@ -251,7 +250,7 @@ class TestVerifyPipeline:
     def test_check_pipeline_health(self, project_root):
         """Test pipeline health checking."""
         try:
-            from pipeline.verify_pipeline import check_pipeline_health
+            from src.pipeline.verify_pipeline import check_pipeline_health
             
             src_dir = project_root / "src"
             health = check_pipeline_health(src_dir)
@@ -288,7 +287,7 @@ class TestUtilsMigrationHelper:
     def test_migrate_pipeline(self, isolated_temp_dir):
         """Test pipeline migration functionality."""
         try:
-            from utils.migration_helper import migrate_pipeline
+            from src.utils.migration_helper import migrate_pipeline
             
             # Create test migration scenario
             old_dir = isolated_temp_dir / "old_pipeline"
@@ -317,7 +316,7 @@ class TestUtilsMigrationHelper:
     def test_upgrade_scripts(self, isolated_temp_dir):
         """Test script upgrade functionality."""
         try:
-            from utils.migration_helper import upgrade_scripts
+            from src.utils.migration_helper import upgrade_scripts
             
             # Create test scripts to upgrade
             scripts_dir = isolated_temp_dir / "scripts"
@@ -357,7 +356,7 @@ class TestUtilsPipelineMonitor:
     def test_pipeline_monitor_class(self):
         """Test PipelineMonitor class functionality."""
         try:
-            from utils.pipeline_monitor import PipelineMonitor
+            from src.utils.pipeline_monitor import PipelineMonitor
             
             monitor = PipelineMonitor()
             
@@ -380,7 +379,7 @@ class TestUtilsPipelineMonitor:
     def test_monitor_execution(self):
         """Test execution monitoring functionality."""
         try:
-            from utils.pipeline_monitor import monitor_execution
+            from src.utils.pipeline_monitor import monitor_execution
             
             # Test monitoring a simple function
             def test_function():
@@ -426,7 +425,7 @@ class TestUtilsResourceManager:
     def test_resource_manager_class(self):
         """Test ResourceManager class functionality."""
         try:
-            from utils.resource_manager import ResourceManager
+            from src.utils.resource_manager import ResourceManager
             
             manager = ResourceManager()
             
@@ -446,7 +445,7 @@ class TestUtilsResourceManager:
     def test_monitor_resources(self):
         """Test resource monitoring functionality."""
         try:
-            from utils.resource_manager import monitor_resources
+            from src.utils.resource_manager import monitor_resources
             
             # Test resource monitoring
             resources = monitor_resources()
@@ -483,7 +482,7 @@ class TestUtilsScriptValidator:
     def test_script_validator_class(self):
         """Test ScriptValidator class functionality."""
         try:
-            from utils.script_validator import ScriptValidator
+            from src.utils.script_validator import ScriptValidator
             
             validator = ScriptValidator()
             
@@ -503,7 +502,7 @@ class TestUtilsScriptValidator:
     def test_validate_script(self, isolated_temp_dir):
         """Test script validation functionality."""
         try:
-            from utils.script_validator import validate_script
+            from src.utils.script_validator import validate_script
             
             # Create test script
             test_script = isolated_temp_dir / "test_script.py"
@@ -537,8 +536,8 @@ class TestPipelineInfrastructureIntegration:
     def test_discovery_and_validation_integration(self, project_root):
         """Test integration between discovery and validation."""
         try:
-            from pipeline.discovery import get_pipeline_scripts
-            from pipeline.pipeline_validation import validate_pipeline
+            from src.pipeline.discovery import get_pipeline_scripts
+            from src.pipeline.pipeline_validation import validate_pipeline
             
             src_dir = project_root / "src"
             
@@ -561,8 +560,8 @@ class TestPipelineInfrastructureIntegration:
     def test_monitoring_and_resource_management_integration(self):
         """Test integration between monitoring and resource management."""
         try:
-            from utils.pipeline_monitor import monitor_execution
-            from utils.resource_manager import monitor_resources
+            from src.utils.pipeline_monitor import monitor_execution
+            from src.utils.resource_manager import monitor_resources
             
             # Test function to monitor
             def test_task():

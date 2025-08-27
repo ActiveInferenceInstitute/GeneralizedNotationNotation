@@ -109,7 +109,8 @@ def _configure_live_pytest_output(logger: logging.Logger):
             "-s",   # disable capture for live stdout
             "--durations=15",
             "-o",
-            "console_output_style=progress",
+            "console_output_style=classic",
+            "--color=no",
         ]
 
         existing = os.environ.get("PYTEST_ADDOPTS", "").split()
@@ -121,6 +122,12 @@ def _configure_live_pytest_output(logger: logging.Logger):
 
         # Ensure unbuffered Python for children
         os.environ.setdefault("PYTHONUNBUFFERED", "1")
+        # Force non-interactive terminal settings to avoid termcap warnings
+        os.environ.setdefault("TERM", "dumb")
+        os.environ.setdefault("NO_COLOR", "1")
+        os.environ.setdefault("PY_COLORS", "0")
+        # Disable Ollama provider in tests unless explicitly enabled to avoid CLI timeouts
+        os.environ.setdefault("OLLAMA_DISABLED", "1")
         logger.info(f"Configured PYTEST_ADDOPTS: {os.environ['PYTEST_ADDOPTS']}")
     except Exception as e:
         logger.warning(f"Could not set live pytest output configuration: {e}")
@@ -333,11 +340,11 @@ def process_tests_standardized(
             result = subprocess.run([python_exec, "-m", "pytest", "--version"], 
                                   capture_output=True, text=True, timeout=10)
             if result.returncode != 0:
-                logger.warning("⚠️ pytest not available, skipping tests")
-                return True  # Don't fail the pipeline if tests are not available
+                logger.error("❌ pytest not available; failing tests step")
+                return False
         except (subprocess.TimeoutExpired, FileNotFoundError):
-            logger.warning("⚠️ pytest not available, skipping tests")
-            return True
+            logger.error("❌ pytest not available; failing tests step")
+            return False
         
         # Run tests if test runner is available
         if TEST_RUNNER_AVAILABLE:
@@ -377,8 +384,8 @@ def process_tests_standardized(
                     logger.warning("⚠️ Test runner creation failed")
                     return True  # Don't fail the pipeline
             except Exception as e:
-                logger.warning(f"⚠️ Test execution failed: {e}")
-                return True  # Don't fail the pipeline
+                logger.error(f"❌ Test execution failed: {e}")
+                return False
         else:
             # Fallback: run basic pytest
             try:
@@ -401,7 +408,7 @@ def process_tests_standardized(
                         "console_output_style=progress",
                     ]
                     if verbose:
-                        cmd.append("-q")
+                        cmd.append("-vv")
 
                     # Stream output live while teeing to files
                     stdout_path = test_output_dir / "pytest_stdout.log"
@@ -410,6 +417,18 @@ def process_tests_standardized(
                     import os as _os
                     _env = _os.environ.copy()
                     _env.setdefault("PYTHONUNBUFFERED", "1")
+                    _env.setdefault("TERM", "xterm-256color")
+                    # Ensure stable environment for pytest execution
+                    _env.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
+                    # Encourage live, detailed progress output
+                    desired_addopts = ["-vv", "-rA", "-s", "--durations=15", "-o", "console_output_style=progress"]
+                    existing_addopts = _env.get("PYTEST_ADDOPTS", "").split()
+                    for opt in desired_addopts:
+                        if opt not in existing_addopts:
+                            existing_addopts.append(opt)
+                    _env["PYTEST_ADDOPTS"] = " ".join(existing_addopts).strip()
+                    # Add src to PYTHONPATH so imports work consistently
+                    _env["PYTHONPATH"] = str(project_root / "src")
 
                     with open(stdout_path, "w") as f_out, open(stderr_path, "w") as f_err:
                         process = subprocess.Popen(
@@ -467,16 +486,16 @@ def process_tests_standardized(
 
                     if result_returncode == 0:
                         logger.info("✅ Basic tests completed successfully")
+                        return True
                     else:
-                        logger.warning("⚠️ Some basic tests failed")
-
-                    return True  # Don't fail the pipeline for test failures
+                        logger.error("❌ Tests failed in fallback execution")
+                        return False
                 else:
-                    logger.warning("⚠️ No test directory found")
-                    return True
+                    logger.error("❌ No test directory found")
+                    return False
             except Exception as e:
-                logger.warning(f"⚠️ Fallback test execution failed: {e}")
-                return True
+                logger.error(f"❌ Fallback test execution failed: {e}")
+                return False
         
     except Exception as e:
         logger.error(f"❌ Test processing failed: {e}")

@@ -25,6 +25,12 @@ GeneralizedNotationNotation (GNN) is a text-based language for standardizing Act
 ## Critical Implementation Philosophy
 This project implements a comprehensive scientific computing pipeline with real, functional components at every level. Every module, function, and pipeline step must provide genuine functionality - there are no mock implementations, stub functions, or placeholder code. The architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards.
 
+## Testing Policy: No Mocks
+- All tests must execute real code paths and real methods. Do not use mocking frameworks or monkeypatches to simulate behavior.
+- Tests may skip when an external dependency is unavailable (e.g., no API keys or local service absent), but must never replace that dependency with a mock.
+- Pipeline script tests must run the actual numbered scripts via subprocess and assert on real artifacts in `output/`.
+- Replace any legacy tests that use `unittest.mock`, patched subprocess, or fake registries with real end-to-end calls and file-based assertions.
+
 ## Key Implementation Patterns (MUST FOLLOW)
 - **Pipeline Scripts**: Use standardized imports from `utils` (setup_step_logging, log_step_*, EnhancedArgumentParser) and `pipeline` (get_output_dir_for_script, get_pipeline_config)
 - **Argument Parsing**: Always use `EnhancedArgumentParser.parse_step_arguments()` with fallback argument parser for graceful degradation

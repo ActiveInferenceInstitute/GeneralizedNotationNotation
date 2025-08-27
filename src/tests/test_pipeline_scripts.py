@@ -13,8 +13,8 @@ to ensure 100% functionality and coverage. Each test validates:
 6. Output generation and file operations
 7. Integration with pipeline infrastructure
 
-All tests use extensive mocking to ensure safe execution without
-modifying the production environment.
+All tests execute real scripts via subprocess with isolated temp directories
+and assert on real artifacts. No mocking is used.
 """
 
 import pytest
@@ -25,7 +25,6 @@ import logging
 import subprocess
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
-from unittest.mock import patch, Mock, MagicMock, call
 import tempfile
 import argparse
 import importlib.util
@@ -34,16 +33,8 @@ import re
 # Test markers
 pytestmark = [pytest.mark.pipeline, pytest.mark.safe_to_fail]
 
-# Import test utilities and configuration
-from . import (
-    TEST_CONFIG,
-    get_sample_pipeline_arguments,
-    create_test_gnn_files,
-    is_safe_mode,
-    TEST_DIR,
-    SRC_DIR,
-    PROJECT_ROOT
-)
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+SRC_DIR = PROJECT_ROOT / "src"
 
 class TestPipelineScriptDiscovery:
     """Test discovery and basic structure of all pipeline scripts."""
@@ -112,9 +103,11 @@ class TestPipelineScriptDiscovery:
     
     @pytest.mark.unit
     @pytest.mark.parametrize("script_name", [
-        "1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py",
-        "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-        "10_execute.py", "11_llm.py", "12_audio.py", "13_website.py", "14_report.py"
+        "1_setup.py", "2_tests.py", "3_gnn.py", "4_model_registry.py", "5_type_checker.py",
+        "6_validation.py", "7_export.py", "8_visualization.py", "9_advanced_viz.py",
+        "10_ontology.py", "11_render.py", "12_execute.py", "13_llm.py", "14_ml_integration.py",
+        "15_audio.py", "16_analysis.py", "17_integration.py", "18_security.py",
+        "19_research.py", "20_website.py", "21_mcp.py", "22_gui.py", "23_report.py"
     ])
     def test_pipeline_script_structure(self, script_name: str):
         """Test that each pipeline script has proper structure and imports."""
@@ -149,75 +142,38 @@ class TestPipelineScriptImports:
     
     @pytest.mark.unit
     @pytest.mark.parametrize("script_name", [
-        "1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py",
-        "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-        "10_execute.py", "11_llm.py", "12_audio.py", "13_website.py", "14_report.py"
+        "1_setup.py", "2_tests.py", "3_gnn.py", "4_model_registry.py", "5_type_checker.py"
     ])
-    def test_script_import_capability(self, script_name: str):
-        """Test that pipeline scripts can be imported without errors."""
+    def test_script_executes_help(self, script_name: str):
+        """Each script should respond to --help without error."""
         script_path = SRC_DIR / script_name
         if not script_path.exists():
             pytest.skip(f"Script {script_name} not found")
-        
-        try:
-            # Import the script as a module
-            spec = importlib.util.spec_from_file_location(script_name[:-3], script_path)
-            module = importlib.util.module_from_spec(spec)
-            
-            # Execute the module (this will run imports but not main())
-            with patch('sys.argv', ['test']):  # Mock sys.argv to prevent main execution
-                spec.loader.exec_module(module)
-            
-            # Check that module has expected attributes
-            assert hasattr(module, '__file__'), f"Module {script_name} should have __file__ attribute"
-            
-            logging.info(f"Script {script_name} imports successfully")
-            
-        except Exception as e:
-            pytest.fail(f"Failed to import {script_name}: {e}")
+        result = subprocess.run([sys.executable, str(script_path), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+        assert result.returncode in [0, 2]
 
 class TestPipelineScriptExecution:
-    """Test execution of pipeline scripts with mocked dependencies."""
-    
-    @pytest.mark.unit
-    @pytest.mark.safe_to_fail
-    @pytest.mark.parametrize("script_name", [
-        "1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py",
-        "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-        "10_execute.py", "11_llm.py", "12_audio.py", "13_website.py", "14_report.py"
+    """Execute real scripts and assert on real artifacts."""
+
+    @pytest.mark.integration
+    @pytest.mark.parametrize("script_name,artifact_checker", [
+        ("3_gnn.py", lambda outdir: (outdir / "3_gnn_output").exists()),
+        ("5_type_checker.py", lambda outdir: (outdir / "type_check_results.json").exists() or (outdir / "type_check" / "type_check_results.json").exists()),
+        ("7_export.py", lambda outdir: (outdir / "7_export_output").exists()),
+        ("8_visualization.py", lambda outdir: (outdir / "8_visualization_output").exists()),
     ])
-    def test_script_execution_with_mocks(self, script_name: str, mock_subprocess, mock_filesystem, isolated_temp_dir):
-        """Test script execution with comprehensive mocking."""
+    def test_script_executes_real(self, script_name: str, artifact_checker):
         script_path = SRC_DIR / script_name
         if not script_path.exists():
             pytest.skip(f"Script {script_name} not found")
-        
-        # Create test arguments
-        test_args = [
-            str(script_path),
-            "--target-dir", str(isolated_temp_dir / "input"),
-            "--output-dir", str(isolated_temp_dir / "output"),
-            "--verbose"
-        ]
-        
-        # Mock subprocess execution
-        with patch('subprocess.run') as mock_run:
-            mock_run.return_value = Mock(returncode=0, stdout="Mock output", stderr="")
-            
-            # Mock file operations
-            with patch('pathlib.Path.exists', return_value=True):
-                with patch('pathlib.Path.mkdir', return_value=None):
-                    with patch('builtins.open', create=True) as mock_open:
-                        mock_open.return_value.__enter__.return_value = Mock()
-                        
-                        # Execute script
-                        result = subprocess.run([sys.executable] + test_args, 
-                                              capture_output=True, text=True, timeout=30)
-                        
-                        # Verify execution
-                        assert result.returncode in [0, 1, 2], f"Script {script_name} should return valid exit code"
-                        
-                        logging.info(f"Script {script_name} executed successfully with exit code {result.returncode}")
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            input_dir = PROJECT_ROOT / "input" / "gnn_files"
+            output_dir = tmp / "output"
+            cmd = [sys.executable, str(script_path), "--target-dir", str(input_dir), "--output-dir", str(output_dir)]
+            result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+            assert result.returncode in [0, 1]
+            assert artifact_checker(output_dir), f"Expected artifacts not produced by {script_name}"
 
 class TestStep2GNNComprehensive:
     """Comprehensive tests for Step 2: GNN File Processing."""
@@ -389,22 +345,11 @@ class TestStep7MCPComprehensive:
     def test_step7_mcp_tools(self):
         """Test MCP tool registration and functionality."""
         try:
-            from mcp import register_tools, get_available_tools
-            
-            try:
-                # Test tool registration
-                tools = register_tools()
-                assert isinstance(tools, list), "Tools should be a list"
-                
-                # Test tool availability
-                available_tools = get_available_tools()
-                assert isinstance(available_tools, list), "Available tools should be a list"
-                
-                logging.info("MCP tools test completed")
-            except Exception as e:
-                logging.warning(f"MCP tools test failed: {e}")
-        except ImportError as e:
-            logging.warning(f"MCP module functions not available: {e}")
+            from src.mcp.mcp import register_tools as _register_tools
+            tools = _register_tools()
+            assert tools is not None
+        except Exception as e:
+            pytest.skip(f"MCP registration unavailable: {e}")
 
 class TestStep8OntologyComprehensive:
     """Comprehensive tests for Step 8: Ontology Processing."""
@@ -531,23 +476,13 @@ class TestStep13WebsiteComprehensive:
     @pytest.mark.safe_to_fail
     def test_step13_website_generation(self, sample_gnn_files, isolated_temp_dir):
         """Test SAPF audio generation."""
-        from sapf import generate_sapf_audio, convert_gnn_to_sapf
-        
-        # Test GNN to SAPF conversion
         try:
-            sapf_code = convert_gnn_to_sapf(sample_gnn_files)
-            assert isinstance(sapf_code, str), "SAPF code should be a string"
-            logging.info("GNN to SAPF conversion test completed")
-        except Exception as e:
-            logging.warning(f"GNN to SAPF conversion test failed: {e}")
-        
-        # Test audio generation
-        try:
+            from src.audio.sapf.generator import generate_wav_from_sapf
             audio_path = isolated_temp_dir / "test_audio.wav"
-            generate_sapf_audio("test_sapf_code", audio_path)
-            logging.info("SAPF audio generation test completed")
+            generate_wav_from_sapf("tempo=120; scale=C_major; notes=C4,D4,E4", audio_path)
+            assert audio_path.exists()
         except Exception as e:
-            logging.warning(f"Website generation test failed: {e}")
+            pytest.skip(f"SAPF audio backend unavailable: {e}")
 
 
 class TestStep14ReportComprehensive:
@@ -582,29 +517,21 @@ class TestStep14ReportComprehensive:
 
 class TestPipelineScriptIntegration:
     """Integration tests for pipeline script coordination."""
-    
+
     @pytest.mark.integration
-    @pytest.mark.safe_to_fail
-    def test_pipeline_script_coordination(self, mock_subprocess, isolated_temp_dir):
-        """Test coordination between pipeline scripts."""
-        # Test that scripts can be executed in sequence
-        scripts = ["1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py"]
-        
-        for script_name in scripts:
-            script_path = SRC_DIR / script_name
-            if not script_path.exists():
-                continue
-            
-            with patch('subprocess.run') as mock_run:
-                mock_run.return_value = Mock(returncode=0, stdout="Mock output", stderr="")
-                
-                result = subprocess.run([sys.executable, str(script_path), "--help"], 
-                                      capture_output=True, text=True, timeout=10)
-                
-                # Scripts should either execute successfully or show help
-                assert result.returncode in [0, 1, 2], f"Script {script_name} should return valid exit code"
-                
-                logging.info(f"Script {script_name} coordination test passed")
+    def test_pipeline_core_sequence(self):
+        scripts = ["3_gnn.py", "5_type_checker.py", "7_export.py"]
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            input_dir = PROJECT_ROOT / "input" / "gnn_files"
+            output_dir = tmp / "output"
+            for script_name in scripts:
+                script_path = SRC_DIR / script_name
+                if not script_path.exists():
+                    continue
+                cmd = [sys.executable, str(script_path), "--target-dir", str(input_dir), "--output-dir", str(output_dir)]
+                result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+                assert result.returncode in [0, 1]
     
     @pytest.mark.integration
     @pytest.mark.safe_to_fail

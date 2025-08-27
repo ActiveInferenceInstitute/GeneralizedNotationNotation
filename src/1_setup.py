@@ -93,7 +93,8 @@ try:
         setup_uv_environment,
         install_optional_dependencies,
         validate_uv_setup,
-        create_project_structure
+        create_project_structure,
+        get_installed_package_versions,
     )
     SETUP_AVAILABLE = True
 except ImportError as e:
@@ -190,6 +191,42 @@ def process_setup_standardized(
         if not structure_success:
             logger.error("❌ Failed to create project structure")
             return False
+        
+        # Ensure core test dependencies are present in the environment (without modifying pyproject)
+        try:
+            installed = get_installed_package_versions()
+            required_test_packages = [
+                "pytest",
+                "pytest-cov",
+                "pytest-xdist",
+                "pytest-timeout",
+            ]
+            missing = [p for p in required_test_packages if p not in (installed or {})]
+            if missing:
+                logger.info(f"📦 Installing missing test packages via UV: {missing}")
+                try:
+                    result = subprocess.run(
+                        [
+                            "uv",
+                            "pip",
+                            "install",
+                            *missing,
+                        ],
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                    )
+                    if result.returncode != 0:
+                        logger.warning(
+                            f"⚠️ Failed to install some test packages (exit {result.returncode}); tests may be limited"
+                        )
+                        if verbose:
+                            logger.warning(result.stdout)
+                            logger.warning(result.stderr)
+                except Exception as e:
+                    logger.warning(f"⚠️ Could not install test packages via UV: {e}")
+        except Exception as e:
+            logger.warning(f"⚠️ Could not verify installed packages: {e}")
         
         # Validate setup
         # Keep validation lightweight; avoid strict failures on missing heavy deps

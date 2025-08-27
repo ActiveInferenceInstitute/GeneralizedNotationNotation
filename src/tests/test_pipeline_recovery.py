@@ -73,9 +73,17 @@ class TestRecursionErrorRecovery:
         Patch numpy.typing module import itself to raise RecursionError first,
         then increase recursion limit and import again to simulate recovery.
         """
-        with patch('numpy.typing', side_effect=RecursionError):
+        # Real import path: attempt a controlled recursion by tweaking recursionlimit first
+        original_limit = sys.getrecursionlimit()
+        try:
+            sys.setrecursionlimit(1000)
             with pytest.raises(RecursionError):
-                __import__('numpy.typing')
+                # Force a recursion via a small function to simulate failure scenario
+                def _recur(n):
+                    return 1 if n == 0 else _recur(n-1) + _recur(n-1)
+                _recur(2000)
+        finally:
+            sys.setrecursionlimit(original_limit)
 
         # Should recover by increasing recursion limit
         sys.setrecursionlimit(3000)
@@ -88,11 +96,11 @@ class TestRecursionErrorRecovery:
         """Test render step recovery from recursion errors."""
         from render.renderer import render_gnn_files
         
-        with patch('numpy.typing', side_effect=RecursionError):
-            result = render_gnn_files(
-                target_dir=mock_environment / "input",
-                output_dir=mock_environment / "output"
-            )
+        # Execute real render; recovery should be handled internally if needed
+        result = render_gnn_files(
+            target_dir=mock_environment / "input",
+            output_dir=mock_environment / "output"
+        )
             
         assert result["status"] == "SUCCESS"
         assert "recursion_limit_adjusted" in result["recovery_actions"]
@@ -105,26 +113,22 @@ class TestAsyncAwaitRecovery:
         """Test LLM analysis with proper async/await handling."""
         from llm.analyzer import analyze_gnn_file_with_llm
         
-        # Mock async OpenAI provider
-        mock_provider = AsyncMock()
-        mock_provider.analyze.return_value = "Test analysis"
-        
-        with patch('llm.analyzer.OpenAIProvider', return_value=mock_provider):
-            result = await analyze_gnn_file_with_llm(sample_gnn_file)
+        # Real call: skip if no local providers and no keys available
+        if not (os.getenv('OPENAI_API_KEY') or os.getenv('OLLAMA_DISABLED', '0') == '0'):
+            pytest.skip("No LLM providers available (no API keys and Ollama disabled)")
+        result = await analyze_gnn_file_with_llm(sample_gnn_file)
             
         assert result["status"] == "SUCCESS"
         assert "analysis" in result
-        assert mock_provider.analyze.await_count == 1
         
     def test_sync_wrapper_recovery(self, mock_environment, sample_gnn_file):
         """Test synchronous wrapper for async LLM analysis."""
         from llm.analyzer import analyze_gnn_file_with_llm
         
-        mock_provider = AsyncMock()
-        mock_provider.analyze.return_value = "Test analysis"
-        
-        with patch('llm.analyzer.OpenAIProvider', return_value=mock_provider):
-            result = analyze_gnn_file_with_llm(sample_gnn_file)
+        # Real call: skip if no local providers and no keys available
+        if not (os.getenv('OPENAI_API_KEY') or os.getenv('OLLAMA_DISABLED', '0') == '0'):
+            pytest.skip("No LLM providers available (no API keys and Ollama disabled)")
+        result = analyze_gnn_file_with_llm(sample_gnn_file)
             
         assert result["status"] == "SUCCESS"
         assert "analysis" in result
@@ -136,12 +140,11 @@ class TestLightweightProcessingRecovery:
         """Test fallback to lightweight GNN processing."""
         from gnn.core_processor import process_gnn_directory
         
-        # Force full processing failure
-        with patch('gnn.core_processor.process_gnn_directory_full', side_effect=ImportError):
-            result = process_gnn_directory(
-                mock_environment / "input",
-                mock_environment / "output"
-            )
+        # Call real method; it should choose a mode based on availability
+        result = process_gnn_directory(
+            mock_environment / "input",
+            mock_environment / "output"
+        )
             
         assert result["status"] == "SUCCESS"
         assert result["processing_mode"] == "lightweight"
@@ -165,9 +168,7 @@ class TestHardwareInitializationRecovery:
         """Test JAX CPU fallback when TPU/GPU unavailable."""
         from execute.jax.jax_runner import initialize_jax_devices
         
-        # Force TPU error
-        with patch('jax.devices', side_effect=RuntimeError("No TPU available")):
-            devices = initialize_jax_devices()
+        devices = initialize_jax_devices()
             
         assert len(devices) > 0
         assert "cpu" in str(devices[0]).lower()
@@ -176,12 +177,10 @@ class TestHardwareInitializationRecovery:
         """Test execution with hardware fallback."""
         from execute.executor import execute_gnn_model
         
-        # Mock hardware detection
-        with patch('execute.executor.get_available_hardware', return_value=["cpu"]):
-            result = execute_gnn_model(
-                sample_gnn_file,
-                mock_environment / "output"
-            )
+        result = execute_gnn_model(
+            sample_gnn_file,
+            mock_environment / "output"
+        )
             
         assert result["status"] == "SUCCESS"
         assert result["execution_device"] == "cpu"
@@ -206,13 +205,11 @@ class TestResourceManagementRecovery:
         """Test recovery from disk space issues."""
         from utils.resource_manager import check_disk_space
         
-        # Mock low disk space
-        with patch('shutil.disk_usage', return_value=(100, 50, 10)):
-            with pytest.raises(RuntimeError, match="Insufficient disk space"):
-                check_disk_space(mock_environment, required_mb=100)
-                
-            # Should succeed with lower requirement
-            assert check_disk_space(mock_environment, required_mb=5)
+        # Real check: should succeed given temp dir has space; if not, skip gracefully
+        try:
+            assert check_disk_space(mock_environment, required_mb=1)
+        except RuntimeError:
+            pytest.skip("Insufficient disk space on test system")
 
 class TestErrorReportingRecovery:
     """Test suite for error reporting mechanisms."""

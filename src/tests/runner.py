@@ -1344,14 +1344,23 @@ class ModularTestRunner:
                 env = os.environ.copy()
                 env["PYTHONPATH"] = str(self.project_root / "src")
                 env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"  # Disable automatic plugin loading
-                # Encourage live, detailed progress output
-                desired_addopts = ["-vv", "-rA", "-s", "--durations=15", "-o", "console_output_style=progress"]
+                # Encourage live, detailed progress output and disable color to avoid termcap issues
+                desired_addopts = ["-vv", "-rA", "-s", "--durations=15", "-o", "console_output_style=classic", "--color=no"]
                 existing_addopts = env.get("PYTEST_ADDOPTS", "").split()
                 for opt in desired_addopts:
                     if opt not in existing_addopts:
                         existing_addopts.append(opt)
                 env["PYTEST_ADDOPTS"] = " ".join(existing_addopts).strip()
                 env.setdefault("PYTHONUNBUFFERED", "1")
+                # Force no-color and dumb terminal to avoid termcap/terminfo warnings in headless runs
+                env.setdefault("TERM", "dumb")
+                env.setdefault("NO_COLOR", "1")
+                env.setdefault("PY_COLORS", "0")
+                # Set default terminal dimensions to placate some TTY-dependent libs
+                env.setdefault("COLUMNS", "120")
+                env.setdefault("LINES", "40")
+                # Disable Ollama provider in tests unless explicitly enabled to avoid CLI timeouts
+                env.setdefault("OLLAMA_DISABLED", "1")
 
                 self.logger.info(f"⏱️ Starting test execution at {time.strftime('%H:%M:%S')}")
 
@@ -1521,7 +1530,8 @@ class ModularTestRunner:
                 failed_tests = test_stats.get('failed', 0)
                 passed_tests = test_stats.get('passed', 0)
 
-                success = (total_tests > 0 and failed_tests == 0) or (passed_tests > 0 and failed_tests <= config.get('max_failures', 10))
+                # Strict: category succeeds only if there are zero failures when any tests ran
+                success = (total_tests > 0 and failed_tests == 0)
 
                 if success:
                     self.logger.info(f"✅ Category '{category}' completed successfully")

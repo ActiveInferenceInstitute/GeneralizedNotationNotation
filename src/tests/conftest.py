@@ -287,94 +287,27 @@ def safe_filesystem():
     yield fs
     fs.cleanup()
 
+"""
+NOTE: Mocking is disallowed. Legacy fixtures retained as no-ops for compatibility
+but must not be used in new tests. They either yield without effect or raise to
+encourage removal.
+"""
+
 @pytest.fixture
 def mock_subprocess():
-    """Provide a mock subprocess for testing."""
-    def safe_run(cmd, **kwargs):
-        class SafeResult:
-            def __init__(self):
-                self.returncode = 0
-                self.stdout = "Mock output"
-                self.stderr = ""
-        
-        return SafeResult()
-    
-    return safe_run
+    raise RuntimeError("mock_subprocess fixture is disallowed. Execute real subprocess instead.")
 
 @pytest.fixture
-def mock_dangerous_operations(monkeypatch):
-    """Provide no-op replacements for potentially dangerous operations during tests.
-
-    This avoids side effects while allowing tests to request the fixture.
-    """
-    try:
-        # Best-effort: if execute.executor has a dangerous operation hook, neutralize it
-        import execute.executor as _executor  # type: ignore
-        def _noop(*args, **kwargs):
-            return {"status": "SAFE"}
-        monkeypatch.setattr(_executor, "execute_dangerous_operation", _noop, raising=False)
-    except Exception:
-        # If the module or attribute doesn't exist, proceed without failing the test
-        pass
-    yield
+def mock_dangerous_operations():
+    raise RuntimeError("mock_dangerous_operations fixture is disallowed. Use real execution paths with safe inputs.")
 
 @pytest.fixture
-def mock_llm_provider(monkeypatch):
-    """Provide a lightweight LLM provider mock used by some pipeline tests.
-
-    Ensures that code paths expecting an async provider can run without external deps.
-    """
-    try:
-        import llm.analyzer as _analyzer  # type: ignore
-        class _FakeProvider:
-            async def analyze(self, *_, **__):
-                return "Test analysis"
-        # Patch the provider factory used by tests
-        monkeypatch.setattr(_analyzer, "OpenAIProvider", lambda *_, **__: _FakeProvider(), raising=False)
-    except Exception:
-        pass
-    yield
+def mock_llm_provider():
+    raise RuntimeError("mock_llm_provider fixture is disallowed. Skip tests if provider unavailable.")
 
 @pytest.fixture
 def mock_filesystem():
-    """Back-compat alias to safe_filesystem expected by some tests."""
-    from typing import Generator as _Gen
-    # Reuse the safe_filesystem fixture implementation
-    temp_dir = Path(tempfile.mkdtemp())
-    class SafeFileSystem:
-        def __init__(self, temp_dir: Path):
-            self.temp_dir = temp_dir
-            self.created_files = []
-            self.created_dirs = []
-        def create_file(self, path: Path, content: str = "") -> Path:
-            full_path = self.temp_dir / path
-            full_path.parent.mkdir(parents=True, exist_ok=True)
-            full_path.write_text(content)
-            self.created_files.append(full_path)
-            return full_path
-        def create_dir(self, path: Path) -> Path:
-            full_path = self.temp_dir / path
-            full_path.mkdir(parents=True, exist_ok=True)
-            self.created_dirs.append(full_path)
-            return full_path
-        def cleanup(self):
-            for file_path in self.created_files:
-                if file_path.exists():
-                    try:
-                        file_path.unlink()
-                    except Exception:
-                        pass
-            if self.temp_dir.exists():
-                try:
-                    import shutil
-                    shutil.rmtree(self.temp_dir)
-                except Exception:
-                    pass
-    fs = SafeFileSystem(temp_dir)
-    try:
-        yield fs
-    finally:
-        fs.cleanup()
+    raise RuntimeError("mock_filesystem fixture is disallowed. Use safe_filesystem or tmp_path.")
 
 @pytest.fixture
 def full_pipeline_environment(tmp_path) -> Dict[str, Any]:
@@ -399,50 +332,11 @@ def capture_logs(caplog):
 
 @pytest.fixture
 def mock_imports():
-    """Provide safe import mocking."""
-    def safe_import(module_name: str, fallback=None):
-        try:
-            return __import__(module_name)
-        except ImportError:
-            return fallback or Mock()
-    
-    return safe_import
+    raise RuntimeError("mock_imports fixture is disallowed. Adjust tests to import real modules or skip.")
 
 @pytest.fixture
 def mock_logger():
-    """Provide a mock logger for testing."""
-    class MockLogger:
-        def __init__(self):
-            self.messages = []
-            self.errors = []
-            self.warnings = []
-            self.info_messages = []
-        
-        def reset_mocks(self):
-            self.messages.clear()
-            self.errors.clear()
-            self.warnings.clear()
-            self.info_messages.clear()
-        
-        def error(self, msg, *args, **kwargs):
-            self.errors.append(msg)
-            self.messages.append(("ERROR", msg))
-        
-        def warning(self, msg, *args, **kwargs):
-            self.warnings.append(msg)
-            self.messages.append(("WARNING", msg))
-        
-        def info(self, msg, *args, **kwargs):
-            self.info_messages.append(msg)
-            self.messages.append(("INFO", msg))
-        
-        def debug(self, msg, *args, **kwargs):
-            self.messages.append(("DEBUG", msg))
-        
-        def critical(self, msg, *args, **kwargs):
-            self.messages.append(("CRITICAL", msg))
-    
-    return MockLogger()
+    raise RuntimeError("mock_logger fixture is disallowed. Use real logging or caplog.")
 
 @pytest.fixture
 def sample_gnn_files(safe_filesystem) -> Dict[str, Path]:

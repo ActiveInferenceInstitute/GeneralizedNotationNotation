@@ -38,6 +38,7 @@ E[3,type=float]       # Initial policy prior (habit) over actions
 # Hidden State
 s[3,1,type=float]     # Current hidden state distribution
 s_prime[3,1,type=float] # Next hidden state distribution
+F[π,type=float]       # Variational Free Energy for belief updating from observations
 
 # Observation
 o[3,1,type=int]     # Current observation (integer index)
@@ -92,6 +93,7 @@ E={(0.33333, 0.33333, 0.33333)}
 # - State inference using Variational Free Energy with infer_states()
 # - Policy inference using Expected Free Energy = with infer_policies()
 # - Action selection from policy posterior: action = sample_action()
+# - Belief updating using Variational Free Energy with update_beliefs()
 
 ## Time
 Time=t

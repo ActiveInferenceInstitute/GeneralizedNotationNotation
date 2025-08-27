@@ -20,7 +20,6 @@ import psutil
 import tempfile
 from pathlib import Path
 from typing import Dict, Any, List
-from unittest.mock import patch, Mock
 
 # Import test utilities
 from . import (
@@ -234,7 +233,7 @@ class TestMemoryUsagePatterns:
         
     def test_peak_memory_tracking(self, mock_environment, create_model_file):
         """Test peak memory usage tracking."""
-        from utils.resource_manager import track_peak_memory
+        from src.utils.resource_manager import track_peak_memory
         
         @track_peak_memory
         def memory_intensive_operation():
@@ -254,7 +253,7 @@ class TestDiskIOPerformance:
     
     def test_file_write_performance(self, mock_environment):
         """Test file write performance with different file sizes."""
-        from utils.io_utils import batch_write_files
+        from src.utils.io_utils import batch_write_files
         
         # Create test files with correct structure
         files_data = [
@@ -311,7 +310,7 @@ class TestNetworkOperationTiming:
     
     def test_api_request_timing(self, mock_environment):
         """Test API request timing and performance."""
-        from utils.network_utils import timed_request
+        from src.utils.network_utils import timed_request
         
         # Mock API endpoint
         test_url = "https://httpbin.org/delay/1"
@@ -330,7 +329,7 @@ class TestNetworkOperationTiming:
             
     def test_batch_request_performance(self, mock_environment):
         """Test batch request performance."""
-        from utils.network_utils import batch_request
+        from src.utils.network_utils import batch_request
         
         urls = [f"https://api.example.com/test/{i}" for i in range(5)]
         
@@ -348,7 +347,7 @@ class TestResourceScaling:
     @pytest.mark.parametrize("model_count", [1, 3, 10])
     def test_pipeline_scaling(self, mock_environment, create_model_file, model_count):
         """Test pipeline scaling with different model counts."""
-        from pipeline.execution import run_pipeline
+        from src.pipeline.execution import run_pipeline
         
         # Create test files
         for i in range(model_count):
@@ -368,8 +367,8 @@ class TestResourceScaling:
         
     def test_resource_estimation(self, mock_environment, create_model_file):
         """Test resource estimation accuracy."""
-        from pipeline.execution import run_pipeline
-        from utils.resource_manager import estimate_resources
+        from src.pipeline.execution import run_pipeline
+        from src.utils.resource_manager import estimate_resources
         
         model_file = create_model_file("medium")
         

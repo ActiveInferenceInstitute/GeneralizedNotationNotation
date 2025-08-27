@@ -10,7 +10,6 @@ import tempfile
 import json
 import os
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 
 # Test markers
 pytestmark = [pytest.mark.integration, pytest.mark.safe_to_fail]

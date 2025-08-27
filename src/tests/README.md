@@ -155,9 +155,6 @@ python src/tests/run_fast_tests.py
 - `src_dir` - Source directory
 - `test_dir` - Test directory
 - `safe_filesystem` - Safe filesystem operations
-- `mock_subprocess` - Mock subprocess operations
-- `mock_imports` - Mock import operations
-- `mock_logger` - Mock logging
 - `sample_gnn_files` - Sample GNN files
 - `isolated_temp_dir` - Isolated temporary directory
 - `comprehensive_test_data` - Comprehensive test data
@@ -259,9 +256,9 @@ pytest -m "not slow"
 4. **Integration Testing**: Cross-module integration tests
 
 ### Test Writing
-1. **Safe-to-Fail**: Use `@pytest.mark.safe_to_fail` for tests that can fail gracefully
-2. **Import Error Handling**: Wrap imports in try/except blocks
-3. **Comprehensive Assertions**: Test both success and failure cases
+1. **No Mocks**: Do not use mocking frameworks or monkeypatches to simulate behavior. Execute real methods and code paths.
+2. **Import Error Handling**: Wrap imports in try/except blocks; skip if optional deps missing.
+3. **Comprehensive Assertions**: Test both success and failure cases against real artifacts.
 4. **Performance Monitoring**: Use performance tracking for slow operations
 
 ### Test Execution
