@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/actinf_pomdp_agent.md",
+  "output_file": "output/0_template_output/actinf_pomdp_agent/actinf_pomdp_agent_processed.md",
+  "timestamp": "2025-08-27T12:22:12.635762",
+  "file_size_bytes": 4236,
+  "file_size_lines": 129,
+  "processing_options": {
+    "verbose": true,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

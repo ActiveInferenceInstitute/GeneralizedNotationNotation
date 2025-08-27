@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-08-27T12:23:10.609568",
+  "processed_files": 1,
+  "success": true,
+  "errors": [
+    {
+      "file": "input/gnn_files/actinf_pomdp_agent.md",
+      "error": "name 'generate_pymdp_code' is not defined",
+      "error_type": "NameError"
+    }
+  ],
+  "pymdp_generated": [],
+  "rxinfer_generated": [],
+  "activeinference_jl_generated": [],
+  "discopy_generated": []
+}

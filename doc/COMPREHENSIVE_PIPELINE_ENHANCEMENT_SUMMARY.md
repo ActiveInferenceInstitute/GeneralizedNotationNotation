@@ -281,7 +281,7 @@ Enhanced scripts handle error scenarios gracefully:
 - ✅ Include comprehensive documentation and usage examples
 
 ### 3. **Pipeline Integration**
-- ✅ Use standardized argument parsing with `EnhancedArgumentParser`
+- ✅ Use standardized argument parsing with `ArgumentParser`
 - ✅ Implement consistent logging with correlation IDs
 - ✅ Provide clear error messages with actionable guidance
 - ✅ Support both individual and pipeline execution modes

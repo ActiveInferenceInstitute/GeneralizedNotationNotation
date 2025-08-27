@@ -1,0 +1,664 @@
+{
+  "model_name": "Classic Active Inference POMDP Agent v1",
+  "version": "1.0",
+  "annotation": "This model describes a classic Active Inference agent for a discrete POMDP:\n- One observation modality (\"state_observation\") with 3 possible outcomes.\n- One hidden state factor (\"location\") with 3 possible states.\n- The hidden state is fully controllable via 3 discrete actions.\n- The agent's preferences are encoded as log-probabilities over observations.\n- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "566b5ec7-c421-4c77-a3bd-28370ca7784d",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Likelihood mapping hidden states to observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b7229c1c-b472-482c-9489-b3e884121b4a",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        3,
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "State transitions given previous state and action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0256fd40-ff31-4279-a227-4076effd5616",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Log-preferences over observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2451c74b-6e36-4177-9186-8384b150ba9c",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Prior over initial hidden states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "47fa5ffa-6e41-4a1f-9fb4-c6fa9043f844",
+      "name": "E",
+      "var_type": "policy",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Initial policy prior (habit) over actions",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "00f1e28b-7dc6-46dd-985a-7854e18b6b54",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Current hidden state distribution",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "86fa58f9-4363-4a53-8553-e620b9fd2866",
+      "name": "s_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Next hidden state distribution",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5adb1e2d-8626-4be2-9d47-0bf621807a71",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Variational Free Energy for belief updating from observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2b4044cb-a517-4437-b059-71b28c6dc4c6",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Current observation (integer index)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "727e031e-13f4-48aa-99b5-adfcf508dbe6",
+      "name": "π",
+      "var_type": "policy",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Policy (distribution over actions), no planning",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f58fd43d-81ac-41a2-8abd-cc329c0cdf2f",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Action taken",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ca0f75b1-abae-4c58-a55b-60d5e8160105",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Expected Free Energy (per policy)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6b11ea78-35d3-414e-bc53-4d0ba0c1d0d6",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "fa239abe-ced1-4a03-81de-e7b292a89d7d",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "468777b7-db34-468f-abcc-78eabbd984a7",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7c8220c6-fce2-4a26-9d6c-5766c6898890",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "abf6af85-5edd-4f85-83fa-3515840b4c4f",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4a38eae1-62fe-4a5f-835c-b0318b0a49b4",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3b4b93f2-0353-4e6f-a6e6-3b5dd23b8939",
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f4e12cb4-3fda-496b-90c0-2bc3a12ec76c",
+      "source_variables": [
+        "E"
+      ],
+      "target_variables": [
+        "π"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "1c46acf1-cb99-4a25-bd6f-4aa72afc65a6",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "π"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c1e0663a-b1dd-4270-9439-9393a687ac82",
+      "source_variables": [
+        "π"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0b6d51aa-33ad-4431-8323-7c092aa2e9d0",
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c43fe5ce-4be5-42b3-b459-71c67c579878",
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "f36652b9-f858-4039-9a27-edadcd7c47ca",
+      "name": "A",
+      "value": [
+        [
+          0.9,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.9,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "cd78383d-fcf8-4736-8b85-6433291d82e6",
+      "name": "B",
+      "value": [
+        [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "525f7dfe-3768-4369-a394-117821818b5c",
+      "name": "C",
+      "value": [
+        [
+          0.1,
+          0.1,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "65e38f93-1712-4ad5-ac43-eabc79ef0ae9",
+      "name": "D",
+      "value": [
+        [
+          0.33333,
+          0.33333,
+          0.33333
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a8e0bc1d-92a9-44c2-8f98-01af3599abe1",
+      "name": "E",
+      "value": [
+        [
+          0.33333,
+          0.33333,
+          0.33333
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "584b0453-3194-4fbd-a34b-0787ef5a802e",
+      "name": "num_actions: 3       # B actions_dim",
+      "value": "3 (controlled by π)",
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "503d2c1c-6e64-44e6-83b7-792b43cf0725",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "Unbounded # The agent is defined for an unbounded time horizon; simulation runs may specify a finite horizon.",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "507eeb3d-125f-49b6-ac9c-2e06252f5b6d",
+      "variable_name": "A",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "cdd654ec-3f7c-4dfd-8bad-62db5fef2f90",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "69ee3053-3a33-4614-96e5-1ca3d96dde83",
+      "variable_name": "C",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6c6c07a6-1c5c-47f1-ae48-23726a3a9e57",
+      "variable_name": "D",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "d33f1935-7837-4a13-b802-087bda0933f8",
+      "variable_name": "E",
+      "ontology_term": "Habit",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6e1cd1a2-c533-4aae-8f2d-13da8853e813",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "278723f4-6db0-4cd4-a4ec-253a9bc1228a",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "18554a5b-3d85-4f08-86b0-39e05d5a6769",
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b33f6ed3-4da5-4ff0-a8c9-8beae871833e",
+      "variable_name": "s_prime",
+      "ontology_term": "NextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "72a1cce1-efcd-4a01-b3e9-6f4ab41b0b98",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "70ea8474-9702-4271-ac9a-d0d882b99ba2",
+      "variable_name": "π",
+      "ontology_term": "PolicyVector # Distribution over actions",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ba886191-d466-46b7-932f-6246129d618a",
+      "variable_name": "u",
+      "ontology_term": "Action       # Chosen action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "db97dcc6-61f8-48e9-94fa-c1459d0dd380",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2025-08-27T12:23:00.442111",
+  "modified_at": "2025-08-27T12:23:00.442112",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP",
+    "footer": "Active Inference POMDP Agent v1 - GNN Representation. \nCurrently there is a planning horizon of 1 step (no deep planning), no precision modulation, no hierarchical nesting.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Classic Active Inference POMDP Agent v1",
+    "ModelAnnotation": "This model describes a classic Active Inference agent for a discrete POMDP:\n- One observation modality (\"state_observation\") with 3 possible outcomes.\n- One hidden state factor (\"location\") with 3 possible states.\n- The hidden state is fully controllable via 3 discrete actions.\n- The agent's preferences are encoded as log-probabilities over observations.\n- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.",
+    "StateSpaceBlock": "# Likelihood matrix: A[observation_outcomes, hidden_states]\nA[3,3,type=float]   # Likelihood mapping hidden states to observations\n\n# Transition matrix: B[states_next, states_previous, actions]\nB[3,3,3,type=float]   # State transitions given previous state and action\n\n# Preference vector: C[observation_outcomes]\nC[3,type=float]       # Log-preferences over observations\n\n# Prior vector: D[states]\nD[3,type=float]       # Prior over initial hidden states\n\n# Habit vector: E[actions]\nE[3,type=float]       # Initial policy prior (habit) over actions\n\n# Hidden State\ns[3,1,type=float]     # Current hidden state distribution\ns_prime[3,1,type=float] # Next hidden state distribution\nF[π,type=float]       # Variational Free Energy for belief updating from observations\n\n# Observation\no[3,1,type=int]     # Current observation (integer index)\n\n# Policy and Control\nπ[3,type=float]       # Policy (distribution over actions), no planning\nu[1,type=int]         # Action taken\nG[π,type=float]       # Expected Free Energy (per policy)\n\n# Time\nt[1,type=int]         # Discrete time step",
+    "Connections": "D>s\ns-A\ns>s_prime\nA-o\ns-B\nC>G\nE>π\nG>π\nπ>u\nB>u\nu>s_prime",
+    "InitialParameterization": "# A: 3 observations x 3 hidden states. Identity mapping (each state deterministically produces a unique observation). Rows are observations, columns are hidden states.\nA={\n  (0.9, 0.05, 0.05),\n  (0.05, 0.9, 0.05),\n  (0.05, 0.05, 0.9)\n}\n\n# B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state. For each slice, rows are previous states, columns are next states. Each slice is a transition matrix corresponding to a different action selection.\nB={\n  ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ),\n  ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ),\n  ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) )\n}\n\n# C: 3 observations. Preference in terms of log-probabilities over observations.\nC={(0.1, 0.1, 1.0)}\n\n# D: 3 states. Uniform prior over hidden states. Rows are hidden states, columns are prior probabilities.\nD={(0.33333, 0.33333, 0.33333)}\n\n# E: 3 actions. Uniform habit used as initial policy prior.\nE={(0.33333, 0.33333, 0.33333)}",
+    "Equations": "# Standard Active Inference update equations for POMDPs:\n# - State inference using Variational Free Energy with infer_states()\n# - Policy inference using Expected Free Energy = with infer_policies()\n# - Action selection from policy posterior: action = sample_action()\n# - Belief updating using Variational Free Energy with update_beliefs()",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=Unbounded # The agent is defined for an unbounded time horizon; simulation runs may specify a finite horizon.",
+    "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=TransitionMatrix\nC=LogPreferenceVector\nD=PriorOverHiddenStates\nE=Habit\nF=VariationalFreeEnergy\nG=ExpectedFreeEnergy\ns=HiddenState\ns_prime=NextHiddenState\no=Observation\nπ=PolicyVector # Distribution over actions\nu=Action       # Chosen action\nt=Time",
+    "ModelParameters": "num_hidden_states: 3  # s[3]\nnum_obs: 3           # o[3]\nnum_actions: 3       # B actions_dim=3 (controlled by π)",
+    "Footer": "Active Inference POMDP Agent v1 - GNN Representation. \nCurrently there is a planning horizon of 1 step (no deep planning), no precision modulation, no hierarchical nesting.",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

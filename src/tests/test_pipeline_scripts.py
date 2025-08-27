@@ -134,7 +134,7 @@ class TestPipelineScriptDiscovery:
         # Check for argument parsing - multiple patterns including standardized pipeline scripts
         has_argparse = (
             "argparse" in content or
-            "EnhancedArgumentParser" in content or
+            "ArgumentParser" in content or
             "ArgumentParser" in content or
             "parse_args" in content or
             "add_argument" in content or
@@ -561,7 +561,7 @@ class TestPipelineScriptIntegration:
             
             # Check if script uses standardized pipeline template (more flexible approach)
             uses_template = "create_standardized_pipeline_script" in content
-            has_enhanced_parser = "EnhancedArgumentParser" in content
+            has_argument_parser = "ArgumentParser" in content
             has_argparse = "argparse" in content
             
             if uses_template:

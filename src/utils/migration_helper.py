@@ -48,7 +48,7 @@ class PipelineMigrationHelper:
             
             # Check for enhanced argument parsing opportunities
             if self._needs_enhanced_argument_parsing(content, module_path):
-                issues["missing_enhanced_imports"].append("Could use EnhancedArgumentParser")
+                issues["missing_enhanced_imports"].append("Could use ArgumentParser")
             
             # Check for hardcoded paths
             hardcoded = self._find_hardcoded_paths(content)
@@ -124,7 +124,7 @@ class PipelineMigrationHelper:
     def _needs_enhanced_argument_parsing(self, content: str, module_path: Path) -> bool:
         """Check if module could benefit from enhanced argument parsing."""
         # Skip if already using enhanced parser
-        if "EnhancedArgumentParser" in content:
+        if "ArgumentParser" in content:
             return False
             
         # Check if it's a pipeline step that parses arguments
@@ -133,7 +133,7 @@ class PipelineMigrationHelper:
         
         # Check main.py specifically
         if module_path.name == "main.py":
-            return "ArgumentParser" in content and "EnhancedArgumentParser" not in content
+            return "ArgumentParser" in content
             
         return False
     
@@ -190,7 +190,7 @@ class PipelineMigrationHelper:
         if module_path.name == "main.py":
             if "from utils import" in content and "setup_main_logging" not in content:
                 # This is a complex change, just suggest it
-                changes.append("💡 Consider adding: setup_main_logging, EnhancedArgumentParser")
+                changes.append("💡 Consider adding: setup_main_logging, ArgumentParser")
         
         return content, changes
     

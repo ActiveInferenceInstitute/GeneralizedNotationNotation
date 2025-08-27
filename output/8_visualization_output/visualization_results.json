@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-08-27T12:23:01.531932",
+  "source_directory": "input/gnn_files",
+  "output_directory": "output/8_visualization_output",
+  "files_visualized": [
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "visualizations": {
+        "matrix": {
+          "success": true,
+          "result": [
+            "output/8_visualization_output/actinf_pomdp_agent/matrix_analysis.png",
+            "output/8_visualization_output/actinf_pomdp_agent/matrix_statistics.png"
+          ]
+        },
+        "network": {
+          "success": false,
+          "result": []
+        },
+        "combined": {
+          "success": false,
+          "result": []
+        }
+      },
+      "success": true
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "successful_visualizations": 1,
+    "failed_visualizations": 0,
+    "total_images_generated": 4,
+    "visualization_types": {
+      "matrix": 1,
+      "network": 1,
+      "combined": 1
+    }
+  }
+}

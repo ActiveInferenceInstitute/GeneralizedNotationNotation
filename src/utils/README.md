@@ -70,10 +70,10 @@ Logs warnings during pipeline step execution.
 - Action recommendations
 - Warning categorization
 
-### Enhanced Argument Parsing
+### Argument Parsing
 
-#### `EnhancedArgumentParser`
-Enhanced argument parser with fallback capabilities.
+#### `ArgumentParser`
+Standard argument parser with comprehensive pipeline support.
 
 **Features:**
 - Graceful degradation
@@ -83,7 +83,7 @@ Enhanced argument parser with fallback capabilities.
 - Error handling
 
 #### `parse_step_arguments() -> argparse.Namespace`
-Parses arguments with fallback for graceful degradation.
+Parses arguments for specific pipeline steps with fallback for graceful degradation.
 
 **Parsing Features:**
 - Standard argument parsing
@@ -216,21 +216,18 @@ except Exception as e:
     raise
 ```
 
-### Enhanced Argument Parsing
+### Argument Parsing
 
 ```python
-from utils import EnhancedArgumentParser
+from utils.argument_utils import ArgumentParser
 
-# Parse arguments with fallback
-try:
-    args = EnhancedArgumentParser.parse_step_arguments()
-except Exception as e:
-    # Fallback to basic argument parser
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--target-dir", type=Path, required=True)
-    parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--verbose", action="store_true")
-    args = parser.parse_args()
+# Parse arguments for a specific step
+args = ArgumentParser.parse_step_arguments("step_name")
+
+# Access parsed arguments
+target_dir = args.target_dir
+output_dir = args.output_dir
+verbose = args.verbose
 ```
 
 ### Pipeline Orchestration
@@ -341,19 +338,11 @@ def process_my_module(target_dir: Path, output_dir: Path, verbose: bool = False,
 
 ### Argument Parsing Pattern
 ```python
-# Standard argument parsing with fallback
-def parse_step_arguments():
-    """Parse arguments with fallback for graceful degradation."""
-    try:
-        parser = EnhancedArgumentParser.parse_step_arguments()
-        return parser.parse_args()
-    except Exception as e:
-        # Fallback to basic argument parser
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--target-dir", type=Path, required=True)
-        parser.add_argument("--output-dir", type=Path, required=True)
-        parser.add_argument("--verbose", action="store_true")
-        return parser.parse_args()
+# Standard argument parsing for pipeline steps
+def parse_step_arguments(step_name):
+    """Parse arguments for a specific pipeline step."""
+    from utils.argument_utils import ArgumentParser
+    return ArgumentParser.parse_step_arguments(step_name)
 ```
 
 ## Configuration Options
@@ -410,7 +399,7 @@ except Exception as e:
 ```python
 # Handle argument parsing failures gracefully
 try:
-    args = EnhancedArgumentParser.parse_step_arguments()
+    args = ArgumentParser.parse_step_arguments("step_name")
 except Exception as e:
     # Fallback to basic argument parser
     parser = argparse.ArgumentParser()
@@ -468,7 +457,7 @@ def test_utility_pipeline():
     logger = setup_step_logging("test_module")
     
     # Test argument parsing
-    args = EnhancedArgumentParser.parse_step_arguments()
+    args = ArgumentParser.parse_step_arguments("step_name")
     
     # Test file operations
     success = ensure_directory_exists(Path("test_dir/"))

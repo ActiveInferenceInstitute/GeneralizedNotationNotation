@@ -53,7 +53,7 @@ try:
         log_step_error,
         log_step_warning
     )
-    from utils.argument_utils import EnhancedArgumentParser
+    from utils.argument_utils import ArgumentParser
     from pipeline.config import get_output_dir_for_script, get_pipeline_config
     
     # Infrastructure imports
@@ -195,7 +195,7 @@ def process_template_standardized_wrapper(
 
 def main():
     """Main template processing function."""
-    args = EnhancedArgumentParser.parse_step_arguments("0_template.py")
+    args = ArgumentParser.parse_step_arguments("0_template.py")
     
     # Setup logging
     logger = setup_step_logging("template", args)

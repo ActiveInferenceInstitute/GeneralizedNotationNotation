@@ -59,7 +59,7 @@ src/
 # main.py - Central pipeline orchestrator
 def main():
     """Main pipeline orchestration function."""
-    args = EnhancedArgumentParser.parse_step_arguments()
+    args = ArgumentParser.parse_step_arguments("main.py")
     
     # Define pipeline steps
     pipeline_steps = [
@@ -144,7 +144,8 @@ def process_template_standardized_wrapper(
 
 def main():
     """Main template processing function."""
-    args = EnhancedArgumentParser.parse_step_arguments("0_template.py")
+    from utils.argument_utils import ArgumentParser
+    args = ArgumentParser.parse_step_arguments("0_template.py")
     logger = setup_step_logging("template", args)
     
     success = process_template_standardized_wrapper(

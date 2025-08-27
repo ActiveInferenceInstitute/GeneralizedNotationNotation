@@ -126,10 +126,15 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
     if verbose:
         logger.setLevel(logging.DEBUG)
 
+    # Ensure output directory exists
+    output_dir.mkdir(parents=True, exist_ok=True)
+
     try:
         # Load parsed GNN data from previous step
         from pipeline.config import get_output_dir_for_script
-        gnn_output_dir = get_output_dir_for_script("3_gnn.py", output_dir)
+        # Look in the base output directory, not the step-specific directory
+        base_output_dir = Path(output_dir).parent if Path(output_dir).name.startswith(('6_validation', '7_export', '8_visualization')) else output_dir
+        gnn_output_dir = get_output_dir_for_script("3_gnn.py", base_output_dir)
         # Step 3 uses double-nested output directory structure
         gnn_nested_dir = gnn_output_dir / "3_gnn_output"
         gnn_results_file = gnn_nested_dir / "gnn_processing_results.json"

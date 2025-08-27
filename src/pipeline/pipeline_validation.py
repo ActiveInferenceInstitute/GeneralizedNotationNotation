@@ -203,11 +203,11 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
         
         # Check for consistent argument parsing
         if module_path.name == "main.py":
-            if "EnhancedArgumentParser" not in content:
-                issues["suggestions"].append("Consider using EnhancedArgumentParser for better argument handling")
+            if "ArgumentParser" not in content:
+                issues["suggestions"].append("Consider using ArgumentParser for better argument handling")
         elif "__name__ == '__main__'" in content:
-            if "argparse.ArgumentParser" in content and "EnhancedArgumentParser" not in content:
-                issues["suggestions"].append("Consider using EnhancedArgumentParser.parse_step_arguments for consistency")
+            if "argparse.ArgumentParser" in content and "ArgumentParser" not in content:
+                issues["suggestions"].append("Consider using ArgumentParser.parse_step_arguments for consistency")
         
         # Check for performance tracking usage
         if module_path.name in ['5_export.py', '6_visualization.py', '9_render.py', '10_execute.py', '11_llm.py', '12_audio.py', '13_website.py', '14_report.py']:
@@ -282,7 +282,7 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
         if warning_modules > 0:
             recommendations.append(f"🟡 **Improve**: Address warnings in {warning_modules} modules")
             recommendations.append("   - Add missing required imports (log_step_*, setup_step_logging)")
-            recommendations.append("   - Consider using EnhancedArgumentParser for consistency")
+            recommendations.append("   - Consider using ArgumentParser for consistency")
     
     # Configuration recommendations
     config_issues = report.get("configuration_validation", {})

@@ -50,7 +50,7 @@ class PipelineScriptValidator:
         # Expected patterns for safe pipeline scripts
         self.required_imports = {
             "utils.pipeline_template": ["setup_step_logging", "log_step_start", "log_step_success", "log_step_error"],
-            "utils.argument_utils": ["EnhancedArgumentParser"],
+            "utils.argument_utils": ["ArgumentParser"],
             "pipeline.config": ["get_output_dir_for_script", "get_pipeline_config"]
         }
         

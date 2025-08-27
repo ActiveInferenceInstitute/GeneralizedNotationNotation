@@ -249,7 +249,7 @@ def process_setup_standardized(
         return False
 
 run_script = create_standardized_pipeline_script(
-    "1_setup",
+    "1_setup.py",
     process_setup_standardized,
     "Project setup and environment validation",
 )

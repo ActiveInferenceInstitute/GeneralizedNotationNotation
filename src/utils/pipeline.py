@@ -69,10 +69,10 @@ def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, 
     try:
         # Try to import actual utilities
         from .logging_utils import setup_step_logging
-        from .argument_utils import EnhancedArgumentParser
+        from .argument_utils import ArgumentParser
         
         logger = setup_step_logging(step_name, verbose)
-        parser = EnhancedArgumentParser()
+        parser = ArgumentParser
         
         return logger, parser
         

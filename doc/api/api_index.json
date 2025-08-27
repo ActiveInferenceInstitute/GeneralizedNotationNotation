@@ -41628,7 +41628,7 @@
           ]
         },
         {
-          "name": "EnhancedArgumentParser",
+          "name": "ArgumentParser",
           "lineno": 737,
           "bases": [
             "ArgumentParser"

@@ -843,7 +843,7 @@ def generate_test_report(test_results: Dict[str, Any], syntax_errors: List[str])
 
 # --- Main Execution Function ---
 run_script = create_standardized_pipeline_script(
-    "2_tests",
+    "2_tests.py",
     process_tests_standardized,
     "Comprehensive test suite execution",
 )

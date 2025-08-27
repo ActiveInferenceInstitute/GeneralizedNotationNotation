@@ -44,7 +44,7 @@ from validation import process_validation
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "6_validation",
+    "6_validation.py",
     process_validation,
     "Validation and quality assurance processing"
 )
