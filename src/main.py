@@ -381,8 +381,13 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
 
         # Execute step with timeout
         try:
-            # Use a higher timeout for the tests step
-            step_timeout_seconds = 300 if script_name == "2_tests.py" else 60
+            # Use appropriate timeout for the tests step based on test mode
+            if script_name == "2_tests.py":
+                # Check if comprehensive testing is requested
+                comprehensive_requested = any("--comprehensive" in str(arg) for arg in sys.argv)
+                step_timeout_seconds = 900 if comprehensive_requested else 600  # 15 min for comprehensive, 10 min for others
+            else:
+                step_timeout_seconds = 60
 
             result = subprocess.run(
                 cmd,

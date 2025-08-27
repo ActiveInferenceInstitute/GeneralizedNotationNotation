@@ -572,7 +572,7 @@ class TestUtilsModule:
     @pytest.mark.skipif(not UTILS_AVAILABLE, reason="Utils module not available")
     def test_module_imports(self):
         """Test that all expected functions are available."""
-        assert hasattr(src.utils, 'EnhancedArgumentParser')
+        assert hasattr(src.utils, 'ArgumentParser')
         assert hasattr(src.utils, 'PipelineLogger')
         assert hasattr(src.utils, 'performance_tracker')
         assert hasattr(src.utils, 'validate_pipeline_dependencies')
@@ -581,8 +581,8 @@ class TestUtilsModule:
     @pytest.mark.skipif(not UTILS_AVAILABLE, reason="Utils module not available")
     def test_utils_classes_instantiation(self):
         """Test that utility classes can be instantiated."""
-        from src.utils.argument_utils import EnhancedArgumentParser
-        parser = EnhancedArgumentParser()
+        from src.utils.argument_utils import ArgumentParser
+        parser = ArgumentParser()
         assert parser is not None
 
 

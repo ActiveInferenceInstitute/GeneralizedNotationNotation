@@ -507,8 +507,19 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
     cmd = [python_executable, str(script_path)]
     
     # Get supported arguments for this step
+    # Try both with and without .py extension
     supported_args = ArgumentParser.STEP_ARGUMENTS.get(step_name, [])
-    
+    if not supported_args and not step_name.endswith('.py'):
+        supported_args = ArgumentParser.STEP_ARGUMENTS.get(f"{step_name}.py", [])
+    elif not supported_args and step_name.endswith('.py'):
+        supported_args = ArgumentParser.STEP_ARGUMENTS.get(step_name[:-3], [])
+
+    # Special handling for 2_tests.py - only pass test-specific arguments
+    if step_name in ['2_tests', '2_tests.py']:
+        # Filter to only test-relevant arguments that the test script can handle
+        test_args = ['target_dir', 'output_dir', 'verbose', 'fast_only', 'include_slow', 'include_performance', 'comprehensive']
+        supported_args = [arg for arg in supported_args if arg in test_args]
+
     # Build arguments
     for arg_name in supported_args:
         if not hasattr(pipeline_args, arg_name):

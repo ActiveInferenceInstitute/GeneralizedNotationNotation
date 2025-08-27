@@ -1,0 +1,499 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.7, pytest-8.4.1, pluggy-1.6.0 -- /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+metadata: {'Python': '3.11.7', 'Platform': 'Linux-6.12.10-76061203-generic-x86_64-with-glibc2.35', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'cov': '6.2.1', 'timeout': '2.4.0', 'asyncio': '1.1.0', 'benchmark': '5.1.0', 'xdist': '3.8.0', 'sugar': '1.0.0', 'metadata': '3.1.1', 'anyio': '4.10.0', 'mock': '3.14.1', 'json-report': '1.5.0'}}
+rootdir: /home/trim/Documents/GitHub/GeneralizedNotationNotation
+configfile: pytest.ini
+plugins: cov-6.2.1, timeout-2.4.0, asyncio-1.1.0, benchmark-5.1.0, xdist-3.8.0, sugar-1.0.0, metadata-3.1.1, anyio-4.10.0, mock-3.14.1, json-report-1.5.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 81 items
+
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation SKIPPEDture: simple.gnn
+assert False)
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports PASSED
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering PASSED
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering PASSED
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering PASSED
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports PASSED
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation PASSED
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution PASSED
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports PASSED
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis PASSED
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation PASSED
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports PASSED
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration PASSED
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling PASSED
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports PASSED
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation PASSED
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports PASSED
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation PASSED
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation PASSED
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports PASSED
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion SKIPPEDd positional argument:
+'model_name')
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation PASSED
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation PASSED
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination PASSED
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow PASSED
+src/tests/test_core_modules.py::test_core_module_completeness PASSED
+src/tests/test_core_modules.py::test_core_module_performance PASSED
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports PASSED
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation PASSED
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation PASSED
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info PASSED
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation PASSED
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup PASSED
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation PASSED
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check PASSED
+src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration PASSED
+src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration SKIPPED
+src/tests/test_environment_overall.py::test_environment_module_completeness PASSED
+src/tests/test_environment_overall.py::test_environment_module_performance PASSED
+src/tests/test_fast_suite.py::TestFastEnvironment::test_python_environment PASSED
+src/tests/test_fast_suite.py::TestFastEnvironment::test_test_configuration PASSED
+src/tests/test_fast_suite.py::TestFastEnvironment::test_essential_directories PASSED
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_module_import PASSED
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_file_creation PASSED
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_content_validation PASSED
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_utils_module_import PASSED
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_pipeline_module_import PASSED
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_type_checker_import PASSED
+src/tests/test_fast_suite.py::TestFastExport::test_export_module_import PASSED
+src/tests/test_fast_suite.py::TestFastExport::test_basic_export_functionality PASSED
+src/tests/test_fast_suite.py::TestFastVisualization::test_visualization_module_import PASSED
+src/tests/test_fast_suite.py::TestFastRender::test_render_module_import PASSED
+src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import PASSED
+src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import PASSED
+src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import PASSED
+src/tests/test_fast_suite.py::TestFastOntology::test_ontology_module_import PASSED
+src/tests/test_fast_suite.py::TestFastSAPF::test_sapf_module_import PASSED
+src/tests/test_fast_suite.py::TestFastWebsite::test_website_module_import PASSED
+src/tests/test_fast_suite.py::TestFastIntegration::test_basic_pipeline_flow PASSED
+src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_setup PASSED
+src/tests/test_fast_suite.py::test_fast_suite_completeness PASSED
+src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports PASSED
+src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports PASSED
+src/tests/test_gnn_overall.py::TestGNNReporting::test_reporting_imports PASSED
+src/tests/test_gnn_overall.py::TestGNNReporting::test_generate_report SKIPPED
+src/tests/test_gnn_overall.py::TestGNNReporting::test_create_summary SKIPPED
+src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_module_imports PASSED
+src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_orchestrator_instantiation PASSED
+src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_step_instantiation PASSED
+src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_module_info PASSED
+src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_config PASSED
+src/tests/test_pipeline_overall.py::TestPipelineFunctionality::test_pipeline_execution PASSED
+src/tests/test_pipeline_overall.py::TestPipelineFunctionality::test_pipeline_step_validation PASSED
+src/tests/test_pipeline_overall.py::TestPipelineFunctionality::test_pipeline_discovery PASSED
+src/tests/test_pipeline_overall.py::TestPipelineIntegration::test_pipeline_module_integration PASSED
+src/tests/test_pipeline_overall.py::TestPipelineIntegration::test_pipeline_mcp_integration PASSED
+src/tests/test_pipeline_overall.py::test_pipeline_module_completeness PASSED
+src/tests/test_pipeline_overall.py::test_pipeline_module_performance PASSED
+
+==================================== PASSES ====================================
+______________ TestGNNModuleComprehensive.test_gnn_module_imports ______________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:62 GNN module imports validated
+______________ TestGNNModuleComprehensive.test_gnn_file_discovery ______________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:85 GNN file discovery validated: 1 files found
+_______________ TestGNNModuleComprehensive.test_gnn_file_parsing _______________
+------------------------------ Captured log call -------------------------------
+WARNING  root:test_core_modules.py:107 Failed to parse simple.gnn: Parsed data should contain ModelName
+assert 'ModelName' in {'file_path': '/tmp/tmpe6tr003u/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-08-27T12:00:12.784621'}
+___________ TestRenderModuleComprehensive.test_render_module_imports ___________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:156 Render module imports validated
+______________ TestRenderModuleComprehensive.test_pymdp_rendering ______________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:172 PyMDP rendering validated
+_____________ TestRenderModuleComprehensive.test_rxinfer_rendering _____________
+------------------------------ Captured log call -------------------------------
+WARNING  root:test_core_modules.py:189 RxInfer rendering failed: generate_rxinfer_code() takes 1 positional argument but 2 were given
+__________ TestExecuteModuleComprehensive.test_execute_module_imports __________
+------------------------------ Captured log call -------------------------------
+WARNING  root:pymdp_simulation.py:50 PyMDP not available - simulation will gracefully degrade with informative output
+WARNING  src.execute.discopy.discopy_executor:discopy_executor.py:28 DisCoPy translator module not available: No module named 'src.execute.discopy_translator_module'
+_____ TestExecuteModuleComprehensive.test_execution_environment_validation _____
+------------------------------ Captured log call -------------------------------
+WARNING  root:test_core_modules.py:244 Execution environment validation failed: Status should contain python_version
+assert 'python_version' in {'valid': False, 'issues': ['validate_execution_environment not available']}
+______________ TestLLMModuleComprehensive.test_llm_module_imports ______________
+------------------------------ Captured log call -------------------------------
+INFO     src.llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['openai']
+INFO     src.llm.llm_operations:llm_operations.py:87 Created new LLM processor
+______________ TestLLMModuleComprehensive.test_llm_model_analysis ______________
+------------------------------ Captured log call -------------------------------
+INFO     src.llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['openai']
+INFO     src.llm.llm_operations:llm_operations.py:87 Created new LLM processor
+INFO     src.llm.providers.openai_provider:openai_provider.py:95 OpenAI provider initialized successfully
+INFO     src.llm.llm_processor:llm_processor.py:201 Initialized openai provider
+WARNING  src.llm.providers.openrouter_provider:openrouter_provider.py:116 OpenRouter API key not provided
+WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize openrouter provider
+WARNING  src.llm.providers.perplexity_provider:perplexity_provider.py:90 Perplexity API key not provided
+WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize perplexity provider
+INFO     src.llm.providers.ollama_provider:ollama_provider.py:86 Ollama provider initialized (CLI fallback)
+INFO     src.llm.llm_processor:llm_processor.py:201 Initialized ollama provider
+INFO     src.llm.llm_processor:llm_processor.py:211 LLM Processor initialized with 2 providers
+INFO     httpx:_client.py:1740 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+ERROR    src.llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************m_oA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+ERROR    src.llm.llm_processor:llm_processor.py:334 Analysis failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************m_oA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+INFO     httpx:_client.py:1740 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+ERROR    src.llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************m_oA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+WARNING  src.llm.llm_processor:llm_processor.py:356 Fallback failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************m_oA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+______________ TestMCPModuleComprehensive.test_mcp_module_imports ______________
+------------------------------ Captured log call -------------------------------
+INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+INFO     root:test_core_modules.py:346 MCP module imports validated
+____________ TestMCPModuleComprehensive.test_mcp_tool_registration _____________
+------------------------------ Captured log call -------------------------------
+WARNING  root:test_core_modules.py:372 MCP tool registration failed: Tools should be a list
+assert False
+ +  where False = isinstance(True, list)
+_____________ TestMCPModuleComprehensive.test_mcp_request_handling _____________
+------------------------------ Captured log call -------------------------------
+INFO     src.mcp.processor:processor.py:72 Handling MCP request: tools/list
+INFO     root:test_core_modules.py:392 MCP request handling validated
+________ TestOntologyModuleComprehensive.test_ontology_term_validation _________
+------------------------------ Captured log call -------------------------------
+INFO     ontology:pipeline_template.py:47 🚀 Processing ontology
+INFO     ontology:pipeline_template.py:48 ✅ Ontology processing completed successfully
+____________ TestWebsiteModuleComprehensive.test_website_generation ____________
+------------------------------ Captured log call -------------------------------
+INFO     website:renderer.py:152 Website generated successfully with 1 pages
+___________ TestWebsiteModuleComprehensive.test_html_report_creation ___________
+------------------------------ Captured log call -------------------------------
+INFO     website:renderer.py:152 Website generated successfully with 1 pages
+_____________ TestSAPFModuleComprehensive.test_sapf_module_imports _____________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:559 SAPF module imports validated successfully
+_______________ TestSAPFModuleComprehensive.test_sapf_validation _______________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:636 SAPF validation functionality confirmed
+____________ TestSAPFModuleComprehensive.test_sapf_audio_generation ____________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:655 SAPF audio generation functionality confirmed
+______________ TestCoreModuleIntegration.test_module_coordination ______________
+------------------------------ Captured log call -------------------------------
+WARNING  root:test_core_modules.py:679 Core module coordination failed: cannot import name 'execute_gnn_model' from 'src.execute' (/home/trim/Documents/GitHub/GeneralizedNotationNotation/src/execute/__init__.py)
+_______________ TestCoreModuleIntegration.test_module_data_flow ________________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:694 Module data flow validated
+________________________ test_core_module_completeness _________________________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:701 Core module completeness test passed
+_________________________ test_core_module_performance _________________________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:707 Core module performance test completed
+________ TestEnvironmentModuleComprehensive.test_environment_validation ________
+------------------------------ Captured log call -------------------------------
+INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
+INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.11.7
+INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.5
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 25.54GB free
+INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
+INFO     setup.setup:setup.py:359 📦 Found 286 installed packages using UV
+INFO     setup.setup:setup.py:369 📋 Key installed packages:
+INFO     setup.setup:setup.py:372   - pytest: 8.4.1
+INFO     setup.setup:setup.py:372   - numpy: 2.2.6
+INFO     setup.setup:setup.py:372   - matplotlib: 3.10.5
+INFO     setup.setup:setup.py:372   - scipy: 1.16.1
+INFO     setup.setup:setup.py:378 📄 Full package list saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+__________ TestEnvironmentFunctionality.test_dependency_installation ___________
+------------------------------ Captured log call -------------------------------
+INFO     setup.setup:setup.py:276 📦 Installing dependencies from /home/trim/Documents/GitHub/GeneralizedNotationNotation/pyproject.toml using UV sync
+INFO     setup.setup:setup.py:305 ✅ Dependencies installed using UV in 0.3s
+INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
+INFO     setup.setup:setup.py:359 📦 Found 145 installed packages using UV
+INFO     setup.setup:setup.py:363 📋 Installed packages:
+INFO     setup.setup:setup.py:365   - absl-py: 2.3.1
+INFO     setup.setup:setup.py:365   - aiofiles: 24.1.0
+INFO     setup.setup:setup.py:365   - aiohappyeyeballs: 2.6.1
+INFO     setup.setup:setup.py:365   - aiohttp: 3.12.15
+INFO     setup.setup:setup.py:365   - aiosignal: 1.4.0
+INFO     setup.setup:setup.py:365   - altair: 5.5.0
+INFO     setup.setup:setup.py:365   - annotated-types: 0.7.0
+INFO     setup.setup:setup.py:365   - anyio: 4.10.0
+INFO     setup.setup:setup.py:365   - attrs: 25.3.0
+INFO     setup.setup:setup.py:365   - authlib: 1.6.1
+INFO     setup.setup:setup.py:365   - bandit: 1.8.6
+INFO     setup.setup:setup.py:365   - black: 25.1.0
+INFO     setup.setup:setup.py:365   - certifi: 2025.8.3
+INFO     setup.setup:setup.py:365   - cffi: 1.17.1
+INFO     setup.setup:setup.py:365   - charset-normalizer: 3.4.2
+INFO     setup.setup:setup.py:365   - chex: 0.1.90
+INFO     setup.setup:setup.py:365   - click: 8.2.1
+INFO     setup.setup:setup.py:365   - contourpy: 1.3.3
+INFO     setup.setup:setup.py:365   - coverage: 7.10.2
+INFO     setup.setup:setup.py:365   - cryptography: 45.0.6
+INFO     setup.setup:setup.py:365   - cycler: 0.12.1
+INFO     setup.setup:setup.py:365   - defusedxml: 0.7.1
+INFO     setup.setup:setup.py:365   - discopy: 1.2.0
+INFO     setup.setup:setup.py:365   - dparse: 0.6.4
+INFO     setup.setup:setup.py:365   - etils: 1.13.0
+INFO     setup.setup:setup.py:365   - execnet: 2.1.1
+INFO     setup.setup:setup.py:365   - filelock: 3.16.1
+INFO     setup.setup:setup.py:365   - flake8: 7.3.0
+INFO     setup.setup:setup.py:365   - flax: 0.11.0
+INFO     setup.setup:setup.py:365   - fonttools: 4.59.0
+INFO     setup.setup:setup.py:365   - frozenlist: 1.7.0
+INFO     setup.setup:setup.py:365   - fsspec: 2025.7.0
+INFO     setup.setup:setup.py:365   - generalized-notation-notation: 1.1.0
+INFO     setup.setup:setup.py:365   - h11: 0.16.0
+INFO     setup.setup:setup.py:365   - httpcore: 1.0.9
+INFO     setup.setup:setup.py:365   - httpx: 0.28.1
+INFO     setup.setup:setup.py:365   - humanize: 4.12.3
+INFO     setup.setup:setup.py:365   - idna: 3.10
+INFO     setup.setup:setup.py:365   - importlib-resources: 6.5.2
+INFO     setup.setup:setup.py:365   - iniconfig: 2.1.0
+INFO     setup.setup:setup.py:365   - jax: 0.7.0
+INFO     setup.setup:setup.py:365   - jaxlib: 0.7.0
+INFO     setup.setup:setup.py:365   - jinja2: 3.1.6
+INFO     setup.setup:setup.py:365   - joblib: 1.5.1
+INFO     setup.setup:setup.py:365   - jsonschema: 4.25.0
+INFO     setup.setup:setup.py:365   - jsonschema-specifications: 2025.4.1
+INFO     setup.setup:setup.py:365   - kiwisolver: 1.4.8
+INFO     setup.setup:setup.py:365   - markdown: 3.8.2
+INFO     setup.setup:setup.py:365   - markdown-it-py: 3.0.0
+INFO     setup.setup:setup.py:365   - markupsafe: 3.0.2
+INFO     setup.setup:setup.py:365   - marshmallow: 4.0.0
+INFO     setup.setup:setup.py:365   - matplotlib: 3.10.5
+INFO     setup.setup:setup.py:365   - mccabe: 0.7.0
+INFO     setup.setup:setup.py:365   - mdurl: 0.1.2
+INFO     setup.setup:setup.py:365   - ml-dtypes: 0.5.3
+INFO     setup.setup:setup.py:365   - mpmath: 1.3.0
+INFO     setup.setup:setup.py:365   - msgpack: 1.1.1
+INFO     setup.setup:setup.py:365   - multidict: 6.6.3
+INFO     setup.setup:setup.py:365   - mypy: 1.17.1
+INFO     setup.setup:setup.py:365   - mypy-extensions: 1.1.0
+INFO     setup.setup:setup.py:365   - narwhals: 2.0.1
+INFO     setup.setup:setup.py:365   - nest-asyncio: 1.6.0
+INFO     setup.setup:setup.py:365   - networkx: 3.5
+INFO     setup.setup:setup.py:365   - nltk: 3.9.1
+INFO     setup.setup:setup.py:365   - nose: 1.3.7
+INFO     setup.setup:setup.py:365   - numpy: 2.2.6
+INFO     setup.setup:setup.py:365   - nvidia-cublas-cu12: 12.8.4.1
+INFO     setup.setup:setup.py:365   - nvidia-cuda-cupti-cu12: 12.8.90
+INFO     setup.setup:setup.py:365   - nvidia-cuda-nvrtc-cu12: 12.8.93
+INFO     setup.setup:setup.py:365   - nvidia-cuda-runtime-cu12: 12.8.90
+INFO     setup.setup:setup.py:365   - nvidia-cudnn-cu12: 9.10.2.21
+INFO     setup.setup:setup.py:365   - nvidia-cufft-cu12: 11.3.3.83
+INFO     setup.setup:setup.py:365   - nvidia-cufile-cu12: 1.13.1.3
+INFO     setup.setup:setup.py:365   - nvidia-curand-cu12: 10.3.9.90
+INFO     setup.setup:setup.py:365   - nvidia-cusolver-cu12: 11.7.3.90
+INFO     setup.setup:setup.py:365   - nvidia-cusparse-cu12: 12.5.8.93
+INFO     setup.setup:setup.py:365   - nvidia-cusparselt-cu12: 0.7.1
+INFO     setup.setup:setup.py:365   - nvidia-nccl-cu12: 2.27.3
+INFO     setup.setup:setup.py:365   - nvidia-nvjitlink-cu12: 12.8.93
+INFO     setup.setup:setup.py:365   - nvidia-nvtx-cu12: 12.8.90
+INFO     setup.setup:setup.py:365   - opt-einsum: 3.4.0
+INFO     setup.setup:setup.py:365   - optax: 0.2.5
+INFO     setup.setup:setup.py:365   - orbax-checkpoint: 0.11.20
+INFO     setup.setup:setup.py:365   - packaging: 25.0
+INFO     setup.setup:setup.py:365   - pandas: 2.3.1
+INFO     setup.setup:setup.py:365   - pathspec: 0.12.1
+INFO     setup.setup:setup.py:365   - pbr: 6.1.1
+INFO     setup.setup:setup.py:365   - pillow: 11.3.0
+INFO     setup.setup:setup.py:365   - platformdirs: 4.3.8
+INFO     setup.setup:setup.py:365   - pluggy: 1.6.0
+INFO     setup.setup:setup.py:365   - propcache: 0.3.2
+INFO     setup.setup:setup.py:365   - protobuf: 6.31.1
+INFO     setup.setup:setup.py:365   - psutil: 6.1.1
+INFO     setup.setup:setup.py:365   - pycodestyle: 2.14.0
+INFO     setup.setup:setup.py:365   - pycparser: 2.22
+INFO     setup.setup:setup.py:365   - pydantic: 2.9.2
+INFO     setup.setup:setup.py:365   - pydantic-core: 2.23.4
+INFO     setup.setup:setup.py:365   - pyflakes: 3.4.0
+INFO     setup.setup:setup.py:365   - pygments: 2.19.2
+INFO     setup.setup:setup.py:365   - pymdp: 0.0.1
+INFO     setup.setup:setup.py:365   - pyparsing: 3.2.3
+INFO     setup.setup:setup.py:365   - pytest: 8.4.1
+INFO     setup.setup:setup.py:365   - pytest-asyncio: 1.1.0
+INFO     setup.setup:setup.py:365   - pytest-cov: 6.2.1
+INFO     setup.setup:setup.py:365   - pytest-json-report: 1.5.0
+INFO     setup.setup:setup.py:365   - pytest-metadata: 3.1.1
+INFO     setup.setup:setup.py:365   - pytest-timeout: 2.4.0
+INFO     setup.setup:setup.py:365   - pytest-xdist: 3.8.0
+INFO     setup.setup:setup.py:365   - python-dateutil: 2.9.0.post0
+INFO     setup.setup:setup.py:365   - pytz: 2025.2
+INFO     setup.setup:setup.py:365   - pyyaml: 6.0.2
+INFO     setup.setup:setup.py:365   - referencing: 0.36.2
+INFO     setup.setup:setup.py:365   - regex: 2025.7.34
+INFO     setup.setup:setup.py:365   - requests: 2.32.4
+INFO     setup.setup:setup.py:365   - rich: 14.1.0
+INFO     setup.setup:setup.py:365   - rpds-py: 0.26.0
+INFO     setup.setup:setup.py:365   - ruamel-yaml: 0.18.14
+INFO     setup.setup:setup.py:365   - ruamel-yaml-clib: 0.2.12
+INFO     setup.setup:setup.py:365   - safety: 3.6.0
+INFO     setup.setup:setup.py:365   - safety-schemas: 0.0.14
+INFO     setup.setup:setup.py:365   - scikit-learn: 1.7.1
+INFO     setup.setup:setup.py:365   - scipy: 1.16.1
+INFO     setup.setup:setup.py:365   - setuptools: 80.9.0
+INFO     setup.setup:setup.py:365   - shellingham: 1.5.4
+INFO     setup.setup:setup.py:365   - simplejson: 3.20.1
+INFO     setup.setup:setup.py:365   - six: 1.17.0
+INFO     setup.setup:setup.py:365   - sniffio: 1.3.1
+INFO     setup.setup:setup.py:365   - stevedore: 5.4.1
+INFO     setup.setup:setup.py:365   - sympy: 1.14.0
+INFO     setup.setup:setup.py:365   - tenacity: 9.1.2
+INFO     setup.setup:setup.py:365   - tensorstore: 0.1.76
+INFO     setup.setup:setup.py:365   - threadpoolctl: 3.6.0
+INFO     setup.setup:setup.py:365   - toml: 0.10.2
+INFO     setup.setup:setup.py:365   - tomlkit: 0.13.3
+INFO     setup.setup:setup.py:365   - toolz: 1.0.0
+INFO     setup.setup:setup.py:365   - torch: 2.8.0
+INFO     setup.setup:setup.py:365   - tqdm: 4.67.1
+INFO     setup.setup:setup.py:365   - treescope: 0.1.9
+INFO     setup.setup:setup.py:365   - triton: 3.4.0
+INFO     setup.setup:setup.py:365   - typer: 0.16.0
+INFO     setup.setup:setup.py:365   - typing-extensions: 4.14.1
+INFO     setup.setup:setup.py:365   - tzdata: 2025.2
+INFO     setup.setup:setup.py:365   - urllib3: 2.5.0
+INFO     setup.setup:setup.py:365   - yarl: 1.20.1
+INFO     setup.setup:setup.py:365   - zipp: 3.23.0
+INFO     setup.setup:setup.py:378 📄 Full package list saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+_______ TestEnvironmentIntegration.test_environment_pipeline_integration _______
+------------------------------ Captured log call -------------------------------
+INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
+INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.11.7
+INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.5
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 25.57GB free
+INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
+INFO     setup.setup:setup.py:359 📦 Found 145 installed packages using UV
+INFO     setup.setup:setup.py:369 📋 Key installed packages:
+INFO     setup.setup:setup.py:372   - pytest: 8.4.1
+INFO     setup.setup:setup.py:372   - numpy: 2.2.6
+INFO     setup.setup:setup.py:372   - matplotlib: 3.10.5
+INFO     setup.setup:setup.py:372   - scipy: 1.16.1
+INFO     setup.setup:setup.py:378 📄 Full package list saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+_____________________ test_environment_module_performance ______________________
+------------------------------ Captured log call -------------------------------
+INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
+INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.11.7
+INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.5
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 25.57GB free
+INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
+INFO     setup.setup:setup.py:359 📦 Found 145 installed packages using UV
+INFO     setup.setup:setup.py:369 📋 Key installed packages:
+INFO     setup.setup:setup.py:372   - pytest: 8.4.1
+INFO     setup.setup:setup.py:372   - numpy: 2.2.6
+INFO     setup.setup:setup.py:372   - matplotlib: 3.10.5
+INFO     setup.setup:setup.py:372   - scipy: 1.16.1
+INFO     setup.setup:setup.py:378 📄 Full package list saved to: /home/trim/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+__________________ TestFastExecute.test_execute_module_import __________________
+------------------------------ Captured log call -------------------------------
+WARNING  root:pymdp_simulation.py:50 PyMDP not available - simulation will gracefully degrade with informative output
+WARNING  execute.discopy.discopy_executor:discopy_executor.py:28 DisCoPy translator module not available: No module named 'execute.discopy_translator_module'
+______________________ TestFastLLM.test_llm_module_import ______________________
+------------------------------ Captured log call -------------------------------
+INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['openai']
+INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
+______________________ TestFastMCP.test_mcp_module_import ______________________
+------------------------------ Captured log call -------------------------------
+INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+_________________________ test_fast_suite_completeness _________________________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_fast_suite.py:318 Fast test suite completeness validated
+============================= slowest 15 durations =============================
+4.65s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+0.34s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
+0.03s call     src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
+0.03s call     src/tests/test_fast_suite.py::TestFastRender::test_render_module_import
+0.02s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
+0.02s call     src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
+0.02s call     src/tests/test_environment_overall.py::test_environment_module_performance
+0.01s call     src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports
+0.01s call     src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports
+0.01s call     src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import
+0.01s call     src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import
+0.01s call     src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports
+0.01s call     src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import
+0.00s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
+0.00s call     src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports
+=========================== short test summary info ============================
+PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports
+PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery
+PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering
+PASSED src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports
+PASSED src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation
+PASSED src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution
+PASSED src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
+PASSED src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+PASSED src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation
+PASSED src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports
+PASSED src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration
+PASSED src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling
+PASSED src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports
+PASSED src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation
+PASSED src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports
+PASSED src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation
+PASSED src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation
+PASSED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports
+PASSED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation
+PASSED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation
+PASSED src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination
+PASSED src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow
+PASSED src/tests/test_core_modules.py::test_core_module_completeness
+PASSED src/tests/test_core_modules.py::test_core_module_performance
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
+PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup
+PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
+PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check
+PASSED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
+PASSED src/tests/test_environment_overall.py::test_environment_module_completeness
+PASSED src/tests/test_environment_overall.py::test_environment_module_performance
+PASSED src/tests/test_fast_suite.py::TestFastEnvironment::test_python_environment
+PASSED src/tests/test_fast_suite.py::TestFastEnvironment::test_test_configuration
+PASSED src/tests/test_fast_suite.py::TestFastEnvironment::test_essential_directories
+PASSED src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_module_import
+PASSED src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_file_creation
+PASSED src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_content_validation
+PASSED src/tests/test_fast_suite.py::TestFastPipelineComponents::test_utils_module_import
+PASSED src/tests/test_fast_suite.py::TestFastPipelineComponents::test_pipeline_module_import
+PASSED src/tests/test_fast_suite.py::TestFastPipelineComponents::test_type_checker_import
+PASSED src/tests/test_fast_suite.py::TestFastExport::test_export_module_import
+PASSED src/tests/test_fast_suite.py::TestFastExport::test_basic_export_functionality
+PASSED src/tests/test_fast_suite.py::TestFastVisualization::test_visualization_module_import
+PASSED src/tests/test_fast_suite.py::TestFastRender::test_render_module_import
+PASSED src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import
+PASSED src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import
+PASSED src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import
+PASSED src/tests/test_fast_suite.py::TestFastOntology::test_ontology_module_import
+PASSED src/tests/test_fast_suite.py::TestFastSAPF::test_sapf_module_import
+PASSED src/tests/test_fast_suite.py::TestFastWebsite::test_website_module_import
+PASSED src/tests/test_fast_suite.py::TestFastIntegration::test_basic_pipeline_flow
+PASSED src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_setup
+PASSED src/tests/test_fast_suite.py::test_fast_suite_completeness
+PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports
+PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports
+PASSED src/tests/test_gnn_overall.py::TestGNNReporting::test_reporting_imports
+PASSED src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_module_imports
+PASSED src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_orchestrator_instantiation
+PASSED src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_step_instantiation
+PASSED src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_module_info
+PASSED src/tests/test_pipeline_overall.py::TestPipelineModuleComprehensive::test_pipeline_config
+PASSED src/tests/test_pipeline_overall.py::TestPipelineFunctionality::test_pipeline_execution
+PASSED src/tests/test_pipeline_overall.py::TestPipelineFunctionality::test_pipeline_step_validation
+PASSED src/tests/test_pipeline_overall.py::TestPipelineFunctionality::test_pipeline_discovery
+PASSED src/tests/test_pipeline_overall.py::TestPipelineIntegration::test_pipeline_module_integration
+PASSED src/tests/test_pipeline_overall.py::TestPipelineIntegration::test_pipeline_mcp_integration
+PASSED src/tests/test_pipeline_overall.py::test_pipeline_module_completeness
+PASSED src/tests/test_pipeline_overall.py::test_pipeline_module_performance
+SKIPPED [1] src/tests/test_core_modules.py:136: Validation test skipped due to: Valid GNN file should have basic structure: simple.gnn
+assert False
+SKIPPED [1] src/tests/test_core_modules.py:610: SAPF conversion not available: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
+SKIPPED [1] src/tests/test_environment_overall.py:158: Environment MCP not available
+SKIPPED [1] src/tests/test_gnn_overall.py:94: GNN reporting not available
+SKIPPED [1] src/tests/test_gnn_overall.py:117: GNN reporting not available
+======================== 76 passed, 5 skipped in 5.35s =========================

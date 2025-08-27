@@ -1,0 +1,15 @@
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+2025-08-27 11:07:48,770 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']

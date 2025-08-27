@@ -51,7 +51,9 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
     args = ArgumentParser.parse_step_arguments("5_type_checker.py")
     # Load parsed GNN data from previous step
     gnn_output_dir = get_output_dir_for_script("3_gnn.py", Path(args.output_dir))
-    gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
+    # Step 3 uses double-nested output directory structure
+    gnn_nested_dir = gnn_output_dir / "3_gnn_output"
+    gnn_results_file = gnn_nested_dir / "gnn_processing_results.json"
 
     if not gnn_results_file.exists():
         log_step_error(logger, "GNN processing results not found. Run step 3 first.")
@@ -61,6 +63,9 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
         gnn_results = json.load(f)
 
     logger.info(f"Loaded {len(gnn_results['processed_files'])} parsed GNN files")
+
+    # Ensure output directory exists
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     type_check_results: Dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),

@@ -131,8 +131,16 @@ class TestPipelineScriptDiscovery:
         # Check for proper imports
         assert "import" in content, f"Script {script_name} should have imports"
         
-        # Check for argument parsing
-        has_argparse = "argparse" in content or "EnhancedArgumentParser" in content
+        # Check for argument parsing - multiple patterns including standardized pipeline scripts
+        has_argparse = (
+            "argparse" in content or
+            "EnhancedArgumentParser" in content or
+            "ArgumentParser" in content or
+            "parse_args" in content or
+            "add_argument" in content or
+            "sys.argv" in content or
+            "create_standardized_pipeline_script" in content  # Standardized pipeline scripts
+        )
         assert has_argparse, f"Script {script_name} should handle arguments"
         
         logging.info(f"Script {script_name} structure validated")

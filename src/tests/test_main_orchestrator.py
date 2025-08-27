@@ -66,12 +66,12 @@ class TestMainOrchestratorImport:
             pytest.fail(f"Failed to read main orchestrator script: {e}")
     
     @pytest.mark.unit
-	def test_main_orchestrator_help_executes(self):
-		"""main.py should print help and exit 0."""
-		main_py = SRC_DIR / "main.py"
-		result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
-		assert result.returncode == 0
-		assert "usage" in result.stdout.lower() or "usage" in result.stderr.lower()
+    def test_main_orchestrator_help_executes(self):
+        """main.py should print help and exit 0."""
+        main_py = SRC_DIR / "main.py"
+        result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+        assert result.returncode == 0
+        assert "usage" in result.stdout.lower() or "usage" in result.stderr.lower()
     
     @pytest.mark.unit
     def test_main_orchestrator_component_availability(self):
@@ -92,12 +92,12 @@ class TestMainOrchestratorImport:
         logging.info(f"All {len(components)} main orchestrator components available")
 
 class TestArgumentParsing:
-	"""Smoke-check argument parser via main --help only (no mocks)."""
+    """Smoke-check argument parser via main --help only (no mocks)."""
     @pytest.mark.unit
-	def test_help(self):
-		main_py = SRC_DIR / "main.py"
-		result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
-		assert result.returncode == 0
+    def test_help(self):
+        main_py = SRC_DIR / "main.py"
+        result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+        assert result.returncode == 0
 
 class TestPipelineScriptDiscovery:
     """Test pipeline script discovery and metadata extraction."""
@@ -159,47 +159,47 @@ class TestVirtualEnvironmentHandling:
     @pytest.mark.unit
     def test_python_executable_detection(self):
         python_executable = sys.executable
-		assert python_executable
+        assert python_executable
 
 class TestStepExecution:
-	"""Execute a core step for real."""
-	
-	@pytest.mark.integration
-	def test_run_core_step(self):
-		script = SRC_DIR / "3_gnn.py"
-		if not script.exists():
-			pytest.skip("3_gnn.py missing")
-		with tempfile.TemporaryDirectory() as td:
-			outdir = Path(td) / "output"
-			cmd = [sys.executable, str(script), "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
-			result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
-			assert result.returncode in [0,1]
+    """Execute a core step for real."""
+    
+    @pytest.mark.integration
+    def test_run_core_step(self):
+        script = SRC_DIR / "3_gnn.py"
+        if not script.exists():
+            pytest.skip("3_gnn.py missing")
+        with tempfile.TemporaryDirectory() as td:
+            outdir = Path(td) / "output"
+            cmd = [sys.executable, str(script), "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
+            result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+            assert result.returncode in [0,1]
 
 class TestPipelineCoordination:
     @pytest.mark.integration
-	def test_minimal_pipeline_execution(self):
-		main_py = SRC_DIR / "main.py"
-		with tempfile.TemporaryDirectory() as td:
-			outdir = Path(td) / "output"
-			cmd = [sys.executable, str(main_py), "--only-steps", "3,5,7", "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
-			result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
-			summary = outdir / "pipeline_execution_summary.json"
-			assert summary.exists()
+    def test_minimal_pipeline_execution(self):
+        main_py = SRC_DIR / "main.py"
+        with tempfile.TemporaryDirectory() as td:
+            outdir = Path(td) / "output"
+            cmd = [sys.executable, str(main_py), "--only-steps", "3,5,7", "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
+            result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+            summary = outdir / "pipeline_execution_summary.json"
+            assert summary.exists()
     
     @pytest.mark.unit
-	def test_environment_info_function(self):
-		from src.main import get_environment_info
-		info = get_environment_info()
-		assert isinstance(info, dict)
-		assert "python_version" in info
+    def test_environment_info_function(self):
+        from src.main import get_environment_info
+        info = get_environment_info()
+        assert isinstance(info, dict)
+        assert "python_version" in info
 
 class TestEndToEndIntegration:
     @pytest.mark.integration
-	def test_run_pipeline_subset(self):
-		main_py = SRC_DIR / "main.py"
-		with tempfile.TemporaryDirectory() as td:
-			outdir = Path(td) / "output"
-			cmd = [sys.executable, str(main_py), "--only-steps", "3,5,7,8", "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
-			subprocess.run(cmd, cwd=str(PROJECT_ROOT))
-			# Assert expected subdirs may be created by steps
-			assert (outdir / "3_gnn_output").exists() or (outdir / "gnn_processing_step").exists() 
+    def test_run_pipeline_subset(self):
+        main_py = SRC_DIR / "main.py"
+        with tempfile.TemporaryDirectory() as td:
+            outdir = Path(td) / "output"
+            cmd = [sys.executable, str(main_py), "--only-steps", "3,5,7,8", "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
+            subprocess.run(cmd, cwd=str(PROJECT_ROOT))
+            # Assert expected subdirs may be created by steps
+            assert (outdir / "3_gnn_output").exists() or (outdir / "gnn_processing_step").exists() 

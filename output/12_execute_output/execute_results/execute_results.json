@@ -1,0 +1,20 @@
+{
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "executions": [
+    {
+      "file": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "result": {
+        "success": true,
+        "stdout": "",
+        "stderr": "  File \"/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\", line 19\n    - The agent's preferences are encoded as log-probabilities over observations.\n               ^\nSyntaxError: unterminated string literal (detected at line 19)\n",
+        "return_code": 1,
+        "execution_time": 0.026106834411621094,
+        "execution_type": "pymdp",
+        "model_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+        "execution_device": "cpu"
+      }
+    }
+  ]
+}

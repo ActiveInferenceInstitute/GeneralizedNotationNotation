@@ -1,0 +1,16 @@
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+Cannot read termcap database;
+using dumb terminal settings.
+2025-08-27 11:10:35,827 - visualization.ontology_visualizer - INFO - Ontology visualization saved to /tmp/tmpgug_ehf3/viz_output/ontology_annotations.png
+2025-08-27 11:10:36,036 - visualization.ontology_visualizer - INFO - Ontology visualization saved to /tmp/tmp54q5_equ/viz_output/actinf_pomdp_agent/ontology_annotations.png

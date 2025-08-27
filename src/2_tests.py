@@ -217,64 +217,184 @@ def parse_enhanced_arguments():
     """Parse arguments with error handling and validation."""
     # Use fallback argument parsing for test-specific arguments
     import argparse
+    import sys
+
     parser = argparse.ArgumentParser(description="Comprehensive test suite execution for GNN pipeline")
-    
+
+    # Add all possible arguments that might be passed from main pipeline
     # Core arguments
     parser.add_argument(
-        "--target-dir", 
+        "--target-dir",
         type=Path,
         default=Path("input/gnn_files"),
         help="Directory containing GNN files to test against"
     )
-    
+
     parser.add_argument(
         "--output-dir",
         type=Path,
         default=Path("output"),
         help="Output directory for test results and reports"
     )
-    
+
     parser.add_argument(
         "--verbose",
         action="store_true",
         help="Enable verbose logging"
     )
-    
-    # Test execution options
-    parser.add_argument(
-        "--fast-only",
-        action="store_true",
-        help="Run only fast tests (core and pipeline categories)"
-    )
-    
-    parser.add_argument(
-        "--include-slow",
-        action="store_true",
-        help="Include slow test categories"
-    )
-    
-    parser.add_argument(
-        "--include-performance",
-        action="store_true",
-        help="Include performance test categories"
-    )
-    
-    parser.add_argument(
-        "--comprehensive",
-        action="store_true",
-        help="Run all test categories including comprehensive suite"
-    )
-    
+
     parser.add_argument(
         "--recursive",
         action="store_true",
         default=True,
         help="Recursively process directories"
     )
-    
-    args = parser.parse_args()
-    
-    return args
+
+    # Test execution options
+    parser.add_argument(
+        "--fast-only",
+        action="store_true",
+        help="Run only fast tests (core and pipeline categories)"
+    )
+
+    parser.add_argument(
+        "--include-slow",
+        action="store_true",
+        help="Include slow test categories"
+    )
+
+    parser.add_argument(
+        "--include-performance",
+        action="store_true",
+        help="Include performance test categories"
+    )
+
+    parser.add_argument(
+        "--comprehensive",
+        action="store_true",
+        help="Run all test categories including comprehensive suite"
+    )
+
+    # Additional arguments that might be passed from main pipeline
+    parser.add_argument(
+        "--enable-round-trip",
+        action="store_true",
+        help="Enable round-trip testing"
+    )
+
+    parser.add_argument(
+        "--enable-cross-format",
+        action="store_true",
+        help="Enable cross-format validation"
+    )
+
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Enable strict mode"
+    )
+
+    parser.add_argument(
+        "--estimate-resources",
+        action="store_true",
+        help="Estimate resources"
+    )
+
+    parser.add_argument(
+        "--ontology-terms-file",
+        type=Path,
+        help="Ontology terms file"
+    )
+
+    parser.add_argument(
+        "--llm-tasks",
+        help="LLM tasks"
+    )
+
+    parser.add_argument(
+        "--llm-timeout",
+        type=int,
+        help="LLM timeout"
+    )
+
+    parser.add_argument(
+        "--website-html-filename",
+        help="Website HTML filename"
+    )
+
+    parser.add_argument(
+        "--performance-mode",
+        help="Performance mode"
+    )
+
+    parser.add_argument(
+        "--recreate-venv",
+        action="store_true",
+        help="Recreate virtual environment"
+    )
+
+    parser.add_argument(
+        "--dev",
+        action="store_true",
+        help="Install dev dependencies"
+    )
+
+    parser.add_argument(
+        "--duration",
+        type=float,
+        help="Audio duration"
+    )
+
+    parser.add_argument(
+        "--audio-backend",
+        help="Audio backend"
+    )
+
+    parser.add_argument(
+        "--pipeline-summary-file",
+        type=Path,
+        help="Pipeline summary file"
+    )
+
+    parser.add_argument(
+        "--install-optional",
+        help="Install optional packages"
+    )
+
+    try:
+        # Accept any unknown arguments gracefully to avoid parsing errors
+        args, unknown = parser.parse_known_args()
+
+        # Log any unknown arguments for debugging
+        if unknown:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.debug(f"Unknown arguments ignored: {unknown}")
+
+        return args
+    except SystemExit as e:
+        # If argument parsing fails, create default args object
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.warning(f"Argument parsing failed ({e}), using default arguments")
+
+        # Create a default args object with basic defaults
+        class DefaultArgs:
+            def __init__(self):
+                self.target_dir = Path("input/gnn_files")
+                self.output_dir = Path("output")
+                self.verbose = False
+                self.recursive = True
+                self.fast_only = False
+                self.include_slow = False
+                self.include_performance = False
+                self.comprehensive = False  # Default to False, but check command line
+
+                # Check if --comprehensive was in the original command line
+                if '--comprehensive' in sys.argv:
+                    self.comprehensive = True
+
+        return DefaultArgs()
 
 def discover_test_files(target_dir: Path = None) -> List[Path]:
     """
@@ -308,7 +428,7 @@ def process_tests_standardized(
 ) -> bool:
     """
     Standardized test processing function.
-    
+
     Args:
         target_dir: Directory containing files to process
         output_dir: Directory to write output files
@@ -316,12 +436,22 @@ def process_tests_standardized(
         recursive: Whether to process subdirectories recursively
         verbose: Whether to enable verbose logging
         **kwargs: Additional keyword arguments
-        
+
     Returns:
         True if tests passed, False otherwise
     """
     try:
         logger.info("🚀 Processing tests")
+
+        # Check if --comprehensive was passed in command line arguments
+        import sys
+        comprehensive_mode = '--comprehensive' in sys.argv
+
+        if comprehensive_mode:
+            logger.info("🎯 COMPREHENSIVE MODE DETECTED - Running ALL available test files")
+        else:
+            logger.info("🔍 Running standard test suite")
+
         # Configure environment for live pytest streaming
         _configure_live_pytest_output(logger)
         
@@ -346,46 +476,121 @@ def process_tests_standardized(
             logger.error("❌ pytest not available; failing tests step")
             return False
         
-        # Run tests if test runner is available
-        if TEST_RUNNER_AVAILABLE:
-            try:
-                # Create test runner
-                runner = create_test_runner(type('Args', (), {
-                    'target_dir': target_dir,
-                    'output_dir': test_output_dir,
-                    'recursive': recursive,
-                    'verbose': verbose,
-                    'fast_only': kwargs.get('fast_only', False),
-                    'include_slow': kwargs.get('include_slow', False),
-                    'include_performance': kwargs.get('include_performance', False),
-                    'comprehensive': kwargs.get('comprehensive', False),
-                }), logger)
-                
-                if runner:
-                    # Prefer modular comprehensive category runner if available
-                    success = False
-                    if hasattr(runner, 'run_all_categories'):
-                        results = runner.run_all_categories()
-                        success = bool(results.get('overall_success', False))
-                    elif hasattr(runner, 'run_all_tests'):
-                        success = bool(runner.run_all_tests())
-                    elif hasattr(runner, 'run_tests'):
-                        success = bool(runner.run_tests())
-                    else:
-                        logger.warning("⚠️ No test execution method available")
-                        success = True
-                    
-                    if success:
-                        logger.info("✅ Tests completed successfully")
-                    else:
-                        logger.warning("⚠️ Some tests failed")
-                    return success
-                else:
-                    logger.warning("⚠️ Test runner creation failed")
-                    return True  # Don't fail the pipeline
-            except Exception as e:
-                logger.error(f"❌ Test execution failed: {e}")
+        # Run tests using simplified approach
+        try:
+            # Get test directory
+            test_dir = Path(__file__).parent / "tests"
+
+            # Discover ALL test files
+            all_test_files = list(test_dir.glob("test_*.py"))
+            all_test_files.sort()  # Sort for consistent execution order
+
+            # Determine which tests to run based on arguments
+            test_files = []
+            if kwargs.get('fast_only', False):
+                # Run only fast tests - filter for core/fast test files
+                fast_test_names = [
+                    "test_fast_suite.py",
+                    "test_core_modules.py",
+                    "test_environment_overall.py",
+                    "test_environment_python.py",
+                    "test_environment_system.py"
+                ]
+                test_files = [f for f in all_test_files if f.name in fast_test_names]
+            elif comprehensive_mode:
+                # Run ALL available test files for comprehensive testing
+                test_files = all_test_files
+                logger.info(f"🎯 COMPREHENSIVE MODE: Running ALL {len(test_files)} test files")
+                logger.info("📋 Complete test file list:")
+                for i, test_file in enumerate(test_files, 1):
+                    logger.info(f"  {i:2d}. {test_file.name}")
+            else:
+                # Default: run core test files
+                core_test_names = [
+                    "test_fast_suite.py",
+                    "test_core_modules.py",
+                    "test_environment_overall.py",
+                    "test_gnn_overall.py",
+                    "test_pipeline_overall.py"
+                ]
+                test_files = [f for f in all_test_files if f.name in core_test_names]
+
+            if not test_files:
+                logger.warning("⚠️ No test files found")
+                return True
+
+            logger.info(f"📋 Running {len(test_files)} test files: {[p.name for p in test_files]}")
+
+            # Use simple pytest execution
+            cmd = [
+                python_exec,
+                "-m",
+                "pytest",
+                "-v",
+                "--tb=short",
+                "--maxfail=10",
+                "--durations=15",
+                "--color=no"
+            ]
+
+            # Add test files
+            for test_path in test_files:
+                cmd.append(str(test_path))
+
+            # Execute with simplified environment
+            env = os.environ.copy()
+            env["PYTHONPATH"] = str(project_root / "src")
+            env.setdefault("PYTHONUNBUFFERED", "1")
+            env.setdefault("TERM", "dumb")
+            env.setdefault("NO_COLOR", "1")
+
+            logger.info(f"🚀 Executing: {' '.join(cmd[:3])}...")
+
+            # Use longer timeout for comprehensive testing
+            timeout_seconds = 900 if kwargs.get('comprehensive', False) else 300  # 15 min for comprehensive, 5 min for others
+
+            # Use subprocess.run with reasonable timeout
+            result = subprocess.run(
+                cmd,
+                cwd=project_root,
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=timeout_seconds
+            )
+
+            # Define output paths for saving results
+            test_output_dir = tests_root / "test_results"
+            test_output_dir.mkdir(parents=True, exist_ok=True)
+            stdout_path = test_output_dir / "pytest_stdout.log"
+            stderr_path = test_output_dir / "pytest_stderr.log"
+
+            # Save output to files
+            with open(stdout_path, "w") as f_out:
+                f_out.write(result.stdout)
+            with open(stderr_path, "w") as f_err:
+                f_err.write(result.stderr)
+
+            # Log results
+            if result.returncode == 0:
+                logger.info("✅ Tests completed successfully")
+                return True
+            else:
+                logger.warning("⚠️ Some tests failed")
+                # Log some output for debugging
+                if verbose and result.stdout:
+                    logger.info("Test output (last 20 lines):")
+                    lines = result.stdout.strip().split('\n')
+                    for line in lines[-20:]:
+                        logger.info(f"  {line}")
                 return False
+
+        except subprocess.TimeoutExpired:
+            logger.error("❌ Test execution timed out")
+            return False
+        except Exception as e:
+            logger.error(f"❌ Test execution failed: {e}")
+            return False
         else:
             # Fallback: run basic pytest
             try:

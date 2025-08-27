@@ -130,7 +130,9 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
         # Load parsed GNN data from previous step
         from pipeline.config import get_output_dir_for_script
         gnn_output_dir = get_output_dir_for_script("3_gnn.py", output_dir)
-        gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
+        # Step 3 uses double-nested output directory structure
+        gnn_nested_dir = gnn_output_dir / "3_gnn_output"
+        gnn_results_file = gnn_nested_dir / "gnn_processing_results.json"
 
         if not gnn_results_file.exists():
             logger.error("GNN processing results not found. Run step 3 first.")
