@@ -156,7 +156,61 @@ try:
         validate_output_directory,
         execute_pipeline_step_template
     )
-    
+
+    # Import error handling framework
+    from .error_handling import (
+        PipelineErrorHandler,
+        ErrorSeverity,
+        ErrorCategory,
+        RecoveryStrategy,
+        ExitCode,
+        generate_correlation_id,
+        handle_file_system_error,
+        handle_network_error,
+        handle_timeout_error
+    )
+
+    # Import structured logging
+    from .structured_logging import (
+        StructuredLogger,
+        get_pipeline_logger,
+        set_correlation_context,
+        log_pipeline_start,
+        log_pipeline_complete,
+        log_step_start,
+        log_step_success,
+        log_step_error,
+        log_step_warning
+    )
+
+    # Import configuration management
+    from .configuration import (
+        ConfigurationManager,
+        ConfigSchema,
+        ConfigFormat,
+        ConfigSource,
+        ConfigurationError,
+        get_config_manager,
+        init_config,
+        get_config,
+        set_config,
+        validate_config,
+        get_pipeline_config,
+        get_step_config,
+        get_logging_config,
+        get_test_config
+    )
+
+    # Import dependency audit system
+    from .dependency_audit import (
+        DependencyAuditor,
+        DependencyOptimizer,
+        DependencyInfo,
+        AuditResult,
+        audit_project_dependencies,
+        optimize_project_dependencies
+    )
+
 except ImportError as e:
     # Import fallback functions when modules are not available
     logging.warning(f"Some utils modules not available: {e}")
@@ -231,7 +285,53 @@ __all__ = [
     'get_pipeline_utilities',
     'validate_output_directory',
     'execute_pipeline_step_template',
-    
+
+    # Error handling utilities
+    'PipelineErrorHandler',
+    'ErrorSeverity',
+    'ErrorCategory',
+    'RecoveryStrategy',
+    'ExitCode',
+    'generate_correlation_id',
+    'handle_file_system_error',
+    'handle_network_error',
+    'handle_timeout_error',
+
+    # Structured logging utilities
+    'StructuredLogger',
+    'get_pipeline_logger',
+    'set_correlation_context',
+    'log_pipeline_start',
+    'log_pipeline_complete',
+    'log_step_start',
+    'log_step_success',
+    'log_step_error',
+    'log_step_warning',
+
+    # Configuration utilities
+    'ConfigurationManager',
+    'ConfigSchema',
+    'ConfigFormat',
+    'ConfigSource',
+    'ConfigurationError',
+    'get_config_manager',
+    'init_config',
+    'get_config',
+    'set_config',
+    'validate_config',
+    'get_pipeline_config',
+    'get_step_config',
+    'get_logging_config',
+    'get_test_config',
+
+    # Dependency audit utilities
+    'DependencyAuditor',
+    'DependencyOptimizer',
+    'DependencyInfo',
+    'AuditResult',
+    'audit_project_dependencies',
+    'optimize_project_dependencies',
+
     # Test utilities
     'TEST_CATEGORIES',
     'TEST_STAGES',

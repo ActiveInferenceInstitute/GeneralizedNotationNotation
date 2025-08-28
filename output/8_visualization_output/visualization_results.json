@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-08-27T12:23:01.531932",
-  "source_directory": "input/gnn_files",
-  "output_directory": "output/8_visualization_output",
+  "timestamp": "2025-08-27T14:26:55.190673",
+  "source_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output",
   "files_visualized": [
     {
       "file_name": "actinf_pomdp_agent.md",
-      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
       "visualizations": {
         "matrix": {
           "success": true,
           "result": [
-            "output/8_visualization_output/actinf_pomdp_agent/matrix_analysis.png",
-            "output/8_visualization_output/actinf_pomdp_agent/matrix_statistics.png"
+            "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/matrix_analysis.png",
+            "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/matrix_statistics.png"
           ]
         },
         "network": {

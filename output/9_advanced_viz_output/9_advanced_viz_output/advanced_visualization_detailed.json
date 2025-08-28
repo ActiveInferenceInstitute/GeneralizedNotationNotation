@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-08-27T12:23:06.317138",
-  "correlation_id": "3580dea1",
+  "timestamp": "2025-08-27T13:03:53.246857",
+  "correlation_id": "6f3fe92c",
   "source_directory": "input/gnn_files",
   "output_directory": "output/9_advanced_viz_output/9_advanced_viz_output",
   "configuration": {
@@ -29,7 +29,7 @@
       "file_name": "actinf_pomdp_agent.md",
       "success": true,
       "fallback_used": false,
-      "duration_seconds": 3.495262,
+      "duration_seconds": 4.415841,
       "generated_files": [
         "output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
         "output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",

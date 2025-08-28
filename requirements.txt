@@ -15,7 +15,7 @@ scikit-learn>=1.0.0
 # Testing and development (essential)
 pytest>=6.0.0
 pytest-cov>=3.0.0
-pytest-asyncio>=0.21.0
+pytest-asyncio>=0.23.0
 pytest-json-report>=1.5.0
 pytest-xdist>=2.5.0
 black>=22.0.0
@@ -27,6 +27,13 @@ psutil>=5.8.0
 toml>=0.10.0
 defusedxml>=0.7.0
 
+# HTTP and async communication
+aiohttp>=3.9.0
+httpx>=0.27.0
+
+# GNN processing
+markdown>=3.0.0
+
 # Security tools
 bandit>=1.7.0
 safety>=2.3.0
@@ -35,12 +42,23 @@ safety>=2.3.0
 # OPTIONAL HEAVY PACKAGES (Install separately if needed)
 # =============================================================================
 
-# Uncomment the sections below based on your needs:
+# Active Inference ecosystem
+pymdp>=0.0.1
+
+# High-performance computing (essential for execution)
+jax[cpu]>=0.4.0
+jaxlib>=0.4.0
+
+# Visualization and diagramming
+discopy[matrix]>=1.0.0
+altair>=5.0.0
+
+# Uncomment additional heavy packages below based on your needs:
 
 # === MACHINE LEARNING & AI (Heavy packages) ===
 # torch>=1.12.0         # ~1.5GB - PyTorch (CPU version available)
-# jax>=0.4.0            # ~500MB - JAX for GPU acceleration
-# jaxlib>=0.4.0         # ~300MB - JAX libraries
+# flax>=0.7.0           # ~150MB - JAX neural network library
+# optax>=0.1.0          # ~50MB - JAX optimization library
 
 # === LLM INTEGRATION (API clients) ===
 # openai>=1.0.0         # ~50MB - OpenAI API client

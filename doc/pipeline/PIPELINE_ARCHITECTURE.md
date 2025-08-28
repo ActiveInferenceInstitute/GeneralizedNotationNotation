@@ -2,7 +2,7 @@
 
 ## Overview
 
-The GNN Processing Pipeline is a comprehensive, modular system for processing Generalized Notation Notation (GNN) files through a series of well-defined stages. Each stage performs specific operations and outputs results that can be consumed by subsequent stages or used independently.
+The GNN Processing Pipeline is a comprehensive, modular 24-step system (steps 0-23) for processing Generalized Notation Notation (GNN) files through a series of well-defined stages. Each stage performs specific operations and outputs results that can be consumed by subsequent stages or used independently.
 
 ## Pipeline Flow
 
@@ -31,9 +31,12 @@ graph TD
     S --> T[19_research.py]
     I --> U[20_website.py]
     K --> U
-    Q --> V[21_report.py]
-    K --> V
-    P --> V
+    T --> V[21_mcp.py]
+    U --> W[22_gui.py]
+    Q --> X[23_report.py]
+    K --> X
+    P --> X
+    V --> X
     
     style A fill:#ffcccc
     style B fill:#ffcccc
@@ -67,7 +70,9 @@ graph TD
 | 18 | `18_security.py` | Security validation and access control | 2 min | No |
 | 19 | `19_research.py` | Research tools and experimental features | 5 min | No |
 | 20 | `20_website.py` | Static website generation | 2 min | No |
-| 21 | `21_report.py` | Comprehensive analysis report generation | 2 min | No |
+| 21 | `21_mcp.py` | Model Context Protocol processing | 2 min | No |
+| 22 | `22_gui.py` | GUI (Interactive GNN Constructor) | 5 min | No |
+| 23 | `23_report.py` | Comprehensive analysis report generation | 2 min | No |
 
 ### Step Dependencies
 
@@ -86,7 +91,9 @@ graph TD
 - **Step 18 (security.py)** depends on Step 17 for integration results
 - **Step 19 (research.py)** depends on Step 18 for security validation
 - **Step 20 (website.py)** depends on Steps 8 and 10 for visualizations and ontology
-- **Step 21 (report.py)** depends on Steps 10, 15, and 16 for comprehensive reporting
+- **Step 21 (mcp.py)** depends on Step 19 for research results and tool registration
+- **Step 22 (gui.py)** depends on Step 20 for website components and interactive elements
+- **Step 23 (report.py)** depends on Steps 10, 15, 16, and 21 for comprehensive reporting
 
 ## Configuration Management
 
@@ -114,26 +121,38 @@ Each step has a configured timeout in `STEP_TIMEOUTS`:
 
 ### Critical Steps
 
-**Steps 1 (setup.py)** and **Step 2 (gnn.py)** are marked as critical. If either fails, the entire pipeline halts to prevent cascading failures from missing dependencies or GNN files.
+**Steps 1 (setup.py)** and **Step 3 (gnn.py)** are marked as critical. If either fails, the entire pipeline halts to prevent cascading failures from missing dependencies or GNN files.
 
 ## Output Structure
 
-```
+```bash
 output/
-├── setup_artifacts/              # Step 1 output
-├── gnn_processing_step/          # Step 2 output
-├── test_reports/                 # Step 3 output
-├── type_check/                   # Step 4 output
-├── gnn_exports/                  # Step 5 output
-├── visualization/                # Step 6 output
-├── mcp_processing_step/          # Step 7 output
-├── ontology_processing/          # Step 8 output
-├── gnn_rendered_simulators/      # Step 9 output
-├── execution_results/            # Step 10 output
-├── llm_processing_step/          # Step 11 output
-├── audio_processing_step/        # Step 12 output
-├── website/                      # Step 13 output
-├── report_processing_step/       # Step 14 output
+├── 0_template_output/            # Step 0: Template initialization
+├── 1_setup_output/               # Step 1: Environment setup
+├── 2_tests_output/               # Step 2: Test execution
+├── 3_gnn_output/                 # Step 3: GNN file processing
+├── 4_model_registry_output/      # Step 4: Model registry
+├── 5_type_checker_output/        # Step 5: Type checking
+├── 6_validation_output/          # Step 6: Validation
+├── 7_export_output/              # Step 7: Multi-format export
+├── 8_visualization_output/       # Step 8: Visualization
+├── 9_advanced_viz_output/        # Step 9: Advanced visualization
+├── 10_ontology_output/           # Step 10: Ontology processing
+├── 11_render_output/             # Step 11: Code rendering
+├── 12_execute_output/            # Step 12: Execution
+├── 13_llm_output/                # Step 13: LLM processing
+├── 14_ml_integration_output/     # Step 14: ML integration
+├── 15_audio_output/              # Step 15: Audio processing
+├── 16_analysis_output/           # Step 16: Analysis
+├── 17_integration_output/        # Step 17: Integration
+├── 18_security_output/           # Step 18: Security
+├── 19_research_output/           # Step 19: Research
+├── 20_website_output/            # Step 20: Website generation
+├── 21_mcp_output/                # Step 21: MCP processing
+├── 22_gui_output/                # Step 22: GUI
+├── 23_report_output/             # Step 23: Report generation
+├── execution_results/            # Cross-step execution artifacts
+├── test_artifacts/               # Cross-step test artifacts
 ├── logs/                         # Pipeline logs
 ├── pipeline_execution_summary.json
 └── gnn_pipeline_summary_site.html
@@ -242,4 +261,4 @@ Check specific log files:
 
 - `output/logs/pipeline.log`: Main pipeline log
 - `output/pipeline_execution_summary.json`: Structured execution data
-- Step-specific outputs in respective directories 
+- Step-specific outputs in respective directories

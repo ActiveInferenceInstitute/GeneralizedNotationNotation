@@ -103,7 +103,7 @@ INFO     root:test_core_modules.py:85 GNN file discovery validated: 1 files foun
 _______________ TestGNNModuleComprehensive.test_gnn_file_parsing _______________
 ------------------------------ Captured log call -------------------------------
 WARNING  root:test_core_modules.py:107 Failed to parse simple.gnn: Parsed data should contain ModelName
-assert 'ModelName' in {'file_path': '/tmp/tmpcqo2rn7o/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-08-27T12:22:43.276450'}
+assert 'ModelName' in {'file_path': '/tmp/tmp1a_5yzau/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-08-27T14:27:11.153966'}
 ___________ TestRenderModuleComprehensive.test_render_module_imports ___________
 ------------------------------ Captured log call -------------------------------
 INFO     root:test_core_modules.py:156 Render module imports validated
@@ -193,7 +193,7 @@ ________ TestEnvironmentModuleComprehensive.test_environment_validation ________
 INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
 INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.11.7
 INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.5
-INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 25.65GB free
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 25.60GB free
 INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
 INFO     setup.setup:setup.py:359 📦 Found 286 installed packages using UV
 INFO     setup.setup:setup.py:369 📋 Key installed packages:
@@ -360,7 +360,7 @@ _______ TestEnvironmentIntegration.test_environment_pipeline_integration _______
 INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
 INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.11.7
 INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.5
-INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 25.68GB free
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 25.62GB free
 INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
 INFO     setup.setup:setup.py:359 📦 Found 145 installed packages using UV
 INFO     setup.setup:setup.py:369 📋 Key installed packages:
@@ -374,7 +374,7 @@ _____________________ test_environment_module_performance ______________________
 INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
 INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.11.7
 INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.5
-INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 25.68GB free
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 25.62GB free
 INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
 INFO     setup.setup:setup.py:359 📦 Found 145 installed packages using UV
 INFO     setup.setup:setup.py:369 📋 Key installed packages:
@@ -398,21 +398,21 @@ _________________________ test_fast_suite_completeness _________________________
 ------------------------------ Captured log call -------------------------------
 INFO     root:test_fast_suite.py:318 Fast test suite completeness validated
 ============================= slowest 15 durations =============================
-15.28s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
-0.33s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
+27.94s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+0.27s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
 0.05s call     src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
 0.02s call     src/tests/test_fast_suite.py::TestFastRender::test_render_module_import
 0.02s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
-0.02s call     src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports
-0.02s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
 0.02s call     src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
-0.02s call     src/tests/test_environment_overall.py::test_environment_module_performance
+0.01s call     src/tests/test_environment_overall.py::test_environment_module_performance
+0.01s call     src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports
 0.01s call     src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports
-0.01s call     src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports
+0.01s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
+0.00s call     src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports
+0.00s call     src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports
+0.00s call     src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import
 0.00s call     src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import
 0.00s call     src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import
-0.00s call     src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import
-0.00s call     src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports
 =========================== short test summary info ============================
 PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports
 PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery
@@ -496,4 +496,4 @@ SKIPPED [1] src/tests/test_core_modules.py:610: SAPF conversion not available: c
 SKIPPED [1] src/tests/test_environment_overall.py:158: Environment MCP not available
 SKIPPED [1] src/tests/test_gnn_overall.py:94: GNN reporting not available
 SKIPPED [1] src/tests/test_gnn_overall.py:117: GNN reporting not available
-======================== 76 passed, 5 skipped in 16.07s ========================
+======================== 76 passed, 5 skipped in 28.67s ========================

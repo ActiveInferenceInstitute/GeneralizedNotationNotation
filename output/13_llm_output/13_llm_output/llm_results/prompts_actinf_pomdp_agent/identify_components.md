@@ -1,63 +1,32 @@
 # IDENTIFY_COMPONENTS
 
-You've already covered the key concepts in the response for understanding the structure of GNN models with active inference, Bayesian inference, and generalized notational notation (GANN). Here's a more detailed breakdown:
+You've provided a comprehensive overview of the Key Inference Model's structure in the last message:
 
-1. **State Variables**:
-    - Variable names and dimensions: 
-    - Hidden states by number of observations and actions
-    - Input parameters are denoted as `A`, `B` for action/policy types, e.g., "x" for "action x", etc.
+Your detailed analysis is well-structured, with clear conclusions. Here are some key points to consider:
 
-2. **Observation Variables**:
-    - Observation modalities include the following
-   - 3 variables: `o[n]`:
-      - Initial position (0 to n-1) of observation
+1) **State Variables**:
+   - The state space for each input layer
+   - Observation modalities and their meanings
+   - Noise models or uncertainty characterization
 
-      - Observation direction and orientation (e.g., up/down, right/left)
+2) **Observation Variables**:
+   - State variable(s): Actions/actions_dim=3,
+   - Temporal dependence of observed actions on the hidden states
+   - Input features used to identify observations: Linear feature space with bias in case of input neurons; linear feature space constrained by the hidden state tensor.
 
-    - `p_i` or `u_i`:
-      - Current state in index i
+3) **Action/Control Variables**:
+   - Available actions and their effects
+   - Control policies and decision variables (choices over observables)
+   - Action spaces properties, such as action boundaries or actions based on a specific action distribution.
+4) **Model Matrices**:
+   - A matrices: Observation models P(o|s)
+   - B matrix: Transition dynamics T(y|z_t,u=w^2), which can be thought of as the state transitions between states given inputs and policy posterior (probabilities over actions). The learned action-belief network is based on linear feature spaces with biases.
 
-      - `S_{i}^{k}` or `B_{i}^{k}**: A transition matrix with states indexed by indices of observation pairs
-      - `s_{i}^{j}** = S_{i}'*(A(x,o[j])+u_(y))$
-   
-   - A and B represent input/output variables for each action
-3. **Action Variables**:
-    - Action types are denoted as `action`
+5) **Parameters**:
+   - Precision parameters γ, α, etc.: parameter ranges determined by the value of these in your example input features.
+   - Learning rates: how much to change the model during training or evaluation iterations (in this case, learning rate = 0.2).
+   - Fixed vs. learnable parameters: where fixed is a specific initial hyperparameter and learns it through estimation from the model's training data at each step of the optimization process.
 
-    - 3 actions: "S_1", "B_1"
-      - "T_2": "P(x^*,u^*)" is defined to be P([p],[s])
-
-      A and B denote action variables, where
-        A represents the input parameter for a single action
-        B denotes the output variable in the same action
-
-   
-4. **Model Matrices**:
-    - A matrices:
-      - A set of matrices representing observable transitions over actions (actions).
-
-      For each observation pair
-
-  - B sets of matrices representing observed observables, including their distribution over actions and actions-permitting/unallowing observations
-  - C represents the probability distributions over states
-   - D represents a vector or column array containing the action probabilities
-5. **Parameters**:
-    - Precision parameters (γ)
-      - Initialize the `gnn_p` parameter to 0, meaning that you can't learn anything from an unbounded input horizon
-
-  - Learning rates and adaptation:
-     - Initialize learning rate `l` for each time step based on observation probabilities
-
-    - Adjusting parameters in future steps
-
-6. **Temporal Structure**:
-    - Time horizons (fixed)
-   - Dynamic vs. static components
-7. **Signature**:
-    - The signature provides a clear description of the model's structure:
-      - A(x,o[n]) represents actions taken
-
-      Plugated inputs with state-wise variables for each observation pair
-
-  - The "A" matrix is used to represent observable transitions over action pairs,
-      while the "B" and "D" matrices are used to describe the corresponding observed observables.
+6) **Temporal Structure**:
+    - Time horizons and temporal dependencies
+- Dynamic versus static components

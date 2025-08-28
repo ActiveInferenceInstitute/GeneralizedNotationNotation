@@ -1,15 +1,15 @@
 # Pipeline Architecture & Implementation Paradigm
 
 ### Core Pipeline Orchestration
-- **Main Orchestrator**: `src/main.py` dynamically executes numbered pipeline scripts (0-21)
-- **Script Discovery**: Uses predefined pipeline_steps list to execute 22 steps in order
+- **Main Orchestrator**: `src/main.py` dynamically executes numbered pipeline scripts (0-23)
+- **Script Discovery**: Uses predefined pipeline_steps list to execute 24 steps in order
 - **Execution Model**: Each script runs as subprocess with centralized argument passing
 - **Virtual Environment**: Automatic detection and use of project virtual environment
 - **Dependency Validation**: Comprehensive dependency checking before pipeline execution
 - **Performance Tracking**: Built-in performance monitoring and resource usage tracking
 - **Configuration Management**: YAML-based configuration with CLI argument overrides
 
-### Pipeline Steps (22 Steps - Current Order 0-21)
+### Pipeline Steps (24 Steps - Current Order 0-23)
 Each numbered script corresponds to a specific module folder and implements real functionality:
 
 0. **0_template.py** → `src/template/` - Pipeline template and initialization (thin orchestrator)
@@ -33,10 +33,12 @@ Each numbered script corresponds to a specific module folder and implements real
 18. **18_security.py** → `src/security/` - Security validation and access control (thin orchestrator)
 19. **19_research.py** → `src/research/` - Research tools and experimental features (thin orchestrator)
 20. **20_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts (thin orchestrator)
-21. **21_report.py** → `src/report/` - Comprehensive analysis report generation (thin orchestrator)
+21. **21_mcp.py** → `src/mcp/` - Model Context Protocol processing and tool registration (thin orchestrator)
+22. **22_gui.py** → `src/gui/` - Interactive GUI for constructing and editing GNN models (thin orchestrator)
+23. **23_report.py** → `src/report/` - Comprehensive analysis report generation (thin orchestrator)
 
 ### Architectural Pattern: Thin Orchestrator Scripts
-**CRITICAL**: Numbered pipeline scripts (especially steps 10, 13-21) must be thin orchestrators that:
+**CRITICAL**: Numbered pipeline scripts (especially steps 10, 13-23) must be thin orchestrators that:
 1. **Import and invoke methods** from their corresponding modules (e.g., `src/ontology/`, `src/llm/`)
 2. **NEVER contain long method definitions** - all core logic belongs in the module
 3. **Handle pipeline orchestration** - argument parsing, logging, output directory management, result aggregation
@@ -44,7 +46,7 @@ Each numbered script corresponds to a specific module folder and implements real
 5. **Maintain separation of concerns** - scripts handle pipeline flow, modules handle domain logic
 
 **Current Implementation Status:**
-- **Thin Orchestrators**: Steps 0, 4, 10, 13-21 (correctly delegate to modules)
+- **Thin Orchestrators**: Steps 0, 4, 10, 13-23 (correctly delegate to modules)
 - **Full Implementation**: Steps 1-3, 5-9, 11-12 (contain substantial logic - legacy pattern)
 - **Hybrid Implementation**: Some steps mix approaches
 
@@ -61,7 +63,7 @@ Each numbered script corresponds to a specific module folder and implements real
 - **config_loader**: YAML configuration loading with validation and CLI argument override support
 
 #### Pipeline Configuration (`src/pipeline/`)
-- **STEP_METADATA**: Centralized metadata for all 22 pipeline steps with dependencies, timeouts, and requirements
+- **STEP_METADATA**: Centralized metadata for all 24 pipeline steps with dependencies, timeouts, and requirements
 - **get_pipeline_config**: Pipeline configuration management with step-specific settings
 - **get_output_dir_for_script**: Standardized output directory structure with automatic creation
 - **execute_pipeline_step**: Centralized step execution with enhanced error handling and performance tracking
@@ -185,12 +187,14 @@ Every numbered script follows this standardized pattern:
 - **Audio Synthesis**: Real-time audio generation, processing, and export with multiple format support
 - **Scientific Sonification**: Mathematically grounded audio representations for model analysis
 
-#### Final Processing Chain (Steps 16-21)
+#### Final Processing Chain (Steps 16-23)
 - **Analysis**: Comprehensive statistical analysis and performance metrics aggregation
 - **Integration**: Cross-module coordination and system integration
 - **Security**: Security validation and access control
 - **Research**: Experimental features and advanced research tools
 - **Website**: Static HTML site generation with interactive elements
+- **MCP**: Model Context Protocol processing and tool registration
+- **GUI**: Interactive GNN model construction and editing interface
 - **Report**: Final comprehensive reporting and documentation generation
 
 ### Performance and Quality Standards
@@ -206,4 +210,4 @@ Every numbered script follows this standardized pattern:
 - **Functional Improvements**: Focus on making smart functional improvements to code and documentation
 - **Inline Updates**: Add documentation directly to relevant files rather than creating separate report files
 - **Concrete Demonstrations**: Show functionality through working code, real outputs, and measurable results
-- **Understated Communication**: Use specific examples and functional demonstrations over promotional language 
+- **Understated Communication**: Use specific examples and functional demonstrations over promotional language

@@ -210,7 +210,7 @@ batch_results = batch_execute_pymdp(
 2. **🔬 Scientific Authenticity**: Real PyMDP Agent class, no mock implementations  
 3. **🔧 Pipeline Compatibility**: Seamless integration with GNN parsing and validation
 4. **📊 Comprehensive Output**: JSON traces, performance metrics, visualizations
-5. **🧩 Modular Design**: Can be used standalone or as part of full 22-step pipeline
+5. **🧩 Modular Design**: Can be used standalone or as part of full 24-step pipeline
 6. **⚡ Performance**: Efficient discrete POMDP simulations with proper visualization
 7. **🧪 Testing**: Comprehensive test coverage for all components
 

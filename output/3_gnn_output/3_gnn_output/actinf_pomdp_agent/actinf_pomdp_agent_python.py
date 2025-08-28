@@ -6,7 +6,7 @@ This model describes a classic Active Inference agent for a discrete POMDP:
 - The hidden state is fully controllable via 3 discrete actions.
 - The agent's preferences are encoded as log-probabilities over observations.
 - The agent has an initial policy prior (habit) encoded as log-probabilities over actions.
-Generated: 2025-08-27T12:23:00.445323
+Generated: 2025-08-27T14:26:51.099728
 """
 
 import numpy as np
