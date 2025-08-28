@@ -166,7 +166,7 @@ def process_visualization(
 
 def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = False) -> List[str]:
     """
-    Process visualization for a single GNN file.
+    Process visualization for a single GNN file with performance optimization.
     
     Args:
         gnn_file: Path to the GNN file
@@ -181,33 +181,108 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
         with open(gnn_file, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Parse GNN content
-        parsed_data = parse_gnn_content(content)
-        
         # Create model-specific output directory
         model_name = gnn_file.stem
         model_dir = results_dir / model_name
         model_dir.mkdir(exist_ok=True)
 
-        # Lightweight caching: if visualizations already exist for this model, reuse them
+        # Enhanced caching: check for existing visualizations with timestamp
         existing_pngs = sorted([str(p) for p in model_dir.glob('*.png')])
         if existing_pngs:
-            return existing_pngs
+            # Check if cache is still valid (file modification time)
+            source_mtime = gnn_file.stat().st_mtime
+            cache_mtime = min(Path(png).stat().st_mtime for png in existing_pngs)
+            
+            if cache_mtime >= source_mtime:
+                if verbose:
+                    print(f"Using cached visualizations for {model_name}")
+                return existing_pngs
+            else:
+                # Cache is stale, remove old files
+                for png_file in existing_pngs:
+                    try:
+                        Path(png_file).unlink()
+                    except OSError:
+                        pass
         
-        # Generate different types of visualizations
+        # Parse GNN content with optimization checks
+        parsed_data = parse_gnn_content(content)
+        
+        # Check for large datasets and apply sampling if needed
+        should_sample = False
+        if parsed_data.get("variables") and len(parsed_data["variables"]) > 100:
+            should_sample = True
+            if verbose:
+                print(f"Large dataset detected for {model_name}, applying sampling")
+        
+        if should_sample:
+            # Sample data to improve performance
+            original_vars = len(parsed_data.get("variables", []))
+            original_conns = len(parsed_data.get("connections", []))
+            
+            # Keep first 100 variables and related connections
+            parsed_data["variables"] = parsed_data["variables"][:100]
+            var_names = {var["name"] for var in parsed_data["variables"]}
+            parsed_data["connections"] = [conn for conn in parsed_data.get("connections", [])
+                                        if conn["source"] in var_names and conn["target"] in var_names]
+            
+            # Limit matrices
+            if parsed_data.get("matrices") and len(parsed_data["matrices"]) > 5:
+                parsed_data["matrices"] = parsed_data["matrices"][:5]
+            
+            parsed_data["_sampling_applied"] = {
+                "original_variables": original_vars,
+                "original_connections": original_conns,
+                "sampled_variables": len(parsed_data["variables"]),
+                "sampled_connections": len(parsed_data["connections"])
+            }
+        
+        # Generate different types of visualizations with error handling
         visualizations = []
         
-        # Matrix visualizations
-        matrix_viz = generate_matrix_visualizations(parsed_data, model_dir, model_name)
-        visualizations.extend(matrix_viz)
+        # Matrix visualizations (skip if too many matrices)
+        if len(parsed_data.get("matrices", [])) <= 10:
+            try:
+                matrix_viz = generate_matrix_visualizations(parsed_data, model_dir, model_name)
+                visualizations.extend(matrix_viz)
+            except Exception as e:
+                if verbose:
+                    print(f"Matrix visualization failed for {model_name}: {e}")
+        elif verbose:
+            print(f"Skipping matrix visualizations for {model_name} - too many matrices")
         
-        # Network visualizations
-        network_viz = generate_network_visualizations(parsed_data, model_dir, model_name)
-        visualizations.extend(network_viz)
+        # Network visualizations (skip if too many nodes)
+        if len(parsed_data.get("variables", [])) <= 200:
+            try:
+                network_viz = generate_network_visualizations(parsed_data, model_dir, model_name)
+                visualizations.extend(network_viz)
+            except Exception as e:
+                if verbose:
+                    print(f"Network visualization failed for {model_name}: {e}")
+        elif verbose:
+            print(f"Skipping network visualizations for {model_name} - too many nodes")
         
-        # Combined analysis
-        combined_viz = generate_combined_analysis(parsed_data, model_dir, model_name)
-        visualizations.extend(combined_viz)
+        # Combined analysis (always try this as it's lightweight)
+        try:
+            combined_viz = generate_combined_analysis(parsed_data, model_dir, model_name)
+            visualizations.extend(combined_viz)
+        except Exception as e:
+            if verbose:
+                print(f"Combined analysis failed for {model_name}: {e}")
+        
+        # Add sampling note to visualizations if applied
+        if should_sample and visualizations:
+            try:
+                # Create a note file about sampling
+                sampling_note = model_dir / f"{model_name}_sampling_note.txt"
+                with open(sampling_note, 'w') as f:
+                    f.write(f"Sampling applied to {model_name}:\n")
+                    f.write(f"Original variables: {parsed_data['_sampling_applied']['original_variables']}\n")
+                    f.write(f"Sampled variables: {parsed_data['_sampling_applied']['sampled_variables']}\n")
+                    f.write(f"Original connections: {parsed_data['_sampling_applied']['original_connections']}\n")
+                    f.write(f"Sampled connections: {parsed_data['_sampling_applied']['sampled_connections']}\n")
+            except Exception:
+                pass
         
         return visualizations
         
@@ -343,34 +418,60 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
         return visualizations
     
     try:
-        # Generate heatmaps for matrices
+        # Generate heatmaps for matrices with size optimization
         matrices = parsed_data.get("matrices", [])
         for i, matrix_info in enumerate(matrices):
             matrix_data = matrix_info["data"]
             
             if matrix_data is not None and matrix_data.size > 0:
-                # Create heatmap with seaborn if available; otherwise use matplotlib imshow
-                plt.figure(figsize=(8, 6))
+                # Optimize large matrices for visualization
+                original_shape = matrix_data.shape
+                display_matrix = matrix_data
+                
+                # Sample large matrices to improve performance and readability
+                max_display_size = 50
+                if matrix_data.shape[0] > max_display_size or matrix_data.shape[1] > max_display_size:
+                    # Sample rows and columns
+                    row_step = max(1, matrix_data.shape[0] // max_display_size)
+                    col_step = max(1, matrix_data.shape[1] // max_display_size)
+                    display_matrix = matrix_data[::row_step, ::col_step]
+                
+                # Create heatmap with optimized settings
+                fig_width = min(12, max(6, display_matrix.shape[1] * 0.3))
+                fig_height = min(10, max(4, display_matrix.shape[0] * 0.3))
+                plt.figure(figsize=(fig_width, fig_height))
+                
                 if SEABORN_AVAILABLE:
-                    sns.heatmap(matrix_data, annot=True, cmap='viridis', fmt='.2f')
+                    # Only annotate small matrices to avoid clutter
+                    show_annot = display_matrix.size <= 100
+                    sns.heatmap(display_matrix, annot=show_annot, cmap='viridis', 
+                               fmt='.2f' if show_annot else '', cbar_kws={'shrink': 0.8})
                 else:
-                    im = plt.imshow(matrix_data, cmap='viridis', aspect='auto')
-                    plt.colorbar(im, fraction=0.046, pad=0.04)
-                    # Annotate small matrices for readability
-                    try:
-                        rows, cols = matrix_data.shape
-                        if rows * cols <= 25:
+                    im = plt.imshow(display_matrix, cmap='viridis', aspect='auto')
+                    plt.colorbar(im, fraction=0.046, pad=0.04, shrink=0.8)
+                    # Annotate very small matrices only
+                    if display_matrix.size <= 25:
+                        try:
+                            rows, cols = display_matrix.shape
                             for r in range(rows):
                                 for c in range(cols):
-                                    plt.text(c, r, f"{matrix_data[r, c]:.2f}", ha='center', va='center', color='white')
-                    except Exception:
-                        pass
-                plt.title(f"{model_name} - Matrix {i+1}")
+                                    plt.text(c, r, f"{display_matrix[r, c]:.2f}", 
+                                           ha='center', va='center', color='white', fontsize=8)
+                        except Exception:
+                            pass
+                
+                # Add title with shape information
+                title = f"{model_name} - Matrix {i+1}"
+                if original_shape != display_matrix.shape:
+                    title += f" (sampled from {original_shape[0]}x{original_shape[1]})"
+                plt.title(title, fontsize=10)
                 plt.tight_layout()
 
-                # Save plot
+                # Save plot with optimized settings
                 plot_file = output_dir / f"{model_name}_matrix_{i+1}_heatmap.png"
-                _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
+                # Reduce DPI for large matrices to save memory and disk space
+                dpi = 150 if display_matrix.size > 1000 else 300
+                _save_plot_safely(plot_file, dpi=dpi, bbox_inches='tight')
                 plt.close()
                 
                 visualizations.append(str(plot_file))

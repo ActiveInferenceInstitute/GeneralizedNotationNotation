@@ -144,18 +144,63 @@ def process_llm(
                                 LLMMessage(role="user", content=prompt_cfg["user_prompt"]),
                             ]
 
-                            # Run generation (sync wrapper around async)
+                            # Run generation with enhanced timeout handling
                             def _run_prompt():
                                 async def _inner():
                                     try:
-                                        resp = await processor.get_response(
-                                            messages=messages,
-                                            model_name=ollama_model,
-                                            max_tokens=min(512, prompt_cfg.get("max_tokens", 512)),
-                                            temperature=0.2,
-                                            config=LLMConfig(timeout=60)
+                                        # Use timeout manager for LLM calls
+                                        from utils.timeout_manager import get_llm_timeout_manager, TimeoutConfig
+                                        timeout_manager = get_llm_timeout_manager()
+                                        
+                                        # Configure timeout based on prompt complexity
+                                        prompt_length = len(prompt_cfg["user_prompt"])
+                                        base_timeout = min(120, max(30, prompt_length / 100))  # Dynamic timeout
+                                        
+                                        timeout_config = TimeoutConfig(
+                                            base_timeout=base_timeout,
+                                            max_timeout=300,
+                                            max_retries=2,
+                                            retry_delay=3.0
                                         )
-                                        return resp.content
+                                        
+                                        async def llm_operation():
+                                            return await processor.get_response(
+                                                messages=messages,
+                                                model_name=ollama_model,
+                                                max_tokens=min(512, prompt_cfg.get("max_tokens", 512)),
+                                                temperature=0.2,
+                                                config=LLMConfig(timeout=base_timeout)
+                                            )
+                                        
+                                        result = await timeout_manager._execute_with_timeout_async(
+                                            f"llm_prompt_{ptype.value}", timeout_config, llm_operation
+                                        )
+                                        
+                                        if result.success:
+                                            if result.used_fallback:
+                                                logger.warning(f"Using fallback result for prompt {ptype.value}")
+                                            return result.result.content if hasattr(result.result, 'content') else str(result.result)
+                                        else:
+                                            return f"Prompt execution failed after {result.attempts} attempts: {result.error}"
+                                            
+                                    except ImportError:
+                                        # Fallback to original timeout handling if timeout manager not available
+                                        logger.warning("Timeout manager not available, using basic timeout")
+                                        try:
+                                            resp = await asyncio.wait_for(
+                                                processor.get_response(
+                                                    messages=messages,
+                                                    model_name=ollama_model,
+                                                    max_tokens=min(512, prompt_cfg.get("max_tokens", 512)),
+                                                    temperature=0.2,
+                                                    config=LLMConfig(timeout=60)
+                                                ), timeout=120
+                                            )
+                                            return resp.content
+                                        except asyncio.TimeoutError:
+                                            return f"Prompt execution timed out after 120 seconds"
+                                        except Exception as e:
+                                            return f"Prompt execution failed: {e}"
                                     except Exception as e:
                                         return f"Prompt execution failed: {e}"
                                 return asyncio.run(_inner())

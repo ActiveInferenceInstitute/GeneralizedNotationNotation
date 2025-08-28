@@ -385,51 +385,75 @@ def get_system_info() -> Dict[str, str]:
 
 
 # Convenience functions for common logging patterns
-def log_pipeline_start(logger: StructuredLogger, pipeline_name: str, **context):
-    """Log pipeline start event."""
-    logger.info(f"Starting pipeline: {pipeline_name}",
-               event_type="pipeline_start",
-               pipeline_name=pipeline_name,
-               system_info=get_system_info(),
-               **context)
+def log_pipeline_start(logger, pipeline_name: str, **context):
+    """Log pipeline start event - compatible with both StructuredLogger and standard Logger."""
+    if hasattr(logger, 'log') and hasattr(logger, 'correlation_id'):
+        # StructuredLogger - can handle extra data
+        logger.info(f"Starting pipeline: {pipeline_name}",
+                   event_type="pipeline_start",
+                   pipeline_name=pipeline_name,
+                   system_info=get_system_info(),
+                   **context)
+    else:
+        # Standard logger - just log the message
+        logger.info(f"🚀 Starting pipeline: {pipeline_name}")
 
 
-def log_pipeline_complete(logger: StructuredLogger, pipeline_name: str, status: str,
+def log_pipeline_complete(logger, pipeline_name: str, status: str,
                          total_duration: float, **context):
-    """Log pipeline completion event."""
-    logger.info(f"Pipeline {pipeline_name} completed with status: {status}",
-               event_type="pipeline_complete",
-               pipeline_name=pipeline_name,
-               status=status,
-               total_duration_seconds=round(total_duration, 3),
-               **context)
+    """Log pipeline completion event - compatible with both StructuredLogger and standard Logger."""
+    if hasattr(logger, 'log') and hasattr(logger, 'correlation_id'):
+        # StructuredLogger - can handle extra data
+        logger.info(f"Pipeline {pipeline_name} completed with status: {status}",
+                   event_type="pipeline_complete",
+                   pipeline_name=pipeline_name,
+                   status=status,
+                   total_duration_seconds=round(total_duration, 3),
+                   **context)
+    else:
+        # Standard logger - just log the message
+        logger.info(f"🏁 Pipeline {pipeline_name} completed with status: {status} in {total_duration:.2f}s")
 
 
-def log_step_start(logger: StructuredLogger, step_name: str, **context):
-    """Log step start event."""
-    logger.info(f"Starting step: {step_name}",
-               event_type="step_start",
-               step_name=step_name,
-               **context)
+def log_step_start(logger, step_name: str, **context):
+    """Log step start event - compatible with both StructuredLogger and standard Logger."""
+    if hasattr(logger, 'log') and hasattr(logger, 'correlation_id'):
+        # StructuredLogger - can handle extra data
+        logger.info(f"Starting step: {step_name}",
+                   event_type="step_start",
+                   step_name=step_name,
+                   **context)
+    else:
+        # Standard logger - just log the message
+        logger.info(f"🚀 Starting step: {step_name}")
 
 
-def log_step_success(logger: StructuredLogger, message: str, **context):
-    """Log step success event."""
-    logger.info(message,
-               event_type="step_success",
-               **context)
+def log_step_success(logger, message: str, **context):
+    """Log step success event - compatible with both StructuredLogger and standard Logger."""
+    if hasattr(logger, 'log') and hasattr(logger, 'correlation_id'):
+        # StructuredLogger - can handle extra data
+        logger.info(message, event_type="step_success", **context)
+    else:
+        # Standard logger - just log the message
+        logger.info(f"✅ {message}")
 
 
-def log_step_error(logger: StructuredLogger, message: str, **context):
-    """Log step error event."""
-    logger.error(message,
-                event_type="step_error",
-                **context)
+def log_step_error(logger, message: str, **context):
+    """Log step error event - compatible with both StructuredLogger and standard Logger."""
+    if hasattr(logger, 'log') and hasattr(logger, 'correlation_id'):
+        # StructuredLogger - can handle extra data
+        logger.error(message, event_type="step_error", **context)
+    else:
+        # Standard logger - just log the message
+        logger.error(f"❌ {message}")
 
 
-def log_step_warning(logger: StructuredLogger, message: str, **context):
-    """Log step warning event."""
-    logger.warning(message,
-                  event_type="step_warning",
-                  **context)
+def log_step_warning(logger, message: str, **context):
+    """Log step warning event - compatible with both StructuredLogger and standard Logger."""
+    if hasattr(logger, 'log') and hasattr(logger, 'correlation_id'):
+        # StructuredLogger - can handle extra data
+        logger.warning(message, event_type="step_warning", **context)
+    else:
+        # Standard logger - just log the message
+        logger.warning(f"⚠️ {message}")
 

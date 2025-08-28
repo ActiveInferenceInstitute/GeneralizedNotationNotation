@@ -67,7 +67,7 @@ run_script = create_standardized_pipeline_script(
 
 def _run_execute_processing(target_dir: Path, output_dir: Path, logger, **kwargs) -> bool:
     """
-    Standardized execute processing function.
+    Standardized execute processing function with enhanced dependency handling.
 
     Args:
         target_dir: Directory containing GNN files to execute
@@ -80,6 +80,45 @@ def _run_execute_processing(target_dir: Path, output_dir: Path, logger, **kwargs
     """
     try:
         logger.info("🚀 Processing execute")
+
+        # Check dependencies for execute step
+        try:
+            from utils.dependency_manager import log_dependency_status
+            log_dependency_status("12_execute", logger)
+        except ImportError:
+            logger.warning("⚠️ Dependency manager not available - proceeding with basic checks")
+            
+            # Basic fallback dependency checking
+            missing_deps = []
+            try:
+                import numpy
+            except ImportError:
+                missing_deps.append("numpy")
+            
+            # Check for simulation engines
+            simulation_engines = []
+            try:
+                import pymdp
+                simulation_engines.append("PyMDP")
+            except ImportError:
+                logger.warning("⚠️ PyMDP not available - PyMDP simulations will be skipped")
+            
+            try:
+                import subprocess
+                result = subprocess.run(["julia", "--version"], capture_output=True, timeout=5)
+                if result.returncode == 0:
+                    simulation_engines.append("Julia/RxInfer")
+            except (FileNotFoundError, subprocess.TimeoutExpired):
+                logger.warning("⚠️ Julia not available - RxInfer simulations will be skipped")
+                
+            if missing_deps:
+                log_step_error(logger, f"Critical dependencies missing: {missing_deps}")
+                return False
+            
+            if simulation_engines:
+                logger.info(f"✅ Available simulation engines: {simulation_engines}")
+            else:
+                log_step_warning(logger, "No simulation engines available - execution will be limited")
 
         # Get configuration
         config = get_pipeline_config()
