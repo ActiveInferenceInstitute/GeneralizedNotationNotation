@@ -51,7 +51,9 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
 from gui import (
     process_gui,
-    run_gui,
+    gui_1,
+    gui_2,
+    get_available_guis,
 )
 
 run_script = create_standardized_pipeline_script(
@@ -92,13 +94,39 @@ def _run_gui_processing(target_dir: Path, output_dir: Path, logger, **kwargs) ->
         logger.info(f"Output directory: {step_output_dir}")
 
         # Extract GUI-specific parameters
-        gui_mode = kwargs.get('gui_mode', 'generate_artifacts')
+        gui_mode = kwargs.get('gui_mode', 'all')  # 'all', 'gui_1', 'gui_2', or specific list
         interactive_mode = kwargs.get('interactive_mode', False)
+        headless = kwargs.get('headless', False)
 
-        if gui_mode:
-            logger.info(f"GUI mode: {gui_mode}")
+        logger.info(f"GUI mode: {gui_mode}")
         if interactive_mode:
             logger.info("Running in interactive mode")
+        if headless:
+            logger.info("Running in headless mode (generating artifacts only)")
+
+        # List available GUIs
+        available_guis = get_available_guis()
+        logger.info(f"Available GUI implementations: {list(available_guis.keys())}")
+        
+        # Determine which GUIs to run
+        if gui_mode == 'all':
+            gui_types = list(available_guis.keys())
+        elif gui_mode in available_guis:
+            gui_types = [gui_mode]
+        else:
+            try:
+                # Try to parse as comma-separated list
+                gui_types = [g.strip() for g in str(gui_mode).split(',')]
+                # Filter to only valid GUI types
+                gui_types = [g for g in gui_types if g in available_guis]
+                if not gui_types:
+                    logger.warning(f"No valid GUI types found in '{gui_mode}', defaulting to all")
+                    gui_types = list(available_guis.keys())
+            except:
+                logger.warning(f"Invalid GUI mode '{gui_mode}', defaulting to all")
+                gui_types = list(available_guis.keys())
+
+        logger.info(f"Will run GUI types: {gui_types}")
 
         # Validate input directory
         if not target_dir.exists():
@@ -115,9 +143,80 @@ def _run_gui_processing(target_dir: Path, output_dir: Path, logger, **kwargs) ->
 
         logger.info(f"Found {len(gnn_files)} GNN files for GUI processing")
 
-        # Process GUI via module API
-        logger.info("GUI module available, processing files...")
-        return process_gui(target_dir=target_dir, output_dir=step_output_dir, **kwargs)
+        # Process GUIs individually
+        results = {}
+        overall_success = True
+        
+        for gui_type in gui_types:
+            try:
+                logger.info(f"🚀 Starting {gui_type.upper()}: {available_guis[gui_type]['name']}")
+                
+                # Create GUI-specific output directory
+                gui_output_dir = step_output_dir / f"{gui_type}_output"
+                gui_output_dir.mkdir(parents=True, exist_ok=True)
+                
+                # Run the specific GUI
+                if gui_type == 'gui_1':
+                    result = gui_1(
+                        target_dir=target_dir,
+                        output_dir=gui_output_dir,
+                        logger=logger,
+                        verbose=kwargs.get('verbose', False),
+                        headless=headless,
+                        export_filename=f"constructed_model_{gui_type}.md",
+                        open_browser=interactive_mode and not headless,
+                    )
+                elif gui_type == 'gui_2':
+                    result = gui_2(
+                        target_dir=target_dir,
+                        output_dir=gui_output_dir,
+                        logger=logger,
+                        verbose=kwargs.get('verbose', False),
+                        headless=headless,
+                        export_filename=f"visual_model_{gui_type}.md",
+                        open_browser=interactive_mode and not headless,
+                    )
+                else:
+                    result = {
+                        "gui_type": gui_type,
+                        "success": False,
+                        "error": f"Unknown GUI type: {gui_type}"
+                    }
+                
+                results[gui_type] = result
+                
+                if result.get('success', False):
+                    logger.info(f"✅ {gui_type.upper()} completed successfully")
+                else:
+                    logger.error(f"❌ {gui_type.upper()} failed: {result.get('error', 'Unknown error')}")
+                    overall_success = False
+                    
+            except Exception as e:
+                logger.error(f"❌ {gui_type.upper()} failed with exception: {e}")
+                results[gui_type] = {
+                    "gui_type": gui_type,
+                    "success": False,
+                    "error": str(e)
+                }
+                overall_success = False
+        
+        # Save overall results summary
+        summary_file = step_output_dir / "gui_processing_summary.json"
+        import json
+        with open(summary_file, 'w') as f:
+            json.dump({
+                "gui_types_requested": gui_types,
+                "gui_types_available": list(available_guis.keys()),
+                "results": results,
+                "overall_success": overall_success,
+                "total_guis_run": len(results),
+                "successful_guis": sum(1 for r in results.values() if r.get('success', False)),
+                "processing_mode": "headless" if headless else "interactive"
+            }, f, indent=2)
+        
+        logger.info(f"📊 GUI processing summary saved to: {summary_file}")
+        
+        return overall_success
 
     except Exception as e:
         log_step_error(logger, f"GUI processing failed: {e}")
