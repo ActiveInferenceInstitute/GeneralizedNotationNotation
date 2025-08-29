@@ -53,6 +53,7 @@ from gui import (
     process_gui,
     gui_1,
     gui_2,
+    gui_3,
     get_available_guis,
 )
 
@@ -62,6 +63,18 @@ run_script = create_standardized_pipeline_script(
         target_dir, output_dir, logger, **kwargs
     ),
     "GUI processing for interactive GNN construction",
+    additional_arguments={
+        "gui_mode": {
+            "dest": "gui_mode",
+            "default": "all",
+            "help": "GUI mode: 'all', 'gui_1', 'gui_2', 'gui_3', or comma-separated list"
+        },
+        "interactive_mode": {
+            "dest": "interactive_mode", 
+            "action": "store_true",
+            "help": "Run GUIs in interactive mode (default: headless artifact generation)"
+        }
+    }
 )
 
 
@@ -176,6 +189,16 @@ def _run_gui_processing(target_dir: Path, output_dir: Path, logger, **kwargs) ->
                         export_filename=f"visual_model_{gui_type}.md",
                         open_browser=interactive_mode and not headless,
                     )
+                elif gui_type == 'gui_3':
+                    result = gui_3(
+                        target_dir=target_dir,
+                        output_dir=gui_output_dir,
+                        logger=logger,
+                        verbose=kwargs.get('verbose', False),
+                        headless=headless,
+                        export_filename=f"designed_model_{gui_type}.md",
+                        open_browser=interactive_mode and not headless,
+                    )
                 else:
                     result = {
                         "gui_type": gui_type,
@@ -215,6 +238,33 @@ def _run_gui_processing(target_dir: Path, output_dir: Path, logger, **kwargs) ->
             }, f, indent=2)
         
         logger.info(f"📊 GUI processing summary saved to: {summary_file}")
+        
+        # Keep the process alive if GUIs were launched successfully (non-headless mode)
+        if not headless and overall_success and any(r.get('success', False) for r in results.values()):
+            import time
+            logger.info("🌐 GUIs are running! Access them at:")
+            for gui_type, result in results.items():
+                if result.get('success', False):
+                    if gui_type == 'gui_1':
+                        port = 7860
+                    elif gui_type == 'gui_2':
+                        port = 7861
+                    elif gui_type == 'gui_3':
+                        port = 7862
+                    else:
+                        port = 7860  # fallback
+                    logger.info(f"  • {gui_type.upper()}: http://localhost:{port}")
+            
+            logger.info("💡 Press Ctrl+C to stop all GUIs and exit")
+            
+            try:
+                # Keep the main process alive to maintain GUI threads
+                while True:
+                    time.sleep(10)  # Check every 10 seconds
+                    # You could add health checks here if needed
+            except KeyboardInterrupt:
+                logger.info("🛑 Shutting down GUIs...")
+                return overall_success
         
         return overall_success
 

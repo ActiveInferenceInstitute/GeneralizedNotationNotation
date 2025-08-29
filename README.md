@@ -446,6 +446,69 @@ python src/main.py --only-steps 6 --target-dir path/to/gnn_file.md
 - 🧠 **Ontology Diagrams**: Active Inference relationship maps
 - 📈 **Performance Plots**: Resource usage and timing analysis
 
+### 🎮 Interactive GUI Interfaces
+
+GNN provides **three distinct interactive GUI interfaces** for visual model construction and editing (pipeline step 22).
+
+#### 🎯 GUI Overview
+
+| **GUI** | **Focus** | **Port** | **Key Features** |
+|---------|-----------|----------|------------------|
+| **GUI 1** | Form-based Constructor | `:7860` | Step-by-step model building, component management |
+| **GUI 2** | Visual Matrix Editor | `:7861` | Real-time heatmaps, interactive matrix editing |
+| **GUI 3** | Design Studio | `:7862` | State space design, ontology editing, low-dependency |
+
+#### 🚀 Quick Launch
+
+```bash
+# Launch all GUIs (recommended)
+python src/22_gui.py --target-dir input/gnn_files --output-dir output --gui-mode all --interactive-mode --verbose
+
+# Launch specific GUI
+python src/22_gui.py --gui-mode gui_3 --interactive-mode --verbose  # Design Studio only
+
+# Launch via main pipeline
+python src/main.py --only-steps 22 --verbose
+```
+
+#### 🏗️ GUI Details
+
+**🔧 GUI 1: Form-based Constructor** (`http://localhost:7860`)
+- Interactive two-pane editor for systematic GNN model construction
+- Component management (observation/hidden/action/policy variables)  
+- State space entry management with live validation
+- Synchronized plaintext GNN markdown editor
+
+**📊 GUI 2: Visual Matrix Editor** (`http://localhost:7861`)
+- Real-time matrix heatmap visualizations with Plotly
+- Interactive DataFrame editing with +/- dimension controls
+- Vector bar chart displays for C & D vectors
+- Live matrix statistics (min, max, mean, sum)
+- Auto-update functionality and matrix validation
+
+**🎨 GUI 3: State Space Design Studio** (`http://localhost:7862`)
+- Visual state space architecture designer with SVG diagrams
+- Ontology term editor for Active Inference concept mapping
+- Interactive connection graph interface (D>s, s-A, A-o format)
+- Parameter tuning controls (states, observations, actions, horizons)
+- Real-time GNN export and preview with low-dependency approach
+
+#### 📁 GUI Output Structure
+
+```
+output/22_gui_output/
+├── gui_1_output/           # Form-based constructor outputs
+│   ├── constructed_model_gui_1.md
+│   └── gui_status.json
+├── gui_2_output/           # Visual matrix editor outputs  
+│   ├── visual_model_gui_2.md
+│   └── visual_matrices.json
+├── gui_3_output/           # Design studio outputs
+│   ├── designed_model_gui_3.md
+│   └── design_analysis.json
+└── gui_processing_summary.json
+```
+
 ---
 
 ## 🚀 Quick Start

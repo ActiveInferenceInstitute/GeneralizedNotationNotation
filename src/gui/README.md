@@ -1,7 +1,7 @@
 # GUI Module (Interactive GNN Constructors)
 
 ## Overview
-The GUI module provides multiple interactive interfaces for constructing and editing GNN models:
+The GUI module provides **three distinct interactive interfaces** for constructing and editing GNN models:
 
 ### GUI 1: Form-based Interactive GNN Constructor
 - Interactive two-pane editor for GNN models
@@ -10,6 +10,7 @@ The GUI module provides multiple interactive interfaces for constructing and edi
   - State Space tab: live list of state-space entries with name, dimensions, type; add/update/remove entries
 - Right panel: synchronized plaintext GNN markdown editor
 - Edits are immediately reflected in the markdown
+- **Access:** http://localhost:7860
 
 ### GUI 2: Visual Matrix Editor
 - Visual drag-and-drop matrix editing interface
@@ -18,6 +19,16 @@ The GUI module provides multiple interactive interfaces for constructing and edi
 - POMDP template-based initialization
 - Multi-tab interface for A, B, C, D matrices
 - Matrix validation and consistency checking
+- **Access:** http://localhost:7861
+
+### GUI 3: State Space Design Studio
+- 🎨 **Visual state space designer** with interactive diagrams
+- 📚 **Ontology term editor** for Active Inference concepts  
+- 🔗 **Connection graph interface** with SVG visualization
+- ⚙️ **Parameter tuning controls** (states, observations, actions)
+- 💾 **Real-time GNN export and preview** functionality
+- 🎯 **Low-dependency HTML/CSS design** approach
+- **Access:** http://localhost:7862
 
 ## Usage
 ```bash
@@ -27,9 +38,10 @@ python src/22_gui.py --target-dir input/gnn_files --output-dir output --verbose
 # Run specific GUI
 python src/22_gui.py --gui-mode gui_1 --target-dir input/gnn_files --output-dir output --verbose
 python src/22_gui.py --gui-mode gui_2 --target-dir input/gnn_files --output-dir output --verbose
+python src/22_gui.py --gui-mode gui_3 --target-dir input/gnn_files --output-dir output --verbose
 
 # Run multiple specific GUIs
-python src/22_gui.py --gui-mode "gui_1,gui_2" --target-dir input/gnn_files --output-dir output --verbose
+python src/22_gui.py --gui-mode "gui_1,gui_2,gui_3" --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 - With dependencies available, local web UIs launch (in-browser). Otherwise, headless artifacts are generated.
@@ -44,6 +56,7 @@ python src/22_gui.py --gui-mode "gui_1,gui_2" --target-dir input/gnn_files --out
 - Standard pipeline mapping: output/22_gui_output/
   - `gui_1_output/`: GUI 1 specific outputs (constructed_model_gui_1.md, etc.)
   - `gui_2_output/`: GUI 2 specific outputs (visual_model_gui_2.md, visual_matrices.json, etc.)
+  - `gui_3_output/`: GUI 3 specific outputs (designed_model_gui_3.md, design_analysis.json, etc.)
   - `gui_processing_summary.json`: Overall processing summary
 
 ## Public API
@@ -55,11 +68,13 @@ from gui import (
   # Individual GUI runners
   gui_1,
   gui_2,
+  gui_3,
   
   # Information functions
   get_available_guis,
   get_gui_1_info,
   get_gui_2_info,
+  get_gui_3_info,
   
   # GUI 1 utilities (backward compatibility)
   add_component_to_markdown,
@@ -77,6 +92,7 @@ from gui import (
 ```python
 gui_1(target_dir: Path, output_dir: Path, logger: Logger, **kwargs) -> Dict[str, Any]
 gui_2(target_dir: Path, output_dir: Path, logger: Logger, **kwargs) -> Dict[str, Any]
+gui_3(target_dir: Path, output_dir: Path, logger: Logger, **kwargs) -> Dict[str, Any]
 ```
 - Launch specific GUI implementations
 - Returns execution results and status information
@@ -103,27 +119,33 @@ process_gui(
 src/gui/
 ├── __init__.py          # Main module exports and process_gui function
 ├── README.md           # This file
-├── gui_1.py            # GUI 1 runner
 ├── gui_1/              # GUI 1 implementation
-│   ├── __init__.py     # GUI 1 exports
+│   ├── __init__.py     # GUI 1 exports  
 │   ├── processor.py    # GUI 1 main logic
 │   ├── markdown.py     # Component and state-space helpers
 │   ├── ui.py           # Gradio form-based interface
 │   └── mcp.py          # Optional MCP registration
-├── gui_2.py            # GUI 2 runner  
-└── gui_2/              # GUI 2 implementation
-    ├── __init__.py     # GUI 2 exports
-    ├── processor.py    # GUI 2 main logic
-    ├── matrix_editor.py # Matrix manipulation and templates
-    └── ui.py           # Gradio visual interface
+├── gui_2/              # GUI 2 implementation
+│   ├── __init__.py     # GUI 2 exports
+│   ├── processor.py    # GUI 2 main logic
+│   ├── matrix_editor.py # Matrix manipulation and templates
+│   ├── ui.py           # Gradio visual interface
+│   └── ui_simple.py    # Simplified matrix editor
+└── gui_3/              # GUI 3 implementation
+    ├── __init__.py     # GUI 3 exports
+    ├── processor.py    # GUI 3 main logic
+    └── ui_designer.py  # Low-dependency design studio
 ```
 
 ### Adding New GUIs
-To add a new GUI (e.g., gui_3):
-1. Create `gui_3.py` runner with `gui_3()` function
-2. Create `gui_3/` subfolder with implementation
-3. Update `gui/__init__.py` to import and expose gui_3
-4. Update `22_gui.py` to handle gui_3 in processing logic
+To add a new GUI (e.g., gui_4):
+1. Create `gui_4/` subfolder with implementation
+2. Add `gui_4()` function in `gui_4/__init__.py`  
+3. Update `gui/__init__.py` to import and expose gui_4
+4. Update `22_gui.py` to handle gui_4 in processing logic
+5. Add port assignment and URL mapping
+
+**Example completed:** GUI 3 (State Space Design Studio) follows this pattern.
 
 ## Setup via UV
 - Step 1 installs GUI extras (`--extra gui`) to include Gradio. To install manually:

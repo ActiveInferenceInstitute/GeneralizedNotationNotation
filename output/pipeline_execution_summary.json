@@ -1,5 +1,5 @@
 {
-    "start_time": "2025-08-28T14:28:33.411828",
+    "start_time": "2025-08-29T04:57:53.703178",
     "arguments": {
         "target_dir": "input/gnn_files",
         "output_dir": "output",
@@ -29,23 +29,23 @@
     },
     "steps": [
         {
-            "status": "FAILED",
+            "status": "TIMEOUT",
             "stdout": "",
-            "stderr": "2025-08-28 14:28:33,627 - 22_gui.py - INFO - \ud83d\ude80 Processing GUI\n2025-08-28 14:28:33,627 - 22_gui.py - INFO - Processing GNN files from: input/gnn_files\n2025-08-28 14:28:33,627 - 22_gui.py - INFO - Output directory: output/22_gui_output/22_gui_output\n2025-08-28 14:28:33,627 - 22_gui.py - INFO - GUI mode: all\n2025-08-28 14:28:33,627 - 22_gui.py - INFO - Available GUI implementations: ['gui_1', 'gui_2']\n2025-08-28 14:28:33,627 - 22_gui.py - INFO - Will run GUI types: ['gui_1', 'gui_2']\n2025-08-28 14:28:33,628 - 22_gui.py - INFO - Found 1 GNN files for GUI processing\n2025-08-28 14:28:33,628 - 22_gui.py - INFO - \ud83d\ude80 Starting GUI_1: Form-based Interactive GNN Constructor\n2025-08-28 14:28:33,628 - 22_gui.py - INFO - \ud83c\udfae Starting GUI 1: Form-based Interactive GNN Constructor\n2025-08-28 14:28:33,629 - 22_gui.py - ERROR - \u274c GUI launch failed: module 'gradio' has no attribute 'Blocks'\n2025-08-28 14:28:33,629 - 22_gui.py - ERROR - \u274c GUI 1 failed\n2025-08-28 14:28:33,629 - 22_gui.py - ERROR - \u274c GUI_1 failed: Unknown error\n2025-08-28 14:28:33,629 - 22_gui.py - INFO - \ud83d\ude80 Starting GUI_2: Visual Matrix Editor for GNN Models\n2025-08-28 14:28:33,629 - 22_gui.py - INFO - \ud83c\udfaf Starting GUI 2: Visual Matrix Editor\n2025-08-28 14:28:33,772 - 22_gui.py - ERROR - \u274c GUI 2 launch failed: Gradio not available\n2025-08-28 14:28:33,772 - 22_gui.py - ERROR - \u274c GUI 2 failed\n2025-08-28 14:28:33,772 - 22_gui.py - ERROR - \u274c GUI_2 failed: Unknown error\n2025-08-28 14:28:33,773 - 22_gui.py - INFO - \ud83d\udcca GUI processing summary saved to: output/22_gui_output/22_gui_output/gui_processing_summary.json\n",
+            "stderr": "",
             "memory_usage_mb": 0.0,
-            "exit_code": 1,
+            "exit_code": -1,
             "retry_count": 0,
             "step_number": 1,
             "script_name": "22_gui.py",
             "description": "GUI (Interactive GNN Constructor)",
-            "start_time": "2025-08-28T14:28:33.412599",
-            "end_time": "2025-08-28T14:28:33.898594",
-            "duration_seconds": 0.4859950542449951
+            "start_time": "2025-08-29T04:57:53.703946",
+            "end_time": "2025-08-29T04:58:53.860872",
+            "duration_seconds": 60.156923055648804
         }
     ],
-    "end_time": "2025-08-28T14:28:33.898828",
-    "overall_status": "FAILED",
-    "total_duration_seconds": 0.8988351821899414,
+    "end_time": "2025-08-29T04:58:53.861231",
+    "overall_status": "SUCCESS",
+    "total_duration_seconds": 60.86123824119568,
     "environment_info": {
         "python_version": "3.11.7 (main, Jan  8 2024, 05:55:31) [Clang 17.0.6 ]",
         "platform": "linux",
@@ -53,13 +53,13 @@
         "working_directory": "/home/trim/Documents/GitHub/GeneralizedNotationNotation",
         "user": "trim",
         "memory_total_gb": "62.5",
-        "disk_free_gb": "26.6"
+        "disk_free_gb": "24.9"
     },
     "performance_summary": {
         "peak_memory_mb": 0.0,
         "total_steps": 1,
-        "failed_steps": 1,
-        "critical_failures": 1,
+        "failed_steps": 0,
+        "critical_failures": 0,
         "successful_steps": 0,
         "warnings": 0
     }

@@ -213,6 +213,11 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Pipeline*: [Step 7 MCP](pipeline/README.md#step-7-model-context-protocol)
 - **[Tool Development](mcp/README.md#development-guidelines)** - Creating new MCP tools
   - *Cross-refs*: [API Documentation](api/README.md), [DSL Manual](gnn/gnn_dsl_manual.md)
+- **[Interactive GUI Tools](../src/gui/README.md)** - Visual model construction interfaces
+  - *GUI 1*: Form-based constructor (localhost:7860)
+  - *GUI 2*: Visual matrix editor (localhost:7861) 
+  - *GUI 3*: State space design studio (localhost:7862)
+  - *Pipeline*: [Step 22 GUI Processing](pipeline/README.md#step-22-gui-processing)
 
 ### Learning Resources
 > **📖 Progressive Learning System** | **🎯 Beginner to Expert**

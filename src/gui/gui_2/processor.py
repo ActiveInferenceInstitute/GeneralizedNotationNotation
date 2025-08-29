@@ -98,17 +98,38 @@ def run_gui(
             log_step_success(logger, f"GUI 2 artifacts generated (headless). Export: {starter_path}")
             return True
 
-        # Build visual matrix editor GUI
+        # Build visual matrix editor GUI with enhanced logging
+        logger.info("🔧 Building Visual Matrix Editor UI...")
         from .ui import build_visual_gui
-        demo = build_visual_gui(markdown_text=starter_md, export_path=starter_path, logger=logger)
+        demo = build_visual_gui(starter_md, starter_path, logger)
+        logger.info("✅ Visual Matrix Editor UI built successfully")
 
-        # Launch GUI
-        demo.launch(
-            share=False,
-            prevent_thread_lock=not open_browser,
-            server_name="0.0.0.0",
-            inbrowser=open_browser,
-        )
+        # Launch GUI server with proper threading
+        logger.info(f"🌐 Launching GUI 2 on http://localhost:7861 (open_browser={open_browser})")
+        
+        import threading
+        import time
+        
+        def launch_gui():
+            logger.info("🎯 Visual Matrix Editor starting...")
+            demo.launch(
+                share=False,
+                prevent_thread_lock=False,  # Let the thread properly block on the server
+                server_name="0.0.0.0",
+                server_port=7861,
+                inbrowser=open_browser,
+                show_error=True,
+                quiet=False,  # Show server startup messages
+            )
+        
+        # Launch in a separate thread to allow multiple GUIs
+        gui_thread = threading.Thread(target=launch_gui, daemon=False)
+        gui_thread.start()
+        
+        # Give it a moment to start
+        time.sleep(3)
+        logger.info("🎯 GUI 2 is running on http://localhost:7861")
+        logger.info("🔍 Features: Real-time heatmaps, matrix editing, interactive dimension controls, live statistics")
 
         # Record launch status
         (output_root / "gui_status.json").write_text(json.dumps({

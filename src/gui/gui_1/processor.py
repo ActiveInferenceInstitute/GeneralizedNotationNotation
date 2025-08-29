@@ -70,16 +70,41 @@ def run_gui(
             return True
 
         # Build Gradio UI via modular builder
+        logger.info("🔧 Building Form-based Interactive GNN Constructor...")
         from .ui import build_gui
-        demo = build_gui(markdown_text=starter_md, export_path=starter_path)
+        demo = build_gui(markdown_text=starter_md, export_path=starter_path, logger=logger)
+        logger.info("✅ Form-based Constructor UI built successfully")
 
-        # Launch returns a server; prevent block in pipelines by non-blocking share=False
-        demo.launch(
-            share=False,
-            prevent_thread_lock=not open_browser,
-            server_name="0.0.0.0",
-            inbrowser=open_browser,
-        )
+        # Launch GUI with proper blocking behavior
+        if headless:
+            # Generate artifacts without launching server in headless mode
+            pass  # Already handled above
+        else:
+            # Launch GUI server - stay open but allow other GUIs to launch too
+            logger.info(f"🌐 Launching GUI 1 on http://localhost:7860 (open_browser={open_browser})")
+            import threading
+            import time
+            
+            def launch_gui():
+                logger.info("🎮 Form-based Constructor starting...")
+                demo.launch(
+                    share=False,
+                    prevent_thread_lock=False,  # Let the thread properly block on the server
+                    server_name="0.0.0.0",
+                    server_port=7860,
+                    inbrowser=open_browser,
+                    show_error=True,
+                    quiet=False,  # Show server startup messages
+                )
+            
+            # Launch in a separate thread to allow multiple GUIs
+            gui_thread = threading.Thread(target=launch_gui, daemon=False)
+            gui_thread.start()
+            
+            # Give it a moment to start and verify
+            time.sleep(3)
+            logger.info("🎮 GUI 1 is running on http://localhost:7860")
+            logger.info("🔍 Features: Component management, state space editing, live markdown sync")
 
         # Record availability artifact
         (output_root / "22_gui_output" / "gui_status.json").parent.mkdir(parents=True, exist_ok=True)

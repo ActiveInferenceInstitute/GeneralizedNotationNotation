@@ -15,6 +15,7 @@ Public API:
 # Import GUI runners
 from .gui_1 import gui_1, get_gui_1_info
 from .gui_2 import gui_2, get_gui_2_info
+from .gui_3 import gui_3, get_gui_3_info
 
 # Import GUI 1 utilities for backward compatibility
 from .gui_1 import (
@@ -33,6 +34,7 @@ def get_available_guis():
     return {
         "gui_1": get_gui_1_info(),
         "gui_2": get_gui_2_info(),
+        "gui_3": get_gui_3_info(),
     }
 
 def process_gui(target_dir, output_dir, verbose=False, **kwargs):

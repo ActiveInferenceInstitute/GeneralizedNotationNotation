@@ -201,10 +201,14 @@ src/
 - **Key Features**: Tool discovery, registration, protocol validation
 
 #### Step 22: GUI (`22_gui.py`)
-- **Purpose**: Interactive GUI for constructing/editing GNN models
-- **Input**: GNN models and templates
+- **Purpose**: Interactive GUI interfaces for visual GNN model construction and editing
+- **Input**: GNN models and templates  
 - **Output**: `22_gui_output/`
-- **Key Features**: Two-pane UI (controls + markdown editor), headless artifact mode
+- **Key Features**: Three distinct GUI interfaces
+  - *GUI 1 (Port 7860)*: Form-based constructor with two-pane editor
+  - *GUI 2 (Port 7861)*: Visual matrix editor with real-time heatmaps
+  - *GUI 3 (Port 7862)*: State space design studio with low-dependency approach
+- **Modes**: Interactive (web interfaces) or headless (artifact generation)
 
 #### Step 23: Report Generation (`23_report.py`)
 - **Purpose**: Comprehensive analysis report generation

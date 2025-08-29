@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides a comprehensive guide to the enhanced pipeline scripts that follow the **thin orchestrator pattern**. All 22 numbered scripts have been standardized to ensure robust, fail-safe execution with streamlined modular re-use across the GNN processing pipeline.
+This document provides a comprehensive guide to the enhanced pipeline scripts that follow the **thin orchestrator pattern**. All 24 numbered scripts have been standardized to ensure robust, fail-safe execution with streamlined modular re-use across the GNN processing pipeline.
 
 ## Architecture Pattern: Thin Orchestrators
 
@@ -25,8 +25,9 @@ Each numbered script (e.g., `16_analysis.py`) is a **thin orchestrator** that:
 - `18_security.py` - Security validation with access control
 - `19_research.py` - Research workflow with experimental features
 - `20_website.py` - Website generation with static HTML output
-- `21_report.py` - Report generation with comprehensive analysis
-- `22_mcp.py` - Model Context Protocol processing
+- `21_mcp.py` - Model Context Protocol processing
+- `22_gui.py` - Interactive GUI interfaces for visual model construction
+- `23_report.py` - Comprehensive analysis report generation
 
 #### 🔄 **Existing Standardized Scripts** (Already Following Pattern)
 - `4_model_registry.py` - Uses `create_standardized_pipeline_script`
