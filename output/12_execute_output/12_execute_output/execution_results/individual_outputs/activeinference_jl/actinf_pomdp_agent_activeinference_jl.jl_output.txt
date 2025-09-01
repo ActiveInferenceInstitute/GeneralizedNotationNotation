@@ -1,0 +1,34 @@
+Execution Results for actinf_pomdp_agent_activeinference_jl.jl
+Timestamp: 2025-08-29T15:10:46.169285
+Return Code: 1
+Execution Time: 12.38 seconds
+
+STDOUT:
+🚀 ENHANCED ActiveInference.jl Simulation
+======================================================================
+✅ Agent Creation: Creating Enhanced ActiveInference.jl agent
+❌ Enhanced ActiveInference.jl simulation failed: DimensionMismatch("arrays could not be broadcast to a common size: a has axes Base.OneTo(4) and b has axes Base.OneTo(3)")
+
+
+STDERR:
+ERROR: LoadError: DimensionMismatch: arrays could not be broadcast to a common size: a has axes Base.OneTo(4) and b has axes Base.OneTo(3)
+Stacktrace:
+ [1] _bcs1
+   @ ./broadcast.jl:528 [inlined]
+ [2] _bcs
+   @ ./broadcast.jl:522 [inlined]
+ [3] broadcast_shape
+   @ ./broadcast.jl:516 [inlined]
+ [4] combine_axes
+   @ ./broadcast.jl:497 [inlined]
+ [5] instantiate
+   @ ./broadcast.jl:307 [inlined]
+ [6] materialize
+   @ ./broadcast.jl:872 [inlined]
+ [7] create_enhanced_agent()
+   @ Main ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/actinf_pomdp_agent_activeinference_jl.jl:55
+ [8] main()
+   @ Main ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/actinf_pomdp_agent_activeinference_jl.jl:363
+ [9] top-level scope
+   @ ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/actinf_pomdp_agent_activeinference_jl.jl:388
+in expression starting at /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/actinf_pomdp_agent_activeinference_jl.jl:387

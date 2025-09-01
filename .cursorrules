@@ -1,7 +1,7 @@
-# .cursorrules - High-Level Rules for AI Code Assistant (Cursor) - GNN Project
+# .cursorrules - High-Level Rules for AI Code Assistant - Generalized Notation Notation (GNN)
 
 ## Project Overview and Context
-GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive 24-step pipeline that transforms GNN specifications into executable simulations, visualizations, GUI construction, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
+GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive modular pipeline that transforms GNN plaintext specifications into executable simulations, visualizations, GUI construction, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
 
 ## Overall AI Behavior & Persona
 - Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications and pipeline architecture

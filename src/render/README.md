@@ -1,6 +1,24 @@
-# Render Module
+# POMDP-Aware Render Module
 
-This module provides comprehensive code generation capabilities for GNN models, translating them into executable simulation code for multiple frameworks including PyMDP, RxInfer.jl, ActiveInference.jl, JAX, and DisCoPy.
+This module provides comprehensive **POMDP-aware code generation** capabilities for GNN models, with specialized support for Active Inference specifications. It translates GNN models into executable simulation code for multiple frameworks including PyMDP, RxInfer.jl, ActiveInference.jl, JAX, and DisCoPy.
+
+## Key Features
+
+🧠 **POMDP State Space Extraction** - Automatically extracts Active Inference matrices (A, B, C, D, E) and state space structures from GNN specifications
+
+🔧 **Modular Injection System** - Injects POMDP state spaces into framework-specific renderers with validation and compatibility checking
+
+📁 **Implementation-Specific Output Structure** - Creates organized output directories with framework-specific subfolders 
+
+📚 **Structured Documentation Generation** - Automatically generates comprehensive documentation for each framework rendering
+
+✅ **Enhanced Validation** - Validates POMDP structural consistency and framework compatibility
+
+## POMDP Processing Pipeline
+
+```
+GNN File → POMDP Extraction → Framework Compatibility Check → Modular Injection → Generated Code + Documentation
+```
 
 ## Module Structure
 
@@ -345,32 +363,114 @@ def process_render(target_dir, output_dir, verbose=False, **kwargs):
     return True
 ```
 
-### Output Structure
+### Enhanced Output Structure
+
+The new POMDP-aware render system creates **implementation-specific output subfolders** for organized code generation:
+
 ```
 output/11_render_output/
-├── pymdp/                         # PyMDP generated code
-│   ├── simulation_script.py       # Main simulation script
-│   ├── config.py                  # Configuration file
-│   ├── requirements.txt           # Dependencies
-│   └── README.md                 # Documentation
-├── rxinfer/                       # RxInfer.jl generated code
-│   ├── simulation.jl              # Main simulation script
-│   ├── Project.toml              # Project configuration
-│   ├── Manifest.toml             # Manifest file
-│   └── README.md                 # Documentation
-├── activeinference_jl/            # ActiveInference.jl generated code
-│   ├── simulation.jl              # Main simulation script
-│   ├── Project.toml              # Project configuration
-│   └── README.md                 # Documentation
-├── jax/                           # JAX generated code
-│   ├── simulation.py              # Main simulation script
-│   ├── config.py                  # Configuration file
-│   └── README.md                 # Documentation
-└── discopy/                       # DisCoPy generated code
-    ├── diagram.py                 # Main diagram script
-    ├── visualization.py           # Visualization code
-    └── README.md                 # Documentation
+├── [model_name]/                          # Model-specific directory
+│   ├── pymdp/                            # PyMDP implementation
+│   │   ├── [model_name]_pymdp.py         # Generated simulation script
+│   │   ├── README.md                     # Framework-specific documentation
+│   │   └── processing_summary.json       # Processing details
+│   ├── rxinfer/                          # RxInfer.jl implementation  
+│   │   ├── [model_name]_rxinfer.jl       # Generated Julia script
+│   │   ├── README.md                     # Framework-specific documentation
+│   │   └── processing_summary.json       # Processing details
+│   ├── activeinference_jl/               # ActiveInference.jl implementation
+│   │   ├── [model_name]_activeinference.jl # Generated Julia script
+│   │   ├── README.md                     # Framework-specific documentation
+│   │   └── processing_summary.json       # Processing details
+│   ├── jax/                              # JAX implementation
+│   │   ├── [model_name]_jax.py           # Generated JAX script
+│   │   ├── README.md                     # Framework-specific documentation
+│   │   └── processing_summary.json       # Processing details
+│   ├── discopy/                          # DisCoPy implementation
+│   │   ├── [model_name]_discopy.py       # Generated diagram script
+│   │   ├── README.md                     # Framework-specific documentation
+│   │   └── processing_summary.json       # Processing details
+│   └── processing_summary.json           # Overall model processing summary
+├── README.md                             # Overall processing documentation
+└── render_processing_summary.json        # Complete processing results
 ```
+
+**Benefits of This Structure:**
+- ✅ Clear separation of implementation-specific code
+- ✅ Framework-specific documentation and configurations
+- ✅ Easy navigation to specific implementations
+- ✅ Comprehensive processing tracking and validation results
+- ✅ Scalable to multiple GNN models
+
+## POMDP Processing Features
+
+### POMDP State Space Extraction (`pomdp_extractor.py`)
+
+The system automatically extracts Active Inference structures from GNN specifications:
+
+**Extracted Components:**
+- **A Matrix**: Likelihood mapping P(o|s) - observations given states
+- **B Matrix**: Transition dynamics P(s'|s,a) - next states given current states and actions
+- **C Vector**: Preferences over observations (log-probabilities)
+- **D Vector**: Prior beliefs over initial hidden states
+- **E Vector**: Policy priors (habits) over actions
+
+**State Space Variables:**
+- Hidden states, observations, actions with dimensions and types
+- Connections and relationships between variables
+- Ontology mappings to Active Inference concepts
+
+**Example POMDP Extraction:**
+```python
+from gnn.pomdp_extractor import extract_pomdp_from_file
+
+# Extract POMDP from GNN file
+pomdp_space = extract_pomdp_from_file("input/gnn_files/actinf_pomdp_agent.md")
+
+print(f"Model: {pomdp_space.model_name}")
+print(f"States: {pomdp_space.num_states}")
+print(f"Observations: {pomdp_space.num_observations}")  
+print(f"Actions: {pomdp_space.num_actions}")
+print(f"A Matrix: {len(pomdp_space.A_matrix)} x {len(pomdp_space.A_matrix[0])}")
+```
+
+### Modular Injection System (`pomdp_processor.py`)
+
+The processor validates POMDP compatibility and injects state spaces into framework renderers:
+
+**Compatibility Validation:**
+- Checks required matrices are present for each framework
+- Validates matrix dimensions and consistency
+- Warns about framework limitations (e.g., multi-modality support)
+
+**Framework-Specific Processing:**
+```python
+from render.pomdp_processor import process_pomdp_for_frameworks
+
+# Process for all frameworks
+results = process_pomdp_for_frameworks(
+    pomdp_space=pomdp_space,
+    output_dir="output/11_render_output/",
+    frameworks=["pymdp", "activeinference_jl", "rxinfer"],
+    strict_validation=True
+)
+
+# Results include success/failure for each framework
+for framework, result in results['framework_results'].items():
+    status = "✅" if result['success'] else "❌"
+    print(f"{status} {framework}: {result['message']}")
+```
+
+### Structured Documentation Generation
+
+Each framework rendering includes:
+
+- **Model Information**: Extracted from GNN annotations
+- **POMDP Dimensions**: States, observations, actions
+- **Active Inference Matrices**: Available matrices with dimensions
+- **Generated Files**: List of created simulation scripts
+- **Usage Instructions**: Framework-specific execution guidance
+- **Warnings**: Any compatibility or processing issues
 
 ## Framework Features
 

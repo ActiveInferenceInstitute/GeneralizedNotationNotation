@@ -1,0 +1,13 @@
+step,semantic_score,duration_ms,complexity_measure,analysis_type
+1,0.8314641041425872,20.208000000000002,2,categorical_step_1
+2,0.8729217295068367,0.107,2,categorical_step_2
+3,1.0,0.027,2,categorical_step_3
+4,0.9478731584407637,0.022,2,categorical_step_4
+5,0.919092505865115,0.037,2,categorical_step_5
+6,0.819451708457208,0.019,2,categorical_step_6
+7,1.0,0.017,2,categorical_step_7
+8,0.932809622609172,0.026,2,categorical_step_8
+9,0.9385104418442138,0.019,2,categorical_step_9
+10,0.8615973013153645,0.019,2,categorical_step_10
+11,0.9177589516975421,0.017,2,categorical_step_11
+12,0.8353639427083558,0.019,2,categorical_step_12

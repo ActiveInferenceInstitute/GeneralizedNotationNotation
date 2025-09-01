@@ -1,0 +1,23 @@
+Execution Results for actinf_pomdp_agent_rxinfer.jl
+Timestamp: 2025-08-29T05:44:43.225287
+Return Code: 1
+Execution Time: 27.44 seconds
+
+STDOUT:
+
+
+STDERR:
+ERROR: LoadError: The `actinf_pomdp_agent_model` model macro does not support positional arguments. Use keyword arguments `actinf_pomdp_agent_model(n = ...)` instead.
+
+Stacktrace:
+ [1] error(s::String)
+   @ Base ./error.jl:35
+ [2] actinf_pomdp_agent_model(args::Int64; kwargs::@Kwargs{})
+   @ Main ~/.julia/packages/GraphPPL/xPNyo/src/model_macro.jl:765
+ [3] actinf_pomdp_agent_model(args::Int64)
+   @ Main ~/.julia/packages/GraphPPL/xPNyo/src/model_macro.jl:764
+ [4] run_actinf_pomdp_agent_inference(data::Vector{Float64}, n::Int64)
+   @ Main ~/Documents/GitHub/GeneralizedNotationNotation/output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/actinf_pomdp_agent_rxinfer.jl:30
+ [5] top-level scope
+   @ ~/Documents/GitHub/GeneralizedNotationNotation/output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/actinf_pomdp_agent_rxinfer.jl:58
+in expression starting at /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/actinf_pomdp_agent_rxinfer.jl:51

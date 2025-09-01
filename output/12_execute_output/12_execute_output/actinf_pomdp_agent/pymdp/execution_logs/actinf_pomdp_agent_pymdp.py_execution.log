@@ -1,0 +1,16 @@
+Execution Results for actinf_pomdp_agent_pymdp.py
+Timestamp: 2025-08-29T15:10:38.263916
+Return Code: 1
+Execution Time: 0.06 seconds
+Model: actinf_pomdp_agent
+Framework: pymdp
+Output Directory: output/12_execute_output/12_execute_output/actinf_pomdp_agent/pymdp
+
+STDOUT:
+
+
+STDERR:
+  File "/home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/pymdp/actinf_pomdp_agent_pymdp.py", line 96
+    ([A[i,:].sum():.3f for i in range(min(3, A.shape[0]))])
+                    ^
+SyntaxError: invalid decimal literal

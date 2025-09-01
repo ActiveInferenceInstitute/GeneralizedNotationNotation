@@ -1,0 +1,22 @@
+Execution Results for actinf_pomdp_agent_activeinference_jl.jl
+Timestamp: 2025-08-29T05:44:13.649610
+Return Code: 1
+Execution Time: 29.57 seconds
+
+STDOUT:
+
+
+STDERR:
+ERROR: LoadError: UndefVarError: `softmax` not defined in `Main`
+Suggestion: check for spelling errors or missing imports.
+Hint: a global variable of this name may be made accessible by importing LogExpFunctions in the current active module Main
+Hint: a global variable of this name may be made accessible by importing StatsFuns in the current active module Main
+Hint: a global variable of this name may be made accessible by importing NNlib in the current active module Main
+Stacktrace:
+ [1] run_actinf_pomdp_agent_simulation(agent::Actinf_pomdp_agentAgent, num_steps::Int64)
+   @ Main ~/Documents/GitHub/GeneralizedNotationNotation/output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/actinf_pomdp_agent_activeinference_jl.jl:63
+ [2] run_actinf_pomdp_agent_simulation(agent::Actinf_pomdp_agentAgent)
+   @ Main ~/Documents/GitHub/GeneralizedNotationNotation/output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/actinf_pomdp_agent_activeinference_jl.jl:47
+ [3] top-level scope
+   @ ~/Documents/GitHub/GeneralizedNotationNotation/output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/actinf_pomdp_agent_activeinference_jl.jl:83
+in expression starting at /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/actinf_pomdp_agent_activeinference_jl.jl:80

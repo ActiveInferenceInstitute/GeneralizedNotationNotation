@@ -1,0 +1,29 @@
+{
+  "timestamp": "2025-08-29T05:43:17.656456",
+  "processing_type": "Basic rendering",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "total_framework_attempts": 0,
+  "successful_framework_renderings": 0,
+  "framework_success_rate": 0,
+  "configuration": {
+    "frameworks": "all",
+    "strict_validation": true,
+    "verbose": true,
+    "pomdp_processing_available": false
+  },
+  "file_results": {
+    "input/gnn_files/actinf_pomdp_agent.md": {
+      "success": true,
+      "message": "Generated 4 files",
+      "generated_files": [
+        "output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/pymdp/actinf_pomdp_agent_pymdp.py",
+        "output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/actinf_pomdp_agent_rxinfer.jl",
+        "output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/actinf_pomdp_agent_activeinference_jl.jl",
+        "output/final_test/11_render_output/11_render_output/actinf_pomdp_agent/discopy/actinf_pomdp_agent_discopy.py"
+      ],
+      "output_directory": "output/final_test/11_render_output/11_render_output/actinf_pomdp_agent"
+    }
+  }
+}

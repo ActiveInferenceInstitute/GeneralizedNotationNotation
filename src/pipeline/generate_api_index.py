@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Any
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SRC_DIR = PROJECT_ROOT / "src"
 OUTPUT_JSON = PROJECT_ROOT / "doc" / "api" / "api_index.json"
 

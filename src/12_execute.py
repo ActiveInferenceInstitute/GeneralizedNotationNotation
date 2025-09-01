@@ -124,8 +124,8 @@ def _run_execute_processing(target_dir: Path, output_dir: Path, logger, **kwargs
         config = get_pipeline_config()
         step_config = config.get_step_config("12_execute") if hasattr(config, 'get_step_config') else None
 
-        # Set up output directory
-        step_output_dir = get_output_dir_for_script("12_execute.py", output_dir)
+        # Set up output directory - use direct 12_execute_output directory
+        step_output_dir = output_dir / "12_execute_output"
         step_output_dir.mkdir(parents=True, exist_ok=True)
 
         # Log processing parameters
