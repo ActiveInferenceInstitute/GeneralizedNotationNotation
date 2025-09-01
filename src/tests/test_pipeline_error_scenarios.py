@@ -472,3 +472,4 @@ class TestErrorReportingAndDiagnostics:
             
         except ImportError:
             pytest.skip("Dependency validator not available")
+

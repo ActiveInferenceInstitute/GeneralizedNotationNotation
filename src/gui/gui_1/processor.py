@@ -57,16 +57,36 @@ def run_gui(
         starter_path.write_text(starter_md)
 
         if headless or _GUI_BACKEND is None:
-            # Persist a small artifact describing GUI availability
+            # Enhanced fallback handling for missing GUI backend
+            if _GUI_BACKEND is None:
+                logger.warning("⚠️ Gradio not available - generating fallback artifacts only")
+                logger.info("💡 Install GUI support with: uv pip install -e .[gui]")
+            
+            # Persist enhanced artifact describing GUI availability
             # `output_root` is already the step-specific output directory
             gui_output_dir = output_root
             gui_output_dir.mkdir(parents=True, exist_ok=True)
-            (gui_output_dir / "gui_status.json").write_text(json.dumps({
+            
+            # Create comprehensive fallback status report
+            fallback_status = {
                 "backend": _GUI_BACKEND or "none",
                 "launched": False,
-                "export_file": str(starter_path)
-            }, indent=2))
-            log_step_success(logger, f"GUI artifacts generated (headless). Export: {starter_path}")
+                "export_file": str(starter_path),
+                "gui_type": "form_based_constructor",
+                "status": "fallback_mode" if _GUI_BACKEND is None else "headless_mode",
+                "reason": "gradio_not_available" if _GUI_BACKEND is None else "headless_requested",
+                "recommendations": [
+                    "Install gradio with: uv pip install gradio>=4.0.0",
+                    "Run with --interactive-mode for full GUI experience",
+                    "Use generated template as starting point for manual editing"
+                ] if _GUI_BACKEND is None else [
+                    "Generated template available for manual editing"
+                ]
+            }
+            
+            (gui_output_dir / "gui_status.json").write_text(json.dumps(fallback_status, indent=2))
+            
+            log_step_success(logger, f"GUI artifacts generated ({'fallback' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
             return True
 
         # Build Gradio UI via modular builder

@@ -343,3 +343,4 @@ def with_diagnostic_logging(step_name: str, output_dir: Optional[Path] = None):
                 
         return wrapper
     return decorator
+

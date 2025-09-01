@@ -262,3 +262,4 @@ def create_summary_visualization(
     except Exception as e:
         logger.error(f"Error creating summary visualization: {e}")
         return False, f"Error creating summary: {str(e)}"
+
