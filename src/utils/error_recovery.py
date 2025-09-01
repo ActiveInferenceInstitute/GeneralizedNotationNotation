@@ -590,4 +590,145 @@ def log_error_with_recovery(logger: logging.Logger, step_name: str, error: Excep
     # Log full traceback at debug level
     logger.debug(f"Full traceback:\n{full_traceback}")
     
-    return recovery_info 
+    return recovery_info
+
+
+# Pipeline Step-Specific Recovery Functions
+
+def attempt_step_recovery(script_name: str, step_result: Dict[str, Any], 
+                          args, logger) -> Optional[Dict[str, Any]]:
+    """Attempt to recover from step failures using fallback strategies."""
+    recovery_strategies = {
+        "8_visualization.py": recover_visualization_step,
+        "12_execute.py": recover_execution_step,
+        "15_audio.py": recover_audio_step,
+        "13_llm.py": recover_llm_step
+    }
+    
+    if script_name in recovery_strategies:
+        try:
+            return recovery_strategies[script_name](step_result, args, logger)
+        except Exception as e:
+            logger.warning(f"Recovery attempt failed for {script_name}: {e}")
+            return None
+    
+    return None
+
+def recover_visualization_step(step_result: Dict[str, Any], args, logger) -> Dict[str, Any]:
+    """Recovery strategy for visualization step failures."""
+    recovery_result = {"success": False, "warnings": []}
+    
+    # Check if matplotlib backend issues
+    stderr = step_result.get("stderr", "")
+    if "matplotlib" in stderr.lower() or "renderer" in stderr.lower():
+        recovery_result["warnings"].append("Matplotlib backend issues detected - visualization may use fallback rendering")
+        # Check if any visualization files were actually created despite the error
+        viz_output_dir = args.output_dir / "8_visualization_output"
+        if viz_output_dir.exists():
+            viz_files = list(viz_output_dir.rglob("*.png")) + list(viz_output_dir.rglob("*.svg"))
+            if viz_files:
+                recovery_result["success"] = True
+                recovery_result["warnings"].append(f"Found {len(viz_files)} visualization files despite errors")
+    
+    return recovery_result
+
+def recover_execution_step(step_result: Dict[str, Any], args, logger) -> Dict[str, Any]:
+    """Recovery strategy for execution step failures."""
+    recovery_result = {"success": False, "warnings": []}
+    
+    stderr = step_result.get("stderr", "")
+    if "PyMDP not available" in stderr or "render output directory not found" in stderr:
+        # Create informational execution report even without actual execution
+        exec_output_dir = args.output_dir / "12_execute_output"
+        exec_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Create a fallback execution report
+        fallback_report = {
+            "status": "degraded",
+            "message": "Execution completed with graceful degradation",
+            "missing_dependencies": [],
+            "available_simulators": [],
+            "recommendations": ["Install PyMDP for full simulation capabilities", "Run render step (11) before execute step (12)"]
+        }
+        
+        # Check which simulators are available
+        if "PyMDP not available" in stderr:
+            fallback_report["missing_dependencies"].append("PyMDP")
+        
+        # Write fallback report
+        import json
+        report_file = exec_output_dir / "execution_fallback_report.json"
+        with open(report_file, 'w') as f:
+            json.dump(fallback_report, f, indent=2)
+            
+        recovery_result["success"] = True
+        recovery_result["warnings"].append("Created fallback execution report with installation recommendations")
+    
+    return recovery_result
+
+def recover_audio_step(step_result: Dict[str, Any], args, logger) -> Dict[str, Any]:
+    """Recovery strategy for audio step failures."""
+    recovery_result = {"success": True, "warnings": []}
+    
+    # Audio step is typically optional and can gracefully degrade
+    recovery_result["warnings"].append("Audio generation skipped - non-critical for pipeline completion")
+    
+    return recovery_result
+
+def recover_llm_step(step_result: Dict[str, Any], args, logger) -> Dict[str, Any]:
+    """Recovery strategy for LLM step failures."""
+    recovery_result = {"success": False, "warnings": []}
+    
+    stderr = step_result.get("stderr", "")
+    if "API" in stderr or "key" in stderr.lower() or "authentication" in stderr.lower():
+        # Create fallback analysis without LLM
+        llm_output_dir = args.output_dir / "13_llm_output"
+        llm_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        fallback_analysis = """
+# GNN Analysis Report (Fallback Mode)
+
+This analysis was generated without LLM integration due to missing API credentials.
+
+## Recommendations
+1. Configure API keys for enhanced AI analysis
+2. Review GNN specifications manually
+3. Consider local LLM alternatives
+        """
+        
+        analysis_file = llm_output_dir / "fallback_analysis.md"
+        with open(analysis_file, 'w') as f:
+            f.write(fallback_analysis)
+            
+        recovery_result["success"] = True
+        recovery_result["warnings"].append("Created fallback analysis without LLM integration")
+    
+    return recovery_result
+
+def is_failure_recoverable(script_name: str, step_result: Dict[str, Any]) -> bool:
+    """Determine if a step failure is recoverable for downstream processing."""
+    # Steps that are critical for downstream processing
+    critical_steps = {
+        "3_gnn.py": "GNN parsing is critical for all downstream steps",
+        "1_setup.py": "Environment setup is critical for pipeline execution"
+    }
+    
+    if script_name in critical_steps:
+        return False
+        
+    # Check exit code - some exit codes indicate recoverable errors
+    exit_code = step_result.get("exit_code", -1)
+    if exit_code == 2:  # Often used for warnings/partial success
+        return True
+        
+    # Check stderr for recoverable error patterns
+    stderr = step_result.get("stderr", "")
+    recoverable_patterns = [
+        "not available",
+        "optional dependency",
+        "warning",
+        "fallback",
+        "degraded"
+    ]
+    
+    return any(pattern in stderr.lower() for pattern in recoverable_patterns) 

@@ -165,3 +165,4 @@ def log_simulation_failure(simulation_name: str, error: str):
         "timestamp": datetime.now().isoformat()
     }
     global_monitor.execution_data["total_failed"] += 1
+

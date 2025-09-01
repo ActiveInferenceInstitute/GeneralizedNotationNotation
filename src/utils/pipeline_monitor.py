@@ -626,4 +626,72 @@ def get_pipeline_health_status() -> Dict[str, Any]:
         "total_steps": health.total_steps,
         "active_alerts": health.active_alerts,
         "last_update": health.last_update.isoformat()
-    } 
+    }
+
+def generate_pipeline_health_report(pipeline_summary: Dict[str, Any], logger) -> Dict[str, Any]:
+    """Generate comprehensive pipeline health and performance report."""
+    health_report = {
+        "overall_health": "healthy",
+        "execution_efficiency": 0.0,
+        "memory_efficiency": "good",
+        "step_performance": {},
+        "recommendations": [],
+        "warnings": [],
+        "critical_issues": []
+    }
+    
+    # Analyze execution efficiency
+    total_steps = len(pipeline_summary.get("steps", []))
+    successful_steps = pipeline_summary.get("performance_summary", {}).get("successful_steps", 0)
+    
+    if total_steps > 0:
+        health_report["execution_efficiency"] = (successful_steps / total_steps) * 100
+        
+    # Determine overall health
+    critical_failures = pipeline_summary.get("performance_summary", {}).get("critical_failures", 0)
+    warnings = pipeline_summary.get("performance_summary", {}).get("warnings", 0)
+    
+    if critical_failures > 0:
+        health_report["overall_health"] = "critical"
+        health_report["critical_issues"].append(f"{critical_failures} critical step failures detected")
+    elif warnings > 2:
+        health_report["overall_health"] = "degraded"
+        health_report["warnings"].append(f"{warnings} warnings detected across pipeline steps")
+        
+    # Analyze memory usage patterns
+    peak_memory = pipeline_summary.get("performance_summary", {}).get("peak_memory_mb", 0.0)
+    if peak_memory > 1000:  # > 1GB
+        health_report["memory_efficiency"] = "high_usage"
+        health_report["recommendations"].append("Consider optimizing memory usage for large-scale processing")
+    elif peak_memory > 500:  # > 500MB
+        health_report["memory_efficiency"] = "moderate_usage"
+        
+    # Analyze individual step performance
+    for step in pipeline_summary.get("steps", []):
+        step_name = step.get("script_name", "unknown")
+        duration = step.get("duration_seconds", 0)
+        memory_delta = step.get("memory_delta_mb", 0)
+        
+        health_report["step_performance"][step_name] = {
+            "duration_seconds": duration,
+            "memory_delta_mb": memory_delta,
+            "status": step.get("status", "unknown")
+        }
+        
+        # Flag slow steps
+        if duration > 30:  # > 30 seconds
+            health_report["warnings"].append(f"Step {step_name} took {duration:.1f}s - consider optimization")
+            
+        # Flag memory-intensive steps  
+        if memory_delta > 100:  # > 100MB increase
+            health_report["warnings"].append(f"Step {step_name} used {memory_delta:.1f}MB additional memory")
+    
+    # Generate specific recommendations
+    if health_report["execution_efficiency"] < 80:
+        health_report["recommendations"].append("Pipeline efficiency below 80% - review step dependencies and error handling")
+        
+    if health_report["overall_health"] in ["degraded", "critical"]:
+        health_report["recommendations"].append("Run pipeline with --verbose flag for detailed diagnostics")
+        health_report["recommendations"].append("Check individual step logs for specific error resolution")
+    
+    return health_report 

@@ -55,6 +55,20 @@ class DependencyValidator:
         return {
             "core": [
                 DependencySpec(
+                    name="pathlib",
+                    description="Path handling utilities"
+                ),
+                DependencySpec(
+                    name="json",
+                    description="JSON processing"
+                ),
+                DependencySpec(
+                    name="yaml",
+                    module_name="yaml", 
+                    install_command="pip install pyyaml",
+                    description="YAML file processing"
+                ),
+                DependencySpec(
                     name="numpy",
                     version_min="1.20.0",
                     description="Numerical computing library"
@@ -161,6 +175,29 @@ class DependencyValidator:
                     version_min="6.0.0",
                     install_command="uv pip install pytest",
                     description="Testing framework"
+                ),
+            ],
+            "discopy": [
+                DependencySpec(
+                    name="discopy",
+                    version_min="0.4.0",
+                    install_command="uv pip install discopy",
+                    is_optional=True,
+                    description="DisCoPy categorical quantum computing library"
+                ),
+                DependencySpec(
+                    name="jax",
+                    version_min="0.3.0",
+                    install_command="uv pip install jax jaxlib",
+                    is_optional=True,
+                    description="JAX for DisCoPy numerical evaluation"
+                ),
+                DependencySpec(
+                    name="jaxlib",
+                    version_min="0.3.0", 
+                    install_command="uv pip install jaxlib",
+                    is_optional=True,
+                    description="JAX library backend"
                 ),
             ]
         }
@@ -390,7 +427,8 @@ def validate_pipeline_dependencies(step_names: Optional[List[str]] = None,
         "type_checker": ["core", "gnn_processing"],
         "export": ["core", "export"],
         "visualization": ["core", "visualization"],
-        "render": ["core", "pymdp", "rxinfer"],
+        "render": ["core", "pymdp", "rxinfer", "discopy"],
+        "execute": ["core", "pymdp", "rxinfer", "discopy"],
         "mcp": ["core"],
         "ontology": ["core", "gnn_processing"],
     }
@@ -552,25 +590,34 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
     
     # Map step numbers to dependency groups
     step_dependency_map = {
-        1: "core",              # 1_setup.py - Setup step
-        2: "gnn_processing",    # 2_gnn.py - GNN file processing
-        3: "testing",           # 3_tests.py - Testing framework
-        4: "gnn_processing",    # 4_type_checker.py - GNN validation
-        5: "export",            # 5_export.py - Export formats
-        6: "visualization",     # 6_visualization.py - Visualization
-        7: "core",              # 7_mcp.py - MCP tools
-        8: "gnn_processing",    # 8_ontology.py - Ontology processing
-        9: "core",              # 9_render.py - Rendering
-        10: "core",             # 10_execute.py - Execution
-        11: "core",             # 11_llm.py - LLM processing
-        12: "core",             # 12_audio.py - Audio generation
-13: "core",             # 13_website.py - Website generation
-14: "core"              # 14_report.py - Comprehensive analysis reports
+        1: "core",              # 1_setup.py - Setup step  
+        2: "testing",           # 2_tests.py - Testing framework
+        3: "gnn_processing",    # 3_gnn.py - GNN file processing
+        4: "core",              # 4_model_registry.py - Model registry
+        5: "gnn_processing",    # 5_type_checker.py - GNN validation
+        6: "core",              # 6_validation.py - Validation
+        7: "export",            # 7_export.py - Export formats
+        8: "visualization",     # 8_visualization.py - Visualization
+        9: "visualization",     # 9_advanced_viz.py - Advanced visualization
+        10: "gnn_processing",   # 10_ontology.py - Ontology processing
+        11: "core",             # 11_render.py - Rendering (pymdp, rxinfer, discopy)
+        12: "core",             # 12_execute.py - Execution (pymdp, rxinfer, discopy)
+        13: "core",             # 13_llm.py - LLM processing
+        14: "core",             # 14_ml_integration.py - ML integration
+        15: "core",             # 15_audio.py - Audio generation
+        16: "core",             # 16_analysis.py - Analysis
+        17: "core",             # 17_integration.py - Integration
+        18: "core",             # 18_security.py - Security
+        19: "core",             # 19_research.py - Research
+        20: "core",             # 20_website.py - Website generation
+        21: "core",             # 21_mcp.py - MCP tools
+        22: "core",             # 22_gui.py - GUI
+        23: "core"              # 23_report.py - Comprehensive analysis reports
     }
     
     # Determine which dependency groups we need
     required_groups = set(["core"])
-    for step_num in range(1, 14):  # Updated to include steps 1-13
+    for step_num in range(1, 24):  # Updated to include steps 1-23
         # Skip if in skip list
         if step_num in skip_steps or f"{step_num}_" in str(skip_steps):
             continue

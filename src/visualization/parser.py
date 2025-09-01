@@ -187,10 +187,14 @@ class GNNParser:
                             except ValueError:
                                 dimensions.append(dim_part) # Keep as string if not int
                 
+                # Ensure var_type is never None for safety
+                if var_type is None:
+                    var_type = 'unknown'
+                
                 variables[var_name] = {
                     'dimensions': dimensions,
                     'type': var_type,
-                    'comment': comment
+                    'comment': comment if comment else ''
                 }
         
         if variables:

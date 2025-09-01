@@ -67,6 +67,8 @@ except ImportError:
     def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
     UTILS_AVAILABLE = False
 
+# Set up logger
+logger = logging.getLogger(__name__)
 
 # Safe plot saving helper to avoid crashes due to extreme DPI or backend issues
 def _save_plot_safely(plot_path: Path, dpi: int = 300, **savefig_kwargs) -> bool:
@@ -74,19 +76,38 @@ def _save_plot_safely(plot_path: Path, dpi: int = 300, **savefig_kwargs) -> bool
 
     Returns True on success, False on failure.
     """
-    try:
-        plt.savefig(plot_path, dpi=dpi, **savefig_kwargs)
-        return True
-    except Exception:
+    def _safe_dpi_value(dpi_input):
+        """Validate and sanitize DPI value."""
         try:
-            fallback_dpi = int(matplotlib.rcParams.get('savefig.dpi', 100))
+            dpi_val = int(dpi_input) if isinstance(dpi_input, (int, float)) else 150
+            # Ensure DPI is within reasonable bounds
+            return max(50, min(dpi_val, 600))
+        except (ValueError, TypeError, OverflowError):
+            return 150
+    
+    # Sanitize DPI value first
+    safe_dpi = _safe_dpi_value(dpi)
+    
+    try:
+        plt.savefig(plot_path, dpi=safe_dpi, **savefig_kwargs)
+        logger.debug(f"Successfully saved plot with DPI {safe_dpi}")
+        return True
+    except Exception as e:
+        logger.debug(f"Error saving with DPI {safe_dpi}: {e}")
+        try:
+            fallback_dpi = _safe_dpi_value(matplotlib.rcParams.get('savefig.dpi', 100))
             plt.savefig(plot_path, dpi=fallback_dpi, **savefig_kwargs)
+            logger.debug(f"Saved with fallback DPI {fallback_dpi}")
             return True
-        except Exception:
+        except Exception as e2:
+            logger.debug(f"Error with fallback DPI: {e2}")
             try:
+                # Final fallback - no DPI specified
                 plt.savefig(plot_path, **savefig_kwargs)
+                logger.debug("Saved with default DPI")
                 return True
-            except Exception:
+            except Exception as e3:
+                logger.error(f"Failed to save plot {plot_path}: {e3}")
                 return False
 
 def process_visualization(
@@ -542,14 +563,16 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
         G = nx.DiGraph()
         
         # Add nodes (variables)
-        variables = parsed_data.get("variables", [])
-        for var in variables:
-            G.add_node(var["name"], type=var["type"])
+        variables = parsed_data.get("Variables", {})
+        for var_name, var_info in variables.items():
+            var_type = var_info.get('type', 'unknown') if var_info else 'unknown'
+            G.add_node(var_name, type=var_type)
         
         # Add edges (connections)
-        connections = parsed_data.get("connections", [])
+        connections = parsed_data.get("Edges", [])
         for conn in connections:
-            G.add_edge(conn["source"], conn["target"])
+            if isinstance(conn, dict) and 'source' in conn and 'target' in conn:
+                G.add_edge(conn["source"], conn["target"])
         
         if len(G.nodes()) > 0:
             # Create network plot
@@ -611,9 +634,9 @@ def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, mo
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 12))
         
         # 1. Variable type distribution
-        variables = parsed_data.get("variables", [])
+        variables = parsed_data.get("Variables", {})
         if variables:
-            var_types = [v["type"] for v in variables]
+            var_types = [var_info.get('type', 'unknown') for var_info in variables.values()]
             type_counts = {}
             for var_type in var_types:
                 type_counts[var_type] = type_counts.get(var_type, 0) + 1
@@ -622,7 +645,7 @@ def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, mo
             ax1.set_title("Variable Type Distribution")
         
         # 2. Connection count histogram
-        connections = parsed_data.get("connections", [])
+        connections = parsed_data.get("Edges", [])
         if connections:
             source_counts = {}
             target_counts = {}
@@ -693,19 +716,45 @@ def generate_combined_visualizations(gnn_files: List[Path], results_dir: Path, v
         return visualizations
     
     try:
+        # Import the proper GNN parser
+        from .parser import GNNParser
+        
         # Collect data from all files
         all_variables = []
         all_connections = []
         all_matrices = []
         
+        parser = GNNParser()
         for gnn_file in gnn_files:
-            with open(gnn_file, 'r', encoding='utf-8') as f:
-                content = f.read()
-            
-            parsed_data = parse_gnn_content(content)
-            all_variables.extend(parsed_data.get("variables", []))
-            all_connections.extend(parsed_data.get("connections", []))
-            all_matrices.extend(parsed_data.get("matrices", []))
+            try:
+                parsed_data = parser.parse_file(str(gnn_file))
+                
+                # Convert Variables dict to list format for consistency
+                variables = parsed_data.get("Variables", {})
+                for var_name, var_info in variables.items():
+                    all_variables.append({
+                        "name": var_name,
+                        "type": var_info.get('type', 'unknown'),
+                        "dimensions": var_info.get('dimensions', []),
+                        "comment": var_info.get('comment', '')
+                    })
+                
+                # Add connections
+                connections = parsed_data.get("Edges", [])
+                all_connections.extend(connections)
+                
+                # For matrices, create from variables with 2+ dimensions
+                for var_name, var_info in variables.items():
+                    dimensions = var_info.get('dimensions', [])
+                    if len(dimensions) >= 2 and all(isinstance(d, int) for d in dimensions[:2]):
+                        all_matrices.append({
+                            "name": var_name,
+                            "shape": dimensions,
+                            "size": dimensions[0] * dimensions[1] if len(dimensions) >= 2 else 0
+                        })
+                        
+            except Exception as e:
+                logger.warning(f"Could not parse {gnn_file}: {e}")
         
         # Create combined analysis
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 12))

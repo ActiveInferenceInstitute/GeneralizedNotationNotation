@@ -20,6 +20,15 @@ logger = logging.getLogger(__name__)
 # Type variable for generic function decorators
 T = TypeVar('T')
 
+def get_current_memory_usage() -> float:
+    """Get current memory usage in MB with error handling."""
+    try:
+        import psutil
+        process = psutil.Process()
+        return process.memory_info().rss / 1024 / 1024  # Convert bytes to MB
+    except (ImportError, Exception):
+        return 0.0
+
 class ResourceTracker:
     """Tracks resource usage during operations."""
     

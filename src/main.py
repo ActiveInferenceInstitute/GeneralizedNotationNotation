@@ -71,6 +71,11 @@ from utils.pipeline_template import (
 )
 from utils.argument_utils import ArgumentParser, PipelineArguments
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
+from utils.resource_manager import get_current_memory_usage
+from utils.error_recovery import attempt_step_recovery, is_failure_recoverable
+from utils.pipeline_monitor import generate_pipeline_health_report
+from utils.pipeline_validator import validate_step_prerequisites, validate_pipeline_step_sequence
+from utils.pipeline_planner import generate_execution_plan
 
 # Optional logging and progress tracking
 try:
@@ -185,6 +190,15 @@ def main():
         progress_tracker = None
         if STRUCTURED_LOGGING_AVAILABLE:
             progress_tracker = PipelineProgressTracker(len(steps_to_execute))
+        
+        # Validate step sequence before execution
+        sequence_validation = validate_pipeline_step_sequence(steps_to_execute, logger)
+        if sequence_validation["warnings"]:
+            for warning in sequence_validation["warnings"]:
+                logger.warning(f"Pipeline sequence: {warning}")
+        if sequence_validation["recommendations"]:
+            for rec in sequence_validation["recommendations"]:
+                logger.info(f"Recommendation: {rec}")
         
         # Execute each step
         for step_number, (script_name, description) in enumerate(steps_to_execute, 1):
@@ -333,21 +347,40 @@ def main():
         return 1
 
 def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> Dict[str, Any]:
-    """Execute a single pipeline step."""
+    """Execute a single pipeline step with comprehensive monitoring."""
     import subprocess
     import os
     import shutil
+    import time
+    
+    # Initialize performance tracking
+    start_memory = get_current_memory_usage()
+    peak_memory = start_memory
     
     step_result = {
         "status": "UNKNOWN",
         "stdout": "",
         "stderr": "",
         "memory_usage_mb": 0.0,
+        "peak_memory_mb": 0.0,
+        "memory_delta_mb": 0.0,
         "exit_code": -1,
-        "retry_count": 0
+        "retry_count": 0,
+        "prerequisite_check": True,
+        "dependency_warnings": []
     }
     
     try:
+        # Validate step prerequisites
+        prereq_result = validate_step_prerequisites(script_name, args, logger)
+        step_result["prerequisite_check"] = prereq_result["passed"]
+        step_result["dependency_warnings"] = prereq_result.get("warnings", [])
+        
+        # Log prerequisite warnings if any
+        if prereq_result.get("warnings"):
+            for warning in prereq_result["warnings"]:
+                logger.warning(f"Prerequisite warning for {script_name}: {warning}")
+        
         # Get script path
         script_path = Path(__file__).parent / script_name
         
@@ -389,6 +422,9 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
             else:
                 step_timeout_seconds = 60
 
+            # Track memory during execution
+            process_start_time = time.time()
+            
             result = subprocess.run(
                 cmd,
                 cwd=project_root,
@@ -397,10 +433,17 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                 text=True,
                 timeout=step_timeout_seconds
             )
-
+            
+            # Capture final memory measurements
+            end_memory = get_current_memory_usage()
+            peak_memory = max(peak_memory, end_memory)
+            
             step_result["stdout"] = result.stdout
             step_result["stderr"] = result.stderr
             step_result["exit_code"] = result.returncode
+            step_result["memory_usage_mb"] = end_memory
+            step_result["peak_memory_mb"] = peak_memory
+            step_result["memory_delta_mb"] = end_memory - start_memory
 
             # Log output if verbose
             if args.verbose:
@@ -414,15 +457,26 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
             step_result["exit_code"] = -1
             return step_result
         
-        # Determine status
+        # Determine status with enhanced logic
         if step_result["exit_code"] == 0:
             step_result["status"] = "SUCCESS"
+            # Check for any dependency warnings that might affect downstream steps
+            if step_result["dependency_warnings"]:
+                step_result["status"] = "SUCCESS_WITH_WARNINGS"
         else:
             # Respect the child process exit code to avoid masking failures
             step_result["status"] = "FAILED"
+            # Log detailed failure information
+            logger.error(f"Step {script_name} failed with exit code {step_result['exit_code']}")
+            if step_result["stderr"]:
+                logger.error(f"Error output: {step_result['stderr'][:500]}...")  # Limit to first 500 chars
 
         # Steps determine their own output directories via get_output_dir_for_script
         
+        # Add recovery status to result
+        if not step_result.get("recoverable"):
+            step_result["recoverable"] = False
+            
         return step_result
         
     except Exception as e:
@@ -465,6 +519,14 @@ def get_environment_info() -> Dict[str, Any]:
         info["disk_free_gb"] = "unavailable (psutil not installed)"
     
     return info
+
+# All pipeline utility functions have been moved to appropriate utils modules:
+# - validate_step_prerequisites, validate_pipeline_step_sequence → utils/pipeline_validator.py  
+# - get_current_memory_usage → utils/resource_manager.py
+# - attempt_step_recovery and recovery functions → utils/error_recovery.py
+# - generate_pipeline_health_report → utils/pipeline_monitor.py
+# - generate_execution_plan → utils/pipeline_planner.py
+
 
 if __name__ == "__main__":
     sys.exit(main()) 

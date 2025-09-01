@@ -48,6 +48,28 @@ try:
         validate_and_convert_paths
     )
     
+    from .resource_manager import (
+        get_current_memory_usage
+    )
+    
+    from .error_recovery import (
+        attempt_step_recovery,
+        is_failure_recoverable
+    )
+    
+    from .pipeline_monitor import (
+        generate_pipeline_health_report
+    )
+    
+    from .pipeline_validator import (
+        validate_step_prerequisites,
+        validate_pipeline_step_sequence
+    )
+    
+    from .pipeline_planner import (
+        generate_execution_plan
+    )
+    
     from .dependency_validator import (
         DependencyValidator,
         validate_pipeline_dependencies,
@@ -239,6 +261,23 @@ __all__ = [
     'ArgumentParser',
     'PipelineArguments',
     'build_step_command_args',
+    
+    # Resource management
+    'get_current_memory_usage',
+    
+    # Error recovery
+    'attempt_step_recovery',
+    'is_failure_recoverable', 
+    
+    # Pipeline monitoring
+    'generate_pipeline_health_report',
+    
+    # Pipeline validation
+    'validate_step_prerequisites',
+    'validate_pipeline_step_sequence',
+    
+    # Pipeline planning
+    'generate_execution_plan',
     'get_step_output_dir',
     'StepConfiguration',
     'get_pipeline_step_info',

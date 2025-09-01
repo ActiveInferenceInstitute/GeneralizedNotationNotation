@@ -1,9 +1,0 @@
-{
-  "model": "actinf_pomdp_agent",
-  "generated": [
-    "output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
-    "output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
-    "output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_advanced_summary.html"
-  ],
-  "timestamp": "2025-08-28T09:54:45.969015"
-}

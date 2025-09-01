@@ -445,22 +445,39 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             fig.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.95, hspace=0.4, wspace=0.3)
             
             try:
-                # Some environments miscompute figure pixel size; use a safe backend call
-                import matplotlib
-                backend = matplotlib.get_backend()
+                # Use safe DPI handling similar to processor.py
+                def _safe_dpi_value(dpi_input):
+                    """Validate and sanitize DPI value."""
+                    try:
+                        dpi_val = int(dpi_input) if isinstance(dpi_input, (int, float)) else 150
+                        # Ensure DPI is within reasonable bounds and avoid extreme values
+                        return max(50, min(dpi_val, 600))
+                    except (ValueError, TypeError):
+                        return 150  # Safe default
+                
                 # Force a sane canvas size before saving
                 fig.set_size_inches(12, 9)
-                plt.savefig(output_path, dpi=150, bbox_inches='tight')
+                safe_dpi = _safe_dpi_value(150)
+                plt.savefig(output_path, dpi=safe_dpi, bbox_inches='tight')
                 print("DEBUG: POMDP analysis saved successfully (safe mode)")
             except Exception as e:
                 print(f"DEBUG: Error saving POMDP analysis: {e}")
                 try:
+                    # Fallback with smaller figure and safer DPI
                     fig.set_size_inches(10, 7.5)
-                    plt.savefig(output_path, dpi=96)
+                    fallback_dpi = _safe_dpi_value(96)
+                    plt.savefig(output_path, dpi=fallback_dpi)
                     print("DEBUG: POMDP analysis saved with fallback DPI")
                 except Exception as e2:
                     print(f"DEBUG: Error saving with fallback DPI: {e2}")
-                    return False
+                    try:
+                        # Final fallback - no DPI specified, minimal figure
+                        fig.set_size_inches(8, 6)
+                        plt.savefig(output_path)
+                        print("DEBUG: POMDP analysis saved with minimal settings")
+                    except Exception as e3:
+                        print(f"DEBUG: All save attempts failed: {e3}")
+                        return False
             plt.close()
             return True
             

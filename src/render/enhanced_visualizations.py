@@ -626,3 +626,4 @@ class EnhancedVisualizationSuite:
         viz_files.append(comp_file)
         
         return viz_files
+
