@@ -1,0 +1,22 @@
+Execution Results for Classic Active Inference POMDP Agent v1_jax.py
+Timestamp: 2025-09-01T12:06:23.323687
+Return Code: 0
+Execution Time: 2.30 seconds
+Model: actinf_pomdp_agent
+Framework: jax
+Output Directory: output/12_execute_output/12_execute_output/actinf_pomdp_agent/jax
+
+STDOUT:
+
+GNNModel Model Summary:
+- Number of states: 3
+- Number of observations: 3
+- Number of actions: 1
+- Parameters: 24
+
+Model test successful!
+Output keys: ['beliefs', 'actions', 'expected_free_energy', 'state_predictions', 'action_efes', 'predicted_observations']
+
+
+STDERR:
+WARNING:2025-09-01 12:06:24,201:jax._src.xla_bridge:872: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.

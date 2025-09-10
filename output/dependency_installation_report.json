@@ -1,0 +1,41 @@
+{
+  "timestamp": "2025-09-01T12:00:20.181224",
+  "installer_version": "1.0.0",
+  "package_manager": "uv",
+  "categories": {
+    "visualization": {
+      "seaborn": true
+    },
+    "audio": {
+      "librosa": true,
+      "soundfile": true,
+      "pedalboard": true
+    }
+  },
+  "summary": {
+    "total_categories": 2,
+    "total_packages": 4,
+    "successful_packages": 4,
+    "failed_packages": 0,
+    "success_rate": 100.0
+  },
+  "verification_results": {
+    "seaborn": true,
+    "networkx": true,
+    "plotly": true,
+    "librosa": true,
+    "soundfile": true,
+    "pedalboard": true,
+    "pydub": true,
+    "pymdp": true,
+    "jax": true,
+    "flax": true,
+    "discopy": true,
+    "scipy": true,
+    "sympy": true,
+    "numpy": true,
+    "pytest": true,
+    "black": true,
+    "mypy": true
+  }
+}

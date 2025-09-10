@@ -202,8 +202,84 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract A, B, C, D matrices from GNN specification."""
     matrices = {}
     
-    # Handle the JSON export format from GNN processing pipeline
-    if "statespaceblock" in gnn_spec:
+    # --- Primary: Handle POMDP processor format ---
+    if "model_parameters" in gnn_spec:
+        logger.info("Extracting matrices from POMDP processor format")
+        
+        model_params = gnn_spec["model_parameters"]
+        n_states = model_params.get("num_hidden_states", 3)
+        n_obs = model_params.get("num_obs", 3) 
+        n_actions = model_params.get("num_actions", 3)
+        
+        logger.info(f"Extracted variable dimensions: {{n_states: {n_states}, n_obs: {n_obs}, n_actions: {n_actions}}}")
+        
+        # Create default matrices based on dimensions
+        default_matrices = {
+            'A': np.eye(n_obs, n_states),  # Identity-like likelihood matrix
+            'B': np.stack([np.eye(n_states) for _ in range(n_actions)], axis=2),  # Identity transitions for each action
+            'C': np.zeros(n_obs),  # Zero preferences
+            'D': np.ones(n_states) / n_states  # Uniform prior
+        }
+        logger.info(f"Created default matrices: A={default_matrices['A'].shape}, B={default_matrices['B'].shape}, C={default_matrices['C'].shape}, D={default_matrices['D'].shape}")
+        
+        # Initialize matrices with defaults
+        matrices.update(default_matrices)
+        
+        # Extract actual parameter values from initialparameterization
+        init_params = gnn_spec.get("initialparameterization", {})
+        if init_params:
+            logger.info("Found initialparameterization, extracting actual matrix values")
+            
+            # Extract A matrix
+            if "A" in init_params:
+                try:
+                    A_data = init_params["A"]
+                    if isinstance(A_data, list):
+                        A_matrix = np.array(A_data)
+                        if A_matrix.ndim == 2:
+                            matrices['A'] = A_matrix
+                            logger.info(f"Successfully extracted A matrix: shape {A_matrix.shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to extract A matrix: {e}")
+            
+            # Extract B matrix
+            if "B" in init_params:
+                try:
+                    B_data = init_params["B"]
+                    if isinstance(B_data, list):
+                        B_matrix = np.array(B_data)
+                        if B_matrix.ndim == 3:
+                            matrices['B'] = B_matrix
+                            logger.info(f"Successfully extracted B matrix: shape {B_matrix.shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to extract B matrix: {e}")
+            
+            # Extract C vector
+            if "C" in init_params:
+                try:
+                    C_data = init_params["C"]
+                    if isinstance(C_data, list):
+                        C_vector = np.array(C_data)
+                        if C_vector.ndim == 1:
+                            matrices['C'] = C_vector
+                            logger.info(f"Successfully extracted C vector: shape {C_vector.shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to extract C vector: {e}")
+            
+            # Extract D vector
+            if "D" in init_params:
+                try:
+                    D_data = init_params["D"]
+                    if isinstance(D_data, list):
+                        D_vector = np.array(D_data)
+                        if D_vector.ndim == 1:
+                            matrices['D'] = D_vector
+                            logger.info(f"Successfully extracted D vector: shape {D_vector.shape}")
+                except Exception as e:
+                    logger.warning(f"Failed to extract D vector: {e}")
+    
+    # --- Fallback: Handle the JSON export format from GNN processing pipeline ---
+    elif "statespaceblock" in gnn_spec:
         logger.info("Extracting matrices from GNN JSON export structure")
         
         # Extract variable dimensions from statespaceblock
@@ -915,26 +991,30 @@ def create_model() -> {model_name}Model:
     """Create and return a new instance of the model."""
     return {model_name}Model()
 
-def get_model_summary(model: {model_name}Model) -> str:
+def get_model_summary(num_states: int, num_observations: int, num_actions: int, variables: Dict) -> str:
     """Get a summary of the model architecture."""
     return f"""
 {model_name} Model Summary:
-- Number of states: {{model.num_states}}
-- Number of observations: {{model.num_observations}}
-- Number of actions: {{model.num_actions}}
-- Parameters: {{sum(p.size for p in jax.tree_util.tree_leaves(model.variables))}}
+- Number of states: {{num_states}}
+- Number of observations: {{num_observations}}
+- Number of actions: {{num_actions}}
+- Parameters: {{sum(p.size for p in jax.tree_util.tree_leaves(variables))}}
 """
 
 if __name__ == "__main__":
     # Example usage
     model = create_model()
-    print(get_model_summary(model))
+    
+    # Initialize model variables
+    key = jax.random.PRNGKey(0)
+    variables = model.init(key, {{"observations": jnp.zeros((1, {num_observations}))}})
+    
+    print(get_model_summary({num_states}, {num_observations}, {num_actions}, variables))
     
     # Test forward pass
-    key = jax.random.PRNGKey(0)
-    variables = model.init(key, {{"observations": jnp.zeros((1, model.num_observations))}})
-    outputs = model.apply(variables, {{"observations": jnp.zeros((1, model.num_observations))}})
+    outputs = model.apply(variables, {{"observations": jnp.zeros((1, {num_observations}))}})
     print("Model test successful!")
+    print(f"Output keys: {{list(outputs.keys())}}")
 '''
         
         return code

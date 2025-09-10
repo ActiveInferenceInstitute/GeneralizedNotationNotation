@@ -1,0 +1,47 @@
+Execution Results for Classic Active Inference POMDP Agent v1_activeinference.jl
+Timestamp: 2025-09-01T12:06:26.648466
+Return Code: 1
+Execution Time: 22.46 seconds
+Model: actinf_pomdp_agent
+Framework: activeinference_jl
+Output Directory: output/12_execute_output/12_execute_output/actinf_pomdp_agent/activeinference_jl
+
+STDOUT:
+======================================================================
+ActiveInference.jl Script for GNN Model: Classic Active Inference POMDP Agent v1
+======================================================================
+Julia version: 1.11.6
+Date: 2025-09-01T12:06:43.518
+Model dimensions: States=3, Observations=3, Actions=1
+
+📁 Output directory: activeinference_outputs_2025-09-01_12-06-43
+🔧 Creating model matrices from GNN specification...
+✅ A matrix created: (3,)
+✅ B matrix created: (3,)
+✅ C vector created: 3
+✅ D vector created: 3
+✅ E vector created: 3
+🔧 Normalizing matrices...
+
+
+STDERR:
+ERROR: LoadError: MethodError: no method matching isless(::Int64, ::Vector{Float64})
+The function `isless` exists, but no method is defined for this combination of argument types.
+
+Closest candidates are:
+  isless(!Matched::Missing, ::Any)
+   @ Base missing.jl:87
+  isless(::Any, !Matched::Missing)
+   @ Base missing.jl:88
+  isless(::Integer, !Matched::ReverseDiff.TrackedReal)
+   @ ReverseDiff ~/.julia/packages/ReverseDiff/rKZaG/src/derivatives/scalars.jl:42
+  ...
+
+Stacktrace:
+ [1] <(x::Int64, y::Vector{Float64})
+   @ Base ./operators.jl:353
+ [2] >(x::Vector{Float64}, y::Int64)
+   @ Base ./operators.jl:379
+ [3] top-level scope
+   @ ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:81
+in expression starting at /home/trim/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:79

@@ -54,8 +54,28 @@ def process_render(
         
         # Import POMDP processing capabilities
         try:
-            from ..gnn.pomdp_extractor import extract_pomdp_from_file
-            from .pomdp_processor import POMDPRenderProcessor
+            # Use absolute imports to avoid relative import issues
+            import sys
+            from pathlib import Path
+            
+            # Add both src directory and project root to path
+            src_path = Path(__file__).parent.parent
+            project_root = src_path.parent
+            
+            if str(src_path) not in sys.path:
+                sys.path.insert(0, str(src_path))
+            if str(project_root) not in sys.path:
+                sys.path.insert(0, str(project_root))
+            
+            # Try multiple import strategies
+            try:
+                from gnn.pomdp_extractor import extract_pomdp_from_file
+                from render.pomdp_processor import POMDPRenderProcessor
+            except ImportError:
+                # Fallback to src-prefixed imports
+                from src.gnn.pomdp_extractor import extract_pomdp_from_file
+                from src.render.pomdp_processor import POMDPRenderProcessor
+            
             pomdp_available = True
         except ImportError as e:
             logger.warning(f"POMDP processing modules not available: {e}")
@@ -393,8 +413,13 @@ def render_gnn_spec(
         
         # Try to use POMDP-aware processing first
         try:
-            from ..gnn.pomdp_extractor import POMDPExtractor
-            from .pomdp_processor import POMDPRenderProcessor
+            # Use same import strategy as above
+            try:
+                from gnn.pomdp_extractor import POMDPExtractor
+                from render.pomdp_processor import POMDPRenderProcessor
+            except ImportError:
+                from src.gnn.pomdp_extractor import POMDPExtractor
+                from src.render.pomdp_processor import POMDPRenderProcessor
             
             # Create a dummy POMDP space from GNN spec
             # This is a simplified conversion - real usage should use proper extraction

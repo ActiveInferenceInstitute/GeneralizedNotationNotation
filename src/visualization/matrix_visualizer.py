@@ -315,9 +315,19 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             dim1, dim2, dim3 = tensor.shape
             print(f"DEBUG: Creating POMDP analysis for tensor shape: ({dim1}, {dim2}, {dim3})")
             
-            # Create comprehensive analysis figure
+            # Create comprehensive analysis figure with safe dimensions
             try:
-                fig = plt.figure(figsize=(16, 12))
+                # Ensure sane figure dimensions and clear any stale figures
+                plt.close('all')
+                
+                # Use very conservative figure size to avoid dimension overflow
+                # Keep it small to prevent pixel calculation overflow
+                safe_figsize = (12, 9)  # Safe, tested dimensions
+                fig = plt.figure(figsize=safe_figsize, clear=True)
+                
+                # Set DPI early and ensure it's safe
+                safe_dpi = 96  # Use a very safe, low DPI to prevent overflow
+                fig.set_dpi(safe_dpi)
                 print("DEBUG: Figure created successfully")
             except Exception as e:
                 print(f"DEBUG: Error creating figure: {e}")
@@ -449,30 +459,30 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 def _safe_dpi_value(dpi_input):
                     """Validate and sanitize DPI value."""
                     try:
-                        dpi_val = int(dpi_input) if isinstance(dpi_input, (int, float)) else 150
-                        # Ensure DPI is within reasonable bounds and avoid extreme values
-                        return max(50, min(dpi_val, 600))
+                        dpi_val = int(dpi_input) if isinstance(dpi_input, (int, float)) else 96
+                        # Ensure DPI is within very safe bounds to prevent overflow
+                        return max(72, min(dpi_val, 150))
                     except (ValueError, TypeError):
-                        return 150  # Safe default
+                        return 96  # Very safe default
                 
-                # Force a sane canvas size before saving
-                fig.set_size_inches(12, 9)
-                safe_dpi = _safe_dpi_value(150)
+                # Use the same safe dimensions we set during creation
+                # Don't change figure size - keep what we set during creation
+                safe_dpi = _safe_dpi_value(96)
                 plt.savefig(output_path, dpi=safe_dpi, bbox_inches='tight')
                 print("DEBUG: POMDP analysis saved successfully (safe mode)")
             except Exception as e:
                 print(f"DEBUG: Error saving POMDP analysis: {e}")
                 try:
-                    # Fallback with smaller figure and safer DPI
-                    fig.set_size_inches(10, 7.5)
-                    fallback_dpi = _safe_dpi_value(96)
+                    # Fallback with smaller figure and very safe DPI
+                    fig.set_size_inches(8, 6)
+                    fallback_dpi = 72  # Extremely safe DPI
                     plt.savefig(output_path, dpi=fallback_dpi)
                     print("DEBUG: POMDP analysis saved with fallback DPI")
                 except Exception as e2:
                     print(f"DEBUG: Error saving with fallback DPI: {e2}")
                     try:
                         # Final fallback - no DPI specified, minimal figure
-                        fig.set_size_inches(8, 6)
+                        fig.set_size_inches(6, 4)
                         plt.savefig(output_path)
                         print("DEBUG: POMDP analysis saved with minimal settings")
                     except Exception as e3:

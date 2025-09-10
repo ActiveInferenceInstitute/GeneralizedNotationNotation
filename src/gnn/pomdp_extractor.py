@@ -382,10 +382,21 @@ class POMDPExtractor:
                     values.append(item)
             return values
         
-        # Handle nested structure for matrices
+        # Handle nested structure for matrices using safer parsing
         elif '(' in value_str and ')' in value_str:
-            # This is a multi-dimensional structure
-            return self._parse_nested_structure(value_str)
+            # This is a multi-dimensional structure - use safe parsing
+            try:
+                return self._parse_nested_structure_safe(value_str)
+            except RecursionError:
+                # Fallback to eval for complex nested structures
+                try:
+                    # Convert to Python-evaluable format
+                    python_str = value_str.replace('(', '[').replace(')', ']')
+                    result = eval(python_str)
+                    return result
+                except Exception as e:
+                    self.logger.warning(f"Failed to parse complex structure, using fallback: {e}")
+                    return []
         
         else:
             # Simple comma-separated values
@@ -482,6 +493,64 @@ class POMDPExtractor:
                 parsed = values
             result.append(parsed)
             
+        return result
+    
+    def _parse_nested_structure_safe(self, value_str: str, max_depth: int = 10) -> List:
+        """Parse nested parameter structure safely with recursion limit."""
+        if max_depth <= 0:
+            raise RecursionError("Maximum parsing depth exceeded")
+            
+        # Remove outer curly braces if present
+        value_str = value_str.strip()
+        if value_str.startswith('{') and value_str.endswith('}'):
+            value_str = value_str[1:-1].strip()
+        
+        # For B matrix format like: ((1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0))
+        result = []
+        current = ''
+        paren_depth = 0
+        i = 0
+        
+        while i < len(value_str):
+            char = value_str[i]
+            
+            if char == '(':
+                paren_depth += 1
+                if paren_depth == 1:
+                    # Start of a new group - don't include the opening parenthesis
+                    current = ''
+                else:
+                    current += char
+            elif char == ')':
+                paren_depth -= 1
+                if paren_depth == 0:
+                    # End of a complete group
+                    if current.strip():
+                        # Parse simple numeric tuple
+                        values = []
+                        for item in current.split(','):
+                            item = item.strip()
+                            if item:
+                                try:
+                                    if '.' in item:
+                                        values.append(float(item))
+                                    else:
+                                        values.append(int(item))
+                                except ValueError:
+                                    values.append(item)
+                        result.append(values)
+                        current = ''
+                else:
+                    current += char
+            elif char == ',' and paren_depth == 0:
+                # Top-level separator between groups - ignore
+                pass
+            else:
+                if paren_depth > 0:
+                    current += char
+            
+            i += 1
+        
         return result
     
     def _parse_connections(self, content: str) -> List[Tuple[str, str, str]]:

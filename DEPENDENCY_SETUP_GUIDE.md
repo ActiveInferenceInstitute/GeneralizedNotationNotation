@@ -62,3 +62,4 @@ export GNN_DEBUG=1          # Enable debug logging
 export GNN_HEADLESS=1       # Force headless mode for GUIs
 export GNN_AUDIO_BACKEND=sapf  # Specify audio backend
 ```
+

@@ -1,0 +1,144 @@
+{
+  "timestamp": "2025-09-01T12:06:05.836487",
+  "source_directory": "input/gnn_files",
+  "output_directory": "output/5_type_checker_output",
+  "strict_mode": null,
+  "resource_estimation": false,
+  "files_analyzed": [
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "parsed_model_file": "output/3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
+      "type_analysis": {
+        "total_variables": 13,
+        "type_distribution": {
+          "unknown": 13
+        },
+        "dimension_analysis": {
+          "max_dimensions": 3,
+          "avg_dimensions": 1.4615384615384615,
+          "dimension_distribution": {
+            "2D": 4,
+            "3D": 1,
+            "1D": 8
+          }
+        },
+        "data_type_distribution": {
+          "float": 10,
+          "integer": 3
+        },
+        "complexity_metrics": {
+          "total_elements": 61,
+          "estimated_memory_bytes": 488,
+          "estimated_memory_mb": 0.00046539306640625
+        }
+      },
+      "connection_analysis": {
+        "total_connections": 11,
+        "connection_type_distribution": {
+          "unknown": 11
+        },
+        "connectivity_metrics": {
+          "avg_connections_per_variable": 1.0,
+          "max_connections_per_variable": 3,
+          "isolated_variables": 0
+        },
+        "graph_metrics": {
+          "in_degree_distribution": {},
+          "out_degree_distribution": {},
+          "cycles_detected": false
+        }
+      },
+      "complexity_analysis": {
+        "inference_complexity": {
+          "operations_per_step": 671,
+          "memory_bandwidth_gb_s": 4.544854164123535e-07,
+          "parallelization_potential": "low"
+        },
+        "learning_complexity": {
+          "gradient_operations": 0,
+          "parameter_updates": 0
+        },
+        "resource_requirements": {
+          "cpu_cores_recommended": 1,
+          "ram_gb_recommended": 1,
+          "gpu_memory_gb_recommended": 0
+        }
+      },
+      "type_errors": [],
+      "warnings": [],
+      "model_info": {
+        "name": "Classic Active Inference POMDP Agent v1",
+        "version": "1.0",
+        "variables_count": 13,
+        "connections_count": 11,
+        "parameters_count": 6,
+        "equations_count": 0
+      }
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "valid_files": 1,
+    "type_errors": 0,
+    "warnings": 0
+  },
+  "global_analysis": {
+    "type_analysis": {
+      "total_variables": 13,
+      "type_distribution": {
+        "unknown": 13
+      },
+      "dimension_analysis": {
+        "max_dimensions": 3,
+        "avg_dimensions": 1.4615384615384615,
+        "dimension_distribution": {
+          "2D": 4,
+          "3D": 1,
+          "1D": 8
+        }
+      },
+      "data_type_distribution": {
+        "float": 10,
+        "integer": 3
+      },
+      "complexity_metrics": {
+        "total_elements": 61,
+        "estimated_memory_bytes": 488,
+        "estimated_memory_mb": 0.00046539306640625
+      }
+    },
+    "connection_analysis": {
+      "total_connections": 11,
+      "connection_type_distribution": {
+        "unknown": 11
+      },
+      "connectivity_metrics": {
+        "avg_connections_per_variable": 1.0,
+        "max_connections_per_variable": 3,
+        "isolated_variables": 0
+      },
+      "graph_metrics": {
+        "in_degree_distribution": {},
+        "out_degree_distribution": {},
+        "cycles_detected": false
+      }
+    },
+    "complexity_analysis": {
+      "inference_complexity": {
+        "operations_per_step": 671,
+        "memory_bandwidth_gb_s": 4.544854164123535e-07,
+        "parallelization_potential": "low"
+      },
+      "learning_complexity": {
+        "gradient_operations": 0,
+        "parameter_updates": 0
+      },
+      "resource_requirements": {
+        "cpu_cores_recommended": 1,
+        "ram_gb_recommended": 1,
+        "gpu_memory_gb_recommended": 0
+      }
+    }
+  }
+}

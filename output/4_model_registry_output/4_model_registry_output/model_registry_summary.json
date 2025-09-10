@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-09-01T12:06:05.570595",
+  "step_name": "model_registry",
+  "input_directory": "input/gnn_files",
+  "output_directory": "output/4_model_registry_output/4_model_registry_output",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "registry_path": "output/4_model_registry_output/4_model_registry_output/model_registry.json",
+  "performance_metrics": {}
+}

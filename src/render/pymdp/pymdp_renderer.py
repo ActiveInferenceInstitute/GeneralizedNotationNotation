@@ -345,7 +345,7 @@ import logging
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.execute.pymdp import execute_pymdp_simulation, configure_from_gnn_spec
+from src.execute.pymdp import execute_pymdp_simulation
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

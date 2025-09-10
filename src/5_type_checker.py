@@ -137,8 +137,46 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
             connected_vars.update(conn.get("target_variables", []))
 
         orphaned = var_names - connected_vars
-        if orphaned:
-            warnings.append(f"Orphaned variables: {list(orphaned)}")
+        
+        # Filter out variables that are allowed to be standalone/global
+        # These variables typically represent global state, time, or computed quantities
+        allowed_standalone = set()
+        for var_name in orphaned:
+            # Find variable info (variables might be a list of dicts)
+            var_info = {}
+            if isinstance(variables, list):
+                for var in variables:
+                    if var.get("name") == var_name:
+                        var_info = var
+                        break
+            elif isinstance(variables, dict):
+                var_info = variables.get(var_name, {})
+            
+            var_comment = var_info.get('comment', '').lower() if var_info else ''
+            
+            # Time variables are typically global/standalone
+            if var_name.lower() in ['t', 'time', 'step', 'timestep']:
+                allowed_standalone.add(var_name)
+                continue
+            
+            # Free energy variables are often computed quantities that don't need explicit connections
+            if var_name.upper() in ['F', 'FREE_ENERGY', 'VARIATIONAL_FREE_ENERGY']:
+                allowed_standalone.add(var_name)
+                continue
+            
+            # Check comment patterns for standalone indicators
+            standalone_patterns = [
+                'time', 'global', 'computed', 'derived', 'output',
+                'free energy', 'standalone', 'independent', 'discrete time'
+            ]
+            
+            if any(pattern in var_comment for pattern in standalone_patterns):
+                allowed_standalone.add(var_name)
+                continue
+        
+        actual_orphaned = orphaned - allowed_standalone
+        if actual_orphaned:
+            warnings.append(f"Orphaned variables: {list(actual_orphaned)}")
 
         file_analysis: Dict[str, Any] = {
             "file_name": file_name,

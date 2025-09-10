@@ -72,19 +72,43 @@ def process_execute(
             "success": True
         }
         
-        # Look for rendered implementations from 11_render_output
-        if "11_render_output" in str(target_dir) or target_dir.name == "11_render_output":
+        # Look for rendered implementations from render output
+        render_output_dir = None
+        
+        # Priority 1: Check if --render-output-dir was specified
+        if kwargs.get('render_output_dir'):
+            render_output_dir = Path(kwargs['render_output_dir'])
+            
+        # Priority 2: Check if target_dir is already a render output directory
+        elif "11_render_output" in str(target_dir) or target_dir.name == "11_render_output":
             render_output_dir = target_dir
+            
+        # Priority 3: Search for render output directories in common locations
         else:
-            # Look for 11_render_output in the typical location
-            render_output_dir = target_dir.parent / "output" / "11_render_output"
-            if not render_output_dir.exists():
-                render_output_dir = target_dir / "11_render_output"
+            potential_dirs = [
+                # Standard pipeline location
+                target_dir.parent / "output" / "11_render_output",
+                target_dir / "11_render_output",
+                
+                # Recent test locations
+                Path("output/test_render/11_render_output/11_render_output"),
+                Path("output/test_render_improved/11_render_output/11_render_output"),
+                
+                # Search in all output directories
+                *list(Path("output").glob("*/11_render_output/11_render_output")),
+                *list(Path("output").glob("**/11_render_output")),
+            ]
+            
+            for potential_dir in potential_dirs:
+                if potential_dir.exists() and any(potential_dir.rglob("*")):
+                    render_output_dir = potential_dir
+                    logger.info(f"Found render output directory: {render_output_dir}")
+                    break
         
         if verbose:
             logger.info(f"Searching for executable scripts in: {render_output_dir}")
         
-        if not render_output_dir.exists():
+        if not render_output_dir or not render_output_dir.exists():
             log_step_warning(logger, f"Render output directory not found: {render_output_dir}")
             execution_results["success"] = True  # Not an error, just no files to execute
             execution_results["message"] = "No rendered implementations found"

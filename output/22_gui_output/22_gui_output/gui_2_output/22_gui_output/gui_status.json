@@ -1,0 +1,12 @@
+{
+  "backend": "gradio",
+  "launched": true,
+  "export_file": "output/22_gui_output/22_gui_output/gui_2_output/22_gui_output/visual_model_gui_2.md",
+  "gui_type": "visual_matrix_editor",
+  "features": [
+    "Visual matrix editing",
+    "Drag-and-drop interface",
+    "Real-time GNN generation",
+    "POMDP template-based"
+  ]
+}

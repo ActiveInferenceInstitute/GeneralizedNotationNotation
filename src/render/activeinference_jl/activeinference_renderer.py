@@ -58,7 +58,7 @@ def render_gnn_to_activeinference_jl(
 def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """
     Extract relevant model information from GNN specification for ActiveInference.jl.
-    Robustly handles GNN state space and parameter extraction.
+    Robustly handles GNN state space and parameter extraction from multiple sources.
     """
     model_info = {
         "name": gnn_spec.get("name", "gnn_model"),
@@ -70,65 +70,110 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         "metadata": {}
     }
 
-    # --- Robust state/obs/action extraction ---
-    statespace = gnn_spec.get("statespaceblock", [])
-    n_states = None
-    n_obs = None
-    n_actions = None
+    # --- Primary extraction: from POMDP processor format (model_parameters) ---
+    model_params = gnn_spec.get("model_parameters", {})
+    n_states = model_params.get("num_hidden_states")
+    n_obs = model_params.get("num_obs") 
+    n_actions = model_params.get("num_actions")
     
-    for entry in statespace:
-        var_id = entry.get("id", "")
-        dims = entry.get("dimensions", "")
-        if var_id == "s":
-            # Hidden state: e.g., '3,1,type=float'
-            try:
-                n_states = int(dims.split(",")[0])
-            except Exception:
-                pass
-        elif var_id == "o":
-            # Observation: e.g., '3,1,type=int'
-            try:
-                n_obs = int(dims.split(",")[0])
-            except Exception:
-                pass
-        elif var_id == "u":
-            # Action: e.g., '1,type=int' (but see B for action count)
-            try:
-                n_actions = int(dims.split(",")[0])
-            except Exception:
-                pass
-        elif var_id == "A":
-            # A matrix: e.g., '3,3,type=float'
-            try:
-                n_obs = int(dims.split(",")[0])
-                n_states = int(dims.split(",")[1])
-            except Exception:
-                pass
-        elif var_id == "B":
-            # B matrix: e.g., '3,3,3,type=float'
-            try:
-                n_states = int(dims.split(",")[0])
-                n_actions = int(dims.split(",")[2])
-            except Exception:
-                pass
+    # --- Fallback 1: from original statespaceblock format ---
+    if n_states is None or n_obs is None or n_actions is None:
+        statespace = gnn_spec.get("statespaceblock", [])
+        for entry in statespace:
+            var_id = entry.get("id", "")
+            dims = entry.get("dimensions", "")
+            if var_id == "s" and n_states is None:
+                # Hidden state: e.g., '3,1,type=float'
+                try:
+                    n_states = int(dims.split(",")[0])
+                except Exception:
+                    pass
+            elif var_id == "o" and n_obs is None:
+                # Observation: e.g., '3,1,type=int'
+                try:
+                    n_obs = int(dims.split(",")[0])
+                except Exception:
+                    pass
+            elif var_id == "u" and n_actions is None:
+                # Action: e.g., '1,type=int' (but see B for action count)
+                try:
+                    n_actions = int(dims.split(",")[0])
+                except Exception:
+                    pass
+            elif var_id == "A" and (n_obs is None or n_states is None):
+                # A matrix: e.g., '3,3,type=float'
+                try:
+                    if n_obs is None:
+                        n_obs = int(dims.split(",")[0])
+                    if n_states is None:
+                        n_states = int(dims.split(",")[1])
+                except Exception:
+                    pass
+            elif var_id == "B" and (n_states is None or n_actions is None):
+                # B matrix: e.g., '3,3,3,type=float'
+                try:
+                    if n_states is None:
+                        n_states = int(dims.split(",")[0])
+                    if n_actions is None:
+                        n_actions = int(dims.split(",")[2])
+                except Exception:
+                    pass
     
-    # Fallback to ModelParameters if needed
+    # --- Fallback 2: from raw ModelParameters section ---
     if n_states is None or n_obs is None or n_actions is None:
         params = gnn_spec.get("raw_sections", {}).get("ModelParameters", "")
         import re
-        m_states = re.search(r"num_hidden_states:\s*(\d+)", params)
-        m_obs = re.search(r"num_obs:\s*(\d+)", params)
-        m_actions = re.search(r"num_actions:\s*(\d+)", params)
-        if m_states:
-            n_states = int(m_states.group(1))
-        if m_obs:
-            n_obs = int(m_obs.group(1))
-        if m_actions:
-            n_actions = int(m_actions.group(1))
+        if n_states is None:
+            m_states = re.search(r"num_hidden_states:\s*(\d+)", params)
+            if m_states:
+                n_states = int(m_states.group(1))
+        if n_obs is None:
+            m_obs = re.search(r"num_obs:\s*(\d+)", params)
+            if m_obs:
+                n_obs = int(m_obs.group(1))
+        if n_actions is None:
+            m_actions = re.search(r"num_actions:\s*(\d+)", params)
+            if m_actions:
+                n_actions = int(m_actions.group(1))
     
-    # Final fallback: error if any are missing
+    # --- Fallback 3: infer from matrix shapes in initialparameterization ---
     if n_states is None or n_obs is None or n_actions is None:
-        raise ValueError("Could not extract n_states, n_obs, n_actions from GNN spec. Please check the GNN file.")
+        init_params = gnn_spec.get("initialparameterization", {})
+        
+        # Try A matrix for n_obs, n_states
+        if "A" in init_params and (n_obs is None or n_states is None):
+            try:
+                A_matrix = init_params["A"]
+                if isinstance(A_matrix, list) and len(A_matrix) > 0:
+                    if n_obs is None:
+                        n_obs = len(A_matrix)  # rows = observations
+                    if n_states is None and isinstance(A_matrix[0], list):
+                        n_states = len(A_matrix[0])  # cols = states
+            except Exception:
+                pass
+        
+        # Try B matrix for n_states, n_actions
+        if "B" in init_params and (n_states is None or n_actions is None):
+            try:
+                B_matrix = init_params["B"]
+                if isinstance(B_matrix, list) and len(B_matrix) > 0:
+                    if n_actions is None:
+                        n_actions = len(B_matrix)  # depth = actions
+                    if n_states is None and isinstance(B_matrix[0], list):
+                        n_states = len(B_matrix[0])  # rows = states
+            except Exception:
+                pass
+    
+    # --- Final validation ---
+    if n_states is None or n_obs is None or n_actions is None:
+        missing = []
+        if n_states is None:
+            missing.append("n_states")
+        if n_obs is None:
+            missing.append("n_obs") 
+        if n_actions is None:
+            missing.append("n_actions")
+        raise ValueError(f"Could not extract {missing} from GNN spec. Available keys: {list(gnn_spec.keys())}")
     
     model_info["n_states"] = [n_states]
     model_info["n_observations"] = [n_obs]
@@ -183,13 +228,19 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
     
     # Convert to Julia format
     def matrix_to_julia(matrix_data):
+        def convert_element(element):
+            """Convert tuple or list elements to proper Julia format."""
+            if isinstance(element, (tuple, list)):
+                return "[" + ", ".join(str(x) for x in element) + "]"
+            return str(element)
+        
         if isinstance(matrix_data, list):
-            if isinstance(matrix_data[0], list):
-                if isinstance(matrix_data[0][0], list):
-                    # 3D matrix (B matrix)
+            if len(matrix_data) > 0 and isinstance(matrix_data[0], list):
+                if len(matrix_data[0]) > 0 and isinstance(matrix_data[0][0], (list, tuple)):
+                    # 3D matrix (B matrix) - handle nested tuples/lists
                     return "[" + ", ".join([
                         "[" + ", ".join([
-                            "[" + ", ".join(str(x) for x in row) + "]"
+                            convert_element(row)
                             for row in slice
                         ]) + "]"
                         for slice in matrix_data
@@ -203,6 +254,9 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
             else:
                 # 1D vector (C, D, E vectors)
                 return "[" + ", ".join(str(x) for x in matrix_data) + "]"
+        elif isinstance(matrix_data, tuple):
+            # Handle tuple input
+            return "[" + ", ".join(str(x) for x in matrix_data) + "]"
         return str(matrix_data)
     
     julia_A = matrix_to_julia(A_matrix)
@@ -409,7 +463,20 @@ try
     )
     
     open(params_file, "w") do f
-        JSON.print(f, model_params, 2)
+        # Convert matrices to strings for JSON serialization
+        json_model_params = Dict(
+            "name" => MODEL_NAME,
+            "n_states" => N_STATES,
+            "n_observations" => N_OBSERVATIONS,
+            "n_actions" => N_CONTROLS,
+            "A_matrix" => string(A_matrix),
+            "B_matrix" => string(B_matrix),
+            "C_vector" => string(C_vector),
+            "D_vector" => string(D_vector),
+            "E_vector" => string(E_vector),
+            "generated" => string(now())
+        )
+        write(f, JSON.json(json_model_params, 2))
     end
     
     # Create summary
