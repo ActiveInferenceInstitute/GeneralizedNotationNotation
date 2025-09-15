@@ -571,7 +571,31 @@ uv run pytest          # run tests inside uv-managed venv
 uv run python -m pytest
 ```
 
-**5️⃣ Explore Results**
+**5️⃣ Run Pipeline (Easy Mode)**
+
+Use the convenient `run.sh` script for easy pipeline execution:
+
+```bash
+# Run full pipeline
+./run.sh
+
+# Run with verbose output
+./run.sh --verbose
+
+# Quick test (steps 0-3 only)
+./run.sh --quick
+
+# Run specific steps
+./run.sh --steps "0,1,2,3" --verbose
+
+# Check dependencies
+./run.sh --check-deps
+
+# Show all options
+./run.sh --help
+```
+
+**6️⃣ Explore Results**
 
 Check the generated outputs in the `output/` directory. The static site is under the numbered website folder:
 

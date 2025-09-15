@@ -439,73 +439,85 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
         return visualizations
     
     try:
-        # Generate heatmaps for matrices with size optimization
-        matrices = parsed_data.get("matrices", [])
-        for i, matrix_info in enumerate(matrices):
-            matrix_data = matrix_info["data"]
-            
-            if matrix_data is not None and matrix_data.size > 0:
-                # Optimize large matrices for visualization
-                original_shape = matrix_data.shape
-                display_matrix = matrix_data
-                
-                # Sample large matrices to improve performance and readability
-                max_display_size = 50
-                if matrix_data.shape[0] > max_display_size or matrix_data.shape[1] > max_display_size:
-                    # Sample rows and columns
-                    row_step = max(1, matrix_data.shape[0] // max_display_size)
-                    col_step = max(1, matrix_data.shape[1] // max_display_size)
-                    display_matrix = matrix_data[::row_step, ::col_step]
-                
-                # Create heatmap with optimized settings
-                fig_width = min(12, max(6, display_matrix.shape[1] * 0.3))
-                fig_height = min(10, max(4, display_matrix.shape[0] * 0.3))
-                plt.figure(figsize=(fig_width, fig_height))
-                
-                if SEABORN_AVAILABLE:
-                    # Only annotate small matrices to avoid clutter
-                    show_annot = display_matrix.size <= 100
-                    sns.heatmap(display_matrix, annot=show_annot, cmap='viridis', 
-                               fmt='.2f' if show_annot else '', cbar_kws={'shrink': 0.8})
-                else:
-                    im = plt.imshow(display_matrix, cmap='viridis', aspect='auto')
-                    plt.colorbar(im, fraction=0.046, pad=0.04, shrink=0.8)
-                    # Annotate very small matrices only
-                    if display_matrix.size <= 25:
-                        try:
-                            rows, cols = display_matrix.shape
-                            for r in range(rows):
-                                for c in range(cols):
-                                    plt.text(c, r, f"{display_matrix[r, c]:.2f}", 
-                                           ha='center', va='center', color='white', fontsize=8)
-                        except Exception:
-                            pass
-                
-                # Add title with shape information
-                title = f"{model_name} - Matrix {i+1}"
-                if original_shape != display_matrix.shape:
-                    title += f" (sampled from {original_shape[0]}x{original_shape[1]})"
-                plt.title(title, fontsize=10)
-                plt.tight_layout()
+        # Generate heatmaps for matrices from parameters
+        parameters = parsed_data.get("parameters", [])
+        matrix_data_list = []
+        
+        for i, param in enumerate(parameters):
+            if isinstance(param, dict) and param.get("value") is not None:
+                try:
+                    import numpy as np
+                    matrix_data = np.array(param["value"], dtype=float)
+                    matrix_name = param.get("name", f"matrix_{i+1}")
+                    
+                    if matrix_data.size > 0:
+                        matrix_data_list.append((matrix_name, matrix_data))
+                        
+                        # Optimize large matrices for visualization
+                        original_shape = matrix_data.shape
+                        display_matrix = matrix_data
+                        
+                        # Sample large matrices to improve performance and readability
+                        max_display_size = 50
+                        if matrix_data.ndim >= 2 and (matrix_data.shape[0] > max_display_size or matrix_data.shape[1] > max_display_size):
+                            # Sample rows and columns
+                            row_step = max(1, matrix_data.shape[0] // max_display_size)
+                            col_step = max(1, matrix_data.shape[1] // max_display_size)
+                            display_matrix = matrix_data[::row_step, ::col_step]
+                        
+                        # Create heatmap with optimized settings
+                        fig_width = min(12, max(6, display_matrix.shape[1] * 0.3))
+                        fig_height = min(10, max(4, display_matrix.shape[0] * 0.3))
+                        plt.figure(figsize=(fig_width, fig_height))
+                        
+                        if SEABORN_AVAILABLE:
+                            # Only annotate small matrices to avoid clutter
+                            show_annot = display_matrix.size <= 100
+                            sns.heatmap(display_matrix, annot=show_annot, cmap='viridis', 
+                                       fmt='.2f' if show_annot else '', cbar_kws={'shrink': 0.8})
+                        else:
+                            im = plt.imshow(display_matrix, cmap='viridis', aspect='auto')
+                            plt.colorbar(im, fraction=0.046, pad=0.04, shrink=0.8)
+                            # Annotate very small matrices only
+                            if display_matrix.size <= 25:
+                                try:
+                                    rows, cols = display_matrix.shape
+                                    for r in range(rows):
+                                        for c in range(cols):
+                                            plt.text(c, r, f"{display_matrix[r, c]:.2f}", 
+                                                   ha='center', va='center', color='white', fontsize=8)
+                                except Exception:
+                                    pass
+                        
+                        # Add title with shape information
+                        title = f"{model_name} - {matrix_name}"
+                        if original_shape != display_matrix.shape:
+                            title += f" (sampled from {original_shape[0]}x{original_shape[1]})"
+                        plt.title(title, fontsize=10)
+                        plt.tight_layout()
 
-                # Save plot with optimized settings
-                plot_file = output_dir / f"{model_name}_matrix_{i+1}_heatmap.png"
-                # Reduce DPI for large matrices to save memory and disk space
-                dpi = 150 if display_matrix.size > 1000 else 300
-                _save_plot_safely(plot_file, dpi=dpi, bbox_inches='tight')
-                plt.close()
-                
-                visualizations.append(str(plot_file))
+                        # Save plot with optimized settings
+                        plot_file = output_dir / f"{model_name}_{matrix_name}_heatmap.png"
+                        # Reduce DPI for large matrices to save memory and disk space
+                        dpi = 150 if display_matrix.size > 1000 else 300
+                        _save_plot_safely(plot_file, dpi=dpi, bbox_inches='tight')
+                        plt.close()
+                        
+                        visualizations.append(str(plot_file))
+                        
+                except Exception as e:
+                    print(f"Error processing matrix {param.get('name', f'param_{i}')}: {e}")
+                    continue
         
         # Matrix-to-matrix correlation based on flattened numeric values (real data, no randomness)
-        matrices_list = [m for m in matrices if m.get("data") is not None]
-        if len(matrices_list) > 1:
+        if len(matrix_data_list) > 1:
             try:
-                names = [m.get("definition", f"M{i+1}") for i, m in enumerate(matrices_list)]
+                import numpy as np
+                names = [name for name, _ in matrix_data_list]
                 data_flat = []
-                max_len = max(m["data"].size for m in matrices_list)
-                for m in matrices_list:
-                    flat = m["data"].astype(float).flatten()
+                max_len = max(data.size for _, data in matrix_data_list)
+                for name, data in matrix_data_list:
+                    flat = data.astype(float).flatten()
                     # Pad with NaNs to equal length for fair correlation on overlapping indices
                     if flat.size < max_len:
                         pad = np.full((max_len - flat.size,), np.nan)
@@ -523,21 +535,29 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
                         return cov
                 corr_matrix = nan_corrcoef(data_mat)
                 plt.figure(figsize=(10, 8))
-                sns.heatmap(corr_matrix, 
-                           xticklabels=[f"M{i+1}" for i in range(len(names))],
-                           yticklabels=[f"M{i+1}" for i in range(len(names))],
-                           annot=True if len(names) <= 10 else False, cmap='coolwarm', vmin=-1, vmax=1)
+                if SEABORN_AVAILABLE:
+                    sns.heatmap(corr_matrix, 
+                               xticklabels=names,
+                               yticklabels=names,
+                               annot=True if len(names) <= 10 else False, cmap='coolwarm', vmin=-1, vmax=1)
+                else:
+                    im = plt.imshow(corr_matrix, cmap='coolwarm', aspect='auto', vmin=-1, vmax=1)
+                    plt.colorbar(im)
+                    plt.xticks(range(len(names)), names)
+                    plt.yticks(range(len(names)), names)
                 plt.title(f"{model_name} - Matrix Correlation (flattened)")
                 plt.tight_layout()
                 plot_file = output_dir / f"{model_name}_matrix_correlation.png"
                 _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
                 plt.close()
                 visualizations.append(str(plot_file))
-            except Exception as _:
-                pass
+            except Exception as e:
+                print(f"Error generating matrix correlation: {e}")
         
     except Exception as e:
         print(f"Error generating matrix visualizations: {e}")
+        import traceback
+        traceback.print_exc()
     
     return visualizations
 
@@ -563,16 +583,22 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
         G = nx.DiGraph()
         
         # Add nodes (variables)
-        variables = parsed_data.get("Variables", {})
-        for var_name, var_info in variables.items():
-            var_type = var_info.get('type', 'unknown') if var_info else 'unknown'
-            G.add_node(var_name, type=var_type)
+        variables = parsed_data.get("variables", [])
+        for var in variables:
+            if isinstance(var, dict):
+                var_name = var.get('name', 'unknown')
+                var_type = var.get('var_type', 'unknown')
+                G.add_node(var_name, type=var_type)
         
         # Add edges (connections)
-        connections = parsed_data.get("Edges", [])
+        connections = parsed_data.get("connections", [])
         for conn in connections:
-            if isinstance(conn, dict) and 'source' in conn and 'target' in conn:
-                G.add_edge(conn["source"], conn["target"])
+            if isinstance(conn, dict):
+                source_vars = conn.get("source_variables", [])
+                target_vars = conn.get("target_variables", [])
+                for source in source_vars:
+                    for target in target_vars:
+                        G.add_edge(source, target)
         
         if len(G.nodes()) > 0:
             # Create network plot
@@ -609,6 +635,8 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
         
     except Exception as e:
         print(f"Error generating network visualizations: {e}")
+        import traceback
+        traceback.print_exc()
     
     return visualizations
 
@@ -634,55 +662,96 @@ def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, mo
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 12))
         
         # 1. Variable type distribution
-        variables = parsed_data.get("Variables", {})
+        variables = parsed_data.get("variables", [])
         if variables:
-            var_types = [var_info.get('type', 'unknown') for var_info in variables.values()]
+            var_types = [var.get('var_type', 'unknown') for var in variables if isinstance(var, dict)]
             type_counts = {}
             for var_type in var_types:
                 type_counts[var_type] = type_counts.get(var_type, 0) + 1
             
-            ax1.pie(type_counts.values(), labels=type_counts.keys(), autopct='%1.1f%%')
+            if type_counts:
+                ax1.pie(type_counts.values(), labels=type_counts.keys(), autopct='%1.1f%%')
+                ax1.set_title("Variable Type Distribution")
+            else:
+                ax1.text(0.5, 0.5, 'No variable types found', ha='center', va='center', transform=ax1.transAxes)
+                ax1.set_title("Variable Type Distribution")
+        else:
+            ax1.text(0.5, 0.5, 'No variables found', ha='center', va='center', transform=ax1.transAxes)
             ax1.set_title("Variable Type Distribution")
         
         # 2. Connection count histogram
-        connections = parsed_data.get("Edges", [])
+        connections = parsed_data.get("connections", [])
         if connections:
             source_counts = {}
             target_counts = {}
             for conn in connections:
-                source_counts[conn["source"]] = source_counts.get(conn["source"], 0) + 1
-                target_counts[conn["target"]] = target_counts.get(conn["target"], 0) + 1
+                if isinstance(conn, dict):
+                    source_vars = conn.get("source_variables", [])
+                    target_vars = conn.get("target_variables", [])
+                    for source in source_vars:
+                        source_counts[source] = source_counts.get(source, 0) + 1
+                    for target in target_vars:
+                        target_counts[target] = target_counts.get(target, 0) + 1
             
             all_nodes = set(source_counts.keys()) | set(target_counts.keys())
-            node_counts = [source_counts.get(node, 0) + target_counts.get(node, 0) for node in all_nodes]
-            
-            ax2.hist(node_counts, bins=10, alpha=0.7, color='skyblue', edgecolor='black')
+            if all_nodes:
+                node_counts = [source_counts.get(node, 0) + target_counts.get(node, 0) for node in all_nodes]
+                ax2.hist(node_counts, bins=min(10, len(node_counts)), alpha=0.7, color='skyblue', edgecolor='black')
+                ax2.set_title("Node Connection Count Distribution")
+                ax2.set_xlabel("Number of Connections")
+                ax2.set_ylabel("Frequency")
+            else:
+                ax2.text(0.5, 0.5, 'No connections found', ha='center', va='center', transform=ax2.transAxes)
+                ax2.set_title("Node Connection Count Distribution")
+        else:
+            ax2.text(0.5, 0.5, 'No connections found', ha='center', va='center', transform=ax2.transAxes)
             ax2.set_title("Node Connection Count Distribution")
-            ax2.set_xlabel("Number of Connections")
-            ax2.set_ylabel("Frequency")
         
-        # 3. Matrix statistics
-        matrices = parsed_data.get("matrices", [])
-        if matrices:
-            matrix_sizes = [m["data"].size for m in matrices if m["data"] is not None]
+        # 3. Matrix statistics from parameters
+        parameters = parsed_data.get("parameters", [])
+        if parameters:
+            matrix_sizes = []
+            for param in parameters:
+                if isinstance(param, dict) and param.get("value") is not None:
+                    try:
+                        import numpy as np
+                        matrix = np.array(param["value"])
+                        matrix_sizes.append(matrix.size)
+                    except:
+                        continue
+            
             if matrix_sizes:
                 ax3.hist(matrix_sizes, bins=min(10, len(matrix_sizes)), alpha=0.7, color='lightgreen', edgecolor='black')
                 ax3.set_title("Matrix Size Distribution")
                 ax3.set_xlabel("Matrix Size (elements)")
                 ax3.set_ylabel("Frequency")
+            else:
+                ax3.text(0.5, 0.5, 'No matrix data found', ha='center', va='center', transform=ax3.transAxes)
+                ax3.set_title("Matrix Size Distribution")
+        else:
+            ax3.text(0.5, 0.5, 'No parameters found', ha='center', va='center', transform=ax3.transAxes)
+            ax3.set_title("Matrix Size Distribution")
         
-        # 4. Section content length
-        sections = parsed_data.get("sections", {})
-        if sections:
-            section_lengths = [len(content) for content in sections.values()]
-            section_names = list(sections.keys())
+        # 4. Variable dimensions distribution
+        if variables:
+            dimensions = []
+            for var in variables:
+                if isinstance(var, dict) and var.get("dimensions"):
+                    dims = var["dimensions"]
+                    if isinstance(dims, list) and len(dims) > 0:
+                        dimensions.append(len(dims))
             
-            ax4.bar(range(len(section_names)), section_lengths, alpha=0.7, color='orange')
-            ax4.set_title("Section Content Length")
-            ax4.set_xlabel("Sections")
-            ax4.set_ylabel("Number of Lines")
-            ax4.set_xticks(range(len(section_names)))
-            ax4.set_xticklabels(section_names, rotation=45, ha='right')
+            if dimensions:
+                ax4.hist(dimensions, bins=min(10, len(set(dimensions))), alpha=0.7, color='orange', edgecolor='black')
+                ax4.set_title("Variable Dimensions Distribution")
+                ax4.set_xlabel("Number of Dimensions")
+                ax4.set_ylabel("Frequency")
+            else:
+                ax4.text(0.5, 0.5, 'No dimension data found', ha='center', va='center', transform=ax4.transAxes)
+                ax4.set_title("Variable Dimensions Distribution")
+        else:
+            ax4.text(0.5, 0.5, 'No variables found', ha='center', va='center', transform=ax4.transAxes)
+            ax4.set_title("Variable Dimensions Distribution")
         
         plt.suptitle(f"{model_name} - Combined Analysis", fontsize=16)
         plt.tight_layout()
@@ -695,6 +764,8 @@ def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, mo
         
     except Exception as e:
         print(f"Error generating combined analysis: {e}")
+        import traceback
+        traceback.print_exc()
     
     return visualizations
 
