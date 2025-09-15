@@ -1,0 +1,49 @@
+2025-09-15 11:18:57,835 - root - INFO - GNN module imports validated
+2025-09-15 11:18:57,837 - root - INFO - GNN file discovery validated: 1 files found
+2025-09-15 11:18:57,838 - root - INFO - Successfully parsed simple.gnn
+2025-09-15 11:18:57,839 - root - WARNING - Validation check failed for simple.gnn: Valid GNN file should have basic structure: simple.gnn
+assert False
+2025-09-15 11:18:57,860 - root - INFO - Render module imports validated
+2025-09-15 11:18:57,862 - root - INFO - PyMDP rendering validated
+2025-09-15 11:18:57,863 - root - INFO - RxInfer rendering validated
+2025-09-15 11:18:57,867 - root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
+2025-09-15 11:18:57,915 - root - WARNING - Execution environment validation failed: Status should contain python_version
+assert 'python_version' in {'valid': False, 'issues': ['validate_execution_environment not available']}
+2025-09-15 11:18:57,919 - src.llm.llm_processor - INFO - Loaded API keys for providers: []
+2025-09-15 11:18:57,919 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-15 11:18:57,921 - src.llm.llm_processor - INFO - Loaded API keys for providers: []
+2025-09-15 11:18:57,921 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-15 11:18:57,921 - src.llm.providers.openai_provider - WARNING - OpenAI API key not provided
+2025-09-15 11:18:57,921 - src.llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-09-15 11:18:57,921 - src.llm.providers.openrouter_provider - ERROR - Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+2025-09-15 11:18:57,921 - src.llm.providers.openrouter_provider - ERROR - Install aiohttp with: pip install aiohttp>=3.9.0
+2025-09-15 11:18:57,921 - src.llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-09-15 11:18:57,922 - src.llm.providers.perplexity_provider - ERROR - Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+2025-09-15 11:18:57,922 - src.llm.providers.perplexity_provider - ERROR - Install aiohttp with: pip install aiohttp>=3.9.0
+2025-09-15 11:18:57,922 - src.llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-09-15 11:18:57,923 - src.llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+2025-09-15 11:18:57,923 - src.llm.llm_processor - WARNING - Failed to initialize ollama provider
+2025-09-15 11:18:57,923 - src.llm.llm_processor - WARNING - No LLM providers could be initialized
+2025-09-15 11:18:57,923 - src.llm.analyzer - WARNING - LLM summary generation failed for simple.gnn: Processor not initialized
+2025-09-15 11:18:57,928 - mcp - INFO - Enhanced MCP server initialized
+2025-09-15 11:18:57,928 - root - INFO - MCP module imports validated
+2025-09-15 11:18:57,929 - root - INFO - MCP tool registration validated
+2025-09-15 11:18:57,929 - src.mcp.processor - INFO - Handling MCP request: tools/list
+2025-09-15 11:18:57,930 - root - INFO - MCP request handling validated
+2025-09-15 11:18:57,931 - ontology - INFO - 🚀 Processing ontology
+2025-09-15 11:18:57,932 - ontology - INFO - ✅ Ontology processing completed successfully
+2025-09-15 11:18:57,934 - website - INFO - Website generated successfully with 1 pages
+2025-09-15 11:18:57,935 - website - INFO - Website generated successfully with 1 pages
+2025-09-15 11:18:57,936 - root - INFO - SAPF module imports validated successfully
+2025-09-15 11:18:57,937 - root - INFO - GNN to SAPF conversion validated
+2025-09-15 11:18:57,938 - root - INFO - SAPF validation functionality confirmed
+2025-09-15 11:18:57,938 - root - INFO - SAPF audio generation functionality confirmed
+2025-09-15 11:18:57,939 - root - WARNING - Core module coordination failed: execute_simulation_from_gnn() got an unexpected keyword argument 'timeout'
+2025-09-15 11:18:57,941 - root - INFO - Module data flow validated
+2025-09-15 11:18:57,941 - root - INFO - Core module completeness test passed
+2025-09-15 11:18:57,942 - root - INFO - Core module performance test completed
+2025-09-15 11:18:57,972 - root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
+2025-09-15 11:18:57,979 - llm.llm_processor - INFO - Loaded API keys for providers: []
+2025-09-15 11:18:57,979 - llm.llm_operations - INFO - Created new LLM processor
+2025-09-15 11:18:57,983 - mcp - INFO - Enhanced MCP server initialized
+2025-09-15 11:18:57,987 - root - INFO - Fast test suite completeness validated

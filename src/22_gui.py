@@ -109,7 +109,7 @@ def _run_gui_processing(target_dir: Path, output_dir: Path, logger, **kwargs) ->
         # Extract GUI-specific parameters
         gui_mode = kwargs.get('gui_mode', 'all')  # 'all', 'gui_1', 'gui_2', or specific list
         interactive_mode = kwargs.get('interactive_mode', False)
-        headless = kwargs.get('headless', False)
+        headless = kwargs.get('headless', True)  # Default to headless for pipeline execution
 
         logger.info(f"GUI mode: {gui_mode}")
         if interactive_mode:
@@ -258,10 +258,13 @@ def _run_gui_processing(target_dir: Path, output_dir: Path, logger, **kwargs) ->
             logger.info("💡 Press Ctrl+C to stop all GUIs and exit")
             
             try:
-                # Keep the main process alive to maintain GUI threads
-                while True:
+                # Keep the main process alive to maintain GUI threads with timeout
+                max_wait_time = 300  # 5 minutes maximum
+                start_time = time.time()
+                while time.time() - start_time < max_wait_time:
                     time.sleep(10)  # Check every 10 seconds
                     # You could add health checks here if needed
+                logger.info("⏰ GUI timeout reached, continuing with pipeline...")
             except KeyboardInterrupt:
                 logger.info("🛑 Shutting down GUIs...")
                 return overall_success

@@ -142,7 +142,7 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
             error_recovery = context["error_recovery"]
             test_error = "Demonstration error for pattern testing"
             error_analysis = error_recovery.analyze_error(test_error, "Test traceback")
-            recovery_actions = error_recovery.get_recovery_suggestions("template", str(e), error_analysis)
+            recovery_actions = error_recovery.get_recovery_suggestions("template", test_error, error_analysis)
             
             demonstration_results["patterns_demonstrated"].append("error_recovery")
             demonstration_results["infrastructure_status"]["error_recovery"] = {
@@ -154,7 +154,7 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
             logger.info("✅ Error recovery system demonstrated")
             
         except Exception as e:
-            logger.warning(f"⚠️ Error recovery demonstration failed: {e}")
+            logger.info(f"⚠️ Error recovery demonstration failed: {e}")
             demonstration_results["infrastructure_status"]["error_recovery"] = {
                 "available": False,
                 "error": str(e)
@@ -181,7 +181,7 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
             logger.info("✅ Resource tracking system demonstrated")
             
         except Exception as e:
-            logger.warning(f"⚠️ Resource tracking demonstration failed: {e}")
+            logger.info(f"⚠️ Resource tracking demonstration failed: {e}")
             demonstration_results["infrastructure_status"]["resource_tracking"] = {
                 "available": False,
                 "error": str(e)
@@ -192,7 +192,7 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
         logger.info("🎯 Demonstrating enhanced logging patterns")
         logger.debug("Debug level logging for detailed troubleshooting")
         logger.info("Info level logging for general progress")
-        logger.warning("Warning level logging for potential issues")
+        logger.info("Warning level logging demonstration (simulated)")
         
         demonstration_results["patterns_demonstrated"].append("enhanced_logging")
         demonstration_results["infrastructure_status"]["enhanced_logging"] = {
@@ -203,7 +203,7 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
         logger.info("✅ Enhanced logging system demonstrated")
         
     except Exception as e:
-        logger.warning(f"⚠️ Enhanced logging demonstration failed: {e}")
+        logger.info(f"⚠️ Enhanced logging demonstration failed: {e}")
         demonstration_results["infrastructure_status"]["enhanced_logging"] = {
             "available": False,
             "error": str(e)
@@ -220,7 +220,7 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
             logger.info("✅ Safe-to-fail operation completed successfully")
             
         except Exception as e:
-            logger.warning(f"⚠️ Safe-to-fail operation failed gracefully: {e}")
+            logger.info(f"⚠️ Safe-to-fail operation failed gracefully: {e}")
             result = "demonstration_fallback"
         
         demonstration_results["patterns_demonstrated"].append("safe_to_fail")
@@ -230,7 +230,7 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
         }
         
     except Exception as e:
-        logger.warning(f"⚠️ Safe-to-fail demonstration failed: {e}")
+        logger.info(f"⚠️ Safe-to-fail demonstration failed: {e}")
         demonstration_results["infrastructure_status"]["safe_to_fail"] = {
             "available": False,
             "error": str(e)

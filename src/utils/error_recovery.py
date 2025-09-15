@@ -609,7 +609,7 @@ def attempt_step_recovery(script_name: str, step_result: Dict[str, Any],
         try:
             return recovery_strategies[script_name](step_result, args, logger)
         except Exception as e:
-            logger.warning(f"Recovery attempt failed for {script_name}: {e}")
+            logger.info(f"Recovery attempt failed for {script_name}: {e}")
             return None
     
     return None

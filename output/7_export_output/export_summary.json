@@ -1,0 +1,12 @@
+{
+  "total_files": 1,
+  "successful_exports": 1,
+  "failed_exports": 0,
+  "formats_generated": {
+    "json": 1,
+    "xml": 1,
+    "graphml": 1,
+    "gexf": 1,
+    "pickle": 1
+  }
+}

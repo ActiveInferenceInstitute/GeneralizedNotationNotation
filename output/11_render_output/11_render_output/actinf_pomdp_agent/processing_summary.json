@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-09-15T11:19:07.491228",
+  "source_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+  "model_name": "Classic Active Inference POMDP Agent v1",
+  "pomdp_dimensions": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 1
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy"
+  ],
+  "frameworks_failed": []
+}

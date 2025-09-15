@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-09-15T11:18:39.059687",
+  "step_name": "template",
+  "input_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/0_template_output",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  },
+  "performance_metrics": {}
+}

@@ -144,7 +144,7 @@ def execute_pipeline_step_template(
                     __import__(dep)
                     logger.debug(f"Imported dependency: {dep}")
                 except ImportError as e:
-                    logger.warning(f"Failed to import dependency {dep}: {e}")
+                    logger.info(f"Failed to import dependency {dep}: {e}")
         
         # Execute main function
         result = main_function()

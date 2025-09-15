@@ -209,7 +209,15 @@ class DependencyInstaller:
         try:
             self.log_install("Installing PyMDP...")
             
-            # Try installing via pip first
+            # Try installing via UV first (preferred for UV environments)
+            try:
+                self.run_command(["uv", "pip", "install", "pymdp"])
+                self.log_install("PyMDP installed successfully via UV")
+                return True
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                pass
+            
+            # Try installing via pip
             try:
                 self.run_command([sys.executable, "-m", "pip", "install", "pymdp"])
                 self.log_install("PyMDP installed successfully via pip")
@@ -217,13 +225,24 @@ class DependencyInstaller:
             except subprocess.CalledProcessError:
                 pass
             
-            # Try installing from source
+            # Try installing from source via UV
+            try:
+                self.run_command([
+                    "uv", "pip", "install", 
+                    "git+https://github.com/infer-actively/pymdp.git"
+                ])
+                self.log_install("PyMDP installed successfully from source via UV")
+                return True
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                pass
+            
+            # Try installing from source via pip
             try:
                 self.run_command([
                     sys.executable, "-m", "pip", "install", 
                     "git+https://github.com/infer-actively/pymdp.git"
                 ])
-                self.log_install("PyMDP installed successfully from source")
+                self.log_install("PyMDP installed successfully from source via pip")
                 return True
             except subprocess.CalledProcessError:
                 pass
@@ -249,8 +268,14 @@ class DependencyInstaller:
             
             for package in packages:
                 try:
-                    self.run_command([sys.executable, "-m", "pip", "install", package])
-                    self.log_install(f"Installed {package}")
+                    # Try UV first (preferred for UV environments)
+                    try:
+                        self.run_command(["uv", "pip", "install", package])
+                        self.log_install(f"Installed {package} via UV")
+                    except (subprocess.CalledProcessError, FileNotFoundError):
+                        # Fallback to regular pip
+                        self.run_command([sys.executable, "-m", "pip", "install", package])
+                        self.log_install(f"Installed {package} via pip")
                 except subprocess.CalledProcessError as e:
                     self.log_install(f"Failed to install {package}: {e}", "WARNING")
             

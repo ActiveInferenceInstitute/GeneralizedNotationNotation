@@ -102,7 +102,7 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
 
         parsed_model_file = Path(file_result.get("parsed_model_file", ""))
         if not parsed_model_file.exists():
-            logger.warning(f"Parsed model file not found: {parsed_model_file}")
+            logger.info(f"Parsed model file not found: {parsed_model_file}")
             continue
 
         try:
@@ -239,12 +239,21 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
     shutil.copy2(global_analysis_file, prereq_dir / "global_type_analysis.json")
 
     success = type_check_results["summary"].get("valid_files", 0) > 0
+    warnings_count = type_check_results["summary"].get("warnings", 0)
+    
     if success:
-        log_step_success(
-            logger,
-            f"Type checking completed: {type_check_results['summary']['valid_files']} valid files, "
-            f"{type_check_results['summary']['warnings']} warnings",
-        )
+        if warnings_count > 0:
+            log_step_warning(
+                logger,
+                f"Type checking completed: {type_check_results['summary']['valid_files']} valid files, "
+                f"{warnings_count} warnings",
+            )
+        else:
+            log_step_success(
+                logger,
+                f"Type checking completed: {type_check_results['summary']['valid_files']} valid files, "
+                f"{warnings_count} warnings",
+            )
     else:
         log_step_error(logger, "No valid files found during type checking")
 

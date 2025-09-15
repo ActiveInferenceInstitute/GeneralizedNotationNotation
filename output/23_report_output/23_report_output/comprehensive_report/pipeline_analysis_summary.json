@@ -1,0 +1,1354 @@
+{
+  "report_generation_time": "2025-09-15T11:19:19.252543",
+  "pipeline_summary": {
+    "start_time": "2025-09-15T11:18:43.163090",
+    "arguments": {
+      "target_dir": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+      "output_dir": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output",
+      "recursive": true,
+      "verbose": true,
+      "enable_round_trip": true,
+      "enable_cross_format": true,
+      "skip_steps": [],
+      "only_steps": "3,5,7,8,12,15",
+      "strict": false,
+      "estimate_resources": false,
+      "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+      "pipeline_summary_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/pipeline_execution_summary.json",
+      "llm_tasks": "all",
+      "llm_timeout": 360,
+      "website_html_filename": "gnn_pipeline_summary_website.html",
+      "recreate_venv": false,
+      "dev": false,
+      "install_optional": null,
+      "duration": 30.0,
+      "audio_backend": "auto",
+      "fast_only": false,
+      "include_slow": false,
+      "include_performance": false,
+      "comprehensive": false,
+      "performance_mode": "low"
+    },
+    "steps": [
+      {
+        "status": "SUCCESS",
+        "stdout": "",
+        "stderr": "2025-09-15 11:18:43,236 - 3_gnn.py - INFO - \ud83d\ude80 Processing GNN files with full multi-format generation\n2025-09-15 11:18:43,258 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats\n2025-09-15 11:18:43,258 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2025-09-15 11:18:43,260 - 3_gnn.py - INFO - Found 1 potential GNN files\n2025-09-15 11:18:43,260 - 3_gnn.py - INFO - Processing: /home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2025-09-15 11:18:43,263 - 3_gnn.py - INFO -   Generated markdown: 1759 bytes\n2025-09-15 11:18:43,263 - 3_gnn.py - INFO -   Generated scala: 5106 bytes\n2025-09-15 11:18:43,263 - 3_gnn.py - INFO -   Generated lean: 5504 bytes\n2025-09-15 11:18:43,264 - 3_gnn.py - INFO -   Generated coq: 5255 bytes\n2025-09-15 11:18:43,264 - 3_gnn.py - INFO -   Generated python: 9113 bytes\n2025-09-15 11:18:43,264 - 3_gnn.py - INFO -   Generated bnf: 5486 bytes\n2025-09-15 11:18:43,265 - 3_gnn.py - INFO -   Generated ebnf: 5486 bytes\n2025-09-15 11:18:43,265 - 3_gnn.py - INFO -   Generated isabelle: 5282 bytes\n2025-09-15 11:18:43,265 - 3_gnn.py - INFO -   Generated maxima: 5759 bytes\n2025-09-15 11:18:43,267 - 3_gnn.py - INFO -   Generated xml: 9556 bytes\n2025-09-15 11:18:43,268 - 3_gnn.py - INFO -   Generated json: 9413 bytes\n2025-09-15 11:18:43,268 - 3_gnn.py - INFO -   Generated protobuf: 7237 bytes\n2025-09-15 11:18:43,275 - 3_gnn.py - INFO -   Generated yaml: 5736 bytes\n2025-09-15 11:18:43,275 - 3_gnn.py - INFO -   Generated xsd: 6224 bytes\n2025-09-15 11:18:43,276 - 3_gnn.py - INFO -   Generated asn1: 8138 bytes\n2025-09-15 11:18:43,276 - 3_gnn.py - INFO -   Generated pkl: 11946 bytes\n2025-09-15 11:18:43,277 - 3_gnn.py - INFO -   Generated alloy: 8220 bytes\n2025-09-15 11:18:43,277 - 3_gnn.py - INFO -   Generated z_notation: 5838 bytes\n2025-09-15 11:18:43,277 - 3_gnn.py - INFO -   Generated tla_plus: 4729 bytes\n2025-09-15 11:18:43,277 - 3_gnn.py - INFO -   Generated agda: 4736 bytes\n2025-09-15 11:18:43,278 - 3_gnn.py - INFO -   Generated haskell: 5520 bytes\n2025-09-15 11:18:43,278 - 3_gnn.py - INFO -   Generated pickle: 3888 bytes\n2025-09-15 11:18:43,278 - 3_gnn.py - INFO - Generated 22 formats for actinf_pomdp_agent.md\n2025-09-15 11:18:43,278 - 3_gnn.py - INFO - \u2705 Processed 1 files, generated 22 format instances across 22 formats\n",
+        "memory_usage_mb": 23.578125,
+        "peak_memory_mb": 23.578125,
+        "memory_delta_mb": 0.0,
+        "exit_code": 0,
+        "retry_count": 0,
+        "prerequisite_check": true,
+        "dependency_warnings": [],
+        "recoverable": false,
+        "step_number": 1,
+        "script_name": "3_gnn.py",
+        "description": "GNN file processing",
+        "start_time": "2025-09-15T11:18:43.163415",
+        "end_time": "2025-09-15T11:18:43.297013",
+        "duration_seconds": 0.13359761238098145
+      },
+      {
+        "status": "SUCCESS_WITH_WARNINGS",
+        "stdout": "",
+        "stderr": "2025-09-15 11:18:43,369 - 5_type_checker.py - INFO - Loaded 1 parsed GNN files\n2025-09-15 11:18:43,369 - 5_type_checker.py - INFO - Analyzing types for: actinf_pomdp_agent.md\n2025-09-15 11:18:43,369 - 5_type_checker.py - INFO - Analyzed actinf_pomdp_agent.md: 13 variables, 11 connections, 0 errors, 0 warnings\n2025-09-15 11:18:43,370 - 5_type_checker.py - INFO - \u2705 Type checking completed: 1 valid files, 0 warnings\n",
+        "memory_usage_mb": 23.578125,
+        "peak_memory_mb": 23.578125,
+        "memory_delta_mb": 0.0,
+        "exit_code": 0,
+        "retry_count": 0,
+        "prerequisite_check": true,
+        "dependency_warnings": [],
+        "recoverable": false,
+        "step_number": 2,
+        "script_name": "5_type_checker.py",
+        "description": "Type checking",
+        "start_time": "2025-09-15T11:18:43.297164",
+        "end_time": "2025-09-15T11:18:43.386602",
+        "duration_seconds": 0.08943772315979004
+      },
+      {
+        "status": "SUCCESS",
+        "stdout": "",
+        "stderr": "2025-09-15 11:18:43,465 - export - INFO - Loaded 1 parsed GNN files\n2025-09-15 11:18:43,465 - export - INFO - Exporting: actinf_pomdp_agent.md\n2025-09-15 11:18:43,465 - export - INFO - Loaded parsed GNN specification from /home/q/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json\n2025-09-15 11:18:43,466 - export - INFO - Generated json export for actinf_pomdp_agent.md\n2025-09-15 11:18:43,468 - export - INFO - Generated xml export for actinf_pomdp_agent.md\n2025-09-15 11:18:43,468 - export - INFO - Generated graphml export for actinf_pomdp_agent.md\n2025-09-15 11:18:43,469 - export - INFO - Generated gexf export for actinf_pomdp_agent.md\n2025-09-15 11:18:43,469 - export - INFO - Generated pickle export for actinf_pomdp_agent.md\n2025-09-15 11:18:43,470 - export - INFO - Export processing completed:\n2025-09-15 11:18:43,470 - export - INFO -   Total files: 1\n2025-09-15 11:18:43,470 - export - INFO -   Successful exports: 1\n2025-09-15 11:18:43,470 - export - INFO -   Failed exports: 0\n2025-09-15 11:18:43,470 - export - INFO -   Formats generated: {'json': 1, 'xml': 1, 'graphml': 1, 'gexf': 1, 'pickle': 1}\n",
+        "memory_usage_mb": 23.578125,
+        "peak_memory_mb": 23.578125,
+        "memory_delta_mb": 0.0,
+        "exit_code": 0,
+        "retry_count": 0,
+        "prerequisite_check": true,
+        "dependency_warnings": [],
+        "recoverable": false,
+        "step_number": 3,
+        "script_name": "7_export.py",
+        "description": "Multi-format export",
+        "start_time": "2025-09-15T11:18:43.386718",
+        "end_time": "2025-09-15T11:18:43.486196",
+        "duration_seconds": 0.09947824478149414
+      },
+      {
+        "status": "SUCCESS",
+        "stdout": "DEBUG: Creating POMDP analysis for tensor shape: (3, 3, 3)\nDEBUG: Figure created successfully\nDEBUG: Using simple subplot layout\nDEBUG: Error saving POMDP analysis: __init__(): incompatible constructor arguments. The following argument types are supported:\n    1. matplotlib.backends._backend_agg.RendererAgg(width: typing.SupportsInt, height: typing.SupportsInt, dpi: typing.SupportsFloat)\n\nInvoked with: 1081, 18189472529, 96\nDEBUG: POMDP analysis saved with fallback DPI\n",
+        "stderr": "2025-09-15 11:18:44,735 - visualization - INFO - Loaded 1 parsed GNN files\n2025-09-15 11:18:44,736 - visualization - INFO - Visualizing: actinf_pomdp_agent.md\n2025-09-15 11:18:44,736 - visualization - INFO - Loaded parsed GNN specification from /home/q/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json\n2025-09-15 11:18:47,386 - visualization - INFO - Matrix visualization completed for actinf_pomdp_agent.md\n2025-09-15 11:18:47,885 - visualization.processor - DEBUG - Successfully saved plot with DPI 300\n2025-09-15 11:18:47,885 - visualization - INFO - Network visualization completed for actinf_pomdp_agent.md\n2025-09-15 11:18:48,904 - visualization.processor - DEBUG - Successfully saved plot with DPI 300\n2025-09-15 11:18:48,904 - visualization - INFO - Combined visualization completed for actinf_pomdp_agent.md\n2025-09-15 11:18:48,904 - visualization - INFO - Visualization processing completed:\n2025-09-15 11:18:48,904 - visualization - INFO -   Total files: 1\n2025-09-15 11:18:48,904 - visualization - INFO -   Successful visualizations: 1\n2025-09-15 11:18:48,904 - visualization - INFO -   Failed visualizations: 0\n2025-09-15 11:18:48,904 - visualization - INFO -   Total images generated: 6\n2025-09-15 11:18:48,904 - visualization - INFO -   Visualization types: {'matrix': 1, 'network': 1, 'combined': 1}\n",
+        "memory_usage_mb": 23.578125,
+        "peak_memory_mb": 23.578125,
+        "memory_delta_mb": 0.0,
+        "exit_code": 0,
+        "retry_count": 0,
+        "prerequisite_check": true,
+        "dependency_warnings": [],
+        "recoverable": false,
+        "step_number": 4,
+        "script_name": "8_visualization.py",
+        "description": "Visualization",
+        "start_time": "2025-09-15T11:18:43.486318",
+        "end_time": "2025-09-15T11:18:49.159561",
+        "duration_seconds": 5.673242092132568
+      },
+      {
+        "status": "SUCCESS",
+        "stdout": "",
+        "stderr": "2025-09-15 11:18:49,292 - 11_render.py - INFO - \ud83d\ude80 Processing render\n2025-09-15 11:18:49,292 - 11_render.py - INFO - Processing GNN files from: /home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2025-09-15 11:18:49,292 - 11_render.py - INFO - Output directory: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output\n2025-09-15 11:18:49,292 - 11_render.py - INFO - Render format: all\n2025-09-15 11:18:49,292 - 11_render.py - INFO - Found 1 GNN files to render\n2025-09-15 11:18:49,292 - 11_render.py - INFO - Render module available, processing files...\n2025-09-15 11:18:49,292 - render.processor - INFO - \ud83d\ude80 Starting POMDP-aware render processing\n2025-09-15 11:18:49,292 - render.processor - INFO - Processing GNN files in: /home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2025-09-15 11:18:49,292 - render.processor - INFO - Output directory: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output\n2025-09-15 11:18:49,293 - render.processor - INFO - Found 1 GNN files to process\n2025-09-15 11:18:49,294 - render.processor - INFO - Target frameworks: all available\n2025-09-15 11:18:49,294 - render.processor - INFO - \ud83d\udcc1 Processing: /home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2025-09-15 11:18:49,295 - render.processor - INFO - \u2705 Extracted POMDP 'Classic Active Inference POMDP Agent v1' with 3 states, 3 observations, 1 actions\n2025-09-15 11:18:49,295 - render.pomdp_processor - INFO - Processing POMDP 'Classic Active Inference POMDP Agent v1' for frameworks: ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy']\n2025-09-15 11:18:49,295 - render.pomdp_processor - INFO - Processing framework: pymdp\n2025-09-15 11:18:49,296 - render.pomdp_processor - INFO - Created documentation: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/pymdp/README.md\n2025-09-15 11:18:49,296 - render.pomdp_processor - INFO - \u2705 pymdp: Generated PyMDP simulation script: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2025-09-15 11:18:49,296 - render.pomdp_processor - INFO - Processing framework: rxinfer\n2025-09-15 11:18:49,296 - render.pomdp_processor - INFO - Created documentation: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/README.md\n2025-09-15 11:18:49,297 - render.pomdp_processor - INFO - \u2705 rxinfer: Generated RxInfer.jl simulation script: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2025-09-15 11:18:49,297 - render.pomdp_processor - INFO - Processing framework: activeinference_jl\n2025-09-15 11:18:49,297 - render.activeinference_jl.activeinference_renderer - INFO - Rendering GNN specification to ActiveInference.jl script for model: Classic Active Inference POMDP Agent v1\n2025-09-15 11:18:49,297 - render.activeinference_jl.activeinference_renderer - INFO - Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2025-09-15 11:18:49,297 - render.pomdp_processor - INFO - Created documentation: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/README.md\n2025-09-15 11:18:49,297 - render.pomdp_processor - INFO - \u2705 activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2025-09-15 11:18:49,298 - render.pomdp_processor - INFO - Processing framework: jax\n2025-09-15 11:18:49,298 - render.jax.jax_renderer - INFO - Extracting matrices from POMDP processor format\n2025-09-15 11:18:49,298 - render.jax.jax_renderer - INFO - Extracted variable dimensions: {n_states: 3, n_obs: 3, n_actions: 1}\n2025-09-15 11:18:49,298 - render.jax.jax_renderer - INFO - Created default matrices: A=(3, 3), B=(3, 3, 1), C=(3,), D=(3,)\n2025-09-15 11:18:49,298 - render.jax.jax_renderer - INFO - Found initialparameterization, extracting actual matrix values\n2025-09-15 11:18:49,298 - render.jax.jax_renderer - INFO - Successfully extracted A matrix: shape (3, 3)\n2025-09-15 11:18:49,298 - render.jax.jax_renderer - INFO - Successfully extracted C vector: shape (3,)\n2025-09-15 11:18:49,298 - render.jax.jax_renderer - INFO - Successfully extracted D vector: shape (3,)\n2025-09-15 11:18:49,298 - render.jax.jax_renderer - INFO - JAX model code written to /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2025-09-15 11:18:49,299 - render.pomdp_processor - INFO - Created documentation: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/jax/README.md\n2025-09-15 11:18:49,299 - render.pomdp_processor - INFO - \u2705 jax: JAX model code generated successfully.\n2025-09-15 11:18:49,299 - render.pomdp_processor - INFO - Processing framework: discopy\n2025-09-15 11:18:49,299 - render.pomdp_processor - INFO - Created documentation: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/discopy/README.md\n2025-09-15 11:18:49,299 - render.pomdp_processor - INFO - \u2705 discopy: Generated DisCoPy categorical diagram script: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2025-09-15 11:18:49,300 - render.processor - INFO - \u2705 Successfully processed actinf_pomdp_agent.md\n2025-09-15 11:18:49,300 - render.processor - INFO - Created overview documentation: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/README.md\n2025-09-15 11:18:49,301 - render.processor - INFO - \ud83c\udf89 Render processing completed!\n2025-09-15 11:18:49,301 - render.processor - INFO - \ud83d\udcca Files: 1/1 successful\n2025-09-15 11:18:49,301 - render.processor - INFO - \ud83e\udde0 Framework renderings: 5/5 successful (100.0%)\n2025-09-15 11:18:49,301 - render.processor - INFO - \ud83d\udcc4 Summary saved to: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/render_processing_summary.json\n",
+        "memory_usage_mb": 23.578125,
+        "peak_memory_mb": 23.578125,
+        "memory_delta_mb": 0.0,
+        "exit_code": 0,
+        "retry_count": 0,
+        "prerequisite_check": true,
+        "dependency_warnings": [],
+        "recoverable": false,
+        "step_number": 5,
+        "script_name": "11_render.py",
+        "description": "Code rendering",
+        "start_time": "2025-09-15T11:18:49.159671",
+        "end_time": "2025-09-15T11:18:49.323862",
+        "duration_seconds": 0.16419005393981934
+      },
+      {
+        "status": "SUCCESS_WITH_WARNINGS",
+        "stdout": "",
+        "stderr": "2025-09-15 11:18:50,445 - root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output\n2025-09-15 11:18:50,906 - 12_execute.py - INFO - \ud83d\ude80 Processing execute\n2025-09-15 11:18:50,906 - 12_execute.py - WARNING - \u26a0\ufe0f Dependency manager not available - proceeding with basic checks\n2025-09-15 11:18:50,920 - 12_execute.py - INFO - \u2705 Available simulation engines: ['PyMDP', 'Julia/RxInfer']\n2025-09-15 11:18:50,920 - 12_execute.py - INFO - Processing GNN files from: /home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2025-09-15 11:18:50,920 - 12_execute.py - INFO - Output directory: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output\n2025-09-15 11:18:50,920 - 12_execute.py - INFO - Simulation engine: auto\n2025-09-15 11:18:50,920 - 12_execute.py - INFO - Found 1 GNN files to execute\n2025-09-15 11:18:50,920 - 12_execute.py - INFO - Execute module available, processing files...\n2025-09-15 11:18:50,920 - execute - INFO - \ud83d\ude80 Processing execute - searching for rendered implementations\n2025-09-15 11:18:50,923 - execute - INFO - Found render output directory: output/11_render_output\n2025-09-15 11:18:50,923 - execute - INFO - Searching for executable scripts in: output/11_render_output\n2025-09-15 11:18:50,923 - execute - INFO - Found python script: 11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2025-09-15 11:18:50,924 - execute - INFO - Found python script: 11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2025-09-15 11:18:50,924 - execute - INFO - Found python script: 11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2025-09-15 11:18:50,924 - execute - INFO - Found julia script: 11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2025-09-15 11:18:50,924 - execute - INFO - Found julia script: 11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl\n2025-09-15 11:18:50,924 - execute - INFO - Found 5 executable scripts to run\n2025-09-15 11:18:50,924 - execute - INFO - Executing python script: Classic Active Inference POMDP Agent v1_pymdp.py\n2025-09-15 11:18:52,712 - execute - ERROR - \u274c Script Classic Active Inference POMDP Agent v1_pymdp.py failed with return code 1\n2025-09-15 11:18:52,712 - execute - ERROR - Error output: 2025-09-15 11:18:51,999 - root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output\n2025-09-15 11:18:52,396 - __main__ - INFO - Starting PyMDP simulation for Cl...\n2025-09-15 11:18:52,712 - execute - INFO - Executing python script: Classic Active Inference POMDP Agent v1_jax.py\n2025-09-15 11:18:53,912 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_jax.py\n2025-09-15 11:18:53,912 - execute - INFO - Script output: \nGNNModel Model Summary:\n- Number of states: 3\n- Number of observations: 3\n- Number of actions: 1\n- Parameters: 24\n\nModel test successful!\nOutput keys: ['beliefs', 'actions', 'expected_free_energy', '...\n2025-09-15 11:18:53,913 - execute - INFO - Executing python script: Classic Active Inference POMDP Agent v1_discopy.py\n2025-09-15 11:18:54,505 - execute - ERROR - \u274c Script Classic Active Inference POMDP Agent v1_discopy.py failed with return code 1\n2025-09-15 11:18:54,505 - execute - ERROR - Error output: Traceback (most recent call last):\n  File \"/home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent...\n2025-09-15 11:18:54,505 - execute - INFO - Executing julia script: Classic Active Inference POMDP Agent v1_rxinfer.jl\n2025-09-15 11:18:55,706 - execute - ERROR - \u274c Script Classic Active Inference POMDP Agent v1_rxinfer.jl failed with return code 1\n2025-09-15 11:18:55,706 - execute - ERROR - Error output: ERROR: LoadError: ArgumentError: Package RxInfer not found in current path.\n- Run `import Pkg; Pkg.add(\"RxInfer\")` to install the RxInfer package.\nStacktrace:\n [1] macro expansion\n   @ ./loading.jl:17...\n2025-09-15 11:18:55,706 - execute - INFO - Executing julia script: Classic Active Inference POMDP Agent v1_activeinference.jl\n2025-09-15 11:18:57,051 - execute - ERROR - \u274c Script Classic Active Inference POMDP Agent v1_activeinference.jl failed with return code 1\n2025-09-15 11:18:57,051 - execute - ERROR - Error output: ERROR: LoadError: ArgumentError: Package ActiveInference not found in current path.\n- Run `import Pkg; Pkg.add(\"ActiveInference\")` to install the ActiveInference package.\nStacktrace:\n [1] macro expans...\n2025-09-15 11:18:57,052 - execute - INFO - Generated execution report: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/execution_results/execution_report.md\n2025-09-15 11:18:57,052 - execute - WARNING - \u26a0\ufe0f Execute processing completed with 4 failures\n",
+        "memory_usage_mb": 23.703125,
+        "peak_memory_mb": 23.703125,
+        "memory_delta_mb": 0.0,
+        "exit_code": 0,
+        "retry_count": 0,
+        "prerequisite_check": true,
+        "dependency_warnings": [],
+        "recoverable": false,
+        "step_number": 6,
+        "script_name": "12_execute.py",
+        "description": "Execution",
+        "start_time": "2025-09-15T11:18:49.324003",
+        "end_time": "2025-09-15T11:18:57.357798",
+        "duration_seconds": 8.033794403076172
+      },
+      {
+        "status": "SUCCESS",
+        "stdout": "",
+        "stderr": "2025-09-15 11:18:57,499 - 15_audio.py - INFO - \ud83d\ude80 Processing audio\n2025-09-15 11:18:57,499 - 15_audio.py - INFO - Processing GNN files from: /home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2025-09-15 11:18:57,499 - 15_audio.py - INFO - Output directory: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/15_audio_output\n2025-09-15 11:18:57,499 - 15_audio.py - INFO - Audio backend: auto\n2025-09-15 11:18:57,499 - 15_audio.py - INFO - Duration: 30.0s\n2025-09-15 11:18:57,499 - 15_audio.py - INFO - Found 1 GNN files for audio generation\n2025-09-15 11:18:57,499 - 15_audio.py - INFO - Audio module available, processing files...\n2025-09-15 11:18:57,500 - audio - INFO - Processing audio for files in /home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2025-09-15 11:18:57,500 - audio - INFO - Audio processing completed\n",
+        "memory_usage_mb": 23.703125,
+        "peak_memory_mb": 23.703125,
+        "memory_delta_mb": 0.0,
+        "exit_code": 0,
+        "retry_count": 0,
+        "prerequisite_check": true,
+        "dependency_warnings": [],
+        "recoverable": false,
+        "step_number": 7,
+        "script_name": "15_audio.py",
+        "description": "Audio processing",
+        "start_time": "2025-09-15T11:18:57.357907",
+        "end_time": "2025-09-15T11:18:57.531471",
+        "duration_seconds": 0.17356276512145996
+      }
+    ],
+    "end_time": "2025-09-15T11:18:57.531579",
+    "overall_status": "SUCCESS",
+    "total_duration_seconds": 14.531582355499268,
+    "environment_info": {
+      "python_version": "3.11.2 (main, Apr 28 2025, 14:11:48) [GCC 12.2.0]",
+      "platform": "linux",
+      "cpu_count": 8,
+      "working_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation",
+      "user": "root",
+      "memory_total_gb": "31.2",
+      "disk_free_gb": "374.6"
+    },
+    "performance_summary": {
+      "peak_memory_mb": 23.703125,
+      "total_steps": 7,
+      "failed_steps": 0,
+      "critical_failures": 0,
+      "successful_steps": 7,
+      "warnings": 2
+    }
+  },
+  "step_analysis": {
+    "3_gnn.py": {
+      "status": "SUCCESS",
+      "duration_seconds": 0.13359761238098145,
+      "memory_usage_mb": 23.578125,
+      "exit_code": 0,
+      "has_stdout": false,
+      "has_stderr": true,
+      "warnings": [],
+      "errors": [],
+      "description": "GNN file processing",
+      "start_time": "2025-09-15T11:18:43.163415",
+      "end_time": "2025-09-15T11:18:43.297013"
+    },
+    "5_type_checker.py": {
+      "status": "SUCCESS_WITH_WARNINGS",
+      "duration_seconds": 0.08943772315979004,
+      "memory_usage_mb": 23.578125,
+      "exit_code": 0,
+      "has_stdout": false,
+      "has_stderr": true,
+      "warnings": [],
+      "errors": [],
+      "description": "Type checking",
+      "start_time": "2025-09-15T11:18:43.297164",
+      "end_time": "2025-09-15T11:18:43.386602"
+    },
+    "7_export.py": {
+      "status": "SUCCESS",
+      "duration_seconds": 0.09947824478149414,
+      "memory_usage_mb": 23.578125,
+      "exit_code": 0,
+      "has_stdout": false,
+      "has_stderr": true,
+      "warnings": [],
+      "errors": [],
+      "description": "Multi-format export",
+      "start_time": "2025-09-15T11:18:43.386718",
+      "end_time": "2025-09-15T11:18:43.486196"
+    },
+    "8_visualization.py": {
+      "status": "SUCCESS",
+      "duration_seconds": 5.673242092132568,
+      "memory_usage_mb": 23.578125,
+      "exit_code": 0,
+      "has_stdout": true,
+      "has_stderr": true,
+      "warnings": [],
+      "errors": [],
+      "description": "Visualization",
+      "start_time": "2025-09-15T11:18:43.486318",
+      "end_time": "2025-09-15T11:18:49.159561"
+    },
+    "11_render.py": {
+      "status": "SUCCESS",
+      "duration_seconds": 0.16419005393981934,
+      "memory_usage_mb": 23.578125,
+      "exit_code": 0,
+      "has_stdout": false,
+      "has_stderr": true,
+      "warnings": [],
+      "errors": [],
+      "description": "Code rendering",
+      "start_time": "2025-09-15T11:18:49.159671",
+      "end_time": "2025-09-15T11:18:49.323862"
+    },
+    "12_execute.py": {
+      "status": "SUCCESS_WITH_WARNINGS",
+      "duration_seconds": 8.033794403076172,
+      "memory_usage_mb": 23.703125,
+      "exit_code": 0,
+      "has_stdout": false,
+      "has_stderr": true,
+      "warnings": [],
+      "errors": [
+        "2025-09-15 11:18:54,505 - execute - ERROR - Error output: Traceback (most recent call last):",
+        "2025-09-15 11:18:55,706 - execute - ERROR - Error output: ERROR: LoadError: ArgumentError: Package RxInfer not found in current path.",
+        "2025-09-15 11:18:57,051 - execute - ERROR - Error output: ERROR: LoadError: ArgumentError: Package ActiveInference not found in current path."
+      ],
+      "description": "Execution",
+      "start_time": "2025-09-15T11:18:49.324003",
+      "end_time": "2025-09-15T11:18:57.357798"
+    },
+    "15_audio.py": {
+      "status": "SUCCESS",
+      "duration_seconds": 0.17356276512145996,
+      "memory_usage_mb": 23.703125,
+      "exit_code": 0,
+      "has_stdout": false,
+      "has_stderr": true,
+      "warnings": [],
+      "errors": [],
+      "description": "Audio processing",
+      "start_time": "2025-09-15T11:18:57.357907",
+      "end_time": "2025-09-15T11:18:57.531471"
+    }
+  },
+  "file_analysis": {
+    "total_files": 105,
+    "total_size_mb": 1.94,
+    "files_by_step": {
+      "0_template.py": {
+        "directory": "0_template_output",
+        "exists": true,
+        "file_count": 5,
+        "total_size_mb": 0.01,
+        "files": [
+          {
+            "name": "template_processing_summary.json",
+            "path": "0_template_output/template_processing_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "template_demonstration_results.json",
+            "path": "0_template_output/template_demonstration_results.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "template_results.json",
+            "path": "0_template_output/template_results.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "actinf_pomdp_agent_processed.md",
+            "path": "0_template_output/actinf_pomdp_agent/actinf_pomdp_agent_processed.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "actinf_pomdp_agent_report.json",
+            "path": "0_template_output/actinf_pomdp_agent/actinf_pomdp_agent_report.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          }
+        ]
+      },
+      "1_setup.py": {
+        "directory": "1_setup_output",
+        "exists": true,
+        "file_count": 3,
+        "total_size_mb": 0.0,
+        "files": [
+          {
+            "name": "config.yaml",
+            "path": "1_setup_output/1_setup_output/input/config.yaml",
+            "size_mb": 0.0,
+            "extension": ".yaml"
+          },
+          {
+            "name": ".gitkeep",
+            "path": "1_setup_output/1_setup_output/output/.gitkeep",
+            "size_mb": 0.0,
+            "extension": ""
+          },
+          {
+            "name": "__init__.py",
+            "path": "1_setup_output/1_setup_output/tests/__init__.py",
+            "size_mb": 0.0,
+            "extension": ".py"
+          }
+        ]
+      },
+      "2_tests.py": {
+        "directory": "2_tests_output",
+        "exists": true,
+        "file_count": 2,
+        "total_size_mb": 0.02,
+        "files": [
+          {
+            "name": "pytest_stdout.log",
+            "path": "2_tests_output/2_tests_output/test_results/pytest_stdout.log",
+            "size_mb": 0.02,
+            "extension": ".log"
+          },
+          {
+            "name": "pytest_stderr.log",
+            "path": "2_tests_output/2_tests_output/test_results/pytest_stderr.log",
+            "size_mb": 0.0,
+            "extension": ".log"
+          }
+        ]
+      },
+      "3_gnn.py": {
+        "directory": "3_gnn_output",
+        "exists": true,
+        "file_count": 26,
+        "total_size_mb": 0.16,
+        "files": [
+          {
+            "name": "gnn_processing_results.json",
+            "path": "3_gnn_output/3_gnn_output/gnn_processing_results.json",
+            "size_mb": 0.01,
+            "extension": ".json"
+          },
+          {
+            "name": "gnn_processing_summary.json",
+            "path": "3_gnn_output/3_gnn_output/gnn_processing_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "format_statistics.json",
+            "path": "3_gnn_output/3_gnn_output/format_statistics.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "actinf_pomdp_agent_parsed.json",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
+            "size_mb": 0.02,
+            "extension": ".json"
+          },
+          {
+            "name": "actinf_pomdp_agent_markdown.md",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_markdown.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "actinf_pomdp_agent_scala.scala",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_scala.scala",
+            "size_mb": 0.0,
+            "extension": ".scala"
+          },
+          {
+            "name": "actinf_pomdp_agent_lean.lean",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_lean.lean",
+            "size_mb": 0.01,
+            "extension": ".lean"
+          },
+          {
+            "name": "actinf_pomdp_agent_coq.v",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_coq.v",
+            "size_mb": 0.01,
+            "extension": ".v"
+          },
+          {
+            "name": "actinf_pomdp_agent_python.py",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_python.py",
+            "size_mb": 0.01,
+            "extension": ".py"
+          },
+          {
+            "name": "actinf_pomdp_agent_bnf.bnf",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_bnf.bnf",
+            "size_mb": 0.01,
+            "extension": ".bnf"
+          },
+          {
+            "name": "actinf_pomdp_agent_ebnf.ebnf",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_ebnf.ebnf",
+            "size_mb": 0.01,
+            "extension": ".ebnf"
+          },
+          {
+            "name": "actinf_pomdp_agent_isabelle.thy",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_isabelle.thy",
+            "size_mb": 0.01,
+            "extension": ".thy"
+          },
+          {
+            "name": "actinf_pomdp_agent_maxima.max",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_maxima.max",
+            "size_mb": 0.01,
+            "extension": ".max"
+          },
+          {
+            "name": "actinf_pomdp_agent_xml.xml",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
+            "size_mb": 0.01,
+            "extension": ".xml"
+          },
+          {
+            "name": "actinf_pomdp_agent_json.json",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_json.json",
+            "size_mb": 0.01,
+            "extension": ".json"
+          },
+          {
+            "name": "actinf_pomdp_agent_protobuf.proto",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_protobuf.proto",
+            "size_mb": 0.01,
+            "extension": ".proto"
+          },
+          {
+            "name": "actinf_pomdp_agent_yaml.yaml",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_yaml.yaml",
+            "size_mb": 0.01,
+            "extension": ".yaml"
+          },
+          {
+            "name": "actinf_pomdp_agent_xsd.xsd",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xsd.xsd",
+            "size_mb": 0.01,
+            "extension": ".xsd"
+          },
+          {
+            "name": "actinf_pomdp_agent_asn1.asn1",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_asn1.asn1",
+            "size_mb": 0.01,
+            "extension": ".asn1"
+          },
+          {
+            "name": "actinf_pomdp_agent_pkl.pkl",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pkl.pkl",
+            "size_mb": 0.01,
+            "extension": ".pkl"
+          },
+          {
+            "name": "actinf_pomdp_agent_alloy.als",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_alloy.als",
+            "size_mb": 0.01,
+            "extension": ".als"
+          },
+          {
+            "name": "actinf_pomdp_agent_z_notation.z",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_z_notation.z",
+            "size_mb": 0.01,
+            "extension": ".z"
+          },
+          {
+            "name": "actinf_pomdp_agent_tla_plus.tla",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_tla_plus.tla",
+            "size_mb": 0.0,
+            "extension": ".tla"
+          },
+          {
+            "name": "actinf_pomdp_agent_agda.agda",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_agda.agda",
+            "size_mb": 0.0,
+            "extension": ".agda"
+          },
+          {
+            "name": "actinf_pomdp_agent_haskell.hs",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_haskell.hs",
+            "size_mb": 0.01,
+            "extension": ".hs"
+          },
+          {
+            "name": "actinf_pomdp_agent_pickle.pkl",
+            "path": "3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pkl",
+            "size_mb": 0.0,
+            "extension": ".pkl"
+          }
+        ]
+      },
+      "4_model_registry.py": {
+        "directory": "4_model_registry_output",
+        "exists": true,
+        "file_count": 2,
+        "total_size_mb": 0.0,
+        "files": [
+          {
+            "name": "model_registry.json",
+            "path": "4_model_registry_output/4_model_registry_output/model_registry.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "model_registry_summary.json",
+            "path": "4_model_registry_output/4_model_registry_output/model_registry_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          }
+        ]
+      },
+      "5_type_checker.py": {
+        "directory": "5_type_checker_output",
+        "exists": true,
+        "file_count": 3,
+        "total_size_mb": 0.01,
+        "files": [
+          {
+            "name": "type_check_results.json",
+            "path": "5_type_checker_output/type_check_results.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "type_check_summary.json",
+            "path": "5_type_checker_output/type_check_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "global_type_analysis.json",
+            "path": "5_type_checker_output/global_type_analysis.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          }
+        ]
+      },
+      "6_validation.py": {
+        "directory": "6_validation_output",
+        "exists": true,
+        "file_count": 2,
+        "total_size_mb": 0.0,
+        "files": [
+          {
+            "name": "validation_results.json",
+            "path": "6_validation_output/validation_results.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "validation_summary.json",
+            "path": "6_validation_output/validation_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          }
+        ]
+      },
+      "7_export.py": {
+        "directory": "7_export_output",
+        "exists": true,
+        "file_count": 7,
+        "total_size_mb": 0.04,
+        "files": [
+          {
+            "name": "export_results.json",
+            "path": "7_export_output/export_results.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "export_summary.json",
+            "path": "7_export_output/export_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "actinf_pomdp_agent_json.json",
+            "path": "7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_json.json",
+            "size_mb": 0.02,
+            "extension": ".json"
+          },
+          {
+            "name": "actinf_pomdp_agent_xml.xml",
+            "path": "7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
+            "size_mb": 0.0,
+            "extension": ".xml"
+          },
+          {
+            "name": "actinf_pomdp_agent_graphml.graphml",
+            "path": "7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_graphml.graphml",
+            "size_mb": 0.0,
+            "extension": ".graphml"
+          },
+          {
+            "name": "actinf_pomdp_agent_gexf.gexf",
+            "path": "7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_gexf.gexf",
+            "size_mb": 0.0,
+            "extension": ".gexf"
+          },
+          {
+            "name": "actinf_pomdp_agent_pickle.pkl",
+            "path": "7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pkl",
+            "size_mb": 0.01,
+            "extension": ".pkl"
+          }
+        ]
+      },
+      "8_visualization.py": {
+        "directory": "8_visualization_output",
+        "exists": true,
+        "file_count": 7,
+        "total_size_mb": 1.14,
+        "files": [
+          {
+            "name": "visualization_results.json",
+            "path": "8_visualization_output/visualization_results.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "visualization_summary.json",
+            "path": "8_visualization_output/visualization_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "matrix_analysis.png",
+            "path": "8_visualization_output/actinf_pomdp_agent/matrix_analysis.png",
+            "size_mb": 0.25,
+            "extension": ".png"
+          },
+          {
+            "name": "matrix_statistics.png",
+            "path": "8_visualization_output/actinf_pomdp_agent/matrix_statistics.png",
+            "size_mb": 0.19,
+            "extension": ".png"
+          },
+          {
+            "name": "pomdp_transition_analysis.png",
+            "path": "8_visualization_output/actinf_pomdp_agent/pomdp_transition_analysis.png",
+            "size_mb": 0.05,
+            "extension": ".png"
+          },
+          {
+            "name": "actinf_pomdp_agent_network_graph.png",
+            "path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+            "size_mb": 0.27,
+            "extension": ".png"
+          },
+          {
+            "name": "actinf_pomdp_agent_combined_analysis.png",
+            "path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+            "size_mb": 0.38,
+            "extension": ".png"
+          }
+        ]
+      },
+      "9_advanced_viz.py": {
+        "directory": "9_advanced_viz_output",
+        "exists": true,
+        "file_count": 6,
+        "total_size_mb": 0.36,
+        "files": [
+          {
+            "name": "advanced_visualization_detailed.json",
+            "path": "9_advanced_viz_output/9_advanced_viz_output/advanced_visualization_detailed.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "advanced_visualization_summary.json",
+            "path": "9_advanced_viz_output/9_advanced_viz_output/advanced_visualization_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "actinf_pomdp_agent_network_graph.png",
+            "path": "9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+            "size_mb": 0.12,
+            "extension": ".png"
+          },
+          {
+            "name": "actinf_pomdp_agent_combined_analysis.png",
+            "path": "9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+            "size_mb": 0.24,
+            "extension": ".png"
+          },
+          {
+            "name": "actinf_pomdp_agent_advanced_summary.html",
+            "path": "9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_advanced_summary.html",
+            "size_mb": 0.0,
+            "extension": ".html"
+          },
+          {
+            "name": "actinf_pomdp_agent_advanced_viz_manifest.json",
+            "path": "9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_advanced_viz_manifest.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          }
+        ]
+      },
+      "10_ontology.py": {
+        "directory": "10_ontology_output",
+        "exists": true,
+        "file_count": 2,
+        "total_size_mb": 0.0,
+        "files": [
+          {
+            "name": "actinf_pomdp_agent_ontology_report.json",
+            "path": "10_ontology_output/10_ontology_output/ontology_results/actinf_pomdp_agent_ontology_report.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "ontology_results.json",
+            "path": "10_ontology_output/10_ontology_output/ontology_results/ontology_results.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          }
+        ]
+      },
+      "11_render.py": {
+        "directory": "11_render_output",
+        "exists": true,
+        "file_count": 13,
+        "total_size_mb": 0.05,
+        "files": [
+          {
+            "name": "render_processing_summary.json",
+            "path": "11_render_output/11_render_output/render_processing_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "README.md",
+            "path": "11_render_output/11_render_output/README.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "processing_summary.json",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/processing_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_pymdp.py",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py",
+            "size_mb": 0.01,
+            "extension": ".py"
+          },
+          {
+            "name": "README.md",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/pymdp/README.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_rxinfer.jl",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl",
+            "size_mb": 0.01,
+            "extension": ".jl"
+          },
+          {
+            "name": "README.md",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/README.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_activeinference.jl",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl",
+            "size_mb": 0.01,
+            "extension": ".jl"
+          },
+          {
+            "name": "README.md",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/README.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_jax.py",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py",
+            "size_mb": 0.01,
+            "extension": ".py"
+          },
+          {
+            "name": "README.md",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/jax/README.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_discopy.py",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py",
+            "size_mb": 0.01,
+            "extension": ".py"
+          },
+          {
+            "name": "README.md",
+            "path": "11_render_output/11_render_output/actinf_pomdp_agent/discopy/README.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          }
+        ]
+      },
+      "12_execute.py": {
+        "directory": "12_execute_output",
+        "exists": true,
+        "file_count": 12,
+        "total_size_mb": 0.02,
+        "files": [
+          {
+            "name": "execution_summary.json",
+            "path": "12_execute_output/12_execute_output/execution_results/execution_summary.json",
+            "size_mb": 0.01,
+            "extension": ".json"
+          },
+          {
+            "name": "execution_report.md",
+            "path": "12_execute_output/12_execute_output/execution_results/execution_report.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_pymdp.py_output.txt",
+            "path": "12_execute_output/12_execute_output/execution_results/individual_outputs/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py_output.txt",
+            "size_mb": 0.0,
+            "extension": ".txt"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_jax.py_output.txt",
+            "path": "12_execute_output/12_execute_output/execution_results/individual_outputs/jax/Classic Active Inference POMDP Agent v1_jax.py_output.txt",
+            "size_mb": 0.0,
+            "extension": ".txt"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_discopy.py_output.txt",
+            "path": "12_execute_output/12_execute_output/execution_results/individual_outputs/discopy/Classic Active Inference POMDP Agent v1_discopy.py_output.txt",
+            "size_mb": 0.0,
+            "extension": ".txt"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_rxinfer.jl_output.txt",
+            "path": "12_execute_output/12_execute_output/execution_results/individual_outputs/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl_output.txt",
+            "size_mb": 0.0,
+            "extension": ".txt"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_activeinference.jl_output.txt",
+            "path": "12_execute_output/12_execute_output/execution_results/individual_outputs/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl_output.txt",
+            "size_mb": 0.0,
+            "extension": ".txt"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_pymdp.py_execution.log",
+            "path": "12_execute_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log",
+            "size_mb": 0.0,
+            "extension": ".log"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_jax.py_execution.log",
+            "path": "12_execute_output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Classic Active Inference POMDP Agent v1_jax.py_execution.log",
+            "size_mb": 0.0,
+            "extension": ".log"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_discopy.py_execution.log",
+            "path": "12_execute_output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Classic Active Inference POMDP Agent v1_discopy.py_execution.log",
+            "size_mb": 0.0,
+            "extension": ".log"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_rxinfer.jl_execution.log",
+            "path": "12_execute_output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Classic Active Inference POMDP Agent v1_rxinfer.jl_execution.log",
+            "size_mb": 0.0,
+            "extension": ".log"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_activeinference.jl_execution.log",
+            "path": "12_execute_output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Classic Active Inference POMDP Agent v1_activeinference.jl_execution.log",
+            "size_mb": 0.0,
+            "extension": ".log"
+          }
+        ]
+      },
+      "13_llm.py": {
+        "directory": "13_llm_output",
+        "exists": true,
+        "file_count": 2,
+        "total_size_mb": 0.03,
+        "files": [
+          {
+            "name": "llm_results.json",
+            "path": "13_llm_output/13_llm_output/llm_results/llm_results.json",
+            "size_mb": 0.03,
+            "extension": ".json"
+          },
+          {
+            "name": "llm_summary.md",
+            "path": "13_llm_output/13_llm_output/llm_results/llm_summary.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          }
+        ]
+      },
+      "14_ml_integration.py": {
+        "directory": "14_ml_integration_output",
+        "exists": true,
+        "file_count": 0,
+        "total_size_mb": 0.0,
+        "files": []
+      },
+      "15_audio.py": {
+        "directory": "15_audio_output",
+        "exists": true,
+        "file_count": 0,
+        "total_size_mb": 0.0,
+        "files": []
+      },
+      "16_analysis.py": {
+        "directory": "16_analysis_output",
+        "exists": true,
+        "file_count": 0,
+        "total_size_mb": 0.0,
+        "files": []
+      },
+      "17_integration.py": {
+        "directory": "17_integration_output",
+        "exists": true,
+        "file_count": 0,
+        "total_size_mb": 0.0,
+        "files": []
+      },
+      "18_security.py": {
+        "directory": "18_security_output",
+        "exists": true,
+        "file_count": 0,
+        "total_size_mb": 0.0,
+        "files": []
+      },
+      "19_research.py": {
+        "directory": "19_research_output",
+        "exists": true,
+        "file_count": 0,
+        "total_size_mb": 0.0,
+        "files": []
+      },
+      "20_website.py": {
+        "directory": "20_website_output",
+        "exists": true,
+        "file_count": 2,
+        "total_size_mb": 0.0,
+        "files": [
+          {
+            "name": "index.html",
+            "path": "20_website_output/20_website_output/website_results/index.html",
+            "size_mb": 0.0,
+            "extension": ".html"
+          },
+          {
+            "name": "website_results.json",
+            "path": "20_website_output/20_website_output/website_results/website_results.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          }
+        ]
+      },
+      "21_mcp.py": {
+        "directory": "21_mcp_output",
+        "exists": true,
+        "file_count": 0,
+        "total_size_mb": 0.0,
+        "files": []
+      },
+      "22_gui.py": {
+        "directory": "22_gui_output",
+        "exists": true,
+        "file_count": 7,
+        "total_size_mb": 0.02,
+        "files": [
+          {
+            "name": "design_analysis.json",
+            "path": "22_gui_output/22_gui_output/design_analysis.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "gui_processing_summary.json",
+            "path": "22_gui_output/22_gui_output/gui_processing_summary.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "constructed_model_gui_1.md",
+            "path": "22_gui_output/22_gui_output/gui_1_output/22_gui_output/constructed_model_gui_1.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "gui_status.json",
+            "path": "22_gui_output/22_gui_output/gui_1_output/22_gui_output/gui_status.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "visual_model_gui_2.md",
+            "path": "22_gui_output/22_gui_output/gui_2_output/22_gui_output/visual_model_gui_2.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "visual_matrices.json",
+            "path": "22_gui_output/22_gui_output/gui_2_output/22_gui_output/visual_matrices.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          },
+          {
+            "name": "gui_status.json",
+            "path": "22_gui_output/22_gui_output/gui_2_output/22_gui_output/gui_status.json",
+            "size_mb": 0.0,
+            "extension": ".json"
+          }
+        ]
+      },
+      "23_report.py": {
+        "directory": "23_report_output",
+        "exists": true,
+        "file_count": 4,
+        "total_size_mb": 0.08,
+        "files": [
+          {
+            "name": "pipeline_analysis_summary.json",
+            "path": "23_report_output/23_report_output/comprehensive_report/pipeline_analysis_summary.json",
+            "size_mb": 0.06,
+            "extension": ".json"
+          },
+          {
+            "name": "pipeline_analysis_report.html",
+            "path": "23_report_output/23_report_output/comprehensive_report/pipeline_analysis_report.html",
+            "size_mb": 0.01,
+            "extension": ".html"
+          },
+          {
+            "name": "pipeline_analysis_report.md",
+            "path": "23_report_output/23_report_output/comprehensive_report/pipeline_analysis_report.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          },
+          {
+            "name": "executive_summary.md",
+            "path": "23_report_output/23_report_output/comprehensive_report/executive_summary.md",
+            "size_mb": 0.0,
+            "extension": ".md"
+          }
+        ]
+      }
+    },
+    "file_types": {
+      ".json": {
+        "count": 37,
+        "total_size_mb": 0.18761539459228516
+      },
+      ".md": {
+        "count": 14,
+        "total_size_mb": 0.03187370300292969
+      },
+      ".yaml": {
+        "count": 2,
+        "total_size_mb": 0.005497932434082031
+      },
+      "": {
+        "count": 1,
+        "total_size_mb": 0.0
+      },
+      ".py": {
+        "count": 5,
+        "total_size_mb": 0.034111976623535156
+      },
+      ".log": {
+        "count": 7,
+        "total_size_mb": 0.03024578094482422
+      },
+      ".scala": {
+        "count": 1,
+        "total_size_mb": 0.0048694610595703125
+      },
+      ".lean": {
+        "count": 1,
+        "total_size_mb": 0.0052490234375
+      },
+      ".v": {
+        "count": 1,
+        "total_size_mb": 0.005011558532714844
+      },
+      ".bnf": {
+        "count": 1,
+        "total_size_mb": 0.0052318572998046875
+      },
+      ".ebnf": {
+        "count": 1,
+        "total_size_mb": 0.0052318572998046875
+      },
+      ".thy": {
+        "count": 1,
+        "total_size_mb": 0.0050373077392578125
+      },
+      ".max": {
+        "count": 1,
+        "total_size_mb": 0.005492210388183594
+      },
+      ".xml": {
+        "count": 2,
+        "total_size_mb": 0.010046005249023438
+      },
+      ".proto": {
+        "count": 1,
+        "total_size_mb": 0.006901741027832031
+      },
+      ".xsd": {
+        "count": 1,
+        "total_size_mb": 0.0059356689453125
+      },
+      ".asn1": {
+        "count": 1,
+        "total_size_mb": 0.0077610015869140625
+      },
+      ".pkl": {
+        "count": 3,
+        "total_size_mb": 0.025590896606445312
+      },
+      ".als": {
+        "count": 1,
+        "total_size_mb": 0.007839202880859375
+      },
+      ".z": {
+        "count": 1,
+        "total_size_mb": 0.0055675506591796875
+      },
+      ".tla": {
+        "count": 1,
+        "total_size_mb": 0.004509925842285156
+      },
+      ".agda": {
+        "count": 1,
+        "total_size_mb": 0.0045166015625
+      },
+      ".hs": {
+        "count": 1,
+        "total_size_mb": 0.0052642822265625
+      },
+      ".graphml": {
+        "count": 1,
+        "total_size_mb": 0.001445770263671875
+      },
+      ".gexf": {
+        "count": 1,
+        "total_size_mb": 0.0011663436889648438
+      },
+      ".png": {
+        "count": 7,
+        "total_size_mb": 1.5010042190551758
+      },
+      ".html": {
+        "count": 3,
+        "total_size_mb": 0.011476516723632812
+      },
+      ".jl": {
+        "count": 2,
+        "total_size_mb": 0.013702392578125
+      },
+      ".txt": {
+        "count": 5,
+        "total_size_mb": 0.004958152770996094
+      }
+    },
+    "largest_files": [
+      {
+        "name": "actinf_pomdp_agent_combined_analysis.png",
+        "path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+        "size_mb": 0.38,
+        "extension": ".png"
+      },
+      {
+        "name": "actinf_pomdp_agent_network_graph.png",
+        "path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+        "size_mb": 0.27,
+        "extension": ".png"
+      },
+      {
+        "name": "matrix_analysis.png",
+        "path": "8_visualization_output/actinf_pomdp_agent/matrix_analysis.png",
+        "size_mb": 0.25,
+        "extension": ".png"
+      },
+      {
+        "name": "actinf_pomdp_agent_combined_analysis.png",
+        "path": "9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+        "size_mb": 0.24,
+        "extension": ".png"
+      },
+      {
+        "name": "matrix_statistics.png",
+        "path": "8_visualization_output/actinf_pomdp_agent/matrix_statistics.png",
+        "size_mb": 0.19,
+        "extension": ".png"
+      },
+      {
+        "name": "actinf_pomdp_agent_network_graph.png",
+        "path": "9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+        "size_mb": 0.12,
+        "extension": ".png"
+      },
+      {
+        "name": "pipeline_analysis_summary.json",
+        "path": "23_report_output/23_report_output/comprehensive_report/pipeline_analysis_summary.json",
+        "size_mb": 0.06,
+        "extension": ".json"
+      },
+      {
+        "name": "pomdp_transition_analysis.png",
+        "path": "8_visualization_output/actinf_pomdp_agent/pomdp_transition_analysis.png",
+        "size_mb": 0.05,
+        "extension": ".png"
+      },
+      {
+        "name": "llm_results.json",
+        "path": "13_llm_output/13_llm_output/llm_results/llm_results.json",
+        "size_mb": 0.03,
+        "extension": ".json"
+      },
+      {
+        "name": "pytest_stdout.log",
+        "path": "2_tests_output/2_tests_output/test_results/pytest_stdout.log",
+        "size_mb": 0.02,
+        "extension": ".log"
+      }
+    ],
+    "missing_expected_files": []
+  },
+  "error_analysis": {
+    "total_errors": 3,
+    "total_warnings": 0,
+    "error_by_step": {
+      "3_gnn.py": [],
+      "5_type_checker.py": [],
+      "7_export.py": [],
+      "8_visualization.py": [],
+      "11_render.py": [],
+      "12_execute.py": [
+        "2025-09-15 11:18:54,505 - execute - ERROR - Error output: Traceback (most recent call last):",
+        "2025-09-15 11:18:55,706 - execute - ERROR - Error output: ERROR: LoadError: ArgumentError: Package RxInfer not found in current path.",
+        "2025-09-15 11:18:57,051 - execute - ERROR - Error output: ERROR: LoadError: ArgumentError: Package ActiveInference not found in current path."
+      ],
+      "15_audio.py": []
+    },
+    "warning_by_step": {
+      "3_gnn.py": [],
+      "5_type_checker.py": [],
+      "7_export.py": [],
+      "8_visualization.py": [],
+      "11_render.py": [],
+      "12_execute.py": [],
+      "15_audio.py": []
+    },
+    "critical_issues": [],
+    "common_issues": {
+      "Other error": 1,
+      "File not found": 2
+    }
+  },
+  "performance_analysis": {
+    "total_duration_seconds": 14.367302894592285,
+    "average_step_duration": 2.052471842084612,
+    "slowest_steps": [
+      {
+        "step": "12_execute.py",
+        "duration_seconds": 8.033794403076172,
+        "description": "Execution"
+      },
+      {
+        "step": "8_visualization.py",
+        "duration_seconds": 5.673242092132568,
+        "description": "Visualization"
+      }
+    ],
+    "memory_usage": {
+      "average_mb": 23.613839285714285,
+      "max_mb": 23.703125,
+      "min_mb": 23.578125
+    },
+    "efficiency_score": 99.8802724758784
+  },
+  "summary": {
+    "total_steps": 7,
+    "successful_steps": 7,
+    "failed_steps": 0,
+    "warnings": 2,
+    "total_files_generated": 105,
+    "total_size_mb": 1.94,
+    "health_score": 94.0
+  },
+  "recommendations": [
+    "Review 2 steps with warnings to prevent future issues",
+    "Optimize 12_execute.py which took 8.0s",
+    "Pipeline is performing well - consider optimization opportunities"
+  ]
+}
