@@ -27,22 +27,23 @@ except ImportError:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     UTILS_AVAILABLE = False
     
-    # Create minimal compatibility functions
-    def log_step_start(logger, message): logger.info(f"🚀 {message}")
-    def log_step_success(logger, message): logger.info(f"✅ {message}")
-    def log_step_warning(logger, message): logger.warning(f"⚠️ {message}")
-    def log_step_error(logger, message): logger.error(f"❌ {message}")
-    
-    # Create minimal performance tracker
-    class DummyPerformanceTracker:
-        def track_operation(self, name, metadata=None):
-            class DummyContext:
-                def __enter__(self): return self
-                def __exit__(self, *args): pass
-            return DummyContext()
-        def get_summary(self): return {}
-    
-    performance_tracker = DummyPerformanceTracker()
+# Create minimal compatibility functions
+def log_step_start(logger, message): logger.info(f"🚀 {message}")
+def log_step_success(logger, message): logger.info(f"✅ {message}")
+def log_step_warning(logger, message): logger.warning(f"⚠️ {message}")
+def log_step_error(logger, message): logger.error(f"❌ {message}")
+
+# Create minimal performance tracker
+class DummyPerformanceTracker:
+    def track_operation(self, name, metadata=None):
+        class DummyContext:
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+        return DummyContext()
+    def get_summary(self): return {}
+
+# Initialize performance tracker
+performance_tracker = DummyPerformanceTracker()
 
 # Initialize logger
 logger = logging.getLogger(__name__)
@@ -80,7 +81,7 @@ def safe_template_execution(logger, correlation_id: str):
             error_recovery = ErrorRecoverySystem()
             
             # Initialize resource tracking
-            resource_tracker = ResourceTracker()
+            resource_tracker = performance_tracker
             
             # Set correlation context for enhanced logging
             set_correlation_context(correlation_id, "template")
@@ -103,7 +104,7 @@ def safe_template_execution(logger, correlation_id: str):
         if error_recovery:
             # Demonstrate error recovery capabilities
             error_analysis = error_recovery.analyze_error(str(e), traceback.format_exc())
-            recovery_actions = error_recovery.suggest_recovery_actions(error_analysis)
+            recovery_actions = error_recovery.get_recovery_suggestions("template", str(e), error_analysis)
             
             logger.error(f"Template execution failed after {execution_time:.2f}s")
             logger.error(f"Error: {str(e)}")
@@ -141,7 +142,7 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
             error_recovery = context["error_recovery"]
             test_error = "Demonstration error for pattern testing"
             error_analysis = error_recovery.analyze_error(test_error, "Test traceback")
-            recovery_actions = error_recovery.suggest_recovery_actions(error_analysis)
+            recovery_actions = error_recovery.get_recovery_suggestions("template", str(e), error_analysis)
             
             demonstration_results["patterns_demonstrated"].append("error_recovery")
             demonstration_results["infrastructure_status"]["error_recovery"] = {

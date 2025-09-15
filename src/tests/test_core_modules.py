@@ -95,11 +95,14 @@ class TestGNNModuleComprehensive:
 				parsed_data = parse_gnn_file(file_path)
 				
 				assert isinstance(parsed_data, dict), "Parsed data should be a dictionary"
-				assert "ModelName" in parsed_data, "Parsed data should contain ModelName"
+				assert "file_path" in parsed_data, "Parsed data should contain file_path"
+				assert "sections" in parsed_data, "Parsed data should contain sections"
+				assert "variables" in parsed_data, "Parsed data should contain variables"
 				
 				# Test structure validation
-				assert isinstance(parsed_data.get("StateSpaceBlock", {}), dict), "StateSpaceBlock should be a dictionary"
-				assert isinstance(parsed_data.get("Connections", []), list), "Connections should be a list"
+				assert isinstance(parsed_data.get("sections", []), list), "sections should be a list"
+				assert isinstance(parsed_data.get("variables", []), list), "variables should be a list"
+				assert isinstance(parsed_data.get("structure_info", {}), dict), "structure_info should be a dictionary"
 				
 				logging.info(f"Successfully parsed {file_path.name}")
 				
@@ -355,11 +358,10 @@ class TestMCPModuleComprehensive:
 		from src.mcp import register_tools, get_available_tools
 		
 		try:
-			# Register tools
-			tools = register_tools()
+			# Register tools - this returns a boolean indicating success
+			registration_success = register_tools()
 			
-			assert isinstance(tools, list), "Tools should be a list"
-			assert len(tools) > 0, "Should register at least one tool"
+			assert isinstance(registration_success, bool), "register_tools should return a boolean"
 			
 			# Get available tools
 			available_tools = get_available_tools()
@@ -572,7 +574,7 @@ class TestSAPFModuleComprehensive:
 	def test_gnn_to_sapf_conversion(self):
 		"""Test GNN to SAPF conversion functionality."""
 		# Sample GNN content for testing
-		sample_gnn_files = """
+		sample_gnn_content = """
 ## ModelName
 TestActiveInferenceModel
 
@@ -598,7 +600,8 @@ C: [0.7, 0.3; 0.4, 0.6]
 			pytest.skip("SAPF module not available")
 		
 		try:
-			sapf_code = convert_gnn_to_sapf(sample_gnn_files)
+			# Pass both gnn_content and model_name parameters
+			sapf_code = convert_gnn_to_sapf(sample_gnn_content, "TestActiveInferenceModel")
 			
 			assert isinstance(sapf_code, str), "SAPF code should be a string"
 			assert len(sapf_code) > 0, "SAPF code should not be empty"

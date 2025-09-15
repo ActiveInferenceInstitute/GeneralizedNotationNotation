@@ -29,6 +29,7 @@
 - [✨ Key Features](#-key-features)
 - [🏗️ Project Architecture](#%EF%B8%8F-project-architecture)
 - [⚙️ Processing Pipeline](#%EF%B8%8F-processing-pipeline)
+- [📋 Pipeline Steps Index](PIPELINE_INDEX.md) - Complete reference table of all 24 steps
 - [🛠️ Tools and Utilities](#%EF%B8%8F-tools-and-utilities)
 - [🚀 Quick Start](#-quick-start)
 - [📖 Documentation](#-documentation)
@@ -250,14 +251,44 @@ flowchart TD
     S --> T["1️⃣8️⃣ Security<br/>src/security/"]
     T --> U["1️⃣9️⃣ Research<br/>src/research/"]
     U --> V["2️⃣0️⃣ Website<br/>src/website/"]
-    V --> W["2️⃣1️⃣ Report<br/>src/report/"]
-    W --> X["2️⃣2️⃣ MCP<br/>src/mcp/"]
-    X --> Y["✅ Complete"]
+    V --> W["2️⃣1️⃣ MCP<br/>src/mcp/"]
+    W --> X["2️⃣2️⃣ GUI<br/>src/gui/"]
+    X --> Y["2️⃣3️⃣ Report<br/>src/report/"]
+    Y --> Z["✅ Complete"]
 
     style A fill:#e1f5fe
     style G fill:#fff3e0,stroke:#ff9800,stroke-width:2px
-    style Y fill:#e8f5e8,stroke:#4caf50
+    style Z fill:#e8f5e8,stroke:#4caf50
 ```
+
+### 📋 Complete Pipeline Steps Index
+
+| Step | Script | Module | Description | Key Features |
+|------|--------|--------|-------------|--------------|
+| **0** | `0_template.py` | `src/template/` | **Template Initialization** | Pipeline template, utility patterns, MCP integration |
+| **1** | `1_setup.py` | `src/setup/` | **Environment Setup** | Virtual environment, dependency installation, system validation |
+| **2** | `2_tests.py` | `src/tests/` | **Test Suite Execution** | Comprehensive testing, coverage analysis, validation |
+| **3** | `3_gnn.py` | `src/gnn/` | **GNN Discovery & Parsing** | File discovery, multi-format parsing, validation |
+| **4** | `4_model_registry.py` | `src/model_registry/` | **Model Registry Management** | Versioning, metadata tracking, model cataloging |
+| **5** | `5_type_checker.py` | `src/type_checker/` | **Type Checking & Validation** | Syntax validation, resource estimation, error reporting |
+| **6** | `6_validation.py` | `src/validation/` | **Advanced Validation** | Consistency checking, dependency validation, quality assurance |
+| **7** | `7_export.py` | `src/export/` | **Multi-Format Export** | JSON, XML, GraphML, GEXF, Pickle export |
+| **8** | `8_visualization.py` | `src/visualization/` | **Core Visualization** | Graph generation, matrix heatmaps, network diagrams |
+| **9** | `9_advanced_viz.py` | `src/advanced_visualization/` | **Advanced Visualization** | Interactive plots, 3D visualizations, advanced analytics |
+| **10** | `10_ontology.py` | `src/ontology/` | **Ontology Processing** | Active Inference ontology mapping, term validation |
+| **11** | `11_render.py` | `src/render/` | **Code Generation** | PyMDP, RxInfer, ActiveInference.jl, DisCoPy code generation |
+| **12** | `12_execute.py` | `src/execute/` | **Simulation Execution** | Execute generated code, result capture, performance monitoring |
+| **13** | `13_llm.py` | `src/llm/` | **LLM Analysis** | AI-powered insights, model interpretation, automated analysis |
+| **14** | `14_ml_integration.py` | `src/ml_integration/` | **ML Integration** | Machine learning model training, integration, optimization |
+| **15** | `15_audio.py` | `src/audio/` | **Audio Generation** | SAPF, Pedalboard audio synthesis, sonification |
+| **16** | `16_analysis.py` | `src/analysis/` | **Advanced Analysis** | Statistical processing, performance analysis, insights |
+| **17** | `17_integration.py` | `src/integration/` | **System Integration** | Cross-module coordination, workflow management |
+| **18** | `18_security.py` | `src/security/` | **Security Validation** | Access control, security auditing, vulnerability assessment |
+| **19** | `19_research.py` | `src/research/` | **Research Tools** | Experimental features, research utilities, advanced analysis |
+| **20** | `20_website.py` | `src/website/` | **Website Generation** | Static HTML site generation, documentation compilation |
+| **21** | `21_mcp.py` | `src/mcp/` | **MCP Processing** | Model Context Protocol tool registration, MCP integration |
+| **22** | `22_gui.py` | `src/gui/` | **Interactive GUI** | Three GUI interfaces for model construction and editing |
+| **23** | `23_report.py` | `src/report/` | **Report Generation** | Comprehensive analysis reports, final documentation |
 
 ### 🎯 GNN Processing Workflow
 

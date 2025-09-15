@@ -18,6 +18,7 @@ from .processor import (
 
 from .parser import (
     ValidationLevel,
+    GNNParser,
     ParsedGNN,
     GNNParsingSystem,
     GNNFormat,
@@ -45,6 +46,10 @@ FEATURES = {
 def process_gnn(*args, **kwargs):
     return process_gnn_directory(*args, **kwargs)
 
+def process_gnn_main(*args, **kwargs):
+    """Main entry point for GNN processing."""
+    return process_gnn_directory(*args, **kwargs)
+
 def validate_gnn_file(content: str):
     # Minimal shim returning a tuple-like result; tests accept dict or object; return dict
     ok, errors = (False, ["No sections found (use # headers)", "No variables found", "No connections found"]) if not content else (True, [])
@@ -69,6 +74,7 @@ __all__ = [
     
     # Parser classes and functions
     'ValidationLevel',
+    'GNNParser',
     'ParsedGNN',
     'GNNParsingSystem',
     'GNNFormat',
@@ -83,5 +89,6 @@ __all__ = [
     '__version__',
     'FEATURES',
     'process_gnn',
+    'process_gnn_main',
     'validate_gnn_file'
 ] 

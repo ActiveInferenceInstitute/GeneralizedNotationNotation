@@ -1,0 +1,12 @@
+{
+  "gui_type": "design_studio",
+  "launched": true,
+  "export_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/22_gui_output/22_gui_output/designed_model_gui_3.md",
+  "url": "http://localhost:7862",
+  "features": [
+    "State space visual designer",
+    "Ontology term editor",
+    "Connection graph interface",
+    "Parameter tuning controls"
+  ]
+}

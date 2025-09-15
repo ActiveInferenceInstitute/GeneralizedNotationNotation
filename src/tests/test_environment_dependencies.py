@@ -128,8 +128,8 @@ class TestEnvironmentDependencies:
         # Test that we can import and check versions
         try:
             import sys
-            python_version = f"{sys.version_info.major}.{sys.version_info.minor}"
-            assert python_version >= "3.8"
+            python_version = (sys.version_info.major, sys.version_info.minor)
+            assert python_version >= (3, 8), f"Python version {python_version} is below minimum required (3, 8)"
         except Exception as e:
             pytest.fail(f"Version compatibility check failed: {e}")
     

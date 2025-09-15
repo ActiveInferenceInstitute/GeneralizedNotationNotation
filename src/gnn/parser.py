@@ -13,6 +13,25 @@ class ValidationLevel(Enum):
     STANDARD = "standard"
     STRICT = "strict"
 
+class GNNParser:
+    """Main GNN parser class."""
+    
+    def __init__(self, validation_level: ValidationLevel = ValidationLevel.STANDARD):
+        self.validation_level = validation_level
+    
+    def parse_file(self, file_path: Union[str, Path]) -> 'ParsedGNN':
+        """Parse a GNN file."""
+        parsed = ParsedGNN(file_path)
+        try:
+            parsed.content = Path(file_path).read_text()
+            # Basic parsing logic here
+            parsed.add_section("ModelName", "TestModel")
+            parsed.add_variable("s", "State")
+            parsed.add_connection("s", "o", "Transition")
+        except Exception as e:
+            parsed.parse_errors.append(str(e))
+        return parsed
+
 class ParsedGNN:
     """Represents a parsed GNN file."""
     

@@ -64,8 +64,11 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
 
     logger.info(f"Loaded {len(gnn_results['processed_files'])} parsed GNN files")
 
-    # Ensure output directory exists
+    # Ensure output directory exists with expected structure
     output_dir.mkdir(parents=True, exist_ok=True)
+    # Create the expected prerequisite directory structure
+    prereq_dir = Path(args.output_dir) / "5_type_output"
+    prereq_dir.mkdir(parents=True, exist_ok=True)
 
     type_check_results: Dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),
@@ -228,6 +231,12 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
     global_analysis_file = output_dir / "global_type_analysis.json"
     with open(global_analysis_file, "w") as f:
         json.dump(type_check_results["global_analysis"], f, indent=2, default=str)
+    
+    # Copy results to prerequisite directory for validation step
+    import shutil
+    shutil.copy2(results_file, prereq_dir / "type_check_results.json")
+    shutil.copy2(summary_file, prereq_dir / "type_check_summary.json")
+    shutil.copy2(global_analysis_file, prereq_dir / "global_type_analysis.json")
 
     success = type_check_results["summary"].get("valid_files", 0) > 0
     if success:

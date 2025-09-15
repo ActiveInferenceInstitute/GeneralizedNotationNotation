@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-09-15T09:41:39.806142",
+  "step_name": "model_registry",
+  "input_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/4_model_registry_output/4_model_registry_output",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "registry_path": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/4_model_registry_output/4_model_registry_output/model_registry.json",
+  "performance_metrics": {}
+}

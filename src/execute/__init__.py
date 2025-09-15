@@ -86,6 +86,9 @@ from .legacy import (
     pymdp
 )
 
+# Add execute_gnn_model alias for backward compatibility
+execute_gnn_model = execute_simulation_from_gnn
+
 # Add to __all__ for proper exports
 __all__ = [
     # Core classes
@@ -95,6 +98,7 @@ __all__ = [
     # Processor functions
     'process_execute',
     'execute_simulation_from_gnn',
+    'execute_gnn_model',  # Alias for backward compatibility
     
     # Legacy functions
     'execute_pymdp_simulation_from_gnn', 

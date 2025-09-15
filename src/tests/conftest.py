@@ -565,3 +565,21 @@ def sample_scala() -> str:
         "  // EFE = G + F\n"
         "}\n"
     )
+
+@pytest.fixture
+def temp_directories(isolated_temp_dir) -> Dict[str, Path]:
+    """Provide temporary directories for error scenario tests."""
+    input_dir = isolated_temp_dir / "input"
+    output_dir = isolated_temp_dir / "output"
+    temp_dir = isolated_temp_dir / "temp"
+    
+    # Create directories
+    input_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    
+    return {
+        "input_dir": input_dir,
+        "output_dir": output_dir,
+        "temp_dir": temp_dir
+    }

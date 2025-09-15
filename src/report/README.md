@@ -252,7 +252,7 @@ save_reports(output_dir, {
 
 ## Integration with Pipeline
 
-### Pipeline Step 21: Report Generation
+### Pipeline Step 23: Report Generation
 ```python
 # Called from 23_report.py
 def process_report(target_dir, output_dir, verbose=False, **kwargs):
