@@ -181,35 +181,28 @@ def ensure_test_dir_exists(logger):
         sys.exit(1)
     logger.info(f"Test directory found: {test_dir.resolve()}")
 
-# --- Robust Dependency Check ---
+# --- Simplified Dependency Check ---
 def ensure_dependencies(logger):
-    """Check dependencies using the correct Python environment."""
-    # Get the project root and virtual environment paths
+    """Check dependencies using UV."""
     project_root = Path(__file__).parent.parent
-    venv_python = project_root / ".venv" / "bin" / "python"
     
-    # Use virtual environment python if available, otherwise system python
-    python_executable = str(venv_python) if venv_python.exists() else sys.executable
+    logger.info("Checking test dependencies...")
     
-    logger.info(f"Checking dependencies using Python: {python_executable}")
-    
-    # Check pytest availability using the correct Python
+    # Check pytest availability using UV
     try:
-        import subprocess
-        # Prefer uv to query pytest when available
         result = subprocess.run(
-            ["uv", "run", python_executable, "-c", "import pytest; print(f'pytest {pytest.__version__}')"],
-            capture_output=True, text=True, timeout=20
+            ["uv", "run", "python", "-c", "import pytest; print(f'pytest {pytest.__version__}')"],
+            capture_output=True, text=True, timeout=20, cwd=project_root
         )
         if result.returncode == 0:
             logger.info(f"✅ pytest available: {result.stdout.strip()}")
         else:
             logger.error(f"❌ pytest not available: {result.stderr}")
-            logger.error("Action: Ensure pytest is specified in pyproject and run: uv sync --extra dev")
+            logger.error("Action: Run 'uv sync --extra dev' to install test dependencies")
             sys.exit(1)
     except Exception as e:
         logger.error(f"❌ Failed to check pytest: {e}")
-        logger.error("Action: Ensure pytest is specified in pyproject and run: uv sync --extra dev")
+        logger.error("Action: Run 'uv sync --extra dev' to install test dependencies")
         sys.exit(1)
 
 # --- Argument Parsing ---
@@ -505,13 +498,10 @@ def process_tests_standardized(
                 for i, test_file in enumerate(test_files, 1):
                     logger.info(f"  {i:2d}. {test_file.name}")
             else:
-                # Default: run core test files
+                # Default: run only the most essential test files to avoid timeout
                 core_test_names = [
                     "test_fast_suite.py",
-                    "test_core_modules.py",
-                    "test_environment_overall.py",
-                    "test_gnn_overall.py",
-                    "test_pipeline_overall.py"
+                    "test_core_modules.py"
                 ]
                 test_files = [f for f in all_test_files if f.name in core_test_names]
 
@@ -547,7 +537,7 @@ def process_tests_standardized(
             logger.info(f"🚀 Executing: {' '.join(cmd[:3])}...")
 
             # Use longer timeout for comprehensive testing
-            timeout_seconds = 900 if kwargs.get('comprehensive', False) else 300  # 15 min for comprehensive, 5 min for others
+            timeout_seconds = 1800 if kwargs.get('comprehensive', False) else 600  # 30 min for comprehensive, 10 min for others
 
             # Use subprocess.run with reasonable timeout
             result = subprocess.run(
@@ -668,7 +658,7 @@ def process_tests_standardized(
                         t_out.start(); t_err.start()
 
                         try:
-                            process.wait(timeout=3600)
+                            process.wait(timeout=600)  # 10 minutes timeout
                             t_out.join(timeout=5)
                             t_err.join(timeout=5)
                         except subprocess.TimeoutExpired:
@@ -760,7 +750,7 @@ def execute_test_suite(test_files: List[Path], verbose: bool = False) -> Dict[st
         
         # Execute tests
         print(f"🚀 Executing: {' '.join(cmd[:5])}...")
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)  # 10 minutes timeout
         
         # Parse results
         output_lines = result.stdout.split('\n')

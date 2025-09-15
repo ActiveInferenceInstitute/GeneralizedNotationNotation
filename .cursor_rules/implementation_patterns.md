@@ -2,8 +2,49 @@
 
 ## Pipeline Script Implementation Pattern
 
-### Standard Import Structure
-Every pipeline script should follow this exact import pattern:
+### Thin Orchestrator Pattern
+Every numbered pipeline script (0-23) should follow the thin orchestrator pattern:
+
+```python
+#!/usr/bin/env python3
+"""
+Step N: [Step Name] (Thin Orchestrator)
+
+This step orchestrates [step functionality] for GNN models.
+
+Architectural Role:
+    This is a "thin orchestrator" - a minimal script that delegates core functionality
+    to the corresponding module (src/[module_name]/). It handles argument parsing, logging
+    setup, and calls the actual processing functions from the [module_name] module.
+
+Pipeline Flow:
+    main.py → N_[step_name].py (this script) → [module_name]/ (modular implementation)
+"""
+
+import sys
+from pathlib import Path
+
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
+from utils.pipeline_template import create_standardized_pipeline_script
+from [module_name] import [main_processing_function]
+
+run_script = create_standardized_pipeline_script(
+    "N_[step_name].py",
+    [main_processing_function],
+    "[Step description]",
+)
+
+def main() -> int:
+    return run_script()
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+### Standard Import Structure (For Complex Orchestrators)
+Some scripts may need more complex orchestration:
 
 ```python
 #!/usr/bin/env python3

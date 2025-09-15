@@ -1,0 +1,1114 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.2, pytest-8.4.1, pluggy-1.6.0 -- /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.2', 'Platform': 'Linux-6.12.32-amd64-x86_64-with-glibc2.36', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'anyio': '4.10.0', 'json-report': '1.5.0', 'mock': '3.14.1', 'sugar': '1.0.0', 'timeout': '2.4.0', 'xdist': '3.8.0', 'metadata': '3.1.1', 'asyncio': '1.1.0', 'benchmark': '5.1.0', 'cov': '6.2.1'}}
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/q/Documents/GitHub/GeneralizedNotationNotation
+configfile: pytest.ini
+plugins: anyio-4.10.0, json-report-1.5.0, mock-3.14.1, sugar-1.0.0, timeout-2.4.0, xdist-3.8.0, metadata-3.1.1, asyncio-1.1.0, benchmark-5.1.0, cov-6.2.1
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 554 items
+
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection PASSED
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation PASSED
+src/tests/test_audio_integration.py::TestAudioIntegration::test_audio_module_imports PASSED
+src/tests/test_audio_integration.py::TestAudioIntegration::test_audio_pipeline_integration SKIPPED
+src/tests/test_audio_integration.py::TestAudioIntegration::test_audio_backend_integration SKIPPED
+src/tests/test_audio_integration.py::TestAudioIntegration::test_audio_mcp_integration PASSED
+src/tests/test_audio_integration.py::TestAudioIntegration::test_audio_file_processing_integration SKIPPED
+src/tests/test_audio_integration.py::TestAudioIntegration::test_audio_quality_validation_integration SKIPPED
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports PASSED
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation PASSED
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation PASSED
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation PASSED
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info PASSED
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options PASSED
+src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion PASSED
+src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation PASSED
+src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation PASSED
+src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration PASSED
+src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration PASSED
+src/tests/test_audio_overall.py::test_audio_module_completeness PASSED
+src/tests/test_audio_overall.py::test_audio_module_performance PASSED
+src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_valid SKIPPED
+src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_invalid SKIPPED
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_convert_gnn_to_sapf_function SKIPPED
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function SKIPPED
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function SKIPPED
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function SKIPPED
+src/tests/test_comprehensive_api.py::TestGNNModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestGNNModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestGNNModule::test_validate_gnn_function PASSED
+src/tests/test_comprehensive_api.py::TestGNNModule::test_feature_flags PASSED
+src/tests/test_comprehensive_api.py::TestExportModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestExportModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats PASSED
+src/tests/test_comprehensive_api.py::TestExportModule::test_export_gnn_model_invalid_format PASSED
+src/tests/test_comprehensive_api.py::TestRenderModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestRenderModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestRenderModule::test_get_available_renderers PASSED
+src/tests/test_comprehensive_api.py::TestRenderModule::test_feature_flags PASSED
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_supported_file_types PASSED
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_generate_website_from_pipeline_output_nonexistent PASSED
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_validate_website_config PASSED
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_audio_generation_options PASSED
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_process_gnn_to_audio_invalid_input PASSED
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_ontology_processing_options PASSED
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_process_gnn_ontology_nonexistent_file PASSED
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_parse_gnn_ontology_section_empty PASSED
+src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_type_checker_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestVisualizationModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestVisualizationModule::test_visualizer_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestExecuteModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestExecuteModule::test_executor_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestLLMModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestLLMModule::test_llm_processor_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestMCPModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestMCPModule::test_mcp_server_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestSetupModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestSetupModule::test_setup_functions_exist PASSED
+src/tests/test_comprehensive_api.py::TestUtilsModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestUtilsModule::test_utils_classes_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestPipelineModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestPipelineModule::test_pipeline_config PASSED
+src/tests/test_comprehensive_api.py::TestMCPIntegration::test_mcp_availability_flags PASSED
+src/tests/test_comprehensive_api.py::TestMCPIntegration::test_register_tools_functions PASSED
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_version_consistency PASSED
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_feature_flags_consistency PASSED
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_module_info_consistency PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation SKIPPEDture: simple.gnn
+assert False)
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports PASSED
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering PASSED
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering PASSED
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering PASSED
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports PASSED
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation PASSED
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution PASSED
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports PASSED
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis PASSED
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation PASSED
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports PASSED
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration PASSED
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling PASSED
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports PASSED
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation PASSED
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports PASSED
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation PASSED
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation PASSED
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports PASSED
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion SKIPPEDd positional argument:
+'model_name')
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation PASSED
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation PASSED
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination PASSED
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow PASSED
+src/tests/test_core_modules.py::test_core_module_completeness PASSED
+src/tests/test_core_modules.py::test_core_module_performance PASSED
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_gnn_core_imports PASSED
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_audio_imports PASSED
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_export_imports PASSED
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_visualization_imports PASSED
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_llm_imports PASSED
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_python_version_compatibility PASSED
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_essential_packages_available PASSED
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_optional_packages_graceful_degradation PASSED
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_pytest_availability PASSED
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_uv_availability PASSED
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_environment_variables PASSED
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_file_system_permissions PASSED
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_import_path_resolution PASSED
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_version_compatibility FAILED
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_installation_simulation SKIPPEDle or
+directory: 'python')
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_setup_integration SKIPPED
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration PASSED
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_package_installation_integration PASSED
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_validation_integration SKIPPED
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_pipeline_environment_integration PASSED
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_cleanup_integration PASSED
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_monitoring_integration PASSED
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_configuration_integration PASSED
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_error_handling_integration PASSED
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_logging_integration FAILED
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports PASSED
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation PASSED
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation PASSED
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info PASSED
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation PASSED
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup PASSED
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation PASSED
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check PASSED
+src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration PASSED
+src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration SKIPPED
+src/tests/test_environment_overall.py::test_environment_module_completeness PASSED
+src/tests/test_environment_overall.py::test_environment_module_performance PASSED
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports PASSED
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation PASSED
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation PASSED
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info PASSED
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats PASSED
+src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model PASSED
+src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation PASSED
+src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export PASSED
+src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration PASSED
+src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration PASSED
+src/tests/test_export_overall.py::test_export_module_completeness PASSED
+src/tests/test_export_overall.py::test_export_module_performance PASSED
+src/tests/test_fast_suite.py::TestFastEnvironment::test_python_environment PASSED
+src/tests/test_fast_suite.py::TestFastEnvironment::test_test_configuration PASSED
+src/tests/test_fast_suite.py::TestFastEnvironment::test_essential_directories PASSED
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_module_import PASSED
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_file_creation PASSED
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_content_validation PASSED
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_utils_module_import PASSED
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_pipeline_module_import PASSED
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_type_checker_import PASSED
+src/tests/test_fast_suite.py::TestFastExport::test_export_module_import PASSED
+src/tests/test_fast_suite.py::TestFastExport::test_basic_export_functionality PASSED
+src/tests/test_fast_suite.py::TestFastVisualization::test_visualization_module_import PASSED
+src/tests/test_fast_suite.py::TestFastRender::test_render_module_import PASSED
+src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import PASSED
+src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import PASSED
+src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import PASSED
+src/tests/test_fast_suite.py::TestFastOntology::test_ontology_module_import PASSED
+src/tests/test_fast_suite.py::TestFastSAPF::test_sapf_module_import PASSED
+src/tests/test_fast_suite.py::TestFastWebsite::test_website_module_import PASSED
+src/tests/test_fast_suite.py::TestFastIntegration::test_basic_pipeline_flow PASSED
+src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_setup PASSED
+src/tests/test_fast_suite.py::test_fast_suite_completeness PASSED
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_import_available SKIPPED
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_file_processing PASSED
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_validation PASSED
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_format_conversion PASSED
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_error_handling PASSED
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_performance PASSED
+src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_memory_usage PASSED
+src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports PASSED
+src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports PASSED
+src/tests/test_gnn_overall.py::TestGNNReporting::test_reporting_imports PASSED
+src/tests/test_gnn_overall.py::TestGNNReporting::test_generate_report SKIPPED
+src/tests/test_gnn_overall.py::TestGNNReporting::test_create_summary SKIPPED
+src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discovery_imports PASSED
+src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discover_gnn_files SKIPPED
+src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_scan_directory_recursive SKIPPED
+src/tests/test_gnn_parsing.py::TestMarkdownParser::test_valid_parsing PASSED
+src/tests/test_gnn_parsing.py::TestMarkdownParser::test_invalid_parsing PASSED
+src/tests/test_gnn_parsing.py::TestMarkdownParser::test_empty_string PASSED
+src/tests/test_gnn_parsing.py::TestScalaParser::test_valid_parsing PASSED
+src/tests/test_gnn_parsing.py::TestLeanParser::test_valid_parsing PASSED
+src/tests/test_gnn_parsing.py::TestCoqParser::test_valid_parsing PASSED
+src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serializers_imports PASSED
+src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serialize_to_format SKIPPED
+src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_deserialize_from_format SKIPPED
+src/tests/test_gnn_validation.py::TestGNNValidation::test_validation_imports PASSED
+src/tests/test_gnn_validation.py::TestGNNValidation::test_validate_gnn_model SKIPPED
+src/tests/test_gnn_validation.py::TestGNNValidation::test_check_consistency SKIPPED
+src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_imports PASSED
+src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_instantiation PASSED
+src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validation PASSED
+src/tests/test_gui_functionality.py::TestGUIFunctionality::test_headless_artifacts PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_gui_markdown_helpers_imports PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_add_component_and_parse PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_update_states_append_and_replace PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_remove_component PASSED
+src/tests/test_llm_ollama.py::test_import_ollama_provider PASSED
+src/tests/test_llm_ollama.py::test_ollama_provider_initialize PASSED
+src/tests/test_llm_ollama.py::test_ollama_simple_chat SKIPPED (Ollama
+not available locally)
+src/tests/test_llm_ollama.py::test_ollama_streaming SKIPPED (Ollama not
+available locally)
+src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys PASSED
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports PASSED
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation PASSED
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation PASSED
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info PASSED
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers PASSED
+src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis PASSED
+src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation PASSED
+src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis PASSED
+src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration PASSED
+src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration PASSED
+src/tests/test_llm_overall.py::test_llm_module_completeness PASSED
+src/tests/test_llm_overall.py::test_llm_module_performance PASSED
+src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_file_exists PASSED
+src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes PASSED
+src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_component_availability PASSED
+src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help PASSED
+src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_discovery_logic PASSED
+src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_sorting PASSED
+src/tests/test_main_orchestrator.py::TestVirtualEnvironmentHandling::test_python_executable_detection PASSED
+src/tests/test_main_orchestrator.py::TestStepExecution::test_run_core_step PASSED
+src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution PASSED
+src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_environment_info_function PASSED
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset 2025-09-15 08:17:48,095 [2a5a1863:pipeline] pipeline - INFO - 🚀 Starting GNN Processing Pipeline [total_steps=24 | target_dir=/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files | output_dir=/tmp/tmpd7qnc6ml/output]
+2025-09-15 08:17:48,095 [2a5a1863:pipeline] pipeline - INFO - Executing steps: ['3_gnn.py', '5_type_checker.py', '7_export.py', '8_visualization.py']
+2025-09-15 08:17:48,095 [2a5a1863:pipeline] pipeline - INFO - ┌─ Step 1/4: GNN file processing RUNNING
+└─ Progress: [███████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (25%)
+2025-09-15 08:17:48,095 [2a5a1863:pipeline] pipeline - INFO - ┌─ Step 1/4: Step 1 RUNNING
+└─ Progress: [███████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (25%)
+    Starting GNN file processing [step_number=1 | total_steps=4 | script_name=3_gnn.py]
+2025-09-15 08:17:48,214 [2a5a1863:pipeline] pipeline - INFO - ✅ Step 1 completed with SUCCESS in 119ms
+Progress: 1/4 steps (1 successful)
+2025-09-15 08:17:48,214 [2a5a1863:pipeline] pipeline - INFO - ✅ ✅ Step 1 completed with SUCCESS in 119ms
+Progress: 1/4 steps (1 successful)
+    GNN file processing completed [status=SUCCESS | step_number=1] [⏱️ 119ms]
+2025-09-15 08:17:48,214 [2a5a1863:pipeline] pipeline - INFO - ┌─ Step 2/4: Type checking RUNNING
+└─ Progress: [███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (50%)
+2025-09-15 08:17:48,214 [2a5a1863:pipeline] pipeline - INFO - ┌─ Step 2/4: Step 2 RUNNING
+└─ Progress: [███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (50%)
+    Starting Type checking [step_number=2 | total_steps=4 | script_name=5_type_checker.py]
+2025-09-15 08:17:48,297 [2a5a1863:pipeline] pipeline - INFO - ⚠️ Step 2 completed with SUCCESS_WITH_WARNINGS in 83ms
+Progress: 2/4 steps (2 successful)
+2025-09-15 08:17:48,297 [2a5a1863:pipeline] pipeline - INFO - ✅ ✅ Step 2 completed with SUCCESS in 83ms
+Progress: 2/4 steps (2 successful)
+    Type checking completed [status=SUCCESS_WITH_WARNINGS | step_number=2] [⏱️ 83ms]
+2025-09-15 08:17:48,297 [2a5a1863:pipeline] pipeline - INFO - ┌─ Step 3/4: Multi-format export RUNNING
+└─ Progress: [██████████████████████▒▒▒▒▒▒▒▒] (75%)
+2025-09-15 08:17:48,297 [2a5a1863:pipeline] pipeline - INFO - ┌─ Step 3/4: Step 3 RUNNING
+└─ Progress: [██████████████████████▒▒▒▒▒▒▒▒] (75%)
+    Starting Multi-format export [step_number=3 | total_steps=4 | script_name=7_export.py]
+2025-09-15 08:17:48,388 [2a5a1863:pipeline] pipeline - INFO - ✅ Step 3 completed with SUCCESS in 91ms
+Progress: 3/4 steps (3 successful)
+2025-09-15 08:17:48,388 [2a5a1863:pipeline] pipeline - INFO - ✅ ✅ Step 3 completed with SUCCESS in 91ms
+Progress: 3/4 steps (3 successful)
+    Multi-format export completed [status=SUCCESS | step_number=3] [⏱️ 91ms]
+2025-09-15 08:17:48,388 [2a5a1863:pipeline] pipeline - INFO - ┌─ Step 4/4: Visualization RUNNING
+└─ Progress: [██████████████████████████████] (100%)
+2025-09-15 08:17:48,388 [2a5a1863:pipeline] pipeline - INFO - ┌─ Step 4/4: Step 4 RUNNING
+└─ Progress: [██████████████████████████████] (100%)
+    Starting Visualization [step_number=4 | total_steps=4 | script_name=8_visualization.py]
+2025-09-15 08:17:52,180 [2a5a1863:pipeline] pipeline - INFO - ✅ Step 4 completed with SUCCESS in 3.79s
+Progress: 4/4 steps (4 successful)
+2025-09-15 08:17:52,180 [2a5a1863:pipeline] pipeline - INFO - ✅ ✅ Step 4 completed with SUCCESS in 3.79s
+Progress: 4/4 steps (4 successful)
+    Visualization completed [status=SUCCESS | step_number=4] [⏱️ 3.79s]
+2025-09-15 08:17:52,180 [2a5a1863:pipeline] pipeline - INFO - Saving pipeline summary to: /tmp/tmpd7qnc6ml/output/pipeline_execution_summary.json
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - Pipeline summary saved successfully
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ┌─ Step 4/4: Overall Progress SUCCESS
+└─ Progress: [██████████████████████████████] (100%)
+Stats: ✅ Success: 4 | ⚠️ Warnings: 1 | ❌ Failed: 0 | ⏱️ Elapsed: 4.09s
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - 
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ╔═══════════════════════════════════════════════════════════════════════════════════╗
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ║             ⚠️ PIPELINE EXECUTION SUMMARY - SUCCESS_WITH_WARNINGS ⚠️              ║
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ╠═══════════════════════════════════════════════════════════════════════════════════╣
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ║ Total Steps: 4                                                                    ║
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ║ ✅ Successful: 3                                                                   ║
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ║ ⚠️ Warnings: 1                                                                    ║
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ║ ❌ Failed: 0                                                                       ║
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ║ ⏱️ Total Time: 4.08s                                                              ║
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ║ Average Step Time: 1.02s                                                          ║
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ║ 📊 Success Rate: 100.0%                                                            ║
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - ╚═══════════════════════════════════════════════════════════════════════════════════╝
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - 
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - 🔍 DETAILED STEP ANALYSIS:
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO -   ⚠️ 5_type_checker.py: SUCCESS_WITH_WARNINGS (83ms)
+2025-09-15 08:17:52,181 [2a5a1863:pipeline] pipeline - INFO - 
+PASSED
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available SKIPPED
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration PASSED
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer PASSED
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format PASSED
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format PASSED
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling PASSED
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance PASSED
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage PASSED
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations PASSED
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation PASSED
+src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports PASSED
+src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes PASSED
+src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution PASSED
+src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters PASSED
+src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration PASSED
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports PASSED
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation PASSED
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info SKIPPED
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration PASSED
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization PASSED
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval PASSED
+src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution PASSED
+src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution PASSED
+src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution PASSED
+src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports PASSED
+src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports SKIPPED
+src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports SKIPPED
+src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization SKIPPED
+src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration SKIPPED
+src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup SKIPPED
+src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools SKIPPED
+src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling SKIPPED
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_imports PASSED
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processor_instantiation PASSED
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_validator_instantiation PASSED
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_info PASSED
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options PASSED
+src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing PASSED
+src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_validation PASSED
+src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_term_validation PASSED
+src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_pipeline_integration PASSED
+src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration PASSED
+src/tests/test_ontology_overall.py::test_ontology_module_completeness PASSED
+src/tests/test_ontology_overall.py::test_ontology_module_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_import_performance SKIPPEDrt' (/home/q/Documents/GitHub/GeneralizedNotationNo
+tation/src/export/__init__.py))
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_memory_usage_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_file_io_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_json_processing_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_concurrent_operations_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_string_processing_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_list_operations_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_dictionary_operations_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_algorithm_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_network_operations_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_system_resource_performance PASSED
+src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_missing_pymdp_graceful_degradation FAILED
+src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_missing_discopy_graceful_degradation PASSED
+src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_matplotlib_rendering_fallbacks PASSED
+src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_missing_input_directory ERROR
+src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_readonly_output_directory ERROR
+src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_corrupted_gnn_file_handling ERROR
+src/tests/test_pipeline_error_scenarios.py::TestResourceConstraintScenarios::test_large_gnn_file_handling ERROR
+src/tests/test_pipeline_error_scenarios.py::TestResourceConstraintScenarios::test_concurrent_pipeline_execution ERROR
+src/tests/test_pipeline_error_scenarios.py::TestPipelineIntegrationScenarios::test_pipeline_with_missing_dependencies ERROR
+src/tests/test_pipeline_error_scenarios.py::TestPipelineIntegrationScenarios::test_error_recovery_and_continuation ERROR
+
+==================================== ERRORS ====================================
+_ ERROR at setup of TestFileOperationErrorScenarios.test_missing_input_directory _
+file /home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py, line 112
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_missing_input_directory(self, temp_directories):
+E       fixture 'temp_directories' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, capture_logs, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, full_pipeline_environment, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mock_dangerous_operations, mock_filesystem, mock_imports, mock_llm_provider, mock_logger, mock_mcp_tools, mock_render_module, mock_subprocess, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_file, sample_gnn_files, sample_gnn_spec, sample_markdown, sample_scala, session_mocker, simulate_failures, src_dir, temp_output_dir, test_config, test_data_dir, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py:112
+_ ERROR at setup of TestFileOperationErrorScenarios.test_readonly_output_directory _
+file /home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py, line 136
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_readonly_output_directory(self, temp_directories):
+E       fixture 'temp_directories' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, capture_logs, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, full_pipeline_environment, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mock_dangerous_operations, mock_filesystem, mock_imports, mock_llm_provider, mock_logger, mock_mcp_tools, mock_render_module, mock_subprocess, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_file, sample_gnn_files, sample_gnn_spec, sample_markdown, sample_scala, session_mocker, simulate_failures, src_dir, temp_output_dir, test_config, test_data_dir, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py:136
+_ ERROR at setup of TestFileOperationErrorScenarios.test_corrupted_gnn_file_handling _
+file /home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py, line 168
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_corrupted_gnn_file_handling(self, temp_directories):
+E       fixture 'temp_directories' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, capture_logs, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, full_pipeline_environment, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mock_dangerous_operations, mock_filesystem, mock_imports, mock_llm_provider, mock_logger, mock_mcp_tools, mock_render_module, mock_subprocess, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_file, sample_gnn_files, sample_gnn_spec, sample_markdown, sample_scala, session_mocker, simulate_failures, src_dir, temp_output_dir, test_config, test_data_dir, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py:168
+_ ERROR at setup of TestResourceConstraintScenarios.test_large_gnn_file_handling _
+file /home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py, line 196
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_large_gnn_file_handling(self, temp_directories):
+E       fixture 'temp_directories' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, capture_logs, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, full_pipeline_environment, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mock_dangerous_operations, mock_filesystem, mock_imports, mock_llm_provider, mock_logger, mock_mcp_tools, mock_render_module, mock_subprocess, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_file, sample_gnn_files, sample_gnn_spec, sample_markdown, sample_scala, session_mocker, simulate_failures, src_dir, temp_output_dir, test_config, test_data_dir, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py:196
+_ ERROR at setup of TestResourceConstraintScenarios.test_concurrent_pipeline_execution _
+file /home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py, line 233
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_concurrent_pipeline_execution(self, temp_directories):
+E       fixture 'temp_directories' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, capture_logs, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, full_pipeline_environment, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mock_dangerous_operations, mock_filesystem, mock_imports, mock_llm_provider, mock_logger, mock_mcp_tools, mock_render_module, mock_subprocess, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_file, sample_gnn_files, sample_gnn_spec, sample_markdown, sample_scala, session_mocker, simulate_failures, src_dir, temp_output_dir, test_config, test_data_dir, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py:233
+_ ERROR at setup of TestPipelineIntegrationScenarios.test_pipeline_with_missing_dependencies _
+file /home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py, line 293
+      @pytest.mark.integration
+      @pytest.mark.safe_to_fail
+      def test_pipeline_with_missing_dependencies(self, temp_directories):
+E       fixture 'temp_directories' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, capture_logs, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, full_pipeline_environment, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mock_dangerous_operations, mock_filesystem, mock_imports, mock_llm_provider, mock_logger, mock_mcp_tools, mock_render_module, mock_subprocess, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_file, sample_gnn_files, sample_gnn_spec, sample_markdown, sample_scala, session_mocker, simulate_failures, src_dir, temp_output_dir, test_config, test_data_dir, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py:293
+_ ERROR at setup of TestPipelineIntegrationScenarios.test_error_recovery_and_continuation _
+file /home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py, line 343
+      @pytest.mark.integration
+      @pytest.mark.safe_to_fail
+      def test_error_recovery_and_continuation(self, temp_directories):
+E       fixture 'temp_directories' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, capture_logs, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, full_pipeline_environment, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mock_dangerous_operations, mock_filesystem, mock_imports, mock_llm_provider, mock_logger, mock_mcp_tools, mock_render_module, mock_subprocess, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pipeline_arguments, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, safe_filesystem, sample_gnn_file, sample_gnn_files, sample_gnn_spec, sample_markdown, sample_scala, session_mocker, simulate_failures, src_dir, temp_output_dir, test_config, test_data_dir, test_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/q/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_error_scenarios.py:343
+=================================== FAILURES ===================================
+______ TestEnvironmentDependencies.test_dependency_version_compatibility _______
+src/tests/test_environment_dependencies.py:132: in test_dependency_version_compatibility
+    assert python_version >= "3.8"
+E   AssertionError: assert '3.11' >= '3.8'
+
+During handling of the above exception, another exception occurred:
+src/tests/test_environment_dependencies.py:134: in test_dependency_version_compatibility
+    pytest.fail(f"Version compatibility check failed: {e}")
+E   Failed: Version compatibility check failed: assert '3.11' >= '3.8'
+_______ TestEnvironmentIntegration.test_environment_logging_integration ________
+src/tests/test_environment_integration.py:190: in test_environment_logging_integration
+    with pytest.raises(SystemExit):
+E   Failed: DID NOT RAISE <class 'SystemExit'>
+------------------------------ Captured log call -------------------------------
+CRITICAL test_environment:test_environment_integration.py:191 Test critical message
+_____ TestDependencyErrorScenarios.test_missing_pymdp_graceful_degradation _____
+src/tests/test_pipeline_error_scenarios.py:47: in test_missing_pymdp_graceful_degradation
+    simulator.create_model({})
+    ^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'PyMDPSimulation' object has no attribute 'create_model'
+------------------------------ Captured log call -------------------------------
+INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:249 Initialized with default gridworld configuration
+INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:564 Created PyMDP model: 4S, 5A, 4O
+==================================== PASSES ====================================
+____________ TestTypeCheckerModule.test_type_checker_instantiation _____________
+------------------------------ Captured log call -------------------------------
+INFO     src.type_checker.checker:checker.py:230 GNNTypeChecker initialized. Strict mode: False
+______________ TestGNNModuleComprehensive.test_gnn_module_imports ______________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:62 GNN module imports validated
+______________ TestGNNModuleComprehensive.test_gnn_file_discovery ______________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:85 GNN file discovery validated: 1 files found
+_______________ TestGNNModuleComprehensive.test_gnn_file_parsing _______________
+------------------------------ Captured log call -------------------------------
+WARNING  root:test_core_modules.py:107 Failed to parse simple.gnn: Parsed data should contain ModelName
+assert 'ModelName' in {'file_path': '/tmp/tmpqhg155ks/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 136, 'sections': ['Test GNN Model', 'Model Name', 'State Space', 'Connections', 'Parameters'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 136}, 'parse_timestamp': '2025-09-15T08:17:43.694678'}
+___________ TestRenderModuleComprehensive.test_render_module_imports ___________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:156 Render module imports validated
+______________ TestRenderModuleComprehensive.test_pymdp_rendering ______________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:172 PyMDP rendering validated
+_____________ TestRenderModuleComprehensive.test_rxinfer_rendering _____________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:187 RxInfer rendering validated
+_____ TestExecuteModuleComprehensive.test_execution_environment_validation _____
+------------------------------ Captured log call -------------------------------
+WARNING  root:test_core_modules.py:244 Execution environment validation failed: Status should contain python_version
+assert 'python_version' in {'valid': False, 'issues': ['validate_execution_environment not available']}
+______________ TestLLMModuleComprehensive.test_llm_model_analysis ______________
+------------------------------ Captured log call -------------------------------
+INFO     src.llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: []
+INFO     src.llm.llm_operations:llm_operations.py:87 Created new LLM processor
+WARNING  src.llm.providers.openai_provider:openai_provider.py:76 OpenAI API key not provided
+WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize openai provider
+ERROR    src.llm.providers.openrouter_provider:openrouter_provider.py:111 Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+ERROR    src.llm.providers.openrouter_provider:openrouter_provider.py:112 Install aiohttp with: pip install aiohttp>=3.9.0
+WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize openrouter provider
+ERROR    src.llm.providers.perplexity_provider:perplexity_provider.py:85 Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+ERROR    src.llm.providers.perplexity_provider:perplexity_provider.py:86 Install aiohttp with: pip install aiohttp>=3.9.0
+WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize perplexity provider
+WARNING  src.llm.providers.ollama_provider:ollama_provider.py:88 Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize ollama provider
+WARNING  src.llm.llm_processor:llm_processor.py:213 No LLM providers could be initialized
+WARNING  src.llm.analyzer:analyzer.py:84 LLM summary generation failed for simple.gnn: Processor not initialized
+______________ TestMCPModuleComprehensive.test_mcp_module_imports ______________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:346 MCP module imports validated
+____________ TestMCPModuleComprehensive.test_mcp_tool_registration _____________
+------------------------------ Captured log call -------------------------------
+WARNING  root:test_core_modules.py:372 MCP tool registration failed: Tools should be a list
+assert False
+ +  where False = isinstance(True, list)
+_____________ TestMCPModuleComprehensive.test_mcp_request_handling _____________
+------------------------------ Captured log call -------------------------------
+INFO     src.mcp.processor:processor.py:72 Handling MCP request: tools/list
+INFO     root:test_core_modules.py:392 MCP request handling validated
+________ TestOntologyModuleComprehensive.test_ontology_term_validation _________
+------------------------------ Captured log call -------------------------------
+INFO     ontology:pipeline_template.py:47 🚀 Processing ontology
+INFO     ontology:pipeline_template.py:48 ✅ Ontology processing completed successfully
+____________ TestWebsiteModuleComprehensive.test_website_generation ____________
+------------------------------ Captured log call -------------------------------
+INFO     website:renderer.py:152 Website generated successfully with 1 pages
+___________ TestWebsiteModuleComprehensive.test_html_report_creation ___________
+------------------------------ Captured log call -------------------------------
+INFO     website:renderer.py:152 Website generated successfully with 1 pages
+_____________ TestSAPFModuleComprehensive.test_sapf_module_imports _____________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:559 SAPF module imports validated successfully
+_______________ TestSAPFModuleComprehensive.test_sapf_validation _______________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:636 SAPF validation functionality confirmed
+____________ TestSAPFModuleComprehensive.test_sapf_audio_generation ____________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:655 SAPF audio generation functionality confirmed
+______________ TestCoreModuleIntegration.test_module_coordination ______________
+------------------------------ Captured log call -------------------------------
+WARNING  root:test_core_modules.py:679 Core module coordination failed: cannot import name 'execute_gnn_model' from 'src.execute' (/home/q/Documents/GitHub/GeneralizedNotationNotation/src/execute/__init__.py)
+_______________ TestCoreModuleIntegration.test_module_data_flow ________________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:694 Module data flow validated
+________________________ test_core_module_completeness _________________________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:701 Core module completeness test passed
+_________________________ test_core_module_performance _________________________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_core_modules.py:707 Core module performance test completed
+_____________________ TestCoverageOverall.test_llm_imports _____________________
+------------------------------ Captured log call -------------------------------
+INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: []
+INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
+________ TestEnvironmentModuleComprehensive.test_environment_validation ________
+------------------------------ Captured log call -------------------------------
+INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
+INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.11.2
+INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.17
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 424.85GB free
+INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
+INFO     setup.setup:setup.py:359 📦 Found 279 installed packages using UV
+INFO     setup.setup:setup.py:369 📋 Key installed packages:
+INFO     setup.setup:setup.py:372   - pytest: 8.4.1
+INFO     setup.setup:setup.py:372   - numpy: 2.2.6
+INFO     setup.setup:setup.py:372   - matplotlib: 3.10.5
+INFO     setup.setup:setup.py:372   - scipy: 1.16.1
+INFO     setup.setup:setup.py:378 📄 Full package list saved to: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+__________ TestEnvironmentFunctionality.test_dependency_installation ___________
+------------------------------ Captured log call -------------------------------
+INFO     setup.setup:setup.py:276 📦 Installing dependencies from /home/q/Documents/GitHub/GeneralizedNotationNotation/pyproject.toml using UV sync
+INFO     setup.setup:setup.py:305 ✅ Dependencies installed using UV in 0.8s
+INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
+INFO     setup.setup:setup.py:359 📦 Found 92 installed packages using UV
+INFO     setup.setup:setup.py:363 📋 Installed packages:
+INFO     setup.setup:setup.py:365   - absl-py: 2.3.1
+INFO     setup.setup:setup.py:365   - aiofiles: 24.1.0
+INFO     setup.setup:setup.py:365   - altair: 5.5.0
+INFO     setup.setup:setup.py:365   - anyio: 4.10.0
+INFO     setup.setup:setup.py:365   - attrs: 25.3.0
+INFO     setup.setup:setup.py:365   - certifi: 2025.8.3
+INFO     setup.setup:setup.py:365   - chex: 0.1.90
+INFO     setup.setup:setup.py:365   - contourpy: 1.3.3
+INFO     setup.setup:setup.py:365   - cycler: 0.12.1
+INFO     setup.setup:setup.py:365   - defusedxml: 0.7.1
+INFO     setup.setup:setup.py:365   - discopy: 1.2.0
+INFO     setup.setup:setup.py:365   - etils: 1.13.0
+INFO     setup.setup:setup.py:365   - filelock: 3.16.1
+INFO     setup.setup:setup.py:365   - flax: 0.11.0
+INFO     setup.setup:setup.py:365   - fonttools: 4.59.0
+INFO     setup.setup:setup.py:365   - fsspec: 2025.7.0
+INFO     setup.setup:setup.py:365   - generalized-notation-notation: 1.1.0
+INFO     setup.setup:setup.py:365   - h11: 0.16.0
+INFO     setup.setup:setup.py:365   - httpcore: 1.0.9
+INFO     setup.setup:setup.py:365   - httpx: 0.28.1
+INFO     setup.setup:setup.py:365   - humanize: 4.12.3
+INFO     setup.setup:setup.py:365   - idna: 3.10
+INFO     setup.setup:setup.py:365   - importlib-resources: 6.5.2
+INFO     setup.setup:setup.py:365   - jax: 0.7.0
+INFO     setup.setup:setup.py:365   - jaxlib: 0.7.0
+INFO     setup.setup:setup.py:365   - jinja2: 3.1.6
+INFO     setup.setup:setup.py:365   - joblib: 1.5.1
+INFO     setup.setup:setup.py:365   - jsonschema: 4.25.0
+INFO     setup.setup:setup.py:365   - jsonschema-specifications: 2025.4.1
+INFO     setup.setup:setup.py:365   - kiwisolver: 1.4.8
+INFO     setup.setup:setup.py:365   - markdown: 3.8.2
+INFO     setup.setup:setup.py:365   - markdown-it-py: 3.0.0
+INFO     setup.setup:setup.py:365   - markupsafe: 3.0.2
+INFO     setup.setup:setup.py:365   - matplotlib: 3.10.5
+INFO     setup.setup:setup.py:365   - mdurl: 0.1.2
+INFO     setup.setup:setup.py:365   - ml-dtypes: 0.5.3
+INFO     setup.setup:setup.py:365   - mpmath: 1.3.0
+INFO     setup.setup:setup.py:365   - msgpack: 1.1.1
+INFO     setup.setup:setup.py:365   - narwhals: 2.0.1
+INFO     setup.setup:setup.py:365   - nest-asyncio: 1.6.0
+INFO     setup.setup:setup.py:365   - networkx: 3.5
+INFO     setup.setup:setup.py:365   - nose: 1.3.7
+INFO     setup.setup:setup.py:365   - numpy: 2.2.6
+INFO     setup.setup:setup.py:365   - nvidia-cublas-cu12: 12.8.4.1
+INFO     setup.setup:setup.py:365   - nvidia-cuda-cupti-cu12: 12.8.90
+INFO     setup.setup:setup.py:365   - nvidia-cuda-nvrtc-cu12: 12.8.93
+INFO     setup.setup:setup.py:365   - nvidia-cuda-runtime-cu12: 12.8.90
+INFO     setup.setup:setup.py:365   - nvidia-cudnn-cu12: 9.10.2.21
+INFO     setup.setup:setup.py:365   - nvidia-cufft-cu12: 11.3.3.83
+INFO     setup.setup:setup.py:365   - nvidia-cufile-cu12: 1.13.1.3
+INFO     setup.setup:setup.py:365   - nvidia-curand-cu12: 10.3.9.90
+INFO     setup.setup:setup.py:365   - nvidia-cusolver-cu12: 11.7.3.90
+INFO     setup.setup:setup.py:365   - nvidia-cusparse-cu12: 12.5.8.93
+INFO     setup.setup:setup.py:365   - nvidia-cusparselt-cu12: 0.7.1
+INFO     setup.setup:setup.py:365   - nvidia-nccl-cu12: 2.27.3
+INFO     setup.setup:setup.py:365   - nvidia-nvjitlink-cu12: 12.8.93
+INFO     setup.setup:setup.py:365   - nvidia-nvtx-cu12: 12.8.90
+INFO     setup.setup:setup.py:365   - opt-einsum: 3.4.0
+INFO     setup.setup:setup.py:365   - optax: 0.2.5
+INFO     setup.setup:setup.py:365   - orbax-checkpoint: 0.11.20
+INFO     setup.setup:setup.py:365   - packaging: 25.0
+INFO     setup.setup:setup.py:365   - pandas: 2.3.1
+INFO     setup.setup:setup.py:365   - pillow: 11.3.0
+INFO     setup.setup:setup.py:365   - plotly: 6.2.0
+INFO     setup.setup:setup.py:365   - protobuf: 6.31.1
+INFO     setup.setup:setup.py:365   - psutil: 6.1.1
+INFO     setup.setup:setup.py:365   - pygments: 2.19.2
+INFO     setup.setup:setup.py:365   - pymdp: 0.0.1
+INFO     setup.setup:setup.py:365   - pyparsing: 3.2.3
+INFO     setup.setup:setup.py:365   - python-dateutil: 2.9.0.post0
+INFO     setup.setup:setup.py:365   - pytz: 2025.2
+INFO     setup.setup:setup.py:365   - pyyaml: 6.0.2
+INFO     setup.setup:setup.py:365   - referencing: 0.36.2
+INFO     setup.setup:setup.py:365   - rich: 14.1.0
+INFO     setup.setup:setup.py:365   - rpds-py: 0.26.0
+INFO     setup.setup:setup.py:365   - scikit-learn: 1.7.1
+INFO     setup.setup:setup.py:365   - scipy: 1.16.1
+INFO     setup.setup:setup.py:365   - setuptools: 80.9.0
+INFO     setup.setup:setup.py:365   - simplejson: 3.20.1
+INFO     setup.setup:setup.py:365   - six: 1.17.0
+INFO     setup.setup:setup.py:365   - sniffio: 1.3.1
+INFO     setup.setup:setup.py:365   - sympy: 1.14.0
+INFO     setup.setup:setup.py:365   - tensorstore: 0.1.76
+INFO     setup.setup:setup.py:365   - threadpoolctl: 3.6.0
+INFO     setup.setup:setup.py:365   - toml: 0.10.2
+INFO     setup.setup:setup.py:365   - toolz: 1.0.0
+INFO     setup.setup:setup.py:365   - torch: 2.8.0
+INFO     setup.setup:setup.py:365   - treescope: 0.1.9
+INFO     setup.setup:setup.py:365   - triton: 3.4.0
+INFO     setup.setup:setup.py:365   - typing-extensions: 4.14.1
+INFO     setup.setup:setup.py:365   - tzdata: 2025.2
+INFO     setup.setup:setup.py:365   - zipp: 3.23.0
+INFO     setup.setup:setup.py:378 📄 Full package list saved to: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+_______ TestEnvironmentIntegration.test_environment_pipeline_integration _______
+------------------------------ Captured log call -------------------------------
+INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
+INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.11.2
+INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.17
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 424.85GB free
+INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
+INFO     setup.setup:setup.py:359 📦 Found 92 installed packages using UV
+INFO     setup.setup:setup.py:369 📋 Key installed packages:
+INFO     setup.setup:setup.py:372   - numpy: 2.2.6
+INFO     setup.setup:setup.py:372   - matplotlib: 3.10.5
+INFO     setup.setup:setup.py:372   - scipy: 1.16.1
+INFO     setup.setup:setup.py:378 📄 Full package list saved to: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+_____________________ test_environment_module_performance ______________________
+------------------------------ Captured log call -------------------------------
+INFO     setup.setup:setup.py:110 🔍 Checking system requirements...
+INFO     setup.setup:setup.py:119 ✅ Python version check passed: 3.11.2
+INFO     setup.setup:setup.py:126 ✅ UV is available: uv 0.8.17
+INFO     setup.setup:setup.py:142 ✅ Disk space check passed: 424.85GB free
+INFO     setup.setup:setup.py:332 📋 Getting list of installed packages using UV...
+INFO     setup.setup:setup.py:359 📦 Found 92 installed packages using UV
+INFO     setup.setup:setup.py:369 📋 Key installed packages:
+INFO     setup.setup:setup.py:372   - numpy: 2.2.6
+INFO     setup.setup:setup.py:372   - matplotlib: 3.10.5
+INFO     setup.setup:setup.py:372   - scipy: 1.16.1
+INFO     setup.setup:setup.py:378 📄 Full package list saved to: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+__________________ TestFastExecute.test_execute_module_import __________________
+------------------------------ Captured log call -------------------------------
+WARNING  root:pymdp_simulation.py:50 PyMDP not available - simulation will gracefully degrade with informative output
+______________________ TestFastMCP.test_mcp_module_import ______________________
+------------------------------ Captured log call -------------------------------
+INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+_________________________ test_fast_suite_completeness _________________________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_fast_suite.py:318 Fast test suite completeness validated
+____________________ TestMarkdownParser.test_valid_parsing _____________________
+------------------------------ Captured log call -------------------------------
+WARNING  gnn.parsers.markdown_parser:markdown_parser.py:780 Connection references unknown target variables: ['o']
+_______________________ test_ollama_provider_initialize ________________________
+------------------------------ Captured log call -------------------------------
+WARNING  llm.providers.ollama_provider:ollama_provider.py:88 Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+___________________ test_processor_uses_ollama_when_no_keys ____________________
+------------------------------ Captured log call -------------------------------
+WARNING  llm.providers.openai_provider:openai_provider.py:76 OpenAI API key not provided
+WARNING  llm.llm_processor:llm_processor.py:203 Failed to initialize openai provider
+ERROR    llm.providers.openrouter_provider:openrouter_provider.py:111 Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+ERROR    llm.providers.openrouter_provider:openrouter_provider.py:112 Install aiohttp with: pip install aiohttp>=3.9.0
+WARNING  llm.llm_processor:llm_processor.py:203 Failed to initialize openrouter provider
+ERROR    llm.providers.perplexity_provider:perplexity_provider.py:85 Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+ERROR    llm.providers.perplexity_provider:perplexity_provider.py:86 Install aiohttp with: pip install aiohttp>=3.9.0
+WARNING  llm.llm_processor:llm_processor.py:203 Failed to initialize perplexity provider
+WARNING  llm.providers.ollama_provider:ollama_provider.py:88 Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
+WARNING  llm.llm_processor:llm_processor.py:203 Failed to initialize ollama provider
+WARNING  llm.llm_processor:llm_processor.py:213 No LLM providers could be initialized
+________ TestMainOrchestratorImport.test_main_orchestrator_file_exists _________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_main_orchestrator.py:63 Main orchestrator file structure validated
+___ TestMainOrchestratorImport.test_main_orchestrator_component_availability ___
+------------------------------ Captured log call -------------------------------
+INFO     root:test_main_orchestrator.py:92 All 3 main orchestrator components available
+_______ TestPipelineScriptDiscovery.test_pipeline_script_discovery_logic _______
+------------------------------ Captured log call -------------------------------
+INFO     root:test_main_orchestrator.py:134 Pipeline script discovery logic validated
+___________ TestPipelineScriptDiscovery.test_pipeline_script_sorting ___________
+------------------------------ Captured log call -------------------------------
+INFO     root:test_main_orchestrator.py:156 Pipeline script sorting logic validated
+_______ TestMCPErrorHandling.test_tool_execution_with_invalid_parameters _______
+------------------------------ Captured log call -------------------------------
+INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
+INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
+___________ TestMCPResourceManagement.test_mcp_resource_registration ___________
+------------------------------ Captured log call -------------------------------
+INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
+INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
+____________ TestMCPToolExecution.test_gnn_validate_tool_execution _____________
+------------------------------ Captured log call -------------------------------
+INFO     gnn.mcp:mcp.py:874 Enhanced GNN MCP tools and resources registered successfully.
+INFO     gnn.mcp:mcp.py:875 Enhanced capabilities available: True
+_______________ TestMCPToolExecution.test_export_tool_execution ________________
+------------------------------ Captured log call -------------------------------
+INFO     export.mcp:mcp.py:161 Export module MCP tools registered.
+____________ TestMCPToolExecution.test_utils_system_info_execution _____________
+------------------------------ Captured log call -------------------------------
+INFO     utils.mcp:mcp.py:289 Registering utils MCP tools
+INFO     utils.mcp:mcp.py:352 Successfully registered utils MCP tools
+____ TestDependencyErrorScenarios.test_missing_discopy_graceful_degradation ____
+------------------------------ Captured log call -------------------------------
+WARNING  execute.discopy_translator_module.translator:translator.py:67 DisCoPy not available - cannot create diagrams
+============================= slowest 15 durations =============================
+4.17s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+2.31s call     src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration
+0.84s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
+0.41s call     src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_matplotlib_rendering_fallbacks
+0.38s call     src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution
+0.16s call     src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats
+0.12s call     src/tests/test_main_orchestrator.py::TestStepExecution::test_run_core_step
+0.10s call     src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_monitoring_integration
+0.10s call     src/tests/test_performance_overall.py::TestPerformanceOverall::test_system_resource_performance
+0.09s call     src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes
+0.09s call     src/tests/test_performance_overall.py::TestPerformanceOverall::test_memory_usage_performance
+0.08s call     src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help
+0.06s call     src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration
+0.05s call     src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage
+0.04s call     src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion
+=========================== short test summary info ============================
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection
+PASSED src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation
+PASSED src/tests/test_audio_integration.py::TestAudioIntegration::test_audio_module_imports
+PASSED src/tests/test_audio_integration.py::TestAudioIntegration::test_audio_mcp_integration
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info
+PASSED src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options
+PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion
+PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation
+PASSED src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation
+PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration
+PASSED src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration
+PASSED src/tests/test_audio_overall.py::test_audio_module_completeness
+PASSED src/tests/test_audio_overall.py::test_audio_module_performance
+PASSED src/tests/test_comprehensive_api.py::TestGNNModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestGNNModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestGNNModule::test_validate_gnn_function
+PASSED src/tests/test_comprehensive_api.py::TestGNNModule::test_feature_flags
+PASSED src/tests/test_comprehensive_api.py::TestExportModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestExportModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats
+PASSED src/tests/test_comprehensive_api.py::TestExportModule::test_export_gnn_model_invalid_format
+PASSED src/tests/test_comprehensive_api.py::TestRenderModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestRenderModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestRenderModule::test_get_available_renderers
+PASSED src/tests/test_comprehensive_api.py::TestRenderModule::test_feature_flags
+PASSED src/tests/test_comprehensive_api.py::TestWebsiteModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_supported_file_types
+PASSED src/tests/test_comprehensive_api.py::TestWebsiteModule::test_generate_website_from_pipeline_output_nonexistent
+PASSED src/tests/test_comprehensive_api.py::TestWebsiteModule::test_validate_website_config
+PASSED src/tests/test_comprehensive_api.py::TestSAPFModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_audio_generation_options
+PASSED src/tests/test_comprehensive_api.py::TestSAPFModule::test_process_gnn_to_audio_invalid_input
+PASSED src/tests/test_comprehensive_api.py::TestOntologyModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_ontology_processing_options
+PASSED src/tests/test_comprehensive_api.py::TestOntologyModule::test_process_gnn_ontology_nonexistent_file
+PASSED src/tests/test_comprehensive_api.py::TestOntologyModule::test_parse_gnn_ontology_section_empty
+PASSED src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_type_checker_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestVisualizationModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestVisualizationModule::test_visualizer_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestExecuteModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestExecuteModule::test_executor_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestLLMModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestLLMModule::test_llm_processor_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestMCPModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestMCPModule::test_mcp_server_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestSetupModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestSetupModule::test_setup_functions_exist
+PASSED src/tests/test_comprehensive_api.py::TestUtilsModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestUtilsModule::test_utils_classes_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestPipelineModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestPipelineModule::test_pipeline_config
+PASSED src/tests/test_comprehensive_api.py::TestMCPIntegration::test_mcp_availability_flags
+PASSED src/tests/test_comprehensive_api.py::TestMCPIntegration::test_register_tools_functions
+PASSED src/tests/test_comprehensive_api.py::TestModuleConsistency::test_version_consistency
+PASSED src/tests/test_comprehensive_api.py::TestModuleConsistency::test_feature_flags_consistency
+PASSED src/tests/test_comprehensive_api.py::TestModuleConsistency::test_module_info_consistency
+PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports
+PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery
+PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering
+PASSED src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports
+PASSED src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation
+PASSED src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution
+PASSED src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
+PASSED src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+PASSED src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation
+PASSED src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports
+PASSED src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration
+PASSED src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling
+PASSED src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports
+PASSED src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation
+PASSED src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports
+PASSED src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation
+PASSED src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation
+PASSED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports
+PASSED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation
+PASSED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation
+PASSED src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination
+PASSED src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow
+PASSED src/tests/test_core_modules.py::test_core_module_completeness
+PASSED src/tests/test_core_modules.py::test_core_module_performance
+PASSED src/tests/test_coverage_overall.py::TestCoverageOverall::test_gnn_core_imports
+PASSED src/tests/test_coverage_overall.py::TestCoverageOverall::test_audio_imports
+PASSED src/tests/test_coverage_overall.py::TestCoverageOverall::test_export_imports
+PASSED src/tests/test_coverage_overall.py::TestCoverageOverall::test_visualization_imports
+PASSED src/tests/test_coverage_overall.py::TestCoverageOverall::test_llm_imports
+PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_python_version_compatibility
+PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_essential_packages_available
+PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_optional_packages_graceful_degradation
+PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_pytest_availability
+PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_uv_availability
+PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_environment_variables
+PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_file_system_permissions
+PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_import_path_resolution
+PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration
+PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_package_installation_integration
+PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_pipeline_environment_integration
+PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_cleanup_integration
+PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_monitoring_integration
+PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_configuration_integration
+PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_error_handling_integration
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info
+PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
+PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup
+PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
+PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check
+PASSED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
+PASSED src/tests/test_environment_overall.py::test_environment_module_completeness
+PASSED src/tests/test_environment_overall.py::test_environment_module_performance
+PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports
+PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation
+PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation
+PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info
+PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats
+PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model
+PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation
+PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export
+PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration
+PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration
+PASSED src/tests/test_export_overall.py::test_export_module_completeness
+PASSED src/tests/test_export_overall.py::test_export_module_performance
+PASSED src/tests/test_fast_suite.py::TestFastEnvironment::test_python_environment
+PASSED src/tests/test_fast_suite.py::TestFastEnvironment::test_test_configuration
+PASSED src/tests/test_fast_suite.py::TestFastEnvironment::test_essential_directories
+PASSED src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_module_import
+PASSED src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_file_creation
+PASSED src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_content_validation
+PASSED src/tests/test_fast_suite.py::TestFastPipelineComponents::test_utils_module_import
+PASSED src/tests/test_fast_suite.py::TestFastPipelineComponents::test_pipeline_module_import
+PASSED src/tests/test_fast_suite.py::TestFastPipelineComponents::test_type_checker_import
+PASSED src/tests/test_fast_suite.py::TestFastExport::test_export_module_import
+PASSED src/tests/test_fast_suite.py::TestFastExport::test_basic_export_functionality
+PASSED src/tests/test_fast_suite.py::TestFastVisualization::test_visualization_module_import
+PASSED src/tests/test_fast_suite.py::TestFastRender::test_render_module_import
+PASSED src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import
+PASSED src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import
+PASSED src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import
+PASSED src/tests/test_fast_suite.py::TestFastOntology::test_ontology_module_import
+PASSED src/tests/test_fast_suite.py::TestFastSAPF::test_sapf_module_import
+PASSED src/tests/test_fast_suite.py::TestFastWebsite::test_website_module_import
+PASSED src/tests/test_fast_suite.py::TestFastIntegration::test_basic_pipeline_flow
+PASSED src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_setup
+PASSED src/tests/test_fast_suite.py::test_fast_suite_completeness
+PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_file_processing
+PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_validation
+PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_format_conversion
+PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_error_handling
+PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_performance
+PASSED src/tests/test_gnn_integration.py::TestGNNIntegration::test_gnn_memory_usage
+PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports
+PASSED src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports
+PASSED src/tests/test_gnn_overall.py::TestGNNReporting::test_reporting_imports
+PASSED src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discovery_imports
+PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_valid_parsing
+PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_invalid_parsing
+PASSED src/tests/test_gnn_parsing.py::TestMarkdownParser::test_empty_string
+PASSED src/tests/test_gnn_parsing.py::TestScalaParser::test_valid_parsing
+PASSED src/tests/test_gnn_parsing.py::TestLeanParser::test_valid_parsing
+PASSED src/tests/test_gnn_parsing.py::TestCoqParser::test_valid_parsing
+PASSED src/tests/test_gnn_processing.py::TestGNNParsersSerializers::test_serializers_imports
+PASSED src/tests/test_gnn_validation.py::TestGNNValidation::test_validation_imports
+PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_imports
+PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_instantiation
+PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validation
+PASSED src/tests/test_gui_functionality.py::TestGUIFunctionality::test_headless_artifacts
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_gui_markdown_helpers_imports
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_add_component_and_parse
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_update_states_append_and_replace
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_remove_component
+PASSED src/tests/test_llm_ollama.py::test_import_ollama_provider
+PASSED src/tests/test_llm_ollama.py::test_ollama_provider_initialize
+PASSED src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys
+PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports
+PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation
+PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation
+PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info
+PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers
+PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis
+PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation
+PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis
+PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration
+PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration
+PASSED src/tests/test_llm_overall.py::test_llm_module_completeness
+PASSED src/tests/test_llm_overall.py::test_llm_module_performance
+PASSED src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_file_exists
+PASSED src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes
+PASSED src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_component_availability
+PASSED src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help
+PASSED src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_discovery_logic
+PASSED src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_sorting
+PASSED src/tests/test_main_orchestrator.py::TestVirtualEnvironmentHandling::test_python_executable_detection
+PASSED src/tests/test_main_orchestrator.py::TestStepExecution::test_run_core_step
+PASSED src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution
+PASSED src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_environment_info_function
+PASSED src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations
+PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation
+PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports
+PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes
+PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution
+PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters
+PASSED src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration
+PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports
+PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation
+PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration
+PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization
+PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval
+PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution
+PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution
+PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution
+PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports
+PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_imports
+PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processor_instantiation
+PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_validator_instantiation
+PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_info
+PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options
+PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing
+PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_validation
+PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_term_validation
+PASSED src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_pipeline_integration
+PASSED src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration
+PASSED src/tests/test_ontology_overall.py::test_ontology_module_completeness
+PASSED src/tests/test_ontology_overall.py::test_ontology_module_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_memory_usage_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_file_io_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_json_processing_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_concurrent_operations_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_string_processing_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_list_operations_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_dictionary_operations_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_algorithm_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_network_operations_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_system_resource_performance
+PASSED src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_missing_discopy_graceful_degradation
+PASSED src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_matplotlib_rendering_fallbacks
+SKIPPED [1] src/tests/test_audio_integration.py:47: Audio module not available
+SKIPPED [1] src/tests/test_audio_integration.py:62: Audio module not available
+SKIPPED [1] src/tests/test_audio_integration.py:95: Audio module not available
+SKIPPED [1] src/tests/test_audio_integration.py:110: Audio module not available
+SKIPPED [1] src/tests/test_audio_sapf.py:30: SAPF validation not available
+SKIPPED [1] src/tests/test_audio_sapf.py:51: SAPF validation not available
+SKIPPED [1] src/tests/test_audio_sapf.py:90: SAPF conversion function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:119: SAPF oscillator function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:134: SAPF envelope function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:153: SAPF mixing function not available
+SKIPPED [1] src/tests/test_core_modules.py:136: Validation test skipped due to: Valid GNN file should have basic structure: simple.gnn
+assert False
+SKIPPED [1] src/tests/test_core_modules.py:610: SAPF conversion not available: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
+SKIPPED [1] src/tests/test_environment_dependencies.py:147: Dependency installation simulation not available: [Errno 2] No such file or directory: 'python'
+SKIPPED [1] src/tests/test_environment_integration.py:33: Setup module not available
+SKIPPED [1] src/tests/test_environment_integration.py:83: Setup module not available
+SKIPPED [1] src/tests/test_environment_overall.py:158: Environment MCP not available
+SKIPPED [1] src/tests/test_gnn_integration.py:28: GNN module not available
+SKIPPED [1] src/tests/test_gnn_overall.py:94: GNN reporting not available
+SKIPPED [1] src/tests/test_gnn_overall.py:117: GNN reporting not available
+SKIPPED [1] src/tests/test_gnn_parsing.py:69: GNN discovery not available
+SKIPPED [1] src/tests/test_gnn_parsing.py:101: GNN discovery not available
+SKIPPED [1] src/tests/test_gnn_processing.py:60: GNN serializers not available
+SKIPPED [1] src/tests/test_gnn_processing.py:80: GNN serializers not available
+SKIPPED [1] src/tests/test_gnn_validation.py:57: GNN validation not available
+SKIPPED [1] src/tests/test_gnn_validation.py:80: GNN validation not available
+SKIPPED [1] src/tests/test_llm_ollama.py:61: Ollama not available locally
+SKIPPED [1] src/tests/test_llm_ollama.py:90: Ollama not available locally
+SKIPPED [1] src/tests/test_mcp_integration.py:28: MCP module not available
+SKIPPED [1] src/tests/test_mcp_overall.py:160: MCP module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:47: MCP TCP server not available
+SKIPPED [1] src/tests/test_mcp_transport.py:60: MCP WebSocket server not available
+SKIPPED [1] src/tests/test_mcp_transport.py:77: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:90: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:103: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:121: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:134: MCP transport module not available
+SKIPPED [1] src/tests/test_performance_overall.py:40: Module imports not available: cannot import name 'exporter' from 'export' (/home/q/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py)
+ERROR src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_missing_input_directory
+ERROR src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_readonly_output_directory
+ERROR src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_corrupted_gnn_file_handling
+ERROR src/tests/test_pipeline_error_scenarios.py::TestResourceConstraintScenarios::test_large_gnn_file_handling
+ERROR src/tests/test_pipeline_error_scenarios.py::TestResourceConstraintScenarios::test_concurrent_pipeline_execution
+ERROR src/tests/test_pipeline_error_scenarios.py::TestPipelineIntegrationScenarios::test_pipeline_with_missing_dependencies
+ERROR src/tests/test_pipeline_error_scenarios.py::TestPipelineIntegrationScenarios::test_error_recovery_and_continuation
+FAILED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_version_compatibility - Failed: Version compatibility check failed: assert '3.11' >= '3.8'
+FAILED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_logging_integration - Failed: DID NOT RAISE <class 'SystemExit'>
+FAILED src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_missing_pymdp_graceful_degradation - AttributeError: 'PyMDPSimulation' object has no attribute 'create_model'
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 10 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+============= 3 failed, 266 passed, 37 skipped, 7 errors in 12.37s =============

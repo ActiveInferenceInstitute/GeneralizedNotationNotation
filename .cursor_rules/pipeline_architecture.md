@@ -46,11 +46,15 @@ Each numbered script corresponds to a specific module folder and implements real
 5. **Maintain separation of concerns** - scripts handle pipeline flow, modules handle domain logic
 
 **Current Implementation Status:**
-- **Thin Orchestrators**: Steps 0, 4, 10, 13-23 (correctly delegate to modules)
-- **Full Implementation**: Steps 1-3, 5-9, 11-12 (contain substantial logic - legacy pattern)
-- **Hybrid Implementation**: Some steps mix approaches
+- **Thin Orchestrators**: Steps 0, 3, 4, 10, 11, 13-23 (correctly delegate to modules)
+- **Hybrid Implementation**: Steps 1-2, 5-9, 12 (mix of orchestration and implementation)
+- **Legacy Pattern**: Some steps contain substantial logic but are being migrated to thin orchestrator pattern
 
-**Target Architecture**: All steps should eventually follow thin orchestrator pattern while maintaining current functionality.
+**Target Architecture**: All steps follow thin orchestrator pattern while maintaining current functionality. The pattern is:
+1. **Numbered Scripts** (e.g., `11_render.py`, `10_ontology.py`): Thin orchestrators that handle pipeline orchestration, argument parsing, logging, and result aggregation
+2. **Module `__init__.py`**: Imports and exposes functions from modular files within the module folder  
+3. **Modular Files** (e.g., `src/render/renderer.py`, `src/ontology/processor.py`): Contain the actual implementation of core methods
+4. **Tests**: All methods are tested in `src/tests/` with comprehensive test coverage
 
 ### Centralized Infrastructure
 

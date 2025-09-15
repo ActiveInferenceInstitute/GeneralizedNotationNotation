@@ -80,21 +80,32 @@ try:
         install_missing_dependencies
     )
     
-    from .config_loader import (
-        GNNPipelineConfig,
-        PipelineConfig,
-        TypeCheckerConfig,
-        OntologyConfig,
-        LLMConfig,
-        WebsiteConfig,
-        SetupConfig,
-        SAPFConfig,
-        ModelConfig,
-        load_config,
-        save_config,
+    from .configuration import (
+        ConfigurationManager,
+        ConfigSchema,
+        ConfigFormat,
+        ConfigSource,
+        ConfigurationError,
+        get_config_manager,
+        init_config,
+        get_config,
+        set_config,
         validate_config,
-        get_config_value,
-        set_config_value
+        get_pipeline_config,
+        get_step_config,
+        get_logging_config,
+        get_test_config
+    )
+    
+    from .file_processing_utils import (
+        detect_content_type,
+        extract_markdown_metadata,
+        extract_structured_metadata,
+        extract_generic_metadata,
+        analyze_nested_structure,
+        generate_processed_content,
+        generate_summary_report,
+        analyze_file_content
     )
     
     from .performance_tracker import (
@@ -193,17 +204,7 @@ try:
     )
 
     # Import structured logging
-    from .structured_logging import (
-        StructuredLogger,
-        get_pipeline_logger,
-        set_correlation_context,
-        log_pipeline_start,
-        log_pipeline_complete,
-        log_step_start,
-        log_step_success,
-        log_step_error,
-        log_step_warning
-    )
+    # Structured logging functionality is now in logging_utils
 
     # Import configuration management
     from .configuration import (
@@ -224,13 +225,10 @@ try:
     )
 
     # Import dependency audit system
-    from .dependency_audit import (
-        DependencyAuditor,
-        DependencyOptimizer,
-        DependencyInfo,
-        AuditResult,
-        audit_project_dependencies,
-        optimize_project_dependencies
+    from .health_check import (
+        PipelineHealthChecker,
+        run_health_check,
+        print_health_report
     )
 
 except ImportError as e:
@@ -295,20 +293,20 @@ __all__ = [
     'install_missing_dependencies',
     
     # Configuration utilities
-    'GNNPipelineConfig',
-    'PipelineConfig',
-    'TypeCheckerConfig',
-    'OntologyConfig',
-    'LLMConfig',
-    'WebsiteConfig',
-    'SetupConfig',
-    'SAPFConfig',
-    'ModelConfig',
-    'load_config',
-    'save_config',
+    'ConfigurationManager',
+    'ConfigSchema',
+    'ConfigFormat',
+    'ConfigSource',
+    'ConfigurationError',
+    'get_config_manager',
+    'init_config',
+    'get_config',
+    'set_config',
     'validate_config',
-    'get_config_value',
-    'set_config_value',
+    'get_pipeline_config',
+    'get_step_config',
+    'get_logging_config',
+    'get_test_config',
     
     # Performance utilities
     'PerformanceTracker',
@@ -336,16 +334,10 @@ __all__ = [
     'handle_network_error',
     'handle_timeout_error',
 
-    # Structured logging utilities
-    'StructuredLogger',
-    'get_pipeline_logger',
-    'set_correlation_context',
-    'log_pipeline_start',
-    'log_pipeline_complete',
-    'log_step_start',
-    'log_step_success',
-    'log_step_error',
-    'log_step_warning',
+    # Health check utilities
+    'PipelineHealthChecker',
+    'run_health_check',
+    'print_health_report',
 
     # Configuration utilities
     'ConfigurationManager',
@@ -363,13 +355,6 @@ __all__ = [
     'get_logging_config',
     'get_test_config',
 
-    # Dependency audit utilities
-    'DependencyAuditor',
-    'DependencyOptimizer',
-    'DependencyInfo',
-    'AuditResult',
-    'audit_project_dependencies',
-    'optimize_project_dependencies',
 
     # Test utilities
     'TEST_CATEGORIES',

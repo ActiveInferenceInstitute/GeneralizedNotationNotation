@@ -15,6 +15,7 @@ The GNN processing pipeline follows a **thin orchestrator pattern** for maintain
 
 ```
 src/
+├── 0_template.py                   # Example thin orchestrator - imports from template/
 ├── 11_render.py                    # Thin orchestrator - imports from render/
 ├── render/
 │   ├── __init__.py                 # Imports from renderer.py, pymdp/, etc.
@@ -26,6 +27,10 @@ src/
 ├── ontology/
 │   ├── __init__.py                 # Imports from processor.py
 │   └── processor.py                # Core ontology processing functions
+├── utils/                          # Shared utilities for all modules
+│   ├── file_processing_utils.py    # File analysis and processing utilities
+│   ├── pipeline_template.py        # Pipeline script creation utilities
+│   └── ...                         # Other utility modules
 └── tests/
     ├── test_render_integration.py  # Tests for render module
     └── test_ontology_integration.py # Tests for ontology module
@@ -33,15 +38,18 @@ src/
 
 ### ✅ Correct Pattern Examples
 
+- `0_template.py` imports from `src/template/` and calls `process_template_standardized()`, `demonstrate_utility_patterns()`, etc.
 - `11_render.py` imports from `src/render/` and calls `generate_pymdp_code()`, `generate_rxinfer_code()`, etc.
 - `10_ontology.py` imports from `src/ontology/` and calls `process_ontology_file()`, `extract_ontology_terms()`, etc.
 - Scripts contain only orchestration logic, not domain-specific processing code
 
 ### ❌ Incorrect Pattern Examples
 
+- Defining `process_template_standardized()` directly in `0_template.py`
 - Defining `generate_pymdp_code()` directly in `11_render.py`
 - Defining `process_ontology_file()` directly in `10_ontology.py`
 - Any long method definitions (>20 lines) in numbered scripts
+- Creating additional template files in `src/` directory (use `utils/` instead)
 
 ## Pipeline Safety and Reliability
 

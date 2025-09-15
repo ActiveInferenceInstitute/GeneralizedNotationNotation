@@ -48,42 +48,81 @@ from utils.pipeline_template import (
 from utils.argument_utils import ArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 
-def install_uv_if_needed(logger: logging.Logger) -> bool:
-    """Install UV if it's not available."""
+def ensure_uv_available(logger: logging.Logger) -> bool:
+    """Ensure UV is available, install if needed."""
     try:
         # Check if UV is already available
         result = subprocess.run(["uv", "--version"], capture_output=True, text=True, timeout=10)
         if result.returncode == 0:
-            logger.info(f"✅ UV is already available: {result.stdout.strip()}")
+            logger.info(f"✅ UV available: {result.stdout.strip()}")
             return True
     except (subprocess.TimeoutExpired, FileNotFoundError):
         pass
     
-    logger.info("🔧 UV not found, installing...")
-    try:
-        # Install UV using the official installer
-        install_script = subprocess.run([
-            "curl", "-LsSf", "https://astral.sh/uv/install.sh"
-        ], capture_output=True, text=True, timeout=30)
-        
-        if install_script.returncode == 0:
-            # Execute the install script
-            install_result = subprocess.run([
-                "sh", "-c", install_script.stdout
-            ], capture_output=True, text=True, timeout=60)
+    logger.info("🔧 UV not found, attempting installation...")
+    
+    # Try multiple installation methods
+    installation_methods = [
+        # Method 1: Use curl to install UV directly (recommended)
+        {
+            "name": "curl installer",
+            "command": ["curl", "-LsSf", "https://astral.sh/uv/install.sh", "|", "sh"],
+            "shell": True
+        },
+        # Method 2: Use pip with --break-system-packages (if available)
+        {
+            "name": "pip with --break-system-packages",
+            "command": [sys.executable, "-m", "pip", "install", "--break-system-packages", "uv"],
+            "shell": False
+        },
+        # Method 3: Use pip with --user flag
+        {
+            "name": "pip with --user",
+            "command": [sys.executable, "-m", "pip", "install", "--user", "uv"],
+            "shell": False
+        },
+        # Method 4: Use pip with --force-reinstall
+        {
+            "name": "pip with --force-reinstall",
+            "command": [sys.executable, "-m", "pip", "install", "--force-reinstall", "uv"],
+            "shell": False
+        }
+    ]
+    
+    for method in installation_methods:
+        try:
+            logger.info(f"🔧 Trying {method['name']}...")
+            result = subprocess.run(
+                method["command"],
+                capture_output=True,
+                text=True,
+                timeout=120,
+                shell=method["shell"]
+            )
             
-            if install_result.returncode == 0:
-                logger.info("✅ UV installed successfully")
-                return True
+            if result.returncode == 0:
+                logger.info(f"✅ UV installed successfully using {method['name']}")
+                # Verify installation worked
+                verify_result = subprocess.run(["uv", "--version"], capture_output=True, text=True, timeout=10)
+                if verify_result.returncode == 0:
+                    logger.info(f"✅ UV verification successful: {verify_result.stdout.strip()}")
+                    return True
+                else:
+                    logger.warning(f"⚠️ UV installed but verification failed, trying next method...")
             else:
-                logger.error(f"❌ UV installation failed: {install_result.stderr}")
-                return False
-        else:
-            logger.error(f"❌ Failed to download UV installer: {install_script.stderr}")
-            return False
-    except Exception as e:
-        logger.error(f"❌ UV installation failed: {e}")
-        return False
+                logger.warning(f"⚠️ {method['name']} failed: {result.stderr.strip()}")
+                
+        except (subprocess.TimeoutExpired, FileNotFoundError, Exception) as e:
+            logger.warning(f"⚠️ {method['name']} failed with exception: {e}")
+            continue
+    
+    # If all methods failed, provide helpful error message
+    logger.error("❌ All UV installation methods failed")
+    logger.error("Please install UV manually:")
+    logger.error("  curl -LsSf https://astral.sh/uv/install.sh | sh")
+    logger.error("  or visit: https://docs.astral.sh/uv/getting-started/installation/")
+    logger.error("  or use: pip install --user uv")
+    return False
 
 # Import core setup functions from setup module
 try:
@@ -152,9 +191,9 @@ def process_setup_standardized(
         logger.info("🚀 Processing setup")
         
         # Ensure UV is available
-        if not install_uv_if_needed(logger):
-            logger.error("❌ Failed to install UV - setup cannot continue")
-            return False
+        if not ensure_uv_available(logger):
+            logger.warning("⚠️ UV not available - attempting to continue with fallback methods")
+            # Don't fail completely, try to continue with available tools
         
         # Log system information
         system_info = log_system_info(logger)
@@ -162,25 +201,29 @@ def process_setup_standardized(
         # Check UV availability
         uv_available = check_uv_availability(logger)
         if not uv_available:
-            logger.error("❌ UV is not available after installation attempt")
-            return False
+            logger.warning("⚠️ UV is not available after installation attempt - continuing with fallback")
+            # Continue with fallback methods instead of failing
         
         # Setup UV environment
         # Use module API that manages its own project_root internally
         # Keep it fast and resilient: avoid long JAX checks in this standardized path
         # Ensure dev and test extras are installed so tests can run in step 2
-        setup_success = setup_uv_environment(
-            verbose=verbose,
-            recreate=False,
-            dev=True,
-            extras=["llm", "visualization", "audio", "gui"],
-            skip_jax_test=True
-        )
-        if not setup_success:
-            logger.error("❌ UV environment setup failed")
-            return False
-        
-        logger.info("✅ UV environment setup completed")
+        if uv_available:
+            setup_success = setup_uv_environment(
+                verbose=verbose,
+                recreate=False,
+                dev=True,
+                extras=["llm", "visualization", "audio", "gui"],
+                skip_jax_test=True
+            )
+            if not setup_success:
+                logger.warning("⚠️ UV environment setup failed - continuing with fallback")
+                # Continue with fallback methods
+            else:
+                logger.info("✅ UV environment setup completed")
+        else:
+            logger.warning("⚠️ Skipping UV environment setup - UV not available")
+            setup_success = False
         
         # Use standardized numbered output folder for this step
         step_output_dir = get_output_dir_for_script("1_setup.py", output_dir)

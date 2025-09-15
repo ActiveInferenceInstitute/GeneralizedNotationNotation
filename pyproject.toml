@@ -28,7 +28,7 @@ classifiers = [
 
 # Core dependencies (essential for basic functionality)
 dependencies = [
-    # Core scientific computing (lightweight)
+    # Core scientific computing
     "numpy>=1.21.0",
     "matplotlib>=3.5.0",
     "networkx>=2.6.0",
@@ -36,67 +36,63 @@ dependencies = [
     "pyyaml>=6.0",
     "scipy>=1.7.0",
     "scikit-learn>=1.0.0",
-    # Testing and development (essential)
+    # System utilities
+    "psutil>=5.8.0",
+    "toml>=0.10.0",
+    "defusedxml>=0.7.0",
+    # HTTP communication
+    "httpx>=0.27.0",
+    # GNN processing
+    "markdown>=3.0.0",
+    # Active Inference ecosystem
+    "pymdp>=0.0.1",
+    # High-performance computing (CPU only for compatibility)
+    "jax[cpu]>=0.4.0",
+    "jaxlib>=0.4.0",
+    "flax>=0.7.0",
+    "optax>=0.1.0",
+    # Visualization
+    "discopy[matrix]>=1.0.0",
+    "altair>=5.0.0",
+    "plotly>=6.2.0",
+]
+
+# Development dependencies
+[project.optional-dependencies]
+dev = [
+    # Testing framework
     "pytest>=6.0.0",
     "pytest-timeout>=2.1.0",
     "pytest-asyncio>=0.23.0",
     "pytest-cov>=3.0.0",
     "pytest-json-report>=1.5.0",
     "pytest-xdist>=2.5.0",
-    "black>=22.0.0",
-    "flake8>=4.0.0",
-    "mypy>=0.950",
-    # System monitoring and utilities
-    "psutil>=5.8.0",
-    "toml>=0.10.0",
-    "defusedxml>=0.7.0",
-    # Security tools
-    "bandit>=1.7.0",
-    "safety>=2.3.0",
-    # HTTP and async communication
-    "aiohttp>=3.9.0",
-    "httpx>=0.27.0",
-    # GNN processing
-    "markdown>=3.0.0",
-    # Active Inference ecosystem
-    "pymdp>=0.0.1",
-    # High-performance computing
-    "jax[cpu]>=0.4.0",
-    "jaxlib>=0.4.0",
-    "flax>=0.7.0",
-    "optax>=0.1.0",
-    # Visualization and diagramming
-    "discopy[matrix]>=1.0.0",
-    "altair>=5.0.0",
-    "plotly>=6.2.0",
-    "gradio>=4.44.1",
-]
-
-# Development dependencies
-[project.optional-dependencies]
-dev = [
-    # Additional testing tools
     "pytest-mock>=3.10.0",
     "pytest-benchmark>=4.0.0",
     "pytest-sugar>=0.9.0",
     
     # Code quality
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "mypy>=0.950",
     "isort>=5.10.0",
     "pre-commit>=2.20.0",
     "mypy-extensions>=1.0.0",
+    
+    # Security tools
+    "bandit>=1.7.0",
+    "safety>=2.3.0",
     
     # Documentation
     "sphinx>=5.0.0",
     "sphinx-rtd-theme>=1.0.0",
     "myst-parser>=0.18.0",
     
-    # Debugging and development
+    # Development tools
     "ipython>=8.0.0",
     "ipdb>=0.13.0",
     "jupyter>=1.0.0",
     "ipywidgets>=7.6.0",
-    
-    # Performance profiling
     "py-spy>=0.3.0",
     "memory-profiler>=0.60.0",
 ]

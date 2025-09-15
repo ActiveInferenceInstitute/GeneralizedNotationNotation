@@ -14,7 +14,7 @@ import re
 import sys
 
 # Import config loading functionality
-from .config_loader import load_config, GNNPipelineConfig
+from .configuration import get_config, init_config
 
 logger = logging.getLogger(__name__)
 
@@ -1105,21 +1105,19 @@ def parse_arguments() -> PipelineArguments:
             config_path = project_root / config_path
         
         # Load the actual configuration from YAML file
-        config = load_config(config_path)
+        config_manager = init_config([config_path])
+        config = config_manager.get_config()
         logger.info(f"Configuration loaded from {config_path}")
     except Exception as e:
         logger.warning(f"Failed to load configuration from {args.config_file}: {e}")
         logger.info("Using default configuration")
-        config = GNNPipelineConfig()
+        config = {}
     
     # Convert config to PipelineArguments
     pipeline_args = PipelineArguments()
     
-    # Set values from config
-    config_dict = config.to_pipeline_arguments()
-    for key, value in config_dict.items():
-        if hasattr(pipeline_args, key):
-            setattr(pipeline_args, key, value)
+    # Set values from config (simplified for now)
+    # TODO: Implement proper config mapping if needed
     
     # Resolve relative paths relative to project root
     if not pipeline_args.target_dir.is_absolute():
