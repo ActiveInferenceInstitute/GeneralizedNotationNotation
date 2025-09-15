@@ -1,10 +1,10 @@
 Execution Results for Classic Active Inference POMDP Agent v1_pymdp.py
-Timestamp: 2025-09-15T13:45:36.840619
+Timestamp: 2025-09-15T16:44:50.834369
 Return Code: 1
 Execution Time: 0.03 seconds
 Model: actinf_pomdp_agent
 Framework: pymdp
-Output Directory: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/pymdp
+Output Directory: output/12_execute_output/12_execute_output/actinf_pomdp_agent/pymdp
 
 STDOUT:
 

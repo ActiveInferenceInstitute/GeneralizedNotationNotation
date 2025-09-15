@@ -175,16 +175,25 @@ MODULAR_TEST_CATEGORIES = {
     "type_checker": {
         "name": "Type Checker Module Tests",
         "description": "Type checking and validation tests",
-        "files": ["test_type_checker_overall.py"],
+        "files": ["test_type_checker_overall.py", "test_type_checker_pomdp.py"],
         "markers": [],
         "timeout_seconds": 90,
         "max_failures": 6,
         "parallel": True
     },
+    "pomdp": {
+        "name": "POMDP Module Tests",
+        "description": "POMDP-specific analysis and validation tests",
+        "files": ["test_type_checker_pomdp.py", "test_pomdp_integration.py", "test_pomdp_validation.py"],
+        "markers": ["pomdp"],
+        "timeout_seconds": 120,
+        "max_failures": 8,
+        "parallel": True
+    },
     "validation": {
         "name": "Validation Module Tests",
         "description": "Validation and consistency tests",
-        "files": ["test_validation_overall.py"],
+        "files": ["test_validation_overall.py", "test_pomdp_validation.py"],
         "markers": [],
         "timeout_seconds": 90,
         "max_failures": 6,
@@ -258,7 +267,7 @@ MODULAR_TEST_CATEGORIES = {
         "description": "Comprehensive API and integration tests",
         "files": ["test_comprehensive_api.py", "test_core_modules.py", "test_fast_suite.py",
                   "test_main_orchestrator.py", "test_coverage_overall.py", "test_performance_overall.py",
-                  "test_unit_overall.py"],
+                  "test_unit_overall.py", "test_pomdp_integration.py", "test_pomdp_validation.py"],
         "markers": [],
         "timeout_seconds": 300,
         "max_failures": 15,
@@ -998,9 +1007,9 @@ class ModularTestRunner:
             return True
             
         if hasattr(self.args, 'fast_only') and self.args.fast_only:
-            # In fast mode, run core, pipeline, validation, utilities, and fast_suite
+            # In fast mode, run core, pipeline, validation, utilities, fast_suite, and pomdp
             # This gives better coverage while still being fast
-            return category in ["core", "pipeline", "validation", "utilities", "fast_suite"]
+            return category in ["core", "pipeline", "validation", "utilities", "fast_suite", "pomdp"]
         
         # Skip performance tests if not explicitly included
         if category == "performance" and hasattr(self.args, 'include_performance') and not self.args.include_performance:

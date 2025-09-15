@@ -28,7 +28,8 @@ def execute_pymdp_simulation(
     gnn_spec: Dict[str, Any],
     output_dir: Path,
     num_episodes: int = 5,
-    verbose: bool = True
+    verbose: bool = True,
+    config_overrides: Optional[Dict[str, Any]] = None
 ) -> Tuple[bool, Dict[str, Any]]:
     """
     Execute PyMDP simulation configured from GNN specification.
@@ -77,6 +78,11 @@ def execute_pymdp_simulation(
             'verbose': verbose
         }
         
+        # Apply config overrides if provided
+        if config_overrides:
+            simulation_config.update(config_overrides)
+            logger.info(f"Applied config overrides: {config_overrides}")
+        
         # Add any additional parameters from GNN spec
         model_params = gnn_spec.get('model_parameters', {})
         if 'action_precision' in model_params:
@@ -91,17 +97,12 @@ def execute_pymdp_simulation(
         # Create and run simulation
         logger.info("Creating PyMDP simulation instance...")
         
-        simulation = PyMDPSimulation(config=simulation_config)
-        
-        # Configure from GNN specification if available
-        if 'initial_matrices' in gnn_spec:
-            logger.info("Configuring simulation matrices from GNN specification...")
-            simulation.configure_from_gnn(gnn_spec)
+        simulation = PyMDPSimulation(**simulation_config)
         
         logger.info(f"Running PyMDP simulation with {num_episodes} episodes...")
         
         # Run the simulation
-        results = simulation.run_simulation(output_dir=output_dir)
+        results = simulation.run_simulation()
         
         if results['success']:
             logger.info(f"✓ PyMDP simulation completed successfully!")

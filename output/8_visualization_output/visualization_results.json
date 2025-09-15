@@ -1,29 +1,29 @@
 {
-  "timestamp": "2025-09-15T13:45:30.629403",
-  "source_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output",
+  "timestamp": "2025-09-15T16:44:41.933661",
+  "source_directory": "input/gnn_files",
+  "output_directory": "output/8_visualization_output",
   "files_visualized": [
     {
       "file_name": "actinf_pomdp_agent.md",
-      "file_path": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "visualizations": {
         "matrix": {
           "success": true,
           "result": [
-            "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/matrix_analysis.png",
-            "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/matrix_statistics.png"
+            "output/8_visualization_output/actinf_pomdp_agent/matrix_analysis.png",
+            "output/8_visualization_output/actinf_pomdp_agent/matrix_statistics.png"
           ]
         },
         "network": {
           "success": true,
           "result": [
-            "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png"
+            "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png"
           ]
         },
         "combined": {
           "success": true,
           "result": [
-            "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png"
+            "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png"
           ]
         }
       },

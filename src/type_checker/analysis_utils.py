@@ -169,6 +169,7 @@ def analyze_connections(connections: List[Dict[str, Any]]) -> Dict[str, Any]:
     
     Args:
         connections: List of connection dictionaries with type, source_variables, target_variables, etc.
+                    OR edges with source, target fields (from GNN parser)
         
     Returns:
         Dictionary containing comprehensive connection analysis results
@@ -216,6 +217,7 @@ def analyze_connections(connections: List[Dict[str, Any]]) -> Dict[str, Any]:
 
     variable_connections: Dict[str, Dict[str, int]] = {}
     all_variables: set[str] = set()
+    temporal_connections: set[str] = set()  # Track temporal connections for Active Inference
 
     for i, conn in enumerate(valid_connections):
         try:
@@ -227,17 +229,25 @@ def analyze_connections(connections: List[Dict[str, Any]]) -> Dict[str, Any]:
                 connection_analysis["connection_type_distribution"].get(conn_type, 0) + 1
             )
 
-            # Extract and validate source variables
-            sources = conn.get("source_variables", [])
-            if not isinstance(sources, list):
-                logger.warning(f"Invalid source_variables format for connection {i}: {sources}")
-                sources = []
+            # Handle both connection formats: edges (source/target) and connections (source_variables/target_variables)
+            sources = []
+            targets = []
             
-            # Extract and validate target variables
-            targets = conn.get("target_variables", [])
-            if not isinstance(targets, list):
-                logger.warning(f"Invalid target_variables format for connection {i}: {targets}")
-                targets = []
+            # Check if this is an edge format (from GNN parser)
+            if "source" in conn and "target" in conn:
+                sources = [conn["source"]]
+                targets = [conn["target"]]
+            else:
+                # Handle connection format (source_variables/target_variables)
+                sources = conn.get("source_variables", [])
+                if not isinstance(sources, list):
+                    logger.warning(f"Invalid source_variables format for connection {i}: {sources}")
+                    sources = []
+                
+                targets = conn.get("target_variables", [])
+                if not isinstance(targets, list):
+                    logger.warning(f"Invalid target_variables format for connection {i}: {targets}")
+                    targets = []
 
             # Process source variables
             for source in sources:
@@ -258,6 +268,23 @@ def analyze_connections(connections: List[Dict[str, Any]]) -> Dict[str, Any]:
                 if target not in variable_connections:
                     variable_connections[target] = {"in": 0, "out": 0}
                 variable_connections[target]["in"] += 1
+                
+                # Track temporal connections for Active Inference cycle detection
+                # Check if any source or target has temporal markers
+                is_temporal = False
+                for s in sources:
+                    if "_prime" in s or "+" in s:
+                        temporal_connections.add(s)
+                        is_temporal = True
+                if "_prime" in target or "+" in target:
+                    temporal_connections.add(target)
+                    is_temporal = True
+                
+                # If this is a temporal connection, mark all involved variables as temporal
+                if is_temporal:
+                    for s in sources:
+                        temporal_connections.add(s)
+                    temporal_connections.add(target)
                 
         except Exception as e:
             logger.error(f"Error processing connection {i}: {e}")
@@ -298,13 +325,48 @@ def analyze_connections(connections: List[Dict[str, Any]]) -> Dict[str, Any]:
                 connection_analysis["graph_metrics"]["in_degree_distribution"].get(degree_key, 0) + 1
             )
         
-        # Simple cycle detection (basic check for self-loops)
-        self_loops = sum(1 for v in variable_connections.values() if v["in"] > 0 and v["out"] > 0)
-        if self_loops > 0:
+        # Active Inference-aware cycle detection
+        # Only flag as cycles if variables have both input and output connections AND are not temporal
+        # AND are not valid Active Inference components
+        potential_cycles = []
+        bidirectional_vars = []
+        
+        # Valid Active Inference components that can have bidirectional connections
+        valid_actinf_components = {
+            'A', 'B', 'C', 'D', 'E',  # Matrices and vectors
+            'F', 'G',  # Free energy components
+            'π',  # Policy
+            's', 'o', 'u', 't'  # State, observation, action, time
+        }
+        
+        for var, conn_info in variable_connections.items():
+            if conn_info["in"] > 0 and conn_info["out"] > 0:
+                bidirectional_vars.append(var)
+                # Check if this is a temporal connection (valid for Active Inference)
+                is_temporal = var in temporal_connections
+                # Check if this is a valid Active Inference component
+                is_actinf_component = var in valid_actinf_components
+                
+                # Only flag as cycle if it's neither temporal nor a valid Active Inference component
+                if not is_temporal and not is_actinf_component:
+                    potential_cycles.append(var)
+        
+        # Debug logging (only in debug mode)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(f"Bidirectional variables: {bidirectional_vars}")
+            logger.debug(f"Temporal connections: {list(temporal_connections)}")
+            logger.debug(f"Valid Active Inference components: {valid_actinf_components}")
+            logger.debug(f"Potential cycles: {potential_cycles}")
+        
+        if potential_cycles:
             connection_analysis["graph_metrics"]["cycles_detected"] = True
             connection_analysis["performance_warnings"].append(
-                f"Potential cycles detected: {self_loops} variables with both input and output connections"
+                f"Potential cycles detected: {len(potential_cycles)} variables with both input and output connections"
             )
+        elif temporal_connections or any(var in valid_actinf_components for var in bidirectional_vars):
+            # Log that Active Inference patterns were detected but not flagged as cycles
+            logger.debug(f"Detected Active Inference pattern: {len(temporal_connections)} temporal connections, "
+                        f"{len([v for v in bidirectional_vars if v in valid_actinf_components])} valid components")
         
         # Estimate strongly connected components (simplified)
         connection_analysis["graph_metrics"]["strongly_connected_components"] = max(1, len(all_variables) - len(valid_connections))

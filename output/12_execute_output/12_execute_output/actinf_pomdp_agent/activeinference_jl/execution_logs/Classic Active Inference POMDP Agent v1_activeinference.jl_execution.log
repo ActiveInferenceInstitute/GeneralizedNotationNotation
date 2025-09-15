@@ -1,28 +1,46 @@
 Execution Results for Classic Active Inference POMDP Agent v1_activeinference.jl
-Timestamp: 2025-09-15T13:45:38.225362
+Timestamp: 2025-09-15T16:44:59.435931
 Return Code: 1
-Execution Time: 2.09 seconds
+Execution Time: 9.50 seconds
 Model: actinf_pomdp_agent
 Framework: activeinference_jl
-Output Directory: /home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/activeinference_jl
+Output Directory: output/12_execute_output/12_execute_output/actinf_pomdp_agent/activeinference_jl
 
 STDOUT:
+======================================================================
+ActiveInference.jl Script for GNN Model: Classic Active Inference POMDP Agent v1
+======================================================================
+Julia version: 1.10.2
+Date: 2025-09-15T16:45:05.865
+Model dimensions: States=3, Observations=3, Actions=1
+
+📁 Output directory: activeinference_outputs_2025-09-15_16-45-05
+🔧 Creating model matrices from GNN specification...
+✅ A matrix created: (3,)
+✅ B matrix created: (3,)
+✅ C vector created: 3
+✅ D vector created: 3
+✅ E vector created: 3
+🔧 Normalizing matrices...
 
 
 STDERR:
-ERROR: LoadError: ArgumentError: Package ActiveInference not found in current path.
-- Run `import Pkg; Pkg.add("ActiveInference")` to install the ActiveInference package.
+ERROR: LoadError: MethodError: no method matching isless(::Int64, ::Vector{Float64})
+
+Closest candidates are:
+  isless(!Matched::Missing, ::Any)
+   @ Base missing.jl:87
+  isless(::Any, !Matched::Missing)
+   @ Base missing.jl:88
+  isless(::Integer, !Matched::ForwardDiff.Dual{Ty}) where Ty
+   @ ForwardDiff ~/.julia/packages/ForwardDiff/X74OO/src/dual.jl:160
+  ...
+
 Stacktrace:
- [1] macro expansion
-   @ ./loading.jl:1772 [inlined]
- [2] macro expansion
-   @ ./lock.jl:267 [inlined]
- [3] __require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:1753
- [4] #invoke_in_world#3
-   @ ./essentials.jl:926 [inlined]
- [5] invoke_in_world
-   @ ./essentials.jl:923 [inlined]
- [6] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:1746
-in expression starting at /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:27
+ [1] <(x::Int64, y::Vector{Float64})
+   @ Base ./operators.jl:352
+ [2] >(x::Vector{Float64}, y::Int64)
+   @ Base ./operators.jl:378
+ [3] top-level scope
+   @ /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:81
+in expression starting at /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:79

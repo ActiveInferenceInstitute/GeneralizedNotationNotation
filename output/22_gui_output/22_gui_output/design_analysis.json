@@ -109,6 +109,6 @@
       "num_actions": "3       # B actions_dim=3 (controlled by \u03c0)"
     }
   },
-  "export_path": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/22_gui_output/22_gui_output/designed_model_gui_3.md",
+  "export_path": "output/22_gui_output/22_gui_output/designed_model_gui_3.md",
   "headless_mode": true
 }

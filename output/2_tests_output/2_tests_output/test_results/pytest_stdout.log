@@ -99,16 +99,18 @@ INFO     src.llm.llm_processor:llm_processor.py:84 Loaded API keys for providers
 INFO     src.llm.llm_operations:llm_operations.py:87 Created new LLM processor
 WARNING  src.llm.providers.openai_provider:openai_provider.py:76 OpenAI API key not provided
 WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize openai provider
-ERROR    src.llm.providers.openrouter_provider:openrouter_provider.py:111 Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
-ERROR    src.llm.providers.openrouter_provider:openrouter_provider.py:112 Install aiohttp with: pip install aiohttp>=3.9.0
+WARNING  src.llm.providers.openrouter_provider:openrouter_provider.py:116 OpenRouter API key not provided
 WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize openrouter provider
-ERROR    src.llm.providers.perplexity_provider:perplexity_provider.py:85 Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
-ERROR    src.llm.providers.perplexity_provider:perplexity_provider.py:86 Install aiohttp with: pip install aiohttp>=3.9.0
+WARNING  src.llm.providers.perplexity_provider:perplexity_provider.py:90 Perplexity API key not provided
 WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize perplexity provider
-WARNING  src.llm.providers.ollama_provider:ollama_provider.py:88 Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
-WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize ollama provider
-WARNING  src.llm.llm_processor:llm_processor.py:213 No LLM providers could be initialized
-WARNING  src.llm.analyzer:analyzer.py:84 LLM summary generation failed for simple.gnn: Processor not initialized
+INFO     src.llm.providers.ollama_provider:ollama_provider.py:79 Ollama provider initialized (python client)
+INFO     src.llm.llm_processor:llm_processor.py:201 Initialized ollama provider
+INFO     src.llm.llm_processor:llm_processor.py:211 LLM Processor initialized with 1 providers
+ERROR    src.llm.providers.ollama_provider:ollama_provider.py:186 Ollama chat failed: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+ERROR    src.llm.llm_processor:llm_processor.py:334 Analysis failed with ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+ERROR    src.llm.providers.ollama_provider:ollama_provider.py:186 Ollama chat failed: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+WARNING  src.llm.llm_processor:llm_processor.py:356 Fallback failed with ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+WARNING  src.llm.analyzer:analyzer.py:84 LLM summary generation failed for simple.gnn: All providers failed for analysis
 ______________ TestMCPModuleComprehensive.test_mcp_module_imports ______________
 ------------------------------ Captured log call -------------------------------
 INFO     mcp:mcp.py:478 Enhanced MCP server initialized
@@ -168,21 +170,21 @@ _________________________ test_fast_suite_completeness _________________________
 ------------------------------ Captured log call -------------------------------
 INFO     root:test_fast_suite.py:318 Fast test suite completeness validated
 ============================= slowest 15 durations =============================
+0.38s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
 0.05s call     src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports
 0.02s call     src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
 0.02s call     src/tests/test_fast_suite.py::TestFastRender::test_render_module_import
-0.00s call     src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import
-0.00s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
+0.01s call     src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import
 0.00s call     src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports
+0.00s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
 0.00s call     src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import
-0.00s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
 0.00s call     src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import
+0.00s call     src/tests/test_fast_suite.py::TestFastPipelineComponents::test_type_checker_import
 0.00s call     src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports
-0.00s call     src/tests/test_fast_suite.py::TestFastExport::test_export_module_import
-0.00s call     src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion
-0.00s call     src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_module_import
 0.00s call     src/tests/test_fast_suite.py::TestFastExport::test_basic_export_functionality
-0.00s call     src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports
+0.00s call     src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_module_import
+0.00s call     src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion
+0.00s call     src/tests/test_fast_suite.py::TestFastExport::test_export_module_import
 =========================== short test summary info ============================
 PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports
 PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery
@@ -237,4 +239,4 @@ PASSED src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_
 PASSED src/tests/test_fast_suite.py::test_fast_suite_completeness
 SKIPPED [1] src/tests/test_core_modules.py:139: Validation test skipped due to: Valid GNN file should have basic structure: simple.gnn
 assert False
-======================== 51 passed, 1 skipped in 0.19s =========================
+======================== 51 passed, 1 skipped in 0.57s =========================

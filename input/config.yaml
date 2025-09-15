@@ -86,6 +86,23 @@ validation:
   
   # Validation timeout (seconds)
   timeout: 300
+  
+  # POMDP-specific validation
+  pomdp:
+    # Enable POMDP mode for Active Inference models
+    enabled: true
+    
+    # Path to ontology terms file
+    ontology_file: "input/ontology_terms.json"
+    
+    # POMDP validation strictness
+    strict_ontology: true
+    strict_dimensions: true
+    
+    # POMDP-specific analysis
+    analyze_complexity: true
+    estimate_resources: true
+    generate_summary: true
 
 # Performance settings
 performance:

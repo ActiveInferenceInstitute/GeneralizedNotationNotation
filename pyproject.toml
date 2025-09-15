@@ -94,6 +94,8 @@ dependencies = [
     "discopy[matrix]>=1.0.0",
     "altair>=5.0.0",
     "plotly>=6.2.0",
+    "aiohttp>=3.12.15",
+    "ollama>=0.5.3",
 ]
 
 # Development dependencies

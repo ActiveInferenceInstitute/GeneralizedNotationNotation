@@ -29,9 +29,9 @@ from .pymdp_visualizer import PyMDPVisualizer, create_visualizer, save_all_visua
 # Import execution functions
 from .executor import (
     execute_pymdp_simulation_from_gnn,
-    execute_pymdp_simulation,
     execute_pymdp_scripts
 )
+from .execute_pymdp import execute_pymdp_simulation
 
 # Import validation functions
 from .validator import (

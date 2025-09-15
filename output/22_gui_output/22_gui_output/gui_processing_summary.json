@@ -14,7 +14,7 @@
       "gui_type": "gui_1",
       "description": "Form-based Interactive GNN Constructor",
       "success": true,
-      "output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/22_gui_output/22_gui_output/gui_1_output/constructed_model_gui_1.md",
+      "output_file": "output/22_gui_output/22_gui_output/gui_1_output/constructed_model_gui_1.md",
       "backend": "headless",
       "features": [
         "Component management via forms",
@@ -27,7 +27,7 @@
       "gui_type": "gui_2",
       "description": "Visual Matrix Editor for GNN Models",
       "success": true,
-      "output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/22_gui_output/22_gui_output/gui_2_output/visual_model_gui_2.md",
+      "output_file": "output/22_gui_output/22_gui_output/gui_2_output/visual_model_gui_2.md",
       "backend": "headless",
       "features": [
         "Visual matrix representation and editing",

@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-09-15T13:31:44.170275",
-  "correlation_id": "a7fe1a96",
-  "source_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/9_advanced_viz_output",
+  "timestamp": "2025-09-15T16:44:47.644508",
+  "correlation_id": "554c0496",
+  "source_directory": "input/gnn_files",
+  "output_directory": "output/9_advanced_viz_output/9_advanced_viz_output",
   "configuration": {
     "visualization_type": "all",
     "interactive": true,
@@ -29,12 +29,12 @@
       "file_name": "actinf_pomdp_agent.md",
       "success": true,
       "fallback_used": false,
-      "duration_seconds": 1.101432,
+      "duration_seconds": 1.153015,
       "generated_files": [
-        "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
-        "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
-        "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_advanced_summary.html",
-        "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_advanced_viz_manifest.json"
+        "output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+        "output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+        "output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_advanced_summary.html",
+        "output/9_advanced_viz_output/9_advanced_viz_output/actinf_pomdp_agent/actinf_pomdp_agent_advanced_viz_manifest.json"
       ],
       "error": null
     }

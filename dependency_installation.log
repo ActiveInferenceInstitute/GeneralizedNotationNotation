@@ -1,37 +1,37 @@
-[2025-09-15 13:31:18] INFO: Starting dependency installation...
-[2025-09-15 13:31:18] INFO: Julia is already installed
-[2025-09-15 13:31:18] INFO: Installing PyMDP...
-[2025-09-15 13:31:18] INFO: Running: uv pip install pymdp
-[2025-09-15 13:31:18] INFO: PyMDP installed successfully via UV
-[2025-09-15 13:31:18] INFO: Installing missing Python packages...
-[2025-09-15 13:31:18] INFO: Running: uv pip install aiohttp>=3.9.0
-[2025-09-15 13:31:18] INFO: Installed aiohttp>=3.9.0 via UV
-[2025-09-15 13:31:18] INFO: Running: uv pip install ollama
-[2025-09-15 13:31:18] INFO: Installed ollama via UV
-[2025-09-15 13:31:18] INFO: Running: uv pip install pymdp
-[2025-09-15 13:31:18] INFO: Installed pymdp via UV
-[2025-09-15 13:31:18] INFO: ============================================================
-[2025-09-15 13:31:18] INFO: API KEY CONFIGURATION GUIDANCE
-[2025-09-15 13:31:18] INFO: ============================================================
-[2025-09-15 13:31:18] INFO: Created API key template: /home/q/Documents/GitHub/GeneralizedNotationNotation/api_keys_template.env
-[2025-09-15 13:31:18] INFO: 
-[2025-09-15 13:31:18] INFO: To configure API keys for LLM providers:
-[2025-09-15 13:31:18] INFO: 1. Copy api_keys_template.env to .env
-[2025-09-15 13:31:18] INFO: 2. Edit .env and add your actual API keys
-[2025-09-15 13:31:18] INFO: 3. Or set environment variables:
-[2025-09-15 13:31:18] INFO:    export OPENAI_API_KEY='your_key_here'
-[2025-09-15 13:31:18] INFO:    export ANTHROPIC_API_KEY='your_key_here'
-[2025-09-15 13:31:18] INFO:    export OPENROUTER_API_KEY='your_key_here'
-[2025-09-15 13:31:18] INFO:    export PERPLEXITY_API_KEY='your_key_here'
-[2025-09-15 13:31:18] INFO: 
-[2025-09-15 13:31:18] INFO: For local LLM (Ollama):
-[2025-09-15 13:31:18] INFO: 1. Install Ollama: https://ollama.ai
-[2025-09-15 13:31:18] INFO: 2. Pull a model: ollama pull llama2
-[2025-09-15 13:31:18] INFO: 3. Set OLLAMA_BASE_URL=http://localhost:11434
-[2025-09-15 13:31:18] INFO: 
-[2025-09-15 13:31:18] INFO: Security best practices:
-[2025-09-15 13:31:18] INFO: - Never commit .env files to version control
-[2025-09-15 13:31:18] INFO: - Use environment variables in production
-[2025-09-15 13:31:18] INFO: - Rotate API keys regularly
-[2025-09-15 13:31:18] INFO: - Use least privilege principle
-[2025-09-15 13:31:18] INFO: ============================================================
+[2025-09-15 14:41:36] INFO: Starting dependency installation...
+[2025-09-15 14:41:37] INFO: Julia is already installed
+[2025-09-15 14:41:37] INFO: Installing PyMDP...
+[2025-09-15 14:41:37] INFO: Running: uv pip install pymdp
+[2025-09-15 14:41:37] INFO: PyMDP installed successfully via UV
+[2025-09-15 14:41:37] INFO: Installing missing Python packages...
+[2025-09-15 14:41:37] INFO: Running: uv pip install aiohttp>=3.9.0
+[2025-09-15 14:41:37] INFO: Installed aiohttp>=3.9.0 via UV
+[2025-09-15 14:41:37] INFO: Running: uv pip install ollama
+[2025-09-15 14:41:37] INFO: Installed ollama via UV
+[2025-09-15 14:41:37] INFO: Running: uv pip install pymdp
+[2025-09-15 14:41:37] INFO: Installed pymdp via UV
+[2025-09-15 14:41:37] INFO: ============================================================
+[2025-09-15 14:41:37] INFO: API KEY CONFIGURATION GUIDANCE
+[2025-09-15 14:41:37] INFO: ============================================================
+[2025-09-15 14:41:37] INFO: Created API key template: /home/q/Documents/GitHub/GeneralizedNotationNotation/api_keys_template.env
+[2025-09-15 14:41:37] INFO: 
+[2025-09-15 14:41:37] INFO: To configure API keys for LLM providers:
+[2025-09-15 14:41:37] INFO: 1. Copy api_keys_template.env to .env
+[2025-09-15 14:41:37] INFO: 2. Edit .env and add your actual API keys
+[2025-09-15 14:41:37] INFO: 3. Or set environment variables:
+[2025-09-15 14:41:37] INFO:    export OPENAI_API_KEY='your_key_here'
+[2025-09-15 14:41:37] INFO:    export ANTHROPIC_API_KEY='your_key_here'
+[2025-09-15 14:41:37] INFO:    export OPENROUTER_API_KEY='your_key_here'
+[2025-09-15 14:41:37] INFO:    export PERPLEXITY_API_KEY='your_key_here'
+[2025-09-15 14:41:37] INFO: 
+[2025-09-15 14:41:37] INFO: For local LLM (Ollama):
+[2025-09-15 14:41:37] INFO: 1. Install Ollama: https://ollama.ai
+[2025-09-15 14:41:37] INFO: 2. Pull a model: ollama pull llama2
+[2025-09-15 14:41:37] INFO: 3. Set OLLAMA_BASE_URL=http://localhost:11434
+[2025-09-15 14:41:37] INFO: 
+[2025-09-15 14:41:37] INFO: Security best practices:
+[2025-09-15 14:41:37] INFO: - Never commit .env files to version control
+[2025-09-15 14:41:37] INFO: - Use environment variables in production
+[2025-09-15 14:41:37] INFO: - Rotate API keys regularly
+[2025-09-15 14:41:37] INFO: - Use least privilege principle
+[2025-09-15 14:41:37] INFO: ============================================================

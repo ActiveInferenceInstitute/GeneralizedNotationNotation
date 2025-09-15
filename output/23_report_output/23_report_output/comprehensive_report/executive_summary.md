@@ -9,11 +9,11 @@
 - **Pipeline Steps:** 7 total
   - ✅ Successful: 7
   - ❌ Failed: 0
-  - ⚠️ Warnings: 2
+  - ⚠️ Warnings: 1
 
 - **Output Generation:**
-  - Files Created: 101
-  - Total Size: 1.88 MB
+  - Files Created: 115
+  - Total Size: 1.96 MB
 
 ## Critical Issues
 
@@ -21,8 +21,8 @@
 
 ## Top Recommendations
 
-1. Review 2 steps with warnings to prevent future issues
-2. Optimize 12_execute.py which took 8.2s
+1. Review 1 steps with warnings to prevent future issues
+2. Optimize 12_execute.py which took 24.3s
 3. Pipeline is performing well - consider optimization opportunities
 
 ## Next Steps
@@ -32,4 +32,4 @@
 3. **Long-term:** Monitor pipeline performance and establish regular health checks
 
 ---
-*Report generated on 2025-09-15T13:31:57.076172*
+*Report generated on 2025-09-15T16:46:06.826027*

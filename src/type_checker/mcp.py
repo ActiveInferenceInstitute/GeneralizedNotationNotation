@@ -19,6 +19,7 @@ from .analysis_utils import (
     analyze_connections,
     estimate_computational_complexity
 )
+from .pomdp_analyzer import POMDPAnalyzer, load_ontology_terms
 
 logger = logging.getLogger(__name__)
 
@@ -146,6 +147,102 @@ MCP_TOOLS = [
             "type": "object",
             "properties": {}
         }
+    },
+    {
+        "name": "validate_pomdp_file",
+        "description": "Validate a POMDP GNN file with Active Inference specific analysis",
+        "parameters": {
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to the POMDP GNN file to validate"
+                },
+                "ontology_file": {
+                    "type": "string",
+                    "description": "Path to ontology terms file (optional)",
+                    "default": None
+                },
+                "strict_ontology": {
+                    "type": "boolean",
+                    "description": "Enable strict ontology compliance checking",
+                    "default": True
+                }
+            }
+        },
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to the POMDP GNN file to validate"
+                },
+                "ontology_file": {
+                    "type": "string",
+                    "description": "Path to ontology terms file (optional)",
+                    "default": None
+                },
+                "strict_ontology": {
+                    "type": "boolean",
+                    "description": "Enable strict ontology compliance checking",
+                    "default": True
+                }
+            },
+            "required": ["file_path"]
+        }
+    },
+    {
+        "name": "analyze_pomdp_structure",
+        "description": "Analyze the structure of a POMDP model",
+        "parameters": {
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "description": "GNN file content to analyze"
+                },
+                "ontology_terms": {
+                    "type": "object",
+                    "description": "Custom ontology terms dictionary (optional)",
+                    "default": None
+                }
+            }
+        },
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "description": "GNN file content to analyze"
+                },
+                "ontology_terms": {
+                    "type": "object",
+                    "description": "Custom ontology terms dictionary (optional)",
+                    "default": None
+                }
+            },
+            "required": ["content"]
+        }
+    },
+    {
+        "name": "estimate_pomdp_complexity",
+        "description": "Estimate computational complexity for POMDP models",
+        "parameters": {
+            "properties": {
+                "analysis_result": {
+                    "type": "object",
+                    "description": "POMDP structure analysis result"
+                }
+            }
+        },
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "analysis_result": {
+                    "type": "object",
+                    "description": "POMDP structure analysis result"
+                }
+            },
+            "required": ["analysis_result"]
+        }
     }
 ]
 
@@ -191,6 +288,12 @@ def execute_mcp_tool(tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any
             return _execute_validate_gnn_directory(arguments)
         elif tool_name == "get_type_checker_info":
             return _execute_get_type_checker_info(arguments)
+        elif tool_name == "validate_pomdp_file":
+            return _execute_validate_pomdp_file(arguments)
+        elif tool_name == "analyze_pomdp_structure":
+            return _execute_analyze_pomdp_structure(arguments)
+        elif tool_name == "estimate_pomdp_complexity":
+            return _execute_estimate_pomdp_complexity(arguments)
         else:
             raise ValueError(f"Unknown tool: {tool_name}")
             
@@ -349,15 +452,107 @@ def _execute_get_type_checker_info(arguments: Dict[str, Any]) -> Dict[str, Any]:
                 "Connection pattern analysis",
                 "Computational complexity estimation",
                 "Resource requirement estimation",
-                "Performance analysis"
+                "Performance analysis",
+                "POMDP-specific analysis",
+                "Active Inference model validation",
+                "Ontology compliance checking"
             ],
             "supported_file_types": [".md", ".gnn", ".txt"],
-            "validation_modes": ["standard", "strict"],
+            "validation_modes": ["standard", "strict", "pomdp"],
             "available_tools": [tool["name"] for tool in MCP_TOOLS],
             "timestamp": datetime.now().isoformat()
         },
         "timestamp": datetime.now().isoformat()
     }
+
+
+def _execute_validate_pomdp_file(arguments: Dict[str, Any]) -> Dict[str, Any]:
+    """Execute validate_pomdp_file tool."""
+    file_path = Path(arguments["file_path"])
+    ontology_file = arguments.get("ontology_file")
+    strict_ontology = arguments.get("strict_ontology", True)
+    
+    if not file_path.exists():
+        return {
+            "success": False,
+            "error": f"File not found: {file_path}",
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    try:
+        # Load ontology if provided
+        ontology_terms = None
+        if ontology_file:
+            ontology_file_path = Path(ontology_file)
+            if ontology_file_path.exists():
+                ontology_terms = load_ontology_terms(ontology_file_path)
+        
+        # Create POMDP analyzer
+        analyzer = POMDPAnalyzer(ontology_terms)
+        result = analyzer.validate_pomdp_model(file_path)
+        
+        # Add complexity estimation for valid models
+        if result.get("validation_results", {}).get("overall_valid", False):
+            complexity = analyzer.estimate_pomdp_complexity(result)
+            result["complexity_estimation"] = complexity
+        
+        return {
+            "success": True,
+            "result": result,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "timestamp": datetime.now().isoformat()
+        }
+
+
+def _execute_analyze_pomdp_structure(arguments: Dict[str, Any]) -> Dict[str, Any]:
+    """Execute analyze_pomdp_structure tool."""
+    content = arguments["content"]
+    ontology_terms = arguments.get("ontology_terms")
+    
+    try:
+        analyzer = POMDPAnalyzer(ontology_terms)
+        result = analyzer.analyze_pomdp_structure(content)
+        
+        return {
+            "success": True,
+            "result": result,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "timestamp": datetime.now().isoformat()
+        }
+
+
+def _execute_estimate_pomdp_complexity(arguments: Dict[str, Any]) -> Dict[str, Any]:
+    """Execute estimate_pomdp_complexity tool."""
+    analysis_result = arguments["analysis_result"]
+    
+    try:
+        analyzer = POMDPAnalyzer()
+        result = analyzer.estimate_pomdp_complexity(analysis_result)
+        
+        return {
+            "success": True,
+            "result": result,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "timestamp": datetime.now().isoformat()
+        }
 
 
 def get_mcp_tool_schema(tool_name: str) -> Optional[Dict[str, Any]]:
@@ -457,6 +652,9 @@ MCP_TOOL_REGISTRY = {
     "estimate_complexity": _execute_estimate_complexity,
     "validate_gnn_directory": _execute_validate_gnn_directory,
     "get_type_checker_info": _execute_get_type_checker_info,
+    "validate_pomdp_file": _execute_validate_pomdp_file,
+    "analyze_pomdp_structure": _execute_analyze_pomdp_structure,
+    "estimate_pomdp_complexity": _execute_estimate_pomdp_complexity,
 }
 
 

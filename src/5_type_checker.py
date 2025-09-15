@@ -50,6 +50,29 @@ run_script = create_standardized_pipeline_script(
 
 def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> bool:
     args = ArgumentParser.parse_step_arguments("5_type_checker.py")
+    
+    # Load configuration for POMDP settings
+    config_file = Path("input/config.yaml")
+    pomdp_config = {}
+    if config_file.exists():
+        try:
+            import yaml
+            with open(config_file, 'r') as f:
+                config = yaml.safe_load(f)
+            pomdp_config = config.get("validation", {}).get("pomdp", {})
+        except Exception as e:
+            logger.warning(f"Failed to load config file: {e}")
+    
+    # Check for POMDP mode configuration
+    pomdp_mode = getattr(args, "pomdp_mode", pomdp_config.get("enabled", False))
+    ontology_file = None
+    if pomdp_mode:
+        ontology_file_path = pomdp_config.get("ontology_file", "input/ontology_terms.json")
+        ontology_file = Path(ontology_file_path)
+        if not ontology_file.exists():
+            logger.warning(f"POMDP mode enabled but ontology file not found at {ontology_file}, using default terms")
+            ontology_file = None
+    
     # Load parsed GNN data from previous step
     gnn_output_dir = get_output_dir_for_script("3_gnn.py", Path(args.output_dir))
     # Step 3 uses double-nested output directory structure
@@ -77,6 +100,8 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
         "output_directory": str(output_dir),
         "strict_mode": getattr(args, "strict", False),
         "resource_estimation": getattr(args, "estimate_resources", False),
+        "pomdp_mode": pomdp_mode,
+        "ontology_file": str(ontology_file) if ontology_file else None,
         "files_analyzed": [],
         "summary": {
             "total_files": 0,
@@ -90,6 +115,15 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
             "complexity_analysis": {},
         },
     }
+    
+    # Add POMDP-specific summary if in POMDP mode
+    if pomdp_mode:
+        type_check_results["summary"]["pomdp_metrics"] = {
+            "total_state_space_size": 0,
+            "total_observation_space_size": 0,
+            "total_action_space_size": 0,
+            "pomdp_models_valid": 0
+        }
 
     all_variables: List[Dict[str, Any]] = []
     all_connections: List[Dict[str, Any]] = []
@@ -119,6 +153,47 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
         type_analysis = analyze_variable_types(variables)
         connection_analysis = analyze_connections(connections)
         complexity_analysis = estimate_computational_complexity(type_analysis, connection_analysis)
+        
+        # POMDP-specific analysis if enabled
+        pomdp_analysis = None
+        if pomdp_mode:
+            try:
+                from type_checker.processor import GNNTypeChecker
+                pomdp_checker = GNNTypeChecker(pomdp_mode=True, ontology_file=ontology_file)
+                # Try different possible file names for POMDP analysis
+                pomdp_file_candidates = [
+                    parsed_model_file.parent / file_name,
+                    parsed_model_file.parent / f"{file_name.replace('.md', '_markdown.md')}",
+                    parsed_model_file.parent / f"{file_name.replace('.md', '_processed.md')}",
+                    parsed_model_file.parent / file_name.replace('.md', '_markdown.md'),
+                    parsed_model_file.parent / file_name.replace('.md', '_processed.md')
+                ]
+                
+                pomdp_analysis = None
+                for candidate in pomdp_file_candidates:
+                    if candidate.exists():
+                        pomdp_analysis = pomdp_checker.validate_pomdp_file(candidate)
+                        break
+                
+                if pomdp_analysis is None:
+                    # Fallback to using the original file if no processed version found
+                    pomdp_analysis = pomdp_checker.validate_pomdp_file(Path(file_result.get("file_path", "")))
+                
+                # Add POMDP metrics to summary
+                if pomdp_analysis and "pomdp_analysis" in pomdp_analysis:
+                    inner_pomdp_analysis = pomdp_analysis["pomdp_analysis"]
+                    if "pomdp_specific" in inner_pomdp_analysis:
+                        pomdp_metrics = inner_pomdp_analysis["pomdp_specific"]
+                        type_check_results["summary"]["pomdp_metrics"]["total_state_space_size"] += pomdp_metrics.get("state_space_size", 0)
+                        type_check_results["summary"]["pomdp_metrics"]["total_observation_space_size"] += pomdp_metrics.get("observation_space_size", 0)
+                        type_check_results["summary"]["pomdp_metrics"]["total_action_space_size"] += pomdp_metrics.get("action_space_size", 0)
+                        
+                        if inner_pomdp_analysis.get("overall_valid", False):
+                            type_check_results["summary"]["pomdp_metrics"]["pomdp_models_valid"] += 1
+                        
+            except Exception as e:
+                logger.warning(f"POMDP analysis failed for {file_name}: {e}")
+                pomdp_analysis = {"error": str(e)}
 
         type_errors: List[str] = []
         warnings: List[str] = []
@@ -156,7 +231,7 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
             elif isinstance(variables, dict):
                 var_info = variables.get(var_name, {})
             
-            var_comment = var_info.get('comment', '').lower() if var_info else ''
+            var_comment = var_info.get('description', '').lower() if var_info else ''
             
             # Time variables are typically global/standalone
             if var_name.lower() in ['t', 'time', 'step', 'timestep']:
@@ -193,6 +268,10 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
             "warnings": warnings,
             "model_info": file_result.get("model_info", {}),
         }
+        
+        # Add POMDP analysis if available
+        if pomdp_analysis:
+            file_analysis["pomdp_analysis"] = pomdp_analysis
 
         type_check_results["files_analyzed"].append(file_analysis)
         all_variables.extend(variables)
@@ -233,11 +312,45 @@ def _run_type_check(target_dir: Path, output_dir: Path, logger, **kwargs) -> boo
     with open(global_analysis_file, "w") as f:
         json.dump(type_check_results["global_analysis"], f, indent=2, default=str)
     
+    # Generate POMDP-specific summary if in POMDP mode
+    if pomdp_mode:
+        try:
+            from type_checker.processor import GNNTypeChecker
+            pomdp_checker = GNNTypeChecker(pomdp_mode=True, ontology_file=ontology_file)
+            
+            # Extract POMDP analyses from files_analyzed
+            pomdp_analyses = []
+            for file_analysis in type_check_results.get("files_analyzed", []):
+                if "pomdp_analysis" in file_analysis:
+                    pomdp_analyses.append(file_analysis["pomdp_analysis"])
+            
+            # Create a results structure for summary generation
+            pomdp_results = {
+                "pomdp_analysis": pomdp_analyses,
+                "summary_statistics": type_check_results.get("summary", {})
+            }
+            
+            pomdp_summary = pomdp_checker.get_pomdp_analysis_summary(pomdp_results)
+            
+            pomdp_summary_file = output_dir / "pomdp_analysis_summary.md"
+            with open(pomdp_summary_file, "w") as f:
+                f.write(pomdp_summary)
+            
+            logger.info("POMDP analysis summary generated")
+        except Exception as e:
+            logger.warning(f"Failed to generate POMDP summary: {e}")
+    
     # Copy results to prerequisite directory for validation step
     import shutil
     shutil.copy2(results_file, prereq_dir / "type_check_results.json")
     shutil.copy2(summary_file, prereq_dir / "type_check_summary.json")
     shutil.copy2(global_analysis_file, prereq_dir / "global_type_analysis.json")
+    
+    if pomdp_mode:
+        try:
+            shutil.copy2(pomdp_summary_file, prereq_dir / "pomdp_analysis_summary.md")
+        except:
+            pass  # POMDP summary might not have been generated
 
     success = type_check_results["summary"].get("valid_files", 0) > 0
     warnings_count = type_check_results["summary"].get("warnings", 0)

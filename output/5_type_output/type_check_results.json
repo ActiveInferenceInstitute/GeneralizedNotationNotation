@@ -1,14 +1,16 @@
 {
-  "timestamp": "2025-09-15T13:45:29.234359",
-  "source_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/5_type_checker_output",
+  "timestamp": "2025-09-15T16:44:40.409581",
+  "source_directory": "input/gnn_files",
+  "output_directory": "output/5_type_checker_output",
   "strict_mode": null,
   "resource_estimation": false,
+  "pomdp_mode": true,
+  "ontology_file": "input/ontology_terms.json",
   "files_analyzed": [
     {
       "file_name": "actinf_pomdp_agent.md",
-      "file_path": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
-      "parsed_model_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "parsed_model_file": "output/3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
       "type_analysis": {
         "total_variables": 13,
         "type_distribution": {
@@ -59,13 +61,11 @@
             "degree_3": 1,
             "degree_0": 2
           },
-          "cycles_detected": true,
+          "cycles_detected": false,
           "strongly_connected_components": 1
         },
         "validation_issues": [],
-        "performance_warnings": [
-          "Potential cycles detected: 6 variables with both input and output connections"
-        ]
+        "performance_warnings": []
       },
       "complexity_analysis": {
         "inference_complexity": {
@@ -104,6 +104,297 @@
         "connections_count": 11,
         "parameters_count": 6,
         "equations_count": 0
+      },
+      "pomdp_analysis": {
+        "pomdp_analysis": {
+          "timestamp": "2025-09-15T16:44:40.410064",
+          "model_type": "POMDP",
+          "valid": true,
+          "components_found": {
+            "likelihood_matrix": [
+              {
+                "line": 16,
+                "match": "A[3,3],float",
+                "dimensions": [
+                  3,
+                  3
+                ],
+                "raw_match": "A[3,3],float"
+              }
+            ],
+            "transition_matrix": [
+              {
+                "line": 17,
+                "match": "B[3,3,3],float",
+                "dimensions": [
+                  3,
+                  3,
+                  3
+                ],
+                "raw_match": "B[3,3,3],float"
+              }
+            ],
+            "preference_vector": [
+              {
+                "line": 18,
+                "match": "C[3],float",
+                "dimensions": [
+                  3
+                ],
+                "raw_match": "C[3],float"
+              }
+            ],
+            "prior_vector": [
+              {
+                "line": 19,
+                "match": "D[3],float",
+                "dimensions": [
+                  3
+                ],
+                "raw_match": "D[3],float"
+              }
+            ],
+            "habit_vector": [
+              {
+                "line": 20,
+                "match": "E[3],float",
+                "dimensions": [
+                  3
+                ],
+                "raw_match": "E[3],float"
+              }
+            ],
+            "hidden_state": [
+              {
+                "line": 21,
+                "match": "s[3,1],float",
+                "dimensions": [
+                  3,
+                  1
+                ],
+                "raw_match": "s[3,1],float"
+              }
+            ],
+            "observation": [
+              {
+                "line": 24,
+                "match": "o[3,1],int",
+                "dimensions": [
+                  3,
+                  1
+                ],
+                "raw_match": "o[3,1],int"
+              }
+            ],
+            "policy": [
+              {
+                "line": 25,
+                "match": "\u03c0[3],float",
+                "dimensions": [
+                  3
+                ],
+                "raw_match": "\u03c0[3],float"
+              }
+            ],
+            "action": [
+              {
+                "line": 26,
+                "match": "u[1],int",
+                "dimensions": [
+                  1
+                ],
+                "raw_match": "u[1],int"
+              }
+            ],
+            "free_energy": [
+              {
+                "line": 23,
+                "match": "F[1],float",
+                "dimensions": [
+                  1
+                ],
+                "raw_match": "F[1],float"
+              }
+            ],
+            "expected_free_energy": [
+              {
+                "line": 27,
+                "match": "G[1],float",
+                "dimensions": [
+                  1
+                ],
+                "raw_match": "G[1],float"
+              }
+            ],
+            "time": [
+              {
+                "line": 28,
+                "match": "t[1],int",
+                "dimensions": [
+                  1
+                ],
+                "raw_match": "t[1],int"
+              }
+            ]
+          },
+          "dimensions": {
+            "likelihood_matrix": [
+              3,
+              3
+            ],
+            "transition_matrix": [
+              3,
+              3,
+              3
+            ],
+            "preference_vector": [
+              3
+            ],
+            "prior_vector": [
+              3
+            ],
+            "habit_vector": [
+              3
+            ],
+            "hidden_state": [
+              3,
+              1
+            ],
+            "observation": [
+              3,
+              1
+            ],
+            "policy": [
+              3
+            ],
+            "action": [
+              1
+            ],
+            "free_energy": [
+              1
+            ],
+            "expected_free_energy": [
+              1
+            ],
+            "time": [
+              1
+            ]
+          },
+          "connections": [
+            {
+              "source": "D",
+              "target": "s",
+              "line": 31,
+              "pattern": "D>s"
+            },
+            {
+              "source": "s",
+              "target": "s_prime",
+              "line": 33,
+              "pattern": "s>s_prime"
+            },
+            {
+              "source": "C",
+              "target": "G",
+              "line": 36,
+              "pattern": "C>G"
+            },
+            {
+              "source": "E",
+              "target": "\u03c0",
+              "line": 37,
+              "pattern": "E>\u03c0"
+            },
+            {
+              "source": "G",
+              "target": "\u03c0",
+              "line": 38,
+              "pattern": "G>\u03c0"
+            },
+            {
+              "source": "\u03c0",
+              "target": "u",
+              "line": 39,
+              "pattern": "\u03c0>u"
+            },
+            {
+              "source": "B",
+              "target": "u",
+              "line": 40,
+              "pattern": "B>u"
+            },
+            {
+              "source": "u",
+              "target": "s_prime",
+              "line": 41,
+              "pattern": "u>s_prime"
+            },
+            {
+              "source": "log",
+              "target": "probabilities",
+              "line": 12,
+              "pattern": "log-probabilities"
+            },
+            {
+              "source": "log",
+              "target": "probabilities",
+              "line": 13,
+              "pattern": "log-probabilities"
+            },
+            {
+              "source": "s",
+              "target": "A",
+              "line": 32,
+              "pattern": "s-A"
+            },
+            {
+              "source": "A",
+              "target": "o",
+              "line": 34,
+              "pattern": "A-o"
+            },
+            {
+              "source": "s",
+              "target": "B",
+              "line": 35,
+              "pattern": "s-B"
+            },
+            {
+              "source": "2025",
+              "target": "09",
+              "line": 71,
+              "pattern": "2025-09"
+            }
+          ],
+          "validation_results": {
+            "structure_valid": true,
+            "missing_components": [],
+            "dimension_consistency": true,
+            "ontology_compliance": true
+          },
+          "pomdp_specific": {
+            "state_space_size": 3,
+            "observation_space_size": 3,
+            "action_space_size": 3,
+            "planning_horizon": 1,
+            "time_horizon": "unbounded",
+            "model_complexity": "low",
+            "computational_requirements": {
+              "inference_ops_per_step": 18,
+              "policy_ops_per_step": 12,
+              "total_ops_per_step": 30
+            }
+          },
+          "warnings": [],
+          "errors": [],
+          "model_parameters": {},
+          "file_path": "output/3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_markdown.md",
+          "file_name": "actinf_pomdp_agent_markdown.md",
+          "file_size": 1759,
+          "overall_valid": true
+        },
+        "file_path": "output/3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_markdown.md",
+        "valid": true
       }
     }
   ],
@@ -111,7 +402,13 @@
     "total_files": 1,
     "valid_files": 1,
     "type_errors": 0,
-    "warnings": 0
+    "warnings": 0,
+    "pomdp_metrics": {
+      "total_state_space_size": 3,
+      "total_observation_space_size": 3,
+      "total_action_space_size": 3,
+      "pomdp_models_valid": 1
+    }
   },
   "global_analysis": {
     "type_analysis": {
@@ -164,13 +461,11 @@
           "degree_3": 1,
           "degree_0": 2
         },
-        "cycles_detected": true,
+        "cycles_detected": false,
         "strongly_connected_components": 1
       },
       "validation_issues": [],
-      "performance_warnings": [
-        "Potential cycles detected: 6 variables with both input and output connections"
-      ]
+      "performance_warnings": []
     },
     "complexity_analysis": {
       "inference_complexity": {

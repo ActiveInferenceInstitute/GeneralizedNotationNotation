@@ -71,6 +71,7 @@ from utils.pipeline_template import (
 )
 from utils.argument_utils import ArgumentParser, PipelineArguments
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
+from utils.configuration import init_config, get_config
 from utils.resource_manager import get_current_memory_usage
 from utils.error_recovery import attempt_step_recovery, is_failure_recoverable
 from utils.pipeline_monitor import generate_pipeline_health_report
@@ -106,6 +107,9 @@ except ImportError:
 
 def main():
     """Main pipeline orchestration function."""
+    # Load configuration first
+    config_manager = init_config(config_files=["input/config.yaml"])
+    
     # Parse arguments
     parser = ArgumentParser.create_main_parser()
     parsed = parser.parse_args()
@@ -115,6 +119,15 @@ def main():
     for key, value in vars(parsed).items():
         if value is not None:
             kwargs[key] = value
+
+    # Apply POMDP configuration from config file
+    pomdp_enabled = get_config("validation.pomdp.enabled", False)
+    ontology_file = get_config("validation.pomdp.ontology_file", None)
+    
+    if pomdp_enabled:
+        kwargs["pomdp_mode"] = True
+        if ontology_file:
+            kwargs["ontology_file"] = Path(ontology_file)
 
     args = PipelineArguments(**kwargs)
     
@@ -299,7 +312,15 @@ def main():
             
             # Check for warnings in both stdout and stderr (case-insensitive and symbol-aware)
             combined_output = f"{step_result.get('stdout', '')}\n{step_result.get('stderr', '')}"
-            has_warning = ("WARNING" in combined_output) or ("⚠️" in combined_output) or ("warning" in combined_output.lower())
+            
+            # More precise warning detection - look for actual warning messages, not just the word "warning"
+            has_warning = (
+                ("WARNING" in combined_output and not ("0 warnings" in combined_output or "no warnings" in combined_output)) or
+                ("⚠️" in combined_output) or
+                ("warning:" in combined_output.lower()) or
+                ("warning -" in combined_output.lower()) or
+                ("warning [" in combined_output.lower())
+            )
 
             # Propagate SUCCESS_WITH_WARNINGS status if applicable
             if step_result["status"] == "SUCCESS" and has_warning:

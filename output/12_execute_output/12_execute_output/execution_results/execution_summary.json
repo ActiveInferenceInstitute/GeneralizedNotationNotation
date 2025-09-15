@@ -1,7 +1,7 @@
 {
-  "timestamp": "2025-09-15T13:45:36.836536",
-  "target_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output",
+  "timestamp": "2025-09-15T16:44:50.830388",
+  "target_directory": "input/gnn_files",
+  "output_directory": "output/12_execute_output/12_execute_output",
   "total_scripts_found": 5,
   "successful_executions": 0,
   "failed_executions": 5,
@@ -16,11 +16,11 @@
       "return_code": 1,
       "stdout": "",
       "stderr": "Traceback (most recent call last):\n  File \"/home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\", line 25, in <module>\n    from src.execute.pymdp import execute_pymdp_simulation\nModuleNotFoundError: No module named 'src'\n",
-      "execution_time": 0.032664,
-      "timestamp": "2025-09-15T13:45:36.840619",
-      "output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log",
-      "centralized_output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/execution_results/individual_outputs/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py_output.txt",
-      "implementation_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/pymdp"
+      "execution_time": 0.031691,
+      "timestamp": "2025-09-15T16:44:50.834369",
+      "output_file": "output/12_execute_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log",
+      "centralized_output_file": "output/12_execute_output/12_execute_output/execution_results/individual_outputs/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py_output.txt",
+      "implementation_directory": "output/12_execute_output/12_execute_output/actinf_pomdp_agent/pymdp"
     },
     {
       "script_path": "output/11_render_output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py",
@@ -32,11 +32,11 @@
       "return_code": 1,
       "stdout": "",
       "stderr": "Traceback (most recent call last):\n  File \"/home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\", line 11, in <module>\n    import jax\nModuleNotFoundError: No module named 'jax'\n",
-      "execution_time": 0.020765,
-      "timestamp": "2025-09-15T13:45:36.873736",
-      "output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Classic Active Inference POMDP Agent v1_jax.py_execution.log",
-      "centralized_output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/execution_results/individual_outputs/jax/Classic Active Inference POMDP Agent v1_jax.py_output.txt",
-      "implementation_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/jax"
+      "execution_time": 0.020451,
+      "timestamp": "2025-09-15T16:44:50.866404",
+      "output_file": "output/12_execute_output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Classic Active Inference POMDP Agent v1_jax.py_execution.log",
+      "centralized_output_file": "output/12_execute_output/12_execute_output/execution_results/individual_outputs/jax/Classic Active Inference POMDP Agent v1_jax.py_output.txt",
+      "implementation_directory": "output/12_execute_output/12_execute_output/actinf_pomdp_agent/jax"
     },
     {
       "script_path": "output/11_render_output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py",
@@ -48,11 +48,11 @@
       "return_code": 1,
       "stdout": "",
       "stderr": "Traceback (most recent call last):\n  File \"/home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\", line 11, in <module>\n    from discopy import *\nModuleNotFoundError: No module named 'discopy'\n",
-      "execution_time": 0.020912,
-      "timestamp": "2025-09-15T13:45:36.894871",
-      "output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Classic Active Inference POMDP Agent v1_discopy.py_execution.log",
-      "centralized_output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/execution_results/individual_outputs/discopy/Classic Active Inference POMDP Agent v1_discopy.py_output.txt",
-      "implementation_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/discopy"
+      "execution_time": 0.020927,
+      "timestamp": "2025-09-15T16:44:50.887199",
+      "output_file": "output/12_execute_output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Classic Active Inference POMDP Agent v1_discopy.py_execution.log",
+      "centralized_output_file": "output/12_execute_output/12_execute_output/execution_results/individual_outputs/discopy/Classic Active Inference POMDP Agent v1_discopy.py_output.txt",
+      "implementation_directory": "output/12_execute_output/12_execute_output/actinf_pomdp_agent/discopy"
     },
     {
       "script_path": "output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl",
@@ -62,13 +62,13 @@
       "executor": "julia",
       "success": false,
       "return_code": 1,
-      "stdout": "",
-      "stderr": "ERROR: LoadError: ArgumentError: Package RxInfer not found in current path.\n- Run `import Pkg; Pkg.add(\"RxInfer\")` to install the RxInfer package.\nStacktrace:\n [1] macro expansion\n   @ ./loading.jl:1772 [inlined]\n [2] macro expansion\n   @ ./lock.jl:267 [inlined]\n [3] __require(into::Module, mod::Symbol)\n   @ Base ./loading.jl:1753\n [4] #invoke_in_world#3\n   @ ./essentials.jl:926 [inlined]\n [5] invoke_in_world\n   @ ./essentials.jl:923 [inlined]\n [6] require(into::Module, mod::Symbol)\n   @ Base ./loading.jl:1746\nin expression starting at /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:5\n",
-      "execution_time": 1.308663,
-      "timestamp": "2025-09-15T13:45:36.916224",
-      "output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Classic Active Inference POMDP Agent v1_rxinfer.jl_execution.log",
-      "centralized_output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/execution_results/individual_outputs/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl_output.txt",
-      "implementation_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/rxinfer"
+      "stdout": "\ud83d\udd2c RxInfer.jl Active Inference Simulation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n",
+      "stderr": "ERROR: LoadError: ParseError:\n# Error @ /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:108:37\n    println(\"\u2713 Successfully computed posterior marginals\")\n    println(\"  - State posteriors: ${length(states_marginals)} time steps\")\n#                                   \u2514 \u2500\u2500 identifier or parenthesized expression expected after $ in string\nStacktrace:\n [1] top-level scope\n   @ /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:108\nin expression starting at /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:108\n",
+      "execution_time": 8.526952,
+      "timestamp": "2025-09-15T16:44:50.908499",
+      "output_file": "output/12_execute_output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Classic Active Inference POMDP Agent v1_rxinfer.jl_execution.log",
+      "centralized_output_file": "output/12_execute_output/12_execute_output/execution_results/individual_outputs/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl_output.txt",
+      "implementation_directory": "output/12_execute_output/12_execute_output/actinf_pomdp_agent/rxinfer"
     },
     {
       "script_path": "output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl",
@@ -78,13 +78,13 @@
       "executor": "julia",
       "success": false,
       "return_code": 1,
-      "stdout": "",
-      "stderr": "ERROR: LoadError: ArgumentError: Package ActiveInference not found in current path.\n- Run `import Pkg; Pkg.add(\"ActiveInference\")` to install the ActiveInference package.\nStacktrace:\n [1] macro expansion\n   @ ./loading.jl:1772 [inlined]\n [2] macro expansion\n   @ ./lock.jl:267 [inlined]\n [3] __require(into::Module, mod::Symbol)\n   @ Base ./loading.jl:1753\n [4] #invoke_in_world#3\n   @ ./essentials.jl:926 [inlined]\n [5] invoke_in_world\n   @ ./essentials.jl:923 [inlined]\n [6] require(into::Module, mod::Symbol)\n   @ Base ./loading.jl:1746\nin expression starting at /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:27\n",
-      "execution_time": 2.094926,
-      "timestamp": "2025-09-15T13:45:38.225362",
-      "output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Classic Active Inference POMDP Agent v1_activeinference.jl_execution.log",
-      "centralized_output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/execution_results/individual_outputs/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl_output.txt",
-      "implementation_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/12_execute_output/actinf_pomdp_agent/activeinference_jl"
+      "stdout": "======================================================================\nActiveInference.jl Script for GNN Model: Classic Active Inference POMDP Agent v1\n======================================================================\nJulia version: 1.10.2\nDate: 2025-09-15T16:45:05.865\nModel dimensions: States=3, Observations=3, Actions=1\n\n\ud83d\udcc1 Output directory: activeinference_outputs_2025-09-15_16-45-05\n\ud83d\udd27 Creating model matrices from GNN specification...\n\u2705 A matrix created: (3,)\n\u2705 B matrix created: (3,)\n\u2705 C vector created: 3\n\u2705 D vector created: 3\n\u2705 E vector created: 3\n\ud83d\udd27 Normalizing matrices...\n",
+      "stderr": "ERROR: LoadError: MethodError: no method matching isless(::Int64, ::Vector{Float64})\n\nClosest candidates are:\n  isless(!Matched::Missing, ::Any)\n   @ Base missing.jl:87\n  isless(::Any, !Matched::Missing)\n   @ Base missing.jl:88\n  isless(::Integer, !Matched::ForwardDiff.Dual{Ty}) where Ty\n   @ ForwardDiff ~/.julia/packages/ForwardDiff/X74OO/src/dual.jl:160\n  ...\n\nStacktrace:\n [1] <(x::Int64, y::Vector{Float64})\n   @ Base ./operators.jl:352\n [2] >(x::Vector{Float64}, y::Int64)\n   @ Base ./operators.jl:378\n [3] top-level scope\n   @ /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:81\nin expression starting at /home/q/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:79\n",
+      "execution_time": 9.497879,
+      "timestamp": "2025-09-15T16:44:59.435931",
+      "output_file": "output/12_execute_output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Classic Active Inference POMDP Agent v1_activeinference.jl_execution.log",
+      "centralized_output_file": "output/12_execute_output/12_execute_output/execution_results/individual_outputs/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl_output.txt",
+      "implementation_directory": "output/12_execute_output/12_execute_output/actinf_pomdp_agent/activeinference_jl"
     }
   ],
   "success": true

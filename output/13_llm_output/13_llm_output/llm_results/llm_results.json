@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-09-15T13:31:53.587530",
+  "timestamp": "2025-09-15T16:45:09.304867",
   "processed_files": 1,
   "success": true,
   "errors": [],
   "analysis_results": [
     {
-      "file_path": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
       "file_size": 4244,
       "line_count": 129,
@@ -551,13 +551,24 @@
           "Consider breaking down into smaller modules"
         ]
       },
-      "analysis_timestamp": "2025-09-15T13:31:53.592532",
-      "llm_summary_error": "Processor not initialized",
+      "analysis_timestamp": "2025-09-15T16:45:09.648735",
+      "llm_summary_error": "All providers failed for analysis",
       "status": "SUCCESS",
       "analysis": "LLM-assisted analysis complete",
       "documentation": {
-        "file_path": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+        "file_path": "input/gnn_files/actinf_pomdp_agent.md",
         "model_overview": ""
+      },
+      "llm_prompt_outputs": {
+        "summarize_content": "Prompt execution failed after 3 attempts: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+        "explain_model": "Prompt execution failed after 3 attempts: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+        "identify_components": "Prompt execution failed after 3 attempts: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+        "analyze_structure": "Prompt execution failed after 3 attempts: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+        "extract_parameters": "Prompt execution failed after 3 attempts: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+        "practical_applications": "Prompt execution failed after 3 attempts: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+        "technical_description": "Prompt execution failed: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+        "nontechnical_description": "Prompt execution failed: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download",
+        "runtime_behavior": "Prompt execution failed: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download"
       }
     }
   ],
@@ -574,7 +585,7 @@
         "Complex model may be difficult to understand",
         "No connections defined"
       ],
-      "generation_timestamp": "2025-09-15T13:31:53.593440"
+      "generation_timestamp": "2025-09-15T16:45:09.652369"
     }
   ],
   "code_suggestions": [
@@ -587,12 +598,12 @@
         "Use descriptive variable names",
         "Group related variables together"
       ],
-      "generation_timestamp": "2025-09-15T13:31:53.593447"
+      "generation_timestamp": "2025-09-15T16:45:09.652377"
     }
   ],
   "documentation_generated": [
     {
-      "file_path": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "model_overview": "\n# actinf_pomdp_agent.md Model Documentation\n\nThis GNN model contains 72 variables and 0 connections.\n\n## Model Structure\n- **Variables**: 72 defined\n- **Connections**: 0 defined\n- **Complexity**: 72 total elements\n\n## Key Components\n",
       "variable_documentation": [
         {
@@ -1036,7 +1047,7 @@
           "code": "# Example variable usage\nExample = ...\nVersion = ...\nmatrix = ..."
         }
       ],
-      "generation_timestamp": "2025-09-15T13:31:53.593466"
+      "generation_timestamp": "2025-09-15T16:45:09.652398"
     }
   ]
 }

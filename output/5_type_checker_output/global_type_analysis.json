@@ -49,13 +49,11 @@
         "degree_3": 1,
         "degree_0": 2
       },
-      "cycles_detected": true,
+      "cycles_detected": false,
       "strongly_connected_components": 1
     },
     "validation_issues": [],
-    "performance_warnings": [
-      "Potential cycles detected: 6 variables with both input and output connections"
-    ]
+    "performance_warnings": []
   },
   "complexity_analysis": {
     "inference_complexity": {

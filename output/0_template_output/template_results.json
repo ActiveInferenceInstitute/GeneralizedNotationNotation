@@ -1,12 +1,12 @@
 {
-  "timestamp": "2025-09-15T13:31:16.830978",
-  "correlation_id": "f881763c",
-  "source_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
-  "output_directory": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/0_template_output",
+  "timestamp": "2025-09-15T16:44:03.310435",
+  "correlation_id": "87b3f356",
+  "source_directory": "input/gnn_files",
+  "output_directory": "output/0_template_output",
   "success": true,
   "demonstration_results": {
-    "timestamp": "2025-09-15T13:31:16.729089",
-    "correlation_id": "f881763c",
+    "timestamp": "2025-09-15T16:44:03.208339",
+    "correlation_id": "87b3f356",
     "patterns_demonstrated": [
       "error_recovery",
       "resource_tracking",

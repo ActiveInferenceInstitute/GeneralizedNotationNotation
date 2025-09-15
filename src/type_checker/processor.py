@@ -28,6 +28,7 @@ from utils.pipeline_template import (
     log_step_error,
     log_step_warning
 )
+from .pomdp_analyzer import POMDPAnalyzer, load_ontology_terms
 
 class GNNTypeChecker:
     """
@@ -43,17 +44,22 @@ class GNNTypeChecker:
         performance_metrics: Dictionary tracking performance metrics
     """
     
-    def __init__(self, strict_mode: bool = False, verbose: bool = False, *args, **kwargs):
+    def __init__(self, strict_mode: bool = False, verbose: bool = False, 
+                 pomdp_mode: bool = False, ontology_file: Optional[Path] = None, *args, **kwargs):
         """
         Initialize the GNN type checker.
         
         Args:
             strict_mode: If True, use strict validation rules
             verbose: If True, enable verbose logging
+            pomdp_mode: If True, enable POMDP-specific analysis
+            ontology_file: Path to ontology terms JSON file
             **kwargs: Additional configuration options
         """
         self.strict_mode = strict_mode
         self.verbose = verbose
+        self.pomdp_mode = pomdp_mode
+        self.ontology_file = ontology_file
         self.validation_rules = self._get_validation_rules()
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         self.performance_metrics = {
@@ -62,6 +68,20 @@ class GNNTypeChecker:
             "errors_encountered": 0,
             "warnings_generated": 0,
         }
+        
+        # Initialize POMDP analyzer if in POMDP mode
+        if self.pomdp_mode:
+            ontology_terms = None
+            if self.ontology_file:
+                if isinstance(self.ontology_file, str):
+                    ontology_file_path = Path(self.ontology_file)
+                else:
+                    ontology_file_path = self.ontology_file
+                if ontology_file_path.exists():
+                    ontology_terms = load_ontology_terms(ontology_file_path)
+            self.pomdp_analyzer = POMDPAnalyzer(ontology_file=self.ontology_file, ontology_terms=ontology_terms)
+        else:
+            self.pomdp_analyzer = None
     
     def validate_gnn_files(
         self,
@@ -156,6 +176,30 @@ class GNNTypeChecker:
                         # Analyze types
                         type_analysis = self._analyze_types(gnn_file, verbose)
                         results["type_analysis"].append(type_analysis)
+                        
+                        # POMDP-specific analysis if enabled
+                        if self.pomdp_mode and self.pomdp_analyzer:
+                            pomdp_analysis = self.pomdp_analyzer.validate_pomdp_model(gnn_file)
+                            if "pomdp_analysis" not in results:
+                                results["pomdp_analysis"] = []
+                            results["pomdp_analysis"].append(pomdp_analysis)
+                            
+                            # Add POMDP metrics to summary
+                            pomdp_metrics = pomdp_analysis.get("pomdp_specific", {})
+                            if "pomdp_metrics" not in results["summary_statistics"]:
+                                results["summary_statistics"]["pomdp_metrics"] = {
+                                    "total_state_space_size": 0,
+                                    "total_observation_space_size": 0,
+                                    "total_action_space_size": 0,
+                                    "pomdp_models_valid": 0
+                                }
+                            
+                            results["summary_statistics"]["pomdp_metrics"]["total_state_space_size"] += pomdp_metrics.get("state_space_size", 0)
+                            results["summary_statistics"]["pomdp_metrics"]["total_observation_space_size"] += pomdp_metrics.get("observation_space_size", 0)
+                            results["summary_statistics"]["pomdp_metrics"]["total_action_space_size"] += pomdp_metrics.get("action_space_size", 0)
+                            
+                            if pomdp_analysis.get("validation_results", {}).get("overall_valid", False):
+                                results["summary_statistics"]["pomdp_metrics"]["pomdp_models_valid"] += 1
                         
                         # Update variable and connection counts
                         results["summary_statistics"]["total_variables"] += type_analysis.get("total_variables", 0)
@@ -485,6 +529,119 @@ class GNNTypeChecker:
             recommendations.append("Performance metrics look good - no immediate optimizations needed")
         
         return recommendations
+    
+    def validate_pomdp_file(self, file_path: Path, verbose: bool = False) -> Dict[str, Any]:
+        """
+        Validate a single POMDP GNN file with specialized analysis.
+        
+        Args:
+            file_path: Path to the GNN file
+            verbose: Enable verbose output
+            
+        Returns:
+            Dictionary containing POMDP validation results
+        """
+        if not self.pomdp_mode or not self.pomdp_analyzer:
+            return {
+                "error": "POMDP mode not enabled",
+                "file_path": str(file_path),
+                "valid": False
+            }
+        
+        try:
+            pomdp_result = self.pomdp_analyzer.validate_pomdp_model(file_path)
+            
+            # Add complexity estimation
+            if pomdp_result.get("validation_results", {}).get("overall_valid", False):
+                complexity = self.pomdp_analyzer.estimate_pomdp_complexity(pomdp_result)
+                pomdp_result["complexity_estimation"] = complexity
+            
+            return {
+                "pomdp_analysis": pomdp_result,
+                "file_path": str(file_path),
+                "valid": pomdp_result.get("overall_valid", False)
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error validating POMDP file {file_path}: {e}")
+            return {
+                "file_path": str(file_path),
+                "file_name": file_path.name,
+                "validation_results": {
+                    "overall_valid": False,
+                    "structure_valid": False,
+                    "dimension_consistency": False,
+                    "ontology_compliance": False
+                },
+                "errors": [f"POMDP validation error: {str(e)}"],
+                "timestamp": datetime.now().isoformat()
+            }
+    
+    def get_pomdp_analysis_summary(self, results: Dict[str, Any]) -> str:
+        """
+        Generate a summary of POMDP analysis results.
+        
+        Args:
+            results: Results dictionary containing POMDP analysis
+            
+        Returns:
+            Formatted summary string
+        """
+        if not self.pomdp_mode or "pomdp_analysis" not in results:
+            return "POMDP analysis not available"
+        
+        pomdp_analyses = results["pomdp_analysis"]
+        pomdp_metrics = results.get("summary_statistics", {}).get("pomdp_metrics", {})
+        
+        summary = f"""
+# POMDP Analysis Summary
+
+**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+## POMDP Models Processed
+- **Total POMDP Models**: {len(pomdp_analyses)}
+- **Valid POMDP Models**: {pomdp_metrics.get('pomdp_models_valid', 0)}
+- **Invalid POMDP Models**: {len(pomdp_analyses) - pomdp_metrics.get('pomdp_models_valid', 0)}
+
+## Space Dimensions
+- **Total State Space Size**: {pomdp_metrics.get('total_state_space_size', 0)}
+- **Total Observation Space Size**: {pomdp_metrics.get('total_observation_space_size', 0)}
+- **Total Action Space Size**: {pomdp_metrics.get('total_action_space_size', 0)}
+
+## Model Details
+"""
+        
+        for i, analysis in enumerate(pomdp_analyses, 1):
+            file_name = analysis.get("file_name", f"Model {i}")
+            # Handle nested pomdp_analysis structure
+            if "pomdp_analysis" in analysis:
+                inner_analysis = analysis["pomdp_analysis"]
+                pomdp_specific = inner_analysis.get("pomdp_specific", {})
+                validation = inner_analysis.get("validation_results", {})
+                overall_valid = inner_analysis.get("overall_valid", False)
+            else:
+                pomdp_specific = analysis.get("pomdp_specific", {})
+                validation = analysis.get("validation_results", {})
+                overall_valid = analysis.get("overall_valid", False)
+            
+            summary += f"""
+### {file_name}
+- **State Space**: {pomdp_specific.get('state_space_size', 0)}
+- **Observation Space**: {pomdp_specific.get('observation_space_size', 0)}
+- **Action Space**: {pomdp_specific.get('action_space_size', 0)}
+- **Model Complexity**: {pomdp_specific.get('model_complexity', 'unknown')}
+- **Valid**: {overall_valid}
+- **Structure Valid**: {validation.get('structure_valid', False)}
+- **Dimension Consistent**: {validation.get('dimension_consistency', False)}
+- **Ontology Compliant**: {validation.get('ontology_compliance', False)}
+"""
+            
+            if analysis.get("errors"):
+                summary += f"- **Errors**: {len(analysis['errors'])}\n"
+            if analysis.get("warnings"):
+                summary += f"- **Warnings**: {len(analysis['warnings'])}\n"
+        
+        return summary
 
 def estimate_file_resources(content: str) -> Dict[str, Any]:
     """Estimate computational resources needed for a GNN file."""

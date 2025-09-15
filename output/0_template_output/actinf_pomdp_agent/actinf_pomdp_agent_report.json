@@ -1,7 +1,7 @@
 {
-  "input_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
-  "output_file": "/home/q/Documents/GitHub/GeneralizedNotationNotation/output/0_template_output/actinf_pomdp_agent/actinf_pomdp_agent_processed.md",
-  "timestamp": "2025-09-15T13:31:16.830647",
+  "input_file": "input/gnn_files/actinf_pomdp_agent.md",
+  "output_file": "output/0_template_output/actinf_pomdp_agent/actinf_pomdp_agent_processed.md",
+  "timestamp": "2025-09-15T16:44:03.309917",
   "file_size_bytes": 4236,
   "file_size_lines": 129,
   "processing_options": {

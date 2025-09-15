@@ -78,6 +78,10 @@ class PipelineArguments:
     strict: bool = False
     estimate_resources: bool = False
     
+    # POMDP options
+    pomdp_mode: bool = False
+    ontology_file: Optional[Path] = None
+    
     # File references
     ontology_terms_file: Optional[Path] = None
     pipeline_summary_file: Optional[Path] = None
@@ -249,6 +253,18 @@ class ArgumentParser:
             default=False,
             help_text='Estimate computational resources'
         ),
+        'pomdp_mode': ArgumentDefinition(
+            flag='--pomdp-mode',
+            action=argparse.BooleanOptionalAction,
+            default=False,
+            help_text='Enable POMDP mode for Active Inference models'
+        ),
+        'ontology_file': ArgumentDefinition(
+            flag='--ontology-file',
+            arg_type=Path,
+            default=None,
+            help_text='Path to ontology terms file for POMDP validation'
+        ),
         'ontology_terms_file': ArgumentDefinition(
             flag='--ontology-terms-file',
             arg_type=Path,
@@ -336,7 +352,7 @@ class ArgumentParser:
         "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only", "include_slow", "include_performance", "comprehensive"],
         "3_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
         "4_model_registry.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "5_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
+        "5_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources", "pomdp_mode", "ontology_file"],
         "6_validation.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "7_export.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "8_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
@@ -627,8 +643,8 @@ class StepConfiguration:
         },
         "5_type_checker": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose", "strict", "estimate_resources"],
-            "defaults": {"recursive": True, "verbose": False, "strict": False, "estimate_resources": True},
+            "optional_args": ["recursive", "verbose", "strict", "estimate_resources", "pomdp_mode", "ontology_file"],
+            "defaults": {"recursive": True, "verbose": False, "strict": False, "estimate_resources": True, "pomdp_mode": False},
             "description": "Type Checking & Resource Estimation"
         },
         "6_validation": {
