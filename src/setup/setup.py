@@ -285,6 +285,13 @@ def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: li
             for extra in extras:
                 sync_cmd.extend(["--extra", str(extra)])
 
+        # Add UV-specific optimizations
+        sync_cmd.extend([
+            "--frozen",  # Use lock file if available
+            "--no-cache",  # Ensure fresh install
+            "--reinstall-package", "generalized-notation-notation"  # Reinstall this package
+        ])
+
         start_time = time.time()
         result = subprocess.run(
             sync_cmd,
@@ -299,7 +306,33 @@ def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: li
             if verbose:
                 logger.error(result.stdout)
                 logger.error(result.stderr)
-            return False
+            
+            # Try fallback without frozen flag
+            logger.info("🔄 Trying fallback installation without frozen flag...")
+            fallback_cmd = ["uv", "sync"]
+            if dev:
+                fallback_cmd.extend(["--extra", "dev"])
+            if extras:
+                for extra in extras:
+                    fallback_cmd.extend(["--extra", str(extra)])
+            
+            fallback_result = subprocess.run(
+                fallback_cmd,
+                cwd=PROJECT_ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            
+            if fallback_result.returncode != 0:
+                logger.error("❌ Fallback installation also failed")
+                if verbose:
+                    logger.error(fallback_result.stdout)
+                    logger.error(fallback_result.stderr)
+                return False
+            else:
+                logger.info("✅ Fallback installation succeeded")
+                result = fallback_result
 
         duration = time.time() - start_time
         logger.info(f"✅ Dependencies installed using UV in {duration:.1f}s")

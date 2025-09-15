@@ -91,6 +91,19 @@ try:
 except ImportError:
     STRUCTURED_LOGGING_AVAILABLE = False
 
+# UV utilities for environment management
+try:
+    from utils.uv_utils import (
+        check_uv_available,
+        ensure_uv_environment,
+        get_uv_environment_info,
+        run_python_script
+    )
+    UV_AVAILABLE = True
+except ImportError:
+    UV_AVAILABLE = False
+    logging.warning("UV utilities not available - falling back to standard Python execution")
+
 def main():
     """Main pipeline orchestration function."""
     # Parse arguments
@@ -112,6 +125,23 @@ def main():
         reset_progress_tracker()
     else:
         logger = setup_step_logging("pipeline", args.verbose)
+    
+    # Check UV environment if available
+    if UV_AVAILABLE:
+        logger.info("Checking UV environment...")
+        
+        if not check_uv_available():
+            logger.warning("UV is not available - using standard Python execution")
+        else:
+            # Ensure UV environment is ready
+            if not ensure_uv_environment(
+                dev=True,
+                extras=["llm", "visualization", "audio", "gui"],
+                verbose=args.verbose
+            ):
+                logger.warning("UV environment setup failed - continuing with standard Python execution")
+            else:
+                logger.info("UV environment is ready")
     
     # Initialize pipeline execution summary
     pipeline_summary = {

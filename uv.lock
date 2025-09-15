@@ -1801,6 +1801,41 @@ visualization = [
     { name = "seaborn" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "bandit" },
+    { name = "black" },
+    { name = "flake8" },
+    { name = "ipdb" },
+    { name = "ipython", version = "8.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "ipython", version = "8.37.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.10.*'" },
+    { name = "ipython", version = "9.4.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "ipywidgets" },
+    { name = "isort" },
+    { name = "jupyter" },
+    { name = "memory-profiler" },
+    { name = "mypy" },
+    { name = "mypy-extensions" },
+    { name = "myst-parser", version = "3.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "myst-parser", version = "4.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "pre-commit" },
+    { name = "py-spy" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-benchmark" },
+    { name = "pytest-cov" },
+    { name = "pytest-json-report" },
+    { name = "pytest-mock" },
+    { name = "pytest-sugar" },
+    { name = "pytest-timeout" },
+    { name = "pytest-xdist" },
+    { name = "safety" },
+    { name = "sphinx", version = "7.4.7", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "sphinx", version = "8.1.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.10.*'" },
+    { name = "sphinx", version = "8.2.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "sphinx-rtd-theme" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "altair", specifier = ">=5.0.0" },
@@ -1886,6 +1921,36 @@ requires-dist = [
     { name = "transformers", marker = "extra == 'ml-ai'", specifier = ">=4.20.0" },
 ]
 provides-extras = ["dev", "ml-ai", "llm", "visualization", "audio", "gui", "graphs", "research", "all"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "bandit", specifier = ">=1.7.0" },
+    { name = "black", specifier = ">=22.0.0" },
+    { name = "flake8", specifier = ">=4.0.0" },
+    { name = "ipdb", specifier = ">=0.13.0" },
+    { name = "ipython", specifier = ">=8.0.0" },
+    { name = "ipywidgets", specifier = ">=7.6.0" },
+    { name = "isort", specifier = ">=5.10.0" },
+    { name = "jupyter", specifier = ">=1.0.0" },
+    { name = "memory-profiler", specifier = ">=0.60.0" },
+    { name = "mypy", specifier = ">=0.950" },
+    { name = "mypy-extensions", specifier = ">=1.0.0" },
+    { name = "myst-parser", specifier = ">=0.18.0" },
+    { name = "pre-commit", specifier = ">=2.20.0" },
+    { name = "py-spy", specifier = ">=0.3.0" },
+    { name = "pytest", specifier = ">=6.0.0" },
+    { name = "pytest-asyncio", specifier = ">=0.23.0" },
+    { name = "pytest-benchmark", specifier = ">=4.0.0" },
+    { name = "pytest-cov", specifier = ">=3.0.0" },
+    { name = "pytest-json-report", specifier = ">=1.5.0" },
+    { name = "pytest-mock", specifier = ">=3.10.0" },
+    { name = "pytest-sugar", specifier = ">=0.9.0" },
+    { name = "pytest-timeout", specifier = ">=2.1.0" },
+    { name = "pytest-xdist", specifier = ">=2.5.0" },
+    { name = "safety", specifier = ">=2.3.0" },
+    { name = "sphinx", specifier = ">=5.0.0" },
+    { name = "sphinx-rtd-theme", specifier = ">=1.0.0" },
+]
 
 [[package]]
 name = "gradio"

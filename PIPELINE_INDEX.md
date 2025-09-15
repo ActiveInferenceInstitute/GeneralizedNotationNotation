@@ -1,4 +1,4 @@
-# GNN Processing Pipeline - Complete Steps Index
+clear# GNN Processing Pipeline - Complete Steps Index
 
 ## 📋 Overview
 

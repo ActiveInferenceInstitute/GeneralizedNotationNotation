@@ -186,7 +186,24 @@ def ensure_dependencies(logger):
     """Check dependencies using UV."""
     project_root = Path(__file__).parent.parent
     
-    logger.info("Checking test dependencies...")
+    logger.info("Checking test dependencies using UV...")
+    
+    # Check UV availability first
+    try:
+        uv_result = subprocess.run(
+            ["uv", "--version"],
+            capture_output=True, text=True, timeout=10, cwd=project_root
+        )
+        if uv_result.returncode == 0:
+            logger.info(f"✅ UV available: {uv_result.stdout.strip()}")
+        else:
+            logger.error("❌ UV not available")
+            logger.error("Action: Install UV first: curl -LsSf https://astral.sh/uv/install.sh | sh")
+            sys.exit(1)
+    except Exception as e:
+        logger.error(f"❌ Failed to check UV: {e}")
+        logger.error("Action: Install UV first: curl -LsSf https://astral.sh/uv/install.sh | sh")
+        sys.exit(1)
     
     # Check pytest availability using UV
     try:
@@ -197,9 +214,30 @@ def ensure_dependencies(logger):
         if result.returncode == 0:
             logger.info(f"✅ pytest available: {result.stdout.strip()}")
         else:
-            logger.error(f"❌ pytest not available: {result.stderr}")
-            logger.error("Action: Run 'uv sync --extra dev' to install test dependencies")
-            sys.exit(1)
+            logger.warning(f"⚠️ pytest not available: {result.stderr}")
+            logger.info("🔄 Attempting to install test dependencies...")
+            
+            # Try to install test dependencies
+            install_result = subprocess.run(
+                ["uv", "sync", "--extra", "dev"],
+                capture_output=True, text=True, timeout=120, cwd=project_root
+            )
+            if install_result.returncode == 0:
+                logger.info("✅ Test dependencies installed successfully")
+                # Verify again
+                verify_result = subprocess.run(
+                    ["uv", "run", "python", "-c", "import pytest; print(f'pytest {pytest.__version__}')"],
+                    capture_output=True, text=True, timeout=20, cwd=project_root
+                )
+                if verify_result.returncode == 0:
+                    logger.info(f"✅ pytest now available: {verify_result.stdout.strip()}")
+                else:
+                    logger.error("❌ pytest still not available after installation")
+                    sys.exit(1)
+            else:
+                logger.error(f"❌ Failed to install test dependencies: {install_result.stderr}")
+                logger.error("Action: Run 'uv sync --extra dev' manually")
+                sys.exit(1)
     except Exception as e:
         logger.error(f"❌ Failed to check pytest: {e}")
         logger.error("Action: Run 'uv sync --extra dev' to install test dependencies")
@@ -455,18 +493,20 @@ def process_tests_standardized(
         test_output_dir = tests_root / "test_results"
         test_output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Check if pytest is available (use venv Python if present)
+        # Check if pytest is available using UV
         try:
             project_root = Path(__file__).parent.parent
-            venv_python = project_root / ".venv" / "bin" / "python"
-            python_exec = str(venv_python) if venv_python.exists() else sys.executable
-            result = subprocess.run([python_exec, "-m", "pytest", "--version"], 
-                                  capture_output=True, text=True, timeout=10)
+            result = subprocess.run(["uv", "run", "python", "-m", "pytest", "--version"], 
+                                  capture_output=True, text=True, timeout=10, cwd=project_root)
             if result.returncode != 0:
                 logger.error("❌ pytest not available; failing tests step")
+                logger.error("Action: Run 'uv sync --extra dev' to install test dependencies")
                 return False
+            else:
+                logger.info(f"✅ pytest available: {result.stdout.strip()}")
         except (subprocess.TimeoutExpired, FileNotFoundError):
             logger.error("❌ pytest not available; failing tests step")
+            logger.error("Action: Run 'uv sync --extra dev' to install test dependencies")
             return False
         
         # Run tests using simplified approach
@@ -511,11 +551,9 @@ def process_tests_standardized(
 
             logger.info(f"📋 Running {len(test_files)} test files: {[p.name for p in test_files]}")
 
-            # Use simple pytest execution
+            # Use UV to run pytest
             cmd = [
-                python_exec,
-                "-m",
-                "pytest",
+                "uv", "run", "python", "-m", "pytest",
                 "-v",
                 "--tb=short",
                 "--maxfail=10",
@@ -586,13 +624,11 @@ def process_tests_standardized(
             try:
                 test_dir = Path(__file__).parent / "tests"
                 if test_dir.exists():
-                    # Build pytest command; PYTEST_ADDOPTS will add -vv -rA -s and progress style
+                    # Build pytest command using UV; PYTEST_ADDOPTS will add -vv -rA -s and progress style
                     # Disable plugins known to cause duplicate-registration in some environments
                     # (e.g. pytest_timeout sometimes registers twice via entrypoints)
                     cmd = [
-                        python_exec,
-                        "-m",
-                        "pytest",
+                        "uv", "run", "python", "-m", "pytest",
                         "-p",
                         "no:pytest_timeout",
                         str(test_dir),
@@ -724,7 +760,7 @@ def validate_test_syntax(test_files: List[Path]) -> List[str]:
 
 def execute_test_suite(test_files: List[Path], verbose: bool = False) -> Dict[str, Any]:
     """
-    Execute the test suite with proper error handling.
+    Execute the test suite with proper error handling using UV.
     
     Args:
         test_files: List of test file paths
@@ -734,12 +770,8 @@ def execute_test_suite(test_files: List[Path], verbose: bool = False) -> Dict[st
         Dictionary with test execution results
     """
     try:
-        # Use virtual environment Python
-        venv_python = Path(".venv/bin/python")
-        python_executable = str(venv_python) if venv_python.exists() else sys.executable
-        
-        # Build pytest command and disable pytest_timeout plugin to avoid duplicate-registration
-        cmd = [python_executable, "-m", "pytest", "-p", "no:pytest_timeout"]
+        # Use UV to run pytest
+        cmd = ["uv", "run", "python", "-m", "pytest", "-p", "no:pytest_timeout"]
         if verbose:
             cmd.append("-v")
         cmd.extend(["--tb=short", "--maxfail=10", "--color=no"])

@@ -129,20 +129,43 @@ check_python() {
     log_info "Using Python $python_version"
 }
 
-# Check if virtual environment exists and is valid
-check_venv() {
-    if [[ -d "$VENV_DIR" ]]; then
-        if [[ -f "$VENV_DIR/bin/python" ]]; then
-            PYTHON_EXECUTABLE="$VENV_DIR/bin/python"
-            log_info "Using virtual environment: $VENV_DIR"
+# Check if UV is available and set up environment
+check_uv() {
+    if command -v uv &> /dev/null; then
+        log_info "UV is available: $(uv --version 2>&1 | head -n1)"
+        
+        # Check if UV environment exists
+        if [[ -d "$VENV_DIR" ]]; then
+            if [[ -f "$VENV_DIR/bin/python" ]]; then
+                PYTHON_EXECUTABLE="uv run python"
+                log_info "Using UV environment: $VENV_DIR"
+                return 0
+            else
+                log_warning "UV environment directory exists but is invalid"
+            fi
+        fi
+        
+        # Try to create UV environment
+        log_info "Creating UV environment..."
+        if uv venv --python 3.12; then
+            PYTHON_EXECUTABLE="uv run python"
+            log_info "UV environment created successfully"
             return 0
         else
-            log_warning "Virtual environment directory exists but is invalid"
+            log_warning "Failed to create UV environment, falling back to system Python"
         fi
+    else
+        log_warning "UV not available, falling back to system Python"
     fi
     
+    # Fallback to system Python
     log_info "Using system Python: $(which python3)"
     PYTHON_EXECUTABLE="python3"
+}
+
+# Check if virtual environment exists and is valid (legacy)
+check_venv() {
+    check_uv
 }
 
 # Check dependencies
@@ -154,6 +177,16 @@ check_dependencies() {
     
     # Check virtual environment
     check_venv
+    
+    # Sync UV dependencies if using UV
+    if [[ "$PYTHON_EXECUTABLE" == "uv run python" ]]; then
+        log_info "Syncing UV dependencies..."
+        if uv sync --extra dev; then
+            log_success "UV dependencies synced successfully"
+        else
+            log_warning "Failed to sync UV dependencies, continuing anyway"
+        fi
+    fi
     
     # Check if main script exists
     if [[ ! -f "$MAIN_SCRIPT" ]]; then

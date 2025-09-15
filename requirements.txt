@@ -1,6 +1,8 @@
 # =============================================================================
 # CORE DEPENDENCIES (Essential for basic functionality)
 # =============================================================================
+# This file is maintained for compatibility but UV uses pyproject.toml as the source of truth
+# For UV users: Use 'uv sync' instead of 'pip install -r requirements.txt'
 
 # Core scientific computing (lightweight)
 numpy>=1.21.0
@@ -8,19 +10,8 @@ matplotlib>=3.5.0
 networkx>=2.6.0
 pandas>=1.3.0
 pyyaml>=6.0
-pathlib2>=2.3.0; python_version < "3.4"
 scipy>=1.7.0
 scikit-learn>=1.0.0
-
-# Testing and development (essential)
-pytest>=6.0.0
-pytest-cov>=3.0.0
-pytest-asyncio>=0.23.0
-pytest-json-report>=1.5.0
-pytest-xdist>=2.5.0
-black>=22.0.0
-flake8>=4.0.0
-mypy>=0.950
 
 # System monitoring and utilities
 psutil>=5.8.0
@@ -28,19 +19,10 @@ toml>=0.10.0
 defusedxml>=0.7.0
 
 # HTTP and async communication
-aiohttp>=3.9.0
 httpx>=0.27.0
 
 # GNN processing
 markdown>=3.0.0
-
-# Security tools
-bandit>=1.7.0
-safety>=2.3.0
-
-# =============================================================================
-# OPTIONAL HEAVY PACKAGES (Install separately if needed)
-# =============================================================================
 
 # Active Inference ecosystem
 pymdp>=0.0.1
@@ -48,35 +30,79 @@ pymdp>=0.0.1
 # High-performance computing (essential for execution)
 jax[cpu]>=0.4.0
 jaxlib>=0.4.0
+flax>=0.7.0
+optax>=0.1.0
 
 # Visualization and diagramming
 discopy[matrix]>=1.0.0
 altair>=5.0.0
+plotly>=6.2.0
 
-# Uncomment additional heavy packages below based on your needs:
+# =============================================================================
+# DEVELOPMENT DEPENDENCIES (Install with UV: uv sync --extra dev)
+# =============================================================================
+# These are defined in pyproject.toml [project.optional-dependencies.dev]
+# and [tool.uv.dev-dependencies] for UV users
 
-# === MACHINE LEARNING & AI (Heavy packages) ===
+# Testing framework
+# pytest>=6.0.0
+# pytest-timeout>=2.1.0
+# pytest-asyncio>=0.23.0
+# pytest-cov>=3.0.0
+# pytest-json-report>=1.5.0
+# pytest-xdist>=2.5.0
+# pytest-mock>=3.10.0
+# pytest-benchmark>=4.0.0
+# pytest-sugar>=0.9.0
+
+# Code quality
+# black>=22.0.0
+# flake8>=4.0.0
+# mypy>=0.950
+# isort>=5.10.0
+# pre-commit>=2.20.0
+# mypy-extensions>=1.0.0
+
+# Security tools
+# bandit>=1.7.0
+# safety>=2.3.0
+
+# Documentation
+# sphinx>=5.0.0
+# sphinx-rtd-theme>=1.0.0
+# myst-parser>=0.18.0
+
+# Development tools
+# ipython>=8.0.0
+# ipdb>=0.13.0
+# jupyter>=1.0.0
+# ipywidgets>=7.6.0
+# py-spy>=0.3.0
+# memory-profiler>=0.60.0
+
+# =============================================================================
+# OPTIONAL HEAVY PACKAGES (Install with UV: uv sync --extra [group])
+# =============================================================================
+# These are defined in pyproject.toml [project.optional-dependencies] for UV users
+
+# === MACHINE LEARNING & AI ===
 # torch>=1.12.0         # ~1.5GB - PyTorch (CPU version available)
-# flax>=0.7.0           # ~150MB - JAX neural network library
-# optax>=0.1.0          # ~50MB - JAX optimization library
+# transformers>=4.20.0  # ~500MB - Hugging Face transformers
 
-# === LLM INTEGRATION (API clients) ===
+# === LLM INTEGRATION ===
 # openai>=1.0.0         # ~50MB - OpenAI API client
 # anthropic>=0.5.0      # ~30MB - Anthropic API client
-# ollama>=0.3.0           # ~small - Local LLM client for Ollama (optional)
-# python-dotenv>=1.0.0    # ~small - Load env vars for LLM configs (optional)
 
-# === ADVANCED VISUALIZATION (Heavy) ===
-# plotly>=5.0.0         # ~200MB - Interactive plotting
+# === ADVANCED VISUALIZATION ===
 # seaborn>=0.11.0       # ~100MB - Statistical visualization
 # bokeh>=2.4.0          # ~150MB - Web-based visualization
 # holoviews>=1.14.0     # ~100MB - High-level plotting
 # panel>=0.13.0         # ~80MB - Dashboard framework
 
-# === AUDIO PROCESSING (Heavy) ===
-# librosa>=0.9.0        # ~300MB - Audio analysis
-# soundfile>=0.10.0     # ~50MB - Audio file I/O
-# pedalboard>=0.5.0     # ~200MB - Audio effects
+# === AUDIO PROCESSING ===
+# librosa>=0.10.1       # ~300MB - Audio analysis
+# soundfile>=0.12.1     # ~50MB - Audio file I/O
+# pedalboard>=0.6.0     # ~200MB - Audio effects
 
 # === GRAPH VISUALIZATION ===
 # igraph>=0.9.0         # ~100MB - Graph algorithms
@@ -86,8 +112,21 @@ altair>=5.0.0
 # jupyter>=1.0.0        # ~500MB - Jupyter notebook
 # ipywidgets>=7.6.0     # ~100MB - Interactive widgets
 
-# === ACTIVE INFERENCE ===
-# pymdp>=0.0.1          # ~50MB - Active inference library
-
-# === SAPF (Audio backend) ===
-# sapf                  # Temporarily unavailable in PyPI
+# =============================================================================
+# UV USAGE NOTES
+# =============================================================================
+# 
+# For UV users (recommended):
+#   uv sync                    # Install core dependencies
+#   uv sync --extra dev        # Install development dependencies
+#   uv sync --extra llm        # Install LLM dependencies
+#   uv sync --extra visualization  # Install visualization dependencies
+#   uv sync --extra audio      # Install audio dependencies
+#   uv sync --extra gui        # Install GUI dependencies
+#   uv sync --extra all        # Install all optional dependencies
+#
+# For pip users (legacy):
+#   pip install -r requirements.txt
+#   pip install -e .[dev]      # Install development dependencies
+#   pip install -e .[llm]      # Install LLM dependencies
+#   # etc.

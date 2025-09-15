@@ -2,6 +2,45 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.uv]
+dev-dependencies = [
+    # Testing framework
+    "pytest>=6.0.0",
+    "pytest-timeout>=2.1.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=3.0.0",
+    "pytest-json-report>=1.5.0",
+    "pytest-xdist>=2.5.0",
+    "pytest-mock>=3.10.0",
+    "pytest-benchmark>=4.0.0",
+    "pytest-sugar>=0.9.0",
+    
+    # Code quality
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "mypy>=0.950",
+    "isort>=5.10.0",
+    "pre-commit>=2.20.0",
+    "mypy-extensions>=1.0.0",
+    
+    # Security tools
+    "bandit>=1.7.0",
+    "safety>=2.3.0",
+    
+    # Documentation
+    "sphinx>=5.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+    "myst-parser>=0.18.0",
+    
+    # Development tools
+    "ipython>=8.0.0",
+    "ipdb>=0.13.0",
+    "jupyter>=1.0.0",
+    "ipywidgets>=7.6.0",
+    "py-spy>=0.3.0",
+    "memory-profiler>=0.60.0",
+]
+
 [project]
 name = "generalized-notation-notation"
 version = "1.1.0"
@@ -284,4 +323,15 @@ ignore = [
 ]
 
 [tool.ruff.per-file-ignores]
-"__init__.py" = ["F401"] 
+"__init__.py" = ["F401"]
+
+# UV-specific configuration
+[tool.uv.sources]
+# Use specific sources for packages if needed
+# pymdp = { git = "https://github.com/infer-actively/pymdp.git" }
+
+[tool.uv.workspace]
+# Define workspace members if this becomes a workspace
+members = []
+
+# UV scripts are defined in [project.scripts] section above 

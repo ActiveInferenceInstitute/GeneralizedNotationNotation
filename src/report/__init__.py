@@ -87,35 +87,7 @@ def generate_report(target_dir: Path, output_dir: Path, format: str = "json") ->
 __version__ = "1.0.0"
 
 
-def process_report(target_dir, output_dir, verbose=False, **kwargs):
-    """
-    Main processing function for report.
-    
-    Args:
-        target_dir: Directory containing files to process
-        output_dir: Output directory for results
-        verbose: Whether to enable verbose logging
-        **kwargs: Additional processing options
-        
-    Returns:
-        True if processing succeeded, False otherwise
-    """
-    import logging
-    from pathlib import Path
-    
-    logger = logging.getLogger(__name__)
-    if verbose:
-        logger.setLevel(logging.DEBUG)
-    
-    try:
-        logger.info(f"Processing report for files in {target_dir}")
-        # Placeholder implementation - delegate to actual module functions
-        # This would be replaced with actual implementation
-        logger.info(f"Report processing completed")
-        return True
-    except Exception as e:
-        logger.error(f"Report processing failed: {e}")
-        return False
+# The process_report function is imported from processor module above
 
 
 __all__ = [
