@@ -1,524 +1,416 @@
 # Type Checker Module
 
-This module provides comprehensive type checking and validation capabilities for GNN models, including syntax validation, type inference, and resource estimation.
+The Type Checker module provides comprehensive validation, analysis, and type checking capabilities for Generalized Notation Notation (GNN) files in the GNN Processing Pipeline.
 
-## Module Structure
+## Overview
 
+This module implements robust type checking and validation for GNN files, including syntax validation, type consistency checking, resource estimation, and performance analysis. It follows the thin orchestrator pattern and provides both programmatic APIs and MCP (Model Context Protocol) integration.
+
+## Key Features
+
+### Core Functionality
+- **GNN File Validation**: Comprehensive syntax and semantic validation
+- **Type Analysis**: Variable type checking and dimension validation
+- **Connection Analysis**: Pattern analysis and complexity estimation
+- **Resource Estimation**: Computational and memory requirement estimation
+- **Performance Analysis**: Processing metrics and optimization suggestions
+
+### Advanced Capabilities
+- **Error Recovery**: Graceful handling of malformed input
+- **Performance Monitoring**: Real-time metrics and performance tracking
+- **MCP Integration**: External tool integration via Model Context Protocol
+- **Comprehensive Logging**: Detailed logging with correlation IDs
+- **Validation Modes**: Standard and strict validation modes
+
+## Architecture
+
+### Module Structure
 ```
 src/type_checker/
-├── __init__.py                    # Module initialization and exports
-├── README.md                      # This documentation
-├── __main__.py                    # Main type checker entry point
-├── checker.py                     # Core type checking functionality
-├── type_inference.py              # Type inference system
-├── resource_estimator.py          # Resource estimation
-├── syntax_validator.py            # Syntax validation
-└── mcp.py                         # Model Context Protocol integration
+├── __init__.py          # Module initialization and exports
+├── processor.py         # Core type checking functionality
+├── analysis_utils.py    # Analysis utilities and complexity estimation
+├── mcp.py              # MCP tool registration and execution
+└── README.md           # This documentation
 ```
 
-## Core Components
+### Key Components
 
-### Type Checker Functions
+#### 1. GNNTypeChecker (processor.py)
+The main class providing comprehensive type checking capabilities:
 
-#### `process_type_checker(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
-Main function for processing type checking tasks.
+```python
+from src.type_checker import GNNTypeChecker
 
-**Features:**
-- Syntax validation and type checking
-- Type inference and analysis
-- Resource estimation and analysis
-- Error detection and reporting
-- Type checker documentation
+# Initialize with options
+checker = GNNTypeChecker(strict_mode=True, verbose=True)
 
-**Returns:**
-- `bool`: Success status of type checking operations
+# Validate GNN files
+success = checker.validate_gnn_files(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/type_check"),
+    verbose=True
+)
 
-### Type Checking Functions
+# Validate single file
+result = checker.validate_single_gnn_file(
+    file_path=Path("model.gnn"),
+    verbose=True
+)
+```
 
-#### `check_gnn_types(content: str) -> Dict[str, Any]`
-Performs comprehensive type checking on GNN content.
+#### 2. Analysis Utilities (analysis_utils.py)
+Specialized functions for detailed analysis:
 
-**Type Checking Features:**
-- Variable type validation
-- Matrix dimension checking
-- Parameter type verification
-- Connection type analysis
-- Type consistency validation
+```python
+from src.type_checker import (
+    analyze_variable_types,
+    analyze_connections,
+    estimate_computational_complexity
+)
 
-#### `infer_types(content: str) -> Dict[str, Any]`
-Infers types for GNN variables and parameters.
+# Analyze variable types
+variables = [
+    {"name": "state", "type": "belief", "data_type": "float", "dimensions": [10, 1]},
+    {"name": "action", "type": "action", "data_type": "int", "dimensions": [5]}
+]
+type_analysis = analyze_variable_types(variables)
 
-**Inference Features:**
-- Automatic type inference
-- Type constraint analysis
-- Type relationship mapping
-- Type hierarchy analysis
-- Type optimization
+# Analyze connections
+connections = [
+    {"type": "transition", "source_variables": ["state", "action"], "target_variables": ["state"]}
+]
+conn_analysis = analyze_connections(connections)
 
-#### `validate_syntax(content: str) -> Dict[str, Any]`
-Validates GNN syntax and structure.
+# Estimate complexity
+complexity = estimate_computational_complexity(type_analysis, conn_analysis)
+```
 
-**Validation Features:**
-- Syntax correctness checking
-- Structure validation
-- Format verification
-- Error detection
-- Warning generation
+#### 3. MCP Integration (mcp.py)
+Model Context Protocol integration for external tools:
 
-### Resource Estimation Functions
+```python
+from src.type_checker import (
+    register_mcp_tools,
+    execute_mcp_tool,
+    list_available_tools
+)
 
-#### `estimate_resources(content: str) -> Dict[str, Any]`
-Estimates computational resources required for GNN models.
+# Register MCP tools
+tools = register_mcp_tools()
 
-**Estimation Features:**
-- Memory usage estimation
-- Computational complexity analysis
-- Storage requirements
-- Processing time estimation
-- Resource optimization
+# Execute MCP tool
+result = execute_mcp_tool("validate_gnn_file", {
+    "file_path": "/path/to/model.gnn",
+    "strict_mode": True
+})
 
-#### `analyze_complexity(content: str) -> Dict[str, Any]`
-Analyzes computational complexity of GNN models.
-
-**Complexity Analysis:**
-- Time complexity analysis
-- Space complexity analysis
-- Algorithmic complexity
-- Scalability assessment
-- Performance prediction
-
-### Error Detection Functions
-
-#### `detect_type_errors(content: str) -> List[Dict[str, Any]]`
-Detects type-related errors in GNN content.
-
-**Error Detection:**
-- Type mismatch detection
-- Dimension mismatch detection
-- Parameter error detection
-- Connection error detection
-- Consistency error detection
-
-#### `generate_error_report(errors: List[Dict[str, Any]]) -> str`
-Generates comprehensive error report.
-
-**Report Content:**
-- Error summaries
-- Error details
-- Error locations
-- Fix suggestions
-- Error categorization
+# List available tools
+available_tools = list_available_tools()
+```
 
 ## Usage Examples
 
 ### Basic Type Checking
 
 ```python
-from type_checker import process_type_checker
+from pathlib import Path
+from src.type_checker import GNNTypeChecker
 
-# Process type checking tasks
-success = process_type_checker(
-    target_dir=Path("models/"),
-    output_dir=Path("type_checker_output/"),
+# Initialize checker
+checker = GNNTypeChecker(strict_mode=False, verbose=True)
+
+# Validate directory of GNN files
+success = checker.validate_gnn_files(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/type_check"),
     verbose=True
 )
 
 if success:
     print("Type checking completed successfully")
 else:
-    print("Type checking failed")
+    print("Type checking failed - check logs for details")
 ```
 
-### GNN Type Checking
+### Advanced Analysis
 
 ```python
-from type_checker import check_gnn_types
+from src.type_checker import (
+    analyze_variable_types,
+    analyze_connections,
+    estimate_computational_complexity
+)
 
-# Check GNN types
-type_results = check_gnn_types(gnn_content)
+# Sample GNN model data
+variables = [
+    {
+        "name": "belief_state",
+        "type": "belief",
+        "data_type": "float",
+        "dimensions": [10, 1],
+        "description": "Agent belief state"
+    },
+    {
+        "name": "actions",
+        "type": "action",
+        "data_type": "int",
+        "dimensions": [5],
+        "description": "Available actions"
+    }
+]
 
-print(f"Variables checked: {len(type_results['variables'])}")
-print(f"Type errors: {len(type_results['type_errors'])}")
-print(f"Type warnings: {len(type_results['type_warnings'])}")
-print(f"Type consistency: {type_results['type_consistency']:.2f}%")
+connections = [
+    {
+        "type": "transition",
+        "source_variables": ["belief_state", "actions"],
+        "target_variables": ["belief_state"],
+        "description": "State transition function"
+    }
+]
+
+# Perform analysis
+type_analysis = analyze_variable_types(variables)
+conn_analysis = analyze_connections(connections)
+complexity = estimate_computational_complexity(type_analysis, conn_analysis)
+
+# Print results
+print(f"Total variables: {type_analysis['total_variables']}")
+print(f"Total connections: {conn_analysis['total_connections']}")
+print(f"Estimated memory: {complexity['resource_requirements']['ram_gb_recommended']} GB")
 ```
 
-### Type Inference
+### MCP Tool Usage
 
 ```python
-from type_checker import infer_types
+from src.type_checker import execute_mcp_tool
 
-# Infer types for GNN content
-inference_results = infer_types(gnn_content)
+# Validate a single file via MCP
+result = execute_mcp_tool("validate_gnn_file", {
+    "file_path": "/path/to/model.gnn",
+    "strict_mode": True,
+    "verbose": True
+})
 
-print(f"Inferred types: {len(inference_results['inferred_types'])}")
-print(f"Type constraints: {len(inference_results['type_constraints'])}")
-print(f"Type relationships: {len(inference_results['type_relationships'])}")
+if result["success"]:
+    print("File validation successful")
+    print(f"Validation result: {result['result']}")
+else:
+    print(f"Validation failed: {result['error']}")
 ```
-
-### Syntax Validation
-
-```python
-from type_checker import validate_syntax
-
-# Validate GNN syntax
-syntax_results = validate_syntax(gnn_content)
-
-print(f"Syntax valid: {syntax_results['valid']}")
-print(f"Syntax errors: {len(syntax_results['syntax_errors'])}")
-print(f"Structure issues: {len(syntax_results['structure_issues'])}")
-print(f"Format warnings: {len(syntax_results['format_warnings'])}")
-```
-
-### Resource Estimation
-
-```python
-from type_checker import estimate_resources
-
-# Estimate computational resources
-resource_results = estimate_resources(gnn_content)
-
-print(f"Memory usage: {resource_results['memory_usage']:.2f}MB")
-print(f"Computational complexity: {resource_results['computational_complexity']}")
-print(f"Storage requirements: {resource_results['storage_requirements']:.2f}MB")
-print(f"Processing time: {resource_results['processing_time']:.2f}s")
-```
-
-### Complexity Analysis
-
-```python
-from type_checker import analyze_complexity
-
-# Analyze computational complexity
-complexity_results = analyze_complexity(gnn_content)
-
-print(f"Time complexity: O({complexity_results['time_complexity']})")
-print(f"Space complexity: O({complexity_results['space_complexity']})")
-print(f"Algorithmic complexity: {complexity_results['algorithmic_complexity']}")
-print(f"Scalability score: {complexity_results['scalability_score']:.2f}")
-```
-
-### Error Detection
-
-```python
-from type_checker import detect_type_errors
-
-# Detect type errors
-errors = detect_type_errors(gnn_content)
-
-print(f"Total errors: {len(errors)}")
-for error in errors:
-    print(f"Error: {error['type']} at {error['location']}")
-    print(f"Description: {error['description']}")
-    print(f"Severity: {error['severity']}")
-```
-
-## Type Checking Pipeline
-
-### 1. Content Parsing
-```python
-# Parse GNN content
-parsed_content = parse_gnn_content(content)
-variables = extract_variables(parsed_content)
-parameters = extract_parameters(parsed_content)
-```
-
-### 2. Type Inference
-```python
-# Infer types
-inferred_types = infer_types_for_variables(variables)
-type_constraints = analyze_type_constraints(inferred_types)
-type_relationships = map_type_relationships(inferred_types)
-```
-
-### 3. Type Validation
-```python
-# Validate types
-type_validation = validate_inferred_types(inferred_types)
-type_consistency = check_type_consistency(type_validation)
-type_errors = detect_type_errors(type_validation)
-```
-
-### 4. Resource Analysis
-```python
-# Analyze resources
-resource_estimation = estimate_computational_resources(parsed_content)
-complexity_analysis = analyze_computational_complexity(parsed_content)
-performance_prediction = predict_performance(complexity_analysis)
-```
-
-### 5. Report Generation
-```python
-# Generate reports
-type_report = generate_type_report(type_validation, type_errors)
-resource_report = generate_resource_report(resource_estimation)
-complexity_report = generate_complexity_report(complexity_analysis)
-```
-
-## Integration with Pipeline
-
-### Pipeline Step 5: Type Checking
-```python
-# Called from 5_type_checker.py
-def process_type_checker(target_dir, output_dir, verbose=False, **kwargs):
-    # Perform type checking analysis
-    type_results = perform_type_checking_analysis(target_dir, verbose)
-    
-    # Generate type checking reports
-    type_reports = generate_type_checking_reports(type_results)
-    
-    # Create type checking documentation
-    type_docs = create_type_checking_documentation(type_results)
-    
-    return True
-```
-
-### Output Structure
-```
-output/5_type_checker_output/
-├── type_analysis.json             # Type analysis results
-├── type_inference.json            # Type inference results
-├── syntax_validation.json         # Syntax validation results
-├── resource_estimation.json       # Resource estimation results
-├── complexity_analysis.json       # Complexity analysis results
-├── error_detection.json           # Error detection results
-├── type_checker_summary.md        # Type checker summary
-└── type_checker_report.md         # Comprehensive type checker report
-```
-
-## Type Checking Features
-
-### Type Analysis
-- **Variable Type Analysis**: Analysis of variable types
-- **Matrix Type Analysis**: Analysis of matrix types and dimensions
-- **Parameter Type Analysis**: Analysis of parameter types
-- **Connection Type Analysis**: Analysis of connection types
-- **Type Consistency Analysis**: Analysis of type consistency
-
-### Type Inference
-- **Automatic Type Inference**: Automatic type inference for variables
-- **Type Constraint Analysis**: Analysis of type constraints
-- **Type Relationship Mapping**: Mapping of type relationships
-- **Type Hierarchy Analysis**: Analysis of type hierarchies
-- **Type Optimization**: Optimization of type assignments
-
-### Resource Estimation
-- **Memory Estimation**: Estimation of memory usage
-- **Computational Estimation**: Estimation of computational requirements
-- **Storage Estimation**: Estimation of storage requirements
-- **Time Estimation**: Estimation of processing time
-- **Resource Optimization**: Optimization of resource usage
-
-### Error Detection
-- **Type Error Detection**: Detection of type-related errors
-- **Syntax Error Detection**: Detection of syntax errors
-- **Dimension Error Detection**: Detection of dimension mismatches
-- **Parameter Error Detection**: Detection of parameter errors
-- **Consistency Error Detection**: Detection of consistency errors
 
 ## Configuration Options
 
-### Type Checker Settings
-```python
-# Type checker configuration
-config = {
-    'strict_type_checking': True,   # Enable strict type checking
-    'type_inference_enabled': True, # Enable type inference
-    'resource_estimation_enabled': True, # Enable resource estimation
-    'error_detection_enabled': True, # Enable error detection
-    'complexity_analysis_enabled': True, # Enable complexity analysis
-    'auto_fix_enabled': False       # Enable automatic error fixing
+### GNNTypeChecker Parameters
+
+- **strict_mode** (bool): Enable strict validation rules
+- **verbose** (bool): Enable verbose logging and output
+
+### Validation Rules
+
+The type checker supports various validation rules:
+
+- **Type Validation**: Validates variable types against allowed types
+- **Dimension Validation**: Ensures dimensions are positive integers
+- **Name Validation**: Validates variable and connection names
+- **Consistency Checking**: Checks for duplicate names and type consistency
+- **Syntax Validation**: Validates GNN syntax and structure
+
+### Supported File Types
+
+- `.md` - Markdown files with GNN content
+- `.gnn` - Native GNN files
+- `.txt` - Text files with GNN content
+
+## Output Structure
+
+### Validation Results
+
+The type checker generates comprehensive output including:
+
+```json
+{
+  "timestamp": "2024-01-15T10:30:00",
+  "processed_files": 3,
+  "success": true,
+  "errors": [],
+  "warnings": [],
+  "validation_results": [...],
+  "type_analysis": [...],
+  "performance_metrics": {
+    "files_processed": 3,
+    "total_processing_time": 1.23,
+    "errors_encountered": 0,
+    "warnings_generated": 2
+  },
+  "summary_statistics": {
+    "total_variables": 15,
+    "total_connections": 8,
+    "valid_files": 3,
+    "invalid_files": 0,
+    "type_errors": 0,
+    "warnings_count": 2
+  }
 }
 ```
 
-### Validation Settings
-```python
-# Validation configuration
-validation_config = {
-    'syntax_validation': True,      # Enable syntax validation
-    'type_validation': True,        # Enable type validation
-    'dimension_validation': True,   # Enable dimension validation
-    'parameter_validation': True,   # Enable parameter validation
-    'consistency_validation': True  # Enable consistency validation
+### Analysis Results
+
+Type analysis provides detailed metrics:
+
+```json
+{
+  "total_variables": 5,
+  "type_distribution": {
+    "belief": 2,
+    "action": 1,
+    "observation": 1,
+    "reward": 1
+  },
+  "dimension_analysis": {
+    "max_dimensions": 2,
+    "avg_dimensions": 1.4,
+    "dimension_distribution": {
+      "1D": 3,
+      "2D": 2
+    }
+  },
+  "complexity_metrics": {
+    "total_elements": 25,
+    "estimated_memory_bytes": 200,
+    "estimated_memory_mb": 0.0002,
+    "estimated_memory_gb": 0.0000002
+  }
 }
 ```
 
 ## Error Handling
 
-### Type Checker Failures
-```python
-# Handle type checker failures gracefully
-try:
-    results = process_type_checker(target_dir, output_dir)
-except TypeCheckerError as e:
-    logger.error(f"Type checking failed: {e}")
-    # Provide fallback type checking or error reporting
+The type checker provides comprehensive error handling:
+
+### Error Types
+- **FileNotFoundError**: Missing input files
+- **SyntaxError**: Invalid GNN syntax
+- **TypeError**: Invalid type definitions
+- **ValueError**: Invalid values or dimensions
+- **ValidationError**: Custom validation failures
+
+### Error Recovery
+- Graceful degradation for malformed input
+- Detailed error messages with context
+- Partial processing when possible
+- Comprehensive logging for debugging
+
+## Performance Considerations
+
+### Optimization Features
+- Efficient parsing algorithms
+- Memory-conscious processing
+- Parallel processing support
+- Caching for repeated operations
+
+### Performance Metrics
+- Processing time per file
+- Memory usage tracking
+- Error rate monitoring
+- Throughput measurements
+
+### Scaling Guidelines
+- Small models (< 100 variables): Any system
+- Medium models (100-1000 variables): 4GB RAM, 2 CPU cores
+- Large models (1000+ variables): 8GB+ RAM, 4+ CPU cores
+- Very large models (10000+ variables): 16GB+ RAM, 8+ CPU cores
+
+## Testing
+
+The module includes comprehensive tests:
+
+```bash
+# Run all type checker tests
+pytest src/tests/test_type_checker_overall.py -v
+
+# Run specific test categories
+pytest src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils -v
+pytest src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor -v
+pytest src/tests/test_type_checker_overall.py::TestTypeCheckerIntegration -v
 ```
 
-### Inference Issues
+### Test Coverage
+- Unit tests for all functions
+- Integration tests for workflows
+- Performance tests for large datasets
+- Error handling tests
+- MCP integration tests
+
+## Integration with Pipeline
+
+The type checker integrates seamlessly with the GNN Processing Pipeline:
+
+### Pipeline Step 5
+The type checker is used in pipeline step 5 (`5_type_checker.py`):
+
 ```python
-# Handle inference issues gracefully
-try:
-    types = infer_types(content)
-except InferenceError as e:
-    logger.warning(f"Type inference failed: {e}")
-    # Provide fallback inference or error reporting
+# Step 5 orchestrator imports from type_checker module
+from type_checker.analysis_utils import (
+    analyze_variable_types,
+    analyze_connections,
+    estimate_computational_complexity,
+)
 ```
 
-### Validation Issues
-```python
-# Handle validation issues gracefully
-try:
-    validation = validate_syntax(content)
-except ValidationError as e:
-    logger.error(f"Syntax validation failed: {e}")
-    # Provide fallback validation or error reporting
-```
-
-## Performance Optimization
-
-### Type Checking Optimization
-- **Caching**: Cache type checking results
-- **Parallel Processing**: Parallel type checking
-- **Incremental Checking**: Incremental type checking
-- **Optimized Algorithms**: Optimize type checking algorithms
-
-### Inference Optimization
-- **Type Caching**: Cache inferred types
-- **Parallel Inference**: Parallel type inference
-- **Incremental Inference**: Incremental type inference
-- **Optimized Inference**: Optimize inference algorithms
-
-### Resource Optimization
-- **Estimation Caching**: Cache resource estimations
-- **Parallel Estimation**: Parallel resource estimation
-- **Incremental Estimation**: Incremental resource estimation
-- **Optimized Estimation**: Optimize estimation algorithms
-
-## Testing and Validation
-
-### Unit Tests
-```python
-# Test individual type checker functions
-def test_type_checking():
-    results = check_gnn_types(test_content)
-    assert 'variables' in results
-    assert 'type_errors' in results
-    assert 'type_consistency' in results
-```
-
-### Integration Tests
-```python
-# Test complete type checker pipeline
-def test_type_checker_pipeline():
-    success = process_type_checker(test_dir, output_dir)
-    assert success
-    # Verify type checker outputs
-    type_checker_files = list(output_dir.glob("**/*"))
-    assert len(type_checker_files) > 0
-```
-
-### Validation Tests
-```python
-# Test type checker validation
-def test_syntax_validation():
-    validation = validate_syntax(test_content)
-    assert 'valid' in validation
-    assert 'syntax_errors' in validation
-    assert 'structure_issues' in validation
-```
-
-## Dependencies
-
-### Required Dependencies
-- **pathlib**: Path handling
-- **json**: JSON data handling
-- **logging**: Logging functionality
-- **typing**: Type hints and annotations
-
-### Optional Dependencies
-- **numpy**: Numerical computations
-- **sympy**: Symbolic mathematics
-- **pydantic**: Data validation
-- **mypy**: Static type checking
-
-## Performance Metrics
-
-### Processing Times
-- **Small Models** (< 100 variables): < 5 seconds
-- **Medium Models** (100-1000 variables): 5-30 seconds
-- **Large Models** (> 1000 variables): 30-300 seconds
-
-### Memory Usage
-- **Base Memory**: ~20MB
-- **Per Model**: ~5-20MB depending on complexity
-- **Peak Memory**: 1.5-2x base usage during checking
-
-### Accuracy Metrics
-- **Type Inference Accuracy**: 90-95% accuracy
-- **Error Detection Rate**: 85-90% detection rate
-- **Resource Estimation Accuracy**: 80-85% accuracy
-- **Complexity Analysis Accuracy**: 85-90% accuracy
+### Input/Output Flow
+1. **Input**: Parsed GNN data from step 3
+2. **Processing**: Type checking and analysis
+3. **Output**: Validation results and analysis data
+4. **Integration**: Results used by subsequent pipeline steps
 
 ## Troubleshooting
 
 ### Common Issues
 
-#### 1. Type Checker Failures
-```
-Error: Type checking failed - invalid content format
-Solution: Validate content format and structure
-```
+1. **Import Errors**
+   ```python
+   # Ensure proper path setup
+   import sys
+   from pathlib import Path
+   sys.path.insert(0, str(Path(__file__).parent))
+   ```
 
-#### 2. Inference Issues
-```
-Error: Type inference failed - ambiguous types
-Solution: Provide explicit type annotations or constraints
-```
+2. **File Not Found**
+   ```python
+   # Check file paths
+   file_path = Path("model.gnn")
+   if not file_path.exists():
+       print(f"File not found: {file_path}")
+   ```
 
-#### 3. Validation Issues
-```
-Error: Syntax validation failed - malformed syntax
-Solution: Check syntax and fix formatting issues
-```
-
-#### 4. Resource Issues
-```
-Error: Resource estimation failed - insufficient data
-Solution: Provide complete model information for estimation
-```
+3. **Memory Issues**
+   ```python
+   # Use strict mode for large files
+   checker = GNNTypeChecker(strict_mode=True)
+   ```
 
 ### Debug Mode
+
+Enable verbose logging for debugging:
+
 ```python
-# Enable debug mode for detailed type checker information
-results = process_type_checker(target_dir, output_dir, debug=True, verbose=True)
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
+checker = GNNTypeChecker(verbose=True)
 ```
 
-## Future Enhancements
+## Contributing
 
-### Planned Features
-- **Advanced Type Inference**: AI-powered type inference
-- **Real-time Type Checking**: Real-time type checking during development
-- **Advanced Error Correction**: Automated error correction suggestions
-- **Type Optimization**: Advanced type optimization algorithms
+When contributing to the type checker module:
 
-### Performance Improvements
-- **Advanced Caching**: Advanced caching strategies
-- **Parallel Processing**: Parallel type checking processing
-- **Incremental Updates**: Incremental type checking updates
-- **Machine Learning**: ML-based type checking optimization
+1. Follow the thin orchestrator pattern
+2. Add comprehensive tests for new functionality
+3. Update documentation for API changes
+4. Ensure MCP integration compatibility
+5. Follow error handling best practices
 
-## Summary
+## License
 
-The Type Checker module provides comprehensive type checking and validation capabilities for GNN models, including syntax validation, type inference, and resource estimation. The module ensures reliable type checking, proper error detection, and optimal resource analysis to support Active Inference research and development.
-
-## License and Citation
-
-This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
-
-## References
-
-- Project overview: ../../README.md
-- Comprehensive docs: ../../DOCS.md
-- Architecture guide: ../../ARCHITECTURE.md
-- Pipeline details: ../../doc/pipeline/README.md
+This module is part of the GNN Processing Pipeline and follows the same license terms.
