@@ -55,6 +55,87 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Display API key guidance
+display_api_key_guidance() {
+    echo
+    log_info "=========================================="
+    log_info "API KEY CONFIGURATION GUIDANCE"
+    log_info "=========================================="
+    log_info "To enable LLM features, configure API keys:"
+    echo
+    log_info "Method 1 - Environment Variables (Recommended):"
+    log_info "  export OPENAI_API_KEY='your_openai_key_here'"
+    log_info "  export ANTHROPIC_API_KEY='your_anthropic_key_here'"
+    log_info "  export OPENROUTER_API_KEY='your_openrouter_key_here'"
+    log_info "  export PERPLEXITY_API_KEY='your_perplexity_key_here'"
+    echo
+    log_info "Method 2 - .env file:"
+    log_info "  1. Copy api_keys_template.env to .env"
+    log_info "  2. Edit .env with your actual API keys"
+    log_info "  3. Never commit .env files to version control"
+    echo
+    log_info "For local LLM (Ollama):"
+    log_info "  1. Install Ollama: https://ollama.ai"
+    log_info "  2. Pull a model: ollama pull llama2"
+    log_info "  3. Set OLLAMA_BASE_URL=http://localhost:11434"
+    echo
+    log_info "Security Best Practices:"
+    log_info "  - Use environment variables in production"
+    log_info "  - Rotate API keys regularly"
+    log_info "  - Use least privilege principle"
+    log_info "  - Monitor API key usage"
+    log_info "=========================================="
+    echo
+}
+
+# Create API key template file
+create_api_key_template() {
+    local template_file="$PROJECT_ROOT/api_keys_template.env"
+    local env_file="$PROJECT_ROOT/.env"
+    
+    # Create template file if it doesn't exist
+    if [[ ! -f "$template_file" ]]; then
+        log_info "Creating API key template file..."
+        cat > "$template_file" << 'EOF'
+# API Keys Configuration Template
+# Copy this file to .env and fill in your API keys
+# Never commit .env files to version control!
+
+# OpenAI API Key (for GPT models)
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Anthropic API Key (for Claude models)
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# OpenRouter API Key (for multiple providers)
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+
+# Perplexity API Key
+PERPLEXITY_API_KEY=your_perplexity_api_key_here
+
+# Ollama Configuration (for local models)
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama2
+
+# Environment Variables (for shell export)
+export OPENAI_API_KEY="your_openai_api_key_here"
+export ANTHROPIC_API_KEY="your_anthropic_api_key_here"
+export OPENROUTER_API_KEY="your_openrouter_api_key_here"
+export PERPLEXITY_API_KEY="your_perplexity_api_key_here"
+export OLLAMA_BASE_URL="http://localhost:11434"
+export OLLAMA_MODEL="llama2"
+EOF
+        log_success "Created API key template: $template_file"
+    fi
+    
+    # Create .env file if it doesn't exist
+    if [[ ! -f "$env_file" ]]; then
+        log_info "Creating .env file..."
+        echo "# Add your API keys here" > "$env_file"
+        log_success "Created .env file: $env_file"
+    fi
+}
+
 # Help function
 show_help() {
     cat << EOF
@@ -210,6 +291,50 @@ check_dependencies() {
     else
         log_info "Found $gnn_files GNN files in target directory"
     fi
+    
+    # Check for missing dependencies and provide guidance
+    log_info "Checking for missing dependencies..."
+    if $PYTHON_EXECUTABLE -c "
+import sys
+sys.path.insert(0, 'src')
+try:
+    from setup.dependency_installer import DependencyInstaller
+    installer = DependencyInstaller('$PROJECT_ROOT', verbose=False)
+    status = installer.check_dependencies()
+    missing = [dep for dep, available in status.items() if not available]
+    if missing:
+        print(f'MISSING_DEPS: {missing}')
+    else:
+        print('ALL_DEPS_AVAILABLE')
+except Exception as e:
+    print(f'DEP_CHECK_ERROR: {e}')
+" 2>/dev/null; then
+        local dep_check_result
+        dep_check_result=$($PYTHON_EXECUTABLE -c "
+import sys
+sys.path.insert(0, 'src')
+from setup.dependency_installer import DependencyInstaller
+installer = DependencyInstaller('$PROJECT_ROOT', verbose=False)
+status = installer.check_dependencies()
+missing = [dep for dep, available in status.items() if not available]
+if missing:
+    print(' '.join(missing))
+else:
+    print('none')
+" 2>/dev/null)
+        
+        if [[ "$dep_check_result" != "none" ]]; then
+            log_warning "Missing dependencies detected: $dep_check_result"
+            log_info "The pipeline will attempt to install missing dependencies automatically"
+            log_info "For manual installation, see the API key guidance below"
+        fi
+    fi
+    
+    # Create API key template if it doesn't exist
+    create_api_key_template
+    
+    # Display API key guidance
+    display_api_key_guidance
     
     log_success "Dependency check completed"
 }
@@ -393,14 +518,29 @@ main() {
     export PYTHONPATH="$PROJECT_ROOT:${PYTHONPATH:-}"
     export PYTHONUNBUFFERED=1
     
-    # Execute with error handling
-    if $PYTHON_EXECUTABLE "$MAIN_SCRIPT" $cmd_args; then
-        log_success "Pipeline completed successfully"
-        exit 0
+    # Check if we should run individual steps or the full pipeline
+    if [[ -n "$STEPS" ]]; then
+        log_info "Running specific steps: $STEPS"
+        # Run individual steps by calling the main script with step selection
+        if $PYTHON_EXECUTABLE "$MAIN_SCRIPT" $cmd_args; then
+            log_success "Selected steps completed successfully"
+            exit 0
+        else
+            local exit_code=$?
+            log_error "Selected steps failed with exit code $exit_code"
+            exit $exit_code
+        fi
     else
-        local exit_code=$?
-        log_error "Pipeline failed with exit code $exit_code"
-        exit $exit_code
+        log_info "Running full 24-step pipeline..."
+        # Run the complete pipeline
+        if $PYTHON_EXECUTABLE "$MAIN_SCRIPT" $cmd_args; then
+            log_success "Full pipeline completed successfully"
+            exit 0
+        else
+            local exit_code=$?
+            log_error "Pipeline failed with exit code $exit_code"
+            exit $exit_code
+        fi
     fi
 }
 

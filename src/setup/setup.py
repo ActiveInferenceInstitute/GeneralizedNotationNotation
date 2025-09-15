@@ -18,6 +18,9 @@ import time
 import json
 from typing import Dict, Any, List
 
+# Import dependency installer
+from .dependency_installer import DependencyInstaller
+
 # --- Logger Setup ---
 logger = logging.getLogger(__name__)
 # --- End Logger Setup ---
@@ -994,4 +997,40 @@ def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
         
     except Exception as e:
         logger.error(f"Failed to set up GNN project with UV: {e}")
-        return False 
+        return False
+
+def setup_missing_dependencies(verbose: bool = False) -> Dict[str, bool]:
+    """
+    Set up missing dependencies for the GNN pipeline.
+    
+    Args:
+        verbose: Enable verbose logging
+        
+    Returns:
+        Dictionary with installation results for each dependency
+    """
+    logger.info("🔍 Checking for missing dependencies...")
+    
+    installer = DependencyInstaller(PROJECT_ROOT, verbose=verbose)
+    
+    # Check current dependencies
+    dependency_status = installer.check_dependencies()
+    logger.info(f"📊 Current dependency status: {dependency_status}")
+    
+    # Install missing dependencies
+    missing_deps = [dep for dep, available in dependency_status.items() if not available]
+    if missing_deps:
+        logger.info(f"📦 Installing missing dependencies: {missing_deps}")
+        install_results = installer.install_all_dependencies()
+        
+        # Log results
+        for dep, success in install_results.items():
+            if success:
+                logger.info(f"✅ {dep} installed successfully")
+            else:
+                logger.warning(f"⚠️ {dep} installation failed")
+        
+        return install_results
+    else:
+        logger.info("✅ All dependencies are available")
+        return {dep: True for dep in dependency_status.keys()} 

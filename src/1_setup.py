@@ -271,6 +271,16 @@ def process_setup_standardized(
         except Exception as e:
             logger.warning(f"⚠️ Could not verify installed packages: {e}")
         
+        # Setup missing dependencies
+        logger.info("🔍 Setting up missing dependencies...")
+        try:
+            from setup.setup import setup_missing_dependencies
+            dependency_results = setup_missing_dependencies(verbose=verbose)
+            logger.info(f"📊 Dependency setup results: {dependency_results}")
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to setup missing dependencies: {e}")
+            dependency_results = {}
+        
         # Validate setup
         # Keep validation lightweight; avoid strict failures on missing heavy deps
         validation_result = validate_uv_setup()
@@ -280,6 +290,7 @@ def process_setup_standardized(
             "system_info": system_info,
             "uv_available": uv_available,
             "structure_created": structure_success,
+            "dependency_results": dependency_results,
             "validation": validation_result,
             "setup_available": SETUP_AVAILABLE
         }

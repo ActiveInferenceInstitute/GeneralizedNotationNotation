@@ -1,0 +1,52 @@
+[2025-09-15 10:40:54] INFO: Starting dependency installation...
+[2025-09-15 10:40:54] INFO: Julia not found. Installing Julia...
+[2025-09-15 10:40:54] INFO: Downloading Julia installer...
+[2025-09-15 10:40:54] INFO: Running: bash /home/q/Documents/GitHub/GeneralizedNotationNotation/install_julia.sh
+[2025-09-15 10:41:32] INFO: STDOUT: Julia installed successfully
+[2025-09-15 10:41:32] INFO: Julia installed successfully
+[2025-09-15 10:41:32] INFO: Installing PyMDP...
+[2025-09-15 10:41:32] INFO: Running: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pip install pymdp
+[2025-09-15 10:41:32] ERROR: Command failed with code 1: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pip install pymdp
+[2025-09-15 10:41:32] INFO: STDERR: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python: No module named pip
+[2025-09-15 10:41:32] INFO: Running: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pip install git+https://github.com/infer-actively/pymdp.git
+[2025-09-15 10:41:32] ERROR: Command failed with code 1: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pip install git+https://github.com/infer-actively/pymdp.git
+[2025-09-15 10:41:32] INFO: STDERR: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python: No module named pip
+[2025-09-15 10:41:32] WARNING: Failed to install PyMDP. Please install manually.
+[2025-09-15 10:41:32] INFO: Installing missing Python packages...
+[2025-09-15 10:41:32] INFO: Running: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pip install aiohttp>=3.9.0
+[2025-09-15 10:41:32] ERROR: Command failed with code 1: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pip install aiohttp>=3.9.0
+[2025-09-15 10:41:32] INFO: STDERR: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python: No module named pip
+[2025-09-15 10:41:32] WARNING: Failed to install aiohttp>=3.9.0: Command '['/home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python', '-m', 'pip', 'install', 'aiohttp>=3.9.0']' returned non-zero exit status 1.
+[2025-09-15 10:41:32] INFO: Running: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pip install ollama
+[2025-09-15 10:41:32] ERROR: Command failed with code 1: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pip install ollama
+[2025-09-15 10:41:32] INFO: STDERR: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python: No module named pip
+[2025-09-15 10:41:32] WARNING: Failed to install ollama: Command '['/home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python', '-m', 'pip', 'install', 'ollama']' returned non-zero exit status 1.
+[2025-09-15 10:41:32] INFO: Running: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pip install pymdp
+[2025-09-15 10:41:32] ERROR: Command failed with code 1: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pip install pymdp
+[2025-09-15 10:41:32] INFO: STDERR: /home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python: No module named pip
+[2025-09-15 10:41:32] WARNING: Failed to install pymdp: Command '['/home/q/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python', '-m', 'pip', 'install', 'pymdp']' returned non-zero exit status 1.
+[2025-09-15 10:41:32] INFO: ============================================================
+[2025-09-15 10:41:32] INFO: API KEY CONFIGURATION GUIDANCE
+[2025-09-15 10:41:32] INFO: ============================================================
+[2025-09-15 10:41:32] INFO: Created API key template: /home/q/Documents/GitHub/GeneralizedNotationNotation/api_keys_template.env
+[2025-09-15 10:41:32] INFO: 
+[2025-09-15 10:41:32] INFO: To configure API keys for LLM providers:
+[2025-09-15 10:41:32] INFO: 1. Copy api_keys_template.env to .env
+[2025-09-15 10:41:32] INFO: 2. Edit .env and add your actual API keys
+[2025-09-15 10:41:32] INFO: 3. Or set environment variables:
+[2025-09-15 10:41:32] INFO:    export OPENAI_API_KEY='your_key_here'
+[2025-09-15 10:41:32] INFO:    export ANTHROPIC_API_KEY='your_key_here'
+[2025-09-15 10:41:32] INFO:    export OPENROUTER_API_KEY='your_key_here'
+[2025-09-15 10:41:32] INFO:    export PERPLEXITY_API_KEY='your_key_here'
+[2025-09-15 10:41:32] INFO: 
+[2025-09-15 10:41:32] INFO: For local LLM (Ollama):
+[2025-09-15 10:41:32] INFO: 1. Install Ollama: https://ollama.ai
+[2025-09-15 10:41:32] INFO: 2. Pull a model: ollama pull llama2
+[2025-09-15 10:41:32] INFO: 3. Set OLLAMA_BASE_URL=http://localhost:11434
+[2025-09-15 10:41:32] INFO: 
+[2025-09-15 10:41:32] INFO: Security best practices:
+[2025-09-15 10:41:32] INFO: - Never commit .env files to version control
+[2025-09-15 10:41:32] INFO: - Use environment variables in production
+[2025-09-15 10:41:32] INFO: - Rotate API keys regularly
+[2025-09-15 10:41:32] INFO: - Use least privilege principle
+[2025-09-15 10:41:32] INFO: ============================================================
