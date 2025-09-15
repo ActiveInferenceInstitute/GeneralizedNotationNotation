@@ -1,7 +1,0 @@
-Execution Results for DisCoPy
-Timestamp: 2025-08-29T12:14:53.466233
-Return Code: 0
-Success: True
-Copied Files: 2
-  - actinf_pomdp_agent/discopy/discopy_simple_results.json
-  - actinf_pomdp_agent/discopy/actinf_pomdp_agent_categorical_analysis.json

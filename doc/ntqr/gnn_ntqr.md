@@ -1,1 +1,0 @@
-https://ntqr.readthedocs.io/en/latest/

@@ -1,8 +1,0 @@
-Execution Results for actinf_pomdp_agent_activeinference_jl.jl
-Timestamp: 2025-08-29T11:49:29
-Return Code: 0
-Execution Time: 24.5 seconds
-
-STDOUT:
-ActiveInference.jl simulation completed successfully!
-Final free energy: 3.34e-01

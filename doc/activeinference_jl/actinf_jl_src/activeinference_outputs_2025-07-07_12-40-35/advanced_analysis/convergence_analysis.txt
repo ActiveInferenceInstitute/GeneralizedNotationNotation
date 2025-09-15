@@ -1,8 +1,0 @@
-Convergence Analysis
-========================================
-Final belief variance: NaN
-Variance reduction: NaN
-Exponential convergence rate: NaN
-Time constant: NaN
-Steady-state belief mean: [0.2835]
-Steady-state belief std: [0.120758]

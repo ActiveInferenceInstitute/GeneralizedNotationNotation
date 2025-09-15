@@ -1,9 +1,0 @@
-{
-  "total_files": 1,
-  "successful_parses": 1,
-  "failed_parses": 0,
-  "total_formats_generated": 22,
-  "formats_per_file": {
-    "actinf_pomdp_agent.md": 22
-  }
-}
