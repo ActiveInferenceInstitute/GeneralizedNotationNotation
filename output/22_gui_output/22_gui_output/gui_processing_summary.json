@@ -1,0 +1,60 @@
+{
+  "gui_types_requested": [
+    "gui_1",
+    "gui_2",
+    "gui_3"
+  ],
+  "gui_types_available": [
+    "gui_1",
+    "gui_2",
+    "gui_3"
+  ],
+  "results": {
+    "gui_1": {
+      "gui_type": "gui_1",
+      "description": "Form-based Interactive GNN Constructor",
+      "success": true,
+      "output_file": "output/22_gui_output/22_gui_output/gui_1_output/constructed_model_gui_1.md",
+      "backend": "headless",
+      "features": [
+        "Component management via forms",
+        "State space editing",
+        "Live markdown synchronization",
+        "Two-pane interface"
+      ]
+    },
+    "gui_2": {
+      "gui_type": "gui_2",
+      "description": "Visual Matrix Editor for GNN Models",
+      "success": true,
+      "output_file": "output/22_gui_output/22_gui_output/gui_2_output/visual_model_gui_2.md",
+      "backend": "headless",
+      "features": [
+        "Visual matrix representation and editing",
+        "Drag-and-drop state space modification",
+        "Real-time GNN markdown generation",
+        "POMDP template-based initialization",
+        "Interactive heatmaps and plots",
+        "Matrix dimension validation"
+      ]
+    },
+    "gui_3": {
+      "gui_type": "gui_3",
+      "name": "State Space Design Studio",
+      "success": true,
+      "features": [
+        "Visual state space designer",
+        "Ontology term editor",
+        "Connection graph interface",
+        "Parameter tuning controls",
+        "Low-dependency HTML/CSS design"
+      ],
+      "port": 7862,
+      "url": "http://localhost:7862"
+    }
+  },
+  "overall_success": true,
+  "total_guis_run": 3,
+  "successful_guis": 3,
+  "processing_mode": "headless"
+}

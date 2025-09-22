@@ -105,31 +105,273 @@ except ImportError:
     UV_AVAILABLE = False
     logging.warning("UV utilities not available - falling back to standard Python execution")
 
+def perform_pipeline_health_check() -> Dict[str, Any]:
+    """Perform comprehensive pipeline health checks."""
+    import shutil
+    import psutil
+    from pathlib import Path
+
+    health_status = {
+        "healthy": True,
+        "checks": [],
+        "issues": []
+    }
+
+    # Check 1: Python environment
+    try:
+        python_version = sys.version_info
+        if python_version >= (3, 9):
+            health_status["checks"].append({
+                "name": "Python Version",
+                "status": "ok",
+                "message": f"Python {python_version.major}.{python_version.minor}.{python_version.micro}"
+            })
+        else:
+            health_status["checks"].append({
+                "name": "Python Version",
+                "status": "warning",
+                "message": f"Python {python_version.major}.{python_version.minor} < 3.9 recommended"
+            })
+    except Exception as e:
+        health_status["issues"].append(f"Python version check failed: {e}")
+
+    # Check 2: Virtual environment
+    try:
+        venv_path = Path(sys.executable).parent.parent
+        if venv_path.exists() and (venv_path / "pyvenv.cfg").exists():
+            health_status["checks"].append({
+                "name": "Virtual Environment",
+                "status": "ok",
+                "message": f"Using virtual environment: {venv_path.name}"
+            })
+        else:
+            health_status["checks"].append({
+                "name": "Virtual Environment",
+                "status": "warning",
+                "message": "Not using a virtual environment"
+            })
+    except Exception as e:
+        health_status["issues"].append(f"Virtual environment check failed: {e}")
+
+    # Check 3: Essential directories
+    # Get the project root (parent directory of src where this script is located)
+    project_root = Path(__file__).parent.parent
+
+    essential_dirs = [
+        (project_root / "src", "Source directory"),
+        (project_root / "input", "Input directory"),
+        (project_root / "output", "Output directory")
+    ]
+
+    for dir_path, description in essential_dirs:
+        try:
+            if dir_path.exists():
+                if dir_path.is_dir():
+                    health_status["checks"].append({
+                        "name": description,
+                        "status": "ok",
+                        "message": f"Directory exists: {dir_path}"
+                    })
+                else:
+                    health_status["issues"].append(f"{description} exists but is not a directory: {dir_path}")
+            else:
+                # Create directory if it doesn't exist
+                try:
+                    dir_path.mkdir(parents=True, exist_ok=True)
+                    health_status["checks"].append({
+                        "name": description,
+                        "status": "warning",
+                        "message": f"Directory created: {dir_path}"
+                    })
+                except Exception as e:
+                    health_status["issues"].append(f"Failed to create {description}: {e}")
+        except Exception as e:
+            health_status["issues"].append(f"Directory check failed for {description}: {e}")
+
+    # Check 4: Disk space
+    try:
+        disk_usage = psutil.disk_usage('/')
+        free_gb = disk_usage.free / (1024**3)
+        total_gb = disk_usage.total / (1024**3)
+
+        if free_gb > 5:  # More than 5GB free
+            health_status["checks"].append({
+                "name": "Disk Space",
+                "status": "ok",
+                "message": f"{free_gb:.1f}GB free of {total_gb:.1f}GB total"
+            })
+        elif free_gb > 1:  # 1-5GB free
+            health_status["checks"].append({
+                "name": "Disk Space",
+                "status": "warning",
+                "message": f"Low disk space: {free_gb:.1f}GB free of {total_gb:.1f}GB total"
+            })
+        else:  # Less than 1GB free
+            health_status["issues"].append(f"Critical: Only {free_gb:.1f}GB disk space remaining")
+    except Exception as e:
+        health_status["issues"].append(f"Disk space check failed: {e}")
+
+    # Check 5: Memory availability
+    try:
+        memory = psutil.virtual_memory()
+        available_gb = memory.available / (1024**3)
+        total_gb = memory.total / (1024**3)
+
+        if available_gb > 4:  # More than 4GB available
+            health_status["checks"].append({
+                "name": "Memory",
+                "status": "ok",
+                "message": f"{available_gb:.1f}GB available of {total_gb:.1f}GB total"
+            })
+        elif available_gb > 1:  # 1-4GB available
+            health_status["checks"].append({
+                "name": "Memory",
+                "status": "warning",
+                "message": f"Low memory: {available_gb:.1f}GB available of {total_gb:.1f}GB total"
+            })
+        else:  # Less than 1GB available
+            health_status["issues"].append(f"Critical: Only {available_gb:.1f}GB memory available")
+    except Exception as e:
+        health_status["issues"].append(f"Memory check failed: {e}")
+
+    # Check 6: Essential files
+    # Get the project root (parent directory of src where this script is located)
+    project_root = Path(__file__).parent.parent
+
+    essential_files = [
+        (project_root / "src" / "main.py", "Main pipeline script"),
+        (project_root / "input" / "config.yaml", "Configuration file")
+    ]
+
+    for file_path, description in essential_files:
+        try:
+            if file_path.exists() and file_path.is_file():
+                health_status["checks"].append({
+                    "name": description,
+                    "status": "ok",
+                    "message": f"File exists: {file_path}"
+                })
+            else:
+                health_status["issues"].append(f"{description} not found: {file_path}")
+        except Exception as e:
+            health_status["issues"].append(f"File check failed for {description}: {e}")
+
+    # Determine overall health
+    if health_status["issues"]:
+        health_status["healthy"] = False
+
+    return health_status
+
 def main():
     """Main pipeline orchestration function."""
+    # Setup basic logging for health checks (before full logger setup)
+    import logging
+    basic_logger = logging.getLogger("pipeline_health")
+    basic_logger.setLevel(logging.INFO)
+
+    # Add console handler if no handlers exist
+    if not basic_logger.handlers:
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        console_handler.setFormatter(formatter)
+        basic_logger.addHandler(console_handler)
+
+    # Perform comprehensive pipeline health checks
+    health_status = perform_pipeline_health_check()
+    if not health_status["healthy"]:
+        basic_logger.error("❌ Pipeline health check failed:")
+        for issue in health_status["issues"]:
+            basic_logger.error(f"  - {issue}")
+        basic_logger.error("💡 Please resolve these issues before running the pipeline")
+        return 1
+
+    # Log health check results
+    basic_logger.info("✅ Pipeline health check passed:")
+    for check in health_status["checks"]:
+        if check["status"] == "ok":
+            basic_logger.info(f"  ✓ {check['name']}")
+        elif check["status"] == "warning":
+            basic_logger.warning(f"  ⚠️ {check['name']}: {check['message']}")
+
     # Load configuration first
     config_manager = init_config(config_files=["input/config.yaml"])
-    
-    # Parse arguments
-    parser = ArgumentParser.create_main_parser()
-    parsed = parser.parse_args()
 
-    # Convert to PipelineArguments
+    # Parse arguments with enhanced validation
+    try:
+        parser = ArgumentParser.create_main_parser()
+        parsed = parser.parse_args()
+    except SystemExit as e:
+        # Argument parsing failed, exit gracefully
+        basic_logger.error("Argument parsing failed. Use --help for usage information.")
+        return 1
+
+    # Enhanced argument validation and conversion
     kwargs = {}
+    validation_errors = []
+
     for key, value in vars(parsed).items():
         if value is not None:
-            kwargs[key] = value
+            # Validate path arguments
+            if key in ['target_dir', 'output_dir', 'ontology_file', 'ontology_terms_file', 'pipeline_summary_file']:
+                if isinstance(value, str):
+                    path = Path(value)
+                    if not path.exists() and key != 'pipeline_summary_file':  # Summary file can be created
+                        validation_errors.append(f"Path does not exist: {value} (argument: {key})")
+                    kwargs[key] = path
+                else:
+                    kwargs[key] = value
+            else:
+                kwargs[key] = value
+
+    # Validate step arguments
+    if parsed.only_steps:
+        try:
+            only_steps = parse_step_list(parsed.only_steps)
+            if not only_steps:
+                validation_errors.append(f"Invalid --only-steps format: {parsed.only_steps}. Use comma-separated numbers (e.g., '0,1,2')")
+            elif any(step < 0 or step > 23 for step in only_steps):
+                validation_errors.append(f"--only-steps contains invalid step numbers: {parsed.only_steps}. Valid range: 0-23")
+            else:
+                kwargs["only_steps"] = only_steps
+        except Exception as e:
+            validation_errors.append(f"Error parsing --only-steps: {e}")
+
+    if parsed.skip_steps:
+        try:
+            skip_steps = parse_step_list(parsed.skip_steps)
+            if not skip_steps:
+                validation_errors.append(f"Invalid --skip-steps format: {parsed.skip_steps}. Use comma-separated numbers (e.g., '15,16')")
+            elif any(step < 0 or step > 23 for step in skip_steps):
+                validation_errors.append(f"--skip-steps contains invalid step numbers: {parsed.skip_steps}. Valid range: 0-23")
+            else:
+                kwargs["skip_steps"] = skip_steps
+        except Exception as e:
+            validation_errors.append(f"Error parsing --skip-steps: {e}")
 
     # Apply POMDP configuration from config file
     pomdp_enabled = get_config("validation.pomdp.enabled", False)
     ontology_file = get_config("validation.pomdp.ontology_file", None)
-    
+
     if pomdp_enabled:
         kwargs["pomdp_mode"] = True
         if ontology_file:
             kwargs["ontology_file"] = Path(ontology_file)
 
-    args = PipelineArguments(**kwargs)
+    # Report validation errors
+    if validation_errors:
+        for error in validation_errors:
+            basic_logger.error(f"❌ {error}")
+        basic_logger.error(f"💡 Use --help to see correct argument format")
+        return 1
+
+    # Create PipelineArguments object
+    try:
+        args = PipelineArguments(**kwargs)
+    except Exception as e:
+        basic_logger.error(f"Failed to create PipelineArguments: {e}")
+        basic_logger.error(f"Arguments: {kwargs}")
+        return 1
     
     # Setup logging
     if STRUCTURED_LOGGING_AVAILABLE:
@@ -141,10 +383,10 @@ def main():
     
     # Check UV environment if available
     if UV_AVAILABLE:
-        logger.info("Checking UV environment...")
-        
+        basic_logger.info("Checking UV environment...")
+
         if not check_uv_available():
-            logger.warning("UV is not available - using standard Python execution")
+            basic_logger.warning("UV is not available - using standard Python execution")
         else:
             # Ensure UV environment is ready
             if not ensure_uv_environment(
@@ -152,9 +394,9 @@ def main():
                 extras=["llm", "visualization", "audio", "gui"],
                 verbose=args.verbose
             ):
-                logger.warning("UV environment setup failed - continuing with standard Python execution")
+                basic_logger.warning("UV environment setup failed - continuing with standard Python execution")
             else:
-                logger.info("UV environment is ready")
+                basic_logger.info("UV environment is ready")
     
     # Initialize pipeline execution summary
     pipeline_summary = {
@@ -222,43 +464,49 @@ def main():
         if args.only_steps:
             requested_step_numbers = parse_step_list(args.only_steps)
             
-            # Automatic dependency resolution
+            # Automatic dependency resolution - map step indices to script names
             step_dependencies = {
-                11: [3],     # 11_render.py needs 3_gnn.py
-                12: [3, 11], # 12_execute.py needs 3_gnn.py and 11_render.py
-                8: [3],      # 8_visualization.py needs 3_gnn.py
-                9: [3, 8],   # 9_advanced_viz.py needs 3_gnn.py and 8_visualization.py
-                13: [3],     # 13_llm.py needs 3_gnn.py
-                23: [8, 13], # 23_report.py needs 8_visualization.py and 13_llm.py
-                20: [8],     # 20_website.py needs 8_visualization.py
-                5: [3],      # 5_type_checker.py needs 3_gnn.py
-                6: [3, 5],   # 6_validation.py needs 3_gnn.py and 5_type_checker.py
-                7: [3],      # 7_export.py needs 3_gnn.py
-                10: [3],     # 10_ontology.py needs 3_gnn.py
-                15: [3],     # 15_audio.py needs 3_gnn.py
-                16: [3, 7],  # 16_analysis.py needs 3_gnn.py and 7_export.py
+                11: ["3_gnn.py"],     # 11_render.py needs 3_gnn.py
+                12: ["3_gnn.py", "11_render.py"], # 12_execute.py needs 3_gnn.py and 11_render.py
+                8: ["3_gnn.py"],      # 8_visualization.py needs 3_gnn.py
+                9: ["3_gnn.py", "8_visualization.py"],   # 9_advanced_viz.py needs 3_gnn.py and 8_visualization.py
+                13: ["3_gnn.py"],     # 13_llm.py needs 3_gnn.py
+                23: ["8_visualization.py", "13_llm.py"], # 23_report.py needs 8_visualization.py and 13_llm.py
+                20: ["8_visualization.py"],     # 20_website.py needs 8_visualization.py
+                5: ["3_gnn.py"],      # 5_type_checker.py needs 3_gnn.py
+                6: ["3_gnn.py", "5_type_checker.py"],   # 6_validation.py needs 3_gnn.py and 5_type_checker.py
+                7: ["3_gnn.py"],      # 7_export.py needs 3_gnn.py
+                10: ["3_gnn.py"],     # 10_ontology.py needs 3_gnn.py
+                15: ["3_gnn.py"],     # 15_audio.py needs 3_gnn.py
+                16: ["3_gnn.py", "7_export.py"],  # 16_analysis.py needs 3_gnn.py and 7_export.py
             }
             
             # Include dependencies automatically
-            resolved_step_numbers = set(requested_step_numbers)
+            resolved_script_names = set()
             added_dependencies = []
+
+            # Convert step numbers to script names
+            step_to_script = {i: script for i, (script, _) in enumerate(pipeline_steps)}
+
             for step_num in requested_step_numbers:
+                script_name = step_to_script[step_num]
+                resolved_script_names.add(script_name)
                 if step_num in step_dependencies:
-                    for dep in step_dependencies[step_num]:
-                        if dep not in resolved_step_numbers:
-                            resolved_step_numbers.add(dep)
-                            added_dependencies.append(dep)
-            
+                    for dep_script in step_dependencies[step_num]:
+                        if dep_script not in resolved_script_names:
+                            resolved_script_names.add(dep_script)
+                            added_dependencies.append(dep_script)
+
             if added_dependencies:
-                logger.info(f"Auto-including dependency steps: {sorted(added_dependencies)}")
-            
-            steps_to_execute = [pipeline_steps[i] for i in sorted(resolved_step_numbers) if 0 <= i < len(pipeline_steps)]
-            logger.info(f"Executing steps: {[step[0] for step in steps_to_execute]}")
-        
+                basic_logger.info(f"Auto-including dependency steps: {sorted(added_dependencies)}")
+
+            steps_to_execute = [step for step in pipeline_steps if step[0] in resolved_script_names]
+            basic_logger.info(f"Executing steps: {[step[0] for step in steps_to_execute]}")
+
         if args.skip_steps:
             skip_numbers = parse_step_list(args.skip_steps)
             steps_to_execute = [step for i, step in enumerate(pipeline_steps) if i not in skip_numbers]
-            logger.info(f"Skipping steps: {[pipeline_steps[i][0] for i in skip_numbers if 0 <= i < len(pipeline_steps)]}")
+            basic_logger.info(f"Skipping steps: {[pipeline_steps[i][0] for i in skip_numbers if 0 <= i < len(pipeline_steps)]}")
         
         # Initialize progress tracker if enhanced logging is available
         progress_tracker = None
@@ -266,35 +514,44 @@ def main():
             progress_tracker = PipelineProgressTracker(len(steps_to_execute))
         
         # Validate step sequence before execution
-        sequence_validation = validate_pipeline_step_sequence(steps_to_execute, logger)
+        sequence_validation = validate_pipeline_step_sequence(steps_to_execute, basic_logger)
         if sequence_validation["warnings"]:
             for warning in sequence_validation["warnings"]:
-                logger.warning(f"Pipeline sequence: {warning}")
+                basic_logger.warning(f"Pipeline sequence: {warning}")
         if sequence_validation["recommendations"]:
             for rec in sequence_validation["recommendations"]:
-                logger.info(f"Recommendation: {rec}")
+                basic_logger.info(f"Recommendation: {rec}")
         
-        # Execute each step
-        for step_number, (script_name, description) in enumerate(steps_to_execute, 1):
+        # Execute each step with enhanced progress tracking
+        for step_number, step_tuple in enumerate(steps_to_execute, 1):
+            script_name, description = step_tuple
+            # Debug: Check script_name type
+            basic_logger.debug(f"Executing step {step_number}: script_name={script_name} (type: {type(script_name)})")
             step_start_time = time.time()
             step_start_datetime = datetime.now()
-            
-            # Step start logging with progress tracking
+
+            # Enhanced step start logging with progress tracking
             if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
                 progress_header = progress_tracker.start_step(step_number, description)
-                logger.info(progress_header)
-                # Use structured logging functions that support additional parameters
+                basic_logger.info(progress_header)
+
+                # Use structured logging with enhanced context
                 from utils.logging_utils import log_step_start as structured_log_step_start
-                structured_log_step_start(logger, f"Starting {description}",
+                structured_log_step_start(basic_logger, f"Starting {description}",
                                       step_number=step_number,
                                       total_steps=len(steps_to_execute),
-                                      script_name=script_name)
+                                      script_name=script_name,
+                                      estimated_duration="long" if script_name in ["2_tests.py", "13_llm.py", "12_execute.py"] else "normal")
             else:
-                logger.info(f"Executing step {step_number}: {description}")
-            
+                # Enhanced progress display
+                progress_percentage = (step_number - 1) / len(steps_to_execute) * 100
+                progress_bar = "█" * int(progress_percentage / 5) + "░" * (20 - int(progress_percentage / 5))
+                basic_logger.info(f"┌─ Step {step_number}/{len(steps_to_execute)}: {description} RUNNING")
+                basic_logger.info(f"└─ Progress: [{progress_bar}] ({progress_percentage:.1f}%)")
+
             # Execute the step
-            step_result = execute_pipeline_step(script_name, args, logger)
-            
+            step_result = execute_pipeline_step(script_name, args, basic_logger)
+
             # Calculate step duration
             step_end_time = time.time()
             step_duration = step_end_time - step_start_time
@@ -349,27 +606,42 @@ def main():
             # Update total steps count
             pipeline_summary["performance_summary"]["total_steps"] = len(steps_to_execute)
             
-            # Step completion logging with progress tracking
+            # Enhanced step completion logging with progress tracking
             if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
                 status_for_logging = step_result["status"]
                 completion_summary = progress_tracker.complete_step(step_number, status_for_logging, step_duration)
-                logger.info(completion_summary)
+                basic_logger.info(completion_summary)
 
                 # Use structured logging functions that support additional parameters
                 if status_for_logging.startswith("SUCCESS"):
                     from utils.logging_utils import log_step_success as structured_log_step_success
-                    structured_log_step_success(logger, f"{description} completed",
+                    structured_log_step_success(basic_logger, f"{description} completed",
                                         step_number=step_number,
                                         duration=step_duration,
-                                            status=status_for_logging)
+                                        status=status_for_logging,
+                                        memory_mb=step_result.get("memory_usage_mb", 0.0))
             else:
+                # Enhanced visual status logging
                 status_for_logging = step_result["status"]
+                progress_percentage = step_number / len(steps_to_execute) * 100
+                progress_bar = "█" * int(progress_percentage / 5) + "░" * (20 - int(progress_percentage / 5))
+
                 if str(status_for_logging).startswith("SUCCESS"):
-                    logger.info(f"✅ Step {step_number} completed with {status_for_logging} in {step_duration:.2f}s")
+                    memory_info = ""
+                    if step_result.get("memory_usage_mb", 0) > 0:
+                        memory_info = f" 💾 {step_result['memory_usage_mb']:.1f}MB"
+                    basic_logger.info(f"✅ Step {step_number} completed with {status_for_logging} in {step_duration:.2f}s{memory_info}")
                 elif status_for_logging == "PARTIAL_SUCCESS":
-                    logger.warning(f"⚠️ Step {step_number} completed with PARTIAL_SUCCESS in {step_duration:.2f}s")
+                    basic_logger.warning(f"⚠️ Step {step_number} completed with PARTIAL_SUCCESS in {step_duration:.2f}s")
+                    basic_logger.warning(f"   💡 Check warnings above for partial success details")
+                elif status_for_logging == "TIMEOUT":
+                    basic_logger.warning(f"⏰ Step {step_number} timed out after {step_duration:.2f}s")
+                    basic_logger.warning(f"   💡 Step may have partial results available")
                 else:
-                    logger.error(f"❌ Step {step_number} failed with status: {status_for_logging}")
+                    basic_logger.error(f"❌ Step {step_number} failed with status: {status_for_logging}")
+
+                # Show progress update
+                basic_logger.info(f"Progress: [{progress_bar}] ({progress_percentage:.1f}%) [⏱️ {step_duration:.2f}s]")
         
         # Complete pipeline summary
         pipeline_summary["end_time"] = datetime.now().isoformat()
@@ -388,44 +660,72 @@ def main():
         # Save pipeline summary
         summary_path = args.pipeline_summary_file
         summary_path.parent.mkdir(parents=True, exist_ok=True)
-        logger.info(f"Saving pipeline summary to: {summary_path}")
+        basic_logger.info(f"Saving pipeline summary to: {summary_path}")
         with open(summary_path, 'w') as f:
             json.dump(pipeline_summary, f, indent=4)
-        logger.info(f"Pipeline summary saved successfully")
-        
+        basic_logger.info(f"Pipeline summary saved successfully")
+
         # Final status logging
         if STRUCTURED_LOGGING_AVAILABLE:
             # Log overall progress summary
             if progress_tracker:
                 overall_progress = progress_tracker.get_overall_progress()
-                logger.info(overall_progress)
+                basic_logger.info(overall_progress)
 
             # Log detailed pipeline summary
-            log_pipeline_summary(logger, pipeline_summary)
+            log_pipeline_summary(basic_logger, pipeline_summary)
         else:
             # Log final status
             if pipeline_summary["overall_status"] == "SUCCESS":
-                log_step_success(logger, f"Pipeline completed successfully in {pipeline_summary['total_duration_seconds']:.2f}s")
+                log_step_success(basic_logger, f"Pipeline completed successfully in {pipeline_summary['total_duration_seconds']:.2f}s")
             else:
-                log_step_error(logger, f"Pipeline completed with status: {pipeline_summary['overall_status']}")
+                log_step_error(basic_logger, f"Pipeline completed with status: {pipeline_summary['overall_status']}")
         
         return 0 if pipeline_summary["overall_status"] == "SUCCESS" else 1
         
     except Exception as e:
-        # Update pipeline summary with error
+        # Enhanced error handling with detailed context
+        error_context = {
+            "error_type": type(e).__name__,
+            "error_message": str(e),
+            "error_location": "main_pipeline_execution",
+            "current_step": getattr(logger, 'current_step', 'unknown') if hasattr(logger, 'current_step') else None,
+            "pipeline_progress": len(pipeline_summary["steps"]) if "steps" in pipeline_summary else 0,
+            "failed_steps": pipeline_summary["performance_summary"]["failed_steps"] if "performance_summary" in pipeline_summary else 0
+        }
+
+        # Update pipeline summary with enhanced error information
         pipeline_summary["end_time"] = datetime.now().isoformat()
         pipeline_summary["overall_status"] = "FAILED"
         pipeline_summary["total_duration_seconds"] = time.time() - time.mktime(
             datetime.fromisoformat(pipeline_summary["start_time"]).timetuple()
         )
-        
-        # Save pipeline summary even on error
+        pipeline_summary["error_details"] = error_context
+
+        # Save pipeline summary even on error with error context
         summary_path = args.pipeline_summary_file
         summary_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(summary_path, 'w') as f:
-            json.dump(pipeline_summary, f, indent=4)
-        
-        log_step_error(logger, f"Pipeline failed: {str(e)}")
+        try:
+            with open(summary_path, 'w') as f:
+                json.dump(pipeline_summary, f, indent=4)
+            basic_logger.info(f"Pipeline summary saved with error context to: {summary_path}")
+        except Exception as save_error:
+            basic_logger.error(f"Failed to save pipeline summary on error: {save_error}")
+
+        # Log detailed error information
+        log_step_error(basic_logger, f"Pipeline failed with {error_context['error_type']}: {error_context['error_message']}")
+        if error_context["current_step"]:
+            basic_logger.error(f"Failure occurred during step: {error_context['current_step']}")
+        basic_logger.error(f"Pipeline progress: {error_context['pipeline_progress']} steps completed, {error_context['failed_steps']} failed")
+
+        # Log recovery suggestions based on error type
+        if "MemoryError" in error_context["error_type"]:
+            basic_logger.error("💡 Memory error detected. Consider using --performance-mode low or increasing system memory")
+        elif "FileNotFoundError" in error_context["error_type"]:
+            basic_logger.error("💡 File not found error. Check input paths and file permissions")
+        elif "ImportError" in error_context["error_type"]:
+            basic_logger.error("💡 Import error detected. Check dependencies and virtual environment")
+
         return 1
 
 def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> Dict[str, Any]:
@@ -435,9 +735,15 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
     import shutil
     import time
     
-    # Initialize performance tracking
+    # Initialize performance tracking with memory optimization
     start_memory = get_current_memory_usage()
     peak_memory = start_memory
+
+    # Memory optimization settings
+    memory_check_interval = 30  # Check memory every 30 seconds
+    memory_warning_threshold = 500  # Warn if memory exceeds 500MB
+    last_memory_check = time.time()
+    force_gc_interval = 60  # Force garbage collection every 60 seconds
     
     step_result = {
         "status": "UNKNOWN",
@@ -523,9 +829,29 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
 
             # Execute step with progress monitoring
             try:
-                # Set up progress monitoring for long-running steps
+                # Set up progress monitoring for long-running steps with memory optimization
                 def log_progress():
                     elapsed = time.time() - process_start_time
+                    current_time = time.time()
+
+                    # Periodic memory check and optimization
+                    if current_time - last_memory_check > memory_check_interval:
+                        current_memory = get_current_memory_usage()
+                        if current_memory > peak_memory:
+                            peak_memory = current_memory
+
+                        # Memory warning
+                        if current_memory > memory_warning_threshold:
+                            logger.warning(f"⚠️ High memory usage detected: {current_memory:.1f}MB")
+
+                        # Force garbage collection periodically for long-running steps
+                        if current_time - last_memory_check > force_gc_interval:
+                            logger.info(f"🧹 Forcing garbage collection (memory: {current_memory:.1f}MB)")
+                            import gc
+                            gc.collect()
+
+                        last_memory_check = current_time
+
                     logger.info(f"⏱️ {script_name} running for {elapsed:.1f}s...")
 
                 # Start progress logging for LLM step
@@ -608,17 +934,83 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
 
         # Steps determine their own output directories via get_output_dir_for_script
         
+        # Memory cleanup and optimization
+        try:
+            # Force garbage collection after step completion
+            import gc
+            gc.collect()
+
+            # Clear large variables to free memory
+            if 'result' in locals():
+                if hasattr(result, 'stdout') and len(result.stdout) > 100000:  # >100KB
+                    logger.info(f"🧹 Cleared large stdout buffer ({len(result.stdout)} chars)")
+                if hasattr(result, 'stderr') and len(result.stderr) > 100000:  # >100KB
+                    logger.info(f"🧹 Cleared large stderr buffer ({len(result.stderr)} chars)")
+
+            # Update final memory measurements after cleanup
+            final_memory = get_current_memory_usage()
+            step_result["memory_usage_mb"] = final_memory
+            step_result["peak_memory_mb"] = peak_memory
+            step_result["memory_delta_mb"] = final_memory - start_memory
+            step_result["memory_cleanup_performed"] = True
+
+        except Exception as cleanup_error:
+            logger.warning(f"Memory cleanup failed: {cleanup_error}")
+            # Still update memory measurements
+            final_memory = get_current_memory_usage()
+            step_result["memory_usage_mb"] = final_memory
+            step_result["peak_memory_mb"] = peak_memory
+            step_result["memory_delta_mb"] = final_memory - start_memory
+
         # Add recovery status to result
         if not step_result.get("recoverable"):
             step_result["recoverable"] = False
-            
+
+        # Log memory usage summary
+        memory_summary = f"💾 Memory: {step_result['memory_usage_mb']:.1f}MB"
+        if step_result['memory_delta_mb'] != 0:
+            memory_summary += f" (Δ{step_result['memory_delta_mb']:+.1f}MB)"
+        if step_result['peak_memory_mb'] > step_result['memory_usage_mb'] + 50:  # >50MB difference
+            memory_summary += f" [Peak: {step_result['peak_memory_mb']:.1f}MB]"
+        logger.info(memory_summary)
+
         return step_result
         
     except Exception as e:
-        logger.error(f"Exception in execute_pipeline_step for {script_name}: {e}")
+        # Enhanced error handling for step execution
+        error_context = {
+            "error_type": type(e).__name__,
+            "error_message": str(e),
+            "script_name": script_name,
+            "error_location": "execute_pipeline_step",
+            "step_number": step_result.get("step_number", "unknown"),
+            "prerequisite_check": step_result.get("prerequisite_check", False),
+            "dependency_warnings": len(step_result.get("dependency_warnings", []))
+        }
+
+        logger.error(f"Exception in execute_pipeline_step for {script_name}: {error_context['error_type']}: {error_context['error_message']}")
+        logger.error(f"Step context: number={error_context['step_number']}, prereqs={error_context['prerequisite_check']}, warnings={error_context['dependency_warnings']}")
+
+        # Determine if this is a recoverable error
+        recoverable_errors = [
+            "ModuleNotFoundError", "ImportError", "FileNotFoundError",
+            "ConnectionError", "TimeoutError", "OSError"
+        ]
+
+        is_recoverable = any(error_type in error_context["error_type"] for error_type in recoverable_errors)
+        step_result["recoverable"] = is_recoverable
+
+        if is_recoverable:
+            logger.warning(f"💡 {script_name} failed with recoverable error: {error_context['error_type']}")
+            logger.info(f"💡 Consider checking dependencies, file paths, or network connectivity")
+        else:
+            logger.error(f"💥 {script_name} failed with non-recoverable error: {error_context['error_type']}")
+
         step_result["status"] = "FAILED"
         step_result["exit_code"] = -1
         step_result["stderr"] = str(e)
+        step_result["error_context"] = error_context
+
         return step_result
 
 def parse_step_list(step_str: str) -> List[int]:

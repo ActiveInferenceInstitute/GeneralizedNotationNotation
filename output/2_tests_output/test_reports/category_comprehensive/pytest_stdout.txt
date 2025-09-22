@@ -1,0 +1,64 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.13', 'Platform': 'macOS-15.6.1-arm64-arm-64bit', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'sugar': '1.0.0', 'asyncio': '1.1.0', 'xdist': '3.8.0', 'json-report': '1.5.0', 'timeout': '2.4.0', 'metadata': '3.1.1', 'anyio': '4.10.0', 'cov': '6.2.1', 'mock': '3.14.1', 'benchmark': '5.1.0'}}
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/4d/Documents/GitHub/generalizednotationnotation
+configfile: pytest.ini
+plugins: sugar-1.0.0, asyncio-1.1.0, xdist-3.8.0, json-report-1.5.0, timeout-2.4.0, metadata-3.1.1, anyio-4.10.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 47 items
+
+src/tests/test_comprehensive_api.py::TestGNNModule::test_module_imports PASSED [  2%]
+src/tests/test_comprehensive_api.py::TestGNNModule::test_get_module_info PASSED [  4%]
+src/tests/test_comprehensive_api.py::TestGNNModule::test_validate_gnn_function PASSED [  6%]
+src/tests/test_comprehensive_api.py::TestGNNModule::test_feature_flags PASSED [  8%]
+src/tests/test_comprehensive_api.py::TestExportModule::test_module_imports PASSED [ 10%]
+src/tests/test_comprehensive_api.py::TestExportModule::test_get_module_info PASSED [ 12%]
+src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats PASSED [ 14%]
+src/tests/test_comprehensive_api.py::TestExportModule::test_export_gnn_model_invalid_format PASSED [ 17%]
+src/tests/test_comprehensive_api.py::TestRenderModule::test_module_imports PASSED [ 19%]
+src/tests/test_comprehensive_api.py::TestRenderModule::test_get_module_info PASSED [ 21%]
+src/tests/test_comprehensive_api.py::TestRenderModule::test_get_available_renderers PASSED [ 23%]
+src/tests/test_comprehensive_api.py::TestRenderModule::test_feature_flags PASSED [ 25%]
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_module_imports PASSED [ 27%]
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_module_info PASSED [ 29%]
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_supported_file_types PASSED [ 31%]
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_generate_website_from_pipeline_output_nonexistent PASSED [ 34%]
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_validate_website_config PASSED [ 36%]
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_module_imports PASSED [ 38%]
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_module_info PASSED [ 40%]
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_audio_generation_options PASSED [ 42%]
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_process_gnn_to_audio_invalid_input PASSED [ 44%]
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_module_imports PASSED [ 46%]
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_module_info PASSED [ 48%]
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_ontology_processing_options PASSED [ 51%]
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_process_gnn_ontology_nonexistent_file PASSED [ 53%]
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_parse_gnn_ontology_section_empty PASSED [ 55%]
+src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_module_imports PASSED [ 57%]
+src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_type_checker_instantiation PASSED [ 59%]
+src/tests/test_comprehensive_api.py::TestVisualizationModule::test_module_imports PASSED [ 61%]
+src/tests/test_comprehensive_api.py::TestVisualizationModule::test_visualizer_instantiation PASSED [ 63%]
+src/tests/test_comprehensive_api.py::TestExecuteModule::test_module_imports PASSED [ 65%]
+src/tests/test_comprehensive_api.py::TestExecuteModule::test_executor_instantiation PASSED [ 68%]
+src/tests/test_comprehensive_api.py::TestLLMModule::test_module_imports PASSED [ 70%]
+src/tests/test_comprehensive_api.py::TestLLMModule::test_llm_processor_instantiation PASSED [ 72%]
+src/tests/test_comprehensive_api.py::TestMCPModule::test_module_imports PASSED [ 74%]
+src/tests/test_comprehensive_api.py::TestMCPModule::test_mcp_server_instantiation PASSED [ 76%]
+src/tests/test_comprehensive_api.py::TestSetupModule::test_module_imports PASSED [ 78%]
+src/tests/test_comprehensive_api.py::TestSetupModule::test_setup_functions_exist PASSED [ 80%]
+src/tests/test_comprehensive_api.py::TestUtilsModule::test_module_imports PASSED [ 82%]
+src/tests/test_comprehensive_api.py::TestUtilsModule::test_utils_classes_instantiation PASSED [ 85%]
+src/tests/test_comprehensive_api.py::TestPipelineModule::test_module_imports PASSED [ 87%]
+src/tests/test_comprehensive_api.py::TestPipelineModule::test_pipeline_config PASSED [ 89%]
+src/tests/test_comprehensive_api.py::TestMCPIntegration::test_mcp_availability_flags PASSED [ 91%]
+src/tests/test_comprehensive_api.py::TestMCPIntegration::test_register_tools_functions PASSED [ 93%]
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_version_consistency PASSED [ 95%]
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_feature_flags_consistency PASSED [ 97%]
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_module_info_consistency PASSED [100%]
+
+============================= slowest 10 durations =============================
+0.05s call     src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats
+
+(9 durations < 0.005s hidden.  Use -vv to show these durations.)
+============================== 47 passed in 0.08s ==============================

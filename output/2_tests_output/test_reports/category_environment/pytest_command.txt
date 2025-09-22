@@ -1,0 +1,5 @@
+Category: environment
+Success: True
+Duration: 10.75s
+Peak Memory: 17.78 MB
+CPU Usage: 0.0%

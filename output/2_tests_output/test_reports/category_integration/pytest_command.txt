@@ -1,0 +1,5 @@
+Category: integration
+Success: False
+Duration: 2.26s
+Peak Memory: 18.47 MB
+CPU Usage: 0.0%

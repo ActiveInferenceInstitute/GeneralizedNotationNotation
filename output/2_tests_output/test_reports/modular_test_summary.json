@@ -1,0 +1,100 @@
+{
+  "total_categories": 24,
+  "successful_categories": 21,
+  "failed_categories": 3,
+  "total_tests_run": 341,
+  "total_tests_passed": 289,
+  "total_tests_failed": 0,
+  "total_tests_skipped": 41,
+  "success_rate": 84.75073313782991,
+  "total_duration": 410.09902811050415,
+  "category_times": {},
+  "resource_usage": {
+    "gnn": {
+      "memory_mb": 16.9375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "render": {
+      "memory_mb": 20.21875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "mcp": {
+      "memory_mb": 21.09375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "audio": {
+      "memory_mb": 21.21875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "visualization": {
+      "memory_mb": 21.421875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "export": {
+      "memory_mb": 13.921875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "llm": {
+      "memory_mb": 14.046875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "ontology": {
+      "memory_mb": 14.21875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "website": {
+      "memory_mb": 13.734375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "report": {
+      "memory_mb": 13.75,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "environment": {
+      "memory_mb": 17.78125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "type_checker": {
+      "memory_mb": 18.484375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "pomdp": {
+      "memory_mb": 18.5625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "validation": {
+      "memory_mb": 18.96875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "integration": {
+      "memory_mb": 18.46875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "comprehensive": {
+      "memory_mb": 19.671875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "error_categories": {
+    "pathlib_errors": [],
+    "sapf_errors": [],
+    "import_errors": [],
+    "runtime_errors": []
+  }
+}

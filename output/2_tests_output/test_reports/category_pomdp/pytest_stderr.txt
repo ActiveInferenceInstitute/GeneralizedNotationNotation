@@ -1,0 +1,4 @@
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pytest_benchmark/logger.py:39: PytestBenchmarkWarning: Benchmarks are automatically disabled because xdist plugin is active.Benchmarks cannot be performed reliably in a parallelized environment.
+  warner(PytestBenchmarkWarning(text))
+2025-09-22 16:34:28,044 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 16:34:28,044 - src.llm.llm_operations - INFO - Created new LLM processor

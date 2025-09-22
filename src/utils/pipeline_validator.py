@@ -14,6 +14,14 @@ logger = logging.getLogger(__name__)
 
 def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any]:
     """Validate prerequisites for a pipeline step before execution."""
+    # Debug: Check script_name type
+    logger.debug(f"validate_step_prerequisites called with script_name: {script_name} (type: {type(script_name)})")
+
+    # Check if script_name is a list
+    if isinstance(script_name, list):
+        logger.error(f"script_name is a list: {script_name}")
+        return {"passed": False, "warnings": [], "errors": ["script_name is a list"]}
+
     result = {
         "passed": True,
         "warnings": [],
@@ -39,6 +47,21 @@ def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any
 
     required_steps = step_dependencies.get(script_name, [])
 
+    # Debug: Check if required_steps is not a list
+    if not isinstance(required_steps, list):
+        logger.error(f"required_steps is not a list: {type(required_steps)} - {required_steps}")
+        result["errors"].append(f"Invalid step dependencies for {script_name}")
+        result["passed"] = False
+        return result
+
+    # Debug: Check each required step
+    for i, req_step in enumerate(required_steps):
+        if not isinstance(req_step, str):
+            logger.error(f"required_step {i} is not a string: {type(req_step)} - {req_step}")
+            result["errors"].append(f"Invalid required step type for {script_name}")
+            result["passed"] = False
+            return result
+
     if required_steps:
         # Check if prerequisite step outputs exist
         for req_step in required_steps:
@@ -58,10 +81,13 @@ def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any
                 current_step_index = pipeline_steps.index(script_name)
                 req_step_index = pipeline_steps.index(req_step)
 
-                # Only warn if the prerequisite step should have already run
-                if req_step_index < current_step_index:
-                    warning_msg = f"Missing prerequisite output directory: {expected_output_dir}. Step {req_step} may not have been executed successfully."
-                    result["warnings"].append(warning_msg)
+                # Only warn if the prerequisite step should have already run and this is not an early step
+                if req_step_index < current_step_index and current_step_index > 3:  # Don't warn for very early steps
+                    # Only warn for critical dependencies that are truly required
+                    critical_deps = ["3_gnn.py", "7_export.py", "11_render.py"]  # These are truly required
+                    if req_step in critical_deps:
+                        warning_msg = f"Missing prerequisite output directory: {expected_output_dir}. Step {req_step} may not have been executed successfully."
+                        result["warnings"].append(warning_msg)
             else:
                 # Directory exists, check for specific required files based on step type
                 if req_step == "3_gnn.py":

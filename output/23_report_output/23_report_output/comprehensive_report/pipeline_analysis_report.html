@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GNN Pipeline Analysis Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .summary-card { background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; }
+        .summary-card h3 { margin: 0 0 10px 0; color: #333; }
+        .summary-card .value { font-size: 2em; font-weight: bold; color: #007bff; }
+        .section { margin-bottom: 30px; }
+        .section h2 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+        .step { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #28a745; }
+        .step.failed { border-left-color: #dc3545; background: #f8d7da; }
+        .step.warning { border-left-color: #ffc107; background: #fff3cd; }
+        .step.timeout { border-left-color: #6c757d; background: #e2e3e5; }
+        .file-list { background: #f8f9fa; padding: 15px; border-radius: 8px; }
+        .file-item { padding: 5px 0; border-bottom: 1px solid #dee2e6; }
+        .file-item:last-child { border-bottom: none; }
+        .error { color: #dc3545; }
+        .warning { color: #ffc107; }
+        .success { color: #28a745; }
+        .recommendations { background: #e7f3ff; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; }
+        .recommendations ul { margin: 10px 0; }
+        .recommendations li { margin: 5px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #dee2e6; }
+        th { background-color: #f8f9fa; font-weight: bold; }
+        .health-score { font-size: 3em; font-weight: bold; text-align: center; margin: 20px 0; }
+        .health-score.good { color: #28a745; }
+        .health-score.warning { color: #ffc107; }
+        .health-score.poor { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>GNN Pipeline Analysis Report</h1>
+        <p>Generated on: 2025-09-22T16:35:02.889319</p>
+    </div>
+    
+    <div class="summary">
+        <div class="summary-card">
+            <h3>Health Score</h3>
+            <div class="health-score good">
+                91.7/100
+            </div>
+        </div>
+        <div class="summary-card">
+            <h3>Total Steps</h3>
+            <div class="value">0</div>
+        </div>
+        <div class="summary-card">
+            <h3>Successful</h3>
+            <div class="value success">0</div>
+        </div>
+        <div class="summary-card">
+            <h3>Failed</h3>
+            <div class="value error">0</div>
+        </div>
+        <div class="summary-card">
+            <h3>Warnings</h3>
+            <div class="value warning">0</div>
+        </div>
+        <div class="summary-card">
+            <h3>Files Generated</h3>
+            <div class="value">2257</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Pipeline Steps Analysis</h2>
+        <p>No step analysis data available.</p>
+    </div>
+    
+    <div class="section">
+        <h2>File Generation Analysis</h2>
+        
+    <p><strong>Total Files Generated:</strong> 2257</p>
+    <p><strong>Total Size:</strong> 200.38 MB</p>
+    <h3>File Types</h3><table><tr><th>Type</th><th>Count</th><th>Total Size (MB)</th></tr><tr><td>.json</td><td>40</td><td>2.08</td></tr><tr><td>.md</td><td>14</td><td>0.04</td></tr><tr><td>.yaml</td><td>2</td><td>0.01</td></tr><tr><td>.py</td><td>5</td><td>0.03</td></tr><tr><td>no extension</td><td>7</td><td>0.00</td></tr><tr><td>.txt</td><td>77</td><td>0.21</td></tr><tr><td>.html</td><td>2054</td><td>196.48</td></tr><tr><td>.css</td><td>6</td><td>0.09</td></tr><tr><td>.png</td><td>17</td><td>1.15</td></tr><tr><td>.js</td><td>6</td><td>0.15</td></tr><tr><td>.tla</td><td>1</td><td>0.00</td></tr><tr><td>.max</td><td>1</td><td>0.01</td></tr><tr><td>.proto</td><td>1</td><td>0.01</td></tr><tr><td>.lean</td><td>1</td><td>0.01</td></tr><tr><td>.thy</td><td>1</td><td>0.01</td></tr><tr><td>.als</td><td>1</td><td>0.01</td></tr><tr><td>.pkl</td><td>3</td><td>0.03</td></tr><tr><td>.hs</td><td>1</td><td>0.01</td></tr><tr><td>.ebnf</td><td>1</td><td>0.01</td></tr><tr><td>.bnf</td><td>1</td><td>0.01</td></tr><tr><td>.scala</td><td>1</td><td>0.00</td></tr><tr><td>.z</td><td>1</td><td>0.01</td></tr><tr><td>.xsd</td><td>1</td><td>0.01</td></tr><tr><td>.agda</td><td>1</td><td>0.00</td></tr><tr><td>.xml</td><td>2</td><td>0.01</td></tr><tr><td>.v</td><td>1</td><td>0.01</td></tr><tr><td>.asn1</td><td>1</td><td>0.01</td></tr><tr><td>.graphml</td><td>1</td><td>0.00</td></tr><tr><td>.gexf</td><td>1</td><td>0.00</td></tr><tr><td>.jl</td><td>2</td><td>0.01</td></tr><tr><td>.log</td><td>5</td><td>0.00</td></tr></table><h3>Largest Files</h3><div class='file-list'><div class='file-item'>function_index.html (1.50 MB)</div><div class='file-item'>function_index.html (1.50 MB)</div><div class='file-item'>function_index.html (1.50 MB)</div><div class='file-item'>function_index.html (1.50 MB)</div><div class='file-item'>function_index.html (1.50 MB)</div><div class='file-item'>function_index.html (1.50 MB)</div><div class='file-item'>pipeline_analysis_summary.json (1.21 MB)</div><div class='file-item'>z_38d9cbb5becc5752_serializers_py.html (0.83 MB)</div><div class='file-item'>z_38d9cbb5becc5752_serializers_py.html (0.83 MB)</div><div class='file-item'>z_38d9cbb5becc5752_serializers_py.html (0.83 MB)</div></div>
+    </div>
+    
+    <div class="section">
+        <h2>Error Analysis</h2>
+        
+    <p><strong>Total Errors:</strong> <span class='error'>0</span></p>
+    <p><strong>Total Warnings:</strong> <span class='warning'>0</span></p>
+    
+    </div>
+    
+    <div class="section">
+        <h2>Performance Analysis</h2>
+        
+    <p><strong>Total Duration:</strong> 0.00 seconds</p>
+    <p><strong>Average Step Duration:</strong> 0.00 seconds</p>
+    <p><strong>Efficiency Score:</strong> 50.0/100</p>
+    
+    </div>
+    
+    <div class="section">
+        <h2>Recommendations</h2>
+        <div class="recommendations">
+            <ul>
+                <li>Investigate missing output directories: 9_advanced_viz_output</li><li>Pipeline is performing well - consider optimization opportunities</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

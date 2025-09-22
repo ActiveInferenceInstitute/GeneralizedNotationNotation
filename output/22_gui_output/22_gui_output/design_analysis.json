@@ -1,0 +1,114 @@
+{
+  "gui_type": "design_studio",
+  "analysis": {
+    "state_spaces": [
+      {
+        "variable": "# Likelihood matrix: A",
+        "dimensions": "observation_outcomes, hidden_states"
+      },
+      {
+        "variable": "A",
+        "dimensions": "3,3,type=float"
+      },
+      {
+        "variable": "# Transition matrix: B",
+        "dimensions": "states_next, states_previous, actions"
+      },
+      {
+        "variable": "B",
+        "dimensions": "3,3,3,type=float"
+      },
+      {
+        "variable": "# Preference vector: C",
+        "dimensions": "observation_outcomes"
+      },
+      {
+        "variable": "C",
+        "dimensions": "3,type=float"
+      },
+      {
+        "variable": "# Prior vector: D",
+        "dimensions": "states"
+      },
+      {
+        "variable": "D",
+        "dimensions": "3,type=float"
+      },
+      {
+        "variable": "# Habit vector: E",
+        "dimensions": "actions"
+      },
+      {
+        "variable": "E",
+        "dimensions": "3,type=float"
+      },
+      {
+        "variable": "s",
+        "dimensions": "3,1,type=float"
+      },
+      {
+        "variable": "s_prime",
+        "dimensions": "3,1,type=float"
+      },
+      {
+        "variable": "F",
+        "dimensions": "\u03c0,type=float"
+      },
+      {
+        "variable": "o",
+        "dimensions": "3,1,type=int"
+      },
+      {
+        "variable": "\u03c0",
+        "dimensions": "3,type=float"
+      },
+      {
+        "variable": "u",
+        "dimensions": "1,type=int"
+      },
+      {
+        "variable": "G",
+        "dimensions": "\u03c0,type=float"
+      },
+      {
+        "variable": "t",
+        "dimensions": "1,type=int"
+      }
+    ],
+    "ontology_terms": {
+      "A": "LikelihoodMatrix",
+      "B": "TransitionMatrix",
+      "C": "LogPreferenceVector",
+      "D": "PriorOverHiddenStates",
+      "E": "Habit",
+      "F": "VariationalFreeEnergy",
+      "G": "ExpectedFreeEnergy",
+      "s": "HiddenState",
+      "s_prime": "NextHiddenState",
+      "o": "Observation",
+      "\u03c0": "PolicyVector # Distribution over actions",
+      "u": "Action       # Chosen action",
+      "t": "Time"
+    },
+    "connections": [
+      "D>s",
+      "s-A",
+      "s>s_prime",
+      "A-o",
+      "s-B",
+      "C>G",
+      "E>\u03c0",
+      "G>\u03c0",
+      "\u03c0>u",
+      "B>u",
+      "u>s_prime"
+    ],
+    "parameters": {
+      "num_hidden_states": "3  # s[3]",
+      "num_obs": "3           # o[3]",
+      "num_actions": "3       # B actions_dim=3 (controlled by \u03c0)"
+    }
+  },
+  "export_path": "output/22_gui_output/22_gui_output/designed_model_gui_3.md",
+  "headless_mode": true
+}

@@ -1,0 +1,64 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.13', 'Platform': 'macOS-15.6.1-arm64-arm-64bit', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'xdist': '3.8.0', 'sugar': '1.0.0', 'asyncio': '1.1.0', 'json-report': '1.5.0', 'timeout': '2.4.0', 'metadata': '3.1.1', 'anyio': '4.10.0', 'cov': '6.2.1', 'mock': '3.14.1', 'benchmark': '5.1.0'}}
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/4d/Documents/GitHub/generalizednotationnotation
+configfile: pytest.ini
+plugins: xdist-3.8.0, sugar-1.0.0, asyncio-1.1.0, json-report-1.5.0, timeout-2.4.0, metadata-3.1.1, anyio-4.10.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+created: 14/14 workers
+14 workers [21 items]
+
+scheduling tests via LoadScheduling
+
+src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_inconsistent_dimensions 
+[gw6] [  4%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_inconsistent_dimensions 
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_valid_pomdp_structure 
+[gw2] [  9%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_valid_pomdp_structure 
+src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_semantic_consistency 
+[gw2] [ 14%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_semantic_consistency 
+src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_missing_dimension_validation 
+src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_loading_error_handling 
+[gw13] [ 19%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_loading_error_handling 
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_invalid_pomdp_structure 
+src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_non_compliant_pomdp 
+[gw11] [ 23%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_non_compliant_pomdp 
+[gw10] [ 28%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_missing_dimension_validation 
+src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_compliant_pomdp 
+[gw9] [ 33%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_compliant_pomdp 
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_invalid_dimension_syntax 
+[gw3] [ 38%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_invalid_dimension_syntax 
+src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_invalid_input_handling 
+[gw3] [ 42%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_invalid_input_handling 
+src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_missing_ontology_file 
+[gw12] [ 47%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_missing_ontology_file 
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_dimension_extraction 
+[gw5] [ 52%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_dimension_extraction 
+src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_large_content_handling 
+[gw5] [ 57%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_large_content_handling 
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_component_detection 
+[gw4] [ 61%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_component_detection 
+src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_malformed_content_handling 
+[gw4] [ 66%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_malformed_content_handling 
+[gw1] [ 71%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_invalid_pomdp_structure 
+src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_semantic_inconsistency 
+[gw1] [ 76%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_semantic_inconsistency 
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_specific_metrics 
+[gw8] [ 80%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_specific_metrics 
+src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_unicode_content_handling 
+[gw8] [ 85%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_unicode_content_handling 
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_missing_required_components 
+[gw0] [ 90%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_missing_required_components 
+src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_connection_validation 
+[gw0] [ 95%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_connection_validation 
+src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_consistent_dimensions 
+[gw7] [100%] PASSED src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_consistent_dimensions 
+
+============================= slowest 10 durations =============================
+0.01s setup    src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_missing_dimension_validation
+0.01s call     src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_invalid_pomdp_structure
+0.01s call     src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_large_content_handling
+
+(7 durations < 0.005s hidden.  Use -vv to show these durations.)
+============================== 21 passed in 2.94s ==============================

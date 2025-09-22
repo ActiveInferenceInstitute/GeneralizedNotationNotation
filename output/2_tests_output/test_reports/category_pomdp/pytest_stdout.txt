@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.13', 'Platform': 'macOS-15.6.1-arm64-arm-64bit', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'xdist': '3.8.0', 'sugar': '1.0.0', 'asyncio': '1.1.0', 'json-report': '1.5.0', 'timeout': '2.4.0', 'metadata': '3.1.1', 'anyio': '4.10.0', 'cov': '6.2.1', 'mock': '3.14.1', 'benchmark': '5.1.0'}}
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/4d/Documents/GitHub/generalizednotationnotation
+configfile: pytest.ini
+plugins: xdist-3.8.0, sugar-1.0.0, asyncio-1.1.0, json-report-1.5.0, timeout-2.4.0, metadata-3.1.1, anyio-4.10.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+created: 14/14 workers
+14 workers [0 items]
+
+scheduling tests via LoadScheduling
+
+============================ no tests ran in 3.19s =============================

@@ -1,0 +1,45 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.13', 'Platform': 'macOS-15.6.1-arm64-arm-64bit', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'xdist': '3.8.0', 'sugar': '1.0.0', 'asyncio': '1.1.0', 'json-report': '1.5.0', 'timeout': '2.4.0', 'metadata': '3.1.1', 'anyio': '4.10.0', 'cov': '6.2.1', 'mock': '3.14.1', 'benchmark': '5.1.0'}}
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/4d/Documents/GitHub/generalizednotationnotation
+configfile: pytest.ini
+plugins: xdist-3.8.0, sugar-1.0.0, asyncio-1.1.0, json-report-1.5.0, timeout-2.4.0, metadata-3.1.1, anyio-4.10.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+created: 14/14 workers
+14 workers [12 items]
+
+scheduling tests via LoadScheduling
+
+src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation 
+src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types 
+src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports 
+[gw4] [  8%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports 
+src/tests/test_website_overall.py::test_website_module_performance 
+src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration 
+[gw11] [ 16%] PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration 
+src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering 
+[gw5] [ 25%] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering 
+[gw0] [ 33%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation 
+[gw1] [ 41%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types 
+src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation 
+[gw3] [ 50%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation 
+src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation 
+src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration 
+[gw8] [ 58%] PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration 
+src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info 
+[gw2] [ 66%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info 
+src/tests/test_website_overall.py::test_website_module_completeness 
+[gw10] [ 75%] PASSED src/tests/test_website_overall.py::test_website_module_performance 
+[gw7] [ 83%] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation 
+[gw13] [ 91%] PASSED src/tests/test_website_overall.py::test_website_module_completeness 
+src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation 
+[gw6] [100%] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation 
+
+============================= slowest 10 durations =============================
+0.01s call     src/tests/test_website_overall.py::test_website_module_performance
+0.01s call     src/tests/test_website_overall.py::test_website_module_completeness
+
+(8 durations < 0.005s hidden.  Use -vv to show these durations.)
+============================== 12 passed in 7.14s ==============================

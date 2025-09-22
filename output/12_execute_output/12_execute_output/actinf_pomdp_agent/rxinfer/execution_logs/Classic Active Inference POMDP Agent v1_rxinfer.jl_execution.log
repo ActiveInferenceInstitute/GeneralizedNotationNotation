@@ -1,0 +1,23 @@
+Execution Results for Classic Active Inference POMDP Agent v1_rxinfer.jl
+Timestamp: 2025-09-22T16:34:44.432589
+Return Code: 1
+Execution Time: 9.54 seconds
+Model: actinf_pomdp_agent
+Framework: rxinfer
+Output Directory: output/12_execute_output/12_execute_output/actinf_pomdp_agent/rxinfer
+
+STDOUT:
+🔬 RxInfer.jl Active Inference Simulation
+📊 State Space: 3 states, 3 observations, 3 actions
+
+
+STDERR:
+ERROR: LoadError: ParseError:
+# Error @ /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:108:37
+    println("✓ Successfully computed posterior marginals")
+    println("  - State posteriors: ${length(states_marginals)} time steps")
+#                                   └ ── identifier or parenthesized expression expected after $ in string
+Stacktrace:
+ [1] top-level scope
+   @ ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:108
+in expression starting at /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:108

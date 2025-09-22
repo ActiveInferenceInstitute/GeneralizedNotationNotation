@@ -1,0 +1,107 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.13', 'Platform': 'macOS-15.6.1-arm64-arm-64bit', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'xdist': '3.8.0', 'sugar': '1.0.0', 'asyncio': '1.1.0', 'json-report': '1.5.0', 'timeout': '2.4.0', 'metadata': '3.1.1', 'anyio': '4.10.0', 'cov': '6.2.1', 'mock': '3.14.1', 'benchmark': '5.1.0'}}
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/4d/Documents/GitHub/generalizednotationnotation
+configfile: pytest.ini
+plugins: xdist-3.8.0, sugar-1.0.0, asyncio-1.1.0, json-report-1.5.0, timeout-2.4.0, metadata-3.1.1, anyio-4.10.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+created: 14/14 workers
+14 workers [44 items]
+
+scheduling tests via LoadScheduling
+
+src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_variable_types_missing_fields 
+[gw1] [  2%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_variable_types_missing_fields 
+src/tests/test_type_checker_overall.py::TestTypeCheckerPerformance::test_large_file_processing 
+src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_analyze_pomdp_structure_invalid 
+src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validate_gnn_files_no_files 
+[gw7] [  4%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validate_gnn_files_no_files 
+src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validate_type 
+[gw2] [  6%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validate_type 
+src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_analyze_types 
+[gw8] [  9%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_analyze_types 
+src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_pomdp_analyzer_with_ontology 
+[gw12] [ 11%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_pomdp_analyzer_with_ontology 
+src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_gnn_type_checker_initialization 
+[gw3] [ 13%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_gnn_type_checker_initialization 
+src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validate_single_gnn_file_nonexistent 
+[gw6] [ 15%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validate_single_gnn_file_nonexistent 
+src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_connections_empty 
+[gw4] [ 18%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_connections_empty 
+src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_connections_basic 
+[gw1] [ 20%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_connections_basic 
+src/tests/test_type_checker_overall.py::TestTypeCheckerPipelineIntegration::test_step5_integration 
+[gw11] [ 22%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerPipelineIntegration::test_step5_integration 
+[gw10] [ 25%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerPerformance::test_large_file_processing 
+src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_estimate_computational_complexity 
+[gw5] [ 27%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_estimate_computational_complexity 
+src/tests/test_type_checker_overall.py::TestTypeCheckerIntegration::test_end_to_end_processing 
+[gw9] [ 29%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerIntegration::test_end_to_end_processing 
+[gw13] [ 31%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_analyze_pomdp_structure_invalid 
+src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_variable_types_basic 
+[gw0] [ 34%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_variable_types_basic 
+src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validation_rules 
+src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_check_type_consistency 
+src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validate_gnn_files_basic 
+src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_pomdp_analyzer_initialization 
+src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validate_single_gnn_file 
+src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_estimate_computational_complexity_high_complexity 
+src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_generate_type_check_summary 
+[gw8] [ 36%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_generate_type_check_summary 
+src/tests/test_type_checker_overall.py::TestTypeCheckerPerformance::test_memory_efficiency 
+[gw10] [ 38%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerPerformance::test_memory_efficiency 
+src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_validate_pomdp_model_invalid 
+[gw1] [ 40%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_validate_pomdp_model_invalid 
+[gw5] [ 43%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_estimate_computational_complexity_high_complexity 
+[gw7] [ 45%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validation_rules 
+src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_connections_missing_fields 
+[gw4] [ 47%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_connections_missing_fields 
+src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_analyze_pomdp_structure 
+[gw12] [ 50%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_analyze_pomdp_structure 
+[gw11] [ 52%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_pomdp_analyzer_initialization 
+src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_variable_types_empty 
+[gw0] [ 54%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerAnalysisUtils::test_analyze_variable_types_empty 
+[gw3] [ 56%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validate_single_gnn_file 
+[gw2] [ 59%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_check_type_consistency 
+src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_validate_pomdp_model 
+src/tests/test_type_checker_overall.py::TestTypeCheckerIntegration::test_error_handling_robustness 
+[gw9] [ 61%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerIntegration::test_error_handling_robustness 
+[gw13] [ 63%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_validate_pomdp_model 
+src/tests/test_type_checker_pomdp.py::TestPOMDPIntegration::test_pomdp_analysis_in_main_workflow 
+[gw6] [ 65%] PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerProcessor::test_validate_gnn_files_basic 
+src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_gnn_type_checker_pomdp_mode_no_ontology 
+src/tests/test_type_checker_pomdp.py::TestPOMDPValidationRules::test_required_components_validation 
+src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_estimate_pomdp_complexity 
+[gw5] [ 68%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPValidationRules::test_required_components_validation 
+[gw8] [ 70%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_gnn_type_checker_pomdp_mode_no_ontology 
+src/tests/test_type_checker_pomdp.py::TestPOMDPIntegration::test_pomdp_ontology_loading_nonexistent 
+[gw10] [ 72%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPIntegration::test_pomdp_ontology_loading_nonexistent 
+src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_get_pomdp_analysis_summary_no_pomdp_mode 
+[gw7] [ 75%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPAnalyzer::test_estimate_pomdp_complexity 
+[gw4] [ 77%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_get_pomdp_analysis_summary_no_pomdp_mode 
+src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_validate_pomdp_file 
+[gw12] [ 79%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_validate_pomdp_file 
+src/tests/test_type_checker_pomdp.py::TestPOMDPIntegration::test_pomdp_ontology_loading 
+[gw11] [ 81%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPIntegration::test_pomdp_ontology_loading 
+src/tests/test_type_checker_pomdp.py::TestPOMDPPerformance::test_large_pomdp_analysis 
+[gw0] [ 84%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPPerformance::test_large_pomdp_analysis 
+[gw1] [ 86%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPIntegration::test_pomdp_analysis_in_main_workflow 
+src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_gnn_type_checker_pomdp_mode 
+[gw2] [ 88%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_gnn_type_checker_pomdp_mode 
+src/tests/test_type_checker_pomdp.py::TestPOMDPValidationRules::test_dimension_consistency_validation 
+src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_validate_pomdp_file_not_pomdp_mode 
+[gw3] [ 90%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_validate_pomdp_file_not_pomdp_mode 
+src/tests/test_type_checker_pomdp.py::TestPOMDPValidationRules::test_ontology_compliance_validation 
+[gw13] [ 93%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPValidationRules::test_ontology_compliance_validation 
+src/tests/test_type_checker_pomdp.py::TestPOMDPPerformance::test_pomdp_complexity_estimation 
+[gw8] [ 95%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPPerformance::test_pomdp_complexity_estimation 
+src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_get_pomdp_analysis_summary 
+[gw6] [ 97%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPTypeChecker::test_get_pomdp_analysis_summary 
+[gw9] [100%] PASSED src/tests/test_type_checker_pomdp.py::TestPOMDPValidationRules::test_dimension_consistency_validation 
+
+============================= slowest 10 durations =============================
+
+(10 durations < 0.005s hidden.  Use -vv to show these durations.)
+============================== 44 passed in 3.68s ==============================

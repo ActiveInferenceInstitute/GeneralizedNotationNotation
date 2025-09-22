@@ -76,8 +76,8 @@ class TestGNNPerformanceBenchmarks:
         memory_increase = end_memory - start_memory
 
         # Performance assertions
-        assert parsing_time < 5.0, f"Parsing took {parsing_time".2f"}s, should be < 5.0s"
-        assert memory_increase < 100, f"Memory increase: {memory_increase".1f"}MB, should be < 100MB"
+        assert parsing_time < 5.0, f"Parsing took {parsing_time:.2f}s, should be < 5.0s"
+        assert memory_increase < 100, f"Memory increase: {memory_increase:.1f}MB, should be < 100MB"
         assert parsed_model is not None
 
     def test_type_checking_performance(self, large_gnn_file):
