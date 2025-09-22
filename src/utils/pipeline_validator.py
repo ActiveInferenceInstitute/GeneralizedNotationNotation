@@ -19,7 +19,7 @@ def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any
         "warnings": [],
         "errors": []
     }
-    
+
     # Define step dependencies (step name -> [required prerequisite steps])
     step_dependencies = {
         "11_render.py": ["3_gnn.py"],  # Render needs parsed GNN files
@@ -36,36 +36,50 @@ def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any
         "15_audio.py": ["3_gnn.py"],  # Audio generation needs parsed files
         "16_analysis.py": ["7_export.py"],  # Analysis needs exported data
     }
-    
+
     required_steps = step_dependencies.get(script_name, [])
-    
+
     if required_steps:
         # Check if prerequisite step outputs exist
         for req_step in required_steps:
             step_number = req_step.split('_')[0]
             expected_output_dir = args.output_dir / f"{step_number}_{req_step.split('_')[1].replace('.py', '')}_output"
-            
+
             if not expected_output_dir.exists():
-                warning_msg = f"Missing prerequisite output directory: {expected_output_dir}. Step {req_step} may not have been executed."
-                result["warnings"].append(warning_msg)
-                
-            # Check for specific required files based on step type
-            if req_step == "3_gnn.py":
-                # Check for parsed GNN files
-                gnn_output_dir = args.output_dir / "3_gnn_output"
-                if gnn_output_dir.exists():
-                    parsed_files = list(gnn_output_dir.rglob("*_parsed.json"))
-                    if not parsed_files:
-                        result["warnings"].append("No parsed GNN files found in 3_gnn_output")
-                        
-            elif req_step == "11_render.py":
-                # Check for rendered simulation code
-                render_output_dir = args.output_dir / "11_render_output"
-                if render_output_dir.exists():
-                    rendered_files = list(render_output_dir.rglob("*.py")) + list(render_output_dir.rglob("*.jl"))
-                    if not rendered_files:
-                        result["warnings"].append("No rendered simulation files found in 11_render_output")
-    
+                # Don't warn if this is an early step that hasn't run yet
+                # Only warn if we're in the middle/late pipeline and prerequisites are missing
+                pipeline_steps = ["0_template.py", "1_setup.py", "2_tests.py", "3_gnn.py", "4_model_registry.py",
+                                 "5_type_checker.py", "6_validation.py", "7_export.py", "8_visualization.py",
+                                 "9_advanced_viz.py", "10_ontology.py", "11_render.py", "12_execute.py",
+                                 "13_llm.py", "14_ml_integration.py", "15_audio.py", "16_analysis.py",
+                                 "17_integration.py", "18_security.py", "19_research.py", "20_website.py",
+                                 "21_mcp.py", "22_gui.py", "23_report.py"]
+
+                current_step_index = pipeline_steps.index(script_name)
+                req_step_index = pipeline_steps.index(req_step)
+
+                # Only warn if the prerequisite step should have already run
+                if req_step_index < current_step_index:
+                    warning_msg = f"Missing prerequisite output directory: {expected_output_dir}. Step {req_step} may not have been executed successfully."
+                    result["warnings"].append(warning_msg)
+            else:
+                # Directory exists, check for specific required files based on step type
+                if req_step == "3_gnn.py":
+                    # Check for parsed GNN files
+                    gnn_output_dir = args.output_dir / "3_gnn_output"
+                    if gnn_output_dir.exists():
+                        parsed_files = list(gnn_output_dir.rglob("*_parsed.json"))
+                        if not parsed_files:
+                            result["warnings"].append("No parsed GNN files found in 3_gnn_output")
+
+                elif req_step == "11_render.py":
+                    # Check for rendered simulation code
+                    render_output_dir = args.output_dir / "11_render_output"
+                    if render_output_dir.exists():
+                        rendered_files = list(render_output_dir.rglob("*.py")) + list(render_output_dir.rglob("*.jl"))
+                        if not rendered_files:
+                            result["warnings"].append("No rendered simulation files found in 11_render_output")
+
     return result
 
 def validate_pipeline_step_sequence(steps_to_execute: List[tuple], logger) -> Dict[str, Any]:

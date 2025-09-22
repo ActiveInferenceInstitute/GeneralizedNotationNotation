@@ -23,6 +23,11 @@ from .setup import (
     create_project_structure
 )
 
+from .processor import (
+    process_setup_standardized,
+    ensure_uv_available
+)
+
 # Import validator functions
 from .validator import (
     validate_system,
@@ -62,7 +67,7 @@ __all__ = [
     'ensure_directory',
     'find_gnn_files',
     'get_output_paths',
-    
+
     # UV-based setup functions
     'setup_uv_environment',
     'validate_uv_setup',
@@ -76,18 +81,22 @@ __all__ = [
     'log_system_info',
     'install_optional_dependencies',
     'create_project_structure',
-    
+
+    # Processor functions
+    'process_setup_standardized',
+    'ensure_uv_available',
+
     # Validator functions
     'validate_system',
     'get_environment_info',
     'get_uv_status',
-    
+
     # Utility functions
     'get_module_info',
     'get_setup_options',
     'setup_environment',
     'install_dependencies',
-    
+
     # Metadata
     'FEATURES',
     '__version__'

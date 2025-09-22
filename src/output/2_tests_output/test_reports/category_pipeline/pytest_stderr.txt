@@ -1,0 +1,24 @@
+2025-09-22 12:22:17,335 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:17,335 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:17,413 - visualization - INFO - 🚀 Processing visualizations
+2025-09-22 12:22:17,832 - visualization - INFO - ✅ Generated 2 visualizations
+2025-09-22 12:22:17,855 - gnn.schema_validator - INFO - Enhanced multi-format parsing system initialized
+2025-09-22 12:22:17,855 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2025-09-22 12:22:17,855 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2025-09-22 12:22:17,855 - gnn.core_processor.wrapper - INFO - Starting GNN processing pipeline
+2025-09-22 12:22:17,855 - gnn.core_processor.wrapper - INFO - Phase 1: File discovery and basic analysis
+2025-09-22 12:22:17,855 - gnn.discovery - INFO - Starting file discovery in /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files
+2025-09-22 12:22:17,856 - gnn.discovery - INFO - Discovery completed: 1/1 potential GNN files in 0.001s
+2025-09-22 12:22:17,856 - gnn.core_processor.wrapper - INFO - Discovered 1 GNN files
+2025-09-22 12:22:17,856 - gnn.core_processor.wrapper - INFO - Phase 2: File validation
+2025-09-22 12:22:17,856 - gnn.core_processor.wrapper - ERROR - Validation failed: 'STANDARD' is not a valid ValidationLevel
+2025-09-22 12:22:17,858 - export - INFO - 🚀 Generating multi-format exports
+2025-09-22 12:22:17,859 - export - INFO - ✅ All exports generated successfully
+2025-09-22 12:22:17,860 - visualization - INFO - 🚀 Processing visualizations
+2025-09-22 12:22:18,259 - visualization - INFO - ✅ Generated 2 visualizations
+2025-09-22 12:22:18,259 - export - INFO - 🚀 Generating multi-format exports
+2025-09-22 12:22:18,260 - export - INFO - ✅ All exports generated successfully
+2025-09-22 12:22:18,262 - visualization - INFO - 🚀 Processing visualizations
+2025-09-22 12:22:18,722 - visualization - INFO - ✅ Generated 2 visualizations
+2025-09-22 12:22:18,826 - utils.configuration - INFO - Loaded environment configuration with prefix: GNN_
+2025-09-22 12:22:18,831 - utils.configuration - INFO - Loaded configuration from input/config.yaml

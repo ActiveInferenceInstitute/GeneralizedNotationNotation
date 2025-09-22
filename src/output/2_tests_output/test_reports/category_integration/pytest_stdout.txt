@@ -1,0 +1,36 @@
+================================================= test session starts ==================================================
+collecting ... collected 11 items / 1 error
+
+======================================================== ERRORS ========================================================
+______________________________ ERROR collecting src/tests/test_performance_benchmarks.py _______________________________
+.venv/lib/python3.11/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.11/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+../../../.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1204: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1176: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1147: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+.venv/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:177: in exec_module
+    source_stat, co = _rewrite_test(fn, self.config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:357: in _rewrite_test
+    tree = ast.parse(source, filename=strfn)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/ast.py:50: in parse
+    return compile(source, filename, mode, flags,
+E     File "/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_performance_benchmarks.py", line 79
+E       assert parsing_time < 5.0, f"Parsing took {parsing_time".2f"}s, should be < 5.0s"
+E                                                                ^
+E   SyntaxError: invalid decimal literal
+=============================================== short test summary info ================================================
+ERROR src/tests/test_performance_benchmarks.py
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+=================================================== 1 error in 0.87s ===================================================

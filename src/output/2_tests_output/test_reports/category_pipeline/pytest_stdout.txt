@@ -1,0 +1,551 @@
+================================================= test session starts ==================================================
+collecting ... collected 137 items
+
+src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_visualization_generates_images PASSED
+src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_gnn_processing_generates_results PASSED
+src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_multi_format_export_generates_files PASSED
+src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_results_json_are_valid PASSED
+src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_preflight_metrics PASSED
+src/tests/test_pipeline_infrastructure.py::TestPipelineDiscovery::test_discovery_imports PASSED
+src/tests/test_pipeline_infrastructure.py::TestPipelineDiscovery::test_get_pipeline_scripts PASSED
+src/tests/test_pipeline_infrastructure.py::TestPipelineDiscovery::test_discover_steps PASSED
+src/tests/test_pipeline_infrastructure.py::TestPipelineStepTemplate::test_step_template_imports SKIPPED
+src/tests/test_pipeline_infrastructure.py::TestPipelineStepTemplate::test_pipeline_step_class SKIPPED (Pipeline
+step template not available)
+src/tests/test_pipeline_infrastructure.py::TestPipelineStepTemplate::test_create_step_template SKIPPED (Pipeline
+step template not available)
+src/tests/test_pipeline_infrastructure.py::TestPipelineValidation::test_validation_imports SKIPPED (Pipeline
+validation not available)
+src/tests/test_pipeline_infrastructure.py::TestPipelineValidation::test_validate_pipeline SKIPPED (Pipeline
+validation not available)
+src/tests/test_pipeline_infrastructure.py::TestPipelineValidation::test_check_step_dependencies SKIPPED
+src/tests/test_pipeline_infrastructure.py::TestVerifyPipeline::test_verify_imports PASSED
+src/tests/test_pipeline_infrastructure.py::TestVerifyPipeline::test_verify_pipeline_integrity SKIPPED (Pipeline
+verify not available)
+src/tests/test_pipeline_infrastructure.py::TestVerifyPipeline::test_check_pipeline_health SKIPPED (Pipeline
+verify not available)
+src/tests/test_pipeline_infrastructure.py::TestUtilsMigrationHelper::test_migration_imports SKIPPED (Migration
+helper not available)
+src/tests/test_pipeline_infrastructure.py::TestUtilsMigrationHelper::test_migrate_pipeline SKIPPED (Migration
+helper not available)
+src/tests/test_pipeline_infrastructure.py::TestUtilsMigrationHelper::test_upgrade_scripts SKIPPED (Migration
+helper not available)
+src/tests/test_pipeline_infrastructure.py::TestUtilsPipelineMonitor::test_monitor_imports FAILED
+src/tests/test_pipeline_infrastructure.py::TestUtilsPipelineMonitor::test_pipeline_monitor_class SKIPPED
+src/tests/test_pipeline_infrastructure.py::TestUtilsPipelineMonitor::test_monitor_execution SKIPPED (Pipeline
+monitor not available)
+src/tests/test_pipeline_infrastructure.py::TestUtilsResourceManager::test_resource_manager_imports PASSED
+src/tests/test_pipeline_infrastructure.py::TestUtilsResourceManager::test_resource_manager_class SKIPPED
+src/tests/test_pipeline_infrastructure.py::TestUtilsResourceManager::test_monitor_resources SKIPPED (Resource
+manager not available)
+src/tests/test_pipeline_infrastructure.py::TestUtilsScriptValidator::test_script_validator_imports PASSED
+src/tests/test_pipeline_infrastructure.py::TestUtilsScriptValidator::test_script_validator_class SKIPPED (Script
+validator not available)
+src/tests/test_pipeline_infrastructure.py::TestUtilsScriptValidator::test_validate_script SKIPPED (Script
+validator not available)
+src/tests/test_pipeline_infrastructure.py::TestPipelineInfrastructureIntegration::test_discovery_and_validation_integration SKIPPED
+src/tests/test_pipeline_infrastructure.py::TestPipelineInfrastructureIntegration::test_monitoring_and_resource_management_integration SKIPPED
+src/tests/test_pipeline_infrastructure.py::test_pipeline_infrastructure_performance SKIPPED (Pipeline
+infrastructure not available for performance test)
+src/tests/test_pipeline_infrastructure.py::test_pipeline_infrastructure_completeness PASSED
+src/tests/test_pipeline_integration.py::TestPipelineIntegration::test_full_pipeline_execution 2025-09-22 12:22:18,832 [b9557b17:pipeline] pipeline - INFO - Checking UV environment...
+2025-09-22 12:22:18,847 [b9557b17:pipeline] utils.uv_utils - INFO - Syncing dependencies...
+2025-09-22 12:22:18,854 [b9557b17:pipeline] utils.uv_utils - INFO - Running UV command (attempt 1/3): uv sync --extra dev --extra llm --extra visualization --extra audio --extra gui --frozen
+2025-09-22 12:22:18,874 [b9557b17:pipeline] utils.uv_utils - INFO - UV command completed successfully
+2025-09-22 12:22:18,875 [b9557b17:pipeline] utils.uv_utils - INFO - Dependencies synced successfully
+2025-09-22 12:22:18,908 [b9557b17:pipeline] utils.uv_utils - INFO - UV environment is ready
+2025-09-22 12:22:18,908 [b9557b17:pipeline] pipeline - INFO - UV environment is ready
+2025-09-22 12:22:18,908 [b9557b17:pipeline] pipeline - INFO - 🚀 Starting GNN Processing Pipeline [total_steps=24 | target_dir=/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/input | output_dir=/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output]
+2025-09-22 12:22:18,908 [b9557b17:pipeline] pipeline - INFO - ┌─ Step 1/24: Template initialization RUNNING
+└─ Progress: [█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (4%)
+2025-09-22 12:22:18,908 [b9557b17:pipeline] pipeline - INFO - ┌─ Step 1/24: Step 1 RUNNING
+└─ Progress: [█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (4%)
+    Starting Template initialization [step_number=1 | total_steps=24 | script_name=0_template.py]
+2025-09-22 12:22:18,908 [b9557b17:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/0_template.py --target-dir /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/input --output-dir /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output --verbose
+2025-09-22 12:22:18,909 [b9557b17:pipeline] pipeline - INFO - 🚀 Executing 0_template.py with 120s timeout
+2025-09-22 12:22:18,909 [b9557b17:pipeline] pipeline - INFO - 💡 If the step seems stuck, it will timeout and show partial results
+2025-09-22 12:22:20,208 [b9557b17:pipeline] pipeline - WARNING - Step errors:
+2025-09-22 12:22:19,020 - template - INFO - 🚀 Processing template
+2025-09-22 12:22:19,021 - template - INFO - 🎯 Template execution started with correlation ID: 8eec7853
+2025-09-22 12:22:20,039 - template - INFO - 📊 Initial system resources: {'platform': 'macOS-15.6.1-arm64-arm-64bit', 'python_version': '3.11.13', 'cpu_count': 14, 'cpu_percent': 12.3, 'memory_total_gb': 24.0, 'memory_available_gb': 9.749038696289062, 'memory_percent': 59.4, 'disk_usage': {'/Users/4d': 79.0, '/Users/4d/Documents/GitHub/generalizednotationnotation': 79.0}}
+2025-09-22 12:22:20,042 - utils.error_recovery - INFO - Error analyzed: unknown_error in Test traceback
+2025-09-22 12:22:20,042 - utils.error_recovery - INFO - Error analyzed: unknown_error in template
+2025-09-22 12:22:20,043 - template - INFO - ✅ Error recovery system demonstrated
+2025-09-22 12:22:20,153 - template - INFO - ✅ Resource tracking system demonstrated
+2025-09-22 12:22:20,153 - template - INFO - 🎯 Demonstrating enhanced logging patterns
+2025-09-22 12:22:20,153 - template - DEBUG - Debug level logging for detailed troubleshooting
+2025-09-22 12:22:20,153 - template - INFO - Info level logging for general progress
+2025-09-22 12:22:20,153 - template - INFO - Warning level logging demonstration (simulated)
+2025-09-22 12:22:20,153 - template - INFO - ✅ Enhanced logging system demonstrated
+2025-09-22 12:22:20,153 - template - INFO - 🛡️ Demonstrating safe-to-fail patterns
+2025-09-22 12:22:20,154 - template - INFO - ✅ Safe-to-fail operation completed successfully
+2025-09-22 12:22:20,154 - template - INFO - 🎯 Template demonstration completed with 4 patterns
+2025-09-22 12:22:20,154 - template - INFO - Processing files from: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/input
+2025-09-22 12:22:20,154 - template - INFO - Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/0_template_output
+2025-09-22 12:22:20,154 - template - INFO - Recursive processing: True
+2025-09-22 12:22:20,154 - template - DEBUG - Example parameter: default_value
+2025-09-22 12:22:20,156 - template - INFO - Found 1 files to process
+2025-09-22 12:22:20,156 - template.processor - DEBUG - Processing file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/input/actinf_pomdp_agent.md
+2025-09-22 12:22:20,159 - template.processor - DEBUG - Successfully processed actinf_pomdp_agent.md
+2025-09-22 12:22:20,159 - template - INFO - Summary report saved: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/0_template_output/template_processing_summary.json
+2025-09-22 12:22:20,159 - template - INFO - ✅ Successfully processed 1 files
+2025-09-22 12:22:20,160 - template - INFO - ✅ Template processing completed successfully
+
+2025-09-22 12:22:20,208 [b9557b17:pipeline] pipeline - INFO - ✅ Step 1 completed with SUCCESS in 1.30s
+Progress: 1/24 steps (1 successful)
+2025-09-22 12:22:20,208 [b9557b17:pipeline] pipeline - INFO - ✅ ✅ Step 1 completed with SUCCESS in 1.30s
+Progress: 1/24 steps (1 successful)
+    Template initialization completed [status=SUCCESS | step_number=1] [⏱️ 1.30s]
+2025-09-22 12:22:20,208 [b9557b17:pipeline] pipeline - INFO - ┌─ Step 2/24: Environment setup RUNNING
+└─ Progress: [██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (8%)
+2025-09-22 12:22:20,208 [b9557b17:pipeline] pipeline - INFO - ┌─ Step 2/24: Step 2 RUNNING
+└─ Progress: [██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (8%)
+    Starting Environment setup [step_number=2 | total_steps=24 | script_name=1_setup.py]
+2025-09-22 12:22:20,208 [b9557b17:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/1_setup.py --target-dir /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/input --output-dir /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output --verbose
+2025-09-22 12:22:20,208 [b9557b17:pipeline] pipeline - INFO - 🚀 Executing 1_setup.py with 120s timeout
+2025-09-22 12:22:20,208 [b9557b17:pipeline] pipeline - INFO - 💡 If the step seems stuck, it will timeout and show partial results
+2025-09-22 12:22:22,137 [b9557b17:pipeline] pipeline - WARNING - Step errors:
+2025-09-22 12:22:20,338 - 1_setup.py - INFO - 🚀 Processing setup
+2025-09-22 12:22:20,344 - 1_setup.py - INFO - ✅ UV available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-09-22 12:22:20,344 - 1_setup.py - INFO - Logging system information
+2025-09-22 12:22:20,353 - 1_setup.py - INFO - System Platform: macOS-15.6.1-arm64-arm-64bit
+2025-09-22 12:22:20,354 - 1_setup.py - INFO - Python Version: 3.11.13 (main, Aug  8 2025, 16:50:33) [Clang 20.1.4 ]
+2025-09-22 12:22:20,354 - 1_setup.py - INFO - Python Executable: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+2025-09-22 12:22:20,354 - 1_setup.py - INFO - Architecture: ('64bit', '')
+2025-09-22 12:22:20,354 - 1_setup.py - INFO - Processor: arm
+2025-09-22 12:22:20,354 - 1_setup.py - INFO - Machine: arm64
+2025-09-22 12:22:20,354 - 1_setup.py - INFO - Node: timelock.local
+2025-09-22 12:22:20,354 - 1_setup.py - INFO - System information logged
+2025-09-22 12:22:20,358 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-09-22 12:22:20,359 - setup.setup - INFO - ✅ UV is available and ready to use
+2025-09-22 12:22:20,359 - setup.setup - INFO - 🔧 Starting comprehensive UV environment setup...
+2025-09-22 12:22:20,359 - setup.setup - INFO - 🔍 Checking system requirements...
+2025-09-22 12:22:20,359 - setup.setup - INFO - ✅ Python version check passed: 3.11.13
+2025-09-22 12:22:20,363 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-09-22 12:22:20,363 - setup.setup - INFO - ✅ Disk space check passed: 92.07GB free
+2025-09-22 12:22:20,363 - setup.setup - INFO - ✓ Using existing UV environment at /Users/4d/Documents/GitHub/generalizednotationnotation/.venv
+2025-09-22 12:22:20,368 - setup.setup - INFO - ✅ Existing environment is working: Python 3.11.13
+2025-09-22 12:22:20,482 - setup.setup - INFO - ✅ Core packages are available in existing environment
+2025-09-22 12:22:20,482 - setup.setup - INFO - 📦 Installing core dependencies...
+2025-09-22 12:22:20,482 - setup.setup - INFO - 📦 Installing dependencies from /Users/4d/Documents/GitHub/generalizednotationnotation/pyproject.toml using UV sync
+2025-09-22 12:22:21,450 - setup.setup - INFO - ✅ Dependencies installed using UV in 1.0s
+2025-09-22 12:22:21,456 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-09-22 12:22:21,464 - setup.setup - INFO - 📦 Found 273 installed packages using UV
+2025-09-22 12:22:21,464 - setup.setup - INFO - 📋 Installed packages:
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - absl-py: 2.3.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - aiofiles: 24.1.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - aiohappyeyeballs: 2.6.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - aiohttp: 3.12.15
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - aiosignal: 1.4.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - alabaster: 1.0.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - altair: 5.5.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - annotated-types: 0.7.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - anthropic: 0.61.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - anyio: 4.10.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - appnope: 0.1.4
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - argon2-cffi: 25.1.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - argon2-cffi-bindings: 25.1.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - arrow: 1.3.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - asttokens: 3.0.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - async-lru: 2.0.5
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - attrs: 25.3.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - audioread: 3.0.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - authlib: 1.6.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - babel: 2.17.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - bandit: 1.8.6
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - beautifulsoup4: 4.13.4
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - black: 25.1.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - bleach: 6.2.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - bokeh: 3.7.3
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - brotli: 1.1.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - certifi: 2025.8.3
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - cffi: 1.17.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - cfgv: 3.4.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - charset-normalizer: 3.4.2
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - chex: 0.1.90
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - click: 8.2.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - colorcet: 3.1.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - comm: 0.2.3
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - contourpy: 1.3.3
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - coverage: 7.10.2
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - cryptography: 45.0.6
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - cycler: 0.12.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - debugpy: 1.8.15
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - decorator: 5.2.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - defusedxml: 0.7.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - discopy: 1.2.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - distlib: 0.4.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - distro: 1.9.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - docutils: 0.21.2
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - dparse: 0.6.4
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - etils: 1.13.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - execnet: 2.1.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - executing: 2.2.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - fastapi: 0.116.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - fastjsonschema: 2.21.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - ffmpy: 0.6.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - filelock: 3.16.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - flake8: 7.3.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - flax: 0.11.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - fonttools: 4.59.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - fqdn: 1.5.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - frozenlist: 1.7.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - fsspec: 2025.7.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - generalized-notation-notation: 1.1.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - gradio: 5.42.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - gradio-client: 1.11.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - groovy: 0.1.2
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - h11: 0.16.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - hf-xet: 1.1.7
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - holoviews: 1.21.0
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - httpcore: 1.0.9
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - httpx: 0.28.1
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - huggingface-hub: 0.34.3
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - humanize: 4.12.3
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - identify: 2.6.12
+2025-09-22 12:22:21,464 - setup.setup - INFO -   - idna: 3.10
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - imagesize: 1.4.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - importlib-resources: 6.5.2
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - iniconfig: 2.1.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - ipdb: 0.13.13
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - ipykernel: 6.30.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - ipython: 9.4.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - ipython-pygments-lexers: 1.1.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - ipywidgets: 8.1.7
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - isoduration: 20.11.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - isort: 6.0.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jax: 0.7.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jaxlib: 0.7.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jedi: 0.19.2
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jinja2: 3.1.6
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jiter: 0.10.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - joblib: 1.5.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - json5: 0.12.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jsonpointer: 3.0.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jsonschema: 4.25.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jsonschema-specifications: 2025.4.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyter: 1.1.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyter-client: 8.6.3
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyter-console: 6.6.3
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyter-core: 5.8.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyter-events: 0.12.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyter-lsp: 2.2.6
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyter-server: 2.16.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyter-server-terminals: 0.5.3
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyterlab: 4.4.5
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyterlab-pygments: 0.3.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyterlab-server: 2.27.3
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - jupyterlab-widgets: 3.0.15
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - kiwisolver: 1.4.8
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - lark: 1.2.2
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - lazy-loader: 0.4
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - librosa: 0.11.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - linkify-it-py: 2.0.3
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - llvmlite: 0.44.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - markdown: 3.8.2
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - markdown-it-py: 3.0.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - markupsafe: 3.0.2
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - marshmallow: 4.0.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - matplotlib-inline: 0.1.7
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - mccabe: 0.7.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - mdit-py-plugins: 0.4.2
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - mdurl: 0.1.2
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - memory-profiler: 0.61.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - mistune: 3.1.3
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - ml-dtypes: 0.5.3
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - mpmath: 1.3.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - msgpack: 1.1.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - multidict: 6.6.4
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - mypy: 1.17.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - mypy-extensions: 1.1.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - myst-parser: 4.0.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - narwhals: 2.0.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - nbclient: 0.10.2
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - nbconvert: 7.16.6
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - nbformat: 5.10.4
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - nest-asyncio: 1.6.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - networkx: 3.5
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - nltk: 3.9.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - nodeenv: 1.9.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - nose: 1.3.7
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - notebook: 7.4.5
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - notebook-shim: 0.2.4
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - numba: 0.61.2
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - numpy: 2.2.6
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - ollama: 0.5.3
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - openai: 1.99.1
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - opt-einsum: 3.4.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - optax: 0.2.5
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - orbax-checkpoint: 0.11.20
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - orjson: 3.11.2
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - overrides: 7.7.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - packaging: 25.0
+2025-09-22 12:22:21,465 - setup.setup - INFO -   - pandas: 2.3.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pandocfilters: 1.5.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - panel: 1.7.5
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - param: 2.2.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - parso: 0.8.4
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pathspec: 0.12.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pbr: 6.1.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pedalboard: 0.9.17
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pexpect: 4.9.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pillow: 11.3.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - platformdirs: 4.3.8
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - plotly: 6.2.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pluggy: 1.6.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pooch: 1.8.2
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pre-commit: 4.2.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - prometheus-client: 0.22.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - prompt-toolkit: 3.0.51
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - propcache: 0.3.2
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - protobuf: 6.31.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - psutil: 6.1.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - ptyprocess: 0.7.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pure-eval: 0.2.3
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - py-cpuinfo: 9.0.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - py-spy: 0.4.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pycodestyle: 2.14.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pycparser: 2.22
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pydantic: 2.9.2
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pydantic-core: 2.23.4
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pydub: 0.25.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pyflakes: 3.4.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pygments: 2.19.2
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pymdp: 0.0.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pyparsing: 3.2.3
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytest: 8.4.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytest-asyncio: 1.1.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytest-benchmark: 5.1.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytest-cov: 6.2.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytest-json-report: 1.5.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytest-metadata: 3.1.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytest-mock: 3.14.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytest-sugar: 1.0.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytest-timeout: 2.4.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytest-xdist: 3.8.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - python-dateutil: 2.9.0.post0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - python-json-logger: 3.3.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - python-multipart: 0.0.20
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pytz: 2025.2
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pyviz-comms: 3.0.6
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pyyaml: 6.0.2
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - pyzmq: 27.0.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - referencing: 0.36.2
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - regex: 2025.7.34
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - requests: 2.32.4
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - rfc3339-validator: 0.1.4
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - rfc3986-validator: 0.1.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - rfc3987-syntax: 1.1.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - rich: 14.1.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - roman-numerals-py: 3.1.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - rpds-py: 0.26.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - ruamel-yaml: 0.18.14
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - ruamel-yaml-clib: 0.2.12
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - ruff: 0.12.8
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - safehttpx: 0.1.6
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - safety: 3.6.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - safety-schemas: 0.0.14
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - scikit-learn: 1.7.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - scipy: 1.16.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - seaborn: 0.13.2
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - semantic-version: 2.10.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - send2trash: 1.8.3
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - setuptools: 80.9.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - shellingham: 1.5.4
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - simplejson: 3.20.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - six: 1.17.0
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - sniffio: 1.3.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - snowballstemmer: 3.0.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - soundfile: 0.13.1
+2025-09-22 12:22:21,466 - setup.setup - INFO -   - soupsieve: 2.7
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - soxr: 0.5.0.post1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - sphinx: 8.2.3
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - sphinx-rtd-theme: 3.0.2
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - sphinxcontrib-applehelp: 2.0.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - sphinxcontrib-devhelp: 2.0.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - sphinxcontrib-htmlhelp: 2.1.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - sphinxcontrib-jquery: 4.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - sphinxcontrib-jsmath: 1.0.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - sphinxcontrib-qthelp: 2.0.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - sphinxcontrib-serializinghtml: 2.0.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - stack-data: 0.6.3
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - starlette: 0.47.2
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - stevedore: 5.4.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - sympy: 1.14.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - tenacity: 9.1.2
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - tensorstore: 0.1.76
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - termcolor: 3.1.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - terminado: 0.18.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - threadpoolctl: 3.6.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - tinycss2: 1.4.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - toml: 0.10.2
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - tomlkit: 0.13.3
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - toolz: 1.0.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - torch: 2.8.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - tornado: 6.5.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - tqdm: 4.67.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - traitlets: 5.14.3
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - treescope: 0.1.9
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - typer: 0.16.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - types-python-dateutil: 2.9.0.20250708
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - typing-extensions: 4.14.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - tzdata: 2025.2
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - uc-micro-py: 1.0.3
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - uri-template: 1.3.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - urllib3: 2.5.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - uvicorn: 0.35.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - virtualenv: 20.33.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - wcwidth: 0.2.13
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - webcolors: 24.11.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - webencodings: 0.5.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - websocket-client: 1.8.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - websockets: 15.0.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - widgetsnbextension: 4.0.14
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - xyzservices: 2025.4.0
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - yarl: 1.20.1
+2025-09-22 12:22:21,467 - setup.setup - INFO -   - zipp: 3.23.0
+2025-09-22 12:22:21,468 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2025-09-22 12:22:21,468 - setup.setup - INFO - ✅ Validating environment...
+2025-09-22 12:22:21,468 - setup.setup - INFO - 🔍 Checking system requirements...
+2025-09-22 12:22:21,468 - setup.setup - INFO - ✅ Python version check passed: 3.11.13
+2025-09-22 12:22:21,472 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-09-22 12:22:21,472 - setup.setup - INFO - ✅ Disk space check passed: 92.07GB free
+2025-09-22 12:22:21,472 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-09-22 12:22:21,479 - setup.setup - INFO - 📦 Found 273 installed packages using UV
+2025-09-22 12:22:21,479 - setup.setup - INFO - 📋 Key installed packages:
+2025-09-22 12:22:21,479 - setup.setup - INFO -   - pytest: 8.4.1
+2025-09-22 12:22:21,479 - setup.setup - INFO -   - numpy: 2.2.6
+2025-09-22 12:22:21,479 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-09-22 12:22:21,479 - setup.setup - INFO -   - scipy: 1.16.1
+2025-09-22 12:22:21,480 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2025-09-22 12:22:21,647 - setup.setup - INFO - ✅ GNN environment setup completed successfully using UV
+2025-09-22 12:22:21,647 - 1_setup.py - INFO - ✅ UV environment setup completed
+2025-09-22 12:22:21,647 - 1_setup.py - INFO - Creating project structure
+2025-09-22 12:22:21,647 - 1_setup.py - DEBUG - Created directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/1_setup_output/1_setup_output/input/gnn_files
+2025-09-22 12:22:21,647 - 1_setup.py - DEBUG - Created directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/1_setup_output/1_setup_output/output
+2025-09-22 12:22:21,647 - 1_setup.py - DEBUG - Created directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/1_setup_output/1_setup_output/output/logs
+2025-09-22 12:22:21,647 - 1_setup.py - DEBUG - Created directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/1_setup_output/1_setup_output/output/temp
+2025-09-22 12:22:21,647 - 1_setup.py - DEBUG - Created directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/1_setup_output/1_setup_output/doc
+2025-09-22 12:22:21,647 - 1_setup.py - DEBUG - Created directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/1_setup_output/1_setup_output/tests
+2025-09-22 12:22:21,648 - 1_setup.py - DEBUG - Created file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/1_setup_output/1_setup_output/input/config.yaml
+2025-09-22 12:22:21,648 - 1_setup.py - DEBUG - Created file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/1_setup_output/1_setup_output/output/.gitkeep
+2025-09-22 12:22:21,648 - 1_setup.py - DEBUG - Created file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output/1_setup_output/1_setup_output/tests/__init__.py
+2025-09-22 12:22:21,648 - 1_setup.py - INFO - Project structure created successfully
+2025-09-22 12:22:21,648 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-09-22 12:22:21,657 - setup.setup - INFO - 📦 Found 273 installed packages using UV
+2025-09-22 12:22:21,657 - setup.setup - INFO - 📋 Key installed packages:
+2025-09-22 12:22:21,657 - setup.setup - INFO -   - pytest: 8.4.1
+2025-09-22 12:22:21,657 - setup.setup - INFO -   - numpy: 2.2.6
+2025-09-22 12:22:21,657 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-09-22 12:22:21,657 - setup.setup - INFO -   - scipy: 1.16.1
+2025-09-22 12:22:21,658 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2025-09-22 12:22:21,658 - 1_setup.py - INFO - 🔍 Setting up missing dependencies...
+2025-09-22 12:22:21,658 - setup.setup - INFO - 🔍 Checking for missing dependencies...
+2025-09-22 12:22:22,038 - setup.setup - INFO - 📊 Current dependency status: {'julia': True, 'pymdp': True, 'aiohttp': True, 'ollama': True}
+2025-09-22 12:22:22,038 - setup.setup - INFO - ✅ All dependencies are available
+2025-09-22 12:22:22,038 - 1_setup.py - INFO - 📊 Dependency setup results: {'julia': True, 'pymdp': True, 'aiohttp': True, 'ollama': True}
+2025-09-22 12:22:22,038 - setup.setup - INFO - 🔍 Checking system requirements...
+2025-09-22 12:22:22,038 - setup.setup - INFO - ✅ Python version check passed: 3.11.13
+2025-09-22 12:22:22,044 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-09-22 12:22:22,044 - setup.setup - INFO - ✅ Disk space check passed: 92.07GB free
+2025-09-22 12:22:22,044 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-09-22 12:22:22,052 - setup.setup - INFO - 📦 Found 273 installed packages using UV
+2025-09-22 12:22:22,052 - setup.setup - INFO - 📋 Key installed packages:
+2025-09-22 12:22:22,052 - setup.setup - INFO -   - pytest: 8.4.1
+2025-09-22 12:22:22,052 - setup.setup - INFO -   - numpy: 2.2.6
+2025-09-22 12:22:22,052 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-09-22 12:22:22,052 - setup.setup - INFO -   - scipy: 1.16.1
+2025-09-22 12:22:22,053 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2025-09-22 12:22:22,053 - 1_setup.py - INFO - ✅ Setup processing completed successfully
+
+2025-09-22 12:22:22,137 [b9557b17:pipeline] pipeline - INFO - ✅ Step 2 completed with SUCCESS in 1.93s
+Progress: 2/24 steps (2 successful)
+2025-09-22 12:22:22,137 [b9557b17:pipeline] pipeline - INFO - ✅ ✅ Step 2 completed with SUCCESS in 1.93s
+Progress: 2/24 steps (2 successful)
+    Environment setup completed [status=SUCCESS | step_number=2] [⏱️ 1.93s]
+2025-09-22 12:22:22,137 [b9557b17:pipeline] pipeline - INFO - ┌─ Step 3/24: Test suite execution RUNNING
+└─ Progress: [███▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (12%)
+2025-09-22 12:22:22,138 [b9557b17:pipeline] pipeline - INFO - ┌─ Step 3/24: Step 3 RUNNING
+└─ Progress: [███▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (12%)
+    Starting Test suite execution [step_number=3 | total_steps=24 | script_name=2_tests.py]
+2025-09-22 12:22:22,138 [b9557b17:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/2_tests.py --target-dir /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/input --output-dir /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj5o_rj2p/output --verbose
+2025-09-22 12:22:22,138 [b9557b17:pipeline] pipeline - INFO - 🚀 Executing 2_tests.py with 600s timeout
+2025-09-22 12:22:22,138 [b9557b17:pipeline] pipeline - INFO - 💡 If the step seems stuck, it will timeout and show partial results
++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Timeout ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stack of MainThread (8358568128) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/pytest", line 10, in <module>
+    sys.exit(console_main())
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py", line 201, in console_main
+    code = main()
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py", line 175, in main
+    ret: ExitCode | int = config.hook.pytest_cmdline_main(config=config)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/main.py", line 336, in pytest_cmdline_main
+    return wrap_session(config, _main)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/main.py", line 289, in wrap_session
+    session.exitstatus = doit(config, session) or 0
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/main.py", line 343, in _main
+    config.hook.pytest_runtestloop(session=session)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/main.py", line 367, in pytest_runtestloop
+    item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/runner.py", line 117, in pytest_runtest_protocol
+    runtestprotocol(item, nextitem=nextitem)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/runner.py", line 136, in runtestprotocol
+    reports.append(call_and_report(item, "call", log))
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/runner.py", line 245, in call_and_report
+    call = CallInfo.from_call(
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/runner.py", line 344, in from_call
+    result: TResult | None = func()
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/runner.py", line 246, in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/runner.py", line 178, in pytest_runtest_call
+    item.runtest()
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/python.py", line 1671, in runtest
+    self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/python.py", line 157, in pytest_pyfunc_call
+    result = testfunction(**testargs)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_pipeline_integration.py", line 71, in test_full_pipeline_execution
+    result = main()
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/src/main.py", line 296, in main
+    step_result = execute_pipeline_step(script_name, args, logger)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/src/main.py", line 539, in execute_pipeline_step
+    result = subprocess.run(
+  File "/Users/4d/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Users/4d/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Users/4d/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/subprocess.py", line 2115, in _communicate
+    ready = selector.select(timeout)
+  File "/Users/4d/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/selectors.py", line 415, in select
+    fd_event_list = self._selector.poll(timeout)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++ Timeout ++++++++++++++++++++++++++++++++++++++++++++++++++++++++

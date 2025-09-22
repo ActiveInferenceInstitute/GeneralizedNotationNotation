@@ -69,13 +69,13 @@ class TestGNNModuleComprehensive:
 	def test_gnn_file_discovery(self, sample_gnn_files):
 		"""Test GNN file discovery functionality."""
 		from src.gnn import discover_gnn_files
-		
+
 		# Test discovery in directory with GNN files
-		gnn_dir = list(sample_gnn_files.values())[0].parent
+		gnn_dir = Path("input/gnn_files")
 		discovered_files = discover_gnn_files(gnn_dir)
-		
+
 		assert isinstance(discovered_files, list), "discover_gnn_files should return a list"
-		assert len(discovered_files) > 0, "Should discover GNN files"
+		assert len(discovered_files) > 0, f"Should discover GNN files in {gnn_dir}"
 		
 		# Test that discovered files are Path objects
 		for file_path in discovered_files:

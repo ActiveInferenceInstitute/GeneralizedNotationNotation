@@ -74,7 +74,7 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 from utils.configuration import init_config, get_config
 from utils.resource_manager import get_current_memory_usage
 from utils.error_recovery import attempt_step_recovery, is_failure_recoverable
-from utils.pipeline_monitor import generate_pipeline_health_report
+# from utils.pipeline_monitor import generate_pipeline_health_report  # TODO: Implement this function
 from utils.pipeline_validator import validate_step_prerequisites, validate_pipeline_step_sequence
 from utils.pipeline_planner import generate_execution_plan
 
@@ -496,25 +496,78 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
 
         # Execute step with timeout
         try:
-            # Use appropriate timeout for the tests step based on test mode
+            # Use appropriate timeout based on step complexity
             if script_name == "2_tests.py":
                 # Check if comprehensive testing is requested
                 comprehensive_requested = any("--comprehensive" in str(arg) for arg in sys.argv)
                 step_timeout_seconds = 900 if comprehensive_requested else 600  # 15 min for comprehensive, 10 min for others
+            elif script_name == "13_llm.py":
+                # LLM processing can take a long time for complex models
+                step_timeout_seconds = 1800  # 30 minutes for LLM processing
+                logger.info(f"⏱️ LLM step timeout set to {step_timeout_seconds}s")
+            elif script_name == "12_execute.py":
+                # Execution step may need longer for complex simulations
+                step_timeout_seconds = 600  # 10 minutes
+            elif script_name in ["8_visualization.py", "9_advanced_viz.py"]:
+                # Visualization steps may take time to generate plots
+                step_timeout_seconds = 300  # 5 minutes
             else:
-                step_timeout_seconds = 60
+                step_timeout_seconds = 120  # 2 minutes for other steps
 
             # Track memory during execution
             process_start_time = time.time()
-            
-            result = subprocess.run(
-                cmd,
-                cwd=project_root,
-                env=_env,
-                capture_output=True,
-                text=True,
-                timeout=step_timeout_seconds
-            )
+
+            # Log step execution start
+            logger.info(f"🚀 Executing {script_name} with {step_timeout_seconds}s timeout")
+            logger.info(f"💡 If the step seems stuck, it will timeout and show partial results")
+
+            # Execute step with progress monitoring
+            try:
+                # Set up progress monitoring for long-running steps
+                def log_progress():
+                    elapsed = time.time() - process_start_time
+                    logger.info(f"⏱️ {script_name} running for {elapsed:.1f}s...")
+
+                # Start progress logging for LLM step
+                progress_timer = None
+                if script_name == "13_llm.py":
+                    import threading
+                    progress_timer = threading.Timer(60.0, log_progress)  # Log every 60 seconds
+                    progress_timer.start()
+                    logger.info("📊 Started progress monitoring for LLM step")
+
+                result = subprocess.run(
+                    cmd,
+                    cwd=project_root,
+                    env=_env,
+                    capture_output=True,
+                    text=True,
+                    timeout=step_timeout_seconds
+                )
+
+                # Cancel progress timer if we completed normally
+                if progress_timer:
+                    progress_timer.cancel()
+                    logger.info("📊 LLM step completed normally")
+
+            except subprocess.TimeoutExpired as e:
+                # Cancel progress timer on timeout
+                if progress_timer:
+                    progress_timer.cancel()
+
+                logger.warning(f"⏰ {script_name} timed out after {step_timeout_seconds}s")
+                logger.warning(f"⚠️ Partial output may be available: {len(e.stdout or '')} chars stdout, {len(e.stderr or '')} chars stderr")
+
+                # Create a result object for timeout
+                result = type('obj', (object,), {
+                    'stdout': e.stdout or '',
+                    'stderr': e.stderr or f"Step timed out after {step_timeout_seconds} seconds",
+                    'returncode': -1
+                })()
+
+                # Add timeout-specific handling
+                step_result["timeout"] = True
+                step_result["timeout_seconds"] = step_timeout_seconds
             
             # Capture final memory measurements
             end_memory = get_current_memory_usage()

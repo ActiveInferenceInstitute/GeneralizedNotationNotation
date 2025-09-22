@@ -38,18 +38,156 @@ src/
 
 ### ✅ Correct Pattern Examples
 
-- `0_template.py` imports from `src/template/` and calls `process_template_standardized()`, `demonstrate_utility_patterns()`, etc.
-- `11_render.py` imports from `src/render/` and calls `generate_pymdp_code()`, `generate_rxinfer_code()`, etc.
-- `10_ontology.py` imports from `src/ontology/` and calls `process_ontology_file()`, `extract_ontology_terms()`, etc.
-- Scripts contain only orchestration logic, not domain-specific processing code
+#### **3_gnn.py** (30 lines - PERFECT Thin Orchestrator)
+```python
+#!/usr/bin/env python3
+"""
+Step 3: GNN File Discovery and Parsing (Thin Orchestrator)
+
+Delegates discovery, parsing, and multi-format serialization to
+`gnn/multi_format_processor.py` using the standardized pipeline wrapper.
+"""
+
+import sys
+from pathlib import Path
+
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
+from utils.pipeline_template import create_standardized_pipeline_script
+from gnn.multi_format_processor import process_gnn_multi_format
+
+run_script = create_standardized_pipeline_script(
+    "3_gnn.py",
+    process_gnn_multi_format,
+    "GNN discovery, parsing, and multi-format serialization",
+)
+
+def main() -> int:
+    return run_script()
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+#### **6_validation.py** (55 lines - GOOD with Fallback)
+```python
+#!/usr/bin/env python3
+"""
+Step 6: Validation Processing (Thin Orchestrator)
+
+This step performs validation and quality assurance on GNN models,
+including semantic validation, performance profiling, and consistency checking.
+"""
+
+import sys
+from pathlib import Path
+
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
+from utils.pipeline_template import create_standardized_pipeline_script
+
+# Import module function with fallback
+try:
+    from validation import process_validation
+except ImportError:
+    def process_validation(target_dir, output_dir, logger, **kwargs):
+        """Fallback validation when module unavailable."""
+        logger.warning("⚠️ Validation module not available - using fallback")
+        return True
+
+run_script = create_standardized_pipeline_script(
+    "6_validation.py",
+    process_validation,
+    "Validation processing for GNN models",
+    additional_arguments={
+        "strict": {"type": bool, "help": "Enable strict validation mode"},
+        "profile": {"type": bool, "help": "Enable performance profiling"}
+    }
+)
+
+def main() -> int:
+    return run_script()
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
 
 ### ❌ Incorrect Pattern Examples
 
-- Defining `process_template_standardized()` directly in `0_template.py`
-- Defining `generate_pymdp_code()` directly in `11_render.py`
-- Defining `process_ontology_file()` directly in `10_ontology.py`
-- Any long method definitions (>20 lines) in numbered scripts
-- Creating additional template files in `src/` directory (use `utils/` instead)
+#### **BEFORE: 2_tests.py** (877 lines - VIOLATION)
+```python
+def process_tests_standardized(target_dir, output_dir, logger, **kwargs) -> bool:
+    """
+    Standardized test processing function.
+    [400+ lines of implementation code directly in script]
+    """
+    # ❌ This entire function should be in tests/runner.py
+    # ❌ All test execution logic duplicated here
+    # ❌ No delegation to tests module
+```
+
+#### **AFTER: 2_tests.py** (64 lines - CORRECT)
+```python
+#!/usr/bin/env python3
+"""
+Step 2: Test Suite Execution (Thin Orchestrator)
+
+This script orchestrates comprehensive tests for the GNN pipeline in staged execution.
+It is a thin orchestrator that delegates core functionality to the tests module.
+"""
+
+import sys
+import logging
+from pathlib import Path
+
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
+from utils.pipeline_template import create_standardized_pipeline_script
+
+# Import test processing function with fallback
+try:
+    from tests.runner import run_tests
+    TEST_MODULE_AVAILABLE = True
+except ImportError as e:
+    TEST_MODULE_AVAILABLE = False
+    logging.warning(f"Test module not available: {e}")
+
+    def run_tests(target_dir, output_dir, logger, **kwargs):
+        """Fallback test processing when module unavailable."""
+        logger.warning("⚠️ Test module not available, using fallback")
+        return True
+
+# ✅ Thin orchestrator - delegates to tests module
+# ✅ No implementation code in script
+# ✅ Proper fallback handling
+run_script = create_standardized_pipeline_script(
+    "2_tests.py",
+    run_tests,
+    "Comprehensive test suite execution",
+    additional_arguments={
+        "fast_only": {"type": bool, "help": "Run only fast tests"},
+        "include_slow": {"type": bool, "help": "Include slow test categories"},
+        "include_performance": {"type": bool, "help": "Include performance test categories"},
+        "comprehensive": {"type": bool, "help": "Run all test categories including comprehensive suite"}
+    }
+)
+
+def main() -> int:
+    return run_script()
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+#### **Common Violations to Avoid**
+- ❌ Defining `process_*()` functions directly in numbered scripts
+- ❌ Any long method definitions (>50 lines) in numbered scripts
+- ❌ Implementing domain logic directly in orchestrator scripts
+- ❌ Creating additional utility functions in numbered scripts
+- ❌ Duplicating code that exists in corresponding modules
 
 ## Pipeline Safety and Reliability
 

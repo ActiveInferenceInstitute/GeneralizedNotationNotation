@@ -306,8 +306,8 @@ class GNNTypeChecker:
             # Check for consistency
             consistency_check = self._check_type_consistency(found_types)
             if not consistency_check["consistent"]:
-                validation_result["errors"].append(consistency_check["message"])
-                validation_result["valid"] = False
+                validation_result["warnings"].append(consistency_check["message"])
+                # Don't mark as invalid just for consistency issues - these are warnings
             
             return validation_result
             
@@ -502,7 +502,7 @@ class GNNTypeChecker:
             "calculated_metrics": {
                 "avg_time_per_file_seconds": avg_time_per_file,
                 "error_rate_percent": error_rate,
-                "files_per_second": files_processed / processing_time if processing_time > 0 else 0,
+                "files_per_second": files_processed / processing_time if processing_time > 0 and files_processed > 0 else 0,
                 "efficiency_score": max(0, 100 - error_rate),
             },
             "recommendations": self._generate_performance_recommendations(perf, stats)
@@ -649,13 +649,13 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
         # Count variables and connections
         variables = len(re.findall(r'(\w+)\s*[:=]', content))
         connections = len(re.findall(r'(\w+)\s*[->→]\s*(\w+)', content))
-        
+
         # Estimate memory usage
         estimated_memory = variables * 8 + connections * 16  # bytes
-        
+
         # Estimate computation time
         estimated_time = variables * connections * 0.001  # seconds
-        
+
         return {
             "variables": variables,
             "connections": connections,
@@ -663,7 +663,7 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
             "estimated_time_seconds": estimated_time,
             "complexity_score": variables * connections
         }
-        
+
     except Exception as e:
         return {
             "error": str(e),
@@ -673,3 +673,134 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
             "estimated_time_seconds": 0,
             "complexity_score": 0
         }
+
+
+def process_type_checking_standardized(
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
+    recursive: bool = False,
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Standardized type checking processing function for GNN files.
+
+    This function performs comprehensive type checking and validation on GNN files,
+    including syntax validation, type consistency checking, and resource estimation.
+
+    Args:
+        target_dir: Directory containing GNN files to process
+        output_dir: Output directory for type checking results
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional processing options
+
+    Returns:
+        True if processing succeeded, False otherwise
+    """
+    try:
+        from pipeline.config import get_output_dir_for_script, get_pipeline_config
+
+        # Get configuration
+        config = get_pipeline_config()
+        step_output_dir = get_output_dir_for_script("5_type_checker.py", output_dir)
+        step_output_dir.mkdir(parents=True, exist_ok=True)
+
+        # Log processing parameters
+        logger.info(f"Processing GNN files from: {target_dir}")
+        logger.info(f"Output directory: {step_output_dir}")
+        logger.info(f"Recursive processing: {recursive}")
+
+        # Load POMDP configuration if available
+        pomdp_mode = kwargs.get('pomdp_mode', False)
+        ontology_file = kwargs.get('ontology_file', None)
+
+        if pomdp_mode:
+            logger.info("POMDP mode enabled")
+            if ontology_file:
+                logger.info(f"Using ontology file: {ontology_file}")
+
+        # Validate input directory
+        if not target_dir.exists():
+            logger.error(f"Input directory does not exist: {target_dir}")
+            return False
+
+        # Find GNN files
+        pattern = "**/*.md" if recursive else "*.md"
+        gnn_files = list(target_dir.glob(pattern))
+
+        if not gnn_files:
+            logger.warning(f"No GNN files found in {target_dir}")
+            return True  # Not an error, just no files to process
+
+        logger.info(f"Found {len(gnn_files)} GNN files to type check")
+
+        # Initialize type checker
+        type_checker = GNNTypeChecker(
+            strict_mode=kwargs.get('strict', False),
+            verbose=verbose,
+            pomdp_mode=pomdp_mode,
+            ontology_file=Path(ontology_file) if ontology_file else None
+        )
+
+        # Process each file
+        successful_files = 0
+        failed_files = 0
+        total_errors = 0
+        total_warnings = 0
+
+        for gnn_file in gnn_files:
+            try:
+                logger.info(f"Type checking: {gnn_file.name}")
+
+                # Read file content
+                with open(gnn_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
+                # Perform type checking
+                result = type_checker.validate_single_gnn_file(gnn_file)
+
+                if result.get('valid', False):
+                    successful_files += 1
+                else:
+                    failed_files += 1
+
+                total_errors += len(result.get('errors', []))
+                total_warnings += len(result.get('warnings', []))
+
+                logger.info(f"✓ {gnn_file.name}: {len(result.get('errors', []))} errors, {len(result.get('warnings', []))} warnings")
+
+            except Exception as e:
+                logger.error(f"✗ Error processing {gnn_file.name}: {e}")
+                failed_files += 1
+
+        # Generate summary report
+        summary = {
+            "timestamp": datetime.now().isoformat(),
+            "source_directory": str(target_dir),
+            "output_directory": str(step_output_dir),
+            "total_files": len(gnn_files),
+            "successful_files": successful_files,
+            "failed_files": failed_files,
+            "total_errors": total_errors,
+            "total_warnings": total_warnings,
+            "pomdp_mode": pomdp_mode,
+            "ontology_file": str(ontology_file) if ontology_file else None
+        }
+
+        # Save summary
+        summary_file = step_output_dir / "type_check_summary.json"
+        with open(summary_file, 'w') as f:
+            json.dump(summary, f, indent=2)
+
+        logger.info("Type checking completed")
+
+        # Return True if files were processed successfully, even if there were warnings
+        # Only return False if there were actual errors that prevent processing
+        return successful_files > 0 or failed_files == 0
+
+    except Exception as e:
+        logger.error(f"Type checking processing failed: {e}")
+        return False

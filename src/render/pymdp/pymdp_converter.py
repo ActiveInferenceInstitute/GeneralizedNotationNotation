@@ -161,10 +161,37 @@ logger = logging.getLogger(__name__)
 # Optional import of pymdp for validation if available
 _PYMDP_AVAILABLE = False
 try:
-    from pymdp import utils as pymdp_utils
-    from pymdp import maths as pymdp_maths
-    from pymdp.agent import Agent as PymdpAgent
+    from pymdp.mdp import MDP as PymdpAgent
+    from pymdp.mdp_solver import MDPSolver
     _PYMDP_AVAILABLE = True
+
+    # Fallback utilities
+    def pymdp_utils_obj_array(num_objects):
+        """Create object array similar to PyMDP's obj_array."""
+        return [None] * num_objects
+
+    def pymdp_utils_softmax(x, axis=0):
+        """Softmax function as fallback for PyMDP's softmax."""
+        x = np.array(x)
+        e_x = np.exp(x - np.max(x, axis=axis, keepdims=True))
+        return e_x / np.sum(e_x, axis=axis, keepdims=True)
+
+    def pymdp_utils_norm_dist(x):
+        """Normalize distribution as fallback for PyMDP's norm_dist."""
+        x = np.array(x)
+        return x / np.sum(x, axis=0, keepdims=True)
+
+    pymdp_utils = type('PymdpUtils', (), {
+        'obj_array': pymdp_utils_obj_array,
+        'softmax': pymdp_utils_softmax,
+        'norm_dist': pymdp_utils_norm_dist
+    })()
+
+    pymdp_maths = type('PymdpMaths', (), {
+        'softmax': pymdp_utils_softmax,
+        'norm_dist': pymdp_utils_norm_dist
+    })()
+
 except ImportError:
     pymdp_utils = None
     pymdp_maths = None

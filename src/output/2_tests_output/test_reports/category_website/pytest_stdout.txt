@@ -1,0 +1,1 @@
+Fallback execution: 1/1 files passed syntax check

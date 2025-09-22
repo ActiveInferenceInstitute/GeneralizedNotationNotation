@@ -42,9 +42,15 @@ from .pymdp_utils import (
 
 # Import real PyMDP components - will be available when executed
 try:
-    from pymdp import utils
-    from pymdp.agent import Agent
+    from pymdp.mdp import MDP
+    from pymdp.mdp_solver import MDPSolver
     PYMDP_AVAILABLE = True
+
+    # Create obj_array function if not available
+    def obj_array(num_objects):
+        """Create object array similar to PyMDP's obj_array."""
+        return [None] * num_objects
+
 except ImportError:
     PYMDP_AVAILABLE = False
     logging.warning("PyMDP not available - simulation will gracefully degrade with informative output")
@@ -121,8 +127,9 @@ except ImportError:
             return int(random.randrange(self.num_actions))
 
     # Expose fallback names used later in the module
-    utils = _FallbackUtils()
-    Agent = _FallbackAgent
+    # Use the classes we imported above
+    from pymdp.mdp import MDP
+    from pymdp.mdp_solver import MDPSolver
     # Mark as available since we provided functional fallbacks to allow tests to run
     PYMDP_AVAILABLE = True
 
@@ -185,13 +192,44 @@ class PyMDPSimulation:
     
     def _initialize_parameters(self):
         """Initialize simulation parameters from GNN config or defaults."""
+        # Extract dimensions from GNN config if provided
+        if self.gnn_config:
+            # Update dimensions from GNN config
+            if "states" in self.gnn_config:
+                states_val = self.gnn_config["states"]
+                if isinstance(states_val, int):
+                    self.num_states = states_val
+                elif isinstance(states_val, list):
+                    self.num_states = len(states_val)
+            if "observations" in self.gnn_config:
+                obs_val = self.gnn_config["observations"]
+                if isinstance(obs_val, int):
+                    self.num_observations = obs_val
+                elif isinstance(obs_val, list):
+                    self.num_observations = len(obs_val)
+            if "actions" in self.gnn_config:
+                actions_val = self.gnn_config["actions"]
+                if isinstance(actions_val, int):
+                    self.num_actions = actions_val
+                elif isinstance(actions_val, list):
+                    self.num_actions = len(actions_val)
+
         self.logger.info(f"Initialized PyMDP simulation: {self.model_name}")
         self.logger.info(f"Dimensions: {self.num_states} states, {self.num_observations} obs, {self.num_actions} actions")
-        
+
         # Initialize required attributes for compatibility
         self.states = [f"state_{i}" for i in range(self.num_states)]
         self.actions = [f"action_{i}" for i in range(self.num_actions)]
         self.observations = [f"obs_{i}" for i in range(self.num_observations)]
+
+        # Override with GNN config names if provided
+        if self.gnn_config:
+            if "states" in self.gnn_config and isinstance(self.gnn_config["states"], list):
+                self.states = self.gnn_config["states"]
+            if "observations" in self.gnn_config and isinstance(self.gnn_config["observations"], list):
+                self.observations = self.gnn_config["observations"]
+            if "actions" in self.gnn_config and isinstance(self.gnn_config["actions"], list):
+                self.actions = self.gnn_config["actions"]
         
         # Simulation parameters
         self.num_timesteps = 20
@@ -247,7 +285,7 @@ class PyMDPSimulation:
                 self.D_np = np.ones(1)
                 self.agent = None
     
-    def run_simulation(self):
+    def run_simulation(self, num_timesteps: Optional[int] = None):
         """Run the PyMDP simulation."""
         self.logger.info("Running PyMDP simulation...")
         

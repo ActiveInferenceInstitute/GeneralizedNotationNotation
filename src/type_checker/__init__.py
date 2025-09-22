@@ -20,7 +20,7 @@ Architecture:
 - mcp.py: MCP tool registration and execution
 """
 
-from .processor import GNNTypeChecker, estimate_file_resources
+from .processor import GNNTypeChecker, estimate_file_resources, process_type_checking_standardized
 from .analysis_utils import (
     analyze_variable_types,
     analyze_connections,
@@ -36,21 +36,37 @@ from .mcp import (
 
 __version__ = "1.0.0"
 __author__ = "GNN Processing Pipeline Team"
+FEATURES = {
+    "gnn_syntax_validation": True,
+    "variable_type_analysis": True,
+    "connection_analysis": True,
+    "resource_estimation": True,
+    "complexity_estimation": True,
+    "performance_analysis": True,
+    "mcp_integration": True,
+    "error_handling": True
+}
 
 __all__ = [
     # Core functionality
     'GNNTypeChecker',
     'estimate_file_resources',
-    
+    'process_type_checking_standardized',
+
     # Analysis utilities
     'analyze_variable_types',
     'analyze_connections',
     'estimate_computational_complexity',
-    
+
     # MCP integration
     'register_mcp_tools',
     'execute_mcp_tool',
     'get_mcp_tool_schema',
     'list_available_tools',
     'validate_tool_arguments',
+
+    # Metadata
+    '__version__',
+    'FEATURES',
+    '__author__'
 ] 

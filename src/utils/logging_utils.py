@@ -772,6 +772,7 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
     total_steps = len(steps)
     successes = len([s for s in steps if s.get('status') == 'SUCCESS'])
     warnings = len([s for s in steps if s.get('status') == 'SUCCESS_WITH_WARNINGS'])
+    successful_steps = successes + warnings  # Total successful steps including warnings
     failures = len([s for s in steps if 'FAILED' in s.get('status', '') or 'ERROR' in s.get('status', '')])
     
     # Calculate total duration
@@ -810,17 +811,17 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
     # Basic statistics
     stats_line = f"║ Total Steps: {VisualLoggingEnhancer.colorize(str(total_steps), 'WHITE', True)}"
     content_lines.append(stats_line.ljust(box_width - 1) + "║")
-    
+
     # Success statistics with colors
-    success_text = f"✅ Successful: {VisualLoggingEnhancer.colorize(str(successes), 'GREEN', True)}"
+    success_text = f"✅ Successful: {VisualLoggingEnhancer.colorize(str(successful_steps), 'GREEN', True)}"
     warning_text = f"⚠️ Warnings: {VisualLoggingEnhancer.colorize(str(warnings), 'YELLOW', True)}"
     failure_text = f"❌ Failed: {VisualLoggingEnhancer.colorize(str(failures), 'RED', True)}"
     
     # Calculate line lengths accounting for ANSI color codes
-    success_display_len = len(f"✅ Successful: {successes}")
+    success_display_len = len(f"✅ Successful: {successful_steps}")
     warning_display_len = len(f"⚠️ Warnings: {warnings}")
     failure_display_len = len(f"❌ Failed: {failures}")
-    
+
     success_line = f"║ {success_text}"
     content_lines.append(success_line.ljust(box_width - 1 + (len(success_text) - success_display_len)) + "║")
     
@@ -843,7 +844,7 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
         content_lines.append(performance_line.ljust(box_width - 1) + "║")
     
     # Success rate calculation
-    success_rate = ((successes + warnings) / total_steps * 100) if total_steps > 0 else 0
+    success_rate = (successful_steps / total_steps * 100) if total_steps > 0 else 0
     success_rate_color = "GREEN" if success_rate >= 90 else "YELLOW" if success_rate >= 70 else "RED"
     rate_text = f"📊 Success Rate: {VisualLoggingEnhancer.colorize(f'{success_rate:.1f}%', success_rate_color, True)}"
     rate_display_len = len(f"📊 Success Rate: {success_rate:.1f}%")

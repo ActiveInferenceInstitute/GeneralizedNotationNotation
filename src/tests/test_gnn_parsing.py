@@ -111,7 +111,7 @@ class TestMarkdownParser:
         parser = MarkdownGNNParser()
         result = parser.parse_string(sample_markdown)
         assert result.success
-        assert result.model.model_name == 'TestModel'
+        assert result.model.model_name == 'Test Model'
 
     def test_invalid_parsing(self, sample_markdown):
         parser = MarkdownGNNParser()

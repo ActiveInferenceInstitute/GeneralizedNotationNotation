@@ -86,9 +86,49 @@ except Exception:
 
     sapf = _SapfPlaceholder()
 
+# Lazy import key modules for better performance and error handling
+def _lazy_import_module(module_name: str):
+    """Lazily import a module with error handling."""
+    try:
+        return importlib.import_module(f'src.{module_name}')
+    except ImportError as e:
+        # Return a placeholder module that won't break imports
+        class _ModulePlaceholder:
+            def __getattr__(self, name):
+                raise ImportError(f"Module '{module_name}' not available: {e}")
+        return _ModulePlaceholder()
+
+# Core modules that should be available
+gnn = _lazy_import_module('gnn')
+utils = _lazy_import_module('utils')
+pipeline = _lazy_import_module('pipeline')
+tests = _lazy_import_module('tests')
+
+# Optional modules with fallbacks
+render = _lazy_import_module('render')
+visualization = _lazy_import_module('visualization')
+execute = _lazy_import_module('execute')
+llm = _lazy_import_module('llm')
+analysis = _lazy_import_module('analysis')
+export = _lazy_import_module('export')
+type_checker = _lazy_import_module('type_checker')
+
 __all__ = [
     'get_module_info',
     'sapf',
     '__version__',
     'FEATURES',
+    # Core modules
+    'gnn',
+    'utils',
+    'pipeline',
+    'tests',
+    # Optional modules
+    'render',
+    'visualization',
+    'execute',
+    'llm',
+    'analysis',
+    'export',
+    'type_checker',
 ]

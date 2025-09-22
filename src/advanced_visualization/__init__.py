@@ -24,6 +24,14 @@ from .data_extractor import (
     extract_visualization_data,
 )
 
+from .processor import (
+    process_advanced_viz_standardized,
+    SafeAdvancedVisualizationManager,
+    AdvancedVisualizationResults,
+    AdvancedVisualizationAttempt,
+    generate_correlation_id,
+)
+
 __all__ = [
     'AdvancedVisualizer',
     'create_visualization_from_data',
@@ -36,4 +44,9 @@ __all__ = [
     'generate_dashboard',
     'VisualizationDataExtractor',
     'extract_visualization_data',
+    'process_advanced_viz_standardized',
+    'SafeAdvancedVisualizationManager',
+    'AdvancedVisualizationResults',
+    'AdvancedVisualizationAttempt',
+    'generate_correlation_id',
 ]

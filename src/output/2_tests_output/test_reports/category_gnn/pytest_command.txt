@@ -1,0 +1,5 @@
+Category: gnn
+Success: True
+Duration: 6.02s
+Peak Memory: 37.61 MB
+CPU Usage: 0.0%

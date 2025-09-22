@@ -1,0 +1,37 @@
+2025-09-22 12:22:31,588 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:31,588 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,100 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,100 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,166 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,167 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,245 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,246 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,293 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,294 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,351 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,352 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,374 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,375 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,443 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,443 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,463 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,463 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,517 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,517 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,609 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,609 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,723 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,723 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,779 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,779 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,822 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,823 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:34,900 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:34,900 - src.llm.llm_operations - INFO - Created new LLM processor
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/pytest_cov/plugin.py:358: CovReportWarning: Failed to generate report: Couldn't use data file '/Users/4d/Documents/GitHub/generalizednotationnotation/.coverage': no such table: tracer
+
+  warnings.warn(CovReportWarning(message), stacklevel=1)

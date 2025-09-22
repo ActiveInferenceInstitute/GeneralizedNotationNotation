@@ -1,0 +1,63 @@
+================================================= test session starts ==================================================
+created: 14/14 workers
+14 workers [12 items]
+
+scheduling tests via LoadScheduling
+
+src/tests/test_export_overall.py::test_export_module_completeness 
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports 
+src/tests/test_export_overall.py::test_export_module_performance 
+src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model 
+src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration 
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation 
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation 
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats 
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info 
+src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export 
+src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation 
+src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration 
+[gw12] PASSED src/tests/test_export_overall.py::test_export_module_completeness 
+[gw1] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation 
+[gw2] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation 
+[gw9] PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration 
+[gw10] PASSED src/tests/test_export_overall.py::test_export_module_performance 
+[gw0] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports 
+[gw3] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info 
+[gw8] PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration 
+[gw4] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model 
+[gw7] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export 
+[gw5] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats 
+[gw6] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation 
+WARNING: Failed to generate report: Couldn't use data file '/Users/4d/Documents/GitHub/generalizednotationnotation/.coverage': no such table: tracer
+
+
+
+======================================================== PASSES ========================================================
+==================================================== tests coverage ====================================================
+__________________________________ coverage: platform darwin, python 3.11.13-final-0 ___________________________________
+
+================================================= slowest 10 durations =================================================
+0.04s call     src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation
+0.02s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats
+0.01s call     src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export
+0.00s call     src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model
+0.00s call     src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration
+0.00s call     src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration
+0.00s call     src/tests/test_export_overall.py::test_export_module_performance
+0.00s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports
+0.00s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation
+0.00s call     src/tests/test_export_overall.py::test_export_module_completeness
+=============================================== short test summary info ================================================
+PASSED src/tests/test_export_overall.py::test_export_module_completeness
+PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation
+PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation
+PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration
+PASSED src/tests/test_export_overall.py::test_export_module_performance
+PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports
+PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info
+PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration
+PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model
+PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export
+PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats
+PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation
+================================================== 12 passed in 5.16s ==================================================

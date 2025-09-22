@@ -83,6 +83,15 @@ from .legacy import (
 
 # Add to __all__ for proper exports
 __version__ = "1.0.0"
+FEATURES = {
+    "matrix_visualization": True,
+    "network_visualization": True,
+    "ontology_visualization": True,
+    "mcp_integration": True,
+    "safe_to_fail": True,
+    "resource_monitoring": True,
+    "batch_processing": True
+}
 
 def get_module_info() -> dict:
     return {
@@ -322,5 +331,5 @@ __all__ = [
     'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer', 'GraphVisualizer',
     'matrix_visualizer', 'process_matrix_visualization', 'process_visualization',
     'generate_visualizations', 'generate_graph_visualization', 'generate_matrix_visualization',
-    '__version__', 'process_visualization_main'
+    '__version__', 'FEATURES', 'process_visualization_main'
 ]

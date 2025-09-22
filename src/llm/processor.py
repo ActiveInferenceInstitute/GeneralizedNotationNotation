@@ -82,15 +82,44 @@ def process_llm(
         else:
             results["processed_files"] = len(gnn_files)
             
-            # Initialize LLM processor (will prefer any available provider; Ollama if present)
-            processor = LLMProcessor()
+        # Initialize LLM processor with timeout handling
+        processor = LLMProcessor()
+        processor_initialized = False
+
+        try:
+            logger.info("🚀 Initializing LLM processor...")
+            import asyncio
+            import signal
+
+            def timeout_handler(signum, frame):
+                logger.warning("⏰ LLM processor initialization timed out")
+                raise TimeoutError("LLM processor initialization timed out")
+
+            # Set timeout for initialization
+            old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(60)  # 60 second timeout for initialization
+
             try:
-                import asyncio
                 async def _init():
                     return await processor.initialize()
+
                 processor_initialized = asyncio.run(_init())
-            except Exception:
+                signal.alarm(0)  # Cancel timeout
+
+                if processor_initialized:
+                    logger.info("✅ LLM processor initialized successfully")
+                else:
+                    logger.warning("⚠️ LLM processor initialization failed - will use fallback mode")
+
+            except TimeoutError:
+                logger.warning("⏰ LLM processor initialization timed out - using fallback mode")
                 processor_initialized = False
+            finally:
+                signal.signal(signal.SIGALRM, old_handler)
+
+        except Exception as e:
+            logger.error(f"❌ LLM processor initialization failed: {e}")
+            processor_initialized = False
 
             # Process each GNN file
             for gnn_file in gnn_files:

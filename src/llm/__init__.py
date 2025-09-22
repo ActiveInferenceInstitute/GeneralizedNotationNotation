@@ -110,7 +110,17 @@ except Exception:
     def generate_llm_summary(*_, **__): return ""
 
 __version__ = "1.0.0"
-
+FEATURES = {
+    "llm_analysis": True,
+    "multiple_providers": True,
+    "semantic_analysis": True,
+    "code_generation": True,
+    "documentation_generation": True,
+    "mcp_integration": True,
+    "safe_to_fail": True,
+    "async_processing": True,
+    "provider_fallback": True
+}
 
 class LLMProcessor:
     """Minimal processor facade exposing methods expected by tests."""
@@ -222,5 +232,6 @@ __all__ = [
     'get_default_provider_configs',
     'get_preferred_providers_from_env',
     'LLMConfig', 'LLMMessage', 'LLMResponse', 'BaseLLMProvider',
-    '__version__'
+    '__version__',
+    'FEATURES'
 ]

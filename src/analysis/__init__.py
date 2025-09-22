@@ -29,26 +29,38 @@ from .analyzer import (
 )
 
 
+__version__ = "1.0.0"
+FEATURES = {
+    "statistical_analysis": True,
+    "complexity_metrics": True,
+    "performance_benchmarks": True,
+    "model_comparison": True,
+    "mcp_integration": True,
+    "correlation_analysis": True,
+    "distribution_analysis": True,
+    "maintainability_metrics": True
+}
+
 def process_analysis(target_dir, output_dir, verbose=False, **kwargs):
     """
     Main processing function for analysis.
-    
+
     Args:
         target_dir: Directory containing files to process
         output_dir: Output directory for results
         verbose: Whether to enable verbose logging
         **kwargs: Additional processing options
-        
+
     Returns:
         True if processing succeeded, False otherwise
     """
     import logging
     from pathlib import Path
-    
+
     logger = logging.getLogger(__name__)
     if verbose:
         logger.setLevel(logging.DEBUG)
-    
+
     try:
         logger.info(f"Processing analysis for files in {target_dir}")
         # Placeholder implementation - delegate to actual module functions
@@ -82,5 +94,7 @@ __all__ = [
     'calculate_technical_debt',
     'run_performance_benchmarks',
     'perform_model_comparisons',
-    'generate_analysis_summary'
+    'generate_analysis_summary',
+    '__version__',
+    'FEATURES'
 ]

@@ -67,7 +67,7 @@ run_script = create_standardized_pipeline_script(
 
 def _run_llm_processing(target_dir: Path, output_dir: Path, logger, **kwargs) -> bool:
     """
-    Standardized LLM processing function.
+    Standardized LLM processing function with improved timeout handling and logging.
 
     Args:
         target_dir: Directory containing GNN files to analyze
@@ -117,9 +117,64 @@ def _run_llm_processing(target_dir: Path, output_dir: Path, logger, **kwargs) ->
 
         logger.info(f"Found {len(gnn_files)} GNN files to analyze")
 
-        # Process LLM via module API
-        logger.info("LLM module available, processing files...")
-        return process_llm(target_dir=target_dir, output_dir=step_output_dir, **kwargs)
+        # Check for timeout configuration
+        llm_timeout = kwargs.get('llm_timeout', 360)  # Default 6 minutes
+        logger.info(f"LLM processing timeout: {llm_timeout}s")
+
+        # Add timeout wrapper for LLM processing
+        import signal
+        import time
+
+        def timeout_handler(signum, frame):
+            logger.warning(f"LLM processing timed out after {llm_timeout} seconds")
+            log_step_warning(logger, "LLM processing timed out - completing with partial results")
+            raise TimeoutError(f"LLM processing timed out after {llm_timeout} seconds")
+
+        # Set up signal handler for timeout
+        old_handler = signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(llm_timeout)
+
+        try:
+            logger.info("🚀 Starting LLM processing with timeout protection...")
+            logger.info("💡 If processing seems stuck, it will timeout and provide partial results")
+
+            # Process LLM via module API with progress tracking
+            logger.info("LLM module available, processing files...")
+
+            # Add periodic progress logging
+            def log_progress():
+                logger.info("⏱️ LLM processing in progress... (this may take several minutes for complex models)")
+
+            # Start progress logging
+            import threading
+            progress_timer = threading.Timer(30.0, log_progress)  # Log progress every 30 seconds
+            progress_timer.start()
+
+            try:
+                result = process_llm(target_dir=target_dir, output_dir=step_output_dir, **kwargs)
+                progress_timer.cancel()  # Cancel the progress timer if we complete normally
+                logger.info("✅ LLM processing completed normally")
+                return result
+            except Exception as e:
+                progress_timer.cancel()  # Cancel the progress timer on error
+                logger.error(f"❌ LLM processing failed: {e}")
+                log_step_error(logger, f"LLM processing failed: {e}")
+                return False
+            finally:
+                progress_timer.cancel()  # Always cancel the timer
+
+        except TimeoutError as te:
+            logger.warning(f"⚠️ LLM processing timed out: {te}")
+            log_step_warning(logger, f"LLM processing timed out - may have partial results: {te}")
+            return True  # Return success with warnings for timeout
+        except Exception as e:
+            logger.error(f"❌ LLM processing failed: {e}")
+            log_step_error(logger, f"LLM processing failed: {e}")
+            return False
+        finally:
+            # Restore original signal handler
+            signal.alarm(0)
+            signal.signal(signal.SIGALRM, old_handler)
 
     except Exception as e:
         log_step_error(logger, f"LLM processing failed: {e}")

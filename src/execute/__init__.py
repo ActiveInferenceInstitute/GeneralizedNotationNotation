@@ -90,21 +90,32 @@ from .legacy import (
 execute_gnn_model = execute_simulation_from_gnn
 
 # Add to __all__ for proper exports
+__version__ = "1.0.0"
+FEATURES = {
+    "execution_engine": True,
+    "pymdp_execution": True,
+    "validation": VALIDATION_AVAILABLE,
+    "error_recovery": ERROR_RECOVERY_AVAILABLE,
+    "mcp_integration": True,
+    "safe_execution": True,
+    "resource_monitoring": True
+}
+
 __all__ = [
     # Core classes
-    'ExecutionEngine', 
+    'ExecutionEngine',
     'PyMdpExecutor',
-    
+
     # Processor functions
     'process_execute',
     'execute_simulation_from_gnn',
     'execute_gnn_model',  # Alias for backward compatibility
-    
+
     # Legacy functions
-    'execute_pymdp_simulation_from_gnn', 
-    'validator', 
+    'execute_pymdp_simulation_from_gnn',
+    'validator',
     'pymdp',
-    
+
     # Validation functions
     'validate_execution_environment',
     'get_execution_health_status',
@@ -113,10 +124,14 @@ __all__ = [
     'check_system_dependencies',
     'check_python_packages',
     'check_file_system',
-    
+
     # Error recovery functions
     'analyze_pipeline_error',
     'generate_error_recovery_report',
     'get_quick_error_suggestions',
-    'ErrorRecoverySystem'
+    'ErrorRecoverySystem',
+
+    # Metadata
+    '__version__',
+    'FEATURES'
 ]

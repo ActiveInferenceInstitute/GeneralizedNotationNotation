@@ -44,7 +44,7 @@ POMDP_ONTOLOGY_TERMS = {
 # POMDP-specific validation patterns
 POMDP_PATTERNS = {
     "likelihood_matrix": r"A\[(\d+),(\d+)\](?:,type=float|,float)",
-    "transition_matrix": r"B\[(\d+),(\d+),(\d+)\](?:,type=float|,float)", 
+    "transition_matrix": r"B\[(\d+),(\d+),(\d+)\](?:,type=float|,float)",
     "preference_vector": r"C\[(\d+)\](?:,type=float|,float)",
     "prior_vector": r"D\[(\d+)\](?:,type=float|,float)",
     "habit_vector": r"E\[(\d+)\](?:,type=float|,float)",
@@ -52,8 +52,8 @@ POMDP_PATTERNS = {
     "observation": r"o\[(\d+),(\d+)\](?:,type=int|,int)",
     "policy": r"π\[(\d+)\](?:,type=float|,float)",
     "action": r"u\[(\d+)\](?:,type=int|,int)",
-    "free_energy": r"F\[(\d+)\],float",
-    "expected_free_energy": r"G\[(\d+)\],float",
+    "free_energy": r"F\[([^\]]+)\](?:,type=float|,float)",
+    "expected_free_energy": r"G\[([^\]]+)\](?:,type=float|,float)",
     "time": r"t\[(\d+)\](?:,type=int|,int)"
 }
 
@@ -192,10 +192,17 @@ class POMDPAnalyzer:
                     components[component] = []
                 
                 groups = match.groups()
+                # Convert numeric dimensions, keep non-numeric as strings
+                dimensions = []
+                for g in groups:
+                    try:
+                        dimensions.append(int(g))
+                    except ValueError:
+                        dimensions.append(g)  # Keep as string for non-numeric dimensions
                 component_info = {
                     "line": content[:match.start()].count('\n') + 1,
                     "match": match.group(0),
-                    "dimensions": [int(g) for g in groups] if groups else [],
+                    "dimensions": dimensions,
                     "raw_match": match.group(0)
                 }
                 components[component].append(component_info)
@@ -219,63 +226,81 @@ class POMDPAnalyzer:
             for match in matches:
                 groups = match.groups()
                 if groups:
-                    dims = [int(g) for g in groups]
+                    # Convert numeric dimensions, keep non-numeric as strings
+                    dims = []
+                    for g in groups:
+                        try:
+                            dims.append(int(g))
+                        except ValueError:
+                            dims.append(g)  # Keep as string for non-numeric dimensions
                     if component not in dimensions:
                         dimensions[component] = dims  # Store first occurrence
                     break  # Only take first match
         
         return dimensions
     
-    def _validate_dimension_consistency(self, dimensions: Dict[str, List[int]]) -> bool:
+    def _validate_dimension_consistency(self, dimensions: Dict[str, List]) -> bool:
         """Validate dimension consistency across POMDP components."""
         try:
             # Check likelihood matrix A dimensions
             if "likelihood_matrix" in dimensions:
                 a_dims = dimensions["likelihood_matrix"]
-                obs_dim, state_dim = a_dims[0], a_dims[1]
-                
+                # Convert to comparable format (prefer int if possible)
+                obs_dim = a_dims[0] if isinstance(a_dims[0], int) else str(a_dims[0])
+                state_dim = a_dims[1] if isinstance(a_dims[1], int) else str(a_dims[1])
+
                 # Check observation vector o dimensions
                 if "observation" in dimensions:
                     o_dims = dimensions["observation"]
-                    if o_dims[0] != obs_dim:
+                    o_dim = o_dims[0] if isinstance(o_dims[0], int) else str(o_dims[0])
+                    if o_dim != obs_dim:
                         return False
-                
+
                 # Check preference vector C dimensions
                 if "preference_vector" in dimensions:
                     c_dims = dimensions["preference_vector"]
-                    if c_dims[0] != obs_dim:
+                    c_dim = c_dims[0] if isinstance(c_dims[0], int) else str(c_dims[0])
+                    if c_dim != obs_dim:
                         return False
-                
+
                 # Check transition matrix B dimensions
                 if "transition_matrix" in dimensions:
                     b_dims = dimensions["transition_matrix"]
-                    if b_dims[0] != state_dim or b_dims[1] != state_dim:
+                    b_state_dim = b_dims[0] if isinstance(b_dims[0], int) else str(b_dims[0])
+                    b_action_dim = b_dims[1] if isinstance(b_dims[1], int) else str(b_dims[1])
+                    if b_state_dim != state_dim or b_action_dim != state_dim:
                         return False
-                
+
                 # Check prior vector D dimensions
                 if "prior_vector" in dimensions:
                     d_dims = dimensions["prior_vector"]
-                    if d_dims[0] != state_dim:
+                    d_dim = d_dims[0] if isinstance(d_dims[0], int) else str(d_dims[0])
+                    if d_dim != state_dim:
                         return False
-                
+
                 # Check hidden state s dimensions
                 if "hidden_state" in dimensions:
                     s_dims = dimensions["hidden_state"]
-                    if s_dims[0] != state_dim:
+                    s_dim = s_dims[0] if isinstance(s_dims[0], int) else str(s_dims[0])
+                    if s_dim != state_dim:
                         return False
                 
                 # Check action space consistency
                 if "transition_matrix" in dimensions and "habit_vector" in dimensions:
                     b_dims = dimensions["transition_matrix"]
                     e_dims = dimensions["habit_vector"]
-                    if b_dims[2] != e_dims[0]:  # action dimension
+                    b_action_dim = b_dims[2] if isinstance(b_dims[2], int) else str(b_dims[2])
+                    e_dim = e_dims[0] if isinstance(e_dims[0], int) else str(e_dims[0])
+                    if b_action_dim != e_dim:  # action dimension
                         return False
-                
+
                 # Check policy π dimensions
                 if "policy" in dimensions and "habit_vector" in dimensions:
                     pi_dims = dimensions["policy"]
                     e_dims = dimensions["habit_vector"]
-                    if pi_dims[0] != e_dims[0]:  # action dimension
+                    pi_dim = pi_dims[0] if isinstance(pi_dims[0], int) else str(pi_dims[0])
+                    e_dim = e_dims[0] if isinstance(e_dims[0], int) else str(e_dims[0])
+                    if pi_dim != e_dim:  # action dimension
                         return False
             
             return True
@@ -327,14 +352,19 @@ class POMDPAnalyzer:
             # Extract state space size
             if "likelihood_matrix" in dimensions:
                 a_dims = dimensions["likelihood_matrix"]
-                metrics["state_space_size"] = a_dims[1]  # hidden states
-                metrics["observation_space_size"] = a_dims[0]  # observations
-            
+                # Handle mixed types (int or str)
+                obs_dim = a_dims[0] if isinstance(a_dims[0], int) else 1
+                state_dim = a_dims[1] if isinstance(a_dims[1], int) else 1
+                metrics["state_space_size"] = state_dim  # hidden states
+                metrics["observation_space_size"] = obs_dim  # observations
+
             # Extract action space size
             if "transition_matrix" in dimensions:
                 b_dims = dimensions["transition_matrix"]
-                metrics["action_space_size"] = b_dims[2]  # actions
-            
+                # Handle mixed types (int or str)
+                action_dim = b_dims[2] if isinstance(b_dims[2], int) else 1
+                metrics["action_space_size"] = action_dim  # actions
+
             # Calculate computational requirements
             state_size = metrics["state_space_size"]
             obs_size = metrics["observation_space_size"]
@@ -381,10 +411,10 @@ class POMDPAnalyzer:
             
             ontology_text = ontology_section.group(1)
             
-            # Check for required ontology mappings (with spaces around equals sign)
+            # Check for required ontology mappings (with or without spaces around equals sign)
             required_mappings = [
                 "A = LikelihoodMatrix",
-                "B = TransitionMatrix", 
+                "B = TransitionMatrix",
                 "C = LogPreferenceVector",
                 "D = PriorOverHiddenStates",
                 "E = Habit",
@@ -396,9 +426,10 @@ class POMDPAnalyzer:
                 "u = Action",
                 "t = Time"
             ]
-            
+
             for mapping in required_mappings:
-                if mapping not in ontology_text:
+                # Check both with spaces and without spaces around equals
+                if mapping not in ontology_text and mapping.replace(" = ", "=") not in ontology_text:
                     return False
             return True
             

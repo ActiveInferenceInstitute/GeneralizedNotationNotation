@@ -1,0 +1,2 @@
+2025-09-22 12:24:21,165 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:24:21,167 - src.llm.llm_operations - INFO - Created new LLM processor

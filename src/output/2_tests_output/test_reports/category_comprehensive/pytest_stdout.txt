@@ -1,0 +1,751 @@
+================================================= test session starts ==================================================
+collecting ... collected 178 items
+
+src/tests/test_comprehensive_api.py::TestGNNModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestGNNModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestGNNModule::test_validate_gnn_function PASSED
+src/tests/test_comprehensive_api.py::TestGNNModule::test_feature_flags PASSED
+src/tests/test_comprehensive_api.py::TestExportModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestExportModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats PASSED
+src/tests/test_comprehensive_api.py::TestExportModule::test_export_gnn_model_invalid_format PASSED
+src/tests/test_comprehensive_api.py::TestRenderModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestRenderModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestRenderModule::test_get_available_renderers PASSED
+src/tests/test_comprehensive_api.py::TestRenderModule::test_feature_flags PASSED
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_supported_file_types PASSED
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_generate_website_from_pipeline_output_nonexistent PASSED
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_validate_website_config PASSED
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_audio_generation_options PASSED
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_process_gnn_to_audio_invalid_input PASSED
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_module_info PASSED
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_ontology_processing_options PASSED
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_process_gnn_ontology_nonexistent_file PASSED
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_parse_gnn_ontology_section_empty PASSED
+src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_type_checker_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestVisualizationModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestVisualizationModule::test_visualizer_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestExecuteModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestExecuteModule::test_executor_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestLLMModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestLLMModule::test_llm_processor_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestMCPModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestMCPModule::test_mcp_server_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestSetupModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestSetupModule::test_setup_functions_exist PASSED
+src/tests/test_comprehensive_api.py::TestUtilsModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestUtilsModule::test_utils_classes_instantiation PASSED
+src/tests/test_comprehensive_api.py::TestPipelineModule::test_module_imports PASSED
+src/tests/test_comprehensive_api.py::TestPipelineModule::test_pipeline_config PASSED
+src/tests/test_comprehensive_api.py::TestMCPIntegration::test_mcp_availability_flags PASSED
+src/tests/test_comprehensive_api.py::TestMCPIntegration::test_register_tools_functions PASSED
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_version_consistency PASSED
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_feature_flags_consistency PASSED
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_module_info_consistency PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing PASSED
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation PASSED
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports PASSED
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering PASSED
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering PASSED
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering PASSED
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports PASSED
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation PASSED
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution PASSED
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports PASSED
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis PASSED
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation PASSED
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports PASSED
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration PASSED
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling PASSED
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports PASSED
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation PASSED
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports PASSED
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation PASSED
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation PASSED
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports PASSED
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion PASSED
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation PASSED
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation PASSED
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination PASSED
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow PASSED
+src/tests/test_core_modules.py::test_core_module_completeness PASSED
+src/tests/test_core_modules.py::test_core_module_performance PASSED
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_gnn_core_imports PASSED
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_audio_imports PASSED
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_export_imports PASSED
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_visualization_imports PASSED
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_llm_imports PASSED
+src/tests/test_fast_suite.py::TestFastEnvironment::test_python_environment PASSED
+src/tests/test_fast_suite.py::TestFastEnvironment::test_test_configuration PASSED
+src/tests/test_fast_suite.py::TestFastEnvironment::test_essential_directories PASSED
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_module_import PASSED
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_file_creation PASSED
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_content_validation PASSED
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_utils_module_import PASSED
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_pipeline_module_import PASSED
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_type_checker_import PASSED
+src/tests/test_fast_suite.py::TestFastExport::test_export_module_import PASSED
+src/tests/test_fast_suite.py::TestFastExport::test_basic_export_functionality PASSED
+src/tests/test_fast_suite.py::TestFastVisualization::test_visualization_module_import PASSED
+src/tests/test_fast_suite.py::TestFastRender::test_render_module_import PASSED
+src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import PASSED
+src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import PASSED
+src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import PASSED
+src/tests/test_fast_suite.py::TestFastOntology::test_ontology_module_import PASSED
+src/tests/test_fast_suite.py::TestFastSAPF::test_sapf_module_import PASSED
+src/tests/test_fast_suite.py::TestFastWebsite::test_website_module_import PASSED
+src/tests/test_fast_suite.py::TestFastIntegration::test_basic_pipeline_flow PASSED
+src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_setup PASSED
+src/tests/test_fast_suite.py::test_fast_suite_completeness PASSED
+src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_file_exists PASSED
+src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes PASSED
+src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_component_availability PASSED
+src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help PASSED
+src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_discovery_logic PASSED
+src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_sorting PASSED
+src/tests/test_main_orchestrator.py::TestVirtualEnvironmentHandling::test_python_executable_detection PASSED
+src/tests/test_main_orchestrator.py::TestStepExecution::test_run_core_step PASSED
+src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution PASSED
+src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_environment_info_function PASSED
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset 2025-09-22 12:24:34,183 [39b0b78c:pipeline] pipeline - INFO - Checking UV environment...
+2025-09-22 12:24:34,196 [39b0b78c:pipeline] utils.uv_utils - INFO - Syncing dependencies...
+2025-09-22 12:24:34,262 [39b0b78c:pipeline] utils.uv_utils - INFO - UV environment is ready
+2025-09-22 12:24:34,262 [39b0b78c:pipeline] pipeline - INFO - UV environment is ready
+2025-09-22 12:24:34,262 [39b0b78c:pipeline] pipeline - INFO - 🚀 Starting GNN Processing Pipeline [total_steps=24 | target_dir=/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files | output_dir=/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpi_u_ql3i/output]
+2025-09-22 12:24:34,262 [39b0b78c:pipeline] pipeline - INFO - Executing steps: ['3_gnn.py', '5_type_checker.py', '7_export.py', '8_visualization.py']
+2025-09-22 12:24:34,263 [39b0b78c:pipeline] pipeline - INFO - ┌─ Step 1/4: GNN file processing RUNNING
+└─ Progress: [███████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (25%)
+2025-09-22 12:24:34,263 [39b0b78c:pipeline] pipeline - INFO - ┌─ Step 1/4: Step 1 RUNNING
+└─ Progress: [███████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (25%)
+    Starting GNN file processing [step_number=1 | total_steps=4 | script_name=3_gnn.py]
+2025-09-22 12:24:34,263 [39b0b78c:pipeline] pipeline - INFO - 🚀 Executing 3_gnn.py with 120s timeout
+2025-09-22 12:24:34,263 [39b0b78c:pipeline] pipeline - INFO - 💡 If the step seems stuck, it will timeout and show partial results
+2025-09-22 12:24:34,562 [39b0b78c:pipeline] pipeline - INFO - ✅ Step 1 completed with SUCCESS in 300ms
+Progress: 1/4 steps (1 successful)
+2025-09-22 12:24:34,562 [39b0b78c:pipeline] pipeline - INFO - ✅ ✅ Step 1 completed with SUCCESS in 300ms
+Progress: 1/4 steps (1 successful)
+    GNN file processing completed [status=SUCCESS | step_number=1] [⏱️ 300ms]
+2025-09-22 12:24:34,562 [39b0b78c:pipeline] pipeline - INFO - ┌─ Step 2/4: Type checking RUNNING
+└─ Progress: [███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (50%)
+2025-09-22 12:24:34,562 [39b0b78c:pipeline] pipeline - INFO - ┌─ Step 2/4: Step 2 RUNNING
+└─ Progress: [███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (50%)
+    Starting Type checking [step_number=2 | total_steps=4 | script_name=5_type_checker.py]
+2025-09-22 12:24:34,563 [39b0b78c:pipeline] pipeline - INFO - 🚀 Executing 5_type_checker.py with 120s timeout
+2025-09-22 12:24:34,563 [39b0b78c:pipeline] pipeline - INFO - 💡 If the step seems stuck, it will timeout and show partial results
+2025-09-22 12:24:34,777 [39b0b78c:pipeline] pipeline - INFO - ✅ Step 2 completed with SUCCESS in 214ms
+Progress: 2/4 steps (2 successful)
+2025-09-22 12:24:34,777 [39b0b78c:pipeline] pipeline - INFO - ✅ ✅ Step 2 completed with SUCCESS in 214ms
+Progress: 2/4 steps (2 successful)
+    Type checking completed [status=SUCCESS | step_number=2] [⏱️ 214ms]
+2025-09-22 12:24:34,777 [39b0b78c:pipeline] pipeline - INFO - ┌─ Step 3/4: Multi-format export RUNNING
+└─ Progress: [██████████████████████▒▒▒▒▒▒▒▒] (75%)
+2025-09-22 12:24:34,777 [39b0b78c:pipeline] pipeline - INFO - ┌─ Step 3/4: Step 3 RUNNING
+└─ Progress: [██████████████████████▒▒▒▒▒▒▒▒] (75%)
+    Starting Multi-format export [step_number=3 | total_steps=4 | script_name=7_export.py]
+2025-09-22 12:24:34,778 [39b0b78c:pipeline] pipeline - INFO - 🚀 Executing 7_export.py with 120s timeout
+2025-09-22 12:24:34,778 [39b0b78c:pipeline] pipeline - INFO - 💡 If the step seems stuck, it will timeout and show partial results
+2025-09-22 12:24:34,966 [39b0b78c:pipeline] pipeline - INFO - ✅ Step 3 completed with SUCCESS in 189ms
+Progress: 3/4 steps (3 successful)
+2025-09-22 12:24:34,966 [39b0b78c:pipeline] pipeline - INFO - ✅ ✅ Step 3 completed with SUCCESS in 189ms
+Progress: 3/4 steps (3 successful)
+    Multi-format export completed [status=SUCCESS | step_number=3] [⏱️ 189ms]
+2025-09-22 12:24:34,966 [39b0b78c:pipeline] pipeline - INFO - ┌─ Step 4/4: Visualization RUNNING
+└─ Progress: [██████████████████████████████] (100%)
+2025-09-22 12:24:34,966 [39b0b78c:pipeline] pipeline - INFO - ┌─ Step 4/4: Step 4 RUNNING
+└─ Progress: [██████████████████████████████] (100%)
+    Starting Visualization [step_number=4 | total_steps=4 | script_name=8_visualization.py]
+2025-09-22 12:24:34,967 [39b0b78c:pipeline] pipeline - INFO - 🚀 Executing 8_visualization.py with 300s timeout
+2025-09-22 12:24:34,967 [39b0b78c:pipeline] pipeline - INFO - 💡 If the step seems stuck, it will timeout and show partial results
+2025-09-22 12:24:39,442 [39b0b78c:pipeline] pipeline - INFO - ✅ Step 4 completed with SUCCESS in 4.48s
+Progress: 4/4 steps (4 successful)
+2025-09-22 12:24:39,442 [39b0b78c:pipeline] pipeline - INFO - ✅ ✅ Step 4 completed with SUCCESS in 4.48s
+Progress: 4/4 steps (4 successful)
+    Visualization completed [status=SUCCESS | step_number=4] [⏱️ 4.48s]
+2025-09-22 12:24:39,442 [39b0b78c:pipeline] pipeline - INFO - Saving pipeline summary to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpi_u_ql3i/output/pipeline_execution_summary.json
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - Pipeline summary saved successfully
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ┌─ Step 4/4: Overall Progress SUCCESS
+└─ Progress: [██████████████████████████████] (100%)
+Stats: ✅ Success: 4 | ⚠️ Warnings: 0 | ❌ Failed: 0 | ⏱️ Elapsed: 5.18s
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - 
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ╔═══════════════════════════════════════════════════════════════════════════════════╗
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ║                     ✅ PIPELINE EXECUTION SUMMARY - SUCCESS ✅                      ║
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ╠═══════════════════════════════════════════════════════════════════════════════════╣
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ║ Total Steps: 4                                                                    ║
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ║ ✅ Successful: 4                                                                   ║
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ║ ⚠️ Warnings: 0                                                                    ║
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ║ ❌ Failed: 0                                                                       ║
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ║ ⏱️ Total Time: 5.18s                                                              ║
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ║ Average Step Time: 1.29s                                                          ║
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ║ 📊 Success Rate: 100.0%                                                            ║
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - ╚═══════════════════════════════════════════════════════════════════════════════════╝
+2025-09-22 12:24:39,443 [39b0b78c:pipeline] pipeline - INFO - 
+PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_import_performance SKIPPED (Module imports
+not available: cannot import name 'exporter' from 'export'
+(/Users/4d/Documents/GitHub/generalizednotationnotation/src/export/__init__.py))
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_memory_usage_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_file_io_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_json_processing_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_concurrent_operations_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_string_processing_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_list_operations_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_dictionary_operations_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_algorithm_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_network_operations_performance PASSED
+src/tests/test_performance_overall.py::TestPerformanceOverall::test_system_resource_performance PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_analyzer_initialization PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_structure_analysis PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_model_validation PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_complexity_estimation PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_type_checker_integration PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_ontology_loading PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_error_handling PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_mcp_integration PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_performance_metrics PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_data_consistency PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPPipelineIntegration::test_pomdp_step_2_tests PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPPipelineIntegration::test_pomdp_step_5_type_checker PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPPipelineIntegration::test_pomdp_configuration_integration PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPPipelineIntegration::test_pomdp_argument_parsing PASSED
+src/tests/test_pomdp_integration.py::TestPOMDPPipelineIntegration::test_pomdp_mcp_tool_registration PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_valid_pomdp_structure PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_invalid_pomdp_structure PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_missing_required_components PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_invalid_dimension_syntax PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_component_detection PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_dimension_extraction PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_specific_metrics PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_consistent_dimensions PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_inconsistent_dimensions PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_missing_dimension_validation PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_compliant_pomdp PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_non_compliant_pomdp PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_missing_ontology_file PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_loading_error_handling PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_semantic_consistency PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_semantic_inconsistency PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_connection_validation PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_invalid_input_handling PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_malformed_content_handling PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_large_content_handling PASSED
+src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_unicode_content_handling PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_basic_imports PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_path_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_json_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_logging_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_string_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_list_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_dictionary_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_file_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_directory_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_error_handling PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_type_annotations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_datetime_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_math_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_regex_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_collections_operations PASSED
+src/tests/test_unit_overall.py::TestUnitOverall::test_itertools_operations PASSED
+WARNING: Failed to generate report: Couldn't use data file '/Users/4d/Documents/GitHub/generalizednotationnotation/.coverage': no such table: tracer
+
+
+
+=================================================== warnings summary ===================================================
+src/tests/test_main_orchestrator.py:36
+  /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_main_orchestrator.py:36: PytestUnknownMarkWarning: Unknown pytest.mark.main_orchestrator - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    pytestmark = [pytest.mark.main_orchestrator]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================================================== PASSES ========================================================
+________________________________ TestTypeCheckerModule.test_type_checker_instantiation _________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     src.type_checker.checker:checker.py:230 GNNTypeChecker initialized. Strict mode: False
+__________________________________ TestGNNModuleComprehensive.test_gnn_module_imports __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:62 GNN module imports validated
+__________________________________ TestGNNModuleComprehensive.test_gnn_file_discovery __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:85 GNN file discovery validated: 1 files found
+___________________________________ TestGNNModuleComprehensive.test_gnn_file_parsing ___________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:107 Successfully parsed actinf_pomdp_agent.md
+____________________________________ TestGNNModuleComprehensive.test_gnn_validation ____________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:134 Validation result for actinf_pomdp_agent.md: True
+_______________________________ TestRenderModuleComprehensive.test_render_module_imports _______________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:159 Render module imports validated
+__________________________________ TestRenderModuleComprehensive.test_pymdp_rendering __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:175 PyMDP rendering validated
+_________________________________ TestRenderModuleComprehensive.test_rxinfer_rendering _________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:190 RxInfer rendering validated
+_________________________ TestExecuteModuleComprehensive.test_execution_environment_validation _________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+WARNING  root:test_core_modules.py:247 Execution environment validation failed: Status should contain python_version
+assert 'python_version' in {'valid': False, 'issues': ['validate_execution_environment not available']}
+__________________________________ TestLLMModuleComprehensive.test_llm_model_analysis __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     src.llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['openai']
+INFO     src.llm.llm_operations:llm_operations.py:87 Created new LLM processor
+INFO     src.llm.providers.openai_provider:openai_provider.py:95 OpenAI provider initialized successfully
+INFO     src.llm.llm_processor:llm_processor.py:201 Initialized openai provider
+WARNING  src.llm.providers.openrouter_provider:openrouter_provider.py:116 OpenRouter API key not provided
+WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize openrouter provider
+WARNING  src.llm.providers.perplexity_provider:perplexity_provider.py:90 Perplexity API key not provided
+WARNING  src.llm.llm_processor:llm_processor.py:203 Failed to initialize perplexity provider
+INFO     httpx:_client.py:1025 HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+INFO     src.llm.providers.ollama_provider:ollama_provider.py:79 Ollama provider initialized (python client)
+INFO     src.llm.llm_processor:llm_processor.py:201 Initialized ollama provider
+INFO     src.llm.llm_processor:llm_processor.py:211 LLM Processor initialized with 2 providers
+INFO     httpx:_client.py:1740 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+ERROR    src.llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+ERROR    src.llm.llm_processor:llm_processor.py:334 Analysis failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+INFO     httpx:_client.py:1740 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+ERROR    src.llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+WARNING  src.llm.llm_processor:llm_processor.py:356 Fallback failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+INFO     httpx:_client.py:1025 HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+ERROR    src.llm.providers.ollama_provider:ollama_provider.py:186 Ollama chat failed: 'ChatResponse' object has no attribute 'items'
+WARNING  src.llm.llm_processor:llm_processor.py:356 Fallback failed with ollama: 'ChatResponse' object has no attribute 'items'
+WARNING  src.llm.analyzer:analyzer.py:84 LLM summary generation failed for actinf_pomdp_agent.md: All providers failed for analysis
+__________________________________ TestMCPModuleComprehensive.test_mcp_module_imports __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:349 MCP module imports validated
+________________________________ TestMCPModuleComprehensive.test_mcp_tool_registration _________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:371 MCP tool registration validated
+_________________________________ TestMCPModuleComprehensive.test_mcp_request_handling _________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     src.mcp.processor:processor.py:72 Handling MCP request: tools/list
+INFO     root:test_core_modules.py:394 MCP request handling validated
+____________________________ TestOntologyModuleComprehensive.test_ontology_term_validation _____________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     ontology:pipeline_template.py:47 🚀 Processing ontology
+INFO     ontology:pipeline_template.py:48 ✅ Ontology processing completed successfully
+________________________________ TestWebsiteModuleComprehensive.test_website_generation ________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     website:renderer.py:152 Website generated successfully with 1 pages
+_______________________________ TestWebsiteModuleComprehensive.test_html_report_creation _______________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     website:renderer.py:152 Website generated successfully with 1 pages
+_________________________________ TestSAPFModuleComprehensive.test_sapf_module_imports _________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:561 SAPF module imports validated successfully
+_______________________________ TestSAPFModuleComprehensive.test_gnn_to_sapf_conversion ________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:609 GNN to SAPF conversion validated
+___________________________________ TestSAPFModuleComprehensive.test_sapf_validation ___________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:639 SAPF validation functionality confirmed
+________________________________ TestSAPFModuleComprehensive.test_sapf_audio_generation ________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:658 SAPF audio generation functionality confirmed
+__________________________________ TestCoreModuleIntegration.test_module_coordination __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+WARNING  root:test_core_modules.py:682 Core module coordination failed: execute_simulation_from_gnn() got an unexpected keyword argument 'timeout'
+___________________________________ TestCoreModuleIntegration.test_module_data_flow ____________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:697 Module data flow validated
+____________________________________________ test_core_module_completeness _____________________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:704 Core module completeness test passed
+_____________________________________________ test_core_module_performance _____________________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_core_modules.py:710 Core module performance test completed
+_________________________________________ TestCoverageOverall.test_llm_imports _________________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['openai']
+INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
+__________________________________________ TestFastMCP.test_mcp_module_import __________________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     mcp:mcp.py:478 Enhanced MCP server initialized
+_____________________________________________ test_fast_suite_completeness _____________________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_fast_suite.py:318 Fast test suite completeness validated
+____________________________ TestMainOrchestratorImport.test_main_orchestrator_file_exists _____________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_main_orchestrator.py:63 Main orchestrator file structure validated
+_______________________ TestMainOrchestratorImport.test_main_orchestrator_component_availability _______________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_main_orchestrator.py:92 All 3 main orchestrator components available
+___________________________ TestPipelineScriptDiscovery.test_pipeline_script_discovery_logic ___________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_main_orchestrator.py:134 Pipeline script discovery logic validated
+_______________________________ TestPipelineScriptDiscovery.test_pipeline_script_sorting _______________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     root:test_main_orchestrator.py:156 Pipeline script sorting logic validated
+____________________________________ TestPOMDPIntegration.test_pomdp_error_handling ____________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+WARNING  type_checker.pomdp_analyzer:pomdp_analyzer.py:684 Error loading ontology terms from nonexistent.json: [Errno 2] No such file or directory: 'nonexistent.json'
+________________________________ TestPOMDPOntologyCompliance.test_missing_ontology_file ________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+WARNING  type_checker.pomdp_analyzer:pomdp_analyzer.py:684 Error loading ontology terms from nonexistent.json: [Errno 2] No such file or directory: 'nonexistent.json'
+___________________________ TestPOMDPOntologyCompliance.test_ontology_loading_error_handling ___________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+WARNING  type_checker.pomdp_analyzer:pomdp_analyzer.py:684 Error loading ontology terms from /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpvf570ics.json: Expecting value: line 1 column 1 (char 0)
+__________________________________ TestPOMDPErrorHandling.test_invalid_input_handling __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+ERROR    type_checker.pomdp_analyzer.POMDPAnalyzer:pomdp_analyzer.py:177 Error analyzing POMDP structure: expected string or bytes-like object, got 'NoneType'
+ERROR    type_checker.pomdp_analyzer.POMDPAnalyzer:pomdp_analyzer.py:177 Error analyzing POMDP structure: expected string or bytes-like object, got 'int'
+==================================================== tests coverage ====================================================
+__________________________________ coverage: platform darwin, python 3.11.13-final-0 ___________________________________
+
+Name                                                            Stmts   Miss  Cover   Missing
+---------------------------------------------------------------------------------------------
+src/0_template.py                                                  79     79     0%   35-217
+src/1_setup.py                                                      8      8     0%   27-45
+src/2_tests.py                                                     17     17     0%   23-60
+src/3_gnn.py                                                        8      8     0%   9-27
+src/4_model_registry.py                                           104    104     0%   21-267
+src/5_type_checker.py                                               8      8     0%   34-57
+src/6_validation.py                                                13     13     0%   21-50
+src/7_export.py                                                     8      8     0%   33-51
+src/8_visualization.py                                              8      0   100%
+src/9_advanced_viz.py                                               8      8     0%   34-62
+src/10_ontology.py                                                 46     46     0%   26-141
+src/11_render.py                                                   42     42     0%   32-131
+src/12_execute.py                                                  71     71     0%   32-170
+src/13_llm.py                                                      80     80     0%   32-186
+src/14_ml_integration.py                                           42     42     0%   32-128
+src/15_audio.py                                                    42     42     0%   32-131
+src/16_analysis.py                                                 42     42     0%   32-130
+src/17_integration.py                                              42     42     0%   32-128
+src/18_security.py                                                 42     42     0%   32-130
+src/19_research.py                                                 42     42     0%   32-128
+src/20_website.py                                                  42     42     0%   32-130
+src/21_mcp.py                                                      42     42     0%   32-128
+src/22_gui.py                                                     110    110     0%   32-281
+src/23_report.py                                                   42     42     0%   32-128
+src/__init__.py                                                    49     25    49%   24-34, 42, 68-87, 94-99
+src/advanced_visualization/__init__.py                              5      5     0%   7-35
+src/advanced_visualization/dashboard.py                            59     59     0%   8-567
+src/advanced_visualization/data_extractor.py                      114    114     0%   8-343
+src/advanced_visualization/html_generator.py                       37     37     0%   8-479
+src/advanced_visualization/processor.py                           270    270     0%   9-713
+src/advanced_visualization/visualizer.py                          122    122     0%   6-264
+src/analysis/__init__.py                                           18     12    33%   57-72
+src/analysis/analyzer.py                                          195    170    13%   14-51, 55-74, 78-97, 101-117, 121-136, 140-149, 153-162, 166-170, 174-181, 185-222, 226-248, 252, 257-269, 274-286, 290-311, 316-324, 328-341, 345-366, 370-419, 423-465
+src/analysis/mcp.py                                                16     16     0%   7-65
+src/analysis/processor.py                                          59     48    19%   46-126, 130-136
+src/audio/__init__.py                                              24     12    50%   79-94
+src/audio/analyzer.py                                              72     51    29%   95-121, 128, 141-175, 191-216, 231-259
+src/audio/classes.py                                               82     66    20%   18-19, 23-71, 80-90, 97-98, 104-105, 109-122, 129-169, 176-177, 180-181, 185
+src/audio/generator.py                                            135    121    10%   15-32, 36-54, 58-82, 86-109, 124-140, 153-161, 174-205, 211-213, 217-245, 249-269
+src/audio/mcp.py                                                   53     41    23%   21-25, 28-35, 38-56, 72-86, 96-123
+src/audio/processor.py                                            173    153    12%   48-121, 135-183, 187-205, 209-227, 231-236, 240-261, 265-286, 290-309, 313-366, 370-397
+src/audio/sapf/__init__.py                                         21      1    95%   47
+src/audio/sapf/audio_generators.py                                259    235     9%   27-28, 44-60, 72-232, 245-288, 293-303, 307-308, 313-322, 326-354, 358-373, 386-486, 504-514, 532-555, 568-591
+src/audio/sapf/generator.py                                        58     58     0%   1-113
+src/audio/sapf/processor.py                                        64     56    12%   29-66, 84-94, 110-156, 172-193
+src/audio/sapf/sapf_gnn_processor.py                              295    157    47%   78, 91-133, 151-155, 179-180, 186-203, 207-219, 276, 323-326, 338, 356, 373, 375, 377, 390-460, 481-492, 512, 518, 524, 530, 545-572, 603-604, 610, 612, 615, 619, 622, 638-646
+src/audio/sapf/utils.py                                            14      7    50%   66, 85-92
+src/execute/__init__.py                                            41     15    63%   20-24, 29-32, 66, 76-80
+src/execute/activeinference_jl/__init__.py                          2      0   100%
+src/execute/activeinference_jl/activeinference_runner.py          259    241     7%   34-77, 91-152, 164-207, 220-232, 244-271, 291-381, 399-431, 455-555
+src/execute/discopy/__init__.py                                     2      0   100%
+src/execute/discopy/discopy_executor.py                           124    108    13%   27-34, 49-51, 63-79, 91-122, 135-244, 266-295
+src/execute/discopy_translator_module/__init__.py                   4      0   100%
+src/execute/discopy_translator_module/translator.py               113     87    23%   21-23, 36-39, 46-49, 66-120, 137-179, 196-222
+src/execute/discopy_translator_module/visualize_jax_output.py     140    122    13%   22-25, 32-35, 56-130, 149-189, 206-264
+src/execute/executor.py                                           379    330    13%   21-23, 28-30, 35-37, 42-44, 49-51, 55-67, 71-73, 79-83, 99, 119-158, 176-190, 206-223, 227-238, 247-264, 271-287, 294-310, 325, 337-346, 362-365, 378-379, 394-396, 422-804
+src/execute/fallback.py                                            35     15    57%   15, 24, 34, 43, 52, 61, 70, 84, 99, 111, 118, 132, 145, 158, 171
+src/execute/install_dependencies.py                                56     56     0%   8-126
+src/execute/jax/__init__.py                                         2      0   100%
+src/execute/jax/jax_runner.py                                     121    109    10%   25-33, 37-64, 68-73, 77-147, 151-175
+src/execute/legacy.py                                              18     13    28%   23-28, 41-46, 59
+src/execute/mcp.py                                                 53     53     0%   7-122
+src/execute/processor.py                                          213    197     8%   25-29, 54-156, 170-201, 217-355, 367-413, 427-443
+src/execute/pymdp/__init__.py                                      14      0   100%
+src/execute/pymdp/context.py                                       30     24    20%   33-88
+src/execute/pymdp/execute_pymdp.py                                115    105     9%   48-124, 148-181, 201-261, 282-320
+src/execute/pymdp/executor.py                                      41     29    29%   47-67, 85-122, 140-141
+src/execute/pymdp/pymdp_runner.py                                 262    242     8%   33-76, 94-208, 227-266, 275-340, 349-382, 402-468, 474-522, 527-545
+src/execute/pymdp/pymdp_simulation.py                             472    434     8%   52-134, 163-191, 196-286, 290-327, 331-347, 359-456, 460-487, 491-524, 528-558, 562-595, 607-650, 655-664, 669-718, 723-731, 736-744, 749-754, 758-802, 806-833, 837-840, 861, 876-878
+src/execute/pymdp/pymdp_utils.py                                  205    185    10%   37-54, 69-84, 98-110, 123-142, 155-173, 192-213, 226-265, 280-308, 321-328, 343-351, 364-398, 411-429, 442-473, 486-512
+src/execute/pymdp/pymdp_visualizer.py                             184    158    14%   29-33, 65-101, 105-110, 113-118, 121-126, 130-136, 139, 143-153, 172-197, 214-240, 257-304, 316-330, 334-337, 350, 374-408
+src/execute/pymdp/validator.py                                     49     43    12%   21-97, 106-124
+src/execute/rxinfer/__init__.py                                     2      0   100%
+src/execute/rxinfer/rxinfer_runner.py                              86     75    13%   25-43, 59-74, 90-147, 168-205
+src/execute/validator.py                                          179    179     0%   9-466
+src/export/__init__.py                                            130     98    25%   71-73, 78, 93-98, 101, 108-113, 116, 136-297
+src/export/core.py                                                 89     89     0%   1-159
+src/export/format_exporters.py                                    282    282     0%   9-373
+src/export/formatters.py                                          210    190    10%   17-22, 26-60, 64-111, 115-158, 162-167, 175-176, 180-225, 229-234, 238-268, 272-303
+src/export/mcp.py                                                  61     61     0%   7-161
+src/export/processor.py                                           168    131    22%   45-84, 97-135, 151-198, 215-273, 290-309, 338, 343, 346, 349, 351-352, 354-355, 361-367, 374, 379-380
+src/export/utils.py                                                12      0   100%
+src/gnn/__init__.py                                                15      2    87%   47, 51
+src/gnn/core_processor.py                                         167    118    29%   61-63, 67, 71-73, 85-93, 105-135, 140-154, 158-176, 180-201, 205-217, 221-231, 239-269, 274-275, 279, 416
+src/gnn/cross_format.py                                            14     11    21%   21-35
+src/gnn/cross_format_validator.py                                 283    245    13%   48-50, 54-58, 66-85, 90-145, 150-215, 220-249, 253-279, 283-316, 320-332, 337-349, 354-378, 383-403, 407-465, 470-512, 518-519, 524-525
+src/gnn/discovery.py                                               47     29    38%   37-38, 50-51, 63-85, 97-112
+src/gnn/documentation/__init__.py                                   1      1     0%   8
+src/gnn/formal_specs/__init__.py                                    1      1     0%   8
+src/gnn/grammars/__init__.py                                        1      1     0%   8
+src/gnn/mcp.py                                                    184    184     0%   16-875
+src/gnn/multi_format_processor.py                                  96     96     0%   9-296
+src/gnn/parser.py                                                 155    114    26%   20, 24-33, 39-46, 50, 57, 65, 73, 77, 81, 96-97, 101, 105, 109-124, 128-137, 141-189, 196-199, 219, 233-288, 292-298
+src/gnn/parsers/__init__.py                                        44      0   100%
+src/gnn/parsers/alloy_serializer.py                                75     64    15%   12-13, 17-96, 101-105, 109-117
+src/gnn/parsers/asn1_serializer.py                                 96     85    11%   12-13, 17-117, 121-128, 132
+src/gnn/parsers/base_serializer.py                                 39     26    33%   10, 19-21, 25-28, 37-50, 54, 102-122, 126-134, 138-147
+src/gnn/parsers/binary_parser.py                                  136    116    15%   27, 30, 33-48, 52-60, 64-98, 102-103, 107-176, 181-198, 202-216, 220-229, 233-256, 260-270, 274-282
+src/gnn/parsers/binary_serializer.py                               27     13    52%   17-58, 62-100, 104, 108-110, 119-121
+src/gnn/parsers/common.py                                         367    194    47%   33-37, 41-48, 132-133, 137-143, 147, 160-161, 173-174, 185-186, 197-198, 209-210, 220-221, 231-232, 271, 275-278, 282-287, 291-294, 298-320, 324-347, 379, 385, 389-402, 451, 455, 459-460, 464, 474-476, 497, 506, 530-541, 545-565, 569-594, 606-655, 659-670
+src/gnn/parsers/converters.py                                      22     11    50%   24, 41-49, 60-61, 74
+src/gnn/parsers/coq_parser.py                                     167    144    14%   29-35, 39-52, 57-73, 77-90, 94-159, 164-183, 187-191, 195-203, 207-222, 226-244, 248-266, 270-281, 285-305, 309-320, 325-330, 334
+src/gnn/parsers/coq_serializer.py                                  40     29    28%   13-76, 80-82, 91-93, 104-112
+src/gnn/parsers/functional_parser.py                              126    109    13%   26-30, 33, 36-43, 47-113, 117-131, 135-200, 204-205, 209-216, 220, 226-234, 238-244
+src/gnn/parsers/functional_serializer.py                           47     36    23%   13-84, 88-90, 99-101, 112-120
+src/gnn/parsers/grammar_parser.py                                 204    177    13%   29-32, 36-47, 51-109, 113-126, 130-146, 150-160, 165-183, 187-205, 209-236, 240-251, 257-269, 273, 281-286, 290-348, 352-362, 366-386, 391-402, 408-425, 429
+src/gnn/parsers/grammar_serializer.py                              47     37    21%   13-89, 93-95, 104-106
+src/gnn/parsers/isabelle_parser.py                                148    130    12%   26-31, 35, 39-46, 51-127, 131-144, 148-213, 217-227, 232-238, 242-250, 255-256, 261-269, 273-294
+src/gnn/parsers/isabelle_serializer.py                             38     27    29%   13-74, 78-80, 89-91, 102-110
+src/gnn/parsers/json_parser.py                                    182    162    11%   31, 35-57, 61-92, 96-107, 113-171, 175-214, 218-247, 251-273, 277-299, 303-316, 320-340, 344
+src/gnn/parsers/json_serializer.py                                  9      2    78%   13-62
+src/gnn/parsers/lean_parser.py                                    176    154    12%   29-34, 38-51, 56-72, 76-90, 94-159, 163-183, 188-198, 202-210, 214-224, 229-251, 255-274, 278-296, 300-327, 331-343, 347
+src/gnn/parsers/lean_serializer.py                                 47     36    23%   13-85, 89-91, 100-102, 113-121
+src/gnn/parsers/markdown_parser.py                                454    412     9%   36-37, 55, 59-66, 70-115, 119-145, 149-154, 159, 163-175, 179, 183, 187-197, 201-245, 249-262, 266-274, 278-323, 327-336, 340-395, 399-426, 430-498, 502-529, 533-557, 562-573, 577-597, 601-623, 627-668, 672-696, 700-707, 711-735, 740, 744, 748, 752-764, 769-786
+src/gnn/parsers/markdown_serializer.py                             69     62    10%   12-98
+src/gnn/parsers/maxima_parser.py                                  150    132    12%   25-29, 33-42, 46-104, 108, 112-119, 123-196, 200-211, 215, 222-233, 237-250, 254-270, 274-294
+src/gnn/parsers/maxima_serializer.py                               53     43    19%   13-96, 100-102, 111-113
+src/gnn/parsers/pkl_serializer.py                                 164    155     5%   13-219, 223-238
+src/gnn/parsers/protobuf_parser.py                                236    211    11%   26-27, 30, 34-41, 45, 49-111, 121-140, 144-158, 162-214, 218-258, 262-291, 295-302, 307-315, 319-329, 334-349, 353-411, 415-424, 428-437, 441-457, 461-476
+src/gnn/parsers/protobuf_serializer.py                             96     86    10%   13-147, 151-154, 163-176
+src/gnn/parsers/python_parser.py                                  258    225    13%   30-33, 37-50, 55-71, 76-81, 85-99, 103-118, 122-187, 191-204, 208-229, 233-243, 247-267, 273-283, 287-289, 293-300, 305-310, 315-335, 340, 344-349, 353-357, 361-370, 376-403, 407-426, 430-448, 452-467, 471
+src/gnn/parsers/python_serializer.py                               60     50    17%   13-100, 104-106, 115-117
+src/gnn/parsers/scala_parser.py                                   261    228    13%   38-46, 58, 62-69, 74-107, 111-125, 129-194, 199-213, 217-240, 244-272, 276-308, 312-322, 326-331, 336-347, 352-365, 370-383, 388-401, 407-412, 417-438, 442-469, 473-474, 479-488, 493-507, 511-524, 528-536
+src/gnn/parsers/scala_serializer.py                                53     42    21%   13-89, 93-95, 104-106, 117-124
+src/gnn/parsers/schema_parser.py                                  702    626    11%   26, 30-46, 50-105, 109-117, 120, 123-131, 135-146, 149-177, 180-189, 192-198, 204-207, 211-228, 232-287, 291-299, 302, 305-312, 315-354, 357-361, 364-375, 378-386, 392-396, 400-416, 420-476, 480-488, 491, 494-501, 504-581, 585, 591-595, 599-609, 613-624, 628-638, 642-698, 709-723, 727-746, 750-782, 786-813, 817-847, 851-858, 862-866, 870-879, 883-901, 905-925, 929-937, 941-949, 953-972, 976-985, 991-993, 996, 1000-1009, 1013-1071, 1074-1081, 1084-1119, 1122-1128, 1134-1136, 1139, 1143-1154, 1158-1216, 1219-1226, 1229-1264, 1267-1274, 1277-1283
+src/gnn/parsers/schema_serializer.py                                8      1    88%   13
+src/gnn/parsers/serializers.py                                   1133   1133     0%   12-2642
+src/gnn/parsers/system.py                                         147     83    44%   132-141, 145-149, 153-157, 171-191, 205-224, 240, 254-263, 276-288, 300-331, 344-360, 364, 368, 373
+src/gnn/parsers/temporal_parser.py                                264    236    11%   27-32, 35, 38-45, 49-134, 138-152, 156-221, 225-247, 251-261, 268-272, 275, 278-285, 289-352, 356-370, 374-439, 443-448, 452-459, 464, 471-484, 488-505, 509-517
+src/gnn/parsers/temporal_serializer.py                             77     58    25%   13-14, 18-21, 25-90, 94-96, 105-107, 118-126, 130-187, 191-199, 206, 213
+src/gnn/parsers/unified_parser.py                                 220    201     9%   35-36, 41, 59-117, 131-175, 187-228, 240-315, 330-346, 362-451, 455, 459-460
+src/gnn/parsers/utils.py                                           14      8    43%   27-28, 41-52
+src/gnn/parsers/validators.py                                     241    197    18%   40, 53-61, 65, 69, 73-78, 90, 102-122, 127-146, 155-170, 175-207, 211-247, 257-295, 300-330, 340-356, 366-387, 391-426, 437-506, 511-566, 571-617
+src/gnn/parsers/xml_parser.py                                     349    311    11%   30, 34-67, 71-109, 113-124, 130-164, 168-172, 177-188, 192-235, 240-255, 259-314, 319-329, 333-351, 355-366, 370-379, 383-398, 402-416, 424-434, 438-454, 458, 462-473, 478-530, 538, 544-556, 561-579, 583-591, 601-609, 619-625, 634, 638-649, 654-706
+src/gnn/parsers/xml_serializer.py                                 101     89    12%   15-163, 167-169, 178-180
+src/gnn/parsers/xsd_serializer.py                                  59     48    19%   13-92, 96-99, 108-121, 125-133
+src/gnn/parsers/yaml_parser.py                                    361    329     9%   20-21, 36-38, 42-55, 60-94, 98-138, 142-174, 178-189, 195-267, 271-286, 290-325, 329-360, 364-404, 408-415, 419-456, 460-491, 495-511, 515-530, 534-541, 545-569, 573-594, 598-614, 618-631, 635
+src/gnn/parsers/yaml_serializer.py                                 31     21    32%   6-7, 17-83, 87-105
+src/gnn/parsers/znotation_serializer.py                            52     41    21%   13-89, 93-101, 105-107, 116-118
+src/gnn/pomdp_extractor.py                                        373    373     0%   10-673
+src/gnn/processor.py                                              158     96    39%   21-25, 39-87, 147, 156, 170-171, 174-175, 226-227, 244-285, 307-322, 335-380
+src/gnn/processors.py                                             401    401     0%   15-872
+src/gnn/reporting.py                                              188    165    12%   28, 41-77, 85-135, 139-141, 145-162, 175-201, 212-220, 232-240, 251-254, 266-297, 301-303, 307-377, 381-386, 390-393, 453-461
+src/type_checker/cli.py                                           124    124     0%   8-214
+src/type_checker/mcp.py                                           154    154     0%   10-648
+src/type_checker/output_utils.py                                  170    170     0%   10-249
+src/type_checker/pomdp_analyzer.py                                298    298     0%   11-685
+src/type_checker/processor.py                                     322    322     0%   11-806
+src/type_checker/resource_estimator.py                            583    583     0%   11-1738
+src/utils/__init__.py                                              26     26     0%   18-243
+src/utils/argument_utils.py                                       511    511     0%   8-1229
+src/utils/configuration.py                                        287    287     0%   9-515
+src/utils/dependency_validator.py                                 216    216     0%   8-572
+src/utils/error_handling.py                                       175    175     0%   10-354
+src/utils/error_recovery.py                                       265    265     0%   10-734
+src/utils/fallback.py                                              17     17     0%   8-49
+---------------------------------------------------------------------------------------------
+TOTAL                                                           20217  18052    11%
+================================================= slowest 10 durations =================================================
+5.65s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+3.27s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+1.95s call     src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution
+0.50s call     src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats
+0.38s call     src/tests/test_main_orchestrator.py::TestStepExecution::test_run_core_step
+0.27s call     src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes
+0.22s call     src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help
+0.10s call     src/tests/test_performance_overall.py::TestPerformanceOverall::test_system_resource_performance
+0.08s call     src/tests/test_performance_overall.py::TestPerformanceOverall::test_memory_usage_performance
+0.02s call     src/tests/test_coverage_overall.py::TestCoverageOverall::test_gnn_core_imports
+=============================================== short test summary info ================================================
+PASSED src/tests/test_comprehensive_api.py::TestGNNModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestGNNModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestGNNModule::test_validate_gnn_function
+PASSED src/tests/test_comprehensive_api.py::TestGNNModule::test_feature_flags
+PASSED src/tests/test_comprehensive_api.py::TestExportModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestExportModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats
+PASSED src/tests/test_comprehensive_api.py::TestExportModule::test_export_gnn_model_invalid_format
+PASSED src/tests/test_comprehensive_api.py::TestRenderModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestRenderModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestRenderModule::test_get_available_renderers
+PASSED src/tests/test_comprehensive_api.py::TestRenderModule::test_feature_flags
+PASSED src/tests/test_comprehensive_api.py::TestWebsiteModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_supported_file_types
+PASSED src/tests/test_comprehensive_api.py::TestWebsiteModule::test_generate_website_from_pipeline_output_nonexistent
+PASSED src/tests/test_comprehensive_api.py::TestWebsiteModule::test_validate_website_config
+PASSED src/tests/test_comprehensive_api.py::TestSAPFModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_audio_generation_options
+PASSED src/tests/test_comprehensive_api.py::TestSAPFModule::test_process_gnn_to_audio_invalid_input
+PASSED src/tests/test_comprehensive_api.py::TestOntologyModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_module_info
+PASSED src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_ontology_processing_options
+PASSED src/tests/test_comprehensive_api.py::TestOntologyModule::test_process_gnn_ontology_nonexistent_file
+PASSED src/tests/test_comprehensive_api.py::TestOntologyModule::test_parse_gnn_ontology_section_empty
+PASSED src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_type_checker_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestVisualizationModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestVisualizationModule::test_visualizer_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestExecuteModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestExecuteModule::test_executor_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestLLMModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestLLMModule::test_llm_processor_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestMCPModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestMCPModule::test_mcp_server_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestSetupModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestSetupModule::test_setup_functions_exist
+PASSED src/tests/test_comprehensive_api.py::TestUtilsModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestUtilsModule::test_utils_classes_instantiation
+PASSED src/tests/test_comprehensive_api.py::TestPipelineModule::test_module_imports
+PASSED src/tests/test_comprehensive_api.py::TestPipelineModule::test_pipeline_config
+PASSED src/tests/test_comprehensive_api.py::TestMCPIntegration::test_mcp_availability_flags
+PASSED src/tests/test_comprehensive_api.py::TestMCPIntegration::test_register_tools_functions
+PASSED src/tests/test_comprehensive_api.py::TestModuleConsistency::test_version_consistency
+PASSED src/tests/test_comprehensive_api.py::TestModuleConsistency::test_feature_flags_consistency
+PASSED src/tests/test_comprehensive_api.py::TestModuleConsistency::test_module_info_consistency
+PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports
+PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery
+PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing
+PASSED src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering
+PASSED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering
+PASSED src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports
+PASSED src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation
+PASSED src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution
+PASSED src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports
+PASSED src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+PASSED src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation
+PASSED src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports
+PASSED src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration
+PASSED src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling
+PASSED src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports
+PASSED src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation
+PASSED src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports
+PASSED src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation
+PASSED src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation
+PASSED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports
+PASSED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion
+PASSED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation
+PASSED src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation
+PASSED src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination
+PASSED src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow
+PASSED src/tests/test_core_modules.py::test_core_module_completeness
+PASSED src/tests/test_core_modules.py::test_core_module_performance
+PASSED src/tests/test_coverage_overall.py::TestCoverageOverall::test_gnn_core_imports
+PASSED src/tests/test_coverage_overall.py::TestCoverageOverall::test_audio_imports
+PASSED src/tests/test_coverage_overall.py::TestCoverageOverall::test_export_imports
+PASSED src/tests/test_coverage_overall.py::TestCoverageOverall::test_visualization_imports
+PASSED src/tests/test_coverage_overall.py::TestCoverageOverall::test_llm_imports
+PASSED src/tests/test_fast_suite.py::TestFastEnvironment::test_python_environment
+PASSED src/tests/test_fast_suite.py::TestFastEnvironment::test_test_configuration
+PASSED src/tests/test_fast_suite.py::TestFastEnvironment::test_essential_directories
+PASSED src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_module_import
+PASSED src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_file_creation
+PASSED src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_content_validation
+PASSED src/tests/test_fast_suite.py::TestFastPipelineComponents::test_utils_module_import
+PASSED src/tests/test_fast_suite.py::TestFastPipelineComponents::test_pipeline_module_import
+PASSED src/tests/test_fast_suite.py::TestFastPipelineComponents::test_type_checker_import
+PASSED src/tests/test_fast_suite.py::TestFastExport::test_export_module_import
+PASSED src/tests/test_fast_suite.py::TestFastExport::test_basic_export_functionality
+PASSED src/tests/test_fast_suite.py::TestFastVisualization::test_visualization_module_import
+PASSED src/tests/test_fast_suite.py::TestFastRender::test_render_module_import
+PASSED src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import
+PASSED src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import
+PASSED src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import
+PASSED src/tests/test_fast_suite.py::TestFastOntology::test_ontology_module_import
+PASSED src/tests/test_fast_suite.py::TestFastSAPF::test_sapf_module_import
+PASSED src/tests/test_fast_suite.py::TestFastWebsite::test_website_module_import
+PASSED src/tests/test_fast_suite.py::TestFastIntegration::test_basic_pipeline_flow
+PASSED src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_setup
+PASSED src/tests/test_fast_suite.py::test_fast_suite_completeness
+PASSED src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_file_exists
+PASSED src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes
+PASSED src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_component_availability
+PASSED src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help
+PASSED src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_discovery_logic
+PASSED src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_sorting
+PASSED src/tests/test_main_orchestrator.py::TestVirtualEnvironmentHandling::test_python_executable_detection
+PASSED src/tests/test_main_orchestrator.py::TestStepExecution::test_run_core_step
+PASSED src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution
+PASSED src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_environment_info_function
+PASSED src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_memory_usage_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_file_io_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_json_processing_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_concurrent_operations_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_string_processing_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_list_operations_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_dictionary_operations_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_algorithm_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_network_operations_performance
+PASSED src/tests/test_performance_overall.py::TestPerformanceOverall::test_system_resource_performance
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_analyzer_initialization
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_structure_analysis
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_model_validation
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_complexity_estimation
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_type_checker_integration
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_ontology_loading
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_error_handling
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_mcp_integration
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_performance_metrics
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPIntegration::test_pomdp_data_consistency
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPPipelineIntegration::test_pomdp_step_2_tests
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPPipelineIntegration::test_pomdp_step_5_type_checker
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPPipelineIntegration::test_pomdp_configuration_integration
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPPipelineIntegration::test_pomdp_argument_parsing
+PASSED src/tests/test_pomdp_integration.py::TestPOMDPPipelineIntegration::test_pomdp_mcp_tool_registration
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_valid_pomdp_structure
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_invalid_pomdp_structure
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_missing_required_components
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_invalid_dimension_syntax
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_component_detection
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_dimension_extraction
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPStructureValidation::test_pomdp_specific_metrics
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_consistent_dimensions
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_inconsistent_dimensions
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPDimensionConsistency::test_missing_dimension_validation
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_compliant_pomdp
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_non_compliant_pomdp
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_missing_ontology_file
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPOntologyCompliance::test_ontology_loading_error_handling
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_semantic_consistency
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_semantic_inconsistency
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPSemanticValidation::test_connection_validation
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_invalid_input_handling
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_malformed_content_handling
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_large_content_handling
+PASSED src/tests/test_pomdp_validation.py::TestPOMDPErrorHandling::test_unicode_content_handling
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_basic_imports
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_path_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_json_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_logging_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_string_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_list_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_dictionary_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_file_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_directory_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_error_handling
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_type_annotations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_datetime_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_math_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_regex_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_collections_operations
+PASSED src/tests/test_unit_overall.py::TestUnitOverall::test_itertools_operations
+SKIPPED [1] src/tests/test_performance_overall.py:40: Module imports not available: cannot import name 'exporter' from 'export' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/export/__init__.py)
+====================================== 177 passed, 1 skipped, 1 warning in 14.07s ======================================

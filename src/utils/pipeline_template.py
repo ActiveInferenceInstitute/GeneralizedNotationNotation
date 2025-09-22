@@ -130,7 +130,11 @@ def create_standard_pipeline_script(
             # Normalize the output directory to the standardized numbered step folder
             try:
                 step_output_dir = get_output_dir_for_script(step_name if not step_name.endswith('.py') else step_name[:-3], output_dir)
-            except Exception:
+                # Ensure output directory exists
+                step_output_dir.mkdir(parents=True, exist_ok=True)
+                logger.info(f"📁 Using output directory: {step_output_dir}")
+            except Exception as e:
+                logger.warning(f"Failed to create standardized output directory: {e}")
                 step_output_dir = output_dir
 
             # Call the module function with the standardized step output dir

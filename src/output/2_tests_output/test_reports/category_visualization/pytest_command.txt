@@ -1,0 +1,5 @@
+Category: visualization
+Success: True
+Duration: 14.06s
+Peak Memory: 38.56 MB
+CPU Usage: 0.0%

@@ -1,0 +1,109 @@
+{
+  "total_categories": 24,
+  "successful_categories": 22,
+  "failed_categories": 2,
+  "total_tests_run": 540,
+  "total_tests_passed": 350,
+  "total_tests_failed": 0,
+  "total_tests_skipped": 42,
+  "success_rate": 64.81481481481481,
+  "total_duration": 208.86890411376953,
+  "category_times": {
+    "website": 10.060629606246948,
+    "type_checker": 12.100511074066162,
+    "validation": 12.071209907531738
+  },
+  "resource_usage": {
+    "gnn": {
+      "memory_mb": 37.609375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "render": {
+      "memory_mb": 37.921875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "mcp": {
+      "memory_mb": 38.203125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "audio": {
+      "memory_mb": 38.453125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "visualization": {
+      "memory_mb": 38.5625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "pipeline": {
+      "memory_mb": 38.9375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "export": {
+      "memory_mb": 39.515625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "llm": {
+      "memory_mb": 39.546875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "ontology": {
+      "memory_mb": 17.03125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "website": {
+      "memory_mb": 20.734375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "report": {
+      "memory_mb": 21.671875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "environment": {
+      "memory_mb": 22.5,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "type_checker": {
+      "memory_mb": 22.640625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "pomdp": {
+      "memory_mb": 21.421875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "validation": {
+      "memory_mb": 21.8125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "integration": {
+      "memory_mb": 21.984375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "comprehensive": {
+      "memory_mb": 22.359375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "error_categories": {
+    "pathlib_errors": [],
+    "sapf_errors": [],
+    "import_errors": [],
+    "runtime_errors": []
+  }
+}

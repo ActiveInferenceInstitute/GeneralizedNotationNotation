@@ -1,0 +1,36 @@
+2025-09-22 12:22:50,547 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:50,547 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:54,599 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:54,599 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:54,667 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:54,667 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:54,681 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:54,681 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:54,725 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:54,725 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:54,728 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:54,728 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:54,809 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:54,809 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:54,888 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:54,888 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:54,988 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:54,989 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:55,005 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:55,006 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:55,059 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:55,059 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:55,079 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:55,079 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:55,080 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:55,081 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:55,092 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:55,093 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:22:55,160 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:22:55,160 - src.llm.llm_operations - INFO - Created new LLM processor
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/generalizednotationnotation/src/render/pymdp/pymdp_templates.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")

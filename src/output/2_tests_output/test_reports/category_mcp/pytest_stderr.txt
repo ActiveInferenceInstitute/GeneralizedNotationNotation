@@ -1,0 +1,48 @@
+2025-09-22 12:21:35,169 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:35,169 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:37,577 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:37,578 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:37,581 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:37,581 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:37,667 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:37,667 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:37,735 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:37,736 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:37,762 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:37,762 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:37,823 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:37,823 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:37,921 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:37,921 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:37,946 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:37,946 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:38,037 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:38,038 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:38,043 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:38,044 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:38,059 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:38,059 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:38,074 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:38,074 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:38,141 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:38,141 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:38,141 - src.llm.llm_processor - INFO - Loaded API keys for providers: ['openai']
+2025-09-22 12:21:38,142 - src.llm.llm_operations - INFO - Created new LLM processor
+2025-09-22 12:21:38,935 - mcp - INFO - Enhanced MCP server initialized
+2025-09-22 12:21:38,935 - mcp - INFO - Enhanced MCP server initialized
+2025-09-22 12:21:38,935 - mcp - INFO - Enhanced MCP server initialized
+2025-09-22 12:21:38,935 - mcp - INFO - Enhanced MCP server initialized
+2025-09-22 12:21:38,935 - mcp - INFO - Enhanced MCP server initialized
+2025-09-22 12:21:38,935 - mcp - INFO - Enhanced MCP server initialized
+2025-09-22 12:21:38,935 - mcp - INFO - Enhanced MCP server initialized
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+2025-09-22 12:21:38,941 - mcp - INFO - Enhanced MCP server initialized
+2025-09-22 12:21:38,942 - mcp - INFO - Enhanced MCP server initialized
+2025-09-22 12:21:38,943 - mcp - INFO - Enhanced MCP server initialized
+2025-09-22 12:21:38,943 - mcp - INFO - Enhanced MCP server initialized
+2025-09-22 12:21:38,948 - mcp - INFO - Enhanced MCP server initialized
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/coverage/report_core.py:110: CoverageWarning: Couldn't parse Python file '/Users/4d/Documents/GitHub/generalizednotationnotation/src/render/pymdp/pymdp_templates.py' (couldnt-parse)
+  coverage._warn(msg, slug="couldnt-parse")

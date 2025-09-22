@@ -1,0 +1,484 @@
+================================================= test session starts ==================================================
+created: 14/14 workers
+14 workers [29 items]
+
+scheduling tests via LoadScheduling
+
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_comparison_visualization 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_import 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_imports 
+src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_mcp_integration 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_color_mapping 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_data_creation 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_export_formats 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_pipeline_integration 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_info 
+src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_create_ontology_table 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_heatmap_generation 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_graph_visualizer_instantiation 
+src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_ontology_visualization 
+src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_matrix_visualization 
+[gw1] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_data_creation 
+[gw7] ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_create_ontology_table 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_data_preparation 
+[gw13] PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_ontology_visualization 
+[gw0] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_import 
+src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_visualize_directory 
+[gw9] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_imports 
+[gw4] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_color_mapping 
+[gw1] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_data_preparation 
+[gw8] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_graph_visualizer_instantiation 
+[gw12] PASSED src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_mcp_integration 
+[gw6] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_pipeline_integration 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_instantiation 
+[gw0] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_instantiation 
+[gw3] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_comparison_visualization 
+[gw2] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_heatmap_generation 
+[gw10] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_info 
+[gw7] ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_visualize_directory 
+src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_pipeline_integration 
+[gw5] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_export_formats 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_annotation 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_matrix_visualizer_instantiation 
+[gw9] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_matrix_visualizer_instantiation 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_ontology_visualizer_instantiation 
+[gw8] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_ontology_visualizer_instantiation 
+[gw4] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_annotation 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_3d_visualization 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_options 
+[gw10] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_options 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_statistics_visualization 
+src/tests/test_visualization_overall.py::test_visualization_module_completeness 
+src/tests/test_visualization_overall.py::test_visualization_module_performance 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_interactive_visualization 
+src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_extract_ontology_mappings 
+[gw2] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_3d_visualization 
+[gw3] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_statistics_visualization 
+[gw5] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_interactive_visualization 
+[gw12] PASSED src/tests/test_visualization_overall.py::test_visualization_module_completeness 
+[gw6] ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_extract_ontology_mappings 
+[gw13] PASSED src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_pipeline_integration 
+[gw11] PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_matrix_visualization 
+src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_graph_visualization 
+[gw1] PASSED src/tests/test_visualization_overall.py::test_visualization_module_performance 
+[gw11] PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_graph_visualization 
+
+======================================================== ERRORS ========================================================
+_________________________ ERROR at setup of TestOntologyVisualizer.test_create_ontology_table __________________________
+[gw7] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py, line 59
+      def test_create_ontology_table(self, temp_output_dir):
+E       fixture 'temp_output_dir' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, monkeypatch, no_cover, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py:59
+__________________________ ERROR at setup of TestOntologyVisualizer.test_visualize_directory ___________________________
+[gw7] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py, line 78
+      def test_visualize_directory(self, test_data_dir, temp_output_dir):
+E       fixture 'test_data_dir' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, monkeypatch, no_cover, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py:78
+_______________________ ERROR at setup of TestOntologyVisualizer.test_extract_ontology_mappings ________________________
+[gw6] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py, line 24
+      def test_extract_ontology_mappings(self, sample_gnn_file):
+E       fixture 'sample_gnn_file' not found
+>       available fixtures: capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, comprehensive_test_data, cov, doctest_namespace, isolated_temp_dir, monkeypatch, no_cover, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py:24
+======================================================== PASSES ========================================================
+==================================================== tests coverage ====================================================
+__________________________________ coverage: platform darwin, python 3.11.13-final-0 ___________________________________
+
+Name                                                               Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------------------------------
+src/0_template.py                                                     79     79     0%   35-217
+src/1_setup.py                                                         8      8     0%   27-45
+src/2_tests.py                                                        17     17     0%   23-60
+src/3_gnn.py                                                           8      8     0%   9-27
+src/4_model_registry.py                                              104    104     0%   21-267
+src/5_type_checker.py                                                  8      8     0%   34-57
+src/6_validation.py                                                   13     13     0%   21-50
+src/7_export.py                                                        8      8     0%   33-51
+src/8_visualization.py                                                 8      8     0%   34-52
+src/9_advanced_viz.py                                                  8      8     0%   34-62
+src/10_ontology.py                                                    46     46     0%   26-141
+src/11_render.py                                                      42     42     0%   32-131
+src/12_execute.py                                                     71     71     0%   32-170
+src/13_llm.py                                                         80     80     0%   32-186
+src/14_ml_integration.py                                              42     42     0%   32-128
+src/15_audio.py                                                       42     42     0%   32-131
+src/16_analysis.py                                                    42     42     0%   32-130
+src/17_integration.py                                                 42     42     0%   32-128
+src/18_security.py                                                    42     42     0%   32-130
+src/19_research.py                                                    42     42     0%   32-128
+src/20_website.py                                                     42     42     0%   32-130
+src/21_mcp.py                                                         42     42     0%   32-128
+src/22_gui.py                                                        110    110     0%   32-281
+src/23_report.py                                                      42     42     0%   32-128
+src/__init__.py                                                       49     25    49%   24-34, 42, 68-87, 94-99
+src/advanced_visualization/__init__.py                                 5      5     0%   7-35
+src/advanced_visualization/dashboard.py                               59     59     0%   8-567
+src/advanced_visualization/data_extractor.py                         114    114     0%   8-343
+src/advanced_visualization/html_generator.py                          37     37     0%   8-479
+src/advanced_visualization/processor.py                              270    270     0%   9-713
+src/advanced_visualization/visualizer.py                             122    122     0%   6-264
+src/analysis/__init__.py                                              18     12    33%   57-72
+src/analysis/analyzer.py                                             195    170    13%   14-51, 55-74, 78-97, 101-117, 121-136, 140-149, 153-162, 166-170, 174-181, 185-222, 226-248, 252, 257-269, 274-286, 290-311, 316-324, 328-341, 345-366, 370-419, 423-465
+src/analysis/mcp.py                                                   16     16     0%   7-65
+src/analysis/processor.py                                             59     48    19%   46-126, 130-136
+src/audio/__init__.py                                                 24     12    50%   79-94
+src/audio/analyzer.py                                                 72     60    17%   16-51, 58, 86-121, 128, 141-175, 191-216, 231-259
+src/audio/classes.py                                                  82     66    20%   18-19, 23-71, 80-90, 97-98, 104-105, 109-122, 129-169, 176-177, 180-181, 185
+src/audio/generator.py                                               135    121    10%   15-32, 36-54, 58-82, 86-109, 124-140, 153-161, 174-205, 211-213, 217-245, 249-269
+src/audio/mcp.py                                                      53     41    23%   21-25, 28-35, 38-56, 72-86, 96-123
+src/audio/processor.py                                               173    153    12%   48-121, 135-183, 187-205, 209-227, 231-236, 240-261, 265-286, 290-309, 313-366, 370-397
+src/audio/sapf/__init__.py                                            21      1    95%   47
+src/audio/sapf/audio_generators.py                                   259    235     9%   27-28, 44-60, 72-232, 245-288, 293-303, 307-308, 313-322, 326-354, 358-373, 386-486, 504-514, 532-555, 568-591
+src/audio/sapf/generator.py                                           58     58     0%   1-113
+src/audio/sapf/processor.py                                           64     56    12%   29-66, 84-94, 110-156, 172-193
+src/audio/sapf/sapf_gnn_processor.py                                 295    267     9%   23-25, 37-80, 84-140, 144-162, 166-182, 186-203, 207-219, 233-311, 315-326, 331-341, 345-359, 363-368, 372-379, 383-469, 473-500, 504-541, 545-572, 585-587, 599-624, 638-646
+src/audio/sapf/utils.py                                               14      8    43%   20, 66, 85-92
+src/execute/__init__.py                                               41     16    61%   20-24, 29-32, 66, 69, 76-80
+src/execute/activeinference_jl/__init__.py                             2      0   100%
+src/execute/activeinference_jl/activeinference_runner.py             259    241     7%   34-77, 91-152, 164-207, 220-232, 244-271, 291-381, 399-431, 455-555
+src/execute/discopy/__init__.py                                        2      0   100%
+src/execute/discopy/discopy_executor.py                              124    108    13%   27-34, 49-51, 63-79, 91-122, 135-244, 266-295
+src/execute/discopy_translator_module/__init__.py                      4      0   100%
+src/execute/discopy_translator_module/translator.py                  113     87    23%   21-23, 36-39, 46-49, 66-120, 137-179, 196-222
+src/execute/discopy_translator_module/visualize_jax_output.py        140    122    13%   22-25, 32-35, 56-130, 149-189, 206-264
+src/execute/executor.py                                              379    334    12%   21-23, 28-30, 35-37, 42-44, 49-51, 55-67, 71-73, 79-83, 98-104, 119-158, 176-190, 206-223, 227-238, 247-264, 271-287, 294-310, 325, 337-346, 362-365, 378-379, 394-396, 422-804
+src/execute/fallback.py                                               35     16    54%   15, 24, 34, 43, 52, 61, 70, 84, 99, 111, 118, 125, 132, 145, 158, 171
+src/execute/install_dependencies.py                                   56     56     0%   8-126
+src/execute/jax/__init__.py                                            2      0   100%
+src/execute/jax/jax_runner.py                                        121    109    10%   25-33, 37-64, 68-73, 77-147, 151-175
+src/execute/legacy.py                                                 18     13    28%   23-28, 41-46, 59
+src/execute/mcp.py                                                    53     53     0%   7-122
+src/execute/processor.py                                             213    197     8%   25-29, 54-156, 170-201, 217-355, 367-413, 427-443
+src/execute/pymdp/__init__.py                                         14      0   100%
+src/execute/pymdp/context.py                                          30     24    20%   33-88
+src/execute/pymdp/execute_pymdp.py                                   115    105     9%   48-124, 148-181, 201-261, 282-320
+src/execute/pymdp/executor.py                                         41     29    29%   47-67, 85-122, 140-141
+src/execute/pymdp/pymdp_runner.py                                    262    242     8%   33-76, 94-208, 227-266, 275-340, 349-382, 402-468, 474-522, 527-545
+src/execute/pymdp/pymdp_simulation.py                                472    434     8%   52-134, 163-191, 196-286, 290-327, 331-347, 359-456, 460-487, 491-524, 528-558, 562-595, 607-650, 655-664, 669-718, 723-731, 736-744, 749-754, 758-802, 806-833, 837-840, 861, 876-878
+src/execute/pymdp/pymdp_utils.py                                     205    185    10%   37-54, 69-84, 98-110, 123-142, 155-173, 192-213, 226-265, 280-308, 321-328, 343-351, 364-398, 411-429, 442-473, 486-512
+src/execute/pymdp/pymdp_visualizer.py                                184    158    14%   29-33, 65-101, 105-110, 113-118, 121-126, 130-136, 139, 143-153, 172-197, 214-240, 257-304, 316-330, 334-337, 350, 374-408
+src/execute/pymdp/validator.py                                        49     43    12%   21-97, 106-124
+src/execute/rxinfer/__init__.py                                        2      0   100%
+src/execute/rxinfer/rxinfer_runner.py                                 86     75    13%   25-43, 59-74, 90-147, 168-205
+src/execute/validator.py                                             179    179     0%   9-466
+src/export/__init__.py                                               130    114    12%   46-73, 78, 93-98, 101, 108-113, 116, 136-297
+src/export/core.py                                                    89     89     0%   1-159
+src/export/format_exporters.py                                       282    282     0%   9-373
+src/export/formatters.py                                             210    194     8%   17-22, 26-60, 64-111, 115-158, 162-167, 171-176, 180-225, 229-234, 238-268, 272-303
+src/export/mcp.py                                                     61     61     0%   7-161
+src/export/processor.py                                              168    156     7%   45-84, 97-135, 151-198, 215-273, 290-309, 326-380
+src/export/utils.py                                                   12      9    25%   12-55, 59
+src/gnn/__init__.py                                                   15      6    60%   47, 51, 55-56, 60-61
+src/gnn/core_processor.py                                            167    167     0%   10-416
+src/gnn/cross_format.py                                               14     14     0%   10-35
+src/gnn/cross_format_validator.py                                    283    283     0%   16-525
+src/gnn/discovery.py                                                  47     47     0%   9-112
+src/gnn/documentation/__init__.py                                      1      1     0%   8
+src/gnn/formal_specs/__init__.py                                       1      1     0%   8
+src/gnn/grammars/__init__.py                                           1      1     0%   8
+src/gnn/mcp.py                                                       184    184     0%   16-875
+src/gnn/multi_format_processor.py                                     96     96     0%   9-296
+src/gnn/parser.py                                                    155    114    26%   20, 24-33, 39-46, 50, 57, 65, 73, 77, 81, 96-97, 101, 105, 109-124, 128-137, 141-189, 196-199, 219, 233-288, 292-298
+src/gnn/parsers/__init__.py                                           44      0   100%
+src/gnn/parsers/alloy_serializer.py                                   75     64    15%   12-13, 17-96, 101-105, 109-117
+src/gnn/parsers/asn1_serializer.py                                    96     85    11%   12-13, 17-117, 121-128, 132
+src/gnn/parsers/base_serializer.py                                    39     26    33%   10, 19-21, 25-28, 37-50, 54, 102-122, 126-134, 138-147
+src/gnn/parsers/binary_parser.py                                     136    116    15%   27, 30, 33-48, 52-60, 64-98, 102-103, 107-176, 181-198, 202-216, 220-229, 233-256, 260-270, 274-282
+src/gnn/parsers/binary_serializer.py                                  27     13    52%   17-58, 62-100, 104, 108-110, 119-121
+src/gnn/parsers/common.py                                            367    194    47%   33-37, 41-48, 132-133, 137-143, 147, 160-161, 173-174, 185-186, 197-198, 209-210, 220-221, 231-232, 271, 275-278, 282-287, 291-294, 298-320, 324-347, 379, 385, 389-402, 451, 455, 459-460, 464, 474-476, 497, 506, 530-541, 545-565, 569-594, 606-655, 659-670
+src/gnn/parsers/converters.py                                         22     11    50%   24, 41-49, 60-61, 74
+src/gnn/parsers/coq_parser.py                                        167    144    14%   29-35, 39-52, 57-73, 77-90, 94-159, 164-183, 187-191, 195-203, 207-222, 226-244, 248-266, 270-281, 285-305, 309-320, 325-330, 334
+src/gnn/parsers/coq_serializer.py                                     40     29    28%   13-76, 80-82, 91-93, 104-112
+src/gnn/parsers/functional_parser.py                                 126    109    13%   26-30, 33, 36-43, 47-113, 117-131, 135-200, 204-205, 209-216, 220, 226-234, 238-244
+src/gnn/parsers/functional_serializer.py                              47     36    23%   13-84, 88-90, 99-101, 112-120
+src/gnn/parsers/grammar_parser.py                                    204    177    13%   29-32, 36-47, 51-109, 113-126, 130-146, 150-160, 165-183, 187-205, 209-236, 240-251, 257-269, 273, 281-286, 290-348, 352-362, 366-386, 391-402, 408-425, 429
+src/gnn/parsers/grammar_serializer.py                                 47     37    21%   13-89, 93-95, 104-106
+src/gnn/parsers/isabelle_parser.py                                   148    130    12%   26-31, 35, 39-46, 51-127, 131-144, 148-213, 217-227, 232-238, 242-250, 255-256, 261-269, 273-294
+src/gnn/parsers/isabelle_serializer.py                                38     27    29%   13-74, 78-80, 89-91, 102-110
+src/gnn/parsers/json_parser.py                                       182    162    11%   31, 35-57, 61-92, 96-107, 113-171, 175-214, 218-247, 251-273, 277-299, 303-316, 320-340, 344
+src/gnn/parsers/json_serializer.py                                     9      2    78%   13-62
+src/gnn/parsers/lean_parser.py                                       176    154    12%   29-34, 38-51, 56-72, 76-90, 94-159, 163-183, 188-198, 202-210, 214-224, 229-251, 255-274, 278-296, 300-327, 331-343, 347
+src/gnn/parsers/lean_serializer.py                                    47     36    23%   13-85, 89-91, 100-102, 113-121
+src/gnn/parsers/markdown_parser.py                                   454    412     9%   36-37, 55, 59-66, 70-115, 119-145, 149-154, 159, 163-175, 179, 183, 187-197, 201-245, 249-262, 266-274, 278-323, 327-336, 340-395, 399-426, 430-498, 502-529, 533-557, 562-573, 577-597, 601-623, 627-668, 672-696, 700-707, 711-735, 740, 744, 748, 752-764, 769-786
+src/gnn/parsers/markdown_serializer.py                                69     62    10%   12-98
+src/gnn/parsers/maxima_parser.py                                     150    132    12%   25-29, 33-42, 46-104, 108, 112-119, 123-196, 200-211, 215, 222-233, 237-250, 254-270, 274-294
+src/gnn/parsers/maxima_serializer.py                                  53     43    19%   13-96, 100-102, 111-113
+src/gnn/parsers/pkl_serializer.py                                    164    155     5%   13-219, 223-238
+src/gnn/parsers/protobuf_parser.py                                   236    211    11%   26-27, 30, 34-41, 45, 49-111, 121-140, 144-158, 162-214, 218-258, 262-291, 295-302, 307-315, 319-329, 334-349, 353-411, 415-424, 428-437, 441-457, 461-476
+src/gnn/parsers/protobuf_serializer.py                                96     86    10%   13-147, 151-154, 163-176
+src/gnn/parsers/python_parser.py                                     258    225    13%   30-33, 37-50, 55-71, 76-81, 85-99, 103-118, 122-187, 191-204, 208-229, 233-243, 247-267, 273-283, 287-289, 293-300, 305-310, 315-335, 340, 344-349, 353-357, 361-370, 376-403, 407-426, 430-448, 452-467, 471
+src/gnn/parsers/python_serializer.py                                  60     50    17%   13-100, 104-106, 115-117
+src/gnn/parsers/scala_parser.py                                      261    228    13%   38-46, 58, 62-69, 74-107, 111-125, 129-194, 199-213, 217-240, 244-272, 276-308, 312-322, 326-331, 336-347, 352-365, 370-383, 388-401, 407-412, 417-438, 442-469, 473-474, 479-488, 493-507, 511-524, 528-536
+src/gnn/parsers/scala_serializer.py                                   53     42    21%   13-89, 93-95, 104-106, 117-124
+src/gnn/parsers/schema_parser.py                                     702    626    11%   26, 30-46, 50-105, 109-117, 120, 123-131, 135-146, 149-177, 180-189, 192-198, 204-207, 211-228, 232-287, 291-299, 302, 305-312, 315-354, 357-361, 364-375, 378-386, 392-396, 400-416, 420-476, 480-488, 491, 494-501, 504-581, 585, 591-595, 599-609, 613-624, 628-638, 642-698, 709-723, 727-746, 750-782, 786-813, 817-847, 851-858, 862-866, 870-879, 883-901, 905-925, 929-937, 941-949, 953-972, 976-985, 991-993, 996, 1000-1009, 1013-1071, 1074-1081, 1084-1119, 1122-1128, 1134-1136, 1139, 1143-1154, 1158-1216, 1219-1226, 1229-1264, 1267-1274, 1277-1283
+src/gnn/parsers/schema_serializer.py                                   8      1    88%   13
+src/gnn/parsers/serializers.py                                      1133   1133     0%   12-2642
+src/gnn/parsers/system.py                                            147     83    44%   132-141, 145-149, 153-157, 171-191, 205-224, 240, 254-263, 276-288, 300-331, 344-360, 364, 368, 373
+src/gnn/parsers/temporal_parser.py                                   264    236    11%   27-32, 35, 38-45, 49-134, 138-152, 156-221, 225-247, 251-261, 268-272, 275, 278-285, 289-352, 356-370, 374-439, 443-448, 452-459, 464, 471-484, 488-505, 509-517
+src/gnn/parsers/temporal_serializer.py                                77     58    25%   13-14, 18-21, 25-90, 94-96, 105-107, 118-126, 130-187, 191-199, 206, 213
+src/gnn/parsers/unified_parser.py                                    220    201     9%   35-36, 41, 59-117, 131-175, 187-228, 240-315, 330-346, 362-451, 455, 459-460
+src/gnn/parsers/utils.py                                              14      8    43%   27-28, 41-52
+src/gnn/parsers/validators.py                                        241    197    18%   40, 53-61, 65, 69, 73-78, 90, 102-122, 127-146, 155-170, 175-207, 211-247, 257-295, 300-330, 340-356, 366-387, 391-426, 437-506, 511-566, 571-617
+src/gnn/parsers/xml_parser.py                                        349    311    11%   30, 34-67, 71-109, 113-124, 130-164, 168-172, 177-188, 192-235, 240-255, 259-314, 319-329, 333-351, 355-366, 370-379, 383-398, 402-416, 424-434, 438-454, 458, 462-473, 478-530, 538, 544-556, 561-579, 583-591, 601-609, 619-625, 634, 638-649, 654-706
+src/gnn/parsers/xml_serializer.py                                    101     89    12%   15-163, 167-169, 178-180
+src/gnn/parsers/xsd_serializer.py                                     59     48    19%   13-92, 96-99, 108-121, 125-133
+src/gnn/parsers/yaml_parser.py                                       361    329     9%   20-21, 36-38, 42-55, 60-94, 98-138, 142-174, 178-189, 195-267, 271-286, 290-325, 329-360, 364-404, 408-415, 419-456, 460-491, 495-511, 515-530, 534-541, 545-569, 573-594, 598-614, 618-631, 635
+src/gnn/parsers/yaml_serializer.py                                    31     21    32%   6-7, 17-83, 87-105
+src/gnn/parsers/znotation_serializer.py                               52     41    21%   13-89, 93-101, 105-107, 116-118
+src/gnn/pomdp_extractor.py                                           373    373     0%   10-673
+src/gnn/processor.py                                                 158    141    11%   21-25, 39-87, 100-110, 114-130, 143-180, 192-227, 244-285, 307-322, 335-380, 384
+src/gnn/processors.py                                                401    401     0%   15-872
+src/gnn/reporting.py                                                 188    188     0%   9-461
+src/gnn/schema_validator.py                                          764    764     0%   16-1386
+src/gnn/schemas/__init__.py                                            1      1     0%   8
+src/gnn/simple_validator.py                                           57     57     0%   10-162
+src/gnn/testing.py                                                   197    197     0%   10-413
+src/gnn/testing/__init__.py                                            1      1     0%   11
+src/gnn/testing/performance_benchmarks.py                             78     78     0%   8-160
+src/gnn/testing/round_trip_strategy.py                                94     94     0%   9-198
+src/gnn/testing/simple_round_trip_test.py                            119    119     0%   12-202
+src/gnn/type_systems/__init__.py                                       1      1     0%   8
+src/gnn/types.py                                                     189    189     0%   5-220
+src/gnn/validation.py                                                173    173     0%   9-327
+src/gui/__init__.py                                                   41     41     0%   16-128
+src/gui/gui_1/__init__.py                                             24     24     0%   10-109
+src/gui/gui_1/markdown.py                                            187    187     0%   1-251
+src/gui/gui_1/mcp.py                                                  13     13     0%   5-27
+src/gui/gui_1/processor.py                                            69     69     0%   1-152
+src/gui/gui_1/ui.py                                                  124    124     0%   1-263
+src/gui/gui_2/__init__.py                                             24     24     0%   11-110
+src/gui/gui_2/matrix_editor.py                                       125    125     0%   5-334
+src/gui/gui_2/processor.py                                            67     67     0%   7-176
+src/gui/gui_2/ui.py                                                  392    392     0%   8-840
+src/gui/gui_2/ui_minimal.py                                           24     24     0%   6-42
+src/gui/gui_2/ui_simple.py                                           113    113     0%   7-240
+src/gui/gui_3/__init__.py                                             14     14     0%   7-69
+src/gui/gui_3/processor.py                                            85     85     0%   7-221
+src/gui/gui_3/ui_designer.py                                         138    138     0%   7-345
+src/integration/__init__.py                                           23     23     0%   7-66
+src/integration/mcp.py                                                16     16     0%   7-65
+src/integration/processor.py                                          26     26     0%   8-75
+src/llm/__init__.py                                                  104     80    23%   12-13, 26-37, 41-47, 59-97, 106-110, 129, 137-142, 145-146, 153, 161, 166, 176-180, 187-188, 193-205
+src/llm/analyzer.py                                                  106     89    16%   29-95, 105-112, 116-134, 138-157, 161-177, 181-204, 208-216, 220-247
+src/llm/demo_enhanced_llm.py                                         124    124     0%   9-304
+src/llm/generator.py                                                  89     83     7%   11-49, 53-88, 92-161, 165-211
+src/llm/llm_operations.py                                            211    162    23%   57-68, 75-76, 81, 88-92, 96-102, 115-135, 149-166, 170-186, 190-208, 221-243, 247-255, 267-294, 298-306, 319-340, 344-353, 357-368, 381-390, 394-402, 414-423, 427-435, 439-445, 449-464, 472, 476, 485-489, 494, 498, 502, 506, 510
+src/llm/llm_processor.py                                             320    243    24%   52-60, 63-64, 74, 78, 82, 86, 131-151, 193-215, 227-240, 244, 256, 268-289, 310-336, 346-359, 378-391, 410-426, 436-442, 451, 458-466, 491-529, 557-573, 582, 588-590, 608-609, 618-623, 636-666, 682, 694, 706, 719-740, 748-750, 760, 774-781, 794, 807-822, 838-848, 860-873
+src/llm/mcp.py                                                        53     53     0%   7-115
+src/llm/processor.py                                                 154    154     0%   6-313
+src/llm/prompts.py                                                    27     27     0%   10-389
+src/llm/providers/__init__.py                                         14      8    43%   20-21, 24-25, 28-29, 32-33
+src/llm/providers/base_provider.py                                    56     14    75%   71-73, 162-171, 188-230, 237, 246
+src/llm/providers/ollama_provider.py                                 123    123     0%   12-249
+src/llm/providers/openai_provider.py                                 155    130    16%   48-51, 56, 61, 66, 75-103, 115-131, 148-215, 232-282, 299-312, 316-320, 324-364
+src/llm/providers/openrouter_provider.py                             191    191     0%   2-450
+src/llm/providers/perplexity_provider.py                             171    171     0%   9-434
+src/main.py                                                          283    283     0%   54-656
+src/mcp/__init__.py                                                   24     24     0%   8-117
+src/mcp/cli.py                                                       201    201     0%   16-314
+src/mcp/mcp.py                                                       825    825     0%   24-1928
+src/mcp/meta_mcp.py                                                   65     65     0%   17-372
+src/mcp/npx_inspector.py                                             194    194     0%   12-328
+src/mcp/processor.py                                                  89     89     0%   8-228
+src/mcp/server.py                                                      2      2     0%   7-9
+src/mcp/server_http.py                                               132    132     0%   14-195
+src/mcp/server_stdio.py                                              155    155     0%   15-237
+src/mcp/sympy_mcp.py                                                 165    165     0%   9-481
+src/mcp/sympy_mcp_client.py                                          194    194     0%   9-503
+src/ml_integration/__init__.py                                        18     18     0%   3-44
+src/ml_integration/processor.py                                       25     25     0%   8-73
+src/model_registry/__init__.py                                         5      5     0%   8-20
+src/model_registry/legacy.py                                           3      3     0%   8-20
+src/model_registry/mcp.py                                             65     65     0%   8-343
+src/model_registry/registry.py                                       201    201     0%   8-451
+src/ontology/__init__.py                                              42     42     0%   7-94
+src/ontology/mcp.py                                                   53     53     0%   7-121
+src/ontology/processor.py                                            123    123     0%   8-346
+src/ontology/utils.py                                                 10     10     0%   8-74
+src/pipeline/__init__.py                                              36     15    58%   45, 47, 49-53, 55-56, 60, 62, 64, 67, 76, 79
+src/pipeline/config.py                                                76     50    34%   14-16, 50-55, 61-62, 66-81, 85-86, 90-104, 108-117, 121-122, 126, 171, 176
+src/pipeline/diagnostic_enhancer.py                                  111    111     0%   9-294
+src/pipeline/discovery.py                                             25     25     0%   1-31
+src/pipeline/execution.py                                             89     63    29%   27-28, 43-114, 118, 127-131, 135, 144, 153-163, 172-177
+src/pipeline/generate_api_index.py                                    55     55     0%   2-103
+src/pipeline/mcp.py                                                   78     78     0%   15-239
+src/pipeline/pipeline_validation.py                                  380    380     0%   16-714
+src/pipeline/pipeline_validator.py                                   230    230     0%   9-441
+src/pipeline/update_version.py                                       129    129     0%   8-244
+src/pipeline/validate_documentation.py                               197    197     0%   18-398
+src/pipeline/verify_pipeline.py                                      102    102     0%   8-263
+src/render/__init__.py                                                12      2    83%   23-24
+src/render/activeinference_jl/__init__.py                              2      0   100%
+src/render/activeinference_jl/activeinference_jl_renderer.py          82     82     0%   18-492
+src/render/activeinference_jl/activeinference_renderer.py            165    155     6%   33-56, 63-205, 218-512, 531-544
+src/render/activeinference_jl/activeinference_renderer_fixed.py       83     83     0%   9-442
+src/render/activeinference_jl/activeinference_renderer_simple.py      84     84     0%   9-423
+src/render/discopy/__init__.py                                         8      1    88%   14
+src/render/discopy/discopy_renderer.py                                88     76    14%   37-38, 51-73, 77-105, 119-452, 456, 475-503
+src/render/discopy/translator.py                                     703    703     0%   7-1518
+src/render/discopy/visualize_jax_output.py                           130    130     0%   1-172
+src/render/enhanced_visualizations.py                                423    423     0%   7-628
+src/render/generators.py                                              94     81    14%   12-19, 23-30, 34-72, 76-488, 492-863, 867-1293, 1297, 1301, 1305, 1309-1310
+src/render/generators_fixed.py                                        94     94     0%   6-1310
+src/render/jax/__init__.py                                             2      0   100%
+src/render/jax/jax_renderer.py                                       610    589     3%   40-49, 67-76, 93-102, 108-199, 203-625, 630-697, 703-752, 756, 761-789, 794-810, 815-1025, 1045-1271, 1291-1472
+src/render/jax/templates/__init__.py                                   4      4     0%   8-12
+src/render/jax/templates/combined_template.py                          0      0   100%
+src/render/jax/templates/general_template.py                           0      0   100%
+src/render/jax/templates/pomdp_template.py                             0      0   100%
+src/render/legacy.py                                                  28     17    39%   19-21, 34-35, 48-49, 53, 66-70, 83, 96, 109, 122, 135, 140
+src/render/mcp.py                                                     53     53     0%   7-122
+src/render/pomdp_processor.py                                        190    169    11%   16, 38-42, 102-162, 186-241, 261-290, 306-351, 370-384, 392-408, 416-432, 440-456, 464-480, 488-504, 524-598, 619-620
+src/render/processor.py                                              219    206     6%   47-223, 238-291, 305-390, 410-460, 469-501, 505, 528
+src/render/pymdp/__init__.py                                           2      0   100%
+src/render/pymdp/pymdp_converter.py                                 1004   1004     0%   8-1544
+src/render/pymdp/pymdp_renderer.py                                   174    154    11%   29-45, 59-73, 78-107, 112-146, 151-176, 191-192, 205-229, 242-275, 289-407, 411-412, 431-456
+src/render/pymdp/pymdp_utils.py                                      160    160     0%   1-267
+src/render/pymdp_enhanced.py                                           0      0   100%
+src/render/render.py                                                 169    143    15%   20-23, 28-31, 36-40, 45-49, 54-59, 87-170, 174-255
+src/render/renderer.py                                               148    148     0%   9-375
+src/render/rxinfer/__init__.py                                         2      0   100%
+src/render/rxinfer/gnn_parser.py                                     117    117     0%   5-256
+src/render/rxinfer/rxinfer_renderer.py                                82     82     0%   18-398
+src/render/rxinfer/toml_generator.py                                 388    365     6%   24-102, 114-172, 184-243, 259-273, 286-320, 340-553, 557-561, 565-574, 578, 582-588, 592-600, 608-778, 794-835, 839-842, 846-881, 885-935, 939-961, 990-1002
+src/report/__init__.py                                                39     39     0%   1-93
+src/report/analyzer.py                                               184    184     0%   9-502
+src/report/formatters.py                                             124    124     0%   9-599
+src/report/generator.py                                              150    150     0%   9-380
+src/report/mcp.py                                                     55     55     0%   7-120
+src/report/processor.py                                              501    501     0%   8-1220
+src/research/__init__.py                                              23     23     0%   7-66
+src/research/mcp.py                                                   16     16     0%   7-65
+src/research/processor.py                                             26     26     0%   8-75
+src/sapf/__init__.py                                                  18     10    44%   18-20, 35-36, 54-60
+src/security/__init__.py                                              15     15     0%   7-48
+src/security/mcp.py                                                   16     16     0%   7-65
+src/security/processor.py                                            140    140     0%   6-362
+src/setup/__init__.py                                                 42     42     0%   8-142
+src/setup/dependency_installer.py                                    218    218     0%   11-397
+src/setup/mcp.py                                                     125    125     0%   8-412
+src/setup/processor.py                                                98     98     0%   9-252
+src/setup/setup.py                                                   550    550     0%   8-1036
+src/setup/utils.py                                                    41     41     0%   8-190
+src/setup/validator.py                                                27     27     0%   8-80
+src/template/__init__.py                                               7      7     0%   20-47
+src/template/mcp.py                                                   94     94     0%   8-325
+src/template/processor.py                                            203    203     0%   8-481
+src/template/utils.py                                                  2      2     0%   8-15
+src/type_checker/__init__.py                                           7      0   100%
+src/type_checker/__main__.py                                           2      2     0%   7-8
+src/type_checker/analysis_utils.py                                   269    263     2%   32-163, 181-384, 404-541
+src/type_checker/checker.py                                          615    615     0%   9-1345
+src/type_checker/cli.py                                              124    124     0%   8-214
+src/type_checker/mcp.py                                              154    128    17%   257-258, 276-302, 312-333, 343-354, 364-375, 385-397, 407-433, 443, 471-505, 515-528, 538-550, 568-571, 581, 595-628, 636-644
+src/type_checker/output_utils.py                                     170    170     0%   10-249
+src/type_checker/pomdp_analyzer.py                                   298    273     8%   93-97, 109-182, 186-210, 214-218, 222-240, 244-310, 314-333, 337-396, 400-438, 442-459, 471-517, 552-666, 679-685
+src/type_checker/processor.py                                        322    293     9%   59-84, 105-262, 266-315, 327, 341-361, 365-378, 382-418, 427-484, 488-498, 513-531, 544-567, 590-644, 648-668, 703-806
+src/type_checker/resource_estimator.py                               583    583     0%   11-1738
+src/utils/__init__.py                                                 26      3    88%   234-237
+src/utils/argument_utils.py                                          511    425    17%   34-55, 118-132, 136-184, 188-194, 380-389, 394-410, 415-434, 439-507, 523-564, 578-598, 763, 768-810, 819-868, 873-885, 890-916, 938-982, 987-998, 1003, 1007-1018, 1022-1027, 1036-1053, 1057-1067, 1072-1194, 1197-1229
+src/utils/configuration.py                                           287    204    29%   81-82, 86-131, 135-142, 146-151, 155-160, 164, 168-175, 179-193, 197-226, 230-239, 243-251, 255-256, 260-268, 272-302, 306-320, 324-332, 336-346, 351-363, 367-382, 387-388, 392-396, 405, 414-432, 437, 442, 447, 454-482, 488, 497, 506, 515
+src/utils/dependency_validator.py                                    216    180    17%   44-51, 55, 209-296, 300-309, 313-331, 343-373, 377-404, 420-454, 463-473, 481-493, 506-528, 571-572
+src/utils/error_handling.py                                          175    100    43%   74, 105-108, 118-142, 147-175, 179-180, 186-218, 223-236, 241-267, 271-293, 305, 315-317, 323-330, 335-342, 347-354
+src/utils/error_recovery.py                                          265    195    26%   222-259, 264-300, 304-317, 321-331, 335-345, 349-369, 373-384, 388-394, 398-414, 429-479, 488-495, 499-513, 525, 528, 531, 548, 564-593, 601-615, 619-633, 637-667, 671-676, 680-706, 711-734
+src/utils/fallback.py                                                 17     17     0%   8-49
+src/utils/file_processing_utils.py                                   120    107    11%   18-27, 32-56, 61-80, 89-92, 104-124, 129-143, 148-186, 200-230
+src/utils/health_check.py                                            148    125    16%   27-29, 33-61, 69-99, 103-123, 127-137, 144-187, 191-234, 238-244, 249-250, 254-255, 259-278
+src/utils/io_utils.py                                                 84     84     0%   8-243
+src/utils/logging_utils.py                                           479    396    17%   33-40, 53-96, 101-110, 115-121, 126-129, 134-139, 156-171, 184-192, 204-206, 210-211, 215, 219-226, 234-235, 244-254, 263-313, 318-323, 330-367, 383-398, 426-441, 446-453, 459-485, 490-514, 519-530, 536-540, 544-547, 553-583, 587-606, 612-614, 618-647, 656-673, 685-712, 716-730, 740-765, 771-882, 886, 891, 895, 908, 915
+src/utils/mcp.py                                                     107    107     0%   16-352
+src/utils/path_utils.py                                                9      9     0%   1-11
+src/utils/performance_tracker.py                                      95     58    39%   21-22, 36-40, 49-54, 58-69, 73-76, 81, 86-92, 96, 125-130, 139-147, 154-155, 164-180, 189-195
+src/utils/pipeline.py                                                 69     58    16%   22-32, 50-56, 69-84, 97-115, 132-162
+src/utils/pipeline_monitor.py                                        101     75    26%   30-55, 59-66, 70-87, 91-106, 110, 114, 123-131, 135, 142, 146-154, 168-231
+src/utils/pipeline_planner.py                                         93     85     9%   17-144, 149-172, 182-224, 229-278
+src/utils/pipeline_template.py                                       213    178    16%   30, 43-45, 52-56, 80-157, 161-184, 227-282, 297, 315-385, 407-491, 495, 499-509
+src/utils/pipeline_validator.py                                       96     88     8%   17-83, 87-143, 147-183, 187-219
+src/utils/resource_manager.py                                        100     69    31%   25-30, 36-40, 44-45, 49-50, 55-57, 62, 67, 71, 80-84, 88-96, 109-125, 146-166, 182-194, 202-203, 212-217
+src/utils/script_validator.py                                        207    207     0%   12-490
+src/utils/shared_functions.py                                        100    100     0%   8-268
+src/utils/standardized_error_handling.py                              70     70     0%   8-146
+src/utils/system_utils.py                                             22     11    50%   11-12, 20-44
+src/utils/thin_orchestrator_validator.py                             210    210     0%   16-390
+src/utils/timeout_manager.py                                         236    236     0%   10-424
+src/utils/uv_utils.py                                                155    155     0%   9-420
+src/utils/uv_validator.py                                            202    202     0%   8-458
+src/utils/venv_utils.py                                               35     29    17%   18-68
+src/validation/__init__.py                                           105    105     0%   8-211
+src/validation/consistency_checker.py                                227    227     0%   8-446
+src/validation/legacy.py                                              16     16     0%   8-102
+src/validation/mcp.py                                                123    123     0%   8-417
+src/validation/performance_profiler.py                               207    207     0%   9-409
+src/validation/semantic_validator.py                                 245    245     0%   8-519
+src/visualization/__init__.py                                        160    141    12%   17-19, 23-56, 63-64, 128-327
+src/visualization/__main__.py                                          2      2     0%   8-9
+src/visualization/cli.py                                              33     33     0%   7-83
+src/visualization/legacy.py                                            6      4    33%   10-11, 15-16
+src/visualization/matrix_visualizer.py                               521    460    12%   17-21, 26-28, 33-35, 64-79, 131-132, 137-140, 144-152, 169-250, 264-297, 310-497, 519-622, 635-734, 747-838, 851-900, 912-940, 952-966, 980-1007, 1025-1029
+src/visualization/mcp.py                                              53     41    23%   20-24, 27-34, 37-55, 71-85, 95-122
+src/visualization/ontology_visualizer.py                             105     77    27%   54-91, 104-120, 141-154, 160, 173-234, 241
+src/visualization/parser.py                                          138    120    13%   35-42, 46-72, 77-92, 96-136, 140-204, 208-241, 253
+src/visualization/processor.py                                       533    499     6%   24-28, 34-36, 43-46, 49-51, 62-68, 79-111, 131-186, 200-311, 323-379, 398-422, 436-562, 576-641, 655-770, 784-912
+src/visualization/run_visualization.py                                42     42     0%   9-76
+src/visualization/visualizer.py                                      455    380    16%   23-25, 31-34, 39-41, 47-49, 54-56, 61-63, 88, 93, 98, 126-128, 142-231, 235-244, 248-257, 269-278, 293, 298-325, 330-353, 357-402, 406-482, 486-592, 596-599, 611-634, 647-658, 672-678, 692-703, 717-723, 738-767, 792-884
+src/website/__init__.py                                                6      6     0%   7-40
+src/website/generator.py                                             159    159     0%   2-393
+src/website/mcp.py                                                    53     53     0%   7-117
+src/website/renderer.py                                              142    142     0%   2-441
+------------------------------------------------------------------------------------------------
+TOTAL                                                              44885  41559     7%
+Coverage HTML written to dir output/2_tests_output/test_reports/category_visualization/htmlcov
+Coverage JSON written to file output/2_tests_output/test_reports/category_visualization/coverage.json
+================================================= slowest 10 durations =================================================
+0.35s call     src/tests/test_visualization_overall.py::test_visualization_module_performance
+0.35s call     src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_matrix_visualization
+0.34s call     src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_pipeline_integration
+0.04s call     src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_graph_visualization
+0.01s call     src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_info
+0.01s call     src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_mcp_integration
+0.01s call     src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_import
+0.01s call     src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_comparison_visualization
+0.01s call     src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_graph_visualizer_instantiation
+0.01s call     src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_color_mapping
+=============================================== short test summary info ================================================
+PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_data_creation
+PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_ontology_visualization
+PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_import
+PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_imports
+PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_data_preparation
+PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_graph_visualizer_instantiation
+PASSED src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_mcp_integration
+PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_instantiation
+PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_info
+PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_matrix_visualizer_instantiation
+PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_ontology_visualizer_instantiation
+PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_options
+PASSED src/tests/test_visualization_overall.py::test_visualization_module_completeness
+PASSED src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_pipeline_integration
+PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_matrix_visualization
+PASSED src/tests/test_visualization_overall.py::test_visualization_module_performance
+PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_graph_visualization
+SKIPPED [1] src/tests/test_visualization_matrices.py:233: Matrix color mapping not available: 'MatrixVisualizer' object has no attribute 'apply_color_map'
+SKIPPED [1] src/tests/test_visualization_matrices.py:337: Matrix visualization pipeline integration not available: 'MatrixVisualizer' object has no attribute 'process_gnn_file'
+SKIPPED [1] src/tests/test_visualization_matrices.py:183: Matrix comparison visualization not available: 'MatrixVisualizer' object has no attribute 'create_comparison_visualization'
+SKIPPED [1] src/tests/test_visualization_matrices.py:132: Matrix heatmap generation not available: MatrixVisualizer.create_heatmap() takes 2 positional arguments but 3 were given
+SKIPPED [1] src/tests/test_visualization_matrices.py:290: Matrix export formats not available: 'MatrixVisualizer' object has no attribute 'export_matrix'
+SKIPPED [1] src/tests/test_visualization_matrices.py:261: Matrix annotation not available: 'MatrixVisualizer' object has no attribute 'create_annotated_visualization'
+SKIPPED [1] src/tests/test_visualization_matrices.py:156: Matrix 3D visualization not available: 'MatrixVisualizer' object has no attribute 'create_3d_visualization'
+SKIPPED [1] src/tests/test_visualization_matrices.py:209: Matrix statistics visualization not available: 'MatrixVisualizer' object has no attribute 'create_statistics_visualization'
+SKIPPED [1] src/tests/test_visualization_matrices.py:316: Matrix interactive visualization not available: 'MatrixVisualizer' object has no attribute 'create_interactive_visualization'
+ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_create_ontology_table
+ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_visualize_directory
+ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_extract_ontology_mappings
+======================================= 17 passed, 9 skipped, 3 errors in 11.03s =======================================
