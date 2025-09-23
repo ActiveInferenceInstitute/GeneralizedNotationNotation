@@ -12,68 +12,68 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_comparison_visualization 
-src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_graph_visualizer_instantiation 
-src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_info 
-src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_create_ontology_table 
-[gw8] [  3%] ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_create_ontology_table 
-src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_data_creation 
-[gw2] [  6%] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_data_creation 
-src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_matrix_visualization 
+src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_ontology_visualization 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_export_formats 
 src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_mcp_integration 
+src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_create_ontology_table 
 src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_color_mapping 
 src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_pipeline_integration 
-src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_heatmap_generation 
+src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_matrix_visualization 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_info 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_comparison_visualization 
 src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_imports 
-[gw7] [ 10%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_imports 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_data_creation 
 src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_import 
-[gw11] [ 13%] PASSED src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_mcp_integration 
-src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_ontology_visualization 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_heatmap_generation 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_graph_visualizer_instantiation 
+[gw0] [  3%] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_import 
+[gw1] [  6%] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_data_creation 
+[gw6] [ 10%] ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_create_ontology_table 
+[gw4] [ 13%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_color_mapping 
 [gw12] [ 17%] PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_ontology_visualization 
-[gw13] [ 20%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_info 
-[gw9] [ 24%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_graph_visualizer_instantiation 
-src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_export_formats 
-[gw6] [ 27%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_export_formats 
-[gw5] [ 31%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_color_mapping 
-[gw0] [ 34%] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_import 
-[gw4] [ 37%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_pipeline_integration 
-src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_visualize_directory 
-src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_data_preparation 
-[gw1] [ 41%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_comparison_visualization 
-[gw8] [ 44%] ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_visualize_directory 
-src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_matrix_visualizer_instantiation 
-[gw3] [ 48%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_heatmap_generation 
-src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_pipeline_integration 
-[gw7] [ 51%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_matrix_visualizer_instantiation 
-[gw2] [ 55%] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_data_preparation 
-src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_ontology_visualizer_instantiation 
-src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_options 
-src/tests/test_visualization_overall.py::test_visualization_module_completeness 
-[gw11] [ 58%] PASSED src/tests/test_visualization_overall.py::test_visualization_module_completeness 
-[gw9] [ 62%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_ontology_visualizer_instantiation 
-[gw13] [ 65%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_options 
-src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_interactive_visualization 
-[gw6] [ 68%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_interactive_visualization 
-src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_annotation 
-[gw5] [ 72%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_annotation 
+[gw10] [ 20%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_info 
 src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_instantiation 
-[gw0] [ 75%] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_instantiation 
-src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_statistics_visualization 
-[gw1] [ 79%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_statistics_visualization 
-src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_3d_visualization 
-[gw3] [ 82%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_3d_visualization 
-src/tests/test_visualization_overall.py::test_visualization_module_performance 
+[gw7] [ 24%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_pipeline_integration 
+[gw5] [ 27%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_export_formats 
+[gw2] [ 31%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_heatmap_generation 
+[gw0] [ 34%] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualizer_instantiation 
+[gw3] [ 37%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_comparison_visualization 
+[gw13] [ 41%] PASSED src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_mcp_integration 
+[gw9] [ 44%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_graph_visualizer_instantiation 
+[gw8] [ 48%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_imports 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_data_preparation 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_annotation 
+src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_visualize_directory 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_options 
+src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_pipeline_integration 
+[gw1] [ 51%] PASSED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_visualization_data_preparation 
 src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_extract_ontology_mappings 
-[gw4] [ 86%] ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_extract_ontology_mappings 
-[gw10] [ 89%] PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_matrix_visualization 
+[gw10] [ 55%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_options 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_3d_visualization 
+[gw4] [ 58%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_annotation 
+[gw2] [ 62%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_3d_visualization 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_ontology_visualizer_instantiation 
+[gw9] [ 65%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_ontology_visualizer_instantiation 
+src/tests/test_visualization_overall.py::test_visualization_module_completeness 
+[gw13] [ 68%] PASSED src/tests/test_visualization_overall.py::test_visualization_module_completeness 
+[gw7] [ 72%] ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_extract_ontology_mappings 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_interactive_visualization 
+[gw5] [ 75%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_interactive_visualization 
+src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_statistics_visualization 
+[gw3] [ 79%] SKIPPED src/tests/test_visualization_matrices.py::TestVisualizationMatrices::test_matrix_statistics_visualization 
+[gw6] [ 82%] ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_visualize_directory 
+src/tests/test_visualization_overall.py::test_visualization_module_performance 
+src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_matrix_visualizer_instantiation 
+[gw8] [ 86%] PASSED src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_matrix_visualizer_instantiation 
+[gw12] [ 89%] PASSED src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_pipeline_integration 
+[gw11] [ 93%] PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_matrix_visualization 
 src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_graph_visualization 
-[gw8] [ 93%] PASSED src/tests/test_visualization_overall.py::test_visualization_module_performance 
-[gw12] [ 96%] PASSED src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_pipeline_integration 
-[gw10] [100%] PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_graph_visualization 
+[gw11] [ 96%] PASSED src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_graph_visualization 
+[gw0] [100%] PASSED src/tests/test_visualization_overall.py::test_visualization_module_performance 
 
 ==================================== ERRORS ====================================
 _____ ERROR at setup of TestOntologyVisualizer.test_create_ontology_table ______
-[gw8] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+[gw6] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
 file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py, line 59
       def test_create_ontology_table(self, temp_output_dir):
 E       fixture 'temp_output_dir' not found
@@ -81,17 +81,8 @@ E       fixture 'temp_output_dir' not found
 >       use 'pytest --fixtures [testpath]' for help on them.
 
 /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py:59
-______ ERROR at setup of TestOntologyVisualizer.test_visualize_directory _______
-[gw8] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
-file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py, line 78
-      def test_visualize_directory(self, test_data_dir, temp_output_dir):
-E       fixture 'test_data_dir' not found
->       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mocker, module_mocker, monkeypatch, no_cover, package_mocker, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, session_mocker, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py:78
 ___ ERROR at setup of TestOntologyVisualizer.test_extract_ontology_mappings ____
-[gw4] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+[gw7] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
 file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py, line 24
       def test_extract_ontology_mappings(self, sample_gnn_file):
 E       fixture 'sample_gnn_file' not found
@@ -99,15 +90,24 @@ E       fixture 'sample_gnn_file' not found
 >       use 'pytest --fixtures [testpath]' for help on them.
 
 /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py:24
+______ ERROR at setup of TestOntologyVisualizer.test_visualize_directory _______
+[gw6] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py, line 78
+      def test_visualize_directory(self, test_data_dir, temp_output_dir):
+E       fixture 'test_data_dir' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mocker, module_mocker, monkeypatch, no_cover, package_mocker, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, session_mocker, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_visualization_ontology.py:78
 ============================= slowest 10 durations =============================
-0.50s call     src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_pipeline_integration
-0.49s call     src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_matrix_visualization
-0.48s call     src/tests/test_visualization_overall.py::test_visualization_module_performance
+0.57s call     src/tests/test_visualization_overall.py::test_visualization_module_performance
+0.55s call     src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_matrix_visualization
+0.51s call     src/tests/test_visualization_overall.py::TestVisualizationIntegration::test_visualization_pipeline_integration
 0.02s call     src/tests/test_visualization_overall.py::TestVisualizationFunctionality::test_graph_visualization
 
 (6 durations < 0.005s hidden.  Use -vv to show these durations.)
 =========================== short test summary info ============================
 ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_create_ontology_table
-ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_visualize_directory
 ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_extract_ontology_mappings
-=================== 17 passed, 9 skipped, 3 errors in 3.96s ====================
+ERROR src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_visualize_directory
+=================== 17 passed, 9 skipped, 3 errors in 3.44s ====================

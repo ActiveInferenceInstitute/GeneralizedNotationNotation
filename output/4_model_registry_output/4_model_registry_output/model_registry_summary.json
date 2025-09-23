@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-22T16:34:40.066589",
+  "timestamp": "2025-09-23T06:19:28.943175",
   "step_name": "model_registry",
   "input_directory": "input/gnn_files",
   "output_directory": "output/4_model_registry_output/4_model_registry_output",

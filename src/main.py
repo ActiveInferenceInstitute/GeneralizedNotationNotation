@@ -105,6 +105,26 @@ except ImportError:
     UV_AVAILABLE = False
     logging.warning("UV utilities not available - falling back to standard Python execution")
 
+def sanitize_for_json(obj):
+    """Sanitize objects for JSON serialization by converting non-serializable types."""
+    if isinstance(obj, bytes):
+        return obj.decode('utf-8', errors='replace')
+    elif isinstance(obj, (dict, list)):
+        if isinstance(obj, dict):
+            return {key: sanitize_for_json(value) for key, value in obj.items()}
+        else:
+            return [sanitize_for_json(item) for item in obj]
+    elif isinstance(obj, Path):
+        return str(obj)
+    elif isinstance(obj, datetime):
+        return obj.isoformat()
+    else:
+        # Try to convert to string, if that fails return str(type)
+        try:
+            return str(obj)
+        except Exception:
+            return f"<{type(obj).__name__} object>"
+
 def perform_pipeline_health_check() -> Dict[str, Any]:
     """Perform comprehensive pipeline health checks."""
     import shutil
@@ -657,12 +677,16 @@ def main():
         else:
             pipeline_summary["overall_status"] = "SUCCESS"
         
-        # Save pipeline summary
+        # Save pipeline summary with JSON serialization fix
         summary_path = args.pipeline_summary_file
         summary_path.parent.mkdir(parents=True, exist_ok=True)
         basic_logger.info(f"Saving pipeline summary to: {summary_path}")
+
+        # Sanitize pipeline summary for JSON serialization
+        sanitized_summary = sanitize_for_json(pipeline_summary)
+
         with open(summary_path, 'w') as f:
-            json.dump(pipeline_summary, f, indent=4)
+            json.dump(sanitized_summary, f, indent=4)
         basic_logger.info(f"Pipeline summary saved successfully")
 
         # Final status logging
@@ -706,8 +730,10 @@ def main():
         summary_path = args.pipeline_summary_file
         summary_path.parent.mkdir(parents=True, exist_ok=True)
         try:
+            # Sanitize pipeline summary for JSON serialization
+            sanitized_summary = sanitize_for_json(pipeline_summary)
             with open(summary_path, 'w') as f:
-                json.dump(pipeline_summary, f, indent=4)
+                json.dump(sanitized_summary, f, indent=4)
             basic_logger.info(f"Pipeline summary saved with error context to: {summary_path}")
         except Exception as save_error:
             basic_logger.error(f"Failed to save pipeline summary on error: {save_error}")

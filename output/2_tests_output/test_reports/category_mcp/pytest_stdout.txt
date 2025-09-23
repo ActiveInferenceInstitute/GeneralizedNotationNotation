@@ -12,83 +12,72 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
 src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution 
-src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
 src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
+src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports 
+src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
+src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
+[gw1] [  3%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
+src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
 src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval 
 src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration 
-src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports 
-[gw1] [  3%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
-[gw4] [  6%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
-src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration 
-src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
-[gw2] [  9%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_transport_layer 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling 
-[gw1] [ 12%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
-[gw10] [ 15%] ERROR src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
+[gw3] [  6%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_performance 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
+[gw2] [  9%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_response_format 
+[gw6] [ 12%] ERROR src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution 
 src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage 
-[gw2] [ 18%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
-[gw6] [ 21%] ERROR src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution 
-[gw7] [ 25%] ERROR src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration 
-[gw4] [ 28%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage 
-[gw8] [ 31%] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration 
-[gw12] [ 34%] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports 
-[gw9] [ 37%] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
+[gw8] [ 15%] ERROR src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
+[gw10] [ 18%] ERROR src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
+[gw1] [ 21%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_message_format 
 src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
-[gw10] [ 40%] ERROR src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
-src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
-src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
-[gw11] [ 43%] PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling 
+[gw2] [ 25%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_error_handling 
+[gw3] [ 28%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_memory_usage 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports 
 src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters 
-[gw6] [ 46%] ERROR src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters 
-[gw0] [ 50%] SKIPPED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
-[gw5] [ 53%] PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization 
-[gw8] [ 56%] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization 
+[gw11] [ 31%] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_instance_retrieval 
+[gw10] [ 34%] ERROR src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
+[gw9] [ 37%] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_tools_registration 
+[gw5] [ 40%] PASSED src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports 
 src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration 
-src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
-[gw13] [ 59%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports 
-src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
-[gw9] [ 62%] SKIPPED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
-[gw12] [ 65%] ERROR src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
-[gw1] [ 68%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration 
-[gw2] [ 71%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
-[gw7] [ 75%] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports 
+[gw12] [ 43%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_websocket_server_imports 
+src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
+[gw7] [ 46%] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_server_instantiation 
+[gw0] [ 50%] SKIPPED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_import_available 
+[gw6] [ 53%] ERROR src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters 
+[gw13] [ 56%] PASSED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_stdio_server_imports 
+src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization 
 src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
-[gw5] [ 78%] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
-src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration 
-[gw0] [ 81%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration 
-[gw4] [ 84%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
-src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
-[gw11] [ 87%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
-src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
 src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
-[gw13] [ 90%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
-[gw1] [ 93%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
-[gw3] [ 96%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
+src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
+[gw9] [ 59%] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_initialization 
+[gw12] [ 62%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_initialization 
+[gw5] [ 65%] PASSED src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_mcp_error_classes 
+src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration 
+src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
+[gw7] [ 68%] SKIPPED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_info 
+[gw1] [ 71%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_configuration 
+[gw8] [ 75%] PASSED src/tests/test_mcp_overall.py::TestMCPModuleComprehensive::test_mcp_module_imports 
+[gw0] [ 78%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_tool_registration 
+src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
+[gw11] [ 81%] ERROR src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
+src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
+[gw3] [ 84%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportFunctionality::test_transport_cleanup 
+[gw2] [ 87%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_with_tools 
+[gw13] [ 90%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportLayers::test_tcp_server_imports 
+[gw4] [ 93%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations 
 src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation 
-[gw3] [100%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation 
+[gw6] [ 96%] SKIPPED src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling 
+[gw4] [100%] PASSED src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_validation 
 
 ==================================== ERRORS ====================================
-______ ERROR at setup of TestMCPToolExecution.test_export_tool_execution _______
-[gw10] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
-file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_tools.py, line 46
-      @pytest.mark.unit
-      @pytest.mark.safe_to_fail
-      def test_export_tool_execution(self, mock_mcp_tools, comprehensive_test_data):
-E       fixture 'mock_mcp_tools' not found
->       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mocker, module_mocker, monkeypatch, no_cover, package_mocker, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, session_mocker, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_tools.py:46
 ______ ERROR at setup of TestMCPErrorHandling.test_invalid_tool_execution ______
 [gw6] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
 file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_overall.py, line 65
@@ -101,7 +90,7 @@ E       fixture 'mock_mcp_tools' not found
 
 /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_overall.py:65
 __ ERROR at setup of TestMCPResourceManagement.test_mcp_resource_registration __
-[gw7] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+[gw8] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
 file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_overall.py, line 103
       @pytest.mark.unit
       @pytest.mark.safe_to_fail
@@ -111,6 +100,17 @@ E       fixture 'mock_mcp_tools' not found
 >       use 'pytest --fixtures [testpath]' for help on them.
 
 /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_overall.py:103
+______ ERROR at setup of TestMCPToolExecution.test_export_tool_execution _______
+[gw10] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_tools.py, line 46
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_export_tool_execution(self, mock_mcp_tools, comprehensive_test_data):
+E       fixture 'mock_mcp_tools' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mocker, module_mocker, monkeypatch, no_cover, package_mocker, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, session_mocker, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_tools.py:46
 ___ ERROR at setup of TestMCPToolExecution.test_utils_system_info_execution ____
 [gw10] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
 file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_tools.py, line 68
@@ -134,7 +134,7 @@ E       fixture 'mock_mcp_tools' not found
 
 /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_overall.py:79
 ___ ERROR at setup of TestMCPToolExecution.test_gnn_validate_tool_execution ____
-[gw12] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+[gw11] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
 file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_tools.py, line 24
       @pytest.mark.unit
       @pytest.mark.safe_to_fail
@@ -146,14 +146,14 @@ E       fixture 'mock_mcp_tools' not found
 /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_tools.py:24
 ============================= slowest 10 durations =============================
 0.01s call     src/tests/test_mcp_integration.py::TestMCPIntegration::test_mcp_concurrent_operations
-0.01s call     src/tests/test_mcp_overall.py::TestMCPCoreComprehensive::test_mcp_core_imports
+0.01s call     src/tests/test_mcp_transport.py::TestMCPTransportIntegration::test_transport_error_handling
 
 (8 durations < 0.005s hidden.  Use -vv to show these durations.)
 =========================== short test summary info ============================
-ERROR src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution
 ERROR src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_invalid_tool_execution
 ERROR src/tests/test_mcp_overall.py::TestMCPResourceManagement::test_mcp_resource_registration
+ERROR src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution
 ERROR src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution
 ERROR src/tests/test_mcp_overall.py::TestMCPErrorHandling::test_tool_execution_with_invalid_parameters
 ERROR src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution
-=================== 17 passed, 9 skipped, 6 errors in 3.42s ====================
+=================== 17 passed, 9 skipped, 6 errors in 2.94s ====================

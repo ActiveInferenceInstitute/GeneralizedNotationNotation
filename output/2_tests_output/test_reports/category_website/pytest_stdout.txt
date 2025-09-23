@@ -13,33 +13,39 @@ created: 14/14 workers
 scheduling tests via LoadScheduling
 
 src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation 
+src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation 
+src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation 
+[gw2] [  8%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation 
+src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info 
+[gw12] [ 16%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info 
 src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types 
 src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports 
-[gw4] [  8%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports 
-src/tests/test_website_overall.py::test_website_module_performance 
-src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration 
-[gw11] [ 16%] PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration 
-src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering 
-[gw5] [ 25%] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering 
-[gw0] [ 33%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation 
-[gw1] [ 41%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types 
-src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation 
-[gw3] [ 50%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation 
-src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation 
-src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration 
-[gw8] [ 58%] PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration 
-src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info 
-[gw2] [ 66%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_info 
+[gw0] [ 25%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_module_imports 
+[gw1] [ 33%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types 
+[gw3] [ 41%] PASSED src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_generator_instantiation 
 src/tests/test_website_overall.py::test_website_module_completeness 
-[gw10] [ 75%] PASSED src/tests/test_website_overall.py::test_website_module_performance 
-[gw7] [ 83%] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation 
-[gw13] [ 91%] PASSED src/tests/test_website_overall.py::test_website_module_completeness 
-src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation 
-[gw6] [100%] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation 
+src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration 
+[gw10] [ 50%] PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration 
+src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration 
+[gw7] [ 58%] PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration 
+[gw6] [ 66%] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation 
+src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering 
+[gw5] [ 75%] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering 
+[gw8] [ 83%] PASSED src/tests/test_website_overall.py::test_website_module_completeness 
+src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation 
+[gw4] [ 91%] PASSED src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation 
+src/tests/test_website_overall.py::test_website_module_performance 
+[gw13] [100%] PASSED src/tests/test_website_overall.py::test_website_module_performance 
 
 ============================= slowest 10 durations =============================
-0.01s call     src/tests/test_website_overall.py::test_website_module_performance
-0.01s call     src/tests/test_website_overall.py::test_website_module_completeness
-
-(8 durations < 0.005s hidden.  Use -vv to show these durations.)
-============================== 12 passed in 7.14s ==============================
+0.06s call     src/tests/test_website_overall.py::test_website_module_completeness
+0.03s call     src/tests/test_website_overall.py::test_website_module_performance
+0.02s call     src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_pipeline_integration
+0.01s call     src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation
+0.01s call     src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types
+0.01s call     src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation
+0.01s call     src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_renderer_instantiation
+0.01s setup    src/tests/test_website_overall.py::test_website_module_performance
+0.01s setup    src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation
+0.01s setup    src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types
+============================= 12 passed in 14.35s ==============================

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-09-22T16:34:40.131082",
+  "timestamp": "2025-09-23T06:19:28.994851",
   "source_directory": "input/gnn_files",
   "output_directory": "output/5_type_checker_output/5_type_checker_output",
   "total_files": 1,
@@ -7,6 +7,6 @@
   "failed_files": 0,
   "total_errors": 0,
   "total_warnings": 72,
-  "pomdp_mode": true,
-  "ontology_file": "input/ontology_terms.json"
+  "pomdp_mode": false,
+  "ontology_file": null
 }

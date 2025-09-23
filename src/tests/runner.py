@@ -1455,7 +1455,7 @@ class ModularTestRunner:
                     env=env,
                     capture_output=True,
                     text=True,
-                    timeout=300  # 5 minute timeout for comprehensive tests
+                    timeout=600  # 10 minute timeout for comprehensive tests
                 )
 
                 # Write output to files

@@ -62,7 +62,7 @@ def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any
             result["passed"] = False
             return result
 
-    if required_steps:
+    if required_steps and args and hasattr(args, 'output_dir'):
         # Check if prerequisite step outputs exist
         for req_step in required_steps:
             step_number = req_step.split('_')[0]

@@ -1,8 +1,8 @@
 # GNN Pipeline Executive Summary
 
-## Overall Status: 🟢 EXCELLENT
+## Overall Status: 🟡 GOOD
 
-**Health Score:** 91.7/100
+**Health Score:** 83.3/100
 
 ## Key Metrics
 
@@ -13,7 +13,7 @@
 
 - **Output Generation:**
   - Files Created: 2257
-  - Total Size: 200.38 MB
+  - Total Size: 199.90 MB
 
 ## Critical Issues
 
@@ -22,7 +22,7 @@
 ## Top Recommendations
 
 1. Investigate missing output directories: 9_advanced_viz_output
-2. Pipeline is performing well - consider optimization opportunities
+2. Pipeline health is good but could be improved
 
 ## Next Steps
 
@@ -31,4 +31,4 @@
 3. **Long-term:** Monitor pipeline performance and establish regular health checks
 
 ---
-*Report generated on 2025-09-22T16:35:02.889319*
+*Report generated on 2025-09-22T19:39:46.834963*

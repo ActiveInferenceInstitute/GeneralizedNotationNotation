@@ -12,40 +12,40 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export 
 src/tests/test_export_overall.py::test_export_module_performance 
-[gw8] [  8%] PASSED src/tests/test_export_overall.py::test_export_module_performance 
-src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model 
-[gw6] [ 16%] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model 
-src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info 
-[gw3] [ 25%] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info 
-src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation 
 src/tests/test_export_overall.py::test_export_module_completeness 
-[gw13] [ 33%] PASSED src/tests/test_export_overall.py::test_export_module_completeness 
-[gw10] [ 41%] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export 
-src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats 
-src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation 
-src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration 
-[gw5] [ 50%] PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration 
 src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration 
-[gw7] [ 58%] PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration 
+src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration 
+src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export 
+[gw10] [  8%] PASSED src/tests/test_export_overall.py::test_export_module_performance 
+src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation 
+src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model 
+[gw11] [ 16%] PASSED src/tests/test_export_overall.py::test_export_module_completeness 
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats 
 src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation 
-[gw2] [ 66%] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation 
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info 
+[gw12] [ 25%] PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration 
+src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation 
 src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports 
-[gw0] [ 75%] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation 
-[gw1] [ 83%] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports 
-[gw4] [ 91%] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats 
-[gw9] [100%] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation 
+[gw13] [ 33%] PASSED src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration 
+[gw9] [ 41%] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export 
+[gw4] [ 50%] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation 
+[gw1] [ 58%] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info 
+[gw2] [ 66%] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation 
+[gw5] [ 75%] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model 
+[gw0] [ 83%] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports 
+[gw7] [ 91%] PASSED src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation 
+[gw3] [100%] PASSED src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats 
 
 ============================= slowest 10 durations =============================
-0.42s call     src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation
-0.38s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats
-0.04s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation
-0.03s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports
-0.01s setup    src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation
-0.01s call     src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration
-0.01s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation
-0.01s call     src/tests/test_export_overall.py::test_export_module_performance
-0.01s call     src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export
-0.01s call     src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration
-============================== 12 passed in 7.02s ==============================
+1.93s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_supported_formats
+1.67s call     src/tests/test_export_overall.py::TestExportFunctionality::test_export_format_validation
+0.32s call     src/tests/test_export_overall.py::TestExportFunctionality::test_export_gnn_model
+0.32s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_imports
+0.27s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_exporter_instantiation
+0.26s call     src/tests/test_export_overall.py::TestExportFunctionality::test_multi_format_export
+0.25s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_export_module_info
+0.24s call     src/tests/test_export_overall.py::TestExportModuleComprehensive::test_multi_format_exporter_instantiation
+0.23s call     src/tests/test_export_overall.py::TestExportIntegration::test_export_mcp_integration
+0.16s call     src/tests/test_export_overall.py::TestExportIntegration::test_export_pipeline_integration
+============================= 12 passed in 31.74s ==============================

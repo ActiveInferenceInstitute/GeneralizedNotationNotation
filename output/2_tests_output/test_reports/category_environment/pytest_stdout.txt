@@ -12,80 +12,80 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
-src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation 
-src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_python_version_compatibility 
 src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_uv_availability 
-src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_optional_packages_graceful_degradation 
 src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_file_system_permissions 
-[gw2] [  3%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_python_version_compatibility 
-src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_package_installation_integration 
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_optional_packages_graceful_degradation 
 src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_version_compatibility 
-[gw0] [  6%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_optional_packages_graceful_degradation 
-src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_pipeline_environment_integration 
-[gw3] [  9%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_file_system_permissions 
+[gw1] [  3%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_version_compatibility 
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_package_installation_integration 
 src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_setup_integration 
-src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_essential_packages_available 
-[gw5] [ 12%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_version_compatibility 
-[gw2] [ 15%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_essential_packages_available 
-src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_monitoring_integration 
-[gw13] [ 18%] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation 
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_python_version_compatibility 
+[gw0] [  6%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_python_version_compatibility 
 src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_error_handling_integration 
-src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_pytest_availability 
-[gw7] [ 21%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_pipeline_environment_integration 
-src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration 
-src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_installation_simulation 
-[gw0] [ 25%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_pytest_availability 
-src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_import_path_resolution 
-[gw3] [ 28%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_import_path_resolution 
-src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation 
 src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports 
-[gw4] [ 31%] SKIPPED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_setup_integration 
-src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info 
-src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration 
-[gw13] [ 34%] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info 
-src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration 
-src/tests/test_environment_overall.py::test_environment_module_performance 
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_pipeline_environment_integration 
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_monitoring_integration 
+[gw10] [  9%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_error_handling_integration 
+[gw11] [ 12%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_pipeline_environment_integration 
+[gw5] [ 15%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_file_system_permissions 
+[gw3] [ 18%] SKIPPED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_setup_integration 
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation 
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_installation_simulation 
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation 
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation 
+[gw2] [ 21%] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports 
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_essential_packages_available 
+[gw0] [ 25%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_essential_packages_available 
 src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_cleanup_integration 
-[gw7] [ 37%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_cleanup_integration 
-[gw11] [ 40%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_error_handling_integration 
-[gw0] [ 43%] SKIPPED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration 
-[gw10] [ 46%] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports 
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_import_path_resolution 
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration 
+src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration 
+[gw11] [ 28%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_cleanup_integration 
+[gw5] [ 31%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_import_path_resolution 
 src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_logging_integration 
 src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation 
-[gw11] [ 50%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_logging_integration 
-[gw1] [ 53%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_uv_availability 
-src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_environment_variables 
-[gw10] [ 56%] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation 
-[gw1] [ 59%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_environment_variables 
-[gw6] [ 62%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_package_installation_integration 
-src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_validation_integration 
-[gw6] [ 65%] SKIPPED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_validation_integration 
-[gw2] [ 68%] PASSED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration 
-[gw12] [ 71%] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation 
-src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup 
-[gw3] [ 75%] PASSED src/tests/test_environment_overall.py::test_environment_module_performance 
-[gw12] [ 78%] PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup 
-src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation 
-[gw8] [ 81%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_monitoring_integration 
-src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_configuration_integration 
-[gw8] [ 84%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_configuration_integration 
-[gw5] [ 87%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_installation_simulation 
 src/tests/test_environment_overall.py::test_environment_module_completeness 
-[gw5] [ 90%] PASSED src/tests/test_environment_overall.py::test_environment_module_completeness 
-[gw4] [ 93%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration 
-[gw9] [ 96%] PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation 
+src/tests/test_environment_overall.py::test_environment_module_performance 
+[gw10] [ 34%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_logging_integration 
+[gw2] [ 37%] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation 
+[gw0] [ 40%] SKIPPED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration 
+[gw11] [ 43%] PASSED src/tests/test_environment_overall.py::test_environment_module_completeness 
+[gw12] [ 46%] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation 
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info 
+[gw4] [ 50%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_uv_availability 
+[gw12] [ 53%] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info 
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_environment_variables 
+[gw4] [ 56%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_environment_variables 
+[gw8] [ 59%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_package_installation_integration 
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_validation_integration 
+[gw8] [ 62%] SKIPPED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_validation_integration 
+[gw9] [ 65%] PASSED src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation 
+[gw5] [ 68%] PASSED src/tests/test_environment_overall.py::test_environment_module_performance 
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup 
+[gw9] [ 71%] PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup 
+[gw7] [ 75%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_monitoring_integration 
+src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_configuration_integration 
+[gw7] [ 78%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_configuration_integration 
+[gw1] [ 81%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_installation_simulation 
+src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration 
+[gw1] [ 84%] PASSED src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration 
+[gw6] [ 87%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_optional_packages_graceful_degradation 
+src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_pytest_availability 
+[gw6] [ 90%] PASSED src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_pytest_availability 
+[gw13] [ 93%] PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation 
 src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check 
-[gw9] [100%] PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check 
+[gw13] [ 96%] PASSED src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check 
+[gw3] [100%] PASSED src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration 
 
 ============================= slowest 10 durations =============================
-2.90s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
-2.08s call     src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration
+7.20s call     src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration
+1.82s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
+0.59s call     src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_optional_packages_graceful_degradation
+0.25s teardown src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration
 0.21s call     src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_dependency_installation_simulation
 0.11s call     src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_environment_monitoring_integration
-0.07s teardown src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_virtual_environment_integration
-0.06s call     src/tests/test_environment_overall.py::test_environment_module_performance
-0.06s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
+0.07s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
+0.07s call     src/tests/test_environment_overall.py::test_environment_module_performance
 0.05s call     src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
 0.03s call     src/tests/test_environment_integration.py::TestEnvironmentIntegration::test_package_installation_integration
-0.02s call     src/tests/test_environment_dependencies.py::TestEnvironmentDependencies::test_uv_availability
-======================== 29 passed, 3 skipped in 8.69s =========================
+======================== 29 passed, 3 skipped in 23.20s ========================

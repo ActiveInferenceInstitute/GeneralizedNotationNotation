@@ -12,40 +12,40 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
+src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration 
 src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis 
 src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration 
-src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis 
-src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports 
 src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation 
-src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation 
-src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info 
-src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration 
 src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation 
-[gw12] [  8%] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis 
-src/tests/test_llm_overall.py::test_llm_module_performance 
-[gw7] [ 16%] PASSED src/tests/test_llm_overall.py::test_llm_module_performance 
-[gw8] [ 25%] PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration 
-[gw2] [ 33%] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation 
-src/tests/test_llm_overall.py::test_llm_module_completeness 
-[gw13] [ 41%] PASSED src/tests/test_llm_overall.py::test_llm_module_completeness 
-[gw6] [ 50%] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation 
-[gw0] [ 58%] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation 
-[gw11] [ 66%] PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration 
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation 
 src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers 
-[gw1] [ 75%] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports 
-[gw5] [ 83%] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis 
-[gw4] [ 91%] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info 
-[gw3] [100%] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers 
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info 
+src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports 
+src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis 
+[gw11] [  8%] PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration 
+src/tests/test_llm_overall.py::test_llm_module_completeness 
+src/tests/test_llm_overall.py::test_llm_module_performance 
+[gw7] [ 16%] PASSED src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_pipeline_integration 
+[gw13] [ 25%] PASSED src/tests/test_llm_overall.py::test_llm_module_completeness 
+[gw9] [ 33%] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis 
+[gw6] [ 41%] PASSED src/tests/test_llm_overall.py::test_llm_module_performance 
+[gw0] [ 50%] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation 
+[gw12] [ 58%] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis 
+[gw4] [ 66%] PASSED src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation 
+[gw1] [ 75%] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation 
+[gw2] [ 83%] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports 
+[gw3] [ 91%] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info 
+[gw5] [100%] PASSED src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers 
 
 ============================= slowest 10 durations =============================
-0.13s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers
-0.11s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info
-0.01s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports
-0.01s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation
-0.01s call     src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration
-0.01s call     src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis
-0.01s call     src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation
-0.01s call     src/tests/test_llm_overall.py::test_llm_module_performance
-
-(2 durations < 0.005s hidden.  Use -vv to show these durations.)
-============================== 12 passed in 5.96s ==============================
+1.62s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_providers
+1.29s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_info
+0.23s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_analyzer_instantiation
+0.23s call     src/tests/test_llm_overall.py::TestLLMFunctionality::test_description_generation
+0.21s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_processor_instantiation
+0.21s call     src/tests/test_llm_overall.py::TestLLMModuleComprehensive::test_llm_module_imports
+0.21s call     src/tests/test_llm_overall.py::TestLLMFunctionality::test_model_analysis
+0.20s call     src/tests/test_llm_overall.py::TestLLMFunctionality::test_content_analysis
+0.17s call     src/tests/test_llm_overall.py::test_llm_module_completeness
+0.13s call     src/tests/test_llm_overall.py::test_llm_module_performance
+============================= 12 passed in 24.26s ==============================

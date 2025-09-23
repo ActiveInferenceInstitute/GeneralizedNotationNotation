@@ -12,39 +12,39 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
+src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing 
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_validator_instantiation 
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_imports 
+[gw1] [  8%] PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_imports 
+src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_term_validation 
+[gw5] [ 16%] PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_term_validation 
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processor_instantiation 
+[gw0] [ 25%] PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processor_instantiation 
 src/tests/test_ontology_overall.py::test_ontology_module_performance 
 src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_validation 
-src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_term_validation 
-src/tests/test_ontology_overall.py::test_ontology_module_completeness 
-src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processor_instantiation 
-src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options 
-src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_imports 
-src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration 
-src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_validator_instantiation 
-src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_pipeline_integration 
+[gw3] [ 33%] PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_validation 
 src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_info 
-[gw9] [  8%] PASSED src/tests/test_ontology_overall.py::test_ontology_module_completeness 
-[gw6] [ 16%] PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_validation 
-src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing 
-[gw10] [ 25%] PASSED src/tests/test_ontology_overall.py::test_ontology_module_performance 
-[gw7] [ 33%] PASSED src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration 
-[gw8] [ 41%] PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_term_validation 
-[gw13] [ 50%] PASSED src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_pipeline_integration 
-[gw1] [ 58%] PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processor_instantiation 
-[gw2] [ 66%] PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_validator_instantiation 
-[gw4] [ 75%] PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options 
-[gw3] [ 83%] PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_info 
-[gw0] [ 91%] PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_imports 
-[gw5] [100%] PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing 
+src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_pipeline_integration 
+src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration 
+[gw6] [ 41%] PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_info 
+[gw4] [ 50%] PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_validator_instantiation 
+[gw2] [ 58%] PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing 
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options 
+[gw9] [ 66%] PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options 
+src/tests/test_ontology_overall.py::test_ontology_module_completeness 
+[gw12] [ 75%] PASSED src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration 
+[gw10] [ 83%] PASSED src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_pipeline_integration 
+[gw13] [ 91%] PASSED src/tests/test_ontology_overall.py::test_ontology_module_completeness 
+[gw7] [100%] PASSED src/tests/test_ontology_overall.py::test_ontology_module_performance 
 
 ============================= slowest 10 durations =============================
-0.01s call     src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_imports
-0.01s setup    src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing
-0.01s call     src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing
-0.01s call     src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_info
+0.02s call     src/tests/test_ontology_overall.py::test_ontology_module_performance
+0.02s call     src/tests/test_ontology_overall.py::test_ontology_module_completeness
 0.01s call     src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_validator_instantiation
-0.01s call     src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processor_instantiation
-0.01s call     src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options
+0.01s call     src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing
+0.01s setup    src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_info
+0.01s setup    src/tests/test_ontology_overall.py::test_ontology_module_performance
+0.01s setup    src/tests/test_ontology_overall.py::test_ontology_module_completeness
 
 (3 durations < 0.005s hidden.  Use -vv to show these durations.)
-============================== 12 passed in 6.13s ==============================
+============================= 12 passed in 17.14s ==============================

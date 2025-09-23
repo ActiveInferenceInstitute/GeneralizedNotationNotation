@@ -12,38 +12,38 @@ created: 14/14 workers
 
 scheduling tests via LoadScheduling
 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl 
+src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available 
+src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering 
+src/tests/test_render_integration.py::TestRenderIntegration::test_render_error_handling 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax 
+src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering 
+src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage 
+src/tests/test_render_integration.py::TestRenderIntegration::test_render_performance 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp 
+src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml 
 src/tests/test_render_integration.py::TestRenderIntegration::test_pymdp_rendering 
 [gw1] [  7%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_pymdp_rendering 
-src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp 
-src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering 
-[gw2] [ 14%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering 
+[gw5] [ 14%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_error_handling 
+[gw3] [ 21%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_rxinfer_rendering 
+[gw4] [ 28%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_performance 
+[gw2] [ 35%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering 
+[gw11] [ 42%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp 
+[gw7] [ 50%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp 
 src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl 
-src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering 
-[gw4] [ 21%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_jax_rendering 
-src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage 
-[gw7] [ 28%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy 
-src/tests/test_render_integration.py::TestRenderIntegration::test_render_performance 
-[gw5] [ 35%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_performance 
-src/tests/test_render_integration.py::TestRenderIntegration::test_render_error_handling 
-[gw3] [ 42%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_error_handling 
-[gw13] [ 50%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp 
-[gw11] [ 57%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl 
+[gw10] [ 57%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined 
 [gw9] [ 64%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy 
-[gw10] [ 71%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined 
-src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp 
-[gw6] [ 78%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp 
-[gw8] [ 85%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml 
-[gw12] [ 92%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax 
+[gw6] [ 71%] PASSED src/tests/test_render_integration.py::TestRenderIntegration::test_render_memory_usage 
+[gw13] [ 78%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax 
+[gw12] [ 85%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl 
+[gw8] [ 92%] ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml 
 [gw0] [100%] SKIPPED src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available 
 
 ==================================== ERRORS ====================================
 _________ ERROR at setup of TestRenderTargets.test_render_to_jax_pomdp _________
-[gw13] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+[gw11] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
 file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 105
       @pytest.mark.unit
       @pytest.mark.safe_to_fail
@@ -53,28 +53,17 @@ E       fixture 'sample_gnn_spec' not found
 >       use 'pytest --fixtures [testpath]' for help on them.
 
 /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:105
-____ ERROR at setup of TestRenderTargets.test_render_to_activeinference_jl _____
-[gw11] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
-file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 79
+___________ ERROR at setup of TestRenderTargets.test_render_to_pymdp ___________
+[gw7] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 24
       @pytest.mark.unit
       @pytest.mark.safe_to_fail
-      def test_render_to_activeinference_jl(self, tmp_path, sample_gnn_spec, mock_render_module):
+      def test_render_to_pymdp(self, tmp_path, sample_gnn_spec, mock_render_module):
 E       fixture 'sample_gnn_spec' not found
 >       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mocker, module_mocker, monkeypatch, no_cover, package_mocker, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, session_mocker, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
 >       use 'pytest --fixtures [testpath]' for help on them.
 
-/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:79
-__________ ERROR at setup of TestRenderTargets.test_render_to_discopy __________
-[gw9] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
-file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 53
-      @pytest.mark.unit
-      @pytest.mark.safe_to_fail
-      def test_render_to_discopy(self, tmp_path, sample_gnn_spec, mock_render_module):
-E       fixture 'sample_gnn_spec' not found
->       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mocker, module_mocker, monkeypatch, no_cover, package_mocker, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, session_mocker, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:53
+/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:24
 _____ ERROR at setup of TestRenderTargets.test_render_to_discopy_combined ______
 [gw10] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
 file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 66
@@ -86,17 +75,39 @@ E       fixture 'sample_gnn_spec' not found
 >       use 'pytest --fixtures [testpath]' for help on them.
 
 /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:66
-___________ ERROR at setup of TestRenderTargets.test_render_to_pymdp ___________
-[gw6] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
-file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 24
+__________ ERROR at setup of TestRenderTargets.test_render_to_discopy __________
+[gw9] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 53
       @pytest.mark.unit
       @pytest.mark.safe_to_fail
-      def test_render_to_pymdp(self, tmp_path, sample_gnn_spec, mock_render_module):
+      def test_render_to_discopy(self, tmp_path, sample_gnn_spec, mock_render_module):
 E       fixture 'sample_gnn_spec' not found
 >       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mocker, module_mocker, monkeypatch, no_cover, package_mocker, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, session_mocker, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
 >       use 'pytest --fixtures [testpath]' for help on them.
 
-/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:24
+/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:53
+____________ ERROR at setup of TestRenderTargets.test_render_to_jax ____________
+[gw13] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 92
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_render_to_jax(self, tmp_path, sample_gnn_spec, mock_render_module):
+E       fixture 'sample_gnn_spec' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mocker, module_mocker, monkeypatch, no_cover, package_mocker, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, session_mocker, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:92
+____ ERROR at setup of TestRenderTargets.test_render_to_activeinference_jl _____
+[gw12] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 79
+      @pytest.mark.unit
+      @pytest.mark.safe_to_fail
+      def test_render_to_activeinference_jl(self, tmp_path, sample_gnn_spec, mock_render_module):
+E       fixture 'sample_gnn_spec' not found
+>       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mocker, module_mocker, monkeypatch, no_cover, package_mocker, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, session_mocker, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:79
 _______ ERROR at setup of TestRenderTargets.test_render_to_rxinfer_toml ________
 [gw8] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
 file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 40
@@ -108,27 +119,16 @@ E       fixture 'sample_gnn_spec' not found
 >       use 'pytest --fixtures [testpath]' for help on them.
 
 /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:40
-____________ ERROR at setup of TestRenderTargets.test_render_to_jax ____________
-[gw12] darwin -- Python 3.11.13 /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
-file /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py, line 92
-      @pytest.mark.unit
-      @pytest.mark.safe_to_fail
-      def test_render_to_jax(self, tmp_path, sample_gnn_spec, mock_render_module):
-E       fixture 'sample_gnn_spec' not found
->       available fixtures: _class_scoped_runner, _function_scoped_runner, _module_scoped_runner, _package_scoped_runner, _session_scoped_runner, anyio_backend, anyio_backend_name, anyio_backend_options, benchmark, benchmark_weave, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, class_mocker, comprehensive_test_data, cov, doctest_namespace, event_loop_policy, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, include_metadata_in_junit_xml, isolated_temp_dir, json_metadata, metadata, mocker, module_mocker, monkeypatch, no_cover, package_mocker, project_root, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, sample_gnn_files, sample_json, sample_markdown, sample_scala, sample_xml, session_mocker, test_config, test_gnn_content, test_ontology_terms, test_temp_dir, testrun_uid, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, worker_id
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_render_overall.py:92
 ============================= slowest 10 durations =============================
-0.01s call     src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available
+0.03s call     src/tests/test_render_integration.py::TestRenderIntegration::test_render_import_available
 
 (9 durations < 0.005s hidden.  Use -vv to show these durations.)
 =========================== short test summary info ============================
 ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax_pomdp
-ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl
-ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy
-ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined
 ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_pymdp
-ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy_combined
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_discopy
 ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_jax
-==================== 6 passed, 1 skipped, 7 errors in 3.39s ====================
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_activeinference_jl
+ERROR src/tests/test_render_overall.py::TestRenderTargets::test_render_to_rxinfer_toml
+==================== 6 passed, 1 skipped, 7 errors in 2.96s ====================
