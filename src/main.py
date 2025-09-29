@@ -235,22 +235,24 @@ def main():
                 logger.info(f"Recommendation: {rec}")
         
         # Execute each step
-        for step_number, (script_name, description) in enumerate(steps_to_execute, 1):
+        for step_index, (script_name, description) in enumerate(steps_to_execute, 0):
+            # Use the actual script name as step identifier for clarity
+            actual_step_number = step_index + 1
             step_start_time = time.time()
             step_start_datetime = datetime.now()
             
             # Step start logging with progress tracking
             if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
-                progress_header = progress_tracker.start_step(step_number, description)
+                progress_header = progress_tracker.start_step(actual_step_number, description)
                 logger.info(progress_header)
                 # Use structured logging functions that support additional parameters
                 from utils.logging_utils import log_step_start as structured_log_step_start
                 structured_log_step_start(logger, f"Starting {description}",
-                                      step_number=step_number,
+                                      step_number=actual_step_number,
                                       total_steps=len(steps_to_execute),
                                       script_name=script_name)
             else:
-                logger.info(f"Executing step {step_number}: {description}")
+                logger.info(f"Executing step {actual_step_number}: {description}")
             
             # Execute the step
             step_result = execute_pipeline_step(script_name, args, logger)
@@ -262,7 +264,7 @@ def main():
             
             # Update step result with timing information and enhanced metadata
             step_result.update({
-                "step_number": step_number,
+                "step_number": actual_step_number,
                 "script_name": script_name,
                 "description": description,
                 "start_time": step_start_datetime.isoformat(),
@@ -272,7 +274,10 @@ def main():
                 "retry_count": step_result.get("retry_count", 0),
                 "prerequisite_check": step_result.get("prerequisite_check", True),
                 "dependency_warnings": step_result.get("dependency_warnings", []),
-                "recoverable": step_result.get("recoverable", False)
+                "recoverable": step_result.get("recoverable", False),
+                "memory_usage_mb": step_result.get("memory_usage_mb", 0.0),
+                "peak_memory_mb": step_result.get("peak_memory_mb", 0.0),
+                "memory_delta_mb": step_result.get("memory_delta_mb", 0.0)
             })
             
             # Check for warnings in both stdout and stderr (precise regex matching)
@@ -316,24 +321,24 @@ def main():
             # Step completion logging with progress tracking
             if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
                 status_for_logging = step_result["status"]
-                completion_summary = progress_tracker.complete_step(step_number, status_for_logging, step_duration)
+                completion_summary = progress_tracker.complete_step(actual_step_number, status_for_logging, step_duration)
                 logger.info(completion_summary)
 
                 # Use structured logging functions that support additional parameters
                 if status_for_logging.startswith("SUCCESS"):
                     from utils.logging_utils import log_step_success as structured_log_step_success
                     structured_log_step_success(logger, f"{description} completed",
-                                        step_number=step_number,
+                                        step_number=actual_step_number,
                                         duration=step_duration,
                                             status=status_for_logging)
             else:
                 status_for_logging = step_result["status"]
                 if str(status_for_logging).startswith("SUCCESS"):
-                    logger.info(f"✅ Step {step_number} completed with {status_for_logging} in {step_duration:.2f}s")
+                    logger.info(f"✅ Step {actual_step_number} completed with {status_for_logging} in {step_duration:.2f}s")
                 elif status_for_logging == "PARTIAL_SUCCESS":
-                    logger.warning(f"⚠️ Step {step_number} completed with PARTIAL_SUCCESS in {step_duration:.2f}s")
+                    logger.warning(f"⚠️ Step {actual_step_number} completed with PARTIAL_SUCCESS in {step_duration:.2f}s")
                 else:
-                    logger.error(f"❌ Step {step_number} failed with status: {status_for_logging}")
+                    logger.error(f"❌ Step {actual_step_number} failed with status: {status_for_logging}")
         
         # Complete pipeline summary
         pipeline_summary["end_time"] = datetime.now().isoformat()
@@ -389,7 +394,8 @@ def main():
                     "error": str(e),
                     "arguments": pipeline_summary.get("arguments", {}),
                     "steps_count": len(pipeline_summary.get("steps", [])),
-                    "performance_summary": pipeline_summary.get("performance_summary", {})
+                    "performance_summary": pipeline_summary.get("performance_summary", {}),
+                    "steps": pipeline_summary.get("steps", [])
                 }
                 with open(summary_path, 'w') as f:
                     json.dump(minimal_summary, f, indent=4, default=str)
@@ -644,6 +650,19 @@ def _validate_pipeline_summary(summary: dict, logger) -> None:
             if field not in step:
                 logger.warning(f"Step {i} missing required field: {field}")
 
+        # Validate step status values
+        if "status" in step:
+            valid_statuses = ["SUCCESS", "SUCCESS_WITH_WARNINGS", "PARTIAL_SUCCESS", "FAILED", "TIMEOUT"]
+            if step["status"] not in valid_statuses:
+                logger.warning(f"Step {i} has invalid status: {step['status']}")
+
+        # Validate numeric fields
+        numeric_fields = ["step_number", "exit_code", "retry_count", "duration_seconds",
+                         "memory_usage_mb", "peak_memory_mb", "memory_delta_mb"]
+        for field in numeric_fields:
+            if field in step and not isinstance(step[field], (int, float)):
+                logger.warning(f"Step {i} field '{field}' should be numeric, got {type(step[field])}")
+
     # Validate performance summary
     perf = summary.get("performance_summary", {})
     if not isinstance(perf, dict):
@@ -656,6 +675,26 @@ def _validate_pipeline_summary(summary: dict, logger) -> None:
         if field in perf:
             if not isinstance(perf[field], (int, float)):
                 logger.warning(f"Performance summary field '{field}' should be numeric, got {type(perf[field])}")
+
+    # Validate overall status
+    if "overall_status" in summary:
+        valid_statuses = ["SUCCESS", "SUCCESS_WITH_WARNINGS", "PARTIAL_SUCCESS", "FAILED"]
+        if summary["overall_status"] not in valid_statuses:
+            logger.warning(f"Invalid overall status: {summary['overall_status']}")
+
+    # Validate timing consistency
+    if "start_time" in summary and "end_time" in summary and "total_duration_seconds" in summary:
+        try:
+            start_dt = datetime.fromisoformat(summary["start_time"])
+            end_dt = datetime.fromisoformat(summary["end_time"])
+            calculated_duration = (end_dt - start_dt).total_seconds()
+            reported_duration = summary["total_duration_seconds"]
+
+            # Allow for small timing differences due to processing
+            if abs(calculated_duration - reported_duration) > 1.0:
+                logger.warning(f"Timing inconsistency: calculated {calculated_duration:.2f}s vs reported {reported_duration:.2f}s")
+        except (ValueError, TypeError) as e:
+            logger.warning(f"Could not validate timing: {e}")
 
 
 # All pipeline utility functions have been moved to appropriate utils modules:

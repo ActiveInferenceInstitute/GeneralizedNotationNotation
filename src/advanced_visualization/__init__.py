@@ -24,6 +24,9 @@ from .data_extractor import (
     extract_visualization_data,
 )
 
+# Import main processor function for thin orchestrator
+from .processor import process_advanced_viz_standardized_impl
+
 __all__ = [
     'AdvancedVisualizer',
     'create_visualization_from_data',
@@ -36,4 +39,5 @@ __all__ = [
     'generate_dashboard',
     'VisualizationDataExtractor',
     'extract_visualization_data',
+    'process_advanced_viz_standardized_impl',  # Main processing function
 ]

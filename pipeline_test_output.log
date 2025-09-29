@@ -1,0 +1,1078 @@
+2025-09-29 15:30:09,627 [e396119a:pipeline] pipeline - INFO - 🚀 Starting GNN Processing Pipeline [total_steps=24 | target_dir=input/gnn_files | output_dir=output]
+2025-09-29 15:30:09,627 [e396119a:pipeline] pipeline - INFO - ┌─ Step 1/24: Template initialization RUNNING
+└─ Progress: [█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (4%)
+2025-09-29 15:30:09,627 [e396119a:pipeline] pipeline - INFO - ┌─ Step 1/24: Step 1 RUNNING
+└─ Progress: [█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (4%)
+    Starting Template initialization [step_number=1 | total_steps=24 | script_name=0_template.py]
+2025-09-29 15:30:09,628 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/0_template.py --target-dir input/gnn_files --output-dir output --verbose
+2025-09-29 15:30:10,757 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:09,720 - template - INFO - 🚀 Processing template
+2025-09-29 15:30:09,721 - template - INFO - 🎯 Template execution started with correlation ID: 094bb21a
+2025-09-29 15:30:10,738 - template - INFO - 📊 Initial system resources: {'platform': 'macOS-26.0-arm64-arm-64bit', 'python_version': '3.11.13', 'cpu_count': 14, 'cpu_percent': 13.1, 'memory_total_gb': 24.0, 'memory_available_gb': 9.029296875, 'memory_percent': 62.4, 'disk_usage': {'/Users/4d': 83.0, '/Users/4d/Documents/GitHub/generalizednotationnotation': 83.0}}
+2025-09-29 15:30:10,738 - utils.error_recovery - INFO - Error analyzed: unknown_error in Test traceback
+2025-09-29 15:30:10,739 - template - WARNING - ⚠️ Error recovery demonstration failed: 'ErrorRecoverySystem' object has no attribute 'suggest_recovery_actions'
+2025-09-29 15:30:10,739 - template - WARNING - ⚠️ Resource tracking demonstration failed: 'ResourceTracker' object has no attribute 'track_operation'
+2025-09-29 15:30:10,739 - template - INFO - 🎯 Demonstrating enhanced logging patterns
+2025-09-29 15:30:10,739 - template - DEBUG - Debug level logging for detailed troubleshooting
+2025-09-29 15:30:10,739 - template - INFO - Info level logging for general progress
+2025-09-29 15:30:10,739 - template - WARNING - Warning level logging for potential issues
+2025-09-29 15:30:10,739 - template - INFO - ✅ Enhanced logging system demonstrated
+2025-09-29 15:30:10,739 - template - INFO - 🛡️ Demonstrating safe-to-fail patterns
+2025-09-29 15:30:10,739 - template - INFO - ✅ Safe-to-fail operation completed successfully
+2025-09-29 15:30:10,739 - template - INFO - 🎯 Template demonstration completed with 2 patterns
+2025-09-29 15:30:10,739 - template - INFO - Processing files from: input/gnn_files
+2025-09-29 15:30:10,739 - template - INFO - Output directory: output/0_template_output
+2025-09-29 15:30:10,739 - template - INFO - Recursive processing: True
+2025-09-29 15:30:10,739 - template - DEBUG - Example parameter: default_value
+2025-09-29 15:30:10,739 - template - INFO - Found 1 files to process
+2025-09-29 15:30:10,739 - template.processor - DEBUG - Processing file: input/gnn_files/actinf_pomdp_agent.md
+2025-09-29 15:30:10,741 - template.processor - DEBUG - Successfully processed actinf_pomdp_agent.md
+2025-09-29 15:30:10,742 - template - INFO - Summary report saved: output/0_template_output/template_processing_summary.json
+2025-09-29 15:30:10,742 - template - INFO - ✅ Successfully processed 1 files
+2025-09-29 15:30:10,742 - template - INFO - ✅ Template processing completed successfully
+
+2025-09-29 15:30:10,758 [e396119a:pipeline] pipeline - INFO - ⚠️ Step 1 completed with SUCCESS_WITH_WARNINGS in 1.13s
+Progress: 1/24 steps (1 successful)
+2025-09-29 15:30:10,758 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 1 completed with SUCCESS in 1.13s
+Progress: 1/24 steps (1 successful)
+    Template initialization completed [status=SUCCESS_WITH_WARNINGS | step_number=1] [⏱️ 1.13s]
+2025-09-29 15:30:10,758 [e396119a:pipeline] pipeline - INFO - ┌─ Step 2/24: Environment setup RUNNING
+└─ Progress: [██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (8%)
+2025-09-29 15:30:10,758 [e396119a:pipeline] pipeline - INFO - ┌─ Step 2/24: Step 2 RUNNING
+└─ Progress: [██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (8%)
+    Starting Environment setup [step_number=2 | total_steps=24 | script_name=1_setup.py]
+2025-09-29 15:30:10,758 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/1_setup.py --target-dir input/gnn_files --output-dir output --verbose
+2025-09-29 15:30:12,461 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:10,814 - 1_setup.py - INFO - 🚀 Processing setup
+2025-09-29 15:30:10,872 - 1_setup.py - INFO - ✅ UV is already available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-09-29 15:30:10,872 - 1_setup.py - INFO - Logging system information
+2025-09-29 15:30:10,884 - 1_setup.py - INFO - System Platform: macOS-26.0-arm64-arm-64bit
+2025-09-29 15:30:10,884 - 1_setup.py - INFO - Python Version: 3.11.13 (main, Aug  8 2025, 16:50:33) [Clang 20.1.4 ]
+2025-09-29 15:30:10,884 - 1_setup.py - INFO - Python Executable: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+2025-09-29 15:30:10,884 - 1_setup.py - INFO - Architecture: ('64bit', '')
+2025-09-29 15:30:10,884 - 1_setup.py - INFO - Processor: arm
+2025-09-29 15:30:10,884 - 1_setup.py - INFO - Machine: arm64
+2025-09-29 15:30:10,884 - 1_setup.py - INFO - Node: timelock.local
+2025-09-29 15:30:10,884 - 1_setup.py - INFO - System information logged
+2025-09-29 15:30:10,925 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-09-29 15:30:10,925 - setup.setup - INFO - ✅ UV is available and ready to use
+2025-09-29 15:30:10,925 - setup.setup - INFO - 🔧 Starting comprehensive UV environment setup...
+2025-09-29 15:30:10,925 - setup.setup - INFO - 🔍 Checking system requirements...
+2025-09-29 15:30:10,925 - setup.setup - INFO - ✅ Python version check passed: 3.11.13
+2025-09-29 15:30:10,964 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-09-29 15:30:10,964 - setup.setup - INFO - ✅ Disk space check passed: 72.81GB free
+2025-09-29 15:30:10,964 - setup.setup - INFO - ✓ Using existing UV environment at /Users/4d/Documents/GitHub/generalizednotationnotation/.venv
+2025-09-29 15:30:10,970 - setup.setup - INFO - ✅ Existing environment is working: Python 3.11.13
+2025-09-29 15:30:10,985 - setup.setup - INFO - ✅ Core packages are available in existing environment
+2025-09-29 15:30:10,985 - setup.setup - INFO - 📦 Installing core dependencies...
+2025-09-29 15:30:10,985 - setup.setup - INFO - 📦 Installing dependencies from /Users/4d/Documents/GitHub/generalizednotationnotation/pyproject.toml using UV sync
+2025-09-29 15:30:11,822 - setup.setup - INFO - ✅ Dependencies installed using UV in 0.8s
+2025-09-29 15:30:11,828 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-09-29 15:30:11,905 - setup.setup - INFO - 📦 Found 325 installed packages using UV
+2025-09-29 15:30:11,905 - setup.setup - INFO - 📋 Installed packages:
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - absl-py: 2.3.1
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - aiofiles: 24.1.0
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - aiohappyeyeballs: 2.6.1
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - aiohttp: 3.12.15
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - aiosignal: 1.4.0
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - altair: 5.5.0
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - amalgkit: 0.12.19
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - annotated-types: 0.7.0
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - anthropic: 0.69.0
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - anyio: 4.11.0
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - appnope: 0.1.4
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - archspec: 0.2.5
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - argcomplete: 3.6.2
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - argh: 0.31.3
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - argon2-cffi: 25.1.0
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - argon2-cffi-bindings: 25.1.0
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - arrow: 1.3.0
+2025-09-29 15:30:11,905 - setup.setup - INFO -   - asttokens: 3.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - async-lru: 2.0.5
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - attrs: 25.3.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - audioread: 3.0.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - authlib: 1.6.4
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - babel: 2.17.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - bandit: 1.8.6
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - beautifulsoup4: 4.13.4
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - biopython: 1.85
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - black: 25.1.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - bleach: 6.2.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - blinker: 1.9.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - bokeh: 3.8.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - boltons: 25.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - bottleneck: 1.6.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - brotli: 1.1.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - cachetools: 5.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - certifi: 2025.8.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - cffi: 1.17.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - charset-normalizer: 3.4.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - chex: 0.1.91
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - click: 8.2.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - colorama: 0.4.6
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - colorcet: 3.1.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - comm: 0.2.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - conda: 25.7.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - conda-libmamba-solver: 25.3.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - conda-package-handling: 2.4.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - conda-package-streaming: 0.12.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - contourpy: 1.3.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - coverage: 7.10.6
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - cryptography: 46.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - csscompressor: 0.9.5
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - cycler: 0.12.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - debugpy: 1.8.16
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - decorator: 5.2.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - defusedxml: 0.7.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - discopy: 1.2.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - distro: 1.9.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - docopt: 0.6.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - docstring-parser: 0.17.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - dparse: 0.6.4
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - et-xmlfile: 2.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - ete3: 3.1.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - etils: 1.13.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - exceptiongroup: 1.3.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - execnet: 2.1.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - executing: 2.2.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - factory-boy: 3.3.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - faker: 37.8.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - fastapi: 0.118.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - fastjsonschema: 2.21.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - ffmpy: 0.6.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - filelock: 3.19.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - flake8: 7.3.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - flake8-docstrings: 1.7.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - flake8-import-order: 0.19.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - flask: 3.1.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - flask-cors: 6.0.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - flax: 0.12.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - fonttools: 4.59.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - fqdn: 1.5.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - freezegun: 1.5.5
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - frozendict: 2.4.6
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - frozenlist: 1.7.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - fsspec: 2025.9.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - ftpretty: 0.4.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - generalized-notation-notation: 1.1.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - geo-infer-math: 0.1.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - geopandas: 1.1.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - gffutils: 0.10.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - goatools: 1.4.12
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - gradio: 5.47.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - gradio-client: 1.13.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - graphviz: 0.21
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - groovy: 0.1.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - h11: 0.16.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - h2: 4.2.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - hf-xet: 1.1.10
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - holoviews: 1.21.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - hpack: 4.1.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - httpcore: 1.0.9
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - httpx: 0.28.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - huggingface-hub: 0.35.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - humanize: 4.13.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - hyperframe: 6.1.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - hypothesis: 6.138.15
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - idna: 3.10
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - igraph: 0.11.9
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - importlib-resources: 6.5.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - iniconfig: 2.1.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - ipykernel: 6.30.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - ipython: 9.4.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - ipython-pygments-lexers: 1.1.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - ipywidgets: 8.1.7
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - isoduration: 20.11.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - itsdangerous: 2.2.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jax: 0.7.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jaxlib: 0.7.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jedi: 0.19.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jinja2: 3.1.6
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jiter: 0.11.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - joblib: 1.5.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jsmin: 3.0.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - json5: 0.12.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jsonlines: 3.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jsonpatch: 1.33
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jsonpointer: 3.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jsonschema: 4.25.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jsonschema-specifications: 2025.9.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyter: 1.1.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyter-client: 8.6.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyter-console: 6.6.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyter-core: 5.8.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyter-events: 0.12.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyter-lsp: 2.3.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyter-server: 2.17.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyter-server-terminals: 0.5.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyterlab: 4.4.9
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyterlab-pygments: 0.3.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyterlab-server: 2.27.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - jupyterlab-widgets: 3.0.15
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - kiwisolver: 1.4.8
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - lark: 1.3.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - lazy-loader: 0.4
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - libmambapy: 2.1.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - librosa: 0.11.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - linkify-it-py: 2.0.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - llvmlite: 0.45.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - lxml: 6.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - markdown: 3.9
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - markdown-it-py: 3.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - markupsafe: 3.0.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - marshmallow: 4.0.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - matplotlib-inline: 0.1.7
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - mccabe: 0.7.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - mdit-py-plugins: 0.5.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - mdurl: 0.1.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - menuinst: 2.3.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - metainformant: 0.1.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - metta: 0.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - mistune: 3.1.4
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - ml-dtypes: 0.5.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - mpmath: 1.3.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - msgpack: 1.1.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - multidict: 6.6.4
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - mypy: 1.17.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - mypy-extensions: 1.1.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - narwhals: 2.4.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - nbclient: 0.10.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - nbconvert: 7.16.6
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - nbformat: 5.10.4
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - ncbi-datasets-pylib: 13.8.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - nest-asyncio: 1.6.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - networkx: 3.5
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - nltk: 3.9.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - nose: 1.3.7
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - notebook: 7.4.7
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - notebook-shim: 0.2.4
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - numba: 0.62.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - numexpr: 2.13.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - numpy: 2.3.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - openai: 1.109.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - openpyxl: 3.1.5
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - opt-einsum: 3.4.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - optax: 0.2.6
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - orbax-checkpoint: 0.11.25
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - orjson: 3.11.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - packaging: 25.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pandas: 2.3.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pandocfilters: 1.5.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - panel: 1.8.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - parallel-fastq-dump: 0.6.5
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - param: 2.2.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - parso: 0.8.4
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pathspec: 0.12.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - patsy: 1.0.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pedalboard: 0.9.17
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pexpect: 4.9.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pillow: 11.3.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pip: 25.1.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - platformdirs: 4.3.8
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - plotly: 6.3.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pluggy: 1.6.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pooch: 1.8.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - prometheus-client: 0.23.1
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - prompt-toolkit: 3.0.51
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - propcache: 0.3.2
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - protobuf: 3.19.4
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - psutil: 7.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - psycopg2-binary: 2.9.10
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - ptyprocess: 0.7.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pure-eval: 0.2.3
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - py-cpuinfo: 9.0.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pycodestyle: 2.14.0
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pycosat: 0.6.6
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pycparser: 2.22
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pydantic: 2.11.9
+2025-09-29 15:30:11,906 - setup.setup - INFO -   - pydantic-core: 2.33.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pydocstyle: 6.3.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pydot: 4.0.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pydub: 0.25.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pyfaidx: 0.8.1.4
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pyflakes: 3.4.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pygments: 2.19.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pymdp: 0.0.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pyogrio: 0.11.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pyparsing: 3.2.3
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pyphen: 0.17.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pyproj: 3.7.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pysocks: 1.7.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytest: 8.4.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytest-asyncio: 1.2.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytest-benchmark: 5.1.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytest-cov: 6.2.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytest-html: 4.1.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytest-json-report: 1.5.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytest-metadata: 3.1.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytest-mock: 3.15.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytest-timeout: 2.4.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytest-xdist: 3.8.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - python-dateutil: 2.8.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - python-json-logger: 3.3.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - python-multipart: 0.0.20
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pytz: 2025.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pyviz-comms: 3.0.6
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pyyaml: 6.0.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - pyzmq: 27.0.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - referencing: 0.36.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - regex: 2025.9.18
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - requests: 2.32.4
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - responses: 0.25.8
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - rfc3339-validator: 0.1.4
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - rfc3986-validator: 0.1.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - rfc3987-syntax: 1.1.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - rich: 14.1.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - rpds-py: 0.27.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - ruamel-yaml: 0.18.14
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - ruamel-yaml-clib: 0.2.8
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - ruff: 0.12.8
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - safehttpx: 0.1.6
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - safetensors: 0.6.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - safety: 3.6.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - safety-schemas: 0.0.16
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - scikit-learn: 1.7.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - scipy: 1.16.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - seaborn: 0.13.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - semantic-version: 2.10.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - send2trash: 1.8.3
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - setuptools: 80.9.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - shapely: 2.1.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - shellingham: 1.5.4
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - simplejson: 3.20.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - six: 1.17.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - sniffio: 1.3.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - snowballstemmer: 3.0.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - sortedcontainers: 2.4.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - soundfile: 0.13.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - soupsieve: 2.7
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - soxr: 1.0.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - stack-data: 0.6.3
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - starlette: 0.48.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - statsmodels: 0.14.5
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - stevedore: 5.5.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - symergetics: 0.1.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - sympy: 1.14.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - tenacity: 9.1.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - tensorstore: 0.1.77
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - terminado: 0.18.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - textstat: 0.7.10
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - texttable: 1.7.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - threadpoolctl: 3.6.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - tinycss2: 1.4.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - tokenizers: 0.22.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - toml: 0.10.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - tomli: 2.2.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - tomlkit: 0.13.3
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - toolz: 1.0.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - torch: 2.8.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - tornado: 6.5.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - tqdm: 4.67.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - traitlets: 5.14.3
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - transformers: 4.56.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - treescope: 0.1.10
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - truststore: 0.10.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - typer: 0.19.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - types-python-dateutil: 2.9.0.20250822
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - typing-extensions: 4.15.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - typing-inspection: 0.4.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - tzdata: 2025.2
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - uc-micro-py: 1.0.3
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - uri-template: 1.3.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - urllib3: 1.26.18
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - uvicorn: 0.37.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - wcwidth: 0.2.13
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - webcolors: 24.11.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - webencodings: 0.5.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - websocket-client: 1.8.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - websockets: 15.0.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - werkzeug: 3.1.3
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - wheel: 0.45.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - widgetsnbextension: 4.0.14
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - xlsxwriter: 3.2.5
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - xyzservices: 2025.4.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - yarl: 1.20.1
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - zipp: 3.23.0
+2025-09-29 15:30:11,907 - setup.setup - INFO -   - zstandard: 0.23.0
+2025-09-29 15:30:11,908 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2025-09-29 15:30:11,908 - setup.setup - INFO - ✅ Validating environment...
+2025-09-29 15:30:11,908 - setup.setup - INFO - 🔍 Checking system requirements...
+2025-09-29 15:30:11,908 - setup.setup - INFO - ✅ Python version check passed: 3.11.13
+2025-09-29 15:30:11,941 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-09-29 15:30:11,941 - setup.setup - INFO - ✅ Disk space check passed: 72.80GB free
+2025-09-29 15:30:11,941 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-09-29 15:30:11,977 - setup.setup - INFO - 📦 Found 325 installed packages using UV
+2025-09-29 15:30:11,977 - setup.setup - INFO - 📋 Key installed packages:
+2025-09-29 15:30:11,977 - setup.setup - INFO -   - pip: 25.1.1
+2025-09-29 15:30:11,977 - setup.setup - INFO -   - pytest: 8.4.2
+2025-09-29 15:30:11,977 - setup.setup - INFO -   - numpy: 2.3.2
+2025-09-29 15:30:11,977 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-09-29 15:30:11,977 - setup.setup - INFO -   - scipy: 1.16.1
+2025-09-29 15:30:11,977 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2025-09-29 15:30:12,306 - setup.setup - INFO - ✅ GNN environment setup completed successfully using UV
+2025-09-29 15:30:12,306 - 1_setup.py - INFO - ✅ UV environment setup completed
+2025-09-29 15:30:12,307 - 1_setup.py - INFO - Creating project structure
+2025-09-29 15:30:12,307 - 1_setup.py - DEBUG - Created directory: output/1_setup_output/1_setup_output/input/gnn_files
+2025-09-29 15:30:12,307 - 1_setup.py - DEBUG - Created directory: output/1_setup_output/1_setup_output/output
+2025-09-29 15:30:12,307 - 1_setup.py - DEBUG - Created directory: output/1_setup_output/1_setup_output/output/logs
+2025-09-29 15:30:12,307 - 1_setup.py - DEBUG - Created directory: output/1_setup_output/1_setup_output/output/temp
+2025-09-29 15:30:12,307 - 1_setup.py - DEBUG - Created directory: output/1_setup_output/1_setup_output/doc
+2025-09-29 15:30:12,307 - 1_setup.py - DEBUG - Created directory: output/1_setup_output/1_setup_output/tests
+2025-09-29 15:30:12,307 - 1_setup.py - DEBUG - Created file: output/1_setup_output/1_setup_output/input/config.yaml
+2025-09-29 15:30:12,307 - 1_setup.py - DEBUG - Created file: output/1_setup_output/1_setup_output/output/.gitkeep
+2025-09-29 15:30:12,307 - 1_setup.py - DEBUG - Created file: output/1_setup_output/1_setup_output/tests/__init__.py
+2025-09-29 15:30:12,307 - 1_setup.py - INFO - Project structure created successfully
+2025-09-29 15:30:12,307 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-09-29 15:30:12,351 - setup.setup - INFO - 📦 Found 325 installed packages using UV
+2025-09-29 15:30:12,351 - setup.setup - INFO - 📋 Key installed packages:
+2025-09-29 15:30:12,351 - setup.setup - INFO -   - pip: 25.1.1
+2025-09-29 15:30:12,351 - setup.setup - INFO -   - pytest: 8.4.2
+2025-09-29 15:30:12,351 - setup.setup - INFO -   - numpy: 2.3.2
+2025-09-29 15:30:12,351 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-09-29 15:30:12,351 - setup.setup - INFO -   - scipy: 1.16.1
+2025-09-29 15:30:12,351 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2025-09-29 15:30:12,352 - setup.setup - INFO - 🔍 Checking system requirements...
+2025-09-29 15:30:12,352 - setup.setup - INFO - ✅ Python version check passed: 3.11.13
+2025-09-29 15:30:12,384 - setup.setup - INFO - ✅ UV is available: uv 0.8.8 (Homebrew 2025-08-09)
+2025-09-29 15:30:12,384 - setup.setup - INFO - ✅ Disk space check passed: 72.80GB free
+2025-09-29 15:30:12,384 - setup.setup - INFO - 📋 Getting list of installed packages using UV...
+2025-09-29 15:30:12,425 - setup.setup - INFO - 📦 Found 325 installed packages using UV
+2025-09-29 15:30:12,425 - setup.setup - INFO - 📋 Key installed packages:
+2025-09-29 15:30:12,425 - setup.setup - INFO -   - pip: 25.1.1
+2025-09-29 15:30:12,425 - setup.setup - INFO -   - pytest: 8.4.2
+2025-09-29 15:30:12,425 - setup.setup - INFO -   - numpy: 2.3.2
+2025-09-29 15:30:12,425 - setup.setup - INFO -   - matplotlib: 3.10.5
+2025-09-29 15:30:12,425 - setup.setup - INFO -   - scipy: 1.16.1
+2025-09-29 15:30:12,425 - setup.setup - INFO - 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2025-09-29 15:30:12,425 - 1_setup.py - INFO - ✅ Setup processing completed successfully
+
+2025-09-29 15:30:12,462 [e396119a:pipeline] pipeline - INFO - ✅ Step 2 completed with SUCCESS in 1.70s
+Progress: 2/24 steps (2 successful)
+2025-09-29 15:30:12,462 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 2 completed with SUCCESS in 1.70s
+Progress: 2/24 steps (2 successful)
+    Environment setup completed [status=SUCCESS | step_number=2] [⏱️ 1.70s]
+2025-09-29 15:30:12,462 [e396119a:pipeline] pipeline - INFO - ┌─ Step 3/24: Test suite execution RUNNING
+└─ Progress: [███▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (12%)
+2025-09-29 15:30:12,462 [e396119a:pipeline] pipeline - INFO - ┌─ Step 3/24: Step 3 RUNNING
+└─ Progress: [███▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (12%)
+    Starting Test suite execution [step_number=3 | total_steps=24 | script_name=2_tests.py]
+2025-09-29 15:30:12,462 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/2_tests.py --target-dir input/gnn_files --output-dir output --verbose
+2025-09-29 15:30:37,711 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:12,551 - 2_tests.py - INFO - 🚀 Processing tests
+2025-09-29 15:30:12,551 - 2_tests.py - INFO - 🔍 Running standard test suite
+2025-09-29 15:30:12,551 - 2_tests.py - INFO - Configured PYTEST_ADDOPTS: -vv -rA -s --durations=15 -o console_output_style=classic --color=no
+2025-09-29 15:30:12,853 - 2_tests.py - INFO - 📋 Running 5 test files: ['test_core_modules.py', 'test_environment_overall.py', 'test_fast_suite.py', 'test_gnn_overall.py', 'test_pipeline_overall.py']
+2025-09-29 15:30:12,853 - 2_tests.py - INFO - 🚀 Executing: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python -m pytest...
+2025-09-29 15:30:37,695 - 2_tests.py - INFO - ✅ Tests completed successfully
+
+2025-09-29 15:30:37,712 [e396119a:pipeline] pipeline - INFO - ✅ Step 3 completed with SUCCESS in 25.2s
+Progress: 3/24 steps (3 successful)
+2025-09-29 15:30:37,712 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 3 completed with SUCCESS in 25.2s
+Progress: 3/24 steps (3 successful)
+    Test suite execution completed [status=SUCCESS | step_number=3] [⏱️ 25.2s]
+2025-09-29 15:30:37,712 [e396119a:pipeline] pipeline - INFO - ┌─ Step 4/24: GNN file processing RUNNING
+└─ Progress: [█████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (16%)
+2025-09-29 15:30:37,712 [e396119a:pipeline] pipeline - INFO - ┌─ Step 4/24: Step 4 RUNNING
+└─ Progress: [█████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (16%)
+    Starting GNN file processing [step_number=4 | total_steps=24 | script_name=3_gnn.py]
+2025-09-29 15:30:37,712 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/3_gnn.py --target-dir input/gnn_files --output-dir output --recursive --verbose --enable-round-trip --enable-cross-format
+2025-09-29 15:30:37,785 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:37,755 - 3_gnn.py - INFO - 🚀 Processing GNN files with full multi-format generation
+2025-09-29 15:30:37,767 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats
+2025-09-29 15:30:37,767 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]
+2025-09-29 15:30:37,768 - 3_gnn.py - INFO - Found 1 potential GNN files
+2025-09-29 15:30:37,768 - 3_gnn.py - INFO - Processing: input/gnn_files/actinf_pomdp_agent.md
+2025-09-29 15:30:37,769 - 3_gnn.py - INFO -   Generated markdown: 1759 bytes
+2025-09-29 15:30:37,770 - 3_gnn.py - INFO -   Generated scala: 5106 bytes
+2025-09-29 15:30:37,770 - 3_gnn.py - INFO -   Generated lean: 5504 bytes
+2025-09-29 15:30:37,770 - 3_gnn.py - INFO -   Generated coq: 5255 bytes
+2025-09-29 15:30:37,770 - 3_gnn.py - INFO -   Generated python: 9113 bytes
+2025-09-29 15:30:37,770 - 3_gnn.py - INFO -   Generated bnf: 5486 bytes
+2025-09-29 15:30:37,770 - 3_gnn.py - INFO -   Generated ebnf: 5486 bytes
+2025-09-29 15:30:37,770 - 3_gnn.py - INFO -   Generated isabelle: 5282 bytes
+2025-09-29 15:30:37,770 - 3_gnn.py - INFO -   Generated maxima: 5759 bytes
+2025-09-29 15:30:37,772 - 3_gnn.py - INFO -   Generated xml: 9556 bytes
+2025-09-29 15:30:37,772 - 3_gnn.py - INFO -   Generated json: 9413 bytes
+2025-09-29 15:30:37,773 - 3_gnn.py - INFO -   Generated protobuf: 7237 bytes
+2025-09-29 15:30:37,776 - 3_gnn.py - INFO -   Generated yaml: 5736 bytes
+2025-09-29 15:30:37,776 - 3_gnn.py - INFO -   Generated xsd: 6224 bytes
+2025-09-29 15:30:37,776 - 3_gnn.py - INFO -   Generated asn1: 8138 bytes
+2025-09-29 15:30:37,776 - 3_gnn.py - INFO -   Generated pkl: 11946 bytes
+2025-09-29 15:30:37,776 - 3_gnn.py - INFO -   Generated alloy: 8220 bytes
+2025-09-29 15:30:37,776 - 3_gnn.py - INFO -   Generated z_notation: 5838 bytes
+2025-09-29 15:30:37,776 - 3_gnn.py - INFO -   Generated tla_plus: 4729 bytes
+2025-09-29 15:30:37,777 - 3_gnn.py - INFO -   Generated agda: 4736 bytes
+2025-09-29 15:30:37,777 - 3_gnn.py - INFO -   Generated haskell: 5520 bytes
+2025-09-29 15:30:37,777 - 3_gnn.py - INFO -   Generated pickle: 3888 bytes
+2025-09-29 15:30:37,777 - 3_gnn.py - INFO - Generated 22 formats for actinf_pomdp_agent.md
+2025-09-29 15:30:37,777 - 3_gnn.py - INFO - ✅ Processed 1 files, generated 22 format instances across 22 formats
+
+2025-09-29 15:30:37,785 [e396119a:pipeline] pipeline - INFO - ✅ Step 4 completed with SUCCESS in 74ms
+Progress: 4/24 steps (4 successful)
+2025-09-29 15:30:37,785 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 4 completed with SUCCESS in 74ms
+Progress: 4/24 steps (4 successful)
+    GNN file processing completed [status=SUCCESS | step_number=4] [⏱️ 74ms]
+2025-09-29 15:30:37,785 [e396119a:pipeline] pipeline - INFO - ┌─ Step 5/24: Model registry RUNNING
+└─ Progress: [██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (20%)
+2025-09-29 15:30:37,785 [e396119a:pipeline] pipeline - INFO - ┌─ Step 5/24: Step 5 RUNNING
+└─ Progress: [██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (20%)
+    Starting Model registry [step_number=5 | total_steps=24 | script_name=4_model_registry.py]
+2025-09-29 15:30:37,785 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/4_model_registry.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:30:37,832 [e396119a:pipeline] pipeline - INFO - Step output:
+2025-09-29 15:30:37,825 [9921fa40:4_model_registry] 4_model_registry.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:30:37,825 [9921fa40:4_model_registry] 4_model_registry.py - INFO - Output directory: output/4_model_registry_output/4_model_registry_output
+2025-09-29 15:30:37,825 [9921fa40:4_model_registry] 4_model_registry.py - INFO - Recursive processing: True
+2025-09-29 15:30:37,825 [9921fa40:4_model_registry] 4_model_registry.py - INFO - Found 1 GNN files to register
+2025-09-29 15:30:37,826 [9921fa40:4_model_registry] 4_model_registry.py - INFO - Summary report saved: output/4_model_registry_output/4_model_registry_output/model_registry_summary.json
+2025-09-29 15:30:37,826 [9921fa40:4_model_registry] 4_model_registry.py - INFO - ✅ Successfully registered 1 GNN models
+
+2025-09-29 15:30:37,833 [e396119a:pipeline] pipeline - INFO - ✅ Step 5 completed with SUCCESS in 47ms
+Progress: 5/24 steps (5 successful)
+2025-09-29 15:30:37,833 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 5 completed with SUCCESS in 47ms
+Progress: 5/24 steps (5 successful)
+    Model registry completed [status=SUCCESS | step_number=5] [⏱️ 47ms]
+2025-09-29 15:30:37,833 [e396119a:pipeline] pipeline - INFO - ┌─ Step 6/24: Type checking RUNNING
+└─ Progress: [███████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (25%)
+2025-09-29 15:30:37,833 [e396119a:pipeline] pipeline - INFO - ┌─ Step 6/24: Step 6 RUNNING
+└─ Progress: [███████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (25%)
+    Starting Type checking [step_number=6 | total_steps=24 | script_name=5_type_checker.py]
+2025-09-29 15:30:37,833 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/5_type_checker.py --target-dir input/gnn_files --output-dir output --recursive --verbose --no-estimate-resources
+2025-09-29 15:30:37,880 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:37,873 - 5_type_checker.py - INFO - Loaded 1 parsed GNN files
+2025-09-29 15:30:37,873 - 5_type_checker.py - INFO - Analyzing types for: actinf_pomdp_agent.md
+2025-09-29 15:30:37,874 - 5_type_checker.py - INFO - Analyzed actinf_pomdp_agent.md: 13 variables, 11 connections, 0 errors, 0 warnings
+2025-09-29 15:30:37,874 - 5_type_checker.py - INFO - ✅ Type checking completed: 1 valid files, 0 warnings
+
+2025-09-29 15:30:37,880 [e396119a:pipeline] pipeline - INFO - ⚠️ Step 6 completed with SUCCESS_WITH_WARNINGS in 47ms
+Progress: 6/24 steps (6 successful)
+2025-09-29 15:30:37,880 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 6 completed with SUCCESS in 47ms
+Progress: 6/24 steps (6 successful)
+    Type checking completed [status=SUCCESS_WITH_WARNINGS | step_number=6] [⏱️ 47ms]
+2025-09-29 15:30:37,880 [e396119a:pipeline] pipeline - INFO - ┌─ Step 7/24: Validation RUNNING
+└─ Progress: [████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (29%)
+2025-09-29 15:30:37,880 [e396119a:pipeline] pipeline - INFO - ┌─ Step 7/24: Step 7 RUNNING
+└─ Progress: [████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (29%)
+    Starting Validation [step_number=7 | total_steps=24 | script_name=6_validation.py]
+2025-09-29 15:30:37,880 [e396119a:pipeline] pipeline - WARNING - Prerequisite warning for 6_validation.py: Missing prerequisite output directory: output/5_type_output. Step 5_type_checker.py may not have been executed.
+2025-09-29 15:30:37,880 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/6_validation.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:30:37,929 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:37,922 - validation - INFO - Loaded 1 parsed GNN files
+2025-09-29 15:30:37,922 - validation - INFO - Validating: actinf_pomdp_agent.md
+2025-09-29 15:30:37,922 - validation - INFO - Loaded parsed GNN specification from output/3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json
+2025-09-29 15:30:37,922 - validation - INFO - Semantic validation completed for actinf_pomdp_agent.md
+2025-09-29 15:30:37,922 - validation - INFO - Performance profiling completed for actinf_pomdp_agent.md
+2025-09-29 15:30:37,922 - validation - INFO - Consistency checking completed for actinf_pomdp_agent.md
+2025-09-29 15:30:37,923 - validation - INFO - Validation processing completed:
+2025-09-29 15:30:37,923 - validation - INFO -   Total files: 1
+2025-09-29 15:30:37,923 - validation - INFO -   Successful validations: 1
+2025-09-29 15:30:37,923 - validation - INFO -   Failed validations: 0
+2025-09-29 15:30:37,923 - validation - INFO -   Average semantic score: 1.00
+2025-09-29 15:30:37,923 - validation - INFO -   Average performance score: 0.70
+2025-09-29 15:30:37,923 - validation - INFO -   Average consistency score: 1.00
+
+2025-09-29 15:30:37,930 [e396119a:pipeline] pipeline - INFO - ⚠️ Step 7 completed with SUCCESS_WITH_WARNINGS in 49ms
+Progress: 7/24 steps (7 successful)
+2025-09-29 15:30:37,930 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 7 completed with SUCCESS in 49ms
+Progress: 7/24 steps (7 successful)
+    Validation completed [status=SUCCESS_WITH_WARNINGS | step_number=7] [⏱️ 49ms]
+2025-09-29 15:30:37,930 [e396119a:pipeline] pipeline - INFO - ┌─ Step 8/24: Multi-format export RUNNING
+└─ Progress: [██████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (33%)
+2025-09-29 15:30:37,930 [e396119a:pipeline] pipeline - INFO - ┌─ Step 8/24: Step 8 RUNNING
+└─ Progress: [██████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (33%)
+    Starting Multi-format export [step_number=8 | total_steps=24 | script_name=7_export.py]
+2025-09-29 15:30:37,930 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/7_export.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:30:37,987 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:37,975 - export - INFO - Loaded 1 parsed GNN files
+2025-09-29 15:30:37,976 - export - INFO - Exporting: actinf_pomdp_agent.md
+2025-09-29 15:30:37,976 - export - INFO - Loaded parsed GNN specification from output/3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json
+2025-09-29 15:30:37,976 - export - INFO - Generated json export for actinf_pomdp_agent.md
+2025-09-29 15:30:37,977 - export - INFO - Generated xml export for actinf_pomdp_agent.md
+2025-09-29 15:30:37,977 - export - INFO - Generated graphml export for actinf_pomdp_agent.md
+2025-09-29 15:30:37,978 - export - INFO - Generated gexf export for actinf_pomdp_agent.md
+2025-09-29 15:30:37,978 - export - INFO - Generated pickle export for actinf_pomdp_agent.md
+2025-09-29 15:30:37,978 - export - INFO - Export processing completed:
+2025-09-29 15:30:37,978 - export - INFO -   Total files: 1
+2025-09-29 15:30:37,978 - export - INFO -   Successful exports: 1
+2025-09-29 15:30:37,978 - export - INFO -   Failed exports: 0
+2025-09-29 15:30:37,978 - export - INFO -   Formats generated: {'json': 1, 'xml': 1, 'graphml': 1, 'gexf': 1, 'pickle': 1}
+
+2025-09-29 15:30:37,988 [e396119a:pipeline] pipeline - INFO - ✅ Step 8 completed with SUCCESS in 58ms
+Progress: 8/24 steps (8 successful)
+2025-09-29 15:30:37,988 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 8 completed with SUCCESS in 58ms
+Progress: 8/24 steps (8 successful)
+    Multi-format export completed [status=SUCCESS | step_number=8] [⏱️ 58ms]
+2025-09-29 15:30:37,988 [e396119a:pipeline] pipeline - INFO - ┌─ Step 9/24: Visualization RUNNING
+└─ Progress: [███████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (37%)
+2025-09-29 15:30:37,988 [e396119a:pipeline] pipeline - INFO - ┌─ Step 9/24: Step 9 RUNNING
+└─ Progress: [███████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (37%)
+    Starting Visualization [step_number=9 | total_steps=24 | script_name=8_visualization.py]
+2025-09-29 15:30:37,988 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/8_visualization.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:30:39,475 [e396119a:pipeline] pipeline - INFO - Step output:
+DEBUG: Creating POMDP analysis for tensor shape: (3, 3, 3)
+DEBUG: Figure created successfully
+DEBUG: Using simple subplot layout
+DEBUG: Error saving POMDP analysis: __init__(): incompatible constructor arguments. The following argument types are supported:
+    1. matplotlib.backends._backend_agg.RendererAgg(width: typing.SupportsInt, height: typing.SupportsInt, dpi: typing.SupportsFloat)
+
+Invoked with: 1081, 18189472529, 96
+DEBUG: POMDP analysis saved with fallback DPI
+
+2025-09-29 15:30:39,475 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:38,255 - visualization - INFO - Loaded 1 parsed GNN files
+2025-09-29 15:30:38,255 - visualization - INFO - Visualizing: actinf_pomdp_agent.md
+2025-09-29 15:30:38,255 - visualization - INFO - Loaded parsed GNN specification from output/3_gnn_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json
+2025-09-29 15:30:39,233 - visualization - INFO - Matrix visualization completed for actinf_pomdp_agent.md
+2025-09-29 15:30:39,233 - visualization - INFO - Network visualization completed for actinf_pomdp_agent.md
+2025-09-29 15:30:39,422 - visualization.processor - DEBUG - Successfully saved plot with DPI 300
+2025-09-29 15:30:39,422 - visualization - INFO - Combined visualization completed for actinf_pomdp_agent.md
+2025-09-29 15:30:39,422 - visualization - INFO - Visualization processing completed:
+2025-09-29 15:30:39,422 - visualization - INFO -   Total files: 1
+2025-09-29 15:30:39,422 - visualization - INFO -   Successful visualizations: 1
+2025-09-29 15:30:39,422 - visualization - INFO -   Failed visualizations: 0
+2025-09-29 15:30:39,422 - visualization - INFO -   Total images generated: 5
+2025-09-29 15:30:39,422 - visualization - INFO -   Visualization types: {'matrix': 1, 'network': 1, 'combined': 1}
+
+2025-09-29 15:30:39,475 [e396119a:pipeline] pipeline - INFO - ✅ Step 9 completed with SUCCESS in 1.49s
+Progress: 9/24 steps (9 successful)
+2025-09-29 15:30:39,475 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 9 completed with SUCCESS in 1.49s
+Progress: 9/24 steps (9 successful)
+    Visualization completed [status=SUCCESS | step_number=9] [⏱️ 1.49s]
+2025-09-29 15:30:39,475 [e396119a:pipeline] pipeline - INFO - ┌─ Step 10/24: Advanced visualization RUNNING
+└─ Progress: [████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (41%)
+2025-09-29 15:30:39,475 [e396119a:pipeline] pipeline - INFO - ┌─ Step 10/24: Step 10 RUNNING
+└─ Progress: [████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (41%)
+    Starting Advanced visualization [step_number=10 | total_steps=24 | script_name=9_advanced_viz.py]
+2025-09-29 15:30:39,475 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/9_advanced_viz.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:30:39,730 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:39,695 - 9_advanced_viz.py - INFO - ================================================================================
+2025-09-29 15:30:39,695 - 9_advanced_viz.py - INFO - ADVANCED VISUALIZATION PROCESSING
+2025-09-29 15:30:39,695 - 9_advanced_viz.py - INFO - ================================================================================
+2025-09-29 15:30:39,697 - 9_advanced_viz.py - DEBUG - seaborn not available - will use matplotlib fallback
+2025-09-29 15:30:39,697 - 9_advanced_viz.py - DEBUG - bokeh not available - will use plotly fallback
+2025-09-29 15:30:39,697 - 9_advanced_viz.py - WARNING - No GNN models found for advanced visualization
+2025-09-29 15:30:39,697 - 9_advanced_viz.py - INFO - Saved advanced visualization summary: output/9_advanced_viz_output/advanced_viz_summary.json
+
+2025-09-29 15:30:39,730 [e396119a:pipeline] pipeline - INFO - ⚠️ Step 10 completed with SUCCESS_WITH_WARNINGS in 255ms
+Progress: 10/24 steps (10 successful)
+2025-09-29 15:30:39,730 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 10 completed with SUCCESS in 255ms
+Progress: 10/24 steps (10 successful)
+    Advanced visualization completed [status=SUCCESS_WITH_WARNINGS | step_number=10] [⏱️ 255ms]
+2025-09-29 15:30:39,730 [e396119a:pipeline] pipeline - INFO - ┌─ Step 11/24: Ontology processing RUNNING
+└─ Progress: [█████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (45%)
+2025-09-29 15:30:39,730 [e396119a:pipeline] pipeline - INFO - ┌─ Step 11/24: Step 11 RUNNING
+└─ Progress: [█████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (45%)
+    Starting Ontology processing [step_number=11 | total_steps=24 | script_name=10_ontology.py]
+2025-09-29 15:30:39,730 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/10_ontology.py --target-dir input/gnn_files --output-dir output --recursive --verbose --ontology-terms-file src/ontology/act_inf_ontology_terms.json
+2025-09-29 15:30:39,779 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:39,771 - 10_ontology.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:30:39,772 - 10_ontology.py - INFO - Output directory: output/10_ontology_output/10_ontology_output
+2025-09-29 15:30:39,772 - 10_ontology.py - INFO - Recursive processing: True
+2025-09-29 15:30:39,772 - 10_ontology.py - INFO - Ontology terms file: src/ontology/act_inf_ontology_terms.json
+2025-09-29 15:30:39,772 - 10_ontology.py - INFO - Found 1 GNN files to process
+2025-09-29 15:30:39,772 - 10_ontology.py - INFO - Ontology module available, processing files...
+2025-09-29 15:30:39,772 - ontology - INFO - 🚀 Processing ontology
+2025-09-29 15:30:39,772 - ontology - INFO - ✅ Ontology processing completed successfully
+
+2025-09-29 15:30:39,779 [e396119a:pipeline] pipeline - INFO - ✅ Step 11 completed with SUCCESS in 49ms
+Progress: 11/24 steps (11 successful)
+2025-09-29 15:30:39,779 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 11 completed with SUCCESS in 49ms
+Progress: 11/24 steps (11 successful)
+    Ontology processing completed [status=SUCCESS | step_number=11] [⏱️ 49ms]
+2025-09-29 15:30:39,779 [e396119a:pipeline] pipeline - INFO - ┌─ Step 12/24: Code rendering RUNNING
+└─ Progress: [███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (50%)
+2025-09-29 15:30:39,779 [e396119a:pipeline] pipeline - INFO - ┌─ Step 12/24: Step 12 RUNNING
+└─ Progress: [███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (50%)
+    Starting Code rendering [step_number=12 | total_steps=24 | script_name=11_render.py]
+2025-09-29 15:30:39,779 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/11_render.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:30:39,863 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:39,848 - 11_render.py - INFO - 🚀 Processing render
+2025-09-29 15:30:39,848 - 11_render.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:30:39,848 - 11_render.py - INFO - Output directory: output/11_render_output/11_render_output
+2025-09-29 15:30:39,848 - 11_render.py - INFO - Render format: all
+2025-09-29 15:30:39,848 - 11_render.py - INFO - Found 1 GNN files to render
+2025-09-29 15:30:39,848 - 11_render.py - INFO - Render module available, processing files...
+2025-09-29 15:30:39,848 - render.processor - INFO - 🚀 Starting POMDP-aware render processing
+2025-09-29 15:30:39,848 - render.processor - INFO - Processing GNN files in: input/gnn_files
+2025-09-29 15:30:39,848 - render.processor - INFO - Output directory: output/11_render_output/11_render_output
+2025-09-29 15:30:39,849 - render.processor - INFO - Found 1 GNN files to process
+2025-09-29 15:30:39,849 - render.processor - INFO - Target frameworks: all available
+2025-09-29 15:30:39,849 - render.processor - INFO - 📁 Processing: input/gnn_files/actinf_pomdp_agent.md
+2025-09-29 15:30:39,849 - render.processor - INFO - ✅ Extracted POMDP 'Classic Active Inference POMDP Agent v1' with 3 states, 3 observations, 1 actions
+2025-09-29 15:30:39,849 - render.pomdp_processor - INFO - Processing POMDP 'Classic Active Inference POMDP Agent v1' for frameworks: ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy']
+2025-09-29 15:30:39,849 - render.pomdp_processor - INFO - Processing framework: pymdp
+2025-09-29 15:30:39,850 - render.pomdp_processor - INFO - Created documentation: output/11_render_output/11_render_output/actinf_pomdp_agent/pymdp/README.md
+2025-09-29 15:30:39,850 - render.pomdp_processor - INFO - ✅ pymdp: Generated PyMDP simulation script: output/11_render_output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py
+2025-09-29 15:30:39,850 - render.pomdp_processor - INFO - Processing framework: rxinfer
+2025-09-29 15:30:39,850 - render.pomdp_processor - INFO - Created documentation: output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/README.md
+2025-09-29 15:30:39,850 - render.pomdp_processor - INFO - ✅ rxinfer: Generated RxInfer.jl simulation script: output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl
+2025-09-29 15:30:39,850 - render.pomdp_processor - INFO - Processing framework: activeinference_jl
+2025-09-29 15:30:39,850 - render.activeinference_jl.activeinference_renderer - INFO - Rendering GNN specification to ActiveInference.jl script for model: Classic Active Inference POMDP Agent v1
+2025-09-29 15:30:39,850 - render.activeinference_jl.activeinference_renderer - INFO - Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl
+2025-09-29 15:30:39,851 - render.pomdp_processor - INFO - Created documentation: output/11_render_output/11_render_output/actinf_pomdp_agent/activeinference_jl/README.md
+2025-09-29 15:30:39,851 - render.pomdp_processor - INFO - ✅ activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl
+2025-09-29 15:30:39,851 - render.pomdp_processor - INFO - Processing framework: jax
+2025-09-29 15:30:39,851 - render.jax.jax_renderer - INFO - Extracting matrices from POMDP processor format
+2025-09-29 15:30:39,851 - render.jax.jax_renderer - INFO - Extracted variable dimensions: {n_states: 3, n_obs: 3, n_actions: 1}
+2025-09-29 15:30:39,851 - render.jax.jax_renderer - INFO - Created default matrices: A=(3, 3), B=(3, 3, 1), C=(3,), D=(3,)
+2025-09-29 15:30:39,851 - render.jax.jax_renderer - INFO - Found initialparameterization, extracting actual matrix values
+2025-09-29 15:30:39,851 - render.jax.jax_renderer - INFO - Successfully extracted A matrix: shape (3, 3)
+2025-09-29 15:30:39,851 - render.jax.jax_renderer - INFO - Successfully extracted C vector: shape (3,)
+2025-09-29 15:30:39,851 - render.jax.jax_renderer - INFO - Successfully extracted D vector: shape (3,)
+2025-09-29 15:30:39,851 - render.jax.jax_renderer - INFO - JAX model code written to output/11_render_output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py
+2025-09-29 15:30:39,851 - render.pomdp_processor - INFO - Created documentation: output/11_render_output/11_render_output/actinf_pomdp_agent/jax/README.md
+2025-09-29 15:30:39,851 - render.pomdp_processor - INFO - ✅ jax: JAX model code generated successfully.
+2025-09-29 15:30:39,851 - render.pomdp_processor - INFO - Processing framework: discopy
+2025-09-29 15:30:39,851 - render.pomdp_processor - INFO - Created documentation: output/11_render_output/11_render_output/actinf_pomdp_agent/discopy/README.md
+2025-09-29 15:30:39,851 - render.pomdp_processor - INFO - ✅ discopy: Generated DisCoPy categorical diagram script: output/11_render_output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py
+2025-09-29 15:30:39,851 - render.processor - INFO - ✅ Successfully processed actinf_pomdp_agent.md
+2025-09-29 15:30:39,851 - render.processor - INFO - Created overview documentation: output/11_render_output/11_render_output/README.md
+2025-09-29 15:30:39,851 - render.processor - INFO - 🎉 Render processing completed!
+2025-09-29 15:30:39,851 - render.processor - INFO - 📊 Files: 1/1 successful
+2025-09-29 15:30:39,851 - render.processor - INFO - 🧠 Framework renderings: 5/5 successful (100.0%)
+2025-09-29 15:30:39,851 - render.processor - INFO - 📄 Summary saved to: output/11_render_output/11_render_output/render_processing_summary.json
+
+2025-09-29 15:30:39,863 [e396119a:pipeline] pipeline - INFO - ✅ Step 12 completed with SUCCESS in 84ms
+Progress: 12/24 steps (12 successful)
+2025-09-29 15:30:39,863 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 12 completed with SUCCESS in 84ms
+Progress: 12/24 steps (12 successful)
+    Code rendering completed [status=SUCCESS | step_number=12] [⏱️ 84ms]
+2025-09-29 15:30:39,863 [e396119a:pipeline] pipeline - INFO - ┌─ Step 13/24: Execution RUNNING
+└─ Progress: [████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (54%)
+2025-09-29 15:30:39,863 [e396119a:pipeline] pipeline - INFO - ┌─ Step 13/24: Step 13 RUNNING
+└─ Progress: [████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (54%)
+    Starting Execution [step_number=13 | total_steps=24 | script_name=12_execute.py]
+2025-09-29 15:30:39,864 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/12_execute.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:30:54,092 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:40,033 - root - WARNING - PyMDP not available - simulation will gracefully degrade with informative output
+2025-09-29 15:30:40,280 - 12_execute.py - INFO - 🚀 Processing execute
+2025-09-29 15:30:40,498 - 12_execute.py - INFO - Dependency check for 12_execute: healthy
+2025-09-29 15:30:40,499 - 12_execute.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:30:40,499 - 12_execute.py - INFO - Output directory: output/12_execute_output/12_execute_output
+2025-09-29 15:30:40,499 - 12_execute.py - INFO - Simulation engine: auto
+2025-09-29 15:30:40,499 - 12_execute.py - INFO - Found 1 GNN files to execute
+2025-09-29 15:30:40,499 - 12_execute.py - INFO - Execute module available, processing files...
+2025-09-29 15:30:40,499 - execute - INFO - 🚀 Processing execute - searching for rendered implementations
+2025-09-29 15:30:40,501 - execute - INFO - Found render output directory: output/11_render_output
+2025-09-29 15:30:40,501 - execute - INFO - Searching for executable scripts in: output/11_render_output
+2025-09-29 15:30:40,501 - execute - INFO - Found python script: 11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py
+2025-09-29 15:30:40,501 - execute - INFO - Found python script: 11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py
+2025-09-29 15:30:40,501 - execute - INFO - Found python script: 11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py
+2025-09-29 15:30:40,502 - execute - INFO - Found julia script: 11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl
+2025-09-29 15:30:40,502 - execute - INFO - Found julia script: 11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl
+2025-09-29 15:30:40,502 - execute - INFO - Found 5 executable scripts to run
+2025-09-29 15:30:40,502 - execute - INFO - Executing python script: Classic Active Inference POMDP Agent v1_pymdp.py
+2025-09-29 15:30:40,601 - execute - ERROR - ❌ Script Classic Active Inference POMDP Agent v1_pymdp.py failed with return code 1
+2025-09-29 15:30:40,601 - execute - ERROR - Error output: Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent...
+2025-09-29 15:30:40,602 - execute - INFO - Executing python script: Classic Active Inference POMDP Agent v1_jax.py
+2025-09-29 15:30:40,702 - execute - ERROR - ❌ Script Classic Active Inference POMDP Agent v1_jax.py failed with return code 1
+2025-09-29 15:30:40,702 - execute - ERROR - Error output: Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v...
+2025-09-29 15:30:40,703 - execute - INFO - Executing python script: Classic Active Inference POMDP Agent v1_discopy.py
+2025-09-29 15:30:40,786 - execute - ERROR - ❌ Script Classic Active Inference POMDP Agent v1_discopy.py failed with return code 1
+2025-09-29 15:30:40,786 - execute - ERROR - Error output: Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Age...
+2025-09-29 15:30:40,786 - execute - INFO - Executing julia script: Classic Active Inference POMDP Agent v1_rxinfer.jl
+2025-09-29 15:30:47,985 - execute - ERROR - ❌ Script Classic Active Inference POMDP Agent v1_rxinfer.jl failed with return code 1
+2025-09-29 15:30:47,985 - execute - ERROR - Error output: ERROR: LoadError: ParseError:
+# Error @ /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent ...
+2025-09-29 15:30:47,985 - execute - INFO - Executing julia script: Classic Active Inference POMDP Agent v1_activeinference.jl
+2025-09-29 15:30:53,952 - execute - ERROR - ❌ Script Classic Active Inference POMDP Agent v1_activeinference.jl failed with return code 1
+2025-09-29 15:30:53,952 - execute - ERROR - Error output: ERROR: LoadError: MethodError: no method matching isless(::Int64, ::Vector{Float64})
+The function `isless` exists, but no method is defined for this combination of argument types.
+
+Closest candidates ...
+2025-09-29 15:30:53,953 - execute - INFO - Generated execution report: output/12_execute_output/12_execute_output/execution_results/execution_report.md
+2025-09-29 15:30:53,953 - execute - WARNING - ⚠️ Execute processing completed with 5 failures
+
+2025-09-29 15:30:54,092 [e396119a:pipeline] pipeline - INFO - ⚠️ Step 13 completed with SUCCESS_WITH_WARNINGS in 14.2s
+Progress: 13/24 steps (13 successful)
+2025-09-29 15:30:54,092 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 13 completed with SUCCESS in 14.2s
+Progress: 13/24 steps (13 successful)
+    Execution completed [status=SUCCESS_WITH_WARNINGS | step_number=13] [⏱️ 14.2s]
+2025-09-29 15:30:54,092 [e396119a:pipeline] pipeline - INFO - ┌─ Step 14/24: LLM processing RUNNING
+└─ Progress: [█████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒] (58%)
+2025-09-29 15:30:54,092 [e396119a:pipeline] pipeline - INFO - ┌─ Step 14/24: Step 14 RUNNING
+└─ Progress: [█████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒] (58%)
+    Starting LLM processing [step_number=14 | total_steps=24 | script_name=13_llm.py]
+2025-09-29 15:30:54,093 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/13_llm.py --target-dir input/gnn_files --output-dir output --recursive --verbose --llm-tasks all --llm-timeout 360
+2025-09-29 15:31:10,884 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:30:54,166 - llm.llm_processor - INFO - Loaded API keys for providers: ['openai', 'ollama']
+2025-09-29 15:30:54,166 - llm.llm_operations - INFO - Created new LLM processor
+2025-09-29 15:30:54,167 - 13_llm.py - INFO - 🚀 Processing LLM
+2025-09-29 15:30:54,167 - 13_llm.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:30:54,167 - 13_llm.py - INFO - Output directory: output/13_llm_output/13_llm_output
+2025-09-29 15:30:54,167 - 13_llm.py - INFO - Analysis type: comprehensive
+2025-09-29 15:30:54,167 - 13_llm.py - INFO - LLM provider: auto
+2025-09-29 15:30:54,167 - 13_llm.py - INFO - Found 1 GNN files to analyze
+2025-09-29 15:30:54,167 - 13_llm.py - INFO - LLM module available, processing files...
+2025-09-29 15:30:54,167 - llm - INFO - 🚀 Processing LLM
+2025-09-29 15:30:54,168 - llm.providers.openai_provider - ERROR - OpenAI library not installed. Install with: pip install openai
+2025-09-29 15:30:54,168 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-09-29 15:30:54,242 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-09-29 15:30:54,242 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-09-29 15:30:54,242 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-09-29 15:30:54,242 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-09-29 15:30:54,243 - llm.providers.ollama_provider - INFO - Ollama provider initialized (CLI fallback)
+2025-09-29 15:30:54,243 - llm.llm_processor - INFO - Initialized ollama provider
+2025-09-29 15:30:54,243 - llm.llm_processor - INFO - LLM Processor initialized with 1 providers
+2025-09-29 15:30:54,245 - llm.llm_processor - INFO - Loaded API keys for providers: ['openai', 'ollama']
+2025-09-29 15:30:54,245 - llm.llm_operations - INFO - Created new LLM processor
+2025-09-29 15:30:54,245 - llm.providers.openai_provider - ERROR - OpenAI library not installed. Install with: pip install openai
+2025-09-29 15:30:54,245 - llm.llm_processor - WARNING - Failed to initialize openai provider
+2025-09-29 15:30:54,245 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
+2025-09-29 15:30:54,245 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
+2025-09-29 15:30:54,245 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
+2025-09-29 15:30:54,245 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
+2025-09-29 15:30:54,245 - llm.providers.ollama_provider - INFO - Ollama provider initialized (CLI fallback)
+2025-09-29 15:30:54,245 - llm.llm_processor - INFO - Initialized ollama provider
+2025-09-29 15:30:54,245 - llm.llm_processor - INFO - LLM Processor initialized with 1 providers
+2025-09-29 15:30:55,708 - llm - INFO - Running structured prompt 1/6: summarize_content for actinf_pomdp_agent.md
+2025-09-29 15:30:56,467 - llm - INFO - Running structured prompt 2/6: explain_model for actinf_pomdp_agent.md
+2025-09-29 15:30:58,749 - llm - INFO - Running structured prompt 3/6: identify_components for actinf_pomdp_agent.md
+2025-09-29 15:31:00,007 - llm - INFO - Running structured prompt 4/6: analyze_structure for actinf_pomdp_agent.md
+2025-09-29 15:31:01,342 - llm - INFO - Running structured prompt 5/6: extract_parameters for actinf_pomdp_agent.md
+2025-09-29 15:31:02,611 - llm - INFO - Running structured prompt 6/6: practical_applications for actinf_pomdp_agent.md
+2025-09-29 15:31:04,667 - llm - INFO - Running custom prompt: technical_description for actinf_pomdp_agent.md
+2025-09-29 15:31:05,400 - llm - INFO - Running custom prompt: nontechnical_description for actinf_pomdp_agent.md
+2025-09-29 15:31:09,020 - llm - INFO - Running custom prompt: runtime_behavior for actinf_pomdp_agent.md
+2025-09-29 15:31:10,859 - llm - INFO - ✅ LLM processing completed successfully
+
+2025-09-29 15:31:10,884 [e396119a:pipeline] pipeline - INFO - ⚠️ Step 14 completed with SUCCESS_WITH_WARNINGS in 16.8s
+Progress: 14/24 steps (14 successful)
+2025-09-29 15:31:10,884 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 14 completed with SUCCESS in 16.8s
+Progress: 14/24 steps (14 successful)
+    LLM processing completed [status=SUCCESS_WITH_WARNINGS | step_number=14] [⏱️ 16.8s]
+2025-09-29 15:31:10,884 [e396119a:pipeline] pipeline - INFO - ┌─ Step 15/24: ML integration RUNNING
+└─ Progress: [██████████████████▒▒▒▒▒▒▒▒▒▒▒▒] (62%)
+2025-09-29 15:31:10,884 [e396119a:pipeline] pipeline - INFO - ┌─ Step 15/24: Step 15 RUNNING
+└─ Progress: [██████████████████▒▒▒▒▒▒▒▒▒▒▒▒] (62%)
+    Starting ML integration [step_number=15 | total_steps=24 | script_name=14_ml_integration.py]
+2025-09-29 15:31:10,885 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/14_ml_integration.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:31:10,942 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:31:10,934 - 14_ml_integration.py - INFO - 🚀 Processing ML integration
+2025-09-29 15:31:10,935 - 14_ml_integration.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:31:10,935 - 14_ml_integration.py - INFO - Output directory: output/14_ml_integration_output/14_ml_integration_output
+2025-09-29 15:31:10,935 - 14_ml_integration.py - INFO - Model type: auto
+2025-09-29 15:31:10,935 - 14_ml_integration.py - INFO - Training mode: supervised
+2025-09-29 15:31:10,935 - 14_ml_integration.py - INFO - Found 1 GNN files for ML integration
+2025-09-29 15:31:10,935 - 14_ml_integration.py - INFO - ML integration module available, processing files...
+2025-09-29 15:31:10,935 - ml_integration - INFO - Processing ml_integration for files in input/gnn_files
+2025-09-29 15:31:10,935 - ml_integration - INFO - Ml_Integration processing completed
+
+2025-09-29 15:31:10,942 [e396119a:pipeline] pipeline - INFO - ✅ Step 15 completed with SUCCESS in 58ms
+Progress: 15/24 steps (15 successful)
+2025-09-29 15:31:10,942 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 15 completed with SUCCESS in 58ms
+Progress: 15/24 steps (15 successful)
+    ML integration completed [status=SUCCESS | step_number=15] [⏱️ 58ms]
+2025-09-29 15:31:10,942 [e396119a:pipeline] pipeline - INFO - ┌─ Step 16/24: Audio processing RUNNING
+└─ Progress: [████████████████████▒▒▒▒▒▒▒▒▒▒] (66%)
+2025-09-29 15:31:10,942 [e396119a:pipeline] pipeline - INFO - ┌─ Step 16/24: Step 16 RUNNING
+└─ Progress: [████████████████████▒▒▒▒▒▒▒▒▒▒] (66%)
+    Starting Audio processing [step_number=16 | total_steps=24 | script_name=15_audio.py]
+2025-09-29 15:31:10,943 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/15_audio.py --target-dir input/gnn_files --output-dir output --recursive --verbose --duration 30.0 --audio-backend auto
+2025-09-29 15:31:11,019 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:31:11,010 - 15_audio.py - INFO - 🚀 Processing audio
+2025-09-29 15:31:11,010 - 15_audio.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:31:11,010 - 15_audio.py - INFO - Output directory: output/15_audio_output/15_audio_output
+2025-09-29 15:31:11,010 - 15_audio.py - INFO - Audio backend: auto
+2025-09-29 15:31:11,010 - 15_audio.py - INFO - Duration: 30.0s
+2025-09-29 15:31:11,010 - 15_audio.py - INFO - Found 1 GNN files for audio generation
+2025-09-29 15:31:11,010 - 15_audio.py - INFO - Audio module available, processing files...
+2025-09-29 15:31:11,011 - audio - INFO - Processing audio for files in input/gnn_files
+2025-09-29 15:31:11,011 - audio - INFO - Audio processing completed
+
+2025-09-29 15:31:11,019 [e396119a:pipeline] pipeline - INFO - ✅ Step 16 completed with SUCCESS in 77ms
+Progress: 16/24 steps (16 successful)
+2025-09-29 15:31:11,019 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 16 completed with SUCCESS in 77ms
+Progress: 16/24 steps (16 successful)
+    Audio processing completed [status=SUCCESS | step_number=16] [⏱️ 77ms]
+2025-09-29 15:31:11,019 [e396119a:pipeline] pipeline - INFO - ┌─ Step 17/24: Analysis RUNNING
+└─ Progress: [█████████████████████▒▒▒▒▒▒▒▒▒] (70%)
+2025-09-29 15:31:11,019 [e396119a:pipeline] pipeline - INFO - ┌─ Step 17/24: Step 17 RUNNING
+└─ Progress: [█████████████████████▒▒▒▒▒▒▒▒▒] (70%)
+    Starting Analysis [step_number=17 | total_steps=24 | script_name=16_analysis.py]
+2025-09-29 15:31:11,020 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/16_analysis.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:31:11,085 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:31:11,077 - 16_analysis.py - INFO - 🚀 Processing analysis
+2025-09-29 15:31:11,077 - 16_analysis.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:31:11,077 - 16_analysis.py - INFO - Output directory: output/16_analysis_output/16_analysis_output
+2025-09-29 15:31:11,077 - 16_analysis.py - INFO - Analysis type: comprehensive
+2025-09-29 15:31:11,077 - 16_analysis.py - INFO - Found 1 GNN files for analysis
+2025-09-29 15:31:11,077 - 16_analysis.py - INFO - Analysis module available, processing files...
+2025-09-29 15:31:11,077 - analysis - INFO - Processing analysis for files in input/gnn_files
+2025-09-29 15:31:11,077 - analysis - INFO - Analysis processing completed
+
+2025-09-29 15:31:11,085 [e396119a:pipeline] pipeline - INFO - ✅ Step 17 completed with SUCCESS in 66ms
+Progress: 17/24 steps (17 successful)
+2025-09-29 15:31:11,085 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 17 completed with SUCCESS in 66ms
+Progress: 17/24 steps (17 successful)
+    Analysis completed [status=SUCCESS | step_number=17] [⏱️ 66ms]
+2025-09-29 15:31:11,086 [e396119a:pipeline] pipeline - INFO - ┌─ Step 18/24: Integration RUNNING
+└─ Progress: [██████████████████████▒▒▒▒▒▒▒▒] (75%)
+2025-09-29 15:31:11,086 [e396119a:pipeline] pipeline - INFO - ┌─ Step 18/24: Step 18 RUNNING
+└─ Progress: [██████████████████████▒▒▒▒▒▒▒▒] (75%)
+    Starting Integration [step_number=18 | total_steps=24 | script_name=17_integration.py]
+2025-09-29 15:31:11,086 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/17_integration.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:31:11,132 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:31:11,126 - 17_integration.py - INFO - 🚀 Processing integration
+2025-09-29 15:31:11,126 - 17_integration.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:31:11,126 - 17_integration.py - INFO - Output directory: output/17_integration_output/17_integration_output
+2025-09-29 15:31:11,126 - 17_integration.py - INFO - Integration mode: coordinated
+2025-09-29 15:31:11,126 - 17_integration.py - INFO - System coordination enabled
+2025-09-29 15:31:11,126 - 17_integration.py - INFO - Found 1 GNN files for integration
+2025-09-29 15:31:11,126 - 17_integration.py - INFO - Integration module available, processing files...
+2025-09-29 15:31:11,126 - integration - INFO - Processing integration for files in input/gnn_files
+2025-09-29 15:31:11,127 - integration - INFO - Integration processing completed
+
+2025-09-29 15:31:11,133 [e396119a:pipeline] pipeline - INFO - ✅ Step 18 completed with SUCCESS in 47ms
+Progress: 18/24 steps (18 successful)
+2025-09-29 15:31:11,133 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 18 completed with SUCCESS in 47ms
+Progress: 18/24 steps (18 successful)
+    Integration completed [status=SUCCESS | step_number=18] [⏱️ 47ms]
+2025-09-29 15:31:11,133 [e396119a:pipeline] pipeline - INFO - ┌─ Step 19/24: Security RUNNING
+└─ Progress: [███████████████████████▒▒▒▒▒▒▒] (79%)
+2025-09-29 15:31:11,133 [e396119a:pipeline] pipeline - INFO - ┌─ Step 19/24: Step 19 RUNNING
+└─ Progress: [███████████████████████▒▒▒▒▒▒▒] (79%)
+    Starting Security [step_number=19 | total_steps=24 | script_name=18_security.py]
+2025-09-29 15:31:11,133 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/18_security.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:31:11,180 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:31:11,173 - 18_security.py - INFO - 🚀 Processing security
+2025-09-29 15:31:11,174 - 18_security.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:31:11,174 - 18_security.py - INFO - Output directory: output/18_security_output/18_security_output
+2025-09-29 15:31:11,174 - 18_security.py - INFO - Security level: standard
+2025-09-29 15:31:11,174 - 18_security.py - INFO - Including security recommendations
+2025-09-29 15:31:11,174 - 18_security.py - INFO - Found 1 GNN files for security analysis
+2025-09-29 15:31:11,174 - 18_security.py - INFO - Security module available, processing files...
+2025-09-29 15:31:11,174 - security - INFO - Processing security for files in input/gnn_files
+2025-09-29 15:31:11,174 - security - INFO - Security processing completed
+
+2025-09-29 15:31:11,180 [e396119a:pipeline] pipeline - INFO - ✅ Step 19 completed with SUCCESS in 47ms
+Progress: 19/24 steps (19 successful)
+2025-09-29 15:31:11,180 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 19 completed with SUCCESS in 47ms
+Progress: 19/24 steps (19 successful)
+    Security completed [status=SUCCESS | step_number=19] [⏱️ 47ms]
+2025-09-29 15:31:11,180 [e396119a:pipeline] pipeline - INFO - ┌─ Step 20/24: Research RUNNING
+└─ Progress: [█████████████████████████▒▒▒▒▒] (83%)
+2025-09-29 15:31:11,180 [e396119a:pipeline] pipeline - INFO - ┌─ Step 20/24: Step 20 RUNNING
+└─ Progress: [█████████████████████████▒▒▒▒▒] (83%)
+    Starting Research [step_number=20 | total_steps=24 | script_name=19_research.py]
+2025-09-29 15:31:11,180 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/19_research.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:31:11,228 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:31:11,221 - 19_research.py - INFO - 🚀 Processing research
+2025-09-29 15:31:11,221 - 19_research.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:31:11,221 - 19_research.py - INFO - Output directory: output/19_research_output/19_research_output
+2025-09-29 15:31:11,221 - 19_research.py - INFO - Research mode: experimental
+2025-09-29 15:31:11,221 - 19_research.py - INFO - Including research hypotheses
+2025-09-29 15:31:11,221 - 19_research.py - INFO - Found 1 GNN files for research analysis
+2025-09-29 15:31:11,221 - 19_research.py - INFO - Research module available, processing files...
+2025-09-29 15:31:11,221 - research - INFO - Processing research for files in input/gnn_files
+2025-09-29 15:31:11,221 - research - INFO - Research processing completed
+
+2025-09-29 15:31:11,228 [e396119a:pipeline] pipeline - INFO - ✅ Step 20 completed with SUCCESS in 48ms
+Progress: 20/24 steps (20 successful)
+2025-09-29 15:31:11,228 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 20 completed with SUCCESS in 48ms
+Progress: 20/24 steps (20 successful)
+    Research completed [status=SUCCESS | step_number=20] [⏱️ 48ms]
+2025-09-29 15:31:11,228 [e396119a:pipeline] pipeline - INFO - ┌─ Step 21/24: Website generation RUNNING
+└─ Progress: [██████████████████████████▒▒▒▒] (87%)
+2025-09-29 15:31:11,228 [e396119a:pipeline] pipeline - INFO - ┌─ Step 21/24: Step 21 RUNNING
+└─ Progress: [██████████████████████████▒▒▒▒] (87%)
+    Starting Website generation [step_number=21 | total_steps=24 | script_name=20_website.py]
+2025-09-29 15:31:11,228 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/20_website.py --target-dir input/gnn_files --output-dir output --recursive --verbose --website-html-filename gnn_pipeline_summary_website.html
+2025-09-29 15:31:11,276 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:31:11,269 - 20_website.py - INFO - 🚀 Processing website
+2025-09-29 15:31:11,269 - 20_website.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:31:11,269 - 20_website.py - INFO - Output directory: output/20_website_output/20_website_output
+2025-09-29 15:31:11,269 - 20_website.py - INFO - Website theme: default
+2025-09-29 15:31:11,269 - 20_website.py - INFO - Including interactive elements
+2025-09-29 15:31:11,269 - 20_website.py - INFO - Found 1 GNN files for website generation
+2025-09-29 15:31:11,269 - 20_website.py - INFO - Website module available, processing files...
+2025-09-29 15:31:11,269 - website - INFO - Website generated successfully with 1 pages
+
+2025-09-29 15:31:11,276 [e396119a:pipeline] pipeline - INFO - ✅ Step 21 completed with SUCCESS in 48ms
+Progress: 21/24 steps (21 successful)
+2025-09-29 15:31:11,276 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 21 completed with SUCCESS in 48ms
+Progress: 21/24 steps (21 successful)
+    Website generation completed [status=SUCCESS | step_number=21] [⏱️ 48ms]
+2025-09-29 15:31:11,276 [e396119a:pipeline] pipeline - INFO - ┌─ Step 22/24: Model Context Protocol processing RUNNING
+└─ Progress: [███████████████████████████▒▒▒] (91%)
+2025-09-29 15:31:11,276 [e396119a:pipeline] pipeline - INFO - ┌─ Step 22/24: Step 22 RUNNING
+└─ Progress: [███████████████████████████▒▒▒] (91%)
+    Starting Model Context Protocol processing [step_number=22 | total_steps=24 | script_name=21_mcp.py]
+2025-09-29 15:31:11,276 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/21_mcp.py --target-dir input/gnn_files --output-dir output --recursive --verbose --performance-mode low
+2025-09-29 15:31:11,325 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:31:11,318 - mcp - INFO - Enhanced MCP server initialized
+2025-09-29 15:31:11,319 - 21_mcp.py - INFO - 🚀 Processing MCP
+2025-09-29 15:31:11,319 - 21_mcp.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:31:11,319 - 21_mcp.py - INFO - Output directory: output/21_mcp_output/21_mcp_output
+2025-09-29 15:31:11,319 - 21_mcp.py - INFO - MCP mode: tool_discovery
+2025-09-29 15:31:11,319 - 21_mcp.py - INFO - Enabling MCP tools
+2025-09-29 15:31:11,319 - 21_mcp.py - INFO - Found 1 GNN files for MCP processing
+2025-09-29 15:31:11,319 - 21_mcp.py - INFO - MCP module available, processing files...
+2025-09-29 15:31:11,319 - mcp - INFO - Processing mcp for files in input/gnn_files
+2025-09-29 15:31:11,319 - mcp - INFO - Mcp processing completed
+
+2025-09-29 15:31:11,325 [e396119a:pipeline] pipeline - INFO - ✅ Step 22 completed with SUCCESS in 49ms
+Progress: 22/24 steps (22 successful)
+2025-09-29 15:31:11,325 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 22 completed with SUCCESS in 49ms
+Progress: 22/24 steps (22 successful)
+    Model Context Protocol processing completed [status=SUCCESS | step_number=22] [⏱️ 49ms]
+2025-09-29 15:31:11,325 [e396119a:pipeline] pipeline - INFO - ┌─ Step 23/24: GUI (Interactive GNN Constructor) RUNNING
+└─ Progress: [████████████████████████████▒▒] (95%)
+2025-09-29 15:31:11,325 [e396119a:pipeline] pipeline - INFO - ┌─ Step 23/24: Step 23 RUNNING
+└─ Progress: [████████████████████████████▒▒] (95%)
+    Starting GUI (Interactive GNN Constructor) [step_number=23 | total_steps=24 | script_name=22_gui.py]
+2025-09-29 15:31:11,326 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/22_gui.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:32:11,336 [e396119a:pipeline] pipeline - INFO - ❌ Step 23 completed with TIMEOUT in 1m0s
+Progress: 23/24 steps (22 successful)
+2025-09-29 15:32:11,336 [e396119a:pipeline] pipeline - INFO - ┌─ Step 24/24: Report generation RUNNING
+└─ Progress: [██████████████████████████████] (100%)
+2025-09-29 15:32:11,336 [e396119a:pipeline] pipeline - INFO - ┌─ Step 24/24: Step 24 RUNNING
+└─ Progress: [██████████████████████████████] (100%)
+    Starting Report generation [step_number=24 | total_steps=24 | script_name=23_report.py]
+2025-09-29 15:32:11,337 [e396119a:pipeline] pipeline - INFO - Executing command: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python /Users/4d/Documents/GitHub/generalizednotationnotation/src/23_report.py --target-dir input/gnn_files --output-dir output --recursive --verbose
+2025-09-29 15:32:11,396 [e396119a:pipeline] pipeline - WARNING - Step errors:
+2025-09-29 15:32:11,388 - 23_report.py - INFO - 🚀 Processing report
+2025-09-29 15:32:11,389 - 23_report.py - INFO - Processing GNN files from: input/gnn_files
+2025-09-29 15:32:11,389 - 23_report.py - INFO - Output directory: output/23_report_output/23_report_output
+2025-09-29 15:32:11,389 - 23_report.py - INFO - Report format: comprehensive
+2025-09-29 15:32:11,389 - 23_report.py - INFO - Including visualizations in report
+2025-09-29 15:32:11,389 - 23_report.py - INFO - Found 1 GNN files for report generation
+2025-09-29 15:32:11,389 - 23_report.py - INFO - Report module available, processing files...
+2025-09-29 15:32:11,389 - report - INFO - Processing report for files in input/gnn_files
+2025-09-29 15:32:11,389 - report - INFO - Report processing completed
+
+2025-09-29 15:32:11,396 [e396119a:pipeline] pipeline - INFO - ✅ Step 24 completed with SUCCESS in 60ms
+Progress: 24/24 steps (23 successful)
+2025-09-29 15:32:11,396 [e396119a:pipeline] pipeline - INFO - ✅ ✅ Step 24 completed with SUCCESS in 60ms
+Progress: 23/24 steps (23 successful)
+    Report generation completed [status=SUCCESS | step_number=24] [⏱️ 60ms]
+2025-09-29 15:32:11,396 [e396119a:pipeline] pipeline - INFO - Saving pipeline summary to: output/pipeline_execution_summary.json
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - Pipeline summary saved successfully
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - Summary: 23/24 steps successful, 0 failed
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ┌─ Step 24/24: Overall Progress SUCCESS
+└─ Progress: [██████████████████████████████] (100%)
+Stats: ✅ Success: 23 | ⚠️ Warnings: 6 | ❌ Failed: 0 | ⏱️ Elapsed: 2m2s
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - 
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ╔═══════════════════════════════════════════════════════════════════════════════════╗
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ║             ⚠️ PIPELINE EXECUTION SUMMARY - SUCCESS_WITH_WARNINGS ⚠️              ║
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ╠═══════════════════════════════════════════════════════════════════════════════════╣
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ║ Total Steps: 24                                                                   ║
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ║ ✅ Successful: 17                                                                  ║
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ║ ⚠️ Warnings: 6                                                                    ║
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ║ ❌ Failed: 0                                                                       ║
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ║ ⏱️ Total Time: 2m2s                                                                 ║
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ║ Average Step Time: 5.07s                                                          ║
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ║ 📊 Success Rate: 95.8%                                                             ║
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - ╚═══════════════════════════════════════════════════════════════════════════════════╝
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - 
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO - 🔍 DETAILED STEP ANALYSIS:
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO -   ⚠️ 0_template.py: SUCCESS_WITH_WARNINGS (1.13s)
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO -   ⚠️ 5_type_checker.py: SUCCESS_WITH_WARNINGS (47ms)
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO -   ⚠️ 6_validation.py: SUCCESS_WITH_WARNINGS (49ms)
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO -   ⚠️ 9_advanced_viz.py: SUCCESS_WITH_WARNINGS (255ms)
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO -   ⚠️ 12_execute.py: SUCCESS_WITH_WARNINGS (14.2s)
+2025-09-29 15:32:11,397 [e396119a:pipeline] pipeline - INFO -   ⚠️ 13_llm.py: SUCCESS_WITH_WARNINGS (16.8s)
+2025-09-29 15:32:11,398 [e396119a:pipeline] pipeline - INFO - 
