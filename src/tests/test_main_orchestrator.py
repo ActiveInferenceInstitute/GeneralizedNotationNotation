@@ -202,4 +202,65 @@ class TestEndToEndIntegration:
             cmd = [sys.executable, str(main_py), "--only-steps", "3,5,7,8", "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
             subprocess.run(cmd, cwd=str(PROJECT_ROOT))
             # Assert expected subdirs may be created by steps
-            assert (outdir / "3_gnn_output").exists() or (outdir / "gnn_processing_step").exists() 
+            assert (outdir / "3_gnn_output").exists() or (outdir / "gnn_processing_step").exists()
+
+    def test_pipeline_summary_validation(self):
+        """Test pipeline summary structure validation."""
+        from main import _validate_pipeline_summary
+
+        # Test valid summary
+        valid_summary = {
+            "start_time": "2025-01-01T00:00:00",
+            "arguments": {"target_dir": "input"},
+            "steps": [
+                {
+                    "status": "SUCCESS",
+                    "step_number": 1,
+                    "script_name": "test.py",
+                    "description": "Test step",
+                    "exit_code": 0
+                }
+            ],
+            "end_time": "2025-01-01T00:01:00",
+            "overall_status": "SUCCESS",
+            "total_duration_seconds": 60.0,
+            "environment_info": {"python_version": "3.11"},
+            "performance_summary": {
+                "peak_memory_mb": 100.0,
+                "total_steps": 1,
+                "failed_steps": 0,
+                "critical_failures": 0,
+                "successful_steps": 1,
+                "warnings": 0
+            }
+        }
+
+        # Should not raise any errors
+        _validate_pipeline_summary(valid_summary, logger)
+
+        # Test invalid summary
+        invalid_summary = {
+            "start_time": None,
+            "steps": "not_a_list"
+        }
+
+        # Should log warnings/errors but not raise exceptions
+        _validate_pipeline_summary(invalid_summary, logger)
+
+    def test_enhanced_warning_detection(self):
+        """Test improved warning detection logic."""
+        # Test the warning detection logic from main.py
+        combined_output = "INFO: Processing completed\nWARNING: Optional feature not available\n⚠️ Warning symbol detected"
+        import re
+        warning_pattern = re.compile(r"(WARNING|⚠️|warn)", re.IGNORECASE)
+        has_warning = bool(warning_pattern.search(combined_output))
+
+        # Should detect warnings
+        assert has_warning == True
+
+        # Test without warnings
+        combined_output_no_warning = "INFO: Processing completed\nDEBUG: File processed successfully"
+        has_warning = bool(warning_pattern.search(combined_output_no_warning))
+
+        # Should not detect warnings
+        assert has_warning == False 

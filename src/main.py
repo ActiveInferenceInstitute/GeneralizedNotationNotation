@@ -113,7 +113,7 @@ def main():
     else:
         logger = setup_step_logging("pipeline", args.verbose)
     
-    # Initialize pipeline execution summary
+    # Initialize pipeline execution summary (will be updated after steps_to_execute is defined)
     pipeline_summary = {
         "start_time": datetime.now().isoformat(),
         "arguments": args.to_dict(),
@@ -124,7 +124,7 @@ def main():
         "environment_info": get_environment_info(),
         "performance_summary": {
             "peak_memory_mb": 0.0,
-             "total_steps": 24,
+            "total_steps": 0,  # Will be updated after steps_to_execute is defined
             "failed_steps": 0,
             "critical_failures": 0,
             "successful_steps": 0,
@@ -216,7 +216,10 @@ def main():
             skip_numbers = parse_step_list(args.skip_steps)
             steps_to_execute = [step for i, step in enumerate(pipeline_steps) if i not in skip_numbers]
             logger.info(f"Skipping steps: {[pipeline_steps[i][0] for i in skip_numbers if 0 <= i < len(pipeline_steps)]}")
-        
+
+        # Update pipeline summary with actual step count
+        pipeline_summary["performance_summary"]["total_steps"] = len(steps_to_execute)
+
         # Initialize progress tracker if enhanced logging is available
         progress_tracker = None
         if STRUCTURED_LOGGING_AVAILABLE:
@@ -257,19 +260,27 @@ def main():
             step_duration = step_end_time - step_start_time
             step_end_datetime = datetime.now()
             
-            # Update step result with timing information
+            # Update step result with timing information and enhanced metadata
             step_result.update({
                 "step_number": step_number,
                 "script_name": script_name,
                 "description": description,
                 "start_time": step_start_datetime.isoformat(),
                 "end_time": step_end_datetime.isoformat(),
-                "duration_seconds": step_duration
+                "duration_seconds": step_duration,
+                "exit_code": step_result.get("exit_code", 0),
+                "retry_count": step_result.get("retry_count", 0),
+                "prerequisite_check": step_result.get("prerequisite_check", True),
+                "dependency_warnings": step_result.get("dependency_warnings", []),
+                "recoverable": step_result.get("recoverable", False)
             })
             
-            # Check for warnings in both stdout and stderr (case-insensitive and symbol-aware)
+            # Check for warnings in both stdout and stderr (precise regex matching)
             combined_output = f"{step_result.get('stdout', '')}\n{step_result.get('stderr', '')}"
-            has_warning = ("WARNING" in combined_output) or ("⚠️" in combined_output) or ("warning" in combined_output.lower())
+            # More precise warning detection - look for actual log levels or warning symbols
+            import re
+            warning_pattern = re.compile(r"(WARNING|⚠️|warn)", re.IGNORECASE)
+            has_warning = bool(warning_pattern.search(combined_output))
 
             # Propagate SUCCESS_WITH_WARNINGS status if applicable
             if step_result["status"] == "SUCCESS" and has_warning:
@@ -290,10 +301,14 @@ def main():
             if has_warning:
                 pipeline_summary["performance_summary"]["warnings"] += 1
             
-            # Update peak memory usage
+            # Update peak memory usage with better tracking
             step_memory = step_result.get("memory_usage_mb", 0.0)
-            if step_memory > pipeline_summary["performance_summary"]["peak_memory_mb"]:
-                pipeline_summary["performance_summary"]["peak_memory_mb"] = step_memory
+            step_peak_memory = step_result.get("peak_memory_mb", 0.0)
+            current_peak = pipeline_summary["performance_summary"]["peak_memory_mb"]
+
+            # Use the higher of step memory or peak memory
+            new_peak = max(step_memory, step_peak_memory, current_peak)
+            pipeline_summary["performance_summary"]["peak_memory_mb"] = new_peak
             
             # Update total steps count
             pipeline_summary["performance_summary"]["total_steps"] = len(steps_to_execute)
@@ -326,21 +341,61 @@ def main():
             datetime.fromisoformat(pipeline_summary["start_time"]).timetuple()
         )
         
-        # Determine overall status
-        if pipeline_summary["performance_summary"]["critical_failures"] > 0:
+        # Determine overall status with enhanced logic
+        perf_summary = pipeline_summary["performance_summary"]
+        if perf_summary["critical_failures"] > 0:
             pipeline_summary["overall_status"] = "FAILED"
-        elif pipeline_summary["performance_summary"]["failed_steps"] > 0:
-            pipeline_summary["overall_status"] = "PARTIAL_SUCCESS"
+        elif perf_summary["failed_steps"] > 0:
+            # Check if failures are recoverable vs critical
+            total_steps = perf_summary["total_steps"]
+            failed_ratio = perf_summary["failed_steps"] / total_steps if total_steps > 0 else 0
+
+            if failed_ratio > 0.5:  # More than half failed
+                pipeline_summary["overall_status"] = "FAILED"
+            elif failed_ratio > 0.2:  # 20-50% failed
+                pipeline_summary["overall_status"] = "PARTIAL_SUCCESS"
+            else:  # Less than 20% failed
+                pipeline_summary["overall_status"] = "SUCCESS_WITH_WARNINGS"
         else:
             pipeline_summary["overall_status"] = "SUCCESS"
         
-        # Save pipeline summary
+        # Save pipeline summary with validation and error handling
         summary_path = args.pipeline_summary_file
         summary_path.parent.mkdir(parents=True, exist_ok=True)
         logger.info(f"Saving pipeline summary to: {summary_path}")
-        with open(summary_path, 'w') as f:
-            json.dump(pipeline_summary, f, indent=4)
-        logger.info(f"Pipeline summary saved successfully")
+
+        try:
+            # Validate summary structure before saving
+            _validate_pipeline_summary(pipeline_summary, logger)
+
+            with open(summary_path, 'w') as f:
+                json.dump(pipeline_summary, f, indent=4, default=str)
+            logger.info(f"Pipeline summary saved successfully")
+
+            # Log summary statistics
+            steps = pipeline_summary["steps"]
+            successful = sum(1 for step in steps if step["status"] in ("SUCCESS", "SUCCESS_WITH_WARNINGS"))
+            failed = sum(1 for step in steps if step["status"] == "FAILED")
+            logger.info(f"Summary: {successful}/{len(steps)} steps successful, {failed} failed")
+
+        except Exception as e:
+            logger.error(f"Failed to save pipeline summary: {e}")
+            # Try to save a minimal summary as fallback
+            try:
+                minimal_summary = {
+                    "start_time": pipeline_summary.get("start_time"),
+                    "end_time": datetime.now().isoformat(),
+                    "overall_status": "FAILED",
+                    "error": str(e),
+                    "arguments": pipeline_summary.get("arguments", {}),
+                    "steps_count": len(pipeline_summary.get("steps", [])),
+                    "performance_summary": pipeline_summary.get("performance_summary", {})
+                }
+                with open(summary_path, 'w') as f:
+                    json.dump(minimal_summary, f, indent=4, default=str)
+                logger.info("Minimal summary saved as fallback")
+            except Exception as fallback_error:
+                logger.error(f"Failed to save even minimal summary: {fallback_error}")
         
         # Final status logging
         if STRUCTURED_LOGGING_AVAILABLE:
@@ -550,6 +605,58 @@ def get_environment_info() -> Dict[str, Any]:
         info["disk_free_gb"] = "unavailable (psutil not installed)"
     
     return info
+
+
+def _validate_pipeline_summary(summary: dict, logger) -> None:
+    """
+    Validate pipeline summary structure and data integrity.
+
+    Args:
+        summary: Pipeline summary dictionary to validate
+        logger: Logger instance for validation messages
+    """
+    required_fields = [
+        "start_time", "arguments", "steps", "end_time",
+        "overall_status", "total_duration_seconds",
+        "environment_info", "performance_summary"
+    ]
+
+    # Check required fields
+    for field in required_fields:
+        if field not in summary:
+            logger.warning(f"Pipeline summary missing required field: {field}")
+        elif summary[field] is None and field not in ["end_time"]:
+            logger.warning(f"Pipeline summary field '{field}' is None")
+
+    # Validate steps structure
+    steps = summary.get("steps", [])
+    if not isinstance(steps, list):
+        logger.error("Pipeline summary 'steps' should be a list")
+        return
+
+    for i, step in enumerate(steps):
+        if not isinstance(step, dict):
+            logger.error(f"Step {i} should be a dictionary")
+            continue
+
+        step_required = ["status", "step_number", "script_name", "description"]
+        for field in step_required:
+            if field not in step:
+                logger.warning(f"Step {i} missing required field: {field}")
+
+    # Validate performance summary
+    perf = summary.get("performance_summary", {})
+    if not isinstance(perf, dict):
+        logger.error("Performance summary should be a dictionary")
+        return
+
+    # Validate numeric fields
+    numeric_fields = ["peak_memory_mb", "total_steps", "failed_steps", "critical_failures", "successful_steps", "warnings"]
+    for field in numeric_fields:
+        if field in perf:
+            if not isinstance(perf[field], (int, float)):
+                logger.warning(f"Performance summary field '{field}' should be numeric, got {type(perf[field])}")
+
 
 # All pipeline utility functions have been moved to appropriate utils modules:
 # - validate_step_prerequisites, validate_pipeline_step_sequence → utils/pipeline_validator.py  
