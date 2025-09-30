@@ -7,6 +7,7 @@
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-24-blue.svg)](#%EF%B8%8F-processing-pipeline)
+[![Latest Run](https://img.shields.io/badge/Latest%20Run-85.7%25%20Success-yellow.svg)](#-performance-characteristics)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-4-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 

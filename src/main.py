@@ -52,6 +52,7 @@ For complete usage information, see:
 """
 
 import sys
+import os
 import json
 import time
 import logging
@@ -59,8 +60,17 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 
+# Detect project root and ensure we're working from there
+SCRIPT_DIR = Path(__file__).parent  # src/
+PROJECT_ROOT = SCRIPT_DIR.parent     # project root (one level up from src/)
+
+# Change working directory to project root if not already there
+if Path.cwd() != PROJECT_ROOT:
+    os.chdir(PROJECT_ROOT)
+    print(f"Changed working directory to project root: {PROJECT_ROOT}")
+
 # Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(SCRIPT_DIR))
 
 from utils.pipeline_template import (
     setup_step_logging,
@@ -506,13 +516,22 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
 
         # Execute step with timeout
         try:
-            # Use appropriate timeout for the tests step based on test mode
+            # Use appropriate timeout for different step types
             if script_name == "2_tests.py":
                 # Check if comprehensive testing is requested
                 comprehensive_requested = any("--comprehensive" in str(arg) for arg in sys.argv)
                 step_timeout_seconds = 900 if comprehensive_requested else 600  # 15 min for comprehensive, 10 min for others
+            elif script_name == "13_llm.py":
+                # LLM processing can take longer due to API calls and analysis
+                step_timeout_seconds = 600  # 10 minutes for LLM processing
+            elif script_name == "22_gui.py":
+                # GUI step needs more time for initialization even in headless mode
+                step_timeout_seconds = 600  # 10 minutes for GUI initialization
+            elif script_name in ["11_render.py", "12_execute.py"]:
+                # Rendering and execution steps may take longer with multiple frameworks
+                step_timeout_seconds = 300  # 5 minutes for framework operations
             else:
-                step_timeout_seconds = 60
+                step_timeout_seconds = 120  # 2 minutes default for other steps
 
             # Track memory during execution
             process_start_time = time.time()

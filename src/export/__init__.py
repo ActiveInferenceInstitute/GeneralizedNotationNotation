@@ -147,17 +147,20 @@ def process_export(target_dir, output_dir, verbose: bool = False, **kwargs) -> b
     output_dir.mkdir(parents=True, exist_ok=True)
 
     try:
-        # Load parsed GNN data from previous step
+        # Load parsed GNN data from previous step (step 3)
         from pipeline.config import get_output_dir_for_script
         # Look in the base output directory, not the step-specific directory
         base_output_dir = Path(output_dir).parent if Path(output_dir).name.startswith(('6_validation', '7_export', '8_visualization')) else output_dir
         gnn_output_dir = get_output_dir_for_script("3_gnn.py", base_output_dir)
-        # Step 3 uses double-nested output directory structure
-        gnn_nested_dir = gnn_output_dir / "3_gnn_output"
-        gnn_results_file = gnn_nested_dir / "gnn_processing_results.json"
+        gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
 
         if not gnn_results_file.exists():
-            logger.error("GNN processing results not found. Run step 3 first.")
+            logger.error(f"GNN processing results not found at {gnn_results_file}. Run step 3 first.")
+            logger.error(f"Expected file location: {gnn_results_file}")
+            logger.error(f"GNN output directory: {gnn_output_dir}")
+            logger.error(f"GNN output directory exists: {gnn_output_dir.exists()}")
+            if gnn_output_dir.exists():
+                logger.error(f"Contents: {list(gnn_output_dir.iterdir())}")
             return False
 
         with open(gnn_results_file, 'r') as f:

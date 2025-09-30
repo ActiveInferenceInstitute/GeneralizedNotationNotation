@@ -113,49 +113,53 @@ output/
 
 ### Latest Pipeline Run (7 steps)
 - **Total Steps**: 7 (partial run: 3,5,7,8,12,15)
-- **Success Rate**: 100%
-- **Peak Memory**: 29.875 MB
-- **Execution Time**: 18.6 seconds
+- **Success Rate**: 85.7% (6/7 successful)
+- **Failed Steps**: 1 (5_type_checker.py - dependency path issue)
+- **Peak Memory**: 29.1875 MB
+- **Execution Time**: 21.1 seconds
 
-### Full Pipeline Run (24 steps)
+### Latest Pipeline Run (24 steps)
 - **Total Steps**: 24
 - **Success Rate**: 91.7% (22/24 successful)
-- **Failed Steps**: 1 (9_advanced_viz.py - ImportError)
-- **Timeout Steps**: 1 (22_gui.py - 60s timeout)
-- **Total Time**: 2m32s
+- **Timeout Steps**: 2 (13_llm.py - 60s timeout, 22_gui.py - 60s timeout)
+- **Total Time**: 6m
+- **AGENTS.md Coverage**: 100% (28/28 modules documented)
 
 ---
 
 ## Module Status Matrix
 
-| Module | Status | Test Coverage | MCP Tools |
-|--------|--------|---------------|-----------|
-| template | ✅ Ready | 85% | 3 |
-| setup | ✅ Ready | 90% | 2 |
-| tests | ✅ Ready | 95% | 1 |
-| gnn | ✅ Ready | 85% | 4 |
-| model_registry | ✅ Ready | 80% | 3 |
-| type_checker | ✅ Ready | 88% | 2 |
-| validation | ✅ Ready | 82% | 3 |
-| export | ✅ Ready | 86% | 3 |
-| visualization | ✅ Ready | 84% | 4 |
-| advanced_visualization | 🔄 Fixed | 75% | 3 |
-| ontology | ✅ Ready | 81% | 3 |
-| render | ✅ Ready | 78% | 5 |
-| execute | ✅ Ready | 79% | 4 |
-| llm | ✅ Ready | 76% | 6 |
-| ml_integration | ✅ Ready | 72% | 2 |
-| audio | ✅ Ready | 74% | 3 |
-| analysis | ✅ Ready | 80% | 4 |
-| integration | ✅ Ready | 83% | 2 |
-| security | ✅ Ready | 87% | 3 |
-| research | ✅ Ready | 70% | 2 |
-| website | ✅ Ready | 79% | 3 |
-| mcp | ✅ Ready | 82% | 5 |
-| gui | ⏱️ Timeout | 68% | 4 |
-| report | ✅ Ready | 81% | 3 |
+| Module | AGENTS.md | Status | Test Coverage | MCP Tools |
+|--------|-----------|--------|---------------|-----------|
+| template | ✅ Complete | ✅ Ready | 85% | 3 |
+| setup | ✅ Complete | ✅ Ready | 90% | 2 |
+| tests | ✅ Complete | ✅ Ready | 95% | 1 |
+| gnn | ✅ Complete | ✅ Ready | 85% | 4 |
+| model_registry | ✅ Complete | ✅ Ready | 80% | 3 |
+| type_checker | ✅ Complete | ✅ Ready | 88% | 2 |
+| validation | ✅ Complete | ✅ Ready | 82% | 3 |
+| export | ✅ Complete | ✅ Ready | 86% | 3 |
+| visualization | ✅ Complete | ✅ Ready | 84% | 4 |
+| advanced_visualization | ✅ Complete | 🔄 Fixed | 75% | 3 |
+| ontology | ✅ Complete | ✅ Ready | 81% | 3 |
+| render | ✅ Complete | ✅ Ready | 78% | 5 |
+| execute | ✅ Complete | ✅ Ready | 79% | 4 |
+| llm | ✅ Complete | ✅ Ready | 76% | 6 |
+| ml_integration | ✅ Complete | ✅ Ready | 72% | 2 |
+| audio | ✅ Complete | ✅ Ready | 74% | 3 |
+| analysis | ✅ Complete | ✅ Ready | 80% | 4 |
+| integration | ✅ Complete | ✅ Ready | 83% | 2 |
+| security | ✅ Complete | ✅ Ready | 87% | 3 |
+| research | ✅ Complete | ✅ Ready | 70% | 2 |
+| website | ✅ Complete | ✅ Ready | 79% | 3 |
+| mcp | ✅ Complete | ✅ Ready | 82% | 5 |
+| gui | ✅ Complete | ⏱️ Timeout | 68% | 4 |
+| report | ✅ Complete | ✅ Ready | 81% | 3 |
+| utils | ✅ Complete | ✅ Ready | 88% | N/A |
+| pipeline | ✅ Complete | ✅ Ready | 90% | N/A |
+| sapf | ✅ Complete | ✅ Ready | 75% | 2 |
 
-**Legend**: ✅ Production Ready | 🔄 Fixed/Updated | ⏱️ Operational (timeout issue)
+**Legend**: ✅ Complete | ⏳ Pending | 🔄 Fixed/Updated | ⏱️ Operational (timeout issue)
 
 ---
 

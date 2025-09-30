@@ -20,6 +20,9 @@ def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any
         "errors": []
     }
     
+    # Import get_output_dir_for_script to use consistent output directory mapping
+    from pipeline.config import get_output_dir_for_script
+    
     # Define step dependencies (step name -> [required prerequisite steps])
     step_dependencies = {
         "11_render.py": ["3_gnn.py"],  # Render needs parsed GNN files
@@ -42,10 +45,22 @@ def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any
     if required_steps:
         # Check if prerequisite step outputs exist
         for req_step in required_steps:
-            step_number = req_step.split('_')[0]
-            expected_output_dir = args.output_dir / f"{step_number}_{req_step.split('_')[1].replace('.py', '')}_output"
+            # Use centralized function to get correct output directory
+            expected_output_dir = get_output_dir_for_script(req_step, args.output_dir)
             
-            if not expected_output_dir.exists():
+            # Also check for nested directories (legacy pattern)
+            nested_output_dir = expected_output_dir / expected_output_dir.name
+            
+            # Check both possible locations
+            if expected_output_dir.exists():
+                # Found at expected location - good
+                pass
+            elif nested_output_dir.exists():
+                # Found at nested location - issue a warning but don't fail
+                warning_msg = f"Prerequisite output found at nested location: {nested_output_dir}. Consider fixing nested directory structure."
+                result["warnings"].append(warning_msg)
+            else:
+                # Not found at either location
                 warning_msg = f"Missing prerequisite output directory: {expected_output_dir}. Step {req_step} may not have been executed."
                 result["warnings"].append(warning_msg)
                 

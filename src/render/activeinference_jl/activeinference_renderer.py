@@ -238,19 +238,27 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
             if len(matrix_data) > 0 and isinstance(matrix_data[0], list):
                 if len(matrix_data[0]) > 0 and isinstance(matrix_data[0][0], (list, tuple)):
                     # 3D matrix (B matrix) - handle nested tuples/lists
-                    return "[" + ", ".join([
-                        "[" + ", ".join([
-                            convert_element(row)
-                            for row in slice
-                        ]) + "]"
-                        for slice in matrix_data
-                    ]) + "]"
+                    # Convert to proper Julia 3D array syntax
+                    slices = []
+                    for slice_data in matrix_data:
+                        rows = []
+                        for row in slice_data:
+                            # Extract values from tuples/lists
+                            if isinstance(row, (tuple, list)):
+                                row_values = " ".join(str(x) for x in row)
+                            else:
+                                row_values = str(row)
+                            rows.append(row_values)
+                        slice_matrix = "; ".join(rows)
+                        slices.append(f"[{slice_matrix}]")
+                    return "cat(" + ", ".join(slices) + "; dims=3)"
                 else:
-                    # 2D matrix (A matrix)
-                    return "[" + ", ".join([
-                        "[" + ", ".join(str(x) for x in row) + "]"
-                        for row in matrix_data
-                    ]) + "]"
+                    # 2D matrix (A matrix) - use Julia matrix syntax with semicolons
+                    rows = []
+                    for row in matrix_data:
+                        row_values = " ".join(str(x) for x in row)
+                        rows.append(row_values)
+                    return "[" + "; ".join(rows) + "]"
             else:
                 # 1D vector (C, D, E vectors)
                 return "[" + ", ".join(str(x) for x in matrix_data) + "]"

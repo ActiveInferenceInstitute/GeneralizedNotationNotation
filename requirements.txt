@@ -86,8 +86,5 @@ altair>=5.0.0
 # jupyter>=1.0.0        # ~500MB - Jupyter notebook
 # ipywidgets>=7.6.0     # ~100MB - Interactive widgets
 
-# === ACTIVE INFERENCE ===
-# pymdp>=0.0.1          # ~50MB - Active inference library
-
 # === SAPF (Audio backend) ===
 # sapf                  # Temporarily unavailable in PyPI

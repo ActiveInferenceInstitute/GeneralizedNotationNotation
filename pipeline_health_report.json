@@ -1,15 +1,18 @@
 {
-  "overall_status": "healthy",
+  "overall_status": "unhealthy",
   "core_dependencies": {
     "available": [
       "numpy 2.3.0",
       "matplotlib 3.10.3",
       "networkx 3.5",
       "pandas 2.3.0",
-      "pytest 8.4.2"
+      "pytest 8.4.2",
+      "scipy 1.16.2"
     ],
-    "missing": [],
-    "status": "healthy"
+    "missing": [
+      "pyyaml >=6.0"
+    ],
+    "status": "unhealthy"
   },
   "optional_dependencies": {
     "gui": {
@@ -93,6 +96,7 @@
     "status": "complete"
   },
   "recommendations": [
+    "Install missing core dependencies with: uv pip install -e .",
     "Install GUI support with: uv pip install -e .[gui]"
   ]
 }

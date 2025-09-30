@@ -247,7 +247,7 @@ function run_active_inference_simulation()
     D_marginal = result.posteriors[:D]
     
     println("✓ Successfully computed posterior marginals")
-    println("  - State posteriors: ${{length(states_marginals)}} time steps")
+    println("  - State posteriors: $(length(states_marginals)) time steps")
     
     # Compute free energy if available
     if haskey(result, :free_energy)

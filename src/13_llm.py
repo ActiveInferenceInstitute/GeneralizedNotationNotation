@@ -93,8 +93,8 @@ def _run_llm_processing(target_dir: Path, output_dir: Path, logger, **kwargs) ->
         logger.info(f"Processing GNN files from: {target_dir}")
         logger.info(f"Output directory: {step_output_dir}")
 
-        # Extract LLM-specific parameters
-        analysis_type = kwargs.get('analysis_type', 'comprehensive')
+        # Extract LLM-specific parameters with pipeline optimizations
+        analysis_type = kwargs.get('analysis_type', 'summary')  # Faster for pipeline
         provider = kwargs.get('provider', 'auto')
 
         if analysis_type:

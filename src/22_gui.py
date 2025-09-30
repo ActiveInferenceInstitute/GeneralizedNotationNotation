@@ -239,7 +239,11 @@ def _run_gui_processing(target_dir: Path, output_dir: Path, logger, **kwargs) ->
         
         logger.info(f"📊 GUI processing summary saved to: {summary_file}")
         
-        # Keep the process alive if GUIs were launched successfully (non-headless mode)
+        # For pipeline runs, default to headless mode to avoid hanging
+        # Users can explicitly enable interactive mode with --interactive-mode
+        headless = kwargs.get('headless', True)  # Default to headless in pipeline
+
+        # Keep the process alive if GUIs were launched successfully and interactive mode is enabled
         if not headless and overall_success and any(r.get('success', False) for r in results.values()):
             import time
             logger.info("🌐 GUIs are running! Access them at:")
@@ -254,9 +258,9 @@ def _run_gui_processing(target_dir: Path, output_dir: Path, logger, **kwargs) ->
                     else:
                         port = 7860  # fallback
                     logger.info(f"  • {gui_type.upper()}: http://localhost:{port}")
-            
+
             logger.info("💡 Press Ctrl+C to stop all GUIs and exit")
-            
+
             try:
                 # Keep the main process alive to maintain GUI threads
                 while True:

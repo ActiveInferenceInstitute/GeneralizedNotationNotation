@@ -10,6 +10,12 @@ from typing import Dict, Any, List
 import logging
 import json
 
+import sys
+from pathlib import Path
+
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from utils.pipeline_template import (
     log_step_start,
     log_step_success,

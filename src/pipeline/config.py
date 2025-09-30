@@ -130,6 +130,17 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
     
     Use a consistent numbered '<N_name>_output' directory for every step to
     keep the pipeline coherent and simple.
+    
+    Args:
+        script_name: Name of the pipeline script (e.g., "3_gnn.py" or "3_gnn")
+        base_output_dir: Base output directory (usually "output/")
+        
+    Returns:
+        Path to step-specific output directory
+        
+    Note:
+        This function prevents nested directories by detecting if base_output_dir
+        already ends with the expected output directory name.
     """
     script_stem = Path(script_name).stem
     normalized = script_stem  # e.g., '7_export'
@@ -166,6 +177,27 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
     if script_name.endswith('.py'):
         normalized = script_name[:-3]
 
+    # Get expected output directory name for this script
+    expected_dir_name = f"{normalized}_output"
+    
+    # Check if base_output_dir already ends with the expected directory name
+    # This prevents nested directories like "10_ontology_output/10_ontology_output"
+    if base_output_dir.name == expected_dir_name:
+        # Already at the correct output directory - return as is
+        return base_output_dir
+    
+    # Check if base_output_dir is already inside a step output directory
+    # (e.g., "output/10_ontology_output/subdir" should not create another layer)
+    if "_output" in base_output_dir.name and base_output_dir.parent.name != "output":
+        # We're inside a step output directory - use the parent's parent as base
+        # This handles cases like passing "output/10_ontology_output/results" as base
+        actual_base = base_output_dir
+        while actual_base.name.endswith("_output") or "_output" in actual_base.parts[-2:]:
+            if actual_base.parent.name == "output":
+                break
+            actual_base = actual_base.parent
+        base_output_dir = actual_base.parent if actual_base.name.endswith("_output") else actual_base
+
     # Exact matches
     if script_name in strict_mapping:
         return strict_mapping[script_name]
@@ -173,4 +205,4 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
         return strict_mapping[normalized]
 
     # Default fallback
-    return base_output_dir / f"{script_stem}_output"
+    return base_output_dir / expected_dir_name
