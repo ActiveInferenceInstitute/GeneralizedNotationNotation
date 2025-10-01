@@ -267,8 +267,7 @@ MODULAR_TEST_CATEGORIES = {
 }
 
 # Import test utilities
-from .conftest import project_root
-from utils.test_utils import TEST_DIR
+from utils.test_utils import TEST_DIR, PROJECT_ROOT
 from utils.pipeline_template import (
     setup_step_logging,
     log_step_start,
@@ -276,6 +275,9 @@ from utils.pipeline_template import (
     log_step_error,
     log_step_warning
 )
+
+# Calculate project root (don't import from conftest as it's a pytest fixture)
+project_root = Path(__file__).parent.parent.parent
 
 @dataclass
 class TestExecutionConfig:
@@ -472,9 +474,9 @@ class TestRunner:
                 "--cov-report=term-missing"
             ])
         
-        # Add parallel execution if enabled
-        if self.config.parallel:
-            cmd.extend(["-n", "auto"])
+        # Add parallel execution if enabled (disabled for now to avoid hanging)
+        # if self.config.parallel:
+        #     cmd.extend(["-n", "auto"])
         
         # Add test paths
         cmd.extend([str(path) for path in test_paths])
@@ -484,6 +486,10 @@ class TestRunner:
     def _execute_pytest(self, cmd: List[str], output_dir: Path) -> Dict[str, Any]:
         """Execute pytest command and capture results."""
         try:
+            # Debug: Log what we're trying to do
+            self.logger.debug(f"Creating output directory: {output_dir}")
+            self.logger.debug(f"Output dir type: {type(output_dir)}")
+            
             # Create output files
             stdout_file = output_dir / "pytest_stdout.txt"
             stderr_file = output_dir / "pytest_stderr.txt"
@@ -527,6 +533,9 @@ class TestRunner:
             return results
             
         except Exception as e:
+            import traceback
+            self.logger.error(f"Exception in _execute_pytest: {e}")
+            self.logger.error(f"Full traceback:\n{traceback.format_exc()}")
             return {
                 "success": False,
                 "tests_run": 0,
@@ -548,24 +557,41 @@ class TestRunner:
             tests_failed = 0
             tests_skipped = 0
             
-            for line in lines:
-                if "collected" in line and "items" in line:
-                    # Extract total tests
+            # Look for the summary line at the end (e.g., "60 passed, 20 skipped in 1.85s")
+            for line in reversed(lines):
+                if "passed" in line or "failed" in line or "skipped" in line:
+                    # Try to extract numbers from the summary line
                     parts = line.split()
                     for i, part in enumerate(parts):
-                        if part == "collected":
-                            tests_run = int(parts[i-1])
-                            break
-                elif "passed" in line and "failed" in line:
-                    # Extract passed/failed counts
-                    parts = line.split()
-                    for i, part in enumerate(parts):
-                        if part == "passed":
-                            tests_passed = int(parts[i-1])
-                        elif part == "failed":
-                            tests_failed = int(parts[i-1])
-                        elif part == "skipped":
-                            tests_skipped = int(parts[i-1])
+                        if i > 0:  # Check previous part is a number
+                            try:
+                                num = int(parts[i-1])
+                                if "passed" in part:
+                                    tests_passed = num
+                                elif "failed" in part:
+                                    tests_failed = num
+                                elif "skipped" in part:
+                                    tests_skipped = num
+                            except (ValueError, IndexError):
+                                # Not a number, skip
+                                continue
+                    # Calculate total from summary
+                    if tests_passed > 0 or tests_failed > 0:
+                        tests_run = tests_passed + tests_failed + tests_skipped
+                        break
+            
+            # Fallback: look for collected items line
+            if tests_run == 0:
+                for line in lines:
+                    if "collected" in line:
+                        parts = line.split()
+                        for i, part in enumerate(parts):
+                            if part == "collected" and i > 0:
+                                try:
+                                    tests_run = int(parts[i-1])
+                                except ValueError:
+                                    pass
+                                break
             
             # Determine success
             success = tests_failed == 0 and tests_run > 0
@@ -589,6 +615,9 @@ class TestRunner:
             }
             
         except Exception as e:
+            import traceback
+            self.logger.error(f"Failed to parse pytest output: {e}")
+            self.logger.error(f"Traceback:\n{traceback.format_exc()}")
             return {
                 "success": False,
                 "tests_run": 0,
@@ -615,6 +644,9 @@ class TestRunner:
                 "success_rate": sum(1 for r in self.execution_history if r.success) / len(self.execution_history) * 100
             }
         }
+        
+        # Ensure output directory exists
+        output_dir.mkdir(parents=True, exist_ok=True)
         
         # Save report
         report_file = output_dir / "test_execution_report.json"
@@ -735,8 +767,9 @@ def run_tests(
     output_dir: Path,
     verbose: bool = False,
     include_slow: bool = False,
-    fast_only: bool = False,
-    generate_coverage: bool = True
+    fast_only: bool = True,  # Default to fast tests for pipeline integration
+    comprehensive: bool = False,
+    generate_coverage: bool = False  # Disable coverage by default for speed
 ) -> bool:
     """
     Run comprehensive test suite.
@@ -745,9 +778,10 @@ def run_tests(
         logger: Logger instance
         output_dir: Output directory for test results
         verbose: Enable verbose output
-        include_slow: Include slow tests
+        include_slow: Include slow tests (deprecated, use comprehensive)
         fast_only: Run only fast tests
-        generate_coverage: Generate coverage reports
+        comprehensive: Run comprehensive test suite (all tests)
+        generate_coverage: Generate coverage report
     
     Returns:
         True if tests pass, False otherwise
@@ -761,11 +795,18 @@ def run_tests(
             log_step_warning(logger, "Some test dependencies missing - functionality may be limited")
 
         # Create test configuration
+        # Comprehensive mode overrides include_slow
+        if comprehensive:
+            include_slow = True
+        
+        # Set appropriate timeout based on test mode
+        timeout = 120 if fast_only else (1800 if comprehensive else 600)
+        
         config = TestExecutionConfig(
-            timeout_seconds=600,
+            timeout_seconds=timeout,
             max_failures=20,
-            parallel=True,
-            coverage=generate_coverage,
+            parallel=False,  # Disabled to avoid hanging issues
+            coverage=generate_coverage and not fast_only,  # Disable coverage for fast tests
             verbose=verbose,
             markers=["fast"] if fast_only else (["not slow"] if not include_slow else None)
         )

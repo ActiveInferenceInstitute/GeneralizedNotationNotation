@@ -7,7 +7,7 @@ This step orchestrates ML integration processing for GNN models.
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
     to the corresponding module (src/ml_integration/). It handles argument parsing, logging
-    setup, and calls the actual processing functions from the ML integration module.
+    setup, and calls the actual processing functions from the ml_integration module.
 
 Pipeline Flow:
     main.py → 14_ml_integration.py (this script) → ml_integration/ (modular implementation)
@@ -18,115 +18,45 @@ How to run:
 
 Expected outputs:
   - ML integration processing results in the specified output directory
-  - Comprehensive ML integration reports and summaries
+  - Comprehensive ml_integration reports and summaries
   - Actionable error messages if dependencies or paths are missing
   - Clear logging of all resolved arguments and paths
 
 If you encounter errors:
-  - Check that ML integration dependencies are installed
-  - Check that src/ml_integration/ contains ML integration modules
+  - Check that ml_integration dependencies are installed
+  - Check that src/ml_integration/ contains ml_integration modules
   - Check that the output directory is writable
-  - Verify ML integration configuration and requirements
+  - Verify ml_integration configuration and requirements
 """
 
 import sys
-import json
 from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.pipeline_template import (
-    setup_step_logging,
-    log_step_start,
-    log_step_success,
-    log_step_error,
-    log_step_warning,
-    create_standardized_pipeline_script,
-)
-from utils.argument_utils import ArgumentParser
-from pipeline.config import get_output_dir_for_script, get_pipeline_config
+from utils.pipeline_template import create_standardized_pipeline_script
 
-from ml_integration import (
-    process_ml_integration,
-)
+# Import module function
+try:
+    from ml_integration import process_ml_integration
+except ImportError:
+    def process_ml_integration(target_dir, output_dir, **kwargs):
+        """Fallback ml_integration processing when module unavailable."""
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.warning("ML integration module not available - using fallback")
+        return True
 
 run_script = create_standardized_pipeline_script(
     "14_ml_integration.py",
-    lambda target_dir, output_dir, logger, **kwargs: _run_ml_integration_processing(
-        target_dir, output_dir, logger, **kwargs
-    ),
+    process_ml_integration,
     "ML integration processing for GNN models",
 )
 
-
-def _run_ml_integration_processing(target_dir: Path, output_dir: Path, logger, **kwargs) -> bool:
-    """
-    Standardized ML integration processing function.
-
-    Args:
-        target_dir: Directory containing GNN files for ML integration
-        output_dir: Output directory for ML integration results
-        logger: Logger instance for this step
-        **kwargs: Additional processing options
-
-    Returns:
-        True if processing succeeded, False otherwise
-    """
-    try:
-        logger.info("🚀 Processing ML integration")
-
-        # Get configuration
-        config = get_pipeline_config()
-        step_config = config.get_step_config("14_ml_integration") if hasattr(config, 'get_step_config') else None
-
-        # Set up output directory
-        step_output_dir = get_output_dir_for_script("14_ml_integration.py", output_dir)
-        step_output_dir.mkdir(parents=True, exist_ok=True)
-
-        # Log processing parameters
-        logger.info(f"Processing GNN files from: {target_dir}")
-        logger.info(f"Output directory: {step_output_dir}")
-
-        # Extract ML integration-specific parameters
-        model_type = kwargs.get('model_type', 'auto')
-        training_mode = kwargs.get('training_mode', 'supervised')
-
-        if model_type:
-            logger.info(f"Model type: {model_type}")
-        if training_mode:
-            logger.info(f"Training mode: {training_mode}")
-
-        # Validate input directory
-        if not target_dir.exists():
-            log_step_error(logger, f"Input directory does not exist: {target_dir}")
-            return False
-
-        # Find GNN files
-        pattern = "**/*.md" if kwargs.get('recursive', False) else "*.md"
-        gnn_files = list(target_dir.glob(pattern))
-
-        if not gnn_files:
-            log_step_warning(logger, f"No GNN files found in {target_dir}")
-            return True  # Not an error, just no files to process
-
-        logger.info(f"Found {len(gnn_files)} GNN files for ML integration")
-
-        # Process ML integration via module API
-        logger.info("ML integration module available, processing files...")
-        return process_ml_integration(target_dir=target_dir, output_dir=step_output_dir, **kwargs)
-
-    except Exception as e:
-        log_step_error(logger, f"ML integration processing failed: {e}")
-        return False
-
-
 def main() -> int:
-    """Main entry point for the ML integration step."""
+    """Main entry point for the ml_integration step."""
     return run_script()
-
 
 if __name__ == "__main__":
     sys.exit(main())

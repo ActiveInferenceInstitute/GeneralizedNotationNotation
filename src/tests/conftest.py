@@ -105,15 +105,15 @@ def pytest_sessionstart(session):
                             try:
                                 # try to use internal parse if available
                                 if original_parse is not None:
-                                    parts = original_parse(self, getattr(self, '_raw_path', ''))
+                                    parts = original_parse(getattr(self, '_raw_path', ''))
                                     # parts may be tuple (drv, root, tail)
                                     self._tail_cached = parts[2] if isinstance(parts, tuple) and len(parts) > 2 else ''
                                 else:
                                     self._tail_cached = ''
-                            except (AttributeError, RecursionError):
+                            except (AttributeError, RecursionError, TypeError):
                                 self._tail_cached = ''
                         return self._tail_cached
-                    except (AttributeError, RecursionError):
+                    except (AttributeError, RecursionError, TypeError):
                         return ''
 
                 try:

@@ -41,7 +41,7 @@ def process_gui(target_dir, output_dir, verbose=False, **kwargs):
     """
     Main processing function for GUI module.
     
-    By default, runs all available GUI implementations.
+    By default, runs all available GUI implementations in headless mode.
     Can be restricted using gui_types parameter.
     
     Args:
@@ -49,24 +49,42 @@ def process_gui(target_dir, output_dir, verbose=False, **kwargs):
         output_dir: Output directory for results
         verbose: Whether to enable verbose logging
         **kwargs: Additional processing options
-            - gui_types: List of GUI types to run (default: all)
-            - headless: Run in headless mode
+            - gui_types: List of GUI types to run (default: gui_1, gui_2)
+            - headless: Run in headless mode (default: True for pipeline)
+            - interactive: Launch interactive GUI servers (overrides headless)
             - open_browser: Whether to open browser for interactive GUIs
         
     Returns:
-        Dictionary with results from all GUI runs
+        Boolean indicating success of all GUI runs
     """
     import logging
     from pathlib import Path
+    import json
     
     logger = logging.getLogger(__name__)
     if verbose:
         logger.setLevel(logging.DEBUG)
     
+    # Handle interactive vs headless mode
+    # Interactive mode overrides headless
+    interactive = kwargs.get('interactive', False)
+    if interactive:
+        kwargs['headless'] = False
+        logger.info("🎮 Running in INTERACTIVE mode - will launch GUI servers")
+    else:
+        # Default to headless mode for pipeline integration
+        kwargs['headless'] = kwargs.get('headless', True)
+        if kwargs['headless']:
+            logger.info("📦 Running in HEADLESS mode - generating artifacts only (fast)")
+    
     # Determine which GUIs to run
-    gui_types = kwargs.get('gui_types', ['gui_1', 'gui_2'])
+    gui_types = kwargs.get('gui_types', 'gui_1,gui_2')
     if isinstance(gui_types, str):
-        gui_types = [gui_types]
+        gui_types = [g.strip() for g in gui_types.split(',')]
+    
+    # Prepare kwargs for GUI functions - remove keys that are passed explicitly
+    gui_kwargs = {k: v for k, v in kwargs.items() 
+                  if k not in ['logger', 'target_dir', 'output_dir', 'verbose']}
     
     results = {}
     overall_success = True
@@ -74,6 +92,7 @@ def process_gui(target_dir, output_dir, verbose=False, **kwargs):
     try:
         logger.info(f"Processing GUI module for files in {target_dir}")
         logger.info(f"Running GUI types: {gui_types}")
+        logger.info(f"Mode: {'INTERACTIVE' if not kwargs['headless'] else 'HEADLESS'}")
         
         # Run each requested GUI
         for gui_type in gui_types:
@@ -84,7 +103,7 @@ def process_gui(target_dir, output_dir, verbose=False, **kwargs):
                         output_dir=Path(output_dir),
                         logger=logger,
                         verbose=verbose,
-                        **kwargs
+                        **gui_kwargs
                     )
                 elif gui_type == 'gui_2':
                     result = gui_2(
@@ -92,9 +111,18 @@ def process_gui(target_dir, output_dir, verbose=False, **kwargs):
                         output_dir=Path(output_dir), 
                         logger=logger,
                         verbose=verbose,
-                        **kwargs
+                        **gui_kwargs
+                    )
+                elif gui_type == 'gui_3':
+                    result = gui_3(
+                        target_dir=Path(target_dir),
+                        output_dir=Path(output_dir),
+                        logger=logger,
+                        verbose=verbose,
+                        **gui_kwargs
                     )
                 else:
+                    logger.warning(f"Unknown GUI type: {gui_type}")
                     result = {
                         "gui_type": gui_type,
                         "success": False,
@@ -113,6 +141,20 @@ def process_gui(target_dir, output_dir, verbose=False, **kwargs):
                     "error": str(e)
                 }
                 overall_success = False
+        
+        # Save processing summary
+        try:
+            output_path = Path(output_dir)
+            summary_file = output_path / "gui_processing_summary.json"
+            summary_file.write_text(json.dumps({
+                "mode": "interactive" if not kwargs['headless'] else "headless",
+                "gui_types": gui_types,
+                "results": results,
+                "overall_success": overall_success
+            }, indent=2))
+            logger.info(f"📊 GUI processing summary saved to: {summary_file}")
+        except Exception as e:
+            logger.warning(f"Failed to save GUI processing summary: {e}")
         
         return overall_success
         

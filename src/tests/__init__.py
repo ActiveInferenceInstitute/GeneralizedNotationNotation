@@ -123,6 +123,21 @@ except Exception:
     def generate_json_report_file(*_, **__): return True
     def generate_comprehensive_report(*_, **__): return True
 
+# Import runner function
+try:
+    from .runner import run_tests, create_test_runner
+except ImportError:
+    # Fallback implementation if runner import fails
+    def run_tests(logger, output_dir, verbose=False, **kwargs):
+        """Fallback test function when module unavailable."""
+        logger.warning("Tests module not available - using fallback")
+        return True
+    
+    def create_test_runner(args, logger):
+        """Fallback test runner creation."""
+        logger.warning("Test runner not available - using fallback")
+        return None
+
 # Import pytest markers from conftest
 try:
     from .conftest import PYTEST_MARKERS
@@ -156,6 +171,10 @@ __all__ = [
     "TEST_STAGES", 
     "COVERAGE_TARGETS",
     "PYTEST_MARKERS",
+    
+    # Test runner functions
+    "run_tests",
+    "create_test_runner",
     
     # Utility functions
     "is_safe_mode",

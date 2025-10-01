@@ -30,12 +30,9 @@ def run_gui(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
         True if GUI launched successfully, False otherwise
     """
     
-    if not GRADIO_AVAILABLE:
-        logger.error("❌ Gradio not available for GUI 3")
-        return False
-        
     try:
         output_root = output_dir.parent if output_dir.name.endswith('_output') else output_dir
+        output_root.mkdir(parents=True, exist_ok=True)
         
         # Setup export path
         export_filename = kwargs.get('export_filename', 'designed_model_gui_3.md') 
@@ -48,31 +45,48 @@ def run_gui(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
         headless = kwargs.get('headless', False)
         open_browser = kwargs.get('open_browser', False)
         
-        if headless:
+        if headless or not GRADIO_AVAILABLE:
             # Generate design artifacts without launching GUI
-            logger.info("🎨 Generating design studio artifacts (headless mode)")
+            if not GRADIO_AVAILABLE:
+                logger.warning("⚠️ Gradio not available - generating fallback artifacts only")
+                logger.info("💡 Install GUI support with: uv pip install -e .[gui]")
+            else:
+                logger.info("📦 Running GUI 3 in HEADLESS mode - generating artifacts only")
             
             design_analysis = _analyze_gnn_design(starter_md)
+            
+            # Write starter model to file
+            starter_path.write_text(starter_md)
             
             # Save design analysis
             analysis_file = output_root / "design_analysis.json"
             analysis_file.write_text(json.dumps({
                 "gui_type": "design_studio",
+                "backend": "gradio" if GRADIO_AVAILABLE else "none",
+                "status": "headless_mode" if GRADIO_AVAILABLE else "fallback_mode",
                 "analysis": design_analysis,
                 "export_path": str(starter_path),
-                "headless_mode": True
+                "headless_mode": True,
+                "recommendations": [
+                    "Run with --interactive to launch GUI server on port 7862"
+                ] if GRADIO_AVAILABLE else [
+                    "Install gradio with: uv pip install gradio>=4.0.0",
+                    "Run with --interactive for full GUI experience"
+                ]
             }, indent=2))
             
             logger.info(f"🎨 Design analysis saved to: {analysis_file}")
             return True
             
-        # Build the Design Studio GUI
+        # Interactive mode - build the Design Studio GUI
+        logger.info("🔧 Building State Space Design Studio...")
         from .ui_designer import build_design_studio
         demo = build_design_studio(
             markdown_text=starter_md,
             export_path=starter_path, 
             logger=logger
         )
+        logger.info("✅ State Space Design Studio UI built successfully")
         
         # Launch GUI
         logger.info(f"🌐 Launching GUI 3 on http://localhost:7862 (open_browser={open_browser})")
@@ -102,8 +116,10 @@ def run_gui(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
         status_file = output_root / "design_studio_status.json"
         status_file.write_text(json.dumps({
             "gui_type": "design_studio",
+            "backend": "gradio",
             "launched": True,
             "export_file": str(starter_path),
+            "port": 7862,
             "url": "http://localhost:7862",
             "features": [
                 "State space visual designer",

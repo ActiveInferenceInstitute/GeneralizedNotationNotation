@@ -69,6 +69,12 @@ def run_gui(
 
         if headless or _GUI_BACKEND is None:
             # Generate headless artifacts for GUI 2
+            if _GUI_BACKEND is None:
+                logger.warning("⚠️ Gradio not available - generating fallback artifacts only")
+                logger.info("💡 Install GUI support with: uv pip install -e .[gui]")
+            else:
+                logger.info("📦 Running GUI 2 in HEADLESS mode - generating artifacts only")
+            
             gui_output_dir = output_root
             gui_output_dir.mkdir(parents=True, exist_ok=True)
             
@@ -86,19 +92,26 @@ def run_gui(
                 "launched": False,
                 "export_file": str(starter_path),
                 "gui_type": "visual_matrix_editor",
+                "status": "fallback_mode" if _GUI_BACKEND is None else "headless_mode",
                 "visual_data_file": str(gui_output_dir / "visual_matrices.json"),
                 "features": [
                     "Visual matrix editing",
                     "Drag-and-drop interface", 
                     "Real-time GNN generation",
                     "POMDP template-based"
+                ],
+                "recommendations": [
+                    "Run with --interactive to launch GUI server on port 7861"
+                ] if _GUI_BACKEND else [
+                    "Install gradio with: uv pip install gradio>=4.0.0",
+                    "Run with --interactive for full GUI experience"
                 ]
             }, indent=2))
             
-            log_step_success(logger, f"GUI 2 artifacts generated (headless). Export: {starter_path}")
+            log_step_success(logger, f"GUI 2 artifacts generated ({'fallback' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
             return True
 
-        # Build visual matrix editor GUI with enhanced logging
+        # Interactive mode - build visual matrix editor GUI
         logger.info("🔧 Building Visual Matrix Editor UI...")
         from .ui import build_visual_gui
         demo = build_visual_gui(starter_md, starter_path, logger)
@@ -132,11 +145,15 @@ def run_gui(
         logger.info("🔍 Features: Real-time heatmaps, matrix editing, interactive dimension controls, live statistics")
 
         # Record launch status
-        (output_root / "gui_status.json").write_text(json.dumps({
+        gui_output_dir = output_root
+        gui_output_dir.mkdir(parents=True, exist_ok=True)
+        (gui_output_dir / "gui_status.json").write_text(json.dumps({
             "backend": _GUI_BACKEND,
             "launched": True,
             "export_file": str(starter_path),
             "gui_type": "visual_matrix_editor",
+            "port": 7861,
+            "url": "http://localhost:7861",
             "features": [
                 "Visual matrix editing",
                 "Drag-and-drop interface",
@@ -145,7 +162,7 @@ def run_gui(
             ]
         }, indent=2))
 
-        log_step_success(logger, "GUI 2 (Visual Matrix Editor) launched")
+        log_step_success(logger, "GUI 2 (Visual Matrix Editor) launched successfully")
         return True
 
     except Exception as e:

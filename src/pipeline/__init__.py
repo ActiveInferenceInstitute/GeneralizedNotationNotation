@@ -13,6 +13,11 @@ from .config import (
     get_output_dir_for_script
 )
 
+from .health_check import (
+    run_enhanced_health_check,
+    EnhancedHealthChecker
+)
+
 from .execution import (
     run_pipeline,
     get_pipeline_status,
@@ -82,12 +87,16 @@ def discover_pipeline_steps() -> list[str]:
 __all__ = [
     # Configuration
     'get_pipeline_config',
-    'set_pipeline_config', 
+    'set_pipeline_config',
     'PipelineConfig',
     'StepConfig',
     'STEP_METADATA',
     'get_output_dir_for_script',
-    
+
+    # Health Check
+    'run_enhanced_health_check',
+    'EnhancedHealthChecker',
+
     # Execution
     'run_pipeline',
     'get_pipeline_status',
@@ -97,7 +106,7 @@ __all__ = [
     'execute_pipeline_step',
     'execute_pipeline_steps',
     'StepExecutionResult',
-    
+
     # Metadata
     'FEATURES',
     '__version__'

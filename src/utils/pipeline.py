@@ -11,6 +11,31 @@ from typing import Optional, Any, Tuple, Dict, List
 
 logger = logging.getLogger(__name__)
 
+def get_output_dir_for_script(script_name: str, base_output_dir: Path = None) -> Path:
+    """
+    Get output directory for a specific script.
+    
+    This is a wrapper that delegates to pipeline.config.get_output_dir_for_script
+    but avoids circular import issues.
+    
+    Args:
+        script_name: Name of the pipeline script (e.g., "3_gnn.py" or "3_gnn")
+        base_output_dir: Base output directory (usually "output/")
+        
+    Returns:
+        Path to step-specific output directory
+    """
+    try:
+        from pipeline.config import get_output_dir_for_script as _get_output_dir
+        return _get_output_dir(script_name, base_output_dir if base_output_dir is not None else Path("output"))
+    except (ImportError, Exception):
+        # Fallback implementation if pipeline.config is not available
+        if base_output_dir is None:
+            base_output_dir = Path("output")
+        script_stem = Path(script_name).stem
+        normalized = script_stem if not script_name.endswith('.py') else script_name[:-3]
+        return base_output_dir / f"{normalized}_output"
+
 def setup_step_logging(step_name: str, verbose: bool = False):
     """
     Setup logging for a pipeline step.

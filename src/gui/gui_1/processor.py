@@ -61,9 +61,10 @@ def run_gui(
             if _GUI_BACKEND is None:
                 logger.warning("⚠️ Gradio not available - generating fallback artifacts only")
                 logger.info("💡 Install GUI support with: uv pip install -e .[gui]")
+            else:
+                logger.info("📦 Running GUI 1 in HEADLESS mode - generating artifacts only")
             
             # Persist enhanced artifact describing GUI availability
-            # `output_root` is already the step-specific output directory
             gui_output_dir = output_root
             gui_output_dir.mkdir(parents=True, exist_ok=True)
             
@@ -77,64 +78,64 @@ def run_gui(
                 "reason": "gradio_not_available" if _GUI_BACKEND is None else "headless_requested",
                 "recommendations": [
                     "Install gradio with: uv pip install gradio>=4.0.0",
-                    "Run with --interactive-mode for full GUI experience",
+                    "Run with --interactive for full GUI experience",
                     "Use generated template as starting point for manual editing"
                 ] if _GUI_BACKEND is None else [
-                    "Generated template available for manual editing"
+                    "Generated template available for manual editing",
+                    "Run with --interactive to launch GUI server on port 7860"
                 ]
             }
             
             (gui_output_dir / "gui_status.json").write_text(json.dumps(fallback_status, indent=2))
             
-            log_step_success(logger, f"GUI artifacts generated ({'fallback' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
+            log_step_success(logger, f"GUI 1 artifacts generated ({'fallback' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
             return True
 
-        # Build Gradio UI via modular builder
+        # Interactive mode - build and launch Gradio GUI
         logger.info("🔧 Building Form-based Interactive GNN Constructor...")
         from .ui import build_gui
         demo = build_gui(markdown_text=starter_md, export_path=starter_path, logger=logger)
         logger.info("✅ Form-based Constructor UI built successfully")
 
-        # Launch GUI with proper blocking behavior
-        if headless:
-            # Generate artifacts without launching server in headless mode
-            pass  # Already handled above
-        else:
-            # Launch GUI server - stay open but allow other GUIs to launch too
-            logger.info(f"🌐 Launching GUI 1 on http://localhost:7860 (open_browser={open_browser})")
-            import threading
-            import time
-            
-            def launch_gui():
-                logger.info("🎮 Form-based Constructor starting...")
-                demo.launch(
-                    share=False,
-                    prevent_thread_lock=False,  # Let the thread properly block on the server
-                    server_name="0.0.0.0",
-                    server_port=7860,
-                    inbrowser=open_browser,
-                    show_error=True,
-                    quiet=False,  # Show server startup messages
-                )
-            
-            # Launch in a separate thread to allow multiple GUIs
-            gui_thread = threading.Thread(target=launch_gui, daemon=False)
-            gui_thread.start()
-            
-            # Give it a moment to start and verify
-            time.sleep(3)
-            logger.info("🎮 GUI 1 is running on http://localhost:7860")
-            logger.info("🔍 Features: Component management, state space editing, live markdown sync")
+        # Launch GUI server - stay open but allow other GUIs to launch too
+        logger.info(f"🌐 Launching GUI 1 on http://localhost:7860 (open_browser={open_browser})")
+        import threading
+        import time
+        
+        def launch_gui():
+            logger.info("🎮 Form-based Constructor starting...")
+            demo.launch(
+                share=False,
+                prevent_thread_lock=False,  # Let the thread properly block on the server
+                server_name="0.0.0.0",
+                server_port=7860,
+                inbrowser=open_browser,
+                show_error=True,
+                quiet=False,  # Show server startup messages
+            )
+        
+        # Launch in a separate thread to allow multiple GUIs
+        gui_thread = threading.Thread(target=launch_gui, daemon=False)
+        gui_thread.start()
+        
+        # Give it a moment to start and verify
+        time.sleep(3)
+        logger.info("🎮 GUI 1 is running on http://localhost:7860")
+        logger.info("🔍 Features: Component management, state space editing, live markdown sync")
 
         # Record availability artifact
-        (output_root / "22_gui_output" / "gui_status.json").parent.mkdir(parents=True, exist_ok=True)
-        (output_root / "22_gui_output" / "gui_status.json").write_text(json.dumps({
+        gui_output_dir = output_root
+        gui_output_dir.mkdir(parents=True, exist_ok=True)
+        (gui_output_dir / "gui_status.json").write_text(json.dumps({
             "backend": _GUI_BACKEND,
             "launched": True,
-            "export_file": str(starter_path)
+            "export_file": str(starter_path),
+            "gui_type": "form_based_constructor",
+            "port": 7860,
+            "url": "http://localhost:7860"
         }, indent=2))
 
-        log_step_success(logger, "GUI launched")
+        log_step_success(logger, "GUI 1 launched successfully")
         return True
     except Exception as e:
         log_step_error(logger, f"GUI launch failed: {e}")

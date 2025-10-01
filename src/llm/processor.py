@@ -9,6 +9,9 @@ import logging
 import json
 import re
 from datetime import datetime
+import os
+import subprocess
+import shutil
 
 try:
     from utils.pipeline_template import (
@@ -22,6 +25,72 @@ except Exception:
     def log_step_success(logger, msg): logger.info(f"✅ {msg}")
     def log_step_error(logger, msg): logger.error(f"❌ {msg}")
     def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
+
+def _check_and_start_ollama(logger) -> bool:
+    """
+    Check if Ollama is available and running. Start it if available but not running.
+    
+    Returns:
+        True if Ollama is available and running, False otherwise
+    """
+    try:
+        # Check if ollama command exists
+        ollama_path = shutil.which("ollama")
+        if not ollama_path:
+            logger.info("Ollama not found in PATH - LLM analysis will use fallback")
+            return False
+        
+        # Check if Ollama is already running by trying 'ollama list'
+        try:
+            result = subprocess.run(
+                ['ollama', 'list'],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            
+            if result.returncode == 0:
+                logger.info("✅ Ollama is running and ready")
+                # Log available models
+                if result.stdout:
+                    models = [line.split()[0] for line in result.stdout.strip().split('\n')[1:] if line.strip()]
+                    if models:
+                        logger.info(f"Available Ollama models: {', '.join(models[:3])}")
+                return True
+        except subprocess.TimeoutExpired:
+            logger.warning("Ollama list command timed out")
+        except Exception as e:
+            logger.debug(f"Ollama list check failed: {e}")
+        
+        # If 'ollama list' failed, try to check if the service is running
+        # by attempting a simple serve check (non-blocking)
+        logger.info("Attempting to check Ollama serve status...")
+        try:
+            # Check if Ollama is serving by testing the API endpoint
+            import socket
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(1)
+            result = sock.connect_ex(('localhost', 11434))  # Default Ollama port
+            sock.close()
+            
+            if result == 0:
+                logger.info("✅ Ollama server is running on localhost:11434")
+                return True
+            else:
+                logger.info("Ollama server not responding on localhost:11434")
+        except Exception as e:
+            logger.debug(f"Socket check failed: {e}")
+        
+        # Ollama exists but may not be running - inform user
+        logger.warning("⚠️ Ollama is installed but may not be running")
+        logger.info("To use Ollama for LLM analysis, please run: ollama serve")
+        logger.info("LLM analysis will use fallback mode without live model interaction")
+        return False
+        
+    except Exception as e:
+        logger.debug(f"Error checking Ollama availability: {e}")
+        return False
+
 from .analyzer import analyze_gnn_file_with_llm
 from .generator import (
     generate_model_insights,
@@ -32,7 +101,6 @@ from .generator import (
 from .prompts import get_default_prompt_sequence, get_prompt, PromptType
 from .llm_processor import LLMProcessor
 from .providers.base_provider import LLMMessage, LLMConfig
-import os
 
 def process_llm(
     target_dir: Path,
@@ -57,6 +125,9 @@ def process_llm(
     try:
         log_step_start(logger, "Processing LLM")
         
+        # Check if Ollama is available and running
+        ollama_available = _check_and_start_ollama(logger)
+        
         # Create results directory
         results_dir = output_dir / "llm_results"
         results_dir.mkdir(parents=True, exist_ok=True)
@@ -70,7 +141,8 @@ def process_llm(
             "analysis_results": [],
             "model_insights": [],
             "code_suggestions": [],
-            "documentation_generated": []
+            "documentation_generated": [],
+            "ollama_available": ollama_available
         }
         
         # Find GNN files
@@ -91,6 +163,7 @@ def process_llm(
                 processor_initialized = asyncio.run(_init())
             except Exception:
                 processor_initialized = False
+                logger.warning("LLM processor initialization failed - using fallback analysis")
 
             # Process each GNN file
             for gnn_file in gnn_files:

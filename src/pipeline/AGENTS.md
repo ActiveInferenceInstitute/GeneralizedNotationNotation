@@ -35,6 +35,7 @@
 ### Pipeline Orchestration
 - `pipeline_validation.py` - Validation utilities
 - `pipeline_step_template.py` - Template for new steps
+- `health_check.py` - Enhanced system health validation
 
 ### Step Management
 - Output directory mapping
@@ -71,6 +72,25 @@ output_dir = get_output_dir_for_script("3_gnn.py")
 - `config_path` (Path): Path to config file (default: "input/config.yaml")
 
 **Returns**: Configuration dictionary
+
+#### `run_enhanced_health_check(verbose: bool = False) -> Dict[str, Any]`
+**Description**: Run comprehensive enhanced health check for the entire pipeline system
+
+**Parameters**:
+- `verbose` (bool): Enable detailed output and recommendations
+
+**Returns**: Dictionary with health check results and recommendations
+
+#### `EnhancedHealthChecker(verbose: bool = False)`
+**Description**: Class for comprehensive system health validation
+
+**Features**:
+- Core dependency validation with version checking
+- Optional feature dependency checking
+- Pipeline structure verification
+- System resource monitoring (CPU, memory, disk, network)
+- Integration with pipeline module utilities
+- Enhanced diagnostic capabilities with actionable recommendations
 
 ---
 
@@ -214,6 +234,32 @@ results_file = gnn_output_dir / "gnn_processing_results.json"
 
 ---
 
-**Last Updated**: September 29, 2025  
-**Status**: ✅ Production Ready - Core Infrastructure
+## Recent Improvements (September 30, 2025)
+
+### Enhanced Health Check System ✅
+**Problem**: Basic health check was limited and not integrated with pipeline module
+
+**Solution**:
+- **Moved** health check from `src/health_check.py` to `src/pipeline/health_check.py` for better integration
+- **Enhanced** with comprehensive system resource monitoring (CPU, memory, disk, network)
+- **Added** pipeline integration testing and validation
+- **Improved** dependency checking with version validation and critical feature detection
+- **Integrated** with existing pipeline utilities (config, validator, diagnostic enhancer)
+
+**Features Added**:
+- System resource monitoring with health status indicators
+- Enhanced dependency validation with version checking
+- Pipeline integration testing (config, validator, diagnostic tools)
+- Comprehensive health scoring system (0-100 scale)
+- Actionable recommendations with priority levels
+- Performance tracking and optimization suggestions
+
+**Performance**: ~2-3 seconds execution time with detailed system analysis
+
+**Result**: Unified, comprehensive health validation system integrated into pipeline module
+
+---
+
+**Last Updated**: September 30, 2025
+**Status**: ✅ Production Ready - Core Infrastructure (Enhanced)
 

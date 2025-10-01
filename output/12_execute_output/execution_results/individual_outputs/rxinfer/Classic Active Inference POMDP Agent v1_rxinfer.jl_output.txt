@@ -1,0 +1,35 @@
+Execution Results for Classic Active Inference POMDP Agent v1_rxinfer.jl
+Timestamp: 2025-10-01T07:47:30.389177
+Return Code: 1
+Execution Time: 6.06 seconds
+
+STDOUT:
+🔬 RxInfer.jl Active Inference Simulation
+📊 State Space: 3 states, 3 observations, 3 actions
+============================================================
+RxInfer.jl Active Inference - GNN Generated Simulation
+Model: Classic Active Inference POMDP Agent v1
+============================================================
+
+🚀 Starting Active Inference simulation...
+📋 Generated observation sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+
+🧠 Running variational inference...
+❌ Simulation failed: ErrorException("The `active_inference_model` model macro does not support positional arguments. Use keyword arguments `active_inference_model(n_steps = ..., observations = ...)` instead.\n")
+🔍 Stack trace:
+The `active_inference_model` model macro does not support positional arguments. Use keyword arguments `active_inference_model(n_steps = ..., observations = ...)` instead.
+
+Stacktrace:
+ [1] active_inference_model(::Int64, ::Vararg{Any}; kwargs::@Kwargs{})
+   @ Main ~/.julia/packages/GraphPPL/xPNyo/src/model_macro.jl:765
+ [2] active_inference_model(::Int64, ::Vararg{Any})
+   @ Main ~/.julia/packages/GraphPPL/xPNyo/src/model_macro.jl:764
+ [3] run_active_inference_simulation()
+   @ Main ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:88
+ [4] main()
+   @ Main ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:181
+ [5] top-level scope
+   @ ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:204
+
+
+STDERR:

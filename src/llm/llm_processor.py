@@ -128,7 +128,7 @@ def get_preferred_providers_from_env() -> List[ProviderType]:
     Returns:
         List of providers in order of preference
     """
-    default_provider = os.getenv('DEFAULT_PROVIDER', 'openai').lower()
+    default_provider = os.getenv('DEFAULT_PROVIDER', 'ollama').lower()
     
     # Map string names to provider types
     provider_map = {

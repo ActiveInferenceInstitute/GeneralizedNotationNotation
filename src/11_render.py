@@ -64,72 +64,25 @@ run_script = create_standardized_pipeline_script(
     "Render processing for GNN specifications",
 )
 
-
 def _run_render_processing(target_dir: Path, output_dir: Path, logger, **kwargs) -> bool:
-    """
-    Standardized render processing function.
-
-    Args:
-        target_dir: Directory containing GNN files to render
-        output_dir: Output directory for render results
-        logger: Logger instance for this step
-        **kwargs: Additional processing options
-
-    Returns:
-        True if processing succeeded, False otherwise
-    """
+    """Execute render processing with proper delegation to render module."""
     try:
-        logger.info("🚀 Processing render")
-
-        # Get configuration
-        config = get_pipeline_config()
-        step_config = config.get_step_config("11_render") if hasattr(config, 'get_step_config') else None
-
-        # Set up output directory
-        step_output_dir = get_output_dir_for_script("11_render.py", output_dir)
-        step_output_dir.mkdir(parents=True, exist_ok=True)
-
-        # Log processing parameters
-        logger.info(f"Processing GNN files from: {target_dir}")
-        logger.info(f"Output directory: {step_output_dir}")
-
-        # Extract render-specific parameters
-        render_format = kwargs.get('render_format', 'all')
-        target_language = kwargs.get('target_language', None)
-
-        if render_format:
-            logger.info(f"Render format: {render_format}")
-        if target_language:
-            logger.info(f"Target language: {target_language}")
-
-        # Validate input directory
-        if not target_dir.exists():
-            log_step_error(logger, f"Input directory does not exist: {target_dir}")
-            return False
-
-        # Find GNN files
-        pattern = "**/*.md" if kwargs.get('recursive', False) else "*.md"
-        gnn_files = list(target_dir.glob(pattern))
-
-        if not gnn_files:
-            log_step_warning(logger, f"No GNN files found in {target_dir}")
-            return True  # Not an error, just no files to process
-
-        logger.info(f"Found {len(gnn_files)} GNN files to render")
-
-        # Process render via module API
-        logger.info("Render module available, processing files...")
-        return process_render(target_dir=target_dir, output_dir=step_output_dir, **kwargs)
-
+        # Extract verbose flag from kwargs, defaulting to False
+        verbose = kwargs.pop('verbose', False)
+        
+        # Call the render module's main processing function
+        # Note: process_render expects (target_dir, output_dir, verbose, **kwargs)
+        result = process_render(target_dir, output_dir, verbose, **kwargs)
+        return result
     except Exception as e:
-        log_step_error(logger, f"Render processing failed: {e}")
+        logger.error(f"Render processing failed: {e}")
+        import traceback
+        logger.error(f"Traceback:\n{traceback.format_exc()}")
         return False
-
 
 def main() -> int:
     """Main entry point for the render step."""
     return run_script()
-
 
 if __name__ == "__main__":
     sys.exit(main())

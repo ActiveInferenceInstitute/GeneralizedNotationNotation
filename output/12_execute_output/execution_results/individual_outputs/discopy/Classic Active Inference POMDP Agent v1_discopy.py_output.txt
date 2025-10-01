@@ -1,0 +1,35 @@
+Execution Results for Classic Active Inference POMDP Agent v1_discopy.py
+Timestamp: 2025-10-01T07:47:30.141757
+Return Code: 1
+Execution Time: 0.25 seconds
+
+STDOUT:
+🔬 DisCoPy Categorical Diagram Generation
+📊 State Space: 3 states, 3 observations, 3 actions
+============================================================
+DisCoPy Categorical Diagrams - GNN Generated
+Model: Classic Active Inference POMDP Agent v1
+============================================================
+❌ Diagram generation failed: Expected quantum.circuit.Digit | quantum.circuit.Qudit, got quantum.circuit.Ob instead.
+🔍 Stack trace:
+
+
+STDERR:
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py", line 262, in main
+    S, O, A, P = define_types()
+                 ^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py", line 31, in define_types
+    S = Ty('S')  # Hidden states
+        ^^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/discopy/monoidal.py", line 124, in __init__
+    self.inside = tuple(x if isinstance(x, self.ob_factory)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/discopy/monoidal.py", line 125, in <genexpr>
+    else self.ob_factory(x) for x in inside)
+         ^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/discopy/quantum/circuit.py", line 96, in __init__
+    assert_isinstance(self, (Digit, Qudit))
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/discopy/utils.py", line 381, in assert_isinstance
+    raise TypeError(messages.TYPE_ERROR.format(
+TypeError: Expected quantum.circuit.Digit | quantum.circuit.Qudit, got quantum.circuit.Ob instead.

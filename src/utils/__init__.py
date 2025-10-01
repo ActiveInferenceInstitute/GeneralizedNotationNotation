@@ -176,7 +176,8 @@ try:
         MockArgumentParser,
         get_pipeline_utilities,
         validate_output_directory,
-        execute_pipeline_step_template
+        execute_pipeline_step_template,
+        get_output_dir_for_script
     )
 
     # Import error handling framework
@@ -323,6 +324,7 @@ __all__ = [
     'MockArgumentParser',
     'get_pipeline_utilities',
     'validate_output_directory',
+    'get_output_dir_for_script',
     'execute_pipeline_step_template',
 
     # Error handling utilities

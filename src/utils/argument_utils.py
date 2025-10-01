@@ -538,10 +538,10 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
             if value:
                 cmd.append(arg_def.flag)
         elif arg_def.action == argparse.BooleanOptionalAction:
+            # Only pass the flag if True; omit if False (don't pass --no-flag)
+            # This ensures compatibility with steps that may not support --no-flag
             if value:
                 cmd.append(arg_def.flag)
-            else:
-                cmd.append(f"--no-{arg_def.flag[2:]}")
         else:
             cmd.extend([arg_def.flag, str(value)])
     
@@ -955,10 +955,10 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
                     if arg_value:
                         cmd.append(flag)
                 elif arg_def.action == argparse.BooleanOptionalAction:
+                    # Only pass the flag if True; omit if False (don't pass --no-flag)
+                    # This ensures compatibility with steps that may not support --no-flag
                     if arg_value is True:
                         cmd.append(flag)
-                    elif arg_value is False:
-                        cmd.append(f"--no-{flag[2:]}")  # Convert --flag to --no-flag
                 else:
                     # Regular arguments with values
                     cmd.extend([flag, str(arg_value)])

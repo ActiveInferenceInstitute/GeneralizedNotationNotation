@@ -1,0 +1,21 @@
+Execution Results for Classic Active Inference POMDP Agent v1_jax.py
+Timestamp: 2025-10-01T07:47:29.585815
+Return Code: 0
+Execution Time: 0.55 seconds
+Model: actinf_pomdp_agent
+Framework: jax
+Output Directory: output/12_execute_output/actinf_pomdp_agent/jax
+
+STDOUT:
+
+GNNModel Model Summary:
+- Number of states: 3
+- Number of observations: 3
+- Number of actions: 1
+- Parameters: 24
+
+Model test successful!
+Output keys: ['beliefs', 'actions', 'expected_free_energy', 'state_predictions', 'action_efes', 'predicted_observations']
+
+
+STDERR:

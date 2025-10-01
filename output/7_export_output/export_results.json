@@ -1,0 +1,51 @@
+{
+  "timestamp": "2025-10-01T07:47:25.005253",
+  "source_directory": "input/gnn_files",
+  "output_directory": "output/7_export_output",
+  "files_exported": [
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "exports": {
+        "json": {
+          "success": true,
+          "export_file": "output/7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_json.json",
+          "file_size": 19998
+        },
+        "xml": {
+          "success": true,
+          "export_file": "output/7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
+          "file_size": 978
+        },
+        "graphml": {
+          "success": true,
+          "export_file": "output/7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_graphml.graphml",
+          "file_size": 1516
+        },
+        "gexf": {
+          "success": true,
+          "export_file": "output/7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_gexf.gexf",
+          "file_size": 1223
+        },
+        "pickle": {
+          "success": true,
+          "export_file": "output/7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pkl",
+          "file_size": 11000
+        }
+      },
+      "success": true
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "successful_exports": 1,
+    "failed_exports": 0,
+    "formats_generated": {
+      "json": 1,
+      "xml": 1,
+      "graphml": 1,
+      "gexf": 1,
+      "pickle": 1
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-10-01T07:47:27.726557",
+  "total_attempts": 2,
+  "successful": 2,
+  "failed": 0,
+  "skipped": 0,
+  "total_duration_ms": 0.0,
+  "output_files": [
+    "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
+  ],
+  "warnings": [],
+  "errors": [],
+  "attempts": [
+    {
+      "viz_type": "3d",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 134.14287567138672,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "statistical",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 126.93595886230469,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    }
+  ]
+}
