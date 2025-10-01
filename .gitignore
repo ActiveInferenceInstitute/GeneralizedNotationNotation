@@ -1,30 +1,388 @@
+# ============================================================================
+# Generalized Notation Notation (GNN) - Git Ignore Configuration
+# ============================================================================
+# This file contains comprehensive ignore patterns for the GNN project
+# including Python, scientific computing, and pipeline-specific artifacts
+# ============================================================================
+
+# ============================================================================
+# PYTHON VIRTUAL ENVIRONMENTS
+# ============================================================================
 /src/.venv
-
 .venv/
+venv/
+env/
+ENV/
 .pytest_cache/
-src/.venv/
 src/.pytest_cache/
+*/.pytest_cache/
+*.pytest_cache/
 
-# Environment variables
+# ============================================================================
+# ENVIRONMENT AND CONFIGURATION FILES
+# ============================================================================
+# Environment variables (NEVER commit these!)
 .env
 .env*
-/doc/rxinfer/RxInferExamples.jl
-*.pytest_cache
-*.pyc 
-/src/export/__pycache__
-/src/setup/__pycache__
-/src/utils/__pycache__
+*.env
+.env.local
+.env.production
+.env.development
 
-# Coverage artifacts (ignore root level, allow output/coverage)
-htmlcov/
-.coverage
-coverage.json
-src/tests/htmlcov/
+# Configuration files with secrets
+config.local.json
+config.local.yaml
+secrets.json
+secrets.yaml
+credentials.json
 
-# Python cache
+# ============================================================================
+# PYTHON ARTIFACTS
+# ============================================================================
+# Python bytecode and cache
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Specific module cache directories
+/src/export/__pycache__/
+/src/setup/__pycache__/
+/src/utils/__pycache__/
+/src/*/activeinference_jl/.julia
 /src/execute/activeinference_jl/.julia
-*.pyc
+
+# ============================================================================
+# TESTING AND COVERAGE
+# ============================================================================
+# Coverage reports (allow output/coverage.json)
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+*.log
+nosetests.xml
+coverage.json
+src/tests/htmlcov/
+*/htmlcov/
+
+# Testing artifacts
+.pytest_cache/
+.tox/
+.coverage.*
+.cache
+.pytest_cache/
+pytest.ini.local
+
+# ============================================================================
+# DOCUMENTATION BUILD ARTIFACTS
+# ============================================================================
+docs/_build/
+docs/build/
+target/
+site/
+_build/
+build/
+
+# Sphinx documentation
+docs/_build/
+*.doctrees
+
+# Jekyll
+_site/
+.jekyll-cache/
+
+# ============================================================================
+# IDE AND EDITOR FILES
+# ============================================================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Atom
+.atom/
+
+# ============================================================================
+# OPERATING SYSTEM FILES
+# ============================================================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ============================================================================
+# SCIENTIFIC COMPUTING FRAMEWORKS
+# ============================================================================
+# Julia
+*.jl.cov
+*.jl.mem
+.julia/
+.jl/
+
+# JAX / TensorFlow
+*.pb
+*.pbtxt
+*.ckpt
+*.index
+*.data-*
+*.meta
+
+# Julia package manager
+/Manifest.toml
+/LocalPreferences.toml
+
+# ============================================================================
+# AUDIO AND MEDIA FILES
+# ============================================================================
+# Audio processing artifacts
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+*.wma
+*.aac
+
+# Generated audio from pipeline
+output/*/audio/
+cache/audio/
+temp_audio_*
+
+# ============================================================================
+# VISUALIZATION AND GRAPHICS
+# ============================================================================
+# Plotly / Matplotlib outputs
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.pdf
+*.eps
+
+# Generated visualizations
+output/*/visualization/
+cache/visualization/
+temp_plots_*
+
+# Graphviz and diagram outputs
+*.dot
+*.gv
+*.graphml
+*.gexf
+
+# ============================================================================
+# PIPELINE OUTPUTS (Selective - Keep important artifacts)
+# ============================================================================
+# Keep these important outputs:
+# output/pipeline_execution_summary.json
+# output/*/processing_summary.json
+# output/*/*_results.json
+# output/*/*_analysis.json
+
+# But ignore temporary and intermediate files
+output/*/temp/
+output/*/tmp/
+output/*/cache/
+output/*/*_temp_*
+output/*/*_tmp_*
+
+# Debug and development outputs
+output/*/debug/
+output/*/dev/
+
+# ============================================================================
+# LOGS AND DEBUGGING
+# ============================================================================
+# Log files
+*.log
+logs/
+log/
+*.log.*
+
+# Debug files
+debug/
+debug_*
+*_debug.*
+
+# Profiling outputs
+*.prof
+*.pstat
+profiling/
+
+# ============================================================================
+# TEMPORARY AND CACHE FILES
+# ============================================================================
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+.tmp/
+.temp/
+
+# Cache directories
+.cache/
+*/cache/
+cache/
+*.cache
+*.cache.*
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# ============================================================================
+# LARGE DATA FILES (Optional - uncomment if needed)
+# ============================================================================
+# Uncomment these if you want to ignore large data files
+# *.csv
+# *.jsonl
+# *.parquet
+# *.hdf5
+# *.h5
+# *.nc
+# data/
+# datasets/
+
+# ============================================================================
+# DEVELOPMENT AND DEPLOYMENT
+# ============================================================================
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Deployment artifacts
+deploy/
+deployment/
+dist/
+build/
+
+# Package build artifacts
+*.whl
+*.tar.gz
+*.zip
+
+# ============================================================================
+# MISCELLANEOUS
+# ============================================================================
+# Lock files (keep uv.lock, ignore others)
+poetry.lock
+Pipfile.lock
+requirements.txt.lock
+constraints.txt.lock
+
+# Node.js (if used for documentation)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# R (if used for statistics)
+*.RData
+*.rda
+*.rds
+.Rhistory
+.Rproj.user/
+
+# MATLAB (if used)
+*.mat
+*.fig
+
+# GNN-specific patterns
+/doc/rxinfer/RxInferExamples.jl
 *.timelock.*
+*.jl.mem
+
+# ============================================================================
+# GITKEEP FILES (Always keep these)
+# ============================================================================
+# Important directories that should be tracked but may be empty
+!output/.gitkeep
+!cache/.gitkeep
+!logs/.gitkeep
+
+# ============================================================================
+# CUSTOM PATTERNS
+# ============================================================================
+# Add any project-specific patterns below this line
+
+# ============================================================================
+# SETUP AND MAINTENANCE NOTES
+# ============================================================================
+#
+# To clean ignored files: git clean -fdx
+# To see what would be cleaned: git clean -fdxn
+# To update this file: Review and test patterns before committing
+#
+# Last updated: October 1, 2025
+# ============================================================================

@@ -50,7 +50,8 @@ run_script = create_standardized_pipeline_script(
         recreate=kwargs.get('recreate_venv', False),
         dev=kwargs.get('dev', True),
         extras=["llm", "visualization", "audio", "gui"],
-        skip_jax_test=True
+        skip_jax_test=True,
+        output_dir=output_dir
     ),
     "Project setup and environment validation with UV",
     additional_arguments={

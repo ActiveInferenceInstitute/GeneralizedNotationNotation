@@ -3,6 +3,8 @@
 ## Project Overview and Context
 GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive modular pipeline that transforms GNN plaintext specifications into executable simulations, visualizations, GUI construction, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
 
+This system represents a complete scientific computing framework with 24 integrated pipeline steps, 28 specialized agent modules, and comprehensive documentation covering all aspects of Active Inference model processing from specification through execution and analysis.
+
 ## Overall AI Behavior & Persona
 - Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications and pipeline architecture
 - Be professional, scientifically rigorous, modular, concise, elegant, and thoughtful
@@ -13,6 +15,13 @@ GeneralizedNotationNotation (GNN) is a text-based language for standardizing Act
 - NEVER create dummy, mock, placeholder, or stub implementations
 - All code must be fully functional, documented, and covered by tests
 - Version existing code with narrow intelligent changes, don't make variant or redundant files
+
+## Critical Success Metrics
+- **Code Quality**: All Python files must have <2% syntax errors, >90% test coverage, comprehensive type hints
+- **Documentation**: Every module must have complete AGENTS.md documentation with real examples and usage patterns
+- **Architecture Compliance**: 100% adherence to thin orchestrator pattern across all 24 pipeline steps
+- **Performance**: Pipeline execution time <30 minutes for standard workloads, memory usage <2GB peak
+- **Reliability**: <1% critical failure rate, >99% successful step completion rate
 
 ## Documentation and Communication Standards
 - **Understated Documentation**: Use concrete examples and functional demonstrations over promotional language
@@ -31,6 +40,14 @@ This project implements a comprehensive scientific computing pipeline with real,
 - Pipeline script tests must run the actual numbered scripts via subprocess and assert on real artifacts in `output/`.
 - Replace any legacy tests that use `unittest.mock`, patched subprocess, or fake registries with real end-to-end calls and file-based assertions.
 
+## Enhanced Testing Requirements
+- **Test Data**: All tests must use real, representative data - no synthetic or placeholder datasets
+- **External Dependencies**: Tests must validate actual API responses, file I/O, and service interactions
+- **Performance Testing**: Include timing assertions for critical paths, memory usage validation
+- **Integration Testing**: End-to-end tests must validate complete pipeline execution with real inputs/outputs
+- **Error Scenario Testing**: Test all error conditions with real failure modes, not simulated exceptions
+- **Cross-Platform Testing**: Validate functionality across different environments and Python versions
+
 ## Key Implementation Patterns (MUST FOLLOW)
 - **Pipeline Scripts**: Use standardized imports from `utils` (setup_step_logging, log_step_*, EnhancedArgumentParser) and `pipeline` (get_output_dir_for_script, get_pipeline_config)
 - **Argument Parsing**: Always use `EnhancedArgumentParser.parse_step_arguments()` with fallback argument parser for graceful degradation
@@ -40,6 +57,15 @@ This project implements a comprehensive scientific computing pipeline with real,
 - **Module Structure**: Follow `src/[module_name]/` pattern with `__init__.py`, core functionality, and `mcp.py` where applicable
 - **Path Handling**: Always convert string arguments to `pathlib.Path` objects and use centralized output directory management
 
+## Enhanced Implementation Standards
+- **Type Safety**: All public functions must have complete type hints with generic types for containers
+- **Documentation**: Every public function/class must have comprehensive docstrings with examples
+- **Error Recovery**: Implement graceful degradation and recovery mechanisms for all critical paths
+- **Resource Management**: Proper cleanup of resources (files, connections, memory) in all code paths
+- **Concurrency Safety**: Thread-safe implementations for all shared resources and state
+- **Performance Monitoring**: Built-in timing and memory usage tracking for all major operations
+- **Configuration Management**: Centralized configuration with validation and environment-specific overrides
+
 ## Architectural Pattern: Thin Orchestrator Scripts
 **CRITICAL**: Numbered pipeline scripts (e.g., `8_visualization.py`, `9_advanced_viz.py`) must be thin orchestrators that:
 1. **Import and invoke methods** from their corresponding modules (e.g., `src/visualization/`, `src/advanced_visualization/`)
@@ -47,6 +73,15 @@ This project implements a comprehensive scientific computing pipeline with real,
 3. **Handle pipeline orchestration** - argument parsing, logging, output directory management, result aggregation
 4. **Delegate core functionality** to module classes and functions
 5. **Maintain separation of concerns** - scripts handle pipeline flow, modules handle domain logic
+
+## Module Architecture Requirements
+- **Single Responsibility**: Each module must have a clearly defined, single primary responsibility
+- **High Cohesion**: Related functionality must be grouped together within modules
+- **Low Coupling**: Modules should minimize dependencies on other modules
+- **Interface Segregation**: Large interfaces should be broken into smaller, focused interfaces
+- **Dependency Injection**: Use dependency injection for testability and flexibility
+- **Immutable State**: Prefer immutable data structures and state where possible
+- **Error Propagation**: Proper error handling with meaningful error messages and recovery strategies
 
 **Module Structure Pattern:**
 - **Numbered Scripts** (e.g., `11_render.py`): Thin orchestrators that import from modules
@@ -129,4 +164,34 @@ For more targeted guidelines, refer to the files in the .cursor_rules/ directory
 - Validate changes with `src/pipeline/pipeline_validation.py`
 - Follow the established patterns in `src/utils/pipeline_template.py` for consistent module structure
 - Leverage the centralized configuration system in `src/pipeline/config.py`
-- Use the comprehensive testing infrastructure in `src/tests/` for validation 
+- Use the comprehensive testing infrastructure in `src/tests/` for validation
+
+## Quality Assurance Requirements
+- **Code Review**: All changes must pass automated code review checks (linting, type checking, security scanning)
+- **Performance Validation**: Changes must not degrade pipeline performance by more than 5%
+- **Backward Compatibility**: All changes must maintain compatibility with existing GNN files and outputs
+- **Documentation Updates**: Any functional changes must be reflected in relevant documentation
+- **Test Coverage**: New features must include comprehensive tests with >95% coverage
+- **Security Review**: Security-sensitive changes require additional review and validation
+
+## Performance Standards
+- **Execution Time**: Full pipeline execution must complete within 30 minutes for standard workloads
+- **Memory Usage**: Peak memory usage must not exceed 2GB for standard workloads
+- **Error Rate**: Critical failure rate must be maintained below 1%
+- **Success Rate**: Step completion rate must exceed 99% for all pipeline steps
+- **Resource Efficiency**: Optimize for minimal resource usage while maintaining functionality
+
+## Documentation Standards
+- **AGENTS.md Files**: Every module must have comprehensive AGENTS.md documentation
+- **API Documentation**: All public APIs must be fully documented with examples
+- **Usage Examples**: Include practical examples for all major features
+- **Troubleshooting Guides**: Document common issues and solutions for each module
+- **Performance Guidelines**: Include performance characteristics and optimization recommendations
+
+## Agent Development Standards
+- **Agent Capabilities**: Each agent module must clearly define its specialized capabilities
+- **Integration Points**: Document all integration points with other modules and external systems
+- **Error Handling**: Comprehensive error handling with graceful degradation strategies
+- **Resource Management**: Proper resource cleanup and memory management
+- **Monitoring**: Built-in performance monitoring and health checks
+- **Configuration**: Flexible configuration options with sensible defaults 

@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-10-01T07:47:24.796658",
+  "timestamp": "2025-10-01T08:19:56.470570",
   "source_directory": "input/gnn_files",
   "output_directory": "output/3_gnn_output",
   "processing_config": {
     "recursive": true,
-    "verbose": false,
+    "verbose": true,
     "supported_formats": [
       "markdown",
       "scala",
@@ -117,7 +117,7 @@
         },
         "xml": {
           "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
-          "file_size": 9556,
+          "file_size": 9536,
           "success": true
         },
         "json": {
@@ -183,15 +183,145 @@
       },
       "errors": [],
       "warnings": []
+    },
+    {
+      "file_name": "neural_response_model.md",
+      "file_path": "input/gnn_files/neural_response_model.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/neural_response_model/neural_response_model_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Active Inference Neural Response Model v1",
+        "version": "1.0",
+        "variables_count": 19,
+        "connections_count": 17,
+        "parameters_count": 5,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_markdown.md",
+          "file_size": 2522,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_scala.scala",
+          "file_size": 7259,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_lean.lean",
+          "file_size": 7837,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_coq.v",
+          "file_size": 7505,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_python.py",
+          "file_size": 13436,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_bnf.bnf",
+          "file_size": 7625,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_ebnf.ebnf",
+          "file_size": 7625,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_isabelle.thy",
+          "file_size": 7574,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_maxima.max",
+          "file_size": 8328,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_xml.xml",
+          "file_size": 15338,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_json.json",
+          "file_size": 14459,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_protobuf.proto",
+          "file_size": 9946,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_yaml.yaml",
+          "file_size": 9452,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_xsd.xsd",
+          "file_size": 8700,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_asn1.asn1",
+          "file_size": 12195,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_pkl.pkl",
+          "file_size": 16775,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_alloy.als",
+          "file_size": 12883,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_z_notation.z",
+          "file_size": 8224,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_tla_plus.tla",
+          "file_size": 6703,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_agda.agda",
+          "file_size": 6693,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_haskell.hs",
+          "file_size": 7933,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/neural_response_model/neural_response_model_pickle.pkl",
+          "file_size": 5436,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
     }
   ],
   "summary": {
-    "total_files": 1,
-    "successful_parses": 1,
+    "total_files": 2,
+    "successful_parses": 2,
     "failed_parses": 0,
-    "total_formats_generated": 22,
+    "total_formats_generated": 44,
     "formats_per_file": {
-      "actinf_pomdp_agent.md": 22
+      "actinf_pomdp_agent.md": 22,
+      "neural_response_model.md": 22
     }
   }
 }

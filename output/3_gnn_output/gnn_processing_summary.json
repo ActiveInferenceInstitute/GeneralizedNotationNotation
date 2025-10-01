@@ -1,9 +1,10 @@
 {
-  "total_files": 1,
-  "successful_parses": 1,
+  "total_files": 2,
+  "successful_parses": 2,
   "failed_parses": 0,
-  "total_formats_generated": 22,
+  "total_formats_generated": 44,
   "formats_per_file": {
-    "actinf_pomdp_agent.md": 22
+    "actinf_pomdp_agent.md": 22,
+    "neural_response_model.md": 22
   }
 }

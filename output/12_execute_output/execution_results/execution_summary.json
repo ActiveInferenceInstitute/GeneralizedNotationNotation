@@ -1,7 +1,7 @@
 {
-  "timestamp": "2025-10-01T07:47:08.575468",
-  "target_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files",
-  "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output",
+  "timestamp": "2025-10-01T08:05:40.213399",
+  "target_directory": "input/gnn_files",
+  "output_directory": "output/12_execute_output",
   "total_scripts_found": 5,
   "successful_executions": 1,
   "failed_executions": 4,
@@ -16,11 +16,11 @@
       "return_code": 1,
       "stdout": "",
       "stderr": "WARNING:root:PyMDP not available - simulation will gracefully degrade with informative output\nERROR:__main__:Unexpected error: execute_pymdp_simulation() got an unexpected keyword argument 'config_overrides'\nTraceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\", line 318, in main\n    success, results = execute_pymdp_simulation(\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: execute_pymdp_simulation() got an unexpected keyword argument 'config_overrides'\n",
-      "execution_time": 0.873645,
-      "timestamp": "2025-10-01T07:47:08.577348",
-      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log",
-      "centralized_output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/execution_results/individual_outputs/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py_output.txt",
-      "implementation_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/pymdp"
+      "execution_time": 0.993696,
+      "timestamp": "2025-10-01T08:05:40.216233",
+      "output_file": "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log",
+      "centralized_output_file": "output/12_execute_output/execution_results/individual_outputs/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py_output.txt",
+      "implementation_directory": "output/12_execute_output/actinf_pomdp_agent/pymdp"
     },
     {
       "script_path": "output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py",
@@ -32,11 +32,11 @@
       "return_code": 0,
       "stdout": "\nGNNModel Model Summary:\n- Number of states: 3\n- Number of observations: 3\n- Number of actions: 1\n- Parameters: 24\n\nModel test successful!\nOutput keys: ['beliefs', 'actions', 'expected_free_energy', 'state_predictions', 'action_efes', 'predicted_observations']\n",
       "stderr": "",
-      "execution_time": 0.712135,
-      "timestamp": "2025-10-01T07:47:09.451584",
-      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Classic Active Inference POMDP Agent v1_jax.py_execution.log",
-      "centralized_output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/execution_results/individual_outputs/jax/Classic Active Inference POMDP Agent v1_jax.py_output.txt",
-      "implementation_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/jax"
+      "execution_time": 0.786509,
+      "timestamp": "2025-10-01T08:05:41.210524",
+      "output_file": "output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Classic Active Inference POMDP Agent v1_jax.py_execution.log",
+      "centralized_output_file": "output/12_execute_output/execution_results/individual_outputs/jax/Classic Active Inference POMDP Agent v1_jax.py_output.txt",
+      "implementation_directory": "output/12_execute_output/actinf_pomdp_agent/jax"
     },
     {
       "script_path": "output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py",
@@ -48,11 +48,11 @@
       "return_code": 1,
       "stdout": "\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nDisCoPy Categorical Diagrams - GNN Generated\nModel: Classic Active Inference POMDP Agent v1\n============================================================\n\u274c Diagram generation failed: Expected quantum.circuit.Digit | quantum.circuit.Qudit, got quantum.circuit.Ob instead.\n\ud83d\udd0d Stack trace:\n",
       "stderr": "Traceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\", line 262, in main\n    S, O, A, P = define_types()\n                 ^^^^^^^^^^^^^^\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\", line 31, in define_types\n    S = Ty('S')  # Hidden states\n        ^^^^^^^\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/discopy/monoidal.py\", line 124, in __init__\n    self.inside = tuple(x if isinstance(x, self.ob_factory)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/discopy/monoidal.py\", line 125, in <genexpr>\n    else self.ob_factory(x) for x in inside)\n         ^^^^^^^^^^^^^^^^^^\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/discopy/quantum/circuit.py\", line 96, in __init__\n    assert_isinstance(self, (Digit, Qudit))\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/discopy/utils.py\", line 381, in assert_isinstance\n    raise TypeError(messages.TYPE_ERROR.format(\nTypeError: Expected quantum.circuit.Digit | quantum.circuit.Qudit, got quantum.circuit.Ob instead.\n",
-      "execution_time": 0.253911,
-      "timestamp": "2025-10-01T07:47:10.164306",
-      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Classic Active Inference POMDP Agent v1_discopy.py_execution.log",
-      "centralized_output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/execution_results/individual_outputs/discopy/Classic Active Inference POMDP Agent v1_discopy.py_output.txt",
-      "implementation_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/discopy"
+      "execution_time": 0.276313,
+      "timestamp": "2025-10-01T08:05:41.997777",
+      "output_file": "output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Classic Active Inference POMDP Agent v1_discopy.py_execution.log",
+      "centralized_output_file": "output/12_execute_output/execution_results/individual_outputs/discopy/Classic Active Inference POMDP Agent v1_discopy.py_output.txt",
+      "implementation_directory": "output/12_execute_output/actinf_pomdp_agent/discopy"
     },
     {
       "script_path": "output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl",
@@ -64,11 +64,11 @@
       "return_code": 1,
       "stdout": "\ud83d\udd2c RxInfer.jl Active Inference Simulation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nRxInfer.jl Active Inference - GNN Generated Simulation\nModel: Classic Active Inference POMDP Agent v1\n============================================================\n\n\ud83d\ude80 Starting Active Inference simulation...\n\ud83d\udccb Generated observation sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]\n\n\ud83e\udde0 Running variational inference...\n\u274c Simulation failed: ErrorException(\"The `active_inference_model` model macro does not support positional arguments. Use keyword arguments `active_inference_model(n_steps = ..., observations = ...)` instead.\\n\")\n\ud83d\udd0d Stack trace:\nThe `active_inference_model` model macro does not support positional arguments. Use keyword arguments `active_inference_model(n_steps = ..., observations = ...)` instead.\n\nStacktrace:\n [1] active_inference_model(::Int64, ::Vararg{Any}; kwargs::@Kwargs{})\n   @ Main ~/.julia/packages/GraphPPL/xPNyo/src/model_macro.jl:765\n [2] active_inference_model(::Int64, ::Vararg{Any})\n   @ Main ~/.julia/packages/GraphPPL/xPNyo/src/model_macro.jl:764\n [3] run_active_inference_simulation()\n   @ Main ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:88\n [4] main()\n   @ Main ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:181\n [5] top-level scope\n   @ ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:204\n",
       "stderr": "",
-      "execution_time": 5.570805,
-      "timestamp": "2025-10-01T07:47:10.418856",
-      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Classic Active Inference POMDP Agent v1_rxinfer.jl_execution.log",
-      "centralized_output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/execution_results/individual_outputs/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl_output.txt",
-      "implementation_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/rxinfer"
+      "execution_time": 8.102613,
+      "timestamp": "2025-10-01T08:05:42.274708",
+      "output_file": "output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Classic Active Inference POMDP Agent v1_rxinfer.jl_execution.log",
+      "centralized_output_file": "output/12_execute_output/execution_results/individual_outputs/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl_output.txt",
+      "implementation_directory": "output/12_execute_output/actinf_pomdp_agent/rxinfer"
     },
     {
       "script_path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl",
@@ -78,13 +78,13 @@
       "executor": "julia",
       "success": false,
       "return_code": 1,
-      "stdout": "======================================================================\nActiveInference.jl Script for GNN Model: Classic Active Inference POMDP Agent v1\n======================================================================\nJulia version: 1.11.6\nDate: 2025-10-01T07:47:20.147\nModel dimensions: States=3, Observations=3, Actions=1\n\n\ud83d\udcc1 Output directory: activeinference_outputs_2025-10-01_07-47-20\n\ud83d\udd27 Creating model matrices from GNN specification...\n\u2705 A matrix created: (3, 3)\n",
+      "stdout": "======================================================================\nActiveInference.jl Script for GNN Model: Classic Active Inference POMDP Agent v1\n======================================================================\nJulia version: 1.11.6\nDate: 2025-10-01T08:05:55.661\nModel dimensions: States=3, Observations=3, Actions=1\n\n\ud83d\udcc1 Output directory: activeinference_outputs_2025-10-01_08-05-55\n\ud83d\udd27 Creating model matrices from GNN specification...\n\u2705 A matrix created: (3, 3)\n",
       "stderr": "ERROR: LoadError: ParseError:\n# Error @ /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:60:18\n# B matrix (transition model) \nB_matrix = [(1.0 0.0 0.0) (0.0 1.0 0.0) (0.0 0.0 1.0); (0.0 1.0 0.0) (1.0 0.0 0.0) (0.0 0.0 1.0); (0.0 0.0 1.0) (0.0 1.0 0.0) (1.0 0.0 0.0)]\n#                \u2514\u2500\u2500\u2500\u2500\u2500\u2518 \u2500\u2500 Expected `)`\nStacktrace:\n [1] top-level scope\n   @ ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:60\nin expression starting at /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:60\n",
-      "execution_time": 5.054415,
-      "timestamp": "2025-10-01T07:47:15.990246",
-      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Classic Active Inference POMDP Agent v1_activeinference.jl_execution.log",
-      "centralized_output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/execution_results/individual_outputs/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl_output.txt",
-      "implementation_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl"
+      "execution_time": 6.320008,
+      "timestamp": "2025-10-01T08:05:50.378037",
+      "output_file": "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Classic Active Inference POMDP Agent v1_activeinference.jl_execution.log",
+      "centralized_output_file": "output/12_execute_output/execution_results/individual_outputs/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl_output.txt",
+      "implementation_directory": "output/12_execute_output/actinf_pomdp_agent/activeinference_jl"
     }
   ],
   "success": true

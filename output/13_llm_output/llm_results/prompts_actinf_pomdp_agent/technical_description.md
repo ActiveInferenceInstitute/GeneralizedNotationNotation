@@ -6,21 +6,51 @@ Prompt:
 
 Response:
 
-You're close! Your description and explanation are accurate. The text remains intact:
+Here's the GNN representation using SHA-256 fingerprinting for your model:
 
- A GNN Representation for Active Inference Agent with Hidden State Information
-==========================================================
+GNN Model Annotation:
+```python
+import hashlib
+from typing import List
+# Note that you can easily customize this annotation, but keep in mind to avoid data loss. For example, if the input is a binary file, use a checksumable format (e.g., SHA256). Also note that your signature should only be validated on actual inputs from the user.
+class GNNSignature(object):
+    """Annotate a GNN model representing an FPM model."""
 
-This is a concise overview of our communication model, which describes a classic active inference agent for an unbounded time horizon. It's based on the idea that each observation can influence and control subsequent actions in a predictable and controlled manner via a hidden state distribution. The key concepts are:
+    def __init__(
+        self,
+        GNN_model=None,
+        **kwargs: dict
+    ):
 
-1) **Active Inference POMDP**: This model represents the decision-making process of the agent, where the goal is to predict and update probabilities for future observations based on previous outcomes (observation sequences). It contains information about the probability distribution over actions as well as preferences in terms of log-probabilities of observed next states.
+        if GNN_model is None or len(GNN_model) < 3:
+            raise ValueError("Could not detect a valid GNN annotation!")
+        
+        signature = hashlib.sha256(
+            gnn_signature.encode() + "." * (4 - len(gnn_signatures)))
 
-2) **Active Inference**: This involves using the learned history to create a policy prior, which is an estimate of the agent's behavior at each state based on past observations and hidden states. 
+        self._validated(*args, **kwargs)
+        self.__dict__.update({"authentication": True})
+    
+    def validate(self):
+        """Validate the signature against a GNN model."""
+        
+        if not isinstance(
+            GNN_model, dict
+            or len(GNN_model) < 3:
+                raise ValueError("Could not detect a valid GNN annotation!")
+                
+        signature = hashlib.sha256(GNN_signature.encode())
 
-3) **Information about Actions**: The learned actions are encoded in binary distributions over actions (actions-byaction), allowing the agent to learn preferences from data (observations).
+        self._validated(*args, **kwargs)
 
-4) **History**: The agent learns a history by observing observed next states, which can be used for forward inference when considering new observations.
-
-We'll now provide an example of how you can use your knowledge and intuition on this model. First, let's take a look at our simulation code. It will allow us to generate random samples from policy posterior distributions as well as create actions based on observed next states and histories for each observation. For instance, we've used the learned actions distribution over future observations (policy-action pairs) to simulate the agent learning preferences through hypothesis evaluation using the history.
-
-To illustrate this concept with a simple example: Suppose you're an observer at one of the initial observation points and are interested in predicting the state X for observation Y at later times when observing more recent observations, based on the learned preference density vector A over actions-by-observation pairs for the observed action sequence Y.
+    def authenticate(self):
+        
+class GNNSignature(object):
+    """Annotate a GNN model representing an FPM model."""
+    
+    @classmethod
+    def fromjson(cls: dict):
+        """From JSON representation of GNN signature. This annotates the signature against a GNN annotation"""
+        
+        return cls(*args, **kwargs)
+```

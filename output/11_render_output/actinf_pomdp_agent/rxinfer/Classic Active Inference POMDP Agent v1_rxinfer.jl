@@ -1,6 +1,6 @@
 # RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: Classic Active Inference POMDP Agent v1
-# Generated: 2025-10-01 07:47:27
+# Generated: 2025-10-01 08:05:39
 
 using RxInfer
 using Distributions

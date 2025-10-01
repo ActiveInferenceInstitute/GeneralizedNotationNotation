@@ -1,90 +1,244 @@
 # =============================================================================
+# GENERALIZED NOTATION NOTATION (GNN) - Requirements Configuration
+# =============================================================================
+# Core dependencies for the GNN pipeline processing Active Inference models
+# Last Updated: October 1, 2025
+# Python Version: >= 3.9
+# =============================================================================
+
+# =============================================================================
 # CORE DEPENDENCIES (Essential for basic functionality)
 # =============================================================================
 
 # Core scientific computing (lightweight)
-numpy>=1.21.0
-matplotlib>=3.5.0
-networkx>=2.6.0
-pandas>=1.3.0
-pyyaml>=6.0
-pathlib2>=2.3.0; python_version < "3.4"
-scipy>=1.7.0
-scikit-learn>=1.0.0
+numpy>=1.24.0,<2.0.0
+matplotlib>=3.7.0,<4.0.0
+networkx>=3.0.0,<4.0.0
+pandas>=2.0.0,<3.0.0
+pyyaml>=6.0.0,<7.0.0
+scipy>=1.11.0,<2.0.0
+scikit-learn>=1.3.0,<2.0.0
 
 # Testing and development (essential)
-pytest>=6.0.0
-pytest-cov>=3.0.0
-pytest-asyncio>=0.23.0
-pytest-json-report>=1.5.0
-pytest-xdist>=2.5.0
-black>=22.0.0
-flake8>=4.0.0
-mypy>=0.950
+pytest>=7.0.0,<8.0.0
+pytest-cov>=4.0.0,<5.0.0
+pytest-asyncio>=0.21.0,<0.25.0
+pytest-json-report>=1.5.0,<2.0.0
+pytest-xdist>=3.0.0,<4.0.0
+pytest-timeout>=2.1.0,<3.0.0
+pytest-benchmark>=4.0.0,<5.0.0
+pytest-sugar>=0.9.0,<2.0.0
+black>=23.0.0,<25.0.0
+isort>=5.12.0,<6.0.0
+flake8>=6.0.0,<7.0.0
+mypy>=1.0.0,<2.0.0
+mypy-extensions>=1.0.0,<2.0.0
 
 # System monitoring and utilities
-psutil>=5.8.0
-toml>=0.10.0
-defusedxml>=0.7.0
+psutil>=5.9.0,<6.0.0
+toml>=0.10.0,<0.11.0
+defusedxml>=0.7.0,<0.8.0
+python-dotenv>=1.0.0,<2.0.0
 
 # HTTP and async communication
-aiohttp>=3.9.0
-httpx>=0.27.0
+aiohttp>=3.9.0,<4.0.0
+httpx>=0.25.0,<0.26.0
+requests>=2.31.0,<3.0.0
 
 # GNN processing
-markdown>=3.0.0
+markdown>=3.4.0,<4.0.0
+markdown-it-py>=3.0.0,<4.0.0
 
 # Security tools
-bandit>=1.7.0
-safety>=2.3.0
+bandit>=1.7.0,<2.0.0
+safety>=2.4.0,<3.0.0
+
+# Development tools
+pre-commit>=3.0.0,<4.0.0
+ipython>=8.0.0,<9.0.0
+ipdb>=0.13.0,<0.14.0
+jupyter>=1.0.0,<2.0.0
+ipywidgets>=8.0.0,<9.0.0
 
 # =============================================================================
 # OPTIONAL HEAVY PACKAGES (Install separately if needed)
 # =============================================================================
+# These packages provide enhanced functionality but are not required for basic
+# GNN pipeline operation. Install based on your specific use case requirements.
+# =============================================================================
 
-# Active Inference ecosystem
-pymdp>=0.0.1
+# =============================================================================
+# ACTIVE INFERENCE ECOSYSTEM (Essential for model execution)
+# =============================================================================
 
-# High-performance computing (essential for execution)
-jax[cpu]>=0.4.0
-jaxlib>=0.4.0
+# Core Active Inference frameworks
+pymdp>=0.1.0,<0.2.0
 
-# Visualization and diagramming
-discopy[matrix]>=1.0.0
-altair>=5.0.0
+# High-performance computing backends (essential for execution)
+jax[cpu]>=0.4.0,<0.5.0
+jaxlib>=0.4.0,<0.5.0
+flax>=0.7.0,<0.8.0
+optax>=0.1.0,<0.2.0
 
-# Uncomment additional heavy packages below based on your needs:
+# =============================================================================
+# VISUALIZATION AND DIAGRAMMING (Recommended for analysis)
+# =============================================================================
 
-# === MACHINE LEARNING & AI (Heavy packages) ===
-# torch>=1.12.0         # ~1.5GB - PyTorch (CPU version available)
-# flax>=0.7.0           # ~150MB - JAX neural network library
-# optax>=0.1.0          # ~50MB - JAX optimization library
+# Core visualization libraries
+plotly>=5.15.0,<6.0.0
+altair>=5.0.0,<6.0.0
+seaborn>=0.12.0,<0.13.0
+bokeh>=3.0.0,<4.0.0
+holoviews>=1.17.0,<2.0.0
+panel>=1.0.0,<2.0.0
 
-# === LLM INTEGRATION (API clients) ===
-# openai>=1.0.0         # ~50MB - OpenAI API client
-# anthropic>=0.5.0      # ~30MB - Anthropic API client
-# ollama>=0.3.0           # ~small - Local LLM client for Ollama (optional)
-# python-dotenv>=1.0.0    # ~small - Load env vars for LLM configs (optional)
+# Specialized diagramming
+discopy[matrix]>=1.1.0,<2.0.0
+graphviz>=0.20.0,<0.21.0
+igraph>=0.10.0,<0.11.0
 
-# === ADVANCED VISUALIZATION (Heavy) ===
-# plotly>=5.0.0         # ~200MB - Interactive plotting
-# seaborn>=0.11.0       # ~100MB - Statistical visualization
-# bokeh>=2.4.0          # ~150MB - Web-based visualization
-# holoviews>=1.14.0     # ~100MB - High-level plotting
-# panel>=0.13.0         # ~80MB - Dashboard framework
+# =============================================================================
+# AUDIO PROCESSING (For sonification features)
+# =============================================================================
 
-# === AUDIO PROCESSING (Heavy) ===
-# librosa>=0.9.0        # ~300MB - Audio analysis
-# soundfile>=0.10.0     # ~50MB - Audio file I/O
-# pedalboard>=0.5.0     # ~200MB - Audio effects
+# Core audio libraries
+librosa>=0.10.0,<0.11.0
+soundfile>=0.12.0,<0.13.0
+pedalboard>=0.7.0,<0.8.0
 
-# === GRAPH VISUALIZATION ===
-# igraph>=0.9.0         # ~100MB - Graph algorithms
-# graphviz>=0.19.0      # ~50MB - Graph visualization
+# Audio analysis and processing
+pydub>=0.25.0,<0.26.0
+pyaudio>=0.2.0,<0.3.0
 
-# === RESEARCH TOOLS ===
-# jupyter>=1.0.0        # ~500MB - Jupyter notebook
-# ipywidgets>=7.6.0     # ~100MB - Interactive widgets
+# =============================================================================
+# LLM INTEGRATION (For AI-enhanced analysis)
+# =============================================================================
 
-# === SAPF (Audio backend) ===
-# sapf                  # Temporarily unavailable in PyPI
+# API clients for major LLM providers
+openai>=1.0.0,<2.0.0
+anthropic>=0.7.0,<0.8.0
+cohere>=4.0.0,<5.0.0
+
+# Local LLM integration
+ollama>=0.1.0,<0.2.0
+
+# =============================================================================
+# MACHINE LEARNING & AI (Advanced features)
+# =============================================================================
+
+# Deep learning frameworks (heavy - ~1-2GB each)
+torch>=2.0.0,<3.0.0  # CPU version recommended for compatibility
+torchvision>=0.15.0,<0.16.0
+torchaudio>=2.0.0,<3.0.0
+
+# Hugging Face ecosystem
+transformers>=4.25.0,<5.0.0
+datasets>=2.10.0,<3.0.0
+accelerate>=0.20.0,<0.21.0
+
+# =============================================================================
+# RESEARCH AND DEVELOPMENT TOOLS
+# =============================================================================
+
+# Jupyter ecosystem for interactive analysis
+jupyterlab>=4.0.0,<5.0.0
+jupyter-server>=2.0.0,<3.0.0
+
+# Scientific computing enhancements
+sympy>=1.12.0,<2.0.0
+numba>=0.57.0,<0.58.0
+cython>=3.0.0,<4.0.0
+
+# Performance profiling and optimization
+py-spy>=0.3.0,<0.4.0
+memory-profiler>=0.61.0,<0.62.0
+line-profiler>=4.0.0,<5.0.0
+
+# =============================================================================
+# GUI AND INTERACTIVE COMPONENTS
+# =============================================================================
+
+# Web-based interfaces
+gradio>=4.0.0,<5.0.0
+streamlit>=1.25.0,<2.0.0
+
+# Interactive widgets
+plotly-dash>=2.10.0,<3.0.0
+
+# =============================================================================
+# DATABASE AND STORAGE (For large-scale processing)
+# =============================================================================
+
+# Database connectivity
+sqlalchemy>=2.0.0,<3.0.0
+alembic>=1.10.0,<2.0.0
+
+# File storage and caching
+fsspec>=2023.0.0,<2024.0.0
+s3fs>=2023.0.0,<2024.0.0
+
+# =============================================================================
+# SPECIALIZED FRAMEWORKS
+# =============================================================================
+
+# Category theory and diagrammatic computing
+discopy[categorical]>=1.1.0,<2.0.0
+
+# Petri nets and process modeling
+snakes>=0.9.0,<1.0.0
+
+# Active Inference specific tools
+pymdp-toolbox>=0.1.0,<0.2.0
+
+# =============================================================================
+# DEVELOPMENT AND DEBUGGING TOOLS
+# =============================================================================
+
+# Code quality and linting
+ruff>=0.1.0,<0.2.0
+pylint>=3.0.0,<4.0.0
+
+# Documentation generation
+sphinx>=7.0.0,<8.0.0
+sphinx-rtd-theme>=1.3.0,<2.0.0
+myst-parser>=2.0.0,<3.0.0
+
+# API documentation
+fastapi>=0.100.0,<0.110.0
+uvicorn>=0.23.0,<0.24.0
+
+# =============================================================================
+# PERFORMANCE AND SCALING (For high-throughput processing)
+# =============================================================================
+
+# Parallel processing
+dask>=2023.0.0,<2024.0.0
+distributed>=2023.0.0,<2024.0.0
+multiprocess>=0.70.0,<0.71.0
+
+# Caching and optimization
+joblib>=1.3.0,<2.0.0
+lru-dict>=1.2.0,<2.0.0
+
+# =============================================================================
+# INSTALLATION NOTES
+# =============================================================================
+#
+# Core Installation (minimal functionality):
+#   pip install -r requirements.txt
+#
+# Full Installation (all features):
+#   pip install -r requirements.txt
+#   pip install pymdp jax[cpu] plotly librosa openai torch
+#
+# Development Installation:
+#   pip install -r requirements.txt
+#   pip install -e ".[dev,ml-ai,llm,visualization,audio]"
+#
+# For specific use cases, install only the relevant optional dependencies:
+#   pip install plotly altair  # Visualization only
+#   pip install openai anthropic  # LLM integration only
+#   pip install librosa pedalboard  # Audio processing only
+#
+# See .env template for configuration of external services and API keys.
+# =============================================================================

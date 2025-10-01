@@ -2,25 +2,45 @@
 
 ## Module Overview
 
-**Purpose**: [Brief 1-2 sentence description of what this module does]
+**Purpose**: [Brief 1-2 sentence description of what this module does. Focus on the core functionality and value proposition.]
 
 **Pipeline Step**: [Script number and name, e.g., "Step 11: Code Rendering (11_render.py)"]
 
-**Category**: [Core/Processing/Integration/Utility]
+**Category**: [Core/Processing/Integration/Utility/Analysis/Visualization/Audio]
+
+**Status**: [Production Ready / Beta / Experimental / Deprecated]
+
+**Version**: [Current version, e.g., "1.0.0"]
+
+**Last Updated**: [Date in ISO format, e.g., "2025-10-01"]
 
 ---
 
 ## Core Functionality
 
 ### Primary Responsibilities
-1. [Main responsibility 1]
-2. [Main responsibility 2]
-3. [Main responsibility 3]
+1. [Main responsibility 1 - be specific about what the module actually does]
+2. [Main responsibility 2 - focus on core value and outcomes]
+3. [Main responsibility 3 - describe the key transformation or processing]
 
 ### Key Capabilities
-- [Capability 1]
-- [Capability 2]
-- [Capability 3]
+- [Capability 1 - specific technical capability with concrete examples]
+- [Capability 2 - integration or processing capability]
+- [Capability 3 - output or analysis capability]
+
+### Agent Capabilities
+This module provides specialized agent capabilities for [specific domain]:
+
+#### 🎯 [Agent Type 1] Agent
+- **Core Function**: [What this agent does]
+- **Input Processing**: [What inputs it handles]
+- **Output Generation**: [What outputs it produces]
+- **Decision Making**: [How it makes choices or optimizations]
+
+#### 🤖 [Agent Type 2] Agent
+- **Core Function**: [What this agent does]
+- **Specialization**: [What makes this agent unique]
+- **Integration Points**: [How it connects with other modules]
 
 ---
 
@@ -29,26 +49,58 @@
 ### Public Functions
 
 #### `primary_function(args) -> ReturnType`
-**Description**: [What this function does]
+**Description**: [What this function does - be specific and include the core purpose]
 
 **Parameters**:
-- `arg1` (type): [description]
-- `arg2` (type): [description]
+- `arg1` (type): [description - include valid values and constraints]
+- `arg2` (type): [description - mention any dependencies or requirements]
 
-**Returns**: [Return value description]
+**Returns**: [Return value description - specify format and content]
+
+**Raises**:
+- `ValueError`: [When and why this exception is raised]
+- `FileNotFoundError`: [When input files are missing]
+- `TypeError`: [When parameters have incorrect types]
 
 **Example**:
 ```python
-result = primary_function(arg1, arg2)
+from [module] import primary_function
+
+# Basic usage
+result = primary_function(
+    arg1="input_value",
+    arg2="configuration"
+)
+
+# Advanced usage with error handling
+try:
+    result = primary_function(
+        arg1=Path("input/file.md"),
+        arg2={"option": "value"}
+    )
+    print(f"Processing completed: {result}")
+except ValueError as e:
+    print(f"Configuration error: {e}")
 ```
 
 #### `secondary_function(args) -> ReturnType`
-**Description**: [What this function does]
+**Description**: [What this function does - focus on specific functionality]
 
 **Parameters**:
-- `arg1` (type): [description]
+- `arg1` (type): [description with detailed constraints]
 
-**Returns**: [Return value description]
+**Returns**: [Return value description with format specification]
+
+**Example**:
+```python
+from [module] import secondary_function
+
+# Usage example
+result = secondary_function(
+    input_data=data,
+    config={"param": "value"}
+)
+```
 
 ---
 
@@ -107,35 +159,108 @@ DEFAULT_SETTING_2 = value
 ```python
 from [module] import primary_function
 
+# Simple processing
 result = primary_function(
-    arg1="value1",
-    arg2="value2"
+    input_path="data/input.md",
+    output_dir="output/",
+    verbose=True
+)
+print(f"Processing completed: {result}")
+```
+
+### Advanced Usage with Configuration
+```python
+from [module] import MainClass
+from pathlib import Path
+
+# Configure processing options
+processor = MainClass(
+    enable_feature_x=True,
+    optimization_level="high",
+    cache_results=True
+)
+
+# Process with custom parameters
+result = processor.process(
+    data=input_data,
+    config={
+        "param1": "value1",
+        "param2": 42
+    }
 )
 ```
 
-### Advanced Usage
+### Error Handling and Recovery
 ```python
-from [module] import MainClass
+from [module] import primary_function
+import logging
 
-processor = MainClass(
-    option1=True,
-    option2="advanced"
-)
+logger = logging.getLogger(__name__)
 
-result = processor.process(data)
+try:
+    result = primary_function(
+        input_file=Path("input/model.md"),
+        output_dir=Path("output/"),
+        timeout=300
+    )
+except FileNotFoundError as e:
+    logger.error(f"Input file not found: {e}")
+    # Fallback processing or user notification
+except TimeoutError as e:
+    logger.warning(f"Processing timed out: {e}")
+    # Retry with different parameters
+except Exception as e:
+    logger.error(f"Unexpected error: {e}")
+    # Graceful degradation
 ```
 
 ### Pipeline Integration
 ```python
-# Called from numbered script
+# Called from numbered script (thin orchestrator pattern)
 from [module] import process_[module]_standardized
+from utils.pipeline_template import setup_step_logging
+from pathlib import Path
 
-success = process_[module]_standardized(
-    target_dir=Path("input"),
-    output_dir=Path("output"),
-    logger=logger,
-    verbose=True
+def main():
+    # Setup standardized logging
+    logger = setup_step_logging("[module]", verbose=True)
+
+    # Process with pipeline integration
+    success = process_[module]_standardized(
+        target_dir=Path("input/gnn_files"),
+        output_dir=Path("output/[step]_output"),
+        logger=logger,
+        verbose=True,
+        config={"option": "value"}
+    )
+
+    return 0 if success else 1
+
+if __name__ == "__main__":
+    exit(main())
+```
+
+### Batch Processing
+```python
+from [module] import batch_processor
+from pathlib import Path
+
+# Process multiple files
+files_to_process = [
+    Path("input/model1.md"),
+    Path("input/model2.md"),
+    Path("input/model3.md")
+]
+
+results = batch_processor.process_files(
+    input_files=files_to_process,
+    output_dir=Path("output/batch/"),
+    parallel=True,
+    max_workers=4
 )
+
+for file_path, result in results.items():
+    print(f"{file_path}: {'SUCCESS' if result.success else 'FAILED'}")
 ```
 
 ---
@@ -255,38 +380,62 @@ def process_tool(args):
 ## Performance Characteristics
 
 ### Resource Requirements
-- **Memory**: [typical usage]
-- **CPU**: [typical usage]
-- **Disk**: [typical usage]
+- **Memory**: [typical usage pattern - e.g., "2-8GB for standard models, scales with model complexity"]
+- **CPU**: [typical usage pattern - e.g., "Single core for basic processing, multi-core for batch operations"]
+- **Disk**: [typical usage pattern - e.g., "100MB-1GB temporary storage during processing"]
+- **Network**: [network requirements if any - e.g., "API calls to external services"]
 
-### Execution Time
-- **Fast Path**: [time for typical input]
-- **Slow Path**: [time for large input]
-- **Timeout**: [configured timeout]
+### Execution Time Benchmarks
+- **Fast Path**: [time for typical input - e.g., "30-60 seconds for standard 100KB GNN file"]
+- **Slow Path**: [time for large input - e.g., "5-10 minutes for complex 1MB+ models"]
+- **Timeout**: [configured timeout - e.g., "300 seconds default, configurable per operation"]
 
-### Scalability
-- **Input Size Limits**: [max recommended]
-- **Parallelization**: [supported/not supported]
+### Scalability Metrics
+- **Input Size Limits**: [max recommended - e.g., "Tested up to 10MB GNN files, performance degrades beyond 50MB"]
+- **Parallelization**: [supported/not supported - e.g., "Full batch processing support, limited by memory"]
+- **Concurrent Users**: [multi-user capability - e.g., "Thread-safe for concurrent processing"]
+- **Horizontal Scaling**: [scaling capability - e.g., "Can be distributed across multiple nodes"]
+
+### Performance Optimization Tips
+- [Specific optimization 1 - e.g., "Use caching for repeated model processing"]
+- [Specific optimization 2 - e.g., "Batch similar models together for efficiency"]
+- [Specific optimization 3 - e.g., "Configure memory limits based on available resources"]
 
 ---
 
 ## Development Guidelines
 
 ### Adding New Features
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
+1. **Plan**: Define the feature requirements and integration points with existing modules
+2. **Design**: Create interface specifications and update API documentation
+3. **Implement**: Follow thin orchestrator pattern, add comprehensive tests
+4. **Test**: Validate functionality with real data and edge cases
+5. **Document**: Update AGENTS.md and add usage examples
+6. **Review**: Ensure compliance with all coding standards and patterns
 
-### Code Style
-- Follow PEP 8
-- Use type hints
-- Document all public functions
-- Include docstring examples
+### Code Style and Standards
+- **PEP 8 Compliance**: Follow Python style guidelines strictly
+- **Type Hints**: All public functions must have complete type annotations
+- **Documentation**: Every public function/class must have comprehensive docstrings
+- **Examples**: Include practical examples in all docstrings
+- **Error Handling**: Implement proper exception handling with meaningful messages
+- **Resource Management**: Ensure proper cleanup of files, connections, and memory
 
 ### Testing Requirements
-- All new functions must have tests
-- Coverage must remain >90%
-- Error scenarios must be tested
+- **Unit Tests**: All new functions must have corresponding unit tests
+- **Integration Tests**: Test module integration with pipeline and other modules
+- **Coverage Target**: Maintain >95% test coverage for new code
+- **Edge Cases**: Test all error scenarios and boundary conditions
+- **Performance Tests**: Include timing and memory usage validation
+- **Real Data**: Use actual representative data, not mocks or synthetic data
+
+### Agent Development Best Practices
+1. **Single Responsibility**: Each agent should have one clear, well-defined purpose
+2. **Stateless Design**: Prefer stateless agents for better testability and reliability
+3. **Configuration**: Use dependency injection for flexible configuration
+4. **Monitoring**: Implement health checks and performance monitoring
+5. **Error Recovery**: Design graceful degradation strategies for failures
+6. **Resource Awareness**: Implement proper resource cleanup and limits
 
 ---
 
@@ -294,27 +443,86 @@ def process_tool(args):
 
 ### Common Issues
 
-#### Issue 1: [Problem description]
-**Symptom**: [What user sees]  
-**Cause**: [Why it happens]  
-**Solution**: [How to fix]
+#### Issue 1: [Problem description - be specific about the actual error]
+**Symptom**: [What user sees - include actual error messages or behaviors]  
+**Cause**: [Why it happens - technical root cause explanation]  
+**Solution**: [How to fix - step-by-step resolution with code examples]
 
-#### Issue 2: [Problem description]
-**Symptom**: [What user sees]  
-**Cause**: [Why it happens]  
-**Solution**: [How to fix]
-
-### Debug Mode
+**Example**:
 ```bash
-# Run with verbose logging
-python src/[N]_[module].py --verbose
+# Diagnostic command
+python src/[N]_[module].py --target-dir input/ --verbose --debug
 
-# Check output directory
-ls -la output/[N]_[module]_output/
+# Check specific log files
+tail -f output/[N]_[module]_output/*.log
+```
 
-# View processing summary
+#### Issue 2: [Problem description - focus on real issues users encounter]
+**Symptom**: [What user sees - concrete symptoms and error patterns]  
+**Cause**: [Why it happens - underlying technical cause]  
+**Solution**: [How to fix - actionable steps with verification]
+
+### Performance Issues
+
+#### Slow Processing
+**Symptoms**: Processing takes longer than expected timeouts
+**Diagnosis**:
+```bash
+# Enable performance profiling
+python src/[N]_[module].py --profile --verbose
+
+# Check resource usage
+python src/main.py --only-steps [N] --verbose
+```
+
+**Solutions**:
+- [Specific optimization 1]
+- [Specific optimization 2]
+- [Configuration adjustment]
+
+#### Memory Issues
+**Symptoms**: OutOfMemory errors or excessive memory usage
+**Diagnosis**:
+```bash
+# Monitor memory usage
+python src/[N]_[module].py --monitor-memory --verbose
+```
+
+**Solutions**:
+- [Memory optimization strategy 1]
+- [Memory optimization strategy 2]
+
+### Integration Issues
+
+#### Pipeline Integration Failures
+**Symptoms**: Module fails when called from pipeline but works standalone
+**Diagnosis**:
+```bash
+# Test standalone
+python src/[N]_[module].py --target-dir test_input/
+
+# Test with pipeline
+python src/main.py --only-steps [N] --target-dir test_input/
+```
+
+### Debug Mode Commands
+```bash
+# Run with comprehensive debugging
+python src/[N]_[module].py --target-dir input/ --verbose --debug --profile
+
+# Check all output files
+find output/[N]_[module]_output/ -name "*.json" -exec cat {} \;
+
+# View detailed logs
+ls -la output/[N]_[module]_output/*.log
 cat output/[N]_[module]_output/[module]_processing_summary.json
 ```
+
+### Getting Help
+1. **Check Documentation**: Review this AGENTS.md file for usage examples
+2. **Enable Debug Mode**: Use `--verbose --debug` flags for detailed logging
+3. **Examine Outputs**: Check `output/[N]_[module]_output/` for diagnostic files
+4. **Community Support**: Open GitHub issues with complete error logs and reproduction steps
 
 ---
 
@@ -348,9 +556,68 @@ cat output/[N]_[module]_output/[module]_processing_summary.json
 
 ---
 
-**Last Updated**: [Date]  
-**Maintainer**: GNN Pipeline Team  
+## Agent Architecture Patterns
+
+This module implements several key agent architecture patterns that ensure robust, maintainable, and scalable functionality:
+
+### 1. **Thin Orchestrator Pattern**
+- **Script Level**: `src/N_[module].py` handles argument parsing, logging, and high-level flow control
+- **Module Level**: `src/[module]/` contains all domain logic and implementation details
+- **Separation**: Clear boundary between orchestration (what) and implementation (how)
+
+### 2. **Configuration-Driven Design**
+- **Environment Variables**: Runtime configuration via `.env` file
+- **YAML Configuration**: Structured configuration for complex parameters
+- **Runtime Validation**: Configuration validation with helpful error messages
+
+### 3. **Resource Management Pattern**
+- **Context Managers**: Proper resource cleanup using `with` statements
+- **RAII Pattern**: Resource Acquisition Is Initialization for automatic cleanup
+- **Monitoring**: Built-in resource usage tracking and limits
+
+### 4. **Error Handling Strategy**
+- **Graceful Degradation**: Continue operation with reduced functionality when possible
+- **Detailed Diagnostics**: Comprehensive error information for debugging
+- **Recovery Mechanisms**: Automatic retry and fallback strategies
+
+### 5. **Performance Optimization**
+- **Caching Strategy**: Intelligent caching of expensive operations
+- **Batch Processing**: Efficient handling of multiple inputs
+- **Resource Pooling**: Reuse of expensive resources (connections, models)
+
+### 6. **Testing Strategy**
+- **Unit Tests**: Individual function testing with mocked dependencies
+- **Integration Tests**: End-to-end pipeline testing with real data
+- **Performance Tests**: Timing and resource usage validation
+
+### 7. **Documentation Pattern**
+- **API Documentation**: Complete function and class documentation
+- **Usage Examples**: Practical examples for all major use cases
+- **Troubleshooting Guide**: Common issues and solutions
+- **Performance Guidelines**: Optimization recommendations
+
+### 8. **MCP Integration Pattern**
+- **Tool Registration**: Proper tool registration in `mcp.py`
+- **Standard Interface**: Consistent interface across all MCP tools
+- **Error Handling**: MCP-compliant error responses
+
+### 9. **Pipeline Integration**
+- **Standardized Interface**: Consistent function signatures across modules
+- **Logging Integration**: Structured logging compatible with pipeline requirements
+- **Output Management**: Proper output directory structure and file management
+
+### 10. **Security Pattern**
+- **Input Validation**: Comprehensive validation of all inputs
+- **Secure Defaults**: Safe default configurations
+- **Access Control**: Proper file and resource access controls
+
+---
+
+**Last Updated**: [Date in ISO format, e.g., "2025-10-01"]
+**Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready / 🔄 In Development / ⚠️ Experimental
+**Version**: [Current version, e.g., "1.0.0"]
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 
 

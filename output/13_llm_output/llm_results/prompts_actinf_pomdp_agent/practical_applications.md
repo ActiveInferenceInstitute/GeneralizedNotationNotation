@@ -1,15 +1,17 @@
 # PRACTICAL_APPLICATIONS
 
-You're already quite knowledgeable on the basics of Active Inference, GNN models, POMDPs, Bayesian inference, and GNN syntax and semantic meaning. To improve your understanding further:
+Based on the information provided, here are some aspects of the model's design:
 
-1. **Generalized Notation**: You mentioned that you've mastered the concepts behind Active Inference POMDPs (active inference agent for discrete POMDP with one observation modality). This is a great foundation to build upon. However, you might want to explore more advanced topics like action selection algorithms or Bayesian inference techniques in future content updates.
+1) **Sequential Action Representation**: The model represents actions as a set of two-element vectors, A[observations] = {A[observation_outcomes]} representing each action. These vectors represent the actions in sequence from left to right, and they correspond to different policy states (states). This allows for efficient inference across all possible actions.
 
-2. **Modeling Complexity**: You've already covered the basics and concepts that underlie Active Inference models (activation functions, hidden state, etc.). Now let's dive deeper into specific applications of Active Inference models.
+2) **Sequential Action Implementation**: The model uses a state-action vector representation as input data, A[observations], which is used for each action selection based on the previous actions. These vectors represent observations from a particular observation. The initial policy values are initialized based on the observable states to reduce memory and computation time.
 
-3. **Implementation Considerations**: This is an exciting area where advanced algorithms or frameworks can be leveraged to enhance performance and scalability in real-world applications. For instance, you could explore using Bayesian methods for optimization or machine learning approaches for data preprocessing.
+3) **Action Selection**: The model selects actions in a way that minimizes the difference between observed outcomes (observations). This is done by assigning different states as first actions, corresponding to each action selection.
 
-4. **Performance Expectations**: As we discussed earlier, Active Inference models have the potential to provide insights into certain use cases like optimizing system behavior, predicting outcomes based on observed patterns, and identifying optimal policies in complex systems. You can look into specific applications of Active Inference models (e.g., algorithm evaluation techniques) to better understand their performance capabilities.
+4) **Estimation of Parameters**: The parameter estimation mechanisms are based on Variational Inference (VI), which allows for efficient inference across all possible actions. These can be expressed in terms of the probability distributions over observables and actions.
 
-5. **Benefits and Advantages**: These concepts are valuable yet challenging for AI analysis as they require a deep understanding of how these algorithms operate and work effectively within the given domain knowledge constraints, data quality, and system requirements.
+5) **Implementation Considerations**: The model provides an implementation that runs as a function of time steps, allowing for prediction of future observation outcomes. This enables inference into past behavior while ignoring uncertain or delayed observations. The evaluation metrics are also based on observable sequence lengths, which reduce computation time by utilizing the available data and computational resources.
 
-As you progress in your learning journey or develop new ideas, keep exploring more advanced topics that showcase the power of Active Inference models in modeling complex systems and uncovering hidden patterns in uncertain environments.
+6) **Performance Expectations**: The model can be implemented with specific performance requirements (such as a planning horizon). These are expressed in terms of time steps, allowing for efficient inference across all possible actions at different timesteps. This enables prediction into future behavior while ignoring uncertain or delayed observations.
+
+The models' capabilities include real-time evaluation and validation within an environment that can handle various scenarios and data types. The modeling framework is designed to provide a flexible way to perform inference with varied use cases, which supports a wide range of applications across industries such as finance (stock portfolio management), transportation systems (vehicle tracking) to energy production (energy grid management).

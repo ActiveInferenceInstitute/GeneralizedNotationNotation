@@ -1,15 +1,32 @@
 # GNN Project Setup Guide
 
-> **📋 Document Metadata**  
-> **Type**: Setup Guide | **Audience**: All Users | **Complexity**: Beginner  
-> **Last Updated**: June 2025 | **Status**: Production-Ready  
-> **Cross-References**: [Quickstart Guide](quickstart.md) | [Main Documentation](README.md) | [Troubleshooting](troubleshooting/README.md)
+> **📋 Document Metadata**
+> **Type**: Setup Guide | **Audience**: All Users | **Complexity**: Beginner
+> **Last Updated**: October 1, 2025 | **Status**: Production-Ready
+> **Cross-References**: [Quickstart Guide](quickstart.md) | [Main Documentation](../README.md) | [Environment Template](../.env) | [Troubleshooting](troubleshooting/README.md)
 
 This document provides comprehensive instructions for setting up the GNN (Generalized Notation Notation) Processing Pipeline environment, including installation steps, environment variables, and detailed information about dependencies.
 
-> **🎯 Quick Start**: For immediate setup, run `cd src && python3 main.py --only-steps 1 --dev`
+> **🎯 Quick Start**: For immediate setup, run:
+> ```bash
+> cd src && python3 main.py --only-steps 1 --dev
+> ```
 
 > **📖 Complete Guide**: For comprehensive documentation on GNN itself, please refer to the [GNN Documentation](gnn/about_gnn.md) in the `doc/gnn/` directory.
+
+## 🎯 Setup Overview
+
+The GNN project provides multiple installation paths depending on your needs:
+
+- **🚀 Quick Setup** (5 minutes): Basic functionality for trying GNN
+- **🔧 Standard Setup** (15 minutes): Full pipeline with core dependencies
+- **⚡ Complete Setup** (30+ minutes): All features including optional heavy packages
+- **🛠️ Development Setup** (45+ minutes): Full development environment with all tools
+
+Choose based on your use case:
+- **Researchers**: Quick or Standard setup
+- **Developers**: Standard or Complete setup
+- **Production**: Complete setup with optimization
 
 ## Quick Start
 

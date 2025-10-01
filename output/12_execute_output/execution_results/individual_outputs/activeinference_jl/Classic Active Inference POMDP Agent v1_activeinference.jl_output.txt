@@ -1,17 +1,17 @@
 Execution Results for Classic Active Inference POMDP Agent v1_activeinference.jl
-Timestamp: 2025-10-01T07:47:15.990246
+Timestamp: 2025-10-01T08:05:50.378037
 Return Code: 1
-Execution Time: 5.05 seconds
+Execution Time: 6.32 seconds
 
 STDOUT:
 ======================================================================
 ActiveInference.jl Script for GNN Model: Classic Active Inference POMDP Agent v1
 ======================================================================
 Julia version: 1.11.6
-Date: 2025-10-01T07:47:20.147
+Date: 2025-10-01T08:05:55.661
 Model dimensions: States=3, Observations=3, Actions=1
 
-📁 Output directory: activeinference_outputs_2025-10-01_07-47-20
+📁 Output directory: activeinference_outputs_2025-10-01_08-05-55
 🔧 Creating model matrices from GNN specification...
 ✅ A matrix created: (3, 3)
 

@@ -2,13 +2,13 @@
 <gnn_model name="Classic Active Inference POMDP Agent v1" version="1.0">
   <metadata>
     <annotation>This model describes a classic Active Inference agent for a discrete POMDP:
-- One observation modality (&quot;state_observation&quot;) with 3 possible outcomes.
-- One hidden state factor (&quot;location&quot;) with 3 possible states.
+- One observation modality ("state_observation") with 3 possible outcomes.
+- One hidden state factor ("location") with 3 possible states.
 - The hidden state is fully controllable via 3 discrete actions.
 - The agent's preferences are encoded as log-probabilities over observations.
 - The agent has an initial policy prior (habit) encoded as log-probabilities over actions.</annotation>
-    <created_at>2025-10-01T07:47:24.796765</created_at>
-    <modified_at>2025-10-01T07:47:24.796765</modified_at>
+    <created_at>2025-10-01T08:19:56.470679</created_at>
+    <modified_at>2025-10-01T08:19:56.470680</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="3,3" name="A" type="likelihood_matrix" description="Likelihood mapping hidden states to observations"/>

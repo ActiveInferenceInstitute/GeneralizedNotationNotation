@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-01T07:47:27.726557",
+  "timestamp": "2025-10-01T08:05:39.035733",
   "total_attempts": 2,
   "successful": 2,
   "failed": 0,
@@ -16,7 +16,7 @@
       "viz_type": "3d",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 134.14287567138672,
+      "duration_ms": 138.3962631225586,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
       ],
@@ -27,7 +27,7 @@
       "viz_type": "statistical",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 126.93595886230469,
+      "duration_ms": 134.89508628845215,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
       ],

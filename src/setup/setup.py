@@ -667,6 +667,7 @@ def setup_uv_environment(
     dev: bool = False,
     extras: list = None,
     skip_jax_test: bool = False,
+    output_dir: Path = None,
 ) -> bool:
     """
     Set up the complete GNN environment using UV.
@@ -677,12 +678,14 @@ def setup_uv_environment(
     3. Dependency installation
     4. JAX installation and testing
     5. Environment validation
+    6. Save setup results to output directory
     
     Args:
         verbose: Enable verbose logging
         recreate: Recreate UV environment if it exists
         dev: Install development dependencies
         extras: List of optional dependency groups to install
+        output_dir: Output directory for setup results (optional)
         
     Returns:
         True if setup successful, False otherwise
@@ -716,6 +719,10 @@ def setup_uv_environment(
             # Final validation
             logger.info("✅ Validating environment...")
             validation_results = validate_uv_setup(PROJECT_ROOT, logger)
+            
+            # Save setup results to output directory if provided
+            if output_dir:
+                save_setup_results(output_dir, validation_results, extras, dev)
             
             if validation_results.get("overall_status", False):
                 logger.info("✅ GNN environment setup completed successfully using UV")
@@ -829,6 +836,55 @@ def cleanup_uv_setup() -> bool:
     except Exception as e:
         logger.error(f"Failed to clean up UV setup: {e}")
         return False
+
+def save_setup_results(output_dir: Path, validation_results: Dict, extras: list = None, dev: bool = False):
+    """
+    Save setup results to output directory.
+    
+    Args:
+        output_dir: Output directory for setup results
+        validation_results: Validation results from validate_uv_setup
+        extras: List of optional dependency groups installed
+        dev: Whether dev dependencies were installed
+    """
+    from datetime import datetime
+    
+    try:
+        # Ensure output directory exists
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Gather setup information
+        setup_results = {
+            "timestamp": datetime.now().isoformat(),
+            "validation": validation_results,
+            "configuration": {
+                "extras_installed": extras or [],
+                "dev_dependencies": dev,
+                "venv_path": str(VENV_PATH),
+                "python_version": sys.version,
+            },
+            "uv_info": get_uv_setup_info(),
+            "system_info": {
+                "platform": platform.system(),
+                "platform_release": platform.release(),
+                "python_executable": sys.executable,
+            }
+        }
+        
+        # Save setup summary
+        summary_file = output_dir / "environment_setup_summary.json"
+        with open(summary_file, 'w') as f:
+            json.dump(setup_results, f, indent=2, default=str)
+        logger.info(f"💾 Setup results saved to: {summary_file}")
+        
+        # Save installed packages list
+        packages_file = output_dir / "installed_packages.json"
+        with open(packages_file, 'w') as f:
+            json.dump(get_installed_package_versions(), f, indent=2)
+        logger.info(f"📦 Package list saved to: {packages_file}")
+        
+    except Exception as e:
+        logger.warning(f"⚠️ Failed to save setup results: {e}")
 
 def log_system_info(logger: logging.Logger) -> Dict[str, Any]:
     """Log comprehensive system information."""
