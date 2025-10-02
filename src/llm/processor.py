@@ -26,19 +26,21 @@ except Exception:
     def log_step_error(logger, msg): logger.error(f"❌ {msg}")
     def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
 
-def _check_and_start_ollama(logger) -> bool:
+def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
     """
-    Check if Ollama is available and running. Start it if available but not running.
+    Check if Ollama is available and running with enhanced detection.
     
     Returns:
-        True if Ollama is available and running, False otherwise
+        Tuple of (is_available, list_of_models)
     """
     try:
         # Check if ollama command exists
         ollama_path = shutil.which("ollama")
         if not ollama_path:
-            logger.info("Ollama not found in PATH - LLM analysis will use fallback")
-            return False
+            logger.info("ℹ️ Ollama not found in PATH - LLM analysis will use fallback")
+            return False, []
+        
+        logger.info(f"🔍 Found Ollama at: {ollama_path}")
         
         # Check if Ollama is already running by trying 'ollama list'
         try:
@@ -46,50 +48,117 @@ def _check_and_start_ollama(logger) -> bool:
                 ['ollama', 'list'],
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=10  # Increased timeout
             )
             
             if result.returncode == 0:
                 logger.info("✅ Ollama is running and ready")
-                # Log available models
+                # Parse available models
+                models = []
                 if result.stdout:
-                    models = [line.split()[0] for line in result.stdout.strip().split('\n')[1:] if line.strip()]
-                    if models:
-                        logger.info(f"Available Ollama models: {', '.join(models[:3])}")
-                return True
+                    lines = result.stdout.strip().split('\n')
+                    if len(lines) > 1:  # Skip header
+                        for line in lines[1:]:
+                            parts = line.split()
+                            if parts:
+                                model_name = parts[0]
+                                models.append(model_name)
+                
+                if models:
+                    logger.info(f"📦 Available Ollama models ({len(models)}): {', '.join(models[:5])}")
+                    if len(models) > 5:
+                        logger.info(f"   ... and {len(models) - 5} more models")
+                else:
+                    logger.warning("⚠️ Ollama is running but no models are installed")
+                    logger.info("To install a model, run: ollama pull llama2")
+                
+                return True, models
+                
         except subprocess.TimeoutExpired:
-            logger.warning("Ollama list command timed out")
+            logger.warning("⚠️ Ollama list command timed out (>10s)")
         except Exception as e:
             logger.debug(f"Ollama list check failed: {e}")
         
         # If 'ollama list' failed, try to check if the service is running
-        # by attempting a simple serve check (non-blocking)
-        logger.info("Attempting to check Ollama serve status...")
+        # by attempting a simple API endpoint check
+        logger.info("🔄 Attempting to check Ollama serve status via API...")
         try:
             # Check if Ollama is serving by testing the API endpoint
             import socket
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(1)
+            sock.settimeout(2)
             result = sock.connect_ex(('localhost', 11434))  # Default Ollama port
             sock.close()
             
             if result == 0:
                 logger.info("✅ Ollama server is running on localhost:11434")
-                return True
+                logger.warning("⚠️ Could not list models, but server is responsive")
+                return True, []
             else:
-                logger.info("Ollama server not responding on localhost:11434")
+                logger.info("ℹ️ Ollama server not responding on localhost:11434")
         except Exception as e:
             logger.debug(f"Socket check failed: {e}")
         
-        # Ollama exists but may not be running - inform user
+        # Ollama exists but may not be running - provide helpful instructions
         logger.warning("⚠️ Ollama is installed but may not be running")
-        logger.info("To use Ollama for LLM analysis, please run: ollama serve")
-        logger.info("LLM analysis will use fallback mode without live model interaction")
-        return False
+        logger.info("📝 To start Ollama, run in a separate terminal:")
+        logger.info("   $ ollama serve")
+        logger.info("📝 To install a lightweight model for testing:")
+        logger.info("   $ ollama pull smollm2:135m")
+        logger.info("   $ ollama pull tinyllama")
+        logger.info("ℹ️ LLM analysis will use fallback mode without live model interaction")
+        return False, []
         
     except Exception as e:
         logger.debug(f"Error checking Ollama availability: {e}")
-        return False
+        return False, []
+
+def _select_best_ollama_model(available_models: list[str], logger) -> str:
+    """
+    Select the best available Ollama model for GNN analysis.
+    
+    Prioritizes small, fast models for quick analysis.
+    """
+    # Preference order: smallest to largest for fast execution
+    preferred_models = [
+        'smollm2:135m-instruct-q4_K_S',
+        'smollm2:135m',
+        'smollm2',
+        'smollm:135m',
+        'smollm',
+        'tinyllama',
+        'llama2:7b',
+        'mistral:7b',
+        'gemma2:2b',
+        'phi3',
+        'llama2',
+        'mistral'
+    ]
+    
+    # Check environment variable override
+    env_model = os.getenv('OLLAMA_MODEL') or os.getenv('OLLAMA_TEST_MODEL')
+    if env_model:
+        logger.info(f"🎯 Using model from environment: {env_model}")
+        return env_model
+    
+    # Find first available model from preference list
+    for preferred in preferred_models:
+        for available in available_models:
+            if available.startswith(preferred):
+                logger.info(f"🎯 Selected model: {available}")
+                return available
+    
+    # Fallback to first available model
+    if available_models:
+        model = available_models[0]
+        logger.info(f"🎯 Using first available model: {model}")
+        return model
+    
+    # Ultimate fallback
+    default_model = 'smollm2:135m-instruct-q4_K_S'
+    logger.warning(f"⚠️ No models found, defaulting to: {default_model}")
+    logger.info(f"   Note: You may need to run: ollama pull {default_model}")
+    return default_model
 
 from .analyzer import analyze_gnn_file_with_llm
 from .generator import (
@@ -123,10 +192,20 @@ def process_llm(
     logger = logging.getLogger("llm")
     
     try:
-        log_step_start(logger, "Processing LLM")
+        log_step_start(logger, "Processing LLM with enhanced Ollama integration")
         
-        # Check if Ollama is available and running
-        ollama_available = _check_and_start_ollama(logger)
+        # Check if Ollama is available and running with model detection
+        ollama_available, ollama_models = _check_and_start_ollama(logger)
+        
+        # Select best model if Ollama is available
+        selected_model = None
+        if ollama_available and ollama_models:
+            selected_model = _select_best_ollama_model(ollama_models, logger)
+        elif ollama_available:
+            # Ollama running but no models listed - use default
+            selected_model = _select_best_ollama_model([], logger)
+        else:
+            logger.info("ℹ️ Proceeding with fallback LLM analysis (no live model interaction)")
         
         # Create results directory
         results_dir = output_dir / "llm_results"
@@ -142,7 +221,10 @@ def process_llm(
             "model_insights": [],
             "code_suggestions": [],
             "documentation_generated": [],
-            "ollama_available": ollama_available
+            "ollama_available": ollama_available,
+            "ollama_models": ollama_models if ollama_available else [],
+            "selected_model": selected_model if ollama_available else None,
+            "llm_provider": "ollama" if ollama_available else "fallback"
         }
         
         # Find GNN files
@@ -207,8 +289,9 @@ def process_llm(
                         per_file_dir.mkdir(parents=True, exist_ok=True)
 
                         prompt_outputs = {}
-                        # Optional model override for Ollama; prefer smallest fast default
-                        ollama_model = os.getenv('OLLAMA_MODEL', os.getenv('OLLAMA_TEST_MODEL', 'smollm2:135m-instruct-q4_K_S'))
+                        # Use selected model or fallback
+                        ollama_model = selected_model if selected_model else 'smollm2:135m-instruct-q4_K_S'
+                        logger.info(f"🤖 Using model '{ollama_model}' for LLM prompts")
 
                         for idx, ptype in enumerate(prompt_sequence, start=1):
                             prompt_cfg = get_prompt(ptype, gnn_content)
@@ -217,6 +300,9 @@ def process_llm(
                                 LLMMessage(role="user", content=prompt_cfg["user_prompt"]),
                             ]
 
+                            # Log progress
+                            logger.info(f"  📝 Running prompt {idx}/{len(prompt_sequence)}: {ptype.value}")
+                            
                             # Run generation with enhanced timeout handling
                             def _run_prompt():
                                 async def _inner():
@@ -278,10 +364,15 @@ def process_llm(
                                         return f"Prompt execution failed: {e}"
                                 return asyncio.run(_inner())
 
-                            # Log which prompt we're running
-                            logger.info(f"Running structured prompt {idx}/{len(prompt_sequence)}: {ptype.value} for {gnn_file.name}")
-                            content = _run_prompt()
-                            prompt_outputs[ptype.value] = content
+                            # Execute prompt
+                            try:
+                                content = _run_prompt()
+                                prompt_outputs[ptype.value] = content
+                                logger.debug(f"  ✅ Prompt completed successfully")
+                            except Exception as e:
+                                error_msg = f"Prompt execution failed: {e}"
+                                logger.error(f"  ❌ {error_msg}")
+                                prompt_outputs[ptype.value] = error_msg
 
                             # Write to file
                             out_path = per_file_dir / f"{ptype.value}.md"
@@ -290,7 +381,9 @@ def process_llm(
                                 outf.write(content or "")
 
                         # Run custom free-form prompts
-                        for key, user_prompt in custom_prompts:
+                        for cust_idx, (key, user_prompt) in enumerate(custom_prompts, start=1):
+                            logger.info(f"  📝 Running custom prompt {cust_idx}/{len(custom_prompts)}: {key}")
+                            
                             messages = [
                                 LLMMessage(role="system", content="You are an expert in Active Inference and GNN specifications."),
                                 LLMMessage(role="user", content=f"{user_prompt}\n\nGNN Model Content:\n{gnn_content}"),
@@ -311,9 +404,16 @@ def process_llm(
                                         return f"Prompt execution failed: {e}"
                                 return asyncio.run(_inner())
 
-                            logger.info(f"Running custom prompt: {key} for {gnn_file.name}")
-                            content = _run_custom()
-                            prompt_outputs[key] = content
+                            try:
+                                content = _run_custom()
+                                prompt_outputs[key] = content
+                                logger.debug(f"  ✅ Custom prompt completed successfully")
+                            except Exception as e:
+                                error_msg = f"Prompt execution failed: {e}"
+                                logger.error(f"  ❌ {error_msg}")
+                                content = error_msg
+                                prompt_outputs[key] = content
+                            
                             out_path = per_file_dir / f"{key}.md"
                             with open(out_path, 'w') as outf:
                                 title = key.replace('_', ' ').title()

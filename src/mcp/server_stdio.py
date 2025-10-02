@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
 """
-MCP Stdio Server Implementation
+Enhanced MCP Stdio Server Implementation
 
-This module provides a JSON-RPC 2.0 stdio server for the Model Context Protocol (MCP),
+This module provides a robust JSON-RPC 2.0 stdio server for the Model Context Protocol (MCP),
 exposing all registered GNN tools and resources via standard input/output streams.
 
 Key Features:
-- Supports both standard MCP methods (capabilities, tool/resource execution) and direct tool invocation
-- Robust error handling with custom MCP error codes and JSON-RPC compliance
+- Enhanced error handling with custom MCP error codes and JSON-RPC compliance
 - Multi-threaded architecture for concurrent request processing
-- Detailed logging of all requests and responses
+- Comprehensive logging and request/response tracking
+- Graceful shutdown and resource cleanup
+- Connection health monitoring and automatic recovery
 - Extensible for meta-tools and future MCP extensions
+- Performance monitoring and metrics collection
 """
 import json
 import sys
 import logging
 import threading
 import queue
+import time
 from typing import Dict, Any, Optional
 import traceback
 
@@ -37,13 +40,29 @@ class StdioServer:
     supporting both standard MCP methods and direct tool invocation.
     """
     
-    def __init__(self):
-        """Initialize the stdio server with queues and thread management."""
+    def __init__(self, max_queue_size: int = 1000, request_timeout: float = 30.0):
+        """Initialize the stdio server with enhanced queue and thread management.
+
+        Args:
+            max_queue_size: Maximum size of request/response queues
+            request_timeout: Timeout for request processing in seconds
+        """
         self.running = False
-        self.request_queue = queue.Queue()
-        self.response_queue = queue.Queue()
+        self.request_queue = queue.Queue(maxsize=max_queue_size)
+        self.response_queue = queue.Queue(maxsize=max_queue_size)
         self.next_id = 1
         self.pending_requests = {}
+        self.request_timeout = request_timeout
+
+        # Connection monitoring
+        self._connection_errors = 0
+        self._max_connection_errors = 10
+        self._last_activity = time.time()
+
+        # Performance tracking
+        self._requests_processed = 0
+        self._responses_sent = 0
+        self._errors_encountered = 0
         
     def start(self):
         """Start the server with reader, processor, and writer threads."""
@@ -79,87 +98,175 @@ class StdioServer:
         writer_thread.join()
         processor_thread.join()
         logger.info("MCP stdio server stopped")
+
+    def get_stats(self) -> Dict[str, Any]:
+        """Get server performance statistics."""
+        return {
+            "running": self.running,
+            "requests_processed": self._requests_processed,
+            "responses_sent": self._responses_sent,
+            "errors_encountered": self._errors_encountered,
+            "connection_errors": self._connection_errors,
+            "last_activity": self._last_activity,
+            "uptime": time.time() - self._start_time if hasattr(self, '_start_time') else 0,
+            "queue_sizes": {
+                "requests": self.request_queue.qsize(),
+                "responses": self.response_queue.qsize()
+            }
+        }
     
     def _reader_thread(self):
-        """Thread that reads JSON-RPC messages from stdin."""
+        """Enhanced thread that reads JSON-RPC messages from stdin with connection monitoring."""
         try:
             while self.running:
-                line = sys.stdin.readline()
-                if not line:
-                    logger.info("End of input, stopping server")
-                    self.running = False
-                    break
-                
                 try:
-                    message = json.loads(line)
-                    logger.debug(f"STDIO IN: {message}")
-                    self.request_queue.put(message)
-                except json.JSONDecodeError:
-                    logger.error(f"Invalid JSON message: {line}")
-                    # Send JSON-RPC parse error
-                    error_response = {
-                        "jsonrpc": "2.0",
-                        "error": {"code": -32700, "message": "Parse error"},
-                        "id": None
-                    }
-                    self.response_queue.put(error_response)
+                    line = sys.stdin.readline()
+                    if not line:
+                        logger.info("End of input detected, stopping server")
+                        self.running = False
+                        break
+
+                    # Update activity timestamp
+                    self._last_activity = time.time()
+
+                    try:
+                        message = json.loads(line.strip())
+                        logger.debug(f"STDIO IN: {message}")
+                        self._requests_processed += 1
+
+                        # Check for connection health
+                        if self._connection_errors > self._max_connection_errors:
+                            logger.error("Too many connection errors, stopping server")
+                            self.running = False
+                            break
+
+                        self.request_queue.put(message, timeout=1.0)
+
+                    except json.JSONDecodeError as e:
+                        logger.error(f"Invalid JSON message: {line.strip()} - {e}")
+                        self._connection_errors += 1
+
+                        # Send JSON-RPC parse error
+                        error_response = {
+                            "jsonrpc": "2.0",
+                            "error": {"code": -32700, "message": "Parse error"},
+                            "id": None
+                        }
+                        try:
+                            self.response_queue.put(error_response, timeout=1.0)
+                        except queue.Full:
+                            logger.warning("Response queue full, dropping error response")
+
+                    except queue.Full:
+                        logger.warning("Request queue full, dropping message")
+                        self._connection_errors += 1
+
+                except (IOError, OSError) as e:
+                    logger.error(f"IO error in reader thread: {e}")
+                    self._connection_errors += 1
+                    if self._connection_errors > self._max_connection_errors:
+                        logger.error("Too many IO errors, stopping server")
+                        self.running = False
+                        break
+
+                    # Brief pause before retrying
+                    time.sleep(0.1)
+
         except Exception as e:
-            logger.error(f"Error in reader thread: {str(e)}")
+            logger.error(f"Unexpected error in reader thread: {str(e)}")
             self.running = False
     
     def _processor_thread(self):
-        """Thread that processes messages from the request queue."""
+        """Enhanced thread that processes messages from the request queue with better error handling."""
         try:
             while self.running:
                 try:
                     message = self.request_queue.get(timeout=0.1)
+                    self._process_message(message)
+                    self.request_queue.task_done()
                 except queue.Empty:
                     continue
-                
-                try:
-                    self._process_message(message)
                 except Exception as e:
-                    logger.error(f"Error processing message: {str(e)}")
-                    traceback.print_exc()
-                
-                self.request_queue.task_done()
+                    logger.error(f"Error in processor thread: {str(e)}")
+                    self._errors_encountered += 1
+                    # Continue processing other messages
+                    try:
+                        self.request_queue.task_done()
+                    except ValueError:
+                        pass  # Task already done or never queued
         except Exception as e:
-            logger.error(f"Error in processor thread: {str(e)}")
+            logger.error(f"Fatal error in processor thread: {str(e)}")
             self.running = False
     
     def _writer_thread(self):
-        """Thread that writes JSON-RPC responses to stdout."""
+        """Enhanced thread that writes JSON-RPC responses to stdout with error recovery."""
         try:
             while self.running:
                 try:
                     message = self.response_queue.get(timeout=0.1)
+                    self._responses_sent += 1
+
+                    try:
+                        json_str = json.dumps(message, separators=(',', ':'), ensure_ascii=False)
+                        logger.debug(f"STDIO OUT: {json_str}")
+                        sys.stdout.write(json_str + "\n")
+                        sys.stdout.flush()
+                    except (BrokenPipeError, IOError) as e:
+                        logger.error(f"IO error writing response: {e}")
+                        self._connection_errors += 1
+                        if self._connection_errors > self._max_connection_errors:
+                            logger.error("Too many write errors, stopping server")
+                            self.running = False
+                            break
+                    except Exception as e:
+                        logger.error(f"Error serializing/writing message: {str(e)}")
+                        self._errors_encountered += 1
+
+                    self.response_queue.task_done()
+
                 except queue.Empty:
                     continue
-                
-                try:
-                    json_str = json.dumps(message)
-                    logger.debug(f"STDIO OUT: {json_str}")
-                    sys.stdout.write(json_str + "\n")
-                    sys.stdout.flush()
                 except Exception as e:
-                    logger.error(f"Error writing message: {str(e)}")
-                
-                self.response_queue.task_done()
+                    logger.error(f"Unexpected error in writer thread: {str(e)}")
+                    self._errors_encountered += 1
+
         except Exception as e:
-            logger.error(f"Error in writer thread: {str(e)}")
+            logger.error(f"Fatal error in writer thread: {str(e)}")
             self.running = False
     
     def _process_message(self, message: Dict[str, Any]):
-        """Process an incoming JSON-RPC message."""
-        if not isinstance(message, dict):
-            logger.error(f"Invalid message format: {message}")
-            return
-        
-        # Check for JSON-RPC message
-        if "jsonrpc" in message and message["jsonrpc"] == "2.0":
+        """Process an incoming JSON-RPC message with enhanced validation."""
+        try:
+            if not isinstance(message, dict):
+                logger.error(f"Invalid message format: expected dict, got {type(message)}")
+                return
+
+            # Validate JSON-RPC structure
+            if "jsonrpc" not in message:
+                logger.error("Missing 'jsonrpc' field in message")
+                self._send_error(None, -32600, "Invalid Request: missing jsonrpc field")
+                return
+
+            if message["jsonrpc"] != "2.0":
+                logger.error(f"Unsupported JSON-RPC version: {message['jsonrpc']}")
+                self._send_error(None, -32600, f"Invalid Request: unsupported jsonrpc version '{message['jsonrpc']}'")
+                return
+
+            if "method" not in message:
+                logger.error("Missing 'method' field in message")
+                self._send_error(None, -32600, "Invalid Request: missing method field")
+                return
+
+            # Check for JSON-RPC message
             self._process_jsonrpc(message)
-        else:
-            logger.error(f"Unsupported message format: {message}")
+
+        except Exception as e:
+            logger.error(f"Error processing message: {str(e)}")
+            self._errors_encountered += 1
+            try:
+                self._send_error(None, -32603, f"Internal error processing message: {str(e)}")
+            except Exception:
+                logger.error("Failed to send error response")
     
     def _process_jsonrpc(self, message: Dict[str, Any]):
         """

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-01T08:05:36.829520",
+  "timestamp": "2025-10-02T10:52:17.734436",
   "source_directory": "input/gnn_files",
   "output_directory": "output/8_visualization_output",
   "files_visualized": [
@@ -26,17 +26,65 @@
         }
       },
       "success": true
+    },
+    {
+      "file_name": "chronic_pain_theories.md",
+      "file_path": "input/gnn_files/chronic_pain_theories.md",
+      "visualizations": {
+        "matrix": {
+          "success": true,
+          "result": [
+            "output/8_visualization_output/chronic_pain_theories/matrix_analysis.png",
+            "output/8_visualization_output/chronic_pain_theories/matrix_statistics.png"
+          ]
+        },
+        "network": {
+          "success": false,
+          "result": []
+        },
+        "combined": {
+          "success": true,
+          "result": [
+            "output/8_visualization_output/chronic_pain_theories/chronic_pain_theories_combined_analysis.png"
+          ]
+        }
+      },
+      "success": true
+    },
+    {
+      "file_name": "neural_response_model.md",
+      "file_path": "input/gnn_files/neural_response_model.md",
+      "visualizations": {
+        "matrix": {
+          "success": true,
+          "result": [
+            "output/8_visualization_output/neural_response_model/matrix_analysis.png",
+            "output/8_visualization_output/neural_response_model/matrix_statistics.png"
+          ]
+        },
+        "network": {
+          "success": false,
+          "result": []
+        },
+        "combined": {
+          "success": true,
+          "result": [
+            "output/8_visualization_output/neural_response_model/neural_response_model_combined_analysis.png"
+          ]
+        }
+      },
+      "success": true
     }
   ],
   "summary": {
-    "total_files": 1,
-    "successful_visualizations": 1,
+    "total_files": 3,
+    "successful_visualizations": 3,
     "failed_visualizations": 0,
-    "total_images_generated": 5,
+    "total_images_generated": 9,
     "visualization_types": {
-      "matrix": 1,
-      "network": 1,
-      "combined": 1
+      "matrix": 3,
+      "network": 0,
+      "combined": 3
     }
   }
 }

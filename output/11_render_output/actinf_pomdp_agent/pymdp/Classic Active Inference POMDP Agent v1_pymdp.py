@@ -7,7 +7,7 @@ It uses the GNN pipeline's PyMDP execution module to run an Active Inference sim
 
 Model: Classic Active Inference POMDP Agent v1
 Description: 
-Generated: 2025-10-01 08:05:39
+Generated: 2025-10-02 10:52:23
 
 State Space:
 - Hidden States: 3

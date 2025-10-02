@@ -45,7 +45,7 @@ logger = logging.getLogger("mcp")
 
 # --- Enhanced MCP Exceptions ---
 class MCPError(Exception):
-    """Base class for MCP related errors."""
+    """Enhanced base class for MCP related errors with better context tracking."""
     def __init__(self, message: str, code: int = -32000, data: Optional[Any] = None, 
                  tool_name: Optional[str] = None, module_name: Optional[str] = None):
         super().__init__(message)
@@ -154,10 +154,51 @@ class MCPPerformanceError(MCPError):
             }
         )
 
+class MCPRateLimitError(MCPError):
+    """Raised when rate limit is exceeded for a tool."""
+    def __init__(self, tool_name: str, rate_limit: float, current_rate: float):
+        super().__init__(
+            f"Rate limit exceeded for tool '{tool_name}': {current_rate:.2f} req/s > {rate_limit:.2f} req/s",
+            code=-32005,
+            data={
+                "tool_name": tool_name,
+                "rate_limit": rate_limit,
+                "current_rate": current_rate
+            },
+            tool_name=tool_name
+        )
+
+class MCPCacheError(MCPError):
+    """Raised when cache operations fail."""
+    def __init__(self, operation: str, cache_key: str, original_error: Exception):
+        super().__init__(
+            f"Cache operation '{operation}' failed for key '{cache_key}': {str(original_error)}",
+            code=-32006,
+            data={
+                "operation": operation,
+                "cache_key": cache_key,
+                "original_error": str(original_error)
+            }
+        )
+
+class MCPModuleDiscoveryError(MCPError):
+    """Raised when module discovery fails."""
+    def __init__(self, module_name: str, discovery_path: str, original_error: Exception):
+        super().__init__(
+            f"Module discovery failed for '{module_name}' in '{discovery_path}': {str(original_error)}",
+            code=-32007,
+            data={
+                "module_name": module_name,
+                "discovery_path": discovery_path,
+                "original_error": str(original_error)
+            },
+            module_name=module_name
+        )
+
 # --- Enhanced MCP Data Structures ---
 @dataclass
 class MCPTool:
-    """Represents an MCP tool that can be executed."""
+    """Enhanced MCP tool representation with better validation and utilities."""
     name: str
     func: Callable
     schema: Dict[str, Any]
@@ -176,6 +217,9 @@ class MCPTool:
     cache_ttl: Optional[float] = None
     input_validation: bool = True
     output_validation: bool = True
+    created_at: float = field(default_factory=time.time)
+    last_used: Optional[float] = None
+    use_count: int = 0
     
     def __post_init__(self):
         """Validate tool configuration after initialization."""
@@ -202,9 +246,59 @@ class MCPTool:
             f"{self.name}:{self.module}:{self.version}:{self.schema}".encode()
         ).hexdigest()
 
+    def mark_used(self) -> None:
+        """Mark the tool as used and update statistics."""
+        self.last_used = time.time()
+        self.use_count += 1
+
+    def is_rate_limited(self) -> bool:
+        """Check if the tool is currently rate limited."""
+        if not self.rate_limit:
+            return False
+
+        current_time = time.time()
+        # This would need access to the MCP instance's rate limit tracking
+        # For now, return False as a placeholder
+        return False
+
+    def get_usage_summary(self) -> Dict[str, Any]:
+        """Get a summary of tool usage statistics."""
+        return {
+            "name": self.name,
+            "use_count": self.use_count,
+            "created_at": self.created_at,
+            "last_used": self.last_used,
+            "avg_usage_interval": None if self.use_count < 2 else
+                (self.last_used - self.created_at) / (self.use_count - 1) if self.last_used else None
+        }
+
+    def validate_schema(self) -> List[str]:
+        """Validate the tool schema and return any issues."""
+        issues = []
+
+        # Basic schema validation
+        if not isinstance(self.schema, dict):
+            issues.append("Schema must be a dictionary")
+            return issues
+
+        # Check for required fields in schema
+        schema = self.schema
+        if "type" not in schema:
+            issues.append("Schema missing 'type' field")
+        elif schema["type"] != "object":
+            issues.append("Schema type must be 'object' for MCP tools")
+
+        if "properties" not in schema:
+            issues.append("Schema missing 'properties' field")
+
+        if "required" in schema and not isinstance(schema["required"], list):
+            issues.append("Schema 'required' field must be a list")
+
+        return issues
+
 @dataclass
 class MCPResource:
-    """Represents an MCP resource that can be accessed."""
+    """Enhanced MCP resource representation with better validation and utilities."""
     uri_template: str
     retriever: Callable
     description: str
@@ -220,6 +314,9 @@ class MCPResource:
     cache_ttl: Optional[float] = None
     compression: bool = False
     encryption: bool = False
+    created_at: float = field(default_factory=time.time)
+    last_accessed: Optional[float] = None
+    access_count: int = 0
     
     def __post_init__(self):
         """Validate resource configuration after initialization."""
@@ -235,6 +332,27 @@ class MCPResource:
             raise ValueError("Rate limit must be positive if specified")
         if self.cache_ttl is not None and self.cache_ttl <= 0:
             raise ValueError("Cache TTL must be positive if specified")
+
+    def mark_accessed(self) -> None:
+        """Mark the resource as accessed and update statistics."""
+        self.last_accessed = time.time()
+        self.access_count += 1
+
+    def get_access_summary(self) -> Dict[str, Any]:
+        """Get a summary of resource access statistics."""
+        return {
+            "uri_template": self.uri_template,
+            "access_count": self.access_count,
+            "created_at": self.created_at,
+            "last_accessed": self.last_accessed,
+            "avg_access_interval": None if self.access_count < 2 else
+                (self.last_accessed - self.created_at) / (self.access_count - 1) if self.last_accessed else None
+        }
+
+    def validate_uri_template(self, uri: str) -> bool:
+        """Validate if a URI matches this resource template."""
+        # Simple validation - could be enhanced with regex patterns
+        return uri.startswith(self.uri_template.split('{')[0]) if '{' in self.uri_template else uri == self.uri_template
 
 @dataclass
 class MCPModuleInfo:
@@ -431,8 +549,9 @@ class MCP:
     - Enhanced error handling and validation
     """
     
-    def __init__(self):
-        """Initialize the enhanced MCP server."""
+    def __init__(self, enable_caching: bool = True, enable_rate_limiting: bool = True,
+                 strict_validation: bool = False, max_workers: int = 4):
+        """Initialize the enhanced MCP server with configurable features."""
         self.tools: Dict[str, MCPTool] = {}
         self.resources: Dict[str, MCPResource] = {}
         self.modules: Dict[str, MCPModuleInfo] = {}
@@ -441,41 +560,44 @@ class MCP:
         self._request_count = 0
         self._error_count = 0
         self._lock = threading.RLock()
-        
+
         # Enhanced performance tracking
         self._performance_metrics = MCPPerformanceMetrics()
         self._tool_execution_times: Dict[str, List[float]] = defaultdict(list)
         self._last_activity = time.time()
-        
+
         # Enhanced module discovery cache
         self._discovery_cache: Dict[str, Any] = {}
         self._cache_timestamp = 0.0
         self._cache_ttl = 300.0  # 5 minutes
         self._cache_lock = threading.Lock()
-        
+
         # Tool execution tracking
         self._active_executions: Dict[str, int] = defaultdict(int)
         self._execution_lock = threading.Lock()
-        
+
         # Rate limiting
         self._rate_limit_timestamps: Dict[str, List[float]] = defaultdict(list)
         self._rate_limit_lock = threading.Lock()
-        
+
         # Caching
         self._result_cache: Dict[str, Tuple[Any, float]] = {}
         self._cache_lock = threading.Lock()
-        
-        # Thread pool for parallel module loading (fallback to single-thread if init fails)
+
+        # Thread pool for parallel module loading
         try:
-            self._executor = ThreadPoolExecutor(max_workers=4)
-        except Exception:
+            self._executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="MCP")
+        except Exception as e:
+            logger.warning(f"Failed to create thread pool executor: {e}")
             self._executor = None
-        # Disable advanced features by default
-        self._enable_caching = False
-        self._enable_rate_limiting = False
-        self._strict_validation = False
-        
-        logger.info("Enhanced MCP server initialized")
+
+        # Feature flags
+        self._enable_caching = enable_caching
+        self._enable_rate_limiting = enable_rate_limiting
+        self._strict_validation = strict_validation
+
+        logger.info(f"Enhanced MCP server initialized (caching={enable_caching}, "
+                   f"rate_limiting={enable_rate_limiting}, strict_validation={strict_validation})")
     
     @property
     def uptime(self) -> float:
@@ -496,6 +618,18 @@ class MCP:
     def performance_metrics(self) -> MCPPerformanceMetrics:
         """Get performance metrics."""
         return self._performance_metrics
+
+    @property
+    def config(self) -> Dict[str, Any]:
+        """Get current configuration."""
+        return {
+            "enable_caching": self._enable_caching,
+            "enable_rate_limiting": self._enable_rate_limiting,
+            "strict_validation": self._strict_validation,
+            "cache_ttl": self._cache_ttl,
+            "max_workers": self._executor._max_workers if self._executor else 0,
+            "modules_discovered": self._modules_discovered
+        }
 
     # --- Compatibility: simple listings used by reporting and diagnostics ---
     def list_available_tools(self, include_metadata: bool = True) -> List[Dict[str, Any]] | List[str]:
@@ -541,15 +675,18 @@ class MCP:
     def discover_modules(self, force_refresh: bool = False, modules_allowlist: Optional[List[str]] = None,
                          per_module_timeout: float = 10.0, overall_timeout: float = 30.0) -> bool:
         """
-        Enhanced module discovery with caching and thread safety.
-        
+        Enhanced module discovery with caching, thread safety, and comprehensive error handling.
+
         This method scans the src/ directory for modules with mcp.py files
         and loads them to register their tools and resources with improved
         caching, thread safety, and error handling.
-        
+
         Args:
             force_refresh: If True, force refresh of module discovery cache
-            
+            modules_allowlist: Optional list of modules to load (others ignored)
+            per_module_timeout: Timeout per module in seconds
+            overall_timeout: Overall timeout for discovery in seconds
+
         Returns:
             bool: True if all modules loaded successfully, False otherwise.
         """
@@ -753,7 +890,7 @@ class MCP:
             )
             return False
 
-    def register_tool(self, name: str, func: Callable = None, schema: Dict[str, Any] = None, description: str = "", 
+    def register_tool(self, name: str, func: Callable = None, schema: Dict[str, Any] = None, description: str = "",
                      module: str = "", category: str = "", version: str = "1.0.0",
                      tags: Optional[List[str]] = None, examples: Optional[List[Dict[str, Any]]] = None,
                      deprecated: bool = False, experimental: bool = False,
@@ -763,10 +900,10 @@ class MCP:
                       # Compatibility keywords accepted by some module mcp files
                       function: Optional[Callable] = None,
                       parameters: Optional[List[Dict[str, Any]]] = None,
-                      returns: Optional[Dict[str, Any]] = None):
+                      returns: Optional[Dict[str, Any]] = None) -> None:
         """
         Register a new tool with the MCP server.
-        
+
         Args:
             name: Unique name for the tool
             func: Callable function to execute
@@ -788,14 +925,28 @@ class MCP:
             output_validation: Whether to validate output results
         """
         with self._lock:
-            if name in self.tools:
-                logger.warning(f"Tool '{name}' already registered, overwriting")
-            
-            # Backward-compatible signature: allow modules to pass function via keyword 'function'
+            # Validate inputs before proceeding
+            if not name or not isinstance(name, str):
+                raise MCPInvalidParamsError("Tool name must be a non-empty string")
+
             if func is None and function is not None:
                 func = function
+            elif func is None:
+                raise MCPInvalidParamsError("Tool function is required")
+
+            if not callable(func):
+                raise MCPInvalidParamsError("Tool function must be callable")
+
             if schema is None:
                 schema = {}
+
+            # Validate schema
+            if not isinstance(schema, dict):
+                raise MCPInvalidParamsError("Tool schema must be a dictionary")
+
+            if name in self.tools:
+                logger.warning(f"Tool '{name}' already registered, overwriting")
+
             # Convert older "parameters" list format into JSON schema if provided
             if parameters and not schema:
                 props: Dict[str, Any] = {}

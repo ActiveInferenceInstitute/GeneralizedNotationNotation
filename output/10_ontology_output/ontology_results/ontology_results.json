@@ -1,7 +1,9 @@
 {
-  "processed_files": 1,
+  "processed_files": 3,
   "reports": [
-    "output/10_ontology_output/ontology_results/actinf_pomdp_agent_ontology_report.json"
+    "output/10_ontology_output/ontology_results/actinf_pomdp_agent_ontology_report.json",
+    "output/10_ontology_output/ontology_results/chronic_pain_theories_ontology_report.json",
+    "output/10_ontology_output/ontology_results/neural_response_model_ontology_report.json"
   ],
   "success": true,
   "errors": []

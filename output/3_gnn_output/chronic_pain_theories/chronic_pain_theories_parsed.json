@@ -1,0 +1,1931 @@
+{
+  "model_name": "Active Inference Chronic Pain Multi-Theory Model v1",
+  "version": "1.0",
+  "annotation": "This model integrates multiple coherent theories of chronic pain mechanisms across THREE NESTED CONTINUOUS TIMESCALES:\n\n**Multi-Theory Integration:**\n- Peripheral Sensitization: Enhanced nociceptor responsiveness and reduced thresholds (slow timescale)\n- Central Sensitization: Amplified CNS processing and reduced inhibition (slow timescale, one-way process)\n- Gate Control Theory: Spinal modulation of ascending pain signals (fast timescale)\n- Neuromatrix Theory: Distributed network generating pain experience (fast-medium coupling)\n- Predictive Coding: Pain as precision-weighted prediction error (all timescales)\n- Biopsychosocial Integration: Cognitive, emotional, and behavioral factors (medium timescale)\n\n**Three Nested Timescales:**\n1. Fast (ms-s): Neural signaling, gate control, descending modulation, acute pain perception\n2. Medium (min-hrs): Cognitive-affective processes, behavioral strategies, functional capacity\n3. Slow (hrs-days): Tissue healing, peripheral/central sensitization, chronic adaptations\n\n**State Space Structure:**\n- Six hidden state factors (378 combinations): tissue state (slow), peripheral sensitivity (slow), spinal gate (fast), central sensitization (slow), descending modulation (fast), cognitive-affective state (medium)\n- Four observation modalities (72 outcomes): pain intensity (fast), pain quality (fast), functional capacity (medium), autonomic response (fast)\n- Four control factors (81 actions): attention allocation (medium), behavioral strategy (medium), cognitive reappraisal (medium), descending control (fast)\n\n**Key Features:**\n- Timescale separation: \u03b5 (fast/medium) \u2248 10^-3, \u03b4 (medium/slow) \u2248 10^-2\n- Cross-timescale coupling: slow states modulate fast dynamics, fast observations (averaged) drive medium cognition, medium behaviors (averaged) influence slow healing\n- Testable predictions about pain chronification pathways across multiple timescales\n- Intervention targets at each timescale: fast (descending control), medium (CBT/behavioral), slow (prevent sensitization)",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "afe0953d-5a59-4c38-916c-8fb58bb6745e",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        72,
+        378
+      ],
+      "data_type": "float",
+      "description": "72 observations x 378 hidden state combinations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "12f758f4-b811-4e49-b365-7434a2f4156c",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        378,
+        378,
+        81
+      ],
+      "data_type": "float",
+      "description": "State transitions given previous state and action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "41e03c4b-b8d7-471b-b8f0-1d97aee3ea23",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        72
+      ],
+      "data_type": "float",
+      "description": "Log-preferences over pain-related observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e9126296-8ffd-4f4c-ae8b-51dac33351e8",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        378
+      ],
+      "data_type": "float",
+      "description": "Prior over initial hidden states (acute vs chronic pain)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8da77958-24b0-49f2-908f-0cab62f94e37",
+      "name": "E",
+      "var_type": "policy",
+      "dimensions": [
+        81
+      ],
+      "data_type": "float",
+      "description": "Initial policy prior over pain coping strategies",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c0799088-3bf2-4fc8-9d32-5179e2bc5df5",
+      "name": "T",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Tissue state (3 levels: healed, inflamed, damaged)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6c4b5cd5-d699-4759-ad03-fb4fbf9f564e",
+      "name": "P_sens",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Peripheral sensitization (3 levels: normal, moderate, severe)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4b9082fd-0b76-48bb-b527-722e881d7016",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Spinal gate state (3 levels: open, modulated, closed)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "93d6cb7d-85be-4d26-8cd6-f6708a86c480",
+      "name": "C_sens",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Central sensitization (2 levels: absent, present)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a7584255-c507-445e-b2d5-437db41b73c3",
+      "name": "D_mod",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Descending modulation (3 levels: facilitation, neutral, inhibition)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b3930554-06d2-40b9-9582-df2069189385",
+      "name": "Cog",
+      "var_type": "hidden_state",
+      "dimensions": [
+        7,
+        1
+      ],
+      "data_type": "float",
+      "description": "Cognitive-affective state (7 levels: adaptive, vigilant, fearful, catastrophizing, depressed, anxious, alexithymic)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "57afe5f1-813b-4bb6-9ca4-1f45df6a5c03",
+      "name": "Pain_I",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Pain intensity (4 levels: none, mild, moderate, severe)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4b98d5df-ad32-4eff-8df5-9f366b32f022",
+      "name": "Pain_Q",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Pain quality (3 levels: nociceptive, neuropathic, nociplastic)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2088d5fc-ef45-4a9b-b478-90c48f81a5fb",
+      "name": "Func",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Functional capacity (3 levels: full, limited, disabled)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f1ff0dc3-a2ac-409b-a150-720c4ba74abe",
+      "name": "Auto",
+      "var_type": "action",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Autonomic response (2 levels: normal, hyperarousal)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a01478b6-6aa0-499a-af5e-3ed65a98d3e1",
+      "name": "Attn",
+      "var_type": "action",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Attention allocation (3 actions: distraction, monitoring, catastrophizing)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0d8d99d7-5268-4c4f-bb10-3dd4f7dffebf",
+      "name": "Behav",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Behavioral strategy (3 actions: avoidance, pacing, engagement)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "04a95dd2-156a-4742-9435-74508b314f85",
+      "name": "Reapp",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Cognitive reappraisal (3 actions: negative, neutral, positive)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4f8b26d7-a206-4401-9004-a770f145932c",
+      "name": "Desc_C",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Descending control (3 actions: low, moderate, high endogenous analgesia)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "174b1b4b-ef92-48bb-8082-ed0bd47358f3",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Variational Free Energy for state inference",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1bc2bef6-594d-4439-814c-3e32965ea46b",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Expected Free Energy (per policy)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "bcf9b0ba-e7e8-42c0-83ac-e34894226901",
+      "name": "t_fast",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Fast timescale (milliseconds to seconds: neural responses, acute signaling)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f77f3198-42f5-4b61-a66e-f50c131fcbf9",
+      "name": "t_medium",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Medium timescale (minutes to hours: cognitive-affective, behavioral adaptation)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7700d171-b85b-42f3-9953-c8e04ddcf0fe",
+      "name": "t_slow",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Slow timescale (hours to days: tissue healing, sensitization, chronic changes)",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "191e95b9-4deb-4467-8be8-be9d12279485",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "T"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Prior influences initial tissue state"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "82f71d4c-c1a2-45e7-90f3-3e7efb219c0f",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "P_sens"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Prior influences baseline peripheral sensitivity"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "72a830db-a47e-4d64-995d-f3f781c32130",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "C_sens"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Prior influences susceptibility to central sensitization"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "53d31779-14e1-42cc-a602-efd34ec17343",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "Cog"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Prior influences initial cognitive-affective state"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "918552d8-bdf7-468d-8a33-8c0fcb3b8756",
+      "source_variables": [
+        "T"
+      ],
+      "target_variables": [
+        "P_sens"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Tissue damage drives peripheral sensitization"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6da7e8d9-4cc5-4d98-9e09-49038ec04f10",
+      "source_variables": [
+        "P_sens"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Peripheral sensitivity affects state transitions"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "5e8db382-24a9-45b3-9e4f-4de93aa60deb",
+      "source_variables": [
+        "P_sens"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Peripheral input modulates spinal gate"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ce9b0d4d-17cf-443c-8b47-c391769998f4",
+      "source_variables": [
+        "D_mod"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Descending signals modulate spinal gate"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d69c0ca1-051e-4e86-82de-09c74f62c872",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Gate state affects pain signal transmission"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7b9f09c9-072c-4050-bf07-03d7138fadc2",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "C_sens"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Prolonged spinal transmission leads to central sensitization"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "48832474-6c21-48da-83f9-9c78f42ec9c3",
+      "source_variables": [
+        "C_sens"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Central sensitization amplifies all subsequent signals"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "308f027e-dc2d-4166-b91c-339a26b55c4a",
+      "source_variables": [
+        "T"
+      ],
+      "target_variables": [
+        "C_sens"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Tissue state indirectly affects central sensitization"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "cc5bf168-b674-40b8-99f6-d7ec76e701e5",
+      "source_variables": [
+        "Cog"
+      ],
+      "target_variables": [
+        "D_mod"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Cognitive-affective state influences descending control"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e06d329f-92e6-4d28-b0e2-aa3a6f1c8be9",
+      "source_variables": [
+        "D_mod"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Descending modulation affects pain processing"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b1e7ec1f-94fa-484b-be8a-f98027d9574d",
+      "source_variables": [
+        "Pain_I"
+      ],
+      "target_variables": [
+        "Cog"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Pain intensity influences cognitive-affective state (via observation)"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "14480b6b-6884-47f9-a1bd-20695810bb6e",
+      "source_variables": [
+        "Func"
+      ],
+      "target_variables": [
+        "Cog"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Functional limitations influence emotional state"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7c4457cb-69fd-4543-95c5-9caa35f862f9",
+      "source_variables": [
+        "Cog"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Cognitive state affects all pain processing"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "39c7c098-116a-4086-bcbd-a3afbcf44bbe",
+      "source_variables": [
+        "T"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Tissue state contributes to pain observations"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "683cff01-8f7e-4f11-acd3-bcd92b20ddb3",
+      "source_variables": [
+        "P_sens"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Peripheral sensitivity affects pain intensity"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "03c8a449-ff73-4082-8b93-e7b9d46b80dd",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Gate state modulates pain intensity"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c1c185c9-26cd-4ffb-858e-e65d5c4b0ed5",
+      "source_variables": [
+        "C_sens"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Central sensitization amplifies pain intensity and changes quality"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f999555c-95a0-4706-ae8a-f72abadfe45a",
+      "source_variables": [
+        "D_mod"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Descending modulation affects perceived pain"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7e399ad4-8f56-4987-ad4b-43350e281c8b",
+      "source_variables": [
+        "Cog"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Cognitive-affective state influences pain perception and function"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c289a8e4-75a5-4e13-beb9-05758eb747bc",
+      "source_variables": [
+        "Attn"
+      ],
+      "target_variables": [
+        "Cog"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Attention allocation affects cognitive state"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d394ec46-5946-47fa-8272-6aa5d283c398",
+      "source_variables": [
+        "Behav"
+      ],
+      "target_variables": [
+        "T"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Behavioral strategy affects tissue healing/damage"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "36e86204-7463-4674-91f6-e56a84ce2eef",
+      "source_variables": [
+        "Behav"
+      ],
+      "target_variables": [
+        "Func"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Behavioral strategy directly affects function"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f0378a49-5134-441d-9d90-3bb3185e84df",
+      "source_variables": [
+        "Reapp"
+      ],
+      "target_variables": [
+        "Cog"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Cognitive reappraisal modulates cognitive-affective state"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3c92b97a-2100-4e65-a661-bfd95422407a",
+      "source_variables": [
+        "Desc_C"
+      ],
+      "target_variables": [
+        "D_mod"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Volitional control of descending modulation"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "91372a73-e026-4beb-801d-9ce73488dc32",
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Preferences (desired states) influence expected free energy"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d5049002-58d9-45e6-a10c-fc21d5ac3408",
+      "source_variables": [
+        "E"
+      ],
+      "target_variables": [
+        "Attn"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Habits influence attention allocation"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "853c4f67-63ee-4d3b-9f42-6ccb064fbf2c",
+      "source_variables": [
+        "E"
+      ],
+      "target_variables": [
+        "Behav"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Habits influence behavioral strategies"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a119cb24-1f8c-4b7f-961d-eea682c02f91",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "Attn"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Expected free energy guides attention"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "08088f99-5492-424a-abe5-67fed97d7387",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "Behav"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Expected free energy guides behavior"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "49964ab6-44e8-4ee8-986c-671393479b4e",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "Reapp"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Expected free energy guides reappraisal"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f9274ddb-0178-4489-bea0-1295592a6b76",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "Desc_C"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Expected free energy guides descending control"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b35081ae-8439-49ee-9732-156c30643d7f",
+      "source_variables": [
+        "Attn"
+      ],
+      "target_variables": [
+        "Behav"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Attention influences behavior"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "62c317a0-bf88-4e30-9e18-bab94d5358b2",
+      "source_variables": [
+        "Behav"
+      ],
+      "target_variables": [
+        "Reapp"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Behavior influences reappraisal capacity"
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "2b67773a-fe97-4cb8-9c74-d0a1efefd3b5",
+      "source_variables": [
+        "Reapp"
+      ],
+      "target_variables": [
+        "Desc_C"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": "Reappraisal enhances descending control"
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "3d34a67b-8743-4276-b0c8-b03bddfa1d3d",
+      "name": "A",
+      "value": [
+        [
+          0.7,
+          0.25,
+          0.05,
+          0.0,
+          0.8,
+          0.15,
+          0.05,
+          0.9,
+          0.08,
+          0.02,
+          0.85,
+          0.15
+        ],
+        [
+          0.6,
+          0.3,
+          0.1,
+          0.0,
+          0.75,
+          0.2,
+          0.05,
+          0.85,
+          0.1,
+          0.05,
+          0.8,
+          0.2
+        ],
+        [
+          0.45,
+          0.35,
+          0.15,
+          0.05,
+          0.7,
+          0.2,
+          0.1,
+          0.75,
+          0.15,
+          0.1,
+          0.7,
+          0.3
+        ],
+        [
+          0.2,
+          0.3,
+          0.35,
+          0.15,
+          0.5,
+          0.3,
+          0.2,
+          0.5,
+          0.3,
+          0.2,
+          0.4,
+          0.6
+        ],
+        [
+          0.3,
+          0.4,
+          0.25,
+          0.05,
+          0.6,
+          0.25,
+          0.15,
+          0.6,
+          0.25,
+          0.15,
+          0.5,
+          0.5
+        ],
+        [
+          0.4,
+          0.35,
+          0.2,
+          0.05,
+          0.65,
+          0.25,
+          0.1,
+          0.7,
+          0.2,
+          0.1,
+          0.6,
+          0.4
+        ],
+        [
+          0.55,
+          0.3,
+          0.12,
+          0.03,
+          0.7,
+          0.22,
+          0.08,
+          0.8,
+          0.15,
+          0.05,
+          0.75,
+          0.25
+        ],
+        [
+          0.8,
+          0.15,
+          0.05,
+          0.0,
+          0.85,
+          0.12,
+          0.03,
+          0.95,
+          0.04,
+          0.01,
+          0.9,
+          0.1
+        ],
+        [
+          0.75,
+          0.2,
+          0.05,
+          0.0,
+          0.8,
+          0.15,
+          0.05,
+          0.9,
+          0.08,
+          0.02,
+          0.85,
+          0.15
+        ],
+        [
+          0.65,
+          0.25,
+          0.08,
+          0.02,
+          0.75,
+          0.18,
+          0.07,
+          0.85,
+          0.12,
+          0.03,
+          0.8,
+          0.2
+        ],
+        [
+          0.9,
+          0.08,
+          0.02,
+          0.0,
+          0.9,
+          0.08,
+          0.02,
+          0.98,
+          0.02,
+          0.0,
+          0.95,
+          0.05
+        ],
+        [
+          0.85,
+          0.12,
+          0.03,
+          0.0,
+          0.88,
+          0.1,
+          0.02,
+          0.95,
+          0.04,
+          0.01,
+          0.92,
+          0.08
+        ],
+        [
+          0.05,
+          0.15,
+          0.45,
+          0.35,
+          0.3,
+          0.4,
+          0.3,
+          0.2,
+          0.4,
+          0.4,
+          0.25,
+          0.75
+        ],
+        [
+          0.02,
+          0.1,
+          0.4,
+          0.48,
+          0.2,
+          0.35,
+          0.45,
+          0.1,
+          0.35,
+          0.55,
+          0.15,
+          0.85
+        ],
+        [
+          0.35,
+          0.4,
+          0.2,
+          0.05,
+          0.7,
+          0.25,
+          0.05,
+          0.7,
+          0.2,
+          0.1,
+          0.75,
+          0.25
+        ],
+        [
+          0.2,
+          0.35,
+          0.3,
+          0.15,
+          0.55,
+          0.3,
+          0.15,
+          0.55,
+          0.3,
+          0.15,
+          0.6,
+          0.4
+        ],
+        [
+          0.15,
+          0.3,
+          0.4,
+          0.15,
+          0.4,
+          0.35,
+          0.25,
+          0.4,
+          0.35,
+          0.25,
+          0.45,
+          0.55
+        ],
+        [
+          0.05,
+          0.2,
+          0.45,
+          0.3,
+          0.3,
+          0.4,
+          0.3,
+          0.3,
+          0.4,
+          0.3,
+          0.35,
+          0.65
+        ],
+        [
+          0.4,
+          0.4,
+          0.15,
+          0.05,
+          0.75,
+          0.2,
+          0.05,
+          0.8,
+          0.15,
+          0.05,
+          0.8,
+          0.2
+        ],
+        [
+          0.25,
+          0.4,
+          0.25,
+          0.1,
+          0.65,
+          0.25,
+          0.1,
+          0.65,
+          0.25,
+          0.1,
+          0.7,
+          0.3
+        ],
+        [
+          0.2,
+          0.35,
+          0.3,
+          0.15,
+          0.55,
+          0.3,
+          0.15,
+          0.5,
+          0.3,
+          0.2,
+          0.6,
+          0.4
+        ],
+        [
+          0.08,
+          0.25,
+          0.4,
+          0.27,
+          0.4,
+          0.35,
+          0.25,
+          0.35,
+          0.4,
+          0.25,
+          0.45,
+          0.55
+        ],
+        [
+          0.05,
+          0.2,
+          0.4,
+          0.35,
+          0.3,
+          0.4,
+          0.3,
+          0.25,
+          0.45,
+          0.3,
+          0.35,
+          0.65
+        ],
+        [
+          0.02,
+          0.1,
+          0.35,
+          0.53,
+          0.2,
+          0.35,
+          0.45,
+          0.15,
+          0.45,
+          0.4,
+          0.2,
+          0.8
+        ],
+        [
+          0.02,
+          0.08,
+          0.3,
+          0.6,
+          0.15,
+          0.3,
+          0.55,
+          0.1,
+          0.4,
+          0.5,
+          0.15,
+          0.85
+        ],
+        [
+          0.1,
+          0.3,
+          0.4,
+          0.2,
+          0.5,
+          0.35,
+          0.15,
+          0.45,
+          0.35,
+          0.2,
+          0.5,
+          0.5
+        ],
+        [
+          0.05,
+          0.25,
+          0.45,
+          0.25,
+          0.4,
+          0.4,
+          0.2,
+          0.4,
+          0.4,
+          0.2,
+          0.45,
+          0.55
+        ],
+        [
+          0.03,
+          0.15,
+          0.42,
+          0.4,
+          0.3,
+          0.4,
+          0.3,
+          0.3,
+          0.45,
+          0.25,
+          0.35,
+          0.65
+        ],
+        [
+          0.01,
+          0.08,
+          0.35,
+          0.56,
+          0.2,
+          0.35,
+          0.45,
+          0.2,
+          0.45,
+          0.35,
+          0.25,
+          0.75
+        ],
+        [
+          0.01,
+          0.05,
+          0.3,
+          0.64,
+          0.15,
+          0.3,
+          0.55,
+          0.15,
+          0.5,
+          0.35,
+          0.2,
+          0.8
+        ],
+        [
+          0.0,
+          0.02,
+          0.2,
+          0.78,
+          0.1,
+          0.25,
+          0.65,
+          0.08,
+          0.45,
+          0.47,
+          0.1,
+          0.9
+        ],
+        [
+          0.7,
+          0.25,
+          0.05,
+          0.0,
+          0.8,
+          0.15,
+          0.05,
+          0.8,
+          0.15,
+          0.05,
+          0.85,
+          0.15
+        ],
+        [
+          0.55,
+          0.35,
+          0.08,
+          0.02,
+          0.75,
+          0.2,
+          0.05,
+          0.75,
+          0.2,
+          0.05,
+          0.8,
+          0.2
+        ],
+        [
+          0.15,
+          0.3,
+          0.4,
+          0.15,
+          0.45,
+          0.35,
+          0.2,
+          0.5,
+          0.35,
+          0.15,
+          0.55,
+          0.45
+        ],
+        [
+          0.05,
+          0.2,
+          0.45,
+          0.3,
+          0.3,
+          0.4,
+          0.3,
+          0.35,
+          0.4,
+          0.25,
+          0.4,
+          0.6
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "e80f047f-9414-48b7-9f2c-9e8925448f24",
+      "name": "B",
+      "value": [],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "2e62b01c-6d59-4bd0-8cc7-1af525370e18",
+      "name": "C",
+      "value": [
+        [
+          2.2,
+          1.4,
+          0.5,
+          0.7,
+          -0.1,
+          -0.8,
+          -0.5,
+          -1.3,
+          -2.2,
+          -1.7,
+          -2.5,
+          -3.4,
+          2.0,
+          1.2,
+          0.3,
+          0.5,
+          -0.3,
+          -1.0,
+          -0.7,
+          -1.5,
+          -2.4,
+          -1.9,
+          -2.7,
+          -3.6,
+          1.6,
+          0.8,
+          -0.1,
+          0.1,
+          -0.7,
+          -1.4,
+          -1.1,
+          -1.9,
+          -2.8,
+          -2.3,
+          -3.1,
+          -4.0,
+          1.0,
+          0.2,
+          -0.7,
+          -0.5,
+          -1.3,
+          -2.0,
+          -1.7,
+          -2.5,
+          -3.4,
+          -2.9,
+          -3.7,
+          -4.6,
+          0.5,
+          -0.3,
+          -1.2,
+          -1.0,
+          -1.8,
+          -2.5,
+          -2.2,
+          -3.0,
+          -3.9,
+          -3.4,
+          -4.2,
+          -5.1,
+          -0.2,
+          -1.0,
+          -1.9,
+          -1.7,
+          -2.5,
+          -3.2,
+          -2.9,
+          -3.7,
+          -4.6,
+          -4.1,
+          -4.9,
+          -5.8
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "e3a768c1-bc68-4048-a16e-5f6b8b04c572",
+      "name": "D",
+      "value": [
+        [
+          0.1,
+          0.5,
+          0.4,
+          0.6,
+          0.3,
+          0.1,
+          0.4,
+          0.4,
+          0.2,
+          0.9,
+          0.1,
+          0.2,
+          0.6,
+          0.2,
+          0.3,
+          0.2,
+          0.15,
+          0.1,
+          0.1,
+          0.1,
+          0.05
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b59c1004-0e89-4c99-a59a-f498ba315f22",
+      "name": "E",
+      "value": [
+        [
+          0.015,
+          0.023,
+          0.015,
+          0.025,
+          0.038,
+          0.025,
+          0.015,
+          0.023,
+          0.015,
+          0.03,
+          0.045,
+          0.03,
+          0.05,
+          0.075,
+          0.05,
+          0.03,
+          0.045,
+          0.03,
+          0.015,
+          0.023,
+          0.015,
+          0.025,
+          0.038,
+          0.025,
+          0.015,
+          0.023,
+          0.015,
+          0.01,
+          0.015,
+          0.01,
+          0.017,
+          0.025,
+          0.017,
+          0.01,
+          0.015,
+          0.01,
+          0.02,
+          0.03,
+          0.02,
+          0.033,
+          0.05,
+          0.033,
+          0.02,
+          0.03,
+          0.02,
+          0.01,
+          0.015,
+          0.01,
+          0.017,
+          0.025,
+          0.017,
+          0.01,
+          0.015,
+          0.01,
+          0.006,
+          0.009,
+          0.006,
+          0.01,
+          0.015,
+          0.01,
+          0.006,
+          0.009,
+          0.006,
+          0.012,
+          0.018,
+          0.012,
+          0.02,
+          0.03,
+          0.02,
+          0.012,
+          0.018,
+          0.012,
+          0.006,
+          0.009,
+          0.006,
+          0.01,
+          0.015,
+          0.01,
+          0.006,
+          0.009,
+          0.006
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5fc5337e-0698-4f08-8901-34f3ce1cbb8d",
+      "name": "epsilon_fast_medium: 0.001     # \u03b5",
+      "value": "\u03c4_fast / \u03c4_medium \u2248 10^-3",
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1c03e1f7-433f-43f8-9721-8084315f903a",
+      "name": "delta_medium_slow: 0.01        # \u03b4",
+      "value": "\u03c4_medium / \u03c4_slow \u2248 10^-2\nwindow_fast_to_medium: 300     # s (5 min) - Averaging window for fast\u2192medium coupling\nwindow_medium_to_slow: 14400   # s (4 hours) - Averaging window for medium\u2192slow coupling\npopulation_type: \"acute\"       # Options: \"acute\", \"chronic\", \"high_risk\", \"resilient\"",
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "bec88ef6-157c-40c1-b605-b42dc3d2fb3f",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "Unbounded # Chronic pain model for longitudinal simulation across multiple timescales",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c7b903fd-07ab-4aea-905e-d975a4c22edf",
+      "variable_name": "A",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4b849228-1a15-4891-bb61-3a2926406bfd",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrices",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5e472ce9-4057-4801-94a3-77024ca0e4ef",
+      "variable_name": "C",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f68b3d1c-552c-4a3e-9a48-9e4cbecc22a7",
+      "variable_name": "D",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "701e5081-09c0-4979-97a4-ded46dc8f2dd",
+      "variable_name": "E",
+      "ontology_term": "HabitVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "84f4a405-9fa1-46df-b14b-b3708c6d0b7a",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "cdf85282-d3d6-4b6e-b32d-f8605e95ebe1",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "48f59657-d1b8-4997-b235-60ec03600fb3",
+      "variable_name": "T",
+      "ontology_term": "TissueState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "262425cb-3828-41a6-be05-4e569d1e5c67",
+      "variable_name": "P_sens",
+      "ontology_term": "PeripheralSensitization",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5dff39ab-8818-4b74-87f7-cc75720fd128",
+      "variable_name": "G",
+      "ontology_term": "SpinalGateState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e0b451b9-5664-429c-bc9b-964509b17133",
+      "variable_name": "C_sens",
+      "ontology_term": "CentralSensitization",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6a3444fc-c4ca-43c6-81f2-d38c599a221b",
+      "variable_name": "D_mod",
+      "ontology_term": "DescendingModulation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1f9e035c-7d31-4620-af74-b3d3791dad76",
+      "variable_name": "Cog",
+      "ontology_term": "CognitiveAffectiveState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9af60b07-56be-4551-82aa-f0b2bf581764",
+      "variable_name": "Pain_I",
+      "ontology_term": "PainIntensityObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c0e0cf46-521c-4e9d-bce6-e04fb1f20678",
+      "variable_name": "Pain_Q",
+      "ontology_term": "PainQualityObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3e9ed77a-85c2-44e4-ab20-2219091b5ccc",
+      "variable_name": "Func",
+      "ontology_term": "FunctionalCapacityObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4fa5099b-3190-434a-b634-56c622d690e3",
+      "variable_name": "Auto",
+      "ontology_term": "AutonomicResponseObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "623988e0-dd58-4b7e-9916-b89544ee6e2c",
+      "variable_name": "Attn",
+      "ontology_term": "AttentionAllocationControl",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "92aa4ba1-98b0-470d-a7fb-834dccc8a18d",
+      "variable_name": "Behav",
+      "ontology_term": "BehavioralStrategyControl",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "8a5b47ab-3790-4bf4-bafe-57c8ec5723c6",
+      "variable_name": "Reapp",
+      "ontology_term": "CognitiveReappraisalControl",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "79b42216-a017-41d4-b24e-0231925a329d",
+      "variable_name": "Desc_C",
+      "ontology_term": "DescendingControlAction",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5aa7a2a3-ceed-4f43-8b41-aa49d2d8f7d2",
+      "variable_name": "t_fast",
+      "ontology_term": "FastTimescale",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3308d9e6-2996-49e9-a4f1-3312266aa581",
+      "variable_name": "t_medium",
+      "ontology_term": "MediumTimescale",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b0df52a2-29b6-4475-9101-c5c7b746c41a",
+      "variable_name": "t_slow",
+      "ontology_term": "SlowTimescale",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2025-10-02T10:52:16.318129",
+  "modified_at": "2025-10-02T10:52:16.318132",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ChronicPainTheories",
+    "footer": "Active Inference Chronic Pain Multi-Theory Model v1 - GNN Representation.\n\nThis model integrates multiple coherent theories of chronic pain chronification across THREE NESTED CONTINUOUS TIMESCALES:\n\n**Integrated Theories:**\n- Peripheral sensitization (nociceptor hyperexcitability)\n- Central sensitization (spinal and supraspinal amplification)\n- Gate control theory (spinal modulation mechanisms)\n- Neuromatrix theory (distributed network including descending modulation)\n- Predictive coding / Active Inference (pain as precision-weighted prediction error)\n- Fear-avoidance model (cognitive-behavioral factors)\n- Biopsychosocial integration (tissue, neural, cognitive, affective, behavioral factors)\n\n**Three Nested Timescales:**\n1. **Fast (milliseconds to seconds)**: Neural signaling, gate control, descending modulation, acute pain perception\n   - Allows modeling immediate pain responses and rapid modulation\n   - Time constants: \u03c4_gate \u2248 50 ms, \u03c4_descending \u2248 150 ms\n\n2. **Medium (minutes to hours)**: Cognitive-affective processes, behavioral adaptation, functional capacity\n   - Captures psychological coping strategies and functional changes\n   - Time constants: \u03c4_cognitive \u2248 30 min, \u03c4_function \u2248 60 min\n\n3. **Slow (hours to days)**: Tissue healing, peripheral/central sensitization development\n   - Models chronic plasticity and long-term pain chronification\n   - Time constants: \u03c4_tissue \u2248 12 hrs, \u03c4_peripheral \u2248 24 hrs, \u03c4_central \u2248 48 hrs\n\n**Timescale Coupling:**\n- Slow states (sensitization, tissue) modulate fast dynamics (acute pain)\n- Fast observations (averaged pain) drive medium dynamics (cognition, behavior)\n- Medium behaviors (averaged strategies) influence slow processes (healing, sensitization)\n- Active Inference operates across all timescales with appropriate temporal integration\n\n**The model enables:**\n1. Testing competing hypotheses about pain chronification mechanisms across multiple timescales\n2. Simulating different patient populations (acute, chronic, high-risk, resilient)\n3. Evaluating intervention strategies with timescale-specific effects (behavioral, cognitive, pharmacological)\n4. Predicting individual trajectories based on baseline states and coping strategies\n5. Identifying critical transition points from acute to chronic pain\n6. Understanding multi-rate dynamics from immediate pain modulation to long-term chronification\n7. Designing interventions targeting specific timescales (fast: descending control, medium: CBT, slow: tissue healing)\n\n**Key testable predictions (with timescale specificity):**\n- Central sensitization (slow) as a \"point of no return\" in chronic pain development\n- Gate control effectiveness (fast) via descending modulation with immediate pain reduction\n- Fear-avoidance cycles (medium) leading to disability independent of tissue state\n- Cognitive reappraisal (medium\u2192fast) as pathway to pain reduction via descending inhibition\n- Peripheral vs central contributions (slow) to pain in different patient phenotypes\n- Timescale interactions driving the transition from acute to chronic pain\n- Intervention windows: fast (immediate relief), medium (coping strategies), slow (prevent sensitization)",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ChronicPainTheories",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Active Inference Chronic Pain Multi-Theory Model v1",
+    "ModelAnnotation": "This model integrates multiple coherent theories of chronic pain mechanisms across THREE NESTED CONTINUOUS TIMESCALES:\n\n**Multi-Theory Integration:**\n- Peripheral Sensitization: Enhanced nociceptor responsiveness and reduced thresholds (slow timescale)\n- Central Sensitization: Amplified CNS processing and reduced inhibition (slow timescale, one-way process)\n- Gate Control Theory: Spinal modulation of ascending pain signals (fast timescale)\n- Neuromatrix Theory: Distributed network generating pain experience (fast-medium coupling)\n- Predictive Coding: Pain as precision-weighted prediction error (all timescales)\n- Biopsychosocial Integration: Cognitive, emotional, and behavioral factors (medium timescale)\n\n**Three Nested Timescales:**\n1. Fast (ms-s): Neural signaling, gate control, descending modulation, acute pain perception\n2. Medium (min-hrs): Cognitive-affective processes, behavioral strategies, functional capacity\n3. Slow (hrs-days): Tissue healing, peripheral/central sensitization, chronic adaptations\n\n**State Space Structure:**\n- Six hidden state factors (378 combinations): tissue state (slow), peripheral sensitivity (slow), spinal gate (fast), central sensitization (slow), descending modulation (fast), cognitive-affective state (medium)\n- Four observation modalities (72 outcomes): pain intensity (fast), pain quality (fast), functional capacity (medium), autonomic response (fast)\n- Four control factors (81 actions): attention allocation (medium), behavioral strategy (medium), cognitive reappraisal (medium), descending control (fast)\n\n**Key Features:**\n- Timescale separation: \u03b5 (fast/medium) \u2248 10^-3, \u03b4 (medium/slow) \u2248 10^-2\n- Cross-timescale coupling: slow states modulate fast dynamics, fast observations (averaged) drive medium cognition, medium behaviors (averaged) influence slow healing\n- Testable predictions about pain chronification pathways across multiple timescales\n- Intervention targets at each timescale: fast (descending control), medium (CBT/behavioral), slow (prevent sensitization)",
+    "StateSpaceBlock": "# Likelihood matrix: A[observation_outcomes, hidden_states]\nA[72,378,type=float]   # 72 observations x 378 hidden state combinations\n\n# Transition matrices: B[states_next, states_previous, actions]\nB[378,378,81,type=float]   # State transitions given previous state and action\n\n# Preference vector: C[observation_outcomes]\nC[72,type=float]       # Log-preferences over pain-related observations\n\n# Prior vector: D[states]\nD[378,type=float]       # Prior over initial hidden states (acute vs chronic pain)\n\n# Habit vector: E[actions]\nE[81,type=float]       # Initial policy prior over pain coping strategies\n\n# Hidden States (6 factors: 3\u00d73\u00d73\u00d72\u00d73\u00d77 = 378 total combinations)\nT[3,1,type=float]      # Tissue state (3 levels: healed, inflamed, damaged)\nP_sens[3,1,type=float] # Peripheral sensitization (3 levels: normal, moderate, severe)\nG[3,1,type=float]      # Spinal gate state (3 levels: open, modulated, closed)\nC_sens[2,1,type=float] # Central sensitization (2 levels: absent, present)\nD_mod[3,1,type=float]  # Descending modulation (3 levels: facilitation, neutral, inhibition)\nCog[7,1,type=float]    # Cognitive-affective state (7 levels: adaptive, vigilant, fearful, catastrophizing, depressed, anxious, alexithymic)\n\n# Observations (4 modalities: 4\u00d73\u00d73\u00d72 = 72 total outcomes)\nPain_I[4,1,type=float]    # Pain intensity (4 levels: none, mild, moderate, severe)\nPain_Q[3,1,type=float]    # Pain quality (3 levels: nociceptive, neuropathic, nociplastic)\nFunc[3,1,type=float]      # Functional capacity (3 levels: full, limited, disabled)\nAuto[2,1,type=float]      # Autonomic response (2 levels: normal, hyperarousal)\n\n# Policy and Control (4 factors: 3\u00d73\u00d73\u00d73 = 81 total actions)\nAttn[3,1,type=float]      # Attention allocation (3 actions: distraction, monitoring, catastrophizing)\nBehav[3,1,type=float]     # Behavioral strategy (3 actions: avoidance, pacing, engagement)\nReapp[3,1,type=float]     # Cognitive reappraisal (3 actions: negative, neutral, positive)\nDesc_C[3,1,type=float]    # Descending control (3 actions: low, moderate, high endogenous analgesia)\n\n# Free Energy terms\nF[T,type=float]           # Variational Free Energy for state inference\nG[Attn,type=float]        # Expected Free Energy (per policy)\n\n# Time - Three Nested Continuous Timescales\nt_fast[1,type=float]     # Fast timescale (milliseconds to seconds: neural responses, acute signaling)\nt_medium[1,type=float]   # Medium timescale (minutes to hours: cognitive-affective, behavioral adaptation)\nt_slow[1,type=float]     # Slow timescale (hours to days: tissue healing, sensitization, chronic changes)",
+    "Connections": "# State evolution connections (theories of pain chronification)\nD>T                       # Prior influences initial tissue state\nD>P_sens                  # Prior influences baseline peripheral sensitivity\nD>C_sens                  # Prior influences susceptibility to central sensitization\nD>Cog                     # Prior influences initial cognitive-affective state\n\n# Peripheral sensitization pathway\nT>P_sens                  # Tissue damage drives peripheral sensitization\nP_sens>B                  # Peripheral sensitivity affects state transitions\n\n# Gate control mechanism\nP_sens>G                  # Peripheral input modulates spinal gate\nD_mod>G                   # Descending signals modulate spinal gate\nG>B                       # Gate state affects pain signal transmission\n\n# Central sensitization pathway\nG>C_sens                  # Prolonged spinal transmission leads to central sensitization\nC_sens>B                  # Central sensitization amplifies all subsequent signals\nT>C_sens                  # Tissue state indirectly affects central sensitization\n\n# Descending modulation (neuromatrix)\nCog>D_mod                 # Cognitive-affective state influences descending control\nD_mod>B                   # Descending modulation affects pain processing\n\n# Cognitive-affective influences (biopsychosocial)\nPain_I>Cog                # Pain intensity influences cognitive-affective state (via observation)\nFunc>Cog                  # Functional limitations influence emotional state\nCog>B                     # Cognitive state affects all pain processing\n\n# Observation generation (what the organism senses)\nT>A                       # Tissue state contributes to pain observations\nP_sens>A                  # Peripheral sensitivity affects pain intensity\nG>A                       # Gate state modulates pain intensity\nC_sens>A                  # Central sensitization amplifies pain intensity and changes quality\nD_mod>A                   # Descending modulation affects perceived pain\nCog>A                     # Cognitive-affective state influences pain perception and function\n\n# Control connections (Active Inference policy)\nAttn>Cog                  # Attention allocation affects cognitive state\nBehav>T                   # Behavioral strategy affects tissue healing/damage\nBehav>Func                # Behavioral strategy directly affects function\nReapp>Cog                 # Cognitive reappraisal modulates cognitive-affective state\nDesc_C>D_mod              # Volitional control of descending modulation\n\n# Free energy and policy\nC>G                       # Preferences (desired states) influence expected free energy\nE>Attn                    # Habits influence attention allocation\nE>Behav                   # Habits influence behavioral strategies\nG>Attn                    # Expected free energy guides attention\nG>Behav                   # Expected free energy guides behavior\nG>Reapp                   # Expected free energy guides reappraisal\nG>Desc_C                  # Expected free energy guides descending control\n\n# Action coordination\nAttn>Behav                # Attention influences behavior\nBehav>Reapp               # Behavior influences reappraisal capacity\nReapp>Desc_C              # Reappraisal enhances descending control",
+    "InitialParameterization": "# A: 72 observations x 378 hidden states. Likelihood mapping from hidden pain states to observations.\n# Observations ordered: Pain_I1-4, Pain_Q1-3, Func1-3, Auto1-2\n# Hidden states ordered by: T, P_sens, G, C_sens, D_mod, Cog\nA={\n  # Theory-specific predictions:\n  \n  # Peripheral Sensitization: High P_sens \u2192 high pain even with minimal tissue damage\n  # Example: T=healed (T1), P_sens=severe (P_sens3), G=open (G1), C_sens=absent (C_sens1), D_mod=neutral (D_mod2), Cog=adaptive (Cog1)\n  # \u2192 Moderate pain, nociceptive quality, limited function, normal autonomic\n  \n  # Central Sensitization: C_sens=present \u2192 severe pain, nociplastic quality regardless of tissue state\n  # Example: T=healed (T1), P_sens=normal (P_sens1), G=modulated (G2), C_sens=present (C_sens2), D_mod=neutral (D_mod2), Cog=adaptive (Cog1)\n  # \u2192 Severe pain, nociplastic quality, disabled function, hyperarousal\n  \n  # Gate Control: Closed gate (G3) \u2192 reduced pain despite tissue damage\n  # Example: T=damaged (T3), P_sens=moderate (P_sens2), G=closed (G3), C_sens=absent (C_sens1), D_mod=inhibition (D_mod3), Cog=adaptive (Cog1)\n  # \u2192 Mild pain, nociceptive quality, limited function, normal autonomic\n  \n  # Cognitive-Affective: Catastrophizing (Cog4) amplifies pain perception\n  # Example: T=inflamed (T2), P_sens=moderate (P_sens2), G=open (G1), C_sens=absent (C_sens1), D_mod=neutral (D_mod2), Cog=catastrophizing (Cog4)\n  # \u2192 Severe pain, nociplastic quality, disabled function, hyperarousal\n  \n  # Descending Facilitation: D_mod=facilitation (D_mod1) increases pain\n  # Example: T=healed (T1), P_sens=normal (P_sens1), G=modulated (G2), C_sens=absent (C_sens1), D_mod=facilitation (D_mod1), Cog=fearful (Cog3)\n  # \u2192 Moderate pain, neuropathic quality, limited function, hyperarousal\n  \n  # First 50 of 378 state combinations with theory-based likelihoods:\n  (0.70, 0.25, 0.05, 0.00, 0.80, 0.15, 0.05, 0.90, 0.08, 0.02, 0.85, 0.15),  # T1,P_sens1,G1,C_sens1,D_mod1,Cog1 - healed, normal sensitivity, adaptive\n  (0.60, 0.30, 0.10, 0.00, 0.75, 0.20, 0.05, 0.85, 0.10, 0.05, 0.80, 0.20),  # T1,P_sens1,G1,C_sens1,D_mod1,Cog2 - healed, vigilant\n  (0.45, 0.35, 0.15, 0.05, 0.70, 0.20, 0.10, 0.75, 0.15, 0.10, 0.70, 0.30),  # T1,P_sens1,G1,C_sens1,D_mod1,Cog3 - healed, fearful\n  (0.20, 0.30, 0.35, 0.15, 0.50, 0.30, 0.20, 0.50, 0.30, 0.20, 0.40, 0.60),  # T1,P_sens1,G1,C_sens1,D_mod1,Cog4 - healed, catastrophizing (amplified pain)\n  (0.30, 0.40, 0.25, 0.05, 0.60, 0.25, 0.15, 0.60, 0.25, 0.15, 0.50, 0.50),  # T1,P_sens1,G1,C_sens1,D_mod1,Cog5 - healed, depressed\n  (0.40, 0.35, 0.20, 0.05, 0.65, 0.25, 0.10, 0.70, 0.20, 0.10, 0.60, 0.40),  # T1,P_sens1,G1,C_sens1,D_mod1,Cog6 - healed, anxious\n  (0.55, 0.30, 0.12, 0.03, 0.70, 0.22, 0.08, 0.80, 0.15, 0.05, 0.75, 0.25),  # T1,P_sens1,G1,C_sens1,D_mod1,Cog7 - healed, alexithymic\n  \n  (0.80, 0.15, 0.05, 0.00, 0.85, 0.12, 0.03, 0.95, 0.04, 0.01, 0.90, 0.10),  # T1,P_sens1,G1,C_sens1,D_mod2,Cog1 - healed, neutral descending mod\n  (0.75, 0.20, 0.05, 0.00, 0.80, 0.15, 0.05, 0.90, 0.08, 0.02, 0.85, 0.15),  # T1,P_sens1,G1,C_sens1,D_mod2,Cog2\n  (0.65, 0.25, 0.08, 0.02, 0.75, 0.18, 0.07, 0.85, 0.12, 0.03, 0.80, 0.20),  # T1,P_sens1,G1,C_sens1,D_mod2,Cog3\n  \n  (0.90, 0.08, 0.02, 0.00, 0.90, 0.08, 0.02, 0.98, 0.02, 0.00, 0.95, 0.05),  # T1,P_sens1,G1,C_sens1,D_mod3,Cog1 - healed, strong inhibition (gate closed)\n  (0.85, 0.12, 0.03, 0.00, 0.88, 0.10, 0.02, 0.95, 0.04, 0.01, 0.92, 0.08),  # T1,P_sens1,G1,C_sens1,D_mod3,Cog2\n  \n  (0.05, 0.15, 0.45, 0.35, 0.30, 0.40, 0.30, 0.20, 0.40, 0.40, 0.25, 0.75),  # T1,P_sens1,G1,C_sens2,D_mod1,Cog1 - healed but CENTRAL SENSITIZATION\n  (0.02, 0.10, 0.40, 0.48, 0.20, 0.35, 0.45, 0.10, 0.35, 0.55, 0.15, 0.85),  # T1,P_sens1,G1,C_sens2,D_mod1,Cog4 - central sensitization + catastrophizing\n  \n  (0.35, 0.40, 0.20, 0.05, 0.70, 0.25, 0.05, 0.70, 0.20, 0.10, 0.75, 0.25),  # T1,P_sens2,G1,C_sens1,D_mod2,Cog1 - healed but moderate peripheral sensitization\n  (0.20, 0.35, 0.30, 0.15, 0.55, 0.30, 0.15, 0.55, 0.30, 0.15, 0.60, 0.40),  # T1,P_sens2,G1,C_sens1,D_mod2,Cog3 - peripheral sensitization + fear\n  \n  (0.15, 0.30, 0.40, 0.15, 0.40, 0.35, 0.25, 0.40, 0.35, 0.25, 0.45, 0.55),  # T1,P_sens3,G1,C_sens1,D_mod2,Cog1 - healed but SEVERE peripheral sensitization\n  (0.05, 0.20, 0.45, 0.30, 0.30, 0.40, 0.30, 0.30, 0.40, 0.30, 0.35, 0.65),  # T1,P_sens3,G1,C_sens1,D_mod2,Cog4 - severe peripheral + catastrophizing\n  \n  (0.40, 0.40, 0.15, 0.05, 0.75, 0.20, 0.05, 0.80, 0.15, 0.05, 0.80, 0.20),  # T2,P_sens1,G1,C_sens1,D_mod2,Cog1 - inflamed tissue, normal processing\n  (0.25, 0.40, 0.25, 0.10, 0.65, 0.25, 0.10, 0.65, 0.25, 0.10, 0.70, 0.30),  # T2,P_sens1,G1,C_sens1,D_mod2,Cog3 - inflamed + fear\n  \n  (0.20, 0.35, 0.30, 0.15, 0.55, 0.30, 0.15, 0.50, 0.30, 0.20, 0.60, 0.40),  # T2,P_sens2,G1,C_sens1,D_mod2,Cog1 - inflamed + moderate peripheral sensitization\n  (0.08, 0.25, 0.40, 0.27, 0.40, 0.35, 0.25, 0.35, 0.40, 0.25, 0.45, 0.55),  # T2,P_sens2,G1,C_sens1,D_mod2,Cog4 - inflamed + peripheral sens + catastrophizing\n  \n  (0.05, 0.20, 0.40, 0.35, 0.30, 0.40, 0.30, 0.25, 0.45, 0.30, 0.35, 0.65),  # T2,P_sens3,G1,C_sens1,D_mod2,Cog1 - inflamed + severe peripheral sensitization\n  (0.02, 0.10, 0.35, 0.53, 0.20, 0.35, 0.45, 0.15, 0.45, 0.40, 0.20, 0.80),  # T2,P_sens3,G1,C_sens1,D_mod2,Cog4 - multiple risk factors\n  \n  (0.02, 0.08, 0.30, 0.60, 0.15, 0.30, 0.55, 0.10, 0.40, 0.50, 0.15, 0.85),  # T2,P_sens3,G1,C_sens2,D_mod1,Cog4 - CHRONIC PAIN PHENOTYPE (all risk factors)\n  \n  (0.10, 0.30, 0.40, 0.20, 0.50, 0.35, 0.15, 0.45, 0.35, 0.20, 0.50, 0.50),  # T3,P_sens1,G1,C_sens1,D_mod2,Cog1 - damaged tissue, normal sensitivity\n  (0.05, 0.25, 0.45, 0.25, 0.40, 0.40, 0.20, 0.40, 0.40, 0.20, 0.45, 0.55),  # T3,P_sens1,G1,C_sens1,D_mod2,Cog3 - damaged + fear\n  \n  (0.03, 0.15, 0.42, 0.40, 0.30, 0.40, 0.30, 0.30, 0.45, 0.25, 0.35, 0.65),  # T3,P_sens2,G1,C_sens1,D_mod2,Cog1 - damaged + moderate peripheral sens\n  (0.01, 0.08, 0.35, 0.56, 0.20, 0.35, 0.45, 0.20, 0.45, 0.35, 0.25, 0.75),  # T3,P_sens2,G1,C_sens1,D_mod2,Cog4 - damaged + peripheral sens + catastrophizing\n  \n  (0.01, 0.05, 0.30, 0.64, 0.15, 0.30, 0.55, 0.15, 0.50, 0.35, 0.20, 0.80),  # T3,P_sens3,G1,C_sens1,D_mod2,Cog1 - damaged + severe peripheral sens\n  (0.00, 0.02, 0.20, 0.78, 0.10, 0.25, 0.65, 0.08, 0.45, 0.47, 0.10, 0.90),  # T3,P_sens3,G1,C_sens1,D_mod2,Cog4 - worst acute pain scenario\n  \n  # Gate control predictions: G=closed (G3) reduces pain substantially\n  (0.70, 0.25, 0.05, 0.00, 0.80, 0.15, 0.05, 0.80, 0.15, 0.05, 0.85, 0.15),  # T2,P_sens2,G3,C_sens1,D_mod3,Cog1 - gate closed, strong inhibition\n  (0.55, 0.35, 0.08, 0.02, 0.75, 0.20, 0.05, 0.75, 0.20, 0.05, 0.80, 0.20),  # T2,P_sens2,G3,C_sens1,D_mod3,Cog3 - gate closed even with fear\n  \n  # Gate open (G1) amplifies pain\n  (0.15, 0.30, 0.40, 0.15, 0.45, 0.35, 0.20, 0.50, 0.35, 0.15, 0.55, 0.45),  # T2,P_sens2,G1,C_sens1,D_mod1,Cog1 - gate open, facilitation\n  (0.05, 0.20, 0.45, 0.30, 0.30, 0.40, 0.30, 0.35, 0.40, 0.25, 0.40, 0.60),  # T2,P_sens2,G1,C_sens1,D_mod1,Cog4 - gate open + catastrophizing\n  \n  # ... (continues for all 378 combinations with theory-based predictions)\n}\n\n# B: 378 states_next x 378 states_previous x 81 actions. State transitions for each action combination.\n# Actions ordered by: Attn, Behav, Reapp, Desc_C (3\u00d73\u00d73\u00d73 = 81 total)\nB={\n  # Theory-specific transition dynamics:\n  \n  # Action 1: Distraction, Avoidance, Negative reappraisal, Low descending control (Attn1,Behav1,Reapp1,Desc_C1)\n  # - Fear-avoidance model: Avoidance \u2192 deconditioning, muscle atrophy \u2192 increased tissue vulnerability\n  # - Negative reappraisal \u2192 catastrophizing \u2192 facilitation \u2192 central sensitization\n  # - Low descending control \u2192 open gate \u2192 peripheral signals reach CNS unimpeded\n  # - Chronic pain pathway: T remains damaged/inflamed, P_sens increases, G opens, C_sens develops, D_mod shifts to facilitation, Cog worsens\n  \n  # Action 14: Monitoring, Pacing, Neutral reappraisal, Moderate descending control (Attn2,Behav2,Reapp2,Desc_C2)\n  # - Balanced approach: Pacing \u2192 gradual tissue healing without overload\n  # - Neutral reappraisal \u2192 stable cognitive state\n  # - Moderate control \u2192 modulated gate\n  # - Maintenance pathway: States remain relatively stable\n  \n  # Action 41: Distraction, Engagement, Positive reappraisal, High descending control (Attn1,Behav3,Reapp3,Desc_C3)\n  # - Active coping: Engagement \u2192 tissue adaptation, improved function\n  # - Positive reappraisal \u2192 reduced catastrophizing \u2192 inhibition\n  # - High descending control \u2192 gate closure\n  # - Recovery pathway: T heals, P_sens normalizes, G closes, C_sens prevented/reversed, D_mod shifts to inhibition, Cog improves\n  \n  # Action 81: Catastrophizing attention, Engagement (push through), Negative reappraisal, High descending control attempt (Attn3,Behav3,Reapp1,Desc_C3)\n  # - Contradictory strategy: Engagement without cognitive change\n  # - May lead to tissue damage despite high control attempts\n  # - Risk of central sensitization despite behavioral engagement\n  \n  # Key transition probabilities for testing hypotheses:\n  # 1. Peripheral Sensitization Hypothesis: Prolonged tissue damage (T=damaged) \u2192 P_sens increases over time\n  # 2. Central Sensitization Hypothesis: Open gate (G1) + prolonged input \u2192 C_sens develops (one-way transition, difficult to reverse)\n  # 3. Gate Control Hypothesis: Desc_C=high \u2192 G=closed \u2192 reduced pain transmission\n  # 4. Fear-Avoidance Hypothesis: Behav=avoidance + Cog=fearful \u2192 T worsens + Cog \u2192 catastrophizing\n  # 5. Cognitive Reappraisal Hypothesis: Reapp=positive \u2192 Cog improves \u2192 D_mod \u2192 inhibition\n  # 6. Descending Facilitation Hypothesis: Cog=catastrophizing \u2192 D_mod=facilitation \u2192 amplified pain\n  \n  # ... (81 transition matrices defining these dynamics)\n}\n\n# C: 72 observations. Preferences for pain-free, functional states.\nC={\n  # Strong preference for: No pain (Pain_I1), nociceptive quality (normal - Pain_Q1), full function (Func1), normal autonomic (Auto1)\n  # Strong aversion to: Severe pain (Pain_I4), nociplastic quality (Pain_Q3), disabled (Func3), hyperarousal (Auto2)\n  \n  # Pain_I preferences: none (0.9), mild (0.5), moderate (-0.3), severe (-1.5)\n  # Pain_Q preferences: nociceptive (0.2), neuropathic (-0.3), nociplastic (-0.8)\n  # Func preferences: full (0.8), limited (0.0), disabled (-1.0)\n  # Auto preferences: normal (0.3), hyperarousal (-0.5)\n  \n  # Combined log-preferences for 72 observation combinations:\n  (2.2, 1.4, 0.5, 0.7, -0.1, -0.8, -0.5, -1.3, -2.2, -1.7, -2.5, -3.4,\n   2.0, 1.2, 0.3, 0.5, -0.3, -1.0, -0.7, -1.5, -2.4, -1.9, -2.7, -3.6,\n   1.6, 0.8, -0.1, 0.1, -0.7, -1.4, -1.1, -1.9, -2.8, -2.3, -3.1, -4.0,\n   1.0, 0.2, -0.7, -0.5, -1.3, -2.0, -1.7, -2.5, -3.4, -2.9, -3.7, -4.6,\n   0.5, -0.3, -1.2, -1.0, -1.8, -2.5, -2.2, -3.0, -3.9, -3.4, -4.2, -5.1,\n   -0.2, -1.0, -1.9, -1.7, -2.5, -3.2, -2.9, -3.7, -4.6, -4.1, -4.9, -5.8)\n}\n\n# D: 378 states. Prior distribution reflecting acute vs chronic pain populations.\nD={\n  # Acute pain prior (testing on recently injured population):\n  # - Tissue: 10% healed, 50% inflamed, 40% damaged\n  # - Peripheral sens: 60% normal, 30% moderate, 10% severe\n  # - Gate: 40% open, 40% modulated, 20% closed\n  # - Central sens: 90% absent, 10% present\n  # - Descending mod: 20% facilitation, 60% neutral, 20% inhibition\n  # - Cognitive: 30% adaptive, 20% vigilant, 15% fearful, 10% catastrophizing, 10% depressed, 10% anxious, 5% alexithymic\n  \n  # Chronic pain prior (testing on chronic pain population):\n  # - Tissue: 40% healed, 40% inflamed, 20% damaged (tissue often healed in chronic pain!)\n  # - Peripheral sens: 20% normal, 40% moderate, 40% severe (higher sensitization)\n  # - Gate: 50% open, 35% modulated, 15% closed (gate more often open)\n  # - Central sens: 40% absent, 60% present (higher central sensitization)\n  # - Descending mod: 40% facilitation, 40% neutral, 20% inhibition (more facilitation)\n  # - Cognitive: 10% adaptive, 15% vigilant, 20% fearful, 25% catastrophizing, 15% depressed, 10% anxious, 5% alexithymic (more maladaptive)\n  \n  # Default: Acute pain prior (can be parameterized for different populations)\n  (0.10, 0.50, 0.40,   # T distribution (healed, inflamed, damaged)\n   0.60, 0.30, 0.10,   # P_sens distribution (normal, moderate, severe)\n   0.40, 0.40, 0.20,   # G distribution (open, modulated, closed)\n   0.90, 0.10,         # C_sens distribution (absent, present)\n   0.20, 0.60, 0.20,   # D_mod distribution (facilitation, neutral, inhibition)\n   0.30, 0.20, 0.15, 0.10, 0.10, 0.10, 0.05)  # Cog distribution (adaptive \u2192 alexithymic)\n   # ... (repeated for all 378 state combinations with appropriate joint probabilities)\n}\n\n# E: 81 actions. Habit vector reflecting common pain coping strategies.\nE={\n  # Default habits favor monitoring, pacing, neutral reappraisal, moderate descending control\n  # Slight bias toward adaptive strategies\n  \n  # Attn distribution: 30% distraction, 50% monitoring, 20% catastrophizing attention\n  # Behav distribution: 25% avoidance, 50% pacing, 25% engagement\n  # Reapp distribution: 20% negative, 60% neutral, 20% positive\n  # Desc_C distribution: 25% low, 50% moderate, 25% high\n  \n  # Combined habit weights (81 action combinations):\n  (0.015, 0.023, 0.015, 0.025, 0.038, 0.025, 0.015, 0.023, 0.015,\n   0.030, 0.045, 0.030, 0.050, 0.075, 0.050, 0.030, 0.045, 0.030,\n   0.015, 0.023, 0.015, 0.025, 0.038, 0.025, 0.015, 0.023, 0.015,\n   0.010, 0.015, 0.010, 0.017, 0.025, 0.017, 0.010, 0.015, 0.010,\n   0.020, 0.030, 0.020, 0.033, 0.050, 0.033, 0.020, 0.030, 0.020,\n   0.010, 0.015, 0.010, 0.017, 0.025, 0.017, 0.010, 0.015, 0.010,\n   0.006, 0.009, 0.006, 0.010, 0.015, 0.010, 0.006, 0.009, 0.006,\n   0.012, 0.018, 0.012, 0.020, 0.030, 0.020, 0.012, 0.018, 0.012,\n   0.006, 0.009, 0.006, 0.010, 0.015, 0.010, 0.006, 0.009, 0.006)\n}",
+    "Equations": "# Chronic pain dynamics following Active Inference principles with THREE NESTED CONTINUOUS TIMESCALES:\n#\n# ============================================================================\n# FAST TIMESCALE (t_fast: milliseconds to seconds) - Neural Signaling\n# ============================================================================\n#\n# GATE CONTROL (Melzack & Wall) - Fast spinal modulation:\n# \u03c4_fast * dG/dt_fast = -G + \u03c3(w_periph * P_sens - w_desc * D_mod + w_cog * f_cog(Cog) + I_noci(T))\n# where \u03c4_fast \u2248 10-100 ms (fast neural dynamics)\n# - Peripheral nociceptive input I_noci(T) from tissue state\n# - Peripheral sensitization P_sens (slow state) amplifies input\n# - Descending modulation D_mod closes gate\n# - Cognitive state influences gate threshold\n# - Rapid equilibration to changing inputs\n#\n# DESCENDING MODULATION (Neuromatrix Theory) - Fast cortical-spinal signals:\n# \u03c4_desc * dD_mod/dt_fast = -D_mod + h(Cog, Reapp) + w_desc * Desc_C + \u03b7_fast(t)\n# where \u03c4_desc \u2248 50-200 ms (cortico-spinal loop delay)\n# - Cognitive-affective state Cog (medium timescale) sets baseline\n# - Cognitive reappraisal Reapp (medium timescale) modulates baseline\n# - Volitional descending control Desc_C provides fast override\n# - \u03b7_fast(t) represents neural noise at fast timescale\n#\n# PAIN PERCEPTION - Fast sensory processing:\n# Pain_I(t_fast) = A_matrix[G(t_fast), P_sens(t_slow), C_sens(t_slow), D_mod(t_fast), Cog(t_medium)]\n# Pain_Q(t_fast) = Quality[P_sens(t_slow), C_sens(t_slow), G(t_fast)]\n# Auto(t_fast) = Autonomic[Pain_I(t_fast), Cog(t_medium)]\n# - Observations generated from fast and slow states\n# - Gate state G modulates immediate pain intensity\n# - Sensitization states (slow) determine pain amplification\n# - Autonomic responses follow pain perception rapidly\n#\n# ============================================================================\n# MEDIUM TIMESCALE (t_medium: minutes to hours) - Cognitive-Behavioral\n# ============================================================================\n#\n# COGNITIVE-AFFECTIVE DYNAMICS (Biopsychosocial Model):\n# \u03c4_cog * dCog/dt_medium = \u03b4_cog * [k_pain * \u27e8Pain_I\u27e9_fast + k_func * Func + k_behav * f_behav(Behav) + k_reapp * Reapp - \u03b5_cog * Cog]\n# where \u03c4_cog \u2248 10-30 min (cognitive adaptation timescale)\n# - \u27e8Pain_I\u27e9_fast represents time-averaged pain from fast timescale\n# - Functional limitations Func contribute to emotional distress\n# - Behavioral patterns (avoidance, pacing, engagement) modulate cognitive state\n# - Cognitive reappraisal Reapp provides corrective input\n# - Natural recovery \u03b5_cog drives return to baseline cognitive state\n# - Catastrophizing develops through positive feedback: high pain \u2192 negative cognition \u2192 descending facilitation \u2192 more pain\n#\n# FUNCTIONAL CAPACITY DYNAMICS:\n# \u03c4_func * dFunc/dt_medium = -Func + g_func(Behav, \u27e8Pain_I\u27e9_fast, Cog)\n# where \u03c4_func \u2248 30-60 min (activity-dependent functional changes)\n# - Behavioral engagement improves function\n# - Avoidance leads to deconditioning and reduced function\n# - Pain intensity limits functional capacity\n# - Cognitive state (fear, catastrophizing) restricts function beyond physical limitations\n#\n# ACTIVE INFERENCE POLICY SELECTION (Medium timescale):\n# G(\u03c0) = E_\u03c0[\u222b_t_fast D_KL(o(\u03c4) || C(\u03c4)) d\u03c4] + D_KL(\u03c0 || E)  # Expected free energy integrating over fast observations\n# \u03c0*(t_medium) = argmin_\u03c0 G(\u03c0)  # Policy updated on medium timescale\n# u(t_medium) ~ softmax(-\u03b3 * G(\u03c0))  # Action selection: Attn, Behav, Reapp, Desc_C\n# - Policies evaluated by integrating prediction errors over fast timescale\n# - Actions (attention, behavior, reappraisal, descending control) selected to minimize expected free energy\n# - Habit priors E bias toward familiar coping strategies\n#\n# ============================================================================\n# SLOW TIMESCALE (t_slow: hours to days) - Tissue & Sensitization\n# ============================================================================\n#\n# TISSUE HEALING/DAMAGE:\n# \u03c4_tissue * dT/dt_slow = \u03b7_heal * h_pacing(\u27e8Behav\u27e9_medium) - \u03b8_damage * [h_overuse(\u27e8Behav\u27e9_medium) + h_disuse(\u27e8Behav\u27e9_medium)]\n# where \u03c4_tissue \u2248 6-24 hours (tissue remodeling timescale)\n# - \u27e8Behav\u27e9_medium represents time-averaged behavioral strategy from medium timescale\n# - Pacing (moderate, graduated activity) promotes healing\n# - Overuse (excessive engagement without rest) causes tissue damage\n# - Disuse (avoidance, inactivity) causes deconditioning and vulnerability\n# - Natural healing rate \u03b7_heal vs damage rate \u03b8_damage\n#\n# PERIPHERAL SENSITIZATION (Nociceptor Theory) - Slow plasticity:\n# \u03c4_periph * dP_sens/dt_slow = \u03b1_periph * f_inflam(T) * [1 - P_sens] - \u03b2_periph * P_sens\n# where \u03c4_periph \u2248 12-48 hours (peripheral nociceptor sensitization)\n# - Tissue inflammation/damage T drives sensitization\n# - Saturation dynamics: sensitization increases from normal state\n# - Spontaneous recovery \u03b2_periph (slow, hours to days)\n# - Peripheral sensitization lowers pain thresholds (allodynia)\n#\n# CENTRAL SENSITIZATION (Wind-up, LTP) - Slow, one-way plasticity:\n# \u03c4_central * dC_sens/dt_slow = \u03bb_central * \u27e8G(t_fast)\u27e9_fast * P_sens * [1 - C_sens] - \u03bc_reverse * C_sens\n# where \u03c4_central \u2248 24-72 hours (central LTP-like process)\n# - \u27e8G(t_fast)\u27e9_fast represents time-averaged gate openness (prolonged nociceptive barrage)\n# - Peripheral sensitization P_sens amplifies input\n# - Cumulative input drives central sensitization (threshold process)\n# - Reversal rate \u03bc_reverse << \u03bb_central (one-way process, difficult to reverse)\n# - C_sens=present indicates chronic central amplification (nociplastic pain)\n# - Central sensitization predicts pain persistence even after tissue healing\n#\n# ============================================================================\n# TIMESCALE SEPARATION AND COUPLING:\n# ============================================================================\n# \u03b5 = \u03c4_fast / \u03c4_medium \u2248 10^-3  (fast/medium separation)\n# \u03b4 = \u03c4_medium / \u03c4_slow \u2248 10^-2  (medium/slow separation)\n#\n# Coupling structure:\n# - SLOW \u2192 FAST: Sensitization states (P_sens, C_sens, T) act as slowly-varying parameters for fast dynamics\n# - FAST \u2192 MEDIUM: Time-averaged pain signals \u27e8Pain_I\u27e9 drive cognitive-affective changes\n# - MEDIUM \u2192 SLOW: Time-averaged behavior \u27e8Behav\u27e9 affects tissue healing and sensitization\n# - FREE ENERGY MINIMIZATION spans all timescales with appropriate temporal integration\n#\n# ============================================================================\n# STATE INFERENCE (Hierarchical across timescales):\n# ============================================================================\n# Fast states: q(G, D_mod | o_fast) = argmin F_fast\n# Medium states: q(Cog, Func | \u27e8o_fast\u27e9, o_medium) = argmin F_medium\n# Slow states: q(T, P_sens, C_sens | \u27e8o_medium\u27e9, o_slow) = argmin F_slow\n#\n# Variational Free Energy at each timescale:\n# F_fast = D_KL(q(s_fast) || p(s_fast | s_medium, s_slow)) - E_q[log p(o_fast | s_fast, s_slow)]\n# F_medium = D_KL(q(s_medium) || p(s_medium | s_slow)) - E_q[log p(\u27e8o_fast\u27e9 | s_medium, s_slow)]\n# F_slow = D_KL(q(s_slow) || p(s_slow)) - E_q[log p(\u27e8o_medium\u27e9 | s_slow)]\n#\n# ============================================================================\n# TESTABLE PREDICTIONS (Multi-timescale):\n# ============================================================================\n# 1. CENTRAL SENSITIZATION (slow): Pain persistence despite tissue healing\n#    - T\u2192healed (slow timescale) but C_sens=present (slow) \u2192 continued severe pain (fast)\n#    - Time course: weeks to months for central sensitization development\n#\n# 2. GATE CONTROL (fast): Immediate pain modulation via descending control\n#    - High Desc_C (fast action) \u2192 G=closed (fast state) \u2192 reduced Pain_I (fast observation)\n#    - Time course: seconds to minutes for gate closure effects\n#\n# 3. FEAR-AVOIDANCE SPIRAL (medium): Cognitive-behavioral disability cycle\n#    - Behav=avoidance (medium) + Cog=fearful (medium) \u2192 Func worsens (medium) \u2192 Cog worsens (medium)\n#    - Time course: days to weeks for fear-avoidance cycle establishment\n#\n# 4. COGNITIVE REAPPRAISAL (medium\u2192fast): Descending inhibition pathway\n#    - Reapp=positive (medium action) \u2192 Cog improves (medium) \u2192 D_mod=inhibition (fast) \u2192 Pain_I reduced (fast)\n#    - Time course: minutes to hours for cognitive change, immediate pain reduction via descending control\n#\n# 5. PERIPHERAL SENSITIZATION (slow): Allodynia development\n#    - Prolonged T=inflamed (slow) \u2192 P_sens=severe (slow) \u2192 high Pain_I (fast) even after T\u2192healed\n#    - Time course: hours to days for peripheral sensitization, days to weeks for normalization\n#\n# 6. CATASTROPHIZING AMPLIFICATION (medium\u2192fast): Descending facilitation\n#    - Persistent high pain (fast) \u2192 Cog\u2192catastrophizing (medium) \u2192 D_mod=facilitation (fast) \u2192 Pain_I amplified (fast)\n#    - Time course: hours to days for catastrophizing development, immediate pain amplification\n#\n# 7. TIMESCALE INTERACTIONS: Multi-rate chronification pathway\n#    - Acute injury (T=damaged, fast pain) \u2192 avoidance behavior (medium) \u2192 tissue vulnerability + catastrophizing (medium) \n#      \u2192 peripheral sensitization (slow) + descending facilitation (fast) \u2192 central sensitization (slow) \u2192 chronic pain\n#    - Full chronification time course: weeks to months integrating all three timescales",
+    "Time": "Time=t_fast,t_medium,t_slow\nDynamic\nContinuous\nMultipleTimescales=True\nModelTimeHorizon=Unbounded # Chronic pain model for longitudinal simulation across multiple timescales\n\n# Fast Timescale (t_fast): Neural signaling and acute responses\nFastTimeScale=t_fast\nFastTimeRange=[0, \u221e) ms\nFastProcesses=[G, D_mod, Pain_I, Pain_Q, Auto]  # Spinal gate, descending modulation, immediate pain perception\n\n# Medium Timescale (t_medium): Cognitive-affective and behavioral dynamics\nMediumTimeScale=t_medium\nMediumTimeRange=[0, \u221e) min\nMediumProcesses=[Cog, Attn, Behav, Reapp, Func]  # Cognitive states, attention, behavior, functional capacity\n\n# Slow Timescale (t_slow): Tissue healing and chronic sensitization\nSlowTimeScale=t_slow\nSlowTimeRange=[0, \u221e) hours\nSlowProcesses=[T, P_sens, C_sens]  # Tissue state, peripheral/central sensitization development\n\n# Timescale Coupling: Processes at faster timescales influence slower ones\n# - Fast \u2192 Medium: Pain signals drive cognitive-affective responses\n# - Medium \u2192 Slow: Behavioral strategies affect tissue healing and sensitization\n# - Slow \u2192 Fast: Sensitization states modulate acute pain processing\n# - All timescales interact through Active Inference free energy minimization",
+    "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=TransitionMatrices\nC=LogPreferenceVector\nD=PriorOverHiddenStates\nE=HabitVector\nF=VariationalFreeEnergy\nG=ExpectedFreeEnergy\nT=TissueState\nP_sens=PeripheralSensitization\nG=SpinalGateState\nC_sens=CentralSensitization\nD_mod=DescendingModulation\nCog=CognitiveAffectiveState\nPain_I=PainIntensityObservation\nPain_Q=PainQualityObservation\nFunc=FunctionalCapacityObservation\nAuto=AutonomicResponseObservation\nAttn=AttentionAllocationControl\nBehav=BehavioralStrategyControl\nReapp=CognitiveReappraisalControl\nDesc_C=DescendingControlAction\nt_fast=FastTimescale\nt_medium=MediumTimescale\nt_slow=SlowTimescale",
+    "ModelParameters": "# Hidden state parameters (6 factors, 378 combinations)\nnum_tissue_states: 3           # T[3] - healed, inflamed, damaged\nnum_peripheral_sens_levels: 3  # P_sens[3] - normal, moderate, severe\nnum_gate_states: 3             # G[3] - open, modulated, closed\nnum_central_sens_states: 2     # C_sens[2] - absent, present\nnum_descending_mod_states: 3   # D_mod[3] - facilitation, neutral, inhibition\nnum_cognitive_states: 7        # Cog[7] - adaptive, vigilant, fearful, catastrophizing, depressed, anxious, alexithymic\n\n# Observation parameters (4 modalities, 72 combinations)\nnum_pain_intensity_levels: 4   # Pain_I[4] - none, mild, moderate, severe\nnum_pain_quality_types: 3      # Pain_Q[3] - nociceptive, neuropathic, nociplastic\nnum_functional_levels: 3       # Func[3] - full, limited, disabled\nnum_autonomic_states: 2        # Auto[2] - normal, hyperarousal\n\n# Control parameters (4 factors, 81 combinations)\nnum_attention_strategies: 3    # Attn[3] - distraction, monitoring, catastrophizing\nnum_behavioral_strategies: 3   # Behav[3] - avoidance, pacing, engagement\nnum_reappraisal_strategies: 3  # Reapp[3] - negative, neutral, positive\nnum_descending_control_levels: 3 # Desc_C[3] - low, moderate, high\n\n# Totals\ntotal_hidden_states: 378       # 3\u00d73\u00d73\u00d72\u00d73\u00d77 combinations\ntotal_observations: 72         # 4\u00d73\u00d73\u00d72 combinations\ntotal_actions: 81              # 3\u00d73\u00d73\u00d73 combinations\n\n# Theory-specific parameters for hypothesis testing (with timescale-specific rates)\n\n# ============================================================================\n# FAST TIMESCALE PARAMETERS (milliseconds to seconds)\n# ============================================================================\ntau_fast_gate: 0.05            # s - Gate dynamics time constant (50 ms)\ntau_fast_descending: 0.15      # s - Descending modulation time constant (150 ms)\nw_periph_gate: 1.2             # - Weight of peripheral input on gate\nw_desc_gate: 1.5               # - Weight of descending modulation on gate closure\nw_cog_gate: 0.8                # - Weight of cognitive state on gate threshold\nw_desc_control: 2.0            # - Weight of volitional descending control\nnoise_fast_std: 0.1            # - Standard deviation of fast neural noise\n\n# ============================================================================\n# MEDIUM TIMESCALE PARAMETERS (minutes to hours)\n# ============================================================================\ntau_medium_cog: 1800           # s (30 min) - Cognitive adaptation time constant\ntau_medium_func: 3600          # s (60 min) - Functional capacity time constant\ndelta_cognitive: 0.10          # - Cognitive adaptation rate\nk_pain_cog: 0.15               # - Weight of pain on cognitive state\nk_func_cog: 0.10               # - Weight of function on cognitive state\nk_behav_cog: 0.12              # - Weight of behavior on cognitive state\nk_reapp_cog: 0.20              # - Weight of reappraisal on cognitive state\nepsilon_cognitive_recovery: 0.05 # - Natural cognitive recovery rate\n\n# ============================================================================\n# SLOW TIMESCALE PARAMETERS (hours to days)\n# ============================================================================\ntau_slow_tissue: 43200         # s (12 hours) - Tissue remodeling time constant\ntau_slow_periph: 86400         # s (24 hours) - Peripheral sensitization time constant\ntau_slow_central: 172800       # s (48 hours) - Central sensitization time constant\n\n# Tissue dynamics\neta_tissue_healing: 0.03       # - Tissue healing rate with optimal pacing\ntheta_tissue_overuse: 0.04     # - Tissue damage rate from overuse\ntheta_tissue_disuse: 0.035     # - Tissue damage rate from disuse\n\n# Peripheral sensitization\nalpha_peripheral_sens: 0.05    # - Peripheral sensitization development rate\nbeta_peripheral_recovery: 0.02 # - Peripheral sensitization spontaneous recovery rate\n\n# Central sensitization (one-way process)\nlambda_central_sens: 0.001     # - Central sensitization accumulation rate\nmu_central_reverse: 0.0001     # - Central sensitization reversal rate (very slow, \u03bc << \u03bb)\nthreshold_central: 0.6         # - Threshold for central sensitization triggering\n\n# ============================================================================\n# TIMESCALE SEPARATION RATIOS\n# ============================================================================\nepsilon_fast_medium: 0.001     # \u03b5 = \u03c4_fast / \u03c4_medium \u2248 10^-3\ndelta_medium_slow: 0.01        # \u03b4 = \u03c4_medium / \u03c4_slow \u2248 10^-2\n\n# ============================================================================\n# TEMPORAL AVERAGING WINDOWS (for cross-timescale coupling)\n# ============================================================================\nwindow_fast_to_medium: 300     # s (5 min) - Averaging window for fast\u2192medium coupling\nwindow_medium_to_slow: 14400   # s (4 hours) - Averaging window for medium\u2192slow coupling\n\n# ============================================================================\n# POPULATION-SPECIFIC PRIORS (can be varied for testing)\n# ============================================================================\npopulation_type: \"acute\"       # Options: \"acute\", \"chronic\", \"high_risk\", \"resilient\"",
+    "Footer": "Active Inference Chronic Pain Multi-Theory Model v1 - GNN Representation.\n\nThis model integrates multiple coherent theories of chronic pain chronification across THREE NESTED CONTINUOUS TIMESCALES:\n\n**Integrated Theories:**\n- Peripheral sensitization (nociceptor hyperexcitability)\n- Central sensitization (spinal and supraspinal amplification)\n- Gate control theory (spinal modulation mechanisms)\n- Neuromatrix theory (distributed network including descending modulation)\n- Predictive coding / Active Inference (pain as precision-weighted prediction error)\n- Fear-avoidance model (cognitive-behavioral factors)\n- Biopsychosocial integration (tissue, neural, cognitive, affective, behavioral factors)\n\n**Three Nested Timescales:**\n1. **Fast (milliseconds to seconds)**: Neural signaling, gate control, descending modulation, acute pain perception\n   - Allows modeling immediate pain responses and rapid modulation\n   - Time constants: \u03c4_gate \u2248 50 ms, \u03c4_descending \u2248 150 ms\n\n2. **Medium (minutes to hours)**: Cognitive-affective processes, behavioral adaptation, functional capacity\n   - Captures psychological coping strategies and functional changes\n   - Time constants: \u03c4_cognitive \u2248 30 min, \u03c4_function \u2248 60 min\n\n3. **Slow (hours to days)**: Tissue healing, peripheral/central sensitization development\n   - Models chronic plasticity and long-term pain chronification\n   - Time constants: \u03c4_tissue \u2248 12 hrs, \u03c4_peripheral \u2248 24 hrs, \u03c4_central \u2248 48 hrs\n\n**Timescale Coupling:**\n- Slow states (sensitization, tissue) modulate fast dynamics (acute pain)\n- Fast observations (averaged pain) drive medium dynamics (cognition, behavior)\n- Medium behaviors (averaged strategies) influence slow processes (healing, sensitization)\n- Active Inference operates across all timescales with appropriate temporal integration\n\n**The model enables:**\n1. Testing competing hypotheses about pain chronification mechanisms across multiple timescales\n2. Simulating different patient populations (acute, chronic, high-risk, resilient)\n3. Evaluating intervention strategies with timescale-specific effects (behavioral, cognitive, pharmacological)\n4. Predicting individual trajectories based on baseline states and coping strategies\n5. Identifying critical transition points from acute to chronic pain\n6. Understanding multi-rate dynamics from immediate pain modulation to long-term chronification\n7. Designing interventions targeting specific timescales (fast: descending control, medium: CBT, slow: tissue healing)\n\n**Key testable predictions (with timescale specificity):**\n- Central sensitization (slow) as a \"point of no return\" in chronic pain development\n- Gate control effectiveness (fast) via descending modulation with immediate pain reduction\n- Fear-avoidance cycles (medium) leading to disability independent of tissue state\n- Cognitive reappraisal (medium\u2192fast) as pathway to pain reduction via descending inhibition\n- Peripheral vs central contributions (slow) to pain in different patient phenotypes\n- Timescale interactions driving the transition from acute to chronic pain\n- Intervention windows: fast (immediate relief), medium (coping strategies), slow (prevent sensitization)",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

@@ -7,7 +7,7 @@ This model describes how a neuron responds to stimuli using Active Inference pri
 - Three control factors for plasticity, channel modulation, and metabolic allocation
 - The model captures key neural phenomena: membrane potential dynamics, synaptic plasticity (STDP-like), activity-dependent adaptation, homeostatic regulation, and metabolic constraints
 - Preferences encode biologically realistic goals: stable firing rates, energy efficiency, and synaptic balance
-Generated: 2025-10-01T08:19:56.485332
+Generated: 2025-10-02T10:52:16.338612
 """
 
 import numpy as np

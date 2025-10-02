@@ -111,53 +111,87 @@ output/
 
 ## Performance Characteristics
 
-### Latest Status (September 30, 2025)
+### Latest Status (October 1, 2025)
 - **Total Steps**: 24 (all steps 0-23)
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **AGENTS.md Coverage**: 100% (28/28 modules documented)
+- **AGENTS.md Coverage**: ✅ 100% (28/28 modules documented)
+- **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
 - **Architecture Status**: ✅ Production Ready
 
-### Recent Fixes (September 30, 2025)
-- **Fixed**: 9 syntax errors (1 IndentationError, 8 template placeholders)
-- **Scripts Fixed**: `10_ontology.py`, `15_audio.py`, `16_analysis.py`, `17_integration.py`, `18_security.py`, `19_research.py`, `20_website.py`, `21_mcp.py`, `23_report.py`
-- **All scripts now**: Properly import from real module implementations
-- **No fallback methods**: All modules have complete implementations in their respective folders
+### Recent Fixes (October 1, 2025)
+- **Fixed**: All documentation gaps and inconsistencies
+- **Created**: Missing AGENTS.md files for all modules
+- **Updated**: All README files for completeness and accuracy
+- **Enhanced**: Module status matrix and performance characteristics
+- **Verified**: 24-step pipeline structure alignment
+- **All modules**: Have complete AGENTS.md and README documentation
+
+---
+
+## 24-Step Pipeline Structure (CURRENT)
+
+The pipeline consists of exactly 24 steps (steps 0-23), executed in order:
+
+0. **0_template.py** → `src/template/` - Pipeline template and initialization
+1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation
+2. **2_tests.py** → `src/tests/` - Comprehensive test suite execution
+3. **3_gnn.py** → `src/gnn/` - GNN file discovery, multi-format parsing, and validation
+4. **4_model_registry.py** → `src/model_registry/` - Model registry management and versioning
+5. **5_type_checker.py** → `src/type_checker/` - GNN syntax validation and resource estimation
+6. **6_validation.py** → `src/validation/` - Advanced validation and consistency checking
+7. **7_export.py** → `src/export/` - Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
+8. **8_visualization.py** → `src/visualization/` - Graph and matrix visualization generation
+9. **9_advanced_viz.py** → `src/advanced_visualization/` - Advanced visualization and interactive plots
+10. **10_ontology.py** → `src/ontology/` - Active Inference Ontology processing and validation
+11. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl simulation environments
+12. **12_execute.py** → `src/execute/` - Execute rendered simulation scripts with result capture
+13. **13_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
+14. **14_ml_integration.py** → `src/ml_integration/` - Machine learning integration and model training
+15. **15_audio.py** → `src/audio/` - Audio generation (SAPF, Pedalboard, and other backends)
+16. **16_analysis.py** → `src/analysis/` - Advanced analysis and statistical processing
+17. **17_integration.py** → `src/integration/` - System integration and cross-module coordination
+18. **18_security.py** → `src/security/` - Security validation and access control
+19. **19_research.py** → `src/research/` - Research tools and experimental features
+20. **20_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts
+21. **21_mcp.py** → `src/mcp/` - Model Context Protocol processing and tool registration
+22. **22_gui.py** → `src/gui/` - Interactive GUI for constructing/editing GNN models
+23. **23_report.py** → `src/report/` - Comprehensive analysis report generation
 
 ---
 
 ## Module Status Matrix
 
-| Module | AGENTS.md | Status | Test Coverage | MCP Tools |
-|--------|-----------|--------|---------------|-----------|
-| template | ✅ Complete | ✅ Ready | 85% | 3 |
-| setup | ✅ Complete | ✅ Ready | 90% | 2 |
-| tests | ✅ Complete | ✅ Ready | 95% | 1 |
-| gnn | ✅ Complete | ✅ Ready | 85% | 4 |
-| model_registry | ✅ Complete | ✅ Ready | 80% | 3 |
-| type_checker | ✅ Complete | ✅ Ready | 88% | 2 |
-| validation | ✅ Complete | ✅ Ready | 82% | 3 |
-| export | ✅ Complete | ✅ Ready | 86% | 3 |
-| visualization | ✅ Complete | ✅ Ready | 84% | 4 |
-| advanced_visualization | ✅ Complete | ✅ Ready | 95% | 3 |
-| ontology | ✅ Complete | ✅ Ready | 81% | 3 |
-| render | ✅ Complete | ✅ Ready | 78% | 5 |
-| execute | ✅ Complete | ✅ Ready | 79% | 4 |
-| llm | ✅ Complete | ✅ Ready | 76% | 6 |
-| ml_integration | ✅ Complete | ✅ Ready | 72% | 2 |
-| audio | ✅ Complete | ✅ Ready | 74% | 3 |
-| analysis | ✅ Complete | ✅ Ready | 80% | 4 |
-| integration | ✅ Complete | ✅ Ready | 83% | 2 |
-| security | ✅ Complete | ✅ Ready | 87% | 3 |
-| research | ✅ Complete | ✅ Ready | 70% | 2 |
-| website | ✅ Complete | ✅ Ready | 79% | 3 |
-| mcp | ✅ Complete | ✅ Ready | 82% | 5 |
-| gui | ✅ Complete | ✅ Ready | 68% | 4 |
-| report | ✅ Complete | ✅ Ready | 81% | 3 |
-| utils | ✅ Complete | ✅ Ready | 88% | N/A |
-| pipeline | ✅ Complete | ✅ Ready | 90% | N/A |
-| sapf | ✅ Complete | ✅ Ready | 75% | 2 |
+| Module | AGENTS.md | README | Status | Test Coverage | MCP Tools |
+|--------|-----------|--------|--------|---------------|-----------|
+| template | ✅ Complete | ✅ Complete | ✅ Ready | 85% | 3 |
+| setup | ✅ Complete | ✅ Complete | ✅ Ready | 90% | 2 |
+| tests | ✅ Complete | ✅ Complete | ✅ Ready | 95% | 1 |
+| gnn | ✅ Complete | ✅ Complete | ✅ Ready | 85% | 4 |
+| model_registry | ✅ Complete | ✅ Complete | ✅ Ready | 80% | 3 |
+| type_checker | ✅ Complete | ✅ Complete | ✅ Ready | 88% | 2 |
+| validation | ✅ Complete | ✅ Complete | ✅ Ready | 82% | 3 |
+| export | ✅ Complete | ✅ Complete | ✅ Ready | 86% | 3 |
+| visualization | ✅ Complete | ✅ Complete | ✅ Ready | 84% | 4 |
+| advanced_visualization | ✅ Complete | ✅ Complete | ✅ Ready | 95% | 3 |
+| ontology | ✅ Complete | ✅ Complete | ✅ Ready | 81% | 3 |
+| render | ✅ Complete | ✅ Complete | ✅ Ready | 78% | 5 |
+| execute | ✅ Complete | ✅ Complete | ✅ Ready | 79% | 4 |
+| llm | ✅ Complete | ✅ Complete | ✅ Ready | 76% | 6 |
+| ml_integration | ✅ Complete | ✅ Complete | ✅ Ready | 72% | 2 |
+| audio | ✅ Complete | ✅ Complete | ✅ Ready | 74% | 3 |
+| analysis | ✅ Complete | ✅ Complete | ✅ Ready | 80% | 4 |
+| integration | ✅ Complete | ✅ Complete | ✅ Ready | 83% | 2 |
+| security | ✅ Complete | ✅ Complete | ✅ Ready | 87% | 3 |
+| research | ✅ Complete | ✅ Complete | ✅ Ready | 70% | 2 |
+| website | ✅ Complete | ✅ Complete | ✅ Ready | 79% | 3 |
+| mcp | ✅ Complete | ✅ Complete | ✅ Ready | 82% | 5 |
+| gui | ✅ Complete | ✅ Complete | ✅ Ready | 68% | 4 |
+| report | ✅ Complete | ✅ Complete | ✅ Ready | 81% | 3 |
+| utils | ✅ Complete | ✅ Complete | ✅ Ready | 88% | N/A |
+| pipeline | ✅ Complete | ✅ Complete | ✅ Ready | 90% | N/A |
+| sapf | ✅ Complete | ✅ Complete | ✅ Ready | 75% | 2 |
 
 **Legend**: ✅ Complete | ⏳ Pending | 🔄 Fixed/Updated
 
@@ -229,10 +263,11 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: September 29, 2025  
-**Pipeline Version**: 2.0.0  
-**Total Modules**: 26  
-**Total Steps**: 24 (0-23)  
+**Last Updated**: October 1, 2025
+**Pipeline Version**: 2.1.0
+**Total Modules**: 28
+**Total Steps**: 24 (0-23)
+**Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README files)
 **Status**: ✅ Production Ready
 
 

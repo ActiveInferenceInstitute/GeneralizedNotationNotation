@@ -2,7 +2,7 @@
 
 ## Module Overview
 
-**Purpose**: Static HTML website generation from pipeline artifacts with embedded visualizations and comprehensive documentation
+**Purpose**: Static HTML website generation from pipeline artifacts and results
 
 **Pipeline Step**: Step 20: Website generation (20_website.py)
 
@@ -14,18 +14,17 @@
 
 ### Primary Responsibilities
 1. Generate static HTML websites from pipeline results
-2. Embed visualizations, charts, and analysis results
-3. Create comprehensive documentation sites
-4. Support multiple output formats and themes
-5. Enable interactive exploration of pipeline artifacts
+2. Create interactive documentation and reports
+3. Organize and present pipeline artifacts
+4. Generate cross-linked documentation
+5. Create publication-ready websites
 
 ### Key Capabilities
-- Static HTML website generation
-- Multi-format content embedding (images, markdown, JSON, HTML)
-- Responsive design and mobile compatibility
-- Interactive visualizations and charts
-- Cross-reference linking between pipeline steps
-- Customizable themes and styling
+- Static website generation from pipeline artifacts
+- Interactive documentation and reports
+- Cross-linked content organization
+- Publication-ready HTML output
+- Asset management and optimization
 
 ---
 
@@ -33,130 +32,79 @@
 
 ### Public Functions
 
-#### `process_website(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main website generation function from pipeline artifacts
+#### `process_website(target_dir, output_dir, **kwargs) -> bool`
+**Description**: Generate website from pipeline artifacts
 
 **Parameters**:
-- `target_dir` (Path): Directory containing GNN files
-- `output_dir` (Path): Output directory for website
-- `logger` (Logger): Logger instance for progress reporting
-- `website_theme` (str): Website theme ("default", "modern", "minimal")
-- `include_interactive` (bool): Include interactive elements
-- `**kwargs`: Additional website-specific options
+- `target_dir`: Directory containing pipeline artifacts
+- `output_dir`: Output directory for website
+- `**kwargs`: Additional website options
 
 **Returns**: `True` if website generation succeeded
 
-#### `generate_website(artifacts_dir, output_dir, **kwargs) -> Dict[str, Any]`
-**Description**: Generate complete website from pipeline artifacts
+#### `generate_html_report(content) -> str`
+**Description**: Generate HTML report from content
 
 **Parameters**:
-- `artifacts_dir` (Path): Directory containing pipeline artifacts
-- `output_dir` (Path): Output directory for website
-- `theme` (str): Website theme and styling
-- `**kwargs`: Additional generation options
+- `content`: Content to convert to HTML
 
-**Returns**: Dictionary with website generation results
+**Returns**: HTML string
 
-#### `WebsiteGenerator` - Website Generation Class
-**Description**: Main class for website generation and management
+#### `embed_image(image_path, output_file) -> bool`
+**Description**: Embed image in HTML output
 
-**Key Methods**:
-- `generate()` - Generate complete website
-- `add_page()` - Add custom page to website
-- `embed_content()` - Embed external content
-- `set_theme()` - Apply website theme
+**Parameters**:
+- `image_path`: Path to image file
+- `output_file`: Output HTML file
 
----
+**Returns**: `True` if embedding succeeded
 
-## Website Features
+#### `embed_markdown_file(md_path, output_file) -> bool`
+**Description**: Embed markdown file in HTML output
 
-### Content Embedding
-**Supported Formats**:
-- **Images**: PNG, JPG, JPEG, GIF, SVG
-- **Text**: Markdown, plain text, RST
-- **Data**: JSON, YAML, CSV
-- **HTML**: Custom HTML content
-- **Visualizations**: Charts, graphs, interactive plots
+**Parameters**:
+- `md_path`: Path to markdown file
+- `output_file`: Output HTML file
 
-### Navigation Structure
-**Standard Pages**:
-- **Index**: Main landing page with overview
-- **Pipeline**: Step-by-step pipeline documentation
-- **Models**: GNN model specifications and details
-- **Analysis**: Statistical analysis and results
-- **Visualizations**: Charts, graphs, and interactive displays
-- **Code**: Generated simulation code and examples
-- **Documentation**: Comprehensive API reference
-
-### Interactive Features
-**Capabilities**:
-- Collapsible sections and accordions
-- Tabbed interfaces for different views
-- Search functionality across content
-- Responsive design for mobile devices
-- Dark/light theme switching
-
-### Theme System
-**Available Themes**:
-- **Default**: Clean, professional layout
-- **Modern**: Contemporary design with animations
-- **Minimal**: Simple, distraction-free interface
-- **Custom**: User-defined themes and styling
+**Returns**: `True` if embedding succeeded
 
 ---
 
 ## Dependencies
 
 ### Required Dependencies
-- `pathlib` - File system operations and path handling
-- `os` - System operations and file management
-- `shutil` - File copying and directory operations
-- `json` - Data serialization and configuration
+- `pathlib` - Path manipulation
+- `jinja2` - HTML templating
 
 ### Optional Dependencies
-- `jinja2` - HTML template rendering (fallback: basic HTML)
-- `markdown` - Markdown processing (fallback: plain text)
-- `beautifulsoup4` - HTML parsing and manipulation (fallback: regex)
-- `pillow` - Image processing and optimization (fallback: copy only)
+- `markdown` - Markdown to HTML conversion
+- `bleach` - HTML sanitization
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing
-- `pipeline.config` - Configuration management
+- `utils.pipeline_template` - Pipeline utilities
 
 ---
 
 ## Configuration
 
-### Environment Variables
-- `WEBSITE_THEME` - Default website theme ("default", "modern", "minimal")
-- `WEBSITE_TITLE` - Website title and branding
-- `WEBSITE_AUTHOR` - Website author information
-- `WEBSITE_INCLUDE_INTERACTIVE` - Include interactive elements (default: True)
-
-### Configuration Files
-- `website_config.yaml` - Website generation settings and themes
-
-### Default Settings
+### Website Settings
 ```python
-DEFAULT_WEBSITE_SETTINGS = {
-    'theme': 'default',
-    'title': 'GNN Pipeline Results',
-    'author': 'Active Inference Institute',
-    'include_interactive': True,
-    'embed_visualizations': True,
-    'embed_code_examples': True,
-    'responsive_design': True,
-    'search_enabled': True,
-    'theme_switching': True,
-    'sections': {
-        'overview': True,
-        'pipeline': True,
-        'models': True,
-        'analysis': True,
-        'visualizations': True,
-        'code': True,
-        'api': True
-    }
+WEBSITE_CONFIG = {
+    'template': 'default',
+    'theme': 'modern',
+    'include_navigation': True,
+    'generate_sitemap': True,
+    'optimize_assets': True
+}
+```
+
+### Content Settings
+```python
+CONTENT_CONFIG = {
+    'include_pipeline_summary': True,
+    'include_visualizations': True,
+    'include_reports': True,
+    'include_raw_data': False
 }
 ```
 
@@ -166,37 +114,30 @@ DEFAULT_WEBSITE_SETTINGS = {
 
 ### Basic Website Generation
 ```python
-from website.generator import generate_website
+from website import process_website
 
-result = generate_website(
-    artifacts_dir=Path("output/"),
-    output_dir=Path("output/20_website_output"),
-    theme="modern"
+success = process_website(
+    target_dir="output/",
+    output_dir="output/20_website_output"
 )
-print(f"Website generated: {result['success']}")
 ```
 
-### Website Generation Class
+### HTML Report Generation
 ```python
-from website.generator import WebsiteGenerator
+from website import generate_html_report
 
-generator = WebsiteGenerator(
-    artifacts_dir=Path("output/"),
-    output_dir=Path("output/20_website_output"),
-    theme="default"
-)
-
-success = generator.generate()
-print(f"Pages generated: {len(generator.pages)}")
+html_content = generate_html_report(markdown_content)
+with open("report.html", "w") as f:
+    f.write(html_content)
 ```
 
-### Content Embedding
+### Asset Embedding
 ```python
-from website.renderer import embed_markdown_file
+from website import embed_image
 
-html_content = embed_markdown_file(
-    Path("output/16_analysis_output/model_analysis.md"),
-    title="Statistical Analysis"
+success = embed_image(
+    image_path="visualizations/network.png",
+    output_file="website/index.html"
 )
 ```
 
@@ -205,31 +146,24 @@ html_content = embed_markdown_file(
 ## Output Specification
 
 ### Output Products
-- `index.html` - Main website landing page
-- `pipeline.html` - Pipeline step documentation
-- `models.html` - GNN model specifications
-- `analysis.html` - Statistical analysis results
-- `visualizations.html` - Charts and interactive displays
-- `code.html` - Generated simulation code
-- `api.html` - API documentation and reference
-- `assets/` - CSS, JavaScript, images, and resources
+- `index.html` - Main website page
+- `*.html` - Individual report pages
+- `assets/` - Static assets and resources
+- `sitemap.xml` - Website sitemap
+- `website_summary.json` - Website generation summary
 
 ### Output Directory Structure
 ```
 output/20_website_output/
 ├── index.html
-├── pipeline.html
-├── models.html
-├── analysis.html
+├── pipeline_summary.html
 ├── visualizations.html
-├── code.html
-├── api.html
+├── reports.html
 ├── assets/
 │   ├── css/
 │   ├── js/
-│   ├── images/
-│   └── fonts/
-└── website_generation_summary.json
+│   └── images/
+└── website_summary.json
 ```
 
 ---
@@ -237,29 +171,31 @@ output/20_website_output/
 ## Performance Characteristics
 
 ### Latest Execution
-- **Duration**: ~10-30 seconds (website generation)
-- **Memory**: ~50-100MB for comprehensive sites
+- **Duration**: ~2-5 seconds
+- **Memory**: ~50-100MB
 - **Status**: ✅ Production Ready
 
 ### Expected Performance
-- **Fast Path**: ~5-10s for basic websites
-- **Slow Path**: ~30-60s for comprehensive sites with many assets
-- **Memory**: ~20-50MB for typical sites, ~100MB+ for large sites
+- **Basic Generation**: 1-2 seconds
+- **Full Website**: 3-5 seconds
+- **Asset Optimization**: 1-3 seconds
+- **Content Processing**: 2-4 seconds
 
 ---
 
 ## Error Handling
 
-### Graceful Degradation
-- **No template engine**: Fallback to basic HTML templates
-- **Missing assets**: Generate placeholder content with warnings
-- **Large sites**: Streaming generation with progress updates
+### Website Errors
+1. **Template Errors**: Template rendering failures
+2. **Content Errors**: Content processing failures
+3. **Asset Errors**: Asset embedding failures
+4. **File I/O**: File system operation failures
 
-### Error Categories
-1. **Template Errors**: Invalid or missing website templates
-2. **Asset Errors**: Missing or corrupted assets and resources
-3. **Content Errors**: Invalid or malformed content for embedding
-4. **Resource Errors**: Memory or disk space exhaustion
+### Recovery Strategies
+- **Template Fallback**: Use default templates
+- **Content Simplification**: Simplify content processing
+- **Asset Skip**: Skip problematic assets
+- **Error Documentation**: Generate error reports
 
 ---
 
@@ -270,16 +206,15 @@ output/20_website_output/
 - **Function**: `process_website()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
-- `pipeline.config` - Configuration management
+- `utils.pipeline_template` - Pipeline utilities
 
 ### Imported By
-- `tests.test_website_unit.py` - Website generation tests
 - `main.py` - Pipeline orchestration
+- `tests.test_website_*` - Website tests
 
 ### Data Flow
 ```
-Pipeline Artifacts → Content Aggregation → Template Processing → Asset Embedding → Static Website
+Pipeline Artifacts → Content Extraction → Template Processing → Asset Embedding → Website Generation
 ```
 
 ---
@@ -287,39 +222,38 @@ Pipeline Artifacts → Content Aggregation → Template Processing → Asset Emb
 ## Testing
 
 ### Test Files
-- `src/tests/test_website_unit.py` - Unit tests
 - `src/tests/test_website_integration.py` - Integration tests
-- `src/tests/test_website_embedding.py` - Content embedding tests
+- `src/tests/test_website_generation.py` - Generation tests
 
 ### Test Coverage
 - **Current**: 79%
-- **Target**: 90%+
+- **Target**: 85%+
 
 ### Key Test Scenarios
-1. Website generation across different themes
-2. Content embedding for various file types
-3. Large site generation and performance
-4. Error handling with missing assets
-5. Mobile responsiveness and accessibility
+1. Website generation from pipeline artifacts
+2. HTML report creation and formatting
+3. Asset embedding and management
+4. Error handling and recovery
 
 ---
 
 ## MCP Integration
 
 ### Tools Registered
-- `website_generate` - Generate websites from pipeline data
-- `website_embed` - Embed content in websites
-- `website_theme` - Apply themes to websites
+- `website.generate` - Generate website from artifacts
+- `website.create_report` - Create HTML reports
+- `website.embed_assets` - Embed assets in HTML
+- `website.validate_content` - Validate website content
 
 ### Tool Endpoints
 ```python
-@mcp_tool("website_generate")
-def generate_website_tool(artifacts_dir, theme="default", interactive=True):
+@mcp_tool("website.generate")
+def generate_website_tool(artifacts_dir, output_dir):
     """Generate website from pipeline artifacts"""
     # Implementation
 ```
 
 ---
 
-**Last Updated**: September 30, 2025
+**Last Updated**: October 1, 2025
 **Status**: ✅ Production Ready

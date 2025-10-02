@@ -524,6 +524,9 @@ class POMDPRenderProcessor:
         try:
             doc_file = output_dir / 'README.md'
             
+            # Get model annotation safely
+            model_annotation = getattr(pomdp_space, 'model_annotation', None) or 'N/A'
+            
             doc_content = f"""# {framework.upper()} Rendering Results
 
 Generated from GNN POMDP Model: **{pomdp_space.model_name}**
@@ -531,7 +534,7 @@ Generated from GNN POMDP Model: **{pomdp_space.model_name}**
 ## Model Information
 
 - **Model Name**: {pomdp_space.model_name}
-- **Model Description**: {pomdp_space.model_annotation or 'N/A'}
+- **Model Description**: {model_annotation}
 - **Generation Date**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 ## POMDP Dimensions
@@ -545,16 +548,29 @@ Generated from GNN POMDP Model: **{pomdp_space.model_name}**
 ### Available Matrices/Vectors:
 """
             
-            if pomdp_space.A_matrix:
-                doc_content += f"- **A Matrix (Likelihood)**: {len(pomdp_space.A_matrix)}×{len(pomdp_space.A_matrix[0])} - Maps hidden states to observations\n"
-            if pomdp_space.B_matrix:
-                doc_content += f"- **B Matrix (Transition)**: {len(pomdp_space.B_matrix[0])}×{len(pomdp_space.B_matrix[0][0])}×{len(pomdp_space.B_matrix)} - State transitions given actions\n"
-            if pomdp_space.C_vector:
-                doc_content += f"- **C Vector (Preferences)**: Length {len(pomdp_space.C_vector)} - Preferences over observations\n"
-            if pomdp_space.D_vector:
-                doc_content += f"- **D Vector (Prior)**: Length {len(pomdp_space.D_vector)} - Prior beliefs over states\n"
-            if pomdp_space.E_vector:
-                doc_content += f"- **E Vector (Habits)**: Length {len(pomdp_space.E_vector)} - Policy priors\n"
+            # Safely check for matrices/vectors
+            A_matrix = getattr(pomdp_space, 'A_matrix', None)
+            if A_matrix and len(A_matrix) > 0 and len(A_matrix[0]) > 0:
+                doc_content += f"- **A Matrix (Likelihood)**: {len(A_matrix)}×{len(A_matrix[0])} - Maps hidden states to observations\n"
+            
+            B_matrix = getattr(pomdp_space, 'B_matrix', None)
+            if B_matrix and len(B_matrix) > 0 and len(B_matrix[0]) > 0:
+                try:
+                    doc_content += f"- **B Matrix (Transition)**: {len(B_matrix[0])}×{len(B_matrix[0][0])}×{len(B_matrix)} - State transitions given actions\n"
+                except (IndexError, TypeError):
+                    doc_content += f"- **B Matrix (Transition)**: Present - State transitions given actions\n"
+            
+            C_vector = getattr(pomdp_space, 'C_vector', None)
+            if C_vector and len(C_vector) > 0:
+                doc_content += f"- **C Vector (Preferences)**: Length {len(C_vector)} - Preferences over observations\n"
+            
+            D_vector = getattr(pomdp_space, 'D_vector', None)
+            if D_vector and len(D_vector) > 0:
+                doc_content += f"- **D Vector (Prior)**: Length {len(D_vector)} - Prior beliefs over states\n"
+            
+            E_vector = getattr(pomdp_space, 'E_vector', None)
+            if E_vector and len(E_vector) > 0:
+                doc_content += f"- **E Vector (Habits)**: Length {len(E_vector)} - Policy priors\n"
             
             doc_content += f"""
 

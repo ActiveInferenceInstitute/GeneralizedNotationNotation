@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-10-02T10:57:23.033744",
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/23_report_output",
+  "processing_status": "completed",
+  "report_format": "comprehensive",
+  "reports_generated": [],
+  "message": "Report module ready for comprehensive analysis report generation"
+}

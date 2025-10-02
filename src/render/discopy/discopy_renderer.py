@@ -160,7 +160,7 @@ structure using DisCoPy's compositional framework.
 """
 
 from discopy import *
-from discopy.quantum import *
+from discopy.monoidal import Ty, Box, Id
 from discopy.drawing import Equation
 import numpy as np
 import matplotlib.pyplot as plt
@@ -194,24 +194,24 @@ def define_model_components(S, O, A, P):
     components = {{}}
     
     # A matrix: Observation model P(o|s)
-    components['A_matrix'] = Box('A', S, O @ P, draw_as_box=True)
-    
-    # B matrix: Transition model P(s'|s,a)  
-    components['B_matrix'] = Box('B', S @ A, S @ P, draw_as_box=True)
-    
+    components['A_matrix'] = Box('A', S, O @ P)
+
+    # B matrix: Transition model P(s'|s,a)
+    components['B_matrix'] = Box('B', S @ A, S @ P)
+
     # C vector: Preference vector over observations
-    components['C_vector'] = Box('C', Ty(), O @ P, draw_as_box=True)
-    
+    components['C_vector'] = Box('C', Ty(), O @ P)
+
     # D vector: Prior beliefs over states
-    components['D_vector'] = Box('D', Ty(), S @ P, draw_as_box=True)
-    
+    components['D_vector'] = Box('D', Ty(), S @ P)
+
     # E vector: Policy priors (if applicable)
-    components['E_vector'] = Box('E', Ty(), A @ P, draw_as_box=True)
-    
+    components['E_vector'] = Box('E', Ty(), A @ P)
+
     # Inference processes
-    components['state_inference'] = Box('StateInf', O, S @ P, draw_as_box=True)
-    components['policy_inference'] = Box('PolicyInf', S @ P, A @ P, draw_as_box=True)
-    components['action_selection'] = Box('ActionSel', A @ P, A, draw_as_box=True)
+    components['state_inference'] = Box('StateInf', O, S @ P)
+    components['policy_inference'] = Box('PolicyInf', S @ P, A @ P)
+    components['action_selection'] = Box('ActionSel', A @ P, A)
     
     print(f"✓ Defined {{len(components)}} model components as morphisms")
     return components
@@ -242,10 +242,10 @@ def create_active_inference_circuit(S, O, A, P, components):
     # Full generative model with priors
     # D (prior) and C (preferences) influence the inference
     generative_model = (
-        (D_vector @ Id(O)) >>  # Prior beliefs
-        (Id(S @ P) @ state_inf) >>  # State inference with observations
-        (policy_inf @ Id(Ty())) >>  # Policy inference
-        (action_sel @ Id(Ty()))  # Action selection
+        D_vector >>  # Prior beliefs
+        state_inf >>  # State inference with observations
+        policy_inf >>  # Policy inference
+        action_sel  # Action selection
     )
     
     print("✓ Created perception-action loop")

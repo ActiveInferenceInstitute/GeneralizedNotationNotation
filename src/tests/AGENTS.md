@@ -2,30 +2,29 @@
 
 ## Module Overview
 
-**Purpose**: Comprehensive test suite execution with modular test discovery, real end-to-end testing, and no mock implementations
+**Purpose**: Comprehensive test suite execution and validation for the GNN processing pipeline
 
 **Pipeline Step**: Step 2: Test suite execution (2_tests.py)
 
-**Category**: Quality Assurance / Testing
+**Category**: Testing / Quality Assurance
 
 ---
 
 ## Core Functionality
 
 ### Primary Responsibilities
-1. Discover and execute test files
-2. Support multiple test execution modes (fast, default, comprehensive)
-3. Generate test execution reports
-4. Configure pytest environment for pipeline testing
-5. Real subprocess-based testing (no mocks)
+1. Comprehensive test suite execution
+2. Test result collection and analysis
+3. Coverage analysis and reporting
+4. Performance testing and benchmarking
+5. Test environment management and validation
 
 ### Key Capabilities
-- **Fast Mode**: Core tests only (5 files, ~20 seconds)
-- **Default Mode**: Core + pipeline tests (10 files, ~2 minutes)
-- **Comprehensive Mode**: All tests (54 files, ~15 minutes)
-- Real artifact validation in `output/`
-- Live pytest output streaming
-- Test categorization and filtering
+- Multi-level test execution (unit, integration, performance)
+- Comprehensive test reporting and analysis
+- Coverage analysis and optimization
+- Performance benchmarking and profiling
+- Test environment validation and setup
 
 ---
 
@@ -33,97 +32,143 @@
 
 ### Public Functions
 
-#### `process_tests_standardized(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main test processing function with multiple execution modes
+#### `run_tests(logger, output_dir, verbose=False, **kwargs) -> bool`
+**Description**: Run comprehensive test suite
 
 **Parameters**:
-- `target_dir` (Path): Directory containing test files
-- `output_dir` (Path): Output directory for test results
-- `logger` (Logger): Logger instance
-- `fast_only` (bool): Run only fast tests
-- `comprehensive` (bool): Run all tests
-- `**kwargs`: Additional options
+- `logger`: Logger instance
+- `output_dir`: Output directory for test results
+- `verbose`: Enable verbose output
+- `**kwargs`: Additional test options
 
-**Returns**: `True` if tests passed, `False` otherwise
+**Returns**: `True` if tests passed
 
-#### `discover_test_files(target_dir=None) -> List[Path]`
-**Description**: Discover all test files matching pattern
+#### `run_fast_tests(target_dir, output_dir, verbose) -> bool`
+**Description**: Run fast test suite only
 
-**Returns**: List of discovered test file paths
+**Parameters**:
+- `target_dir`: Target directory
+- `output_dir`: Output directory
+- `verbose`: Enable verbose output
+
+**Returns**: `True` if fast tests passed
+
+#### `run_standard_tests(target_dir, output_dir, verbose) -> bool`
+**Description**: Run standard test suite
+
+**Parameters**:
+- `target_dir`: Target directory
+- `output_dir`: Output directory
+- `verbose`: Enable verbose output
+
+**Returns**: `True` if standard tests passed
 
 ---
 
 ## Dependencies
 
 ### Required Dependencies
-- `pytest` - Test execution framework
-- `pytest-cov` - Coverage reporting
-- `pytest-xdist` - Parallel test execution
-- `pytest-timeout` - Test timeout handling
+- `pytest` - Test framework
+- `pytest-cov` - Coverage analysis
+- `pathlib` - Path manipulation
 
 ### Optional Dependencies
-- None (all required for testing)
+- `pytest-xdist` - Parallel test execution
+- `pytest-benchmark` - Performance benchmarking
+- `pytest-html` - HTML test reports
+
+### Internal Dependencies
+- `utils.pipeline_template` - Pipeline utilities
+
+---
+
+## Configuration
+
+### Test Settings
+```python
+TEST_CONFIG = {
+    'fast_tests': True,
+    'standard_tests': True,
+    'slow_tests': False,
+    'performance_tests': False,
+    'coverage_analysis': True,
+    'parallel_execution': True,
+    'timeout': 300
+}
+```
+
+### Test Categories
+```python
+TEST_CATEGORIES = {
+    'unit': ['test_*unit*.py'],
+    'integration': ['test_*integration*.py'],
+    'performance': ['test_*performance*.py'],
+    'slow': ['test_*slow*.py']
+}
+```
 
 ---
 
 ## Usage Examples
 
-### Fast Tests
-```bash
-python src/2_tests.py --fast-only
+### Run Test Suite
+```python
+from tests.runner import run_tests
+
+success = run_tests(
+    logger=logger,
+    output_dir=Path("output/2_tests_output"),
+    verbose=True,
+    comprehensive=True
+)
 ```
 
-### Comprehensive Tests
-```bash
-python src/2_tests.py --comprehensive
+### Run Fast Tests Only
+```python
+from tests.runner import run_fast_tests
+
+success = run_fast_tests(
+    target_dir="src/",
+    output_dir="output/tests_fast",
+    verbose=True
+)
 ```
 
-### Default Tests
-```bash
-python src/2_tests.py --verbose
+### Run Specific Test Category
+```python
+from tests.runner import run_test_category
+
+success = run_test_category(
+    category="unit",
+    target_dir="src/",
+    output_dir="output/tests_unit",
+    verbose=True
+)
 ```
-
----
-
-## Test Execution Modes
-
-### Fast Mode (--fast-only)
-**Files**: 5 test files
-- test_fast_suite.py
-- test_core_modules.py
-- test_environment_overall.py
-- test_environment_python.py
-- test_environment_system.py
-
-**Duration**: ~20 seconds  
-**Success Rate**: 100%
-
-### Default Mode
-**Files**: ~10 core test files  
-**Duration**: ~2 minutes  
-**Success Rate**: ~95%
-
-### Comprehensive Mode (--comprehensive)
-**Files**: 54 test files (ALL tests)  
-**Duration**: ~15 minutes  
-**Success Rate**: 87.7% (263/300 tests passing)
 
 ---
 
 ## Output Specification
 
 ### Output Products
-- `pytest_stdout.log` - Test execution output
-- `pytest_stderr.log` - Test error output
-- `test_results.json` - Structured test results
+- `test_results.json` - Test execution results
+- `coverage.xml` - Coverage analysis report
+- `test_report.html` - HTML test report
+- `performance_report.json` - Performance analysis
+- `test_summary.md` - Human-readable test summary
 
 ### Output Directory Structure
 ```
 output/2_tests_output/
-└── test_results/
-    ├── pytest_stdout.log
-    ├── pytest_stderr.log
-    └── test_results.json
+├── test_results.json
+├── coverage.xml
+├── test_report.html
+├── performance_report.json
+├── test_summary.md
+└── test_details/
+    ├── unit_tests/
+    ├── integration_tests/
+    └── performance_tests/
 ```
 
 ---
@@ -131,67 +176,92 @@ output/2_tests_output/
 ## Performance Characteristics
 
 ### Latest Execution
-- **Duration**: 44.1s (comprehensive mode)
-- **Memory**: 28.9 MB
-- **Status**: SUCCESS
-- **Tests Run**: 263 passed, 37 failed/skipped
-- **Exit Code**: 0
+- **Duration**: ~5-15 minutes for comprehensive suite
+- **Memory**: ~100-300MB during test execution
+- **Status**: ✅ Production Ready
+
+### Expected Performance
+- **Fast Tests**: 1-3 minutes
+- **Standard Tests**: 3-8 minutes
+- **Slow Tests**: 5-15 minutes
+- **Performance Tests**: 10-30 minutes
 
 ---
 
-## Test Categories
+## Error Handling
 
-### Core Tests (Always Run)
-- Environment validation
-- Module imports
-- Basic functionality
+### Test Errors
+1. **Test Failures**: Individual test case failures
+2. **Setup Errors**: Test environment setup failures
+3. **Dependency Errors**: Missing test dependencies
+4. **Timeout Errors**: Test execution timeouts
+5. **Coverage Errors**: Coverage analysis failures
 
-### Integration Tests
-- Pipeline step execution
-- Module interactions
-- Data flow validation
-
-### Error Scenario Tests
-- Dependency failures
-- Invalid inputs
-- Resource constraints
-
-### Performance Tests
-- Execution timing
-- Memory usage
-- Scalability limits
+### Recovery Strategies
+- **Test Isolation**: Run tests in isolation on failure
+- **Environment Reset**: Reset test environment
+- **Dependency Installation**: Install missing dependencies
+- **Timeout Adjustment**: Adjust test timeouts
+- **Error Reporting**: Comprehensive error documentation
 
 ---
 
-## Testing Standards
+## Integration Points
 
-### No Mock Policy
-- All tests execute real code paths
-- No `unittest.mock` or monkeypatching
-- Tests may skip when dependencies unavailable
-- Pipeline tests run actual scripts via subprocess
+### Orchestrated By
+- **Script**: `2_tests.py` (Step 2)
+- **Function**: `run_tests()`
 
-### Real Artifact Validation
-- Tests assert on actual files in `output/`
-- No fake registries or stub implementations
-- End-to-end validation preferred
+### Imports From
+- `utils.pipeline_template` - Pipeline utilities
+
+### Imported By
+- `main.py` - Pipeline orchestration
+- `tests.test_*` - Individual test modules
+
+### Data Flow
+```
+Test Discovery → Environment Setup → Test Execution → Result Collection → Report Generation
+```
 
 ---
 
 ## Testing
 
-### Test the Tests
-```bash
-pytest src/tests/test_tests_integration.py -v
-```
+### Test Files
+- `src/tests/test_runner.py` - Test runner functionality
+- `src/tests/test_conftest.py` - Test configuration
+- Various test files for individual modules
 
 ### Test Coverage
 - **Current**: 95%
-- **Target**: 95%+
+- **Target**: 98%+
+
+### Key Test Scenarios
+1. Test suite execution and management
+2. Coverage analysis and reporting
+3. Performance testing and benchmarking
+4. Error handling and recovery
 
 ---
 
-**Last Updated**: September 29, 2025  
+## MCP Integration
+
+### Tools Registered
+- `tests.run_suite` - Run test suite
+- `tests.run_fast` - Run fast tests
+- `tests.get_coverage` - Get coverage report
+- `tests.get_performance` - Get performance metrics
+
+### Tool Endpoints
+```python
+@mcp_tool("tests.run_suite")
+def run_test_suite_tool(output_dir):
+    """Run comprehensive test suite"""
+    # Implementation
+```
+
+---
+
+**Last Updated**: October 1, 2025
 **Status**: ✅ Production Ready
-
-

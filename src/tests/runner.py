@@ -773,7 +773,7 @@ def run_tests(
 ) -> bool:
     """
     Run comprehensive test suite.
-    
+
     Args:
         logger: Logger instance
         output_dir: Output directory for test results
@@ -782,13 +782,13 @@ def run_tests(
         fast_only: Run only fast tests
         comprehensive: Run comprehensive test suite (all tests)
         generate_coverage: Generate coverage report
-    
+
     Returns:
         True if tests pass, False otherwise
     """
     try:
         log_step_start(logger, "Running comprehensive test suite")
-        
+
         # Check dependencies
         dependencies = check_test_dependencies(logger)
         if not all(dependencies.values()):
@@ -798,10 +798,10 @@ def run_tests(
         # Comprehensive mode overrides include_slow
         if comprehensive:
             include_slow = True
-        
+
         # Set appropriate timeout based on test mode
         timeout = 120 if fast_only else (1800 if comprehensive else 600)
-        
+
         config = TestExecutionConfig(
             timeout_seconds=timeout,
             max_failures=20,
@@ -813,10 +813,14 @@ def run_tests(
 
         # Create test runner
         runner = TestRunner(config)
-        
-        # Run tests
-        result = runner.run_tests([TEST_DIR], output_dir)
-        
+
+        # Run tests - use the correct path for tests
+        test_dir = Path(__file__).parent / "tests"
+        if not test_dir.exists():
+            test_dir = TEST_DIR
+
+        result = runner.run_tests([test_dir], output_dir)
+
         # Generate report
         report = runner.generate_report(output_dir)
 
@@ -827,7 +831,7 @@ def run_tests(
             log_step_error(logger, f"Tests failed: {result.tests_failed}/{result.tests_run} tests")
             if result.error_message:
                 log_step_error(logger, f"Error: {result.error_message}")
-        
+
         return result.success
 
     except Exception as e:

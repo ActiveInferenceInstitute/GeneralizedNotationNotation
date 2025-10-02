@@ -357,15 +357,9 @@ def main():
     # GNN Specification (embedded)
     gnn_spec = {json.dumps(gnn_spec, indent=4)}
     
-    # Configuration overrides (can be modified)
-    config_overrides = {{
-        'num_episodes': 10,
-        'max_steps_per_episode': 20,
-        'planning_horizon': 5,
-        'verbose_output': True,
-        'save_visualizations': True,
-        'random_seed': 42
-    }}
+    # Configuration parameters (can be modified)
+    num_episodes = 10
+    verbose_output = True
     
     # Output directory
     output_dir = Path("output") / "pymdp_simulations" / "{model_name}"
@@ -373,13 +367,15 @@ def main():
     
     logger.info("Starting PyMDP simulation for {model_display_name}")
     logger.info(f"Output directory: {{output_dir}}")
+    logger.info(f"Episodes: {{num_episodes}}")
     
     # Run simulation
     try:
         success, results = execute_pymdp_simulation(
             gnn_spec=gnn_spec,
             output_dir=output_dir,
-            config_overrides=config_overrides
+            num_episodes=num_episodes,
+            verbose=verbose_output
         )
         
         if success:

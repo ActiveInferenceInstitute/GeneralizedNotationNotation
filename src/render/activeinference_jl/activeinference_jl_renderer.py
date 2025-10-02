@@ -138,6 +138,67 @@ class ActiveInferenceJlRenderer:
         
         # Get initial parameterization if available
         initial_params = gnn_spec.get('initial_parameterization', {})
+
+        # Validate initial parameters and extract usable values
+        A_values = None
+        B_values = None
+        C_values = None
+        D_values = None
+        E_values = None
+
+        try:
+            if 'A' in initial_params:
+                A_data = initial_params['A']
+                if isinstance(A_data, list) and len(A_data) > 0:
+                    # Try to convert to numeric matrix, filtering out non-numeric values
+                    A_flat = []
+                    for row in A_data:
+                        if isinstance(row, list):
+                            for val in row:
+                                try:
+                                    # Try to convert to float, skip if not numeric
+                                    float_val = float(val)
+                                    A_flat.append(float_val)
+                                except (ValueError, TypeError):
+                                    # Skip non-numeric values like "amplified pain"
+                                    continue
+                        else:
+                            try:
+                                float_val = float(row)
+                                A_flat.append(float_val)
+                            except (ValueError, TypeError):
+                                continue
+
+                    if len(A_flat) >= num_observations * num_states:
+                        A_values = A_flat[:num_observations * num_states]
+                        A_values = [A_values[i:i+num_states] for i in range(0, len(A_values), num_states)]
+            # Add similar validation for other matrices
+            if 'C' in initial_params:
+                C_data = initial_params['C']
+                if isinstance(C_data, list) and len(C_data) > 0:
+                    C_numeric = []
+                    for val in C_data:
+                        try:
+                            C_numeric.append(float(val))
+                        except (ValueError, TypeError):
+                            continue
+                    if len(C_numeric) >= num_observations:
+                        C_values = C_numeric[:num_observations]
+
+            if 'D' in initial_params:
+                D_data = initial_params['D']
+                if isinstance(D_data, list) and len(D_data) > 0:
+                    D_numeric = []
+                    for val in D_data:
+                        try:
+                            D_numeric.append(float(val))
+                        except (ValueError, TypeError):
+                            continue
+                    if len(D_numeric) >= num_states:
+                        D_values = D_numeric[:num_states]
+
+        except Exception as e:
+            print(f"Warning: Failed to parse initial parameters: {e}. Using defaults.")
         
         # Generate the Julia code
         code = f'''# ActiveInference.jl Simulation
@@ -167,16 +228,24 @@ function initialize_matrices()
     println("\\n🏗️  Initializing model matrices...")
     
     # A matrix: Observation model P(o|s)
-    # Create identity-like mapping with some noise for realism
-    A = Matrix{{Float64}}(I, NUM_OBSERVATIONS, NUM_STATES)
-    if NUM_OBSERVATIONS != NUM_STATES
-        # If dimensions don't match, create appropriate mapping
-        A = rand(NUM_OBSERVATIONS, NUM_STATES)
+    # Use provided values if available, otherwise create default
+    if A_values is not None and len(A_values) == NUM_OBSERVATIONS and len(A_values[0]) == NUM_STATES:
+        A = Matrix{Float64}(hcat([A_values[i] for i in 1:length(A_values)]...))
         A = A ./ sum(A, dims=1)  # Normalize columns
-    else
-        # Add small noise to diagonal
-        A += 0.1 * rand(NUM_OBSERVATIONS, NUM_STATES)
-        A = A ./ sum(A, dims=1)  # Normalize columns
+        println("✓ Using provided A matrix values")
+    else:
+        # Create identity-like mapping with some noise for realism
+        A = Matrix{Float64}(I, NUM_OBSERVATIONS, NUM_STATES)
+        if NUM_OBSERVATIONS != NUM_STATES
+            # If dimensions don't match, create appropriate mapping
+            A = rand(NUM_OBSERVATIONS, NUM_STATES)
+            A = A ./ sum(A, dims=1)  # Normalize columns
+        else
+            # Add small noise to diagonal
+            A += 0.1 * rand(NUM_OBSERVATIONS, NUM_STATES)
+            A = A ./ sum(A, dims=1)  # Normalize columns
+        end
+        println("✓ Using default A matrix (random initialization)")
     end
     
     # B matrix: Transition model P(s'|s,a)
@@ -185,7 +254,7 @@ function initialize_matrices()
         # Create different transition patterns for each action
         if action == 1
             # Action 1: Stay in same state (identity + noise)
-            B[:, :, action] = Matrix{{Float64}}(I, NUM_STATES, NUM_STATES)
+            B[:, :, action] = Matrix{Float64}(I, NUM_STATES, NUM_STATES)
             B[:, :, action] += 0.1 * rand(NUM_STATES, NUM_STATES)
         else
             # Other actions: Move to next state (cyclical)
@@ -196,18 +265,33 @@ function initialize_matrices()
             end
         end
         # Normalize columns for each action
-        B[:, :, action] = B[:, :, action] ./ sum(B[:, :, action], dims=1)
+        for s in 1:NUM_STATES
+            B[:, s, action] = B[:, s, action] ./ sum(B[:, s, action])
+        end
     end
     
     # C vector: Preferences over observations
-    C = zeros(NUM_OBSERVATIONS)
-    C[end] = 2.0  # Prefer last observation state
-    if NUM_OBSERVATIONS > 1
-        C[1] = -1.0  # Avoid first observation state
+    if C_values is not None and len(C_values) >= NUM_OBSERVATIONS:
+        C = Vector{Float64}(C_values[:NUM_OBSERVATIONS])
+        println("✓ Using provided C vector values")
+    else:
+        C = zeros(NUM_OBSERVATIONS)
+        C[end] = 2.0  # Prefer last observation state
+        if NUM_OBSERVATIONS > 1
+            C[1] = -1.0  # Avoid first observation state
+        end
+        println("✓ Using default C vector")
     end
-    
+
     # D vector: Prior beliefs over initial states
-    D = ones(NUM_STATES) / NUM_STATES  # Uniform prior
+    if D_values is not None and len(D_values) >= NUM_STATES:
+        D = Vector{Float64}(D_values[:NUM_STATES])
+        D = D ./ sum(D)  # Normalize to probability distribution
+        println("✓ Using provided D vector values")
+    else:
+        D = ones(NUM_STATES) / NUM_STATES  # Uniform prior
+        println("✓ Using default D vector (uniform prior)")
+    end
     
     println("✓ Matrices initialized successfully")
     println("  - A matrix shape: $(size(A))")
@@ -254,8 +338,8 @@ end
 mutable struct SimpleEnvironment
     state::Int
     num_states::Int
-    A::Matrix{{Float64}}
-    B::Array{{Float64, 3}}
+    A::Matrix{Float64}
+    B::Array{Float64, 3}
     
     function SimpleEnvironment(initial_state::Int, A::Matrix, B::Array)
         new(initial_state, size(A, 2), A, B)

@@ -1,10 +1,11 @@
 {
-  "total_files": 2,
-  "successful_parses": 2,
+  "total_files": 3,
+  "successful_parses": 3,
   "failed_parses": 0,
-  "total_formats_generated": 44,
+  "total_formats_generated": 66,
   "formats_per_file": {
     "actinf_pomdp_agent.md": 22,
+    "chronic_pain_theories.md": 22,
     "neural_response_model.md": 22
   }
 }

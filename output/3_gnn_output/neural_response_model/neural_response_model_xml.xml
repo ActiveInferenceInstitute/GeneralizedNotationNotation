@@ -8,8 +8,8 @@
 - Three control factors for plasticity, channel modulation, and metabolic allocation
 - The model captures key neural phenomena: membrane potential dynamics, synaptic plasticity (STDP-like), activity-dependent adaptation, homeostatic regulation, and metabolic constraints
 - Preferences encode biologically realistic goals: stable firing rates, energy efficiency, and synaptic balance</annotation>
-    <created_at>2025-10-01T08:19:56.483351</created_at>
-    <modified_at>2025-10-01T08:19:56.483352</modified_at>
+    <created_at>2025-10-02T10:52:16.336928</created_at>
+    <modified_at>2025-10-02T10:52:16.336931</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="12,405" name="A" type="likelihood_matrix" description="12 observations x 405 hidden state combinations (likelihood mapping)"/>

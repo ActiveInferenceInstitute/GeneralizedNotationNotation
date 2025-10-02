@@ -1,11 +1,11 @@
 {
-  "total_files": 1,
-  "successful_visualizations": 1,
+  "total_files": 3,
+  "successful_visualizations": 3,
   "failed_visualizations": 0,
-  "total_images_generated": 5,
+  "total_images_generated": 9,
   "visualization_types": {
-    "matrix": 1,
-    "network": 1,
-    "combined": 1
+    "matrix": 3,
+    "network": 0,
+    "combined": 3
   }
 }

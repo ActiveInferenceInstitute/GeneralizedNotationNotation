@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-10-01T08:19:56.470570",
+  "timestamp": "2025-10-02T10:52:16.308226",
   "source_directory": "input/gnn_files",
   "output_directory": "output/3_gnn_output",
   "processing_config": {
     "recursive": true,
-    "verbose": true,
+    "verbose": false,
     "supported_formats": [
       "markdown",
       "scala",
@@ -117,7 +117,7 @@
         },
         "xml": {
           "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
-          "file_size": 9536,
+          "file_size": 9556,
           "success": true
         },
         "json": {
@@ -178,6 +178,135 @@
         "pickle": {
           "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pkl",
           "file_size": 3888,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "chronic_pain_theories.md",
+      "file_path": "input/gnn_files/chronic_pain_theories.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Active Inference Chronic Pain Multi-Theory Model v1",
+        "version": "1.0",
+        "variables_count": 24,
+        "connections_count": 38,
+        "parameters_count": 7,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_markdown.md",
+          "file_size": 7698,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_scala.scala",
+          "file_size": 15321,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_lean.lean",
+          "file_size": 16445,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_coq.v",
+          "file_size": 15996,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_python.py",
+          "file_size": 27824,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_bnf.bnf",
+          "file_size": 16125,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_ebnf.ebnf",
+          "file_size": 16125,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_isabelle.thy",
+          "file_size": 16093,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_maxima.max",
+          "file_size": 20725,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_xml.xml",
+          "file_size": 32417,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_json.json",
+          "file_size": 34850,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_protobuf.proto",
+          "file_size": 22684,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_yaml.yaml",
+          "file_size": 21529,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_xsd.xsd",
+          "file_size": 17373,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_asn1.asn1",
+          "file_size": 24053,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_pkl.pkl",
+          "file_size": 38454,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_alloy.als",
+          "file_size": 28506,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_z_notation.z",
+          "file_size": 16924,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_tla_plus.tla",
+          "file_size": 13941,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_agda.agda",
+          "file_size": 13876,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_haskell.hs",
+          "file_size": 16929,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/chronic_pain_theories/chronic_pain_theories_pickle.pkl",
+          "file_size": 15760,
           "success": true
         }
       },
@@ -315,12 +444,13 @@
     }
   ],
   "summary": {
-    "total_files": 2,
-    "successful_parses": 2,
+    "total_files": 3,
+    "successful_parses": 3,
     "failed_parses": 0,
-    "total_formats_generated": 44,
+    "total_formats_generated": 66,
     "formats_per_file": {
       "actinf_pomdp_agent.md": 22,
+      "chronic_pain_theories.md": 22,
       "neural_response_model.md": 22
     }
   }

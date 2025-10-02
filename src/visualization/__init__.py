@@ -97,6 +97,44 @@ def get_visualization_options() -> dict:
         "graph_types": ["connections", "combined"],
         "output_formats": ["png", "json"]
     }
+def _configure_matplotlib_backend(logger):
+    """
+    Configure matplotlib backend for headless/server environments.
+    
+    Tries to detect environment and select appropriate backend.
+    Returns True if successful, False otherwise.
+    """
+    try:
+        import matplotlib
+        import os
+        
+        # Check if we're in a headless environment
+        is_headless = (
+            not os.environ.get('DISPLAY') and 
+            os.environ.get('MPLBACKEND') != 'TkAgg'
+        )
+        
+        if is_headless:
+            logger.info("Detected headless environment, configuring non-interactive backend")
+            # Try Agg backend (best for headless)
+            try:
+                matplotlib.use('Agg', force=True)
+                logger.info("✅ Using 'Agg' backend for matplotlib (headless mode)")
+                return True
+            except Exception as e:
+                logger.warning(f"Failed to set Agg backend: {e}")
+        else:
+            logger.debug("Display available, using default backend")
+        
+        return True
+        
+    except ImportError:
+        logger.warning("matplotlib not available - visualization will be limited")
+        return False
+    except Exception as e:
+        logger.warning(f"Backend configuration failed: {e}")
+        return False
+
 def process_visualization_main(target_dir, output_dir, verbose: bool = False, **kwargs) -> bool:
     """
     Main visualization processing function for GNN models.
@@ -106,6 +144,8 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
     - Network graphs
     - Combined analysis plots
     - Output management and error handling
+    - Automatic matplotlib backend detection for headless environments
+    - Comprehensive progress tracking and error recovery
 
     Args:
         target_dir: Directory containing GNN files to visualize
@@ -125,6 +165,9 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
     logger = logging.getLogger(__name__)
     if verbose:
         logger.setLevel(logging.DEBUG)
+    
+    # Configure matplotlib backend for headless environments
+    backend_ok = _configure_matplotlib_backend(logger)
 
     # Ensure output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -170,13 +213,14 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
             }
         }
 
-        # Process each file
-        for file_result in gnn_results["processed_files"]:
+        # Process each file with progress tracking
+        total_files = len([f for f in gnn_results["processed_files"] if f["parse_success"]])
+        for idx, file_result in enumerate(gnn_results["processed_files"], 1):
             if not file_result["parse_success"]:
                 continue
 
             file_name = file_result["file_name"]
-            logger.info(f"Visualizing: {file_name}")
+            logger.info(f"📊 Visualizing [{idx}/{total_files}]: {file_name}")
 
             # Load the actual parsed GNN specification
             parsed_model_file = file_result.get("parsed_model_file")
@@ -206,12 +250,21 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
 
             # Generate matrix visualizations
             try:
+                logger.debug(f"  → Generating matrix visualizations for {file_name}")
                 parameters = model_data.get("parameters", []) if isinstance(model_data, dict) else []
                 matrix_png = file_output_dir / "matrix_analysis.png"
                 matrix_stats_png = file_output_dir / "matrix_statistics.png"
+                
+                if not backend_ok:
+                    logger.warning(f"  ⚠️ Matplotlib backend not configured - skipping matrix visualization")
+                    raise ImportError("Matplotlib backend not available")
+                
                 mv = MatrixVisualizer()
                 ok1 = mv.generate_matrix_analysis(parameters, matrix_png)
                 ok2 = mv.generate_matrix_statistics(parameters, matrix_stats_png)
+                
+                if ok1 or ok2:
+                    logger.debug(f"  ✅ Matrix visualization completed")
 
                 # Specialized POMDP transition analysis if B tensor present
                 matrices = mv.extract_matrix_data_from_parameters(parameters) if parameters else {}
@@ -231,9 +284,15 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
                     "result": [str(matrix_png), str(matrix_stats_png)]
                 }
                 visualization_results["summary"]["visualization_types"]["matrix"] += 1
-                logger.info(f"Matrix visualization completed for {file_name}")
+            except ImportError as e:
+                logger.warning(f"  ⚠️ Matrix visualization skipped (dependency issue): {e}")
+                file_visualization_result["visualizations"]["matrix"] = {
+                    "success": False,
+                    "skipped": True,
+                    "reason": "matplotlib not available or backend not configured"
+                }
             except Exception as e:
-                logger.error(f"Matrix visualization failed for {file_name}: {e}")
+                logger.error(f"  ❌ Matrix visualization failed for {file_name}: {e}")
                 file_visualization_result["visualizations"]["matrix"] = {
                     "success": False,
                     "error": str(e)
@@ -242,15 +301,24 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
 
             # Generate network visualizations
             try:
+                logger.debug(f"  → Generating network visualizations for {file_name}")
                 net_files = generate_network_visualizations(model_data, file_output_dir, Path(file_name).stem)
                 file_visualization_result["visualizations"]["network"] = {
                     "success": len(net_files) > 0,
                     "result": net_files
                 }
-                visualization_results["summary"]["visualization_types"]["network"] += 1
-                logger.info(f"Network visualization completed for {file_name}")
+                if net_files:
+                    visualization_results["summary"]["visualization_types"]["network"] += 1
+                    logger.debug(f"  ✅ Network visualization completed")
+            except ImportError as e:
+                logger.warning(f"  ⚠️ Network visualization skipped (dependency issue): {e}")
+                file_visualization_result["visualizations"]["network"] = {
+                    "success": False,
+                    "skipped": True,
+                    "reason": "networkx or matplotlib not available"
+                }
             except Exception as e:
-                logger.error(f"Network visualization failed for {file_name}: {e}")
+                logger.error(f"  ❌ Network visualization failed for {file_name}: {e}")
                 file_visualization_result["visualizations"]["network"] = {
                     "success": False,
                     "error": str(e)
@@ -259,15 +327,24 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
 
             # Generate combined visualizations
             try:
+                logger.debug(f"  → Generating combined analysis for {file_name}")
                 combined_files = generate_combined_analysis(model_data, file_output_dir, Path(file_name).stem)
                 file_visualization_result["visualizations"]["combined"] = {
                     "success": len(combined_files) > 0,
                     "result": combined_files
                 }
-                visualization_results["summary"]["visualization_types"]["combined"] += 1
-                logger.info(f"Combined visualization completed for {file_name}")
+                if combined_files:
+                    visualization_results["summary"]["visualization_types"]["combined"] += 1
+                    logger.debug(f"  ✅ Combined visualization completed")
+            except ImportError as e:
+                logger.warning(f"  ⚠️ Combined visualization skipped (dependency issue): {e}")
+                file_visualization_result["visualizations"]["combined"] = {
+                    "success": False,
+                    "skipped": True,
+                    "reason": "visualization dependencies not available"
+                }
             except Exception as e:
-                logger.error(f"Combined visualization failed for {file_name}: {e}")
+                logger.error(f"  ❌ Combined visualization failed for {file_name}: {e}")
                 file_visualization_result["visualizations"]["combined"] = {
                     "success": False,
                     "error": str(e)

@@ -28,12 +28,13 @@ SERVER_START_TIME = time.time()
 def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
     """
     Get comprehensive status information about the MCP server.
-    
+
     Args:
         mcp_instance_ref: Reference to the MCP instance running the server.
-                          
+
     Returns:
-        Dictionary containing detailed server status information.
+        Dictionary containing detailed server status information including
+        performance metrics, health status, and operational statistics.
     """
     uptime_seconds = time.time() - SERVER_START_TIME
     uptime_str = time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
@@ -54,6 +55,28 @@ def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
             "error_message": module_info.error_message
         }
     
+    # Get enhanced status information
+    config = mcp_instance_ref.config
+    performance_metrics = mcp_instance_ref.performance_metrics
+
+    # Calculate health score based on various metrics
+    error_rate = performance_metrics.failed_requests / max(1, performance_metrics.total_requests)
+    avg_exec_time = performance_metrics.average_execution_time
+    cache_efficiency = performance_metrics.cache_hit_ratio
+
+    # Simple health scoring algorithm (0-100)
+    health_score = 100
+    if error_rate > 0.1:  # More than 10% errors
+        health_score -= 30
+    if avg_exec_time > 5.0:  # Average execution > 5 seconds
+        health_score -= 20
+    if cache_efficiency < 0.5:  # Cache efficiency < 50%
+        health_score -= 20
+    if performance_metrics.concurrent_requests > 10:  # High concurrency
+        health_score -= 15
+
+    health_status = "healthy" if health_score >= 70 else "degraded" if health_score >= 40 else "unhealthy"
+
     return {
         "success": True,
         "server_name": mcp_instance_ref.get_capabilities().get("name", "Unknown GNN MCP Server"),
@@ -70,10 +93,26 @@ def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
         "request_count": server_status.get("request_count", 0),
         "error_count": server_status.get("error_count", 0),
         "error_rate": server_status.get("error_rate", 0),
+        "health": {
+            "score": health_score,
+            "status": health_status,
+            "error_rate": error_rate,
+            "avg_execution_time": avg_exec_time,
+            "cache_efficiency": cache_efficiency,
+            "concurrent_load": performance_metrics.concurrent_requests / 10.0  # Normalized to max workers
+        },
+        "configuration": config,
         "modules": modules_info,
         "performance": {
             "avg_execution_times": server_status.get("avg_execution_times", {}),
-            "last_activity": server_status.get("last_activity", 0)
+            "last_activity": server_status.get("last_activity", 0),
+            "total_requests": performance_metrics.total_requests,
+            "successful_requests": performance_metrics.successful_requests,
+            "failed_requests": performance_metrics.failed_requests,
+            "cache_hits": performance_metrics.cache_hits,
+            "cache_misses": performance_metrics.cache_misses,
+            "max_execution_time": performance_metrics.max_execution_time,
+            "min_execution_time": performance_metrics.min_execution_time
         }
     }
 
@@ -228,16 +267,29 @@ def get_mcp_tool_categories(mcp_instance_ref) -> Dict[str, Any]:
 
 def get_mcp_performance_metrics(mcp_instance_ref) -> Dict[str, Any]:
     """
-    Get performance metrics and statistics for the MCP server.
-    
+    Get comprehensive performance metrics and statistics for the MCP server.
+
     Args:
         mcp_instance_ref: Reference to the MCP instance.
-        
+
     Returns:
-        Dictionary with performance metrics.
+        Dictionary with detailed performance metrics including tool-specific stats.
     """
     server_status = mcp_instance_ref.get_server_status()
-    
+    performance_metrics = mcp_instance_ref.performance_metrics
+
+    # Get tool-specific performance data
+    tool_performance = {}
+    for tool_name, tool in mcp_instance_ref.tools.items():
+        tool_stats = mcp_instance_ref.get_tool_performance_stats(tool_name)
+        if tool_stats:
+            tool_performance[tool_name] = tool_stats
+
+    # Get resource access statistics
+    resource_stats = {}
+    for uri_template, resource in mcp_instance_ref.resources.items():
+        resource_stats[uri_template] = resource.get_access_summary()
+
     return {
         "success": True,
         "uptime": {
@@ -247,7 +299,8 @@ def get_mcp_performance_metrics(mcp_instance_ref) -> Dict[str, Any]:
         "requests": {
             "total": server_status.get("request_count", 0),
             "errors": server_status.get("error_count", 0),
-            "error_rate": server_status.get("error_rate", 0)
+            "error_rate": server_status.get("error_rate", 0),
+            "success_rate": performance_metrics.successful_requests / max(1, performance_metrics.total_requests)
         },
         "execution_times": server_status.get("avg_execution_times", {}),
         "last_activity": server_status.get("last_activity", 0),
@@ -255,7 +308,87 @@ def get_mcp_performance_metrics(mcp_instance_ref) -> Dict[str, Any]:
             "loaded": server_status.get("modules_loaded", 0),
             "failed": server_status.get("modules_failed", 0),
             "total": server_status.get("modules_count", 0)
-        }
+        },
+        "caching": {
+            "enabled": mcp_instance_ref._enable_caching,
+            "hit_ratio": performance_metrics.cache_hit_ratio,
+            "hits": performance_metrics.cache_hits,
+            "misses": performance_metrics.cache_misses,
+            "cache_size": len(mcp_instance_ref._result_cache)
+        },
+        "memory": {
+            "peak_mb": performance_metrics.memory_usage,
+            "concurrent_requests": performance_metrics.concurrent_requests,
+            "max_concurrent": performance_metrics.max_concurrent_requests
+        },
+        "tool_performance": tool_performance,
+        "resource_stats": resource_stats
+    }
+
+def get_mcp_diagnostics(mcp_instance_ref) -> Dict[str, Any]:
+    """
+    Get comprehensive diagnostic information for troubleshooting and monitoring.
+
+    Args:
+        mcp_instance_ref: Reference to the MCP instance.
+
+    Returns:
+        Dictionary with diagnostic information including errors, warnings, and recommendations.
+    """
+    # Check for common issues and generate recommendations
+    diagnostics = {
+        "issues": [],
+        "warnings": [],
+        "recommendations": [],
+        "health_checks": {}
+    }
+
+    # Check module loading status
+    failed_modules = [name for name, info in mcp_instance_ref.modules.items() if info.status == "error"]
+    if failed_modules:
+        diagnostics["issues"].append(f"Failed to load modules: {failed_modules}")
+        diagnostics["recommendations"].append("Check module dependencies and installation")
+
+    # Check for deprecated tools
+    deprecated_tools = [name for name, tool in mcp_instance_ref.tools.items() if tool.deprecated]
+    if deprecated_tools:
+        diagnostics["warnings"].append(f"Deprecated tools found: {deprecated_tools}")
+        diagnostics["recommendations"].append("Consider updating or removing deprecated tools")
+
+    # Check for experimental tools
+    experimental_tools = [name for name, tool in mcp_instance_ref.tools.items() if tool.experimental]
+    if experimental_tools:
+        diagnostics["warnings"].append(f"Experimental tools in use: {experimental_tools}")
+        diagnostics["recommendations"].append("Test experimental tools thoroughly before production use")
+
+    # Check performance metrics
+    perf = mcp_instance_ref.performance_metrics
+    if perf.failed_requests / max(1, perf.total_requests) > 0.1:
+        diagnostics["issues"].append("High error rate detected (>10%)")
+        diagnostics["recommendations"].append("Review error logs and fix failing tools")
+
+    if perf.average_execution_time > 10.0:
+        diagnostics["warnings"].append("High average execution time detected")
+        diagnostics["recommendations"].append("Consider optimizing slow tools or enabling caching")
+
+    # Check caching effectiveness
+    if mcp_instance_ref._enable_caching and perf.cache_hit_ratio < 0.3:
+        diagnostics["warnings"].append("Low cache hit ratio detected")
+        diagnostics["recommendations"].append("Review caching strategy or disable caching for non-cacheable tools")
+
+    # Health checks
+    diagnostics["health_checks"] = {
+        "modules_healthy": len(failed_modules) == 0,
+        "error_rate_acceptable": perf.failed_requests / max(1, perf.total_requests) <= 0.05,
+        "performance_acceptable": perf.average_execution_time <= 5.0,
+        "caching_effective": not mcp_instance_ref._enable_caching or perf.cache_hit_ratio >= 0.5
+    }
+
+    return {
+        "success": True,
+        "diagnostics": diagnostics,
+        "overall_health": "healthy" if not diagnostics["issues"] and len(diagnostics["warnings"]) <= 2 else
+                         "degraded" if not diagnostics["issues"] else "unhealthy"
     }
 
 def register_tools(mcp_instance):
@@ -288,7 +421,10 @@ def register_tools(mcp_instance):
     
     def get_performance_metrics_wrapper():
         return get_mcp_performance_metrics(mcp_instance)
-    
+
+    def get_diagnostics_wrapper():
+        return get_mcp_diagnostics(mcp_instance)
+
     # Register meta-tools
     mcp_instance.register_tool(
         name="get_mcp_server_capabilities",
@@ -366,6 +502,16 @@ def register_tools(mcp_instance):
         description="Get performance metrics and statistics for the MCP server, including execution times and error rates.",
         module="meta",
         category="Performance",
+        version="1.0.0"
+    )
+
+    mcp_instance.register_tool(
+        name="get_mcp_diagnostics",
+        func=get_diagnostics_wrapper,
+        schema={},
+        description="Get comprehensive diagnostic information for troubleshooting and monitoring, including health checks and recommendations.",
+        module="meta",
+        category="Diagnostics",
         version="1.0.0"
     )
     

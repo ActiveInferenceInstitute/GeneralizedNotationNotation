@@ -6,51 +6,306 @@ Prompt:
 
 Response:
 
-Here's the GNN representation using SHA-256 fingerprinting for your model:
-
-GNN Model Annotation:
 ```python
-import hashlib
-from typing import List
-# Note that you can easily customize this annotation, but keep in mind to avoid data loss. For example, if the input is a binary file, use a checksumable format (e.g., SHA256). Also note that your signature should only be validated on actual inputs from the user.
-class GNNSignature(object):
-    """Annotate a GNN model representing an FPM model."""
+  import copy   
+    num_hidden_states = 3  
+    num_obs     = 3     
+    num_actions    = 3      
+     
 
-    def __init__(
-        self,
-        GNN_model=None,
-        **kwargs: dict
-    ):
+  B=TemporalDistribution(num_observations)         
+  C=UniformPriorVector()               # Uniformity of prior over hidden states
+  D=B.TemporizedStateProbabilities([2,1])            
 
-        if GNN_model is None or len(GNN_model) < 3:
-            raise ValueError("Could not detect a valid GNN annotation!")
-        
-        signature = hashlib.sha256(
-            gnn_signature.encode() + "." * (4 - len(gnn_signatures)))
+def infer_states():  
+    A=(0.,46.)   
+     
+      
+         
+    return A
 
-        self._validated(*args, **kwargs)
-        self.__dict__.update({"authentication": True})
+  def get_state(x):     
+    s[3][x] = 0         
     
-    def validate(self):
-        """Validate the signature against a GNN model."""
-        
-        if not isinstance(
-            GNN_model, dict
-            or len(GNN_model) < 3:
-                raise ValueError("Could not detect a valid GNN annotation!")
-                
-        signature = hashlib.sha256(GNN_signature.encode())
-
-        self._validated(*args, **kwargs)
-
-    def authenticate(self):
-        
-class GNNSignature(object):
-    """Annotate a GNN model representing an FPM model."""
     
-    @classmethod
-    def fromjson(cls: dict):
-        """From JSON representation of GNN signature. This annotates the signature against a GNN annotation"""
+    return s             
+ 
+  def get_observe(y):        
+   x=random.choices([1,2], weights=[5/num_observations,1])     
+     
+      
+         
+    return x
+def infer_policies():  
+    B =TemporalDistribution(6)       
+    C=UniformPriorVector()             
+    
+    def get_action(x)=0   
+    
+  def get_next_observation(y):        
+   x=random.choices([2,1], weights=[5/num_observations])     
+     
+      
+         
+    return x
+def infer_policy():  
+    G =UniformPolicyVector()          
+    C =UniformPriorVector()               
+    
+    b=[] 
+    for y in range(1,(x-1)): 
+        b.append((y,2))             
+       
+         
+    
+  def get_action(y):     
+      return B[y]      
+      
+  def infer_observe(s):       
+       x=random.choices([0,1], weights=[5/num_observations])  
+          
+    s+=b              
+    S=(A,[x]+B)   
+    
+         
+    return S 
+ 
+def get_belief():     
+   G =UniformBayesianVector()    
+  C =UniformPriorVector()           
+
+  def get_observation(y): 
+    x=random.choices([1,2], weights=[5/num_observations])  
+     
+      
+  s+=b              
+  B=(S,[x]+C)     
+  
+       
+         
+    return S
+def infer_belief():   
+    G =UniformBayesianVector()    
+  C =UniformPriorVector()           
+
+  def get_action(y):     
+    
+    x=random.choices([1,2], weights=[5/num_observations])  
+     
+       
+  s+=B[x]          
+  
+         
+       
+    return S        
+ 
+def infer_belief():   
+  G =UniformBayesianVector()    
+  C =UniformPriorVector()            
+
+  def get_observation(y): # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+             
+    return S[x]
+def validate():     
+   G=UniformBayesianVector()            
+  C =UniformPriorVector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
         
-        return cls(*args, **kwargs)
+     
+    
+    return S[x]
+def infer_decision():   
+    G =UniformBayesianVector()            
+  C =UniformPriorVector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+        
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UniformPriorVector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+        
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UniformPriorVector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UniformPriorVector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UniformPriorVector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+        
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UniformPriorVector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UniformPriorVector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UniformPriorVector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UniformPriorVector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UniformPriorvector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UniformPriorvector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =UnuniformPriorvector()           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =uniform(min=-3.,max+3.)           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =uniform(min=-3.,max+3.)           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =uniform(min=-3.,max+3.)           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =uniform(min=-3.,max+3.)           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
+def validate():     
+   G =UniformBayesianVector()            
+  C =uniform(min=-3.,max+3.)           
+
+  def get_belief(y):     # Use the state information to infer a belief for next observation
+     
+    x=random.choices([1,2], weights=[5/num_observations])  
+      
+            
+     
+    return S[x]
 ```

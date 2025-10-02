@@ -1,0 +1,16 @@
+Execution Results for Active Inference Chronic Pain Multi-Theory Model v1_pymdp.py
+Timestamp: 2025-10-02T10:52:31.484160
+Return Code: 1
+Execution Time: 1.40 seconds
+
+STDOUT:
+
+
+STDERR:
+WARNING:root:PyMDP not available - simulation will gracefully degrade with informative output
+ERROR:__main__:Unexpected error: execute_pymdp_simulation() got an unexpected keyword argument 'config_overrides'
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/chronic_pain_theories/pymdp/Active Inference Chronic Pain Multi-Theory Model v1_pymdp.py", line 1193, in main
+    success, results = execute_pymdp_simulation(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: execute_pymdp_simulation() got an unexpected keyword argument 'config_overrides'

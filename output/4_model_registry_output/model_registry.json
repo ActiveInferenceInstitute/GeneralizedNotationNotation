@@ -1,20 +1,58 @@
 {
   "version": "1.0.0",
-  "updated_at": "2025-10-01T08:05:35.340134",
+  "updated_at": "2025-10-02T10:52:16.411737",
   "models": {
     "actinf_pomdp_agent": {
       "model_id": "actinf_pomdp_agent",
       "name": "GNN Example: Active Inference POMDP Agent",
       "description": "ActInfPOMDP",
-      "created_at": "2025-10-01T06:51:40.582501",
-      "updated_at": "2025-10-01T08:05:35.340078",
+      "created_at": "2025-10-02T10:52:16.411192",
+      "updated_at": "2025-10-02T10:52:16.411310",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/actinf_pomdp_agent.md",
-          "created_at": "2025-10-01T08:05:35.340004",
+          "created_at": "2025-10-02T10:52:16.411223",
           "metadata": {},
           "hash": "001fa3970f50f581dc0538788616a394532c1c80297772ec7a235fa801dbdb1b"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "chronic_pain_theories": {
+      "model_id": "chronic_pain_theories",
+      "name": "GNN Example: Chronic Pain Multi-Theory Model with Three Nested Continuous Timescales",
+      "description": "ChronicPainTheories",
+      "created_at": "2025-10-02T10:52:16.411418",
+      "updated_at": "2025-10-02T10:52:16.411494",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/chronic_pain_theories.md",
+          "created_at": "2025-10-02T10:52:16.411424",
+          "metadata": {},
+          "hash": "fea6a9d783c8850ddf3be0eedc385c26e2a2f7aaabf81b54ca56e19305825f8e"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "neural_response_model": {
+      "model_id": "neural_response_model",
+      "name": "GNN Example: Neural Response Model",
+      "description": "NeuralResponse",
+      "created_at": "2025-10-02T10:52:16.411612",
+      "updated_at": "2025-10-02T10:52:16.411641",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/neural_response_model.md",
+          "created_at": "2025-10-02T10:52:16.411614",
+          "metadata": {},
+          "hash": "7e6d6b5e3c0167ea8bac65457bc0adfc2d45af794abc0beabf208327855ea249"
         }
       },
       "tags": [],

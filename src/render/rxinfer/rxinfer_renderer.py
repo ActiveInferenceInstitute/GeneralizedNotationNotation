@@ -179,8 +179,8 @@ println("📊 State Space: $NUM_STATES states, $NUM_OBSERVATIONS observations, $
     C = zeros(NUM_OBSERVATIONS)
     C[end] = 2.0  # Prefer last observation state
     
-    # State sequence
-    s = Vector{{RandomVariable}}(undef, n_steps)
+    # State sequence - use randomvar() for proper RxInfer variable creation
+    s = randomvar(n_steps)
     
     # Initial state
     s[1] ~ Categorical(D)
@@ -228,7 +228,7 @@ function run_active_inference_simulation()
     # Perform inference
     println("\\n🧠 Running variational inference...")
     result = infer(
-        model = active_inference_model(TIME_STEPS, observations_data),
+        model = active_inference_model(n_steps=TIME_STEPS, observations=observations_data),
         data = data,
         options = (
             iterations = 50,
@@ -370,17 +370,33 @@ def render_gnn_to_rxinfer(
     Returns:
         Tuple of (success, message, warnings)
     """
+    logger = logging.getLogger(__name__)
+    
     try:
+        # Validate input
+        if not isinstance(gnn_spec, dict):
+            return False, "Invalid GNN specification: must be a dictionary", []
+        
         renderer = RxInferRenderer(options)
         
+        # Get model name safely
+        model_name = gnn_spec.get('name') or gnn_spec.get('model_name', 'GNN_Model')
+        
         # Generate simulation code directly from spec
-        model_name = gnn_spec.get('model_name', 'GNN_Model')
-        rxinfer_code = renderer._generate_rxinfer_simulation_code(gnn_spec, model_name)
+        try:
+            rxinfer_code = renderer._generate_rxinfer_simulation_code(gnn_spec, model_name)
+        except Exception as gen_error:
+            logger.error(f"Code generation failed: {gen_error}")
+            return False, f"Error generating RxInfer.jl code: {gen_error}", []
         
         # Write output file
-        output_script_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_script_path, 'w', encoding='utf-8') as f:
-            f.write(rxinfer_code)
+        try:
+            output_script_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(output_script_path, 'w', encoding='utf-8') as f:
+                f.write(rxinfer_code)
+        except Exception as write_error:
+            logger.error(f"Failed to write output file: {write_error}")
+            return False, f"Error writing RxInfer.jl script: {write_error}", []
         
         message = f"Generated RxInfer.jl simulation script: {output_script_path}"
         warnings = []
@@ -392,7 +408,9 @@ def render_gnn_to_rxinfer(
         if not gnn_spec.get('model_parameters'):
             warnings.append("No model parameters found - using inferred dimensions")
         
+        logger.info(f"Successfully generated RxInfer.jl script for {model_name}")
         return True, message, warnings
         
     except Exception as e:
+        logger.error(f"Unexpected error in render_gnn_to_rxinfer: {e}", exc_info=True)
         return False, f"Error generating RxInfer.jl script: {e}", [] 

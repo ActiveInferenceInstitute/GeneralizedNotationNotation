@@ -1,21 +1,21 @@
 
 # Type Check Summary
 
-**Generated**: 2025-10-01 08:05:35
+**Generated**: 2025-10-02 10:52:16
 
 ## Processing Results
-- **Files Processed**: 1
+- **Files Processed**: 3
 - **Success**: True
 - **Errors**: 0
 
 ## Validation Results
-- **Files Validated**: 1
+- **Files Validated**: 3
 - **Valid Files**: 0
-- **Invalid Files**: 1
+- **Invalid Files**: 3
 
 ## Type Analysis
-- **Type Analyses**: 1
-- **Total Variables**: 36
+- **Type Analyses**: 3
+- **Total Variables**: 356
 
 ## Error Summary
 - No errors encountered

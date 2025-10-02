@@ -2,9 +2,9 @@
 
 ## Module Overview
 
-**Purpose**: Research tools and experimental features for advanced GNN model analysis and hypothesis testing
+**Purpose**: Research tools, experimental features, and advanced analysis capabilities for Active Inference research
 
-**Pipeline Step**: Step 19: Research (19_research.py)
+**Pipeline Step**: Step 19: Research tools (19_research.py)
 
 **Category**: Research / Experimental Analysis
 
@@ -13,18 +13,20 @@
 ## Core Functionality
 
 ### Primary Responsibilities
-1. Provide research-oriented analysis tools for GNN models
-2. Enable experimental feature testing and validation
-3. Generate research hypotheses and analysis frameworks
-4. Support advanced model comparison and benchmarking
-5. Facilitate academic research workflows and methodologies
+1. Advanced research analysis and experimentation
+2. Research methodology implementation and validation
+3. Experimental feature development and testing
+4. Research data collection and analysis
+5. Publication and documentation support
+6. Research collaboration tools
 
 ### Key Capabilities
-- Advanced statistical analysis and hypothesis testing
-- Experimental feature development and validation
-- Research methodology implementation
-- Model comparison and differential analysis
-- Academic publication support and formatting
+- Advanced statistical analysis techniques
+- Experimental algorithm implementation
+- Research data visualization
+- Publication-ready output generation
+- Research methodology validation
+- Experimental feature prototyping
 
 ---
 
@@ -32,92 +34,63 @@
 
 ### Public Functions
 
-#### `process_research(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main research processing function for experimental analysis
+#### `process_research(target_dir, output_dir, **kwargs) -> bool`
+**Description**: Main research processing function
 
 **Parameters**:
-- `target_dir` (Path): Directory containing GNN files
-- `output_dir` (Path): Output directory for research results
-- `logger` (Logger): Logger instance for progress reporting
-- `research_mode` (str): Research mode ("experimental", "hypothesis", "validation")
-- `include_hypotheses` (bool): Include research hypothesis generation
-- `**kwargs`: Additional research-specific options
+- `target_dir`: Directory containing research data
+- `output_dir`: Output directory for research results
+- `**kwargs`: Additional research options
 
 **Returns**: `True` if research processing succeeded
 
----
+#### `perform_research_analysis(data, analysis_type="comprehensive") -> Dict[str, Any]`
+**Description**: Perform advanced research analysis
 
-## Research Modes
+**Parameters**:
+- `data`: Research data to analyze
+- `analysis_type`: Type of analysis to perform
 
-### Experimental Mode
-**Purpose**: Test new analysis techniques and methodologies
-**Features**:
-- Novel statistical analysis methods
-- Experimental visualization techniques
-- Advanced model comparison algorithms
-- Cutting-edge research methodologies
+**Returns**: Dictionary with research analysis results
 
-### Hypothesis Mode
-**Purpose**: Generate and test research hypotheses
-**Features**:
-- Automated hypothesis generation from model data
-- Statistical hypothesis testing frameworks
-- Research question formulation
-- Evidence-based hypothesis validation
+#### `generate_research_report(analysis_results, output_format="markdown") -> str`
+**Description**: Generate research report from analysis results
 
-### Validation Mode
-**Purpose**: Validate research findings and methodologies
-**Features**:
-- Cross-validation of analysis results
-- Methodology validation and benchmarking
-- Reproducibility testing and verification
-- Research quality assessment
+**Parameters**:
+- `analysis_results`: Results from research analysis
+- `output_format`: Output format for the report
+
+**Returns**: Research report as formatted string
 
 ---
 
 ## Dependencies
 
 ### Required Dependencies
-- `numpy` - Advanced numerical computations
-- `scipy` - Statistical analysis and hypothesis testing
-- `pandas` - Data manipulation for research datasets
+- `numpy` - Numerical computations
+- `pandas` - Data analysis
+- `matplotlib` - Research visualization
 
 ### Optional Dependencies
-- `statsmodels` - Advanced statistical modeling (fallback: scipy)
-- `scikit-learn` - Machine learning for research (fallback: basic implementations)
-- `jupyter` - Research notebook integration (fallback: markdown reports)
+- `scipy` - Advanced statistical analysis
+- `scikit-learn` - Machine learning research tools
+- `jupyter` - Interactive research notebooks
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing
-- `pipeline.config` - Configuration management
+- `utils.pipeline_template` - Pipeline utilities
 
 ---
 
 ## Configuration
 
-### Environment Variables
-- `RESEARCH_MODE` - Research analysis mode ("experimental", "hypothesis", "validation")
-- `RESEARCH_HYPOTHESES` - Enable hypothesis generation (default: True)
-- `RESEARCH_STATISTICAL_TESTS` - Statistical test configurations
-
-### Configuration Files
-- `research_config.yaml` - Research methodology and test configurations
-
-### Default Settings
+### Research Settings
 ```python
-DEFAULT_RESEARCH_SETTINGS = {
-    'mode': 'experimental',
-    'hypothesis_generation': True,
-    'statistical_tests': {
-        'significance_level': 0.05,
-        'power_analysis': True,
-        'multiple_testing_correction': 'bonferroni'
-    },
-    'validation': {
-        'cross_validation_folds': 5,
-        'bootstrap_samples': 1000,
-        'reproducibility_checks': True
-    }
+RESEARCH_CONFIG = {
+    'analysis_types': ['statistical', 'experimental', 'comparative'],
+    'output_formats': ['markdown', 'html', 'pdf'],
+    'visualization_style': 'publication',
+    'statistical_significance': 0.05,
+    'include_methodology': True
 }
 ```
 
@@ -125,28 +98,34 @@ DEFAULT_RESEARCH_SETTINGS = {
 
 ## Usage Examples
 
-### Basic Research Processing
+### Basic Research Analysis
 ```python
 from research.processor import process_research
 
 success = process_research(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/19_research_output"),
-    logger=logger,
-    research_mode="experimental"
+    target_dir="research_data/",
+    output_dir="output/19_research_output",
+    analysis_type="comprehensive"
 )
 ```
 
-### Hypothesis Testing
+### Advanced Research Analysis
 ```python
-from research.processor import process_research
+from research.analyzer import perform_research_analysis
 
-success = process_research(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/19_research_output"),
-    logger=logger,
-    research_mode="hypothesis",
-    include_hypotheses=True
+results = perform_research_analysis(
+    data=experimental_data,
+    analysis_type="experimental"
+)
+```
+
+### Research Report Generation
+```python
+from research.generator import generate_research_report
+
+report = generate_research_report(
+    analysis_results=results,
+    output_format="markdown"
 )
 ```
 
@@ -155,20 +134,20 @@ success = process_research(
 ## Output Specification
 
 ### Output Products
-- `{model}_research_analysis.json` - Research analysis results
-- `{model}_hypotheses.json` - Generated research hypotheses
-- `{model}_validation_results.json` - Validation study results
-- `{model}_research_summary.md` - Research findings summary
-- `research_processing_summary.json` - Processing metadata
+- `research_analysis_report.md` - Comprehensive research report
+- `research_data_analysis.json` - Detailed analysis results
+- `research_visualizations/` - Research visualizations
+- `research_summary.json` - Research summary
 
 ### Output Directory Structure
 ```
 output/19_research_output/
-├── model_name_research_analysis.json
-├── model_name_hypotheses.json
-├── model_name_validation_results.json
-├── model_name_research_summary.md
-└── research_processing_summary.json
+├── research_analysis_report.md
+├── research_data_analysis.json
+├── research_visualizations/
+│   ├── statistical_plots.png
+│   └── experimental_results.png
+└── research_summary.json
 ```
 
 ---
@@ -176,29 +155,31 @@ output/19_research_output/
 ## Performance Characteristics
 
 ### Latest Execution
-- **Duration**: ~10-30 seconds (research analysis)
-- **Memory**: ~50-150MB for complex analyses
+- **Duration**: Variable (depends on research complexity)
+- **Memory**: ~50-200MB for complex analyses
 - **Status**: ✅ Production Ready
 
 ### Expected Performance
-- **Fast Path**: ~5-10s for basic research analysis
-- **Slow Path**: ~30-60s for comprehensive hypothesis testing
-- **Memory**: ~30-100MB for typical research, ~150MB+ for large studies
+- **Statistical Analysis**: 1-5 minutes
+- **Experimental Analysis**: 5-30 minutes
+- **Report Generation**: < 1 minute
+- **Visualization**: 30 seconds - 2 minutes
 
 ---
 
 ## Error Handling
 
-### Graceful Degradation
-- **No advanced libraries**: Fallback to basic statistical methods
-- **Insufficient data**: Generate preliminary hypotheses and recommendations
-- **Complex analyses**: Simplify methodology with warnings
+### Research Errors
+1. **Data Quality Issues**: Invalid or insufficient research data
+2. **Analysis Failures**: Statistical or computational errors
+3. **Visualization Errors**: Plot generation failures
+4. **Report Generation**: Documentation creation errors
 
-### Error Categories
-1. **Statistical Errors**: Invalid statistical assumptions or data
-2. **Hypothesis Errors**: Unable to generate meaningful hypotheses
-3. **Validation Errors**: Insufficient data for validation studies
-4. **Methodological Errors**: Incompatible research methodologies
+### Recovery Strategies
+- **Data Cleaning**: Automatic data quality improvement
+- **Analysis Fallback**: Alternative analysis methods
+- **Visualization Fallback**: Simplified visualizations
+- **Report Recovery**: Error-aware report generation
 
 ---
 
@@ -209,16 +190,15 @@ output/19_research_output/
 - **Function**: `process_research()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
-- `pipeline.config` - Configuration management
+- `utils.pipeline_template` - Pipeline utilities
 
 ### Imported By
-- `tests.test_research_unit.py` - Research methodology tests
-- `main.py` - Pipeline orchestration
+- Research-specific applications
+- `tests.test_research_*` - Research tests
 
 ### Data Flow
 ```
-GNN Models → Research Analysis → Hypothesis Generation → Validation Studies → Academic Output
+Research Data → Analysis → Visualization → Report Generation → Publication
 ```
 
 ---
@@ -226,38 +206,38 @@ GNN Models → Research Analysis → Hypothesis Generation → Validation Studie
 ## Testing
 
 ### Test Files
-- `src/tests/test_research_unit.py` - Unit tests
-- `src/tests/test_research_methodology.py` - Methodology tests
+- `src/tests/test_research_integration.py` - Integration tests
+- `src/tests/test_research_analysis.py` - Analysis tests
 
 ### Test Coverage
 - **Current**: 70%
-- **Target**: 85%+
+- **Target**: 80%+
 
 ### Key Test Scenarios
-1. Research methodology validation across different model types
-2. Hypothesis generation accuracy and relevance
-3. Statistical test implementation correctness
-4. Performance under various research scenarios
-5. Error handling with edge cases and malformed data
+1. Research analysis with various data types
+2. Report generation and formatting
+3. Visualization creation
+4. Error handling and recovery
 
 ---
 
 ## MCP Integration
 
 ### Tools Registered
-- `research_analyze` - Perform research analysis on GNN models
-- `research_hypothesize` - Generate research hypotheses
-- `research_validate` - Validate research methodologies
+- `research.analyze_data` - Perform research analysis
+- `research.generate_report` - Generate research reports
+- `research.create_visualization` - Create research visualizations
+- `research.validate_methodology` - Validate research methodology
 
 ### Tool Endpoints
 ```python
-@mcp_tool("research_analyze")
-def analyze_research(model_data, methodology="experimental"):
-    """Perform research analysis using specified methodology"""
+@mcp_tool("research.analyze_data")
+def analyze_research_data_tool(data, analysis_type="comprehensive"):
+    """Perform research analysis on data"""
     # Implementation
 ```
 
 ---
 
-**Last Updated**: September 30, 2025
+**Last Updated**: October 1, 2025
 **Status**: ✅ Production Ready

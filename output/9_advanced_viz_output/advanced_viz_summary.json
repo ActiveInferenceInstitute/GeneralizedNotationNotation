@@ -1,13 +1,17 @@
 {
-  "timestamp": "2025-10-01T08:05:39.035733",
-  "total_attempts": 2,
-  "successful": 2,
+  "timestamp": "2025-10-02T10:52:23.219885",
+  "total_attempts": 6,
+  "successful": 6,
   "failed": 0,
   "skipped": 0,
   "total_duration_ms": 0.0,
   "output_files": [
     "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
-    "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
+    "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
+    "output/9_advanced_viz_output/chronic_pain_theories_3d_visualization.png",
+    "output/9_advanced_viz_output/chronic_pain_theories_statistical_analysis.png",
+    "output/9_advanced_viz_output/neural_response_model_3d_visualization.png",
+    "output/9_advanced_viz_output/neural_response_model_statistical_analysis.png"
   ],
   "warnings": [],
   "errors": [],
@@ -16,7 +20,7 @@
       "viz_type": "3d",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 138.3962631225586,
+      "duration_ms": 210.91103553771973,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
       ],
@@ -27,9 +31,53 @@
       "viz_type": "statistical",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 134.89508628845215,
+      "duration_ms": 140.78807830810547,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "3d",
+      "model_name": "chronic_pain_theories",
+      "status": "success",
+      "duration_ms": 194.77605819702148,
+      "output_files": [
+        "output/9_advanced_viz_output/chronic_pain_theories_3d_visualization.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "statistical",
+      "model_name": "chronic_pain_theories",
+      "status": "success",
+      "duration_ms": 257.27081298828125,
+      "output_files": [
+        "output/9_advanced_viz_output/chronic_pain_theories_statistical_analysis.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "3d",
+      "model_name": "neural_response_model",
+      "status": "success",
+      "duration_ms": 182.06191062927246,
+      "output_files": [
+        "output/9_advanced_viz_output/neural_response_model_3d_visualization.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "statistical",
+      "model_name": "neural_response_model",
+      "status": "success",
+      "duration_ms": 212.2659683227539,
+      "output_files": [
+        "output/9_advanced_viz_output/neural_response_model_statistical_analysis.png"
       ],
       "error_message": null,
       "fallback_used": false

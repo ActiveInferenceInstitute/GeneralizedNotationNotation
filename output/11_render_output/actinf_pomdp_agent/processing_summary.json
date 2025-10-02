@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-01T08:05:39.309428",
+  "timestamp": "2025-10-02T10:52:23.711276",
   "source_file": "input/gnn_files/actinf_pomdp_agent.md",
   "model_name": "Classic Active Inference POMDP Agent v1",
   "pomdp_dimensions": {
@@ -16,10 +16,11 @@
   ],
   "frameworks_processed": [
     "pymdp",
-    "rxinfer",
     "activeinference_jl",
     "jax",
     "discopy"
   ],
-  "frameworks_failed": []
+  "frameworks_failed": [
+    "rxinfer"
+  ]
 }

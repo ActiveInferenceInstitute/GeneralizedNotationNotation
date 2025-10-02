@@ -1,19 +1,25 @@
 {
-  "total_files": 1,
-  "successful_validations": 1,
+  "total_files": 3,
+  "successful_validations": 3,
   "failed_validations": 0,
   "validation_scores": {
     "semantic": [
+      1.0,
+      1.0,
       1.0
     ],
     "performance": [
+      0.7,
+      0.7,
       0.7
     ],
     "consistency": [
+      1.0,
+      1.0,
       1.0
     ],
     "avg_semantic_score": 1.0,
-    "avg_performance_score": 0.7,
+    "avg_performance_score": 0.6999999999999998,
     "avg_consistency_score": 1.0
   }
 }

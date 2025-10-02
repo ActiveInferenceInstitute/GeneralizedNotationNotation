@@ -1,14 +1,14 @@
 # GNN Rendering Results
 
-Generated: 2025-10-01T08:05:39.311966
+Generated: 2025-10-02T10:52:23.717831
 Processing Type: **POMDP-aware rendering**
 
 ## Summary
 
-- **Total Files**: 1
-- **Successfully Processed**: 1
-- **Failed**: 0
-- **Framework Renderings**: 5/5 (100.0% success rate)
+- **Total Files**: 3
+- **Successfully Processed**: 0
+- **Failed**: 3
+- **Framework Renderings**: 12/15 (80.0% success rate)
 
 ## Configuration
 
@@ -19,12 +19,9 @@ Processing Type: **POMDP-aware rendering**
 
 ## File Results
 
-- ✅ **actinf_pomdp_agent.md** - Successfully processed
-  - ✅ pymdp: Generated PyMDP simulation script: output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py
-  - ✅ rxinfer: Generated RxInfer.jl simulation script: output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl
-  - ✅ activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl
-  - ✅ jax: JAX model code generated successfully.
-  - ✅ discopy: Generated DisCoPy categorical diagram script: output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py
+- ❌ **actinf_pomdp_agent.md** - Unknown error
+- ❌ **chronic_pain_theories.md** - Unknown error
+- ❌ **neural_response_model.md** - Unknown error
 
 
 ## Output Structure

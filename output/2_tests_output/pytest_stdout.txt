@@ -1,0 +1,98 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.13, pytest-8.4.1, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.11.13', 'Platform': 'macOS-26.0.1-arm64-arm-64bit', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'asyncio': '1.1.0', 'xdist': '3.8.0', 'json-report': '1.5.0', 'timeout': '2.4.0', 'metadata': '3.1.1', 'anyio': '4.10.0', 'cov': '6.2.1'}}
+rootdir: /Users/4d/Documents/GitHub/generalizednotationnotation
+configfile: pytest.ini
+plugins: asyncio-1.1.0, xdist-3.8.0, json-report-1.5.0, timeout-2.4.0, metadata-3.1.1, anyio-4.10.0, cov-6.2.1
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 531 items / 451 deselected / 80 selected
+
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports PASSED [  1%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery PASSED [  2%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing PASSED [  3%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation SKIPPED [  5%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports PASSED [  6%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering PASSED [  7%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering PASSED [  8%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering PASSED [ 10%]
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports PASSED [ 11%]
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation PASSED [ 12%]
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution PASSED [ 13%]
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports PASSED [ 15%]
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis PASSED [ 16%]
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation PASSED [ 17%]
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports PASSED [ 18%]
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration PASSED [ 20%]
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling PASSED [ 21%]
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports PASSED [ 22%]
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation PASSED [ 23%]
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports PASSED [ 25%]
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation PASSED [ 26%]
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation PASSED [ 27%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports PASSED [ 28%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion SKIPPED [ 30%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation PASSED [ 31%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation PASSED [ 32%]
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination PASSED [ 33%]
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow PASSED [ 35%]
+src/tests/test_core_modules.py::test_core_module_completeness PASSED     [ 36%]
+src/tests/test_core_modules.py::test_core_module_performance PASSED      [ 37%]
+src/tests/test_fast_suite.py::TestFastEnvironment::test_python_environment PASSED [ 38%]
+src/tests/test_fast_suite.py::TestFastEnvironment::test_test_configuration PASSED [ 40%]
+src/tests/test_fast_suite.py::TestFastEnvironment::test_essential_directories PASSED [ 41%]
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_module_import PASSED [ 42%]
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_file_creation PASSED [ 43%]
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_content_validation PASSED [ 45%]
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_utils_module_import PASSED [ 46%]
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_pipeline_module_import PASSED [ 47%]
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_type_checker_import PASSED [ 48%]
+src/tests/test_fast_suite.py::TestFastExport::test_export_module_import PASSED [ 50%]
+src/tests/test_fast_suite.py::TestFastExport::test_basic_export_functionality PASSED [ 51%]
+src/tests/test_fast_suite.py::TestFastVisualization::test_visualization_module_import PASSED [ 52%]
+src/tests/test_fast_suite.py::TestFastRender::test_render_module_import PASSED [ 53%]
+src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import PASSED [ 55%]
+src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import PASSED [ 56%]
+src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import PASSED [ 57%]
+src/tests/test_fast_suite.py::TestFastOntology::test_ontology_module_import PASSED [ 58%]
+src/tests/test_fast_suite.py::TestFastSAPF::test_sapf_module_import PASSED [ 60%]
+src/tests/test_fast_suite.py::TestFastWebsite::test_website_module_import PASSED [ 61%]
+src/tests/test_fast_suite.py::TestFastIntegration::test_basic_pipeline_flow PASSED [ 62%]
+src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_setup PASSED [ 63%]
+src/tests/test_fast_suite.py::test_fast_suite_completeness PASSED        [ 65%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineDiscovery::test_discovery_imports PASSED [ 66%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineDiscovery::test_get_pipeline_scripts PASSED [ 67%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineDiscovery::test_discover_steps PASSED [ 68%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineStepTemplate::test_step_template_imports SKIPPED [ 70%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineStepTemplate::test_pipeline_step_class SKIPPED [ 71%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineStepTemplate::test_create_step_template SKIPPED [ 72%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineValidation::test_validation_imports SKIPPED [ 73%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineValidation::test_validate_pipeline SKIPPED [ 75%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineValidation::test_check_step_dependencies SKIPPED [ 76%]
+src/tests/test_pipeline_infrastructure.py::TestVerifyPipeline::test_verify_imports PASSED [ 77%]
+src/tests/test_pipeline_infrastructure.py::TestVerifyPipeline::test_verify_pipeline_integrity SKIPPED [ 78%]
+src/tests/test_pipeline_infrastructure.py::TestVerifyPipeline::test_check_pipeline_health SKIPPED [ 80%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsMigrationHelper::test_migration_imports PASSED [ 81%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsMigrationHelper::test_migrate_pipeline SKIPPED [ 82%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsMigrationHelper::test_upgrade_scripts SKIPPED [ 83%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsPipelineMonitor::test_monitor_imports PASSED [ 85%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsPipelineMonitor::test_pipeline_monitor_class PASSED [ 86%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsPipelineMonitor::test_monitor_execution SKIPPED [ 87%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsResourceManager::test_resource_manager_imports PASSED [ 88%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsResourceManager::test_resource_manager_class SKIPPED [ 90%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsResourceManager::test_monitor_resources SKIPPED [ 91%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsScriptValidator::test_script_validator_imports PASSED [ 92%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsScriptValidator::test_script_validator_class SKIPPED [ 93%]
+src/tests/test_pipeline_infrastructure.py::TestUtilsScriptValidator::test_validate_script SKIPPED [ 95%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineInfrastructureIntegration::test_discovery_and_validation_integration SKIPPED [ 96%]
+src/tests/test_pipeline_infrastructure.py::TestPipelineInfrastructureIntegration::test_monitoring_and_resource_management_integration SKIPPED [ 97%]
+src/tests/test_pipeline_infrastructure.py::test_pipeline_infrastructure_performance SKIPPED [ 98%]
+src/tests/test_pipeline_infrastructure.py::test_pipeline_infrastructure_completeness PASSED [100%]
+
+============================= slowest 10 durations =============================
+3.07s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+0.01s call     src/tests/test_fast_suite.py::TestFastRender::test_render_module_import
+0.01s call     src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import
+
+(7 durations < 0.005s hidden.  Use -vv to show these durations.)
+================ 60 passed, 20 skipped, 451 deselected in 4.73s ================
