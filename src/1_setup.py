@@ -49,7 +49,7 @@ run_script = create_standardized_pipeline_script(
         verbose=kwargs.get('verbose', False),
         recreate=kwargs.get('recreate_venv', False),
         dev=kwargs.get('dev', True),
-        extras=["llm", "visualization", "audio", "gui"],
+        extras=[],  # Don't install problematic optional dependencies during setup
         skip_jax_test=True,
         output_dir=output_dir
     ),

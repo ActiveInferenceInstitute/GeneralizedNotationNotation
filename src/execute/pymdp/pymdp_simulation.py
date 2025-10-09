@@ -513,13 +513,25 @@ class PyMDPSimulation:
             self.logger.error(f"Failed to process GNN D vector: {e}")
             return self._create_prior_beliefs()
 
+    def create_model(self, config: Optional[Dict[str, Any]] = None):
+        """
+        Create PyMDP model matrices (backward compatibility method).
+
+        Args:
+            config: Optional configuration override
+
+        Returns:
+            tuple: (agent, model_matrices) with PyMDP Agent and matrix dict
+        """
+        return self.create_pymdp_model()
+
     def create_pymdp_model(self):
         """
         Create PyMDP model matrices using authentic PyMDP methods.
-        
+
         This function constructs the complete POMDP generative model (A, B, C, D)
         using real PyMDP utilities, configured from GNN specifications.
-        
+
         Returns:
             tuple: (agent, model_matrices) with PyMDP Agent and matrix dict
         """

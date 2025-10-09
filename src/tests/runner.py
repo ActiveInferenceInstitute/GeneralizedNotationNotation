@@ -1303,78 +1303,45 @@ class ModularTestRunner:
         tests_passed = 0
         tests_failed = 0
         tests_skipped = 0
-        
+
         # Parse the output for test results
         lines = stdout.split('\n')
-        
-        # First try to parse summary line with combined stats
-        for line in lines:
+
+        # Look for the summary line at the end (most reliable)
+        # Format: "========================= 41 passed, 12 skipped in 1.76s ==========================="
+        for line in reversed(lines):
             line = line.strip()
-            
-            # Skip lines without = separators
-            if "=" not in line:
-                continue
-                
-            # Look for summary lines like:
-            # "======================== 41 passed, 12 skipped in 1.76s ========================="
-            if "passed" in line or "failed" in line or "skipped" in line:
-                # Extract the content between the = signs
-                start = line.find("=")
-                end = line.rfind("=")
-                if start != end and start != -1 and end != -1:
-                    content = line[start+1:end].strip()
-                    
-                    # Split by comma and parse each part
-                    test_parts = content.split(',')
-                    for part in test_parts:
-                        part = part.strip()
-                        
-                        # Extract numbers from specific keywords
-                        if "passed" in part:
-                            words = part.split()
-                            for i, word in enumerate(words):
-                                if "passed" in word and i > 0:
-                                    try:
-                                        tests_passed = int(words[i-1])
-                                    except (ValueError, IndexError):
-                                        pass
-                        
-                        elif "failed" in part:
-                            words = part.split()
-                            for i, word in enumerate(words):
-                                if "failed" in word and i > 0:
-                                    try:
-                                        tests_failed = int(words[i-1])
-                                    except (ValueError, IndexError):
-                                        pass
-                        
-                        elif "skipped" in part:
-                            words = part.split()
-                            for i, word in enumerate(words):
-                                if "skipped" in word and i > 0:
-                                    try:
-                                        tests_skipped = int(words[i-1])
-                                    except (ValueError, IndexError):
-                                        pass
-                    
-                    # If we found a summary line, calculate total and stop processing
-                    if tests_passed > 0 or tests_failed > 0 or tests_skipped > 0:
-                        tests_run = tests_passed + tests_failed + tests_skipped
-                        break
-        
+            if "passed" in line and ("failed" in line or "skipped" in line or "error" in line):
+                # Extract numbers from patterns like "X passed, Y failed" or "X passed, Y skipped"
+                import re
+                # Match patterns like "41 passed, 12 skipped" or "41 passed, 12 failed"
+                match = re.search(r'(\d+)\s+passed.*?(\d+)\s+(failed|skipped|error)', line)
+                if match:
+                    tests_passed = int(match.group(1))
+                    count = int(match.group(2))
+                    status = match.group(3)
+
+                    if status == "failed" or status == "error":
+                        tests_failed = count
+                    elif status == "skipped":
+                        tests_skipped = count
+
+                    tests_run = tests_passed + tests_failed + tests_skipped
+                    break
+
         # If no summary found, try to count from individual test results
         if tests_run == 0:
             # Count PASSED, FAILED, SKIPPED lines
-            passed_count = stdout.count("PASSED")
-            failed_count = stdout.count("FAILED") + stdout.count("ERROR")
-            skipped_count = stdout.count("SKIPPED")
-            
+            passed_count = stdout.count(" PASSED")
+            failed_count = stdout.count(" FAILED") + stdout.count(" ERROR")
+            skipped_count = stdout.count(" SKIPPED")
+
             if passed_count > 0 or failed_count > 0 or skipped_count > 0:
                 tests_passed = passed_count
                 tests_failed = failed_count
                 tests_skipped = skipped_count
                 tests_run = passed_count + failed_count + skipped_count
-        
+
         # If still no tests found, try to parse from the collected line
         if tests_run == 0:
             for line in lines:
@@ -1390,7 +1357,7 @@ class ModularTestRunner:
                                 break
                             except (ValueError, IndexError):
                                 pass
-        
+
         # Return with both canonical and legacy key names used elsewhere in the runner
         return {
             "tests_run": tests_run,

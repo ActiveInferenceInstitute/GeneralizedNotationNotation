@@ -36,6 +36,7 @@ class ErrorCategory(Enum):
     CONFIGURATION = "configuration"
     DEPENDENCY = "dependency"
     FILE_SYSTEM = "file_system"
+    FILE_ERROR = "file_error"
     NETWORK = "network"
     RESOURCE = "resource"
     VALIDATION = "validation"

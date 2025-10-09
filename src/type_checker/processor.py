@@ -94,14 +94,14 @@ class GNNTypeChecker:
                         results["errors"].append(error_info)
                         logger.error(f"Error processing {gnn_file}: {e}")
             
-            # Save detailed results
-            results_file = results_dir / "type_check_results.json"
+            # Save detailed results directly in output directory
+            results_file = output_dir / "type_check_results.json"
             with open(results_file, 'w') as f:
                 json.dump(results, f, indent=2)
-            
+
             # Generate type check summary
             summary = self._generate_type_check_summary(results)
-            summary_file = results_dir / "type_check_summary.md"
+            summary_file = output_dir / "type_check_summary.md"
             with open(summary_file, 'w') as f:
                 f.write(summary)
             

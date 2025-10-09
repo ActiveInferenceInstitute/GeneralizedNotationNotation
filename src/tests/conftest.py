@@ -402,6 +402,16 @@ def comprehensive_test_data(isolated_temp_dir) -> Dict[str, Any]:
             "test_mode": True,
             "safe_mode": True
         }
+    }
+
+@pytest.fixture
+def temp_directories(tmp_path) -> Dict[str, Path]:
+    """Provide multiple temporary directories for testing."""
+    return {
+        "input": tmp_path / "input",
+        "output": tmp_path / "output",
+        "temp": tmp_path / "temp",
+        "logs": tmp_path / "logs"
     } 
 
 # =============================================================================
