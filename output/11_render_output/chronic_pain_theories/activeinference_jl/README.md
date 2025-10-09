@@ -26,7 +26,7 @@ Generated from GNN POMDP Model: **Active Inference Chronic Pain Multi-Theory Mod
 - Cross-timescale coupling: slow states modulate fast dynamics, fast observations (averaged) drive medium cognition, medium behaviors (averaged) influence slow healing
 - Testable predictions about pain chronification pathways across multiple timescales
 - Intervention targets at each timescale: fast (descending control), medium (CBT/behavioral), slow (prevent sensitization)
-- **Generation Date**: 2025-10-02 10:52:23
+- **Generation Date**: 2025-10-09 07:55:54
 
 ## POMDP Dimensions
 

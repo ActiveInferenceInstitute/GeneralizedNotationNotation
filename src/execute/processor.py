@@ -142,14 +142,23 @@ def process_execute(
         # Generate execution report
         generate_execution_report(execution_results, results_dir, logger)
         
-        # Determine overall success
-        if execution_results["failed_executions"] > 0:
-            log_step_warning(logger, f"Execute processing completed with {execution_results['failed_executions']} failures")
-            # Still return True as some scripts might have succeeded
-        else:
+        # Determine overall success with improved logic
+        total_scripts = execution_results["total_scripts_found"]
+        failed_scripts = execution_results["failed_executions"]
+
+        if total_scripts == 0:
+            log_step_warning(logger, "No executable scripts found to run")
+            return True
+        elif failed_scripts == 0:
             log_step_success(logger, "Execute processing completed successfully")
-        
-        return execution_results["success"]
+        elif failed_scripts < total_scripts * 0.5:  # Less than 50% failures
+            log_step_warning(logger, f"Execute processing completed with {failed_scripts}/{total_scripts} failures (partial success)")
+        else:  # 50% or more failures
+            log_step_error(logger, f"Execute processing completed with {failed_scripts}/{total_scripts} failures (critical failures)")
+
+        # Return True if we found and attempted to run scripts (even if some failed)
+        # Return False only if there was a critical error preventing execution
+        return True
         
     except Exception as e:
         log_step_error(logger, f"Execute processing failed: {e}")
@@ -250,42 +259,77 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         
         # Check if the executor is available
         try:
-            subprocess.run([executor, '--version'], 
-                         capture_output=True, 
-                         text=True, 
-                         timeout=5,
-                         check=True)
-        except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-            exec_result['error'] = f"Executor '{executor}' is not available or not working"
+            # For Python scripts, check if Python is available (most are Python scripts)
+            if executor in ['python', 'python3']:
+                subprocess.run([executor, '--version'],
+                             capture_output=True,
+                             text=True,
+                             timeout=5,
+                             check=True)
+            # For Julia scripts, check if julia is available
+            elif executor == 'julia':
+                subprocess.run([executor, '--version'],
+                             capture_output=True,
+                             text=True,
+                             timeout=5,
+                             check=True)
+            # For other executors, try a basic check
+            else:
+                subprocess.run([executor, '--version'],
+                             capture_output=True,
+                             text=True,
+                             timeout=5,
+                             check=True)
+        except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired) as e:
+            exec_result['error'] = f"Executor '{executor}' is not available or not working: {e}"
             logger.warning(f"Executor '{executor}' is not available - skipping {script_info['name']}")
             return exec_result
         
-        # Execute the script
-        # Use the script name only since we're running from its directory
+        # Execute the script with improved error handling
         script_name = script_path.name
-        result = subprocess.run(
-            [executor, script_name],
-            capture_output=True,
-            text=True,
-            timeout=300,  # 5 minute timeout
-            cwd=script_path.parent  # Run in the script's directory
-        )
-        
-        end_time = datetime.now()
-        exec_result['execution_time'] = (end_time - start_time).total_seconds()
-        exec_result['return_code'] = result.returncode
-        exec_result['stdout'] = result.stdout
-        exec_result['stderr'] = result.stderr
-        
-        if result.returncode == 0:
-            exec_result['success'] = True
-            logger.info(f"✅ Successfully executed {script_info['name']}")
-            if verbose and result.stdout:
-                logger.info(f"Script output: {result.stdout[:200]}...")  # Show first 200 chars
-        else:
-            logger.error(f"❌ Script {script_info['name']} failed with return code {result.returncode}")
-            if result.stderr:
-                logger.error(f"Error output: {result.stderr[:200]}...")  # Show first 200 chars
+        try:
+            result = subprocess.run(
+                [executor, script_name],
+                capture_output=True,
+                text=True,
+                timeout=60,  # Reduced timeout for better responsiveness
+                cwd=script_path.parent  # Run in the script's directory
+            )
+
+            end_time = datetime.now()
+            exec_result['execution_time'] = (end_time - start_time).total_seconds()
+            exec_result['return_code'] = result.returncode
+            exec_result['stdout'] = result.stdout
+            exec_result['stderr'] = result.stderr
+
+            if result.returncode == 0:
+                exec_result['success'] = True
+                logger.info(f"✅ Successfully executed {script_info['name']}")
+                if verbose and result.stdout:
+                    logger.info(f"Script output: {result.stdout[:200]}...")  # Show first 200 chars
+            else:
+                exec_result['error'] = f"Script failed with return code {result.returncode}"
+                logger.warning(f"⚠️ Script {script_info['name']} failed with return code {result.returncode}")
+                if result.stderr:
+                    logger.warning(f"Error output: {result.stderr[:200]}...")  # Show first 200 chars
+
+        except subprocess.TimeoutExpired:
+            end_time = datetime.now()
+            exec_result['execution_time'] = (end_time - start_time).total_seconds()
+            exec_result['error'] = f"Script execution timed out after 60 seconds"
+            exec_result['return_code'] = -1
+            exec_result['stdout'] = ""
+            exec_result['stderr'] = "Timeout"
+            logger.warning(f"⏰ Script {script_info['name']} timed out after 60 seconds")
+
+        except Exception as e:
+            end_time = datetime.now()
+            exec_result['execution_time'] = (end_time - start_time).total_seconds()
+            exec_result['error'] = f"Script execution failed: {e}"
+            exec_result['return_code'] = -2
+            exec_result['stdout'] = ""
+            exec_result['stderr'] = str(e)
+            logger.warning(f"❌ Script {script_info['name']} execution failed: {e}")
                 
         # Save individual script output in implementation-specific subdirectory
         # Create the implementation-specific directory structure

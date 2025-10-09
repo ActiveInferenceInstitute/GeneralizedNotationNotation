@@ -323,10 +323,10 @@ connections:
   target_variables:
   - P_sens
   weight: null
-created_at: '2025-10-02T10:52:16.318129'
+created_at: '2025-10-09T07:55:49.626995'
 equations: []
 model_name: Active Inference Chronic Pain Multi-Theory Model v1
-modified_at: '2025-10-02T10:52:16.318132'
+modified_at: '2025-10-09T07:55:49.626996'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

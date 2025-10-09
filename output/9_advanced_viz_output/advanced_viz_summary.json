@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-02T10:52:23.219885",
+  "timestamp": "2025-10-09T07:55:54.344608",
   "total_attempts": 6,
   "successful": 6,
   "failed": 0,
@@ -20,7 +20,7 @@
       "viz_type": "3d",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 210.91103553771973,
+      "duration_ms": 138.6103630065918,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
       ],
@@ -31,7 +31,7 @@
       "viz_type": "statistical",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 140.78807830810547,
+      "duration_ms": 138.60797882080078,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
       ],
@@ -42,7 +42,7 @@
       "viz_type": "3d",
       "model_name": "chronic_pain_theories",
       "status": "success",
-      "duration_ms": 194.77605819702148,
+      "duration_ms": 126.20067596435547,
       "output_files": [
         "output/9_advanced_viz_output/chronic_pain_theories_3d_visualization.png"
       ],
@@ -53,7 +53,7 @@
       "viz_type": "statistical",
       "model_name": "chronic_pain_theories",
       "status": "success",
-      "duration_ms": 257.27081298828125,
+      "duration_ms": 115.55695533752441,
       "output_files": [
         "output/9_advanced_viz_output/chronic_pain_theories_statistical_analysis.png"
       ],
@@ -64,7 +64,7 @@
       "viz_type": "3d",
       "model_name": "neural_response_model",
       "status": "success",
-      "duration_ms": 182.06191062927246,
+      "duration_ms": 108.81209373474121,
       "output_files": [
         "output/9_advanced_viz_output/neural_response_model_3d_visualization.png"
       ],
@@ -75,7 +75,7 @@
       "viz_type": "statistical",
       "model_name": "neural_response_model",
       "status": "success",
-      "duration_ms": 212.2659683227539,
+      "duration_ms": 118.04413795471191,
       "output_files": [
         "output/9_advanced_viz_output/neural_response_model_statistical_analysis.png"
       ],

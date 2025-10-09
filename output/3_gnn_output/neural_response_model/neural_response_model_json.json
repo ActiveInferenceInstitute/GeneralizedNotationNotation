@@ -190,7 +190,7 @@
       "weight": null
     }
   ],
-  "created_at": "2025-10-02T10:52:16.336928",
+  "created_at": "2025-10-09T07:55:49.643266",
   "equations": [],
   "extensions": {
     "footer": "Active Inference Neural Response Model v1 - GNN Representation.\nThis model captures essential aspects of neural computation including membrane dynamics, synaptic plasticity, adaptation, homeostasis, and metabolic constraints within the Active Inference framework. The model is designed for studying how neurons minimize free energy while maintaining stable, efficient, and adaptive responses to stimuli.",
@@ -198,7 +198,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Active Inference Neural Response Model v1",
-  "modified_at": "2025-10-02T10:52:16.336931",
+  "modified_at": "2025-10-09T07:55:49.643267",
   "ontology_mappings": [
     {
       "description": null,

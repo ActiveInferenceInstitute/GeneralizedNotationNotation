@@ -61,8 +61,17 @@ def main() -> int:
         from tests import run_tests
 
         # Determine test mode
-        fast_only = args.fast_only and not args.comprehensive
-        comprehensive = args.comprehensive
+        # For pipeline integration, run comprehensive tests unless explicitly requested as fast-only
+        if args.comprehensive:
+            comprehensive = True
+            fast_only = False
+        elif args.fast_only:
+            comprehensive = False
+            fast_only = True
+        else:
+            # Default for pipeline: run comprehensive tests
+            comprehensive = True
+            fast_only = False
 
         logger.info(f"🧪 Running {'comprehensive' if comprehensive else 'fast'} test suite")
 

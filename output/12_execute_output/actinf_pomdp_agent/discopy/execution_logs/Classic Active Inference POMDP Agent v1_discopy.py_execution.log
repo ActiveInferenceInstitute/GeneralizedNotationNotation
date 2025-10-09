@@ -1,7 +1,7 @@
 Execution Results for Classic Active Inference POMDP Agent v1_discopy.py
-Timestamp: 2025-10-02T10:52:31.116418
+Timestamp: 2025-10-09T07:55:58.155753
 Return Code: 1
-Execution Time: 0.37 seconds
+Execution Time: 0.24 seconds
 Model: actinf_pomdp_agent
 Framework: discopy
 Output Directory: output/12_execute_output/actinf_pomdp_agent/discopy

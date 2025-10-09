@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-02T10:52:16.470502",
+  "timestamp": "2025-10-09T07:55:49.747470",
   "processed_files": 3,
   "success": true,
   "errors": [],
@@ -9,7 +9,7 @@
       "file_name": "actinf_pomdp_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: matrix, s_prime, B, type, s, u, \u03c0, D, vector, E, G, C, o, t, F, A"
+        "Duplicate variable names: s, matrix, B, \u03c0, C, D, type, vector, F, o, s_prime, t, A, G, E, u"
       ],
       "warnings": [
         "Type issue: Unknown type 'Active' for variable 'Example'",
@@ -512,14 +512,14 @@
           "type": "3 (controlled by \u03c0)"
         }
       ],
-      "validation_timestamp": "2025-10-02T10:52:16.470618"
+      "validation_timestamp": "2025-10-09T07:55:49.747555"
     },
     {
       "file_path": "input/gnn_files/chronic_pain_theories.md",
       "file_name": "chronic_pain_theories.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: \u03b4, preferences, type, t_fast, Theory, Cog, Func, t_slow, C_sens, course, constants, T, Cognitive, by, E, t_medium, dt_fast, G, pathway, Hypothesis, medium, Behav, Sensitization, D_mod, E_q, distribution, C, actions, Tissue, P_sens, factors, fast, A, F, dt_slow, B, Example, states, D, Gate, vector, Attn, Desc_C, levels, dt_medium, Reapp, mod, Auto, slow, sens, Pain_I, 3, \u03b5, Pain_Q"
+        "Duplicate variable names: B, t_medium, pathway, levels, type, actions, F, Tissue, Behav, slow, constants, by, states, T, D, t_fast, Example, C, vector, distribution, Cog, Func, E_q, G, dt_fast, course, E, \u03b4, Pain_I, \u03b5, Reapp, Pain_Q, t_slow, Cognitive, C_sens, sens, dt_medium, Desc_C, Hypothesis, A, P_sens, Gate, D_mod, Auto, factors, fast, mod, Sensitization, 3, Attn, dt_slow, medium, Theory, preferences"
       ],
       "warnings": [
         "Type issue: Unknown type 'Chronic' for variable 'Example'",
@@ -2835,14 +2835,14 @@
           "type": "\u03c4_medium / \u03c4_slow \u2248 10^-2"
         }
       ],
-      "validation_timestamp": "2025-10-02T10:52:16.472644"
+      "validation_timestamp": "2025-10-09T07:55:49.749264"
     },
     {
       "file_path": "input/gnn_files/neural_response_model.md",
       "file_name": "neural_response_model.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: dt, B, type, M, D, Ca, by, W, vector, E, G, C, P, levels, V_m, F, t, actions, FR, H, 3, inference, PSP, M_alloc, C_mod, 1, A"
+        "Duplicate variable names: V_m, C_mod, B, M_alloc, C, Ca, levels, dt, 1, vector, W, type, 3, actions, F, H, E, FR, inference, PSP, t, P, A, G, by, D, M"
       ],
       "warnings": [
         "Type issue: Unknown type 'Neural' for variable 'Example'",
@@ -3884,7 +3884,7 @@
           "type": "TimeStep"
         }
       ],
-      "validation_timestamp": "2025-10-02T10:52:16.499775"
+      "validation_timestamp": "2025-10-09T07:55:49.763520"
     }
   ],
   "type_analysis": [
@@ -4097,7 +4097,7 @@
         "1,type=int": 2
       },
       "total_variables": 36,
-      "analysis_timestamp": "2025-10-02T10:52:16.472593"
+      "analysis_timestamp": "2025-10-09T07:55:49.749231"
     },
     {
       "file_path": "input/gnn_files/chronic_pain_theories.md",
@@ -5362,7 +5362,7 @@
         "log p(\u27e8o_medium\u27e9 | s_slow)": 1
       },
       "total_variables": 226,
-      "analysis_timestamp": "2025-10-02T10:52:16.499586"
+      "analysis_timestamp": "2025-10-09T07:55:49.763495"
     },
     {
       "file_path": "input/gnn_files/neural_response_model.md",
@@ -5900,7 +5900,7 @@
         "Q(\u03c4)": 1
       },
       "total_variables": 94,
-      "analysis_timestamp": "2025-10-02T10:52:16.504847"
+      "analysis_timestamp": "2025-10-09T07:55:49.767041"
     }
   ]
 }

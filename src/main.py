@@ -381,7 +381,7 @@ def main():
 
         try:
             # Validate summary structure before saving
-            _validate_pipeline_summary(pipeline_summary, logger)
+            validate_pipeline_summary(pipeline_summary, logger)
 
             with open(summary_path, 'w') as f:
                 json.dump(pipeline_summary, f, indent=4, default=str)
@@ -632,7 +632,7 @@ def get_environment_info() -> Dict[str, Any]:
     return info
 
 
-def _validate_pipeline_summary(summary: dict, logger) -> None:
+def validate_pipeline_summary(summary: dict, logger) -> None:
     """
     Validate pipeline summary structure and data integrity.
 

@@ -22,8 +22,8 @@
 - Cross-timescale coupling: slow states modulate fast dynamics, fast observations (averaged) drive medium cognition, medium behaviors (averaged) influence slow healing
 - Testable predictions about pain chronification pathways across multiple timescales
 - Intervention targets at each timescale: fast (descending control), medium (CBT/behavioral), slow (prevent sensitization)</annotation>
-    <created_at>2025-10-02T10:52:16.318129</created_at>
-    <modified_at>2025-10-02T10:52:16.318132</modified_at>
+    <created_at>2025-10-09T07:55:49.626995</created_at>
+    <modified_at>2025-10-09T07:55:49.626996</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="72,378" name="A" type="likelihood_matrix" description="72 observations x 378 hidden state combinations"/>

@@ -206,7 +206,11 @@ class TestEndToEndIntegration:
 
     def test_pipeline_summary_validation(self):
         """Test pipeline summary structure validation."""
-        from main import _validate_pipeline_summary
+        from main import validate_pipeline_summary
+        import logging
+
+        # Create a logger for testing
+        logger = logging.getLogger("test_logger")
 
         # Test valid summary
         valid_summary = {
@@ -236,7 +240,7 @@ class TestEndToEndIntegration:
         }
 
         # Should not raise any errors
-        _validate_pipeline_summary(valid_summary, logger)
+        validate_pipeline_summary(valid_summary, logger)
 
         # Test invalid summary
         invalid_summary = {
@@ -245,7 +249,7 @@ class TestEndToEndIntegration:
         }
 
         # Should log warnings/errors but not raise exceptions
-        _validate_pipeline_summary(invalid_summary, logger)
+        validate_pipeline_summary(invalid_summary, logger)
 
     def test_enhanced_warning_detection(self):
         """Test improved warning detection logic."""
@@ -299,7 +303,11 @@ class TestEndToEndIntegration:
 
     def test_pipeline_summary_validation_comprehensive(self):
         """Test comprehensive pipeline summary validation."""
-        from main import _validate_pipeline_summary
+        from main import validate_pipeline_summary
+        import logging
+
+        # Create a logger for testing
+        logger = logging.getLogger("test_logger")
 
         # Test with valid summary
         valid_summary = {
@@ -329,7 +337,7 @@ class TestEndToEndIntegration:
         }
 
         # Should not raise any errors for valid summary
-        _validate_pipeline_summary(valid_summary, logger)
+        validate_pipeline_summary(valid_summary, logger)
 
         # Test with invalid summary
         invalid_summary = {
@@ -339,7 +347,7 @@ class TestEndToEndIntegration:
         }
 
         # Should log warnings but not raise exceptions
-        _validate_pipeline_summary(invalid_summary, logger)
+        validate_pipeline_summary(invalid_summary, logger)
 
     def test_pipeline_step_execution_order(self):
         """Test that steps execute in the correct dependency order."""

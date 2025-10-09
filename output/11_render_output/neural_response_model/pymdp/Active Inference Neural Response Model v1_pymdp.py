@@ -7,7 +7,7 @@ It uses the GNN pipeline's PyMDP execution module to run an Active Inference sim
 
 Model: Active Inference Neural Response Model v1
 Description: 
-Generated: 2025-10-02 10:52:23
+Generated: 2025-10-09 07:55:54
 
 State Space:
 - Hidden States: 3
@@ -424,15 +424,9 @@ def main():
     }
 }
     
-    # Configuration overrides (can be modified)
-    config_overrides = {
-        'num_episodes': 10,
-        'max_steps_per_episode': 20,
-        'planning_horizon': 5,
-        'verbose_output': True,
-        'save_visualizations': True,
-        'random_seed': 42
-    }
+    # Configuration parameters (can be modified)
+    num_episodes = 10
+    verbose_output = True
     
     # Output directory
     output_dir = Path("output") / "pymdp_simulations" / "Active Inference Neural Response Model v1"
@@ -440,13 +434,15 @@ def main():
     
     logger.info("Starting PyMDP simulation for Active Inference Neural Response Model v1")
     logger.info(f"Output directory: {output_dir}")
+    logger.info(f"Episodes: {num_episodes}")
     
     # Run simulation
     try:
         success, results = execute_pymdp_simulation(
             gnn_spec=gnn_spec,
             output_dir=output_dir,
-            config_overrides=config_overrides
+            num_episodes=num_episodes,
+            verbose=verbose_output
         )
         
         if success:

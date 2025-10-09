@@ -1,12 +1,12 @@
 {
-  "timestamp": "2025-10-02T10:52:23.717831",
+  "timestamp": "2025-10-09T07:55:54.546183",
   "processing_type": "POMDP-aware rendering",
   "total_files": 3,
-  "successful_files": 0,
-  "failed_files": 3,
+  "successful_files": 3,
+  "failed_files": 0,
   "total_framework_attempts": 15,
-  "successful_framework_renderings": 12,
-  "framework_success_rate": 80.0,
+  "successful_framework_renderings": 15,
+  "framework_success_rate": 100.0,
   "configuration": {
     "frameworks": "all",
     "strict_validation": true,
@@ -15,7 +15,7 @@
   },
   "file_results": {
     "input/gnn_files/actinf_pomdp_agent.md": {
-      "overall_success": false,
+      "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
@@ -27,9 +27,12 @@
           "warnings": []
         },
         "rxinfer": {
-          "success": false,
-          "message": "Error generating RxInfer.jl code: name 'Int' is not defined",
-          "output_files": [],
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl",
+          "output_files": [
+            "output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ]
@@ -67,7 +70,7 @@
       "base_output_dir": "output/11_render_output/actinf_pomdp_agent"
     },
     "input/gnn_files/chronic_pain_theories.md": {
-      "overall_success": false,
+      "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
@@ -79,9 +82,12 @@
           "warnings": []
         },
         "rxinfer": {
-          "success": false,
-          "message": "Error generating RxInfer.jl code: name 'Int' is not defined",
-          "output_files": [],
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/chronic_pain_theories/rxinfer/Active Inference Chronic Pain Multi-Theory Model v1_rxinfer.jl",
+          "output_files": [
+            "output/11_render_output/chronic_pain_theories/rxinfer/Active Inference Chronic Pain Multi-Theory Model v1_rxinfer.jl"
+          ],
+          "output_directory": "output/11_render_output/chronic_pain_theories/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ]
@@ -119,7 +125,7 @@
       "base_output_dir": "output/11_render_output/chronic_pain_theories"
     },
     "input/gnn_files/neural_response_model.md": {
-      "overall_success": false,
+      "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
@@ -131,9 +137,12 @@
           "warnings": []
         },
         "rxinfer": {
-          "success": false,
-          "message": "Error generating RxInfer.jl code: name 'Int' is not defined",
-          "output_files": [],
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/neural_response_model/rxinfer/Active Inference Neural Response Model v1_rxinfer.jl",
+          "output_files": [
+            "output/11_render_output/neural_response_model/rxinfer/Active Inference Neural Response Model v1_rxinfer.jl"
+          ],
+          "output_directory": "output/11_render_output/neural_response_model/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ]

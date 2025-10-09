@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-02T10:52:23.716567",
+  "timestamp": "2025-10-09T07:55:54.544869",
   "source_file": "input/gnn_files/neural_response_model.md",
   "model_name": "Active Inference Neural Response Model v1",
   "pomdp_dimensions": {
@@ -16,11 +16,10 @@
   ],
   "frameworks_processed": [
     "pymdp",
+    "rxinfer",
     "activeinference_jl",
     "jax",
     "discopy"
   ],
-  "frameworks_failed": [
-    "rxinfer"
-  ]
+  "frameworks_failed": []
 }

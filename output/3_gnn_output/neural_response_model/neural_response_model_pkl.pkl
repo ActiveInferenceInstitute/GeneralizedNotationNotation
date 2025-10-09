@@ -7,7 +7,7 @@
 - Three control factors for plasticity, channel modulation, and metabolic allocation
 - The model captures key neural phenomena: membrane potential dynamics, synaptic plasticity (STDP-like), activity-dependent adaptation, homeostatic regulation, and metabolic constraints
 - Preferences encode biologically realistic goals: stable firing rates, energy efficiency, and synaptic balance
-/// Generated: 2025-10-02T10:52:16.345455
+/// Generated: 2025-10-09T07:55:49.650849
 /// Enhanced by GNN PKL Serializer
 ///
 

@@ -12,7 +12,7 @@ Generated from GNN POMDP Model: **Active Inference Neural Response Model v1**
 - Three control factors for plasticity, channel modulation, and metabolic allocation
 - The model captures key neural phenomena: membrane potential dynamics, synaptic plasticity (STDP-like), activity-dependent adaptation, homeostatic regulation, and metabolic constraints
 - Preferences encode biologically realistic goals: stable firing rates, energy efficiency, and synaptic balance
-- **Generation Date**: 2025-10-02 10:52:23
+- **Generation Date**: 2025-10-09 07:55:54
 
 ## POMDP Dimensions
 

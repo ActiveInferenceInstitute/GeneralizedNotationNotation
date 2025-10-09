@@ -1,19 +1,2 @@
 # PRACTICAL_APPLICATIONS
 
-You've made great progress understanding the GNN Section's components, structure, and key applications. 
-
-I can provide some additional insights:
-
-1. **Model Representation**: The model is represented as a list of Likelihood Maps (LMs), which are probabilistic graphical representations of probability distributions over actions based on their associated observation probabilities. This representation allows for easy inference between states without explicit learning or estimation processes. It's important to note that this representation should support any combination of action selection, preference calculations, and decision-making decisions.
-
-2. **StateSpace Block**: Each state is represented as a list of LMs representing its probability distribution over actions (actions). This provides easy access to the probability distributions across all actions, making it easier for inference processing through probability estimation. The block structure also supports any combination of action selection and policy-policy interactions in the inference process.
-
-3. **Blocking**: Each observation can be represented as a list of LMs representing its corresponding log-probability distribution over actions (observation_outcomes) or actions. This allows for direct evaluation of an action's outcome without requiring explicit prediction from prior knowledge, facilitating exploration and analysis of different actions. However, it may not provide immediate insight into the decision-making process since it doesn't account for uncertainty about initial state distributions that might arise during inference.
-
-4. **Transition Matrix**: Each observation can be represented as a list of LMs representing their policy distribution (policy_states). This allows direct evaluation of actions' probabilities without requiring explicit prediction from prior knowledge, facilitating exploration and analysis of action sequences. However, it may not provide immediate insight into decision-making decisions since the input values might depend on uncertain initial state distributions.
-
-5. **Probability Vector**: Each observation can be represented as a list of LMs representing their belief distribution (belief_states). This allows direct evaluation of actions' probabilities without requiring explicit prediction from prior knowledge, facilitating exploration and analysis of action sequences. However, it may not provide immediate insight into the decision-making process since the input values might depend on uncertain initial state distributions that could potentially influence decisions during inference or execution.
-
-6. **Initial Policy Prior**: A policy_prior is represented as a list of LMs representing their policy distribution (policy_actions). This allows for direct evaluation of actions' probabilities without requiring explicit prediction from prior knowledge, facilitating exploration and analysis of action sequences. However, it may not provide immediate insight into decision-making decisions since the input values might depend on uncertain initial state distributions that could potentially influence decisions during inference or execution.
-
-Overall, the GNN represents a powerful framework for modeling decision-making processes where actions can be defined by probability distributions over available states and actions. It's important to note that its capabilities are heavily dependent on efficient implementation in practice with suitable mechanisms for prediction from prior knowledge of current state distribution(s) or decisions made during action sequence (e.g., "p".). However, as discussed later, it can be further improved based on theoretical foundations and mathematical insights, enabling a more nuanced understanding of the decision-making process throughout application scenarios.

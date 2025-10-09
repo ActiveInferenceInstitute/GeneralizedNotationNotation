@@ -25,7 +25,7 @@ This model integrates multiple coherent theories of chronic pain mechanisms acro
 - Cross-timescale coupling: slow states modulate fast dynamics, fast observations (averaged) drive medium cognition, medium behaviors (averaged) influence slow healing
 - Testable predictions about pain chronification pathways across multiple timescales
 - Intervention targets at each timescale: fast (descending control), medium (CBT/behavioral), slow (prevent sensitization)
-Generated: 2025-10-02T10:52:16.321578
+Generated: 2025-10-09T07:55:49.629847
 """
 
 import numpy as np

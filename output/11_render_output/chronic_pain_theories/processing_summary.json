@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-02T10:52:23.714095",
+  "timestamp": "2025-10-09T07:55:54.543056",
   "source_file": "input/gnn_files/chronic_pain_theories.md",
   "model_name": "Active Inference Chronic Pain Multi-Theory Model v1",
   "pomdp_dimensions": {
@@ -16,11 +16,10 @@
   ],
   "frameworks_processed": [
     "pymdp",
+    "rxinfer",
     "activeinference_jl",
     "jax",
     "discopy"
   ],
-  "frameworks_failed": [
-    "rxinfer"
-  ]
+  "frameworks_failed": []
 }

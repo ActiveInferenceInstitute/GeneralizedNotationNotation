@@ -1,7 +1,7 @@
 Execution Results for Active Inference Chronic Pain Multi-Theory Model v1_discopy.py
-Timestamp: 2025-10-02T10:52:33.915115
+Timestamp: 2025-10-09T07:55:59.851241
 Return Code: 1
-Execution Time: 0.37 seconds
+Execution Time: 0.24 seconds
 
 STDOUT:
 🔬 DisCoPy Categorical Diagram Generation

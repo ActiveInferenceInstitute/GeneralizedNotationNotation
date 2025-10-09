@@ -1,17 +1,17 @@
 Execution Results for Active Inference Neural Response Model v1_activeinference.jl
-Timestamp: 2025-10-02T10:52:34.286527
+Timestamp: 2025-10-09T07:56:06.915537
 Return Code: 1
-Execution Time: 8.50 seconds
+Execution Time: 5.30 seconds
 
 STDOUT:
 ======================================================================
 ActiveInference.jl Script for GNN Model: Active Inference Neural Response Model v1
 ======================================================================
-Julia version: 1.11.6
-Date: 2025-10-02T10:52:41.793
+Julia version: 1.11.7
+Date: 2025-10-09T07:56:11.414
 Model dimensions: States=3, Observations=3, Actions=3
 
-📁 Output directory: activeinference_outputs_2025-10-02_10-52-41
+📁 Output directory: activeinference_outputs_2025-10-09_07-56-11
 🔧 Creating model matrices from GNN specification...
 ✅ A matrix created: (3, 12)
 ✅ B matrix created: (0,)
