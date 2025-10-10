@@ -14,10 +14,9 @@ logger = logging.getLogger(__name__)
 
 # Import utilities from the setup module
 from .utils import (
-    ensure_directory, 
-    find_gnn_files, 
+    ensure_directory,
+    find_gnn_files,
     get_output_paths,
-    check_uv_project_status,
     get_uv_environment_info,
     setup_uv_project_structure
 )

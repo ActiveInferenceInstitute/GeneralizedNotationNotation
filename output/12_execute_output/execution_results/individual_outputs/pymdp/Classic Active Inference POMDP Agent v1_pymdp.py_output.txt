@@ -1,0 +1,13 @@
+Execution Results for Classic Active Inference POMDP Agent v1_pymdp.py
+Timestamp: 2025-10-10T10:34:24.114680
+Return Code: 1
+Execution Time: 0.10 seconds
+
+STDOUT:
+
+
+STDERR:
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py", line 25, in <module>
+    from src.execute.pymdp import execute_pymdp_simulation
+ModuleNotFoundError: No module named 'src'

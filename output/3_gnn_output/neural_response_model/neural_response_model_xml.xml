@@ -1,0 +1,152 @@
+<?xml version="1.0" ?>
+<gnn_model name="Active Inference Neural Response Model v1" version="1.0">
+  <metadata>
+    <annotation>This model describes how a neuron responds to stimuli using Active Inference principles:
+- One primary observation modality (firing_rate) with 4 possible activity levels
+- Two auxiliary observation modalities (postsynaptic_potential, calcium_signal) for comprehensive monitoring
+- Five hidden state factors representing different aspects of neural computation
+- Three control factors for plasticity, channel modulation, and metabolic allocation
+- The model captures key neural phenomena: membrane potential dynamics, synaptic plasticity (STDP-like), activity-dependent adaptation, homeostatic regulation, and metabolic constraints
+- Preferences encode biologically realistic goals: stable firing rates, energy efficiency, and synaptic balance</annotation>
+    <created_at>2025-10-10T10:34:18.521055</created_at>
+    <modified_at>2025-10-10T10:34:18.521056</modified_at>
+  </metadata>
+  <variables>
+    <variable data_type="float" dimensions="12,405" name="A" type="likelihood_matrix" description="12 observations x 405 hidden state combinations (likelihood mapping)"/>
+    <variable data_type="float" dimensions="3,1" name="A" type="likelihood_matrix" description="Adaptation state (3 levels: low, medium, high adaptation)"/>
+    <variable data_type="float" dimensions="405,405,27" name="B" type="transition_matrix" description="State transitions given previous state and action (5 state factors, 3 control factors)"/>
+    <variable data_type="float" dimensions="12" name="C" type="preference_vector" description="Log-preferences over observations"/>
+    <variable data_type="float" dimensions="3,1" name="C_mod" type="hidden_state" description="Channel modulation (3 actions: decrease, maintain, increase conductance)"/>
+    <variable data_type="float" dimensions="3,1" name="Ca" type="hidden_state" description="Calcium signal (3 levels: low, medium, high)"/>
+    <variable data_type="float" dimensions="405" name="D" type="prior_vector" description="Prior over initial hidden states"/>
+    <variable data_type="float" dimensions="27" name="E" type="policy" description="Initial policy prior (habit) over actions"/>
+    <variable data_type="float" dimensions="1" name="F" type="hidden_state" description="Variational Free Energy for belief updating"/>
+    <variable data_type="float" dimensions="4,1" name="FR" type="hidden_state" description="Firing rate (4 levels: silent, low, moderate, high)"/>
+    <variable data_type="float" dimensions="1" name="G" type="policy" description="Expected Free Energy (per policy)"/>
+    <variable data_type="float" dimensions="3,1" name="H" type="hidden_state" description="Homeostatic set point (3 levels: low, target, high firing rate)"/>
+    <variable data_type="float" dimensions="3,1" name="M" type="hidden_state" description="Metabolic state (3 levels: depleted, adequate, surplus)"/>
+    <variable data_type="float" dimensions="3,1" name="M_alloc" type="hidden_state" description="Metabolic allocation (3 actions: conserve, balance, invest)"/>
+    <variable data_type="float" dimensions="3,1" name="P" type="hidden_state" description="Plasticity control (3 actions: LTD, no change, LTP)"/>
+    <variable data_type="float" dimensions="3,1" name="PSP" type="hidden_state" description="Postsynaptic potential (3 levels: inhibitory, none, excitatory)"/>
+    <variable data_type="float" dimensions="5,1" name="V_m" type="hidden_state" description="Membrane potential state (5 levels: hyperpolarized, resting, depolarized, threshold, refractory)"/>
+    <variable data_type="float" dimensions="4,1" name="W" type="hidden_state" description="Synaptic weight factor (4 levels: weak, moderate, strong, saturated)"/>
+    <variable data_type="integer" dimensions="1" name="t" type="hidden_state" description="Discrete time step (milliseconds scale)"/>
+  </variables>
+  <connections>
+    <connection type="directed">
+      <sources>A</sources>
+      <targets>B</targets>
+      <description>Adaptation affects transitions</description>
+    </connection>
+    <connection type="directed">
+      <sources>C</sources>
+      <targets>G</targets>
+      <description>Preferences influence expected free energy</description>
+    </connection>
+    <connection type="directed">
+      <sources>C_mod</sources>
+      <targets>B</targets>
+      <description>Channel modulation affects membrane potential dynamics</description>
+    </connection>
+    <connection type="directed">
+      <sources>C_mod</sources>
+      <targets>M_alloc</targets>
+      <description>Channel modulation influences metabolic allocation</description>
+    </connection>
+    <connection type="directed">
+      <sources>D</sources>
+      <targets>V_m</targets>
+      <description>Prior influences initial membrane potential</description>
+    </connection>
+    <connection type="directed">
+      <sources>E</sources>
+      <targets>P</targets>
+      <description>Habits influence plasticity policy</description>
+    </connection>
+    <connection type="directed">
+      <sources>G</sources>
+      <targets>P</targets>
+      <description>Expected free energy influences plasticity policy</description>
+    </connection>
+    <connection type="directed">
+      <sources>H</sources>
+      <targets>B</targets>
+      <description>Homeostatic set point affects transitions</description>
+    </connection>
+    <connection type="directed">
+      <sources>M</sources>
+      <targets>B</targets>
+      <description>Metabolic state affects transitions</description>
+    </connection>
+    <connection type="directed">
+      <sources>M_alloc</sources>
+      <targets>B</targets>
+      <description>Metabolic allocation affects metabolic state and energy-dependent processes</description>
+    </connection>
+    <connection type="directed">
+      <sources>P</sources>
+      <targets>B</targets>
+      <description>Plasticity control affects synaptic weight transitions</description>
+    </connection>
+    <connection type="directed">
+      <sources>P</sources>
+      <targets>C_mod</targets>
+      <description>Plasticity influences channel modulation</description>
+    </connection>
+    <connection type="directed">
+      <sources>V_m</sources>
+      <targets>A</targets>
+      <description>Membrane potential generates firing rate observations</description>
+    </connection>
+    <connection type="directed">
+      <sources>V_m</sources>
+      <targets>A</targets>
+      <description>Membrane potential affects calcium signals (via firing)</description>
+    </connection>
+    <connection type="directed">
+      <sources>V_m</sources>
+      <targets>B</targets>
+      <description>Membrane potential affects state transitions</description>
+    </connection>
+    <connection type="directed">
+      <sources>W</sources>
+      <targets>A</targets>
+      <description>Synaptic weights influence PSP observations</description>
+    </connection>
+    <connection type="directed">
+      <sources>W</sources>
+      <targets>B</targets>
+      <description>Synaptic weights affect transitions</description>
+    </connection>
+  </connections>
+  <parameters>
+    <parameter name="A">[[0.05, 0.15, 0.25, 0.55, 0.4, 0.4, 0.2, 0.1, 0.35, 0.55, 0.3, 0.45], [0.1, 0.2, 0.3, 0.4, 0.35, 0.45, 0.2, 0.15, 0.4, 0.45, 0.25, 0.4], [0.15, 0.25, 0.35, 0.25, 0.3, 0.5, 0.2, 0.2, 0.45, 0.35, 0.2, 0.35]]</parameter>
+    <parameter name="B">[]</parameter>
+    <parameter name="C">[[0.1, 0.2, 0.4, 0.3, 0.15, 0.35, 0.5, 0.25, 0.35, 0.4, 0.25, 0.2]]</parameter>
+    <parameter name="D">[[0.05, 0.15, 0.35, 0.35, 0.1, 0.2, 0.4, 0.3, 0.1, 0.4, 0.4, 0.2, 0.2, 0.6, 0.2, 0.15, 0.7, 0.15]]</parameter>
+    <parameter name="E">[[0.2, 0.3, 0.5, 0.25, 0.5, 0.25, 0.25, 0.5, 0.25, 0.3, 0.4, 0.3, 0.25, 0.5, 0.25, 0.3, 0.4, 0.3, 0.35, 0.4, 0.25, 0.3, 0.45, 0.25, 0.35, 0.4, 0.25]]</parameter>
+  </parameters>
+  <time_specification horizon="Unbounded # Neural model defined for continuous operation; simulations may specify finite duration." type="Dynamic"/>
+  <ontology_mappings>
+    <mapping term="LikelihoodMatrix" variable="A"/>
+    <mapping term="AdaptationState" variable="A"/>
+    <mapping term="TransitionMatrices" variable="B"/>
+    <mapping term="LogPreferenceVector" variable="C"/>
+    <mapping term="ChannelModulation" variable="C_mod"/>
+    <mapping term="CalciumSignalObservation" variable="Ca"/>
+    <mapping term="PriorOverHiddenStates" variable="D"/>
+    <mapping term="HabitVector" variable="E"/>
+    <mapping term="VariationalFreeEnergy" variable="F"/>
+    <mapping term="FiringRateObservation" variable="FR"/>
+    <mapping term="ExpectedFreeEnergy" variable="G"/>
+    <mapping term="HomeostaticSetPoint" variable="H"/>
+    <mapping term="MetabolicState" variable="M"/>
+    <mapping term="MetabolicAllocation" variable="M_alloc"/>
+    <mapping term="PlasticityControl" variable="P"/>
+    <mapping term="PostsynapticPotentialObservation" variable="PSP"/>
+    <mapping term="MembranePotentialState" variable="V_m"/>
+    <mapping term="SynapticWeightFactor" variable="W"/>
+    <mapping term="TimeStep" variable="t"/>
+  </ontology_mappings>
+<!-- MODEL_DATA: {"model_name":"Active Inference Neural Response Model v1","annotation":"This model describes how a neuron responds to stimuli using Active Inference principles:\n- One primary observation modality (firing_rate) with 4 possible activity levels\n- Two auxiliary observation modalities (postsynaptic_potential, calcium_signal) for comprehensive monitoring\n- Five hidden state factors representing different aspects of neural computation\n- Three control factors for plasticity, channel modulation, and metabolic allocation\n- The model captures key neural phenomena: membrane potential dynamics, synaptic plasticity (STDP-like), activity-dependent adaptation, homeostatic regulation, and metabolic constraints\n- Preferences encode biologically realistic goals: stable firing rates, energy efficiency, and synaptic balance","variables":[{"name":"A","var_type":"likelihood_matrix","data_type":"float","dimensions":[12,405]},{"name":"B","var_type":"transition_matrix","data_type":"float","dimensions":[405,405,27]},{"name":"C","var_type":"preference_vector","data_type":"float","dimensions":[12]},{"name":"D","var_type":"prior_vector","data_type":"float","dimensions":[405]},{"name":"E","var_type":"policy","data_type":"float","dimensions":[27]},{"name":"V_m","var_type":"hidden_state","data_type":"float","dimensions":[5,1]},{"name":"W","var_type":"hidden_state","data_type":"float","dimensions":[4,1]},{"name":"A","var_type":"likelihood_matrix","data_type":"float","dimensions":[3,1]},{"name":"H","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"M","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"FR","var_type":"hidden_state","data_type":"float","dimensions":[4,1]},{"name":"PSP","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"Ca","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"P","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"C_mod","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"M_alloc","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"F","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"G","var_type":"policy","data_type":"float","dimensions":[1]},{"name":"t","var_type":"hidden_state","data_type":"integer","dimensions":[1]}],"connections":[{"source_variables":["D"],"target_variables":["V_m"],"connection_type":"directed"},{"source_variables":["V_m"],"target_variables":["B"],"connection_type":"directed"},{"source_variables":["W"],"target_variables":["B"],"connection_type":"directed"},{"source_variables":["A"],"target_variables":["B"],"connection_type":"directed"},{"source_variables":["H"],"target_variables":["B"],"connection_type":"directed"},{"source_variables":["M"],"target_variables":["B"],"connection_type":"directed"},{"source_variables":["V_m"],"target_variables":["A"],"connection_type":"directed"},{"source_variables":["W"],"target_variables":["A"],"connection_type":"directed"},{"source_variables":["V_m"],"target_variables":["A"],"connection_type":"directed"},{"source_variables":["P"],"target_variables":["B"],"connection_type":"directed"},{"source_variables":["C_mod"],"target_variables":["B"],"connection_type":"directed"},{"source_variables":["M_alloc"],"target_variables":["B"],"connection_type":"directed"},{"source_variables":["C"],"target_variables":["G"],"connection_type":"directed"},{"source_variables":["E"],"target_variables":["P"],"connection_type":"directed"},{"source_variables":["G"],"target_variables":["P"],"connection_type":"directed"},{"source_variables":["P"],"target_variables":["C_mod"],"connection_type":"directed"},{"source_variables":["C_mod"],"target_variables":["M_alloc"],"connection_type":"directed"}],"parameters":[{"name":"A","value":[[0.05,0.15,0.25,0.55,0.4,0.4,0.2,0.1,0.35,0.55,0.3,0.45],[0.1,0.2,0.3,0.4,0.35,0.45,0.2,0.15,0.4,0.45,0.25,0.4],[0.15,0.25,0.35,0.25,0.3,0.5,0.2,0.2,0.45,0.35,0.2,0.35]],"param_type":"constant"},{"name":"B","value":[],"param_type":"constant"},{"name":"C","value":[[0.1,0.2,0.4,0.3,0.15,0.35,0.5,0.25,0.35,0.4,0.25,0.2]],"param_type":"constant"},{"name":"D","value":[[0.05,0.15,0.35,0.35,0.1,0.2,0.4,0.3,0.1,0.4,0.4,0.2,0.2,0.6,0.2,0.15,0.7,0.15]],"param_type":"constant"},{"name":"E","value":[[0.2,0.3,0.5,0.25,0.5,0.25,0.25,0.5,0.25,0.3,0.4,0.3,0.25,0.5,0.25,0.3,0.4,0.3,0.35,0.4,0.25,0.3,0.45,0.25,0.35,0.4,0.25]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":"Unbounded # Neural model defined for continuous operation; simulations may specify finite duration.","step_size":null},"ontology_mappings":[{"variable_name":"A","ontology_term":"LikelihoodMatrix","description":null},{"variable_name":"B","ontology_term":"TransitionMatrices","description":null},{"variable_name":"C","ontology_term":"LogPreferenceVector","description":null},{"variable_name":"D","ontology_term":"PriorOverHiddenStates","description":null},{"variable_name":"E","ontology_term":"HabitVector","description":null},{"variable_name":"F","ontology_term":"VariationalFreeEnergy","description":null},{"variable_name":"G","ontology_term":"ExpectedFreeEnergy","description":null},{"variable_name":"V_m","ontology_term":"MembranePotentialState","description":null},{"variable_name":"W","ontology_term":"SynapticWeightFactor","description":null},{"variable_name":"A","ontology_term":"AdaptationState","description":null},{"variable_name":"H","ontology_term":"HomeostaticSetPoint","description":null},{"variable_name":"M","ontology_term":"MetabolicState","description":null},{"variable_name":"FR","ontology_term":"FiringRateObservation","description":null},{"variable_name":"PSP","ontology_term":"PostsynapticPotentialObservation","description":null},{"variable_name":"Ca","ontology_term":"CalciumSignalObservation","description":null},{"variable_name":"P","ontology_term":"PlasticityControl","description":null},{"variable_name":"C_mod","ontology_term":"ChannelModulation","description":null},{"variable_name":"M_alloc","ontology_term":"MetabolicAllocation","description":null},{"variable_name":"t","ontology_term":"TimeStep","description":null}]} -->
+</gnn_model>

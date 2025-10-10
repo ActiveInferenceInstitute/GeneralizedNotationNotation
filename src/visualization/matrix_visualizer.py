@@ -938,7 +938,220 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                     continue
         
         return parsed_data
-    
+
+    def generate_single_matrix_heatmap(self, matrix_data: np.ndarray, matrix_name: str, output_path: Path) -> bool:
+        """
+        Generate a single matrix heatmap with enhanced styling.
+
+        Args:
+            matrix_data: Matrix data as numpy array
+            matrix_name: Name of the matrix for labeling
+            output_path: Path to save the visualization
+
+        Returns:
+            True if successful, False otherwise
+        """
+        if not self._check_dependencies():
+            return False
+
+        try:
+            plt.figure(figsize=(10, 8))
+
+            # Sample large matrices for better visualization
+            display_matrix = self._sample_matrix_for_display(matrix_data)
+
+            if SEABORN_AVAILABLE and display_matrix.size <= 100:
+                sns.heatmap(display_matrix, annot=True, cmap='viridis', fmt='.2f',
+                          cbar_kws={'shrink': 0.8}, square=True)
+            else:
+                im = plt.imshow(display_matrix, cmap='viridis', aspect='auto')
+                plt.colorbar(im, fraction=0.046, pad=0.04, shrink=0.8)
+
+            plt.title(f'Matrix: {matrix_name}', fontsize=14, fontweight='bold')
+            plt.xlabel('Columns', fontsize=12)
+            plt.ylabel('Rows', fontsize=12)
+            plt.tight_layout()
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.close()
+
+            return True
+
+        except Exception as e:
+            print(f"Error generating single matrix heatmap for {matrix_name}: {e}")
+            return False
+
+    def generate_matrix_correlation_plot(self, matrix_data: np.ndarray, matrix_name: str, output_path: Path) -> bool:
+        """
+        Generate correlation matrix visualization.
+
+        Args:
+            matrix_data: Matrix data as numpy array
+            matrix_name: Name of the matrix for labeling
+            output_path: Path to save the visualization
+
+        Returns:
+            True if successful, False otherwise
+        """
+        if not self._check_dependencies():
+            return False
+
+        try:
+            # Calculate correlation matrix
+            if matrix_data.shape[0] > 1 and matrix_data.shape[1] > 1:
+                corr_matrix = np.corrcoef(matrix_data.T)  # Transpose for proper correlation
+            else:
+                corr_matrix = matrix_data
+
+            plt.figure(figsize=(10, 8))
+
+            if SEABORN_AVAILABLE and corr_matrix.size <= 100:
+                sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f',
+                          cbar_kws={'shrink': 0.8}, square=True, center=0)
+            else:
+                im = plt.imshow(corr_matrix, cmap='coolwarm', aspect='auto')
+                plt.colorbar(im, fraction=0.046, pad=0.04, shrink=0.8)
+
+            plt.title(f'Correlation Matrix: {matrix_name}', fontsize=14, fontweight='bold')
+            plt.xlabel('Variables', fontsize=12)
+            plt.ylabel('Variables', fontsize=12)
+            plt.tight_layout()
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.close()
+
+            return True
+
+        except Exception as e:
+            print(f"Error generating correlation plot for {matrix_name}: {e}")
+            return False
+
+    def generate_matrix_histogram(self, matrix_data: np.ndarray, matrix_name: str, output_path: Path) -> bool:
+        """
+        Generate histogram of matrix values.
+
+        Args:
+            matrix_data: Matrix data as numpy array
+            matrix_name: Name of the matrix for labeling
+            output_path: Path to save the visualization
+
+        Returns:
+            True if successful, False otherwise
+        """
+        if not self._check_dependencies():
+            return False
+
+        try:
+            # Flatten matrix for histogram
+            flat_data = matrix_data.flatten()
+
+            plt.figure(figsize=(10, 6))
+            plt.hist(flat_data, bins=50, alpha=0.7, edgecolor='black', density=True)
+            plt.title(f'Value Distribution: {matrix_name}', fontsize=14, fontweight='bold')
+            plt.xlabel('Value', fontsize=12)
+            plt.ylabel('Density', fontsize=12)
+            plt.grid(True, alpha=0.3)
+            plt.tight_layout()
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.close()
+
+            return True
+
+        except Exception as e:
+            print(f"Error generating histogram for {matrix_name}: {e}")
+            return False
+
+    def generate_matrix_composed_view(self, matrices: Dict[str, np.ndarray], output_path: Path) -> bool:
+        """
+        Generate a composed view of multiple matrices.
+
+        Args:
+            matrices: Dictionary of matrix names to matrix data
+            output_path: Path to save the visualization
+
+        Returns:
+            True if successful, False otherwise
+        """
+        if not self._check_dependencies():
+            return False
+
+        try:
+            num_matrices = len(matrices)
+            if num_matrices == 0:
+                return False
+
+            # Determine grid layout
+            cols = min(3, num_matrices)
+            rows = (num_matrices + cols - 1) // cols
+
+            fig, axes = plt.subplots(rows, cols, figsize=(5*cols, 4*rows))
+
+            if rows == 1 and cols == 1:
+                axes = [axes]
+            elif rows == 1 or cols == 1:
+                axes = axes.flatten()
+            else:
+                axes = axes.flatten()
+
+            for i, (name, matrix) in enumerate(matrices.items()):
+                if i >= len(axes):
+                    break
+
+                ax = axes[i]
+
+                # Sample large matrices
+                display_matrix = self._sample_matrix_for_display(matrix)
+
+                if SEABORN_AVAILABLE and display_matrix.size <= 100:
+                    sns.heatmap(display_matrix, ax=ax, cmap='viridis', cbar=False, square=True)
+                else:
+                    im = ax.imshow(display_matrix, cmap='viridis', aspect='auto')
+
+                ax.set_title(f'{name}\n({matrix.shape[0]}×{matrix.shape[1]})', fontsize=10)
+
+            # Hide unused subplots
+            for i in range(num_matrices, len(axes)):
+                axes[i].set_visible(False)
+
+            plt.suptitle('Matrix Overview', fontsize=16, fontweight='bold')
+            plt.tight_layout()
+            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.close()
+
+            return True
+
+        except Exception as e:
+            print(f"Error generating composed matrix view: {e}")
+            return False
+
+    def _sample_matrix_for_display(self, matrix: np.ndarray, max_size: int = 20) -> np.ndarray:
+        """
+        Sample a matrix for display purposes to avoid performance issues with large matrices.
+
+        Args:
+            matrix: Input matrix
+            max_size: Maximum dimension size for display
+
+        Returns:
+            Sampled matrix suitable for visualization
+        """
+        if matrix.size <= max_size * max_size:
+            return matrix
+
+        # Sample rows and columns
+        if len(matrix.shape) == 2:
+            row_step = max(1, matrix.shape[0] // max_size)
+            col_step = max(1, matrix.shape[1] // max_size)
+            return matrix[::row_step, ::col_step]
+        elif len(matrix.shape) == 3:
+            # For 3D tensors, sample each dimension
+            steps = [max(1, dim // max_size) for dim in matrix.shape]
+            return matrix[::steps[0], ::steps[1], ::steps[2]]
+
+        return matrix
+
+    def _check_dependencies(self) -> bool:
+        """Check if required dependencies are available."""
+        return MATPLOTLIB_AVAILABLE and NUMPY_AVAILABLE
+
     def _parse_matrix_string(self, matrix_str: str) -> List[List[float]]:
         """
         Parse matrix string into list format.

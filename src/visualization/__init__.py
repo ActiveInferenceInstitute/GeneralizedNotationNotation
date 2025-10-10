@@ -6,12 +6,18 @@ including matrix visualizations, network graphs, and combined analysis plots.
 """
 
 # Typing
-from typing import Optional, Union
+from typing import Optional, Union, Dict, Any, List
 from pathlib import Path
 
-# Import main classes with guarded optional-dependency handling so test collection
-# does not fail when heavy visualization dependencies (networkx, matplotlib)
-# are not installed in the environment.
+# Import numpy for type annotations
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    np = None
+    NUMPY_AVAILABLE = False
+
+# Import main classes with guarded optional-dependency handling
 try:
     from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
 except Exception:
@@ -21,8 +27,7 @@ except Exception:
 try:
     from .visualizer import GNNVisualizer, generate_graph_visualization, generate_matrix_visualization
 except Exception:
-    # If the visualizer cannot be instantiated due to missing optional deps, provide
-    # a minimal but functional fallback so tests can still import and call the API.
+    # Fallback for tests
     class GNNVisualizer:
         def __init__(self, *args, config: Optional[dict] = None, output_dir: Optional[Union[str, Path]] = None, **kwargs):
             self.available = False
@@ -33,7 +38,6 @@ except Exception:
             return False
 
         def generate_graph_visualization(self, graph_data: dict) -> list:
-            # Minimal graph visualization: return a list of filenames (none created)
             return []
 
         def generate_matrix_visualization(self, matrix_data: dict) -> list:
@@ -47,15 +51,7 @@ except Exception:
         mv = GNNVisualizer(output_dir=output_dir)
         return mv.generate_matrix_visualization(matrix_data)
 
-    # Provide create_network_diagram compatibility if missing
-    if not hasattr(GNNVisualizer, 'create_network_diagram'):
-        def _create_network_diagram(self, *args, **kwargs):
-            if hasattr(self, 'generate_graph_visualization'):
-                return self.generate_graph_visualization(*args, **kwargs)
-            return []
-        setattr(GNNVisualizer, 'create_network_diagram', _create_network_diagram)
-
-# Basic GraphVisualizer alias for tests (may be None if unavailable)
+# Basic GraphVisualizer alias for tests
 GraphVisualizer = GNNVisualizer
 
 try:
@@ -81,7 +77,6 @@ from .legacy import (
     generate_visualizations
 )
 
-# Add to __all__ for proper exports
 __version__ = "1.0.0"
 
 def get_module_info() -> dict:
@@ -97,306 +92,171 @@ def get_visualization_options() -> dict:
         "graph_types": ["connections", "combined"],
         "output_formats": ["png", "json"]
     }
-def _configure_matplotlib_backend(logger):
-    """
-    Configure matplotlib backend for headless/server environments.
-    
-    Tries to detect environment and select appropriate backend.
-    Returns True if successful, False otherwise.
-    """
-    try:
-        import matplotlib
-        import os
-        
-        # Check if we're in a headless environment
-        is_headless = (
-            not os.environ.get('DISPLAY') and 
-            os.environ.get('MPLBACKEND') != 'TkAgg'
-        )
-        
-        if is_headless:
-            logger.info("Detected headless environment, configuring non-interactive backend")
-            # Try Agg backend (best for headless)
-            try:
-                matplotlib.use('Agg', force=True)
-                logger.info("✅ Using 'Agg' backend for matplotlib (headless mode)")
-                return True
-            except Exception as e:
-                logger.warning(f"Failed to set Agg backend: {e}")
-        else:
-            logger.debug("Display available, using default backend")
-        
-        return True
-        
-    except ImportError:
-        logger.warning("matplotlib not available - visualization will be limited")
-        return False
-    except Exception as e:
-        logger.warning(f"Backend configuration failed: {e}")
-        return False
-
 def process_visualization_main(target_dir, output_dir, verbose: bool = False, **kwargs) -> bool:
-    """
-    Main visualization processing function for GNN models.
-
-    This function orchestrates the complete visualization workflow including:
-    - Matrix visualizations
-    - Network graphs
-    - Combined analysis plots
-    - Output management and error handling
-    - Automatic matplotlib backend detection for headless environments
-    - Comprehensive progress tracking and error recovery
-
-    Args:
-        target_dir: Directory containing GNN files to visualize
-        output_dir: Output directory for visualization results
-        verbose: Whether to enable verbose logging
-        **kwargs: Additional processing options
-
-    Returns:
-        True if visualization succeeded, False otherwise
-    """
-    import json
-    import datetime
-    import logging
-    from pathlib import Path
-
-    # Setup logging
-    logger = logging.getLogger(__name__)
-    if verbose:
-        logger.setLevel(logging.DEBUG)
-    
-    # Configure matplotlib backend for headless environments
-    backend_ok = _configure_matplotlib_backend(logger)
-
-    # Ensure output directory exists
-    output_dir.mkdir(parents=True, exist_ok=True)
-
+    """Main visualization processing function."""
     try:
-        # Load parsed GNN data from previous step (step 3)
-        from pipeline.config import get_output_dir_for_script
-        # Look in the base output directory, not the step-specific directory
-        base_output_dir = Path(output_dir).parent if Path(output_dir).name.startswith(('6_validation', '7_export', '8_visualization')) else output_dir
-        gnn_output_dir = get_output_dir_for_script("3_gnn.py", base_output_dir)
-        gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
+        from .processor import process_visualization
+        return process_visualization(target_dir, output_dir, verbose, **kwargs)
+    except Exception as e:
+        print(f"Visualization processing failed: {e}")
+        return False
 
-        if not gnn_results_file.exists():
-            logger.error(f"GNN processing results not found at {gnn_results_file}. Run step 3 first.")
-            logger.error(f"Expected file location: {gnn_results_file}")
-            logger.error(f"GNN output directory: {gnn_output_dir}")
-            logger.error(f"GNN output directory exists: {gnn_output_dir.exists()}")
-            if gnn_output_dir.exists():
-                logger.error(f"Contents: {list(gnn_output_dir.iterdir())}")
-            return False
 
-        with open(gnn_results_file, 'r') as f:
-            gnn_results = json.load(f)
-
-        logger.info(f"Loaded {len(gnn_results['processed_files'])} parsed GNN files")
-
-        # Visualization results
-        visualization_results = {
-            "timestamp": datetime.datetime.now().isoformat(),
-            "source_directory": str(target_dir),
-            "output_directory": str(output_dir),
-            "files_visualized": [],
-            "summary": {
-                "total_files": 0,
-                "successful_visualizations": 0,
-                "failed_visualizations": 0,
-                "total_images_generated": 0,
-                "visualization_types": {
-                    "matrix": 0,
-                    "network": 0,
-                    "combined": 0
-                }
+# Helper functions for backward compatibility
+def _create_model_summary(model_data: Dict[str, Any], file_name: str) -> Dict[str, Any]:
+            """Create a summary of the model data."""
+            return {
+                "file_name": file_name,
+                "model_name": model_data.get("model_name", "Unknown"),
+                "variables_count": len(model_data.get("variables", {})),
+                "connections_count": len(model_data.get("connections", [])),
+                "parameters_count": len(model_data.get("parameters", [])),
+                "equations_count": len(model_data.get("equations", [])),
+                "ontology_mappings_count": len(model_data.get("ontology_mappings", {})),
+                "has_time_specification": bool(model_data.get("time_specification")),
+                "source_format": model_data.get("source_format", "unknown"),
+                "created_at": model_data.get("created_at"),
+                "modified_at": model_data.get("modified_at")
             }
+
+def _analyze_variables(model_data: Dict[str, Any]) -> Dict[str, Any]:
+            """Analyze variable types and distributions."""
+            variables = model_data.get("variables", {})
+            var_types = {}
+            for var_name, var_info in variables.items():
+                var_type = var_info.get("type", "unknown")
+                var_types[var_type] = var_types.get(var_type, 0) + 1
+
+            return {
+                "total_variables": len(variables),
+                "variable_types": var_types,
+                "variable_names": list(variables.keys()),
+                "type_distribution": {k: v / len(variables) for k, v in var_types.items()}
+            }
+
+def _analyze_connections(model_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Analyze connection patterns."""
+        connections = model_data.get("connections", [])
+        source_nodes = {}
+        target_nodes = {}
+
+        for conn in connections:
+            source = conn.get("source", "unknown")
+            target = conn.get("target", "unknown")
+            source_nodes[source] = source_nodes.get(source, 0) + 1
+            target_nodes[target] = target_nodes.get(target, 0) + 1
+
+        return {
+            "total_connections": len(connections),
+            "unique_sources": len(source_nodes),
+            "unique_targets": len(target_nodes),
+            "source_distribution": source_nodes,
+            "target_distribution": target_nodes,
+            "most_connected_sources": sorted(source_nodes.items(), key=lambda x: x[1], reverse=True)[:10],
+            "most_connected_targets": sorted(target_nodes.items(), key=lambda x: x[1], reverse=True)[:10]
         }
 
-        # Process each file with progress tracking
-        total_files = len([f for f in gnn_results["processed_files"] if f["parse_success"]])
-        for idx, file_result in enumerate(gnn_results["processed_files"], 1):
-            if not file_result["parse_success"]:
-                continue
+def _analyze_parameters(model_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Analyze parameter types and values."""
+        parameters = model_data.get("parameters", [])
+        param_types = {}
+        param_names = []
 
-            file_name = file_result["file_name"]
-            logger.info(f"📊 Visualizing [{idx}/{total_files}]: {file_name}")
+        for param in parameters:
+            param_name = param.get("name", "unknown")
+            param_type = param.get("type_hint", "unknown")
+            param_types[param_type] = param_types.get(param_type, 0) + 1
+            param_names.append(param_name)
 
-            # Load the actual parsed GNN specification
-            parsed_model_file = file_result.get("parsed_model_file")
-            if parsed_model_file and Path(parsed_model_file).exists():
-                try:
-                    with open(parsed_model_file, 'r') as f:
-                        actual_gnn_spec = json.load(f)
-                    logger.info(f"Loaded parsed GNN specification from {parsed_model_file}")
-                    model_data = actual_gnn_spec
-                except Exception as e:
-                    logger.error(f"Failed to load parsed GNN spec from {parsed_model_file}: {e}")
-                    model_data = file_result
-            else:
-                logger.warning(f"Parsed model file not found for {file_name}, using summary data")
-                model_data = file_result
+        return {
+            "total_parameters": len(parameters),
+            "parameter_types": param_types,
+            "parameter_names": param_names,
+            "type_distribution": {k: v / len(parameters) for k, v in param_types.items()}
+        }
 
-            # Create file-specific output directory
-            file_output_dir = output_dir / Path(file_name).stem
-            file_output_dir.mkdir(exist_ok=True)
+def _generate_network_statistics(variables: Dict[str, Any], connections: List[Dict]) -> Dict[str, Any]:
+        """Generate network statistics from variables and connections."""
+        node_degrees = {}
+        for conn in connections:
+            source = conn.get("source", "unknown")
+            target = conn.get("target", "unknown")
+            node_degrees[source] = node_degrees.get(source, 0) + 1
+            node_degrees[target] = node_degrees.get(target, 0) + 1
 
-            file_visualization_result = {
-                "file_name": file_name,
-                "file_path": file_result["file_path"],
-                "visualizations": {},
-                "success": True
+        if node_degrees:
+            degrees = list(node_degrees.values())
+            stats = {
+                "total_nodes": len(variables),
+                "total_connections": len(connections),
+                "average_degree": sum(degrees) / len(degrees),
+                "max_degree": max(degrees),
+                "min_degree": min(degrees),
+                "node_degree_distribution": node_degrees,
+                "isolated_nodes": len([v for v in variables.keys() if v not in node_degrees]),
+                "hub_nodes": [node for node, degree in node_degrees.items() if degree > 2]
+            }
+        else:
+            stats = {
+                "total_nodes": len(variables),
+                "total_connections": len(connections),
+                "average_degree": 0,
+                "max_degree": 0,
+                "min_degree": 0,
+                "node_degree_distribution": {},
+                "isolated_nodes": len(variables),
+                "hub_nodes": []
             }
 
-            # Generate matrix visualizations
-            try:
-                logger.debug(f"  → Generating matrix visualizations for {file_name}")
-                parameters = model_data.get("parameters", []) if isinstance(model_data, dict) else []
-                matrix_png = file_output_dir / "matrix_analysis.png"
-                matrix_stats_png = file_output_dir / "matrix_statistics.png"
-                
-                if not backend_ok:
-                    logger.warning(f"  ⚠️ Matplotlib backend not configured - skipping matrix visualization")
-                    raise ImportError("Matplotlib backend not available")
-                
-                mv = MatrixVisualizer()
-                ok1 = mv.generate_matrix_analysis(parameters, matrix_png)
-                ok2 = mv.generate_matrix_statistics(parameters, matrix_stats_png)
-                
-                if ok1 or ok2:
-                    logger.debug(f"  ✅ Matrix visualization completed")
+        return stats
 
-                # Specialized POMDP transition analysis if B tensor present
-                matrices = mv.extract_matrix_data_from_parameters(parameters) if parameters else {}
-                if isinstance(matrices, dict) and 'B' in matrices:
-                    B = matrices['B']
-                    try:
-                        import numpy as _np
-                        if hasattr(B, 'ndim') and B.ndim == 3:
-                            pomdp_path = file_output_dir / "pomdp_transition_analysis.png"
-                            if mv.generate_pomdp_transition_analysis(B, pomdp_path):
-                                visualization_results["summary"]["total_images_generated"] += 1
-                    except Exception:
-                        pass
+def _generate_connectivity_matrix(variables: Dict[str, Any], connections: List[Dict]) -> np.ndarray:
+    """Generate a connectivity matrix from variables and connections."""
+    if not NUMPY_AVAILABLE or np is None:
+        return np.array([])
+    var_names = list(variables.keys())
+    n_vars = len(var_names)
 
-                file_visualization_result["visualizations"]["matrix"] = {
-                    "success": bool(ok1 or ok2),
-                    "result": [str(matrix_png), str(matrix_stats_png)]
-                }
-                visualization_results["summary"]["visualization_types"]["matrix"] += 1
-            except ImportError as e:
-                logger.warning(f"  ⚠️ Matrix visualization skipped (dependency issue): {e}")
-                file_visualization_result["visualizations"]["matrix"] = {
-                    "success": False,
-                    "skipped": True,
-                    "reason": "matplotlib not available or backend not configured"
-                }
-            except Exception as e:
-                logger.error(f"  ❌ Matrix visualization failed for {file_name}: {e}")
-                file_visualization_result["visualizations"]["matrix"] = {
-                    "success": False,
-                    "error": str(e)
-                }
-                file_visualization_result["success"] = False
+    if n_vars == 0:
+        return np.array([])
 
-            # Generate network visualizations
-            try:
-                logger.debug(f"  → Generating network visualizations for {file_name}")
-                net_files = generate_network_visualizations(model_data, file_output_dir, Path(file_name).stem)
-                file_visualization_result["visualizations"]["network"] = {
-                    "success": len(net_files) > 0,
-                    "result": net_files
-                }
-                if net_files:
-                    visualization_results["summary"]["visualization_types"]["network"] += 1
-                    logger.debug(f"  ✅ Network visualization completed")
-            except ImportError as e:
-                logger.warning(f"  ⚠️ Network visualization skipped (dependency issue): {e}")
-                file_visualization_result["visualizations"]["network"] = {
-                    "success": False,
-                    "skipped": True,
-                    "reason": "networkx or matplotlib not available"
-                }
-            except Exception as e:
-                logger.error(f"  ❌ Network visualization failed for {file_name}: {e}")
-                file_visualization_result["visualizations"]["network"] = {
-                    "success": False,
-                    "error": str(e)
-                }
-                file_visualization_result["success"] = False
+    connectivity = np.zeros((n_vars, n_vars), dtype=int)
 
-            # Generate combined visualizations
-            try:
-                logger.debug(f"  → Generating combined analysis for {file_name}")
-                combined_files = generate_combined_analysis(model_data, file_output_dir, Path(file_name).stem)
-                file_visualization_result["visualizations"]["combined"] = {
-                    "success": len(combined_files) > 0,
-                    "result": combined_files
-                }
-                if combined_files:
-                    visualization_results["summary"]["visualization_types"]["combined"] += 1
-                    logger.debug(f"  ✅ Combined visualization completed")
-            except ImportError as e:
-                logger.warning(f"  ⚠️ Combined visualization skipped (dependency issue): {e}")
-                file_visualization_result["visualizations"]["combined"] = {
-                    "success": False,
-                    "skipped": True,
-                    "reason": "visualization dependencies not available"
-                }
-            except Exception as e:
-                logger.error(f"  ❌ Combined visualization failed for {file_name}: {e}")
-                file_visualization_result["visualizations"]["combined"] = {
-                    "success": False,
-                    "error": str(e)
-                }
-                file_visualization_result["success"] = False
+    for conn in connections:
+        source = conn.get("source", "unknown")
+        target = conn.get("target", "unknown")
 
-            # Count generated images
-            try:
-                for candidate in [
-                    file_output_dir / "matrix_analysis.png",
-                    file_output_dir / "matrix_statistics.png",
-                    file_output_dir / "pomdp_transition_analysis.png",
-                    file_output_dir / f"{Path(file_name).stem}_network_graph.png",
-                    file_output_dir / f"{Path(file_name).stem}_combined_analysis.png",
-                ]:
-                    if candidate.exists():
-                        visualization_results["summary"]["total_images_generated"] += 1
-            except Exception:
-                pass
+        if source in var_names and target in var_names:
+            source_idx = var_names.index(source)
+            target_idx = var_names.index(target)
+            connectivity[source_idx, target_idx] = 1
 
-            visualization_results["files_visualized"].append(file_visualization_result)
-            visualization_results["summary"]["total_files"] += 1
+    return connectivity
 
-            if file_visualization_result["success"]:
-                visualization_results["summary"]["successful_visualizations"] += 1
-            else:
-                visualization_results["summary"]["failed_visualizations"] += 1
+def _visualize_connectivity_matrix(connectivity_matrix, output_path: Path) -> bool:
+    """Visualize connectivity matrix as a heatmap."""
+    try:
+        import matplotlib.pyplot as plt
+        import seaborn as sns
 
-        # Save visualization results
-        visualization_results_file = output_dir / "visualization_results.json"
-        with open(visualization_results_file, 'w') as f:
-            json.dump(visualization_results, f, indent=2)
+        plt.figure(figsize=(8, 8))
 
-        # Save visualization summary
-        visualization_summary_file = output_dir / "visualization_summary.json"
-        with open(visualization_summary_file, 'w') as f:
-            json.dump(visualization_results["summary"], f, indent=2)
+        if 'sns' in globals() and sns:
+            sns.heatmap(connectivity_matrix, annot=True, cmap='Blues', cbar=False, square=True)
+        else:
+            im = plt.imshow(connectivity_matrix, cmap='Blues', aspect='auto')
+            plt.colorbar(im, fraction=0.046, pad=0.04, shrink=0.8)
 
-        logger.info(f"Visualization processing completed:")
-        logger.info(f"  Total files: {visualization_results['summary']['total_files']}")
-        logger.info(f"  Successful visualizations: {visualization_results['summary']['successful_visualizations']}")
-        logger.info(f"  Failed visualizations: {visualization_results['summary']['failed_visualizations']}")
-        logger.info(f"  Total images generated: {visualization_results['summary']['total_images_generated']}")
-        logger.info(f"  Visualization types: {visualization_results['summary']['visualization_types']}")
+        plt.title('Connectivity Matrix', fontsize=14, fontweight='bold')
+        plt.tight_layout()
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
 
-        success = visualization_results["summary"]["successful_visualizations"] > 0
-        return success
+        return True
 
     except Exception as e:
-        logger.error(f"Visualization processing failed: {e}")
+        print(f"Error visualizing connectivity matrix: {e}")
         return False
-
 
 __all__ = [
     'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer', 'GraphVisualizer',

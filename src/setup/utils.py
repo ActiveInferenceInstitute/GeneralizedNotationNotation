@@ -174,11 +174,11 @@ def setup_environment(*args, **kwargs):
 def install_dependencies(*args, **kwargs):
     """
     Install dependencies using UV.
-    
+
     Args:
         *args: Positional arguments
         **kwargs: Keyword arguments
-        
+
     Returns:
         Installation result
     """
@@ -187,4 +187,69 @@ def install_dependencies(*args, **kwargs):
         return install_uv_dependencies(*args, **kwargs)
     except Exception as e:
         logger.error(f"Failed to install dependencies: {e}")
+        return False
+
+def check_uv_project_status(project_root: Path) -> Dict[str, Any]:
+    """
+    Check the status of a UV project.
+
+    Args:
+        project_root: Path to project root directory
+
+    Returns:
+        Dictionary with UV project status information
+    """
+    try:
+        from .setup import validate_uv_setup
+        status = validate_uv_setup(project_root=project_root)
+        return status
+    except Exception as e:
+        logger.error(f"Failed to check UV project status: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "system_requirements": False,
+            "uv_environment": False,
+            "dependencies": False,
+            "jax_installation": False,
+            "overall_status": False
+        }
+
+def get_uv_environment_info() -> Dict[str, Any]:
+    """
+    Get information about the current UV environment.
+
+    Returns:
+        Dictionary with UV environment information
+    """
+    try:
+        from .setup import get_uv_setup_info
+        env_info = get_uv_setup_info()
+        return env_info
+    except Exception as e:
+        logger.error(f"Failed to get UV environment info: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "environment_exists": False,
+            "python_version": None,
+            "dependencies_installed": False
+        }
+
+def setup_uv_project_structure(base_path: Path) -> bool:
+    """
+    Set up UV project structure.
+
+    Args:
+        base_path: Base path for project structure
+
+    Returns:
+        True if setup successful, False otherwise
+    """
+    try:
+        from .setup import create_project_structure
+        success = create_project_structure(base_path, logger)
+        return success
+    except Exception as e:
+        logger.error(f"Failed to setup UV project structure: {e}")
         return False 

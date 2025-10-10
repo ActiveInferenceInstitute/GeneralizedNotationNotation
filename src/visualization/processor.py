@@ -50,6 +50,16 @@ except (ImportError, RecursionError, AttributeError, ValueError) as e:
     nx = None
     NETWORKX_AVAILABLE = False
 
+# Optional plotly import for interactive visualizations
+try:
+    import plotly.graph_objects as go
+    import plotly.express as px
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    go = None
+    px = None
+    PLOTLY_AVAILABLE = False
+
 # Try to import utils, but provide fallbacks if not available
 try:
     from utils.pipeline_template import (
@@ -345,14 +355,36 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                 parsed["sections"][current_section].append(line)
                 
                 # Extract variables and connections
+                # Handle multiple variable definition formats:
+                # 1. GNN format: var[dimensions,type=float]
+                # 2. Standard format: var: type
                 if ':' in line and '=' not in line:
-                    # Variable definition
+                    # Standard format: var: type
                     var_parts = line.split(':', 1)
                     if len(var_parts) == 2:
+                        var_name = var_parts[0].strip()
+                        var_type = var_parts[1].strip()
                         parsed["variables"].append({
-                            "name": var_parts[0].strip(),
-                            "type": var_parts[1].strip()
+                            "name": var_name,
+                            "type": var_type
                         })
+                elif '[' in line and 'type=' in line:
+                    # GNN format: var[dimensions,type=float]
+                    # Extract variable name (everything before [)
+                    bracket_pos = line.find('[')
+                    if bracket_pos != -1:
+                        var_name = line[:bracket_pos].strip()
+                        # Extract type information
+                        type_start = line.find('type=', bracket_pos)
+                        if type_start != -1:
+                            type_end = line.find(',', type_start) if ',' in line[type_start:] else line.find(']', type_start)
+                            if type_end == -1:
+                                type_end = len(line)
+                            var_type = line[type_start:type_end].strip()
+                            parsed["variables"].append({
+                                "name": var_name,
+                                "type": var_type
+                            })
                 elif '->' in line or '→' in line:
                     # Connection definition
                     conn_parts = line.split('->' if '->' in line else '→', 1)
@@ -361,8 +393,8 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                             "source": conn_parts[0].strip(),
                             "target": conn_parts[1].strip()
                         })
-                elif '[' in line and ']' in line:
-                    # Potential matrix definition
+                elif ('{' in line and '}' in line) or ('[' in line and ']' in line):
+                    # Potential matrix definition (supports both tuple and bracket formats)
                     try:
                         matrix_data = parse_matrix_data(line)
                         if matrix_data is not None:
@@ -388,36 +420,81 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
 def parse_matrix_data(matrix_str: str) -> np.ndarray:
     """
     Parse matrix data from string representation.
-    
+
+    Supports multiple formats:
+    - Bracket format: [1,2,3;4,5,6]
+    - Tuple format: {(1,2,3),(4,5,6)}
+    - Mixed format: A={(0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9)}
+
     Args:
         matrix_str: String representation of matrix
-        
+
     Returns:
         Numpy array of matrix data
     """
     try:
-        # Extract matrix content between brackets
+        # First try bracket format: [1,2,3;4,5,6]
         start = matrix_str.find('[')
         end = matrix_str.rfind(']')
-        
-        if start == -1 or end == -1:
-            return None
-        
-        matrix_content = matrix_str[start+1:end]
-        
-        # Parse matrix rows
-        rows = []
-        for row_str in matrix_content.split(';'):
-            row_str = row_str.strip()
-            if row_str:
+
+        if start != -1 and end != -1:
+            matrix_content = matrix_str[start+1:end]
+
+            # Parse matrix rows
+            rows = []
+            for row_str in matrix_content.split(';'):
+                row_str = row_str.strip()
+                if row_str:
+                    # Handle both space and comma separators
+                    row_str = row_str.replace('(', '').replace(')', '')
+                    row = [float(x.strip()) for x in row_str.split(',') if x.strip()]
+                    rows.append(row)
+
+            if rows:
+                return np.array(rows)
+
+        # Try tuple format: {(1,2,3),(4,5,6)} or mixed format with variable name
+        # Look for content between { and }
+        start = matrix_str.find('{')
+        end = matrix_str.rfind('}')
+
+        if start != -1 and end != -1:
+            matrix_content = matrix_str[start+1:end]
+
+            # Parse matrix rows from tuple format
+            rows = []
+            # Split by closing parenthesis to get individual rows
+            row_strings = matrix_content.split('),(')
+
+            for row_str in row_strings:
+                row_str = row_str.strip()
+                if not row_str:
+                    continue
+
+                # Clean up parentheses and split by comma
+                row_str = row_str.replace('(', '').replace(')', '')
                 row = [float(x.strip()) for x in row_str.split(',') if x.strip()]
-                rows.append(row)
-        
-        if rows:
-            return np.array(rows)
-        else:
-            return None
-            
+                if row:  # Only add non-empty rows
+                    rows.append(row)
+
+            if rows:
+                return np.array(rows)
+
+        # If no standard format found, try to extract numbers directly
+        import re
+        numbers = re.findall(r'[-+]?\d*\.\d+|\d+', matrix_str)
+        if len(numbers) >= 4:  # At least 2x2 matrix
+            # Try to infer matrix shape from common patterns
+            numbers = [float(n) for n in numbers]
+
+            # Common patterns for the GNN matrices
+            if len(numbers) == 9:  # 3x3 matrix
+                return np.array(numbers).reshape(3, 3)
+            elif len(numbers) == 3:  # 3-element vector (can be treated as 1x3 or 3x1)
+                return np.array(numbers).reshape(3, 1)
+
+        return None
+
     except Exception:
         return None
 
@@ -544,73 +621,283 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
 def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
     """
     Generate network visualizations.
-    
+
     Args:
-        parsed_data: Parsed GNN data
+        parsed_data: Parsed GNN data (supports both 'Variables'/'Edges' and 'variables'/'connections' keys)
         output_dir: Output directory
         model_name: Name of the model
-        
+
     Returns:
         List of generated visualization file paths
     """
     visualizations = []
-    
+
     if not NETWORKX_AVAILABLE or not MATPLOTLIB_AVAILABLE:
         return visualizations
-    
+
     try:
         # Create network graph
         G = nx.DiGraph()
-        
+
+        # Extract variables and connections from either format
+        variables = parsed_data.get("Variables", {}) or parsed_data.get("variables", {})
+        connections = parsed_data.get("Edges", []) or parsed_data.get("connections", [])
+
+        # Ensure variables is a dictionary
+        if isinstance(variables, list):
+            variables = {var_info.get("name", f"var_{i}"): var_info for i, var_info in enumerate(variables)}
+
         # Add nodes (variables)
-        variables = parsed_data.get("Variables", {})
         for var_name, var_info in variables.items():
-            var_type = var_info.get('type', 'unknown') if var_info else 'unknown'
+            var_type = 'unknown'
+            if var_info:
+                if isinstance(var_info, dict):
+                    var_type = var_info.get('type', 'unknown')
+                elif isinstance(var_info, str):
+                    var_type = var_info
             G.add_node(var_name, type=var_type)
-        
+
         # Add edges (connections)
-        connections = parsed_data.get("Edges", [])
         for conn in connections:
             if isinstance(conn, dict) and 'source' in conn and 'target' in conn:
-                G.add_edge(conn["source"], conn["target"])
-        
+                source = conn["source"]
+                target = conn["target"]
+                if source and target:  # Ensure both source and target are not empty
+                    G.add_edge(source, target)
+
         if len(G.nodes()) > 0:
             # Create network plot
             plt.figure(figsize=(12, 10))
-            
-            # Use spring layout
-            pos = nx.spring_layout(G, k=1, iterations=50)
-            
-            # Draw nodes
-            nx.draw_networkx_nodes(G, pos, 
-                                 node_color='lightblue',
-                                 node_size=1000,
-                                 alpha=0.7)
-            
-            # Draw edges
-            nx.draw_networkx_edges(G, pos, 
+
+            # Use spring layout with better parameters for readability
+            pos = nx.spring_layout(G, k=2, iterations=100, seed=42)
+
+            # Color nodes by type
+            node_types = nx.get_node_attributes(G, 'type')
+            unique_types = set(node_types.values())
+            color_map = plt.cm.get_cmap('Set3')
+            node_colors = [color_map(i / len(unique_types)) if node_types[node] != 'unknown' else 'lightgray'
+                          for node in G.nodes() for i, t in enumerate(unique_types) if node_types[node] == t]
+
+            # Draw nodes with size based on degree
+            node_sizes = [300 + (G.degree(node) * 100) for node in G.nodes()]
+
+            nx.draw_networkx_nodes(G, pos,
+                                 node_color=node_colors,
+                                 node_size=node_sizes,
+                                 alpha=0.8,
+                                 edgecolors='black')
+
+            # Draw edges with arrows
+            nx.draw_networkx_edges(G, pos,
                                  edge_color='gray',
                                  arrows=True,
                                  arrowsize=20,
-                                 alpha=0.6)
-            
-            # Draw labels
-            nx.draw_networkx_labels(G, pos, font_size=10)
-            
-            plt.title(f"{model_name} - Network Graph")
+                                 alpha=0.6,
+                                 arrowstyle='->')
+
+            # Draw labels with better positioning
+            label_pos = {node: (x, y + 0.05) for node, (x, y) in pos.items()}
+            nx.draw_networkx_labels(G, label_pos, font_size=9, font_weight='bold')
+
+            plt.title(f"{model_name} - Network Graph\n({len(G.nodes())} nodes, {len(G.edges())} edges)",
+                     fontsize=14, fontweight='bold')
             plt.axis('off')
             plt.tight_layout()
-            
+
             plot_file = output_dir / f"{model_name}_network_graph.png"
             _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
             plt.close()
-            
+
             visualizations.append(str(plot_file))
-        
+
+            # Generate additional network analysis visualizations
+            try:
+                # Generate degree distribution
+                degrees = [G.degree(node) for node in G.nodes()]
+                if degrees and max(degrees) > 0:
+                    plt.figure(figsize=(10, 6))
+                    plt.hist(degrees, bins=min(20, max(degrees)), alpha=0.7, edgecolor='black')
+                    plt.title(f"{model_name} - Node Degree Distribution")
+                    plt.xlabel("Degree")
+                    plt.ylabel("Frequency")
+                    plt.grid(True, alpha=0.3)
+
+                degree_file = output_dir / f"{model_name}_degree_distribution.png"
+                _save_plot_safely(degree_file, dpi=300, bbox_inches='tight')
+                plt.close()
+                visualizations.append(str(degree_file))
+
+                # Generate network statistics
+                stats = {
+                    "nodes": len(G.nodes()),
+                    "edges": len(G.edges()),
+                    "density": nx.density(G),
+                    "avg_degree": sum(degrees) / len(degrees) if degrees else 0,
+                    "max_degree": max(degrees) if degrees else 0,
+                    "node_types": dict(node_types)
+                }
+
+                stats_file = output_dir / f"{model_name}_network_stats.json"
+                with open(stats_file, 'w') as f:
+                    json.dump(stats, f, indent=2)
+                visualizations.append(str(stats_file))
+
+            except Exception as e:
+                print(f"Error generating additional network analysis: {e}")
+
+            # Generate interactive network visualization if plotly is available
+            if PLOTLY_AVAILABLE and go and px:
+                try:
+                    interactive_file = output_dir / f"{model_name}_network_interactive.html"
+                    if _generate_interactive_network(G, interactive_file):
+                        visualizations.append(str(interactive_file))
+                except Exception as e:
+                    print(f"Error generating interactive network: {e}")
+
     except Exception as e:
         print(f"Error generating network visualizations: {e}")
-    
+
+    # Generate 3D surface plot for matrices (if applicable)
+    matrices_list = parsed_data.get("matrices", [])
+    if matrices_list:
+        try:
+            for matrix_info in matrices_list:
+                matrix_data = matrix_info.get("data")
+                matrix_def = matrix_info.get("definition", "")
+                if matrix_data is not None and matrix_data.ndim == 2 and matrix_data.shape[0] > 3 and matrix_data.shape[1] > 3:
+                    # Extract matrix name from definition
+                    matrix_name = "matrix"
+                    if '=' in matrix_def:
+                        matrix_name = matrix_def.split('=')[0].strip()
+                    surface_file = output_dir / f"{model_name}_{matrix_name}_surface.png"
+                    if _generate_3d_surface_plot(matrix_data, matrix_name, surface_file):
+                        visualizations.append(str(surface_file))
+        except Exception as e:
+            print(f"Error generating 3D surface plots: {e}")
+
     return visualizations
+
+def _generate_3d_surface_plot(matrix: np.ndarray, matrix_name: str, output_path: Path) -> bool:
+    """Generate a 3D surface plot for a matrix."""
+    if not MATPLOTLIB_AVAILABLE or not NUMPY_AVAILABLE:
+        return False
+
+    try:
+        # Sample large matrices for 3D visualization
+        if matrix.size > 1000:
+            # Use every 5th point for large matrices
+            step = max(1, matrix.shape[0] // 20)
+            x = np.arange(0, matrix.shape[1], step)
+            y = np.arange(0, matrix.shape[0], step)
+            X, Y = np.meshgrid(x, y)
+            Z = matrix[::step, ::step]
+        else:
+            x = np.arange(matrix.shape[1])
+            y = np.arange(matrix.shape[0])
+            X, Y = np.meshgrid(x, y)
+            Z = matrix
+
+        fig = plt.figure(figsize=(12, 8))
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Create surface plot
+        surf = ax.plot_surface(X, Y, Z, cmap='viridis', alpha=0.8)
+
+        # Add colorbar
+        fig.colorbar(surf, ax=ax, shrink=0.5, aspect=5)
+
+        ax.set_title(f'3D Surface Plot: {matrix_name}', fontsize=14, fontweight='bold')
+        ax.set_xlabel('X Axis')
+        ax.set_ylabel('Y Axis')
+        ax.set_zlabel('Value')
+
+        plt.tight_layout()
+        _save_plot_safely(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
+        return True
+
+    except Exception as e:
+        print(f"Error generating 3D surface plot for {matrix_name}: {e}")
+        plt.close()
+        return False
+
+def _generate_interactive_network(G, output_path: Path) -> bool:
+    """Generate an interactive network visualization using plotly."""
+    if not PLOTLY_AVAILABLE or not go:
+        return False
+
+    try:
+        # Get node positions using spring layout
+        pos = nx.spring_layout(G, k=2, iterations=100, seed=42)
+
+        # Extract node and edge data
+        edge_x = []
+        edge_y = []
+        for edge in G.edges():
+            x0, y0 = pos[edge[0]]
+            x1, y1 = pos[edge[1]]
+            edge_x.extend([x0, x1, None])
+            edge_y.extend([y0, y1, None])
+
+        edge_trace = go.Scatter(
+            x=edge_x, y=edge_y,
+            line=dict(width=1, color='#888'),
+            hoverinfo='none',
+            mode='lines')
+
+        # Create node traces
+        node_x = []
+        node_y = []
+        node_info = []
+        node_types = nx.get_node_attributes(G, 'type')
+
+        for node in G.nodes():
+            x, y = pos[node]
+            node_x.append(x)
+            node_y.append(y)
+            node_info.append(f'{node}<br>Type: {node_types.get(node, "unknown")}<br>Connections: {G.degree(node)}')
+
+        node_trace = go.Scatter(
+            x=node_x, y=node_y,
+            mode='markers+text',
+            hoverinfo='text',
+            text=list(G.nodes()),
+            textposition="top center",
+            hovertext=node_info,
+            marker=dict(
+                size=[G.degree(node) * 10 + 20 for node in G.nodes()],
+                color=['lightblue' if node_types.get(node, 'unknown') == 'unknown' else 'orange' for node in G.nodes()],
+                line=dict(width=2)
+            )
+        )
+
+        # Create the figure
+        fig = go.Figure(data=[edge_trace, node_trace],
+                       layout=go.Layout(
+                           title=f'Interactive Network Graph ({len(G.nodes())} nodes, {len(G.edges())} edges)',
+                           title_font_size=16,
+                           showlegend=False,
+                           hovermode='closest',
+                           margin=dict(b=20,l=5,r=5,t=40),
+                           annotations=[dict(
+                               text="Hover over nodes and edges for details",
+                               showarrow=False,
+                               xref="paper", yref="paper",
+                               x=0.005, y=-0.002)],
+                           xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                           yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))
+                       )
+
+        # Save as HTML
+        fig.write_html(str(output_path))
+
+        return True
+
+    except Exception as e:
+        print(f"Error generating interactive network: {e}")
+        return False
 
 def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
     """
@@ -802,7 +1089,12 @@ def generate_combined_visualizations(gnn_files: List[Path], results_dir: Path, v
         
         # 3. Matrix size distribution
         if all_matrices:
-            matrix_sizes = [m["data"].size for m in all_matrices if m["data"] is not None]
+            matrix_sizes = []
+            for m in all_matrices:
+                if isinstance(m, dict) and "size" in m:
+                    matrix_sizes.append(m["size"])
+                elif hasattr(m, 'size'):
+                    matrix_sizes.append(m.size)
             if matrix_sizes:
                 ax3.hist(matrix_sizes, bins=min(15, len(matrix_sizes)), alpha=0.7, color='lightgreen', edgecolor='black')
                 ax3.set_title("Overall Matrix Size Distribution")

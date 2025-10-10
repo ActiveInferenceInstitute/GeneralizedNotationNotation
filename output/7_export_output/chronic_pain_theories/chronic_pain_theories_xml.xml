@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+<gnn_model>
+  <sections/>
+  <variables>
+    <variable name="A" type=""/>
+    <variable name="B" type=""/>
+    <variable name="C" type=""/>
+    <variable name="D" type=""/>
+    <variable name="E" type=""/>
+    <variable name="T" type=""/>
+    <variable name="P_sens" type=""/>
+    <variable name="G" type=""/>
+    <variable name="C_sens" type=""/>
+    <variable name="D_mod" type=""/>
+    <variable name="Cog" type=""/>
+    <variable name="Pain_I" type=""/>
+    <variable name="Pain_Q" type=""/>
+    <variable name="Func" type=""/>
+    <variable name="Auto" type=""/>
+    <variable name="Attn" type=""/>
+    <variable name="Behav" type=""/>
+    <variable name="Reapp" type=""/>
+    <variable name="Desc_C" type=""/>
+    <variable name="F" type=""/>
+    <variable name="G" type=""/>
+    <variable name="t_fast" type=""/>
+    <variable name="t_medium" type=""/>
+    <variable name="t_slow" type=""/>
+  </variables>
+  <connections>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+    <connection source="" target=""/>
+  </connections>
+</gnn_model>

@@ -1,0 +1,45 @@
+Execution Results for Active Inference Neural Response Model v1_discopy.py
+Timestamp: 2025-10-10T10:34:23.539650
+Return Code: 1
+Execution Time: 0.57 seconds
+
+STDOUT:
+🔬 DisCoPy Categorical Diagram Generation
+📊 State Space: 1 states, 3 observations, 27 actions
+============================================================
+DisCoPy Categorical Diagrams - GNN Generated
+Model: Active Inference Neural Response Model v1
+============================================================
+✓ Defined basic types: S (states), O (observations), A (actions), P (probabilities)
+✓ Defined 8 model components as morphisms
+
+🏗️  Building Active Inference circuit...
+❌ Diagram generation failed: D does not compose with StateInf: S @ P != O.
+🔍 Stack trace:
+
+
+STDERR:
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/neural_response_model/discopy/Active Inference Neural Response Model v1_discopy.py", line 268, in main
+    circuit_dict = create_active_inference_circuit(S, O, A, P, components)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/neural_response_model/discopy/Active Inference Neural Response Model v1_discopy.py", line 94, in create_active_inference_circuit
+    D_vector >>  # Prior beliefs
+    ~~~~~~~~~^^~~~~~~~~~~~~~~~~~
+    state_inf >>  # State inference with observations
+    ~~~~~~~~~
+  File "/opt/homebrew/lib/python3.13/site-packages/discopy/utils.py", line 606, in <lambda>
+    __rshift__ = __llshift__ = lambda self, other: self.then(other)
+                                                   ~~~~~~~~~^^^^^^^
+  File "/opt/homebrew/lib/python3.13/site-packages/discopy/cat.py", line 328, in then
+    return self.factory(inside, dom, cod)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/lib/python3.13/site-packages/discopy/monoidal.py", line 522, in __init__
+    super().__init__(inside, dom, cod, _scan=_scan)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/lib/python3.13/site-packages/discopy/cat.py", line 236, in __init__
+    assert_iscomposable(f, g)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/opt/homebrew/lib/python3.13/site-packages/discopy/utils.py", line 708, in assert_iscomposable
+    raise AxiomError(messages.NOT_COMPOSABLE.format(
+        left, right, left.cod, right.dom))
+discopy.utils.AxiomError: D does not compose with StateInf: S @ P != O.

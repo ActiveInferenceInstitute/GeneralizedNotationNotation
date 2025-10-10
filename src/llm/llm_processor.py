@@ -124,12 +124,12 @@ def get_default_provider_configs() -> Dict[str, Dict[str, Any]]:
 def get_preferred_providers_from_env() -> List[ProviderType]:
     """
     Get preferred provider order from environment variables.
-    
+
     Returns:
         List of providers in order of preference
     """
     default_provider = os.getenv('DEFAULT_PROVIDER', 'ollama').lower()
-    
+
     # Map string names to provider types
     provider_map = {
         'openai': ProviderType.OPENAI,
@@ -137,17 +137,19 @@ def get_preferred_providers_from_env() -> List[ProviderType]:
         'perplexity': ProviderType.PERPLEXITY,
         'ollama': ProviderType.OLLAMA
     }
-    
-    # Create preferred order with default first
+
+    # Prioritize Ollama as the default since it doesn't require API keys
     preferred = []
-    if default_provider in provider_map:
-        preferred.append(provider_map[default_provider])
-    
-    # Add remaining providers
-    for provider_type in ProviderType:
+
+    # Always put Ollama first if available, then others
+    if default_provider == 'ollama' or default_provider not in provider_map:
+        preferred.append(ProviderType.OLLAMA)
+
+    # Add other providers in order
+    for provider_type in [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY]:
         if provider_type not in preferred:
             preferred.append(provider_type)
-    
+
     return preferred
 
 class LLMProcessor:
@@ -174,10 +176,10 @@ class LLMProcessor:
         """
         self.providers: Dict[ProviderType, BaseLLMProvider] = {}
         self.preferred_providers = preferred_providers or [
+            ProviderType.OLLAMA,  # Prioritize local Ollama first
             ProviderType.OPENAI,
             ProviderType.OPENROUTER,
             ProviderType.PERPLEXITY,
-            ProviderType.OLLAMA,
         ]
         self.api_keys = api_keys or {}
         self.provider_configs = provider_configs or {}
@@ -217,26 +219,31 @@ class LLMProcessor:
     def _create_provider(self, provider_type: ProviderType) -> Optional[BaseLLMProvider]:
         """
         Create a provider instance based on type.
-        
+
         Args:
             provider_type: The type of provider to create
-            
+
         Returns:
             Provider instance or None if creation failed
         """
         api_key = self.api_keys.get(provider_type.value)
         config = self.provider_configs.get(provider_type.value, {})
-        
-        if provider_type == ProviderType.OPENAI:
-            return get_openai_provider_class()(api_key=api_key, **config)
-        elif provider_type == ProviderType.OPENROUTER:
-            return get_openrouter_provider_class()(api_key=api_key, **config)
-        elif provider_type == ProviderType.PERPLEXITY:
-            return get_perplexity_provider_class()(api_key=api_key, **config)
-        elif provider_type == ProviderType.OLLAMA:
-            return get_ollama_provider_class()(**config)
-        else:
-            logger.error(f"Unknown provider type: {provider_type}")
+
+        try:
+            if provider_type == ProviderType.OPENAI:
+                return get_openai_provider_class()(api_key=api_key, **config)
+            elif provider_type == ProviderType.OPENROUTER:
+                return get_openrouter_provider_class()(api_key=api_key, **config)
+            elif provider_type == ProviderType.PERPLEXITY:
+                return get_perplexity_provider_class()(api_key=api_key, **config)
+            elif provider_type == ProviderType.OLLAMA:
+                # Ollama doesn't need an API key, just configuration
+                return get_ollama_provider_class()(**config)
+            else:
+                logger.error(f"Unknown provider type: {provider_type}")
+                return None
+        except Exception as e:
+            logger.error(f"Failed to create provider {provider_type.value}: {e}")
             return None
     
     def get_available_providers(self) -> List[ProviderType]:

@@ -1,0 +1,40 @@
+Execution Results for Active Inference Chronic Pain Multi-Theory Model v1_rxinfer.jl
+Timestamp: 2025-10-10T10:34:51.150498
+Return Code: 1
+Execution Time: 6.97 seconds
+
+STDOUT:
+🔬 RxInfer.jl Active Inference Simulation
+📊 State Space: 378 states, 72 observations, 81 actions
+============================================================
+RxInfer.jl Active Inference - GNN Generated Simulation
+Model: Active Inference Chronic Pain Multi-Theory Model v1
+============================================================
+
+🚀 Starting Active Inference simulation...
+📋 Generated observation sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72]
+
+🧠 Running variational inference...
+❌ Simulation failed: ErrorException("Unknown model inference options: iterations.")
+🔍 Stack trace:
+Unknown model inference options: iterations.
+Stacktrace:
+ [1] convert(::Type{RxInfer.ReactiveMPInferenceOptions}, options::@NamedTuple{iterations::Int64, showprogress::Bool, free_energy::Bool})
+   @ RxInfer ~/.julia/packages/RxInfer/kfX8K/src/model/plugins/reactivemp_inference.jl:60
+ [2] batch_inference(; model::GraphPPL.ModelGenerator{typeof(active_inference_model), @Kwargs{n_steps::Int64, observations::Vector{Int64}}, GraphPPL.PluginsCollection{Tuple{}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, data::@NamedTuple{observations::Vector{Int64}}, initialization::Nothing, constraints::Nothing, meta::Nothing, options::@NamedTuple{iterations::Int64, showprogress::Bool, free_energy::Bool}, returnvars::Nothing, predictvars::Nothing, iterations::Nothing, free_energy::Bool, free_energy_diagnostics::Tuple{RxInfer.ObjectiveDiagnosticCheckNaNs, RxInfer.ObjectiveDiagnosticCheckInfs}, allow_node_contraction::Bool, showprogress::Bool, callbacks::Nothing, addons::Nothing, postprocess::DefaultPostprocess, warn::Bool, catch_exception::Bool)
+   @ RxInfer ~/.julia/packages/RxInfer/kfX8K/src/inference/batch.jl:135
+ [3] (::RxInfer.var"#312#314"{GraphPPL.ModelGenerator{typeof(active_inference_model), @Kwargs{n_steps::Int64, observations::Vector{Int64}}, GraphPPL.PluginsCollection{Tuple{}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, @NamedTuple{observations::Vector{Int64}}, Nothing, Nothing, Nothing, Nothing, Nothing, @NamedTuple{iterations::Int64, showprogress::Bool, free_energy::Bool}, Nothing, Nothing, Nothing, Nothing, Nothing, Bool, Tuple{RxInfer.ObjectiveDiagnosticCheckNaNs, RxInfer.ObjectiveDiagnosticCheckInfs}, Bool, Bool, Bool, Nothing, Nothing, DefaultPostprocess, Nothing, Bool, Bool, Bool})(invoke::RxInfer.SessionInvoke)
+   @ RxInfer ~/.julia/packages/RxInfer/kfX8K/src/inference/inference.jl:545
+ [4] with_session(f::RxInfer.var"#312#314"{GraphPPL.ModelGenerator{typeof(active_inference_model), @Kwargs{n_steps::Int64, observations::Vector{Int64}}, GraphPPL.PluginsCollection{Tuple{}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, @NamedTuple{observations::Vector{Int64}}, Nothing, Nothing, Nothing, Nothing, Nothing, @NamedTuple{iterations::Int64, showprogress::Bool, free_energy::Bool}, Nothing, Nothing, Nothing, Nothing, Nothing, Bool, Tuple{RxInfer.ObjectiveDiagnosticCheckNaNs, RxInfer.ObjectiveDiagnosticCheckInfs}, Bool, Bool, Bool, Nothing, Nothing, DefaultPostprocess, Nothing, Bool, Bool, Bool}, session::RxInfer.Session, label::Symbol)
+   @ RxInfer ~/.julia/packages/RxInfer/kfX8K/src/session.jl:253
+ [5] infer(; model::GraphPPL.ModelGenerator{typeof(active_inference_model), @Kwargs{n_steps::Int64, observations::Vector{Int64}}, GraphPPL.PluginsCollection{Tuple{}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, data::@NamedTuple{observations::Vector{Int64}}, datastream::Nothing, autoupdates::Nothing, initialization::Nothing, initmessages::Nothing, initmarginals::Nothing, constraints::Nothing, meta::Nothing, options::@NamedTuple{iterations::Int64, showprogress::Bool, free_energy::Bool}, returnvars::Nothing, predictvars::Nothing, historyvars::Nothing, keephistory::Nothing, iterations::Nothing, free_energy::Bool, free_energy_diagnostics::Tuple{RxInfer.ObjectiveDiagnosticCheckNaNs, RxInfer.ObjectiveDiagnosticCheckInfs}, allow_node_contraction::Bool, showprogress::Bool, catch_exception::Bool, callbacks::Nothing, addons::Nothing, postprocess::DefaultPostprocess, events::Nothing, uselock::Bool, autostart::Bool, warn::Bool, session::RxInfer.Session)
+   @ RxInfer ~/.julia/packages/RxInfer/kfX8K/src/inference/inference.jl:515
+ [6] run_active_inference_simulation()
+   @ Main ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/chronic_pain_theories/rxinfer/Active Inference Chronic Pain Multi-Theory Model v1_rxinfer.jl:88
+ [7] main()
+   @ Main ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/chronic_pain_theories/rxinfer/Active Inference Chronic Pain Multi-Theory Model v1_rxinfer.jl:181
+ [8] top-level scope
+   @ ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/chronic_pain_theories/rxinfer/Active Inference Chronic Pain Multi-Theory Model v1_rxinfer.jl:204
+
+
+STDERR:

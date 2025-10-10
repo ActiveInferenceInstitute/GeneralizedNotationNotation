@@ -1,0 +1,24 @@
+Execution Results for Active Inference Chronic Pain Multi-Theory Model v1_activeinference.jl
+Timestamp: 2025-10-10T10:34:58.123917
+Return Code: 1
+Execution Time: 5.95 seconds
+
+STDOUT:
+======================================================================
+ActiveInference.jl Script for GNN Model: Active Inference Chronic Pain Multi-Theory Model v1
+======================================================================
+Julia version: 1.11.7
+Date: 2025-10-10T10:35:03.017
+Model dimensions: States=3, Observations=3, Actions=3
+
+📁 Output directory: activeinference_outputs_2025-10-10_10-35-03
+🔧 Creating model matrices from GNN specification...
+
+
+STDERR:
+ERROR: LoadError: UndefVarError: `amplified` not defined in `Main`
+Suggestion: check for spelling errors or missing imports.
+Stacktrace:
+ [1] top-level scope
+   @ ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/chronic_pain_theories/activeinference_jl/Active Inference Chronic Pain Multi-Theory Model v1_activeinference.jl:71
+in expression starting at /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/chronic_pain_theories/activeinference_jl/Active Inference Chronic Pain Multi-Theory Model v1_activeinference.jl:71

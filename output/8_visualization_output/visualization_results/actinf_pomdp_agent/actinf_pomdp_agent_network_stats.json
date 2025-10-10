@@ -1,0 +1,25 @@
+{
+  "nodes": 16,
+  "edges": 0,
+  "density": 0,
+  "avg_degree": 0.0,
+  "max_degree": 0,
+  "node_types": {
+    "This model describes a classic Active Inference agent for a discrete POMDP": "",
+    "A": "type=float",
+    "B": "type=float",
+    "C": "type=float",
+    "D": "type=float",
+    "E": "type=float",
+    "s": "type=float",
+    "s_prime": "type=float",
+    "F": "type=float",
+    "o": "type=int",
+    "\u03c0": "type=float]       # Policy (distribution over actions)",
+    "u": "type=int",
+    "G": "type=float",
+    "t": "type=int",
+    "num_hidden_states": "3  # s[3]",
+    "num_obs": "3           # o[3]"
+  }
+}

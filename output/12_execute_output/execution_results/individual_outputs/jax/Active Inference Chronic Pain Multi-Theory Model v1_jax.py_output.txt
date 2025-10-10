@@ -1,0 +1,13 @@
+Execution Results for Active Inference Chronic Pain Multi-Theory Model v1_jax.py
+Timestamp: 2025-10-10T10:34:24.801700
+Return Code: 1
+Execution Time: 0.09 seconds
+
+STDOUT:
+
+
+STDERR:
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/chronic_pain_theories/jax/Active Inference Chronic Pain Multi-Theory Model v1_jax.py", line 11, in <module>
+    import jax
+ModuleNotFoundError: No module named 'jax'

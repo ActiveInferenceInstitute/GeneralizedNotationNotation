@@ -1,0 +1,183 @@
+{
+  "timestamp": "2025-10-10T10:34:21.964296",
+  "processing_type": "POMDP-aware rendering",
+  "total_files": 3,
+  "successful_files": 3,
+  "failed_files": 0,
+  "total_framework_attempts": 15,
+  "successful_framework_renderings": 15,
+  "framework_success_rate": 100.0,
+  "configuration": {
+    "frameworks": "all",
+    "strict_validation": true,
+    "verbose": false,
+    "pomdp_processing_available": true
+  },
+  "file_results": {
+    "input/gnn_files/actinf_pomdp_agent.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated PyMDP simulation script: output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py",
+          "output_files": [
+            "output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/pymdp",
+          "warnings": []
+        },
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl",
+          "output_files": [
+            "output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/rxinfer",
+          "warnings": [
+            "rxinfer has limited multi-modality support"
+          ]
+        },
+        "activeinference_jl": {
+          "success": true,
+          "message": "Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl",
+          "output_files": [
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/activeinference_jl",
+          "warnings": []
+        },
+        "jax": {
+          "success": true,
+          "message": "JAX model code generated successfully.",
+          "output_files": [
+            "output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/jax",
+          "warnings": []
+        },
+        "discopy": {
+          "success": true,
+          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py",
+          "output_files": [
+            "output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/discopy",
+          "warnings": []
+        }
+      },
+      "summary_file": "output/11_render_output/actinf_pomdp_agent/processing_summary.json",
+      "output_directory": "output/11_render_output/actinf_pomdp_agent",
+      "base_output_dir": "output/11_render_output/actinf_pomdp_agent"
+    },
+    "input/gnn_files/chronic_pain_theories.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated PyMDP simulation script: output/11_render_output/chronic_pain_theories/pymdp/Active Inference Chronic Pain Multi-Theory Model v1_pymdp.py",
+          "output_files": [
+            "output/11_render_output/chronic_pain_theories/pymdp/Active Inference Chronic Pain Multi-Theory Model v1_pymdp.py"
+          ],
+          "output_directory": "output/11_render_output/chronic_pain_theories/pymdp",
+          "warnings": []
+        },
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/chronic_pain_theories/rxinfer/Active Inference Chronic Pain Multi-Theory Model v1_rxinfer.jl",
+          "output_files": [
+            "output/11_render_output/chronic_pain_theories/rxinfer/Active Inference Chronic Pain Multi-Theory Model v1_rxinfer.jl"
+          ],
+          "output_directory": "output/11_render_output/chronic_pain_theories/rxinfer",
+          "warnings": [
+            "rxinfer has limited multi-modality support"
+          ]
+        },
+        "activeinference_jl": {
+          "success": true,
+          "message": "Successfully rendered ActiveInference.jl script to Active Inference Chronic Pain Multi-Theory Model v1_activeinference.jl",
+          "output_files": [
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/chronic_pain_theories/activeinference_jl/Active Inference Chronic Pain Multi-Theory Model v1_activeinference.jl"
+          ],
+          "output_directory": "output/11_render_output/chronic_pain_theories/activeinference_jl",
+          "warnings": []
+        },
+        "jax": {
+          "success": true,
+          "message": "JAX model code generated successfully.",
+          "output_files": [
+            "output/11_render_output/chronic_pain_theories/jax/Active Inference Chronic Pain Multi-Theory Model v1_jax.py"
+          ],
+          "output_directory": "output/11_render_output/chronic_pain_theories/jax",
+          "warnings": []
+        },
+        "discopy": {
+          "success": true,
+          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/chronic_pain_theories/discopy/Active Inference Chronic Pain Multi-Theory Model v1_discopy.py",
+          "output_files": [
+            "output/11_render_output/chronic_pain_theories/discopy/Active Inference Chronic Pain Multi-Theory Model v1_discopy.py"
+          ],
+          "output_directory": "output/11_render_output/chronic_pain_theories/discopy",
+          "warnings": []
+        }
+      },
+      "summary_file": "output/11_render_output/chronic_pain_theories/processing_summary.json",
+      "output_directory": "output/11_render_output/chronic_pain_theories",
+      "base_output_dir": "output/11_render_output/chronic_pain_theories"
+    },
+    "input/gnn_files/neural_response_model.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated PyMDP simulation script: output/11_render_output/neural_response_model/pymdp/Active Inference Neural Response Model v1_pymdp.py",
+          "output_files": [
+            "output/11_render_output/neural_response_model/pymdp/Active Inference Neural Response Model v1_pymdp.py"
+          ],
+          "output_directory": "output/11_render_output/neural_response_model/pymdp",
+          "warnings": []
+        },
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/neural_response_model/rxinfer/Active Inference Neural Response Model v1_rxinfer.jl",
+          "output_files": [
+            "output/11_render_output/neural_response_model/rxinfer/Active Inference Neural Response Model v1_rxinfer.jl"
+          ],
+          "output_directory": "output/11_render_output/neural_response_model/rxinfer",
+          "warnings": [
+            "rxinfer has limited multi-modality support"
+          ]
+        },
+        "activeinference_jl": {
+          "success": true,
+          "message": "Successfully rendered ActiveInference.jl script to Active Inference Neural Response Model v1_activeinference.jl",
+          "output_files": [
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/neural_response_model/activeinference_jl/Active Inference Neural Response Model v1_activeinference.jl"
+          ],
+          "output_directory": "output/11_render_output/neural_response_model/activeinference_jl",
+          "warnings": []
+        },
+        "jax": {
+          "success": true,
+          "message": "JAX model code generated successfully.",
+          "output_files": [
+            "output/11_render_output/neural_response_model/jax/Active Inference Neural Response Model v1_jax.py"
+          ],
+          "output_directory": "output/11_render_output/neural_response_model/jax",
+          "warnings": []
+        },
+        "discopy": {
+          "success": true,
+          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/neural_response_model/discopy/Active Inference Neural Response Model v1_discopy.py",
+          "output_files": [
+            "output/11_render_output/neural_response_model/discopy/Active Inference Neural Response Model v1_discopy.py"
+          ],
+          "output_directory": "output/11_render_output/neural_response_model/discopy",
+          "warnings": []
+        }
+      },
+      "summary_file": "output/11_render_output/neural_response_model/processing_summary.json",
+      "output_directory": "output/11_render_output/neural_response_model",
+      "base_output_dir": "output/11_render_output/neural_response_model"
+    }
+  }
+}
