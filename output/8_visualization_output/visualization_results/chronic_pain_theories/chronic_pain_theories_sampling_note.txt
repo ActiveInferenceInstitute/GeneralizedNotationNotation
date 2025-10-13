@@ -1,5 +1,0 @@
-Sampling applied to chronic_pain_theories:
-Original variables: 104
-Sampled variables: 100
-Original connections: 2
-Sampled connections: 0
