@@ -559,9 +559,42 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
                                 "name": matrix_name
                             })
 
-        # Generate heatmaps for matrices with size optimization
+        # Generate heatmaps for matrices with size optimization and CSV export
         for i, matrix_info in enumerate(matrices):
             matrix_data = matrix_info["data"]
+
+            # Export matrix data to CSV for accessibility
+            try:
+                matrix_name = matrix_info.get("name", f"matrix_{i}")
+                csv_file = output_dir / f"{model_name}_{matrix_name}_data.csv"
+                import csv
+                with open(csv_file, 'w', newline='') as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerow([f"Matrix Data: {matrix_name}"])
+                    writer.writerow([f"Shape: {matrix_data.shape}"])
+                    writer.writerow([f"Data type: {matrix_data.dtype}"])
+                    writer.writerow([])  # Empty row
+
+                    # Write matrix data
+                    if matrix_data.ndim == 1:
+                        writer.writerow([f"Vector element {j}" for j in range(len(matrix_data))])
+                        writer.writerow(matrix_data.tolist())
+                    elif matrix_data.ndim == 2:
+                        writer.writerow([f"Col {j}" for j in range(matrix_data.shape[1])])
+                        for k, row in enumerate(matrix_data):
+                            writer.writerow([f"Row {k}"] + row.tolist())
+                    elif matrix_data.ndim == 3:
+                        writer.writerow([f"3D Tensor: {matrix_name} - First slice"])
+                        writer.writerow([f"Shape: {matrix_data.shape}"])
+                        writer.writerow([])
+                        writer.writerow([f"Col {j}" for j in range(matrix_data.shape[2])])
+                        for k in range(min(5, matrix_data.shape[0])):  # Limit for readability
+                            writer.writerow([f"Slice 0, Row {k}"] + matrix_data[0, k].tolist())
+
+                visualizations.append(str(csv_file))
+            except Exception as e:
+                if verbose:
+                    print(f"Failed to export matrix data to CSV: {e}")
             
             if matrix_data is not None and matrix_data.size > 0:
                 # Optimize large matrices for visualization
@@ -1234,55 +1267,99 @@ def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, mo
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 12))
         
         # 1. Variable type distribution
-        variables = parsed_data.get("Variables", {})
+        variables = parsed_data.get("variables", [])
         if variables:
-            var_types = [var_info.get('type', 'unknown') for var_info in variables.values()]
-            type_counts = {}
-            for var_type in var_types:
-                type_counts[var_type] = type_counts.get(var_type, 0) + 1
-            
-            ax1.pie(type_counts.values(), labels=type_counts.keys(), autopct='%1.1f%%')
-            ax1.set_title("Variable Type Distribution")
+            var_types = []
+            for var_info in variables:
+                # Extract type from variable info - could be in different fields
+                var_type = 'unknown'
+                if isinstance(var_info, dict):
+                    var_type = var_info.get('type', var_info.get('node_type', 'unknown'))
+                var_types.append(var_type)
+
+            if var_types:
+                type_counts = {}
+                for var_type in var_types:
+                    type_counts[var_type] = type_counts.get(var_type, 0) + 1
+
+                ax1.pie(type_counts.values(), labels=type_counts.keys(), autopct='%1.1f%%')
+                ax1.set_title("Variable Type Distribution")
+            else:
+                ax1.text(0.5, 0.5, "No variable type data", transform=ax1.transAxes, ha='center', va='center')
+                ax1.set_title("Variable Type Distribution (No Data)")
         
         # 2. Connection count histogram
-        connections = parsed_data.get("Edges", [])
+        connections = parsed_data.get("connections", [])
         if connections:
             source_counts = {}
             target_counts = {}
             for conn in connections:
-                source_counts[conn["source"]] = source_counts.get(conn["source"], 0) + 1
-                target_counts[conn["target"]] = target_counts.get(conn["target"], 0) + 1
-            
+                if isinstance(conn, dict):
+                    source = conn.get("source_variables", [conn.get("source", "unknown")])[0] if conn.get("source_variables") else conn.get("source", "unknown")
+                    target = conn.get("target_variables", [conn.get("target", "unknown")])[0] if conn.get("target_variables") else conn.get("target", "unknown")
+
+                    source_counts[source] = source_counts.get(source, 0) + 1
+                    target_counts[target] = target_counts.get(target, 0) + 1
+
             all_nodes = set(source_counts.keys()) | set(target_counts.keys())
             node_counts = [source_counts.get(node, 0) + target_counts.get(node, 0) for node in all_nodes]
-            
-            ax2.hist(node_counts, bins=10, alpha=0.7, color='skyblue', edgecolor='black')
-            ax2.set_title("Node Connection Count Distribution")
-            ax2.set_xlabel("Number of Connections")
-            ax2.set_ylabel("Frequency")
+
+            if node_counts:
+                ax2.hist(node_counts, bins=min(10, len(set(node_counts))), alpha=0.7, color='skyblue', edgecolor='black')
+                ax2.set_title("Node Connection Count Distribution")
+                ax2.set_xlabel("Number of Connections")
+                ax2.set_ylabel("Frequency")
+            else:
+                ax2.text(0.5, 0.5, "No connection data", transform=ax2.transAxes, ha='center', va='center')
+                ax2.set_title("Node Connection Count Distribution (No Data)")
         
         # 3. Matrix statistics
-        matrices = parsed_data.get("matrices", [])
-        if matrices:
-            matrix_sizes = [m["data"].size for m in matrices if m["data"] is not None]
-            if matrix_sizes:
-                ax3.hist(matrix_sizes, bins=min(10, len(matrix_sizes)), alpha=0.7, color='lightgreen', edgecolor='black')
-                ax3.set_title("Matrix Size Distribution")
-                ax3.set_xlabel("Matrix Size (elements)")
-                ax3.set_ylabel("Frequency")
+        parameters = parsed_data.get("parameters", [])
+        matrix_sizes = []
+        if parameters:
+            for param in parameters:
+                if isinstance(param, dict) and "value" in param:
+                    value = param["value"]
+                    if isinstance(value, (list, tuple)) and len(value) > 0:
+                        try:
+                            import numpy as np
+                            arr = np.array(value)
+                            matrix_sizes.append(arr.size)
+                        except:
+                            # Count elements in nested structure
+                            def count_elements(obj):
+                                if isinstance(obj, (int, float)):
+                                    return 1
+                                elif isinstance(obj, (list, tuple)):
+                                    return sum(count_elements(item) for item in obj)
+                                else:
+                                    return 1
+                            matrix_sizes.append(count_elements(value))
+
+        if matrix_sizes:
+            ax3.hist(matrix_sizes, bins=min(10, len(matrix_sizes)), alpha=0.7, color='lightgreen', edgecolor='black')
+            ax3.set_title("Matrix Size Distribution")
+            ax3.set_xlabel("Matrix Size (elements)")
+            ax3.set_ylabel("Frequency")
+        else:
+            ax3.text(0.5, 0.5, "No matrix data", transform=ax3.transAxes, ha='center', va='center')
+            ax3.set_title("Matrix Size Distribution (No Data)")
         
         # 4. Section content length
-        sections = parsed_data.get("sections", {})
-        if sections:
-            section_lengths = [len(content) for content in sections.values()]
-            section_names = list(sections.keys())
-            
+        raw_sections = parsed_data.get("raw_sections", {})
+        if raw_sections:
+            section_lengths = [len(str(content)) for content in raw_sections.values()]
+            section_names = list(raw_sections.keys())
+
             ax4.bar(range(len(section_names)), section_lengths, alpha=0.7, color='orange')
             ax4.set_title("Section Content Length")
             ax4.set_xlabel("Sections")
-            ax4.set_ylabel("Number of Lines")
+            ax4.set_ylabel("Content Length (characters)")
             ax4.set_xticks(range(len(section_names)))
-            ax4.set_xticklabels(section_names, rotation=45, ha='right')
+            ax4.set_xticklabels([name[:20] + "..." if len(name) > 20 else name for name in section_names], rotation=45, ha='right')
+        else:
+            ax4.text(0.5, 0.5, "No section data", transform=ax4.transAxes, ha='center', va='center')
+            ax4.set_title("Section Content Length (No Data)")
         
         plt.suptitle(f"{model_name} - Combined Analysis", fontsize=16)
         plt.tight_layout()

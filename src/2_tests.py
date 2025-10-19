@@ -107,6 +107,20 @@ def main() -> int:
             generate_coverage=False  # Disable coverage for speed
         )
 
+        # If no tests were collected, that's a failure
+        if not success:
+            # Check if it's due to zero tests collected
+            summary_file = step_output_dir / "test_execution_report.json"
+            if summary_file.exists():
+                import json
+                summary = json.loads(summary_file.read_text())
+                tests_run = summary.get("execution_summary", {}).get("tests_run", 0)
+                if tests_run == 0:
+                    logger.error("❌ Test execution failed: No tests were collected")
+                    logger.error("💡 Check that test files exist and follow pytest naming conventions (test_*.py)")
+                    logger.error("💡 Ensure test functions are named with 'test_' prefix")
+                    return 1
+
         return 0 if success else 1
 
     except Exception as e:

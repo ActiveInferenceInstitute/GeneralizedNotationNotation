@@ -9,7 +9,7 @@ import sys
 import json
 import importlib
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 
 # Enhanced visual logging
 from utils.visual_logging import create_visual_logger, VisualConfig, print_pipeline_banner
@@ -120,8 +120,15 @@ def check_pipeline_structure() -> Dict[str, Any]:
     return results
 
 
-def run_health_check() -> Dict[str, Any]:
+def run_health_check(output_dir: Optional[Path] = None) -> Dict[str, Any]:
     """Run complete pipeline health check."""
+    # Determine output directory
+    if output_dir is None:
+        output_dir = Path("output")
+
+    health_output_dir = output_dir / "health"
+    health_output_dir.mkdir(parents=True, exist_ok=True)
+
     # Setup visual logging
     visual_config = VisualConfig(
         enable_colors=True,
@@ -258,7 +265,8 @@ def main():
         print_health_report(report)
 
         # Save detailed report
-        report_file = Path("pipeline_health_report.json")
+        report_file = Path("output/health/pipeline_health_report.json")
+        report_file.parent.mkdir(parents=True, exist_ok=True)
         with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
         print(f"📊 Detailed report saved to: {report_file}")

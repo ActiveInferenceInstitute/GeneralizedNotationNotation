@@ -13,6 +13,7 @@ try:
     import matplotlib.pyplot as plt
     import matplotlib.patches as patches
     from matplotlib import cm
+    import csv
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError) as e:
     plt = None
@@ -50,6 +51,55 @@ class MatrixVisualizer:
     def __init__(self):
         """Initialize the MatrixVisualizer."""
         pass
+
+    def export_matrix_to_csv(self, matrix: np.ndarray, matrix_name: str, output_path: Path) -> bool:
+        """
+        Export matrix data to CSV format for accessibility.
+
+        Args:
+            matrix: Numpy array to export
+            matrix_name: Name of the matrix
+            output_path: Output path for CSV file
+
+        Returns:
+            True if successful
+        """
+        try:
+            csv_path = output_path.with_suffix('.csv')
+
+            with open(csv_path, 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+
+                # Write header with matrix info
+                writer.writerow([f"Matrix: {matrix_name}"])
+                writer.writerow([f"Shape: {matrix.shape}"])
+                writer.writerow([f"Data type: {matrix.dtype}"])
+                writer.writerow([])  # Empty row
+
+                # Write matrix data
+                if matrix.ndim == 1:
+                    # Vector - write as single row
+                    writer.writerow([f"Vector element {i}" for i in range(len(matrix))])
+                    writer.writerow(matrix.tolist())
+                elif matrix.ndim == 2:
+                    # Matrix - write with row/column headers
+                    writer.writerow([f"Col {j}" for j in range(matrix.shape[1])])
+                    for i, row in enumerate(matrix):
+                        writer.writerow([f"Row {i}"] + row.tolist())
+                elif matrix.ndim == 3:
+                    # 3D tensor - export first slice
+                    writer.writerow([f"3D Tensor: {matrix_name} - First slice"])
+                    writer.writerow([f"Shape: {matrix.shape}"])
+                    writer.writerow([])
+                    writer.writerow([f"Col {j}" for j in range(matrix.shape[2])])
+                    for i in range(min(10, matrix.shape[0])):  # Limit rows for readability
+                        writer.writerow([f"Slice 0, Row {i}"] + matrix[0, i].tolist())
+
+            return True
+
+        except Exception as e:
+            print(f"Failed to export matrix to CSV: {e}")
+            return False
     
     def extract_matrix_data_from_parameters(self, parameters: List[Dict]) -> Dict[str, np.ndarray]:
         """
@@ -132,6 +182,10 @@ class MatrixVisualizer:
                 pass
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
+
+            # Export matrix data to CSV for accessibility
+            csv_success = self.export_matrix_to_csv(matrix, matrix_name, output_path)
+
             return True
             
         except Exception as e:
@@ -607,7 +661,14 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 pass
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
-            
+
+            # Export CSV data for each matrix
+            csv_exports = []
+            for name, matrix in matrices.items():
+                csv_success = self.export_matrix_to_csv(matrix, name, output_path)
+                if csv_success:
+                    csv_exports.append(output_path.with_suffix('.csv'))
+
             return True
             
         except Exception as e:

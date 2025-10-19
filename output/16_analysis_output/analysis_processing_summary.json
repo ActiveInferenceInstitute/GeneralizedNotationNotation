@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-10-19T13:29:21.647405",
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/16_analysis_output",
+  "analysis_tools": {
+    "numpy": {
+      "available": true,
+      "version": "1.26.4"
+    },
+    "pandas": {
+      "available": true,
+      "version": "2.3.3"
+    },
+    "scipy": {
+      "available": true,
+      "version": "1.16.2"
+    },
+    "matplotlib": {
+      "available": true,
+      "version": "3.10.7"
+    }
+  },
+  "processing_status": "completed",
+  "tools_available": [
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib"
+  ],
+  "message": "Analysis module ready for statistical and complexity analysis"
+}

@@ -287,14 +287,27 @@ def process_llm(
             "processed_files": 0,
             "success": True,
             "errors": [],
+            "provider_matrix": {
+                "ollama": {
+                    "available": ollama_available,
+                    "models": ollama_models,
+                    "selected_model": selected_model
+                },
+                "openai": {
+                    "available": bool(os.getenv("OPENAI_API_KEY")),
+                    "models": ["gpt-4", "gpt-3.5-turbo"] if os.getenv("OPENAI_API_KEY") else [],
+                    "selected_model": None
+                },
+                "anthropic": {
+                    "available": bool(os.getenv("ANTHROPIC_API_KEY")),
+                    "models": ["claude-3", "claude-2"] if os.getenv("ANTHROPIC_API_KEY") else [],
+                    "selected_model": None
+                }
+            },
             "analysis_results": [],
             "model_insights": [],
             "code_suggestions": [],
             "documentation_generated": [],
-            "ollama_available": ollama_available,
-            "ollama_models": ollama_models if ollama_available else [],
-            "selected_model": selected_model if ollama_available else None,
-            "llm_provider": "ollama" if ollama_available else "fallback"
         }
         
         # Find GNN files

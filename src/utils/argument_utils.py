@@ -94,6 +94,9 @@ class PipelineArguments:
     dev: bool = False
     # Optional setup groups to install (comma-separated), used by step 1
     install_optional: Optional[str] = None
+
+    # Execution options
+    frameworks: str = "all"
     
     # Audio generation options
     duration: float = 30.0
@@ -278,6 +281,12 @@ class ArgumentParser:
             default='low',
             help_text='Performance mode for applicable steps (low, medium, high)',
             choices=['low', 'medium', 'high']
+        ),
+        'frameworks': ArgumentDefinition(
+            flag='--frameworks',
+            arg_type=str,
+            default='all',
+            help_text='Frameworks to execute (all, lite, or comma-separated list: pymdp,jax,discopy,rxinfer,activeinference_jl)'
         ),
         'recreate_venv': ArgumentDefinition(
             flag='--recreate-uv-env',

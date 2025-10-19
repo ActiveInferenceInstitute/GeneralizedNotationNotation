@@ -1,0 +1,114 @@
+{
+  "timestamp": "2025-10-19T13:28:41.697741",
+  "total_attempts": 1,
+  "successful": 1,
+  "failed": 0,
+  "skipped": 0,
+  "total_duration_ms": 0.0,
+  "output_files": [
+    "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
+  ],
+  "warnings": [],
+  "errors": [],
+  "attempts": [
+    {
+      "viz_type": "3d",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 400.48837661743164,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "statistical",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 818.9566135406494,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "transitions",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 389.6358013153076,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_state_transitions_conceptual.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "belief",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 885.4563236236572,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_belief_evolution.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "policy",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 747.65944480896,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_policy_visualization.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "correlation",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 849.1308689117432,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_matrix_correlations.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "timeline",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 779.9079418182373,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_timeline_visualization.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "statespace",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 1021.2032794952393,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_state_space_analysis.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "belief_flow",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 1236.2687587738037,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_belief_flow.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    }
+  ]
+}

@@ -335,7 +335,25 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
             plt.savefig(output_file, dpi=150, bbox_inches='tight')
             plt.close()
 
-            return str(output_file)
+            # Export matrix data to CSV for accessibility
+            csv_file = output_dir / f"{model_name}_heatmap_data.csv"
+            try:
+                import csv
+                with open(csv_file, 'w', newline='') as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerow([f"Matrix Heatmap Data: {model_name}"])
+                    writer.writerow([f"Shape: {sample_data.shape}"])
+                    writer.writerow([f"Data type: {sample_data.dtype}"])
+                    writer.writerow([])  # Empty row
+
+                    # Write matrix data
+                    writer.writerow([f"Col {j}" for j in range(sample_data.shape[1])])
+                    for i, row in enumerate(sample_data):
+                        writer.writerow([f"Row {i}"] + row.tolist())
+            except Exception as e:
+                self.logger.warning(f"Failed to export matrix data to CSV: {e}")
+
+            return str(output_file)  # Return PNG file path, CSV file is saved but not returned
         except Exception as e:
             self.logger.error(f"Failed to create matrix heatmap: {e}")
             return None

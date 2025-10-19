@@ -176,6 +176,13 @@ python src/main.py
 python src/8_visualization.py --verbose
 python src/9_advanced_viz.py --interactive
 python src/12_execute.py --verbose
+
+# Framework-specific execution
+python src/12_execute.py --frameworks "pymdp,jax" --verbose
+python src/12_execute.py --frameworks "lite" --verbose
+
+# Install optional dependencies
+python src/1_setup.py --install_optional --optional_groups "pymdp,jax,viz,gui,audio,llm"
 ```
 
 **Output Verification:**

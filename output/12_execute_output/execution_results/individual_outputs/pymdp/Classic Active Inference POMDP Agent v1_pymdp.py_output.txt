@@ -1,0 +1,15 @@
+Execution Results for Classic Active Inference POMDP Agent v1_pymdp.py
+Timestamp: 2025-10-19T14:36:39.998506
+Return Code: 1
+Execution Time: 0.35 seconds
+
+STDOUT:
+Warning: Could not import pipeline utilities: No module named 'utils.enhanced_dependency_manager'
+Warning: Limited pipeline integration: cannot import name 'setup_step_logging' from 'utils' (unknown location)
+
+
+STDERR:
+WARNING:root:PyMDP not available - simulation will gracefully degrade with informative output
+ERROR:src.execute.pymdp.executor:PyMDP simulation execution failed: No module named 'seaborn'
+ERROR:__main__:✗ Simulation failed!
+ERROR:__main__:Error: No module named 'seaborn'

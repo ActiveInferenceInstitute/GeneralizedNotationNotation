@@ -52,6 +52,14 @@ run_script = create_standardized_pipeline_script(
     "12_execute.py",
     process_execute,
     "Execute processing for GNN simulations",
+    additional_arguments={
+        "frameworks": {
+            "flag": "--frameworks",
+            "type": str,
+            "default": "all",
+            "help": "Frameworks to execute (all, lite, or comma-separated list: pymdp,jax,discopy,rxinfer,activeinference_jl)"
+        }
+    }
 )
 
 def main() -> int:

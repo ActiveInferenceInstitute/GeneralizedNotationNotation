@@ -138,13 +138,18 @@ def main():
 
     visual_logger = create_visual_logger("pipeline", visual_config)
 
-    # Setup logging
+    # Setup logging (use structured if available, fallback to standard)
     if STRUCTURED_LOGGING_AVAILABLE:
         logger = setup_step_logging("pipeline", args.verbose, enable_structured=True)
         # Reset progress tracker for new pipeline run
         reset_progress_tracker()
     else:
-        logger = setup_step_logging("pipeline", args.verbose)
+        # Use the logging_utils version directly to avoid duplicate setup
+        try:
+            from utils.logging_utils import setup_step_logging as _setup_step_logging
+            logger = _setup_step_logging("pipeline", args.verbose)
+        except ImportError:
+            logger = setup_step_logging("pipeline", args.verbose)
 
     # Set correlation ID for tracking
     import uuid
@@ -436,10 +441,10 @@ def main():
                     logger.error(f"❌ Step {actual_step_number} failed with status: {status_for_logging}")
         
         # Complete pipeline summary
-        pipeline_summary["end_time"] = datetime.now().isoformat()
-        pipeline_summary["total_duration_seconds"] = time.time() - time.mktime(
-            datetime.fromisoformat(pipeline_summary["start_time"]).timetuple()
-        )
+        end_time_dt = datetime.now()
+        pipeline_summary["end_time"] = end_time_dt.isoformat()
+        start_time_dt = datetime.fromisoformat(pipeline_summary["start_time"])
+        pipeline_summary["total_duration_seconds"] = (end_time_dt - start_time_dt).total_seconds()
         
         # Determine overall status with enhanced logic
         perf_summary = pipeline_summary["performance_summary"]
@@ -534,11 +539,11 @@ def main():
         
     except Exception as e:
         # Update pipeline summary with error
-        pipeline_summary["end_time"] = datetime.now().isoformat()
+        end_time_dt = datetime.now()
+        pipeline_summary["end_time"] = end_time_dt.isoformat()
         pipeline_summary["overall_status"] = "FAILED"
-        pipeline_summary["total_duration_seconds"] = time.time() - time.mktime(
-            datetime.fromisoformat(pipeline_summary["start_time"]).timetuple()
-        )
+        start_time_dt = datetime.fromisoformat(pipeline_summary["start_time"])
+        pipeline_summary["total_duration_seconds"] = (end_time_dt - start_time_dt).total_seconds()
         
         # Save pipeline summary even on error
         summary_path = args.pipeline_summary_file

@@ -17,11 +17,10 @@ import shutil
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from visualization import (
-    process_visualization_main,
-    _configure_matplotlib_backend,
     MatrixVisualizer,
-    generate_network_visualizations,
-    generate_combined_analysis
+    generate_graph_visualization,
+    generate_matrix_visualization,
+    generate_network_visualizations
 )
 
 

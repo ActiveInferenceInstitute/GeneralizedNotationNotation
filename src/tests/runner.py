@@ -556,7 +556,7 @@ class TestRunner:
             tests_passed = 0
             tests_failed = 0
             tests_skipped = 0
-            
+
             # Look for the summary line at the end (e.g., "60 passed, 20 skipped in 1.85s")
             for line in reversed(lines):
                 if "passed" in line or "failed" in line or "skipped" in line:
@@ -579,7 +579,7 @@ class TestRunner:
                     if tests_passed > 0 or tests_failed > 0:
                         tests_run = tests_passed + tests_failed + tests_skipped
                         break
-            
+
             # Fallback: look for collected items line
             if tests_run == 0:
                 for line in lines:
@@ -592,9 +592,15 @@ class TestRunner:
                                 except ValueError:
                                     pass
                                 break
-            
-            # Determine success
-            success = tests_failed == 0 and tests_run > 0
+
+            # Check for collection errors
+            collection_errors = []
+            for line in lines:
+                if "ERROR collecting" in line or "ERROR: No tests collected" in line:
+                    collection_errors.append(line)
+
+            # Determine success - fail if no tests collected or collection errors
+            success = tests_failed == 0 and tests_run > 0 and not collection_errors
             
             # Extract coverage if present
             coverage_percentage = None
@@ -611,7 +617,8 @@ class TestRunner:
                 "tests_passed": tests_passed,
                 "tests_failed": tests_failed,
                 "tests_skipped": tests_skipped,
-                "coverage_percentage": coverage_percentage
+                "coverage_percentage": coverage_percentage,
+                "collection_errors": collection_errors
             }
             
         except Exception as e:

@@ -30,10 +30,76 @@ except Exception:
 
 logger = logging.getLogger(__name__)
 
+
+def determine_script_framework(script_path: Path, render_output_dir: Path, framework_dirs: Dict[str, str]) -> str:
+    """
+    Determine the framework for a script based on its directory path.
+
+    Args:
+        script_path: Path to the script
+        render_output_dir: Base render output directory
+        framework_dirs: Mapping of directory names to framework names
+
+    Returns:
+        Framework name or 'unknown'
+    """
+    try:
+        # Get relative path from render output directory
+        relative_path = script_path.relative_to(render_output_dir)
+
+        # Check each part of the path for framework indicators
+        for part in relative_path.parts:
+            # Check if this part matches a known framework directory
+            if part.lower() in framework_dirs:
+                return framework_dirs[part.lower()]
+
+            # Check for framework names in the directory name
+            for framework_name in framework_dirs.values():
+                if framework_name.lower() in part.lower():
+                    return framework_name
+
+        # Default fallback
+        return "unknown"
+
+    except Exception:
+        return "unknown"
+
+
+def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
+    """
+    Parse the frameworks parameter into a list of framework names.
+
+    Args:
+        frameworks: Comma-separated string of framework names or preset
+        logger: Logger instance
+
+    Returns:
+        List of framework names to include
+    """
+    if not frameworks or frameworks.lower() == "all":
+        return ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl"]
+
+    if frameworks.lower() == "lite":
+        return ["pymdp", "jax", "discopy"]
+
+    # Parse comma-separated list
+    framework_list = [f.strip() for f in frameworks.split(",")]
+    valid_frameworks = ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl"]
+
+    # Filter out invalid frameworks
+    valid_list = [f for f in framework_list if f in valid_frameworks]
+
+    if len(valid_list) != len(framework_list):
+        invalid = [f for f in framework_list if f not in valid_frameworks]
+        logger.warning(f"Invalid frameworks specified: {invalid}. Valid options: {valid_frameworks}")
+
+    return valid_list if valid_list else ["pymdp"]  # Default to pymdp if nothing valid
+
 def process_execute(
     target_dir: Path,
     output_dir: Path,
     verbose: bool = False,
+    frameworks: str = "all",
     **kwargs
 ) -> bool:
     """
@@ -55,7 +121,11 @@ def process_execute(
     
     try:
         log_step_start(logger, "Processing execute - searching for rendered implementations")
-        
+
+        # Parse frameworks parameter
+        requested_frameworks = parse_frameworks_parameter(frameworks, logger)
+        logger.info(f"Requested frameworks: {requested_frameworks}")
+
         # Create results directory
         results_dir = output_dir / "execution_results"
         results_dir.mkdir(parents=True, exist_ok=True)
@@ -68,7 +138,9 @@ def process_execute(
             "total_scripts_found": 0,
             "successful_executions": 0,
             "failed_executions": 0,
+            "skipped_executions": 0,
             "execution_details": [],
+            "framework_status": {},
             "success": True
         }
         
@@ -107,15 +179,16 @@ def process_execute(
         
         if verbose:
             logger.info(f"Searching for executable scripts in: {render_output_dir}")
-        
+
         if not render_output_dir or not render_output_dir.exists():
             log_step_warning(logger, f"Render output directory not found: {render_output_dir}")
             execution_results["success"] = True  # Not an error, just no files to execute
             execution_results["message"] = "No rendered implementations found"
         else:
-            # Find executable scripts
-            executable_scripts = find_executable_scripts(render_output_dir, verbose, logger)
+            # Find executable scripts, filtered by requested frameworks
+            executable_scripts = find_executable_scripts(render_output_dir, verbose, logger, requested_frameworks)
             execution_results["total_scripts_found"] = len(executable_scripts)
+            execution_results["requested_frameworks"] = requested_frameworks
             
             if not executable_scripts:
                 log_step_warning(logger, "No executable scripts found in render output")
@@ -129,10 +202,21 @@ def process_execute(
                     exec_result = execute_single_script(script_info, results_dir, verbose, logger)
                     execution_results["execution_details"].append(exec_result)
                     
+                    # Update framework status
+                    framework = exec_result.get("framework", "unknown")
+                    if framework not in execution_results["framework_status"]:
+                        execution_results["framework_status"][framework] = {"status": "unknown", "executions": 0}
+
+                    execution_results["framework_status"][framework]["executions"] += 1
+
                     if exec_result["success"]:
                         execution_results["successful_executions"] += 1
+                        execution_results["framework_status"][framework]["status"] = "success"
                     else:
                         execution_results["failed_executions"] += 1
+                        execution_results["framework_status"][framework]["status"] = "failed"
+                        if "error" in exec_result:
+                            execution_results["framework_status"][framework]["error"] = exec_result["error"]
         
         # Save detailed results
         results_file = results_dir / "execution_summary.json"
@@ -164,7 +248,7 @@ def process_execute(
         log_step_error(logger, f"Execute processing failed: {e}")
         return False
 
-def find_executable_scripts(render_output_dir: Path, verbose: bool, logger) -> List[Dict[str, Any]]:
+def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requested_frameworks: List[str]) -> List[Dict[str, Any]]:
     """
     Find executable scripts in the render output directory.
     
@@ -183,20 +267,41 @@ def find_executable_scripts(render_output_dir: Path, verbose: bool, logger) -> L
         '*.py': {'executor': 'python3', 'framework': 'python'},
         '*.jl': {'executor': 'julia', 'framework': 'julia'},
     }
-    
+
+    # Map framework directories to framework names
+    framework_dirs = {
+        'pymdp': 'pymdp',
+        'jax': 'jax',
+        'discopy': 'discopy',
+        'rxinfer': 'rxinfer',
+        'activeinference_jl': 'activeinference_jl',
+        'activeinference.jl': 'activeinference_jl',
+    }
+
     for pattern, config in script_types.items():
         scripts = list(render_output_dir.rglob(pattern))
-        
+
         for script_path in scripts:
             # Skip test files and other non-executable scripts
             if any(skip in script_path.name.lower() for skip in ['test_', '__', 'readme']):
                 continue
-            
+
+            # Determine framework from directory path
+            framework = determine_script_framework(script_path, render_output_dir, framework_dirs)
+
+            # Filter by requested frameworks
+            if framework not in requested_frameworks:
+                if verbose:
+                    logger.debug(f"Skipping {framework} script: {script_path.name} (not in requested frameworks)")
+                execution_results["skipped_executions"] += 1
+                execution_results["framework_status"][framework] = {"status": "skipped", "reason": "not_requested"}
+                continue
+
             # Check if script is executable or can be made executable
             script_info = {
                 'path': script_path,
                 'name': script_path.name,
-                'framework': config['framework'],
+                'framework': framework,
                 'executor': config['executor'],
                 'relative_path': script_path.relative_to(render_output_dir),
                 'size_bytes': script_path.stat().st_size if script_path.exists() else 0

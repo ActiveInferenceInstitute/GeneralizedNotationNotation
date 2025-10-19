@@ -214,6 +214,27 @@ python src/main.py --only-steps "3,5,7,8,11,12" --verbose
 python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
+### Framework Selection
+```bash
+# Execute only specific frameworks
+python src/12_execute.py --frameworks "pymdp,jax" --verbose
+
+# Use lite preset (PyMDP, JAX, DisCoPy)
+python src/12_execute.py --frameworks "lite" --verbose
+
+# All frameworks (default)
+python src/12_execute.py --frameworks "all" --verbose
+```
+
+### Optional Dependencies
+```bash
+# Install optional groups
+python src/1_setup.py --install_optional --optional_groups "pymdp,jax,viz,gui,audio,llm"
+
+# Install specific groups
+python src/1_setup.py --install_optional --optional_groups "viz,pymdp"
+```
+
 ---
 
 ## Development Guidelines

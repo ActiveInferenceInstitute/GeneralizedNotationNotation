@@ -227,6 +227,42 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         
         # Extract actual parameter values from initialparameterization
         init_params = gnn_spec.get("initialparameterization", {})
+
+        # Override dimensions from B matrix if available (consistent with other renderers)
+        if "B" in init_params:
+            B_matrix = init_params["B"]
+            if isinstance(B_matrix, (list, np.ndarray)) and len(B_matrix) > 0:
+                # B matrix shape should be (n_states, n_states, n_actions) or similar
+                if isinstance(B_matrix, list):
+                    if len(B_matrix) > 0 and isinstance(B_matrix[0], list) and len(B_matrix[0]) > 0 and isinstance(B_matrix[0][0], list):
+                        # B is (actions, states, observations) or similar nested structure
+                        n_actions_from_b = len(B_matrix)
+                    else:
+                        n_actions_from_b = 1  # Default fallback
+                else:
+                    # B is numpy array
+                    if len(B_matrix.shape) >= 3:
+                        n_actions_from_b = B_matrix.shape[2]  # Last dimension is actions
+                    else:
+                        n_actions_from_b = 1  # Default fallback
+
+                if n_actions_from_b > 1:  # Only override if we got a meaningful value
+                    n_actions = n_actions_from_b
+                    logger.info(f"Corrected n_actions from B matrix: {n_actions}")
+
+            # Also check for explicit dimensions in model_params that might override
+            if "B" in gnn_spec.get("model_params", {}):
+                B_spec = gnn_spec["model_params"]["B"]
+                if "shape" in B_spec:
+                    shape_parts = B_spec["shape"].strip("()").split(",")
+                    if len(shape_parts) >= 3:
+                        try:
+                            n_actions_from_spec = int(shape_parts[2])
+                            if n_actions_from_spec > 1:
+                                n_actions = n_actions_from_spec
+                                logger.info(f"Corrected n_actions from B matrix specification: {n_actions}")
+                        except (ValueError, IndexError):
+                            pass
         if init_params:
             logger.info("Found initialparameterization, extracting actual matrix values")
             

@@ -1027,17 +1027,101 @@ def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
         logger.error(f"Failed to set up GNN project with UV: {e}")
         return False
 
+def setup_julia_environment(verbose: bool = False) -> bool:
+    """
+    Set up Julia environment for GNN execution frameworks.
+
+    Args:
+        verbose: Enable verbose logging
+
+    Returns:
+        True if setup succeeded, False otherwise
+    """
+    logger.info("🔧 Setting up Julia environment for GNN execution")
+
+    try:
+        # Check if Julia is available
+        julia_path = shutil.which("julia")
+        if not julia_path:
+            logger.error("❌ Julia not found in PATH")
+            logger.info("💡 Install Julia from: https://julialang.org/downloads/")
+            return False
+
+        # Check Julia version
+        version_result = subprocess.run(
+            [julia_path, "--version"],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+
+        if version_result.returncode == 0:
+            version_line = version_result.stdout.strip().split('\n')[0]
+            logger.info(f"✅ Julia found: {version_line}")
+        else:
+            logger.warning(f"⚠️ Could not determine Julia version: {version_result.stderr}")
+            logger.info("✅ Julia is available, proceeding with setup")
+
+        # Run Julia setup scripts for required frameworks
+        setup_scripts = [
+            PROJECT_ROOT / "src" / "execute" / "rxinfer" / "setup_environment.jl",
+            PROJECT_ROOT / "src" / "execute" / "activeinference_jl" / "setup_environment.jl"
+        ]
+
+        success_count = 0
+
+        for script_path in setup_scripts:
+            if script_path.exists():
+                logger.info(f"Running Julia setup script: {script_path}")
+                try:
+                    result = subprocess.run(
+                        [julia_path, str(script_path)],
+                        cwd=script_path.parent,
+                        capture_output=True,
+                        text=True,
+                        timeout=300  # 5 minute timeout for package installation
+                    )
+
+                    if result.returncode == 0:
+                        logger.info(f"✅ Julia setup completed for {script_path.name}")
+                        success_count += 1
+                    else:
+                        logger.error(f"❌ Julia setup failed for {script_path.name}: {result.stderr}")
+                except subprocess.TimeoutExpired:
+                    logger.error(f"⏰ Julia setup timed out for {script_path.name}")
+                except Exception as e:
+                    logger.error(f"❌ Error running Julia setup for {script_path.name}: {e}")
+            else:
+                logger.warning(f"⚠️ Julia setup script not found: {script_path}")
+
+        if success_count > 0:
+            logger.info(f"✅ Julia environment setup completed ({success_count} frameworks configured)")
+            return True
+        else:
+            logger.warning("⚠️ No Julia frameworks were successfully configured")
+            return False
+
+    except Exception as e:
+        logger.error(f"❌ Error setting up Julia environment: {e}")
+        return False
+
+
 def install_optional_package_group(group_name: str, verbose: bool = False) -> bool:
     """
     Install a specific optional package group using UV pip.
-    
+
     Args:
-        group_name: Name of the package group ('jax', 'pymdp', 'visualization', 'audio', 'llm', 'ml')
+        group_name: Name of the package group ('jax', 'pymdp', 'visualization', 'audio', 'llm', 'ml', 'julia')
         verbose: Enable verbose logging
-        
+
     Returns:
         True if installation succeeded, False otherwise
     """
+    # Handle Julia setup separately
+    if group_name.lower() == 'julia':
+        return setup_julia_environment(verbose=verbose)
+
+    # Handle Python packages
     package_groups = {
         'jax': ['jax[cpu]', 'jaxlib', 'optax', 'flax'],
         'pymdp': ['inferactively-pymdp'],  # Correct package name for pymdp
