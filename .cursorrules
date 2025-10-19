@@ -31,6 +31,17 @@ This system represents a complete scientific computing framework with 24 integra
 - **Focus on Functionality**: Emphasize what the code actually does rather than what it might achieve
 - **Real Analysis**: Use actual script outputs, file contents, and execution results as evidence
 
+## Visual Accessibility and Logging Standards
+- **Enhanced Visual Output**: Use `utils/visual_logging.py` for consistent visual indicators across all pipeline steps
+- **Progress Indicators**: Display step progress with visual progress bars and completion indicators
+- **Status Icons**: Use standardized emoji icons (✅, ⚠️, ❌, 🔄) for clear status communication
+- **Color Coding**: Apply consistent color schemes (green=success, yellow=warning, red=error, blue=info)
+- **Screen Reader Support**: Provide emoji-free alternatives and structured text for accessibility
+- **Correlation IDs**: Include unique tracking IDs for debugging and monitoring across pipeline steps
+- **Performance Metrics**: Display timing, memory usage, and resource consumption clearly
+- **Structured Summaries**: Use formatted tables and panels for key metrics and completion status
+- **Error Recovery Guidance**: Include actionable recovery suggestions in error messages
+
 ## Critical Implementation Philosophy
 This project implements a comprehensive scientific computing pipeline with real, functional components at every level. Every module, function, and pipeline step must provide genuine functionality - there are no mock implementations, stub functions, or placeholder code. The architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards.
 

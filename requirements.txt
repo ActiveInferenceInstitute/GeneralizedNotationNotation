@@ -51,7 +51,7 @@ markdown-it-py>=3.0.0,<4.0.0
 
 # Security tools
 bandit>=1.7.0,<2.0.0
-safety>=2.4.0,<3.0.0
+# safety>=2.4.0,<3.0.0  # Temporarily disabled due to version resolution issues
 
 # Development tools
 pre-commit>=3.0.0,<4.0.0
@@ -68,157 +68,157 @@ ipywidgets>=8.0.0,<9.0.0
 # =============================================================================
 
 # =============================================================================
-# ACTIVE INFERENCE ECOSYSTEM (Essential for model execution)
+# ACTIVE INFERENCE ECOSYSTEM (Optional - for model execution)
 # =============================================================================
 
-# Core Active Inference frameworks
-pymdp>=0.1.0,<0.2.0
+# Core Active Inference frameworks (optional - install separately if needed)
+# pymdp>=0.1.0,<0.2.0  # Not available in PyPI yet, install from GitHub if needed
 
-# High-performance computing backends (essential for execution)
-jax[cpu]>=0.4.0,<0.5.0
-jaxlib>=0.4.0,<0.5.0
-flax>=0.7.0,<0.8.0
-optax>=0.1.0,<0.2.0
-
-# =============================================================================
-# VISUALIZATION AND DIAGRAMMING (Recommended for analysis)
-# =============================================================================
-
-# Core visualization libraries
-plotly>=5.15.0,<6.0.0
-altair>=5.0.0,<6.0.0
-seaborn>=0.12.0,<0.13.0
-bokeh>=3.0.0,<4.0.0
-holoviews>=1.17.0,<2.0.0
-panel>=1.0.0,<2.0.0
-
-# Specialized diagramming
-discopy[matrix]>=1.1.0,<2.0.0
-graphviz>=0.20.0,<0.21.0
-igraph>=0.10.0,<0.11.0
+# High-performance computing backends (optional - install separately if needed)
+# jax[cpu]>=0.4.0,<0.5.0
+# jaxlib>=0.4.0,<0.5.0
+# flax>=0.7.0,<0.8.0
+# optax>=0.1.0,<0.2.0
 
 # =============================================================================
-# AUDIO PROCESSING (For sonification features)
+# VISUALIZATION AND DIAGRAMMING (Optional - for analysis)
 # =============================================================================
 
-# Core audio libraries
-librosa>=0.10.0,<0.11.0
-soundfile>=0.12.0,<0.13.0
-pedalboard>=0.7.0,<0.8.0
+# Core visualization libraries (optional)
+# plotly>=5.15.0,<6.0.0
+# altair>=5.0.0,<6.0.0
+# seaborn>=0.12.0,<0.13.0
+# bokeh>=3.0.0,<4.0.0
+# holoviews>=1.17.0,<2.0.0
+# panel>=1.0.0,<2.0.0
 
-# Audio analysis and processing
-pydub>=0.25.0,<0.26.0
-pyaudio>=0.2.0,<0.3.0
-
-# =============================================================================
-# LLM INTEGRATION (For AI-enhanced analysis)
-# =============================================================================
-
-# API clients for major LLM providers
-openai>=1.0.0,<2.0.0
-anthropic>=0.7.0,<0.8.0
-cohere>=4.0.0,<5.0.0
-
-# Local LLM integration
-ollama>=0.1.0,<0.2.0
+# Specialized diagramming (optional)
+# discopy[matrix]>=1.1.0,<2.0.0
+# graphviz>=0.20.0,<0.21.0
+# igraph>=0.10.0,<0.11.0
 
 # =============================================================================
-# MACHINE LEARNING & AI (Advanced features)
+# AUDIO PROCESSING (Optional - for sonification features)
 # =============================================================================
 
-# Deep learning frameworks (heavy - ~1-2GB each)
-torch>=2.0.0,<3.0.0  # CPU version recommended for compatibility
-torchvision>=0.15.0,<0.16.0
-torchaudio>=2.0.0,<3.0.0
+# Core audio libraries (optional)
+# librosa>=0.10.0,<0.11.0
+# soundfile>=0.12.0,<0.13.0
+# pedalboard>=0.7.0,<0.8.0
 
-# Hugging Face ecosystem
-transformers>=4.25.0,<5.0.0
-datasets>=2.10.0,<3.0.0
-accelerate>=0.20.0,<0.21.0
-
-# =============================================================================
-# RESEARCH AND DEVELOPMENT TOOLS
-# =============================================================================
-
-# Jupyter ecosystem for interactive analysis
-jupyterlab>=4.0.0,<5.0.0
-jupyter-server>=2.0.0,<3.0.0
-
-# Scientific computing enhancements
-sympy>=1.12.0,<2.0.0
-numba>=0.57.0,<0.58.0
-cython>=3.0.0,<4.0.0
-
-# Performance profiling and optimization
-py-spy>=0.3.0,<0.4.0
-memory-profiler>=0.61.0,<0.62.0
-line-profiler>=4.0.0,<5.0.0
+# Audio analysis and processing (optional)
+# pydub>=0.25.0,<0.26.0
+# pyaudio>=0.2.0,<0.3.0
 
 # =============================================================================
-# GUI AND INTERACTIVE COMPONENTS
+# LLM INTEGRATION (Optional - for AI-enhanced analysis)
 # =============================================================================
 
-# Web-based interfaces
-gradio>=4.0.0,<5.0.0
-streamlit>=1.25.0,<2.0.0
+# API clients for major LLM providers (optional)
+# openai>=1.0.0,<2.0.0
+# anthropic>=0.7.0,<0.8.0
+# cohere>=4.0.0,<5.0.0
 
-# Interactive widgets
-plotly-dash>=2.10.0,<3.0.0
-
-# =============================================================================
-# DATABASE AND STORAGE (For large-scale processing)
-# =============================================================================
-
-# Database connectivity
-sqlalchemy>=2.0.0,<3.0.0
-alembic>=1.10.0,<2.0.0
-
-# File storage and caching
-fsspec>=2023.0.0,<2024.0.0
-s3fs>=2023.0.0,<2024.0.0
+# Local LLM integration (optional)
+# ollama>=0.1.0,<0.2.0
 
 # =============================================================================
-# SPECIALIZED FRAMEWORKS
+# MACHINE LEARNING & AI (Optional - advanced features)
 # =============================================================================
 
-# Category theory and diagrammatic computing
-discopy[categorical]>=1.1.0,<2.0.0
+# Deep learning frameworks (optional - heavy ~1-2GB each)
+# torch>=2.0.0,<3.0.0  # CPU version recommended for compatibility
+# torchvision>=0.15.0,<0.16.0
+# torchaudio>=2.0.0,<3.0.0
 
-# Petri nets and process modeling
-snakes>=0.9.0,<1.0.0
-
-# Active Inference specific tools
-pymdp-toolbox>=0.1.0,<0.2.0
-
-# =============================================================================
-# DEVELOPMENT AND DEBUGGING TOOLS
-# =============================================================================
-
-# Code quality and linting
-ruff>=0.1.0,<0.2.0
-pylint>=3.0.0,<4.0.0
-
-# Documentation generation
-sphinx>=7.0.0,<8.0.0
-sphinx-rtd-theme>=1.3.0,<2.0.0
-myst-parser>=2.0.0,<3.0.0
-
-# API documentation
-fastapi>=0.100.0,<0.110.0
-uvicorn>=0.23.0,<0.24.0
+# Hugging Face ecosystem (optional)
+# transformers>=4.25.0,<5.0.0
+# datasets>=2.10.0,<3.0.0
+# accelerate>=0.20.0,<0.21.0
 
 # =============================================================================
-# PERFORMANCE AND SCALING (For high-throughput processing)
+# RESEARCH AND DEVELOPMENT TOOLS (Optional)
 # =============================================================================
 
-# Parallel processing
-dask>=2023.0.0,<2024.0.0
-distributed>=2023.0.0,<2024.0.0
-multiprocess>=0.70.0,<0.71.0
+# Jupyter ecosystem for interactive analysis (included in core)
+jupyter>=1.0.0,<2.0.0
+ipywidgets>=8.0.0,<9.0.0
 
-# Caching and optimization
-joblib>=1.3.0,<2.0.0
-lru-dict>=1.2.0,<2.0.0
+# Scientific computing enhancements (optional)
+# sympy>=1.12.0,<2.0.0
+# numba>=0.57.0,<0.58.0
+# cython>=3.0.0,<4.0.0
+
+# Performance profiling and optimization (optional)
+# py-spy>=0.3.0,<0.4.0
+# memory-profiler>=0.61.0,<0.62.0
+# line-profiler>=4.0.0,<5.0.0
+
+# =============================================================================
+# GUI AND INTERACTIVE COMPONENTS (Optional)
+# =============================================================================
+
+# Web-based interfaces (optional)
+# gradio>=4.0.0,<5.0.0
+# streamlit>=1.25.0,<2.0.0
+
+# Interactive widgets (optional)
+# plotly-dash>=2.10.0,<3.0.0
+
+# =============================================================================
+# DATABASE AND STORAGE (Optional - for large-scale processing)
+# =============================================================================
+
+# Database connectivity (optional)
+# sqlalchemy>=2.0.0,<3.0.0
+# alembic>=1.10.0,<2.0.0
+
+# File storage and caching (optional)
+# fsspec>=2023.0.0,<2024.0.0
+# s3fs>=2023.0.0,<2024.0.0
+
+# =============================================================================
+# SPECIALIZED FRAMEWORKS (Optional)
+# =============================================================================
+
+# Category theory and diagrammatic computing (optional)
+# discopy[categorical]>=1.1.0,<2.0.0
+
+# Petri nets and process modeling (optional)
+# snakes>=0.9.0,<1.0.0
+
+# Active Inference specific tools (optional)
+# pymdp-toolbox>=0.1.0,<0.2.0
+
+# =============================================================================
+# DEVELOPMENT AND DEBUGGING TOOLS (Optional)
+# =============================================================================
+
+# Code quality and linting (optional)
+# ruff>=0.1.0,<0.2.0
+# pylint>=3.0.0,<4.0.0
+
+# Documentation generation (optional)
+# sphinx>=7.0.0,<8.0.0
+# sphinx-rtd-theme>=1.3.0,<2.0.0
+# myst-parser>=2.0.0,<3.0.0
+
+# API documentation (optional)
+# fastapi>=0.100.0,<0.110.0
+# uvicorn>=0.23.0,<0.24.0
+
+# =============================================================================
+# PERFORMANCE AND SCALING (Optional - for high-throughput processing)
+# =============================================================================
+
+# Parallel processing (optional)
+# dask>=2023.0.0,<2024.0.0
+# distributed>=2023.0.0,<2024.0.0
+# multiprocess>=0.70.0,<0.71.0
+
+# Caching and optimization (optional)
+# joblib>=1.3.0,<2.0.0
+# lru-dict>=1.2.0,<2.0.0
 
 # =============================================================================
 # INSTALLATION NOTES

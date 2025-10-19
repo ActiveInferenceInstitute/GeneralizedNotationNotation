@@ -11,6 +11,9 @@ import importlib
 from pathlib import Path
 from typing import Dict, List, Any
 
+# Enhanced visual logging
+from utils.visual_logging import create_visual_logger, VisualConfig, print_pipeline_banner
+
 
 def check_core_dependencies() -> Dict[str, Any]:
     """Check core pipeline dependencies."""
@@ -119,7 +122,24 @@ def check_pipeline_structure() -> Dict[str, Any]:
 
 def run_health_check() -> Dict[str, Any]:
     """Run complete pipeline health check."""
-    print("🔍 Running GNN Pipeline Health Check...")
+    # Setup visual logging
+    visual_config = VisualConfig(
+        enable_colors=True,
+        enable_progress_bars=True,
+        enable_emoji=True,
+        enable_animation=True,
+        show_timestamps=False,
+        show_correlation_ids=False,
+        compact_mode=False
+    )
+
+    visual_logger = create_visual_logger("health_check", visual_config)
+
+    # Enhanced header
+    print_pipeline_banner(
+        "🔍 GNN Pipeline Health Check",
+        "Comprehensive system validation and dependency analysis"
+    )
 
     health_report = {
         "overall_status": "healthy",
@@ -158,41 +178,73 @@ def run_health_check() -> Dict[str, Any]:
 
 
 def print_health_report(report: Dict[str, Any]):
-    """Print formatted health report."""
-    status_icons = {"healthy": "✅", "degraded": "⚠️", "unhealthy": "❌"}
-
-    print(
-        f"\n{status_icons.get(report['overall_status'], '❓')} Overall Status: {report['overall_status'].upper()}"
+    """Print formatted health report with enhanced visual indicators."""
+    # Setup visual logging for report output
+    visual_config = VisualConfig(
+        enable_colors=True,
+        enable_progress_bars=True,
+        enable_emoji=True,
+        enable_animation=True,
+        show_timestamps=False,
+        show_correlation_ids=False,
+        compact_mode=False
     )
 
-    # Core dependencies
-    core = report["core_dependencies"]
-    print(f"\n📦 Core Dependencies: {status_icons.get(core['status'], '❓')}")
-    if core["available"]:
-        for dep in core["available"]:
-            print(f"  ✅ {dep}")
-    if core["missing"]:
-        for dep in core["missing"]:
-            print(f"  ❌ {dep}")
+    visual_logger = create_visual_logger("health_report", visual_config)
 
-    # Optional dependencies
-    print(f"\n🔧 Optional Features:")
+    status_icons = {"healthy": "✅", "degraded": "⚠️", "unhealthy": "❌"}
+
+    # Enhanced overall status
+    overall_status = report['overall_status']
+    visual_logger.print_status(f"Overall Status: {overall_status.upper()}", overall_status)
+
+    # Core dependencies summary
+    core = report["core_dependencies"]
+    visual_logger.print_summary(
+        "📦 Core Dependencies",
+        {
+            "Status": core['status'],
+            "Available": len(core["available"]),
+            "Missing": len(core["missing"])
+        }
+    )
+
+    if core["available"]:
+        print("  Available packages:")
+        for dep in core["available"]:
+            print(f"    ✅ {dep}")
+    if core["missing"]:
+        print("  Missing packages:")
+        for dep in core["missing"]:
+            print(f"    ❌ {dep}")
+
+    # Optional dependencies summary
+    print("\n🔧 Optional Features:")
     for group, data in report["optional_dependencies"].items():
         status_icon = {"available": "✅", "partial": "⚠️", "unavailable": "❌"}.get(
             data["status"], "❓"
         )
-        print(f"  {status_icon} {group}: {data['status']}")
+        available_count = len(data["available"])
+        missing_count = len(data["missing"])
+        print(f"  {status_icon} {group}: {data['status']} ({available_count} available, {missing_count} missing)")
 
-    # Pipeline structure
+    # Pipeline structure summary
     structure = report["pipeline_structure"]
-    print(f"\n📁 Pipeline Structure: {status_icons.get(structure['status'], '❓')}")
-    print(f"  Available steps: {len(structure['available'])}/24")
-    if structure["missing"]:
-        print(f"  Missing: {', '.join(structure['missing'])}")
+    visual_logger.print_summary(
+        "📁 Pipeline Structure",
+        {
+            "Status": structure['status'],
+            "Available Steps": f"{len(structure['available'])}/24",
+            "Missing Steps": len(structure["missing"])
+        }
+    )
 
-    # Recommendations
+    if structure["missing"]:
+        print(f"  Missing steps: {', '.join(structure['missing'])}")
+
+    # Recommendations with visual enhancement
     if report["recommendations"]:
-        print(f"\n💡 Recommendations:")
+        print("\n💡 Recommendations:")
         for rec in report["recommendations"]:
             print(f"  • {rec}")
 

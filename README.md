@@ -7,7 +7,7 @@
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-24-blue.svg)](#%EF%B8%8F-processing-pipeline)
-[![Latest Run](https://img.shields.io/badge/Latest%20Run-85.7%25%20Success-yellow.svg)](#-performance-characteristics)
+[![Latest Run](https://img.shields.io/badge/Latest%20Run-100%25%20Success-brightgreen.svg)](#-performance-characteristics)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-4-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
@@ -556,7 +556,30 @@ This will:
 - 🧪 Install development dependencies (with `--dev`)
 - ✅ Validate system requirements
 
-**4️⃣ Run Your First Pipeline (using `uv`)**
+**4️⃣ Enhanced Visual Output** *(Optional)*
+
+The pipeline includes enhanced visual logging for better accessibility:
+
+```bash
+# Run with visual enhancements (recommended)
+python src/main.py --verbose
+
+# Run with compact visual mode for narrow terminals
+python src/main.py --verbose --compact
+
+# Run with timestamps for detailed logging
+python src/main.py --verbose --timestamps
+```
+
+**Visual Features:**
+- 🎨 **Color-coded status indicators** (green=success, yellow=warning, red=error)
+- 📊 **Progress bars** and completion indicators
+- 🔢 **Step-by-step visual progress** with correlation IDs
+- 📋 **Structured summary tables** with key metrics
+- ♿ **Screen reader friendly** output (emoji can be disabled)
+- ⏱️ **Performance timing** and memory usage tracking
+
+**5️⃣ Run Your First Pipeline (using `uv`)**
 
 Use `uv` to run the pipeline inside the managed project environment:
 

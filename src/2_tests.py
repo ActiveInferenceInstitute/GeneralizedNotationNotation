@@ -30,6 +30,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from pipeline import get_output_dir_for_script
 from utils.logging_utils import log_step_error
 from utils.pipeline_template import setup_step_logging
+from utils.visual_logging import create_visual_logger, VisualConfig, format_step_header, format_status_message
 
 def main() -> int:
     """Main entry point for the tests step."""
@@ -43,6 +44,19 @@ def main() -> int:
     parser.add_argument('--comprehensive', action='store_true', help='Run all tests (overrides fast-only)')
     parser.add_argument('--target-dir', type=str, help='Target directory (unused for tests)')
     args = parser.parse_args()
+
+    # Setup enhanced visual logging
+    visual_config = VisualConfig(
+        enable_colors=True,
+        enable_progress_bars=True,
+        enable_emoji=True,
+        enable_animation=True,
+        show_timestamps=args.verbose,
+        show_correlation_ids=True,
+        compact_mode=False
+    )
+
+    visual_logger = create_visual_logger("2_tests.py", visual_config)
 
     # Setup logging
     logger = setup_step_logging("2_tests.py", args.verbose)
@@ -60,20 +74,28 @@ def main() -> int:
     try:
         from tests import run_tests
 
-        # Determine test mode
-        # For pipeline integration, run comprehensive tests unless explicitly requested as fast-only
+        # Determine test mode with visual indicators
         if args.comprehensive:
             comprehensive = True
             fast_only = False
+            test_mode = "comprehensive"
         elif args.fast_only:
             comprehensive = False
             fast_only = True
+            test_mode = "fast"
         else:
             # Default for pipeline: run comprehensive tests
             comprehensive = True
             fast_only = False
+            test_mode = "comprehensive"
 
-        logger.info(f"🧪 Running {'comprehensive' if comprehensive else 'fast'} test suite")
+        # Enhanced test mode announcement
+        visual_logger.print_header(
+            "🧪 GNN Pipeline Test Suite",
+            f"Running {test_mode} test mode | Output: {step_output_dir}"
+        )
+
+        logger.info(f"🧪 Running {test_mode} test suite")
 
         # Run tests
         success = run_tests(

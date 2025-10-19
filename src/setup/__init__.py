@@ -20,7 +20,10 @@ from .setup import (
     check_uv_availability,
     log_system_info,
     install_optional_dependencies,
-    create_project_structure
+    create_project_structure,
+    install_optional_package_group,
+    install_all_optional_packages,
+    setup_complete_environment
 )
 
 # Import validator functions
@@ -76,6 +79,9 @@ __all__ = [
     'log_system_info',
     'install_optional_dependencies',
     'create_project_structure',
+    'install_optional_package_group',
+    'install_all_optional_packages',
+    'setup_complete_environment',
     
     # Validator functions
     'validate_system',

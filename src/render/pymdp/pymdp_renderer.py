@@ -342,8 +342,9 @@ import sys
 from pathlib import Path
 import logging
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+# Add project root to path for imports (script is 5 levels deep: output/11_render_output/actinf_pomdp_agent/pymdp/script.py)
+project_root = Path(__file__).parent.parent.parent.parent.parent
+sys.path.insert(0, str(project_root))
 
 from src.execute.pymdp import execute_pymdp_simulation
 
@@ -357,33 +358,27 @@ def main():
     # GNN Specification (embedded)
     gnn_spec = {json.dumps(gnn_spec, indent=4)}
     
-    # Configuration parameters (can be modified)
-    num_episodes = 10
-    verbose_output = True
-    
     # Output directory
     output_dir = Path("output") / "pymdp_simulations" / "{model_name}"
     output_dir.mkdir(parents=True, exist_ok=True)
     
     logger.info("Starting PyMDP simulation for {model_display_name}")
     logger.info(f"Output directory: {{output_dir}}")
-    logger.info(f"Episodes: {{num_episodes}}")
     
     # Run simulation
     try:
         success, results = execute_pymdp_simulation(
             gnn_spec=gnn_spec,
             output_dir=output_dir,
-            num_episodes=num_episodes,
-            verbose=verbose_output
+            correlation_id="render_generated_script"
         )
         
         if success:
             logger.info("✓ Simulation completed successfully!")
             logger.info(f"Results summary:")
-            logger.info(f"  Episodes: {{results.get('total_episodes', 'N/A')}}")
-            logger.info(f"  Success Rate: {{results.get('success_rate', 0):.2%}}")
-            logger.info(f"  Output: {{results.get('output_directory', output_dir)}}")
+            logger.info(f"  Correlation ID: {{results.get('correlation_id', 'N/A')}}")
+            logger.info(f"  Success: {{results.get('success', False)}}")
+            logger.info(f"  Output: {{output_dir}}")
             return 0
         else:
             logger.error("✗ Simulation failed!")

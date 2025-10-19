@@ -6,14 +6,32 @@ This template provides the standardized pattern for all GNN pipeline steps (0-23
 It implements the thin orchestrator pattern that delegates core functionality to
 modular implementations while handling argument parsing, logging, and orchestration.
 
+Enhanced Visual Logging Features:
+  - Visual progress indicators and status icons
+  - Color-coded output (green=success, yellow=warning, red=error)
+  - Structured summary tables and completion banners
+  - Screen reader friendly output options
+  - Correlation ID tracking for debugging
+
 How to run:
   python src/N_step_name.py --target-dir input/gnn_files --output-dir output --verbose
   python src/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - [Module-specific outputs]
-  - Actionable error messages if dependencies or paths are missing
+  - Enhanced visual status indicators and progress tracking
+  - Structured summary tables with key metrics
+  - Actionable error messages with recovery suggestions
   - Clear logging of all resolved arguments and paths
+  - Correlation ID tracking for debugging and monitoring
+
+Visual Features Available:
+  - 🎨 Color-coded status indicators (green=success, yellow=warning, red=error)
+  - 📊 Progress bars and completion indicators
+  - 🔢 Step-by-step visual progress with correlation IDs
+  - 📋 Structured summary tables with key metrics
+  - ♿ Screen reader friendly output (emoji can be disabled)
+  - ⏱️ Performance timing and memory usage tracking
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality

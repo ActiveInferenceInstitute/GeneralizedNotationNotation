@@ -97,6 +97,16 @@ try:
         reset_progress_tracker,
         setup_step_logging
     )
+    from utils.visual_logging import (
+        VisualLogger,
+        VisualConfig,
+        print_pipeline_banner,
+        print_step_summary,
+        print_completion_summary,
+        format_step_header,
+        format_status_message,
+        create_visual_logger
+    )
     STRUCTURED_LOGGING_AVAILABLE = True
 except ImportError:
     STRUCTURED_LOGGING_AVAILABLE = False
@@ -114,7 +124,20 @@ def main():
             kwargs[key] = value
 
     args = PipelineArguments(**kwargs)
-    
+
+    # Setup enhanced visual logging
+    visual_config = VisualConfig(
+        enable_colors=True,
+        enable_progress_bars=True,
+        enable_emoji=True,
+        enable_animation=True,
+        show_timestamps=args.verbose,
+        show_correlation_ids=True,
+        compact_mode=False
+    )
+
+    visual_logger = create_visual_logger("pipeline", visual_config)
+
     # Setup logging
     if STRUCTURED_LOGGING_AVAILABLE:
         logger = setup_step_logging("pipeline", args.verbose, enable_structured=True)
@@ -122,8 +145,47 @@ def main():
         reset_progress_tracker()
     else:
         logger = setup_step_logging("pipeline", args.verbose)
-    
-    # Initialize pipeline execution summary (will be updated after steps_to_execute is defined)
+
+    # Set correlation ID for tracking
+    import uuid
+    correlation_id = str(uuid.uuid4())[:8]
+    visual_logger.set_correlation_id(correlation_id)
+
+    # Initialize steps_to_execute outside try block
+    steps_to_execute = []
+
+    # Define pipeline steps (outside try block for proper scope)
+    pipeline_steps = [
+        ("0_template.py", "Template initialization"),
+        ("1_setup.py", "Environment setup"),
+        ("2_tests.py", "Test suite execution"),
+        ("3_gnn.py", "GNN file processing"),
+        ("4_model_registry.py", "Model registry"),
+        ("5_type_checker.py", "Type checking"),
+        ("6_validation.py", "Validation"),
+        ("7_export.py", "Multi-format export"),
+        ("8_visualization.py", "Visualization"),
+        ("9_advanced_viz.py", "Advanced visualization"),
+        ("10_ontology.py", "Ontology processing"),
+        ("11_render.py", "Code rendering"),
+        ("12_execute.py", "Execution"),
+        ("13_llm.py", "LLM processing"),
+        ("14_ml_integration.py", "ML integration"),
+        ("15_audio.py", "Audio processing"),
+        ("16_analysis.py", "Analysis"),
+        ("17_integration.py", "Integration"),
+        ("18_security.py", "Security"),
+        ("19_research.py", "Research"),
+        ("20_website.py", "Website generation"),
+        ("21_mcp.py", "Model Context Protocol processing"),
+        ("22_gui.py", "GUI (Interactive GNN Constructor)"),
+        ("23_report.py", "Report generation")
+    ]
+
+    # Handle step filtering with automatic dependency resolution
+    steps_to_execute = pipeline_steps  # Initialize with all steps
+
+    # Initialize pipeline execution summary
     pipeline_summary = {
         "start_time": datetime.now().isoformat(),
         "arguments": args.to_dict(),
@@ -134,15 +196,24 @@ def main():
         "environment_info": get_environment_info(),
         "performance_summary": {
             "peak_memory_mb": 0.0,
-            "total_steps": 0,  # Will be updated after steps_to_execute is defined
+            "total_steps": len(steps_to_execute),
             "failed_steps": 0,
             "critical_failures": 0,
             "successful_steps": 0,
             "warnings": 0
         }
     }
-    
+
     try:
+        # Enhanced pipeline start with visual banner
+        print_pipeline_banner(
+            "🚀 GNN Processing Pipeline",
+            f"Starting execution with {len(steps_to_execute)} steps | Correlation ID: {correlation_id}"
+        )
+
+        # Visual progress indicator
+        visual_logger.print_progress(0, len(steps_to_execute), "Pipeline initialization")
+
         # Pipeline start logging
         if STRUCTURED_LOGGING_AVAILABLE:
             PipelineLogger.log_structured(
@@ -183,9 +254,9 @@ def main():
             ("22_gui.py", "GUI (Interactive GNN Constructor)"),
             ("23_report.py", "Report generation")
         ]
-        
+
         # Handle step filtering with automatic dependency resolution
-        steps_to_execute = pipeline_steps
+        steps_to_execute = pipeline_steps  # Initialize with all steps
         if args.only_steps:
             requested_step_numbers = parse_step_list(args.only_steps)
             
@@ -251,6 +322,9 @@ def main():
             step_start_time = time.time()
             step_start_datetime = datetime.now()
             
+            # Enhanced step start with visual indicators
+            visual_logger.print_step_header(actual_step_number, description, len(steps_to_execute))
+
             # Step start logging with progress tracking
             if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
                 progress_header = progress_tracker.start_step(actual_step_number, description)
@@ -262,7 +336,7 @@ def main():
                                       total_steps=len(steps_to_execute),
                                       script_name=script_name)
             else:
-                logger.info(f"Executing step {actual_step_number}: {description}")
+                logger.info(f"🔄 Executing step {actual_step_number}: {description}")
             
             # Execute the step
             step_result = execute_pipeline_step(script_name, args, logger)
@@ -328,9 +402,21 @@ def main():
             # Update total steps count
             pipeline_summary["performance_summary"]["total_steps"] = len(steps_to_execute)
             
+            # Enhanced step completion with visual indicators
+            status_for_logging = step_result["status"]
+
+            # Visual step completion summary
+            step_stats = {
+                "Status": status_for_logging,
+                "Duration": f"{step_duration:.2f}s",
+                "Memory": f"{step_result.get('memory_delta_mb', 0):.1f}MB",
+                "Exit Code": step_result.get("exit_code", 0)
+            }
+
+            print_step_summary(actual_step_number, description, status_for_logging, step_duration, step_stats)
+
             # Step completion logging with progress tracking
             if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
-                status_for_logging = step_result["status"]
                 completion_summary = progress_tracker.complete_step(actual_step_number, status_for_logging, step_duration)
                 logger.info(completion_summary)
 
@@ -342,11 +428,10 @@ def main():
                                         duration=step_duration,
                                             status=status_for_logging)
             else:
-                status_for_logging = step_result["status"]
                 if str(status_for_logging).startswith("SUCCESS"):
-                    logger.info(f"✅ Step {actual_step_number} completed with {status_for_logging} in {step_duration:.2f}s")
+                    logger.info(f"✅ Step {actual_step_number} completed successfully in {step_duration:.2f}s")
                 elif status_for_logging == "PARTIAL_SUCCESS":
-                    logger.warning(f"⚠️ Step {actual_step_number} completed with PARTIAL_SUCCESS in {step_duration:.2f}s")
+                    logger.warning(f"⚠️ Step {actual_step_number} completed with warnings in {step_duration:.2f}s")
                 else:
                     logger.error(f"❌ Step {actual_step_number} failed with status: {status_for_logging}")
         
@@ -413,6 +498,22 @@ def main():
             except Exception as fallback_error:
                 logger.error(f"Failed to save even minimal summary: {fallback_error}")
         
+        # Enhanced final completion summary with visual indicators
+        total_duration = pipeline_summary['total_duration_seconds']
+        perf_summary = pipeline_summary['performance_summary']
+
+        completion_stats = {
+            "Total Steps": len(pipeline_summary.get('steps', [])),
+            "Successful": perf_summary['successful_steps'],
+            "Failed": perf_summary['failed_steps'],
+            "Warnings": perf_summary['warnings'],
+            "Peak Memory": f"{perf_summary['peak_memory_mb']:.1f}MB",
+            "Duration": f"{total_duration:.1f}s"
+        }
+
+        success = pipeline_summary['overall_status'] == "SUCCESS"
+        print_completion_summary(success, total_duration, completion_stats)
+
         # Final status logging
         if STRUCTURED_LOGGING_AVAILABLE:
             # Log overall progress summary
@@ -423,11 +524,11 @@ def main():
             # Log detailed pipeline summary
             log_pipeline_summary(logger, pipeline_summary)
         else:
-            # Log final status
-            if pipeline_summary["overall_status"] == "SUCCESS":
-                log_step_success(logger, f"Pipeline completed successfully in {pipeline_summary['total_duration_seconds']:.2f}s")
+            # Log final status with visual indicators
+            if success:
+                logger.info(f"🎯 Pipeline completed successfully in {total_duration:.2f}s")
             else:
-                log_step_error(logger, f"Pipeline completed with status: {pipeline_summary['overall_status']}")
+                logger.info(f"⚠️ Pipeline completed with issues in {total_duration:.2f}s")
         
         return 0 if pipeline_summary["overall_status"] == "SUCCESS" else 1
         

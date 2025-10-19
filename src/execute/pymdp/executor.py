@@ -72,7 +72,7 @@ def execute_pymdp_simulation(
     correlation_id: str = ""
 ) -> Tuple[bool, Dict[str, Any]]:
     """
-    Execute PyMDP simulation.
+    Execute PyMDP simulation using simple tutorial-based approach.
     
     Args:
         gnn_spec: GNN specification dictionary
@@ -85,40 +85,23 @@ def execute_pymdp_simulation(
     try:
         logger.info(f"Executing PyMDP simulation (correlation_id: {correlation_id})")
         
-        # Create simulation instance
-        simulation = PyMDPSimulation(gnn_spec, output_dir, correlation_id)
+        # Use simple simulation based on official PyMDP tutorial
+        from .simple_simulation import run_simple_pymdp_simulation
         
-        # Run simulation
-        success, results = simulation.run()
+        success, results = run_simple_pymdp_simulation(gnn_spec, output_dir)
         
         if success:
-            # Save results
-            save_simulation_results(results, output_dir, correlation_id)
-            
-            # Generate summary
-            summary = generate_simulation_summary(results, correlation_id)
-            
-            # Create visualizations
-            visualizer = create_visualizer(results)
-            save_all_visualizations(visualizer, output_dir, correlation_id)
-            
-            logger.info(f"PyMDP simulation completed (correlation_id: {correlation_id})")
-            return True, {
-                "success": True,
-                "results": results,
-                "summary": summary,
-                "correlation_id": correlation_id
-            }
+            logger.info(f"PyMDP simulation completed successfully")
+            results["correlation_id"] = correlation_id
+            return True, results
         else:
-            logger.error(f"PyMDP simulation failed (correlation_id: {correlation_id})")
-            return False, {
-                "success": False,
-                "error": results.get("error", "Unknown error"),
-                "correlation_id": correlation_id
-            }
+            logger.error(f"PyMDP simulation failed: {results.get('error', 'Unknown')}")
+            results["correlation_id"] = correlation_id
+            return False, results
             
     except Exception as e:
         logger.error(f"PyMDP simulation execution failed: {e}")
+        import traceback
         return False, {
             "success": False,
             "error": str(e),

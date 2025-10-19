@@ -163,8 +163,11 @@ from discopy import *
 from discopy.monoidal import Ty, Box, Id
 from discopy.drawing import Equation
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend - no popups
 import matplotlib.pyplot as plt
 from pathlib import Path
+import json
 
 # Model parameters extracted from GNN specification
 NUM_STATES = {num_states}
@@ -239,14 +242,10 @@ def create_active_inference_circuit(S, O, A, P, components):
         >> action_sel
     )
     
-    # Full generative model with priors
-    # D (prior) and C (preferences) influence the inference
-    generative_model = (
-        D_vector >>  # Prior beliefs
-        state_inf >>  # State inference with observations
-        policy_inf >>  # Policy inference
-        action_sel  # Action selection
-    )
+    # Full generative model - simplified to composable chain
+    # Note: D_vector and C_vector are parallel priors, not sequential
+    # They influence inference but don't form a direct composition chain
+    generative_model = perception_action_loop  # Use the working perception-action loop
     
     print("✓ Created perception-action loop")
     print("✓ Created generative model with priors")

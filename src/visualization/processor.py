@@ -255,7 +255,8 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
             parsed_data["variables"] = parsed_data["variables"][:100]
             var_names = {var["name"] for var in parsed_data["variables"]}
             parsed_data["connections"] = [conn for conn in parsed_data.get("connections", [])
-                                        if conn["source"] in var_names and conn["target"] in var_names]
+                                        if (any(source in var_names for source in conn.get("source_variables", [])) and
+                                            any(target in var_names for target in conn.get("target_variables", [])))]
             
             # Limit matrices
             if parsed_data.get("matrices") and len(parsed_data["matrices"]) > 5:
@@ -385,14 +386,27 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                                 "name": var_name,
                                 "type": var_type
                             })
-                elif '->' in line or '→' in line:
-                    # Connection definition
-                    conn_parts = line.split('->' if '->' in line else '→', 1)
+                elif ('->' in line or '→' in line or '>' in line or ('-' in line and current_section == 'Connections')):
+                    # Connection definition (supports ->, →, > formats, and - in Connections section)
+                    if '->' in line:
+                        conn_parts = line.split('->', 1)
+                    elif '→' in line:
+                        conn_parts = line.split('→', 1)
+                    elif '>' in line:
+                        conn_parts = line.split('>', 1)
+                    else:
+                        conn_parts = line.split('-', 1)
+
                     if len(conn_parts) == 2:
-                        parsed["connections"].append({
-                            "source": conn_parts[0].strip(),
-                            "target": conn_parts[1].strip()
-                        })
+                        source = conn_parts[0].strip()
+                        target = conn_parts[1].strip()
+                        # Only add if both source and target are non-empty and look like variable names
+                        if source and target and (source.replace('_', '').replace('-', '').isalnum() or source in ['s', 'o', 'π', 'u']) and \
+                           (target.replace('_', '').replace('-', '').isalnum() or target in ['s', 'o', 'π', 'u']):
+                            parsed["connections"].append({
+                                "source": source,
+                                "target": target
+                            })
                 elif ('{' in line and '}' in line) or ('[' in line and ']' in line):
                     # Potential matrix definition (supports both tuple and bracket formats)
                     try:
@@ -500,24 +514,52 @@ def parse_matrix_data(matrix_str: str) -> np.ndarray:
 
 def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
     """
-    Generate matrix visualizations.
-    
+    Generate matrix visualizations for POMDP models.
+
     Args:
         parsed_data: Parsed GNN data
         output_dir: Output directory
         model_name: Name of the model
-        
+
     Returns:
         List of generated visualization file paths
     """
     visualizations = []
-    
+
     if not MATPLOTLIB_AVAILABLE:
         return visualizations
-    
+
     try:
-        # Generate heatmaps for matrices with size optimization
+        # Extract matrices from parsed data or raw sections
         matrices = parsed_data.get("matrices", [])
+
+        # If no matrices found, try to extract from raw sections (for POMDP models)
+        if not matrices and "raw_sections" in parsed_data:
+            raw_sections = parsed_data["raw_sections"]
+            if "InitialParameterization" in raw_sections:
+                init_params = raw_sections["InitialParameterization"]
+
+                # Extract matrices from initial parameterization
+                matrix_patterns = {
+                    'A': 'A=',
+                    'B': 'B=',
+                    'C': 'C=',
+                    'D': 'D=',
+                    'E': 'E='
+                }
+
+                for matrix_name, pattern in matrix_patterns.items():
+                    if matrix_name in init_params:
+                        matrix_str = init_params[matrix_name]
+                        matrix_data = parse_matrix_data(matrix_str)
+                        if matrix_data is not None:
+                            matrices.append({
+                                "data": matrix_data,
+                                "definition": f"{matrix_name}={matrix_str}",
+                                "name": matrix_name
+                            })
+
+        # Generate heatmaps for matrices with size optimization
         for i, matrix_info in enumerate(matrices):
             matrix_data = matrix_info["data"]
             
@@ -620,10 +662,10 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
 
 def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
     """
-    Generate network visualizations.
+    Generate network visualizations for POMDP models.
 
     Args:
-        parsed_data: Parsed GNN data (supports both 'Variables'/'Edges' and 'variables'/'connections' keys)
+        parsed_data: Parsed GNN data
         output_dir: Output directory
         model_name: Name of the model
 
@@ -639,144 +681,415 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
         # Create network graph
         G = nx.DiGraph()
 
-        # Extract variables and connections from either format
-        variables = parsed_data.get("Variables", {}) or parsed_data.get("variables", {})
-        connections = parsed_data.get("Edges", []) or parsed_data.get("connections", [])
+        # Extract variables from parsed data
+        variables = parsed_data.get("variables", [])
 
-        # Ensure variables is a dictionary
-        if isinstance(variables, list):
-            variables = {var_info.get("name", f"var_{i}"): var_info for i, var_info in enumerate(variables)}
+        # Ensure variables is a list of dictionaries
+        if not isinstance(variables, list):
+            variables = []
 
-        # Add nodes (variables)
-        for var_name, var_info in variables.items():
-            var_type = 'unknown'
-            if var_info:
-                if isinstance(var_info, dict):
-                    var_type = var_info.get('type', 'unknown')
-                elif isinstance(var_info, str):
-                    var_type = var_info
-            G.add_node(var_name, type=var_type)
+        # Extract connections from parsed data
+        connections = parsed_data.get("connections", [])
 
-        # Add edges (connections)
-        for conn in connections:
-            if isinstance(conn, dict) and 'source' in conn and 'target' in conn:
-                source = conn["source"]
-                target = conn["target"]
-                if source and target:  # Ensure both source and target are not empty
-                    G.add_edge(source, target)
+        # Ensure connections is a list
+        if not isinstance(connections, list):
+            connections = []
+
+        # Add nodes (variables) with proper type information
+        for var_info in variables:
+            if isinstance(var_info, dict):
+                var_name = var_info.get("name", "unknown")
+                var_type = var_info.get("var_type", "unknown")
+                dimensions = var_info.get("dimensions", [])
+                description = var_info.get("description", "")
+
+                # Create comprehensive node attributes
+                node_attrs = {
+                    'type': var_type,
+                    'dimensions': dimensions,
+                    'description': description,
+                    'size': max(1, min(10, len(dimensions) * 2)),  # Node size based on dimensions
+                }
+                G.add_node(var_name, **node_attrs)
+
+        # Add edges (connections) - handle both old and new connection formats
+        for conn_info in connections:
+            if isinstance(conn_info, dict):
+                # Normalize connection format to handle both old and new formats
+                normalized_conn = _normalize_connection_format(conn_info)
+                source_vars = normalized_conn.get("source_variables", [])
+                target_vars = normalized_conn.get("target_variables", [])
+
+                # Add edges between all source-target pairs
+                for source_var in source_vars:
+                    for target_var in target_vars:
+                        if source_var and target_var and source_var != target_var:
+                            # Determine connection type based on variable types
+                            source_type = None
+                            target_type = None
+
+                            # Find variable types
+                            for var in variables:
+                                if isinstance(var, dict) and var.get("name") == source_var:
+                                    source_type = var.get("var_type", "unknown")
+                                if isinstance(var, dict) and var.get("name") == target_var:
+                                    target_type = var.get("var_type", "unknown")
+
+                            # Determine connection type based on POMDP semantics
+                            conn_type = _determine_connection_type(source_var, target_var, source_type, target_type)
+
+                            # Add edge with comprehensive metadata
+                            edge_attrs = {
+                                'connection_type': conn_type,
+                                'source_location': normalized_conn.get("source_location"),
+                                'metadata': normalized_conn.get("metadata", {}),
+                                'source_type': source_type,
+                                'target_type': target_type,
+                                'weight': 1.0,  # Default weight
+                                'style': _get_edge_style(conn_type)
+                            }
+                            G.add_edge(source_var, target_var, **edge_attrs)
 
         if len(G.nodes()) > 0:
             # Create network plot
-            plt.figure(figsize=(12, 10))
+            plt.figure(figsize=(14, 12))
 
             # Use spring layout with better parameters for readability
             pos = nx.spring_layout(G, k=2, iterations=100, seed=42)
 
-            # Color nodes by type
-            node_types = nx.get_node_attributes(G, 'type')
-            unique_types = set(node_types.values())
-            color_map = plt.cm.get_cmap('Set3')
-            node_colors = [color_map(i / len(unique_types)) if node_types[node] != 'unknown' else 'lightgray'
-                          for node in G.nodes() for i, t in enumerate(unique_types) if node_types[node] == t]
+            # Get node attributes for coloring and sizing
+            node_sizes = [G.nodes[node].get('size', 5) * 100 for node in G.nodes()]
+            node_types = [G.nodes[node].get('type', 'unknown') for node in G.nodes()]
 
-            # Draw nodes with size based on degree
-            node_sizes = [300 + (G.degree(node) * 100) for node in G.nodes()]
+            # Define color mapping for different variable types
+            type_colors = {
+                'hidden_state': 'skyblue',
+                'observation': 'lightgreen',
+                'policy': 'lightcoral',
+                'action': 'gold',
+                'prior_vector': 'plum',
+                'likelihood_matrix': 'orange',
+                'transition_matrix': 'pink',
+                'preference_vector': 'lightblue',
+                'unknown': 'gray'
+            }
 
-            nx.draw_networkx_nodes(G, pos,
-                                 node_color=node_colors,
-                                 node_size=node_sizes,
-                                 alpha=0.8,
-                                 edgecolors='black')
+            node_colors = [type_colors.get(node_type, 'gray') for node_type in node_types]
 
-            # Draw edges with arrows
-            nx.draw_networkx_edges(G, pos,
-                                 edge_color='gray',
-                                 arrows=True,
-                                 arrowsize=20,
-                                 alpha=0.6,
-                                 arrowstyle='->')
+            # Draw the network with connection-type-specific styling
+            # Group edges by connection type for different styling
+            edge_groups = {}
+            for edge in G.edges(data=True):
+                conn_type = edge[2].get('connection_type', 'generic_causal')
+                if conn_type not in edge_groups:
+                    edge_groups[conn_type] = []
+                edge_groups[conn_type].append((edge[0], edge[1]))
 
-            # Draw labels with better positioning
-            label_pos = {node: (x, y + 0.05) for node, (x, y) in pos.items()}
-            nx.draw_networkx_labels(G, label_pos, font_size=9, font_weight='bold')
+            # Draw edges by type
+            for conn_type, edges in edge_groups.items():
+                style = _get_edge_style(conn_type)
+                edge_list = [(u, v) for u, v in edges]
 
-            plt.title(f"{model_name} - Network Graph\n({len(G.nodes())} nodes, {len(G.edges())} edges)",
-                     fontsize=14, fontweight='bold')
+                if edge_list:
+                    nx.draw_networkx_edges(G, pos,
+                                         edgelist=edge_list,
+                                         edge_color=style['color'],
+                                         width=style['width'],
+                                         alpha=style['alpha'],
+                                         arrows=True,
+                                         arrowsize=20,
+                                         style=style['style'])
+
+            # Draw nodes
+            nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors, alpha=0.8)
+            nx.draw_networkx_labels(G, pos, font_size=10, font_weight='bold')
+
+            # Add legend
+            legend_elements = [plt.Rectangle((0,0),1,1, fc=color, label=var_type)
+                              for var_type, color in type_colors.items()]
+            plt.legend(handles=legend_elements, loc='upper right', bbox_to_anchor=(1.0, 1.0))
+
+            plt.title(f'Bayesian Graphical Model: {model_name}\nPOMDP Active Inference Network', fontsize=16, fontweight='bold')
             plt.axis('off')
             plt.tight_layout()
 
-            plot_file = output_dir / f"{model_name}_network_graph.png"
-            _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
+            # Save network visualization
+            network_path = output_dir / f"{model_name}_network_graph.png"
+            plt.savefig(network_path, dpi=300, bbox_inches='tight')
             plt.close()
+            visualizations.append(str(network_path))
 
-            visualizations.append(str(plot_file))
+            # Generate network statistics
+            stats = _generate_network_statistics(variables, connections)
+            stats_path = output_dir / f"{model_name}_network_stats.json"
+            with open(stats_path, 'w') as f:
+                json.dump(stats, f, indent=2)
+            visualizations.append(str(stats_path))
 
-            # Generate additional network analysis visualizations
-            try:
-                # Generate degree distribution
-                degrees = [G.degree(node) for node in G.nodes()]
-                if degrees and max(degrees) > 0:
-                    plt.figure(figsize=(10, 6))
-                    plt.hist(degrees, bins=min(20, max(degrees)), alpha=0.7, edgecolor='black')
-                    plt.title(f"{model_name} - Node Degree Distribution")
-                    plt.xlabel("Degree")
-                    plt.ylabel("Frequency")
-                    plt.grid(True, alpha=0.3)
-
-                degree_file = output_dir / f"{model_name}_degree_distribution.png"
-                _save_plot_safely(degree_file, dpi=300, bbox_inches='tight')
-                plt.close()
-                visualizations.append(str(degree_file))
-
-                # Generate network statistics
-                stats = {
-                    "nodes": len(G.nodes()),
-                    "edges": len(G.edges()),
-                    "density": nx.density(G),
-                    "avg_degree": sum(degrees) / len(degrees) if degrees else 0,
-                    "max_degree": max(degrees) if degrees else 0,
-                    "node_types": dict(node_types)
-                }
-
-                stats_file = output_dir / f"{model_name}_network_stats.json"
-                with open(stats_file, 'w') as f:
-                    json.dump(stats, f, indent=2)
-                visualizations.append(str(stats_file))
-
-            except Exception as e:
-                print(f"Error generating additional network analysis: {e}")
-
-            # Generate interactive network visualization if plotly is available
-            if PLOTLY_AVAILABLE and go and px:
+            # Generate interactive network if plotly available
+            if 'plotly' in globals() and plotly:
                 try:
-                    interactive_file = output_dir / f"{model_name}_network_interactive.html"
-                    if _generate_interactive_network(G, interactive_file):
-                        visualizations.append(str(interactive_file))
+                    interactive_path = _generate_interactive_network(G, output_dir / f"{model_name}_network_interactive.html")
+                    if interactive_path:
+                        visualizations.append(str(interactive_path))
                 except Exception as e:
-                    print(f"Error generating interactive network: {e}")
+                    print(f"Failed to generate interactive network: {e}")
+
+        else:
+            print(f"Warning: No valid nodes found for network visualization of {model_name}")
 
     except Exception as e:
-        print(f"Error generating network visualizations: {e}")
-
-    # Generate 3D surface plot for matrices (if applicable)
-    matrices_list = parsed_data.get("matrices", [])
-    if matrices_list:
-        try:
-            for matrix_info in matrices_list:
-                matrix_data = matrix_info.get("data")
-                matrix_def = matrix_info.get("definition", "")
-                if matrix_data is not None and matrix_data.ndim == 2 and matrix_data.shape[0] > 3 and matrix_data.shape[1] > 3:
-                    # Extract matrix name from definition
-                    matrix_name = "matrix"
-                    if '=' in matrix_def:
-                        matrix_name = matrix_def.split('=')[0].strip()
-                    surface_file = output_dir / f"{model_name}_{matrix_name}_surface.png"
-                    if _generate_3d_surface_plot(matrix_data, matrix_name, surface_file):
-                        visualizations.append(str(surface_file))
-        except Exception as e:
-            print(f"Error generating 3D surface plots: {e}")
+        print(f"Error generating network visualizations for {model_name}: {e}")
+        import traceback
+        traceback.print_exc()
 
     return visualizations
+
+def _normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
+    """Normalize connection format to handle both old and new formats."""
+    if "source_variables" in conn_info and "target_variables" in conn_info:
+        # New format with arrays
+        return conn_info
+    elif "source" in conn_info and "target" in conn_info:
+        # Old format with single values
+        return {
+            "source_variables": [conn_info["source"]],
+            "target_variables": [conn_info["target"]],
+            **{k: v for k, v in conn_info.items() if k not in ["source", "target"]}
+        }
+    else:
+        # Unknown format - return as-is
+        return conn_info
+
+
+def _determine_connection_type(source_var: str, target_var: str, source_type: str = None, target_type: str = None) -> str:
+    """Determine the semantic type of connection between variables."""
+    # POMDP-specific connection types
+    if source_type and target_type:
+        # State to state (with action)
+        if source_type == "hidden_state" and target_type == "hidden_state":
+            return "state_transition"
+        # State to observation
+        elif source_type == "hidden_state" and target_type == "observation":
+            return "observation_generation"
+        # State to transition matrix
+        elif source_type == "hidden_state" and "transition" in target_type:
+            return "state_action_influence"
+        # Action to state
+        elif source_type == "action" and target_type == "hidden_state":
+            return "action_effect"
+        # Policy to action
+        elif source_type == "policy" and target_type == "action":
+            return "policy_selection"
+        # Prior to state
+        elif source_type == "prior_vector" and target_type == "hidden_state":
+            return "prior_influence"
+        # Likelihood matrix connections
+        elif source_type == "hidden_state" and "likelihood" in target_type:
+            return "likelihood_influence"
+        # Free energy connections
+        elif "free_energy" in source_type or "free_energy" in target_type:
+            return "energy_flow"
+
+    # Generic semantic types based on variable names
+    if source_var == "s" and target_var in ["A", "o"]:
+        return "state_observation"
+    elif source_var in ["s", "s_prime"] and target_var == "B":
+        return "state_transition_matrix"
+    elif source_var == "C" and target_var == "G":
+        return "preference_energy"
+    elif source_var == "E" and target_var == "π":
+        return "habit_policy"
+    elif source_var == "π" and target_var == "u":
+        return "policy_action"
+
+    return "generic_causal"
+
+
+def _get_edge_style(connection_type: str) -> Dict[str, Any]:
+    """Get visual styling for different connection types."""
+    style_map = {
+        "state_transition": {"color": "blue", "width": 3, "alpha": 0.8, "style": "solid"},
+        "observation_generation": {"color": "green", "width": 2, "alpha": 0.7, "style": "dashed"},
+        "state_action_influence": {"color": "orange", "width": 2, "alpha": 0.7, "style": "dotted"},
+        "action_effect": {"color": "red", "width": 3, "alpha": 0.8, "style": "solid"},
+        "policy_selection": {"color": "purple", "width": 2, "alpha": 0.7, "style": "solid"},
+        "prior_influence": {"color": "cyan", "width": 2, "alpha": 0.6, "style": "dashed"},
+        "likelihood_influence": {"color": "magenta", "width": 2, "alpha": 0.6, "style": "dotted"},
+        "energy_flow": {"color": "yellow", "width": 1, "alpha": 0.5, "style": "dashed"},
+        "preference_energy": {"color": "lime", "width": 2, "alpha": 0.7, "style": "solid"},
+        "habit_policy": {"color": "pink", "width": 2, "alpha": 0.7, "style": "solid"},
+        "generic_causal": {"color": "gray", "width": 1, "alpha": 0.5, "style": "solid"}
+    }
+
+    return style_map.get(connection_type, style_map["generic_causal"])
+
+def _generate_network_statistics(variables: list, connections: list) -> Dict[str, Any]:
+    """Generate comprehensive network statistics."""
+    stats = {
+        "total_variables": len(variables),
+        "total_connections": len(connections),
+        "variable_types": {},
+        "connection_types": {},
+        "network_properties": {}
+    }
+
+    # Count variable types
+    for var_info in variables:
+        if isinstance(var_info, dict):
+            var_type = var_info.get("var_type", "unknown")
+            stats["variable_types"][var_type] = stats["variable_types"].get(var_type, 0) + 1
+
+    # Count connection types (based on variable relationships)
+    for conn_info in connections:
+        if isinstance(conn_info, dict):
+            # Normalize connection format
+            normalized_conn = _normalize_connection_format(conn_info)
+            source_vars = normalized_conn.get("source_variables", [])
+            target_vars = normalized_conn.get("target_variables", [])
+
+            for source_var in source_vars:
+                for target_var in target_vars:
+                    if source_var != target_var:
+                        # Determine connection type based on variable types
+                        conn_type = f"{source_var}->{target_var}"
+                        stats["connection_types"][conn_type] = stats["connection_types"].get(conn_type, 0) + 1
+
+    # Network properties (if networkx available)
+    if NETWORKX_AVAILABLE:
+        try:
+            # Create a simple graph for network analysis
+            simple_G = nx.DiGraph()
+            for conn_info in connections:
+                # Normalize connection format for graph creation
+                normalized_conn = _normalize_connection_format(conn_info)
+                source_vars = normalized_conn.get("source_variables", [])
+                target_vars = normalized_conn.get("target_variables", [])
+                for source_var in source_vars:
+                    for target_var in target_vars:
+                        if source_var != target_var:
+                            simple_G.add_edge(source_var, target_var)
+
+            if len(simple_G.nodes()) > 0:
+                stats["network_properties"] = {
+                    "num_nodes": simple_G.number_of_nodes(),
+                    "num_edges": simple_G.number_of_edges(),
+                    "density": nx.density(simple_G),
+                    "is_strongly_connected": nx.is_strongly_connected(simple_G) if len(simple_G.nodes()) > 1 else True,
+                    "is_weakly_connected": nx.is_weakly_connected(simple_G) if len(simple_G.nodes()) > 1 else True,
+                    "average_clustering": nx.average_clustering(simple_G)
+                }
+        except Exception as e:
+            print(f"Error calculating network properties: {e}")
+
+    return stats
+
+def _generate_interactive_network(G, output_path: Path) -> bool:
+    """Generate interactive network visualization using plotly."""
+    try:
+        import plotly.graph_objects as go
+        from plotly.subplots import make_subplots
+
+        # Extract node positions and attributes
+        pos = nx.spring_layout(G, k=2, iterations=100, seed=42)
+
+        # Create edge traces
+        edge_traces = []
+        for edge in G.edges():
+            x0, y0 = pos[edge[0]]
+            x1, y1 = pos[edge[1]]
+
+            edge_trace = go.Scatter(
+                x=[x0, x1, None],
+                y=[y0, y1, None],
+                line=dict(width=1, color='gray'),
+                hoverinfo='none',
+                mode='lines',
+                showlegend=False
+            )
+            edge_traces.append(edge_trace)
+
+        # Create node traces
+        node_x = []
+        node_y = []
+        node_colors = []
+        node_sizes = []
+        node_text = []
+
+        type_colors = {
+            'hidden_state': 'skyblue',
+            'observation': 'lightgreen',
+            'policy': 'lightcoral',
+            'action': 'gold',
+            'prior_vector': 'plum',
+            'likelihood_matrix': 'orange',
+            'transition_matrix': 'pink',
+            'preference_vector': 'lightblue',
+            'unknown': 'gray'
+        }
+
+        for node in G.nodes():
+            x, y = pos[node]
+            node_x.append(x)
+            node_y.append(y)
+
+            node_type = G.nodes[node].get('type', 'unknown')
+            node_colors.append(type_colors.get(node_type, 'gray'))
+
+            node_size = G.nodes[node].get('size', 5) * 10
+            node_sizes.append(node_size)
+
+            # Create hover text
+            hover_text = f"<b>{node}</b><br>Type: {node_type}"
+            if 'dimensions' in G.nodes[node]:
+                hover_text += f"<br>Dimensions: {G.nodes[node]['dimensions']}"
+            if 'description' in G.nodes[node]:
+                hover_text += f"<br>Description: {G.nodes[node]['description'][:100]}..."
+            node_text.append(hover_text)
+
+        node_trace = go.Scatter(
+            x=node_x, y=node_y,
+            mode='markers+text',
+            hoverinfo='text',
+            text=list(G.nodes()),
+            textposition="middle center",
+            textfont=dict(size=10, color='white'),
+            marker=dict(
+                size=node_sizes,
+                color=node_colors,
+                line=dict(width=2, color='black'),
+                sizemode='diameter'
+            ),
+            hovertext=node_text,
+            name='Variables'
+        )
+
+        # Create figure
+        fig = go.Figure(data=edge_traces + [node_trace],
+                       layout=go.Layout(
+                           title=f'Interactive Bayesian Graphical Model: {output_path.stem}',
+                           titlefont_size=16,
+                           showlegend=True,
+                           hovermode='closest',
+                           margin=dict(b=20,l=5,r=5,t=40),
+                           annotations=[dict(
+                               text="Variable Types",
+                               showarrow=False,
+                               xref="paper", yref="paper",
+                               x=0.005, y=0.995,
+                               xanchor='left', yanchor='top'
+                           )],
+                           xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                           yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
+                       ))
+
+        # Save interactive HTML
+        fig.write_html(str(output_path))
+        return True
+
+    except Exception as e:
+        print(f"Error generating interactive network: {e}")
+        return False
 
 def _generate_3d_surface_plot(matrix: np.ndarray, matrix_name: str, output_path: Path) -> bool:
     """Generate a 3D surface plot for a matrix."""

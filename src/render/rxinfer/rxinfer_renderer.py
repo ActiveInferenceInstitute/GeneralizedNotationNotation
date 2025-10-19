@@ -57,7 +57,7 @@ class RxInferRenderer:
             gnn_spec = self._parse_gnn_content(content, gnn_file_path.stem)
             
             # Generate RxInfer.jl simulation code
-            rxinfer_code = self._generate_rxinfer_simulation_code(gnn_spec, gnn_file_path.stem)
+            rxinfer_code = self._generate_rxinfer_simulation_code_simple(gnn_spec, gnn_file_path.stem)
             
             # Write output file
             output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -102,6 +102,30 @@ class RxInferRenderer:
                     gnn_spec['model_parameters'][key] = value
         
         return gnn_spec
+    
+    def _generate_rxinfer_simulation_code_simple(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
+        """Generate simplified RxInfer code that actually works with modern API."""
+        from datetime import datetime
+        
+        # Get model parameters
+        model_display_name = gnn_spec.get('model_name', model_name)
+        num_states = gnn_spec.get('model_parameters', {}).get('num_hidden_states', 3)
+        num_observations = gnn_spec.get('model_parameters', {}).get('num_obs', 3)
+        
+        # Read the minimal working template (no deprecated APIs)
+        template_path = Path(__file__).parent / 'minimal_template.jl'
+        with open(template_path, 'r') as f:
+            template = f.read()
+        
+        # Fill in the template
+        code = template.format(
+            model_name=model_display_name,
+            timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            num_states=num_states,
+            num_observations=num_observations
+        )
+        
+        return code
     
     def _generate_rxinfer_simulation_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
         """
@@ -163,7 +187,7 @@ println("🔬 RxInfer.jl Active Inference Simulation")
 println("📊 State Space: $NUM_STATES states, $NUM_OBSERVATIONS observations, $NUM_ACTIONS actions")
 
 # Define the Active Inference model using GraphPPL
-@model function active_inference_model(n_steps, observations)
+@model function active_inference_model(n_steps)
     
     # Hyperparameters for priors
     α_A = ones(NUM_OBSERVATIONS, NUM_STATES)  # Prior for A matrix
@@ -181,6 +205,9 @@ println("📊 State Space: $NUM_STATES states, $NUM_OBSERVATIONS observations, $
     
     # State sequence - use randomvar() for proper RxInfer variable creation
     s = randomvar(n_steps)
+    
+    # Observations - declare as data variables
+    observations = datavar(Vector{{Int}}, n_steps)
     
     # Initial state
     s[1] ~ Categorical(D)
@@ -222,19 +249,17 @@ function run_active_inference_simulation()
     observations_data = generate_observations(TIME_STEPS)
     println("📋 Generated observation sequence: $observations_data")
     
-    # Create data for inference
+    # Create data for inference (observations provided here, not in model)
     data = (observations = observations_data,)
     
     # Perform inference
     println("\\n🧠 Running variational inference...")
     result = infer(
-        model = active_inference_model(n_steps=TIME_STEPS, observations=observations_data),
+        model = active_inference_model(n_steps=TIME_STEPS),
         data = data,
-        options = (
-            iterations = 50,
-            showprogress = true,
-            free_energy = true
-        )
+        iterations = 50,
+        showprogress = true,
+        free_energy = true
     )
     
     # Extract results
@@ -382,9 +407,9 @@ def render_gnn_to_rxinfer(
         # Get model name safely
         model_name = gnn_spec.get('name') or gnn_spec.get('model_name', 'GNN_Model')
         
-        # Generate simulation code directly from spec
+        # Generate simulation code directly from spec (using simplified working version)
         try:
-            rxinfer_code = renderer._generate_rxinfer_simulation_code(gnn_spec, model_name)
+            rxinfer_code = renderer._generate_rxinfer_simulation_code_simple(gnn_spec, model_name)
         except Exception as gen_error:
             logger.error(f"Code generation failed: {gen_error}")
             return False, f"Error generating RxInfer.jl code: {gen_error}", []
