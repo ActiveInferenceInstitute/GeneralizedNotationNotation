@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Navigation Hub | **Audience**: All Users | **Complexity**: Beginner  
-> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Last Updated: October 2025 | **Status**: Production-Ready  
 > **Cross-References**: [Setup Guide](SETUP.md) | [Contributing](../CONTRIBUTING.md)
 
 Welcome to the comprehensive documentation for Generalized Notation Notation (GNN), a standardized text-based language for expressing Active Inference generative models.
@@ -355,7 +355,7 @@ recent_additions: [poe-world_integration, enhanced_cross_references, improved_re
 
 ---
 
-**Last Updated**: July 2025  
+**Last Updated: October 2025  
 **Documentation Version**: Compatible with GNN v1.x  
 **Status**: Comprehensive and Production-Ready  
 **Cross-Reference Network**: ✅ [Fully Integrated](CROSS_REFERENCE_INDEX.md) 

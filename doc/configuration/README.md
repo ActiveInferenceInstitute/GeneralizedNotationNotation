@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Configuration Guide | **Audience**: Developers & System Administrators | **Complexity**: Intermediate  
-> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Last Updated: October 2025 | **Status**: Production-Ready  
 > **Cross-References**: [Pipeline Architecture](../pipeline/README.md) | [Deployment Guide](../deployment/README.md)
 
 ## Overview

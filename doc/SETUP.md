@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**
 > **Type**: Setup Guide | **Audience**: All Users | **Complexity**: Beginner
-> **Last Updated**: October 1, 2025 | **Status**: Production-Ready
+> **Last Updated: October 2025 | **Status**: Production-Ready
 > **Cross-References**: [Quickstart Guide](quickstart.md) | [Main Documentation](../README.md) | [Environment Template](../.env) | [Troubleshooting](troubleshooting/README.md)
 
 This document provides comprehensive instructions for setting up the GNN (Generalized Notation Notation) Processing Pipeline environment, including installation steps, environment variables, and detailed information about dependencies.
@@ -360,7 +360,7 @@ If you encounter issues during setup:
 
 ---
 
-**Last Updated**: June 2025  
+**Last Updated: October 2025  
 **Setup Guide Version**: 2.0  
 **Compatible GNN Versions**: v1.1.0+  
 **Next Review**: September 2025 

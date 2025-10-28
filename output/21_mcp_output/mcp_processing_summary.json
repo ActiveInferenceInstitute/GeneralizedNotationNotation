@@ -1,9 +1,0 @@
-{
-  "timestamp": "2025-10-19T13:29:22.123132",
-  "target_dir": "input/gnn_files",
-  "output_dir": "output/21_mcp_output",
-  "processing_status": "completed",
-  "mcp_version": "2.0.0",
-  "tools_registered": 0,
-  "message": "MCP module ready for tool registration and execution"
-}

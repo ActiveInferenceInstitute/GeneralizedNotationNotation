@@ -18,6 +18,7 @@
 3. Produce advanced statistical plots
 4. Generate interactive HTML visualizations
 5. Provide multi-dimensional data exploration
+6. Generate professional D2 (Declarative Diagramming) diagrams
 
 ### Key Capabilities
 - 3D network topology visualization
@@ -25,6 +26,7 @@
 - Time-series animation
 - Multi-panel comparative analysis
 - HTML-based interactive reports
+- **D2 diagram generation for GNN models and pipeline architecture**
 
 ---
 
@@ -99,6 +101,17 @@
 - Multi-view synchronized displays
 - HTML-based interactive reports
 
+### D2 Diagram Generation (NEW)
+- **GNN Model Structure**: Visualize state space components, connections, and Active Inference ontology
+- **POMDP Diagrams**: Generative model components (A, B, C, D, E matrices) and inference processes
+- **Pipeline Architecture**: Complete 24-step pipeline flow with data dependencies
+- **Framework Integration**: Mapping of GNN models to PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX
+- **Active Inference Concepts**: Free Energy Principle, perception-action loops, belief updating
+- **Multiple Output Formats**: SVG, PNG, PDF with professional themes
+- **Layout Engines**: Dagre (fast), ELK (quality), TALA (advanced)
+
+See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
+
 ---
 
 ## Dependencies
@@ -111,6 +124,7 @@
 - `plotly` - Interactive visualizations (fallback: static plots)
 - `seaborn` - Enhanced statistical plots (fallback: matplotlib)
 - `bokeh` - Interactive dashboards (fallback: HTML report)
+- **`d2` CLI** - D2 diagram compilation (fallback: skip D2 diagrams, log warning)
 
 ---
 
@@ -140,6 +154,29 @@ success = process_advanced_viz_standardized_impl(
 )
 ```
 
+### D2 Diagram Generation (NEW)
+```python
+# Generate only D2 diagrams
+success = process_advanced_viz_standardized_impl(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/9_advanced_viz_output"),
+    logger=logger,
+    viz_type="d2"  # or "diagrams" or "pipeline"
+)
+
+# Programmatic D2 usage
+from advanced_visualization.d2_visualizer import D2Visualizer
+
+visualizer = D2Visualizer(logger=logger)
+if visualizer.d2_available:
+    # Generate all diagrams for a model
+    results = visualizer.generate_all_diagrams_for_model(
+        model_data,
+        output_dir,
+        formats=["svg", "png"]
+    )
+```
+
 ---
 
 ## Output Specification
@@ -149,6 +186,8 @@ success = process_advanced_viz_standardized_impl(
 - `{model}_dashboard.html` - Interactive dashboard
 - `{model}_statistical_analysis.png` - Statistical plots
 - `{model}_visualization_data.json` - Underlying data
+- `d2_diagrams/{model}/` - **D2 diagram files (.d2, .svg, .png)**
+- `d2_diagrams/pipeline/` - **Pipeline architecture D2 diagrams**
 - `advanced_viz_summary.json` - Processing summary
 
 ### Output Directory Structure
@@ -158,6 +197,21 @@ output/9_advanced_viz_output/
 ├── model_name_dashboard.html
 ├── model_name_statistical_analysis.png
 ├── model_name_visualization_data.json
+├── d2_diagrams/
+│   ├── model_name/
+│   │   ├── model_name_structure.d2
+│   │   ├── model_name_structure.svg
+│   │   ├── model_name_structure.png
+│   │   ├── model_name_pomdp.d2
+│   │   ├── model_name_pomdp.svg
+│   │   └── model_name_pomdp.png
+│   └── pipeline/
+│       ├── gnn_pipeline_flow.d2
+│       ├── gnn_pipeline_flow.svg
+│       ├── framework_integration.d2
+│       ├── framework_integration.svg
+│       ├── active_inference_concepts.d2
+│       └── active_inference_concepts.svg
 └── advanced_viz_summary.json
 ```
 
@@ -267,7 +321,7 @@ output/9_advanced_viz_output/
 
 ---
 
-**Last Updated**: October 1, 2025
+**Last Updated: October 28, 2025
 **Status**: ✅ FULLY OPERATIONAL - Production Ready
 
 

@@ -25,9 +25,9 @@ run_script = create_standardized_pipeline_script(
     additional_arguments={
         "viz_type": {
             "type": str,
-            "choices": ["all", "3d", "interactive", "dashboard"],
+            "choices": ["all", "3d", "interactive", "dashboard", "d2", "diagrams", "pipeline"],
             "default": "all",
-            "help": "Type of visualization to generate",
+            "help": "Type of visualization to generate (d2 = D2 diagrams, diagrams = D2 diagrams, pipeline = pipeline D2 diagrams)",
         },
         "interactive": {
             "type": bool,

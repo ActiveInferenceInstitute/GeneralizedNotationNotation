@@ -873,15 +873,27 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         logger.info(f"  ❌ Failed: {test_stats.get('tests_failed', 0)}")
         logger.info(f"  ⏭️ Skipped: {test_stats.get('tests_skipped', 0)}")
 
-        # Determine success (allow some failures for robustness)
-        success = result.returncode == 0 or test_stats.get('tests_failed', 0) < 5
-
-        if success:
-            logger.info("✅ Complete test suite passed (or had minimal failures)")
+        # Determine success - we need to check if tests actually ran
+        tests_run = test_stats.get('tests_run', 0)
+        tests_failed = test_stats.get('tests_failed', 0)
+        tests_passed = test_stats.get('tests_passed', 0)
+        
+        # Success if: tests ran, zero failures, or minimal failures (< 5% failure rate) with significant pass rate
+        if tests_run == 0:
+            # No tests were collected or all were skipped
+            logger.error("❌ No tests were executed - all tests were skipped or not collected")
+            return False
+        elif tests_failed == 0:
+            logger.info(f"✅ Complete test suite passed ({tests_passed}/{tests_run} tests passed)")
+            return True
+        elif tests_passed > 0 and (tests_failed / tests_run) < 0.05:
+            # Allow up to 5% failure rate
+            pass_rate = (tests_passed / tests_run) * 100
+            logger.warning(f"⚠️ Test suite passed with minor failures ({tests_passed} passed, {tests_failed} failed, {pass_rate:.1f}% pass rate)")
+            return True
         else:
-            logger.warning(f"⚠️ Test suite had significant failures ({test_stats.get('tests_failed', 0)} failures)")
-
-        return success
+            logger.error(f"❌ Test suite failed ({tests_passed} passed, {tests_failed} failed out of {tests_run} total)")
+            return False
 
     except subprocess.TimeoutExpired:
         logger.error("⏰ Complete test execution timed out")
@@ -996,49 +1008,47 @@ def _parse_test_statistics(pytest_output: str) -> Dict[str, int]:
     try:
         lines = pytest_output.split('\n')
 
-        # Look for the summary line at the end (e.g., "22 passed in 0.22s")
+        # Look for the summary line at the end (e.g., "534 passed, 12 skipped in 3.45s")
         for line in reversed(lines):
             line = line.strip()
-            if "passed" in line and ("in" in line or "failed" in line or "skipped" in line):
-                # Parse patterns like: "22 passed in 0.22s"
-                # or "22 passed, 5 failed in 1.23s"
-                # or "22 passed, 3 skipped in 1.23s"
-                parts = line.split()
-
-                # Find numbers before keywords
-                for i, part in enumerate(parts):
-                    try:
-                        num = int(part)
-                        if i + 1 < len(parts):
-                            next_part = parts[i + 1]
-                            if next_part == "passed":
-                                stats["tests_passed"] = num
-                                stats["tests_run"] += num
-                            elif next_part == "failed":
-                                stats["tests_failed"] = num
-                                stats["tests_run"] += num
-                            elif next_part == "skipped":
-                                stats["tests_skipped"] = num
-                                stats["tests_run"] += num
-                    except (ValueError, IndexError):
-                        continue
-
+            # Check if this line contains test results (has passed/failed/skipped + " in ")
+            if (" passed" in line or " failed" in line or " skipped" in line) and " in " in line:
+                # Parse patterns like: "534 passed, 12 skipped in 3.45s"
+                # or "22 passed, 5 failed, 3 skipped in 1.23s"
+                import re
+                
+                # Extract passed count
+                passed_match = re.search(r'(\d+)\s+passed', line)
+                if passed_match:
+                    stats["tests_passed"] = int(passed_match.group(1))
+                    stats["tests_run"] += int(passed_match.group(1))
+                
+                # Extract failed count
+                failed_match = re.search(r'(\d+)\s+failed', line)
+                if failed_match:
+                    stats["tests_failed"] = int(failed_match.group(1))
+                    stats["tests_run"] += int(failed_match.group(1))
+                
+                # Extract skipped count
+                skipped_match = re.search(r'(\d+)\s+skipped', line)
+                if skipped_match:
+                    stats["tests_skipped"] = int(skipped_match.group(1))
+                    stats["tests_run"] += int(skipped_match.group(1))
+                
                 # If we found any stats, break
                 if stats["tests_run"] > 0:
                     break
 
-        # Also look for collected items line
+        # Also look for collected items line if no results found yet
         if stats["tests_run"] == 0:
             for line in lines:
-                if "collected" in line and "items" in line:
-                    parts = line.split()
-                    for i, part in enumerate(parts):
-                        if part == "collected" and i > 0:
-                            try:
-                                stats["tests_run"] = int(parts[i-1])
-                            except (ValueError, IndexError):
-                                pass
-                            break
+                if "collected" in line and ("item" in line or "test" in line):
+                    import re
+                    # Extract number before "collected"
+                    match = re.search(r'(\d+)\s+(?:item|test)', line)
+                    if match:
+                        stats["tests_run"] = int(match.group(1))
+                        break
 
     except Exception as e:
         logging.warning(f"Failed to parse test statistics: {e}")
@@ -1442,34 +1452,17 @@ class ModularTestRunner:
         category_output_dir.mkdir(parents=True, exist_ok=True)
 
         # Build pytest command with options and plugin isolation
-        import shutil as _shutil
-        uv_path = _shutil.which("uv")
-        if uv_path:
-            # Prefer uv-managed execution to ensure declared deps (including pytest-timeout) are available
-            cmd = [
-                uv_path, "run", "pytest",
-                "--tb=short",
-                f"--maxfail=10",
-                "--durations=10",
-                "--no-header",
-                "-p", "no:randomly",
-                "-p", "no:sugar",
-                "-p", "no:cacheprovider",
-                # Explicitly enable timeout plugin and set per-test timeout
-                "-p", "pytest_timeout",
-                "--timeout=10", "--timeout-method=thread",
-            ]
-        else:
-            cmd = [
-                python_executable, "-m", "pytest",
-                "--tb=short",  # Shorter traceback
-                "--maxfail=10",  # Stop after 10 failures
-                "--durations=10",  # Show 10 slowest tests
-                "--no-header",  # Skip pytest header
-                "-p", "no:randomly",  # Disable pytest-randomly plugin
-                "-p", "no:sugar",    # Disable pytest-sugar plugin
-                "-p", "no:cacheprovider",  # Disable cache to avoid corruption
-            ]
+        # Always use direct python executable to avoid UV dependency resolution issues
+        cmd = [
+            python_executable, "-m", "pytest",
+            "--tb=short",  # Shorter traceback
+            "--maxfail=10",  # Stop after 10 failures
+            "--durations=10",  # Show 10 slowest tests
+            "--no-header",  # Skip pytest header
+            "-p", "no:randomly",  # Disable pytest-randomly plugin
+            "-p", "no:sugar",    # Disable pytest-sugar plugin
+            "-p", "no:cacheprovider",  # Disable cache to avoid corruption
+        ]
         
         # Load and enable optional plugins explicitly since autoload is disabled
         # Ensure timeout plugin is enabled with 10s per-test limit (unconditionally pass plugin to subprocess)

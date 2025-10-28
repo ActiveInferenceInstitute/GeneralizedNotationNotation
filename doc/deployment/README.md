@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Deployment Guide | **Audience**: DevOps & System Administrators | **Complexity**: Advanced  
-> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Last Updated: October 2025 | **Status**: Production-Ready  
 > **Cross-References**: [Development Guide](../development/README.md) | [Configuration Guide](../configuration/README.md)
 
 ## Overview

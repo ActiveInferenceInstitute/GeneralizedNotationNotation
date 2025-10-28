@@ -160,8 +160,8 @@ class OllamaProvider(BaseLLMProvider):
 
                 response = await asyncio.to_thread(_call_cli)
             else:
-                # Python client
-                def _call_py() -> Dict[str, Any]:
+                # Python client - returns ChatResponse object
+                def _call_py() -> Any:
                     return self._ollama.chat(
                         model=config.model or self.default_model,
                         messages=ollama_messages,
@@ -172,15 +172,31 @@ class OllamaProvider(BaseLLMProvider):
                     )
                 response = await asyncio.to_thread(_call_py)
 
-            content = response.get("message", {}).get("content", "")
-            model_used = response.get("model", config.model or self.default_model)
+            # Handle both dict responses (CLI) and ChatResponse objects (Python client)
+            if isinstance(response, dict):
+                content = response.get("message", {}).get("content", "")
+                model_used = response.get("model", config.model or self.default_model)
+                metadata_dict = {k: v for k, v in response.items() if k != "message"}
+            else:
+                # ChatResponse object from Python client
+                content = getattr(response.message, "content", "") if hasattr(response, "message") else ""
+                model_used = getattr(response, "model", config.model or self.default_model)
+                # Convert ChatResponse to dict for metadata
+                metadata_dict = {"model": model_used}
+                if hasattr(response, "done"):
+                    metadata_dict["done"] = response.done
+                if hasattr(response, "eval_count"):
+                    metadata_dict["eval_count"] = response.eval_count
+                if hasattr(response, "eval_duration"):
+                    metadata_dict["eval_duration"] = response.eval_duration
+            
             return LLMResponse(
                 content=content,
                 model_used=model_used,
                 provider=self.provider_type.value,
                 usage=None,
                 finish_reason=None,
-                metadata={"raw": {k: v for k, v in response.items() if k != "message"}},
+                metadata={"raw": metadata_dict},
             )
         except Exception as e:
             logger.error(f"Ollama chat failed: {e}")

@@ -243,6 +243,42 @@ def process_advanced_viz_standardized_impl(
                         export_formats, dependencies_available, logger
                     )
                     results.attempts.append(attempt)
+                
+                # Generate D2 diagrams for each model
+                if viz_type in ["all", "d2", "diagrams"]:
+                    attempt = _generate_d2_visualizations_safe(
+                        model_data, output_dir, logger
+                    )
+                    results.attempts.append(attempt)
+                    results.total_attempts += 1
+                    if attempt.status == "success":
+                        results.successful += 1
+                        results.output_files.extend(attempt.output_files)
+                    elif attempt.status == "failed":
+                        results.failed += 1
+                        if attempt.error_message:
+                            results.errors.append(attempt.error_message)
+                    else:
+                        results.skipped += 1
+                        if attempt.error_message:
+                            results.warnings.append(attempt.error_message)
+            
+            # Generate pipeline-level D2 diagrams (once for all models)
+            if viz_type in ["all", "d2", "diagrams", "pipeline"]:
+                attempt = _generate_pipeline_d2_diagrams_safe(output_dir, logger)
+                results.attempts.append(attempt)
+                results.total_attempts += 1
+                if attempt.status == "success":
+                    results.successful += 1
+                    results.output_files.extend(attempt.output_files)
+                elif attempt.status == "failed":
+                    results.failed += 1
+                    if attempt.error_message:
+                        results.errors.append(attempt.error_message)
+                else:
+                    results.skipped += 1
+                    if attempt.error_message:
+                        results.warnings.append(attempt.error_message)
         
         # Save results
         _save_results(output_dir, results, logger)
@@ -1993,5 +2029,201 @@ def _generate_belief_flow_visualization(
     finally:
         attempt.duration_ms = (time.time() - start_time) * 1000
 
+    return attempt
+
+
+def _generate_d2_visualizations_safe(
+    model_data: Dict[str, Any],
+    output_dir: Path,
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """
+    Generate D2 diagram visualizations for GNN models.
+    
+    Args:
+        model_data: Parsed GNN model data
+        output_dir: Output directory for visualizations
+        logger: Logger instance
+        
+    Returns:
+        AdvancedVisualizationAttempt tracking the generation
+    """
+    model_name = model_data.get("model_name", "unknown_model")
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="d2_diagrams",
+        model_name=model_name,
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        # Import D2 visualizer
+        try:
+            from .d2_visualizer import D2Visualizer
+            d2_available = True
+        except ImportError:
+            logger.warning("D2 visualizer module not available")
+            attempt.status = "skipped"
+            attempt.error_message = "D2 visualizer not available"
+            return attempt
+        
+        logger.info(f"Generating D2 diagrams for {model_name}...")
+        
+        # Create D2 visualizer
+        visualizer = D2Visualizer(logger=logger)
+        
+        if not visualizer.d2_available:
+            logger.warning("D2 CLI not available. Install from https://d2lang.com")
+            attempt.status = "skipped"
+            attempt.error_message = "D2 CLI not installed"
+            attempt.fallback_used = True
+            return attempt
+        
+        # Create D2 output directory
+        d2_output_dir = output_dir / "d2_diagrams" / model_name
+        d2_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Generate all applicable D2 diagrams
+        results = visualizer.generate_all_diagrams_for_model(
+            model_data,
+            d2_output_dir,
+            formats=["svg", "png"]
+        )
+        
+        # Process results
+        successful = 0
+        for result in results:
+            if result.success:
+                successful += 1
+                for output_file in result.output_files:
+                    attempt.output_files.append(str(output_file))
+                logger.info(f"Generated D2 diagram: {result.diagram_name}")
+            else:
+                logger.warning(f"Failed D2 diagram {result.diagram_name}: {result.error_message}")
+        
+        if successful > 0:
+            attempt.status = "success"
+            logger.info(f"Generated {successful} D2 diagrams for {model_name}")
+        else:
+            attempt.status = "failed"
+            attempt.error_message = "No D2 diagrams generated successfully"
+        
+    except Exception as e:
+        logger.error(f"Failed to generate D2 visualizations for {model_name}: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
+    return attempt
+
+
+def _generate_pipeline_d2_diagrams_safe(
+    output_dir: Path,
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """
+    Generate D2 diagrams for GNN pipeline architecture.
+    
+    Args:
+        output_dir: Output directory for visualizations
+        logger: Logger instance
+        
+    Returns:
+        AdvancedVisualizationAttempt tracking the generation
+    """
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="d2_pipeline_diagrams",
+        model_name="gnn_pipeline",
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        # Import D2 visualizer
+        try:
+            from .d2_visualizer import D2Visualizer
+            d2_available = True
+        except ImportError:
+            logger.warning("D2 visualizer module not available")
+            attempt.status = "skipped"
+            attempt.error_message = "D2 visualizer not available"
+            return attempt
+        
+        logger.info("Generating pipeline D2 diagrams...")
+        
+        # Create D2 visualizer
+        visualizer = D2Visualizer(logger=logger)
+        
+        if not visualizer.d2_available:
+            logger.warning("D2 CLI not available. Install from https://d2lang.com")
+            attempt.status = "skipped"
+            attempt.error_message = "D2 CLI not installed"
+            attempt.fallback_used = True
+            return attempt
+        
+        # Create D2 output directory
+        d2_output_dir = output_dir / "d2_diagrams" / "pipeline"
+        d2_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Generate pipeline flow diagram
+        flow_spec = visualizer.generate_pipeline_flow_diagram(include_frameworks=True)
+        flow_result = visualizer.compile_d2_diagram(
+            flow_spec,
+            d2_output_dir,
+            formats=["svg", "png"]
+        )
+        
+        if flow_result.success:
+            for output_file in flow_result.output_files:
+                attempt.output_files.append(str(output_file))
+            logger.info("Generated pipeline flow diagram")
+        
+        # Generate framework mapping diagram
+        framework_spec = visualizer.generate_framework_mapping_diagram()
+        framework_result = visualizer.compile_d2_diagram(
+            framework_spec,
+            d2_output_dir,
+            formats=["svg", "png"]
+        )
+        
+        if framework_result.success:
+            for output_file in framework_result.output_files:
+                attempt.output_files.append(str(output_file))
+            logger.info("Generated framework mapping diagram")
+        
+        # Generate Active Inference concepts diagram
+        concepts_spec = visualizer.generate_active_inference_concepts_diagram()
+        concepts_result = visualizer.compile_d2_diagram(
+            concepts_spec,
+            d2_output_dir,
+            formats=["svg", "png"]
+        )
+        
+        if concepts_result.success:
+            for output_file in concepts_result.output_files:
+                attempt.output_files.append(str(output_file))
+            logger.info("Generated Active Inference concepts diagram")
+        
+        # Check overall success
+        total_results = [flow_result, framework_result, concepts_result]
+        successful = sum(1 for r in total_results if r.success)
+        
+        if successful > 0:
+            attempt.status = "success"
+            logger.info(f"Generated {successful} pipeline D2 diagrams")
+        else:
+            attempt.status = "failed"
+            attempt.error_message = "No pipeline D2 diagrams generated successfully"
+        
+    except Exception as e:
+        logger.error(f"Failed to generate pipeline D2 diagrams: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
     return attempt
 

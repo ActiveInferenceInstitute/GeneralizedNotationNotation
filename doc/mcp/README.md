@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Guide | **Audience**: AI Developers & Integrators | **Complexity**: Advanced  
-> **Last Updated**: June 2025 | **Status**: Production-Ready  
+> **Last Updated: October 2025 | **Status**: Production-Ready  
 > **Cross-References**: [API Documentation](../api/README.md) | [FastMCP Guide](fastmcp.md)
 
 ## Overview

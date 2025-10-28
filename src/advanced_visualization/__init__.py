@@ -1,7 +1,7 @@
 """
 Advanced visualization package for GNN Processing Pipeline.
 
-Exports real advanced visualization components.
+Exports real advanced visualization components including D2 diagram generation.
 """
 
 from .visualizer import (
@@ -24,6 +24,22 @@ from .data_extractor import (
     extract_visualization_data,
 )
 
+# Import D2 visualization components
+try:
+    from .d2_visualizer import (
+        D2Visualizer,
+        D2DiagramSpec,
+        D2GenerationResult,
+        process_gnn_file_with_d2,
+    )
+    D2_AVAILABLE = True
+except ImportError:
+    D2_AVAILABLE = False
+    D2Visualizer = None
+    D2DiagramSpec = None
+    D2GenerationResult = None
+    process_gnn_file_with_d2 = None
+
 # Import main processor function for thin orchestrator
 from .processor import process_advanced_viz_standardized_impl
 
@@ -40,4 +56,9 @@ __all__ = [
     'VisualizationDataExtractor',
     'extract_visualization_data',
     'process_advanced_viz_standardized_impl',  # Main processing function
+    'D2Visualizer',  # D2 diagram generation
+    'D2DiagramSpec',  # D2 diagram specifications
+    'D2GenerationResult',  # D2 generation results
+    'process_gnn_file_with_d2',  # Process GNN files with D2
+    'D2_AVAILABLE',  # D2 availability flag
 ]

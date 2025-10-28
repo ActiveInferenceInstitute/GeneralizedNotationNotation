@@ -111,22 +111,24 @@ output/
 
 ## Performance Characteristics
 
-### Latest Status (October 1, 2025)
+### Latest Status (October 28, 2025)
 - **Total Steps**: 24 (all steps 0-23)
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **AGENTS.md Coverage**: ✅ 100% (28/28 modules documented)
+- **AGENTS.md Coverage**: ✅ 100% (28/28 modules + 11 subdirectories documented)
 - **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
 - **Architecture Status**: ✅ Production Ready
 
-### Recent Fixes (October 1, 2025)
+### Recent Fixes (October 28, 2025)
 - **Fixed**: All documentation gaps and inconsistencies
 - **Created**: Missing AGENTS.md files for all modules
+- **Added**: Comprehensive AGENTS.md documentation for framework-specific subdirectories (render/pymdp, render/rxinfer, render/activeinference_jl, render/discopy, render/jax, audio/sapf, audio/pedalboard, execute/pymdp, execute/rxinfer, execute/activeinference_jl, execute/jax)
 - **Updated**: All README files for completeness and accuracy
 - **Enhanced**: Module status matrix and performance characteristics
 - **Verified**: 24-step pipeline structure alignment
 - **All modules**: Have complete AGENTS.md and README documentation
+- **Subdirectories**: Framework-specific subdirectories now have comprehensive documentation
 
 ---
 
@@ -278,17 +280,15 @@ pytest --cov=src --cov-report=term-missing
 ## References
 
 - **Main Documentation**: [README.md](../README.md)
-- **Architecture Guide**: [ARCHITECTURE.md](../ARCHITECTURE.md)
-- **Pipeline Rules**: [.cursorrules](../.cursorrules)
 - **Pipeline Execution Summary**: [pipeline_execution_summary.json](../output/pipeline_execution_summary.json)
 
 ---
 
-**Last Updated**: October 1, 2025
+**Last Updated**: October 28, 2025
 **Pipeline Version**: 2.1.0
 **Total Modules**: 28
 **Total Steps**: 24 (0-23)
-**Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README files)
+**Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README files for modules and subdirectories)
 **Status**: ✅ Production Ready
 
 
