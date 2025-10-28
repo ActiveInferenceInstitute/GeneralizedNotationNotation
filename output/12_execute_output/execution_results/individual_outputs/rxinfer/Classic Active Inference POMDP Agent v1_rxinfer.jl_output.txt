@@ -1,0 +1,57 @@
+Execution Results for Classic Active Inference POMDP Agent v1_rxinfer.jl
+Timestamp: 2025-10-28T13:01:31.945807
+Return Code: 1
+Execution Time: 10.12 seconds
+
+STDOUT:
+============================================================
+RxInfer.jl Active Inference - GNN Generated Simulation
+Model: Classic Active Inference POMDP Agent v1
+============================================================
+📊 State Space: 3 states, 3 observations
+⏱️  Time Steps: 5
+\n🚀 Running Bayesian inference...
+📋 Observations: [2, 3, 1, 2, 2]
+\n❌ Simulation failed: ErrorException("Half-edge has been found: s_prev_1. To terminate half-edges 'Uninformative' node can be used.")
+Half-edge has been found: s_prev_1. To terminate half-edges 'Uninformative' node can be used.
+Stacktrace:
+  [1] error(s::LazyString)
+    @ Base ./error.jl:35
+  [2] (::RxInfer.var"#61#65"{RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}, GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#4#8", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}})(label::GraphPPL.NodeLabel, variable::GraphPPL.NodeData)
+    @ RxInfer ~/.julia/packages/RxInfer/kfX8K/src/model/plugins/reactivemp_inference.jl:136
+  [3] variable_nodes(callback::RxInfer.var"#61#65"{RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}, GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#4#8", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}}, model::GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#4#8", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String})
+    @ GraphPPL ~/.julia/packages/GraphPPL/xPNyo/src/graph_engine.jl:878
+  [4] postprocess_plugin
+    @ ~/.julia/packages/RxInfer/kfX8K/src/model/plugins/reactivemp_inference.jl:130 [inlined]
+  [5] #97
+    @ ~/.julia/packages/GraphPPL/xPNyo/src/graph_engine.jl:2136 [inlined]
+  [6] foreach(f::GraphPPL.var"#97#98"{GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#4#8", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}}, itr::GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}})
+    @ Base ./abstractarray.jl:3187
+  [7] add_toplevel_model!
+    @ ~/.julia/packages/GraphPPL/xPNyo/src/graph_engine.jl:2135 [inlined]
+  [8] create_model
+    @ ~/.julia/packages/GraphPPL/xPNyo/src/model_generator.jl:159 [inlined]
+  [9] __infer_create_factor_graph_model
+    @ ~/.julia/packages/RxInfer/kfX8K/src/model/model.jl:140 [inlined]
+ [10] create_model(generator::RxInfer.ConditionedModelGenerator{GraphPPL.ModelGenerator{typeof(simple_hmm), @Kwargs{}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, @NamedTuple{y::Vector{Int64}}})
+    @ RxInfer ~/.julia/packages/RxInfer/kfX8K/src/model/model.jl:128
+ [11] batch_inference(; model::GraphPPL.ModelGenerator{typeof(simple_hmm), @Kwargs{}, GraphPPL.PluginsCollection{Tuple{}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, data::@NamedTuple{y::Vector{Int64}}, initialization::Nothing, constraints::Nothing, meta::Nothing, options::Nothing, returnvars::Nothing, predictvars::Nothing, iterations::Nothing, free_energy::Bool, free_energy_diagnostics::Tuple{RxInfer.ObjectiveDiagnosticCheckNaNs, RxInfer.ObjectiveDiagnosticCheckInfs}, allow_node_contraction::Bool, showprogress::Bool, callbacks::Nothing, addons::Nothing, postprocess::DefaultPostprocess, warn::Bool, catch_exception::Bool)
+    @ RxInfer ~/.julia/packages/RxInfer/kfX8K/src/inference/batch.jl:207
+ [12] batch_inference
+    @ ~/.julia/packages/RxInfer/kfX8K/src/inference/batch.jl:96 [inlined]
+ [13] #312
+    @ ~/.julia/packages/RxInfer/kfX8K/src/inference/inference.jl:545 [inlined]
+ [14] with_session(f::RxInfer.var"#312#314"{GraphPPL.ModelGenerator{typeof(simple_hmm), @Kwargs{}, GraphPPL.PluginsCollection{Tuple{}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, @NamedTuple{y::Vector{Int64}}, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Bool, Tuple{RxInfer.ObjectiveDiagnosticCheckNaNs, RxInfer.ObjectiveDiagnosticCheckInfs}, Bool, Bool, Bool, Nothing, Nothing, DefaultPostprocess, Nothing, Bool, Bool, Bool}, session::RxInfer.Session, label::Symbol)
+    @ RxInfer ~/.julia/packages/RxInfer/kfX8K/src/session.jl:253
+ [15] #infer#311
+    @ ~/.julia/packages/RxInfer/kfX8K/src/inference/inference.jl:515 [inlined]
+ [16] infer
+    @ ~/.julia/packages/RxInfer/kfX8K/src/inference/inference.jl:468 [inlined]
+ [17] run_inference()
+    @ Main ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:50
+ [18] main()
+    @ Main ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:64
+ [19] top-level scope
+    @ ~/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:76
+
+STDERR:

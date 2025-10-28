@@ -458,17 +458,19 @@ GNN provides **three distinct interactive GUI interfaces** for visual model cons
 | **GUI 1** | Form-based Constructor | `:7860` | Step-by-step model building, component management |
 | **GUI 2** | Visual Matrix Editor | `:7861` | Real-time heatmaps, interactive matrix editing |
 | **GUI 3** | Design Studio | `:7862` | State space design, ontology editing, low-dependency |
+| **oxdraw** | Diagram-as-Code | `:5151` | Mermaid-based visual editing, GNN ↔ diagram sync |
 
 #### 🚀 Quick Launch
 
 ```bash
 # Launch all GUIs (recommended)
-python src/22_gui.py --target-dir input/gnn_files --output-dir output --gui-mode all --interactive-mode --verbose
+python src/22_gui.py --target-dir input/gnn_files --output-dir output --gui-types "gui_1,gui_2,gui_3,oxdraw" --interactive --verbose
 
 # Launch specific GUI
-python src/22_gui.py --gui-mode gui_3 --interactive-mode --verbose  # Design Studio only
+python src/22_gui.py --gui-types "gui_3" --interactive --verbose  # Design Studio only
+python src/22_gui.py --gui-types "oxdraw" --interactive --verbose  # oxdraw only
 
-# Launch via main pipeline
+# Launch via main pipeline (headless mode)
 python src/main.py --only-steps 22 --verbose
 ```
 

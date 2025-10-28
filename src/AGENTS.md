@@ -35,7 +35,7 @@ The GNN (Generalized Notation Notation) Pipeline is a comprehensive 24-step syst
 20. **[research/](research/AGENTS.md)** - Research tools and experimental features
 21. **[website/](website/AGENTS.md)** - Static HTML website generation
 22. **[mcp/](mcp/AGENTS.md)** - Model Context Protocol processing
-23. **[gui/](gui/AGENTS.md)** - Interactive GUI for model construction
+23. **[gui/](gui/AGENTS.md)** - Interactive GUI for model construction (includes gui_1, gui_2, gui_3, oxdraw)
 24. **[report/](report/AGENTS.md)** - Comprehensive analysis report generation
 
 ### Infrastructure Modules

@@ -129,9 +129,8 @@ def get_module_info():
         ],
         'supported_formats': [
             'PyProject.toml',
-            'requirements.txt',
-            'poetry.lock',
-            'uv.lock'
+            'uv.lock',
+            'poetry.lock'
         ]
     }
 
@@ -145,7 +144,7 @@ def get_setup_options() -> dict:
     return {
         'environment_types': ['uv', 'venv', 'conda', 'pip'],
         'python_versions': ['3.8', '3.9', '3.10', '3.11', '3.12'],
-        'dependency_sources': ['pyproject.toml', 'requirements.txt', 'poetry.lock'],
+        'dependency_sources': ['pyproject.toml', 'uv.lock', 'poetry.lock'],
         'setup_modes': ['minimal', 'standard', 'full', 'development'],
         'validation_levels': ['basic', 'comprehensive', 'strict'],
         'installation_methods': ['uv', 'pip', 'conda', 'poetry'],

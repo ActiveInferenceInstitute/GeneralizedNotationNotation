@@ -4,7 +4,9 @@
 
 **Purpose**: Visual diagram-as-code interface for Active Inference model construction through bidirectional GNN ↔ Mermaid ↔ oxdraw synchronization
 
-**Pipeline Step**: Step 24: oxdraw Visual Interface (24_oxdraw.py)
+**Pipeline Step**: Step 22: GUI Processing - oxdraw option (22_gui.py)
+
+**Parent Module**: gui (Interactive GNN Constructors)
 
 **Category**: Interactive Visualization / Model Construction
 
@@ -238,14 +240,15 @@ success = process_oxdraw(
 ### Pipeline Integration
 
 ```python
-# Run as part of GNN pipeline (Step 24)
+# Run as part of GNN pipeline (Step 22 - GUI module)
 import subprocess
 
 subprocess.run([
-    "python3", "src/24_oxdraw.py",
+    "python3", "src/22_gui.py",
     "--target-dir", "input/gnn_files",
     "--output-dir", "output",
-    "--mode", "headless",
+    "--gui-types", "oxdraw",
+    "--headless",
     "--verbose"
 ])
 ```
@@ -331,8 +334,9 @@ print(f"   Connections: {len(gnn_model['connections'])}")
 ## Integration Points
 
 ### Orchestrated By
-- **Script**: `24_oxdraw.py` (Step 24)
-- **Function**: `process_oxdraw()`
+- **Script**: `22_gui.py` (Step 22)
+- **Parent Module**: `gui` (Interactive GNN Constructors)
+- **Function**: `oxdraw_gui()` → `process_oxdraw()`
 
 ### Imports From
 - `gnn.processor` - GNN file parsing
@@ -340,8 +344,9 @@ print(f"   Connections: {len(gnn_model['connections'])}")
 - `utils.pipeline_template` - Standardized processing
 
 ### Imported By
+- `gui.__init__.py` - GUI module aggregator
 - `tests.test_oxdraw_integration.py` - Integration tests
-- `main.py` - Pipeline orchestration (optional step)
+- `main.py` - Pipeline orchestration via GUI module
 
 ### Data Flow
 ```

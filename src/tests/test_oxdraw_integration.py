@@ -14,17 +14,17 @@ import json
 import tempfile
 import shutil
 
-from oxdraw.processor import (
+from gui.oxdraw.processor import (
     process_oxdraw,
     check_oxdraw_installed,
     get_module_info
 )
-from oxdraw.mermaid_converter import (
+from gui.oxdraw.mermaid_converter import (
     convert_gnn_file_to_mermaid,
     gnn_to_mermaid,
     generate_mermaid_metadata
 )
-from oxdraw.mermaid_parser import (
+from gui.oxdraw.mermaid_parser import (
     convert_mermaid_file_to_gnn,
     mermaid_to_gnn,
     extract_gnn_metadata

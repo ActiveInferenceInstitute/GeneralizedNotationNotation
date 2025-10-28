@@ -4,11 +4,15 @@ GUI module for Interactive GNN Constructors.
 This module provides multiple GUI implementations:
 - GUI 1: Form-based Interactive GNN Constructor  
 - GUI 2: Visual Matrix Editor with drag-and-drop
+- GUI 3: State Space Design Studio
+- oxdraw: Visual diagram-as-code interface
 
 Public API:
 - process_gui: main processing function (runs all available GUIs)
 - gui_1: form-based GUI with component management
 - gui_2: visual matrix editor with drag-and-drop
+- gui_3: state space design studio
+- oxdraw: visual diagram-as-code with Mermaid
 - get_available_guis: list all available GUI implementations
 """
 
@@ -16,6 +20,7 @@ Public API:
 from .gui_1 import gui_1, get_gui_1_info
 from .gui_2 import gui_2, get_gui_2_info
 from .gui_3 import gui_3, get_gui_3_info
+from .oxdraw import oxdraw_gui, get_oxdraw_info
 
 # Import GUI 1 utilities for backward compatibility
 from .gui_1 import (
@@ -35,6 +40,7 @@ def get_available_guis():
         "gui_1": get_gui_1_info(),
         "gui_2": get_gui_2_info(),
         "gui_3": get_gui_3_info(),
+        "oxdraw": get_oxdraw_info(),
     }
 
 def process_gui(target_dir, output_dir, verbose=False, **kwargs):
@@ -121,6 +127,14 @@ def process_gui(target_dir, output_dir, verbose=False, **kwargs):
                         verbose=verbose,
                         **gui_kwargs
                     )
+                elif gui_type == 'oxdraw':
+                    result = oxdraw_gui(
+                        target_dir=Path(target_dir),
+                        output_dir=Path(output_dir),
+                        logger=logger,
+                        verbose=verbose,
+                        **gui_kwargs
+                    )
                 else:
                     logger.warning(f"Unknown GUI type: {gui_type}")
                     result = {
@@ -171,9 +185,13 @@ __all__ = [
     "process_gui",
     "gui_1", 
     "gui_2",
+    "gui_3",
+    "oxdraw_gui",
     "get_available_guis",
     "get_gui_1_info",
     "get_gui_2_info",
+    "get_gui_3_info",
+    "get_oxdraw_info",
     # Legacy GUI 1 utilities
     "run_gui",
     "add_component_to_markdown",

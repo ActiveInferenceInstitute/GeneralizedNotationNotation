@@ -1,0 +1,14 @@
+Execution Results for Classic Active Inference POMDP Agent v1_pymdp.py
+Timestamp: 2025-10-28T13:01:28.305467
+Return Code: 1
+Execution Time: 2.69 seconds
+
+STDOUT:
+
+
+STDERR:
+WARNING:root:PyMDP not available - simulation will gracefully degrade with informative output
+ERROR:src.execute.pymdp.simple_simulation:PyMDP not available: No module named 'pymdp.agent'
+ERROR:src.execute.pymdp.executor:PyMDP simulation failed: PyMDP import failed: No module named 'pymdp.agent'
+ERROR:__main__:✗ Simulation failed!
+ERROR:__main__:Error: PyMDP import failed: No module named 'pymdp.agent'

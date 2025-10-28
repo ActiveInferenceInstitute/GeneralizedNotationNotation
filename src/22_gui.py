@@ -5,6 +5,12 @@ Step 22: GUI Processing (Thin Orchestrator)
 This step orchestrates GUI processing for GNN models.
 Provides multiple interactive GUI implementations and headless artifact generation.
 
+Available GUI Options:
+    - gui_1: Form-based Interactive GNN Constructor (Port 7860)
+    - gui_2: Visual Matrix Editor (Port 7861)
+    - gui_3: State Space Design Studio (Port 7862)
+    - oxdraw: Visual diagram-as-code interface with Mermaid (Port 5151)
+
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
     to the corresponding module (src/gui/). It handles argument parsing, logging
@@ -20,12 +26,15 @@ How to run:
   # Interactive mode (launch GUI servers)
   python src/22_gui.py --target-dir input/gnn_files --output-dir output --interactive
   
+  # Specific GUI types
+  python src/22_gui.py --gui-types "gui_1,oxdraw" --interactive
+  
   # As part of pipeline (automatically runs in headless mode)
   python src/main.py  # runs all steps including GUI in headless mode
 
 Expected outputs:
   - GUI artifacts in output/22_gui_output/ (headless mode)
-  - Running GUI servers on ports 7860-7862 (interactive mode)
+  - Running GUI servers on ports 7860-7862, 5151 (interactive mode)
   - gui_processing_summary.json with execution status
   - Constructed/designed GNN models in markdown format
   - GUI status and metadata files
@@ -34,8 +43,9 @@ If you encounter errors:
   - Check that Gradio is installed: uv pip install -e .[gui]
   - Check that src/gui/ contains GUI modules
   - Check that the output directory is writable
-  - For interactive mode, ensure ports 7860-7862 are available
+  - For interactive mode, ensure ports 7860-7862, 5151 are available
   - Verify GUI dependencies (gradio, plotly, numpy, pandas)
+  - For oxdraw: Install with `cargo install oxdraw` (optional for headless mode)
 """
 
 import sys
@@ -76,7 +86,7 @@ run_script = create_standardized_pipeline_script(
         "gui_types": {
             "type": str,
             "default": "gui_1,gui_2",
-            "help": "Comma-separated list of GUI types to run (gui_1, gui_2, gui_3)"
+            "help": "Comma-separated list of GUI types to run (gui_1, gui_2, gui_3, oxdraw)"
         },
         "open_browser": {
             "action": "store_true",

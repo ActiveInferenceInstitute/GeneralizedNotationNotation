@@ -110,15 +110,15 @@ class DependencyAuditor:
 
     def _load_project_dependencies(self):
         """Load dependencies from project files."""
-        # Load from pyproject.toml
+        # Load from pyproject.toml (primary source with UV)
         pyproject_path = self.project_root / "pyproject.toml"
         if pyproject_path.exists():
             self._load_from_pyproject_toml(pyproject_path)
 
-        # Load from requirements.txt
-        requirements_path = self.project_root / "requirements.txt"
-        if requirements_path.exists():
-            self._load_from_requirements_txt(requirements_path)
+        # Load from uv.lock if present
+        uv_lock_path = self.project_root / "uv.lock"
+        if uv_lock_path.exists():
+            self._load_from_uv_lock(uv_lock_path)
 
         # Load installed packages
         self._load_installed_packages()
@@ -164,24 +164,40 @@ class DependencyAuditor:
         except Exception as e:
             self.logger.error(f"Error parsing pyproject.toml: {e}")
 
-    def _load_from_requirements_txt(self, requirements_path: Path):
-        """Load dependencies from requirements.txt."""
+    def _load_from_uv_lock(self, uv_lock_path: Path):
+        """Load dependencies from uv.lock file."""
         try:
-            with open(requirements_path, 'r', encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    if line and not line.startswith('#'):
-                        name, version = self._parse_dependency_spec(line)
-                        if name:
-                            if name not in self.dependencies:
-                                self.dependencies[name] = DependencyInfo(
-                                    name=name,
-                                    version=version,
-                                    specifier=line
-                                )
+            # UV lock files are in TOML format
+            try:
+                import tomllib
+            except ImportError:
+                try:
+                    import tomli as tomllib
+                except ImportError:
+                    self.logger.warning("tomllib/tomli not available, skipping uv.lock parsing")
+                    return
+
+            with open(uv_lock_path, 'rb') as f:
+                lock_data = tomllib.load(f)
+
+            # UV lock format has a 'package' array with package information
+            packages = lock_data.get('package', [])
+            for pkg in packages:
+                name = pkg.get('name', '')
+                version = pkg.get('version', '')
+                if name:
+                    if name not in self.dependencies:
+                        self.dependencies[name] = DependencyInfo(
+                            name=name,
+                            version=version,
+                            specifier=f"{name}=={version}"
+                        )
+                    else:
+                        # Update version from lock file
+                        self.dependencies[name].version = version
 
         except Exception as e:
-            self.logger.error(f"Error parsing requirements.txt: {e}")
+            self.logger.error(f"Error parsing uv.lock: {e}")
 
     def _load_installed_packages(self):
         """Load information about installed packages."""

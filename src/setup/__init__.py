@@ -23,7 +23,12 @@ from .setup import (
     create_project_structure,
     install_optional_package_group,
     install_all_optional_packages,
-    setup_complete_environment
+    setup_complete_environment,
+    # New native UV functions
+    add_uv_dependency,
+    remove_uv_dependency,
+    update_uv_dependencies,
+    lock_uv_dependencies,
 )
 
 # Import validator functions
@@ -56,7 +61,11 @@ FEATURES = {
     'jax_installation': True,
     'mcp_integration': True,
     'pyproject_toml_support': True,
-    'lock_file_management': True
+    'lock_file_management': True,
+    'native_uv_add': True,
+    'native_uv_remove': True,
+    'native_uv_sync': True,
+    'native_uv_lock': True,
 }
 
 # Main API functions
@@ -82,6 +91,12 @@ __all__ = [
     'install_optional_package_group',
     'install_all_optional_packages',
     'setup_complete_environment',
+    
+    # Native UV dependency management functions
+    'add_uv_dependency',
+    'remove_uv_dependency',
+    'update_uv_dependencies',
+    'lock_uv_dependencies',
     
     # Validator functions
     'validate_system',

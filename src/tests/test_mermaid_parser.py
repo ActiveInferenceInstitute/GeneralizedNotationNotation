@@ -10,7 +10,7 @@ Tests Mermaid to GNN conversion functions:
 """
 
 import pytest
-from oxdraw.mermaid_parser import (
+from gui.oxdraw.mermaid_parser import (
     mermaid_to_gnn,
     extract_gnn_metadata,
     _extract_nodes,
