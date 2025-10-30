@@ -1,6 +1,6 @@
 # GNN Rendering Results
 
-Generated: 2025-10-28T13:01:26.830063
+Generated: 2025-10-30T12:42:31.049527
 Processing Type: **POMDP-aware rendering**
 
 ## Summary
@@ -8,7 +8,7 @@ Processing Type: **POMDP-aware rendering**
 - **Total Files**: 1
 - **Successfully Processed**: 1
 - **Failed**: 0
-- **Framework Renderings**: 5/5 (100.0% success rate)
+- **Framework Renderings**: 4/5 (80.0% success rate)
 
 ## Configuration
 
@@ -21,7 +21,7 @@ Processing Type: **POMDP-aware rendering**
 
 - ✅ **actinf_pomdp_agent.md** - Successfully processed
   - ✅ pymdp: Generated PyMDP simulation script: output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py
-  - ✅ rxinfer: Generated RxInfer.jl simulation script: output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl
+  - ❌ rxinfer: Error generating RxInfer.jl code: 'Any'
   - ✅ activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl
   - ✅ jax: JAX model code generated successfully.
   - ✅ discopy: Generated DisCoPy categorical diagram script: output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py

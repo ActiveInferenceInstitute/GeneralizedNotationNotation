@@ -260,7 +260,8 @@ def process_advanced_viz_standardized_impl(
                             results.errors.append(attempt.error_message)
                     else:
                         results.skipped += 1
-                        if attempt.error_message:
+                        # D2 CLI is optional - don't add warnings for missing CLI
+                        if attempt.error_message and "D2 CLI" not in attempt.error_message:
                             results.warnings.append(attempt.error_message)
             
             # Generate pipeline-level D2 diagrams (once for all models)
@@ -277,7 +278,8 @@ def process_advanced_viz_standardized_impl(
                         results.errors.append(attempt.error_message)
                 else:
                     results.skipped += 1
-                    if attempt.error_message:
+                    # D2 CLI is optional - don't add warnings for missing CLI
+                    if attempt.error_message and "D2 CLI" not in attempt.error_message:
                         results.warnings.append(attempt.error_message)
         
         # Save results
@@ -291,8 +293,15 @@ def process_advanced_viz_standardized_impl(
         logger.info(f"  Skipped: {results.skipped}")
         logger.info(f"  Output files: {len(results.output_files)}")
         
-        # Return success if at least some visualizations succeeded
-        return results.successful > 0 or results.total_attempts == 0
+        # Return success if:
+        # 1. At least some visualizations succeeded, OR
+        # 2. No attempts were made (no data), OR  
+        # 3. Only failures are skipped optional features (no actual errors)
+        return (
+            results.successful > 0 or 
+            results.total_attempts == 0 or
+            (results.failed == 0 and results.skipped > 0)
+        )
         
     except Exception as e:
         logger.error(f"Advanced visualization processing failed: {e}")

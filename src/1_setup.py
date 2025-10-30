@@ -82,7 +82,7 @@ def setup_orchestrator(target_dir, output_dir, logger, **kwargs):
             recreate=recreate,
             dev=kwargs.get('dev', True),
             extras=[],
-            skip_jax_test=True,
+            skip_jax_test=False,  # Test JAX functionality
             output_dir=output_dir
         )
 

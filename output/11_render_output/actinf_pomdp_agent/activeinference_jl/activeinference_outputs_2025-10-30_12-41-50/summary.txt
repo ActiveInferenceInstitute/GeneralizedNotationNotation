@@ -1,7 +1,7 @@
 ======================================================================
 ActiveInference.jl Simulation Summary
 ======================================================================
-Generated: 2025-10-28T13:02:06.349
+Generated: 2025-10-30T12:42:00.830
 Model: Classic Active Inference POMDP Agent v1
 
 Simulation Parameters:

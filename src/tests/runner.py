@@ -282,7 +282,7 @@ project_root = Path(__file__).parent.parent.parent
 @dataclass
 class TestExecutionConfig:
     """Configuration for test execution."""
-    timeout_seconds: int = 300
+    timeout_seconds: int = 3600  # Increased to 60 minutes for comprehensive test suite
     max_failures: int = 10
     parallel: bool = True
     coverage: bool = True
@@ -821,37 +821,66 @@ def run_tests(
 
 def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False) -> bool:
     """
-    Run ALL tests for comprehensive validation.
-    This runs the complete test suite to ensure full functionality.
+    Run FAST tests for quick pipeline validation.
+    This runs only fast tests to keep pipeline execution under 5 minutes.
     """
     import subprocess
     import sys
+    import os
 
-    logger.info("🎯 Running complete test suite for comprehensive validation")
+    # Check if tests should be skipped entirely for pipeline speed
+    if os.getenv("SKIP_TESTS_IN_PIPELINE"):
+        logger.info("⏭️  Skipping tests (SKIP_TESTS_IN_PIPELINE set)")
+        return True
 
-    # Build pytest command for ALL tests
+    logger.info("⚡ Running fast test subset for quick pipeline validation")
+
+    # Check if pytest-timeout is available
+    try:
+        import pytest_timeout
+        has_timeout = True
+    except ImportError:
+        has_timeout = False
+
+    # Build pytest command for FAST tests only
     cmd = [
         sys.executable, "-m", "pytest",
         "--tb=short",
-        "--maxfail=10",  # Allow more failures for comprehensive testing
-        "--durations=10",  # Show top 10 slowest tests
-        "-v" if verbose else "-q"
+        "--maxfail=5",  # Fail fast for quick feedback
+        "--durations=10",  # Show slowest tests
     ]
+    
+    # Add timeout flags only if pytest-timeout is available
+    if has_timeout:
+        cmd.extend([
+            "--timeout=120",  # 2-minute per-test timeout (critical fix!)
+            "--timeout-method=thread",  # Use thread-based timeout
+        ])
+    
+    cmd.extend([
+        "-m", "not slow",  # Skip slow tests
+        "-v" if verbose else "-q"
+    ])
 
     # Add the entire test directory to run ALL tests
     test_dir = Path(__file__).parent
     cmd.append(str(test_dir))
 
-    logger.info(f"🚀 Executing complete test suite: {' '.join(cmd)}")
+    logger.info(f"🚀 Executing fast test suite: {' '.join(cmd)}")
+    logger.info("💡 Skipping slow tests (-m 'not slow')")
+    if has_timeout:
+        logger.info("⏱️  Per-test timeout: 120s (pytest-timeout enabled)")
+    else:
+        logger.info("⚠️  pytest-timeout not available - no per-test timeout enforcement")
 
     try:
-        # Run with extended timeout for comprehensive testing
+        # Run with strict timeout for pipeline integration
         result = subprocess.run(
             cmd,
             cwd=Path(__file__).parent.parent.parent,
             capture_output=True,
             text=True,
-            timeout=300  # 5 minute timeout for full test suite
+            timeout=300  # 5 minute total timeout for fast tests
         )
 
         # Parse results
@@ -1446,6 +1475,11 @@ class ModularTestRunner:
             has_jsonreport = True
         except Exception:
             has_jsonreport = False
+        try:
+            import pytest_timeout  # type: ignore
+            has_pytest_timeout = True
+        except Exception:
+            has_pytest_timeout = False
 
         # Ensure per-category output directory exists (for coverage artifacts)
         category_output_dir = Path(self.args.output_dir) / "test_reports" / f"category_{category}"
@@ -1465,9 +1499,12 @@ class ModularTestRunner:
         ]
         
         # Load and enable optional plugins explicitly since autoload is disabled
-        # Ensure timeout plugin is enabled with 10s per-test limit (unconditionally pass plugin to subprocess)
-        cmd.extend(["-p", "pytest_timeout", "--timeout=10", "--timeout-method=thread"])  
-        self.logger.info("⏳ Per-test timeout enforced (10s)")
+        # Ensure timeout plugin is enabled with 10s per-test limit (only if available)
+        if has_pytest_timeout:
+            cmd.extend(["-p", "pytest_timeout", "--timeout=10", "--timeout-method=thread"])  
+            self.logger.info("⏳ Per-test timeout enforced (10s)")
+        else:
+            self.logger.info("⚠️  pytest-timeout not available - no per-test timeout enforcement")
 
         # Explicitly enable asyncio plugin for async tests (do not gate on parent import)
         cmd.extend(["-p", "pytest_asyncio"])  

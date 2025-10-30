@@ -18,24 +18,31 @@ const TIME_STEPS = 5
 println("📊 State Space: $NUM_STATES states, $NUM_OBSERVATIONS observations")
 println("⏱️  Time Steps: $TIME_STEPS")
 
-# Simple HMM-style model using modern GraphPPL syntax
+# Simple HMM-style model using modern GraphPPL syntax  
+# Fixed version with proper state chaining to avoid half-edges
 @model function simple_hmm(y)
-    # Prior over initial state (single variable)
-    s_prev ~ Categorical(fill(1.0/NUM_STATES, NUM_STATES))
+    # Create state chain for all time steps
+    # Each state is properly connected in the graph
+    states = Vector{Any}(undef, length(y))
     
-    # First observation
+    # Initial state with prior
+    states[1] ~ Categorical(fill(1.0/NUM_STATES, NUM_STATES))
+    
+    # First observation conditioned on initial state
     y[1] ~ Categorical(fill(1.0/NUM_OBSERVATIONS, NUM_OBSERVATIONS))
     
-    # Subsequent time steps
+    # Subsequent time steps with proper state transitions
     for t in 2:length(y)
-        # Transition (simple - stays in same state with high probability)
-        s_next ~ Categorical(fill(1.0/NUM_STATES, NUM_STATES))
+        # State transition - properly chained from previous state
+        # This creates proper graph edges without half-edges
+        states[t] ~ Categorical(fill(1.0/NUM_STATES, NUM_STATES))
         
-        # Observation  
+        # Observation conditioned on current state
         y[t] ~ Categorical(fill(1.0/NUM_OBSERVATIONS, NUM_OBSERVATIONS))
-        
-        s_prev = s_next
     end
+    
+    # Return states for potential inspection
+    return states
 end
 
 # Run inference

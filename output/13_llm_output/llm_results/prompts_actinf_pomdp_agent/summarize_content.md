@@ -1,20 +1,27 @@
 # SUMMARIZE_CONTENT
 
-Your document is clear and structured nicely. Here's a concise version with some minor edits:
+Here's a structured summary based on the initial parameters provided:
 
-**GNN Example:**
-A classic active inference agent for POMDPs that uses Variational Free Energy (VFE) as the primary update mechanism. The algorithm updates hidden states to preferences, action selection based on habit distributions over actions, and then learns an initial policy prior using probabilistic graphical models and inference backends. This model is suitable for rendering into various simulation or inference backends, such as Markov Decision Processes and POMDPs with finite histories.
+1. **Model Overview**
+   - `List` of models and their functions
+    - `Algorithm` is given (Algorithm v1)
+     - `model_summary(alg, op)`
+  **Key Variables**:
+   - Hidden states: [list with brief descriptions]
+   - Observations: [list with brief descriptions]
+   - Actions/Controls: [list with brief descriptions]
 
-**Key Variables:**
-   - **Hidden States**: [list of values]
-   - **Observations**: [list of 3 x 3 matrices representing observed states]. Each is initialized in a different order from which actions are taken, leading to diverse action selections for each slice of time (s[0], s[1], etc.).
-   - **Initialization Matrix**: [matrix with short descriptions](https://docs.google.com/a/math?class=github%3A_MIT-rpt#q=vf+h)
+2. **Critical Parameters**
+   - `Most Important Matrices`:
+   - `A`, `B`, and `D` are the matrices describing a specific model type
+   - `hidden_states` is an empty list (as it doesn't contain any data)
+   - `actions/controls` is an empty list of lists, as they represent actions/controles in a particular action-action combination.
 
-**Critical Parameters:**
-   - **Most Important Matrices**: [list of matrices with brief description]
-   - **Key Variables**: [string with short descriptions](https://docs.google.com/a/math?class=github%3A_MIT-rpt#q=vf+h)
-
-
-**Notable Features:**
-   - **Unique Properties**: [short description of the model]
-   - **Extensive Description**: [long summary describing key parameters](https://docs.google.com/a/math?class=github%3A_MIT-rpt#q=vf+h)
+3. **Notable Features**
+    - The value for `num_hidden_states` represents the number of hidden states available within the model scope
+    - The value for `num_obs` represents the number of observed observations within the model scope
+   - The values for `num_actions`, `num_observations`, and `max_depth` represent their respective hyperparameters
+   - The values for `hidden_states.probability[a,b]`, `_habit(x)`, etc are lists with corresponding probability distributions over actions
+4. **Use Cases**
+    - `A`. Example scenarios
+  **Signature**: A key element in this model is represented by its signature (Algorithm v1). The signature shows that the algorithm can be used to derive from and manipulate hidden states, actions taken on input observations, etc. This example also demonstrates a specific implementation of Algorithm v1 with a specific parameter set for `A`, `B`, and `D`.

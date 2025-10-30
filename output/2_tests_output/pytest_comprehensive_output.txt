@@ -1,488 +1,54 @@
 STDOUT:
-.............s............................ssssss........................ [ 11%]
-..........................s...................s........................s [ 22%]
-........................................................s.........ss.ss. [ 34%]
-......ss.ss..............F.F....FFF..................................s.. [ 45%]
-..............s.......sssssss...........................F.......F....... [ 57%]
-......................................F..FF
+.............s..........................ssssss.......................... [ 11%]
+........................s...................s........................... [ 23%]
+...................................................s.........ss.ss...... [ 35%]
+.ss.ss................s........................................s........ [ 46%]
+........s.......sssssss...........................s.......s............. [ 58%]
+...............................s..ss................................ssss [ 70%]
+ss.ss.ss..s.ss.ssss..................................................... [ 82%]
+....................................s....FF......s...................... [ 93%]
+..ss.................................                                    [100%]
 =================================== FAILURES ===================================
-______________ TestOllamaDetection.test_ollama_detection_logging _______________
-src/tests/test_llm_ollama_integration.py:63: in test_ollama_detection_logging
-    assert (
-E   AssertionError: assert ('not found' in 'info     test_ollama:processor.py:43 🔍 found ollama at: /opt/homebrew/bin/ollama\n' or 'not running' in 'info     test_ollama:processor.py:43 🔍 found ollama at: /opt/homebrew/bin/ollama\n' or 'not available' in 'info     test_ollama:processor.py:43 🔍 found ollama at: /opt/homebrew/bin/ollama\n')
-E    +  where 'info     test_ollama:processor.py:43 🔍 found ollama at: /opt/homebrew/bin/ollama\n' = <built-in method lower of str object at 0x14f9f9f70>()
-E    +    where <built-in method lower of str object at 0x14f9f9f70> = 'INFO     test_ollama:processor.py:43 🔍 Found Ollama at: /opt/homebrew/bin/ollama\n'.lower
-E    +  and   'info     test_ollama:processor.py:43 🔍 found ollama at: /opt/homebrew/bin/ollama\n' = <built-in method lower of str object at 0x14f9f9f70>()
-E    +    where <built-in method lower of str object at 0x14f9f9f70> = 'INFO     test_ollama:processor.py:43 🔍 Found Ollama at: /opt/homebrew/bin/ollama\n'.lower
-E    +  and   'info     test_ollama:processor.py:43 🔍 found ollama at: /opt/homebrew/bin/ollama\n' = <built-in method lower of str object at 0x14f9f9f70>()
-E    +    where <built-in method lower of str object at 0x14f9f9f70> = 'INFO     test_ollama:processor.py:43 🔍 Found Ollama at: /opt/homebrew/bin/ollama\n'.lower
------------------------------ Captured stderr call -----------------------------
-2025-10-28 12:59:39,786 - test_ollama - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
------------------------------- Captured log call -------------------------------
-INFO     test_ollama:processor.py:43 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-_________________ TestOllamaDetection.test_ollama_socket_check _________________
-src/tests/test_llm_ollama_integration.py:108: in test_ollama_socket_check
-    assert is_available, "Should detect Ollama when port 11434 is open"
-E   AssertionError: Should detect Ollama when port 11434 is open
+___ TestPipelineWarningsFix.test_prerequisite_validation_correct_directories ___
+src/tests/test_pipeline_warnings_fix.py:51: in test_prerequisite_validation_correct_directories
+    assert len(result["warnings"]) == 0, f"Should have no warnings, got: {result['warnings']}"
+E   AssertionError: Should have no warnings, got: ['No parsed GNN files found in 3_gnn_output']
+E   assert 1 == 0
+E    +  where 1 = len(['No parsed GNN files found in 3_gnn_output'])
+_ TestPipelineWarningsFix.test_prerequisite_validation_with_nested_directories _
+src/tests/test_pipeline_warnings_fix.py:75: in test_prerequisite_validation_with_nested_directories
+    assert any("nested" in w.lower() for w in result["warnings"]), \
+E   AssertionError: Should warn about nested directory
 E   assert False
------------------------------ Captured stderr call -----------------------------
-2025-10-28 12:59:39,813 - test_ollama - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
------------------------------- Captured log call -------------------------------
-INFO     test_ollama:processor.py:43 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-______________ TestLLMProcessing.test_llm_processing_with_ollama _______________
-src/tests/test_llm_ollama_integration.py:260: in test_llm_processing_with_ollama
-    assert "ollama_available" in results
-E   AssertionError: assert 'ollama_available' in {'analysis_results': [{'analysis': 'LLM-assisted analysis complete', 'analysis_timestamp': '2025-10-28T12:59:39.844500...ed\n- **Connections**: 3 defined\n- **Complexity**: 7 total elements\n\n## Key Components\n', ...}], 'errors': [], ...}
------------------------------ Captured stderr call -----------------------------
-2025-10-28 12:59:39,829 - llm - INFO - 🚀 Processing LLM with enhanced Ollama integration
-2025-10-28 12:59:39,830 - llm - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-2025-10-28 12:59:39,830 - llm - INFO - ℹ️ Proceeding with fallback LLM analysis (no live model interaction)
-2025-10-28 12:59:39,830 - llm.providers.ollama_provider - INFO - Ollama provider initialized (CLI fallback)
-2025-10-28 12:59:39,830 - llm.llm_processor - INFO - Initialized ollama provider
-2025-10-28 12:59:39,842 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
-2025-10-28 12:59:39,842 - llm.llm_processor - INFO - Initialized openai provider
-2025-10-28 12:59:39,843 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
-2025-10-28 12:59:39,843 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
-2025-10-28 12:59:39,843 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
-2025-10-28 12:59:39,843 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
-2025-10-28 12:59:39,843 - llm.llm_processor - INFO - LLM Processor initialized with 2 providers
-2025-10-28 12:59:39,843 - llm - INFO - LLM processor initialized with providers: ['ollama', 'openai']
-2025-10-28 12:59:39,844 - llm.llm_processor - INFO - Loaded API keys for providers: ['openai', 'ollama']
-2025-10-28 12:59:39,844 - llm.llm_operations - INFO - Created new LLM processor
-2025-10-28 12:59:39,845 - llm.providers.ollama_provider - INFO - Ollama provider initialized (CLI fallback)
-2025-10-28 12:59:39,845 - llm.llm_processor - INFO - Initialized ollama provider
-2025-10-28 12:59:39,859 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
-2025-10-28 12:59:39,859 - llm.llm_processor - INFO - Initialized openai provider
-2025-10-28 12:59:39,859 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
-2025-10-28 12:59:39,859 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
-2025-10-28 12:59:39,859 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
-2025-10-28 12:59:39,859 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
-2025-10-28 12:59:39,859 - llm.llm_processor - INFO - LLM Processor initialized with 2 providers
-2025-10-28 12:59:40,076 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 12:59:40,077 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:40,077 - llm.llm_processor - ERROR - Analysis failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:42,261 - llm - INFO - 🤖 Using model 'smollm2:135m-instruct-q4_K_S' for LLM prompts
-2025-10-28 12:59:42,261 - llm - INFO -   📝 Running prompt 1/6: summarize_content
-2025-10-28 12:59:42,684 - llm - INFO -   📝 Running prompt 2/6: explain_model
-2025-10-28 12:59:43,847 - llm - INFO -   📝 Running prompt 3/6: identify_components
-2025-10-28 12:59:47,220 - llm - INFO -   📝 Running prompt 4/6: analyze_structure
-2025-10-28 12:59:48,690 - llm - INFO -   📝 Running prompt 5/6: extract_parameters
-2025-10-28 12:59:50,139 - llm - INFO -   📝 Running prompt 6/6: practical_applications
-2025-10-28 12:59:51,373 - llm - INFO -   📝 Running custom prompt 1/3: technical_description
-2025-10-28 12:59:53,733 - llm - INFO -   📝 Running custom prompt 2/3: nontechnical_description
-2025-10-28 12:59:55,596 - llm - INFO -   📝 Running custom prompt 3/3: runtime_behavior
-2025-10-28 12:59:56,028 - llm - INFO - ✅ LLM processing completed successfully
------------------------------- Captured log call -------------------------------
-INFO     llm:pipeline_template.py:47 🚀 Processing LLM with enhanced Ollama integration
-INFO     llm:processor.py:43 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-INFO     llm:processor.py:278 ℹ️ Proceeding with fallback LLM analysis (no live model interaction)
-INFO     llm.providers.ollama_provider:ollama_provider.py:86 Ollama provider initialized (CLI fallback)
-INFO     llm.llm_processor:llm_processor.py:203 Initialized ollama provider
-INFO     llm.providers.openai_provider:openai_provider.py:95 OpenAI provider initialized successfully
-INFO     llm.llm_processor:llm_processor.py:203 Initialized openai provider
-WARNING  llm.providers.openrouter_provider:openrouter_provider.py:116 OpenRouter API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize openrouter provider
-WARNING  llm.providers.perplexity_provider:perplexity_provider.py:90 Perplexity API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize perplexity provider
-INFO     llm.llm_processor:llm_processor.py:213 LLM Processor initialized with 2 providers
-INFO     llm:processor.py:335 LLM processor initialized with providers: ['ollama', 'openai']
-INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['openai', 'ollama']
-INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
-INFO     llm.providers.ollama_provider:ollama_provider.py:86 Ollama provider initialized (CLI fallback)
-INFO     llm.llm_processor:llm_processor.py:203 Initialized ollama provider
-INFO     llm.providers.openai_provider:openai_provider.py:95 OpenAI provider initialized successfully
-INFO     llm.llm_processor:llm_processor.py:203 Initialized openai provider
-WARNING  llm.providers.openrouter_provider:openrouter_provider.py:116 OpenRouter API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize openrouter provider
-WARNING  llm.providers.perplexity_provider:perplexity_provider.py:90 Perplexity API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize perplexity provider
-INFO     llm.llm_processor:llm_processor.py:213 LLM Processor initialized with 2 providers
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:341 Analysis failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:processor.py:384 🤖 Using model 'smollm2:135m-instruct-q4_K_S' for LLM prompts
-INFO     llm:processor.py:411   📝 Running prompt 1/6: summarize_content
-INFO     llm:processor.py:411   📝 Running prompt 2/6: explain_model
-INFO     llm:processor.py:411   📝 Running prompt 3/6: identify_components
-INFO     llm:processor.py:411   📝 Running prompt 4/6: analyze_structure
-INFO     llm:processor.py:411   📝 Running prompt 5/6: extract_parameters
-INFO     llm:processor.py:411   📝 Running prompt 6/6: practical_applications
-INFO     llm:processor.py:456   📝 Running custom prompt 1/3: technical_description
-INFO     llm:processor.py:456   📝 Running custom prompt 2/3: nontechnical_description
-INFO     llm:processor.py:456   📝 Running custom prompt 3/3: runtime_behavior
-INFO     llm:pipeline_template.py:48 ✅ LLM processing completed successfully
-_____________ TestLLMProcessing.test_llm_processing_without_ollama _____________
-src/tests/test_llm_ollama_integration.py:299: in test_llm_processing_without_ollama
-    assert results["llm_provider"] == "fallback"
-E   KeyError: 'llm_provider'
------------------------------ Captured stderr call -----------------------------
-2025-10-28 12:59:56,037 - llm - INFO - 🚀 Processing LLM with enhanced Ollama integration
-2025-10-28 12:59:56,037 - llm - INFO - ℹ️ Ollama not found in PATH - LLM analysis will use fallback
-2025-10-28 12:59:56,037 - llm - INFO - ℹ️ Proceeding with fallback LLM analysis (no live model interaction)
-2025-10-28 12:59:56,037 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
-2025-10-28 12:59:56,038 - llm.llm_processor - WARNING - Failed to initialize ollama provider
-2025-10-28 12:59:56,050 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
-2025-10-28 12:59:56,050 - llm.llm_processor - INFO - Initialized openai provider
-2025-10-28 12:59:56,050 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
-2025-10-28 12:59:56,050 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
-2025-10-28 12:59:56,050 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
-2025-10-28 12:59:56,050 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
-2025-10-28 12:59:56,050 - llm.llm_processor - INFO - LLM Processor initialized with 1 providers
-2025-10-28 12:59:56,051 - llm - INFO - LLM processor initialized with providers: ['openai']
-2025-10-28 12:59:56,051 - llm.llm_processor - INFO - Loaded API keys for providers: ['openai', 'ollama']
-2025-10-28 12:59:56,051 - llm.llm_operations - INFO - Created new LLM processor
-2025-10-28 12:59:56,052 - llm.providers.ollama_provider - WARNING - Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
-2025-10-28 12:59:56,052 - llm.llm_processor - WARNING - Failed to initialize ollama provider
-2025-10-28 12:59:56,063 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
-2025-10-28 12:59:56,063 - llm.llm_processor - INFO - Initialized openai provider
-2025-10-28 12:59:56,063 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
-2025-10-28 12:59:56,063 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
-2025-10-28 12:59:56,063 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
-2025-10-28 12:59:56,063 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
-2025-10-28 12:59:56,063 - llm.llm_processor - INFO - LLM Processor initialized with 1 providers
-2025-10-28 12:59:56,270 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 12:59:56,270 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:56,270 - llm.llm_processor - ERROR - Analysis failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:56,394 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 12:59:56,394 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:56,394 - llm.llm_processor - WARNING - Fallback failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:56,394 - llm.analyzer - WARNING - LLM summary generation failed for test_active_inference.md: All providers failed for analysis
-2025-10-28 12:59:56,395 - llm - INFO - 🤖 Using model 'smollm2:135m-instruct-q4_K_S' for LLM prompts
-2025-10-28 12:59:56,395 - llm - INFO -   📝 Running prompt 1/6: summarize_content
-2025-10-28 12:59:56,396 - asyncio - ERROR - Task exception was never retrieved
-future: <Task finished name='Task-67' coro=<AsyncClient.aclose() done, defined at /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpx/_client.py:1967> exception=RuntimeError('Event loop is closed')>
-Traceback (most recent call last):
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpx/_client.py", line 1974, in aclose
-    await self._transport.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpx/_transports/default.py", line 378, in aclose
-    await self._pool.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpcore/_async/connection_pool.py", line 353, in aclose
-    await self._close_connections(closing_connections)
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpcore/_async/connection_pool.py", line 345, in _close_connections
-    await connection.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpcore/_async/connection.py", line 173, in aclose
-    await self._connection.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpcore/_async/http11.py", line 258, in aclose
-    await self._network_stream.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpcore/_backends/anyio.py", line 53, in aclose
-    await self._stream.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/anyio/streams/tls.py", line 234, in aclose
-    await self.transport_stream.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 1314, in aclose
-    self._transport.close()
-  File "/Users/4d/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/asyncio/selector_events.py", line 864, in close
-    self._loop.call_soon(self._call_connection_lost, None)
-  File "/Users/4d/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 762, in call_soon
-    self._check_closed()
-  File "/Users/4d/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 520, in _check_closed
-    raise RuntimeError('Event loop is closed')
-RuntimeError: Event loop is closed
-2025-10-28 12:59:56,607 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 12:59:56,608 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:56,608 - llm.llm_processor - ERROR - Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:56,609 - llm - INFO -   📝 Running prompt 2/6: explain_model
-2025-10-28 12:59:56,610 - openai._base_client - INFO - Retrying request to /chat/completions in 0.399090 seconds
-2025-10-28 12:59:57,194 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 12:59:57,195 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:57,195 - llm.llm_processor - ERROR - Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:57,197 - llm - INFO -   📝 Running prompt 3/6: identify_components
-2025-10-28 12:59:57,200 - openai._base_client - INFO - Retrying request to /chat/completions in 0.428088 seconds
-2025-10-28 12:59:57,858 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 12:59:57,859 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:57,859 - llm.llm_processor - ERROR - Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:57,859 - llm - INFO -   📝 Running prompt 4/6: analyze_structure
-2025-10-28 12:59:57,860 - openai._base_client - INFO - Retrying request to /chat/completions in 0.456050 seconds
-2025-10-28 12:59:58,594 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 12:59:58,595 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:58,595 - llm.llm_processor - ERROR - Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:58,596 - llm - INFO -   📝 Running prompt 5/6: extract_parameters
-2025-10-28 12:59:58,599 - openai._base_client - INFO - Retrying request to /chat/completions in 0.476825 seconds
-2025-10-28 12:59:59,250 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 12:59:59,251 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:59,251 - llm.llm_processor - ERROR - Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 12:59:59,252 - llm - INFO -   📝 Running prompt 6/6: practical_applications
-2025-10-28 12:59:59,254 - openai._base_client - INFO - Retrying request to /chat/completions in 0.414697 seconds
-2025-10-28 13:00:00,022 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 13:00:00,022 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 13:00:00,022 - llm.llm_processor - ERROR - Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 13:00:00,023 - llm - INFO -   📝 Running custom prompt 1/3: technical_description
-2025-10-28 13:00:00,023 - llm.providers.openai_provider - WARNING - Model smollm2:135m-instruct-q4_K_S not in available models list
-2025-10-28 13:00:00,024 - openai._base_client - INFO - Retrying request to /chat/completions in 0.498812 seconds
-2025-10-28 13:00:00,710 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 13:00:00,711 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 13:00:00,711 - llm.llm_processor - ERROR - Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 13:00:00,711 - llm - INFO -   📝 Running custom prompt 2/3: nontechnical_description
-2025-10-28 13:00:00,712 - llm.providers.openai_provider - WARNING - Model smollm2:135m-instruct-q4_K_S not in available models list
-2025-10-28 13:00:00,712 - openai._base_client - INFO - Retrying request to /chat/completions in 0.410844 seconds
-2025-10-28 13:00:01,366 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 13:00:01,367 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 13:00:01,367 - llm.llm_processor - ERROR - Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 13:00:01,368 - llm - INFO -   📝 Running custom prompt 3/3: runtime_behavior
-2025-10-28 13:00:01,368 - llm.providers.openai_provider - WARNING - Model smollm2:135m-instruct-q4_K_S not in available models list
-2025-10-28 13:00:01,370 - openai._base_client - INFO - Retrying request to /chat/completions in 0.494767 seconds
-2025-10-28 13:00:02,067 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 13:00:02,068 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 13:00:02,068 - llm.llm_processor - ERROR - Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 13:00:02,069 - llm - INFO - ✅ LLM processing completed successfully
------------------------------- Captured log call -------------------------------
-INFO     llm:pipeline_template.py:47 🚀 Processing LLM with enhanced Ollama integration
-INFO     llm:processor.py:40 ℹ️ Ollama not found in PATH - LLM analysis will use fallback
-INFO     llm:processor.py:278 ℹ️ Proceeding with fallback LLM analysis (no live model interaction)
-WARNING  llm.providers.ollama_provider:ollama_provider.py:88 Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize ollama provider
-INFO     llm.providers.openai_provider:openai_provider.py:95 OpenAI provider initialized successfully
-INFO     llm.llm_processor:llm_processor.py:203 Initialized openai provider
-WARNING  llm.providers.openrouter_provider:openrouter_provider.py:116 OpenRouter API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize openrouter provider
-WARNING  llm.providers.perplexity_provider:perplexity_provider.py:90 Perplexity API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize perplexity provider
-INFO     llm.llm_processor:llm_processor.py:213 LLM Processor initialized with 1 providers
-INFO     llm:processor.py:335 LLM processor initialized with providers: ['openai']
-INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['openai', 'ollama']
-INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
-WARNING  llm.providers.ollama_provider:ollama_provider.py:88 Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize ollama provider
-INFO     llm.providers.openai_provider:openai_provider.py:95 OpenAI provider initialized successfully
-INFO     llm.llm_processor:llm_processor.py:203 Initialized openai provider
-WARNING  llm.providers.openrouter_provider:openrouter_provider.py:116 OpenRouter API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize openrouter provider
-WARNING  llm.providers.perplexity_provider:perplexity_provider.py:90 Perplexity API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize perplexity provider
-INFO     llm.llm_processor:llm_processor.py:213 LLM Processor initialized with 1 providers
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:341 Analysis failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-WARNING  llm.llm_processor:llm_processor.py:363 Fallback failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-WARNING  llm.analyzer:analyzer.py:84 LLM summary generation failed for test_active_inference.md: All providers failed for analysis
-INFO     llm:processor.py:384 🤖 Using model 'smollm2:135m-instruct-q4_K_S' for LLM prompts
-INFO     llm:processor.py:411   📝 Running prompt 1/6: summarize_content
-ERROR    asyncio:base_events.py:1785 Task exception was never retrieved
-future: <Task finished name='Task-67' coro=<AsyncClient.aclose() done, defined at /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpx/_client.py:1967> exception=RuntimeError('Event loop is closed')>
-Traceback (most recent call last):
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpx/_client.py", line 1974, in aclose
-    await self._transport.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpx/_transports/default.py", line 378, in aclose
-    await self._pool.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpcore/_async/connection_pool.py", line 353, in aclose
-    await self._close_connections(closing_connections)
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpcore/_async/connection_pool.py", line 345, in _close_connections
-    await connection.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpcore/_async/connection.py", line 173, in aclose
-    await self._connection.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpcore/_async/http11.py", line 258, in aclose
-    await self._network_stream.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/httpcore/_backends/anyio.py", line 53, in aclose
-    await self._stream.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/anyio/streams/tls.py", line 234, in aclose
-    await self.transport_stream.aclose()
-  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 1314, in aclose
-    self._transport.close()
-  File "/Users/4d/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/asyncio/selector_events.py", line 864, in close
-    self._loop.call_soon(self._call_connection_lost, None)
-  File "/Users/4d/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 762, in call_soon
-    self._check_closed()
-  File "/Users/4d/.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 520, in _check_closed
-    raise RuntimeError('Event loop is closed')
-RuntimeError: Event loop is closed
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:524 Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:processor.py:411   📝 Running prompt 2/6: explain_model
-INFO     openai._base_client:_base_client.py:1618 Retrying request to /chat/completions in 0.399090 seconds
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:524 Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:processor.py:411   📝 Running prompt 3/6: identify_components
-INFO     openai._base_client:_base_client.py:1618 Retrying request to /chat/completions in 0.428088 seconds
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:524 Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:processor.py:411   📝 Running prompt 4/6: analyze_structure
-INFO     openai._base_client:_base_client.py:1618 Retrying request to /chat/completions in 0.456050 seconds
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:524 Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:processor.py:411   📝 Running prompt 5/6: extract_parameters
-INFO     openai._base_client:_base_client.py:1618 Retrying request to /chat/completions in 0.476825 seconds
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:524 Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:processor.py:411   📝 Running prompt 6/6: practical_applications
-INFO     openai._base_client:_base_client.py:1618 Retrying request to /chat/completions in 0.414697 seconds
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:524 Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:processor.py:456   📝 Running custom prompt 1/3: technical_description
-WARNING  llm.providers.openai_provider:openai_provider.py:116 Model smollm2:135m-instruct-q4_K_S not in available models list
-INFO     openai._base_client:_base_client.py:1618 Retrying request to /chat/completions in 0.498812 seconds
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:524 Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:processor.py:456   📝 Running custom prompt 2/3: nontechnical_description
-WARNING  llm.providers.openai_provider:openai_provider.py:116 Model smollm2:135m-instruct-q4_K_S not in available models list
-INFO     openai._base_client:_base_client.py:1618 Retrying request to /chat/completions in 0.410844 seconds
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:524 Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:processor.py:456   📝 Running custom prompt 3/3: runtime_behavior
-WARNING  llm.providers.openai_provider:openai_provider.py:116 Model smollm2:135m-instruct-q4_K_S not in available models list
-INFO     openai._base_client:_base_client.py:1618 Retrying request to /chat/completions in 0.494767 seconds
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:524 Response generation failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:pipeline_template.py:48 ✅ LLM processing completed successfully
-____________ TestLLMProcessing.test_llm_processing_model_selection _____________
-src/tests/test_llm_ollama_integration.py:326: in test_llm_processing_model_selection
-    if results["ollama_available"]:
-E   KeyError: 'ollama_available'
------------------------------ Captured stderr call -----------------------------
-2025-10-28 13:00:02,076 - llm - INFO - 🚀 Processing LLM with enhanced Ollama integration
-2025-10-28 13:00:02,076 - llm - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-2025-10-28 13:00:02,076 - llm - INFO - ℹ️ Proceeding with fallback LLM analysis (no live model interaction)
-2025-10-28 13:00:02,077 - llm.providers.ollama_provider - INFO - Ollama provider initialized (CLI fallback)
-2025-10-28 13:00:02,077 - llm.llm_processor - INFO - Initialized ollama provider
-2025-10-28 13:00:02,090 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
-2025-10-28 13:00:02,090 - llm.llm_processor - INFO - Initialized openai provider
-2025-10-28 13:00:02,090 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
-2025-10-28 13:00:02,090 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
-2025-10-28 13:00:02,090 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
-2025-10-28 13:00:02,090 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
-2025-10-28 13:00:02,090 - llm.llm_processor - INFO - LLM Processor initialized with 2 providers
-2025-10-28 13:00:02,091 - llm - INFO - LLM processor initialized with providers: ['ollama', 'openai']
-2025-10-28 13:00:02,091 - llm.llm_processor - INFO - Loaded API keys for providers: ['openai', 'ollama']
-2025-10-28 13:00:02,091 - llm.llm_operations - INFO - Created new LLM processor
-2025-10-28 13:00:02,092 - llm.providers.ollama_provider - INFO - Ollama provider initialized (CLI fallback)
-2025-10-28 13:00:02,092 - llm.llm_processor - INFO - Initialized ollama provider
-2025-10-28 13:00:02,104 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
-2025-10-28 13:00:02,104 - llm.llm_processor - INFO - Initialized openai provider
-2025-10-28 13:00:02,104 - llm.providers.openrouter_provider - WARNING - OpenRouter API key not provided
-2025-10-28 13:00:02,104 - llm.llm_processor - WARNING - Failed to initialize openrouter provider
-2025-10-28 13:00:02,104 - llm.providers.perplexity_provider - WARNING - Perplexity API key not provided
-2025-10-28 13:00:02,104 - llm.llm_processor - WARNING - Failed to initialize perplexity provider
-2025-10-28 13:00:02,104 - llm.llm_processor - INFO - LLM Processor initialized with 2 providers
-2025-10-28 13:00:02,310 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-2025-10-28 13:00:02,311 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 13:00:02,311 - llm.llm_processor - ERROR - Analysis failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2025-10-28 13:00:03,695 - llm - INFO - 🤖 Using model 'smollm2:135m-instruct-q4_K_S' for LLM prompts
-2025-10-28 13:00:03,695 - llm - INFO -   📝 Running prompt 1/6: summarize_content
-2025-10-28 13:00:07,502 - llm - INFO -   📝 Running prompt 2/6: explain_model
-2025-10-28 13:00:10,656 - llm - INFO -   📝 Running prompt 3/6: identify_components
-2025-10-28 13:00:11,020 - llm - INFO -   📝 Running prompt 4/6: analyze_structure
-2025-10-28 13:00:51,553 - llm - INFO -   📝 Running prompt 5/6: extract_parameters
-2025-10-28 13:00:52,208 - llm - INFO -   📝 Running prompt 6/6: practical_applications
-2025-10-28 13:00:55,219 - llm - INFO -   📝 Running custom prompt 1/3: technical_description
-2025-10-28 13:00:57,181 - llm - INFO -   📝 Running custom prompt 2/3: nontechnical_description
-2025-10-28 13:00:57,814 - llm - INFO -   📝 Running custom prompt 3/3: runtime_behavior
-2025-10-28 13:00:59,425 - llm - INFO - ✅ LLM processing completed successfully
------------------------------- Captured log call -------------------------------
-INFO     llm:pipeline_template.py:47 🚀 Processing LLM with enhanced Ollama integration
-INFO     llm:processor.py:43 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-INFO     llm:processor.py:278 ℹ️ Proceeding with fallback LLM analysis (no live model interaction)
-INFO     llm.providers.ollama_provider:ollama_provider.py:86 Ollama provider initialized (CLI fallback)
-INFO     llm.llm_processor:llm_processor.py:203 Initialized ollama provider
-INFO     llm.providers.openai_provider:openai_provider.py:95 OpenAI provider initialized successfully
-INFO     llm.llm_processor:llm_processor.py:203 Initialized openai provider
-WARNING  llm.providers.openrouter_provider:openrouter_provider.py:116 OpenRouter API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize openrouter provider
-WARNING  llm.providers.perplexity_provider:perplexity_provider.py:90 Perplexity API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize perplexity provider
-INFO     llm.llm_processor:llm_processor.py:213 LLM Processor initialized with 2 providers
-INFO     llm:processor.py:335 LLM processor initialized with providers: ['ollama', 'openai']
-INFO     llm.llm_processor:llm_processor.py:84 Loaded API keys for providers: ['openai', 'ollama']
-INFO     llm.llm_operations:llm_operations.py:87 Created new LLM processor
-INFO     llm.providers.ollama_provider:ollama_provider.py:86 Ollama provider initialized (CLI fallback)
-INFO     llm.llm_processor:llm_processor.py:203 Initialized ollama provider
-INFO     llm.providers.openai_provider:openai_provider.py:95 OpenAI provider initialized successfully
-INFO     llm.llm_processor:llm_processor.py:203 Initialized openai provider
-WARNING  llm.providers.openrouter_provider:openrouter_provider.py:116 OpenRouter API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize openrouter provider
-WARNING  llm.providers.perplexity_provider:perplexity_provider.py:90 Perplexity API key not provided
-WARNING  llm.llm_processor:llm_processor.py:205 Failed to initialize perplexity provider
-INFO     llm.llm_processor:llm_processor.py:213 LLM Processor initialized with 2 providers
-INFO     httpx:_client.py:1729 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
-ERROR    llm.providers.openai_provider:openai_provider.py:214 OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-ERROR    llm.llm_processor:llm_processor.py:341 Analysis failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-INFO     llm:processor.py:384 🤖 Using model 'smollm2:135m-instruct-q4_K_S' for LLM prompts
-INFO     llm:processor.py:411   📝 Running prompt 1/6: summarize_content
-INFO     llm:processor.py:411   📝 Running prompt 2/6: explain_model
-INFO     llm:processor.py:411   📝 Running prompt 3/6: identify_components
-INFO     llm:processor.py:411   📝 Running prompt 4/6: analyze_structure
-INFO     llm:processor.py:411   📝 Running prompt 5/6: extract_parameters
-INFO     llm:processor.py:411   📝 Running prompt 6/6: practical_applications
-INFO     llm:processor.py:456   📝 Running custom prompt 1/3: technical_description
-INFO     llm:processor.py:456   📝 Running custom prompt 2/3: nontechnical_description
-INFO     llm:processor.py:456   📝 Running custom prompt 3/3: runtime_behavior
-INFO     llm:pipeline_template.py:48 ✅ LLM processing completed successfully
-__________ TestMetadataExtraction.test_extract_metadata_legacy_format __________
-src/tests/test_mermaid_parser.py:68: in test_extract_metadata_legacy_format
-    assert metadata["model_name"] == "Legacy"
-E   KeyError: 'model_name'
-_______________ TestNodeExtraction.test_extract_trapezoid_nodes ________________
-src/tests/test_mermaid_parser.py:142: in test_extract_trapezoid_nodes
-    assert nodes["F"]["shape"] == "trapezoid"
-E   AssertionError: assert 'rectangle' == 'trapezoid'
-E     - trapezoid
-E     + rectangle
-_____ TestDependencyErrorScenarios.test_missing_pymdp_graceful_degradation _____
-src/tests/test_pipeline_error_scenarios.py:48: in test_missing_pymdp_graceful_degradation
-    mock_warning.assert_called()
-../../../.local/share/uv/python/cpython-3.11.13-macos-aarch64-none/lib/python3.11/unittest/mock.py:908: in assert_called
-    raise AssertionError(msg)
-E   AssertionError: Expected 'warning' to have been called.
------------------------------ Captured stderr call -----------------------------
-2025-10-28 13:01:18,759 - execute.pymdp.pymdp_simulation - INFO - Initialized with default gridworld configuration
-2025-10-28 13:01:18,761 - execute.pymdp.pymdp_simulation - INFO - Created PyMDP model: 4S, 5A, 4O
-2025-10-28 13:01:18,761 - execute.pymdp.pymdp_simulation - INFO - Created PyMDP model: 4S, 5A, 4O
------------------------------- Captured log call -------------------------------
-INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:249 Initialized with default gridworld configuration
-INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:576 Created PyMDP model: 4S, 5A, 4O
-INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:576 Created PyMDP model: 4S, 5A, 4O
-_________ TestFileOperationErrorScenarios.test_missing_input_directory _________
-src/tests/test_pipeline_error_scenarios.py:117: in test_missing_input_directory
-    non_existent_dir = temp_directories["temp_dir"] / "non_existent"
-E   KeyError: 'temp_dir'
-________ TestFileOperationErrorScenarios.test_readonly_output_directory ________
-src/tests/test_pipeline_error_scenarios.py:141: in test_readonly_output_directory
-    readonly_dir = temp_directories["temp_dir"] / "readonly"
-E   KeyError: 'temp_dir'
+E    +  where False = any(<generator object TestPipelineWarningsFix.test_prerequisite_validation_with_nested_directories.<locals>.<genexpr> at 0x11cc26500>)
 ============================= slowest 10 durations =============================
-57.35s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_model_selection
-16.20s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_with_ollama
-15.86s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_creates_outputs
-6.03s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_without_ollama
-2.95s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
-2.72s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
-0.87s call     src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats
-0.78s call     src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys
-0.53s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
-0.29s call     src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution
+89.77s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_model_selection
+52.35s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_creates_outputs
+26.24s call     src/tests/test_pipeline_main.py::TestPipelineMain::test_pipeline_step_11_12_produce_reports
+13.92s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_with_ollama
+6.44s call     src/tests/test_pipeline_recovery.py::TestAsyncAwaitRecovery::test_llm_analysis_recovery
+3.89s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+2.64s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers1]
+2.24s call     src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_api_request_timing
+2.17s call     src/tests/test_pipeline_improvements_validation.py::TestDependencyValidationImprovements::test_improved_installation_instructions
+1.73s call     src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_executes_help[1_setup.py]
 =========================== short test summary info ============================
-FAILED src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_detection_logging
-FAILED src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_socket_check
-FAILED src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_with_ollama
-FAILED src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_without_ollama
-FAILED src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_model_selection
-FAILED src/tests/test_mermaid_parser.py::TestMetadataExtraction::test_extract_metadata_legacy_format
-FAILED src/tests/test_mermaid_parser.py::TestNodeExtraction::test_extract_trapezoid_nodes
-FAILED src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_missing_pymdp_graceful_degradation
-FAILED src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_missing_input_directory
-FAILED src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_readonly_output_directory
-!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 10 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
-10 failed, 365 passed, 28 skipped in 109.18s (0:01:49)
+FAILED src/tests/test_pipeline_warnings_fix.py::TestPipelineWarningsFix::test_prerequisite_validation_correct_directories
+FAILED src/tests/test_pipeline_warnings_fix.py::TestPipelineWarningsFix::test_prerequisite_validation_with_nested_directories
+2 failed, 557 passed, 54 skipped, 14 deselected in 223.47s (0:03:43)
 
 
 STDERR:
-/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/pathlib.py:95: PytestWarning: (rm_rf) error removing /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-c6509d29-7991-42c0-9139-513da03a474b/test_permission_denied_handlin0
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/pathlib.py:96: PytestWarning: (rm_rf) error removing /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-8b66bf04-8ebf-4e80-a2a3-653064912796/test_permission_denied_handlin0
 <class 'OSError'>: [Errno 66] Directory not empty: 'test_permission_denied_handlin0'
   warnings.warn(
-/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/pathlib.py:95: PytestWarning: (rm_rf) error removing /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-c6509d29-7991-42c0-9139-513da03a474b
-<class 'OSError'>: [Errno 66] Directory not empty: '/private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-c6509d29-7991-42c0-9139-513da03a474b'
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/pathlib.py:96: PytestWarning: (rm_rf) error removing /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-8b66bf04-8ebf-4e80-a2a3-653064912796
+<class 'OSError'>: [Errno 66] Directory not empty: '/private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-8b66bf04-8ebf-4e80-a2a3-653064912796'
   warnings.warn(
-/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/pathlib.py:95: PytestWarning: (rm_rf) error removing /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-c3b431a9-cdf5-49a3-8aa7-883c2ef28bb2/test_permission_denied_handlin0
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/pathlib.py:96: PytestWarning: (rm_rf) error removing /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-58ded3ac-e87f-4074-b8db-46d080be5367/test_permission_denied_handlin0
 <class 'OSError'>: [Errno 66] Directory not empty: 'test_permission_denied_handlin0'
   warnings.warn(
-/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/pathlib.py:95: PytestWarning: (rm_rf) error removing /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-c3b431a9-cdf5-49a3-8aa7-883c2ef28bb2
-<class 'OSError'>: [Errno 66] Directory not empty: '/private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-c3b431a9-cdf5-49a3-8aa7-883c2ef28bb2'
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.11/site-packages/_pytest/pathlib.py:96: PytestWarning: (rm_rf) error removing /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-58ded3ac-e87f-4074-b8db-46d080be5367
+<class 'OSError'>: [Errno 66] Directory not empty: '/private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/garbage-58ded3ac-e87f-4074-b8db-46d080be5367'
   warnings.warn(
+DEBUG:2025-10-30 12:42:20,768:jax._src.xla_bridge:886: Clearing JAX backend caches.

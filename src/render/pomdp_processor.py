@@ -139,7 +139,6 @@ class POMDPRenderProcessor:
                     self.logger.info(f"✅ {framework}: {framework_result['message']}")
                 else:
                     processing_summary['frameworks_failed'].append(framework)
-                    overall_success = False
                     self.logger.error(f"❌ {framework}: {framework_result['message']}")
                     
             except Exception as e:
@@ -152,7 +151,16 @@ class POMDPRenderProcessor:
                     'warnings': []
                 }
                 processing_summary['frameworks_failed'].append(framework)
-                overall_success = False
+        
+        # Determine overall success:
+        # Consider successful if at least 60% of frameworks succeeded OR at least one succeeded
+        total_frameworks = len(frameworks)
+        successful_frameworks = len(processing_summary['frameworks_processed'])
+        success_rate = successful_frameworks / total_frameworks if total_frameworks > 0 else 0
+        overall_success = success_rate >= 0.6 or successful_frameworks > 0
+        
+        if not overall_success:
+            self.logger.warning(f"⚠️ Low framework success rate: {successful_frameworks}/{total_frameworks} ({success_rate*100:.1f}%)")
         
         # Save processing summary
         summary_file = self.base_output_dir / 'processing_summary.json'

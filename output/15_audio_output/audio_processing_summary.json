@@ -1,30 +1,27 @@
 {
-  "timestamp": "2025-10-28T12:59:29.444111",
-  "target_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files",
-  "output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output",
+  "timestamp": "2025-10-30T12:43:27.780241",
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/15_audio_output",
   "audio_backends": {
     "librosa": {
-      "available": true,
-      "version": "0.11.0"
+      "available": false,
+      "version": null
     },
     "soundfile": {
-      "available": true,
-      "version": "0.13.1"
+      "available": false,
+      "version": null
     },
     "pedalboard": {
-      "available": true,
-      "version": "0.9.17"
+      "available": false,
+      "version": null
     },
     "numpy": {
       "available": true,
-      "version": "1.26.4"
+      "version": "2.2.6"
     }
   },
   "processing_status": "completed",
   "backends_available": [
-    "librosa",
-    "soundfile",
-    "pedalboard",
     "numpy"
   ],
   "message": "Audio processing module ready for sonification and audio generation"

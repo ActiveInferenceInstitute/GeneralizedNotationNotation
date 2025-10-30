@@ -321,6 +321,25 @@ def full_pipeline_environment(tmp_path) -> Dict[str, Any]:
     }
 
 @pytest.fixture
+def temp_directories(tmp_path) -> Dict[str, Path]:
+    """Provide temporary directories for testing with auto-cleanup."""
+    input_dir = tmp_path / "input"
+    output_dir = tmp_path / "output"
+    temp_dir = tmp_path / "temp"
+    
+    # Create directories
+    input_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    
+    return {
+        "input_dir": input_dir,
+        "output_dir": output_dir,
+        "temp_dir": temp_dir,
+        "root": tmp_path
+    }
+
+@pytest.fixture
 def simulate_failures() -> Dict[str, Any]:
     """Fixture to simulate step failures in pipeline tests."""
     return {"simulate": True, "failed_steps": ["render", "execute"]}
@@ -403,16 +422,6 @@ def comprehensive_test_data(isolated_temp_dir) -> Dict[str, Any]:
             "safe_mode": True
         }
     }
-
-@pytest.fixture
-def temp_directories(tmp_path) -> Dict[str, Path]:
-    """Provide multiple temporary directories for testing."""
-    return {
-        "input": tmp_path / "input",
-        "output": tmp_path / "output",
-        "temp": tmp_path / "temp",
-        "logs": tmp_path / "logs"
-    } 
 
 # =============================================================================
 # Additional fixtures expected by migrated tests

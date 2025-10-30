@@ -626,7 +626,7 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
             if script_name == "2_tests.py":
                 # Check if comprehensive testing is requested
                 comprehensive_requested = any("--comprehensive" in str(arg) for arg in sys.argv)
-                step_timeout_seconds = 900 if comprehensive_requested else 600  # 15 min for comprehensive, 10 min for others
+                step_timeout_seconds = 1200 if comprehensive_requested else 900  # 20 min for comprehensive, 15 min for others
             elif script_name == "13_llm.py":
                 # LLM processing can take longer due to API calls and analysis
                 step_timeout_seconds = 600  # 10 minutes for LLM processing

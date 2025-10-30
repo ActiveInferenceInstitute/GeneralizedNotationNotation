@@ -34,6 +34,10 @@ class TestPipelineWarningsFix:
         gnn_output_dir = output_dir / "3_gnn_output"
         gnn_output_dir.mkdir()
         
+        # Create a mock parsed GNN file (validator checks for *_parsed.json files)
+        mock_parsed_file = gnn_output_dir / "test_model_parsed.json"
+        mock_parsed_file.write_text('{"ModelName": "test"}')
+        
         type_checker_output_dir = output_dir / "5_type_checker_output"
         type_checker_output_dir.mkdir()
         
@@ -46,7 +50,7 @@ class TestPipelineWarningsFix:
         # Test validation for step that depends on 3_gnn.py
         result = validate_step_prerequisites("5_type_checker.py", args, logger)
         
-        # Should pass without warnings since 3_gnn_output exists
+        # Should pass without warnings since 3_gnn_output exists with parsed files
         assert result["passed"], "Prerequisite validation should pass"
         assert len(result["warnings"]) == 0, f"Should have no warnings, got: {result['warnings']}"
         
@@ -59,6 +63,10 @@ class TestPipelineWarningsFix:
         # Create nested directory structure (legacy pattern)
         gnn_output_dir = output_dir / "3_gnn_output" / "3_gnn_output"
         gnn_output_dir.mkdir(parents=True)
+        
+        # Create a mock parsed GNN file in the nested location
+        mock_parsed_file = gnn_output_dir / "test_model_parsed.json"
+        mock_parsed_file.write_text('{"ModelName": "test"}')
         
         # Create mock args
         args = Mock()
@@ -73,7 +81,7 @@ class TestPipelineWarningsFix:
         assert result["passed"], "Prerequisite validation should pass"
         assert len(result["warnings"]) > 0, "Should have warning about nested structure"
         assert any("nested" in w.lower() for w in result["warnings"]), \
-            "Should warn about nested directory"
+            f"Should warn about nested directory, got warnings: {result['warnings']}"
     
     def test_prerequisite_validation_missing_directory(self, tmp_path):
         """Test that prerequisite validation warns about missing directories."""

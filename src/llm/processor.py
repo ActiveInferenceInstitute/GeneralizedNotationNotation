@@ -369,11 +369,12 @@ def process_llm(
                             PromptType.PRACTICAL_APPLICATIONS,
                         ]
 
-                        custom_prompts = [
+                        # Allow custom_prompts to be overridden via kwargs
+                        custom_prompts = kwargs.get('custom_prompts', [
                             ("technical_description", "Describe this GNN model comprehensively, in technical detail."),
                             ("nontechnical_description", "Describe this GNN model comprehensively, in non-technical language suitable for a broad audience."),
                             ("runtime_behavior", "Describe what happens when this GNN model runs and how it would behave in different settings or domains."),
-                        ]
+                        ])
 
                         per_file_dir = results_dir / f"prompts_{gnn_file.stem}"
                         per_file_dir.mkdir(parents=True, exist_ok=True)
@@ -410,6 +411,9 @@ def process_llm(
                             # Log progress
                             logger.info(f"  📝 Running prompt {idx}/{len(prompt_sequence)}: {ptype.value}")
                             
+                            # Get max prompt timeout from kwargs
+                            max_prompt_timeout = kwargs.get('max_prompt_timeout', 120)
+                            
                             # Run generation with simple timeout handling
                             def _run_prompt():
                                 async def _inner():
@@ -421,11 +425,11 @@ def process_llm(
                                                 max_tokens=min(512, prompt_cfg.get("max_tokens", 512)),
                                                 temperature=0.2,
                                                 config=LLMConfig(timeout=60)
-                                            ), timeout=120
+                                            ), timeout=max_prompt_timeout
                                         )
                                         return resp.content if hasattr(resp, 'content') else str(resp)
                                     except asyncio.TimeoutError:
-                                        return f"Prompt execution timed out after 120 seconds"
+                                        return f"Prompt execution timed out after {max_prompt_timeout} seconds"
                                     except Exception as e:
                                         return f"Prompt execution failed: {e}"
                                 return asyncio.run(_inner())
@@ -463,14 +467,19 @@ def process_llm(
                             def _run_custom():
                                 async def _inner():
                                     try:
-                                        resp = await processor.get_response(
-                                            messages=messages,
-                                            model_name=ollama_model,
-                                            max_tokens=512,
-                                            temperature=0.2,
-                                            config=LLMConfig(timeout=60)
+                                        # Use configurable timeout
+                                        resp = await asyncio.wait_for(
+                                            processor.get_response(
+                                                messages=messages,
+                                                model_name=ollama_model,
+                                                max_tokens=512,
+                                                temperature=0.2,
+                                                config=LLMConfig(timeout=60)
+                                            ), timeout=max_prompt_timeout
                                         )
                                         return resp.content if hasattr(resp, 'content') else str(resp)
+                                    except asyncio.TimeoutError:
+                                        return f"Prompt execution timed out after {max_prompt_timeout} seconds"
                                     except Exception as e:
                                         return f"Prompt execution failed: {e}"
                                 return asyncio.run(_inner())

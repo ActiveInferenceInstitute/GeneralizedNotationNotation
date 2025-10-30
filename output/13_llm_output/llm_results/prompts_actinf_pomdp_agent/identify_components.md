@@ -1,28 +1,20 @@
 # IDENTIFY_COMPONENTS
 
-Your analysis is well-structured. You've identified the relevant concepts, matrices, and symbols to understand the structure of the active inference agent's model representation and its implications for modeling, inference, and prediction in a POMDP scenario.
+You've covered the core concepts of GNNs in Active Inference POMDP Agents. Now, let's dive into understanding the structure and implications of different activation graphs in this GNN implementation:
 
-To better organize your thoughts and provide more insight into what you have learned about the system:
+1. **State Variables**: The state variables represent which actions are taken (observations) based on a probability distribution over states. Each action corresponds to a discrete transition from one state to another, with corresponding probabilities for each choice. The number of states is the total number of observations. The number of observables determines the agent's decision-making process and can affect its performance during training.
 
-1. **Initialization**: You've outlined the key components that contribute to generating the system behavior. This includes the state variables (observations), observation modality (hidden states), policy, actions, hidden states, preferences, action distributions, and beliefs/actions.
+2. **Observation Variables**: These variables capture the probability distribution over actions or other types of beliefs (facts). Each observation is a tuple containing an action, its corresponding probabilities for that observation across different states/actions, and any prior probabilities associated with those actions. The number of observations defines the agent's learning capacity to estimate future outcomes based on current observed data.
 
-2. **Agent Behavior**: You have a comprehensive description of how each element interacts with one another. You've mentioned "states" which are represented by Lambda matrices, "observation" matrices, and "action distribution". This represents the possible observables and actions that can be performed in response to specific observations or policies given previous ones.
+3. **Action Variables**: These variables represent the probability distribution over all actions or policy choices made during training. They are defined by a transition matrix from initial observation (state) to final state and can provide information about their behavior, such as their probabilities for subsequent states/actions in each iteration (`next`).
 
-3. **Actions**: You have identified a sequence of actions ("actions") as being taken at each step along with an action vector describing their probabilities. You've also mentioned that these are "policy posterior" representations, which represent the current policy based on prior beliefs.
+4. **Model Matrices**: The model matrices represent the joint probability distributions over actions/facts across all observations (`β`) or policies/priorities across different action combinations (state) pairs ($x$ and $y$) based on previous observations, prior probabilities, etc. These matrices are used to update beliefs in each state/action pair during training and provide predictions of future outcomes given the current observed data.
 
-4. **State Variables**: You mention "observations" representing specific data points or states. This represents the relevant state/observation information for each observation. 
+5. **Parameters**: The parameters represent each activation graph in the model, which define how the network adapts to different actions-state relationships based on training. They can vary between actions (e.g., `γ`, `α`) or policy interactions (`β`). Specifically:
+   - **Preferred actions**: The number of predictions for each action/policy pair at each step and across all transitions ($P(y|x) = P(y; x)$, where $0 < |[i, j]| ≤ |n_actions|$ denotes the number of observations in a particular state). This allows for more informed decisions based on available actions.
+   - **Generalized Actions**: A subset that combines the predicted probabilities from different actions/policies pairs at each step across all transitions ($P(y;x) = P(y, x_{ij})$) and represents which actions are executed during training. These can be used to represent more complex interactions between actions (e.g., "look for a particular target").
+   - **Prior Actions**: A subset of the generalized actions represented as a combination of predicted probabilities from different actions/policies pairs (`P(y;x) = P(y; x_{i,j}`). These are used to represent predictions in terms of actions that occur together (e.g., "look for both targets").
+   - **Generalized Actions with Prior**: A subset that represents each action combined using the prior probabilities from previous actions or policies (`P([x|y]) = P(y; x_{i,j}**`, where $[...]$ denotes a transition matrix). These are used to represent predictions in terms of actions together.
+   - **Generalized Actions with Prior**: A subset that represents each action combined using the prior probabilities from previous actions or policies (`P([x|y]) = P(y; x_{i,j}**`), where $[...]$ denotes a transition matrix). These are used to represent predictions in terms of actions together.
 
-5. **Policy and Action Variables**: You have described those individual components that contribute to generating agent behavior in terms of actions, preferences, etc. These represent specific policy-action combinations based on prior beliefs, action probabilities, etc.
-
-6. **Model Matrices**: Your description highlights the various types of matrices used for representing models. This includes "observations" which are represented by Lambda matrices ("observation"), "actions" and/or "policy". You've mentioned that these represent specific actions when considering prior preferences (prior probability) as well as observable actions based on prior beliefs and decisions.
-
-7. **Parameter Constraints**: You mention "parameter constraints", "learning rates" and adaptability parameters in your analysis, but there's no additional discussion of what you consider to be parameters or how they relate to each other.
-
-To illustrate the structure, here are some possible perspectives on how these elements contribute:
-- Actions may refer to actions taken at specific steps (state variables)
-- Policy distributions represent policies based on prior beliefs and/or past experiences
-- Actions can also represent different states in a given instant (policy posterior), which could be represented using action distributions or policy variables, depending upon the context. 
-
-It is clear that there are many types of "states" related to actions ("state_observation") and actions themselves relate to prior beliefs/prior probabilities/policies etc. These relationships allow you to decompose the overall behavior into individual components - state, observation (observations), action (policy distributions) or even more specific entities like actions being associated with policy decisions by observing an object's location within a space of states.
-
-Your analysis provides additional insight but doesn't provide a comprehensive overview on how all these elements contribute to generating the agent behavior in the context described. This could be further explored using data-driven approaches, and/or through other means that would allow you to summarize the specific relationships between each component - such as specifying parameter constraints or modeling mechanisms.
+In summary, these parameters describe how the network adaptively updates its beliefs based on observations and action combinations across different transitions between states/actions. The choice of which parameters is chosen depends on the specific use case and computational resources available for training a GNN model within a specified learning rate and initial activation distance.

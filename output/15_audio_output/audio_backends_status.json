@@ -1,18 +1,18 @@
 {
   "librosa": {
-    "available": true,
-    "version": "0.11.0"
+    "available": false,
+    "version": null
   },
   "soundfile": {
-    "available": true,
-    "version": "0.13.1"
+    "available": false,
+    "version": null
   },
   "pedalboard": {
-    "available": true,
-    "version": "0.9.17"
+    "available": false,
+    "version": null
   },
   "numpy": {
     "available": true,
-    "version": "1.26.4"
+    "version": "2.2.6"
   }
 }

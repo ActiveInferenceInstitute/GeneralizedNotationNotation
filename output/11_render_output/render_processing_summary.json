@@ -1,12 +1,12 @@
 {
-  "timestamp": "2025-10-28T13:01:26.830063",
+  "timestamp": "2025-10-30T12:42:31.049527",
   "processing_type": "POMDP-aware rendering",
   "total_files": 1,
   "successful_files": 1,
   "failed_files": 0,
   "total_framework_attempts": 5,
-  "successful_framework_renderings": 5,
-  "framework_success_rate": 100.0,
+  "successful_framework_renderings": 4,
+  "framework_success_rate": 80.0,
   "configuration": {
     "frameworks": "all",
     "strict_validation": true,
@@ -27,12 +27,9 @@
           "warnings": []
         },
         "rxinfer": {
-          "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl",
-          "output_files": [
-            "output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl"
-          ],
-          "output_directory": "output/11_render_output/actinf_pomdp_agent/rxinfer",
+          "success": false,
+          "message": "Error generating RxInfer.jl code: 'Any'",
+          "output_files": [],
           "warnings": [
             "rxinfer has limited multi-modality support"
           ]

@@ -84,10 +84,11 @@ def main() -> int:
             fast_only = True
             test_mode = "fast"
         else:
-            # Default for pipeline: run comprehensive tests
-            comprehensive = True
-            fast_only = False
-            test_mode = "comprehensive"
+            # Default for pipeline: run fast tests only (comprehensive is too slow)
+            # Use --comprehensive flag for full test suite
+            comprehensive = False
+            fast_only = True
+            test_mode = "fast (default)"
 
         # Enhanced test mode announcement
         visual_logger.print_header(

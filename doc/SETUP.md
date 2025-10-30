@@ -164,29 +164,321 @@ The following dependencies are included in `requirements-dev.txt`:
 - **Debugging**: ipython, ipdb
 - **Performance Profiling**: py-spy
 
+## Framework Dependencies
+
+The GNN pipeline supports multiple Active Inference simulation frameworks. Each framework has different installation requirements and provides unique capabilities.
+
+### Framework Overview
+
+| Framework | Status | Install Method | Primary Use Case | GPU Support |
+|-----------|--------|----------------|------------------|-------------|
+| **DisCoPy** | ✅ Built-in | Included | Categorical diagrams | No |
+| **ActiveInference.jl** | ✅ Auto | Julia | Complete Active Inference | No |
+| **PyMDP** | ⚠️ Optional | pip | Python Active Inference | No |
+| **JAX** | ⚠️ Optional | pip | GPU-accelerated inference | Yes |
+| **RxInfer.jl** | ⚠️ Optional | Julia | Bayesian message passing | No |
+
+### Quick Install (Recommended)
+
+For most users, install the "lite" framework preset:
+
+```bash
+# Install lite preset (PyMDP + JAX)
+python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
+```
+
+For complete framework support:
+
+```bash
+# Install all optional frameworks
+python src/1_setup.py --install_optional --optional_groups "all"
+```
+
+### Individual Framework Installation
+
+#### DisCoPy (✅ Included)
+
+DisCoPy is included by default and requires no additional installation.
+
+**Capabilities**:
+- Categorical diagram generation
+- String diagram composition
+- Functor visualization
+
+**Verification**:
+```bash
+python3 -c "import discopy; print('DisCoPy OK')"
+```
+
+#### ActiveInference.jl (✅ Auto-Install)
+
+ActiveInference.jl is automatically installed when first needed via Julia's package manager.
+
+**Requirements**:
+- Julia 1.6+ installed on system
+- Internet connection for first run
+
+**Capabilities**:
+- Full Active Inference agent implementation
+- Hierarchical temporal models
+- Comprehensive belief updating
+
+**Installation**:
+```bash
+# Julia installs automatically on first execution
+# Or install manually:
+julia -e 'using Pkg; Pkg.add("ActiveInference")'
+```
+
+**Verification**:
+```bash
+julia -e 'using ActiveInference; println("ActiveInference.jl OK")'
+```
+
+#### PyMDP (⚠️ Optional - Recommended)
+
+PyMDP provides Python-based Active Inference for POMDPs.
+
+**Installation**:
+```bash
+# Full PyMDP installation
+uv pip install pymdp[full]
+
+# Or from source for latest features
+uv pip install git+https://github.com/infer-actively/pymdp.git
+```
+
+**Capabilities**:
+- POMDP agent implementation
+- Variational message passing
+- Policy inference and learning
+
+**Common Issues**:
+- **Missing sub-modules**: Install `pymdp[full]` not just `pymdp`
+- **Import errors**: Try `uv pip install --force-reinstall pymdp[full]`
+
+**Verification**:
+```bash
+python3 -c "from pymdp.agent import Agent; print('PyMDP OK')"
+```
+
+#### JAX (⚠️ Optional - Recommended)
+
+JAX enables high-performance numerical computing with GPU acceleration.
+
+**Installation**:
+```bash
+# CPU-only version (most users)
+uv pip install jax[cpu] flax optax
+
+# GPU version (CUDA 12.x)
+uv pip install jax[cuda12_pip] flax optax
+
+# GPU version (CUDA 11.x)
+uv pip install jax[cuda11_pip] flax optax
+```
+
+**Capabilities**:
+- GPU-accelerated tensor operations
+- Just-in-time (JIT) compilation
+- Automatic differentiation
+- Vectorized computations
+
+**System Requirements**:
+- CPU version: Any modern CPU
+- GPU version: NVIDIA GPU with CUDA support
+
+**Verification**:
+```bash
+python3 -c "import jax; import flax.linen; print('JAX + Flax OK')"
+python3 -c "import jax; print(f'JAX devices: {jax.devices()}')"
+```
+
+#### RxInfer.jl (⚠️ Optional)
+
+RxInfer.jl provides reactive Bayesian inference via message passing.
+
+**Requirements**:
+- Julia 1.6+ installed
+- RxInfer.jl Julia package
+
+**Installation**:
+```bash
+# Install via Julia package manager
+julia -e 'using Pkg; Pkg.add("RxInfer")'
+julia -e 'using Pkg; Pkg.add("ReactiveMP")'
+julia -e 'using Pkg; Pkg.add("GraphPPL")'
+```
+
+**Capabilities**:
+- Reactive probabilistic programming
+- Efficient message-passing inference
+- Factor graph models
+- Streaming inference
+
+**Verification**:
+```bash
+julia -e 'using RxInfer; println("RxInfer.jl OK")'
+```
+
+### Framework Selection Strategies
+
+#### Lite Preset (Recommended for Most Users)
+```bash
+# Install PyMDP + JAX only
+python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
+```
+
+**Included**:
+- DisCoPy (built-in)
+- ActiveInference.jl (auto-install)
+- PyMDP (manual install)
+- JAX (manual install)
+
+**Best for**: Python developers, GPU users, fast prototyping
+
+#### Full Preset (Complete Functionality)
+```bash
+# Install all frameworks
+python src/1_setup.py --install_optional --optional_groups "all"
+```
+
+**Included**: All 5 frameworks
+
+**Best for**: Research, comprehensive benchmarking, production use
+
+#### Minimal Preset (Quick Start)
+```bash
+# Use built-in frameworks only (no optional install)
+python src/1_setup.py
+```
+
+**Included**:
+- DisCoPy (built-in)
+- ActiveInference.jl (auto-install on first use)
+
+**Best for**: Quick testing, minimal dependencies
+
+### Framework Execution
+
+#### Running Specific Frameworks
+```bash
+# Execute specific frameworks only
+python src/12_execute.py --frameworks "pymdp,jax"
+
+# Execute lite preset
+python src/12_execute.py --frameworks "lite"
+
+# Execute all available frameworks
+python src/12_execute.py --frameworks "all"
+```
+
+#### Framework Availability Check
+```bash
+# Check which frameworks are available
+python src/12_execute.py --frameworks "all" --dry-run
+```
+
+### Troubleshooting Framework Issues
+
+#### PyMDP Issues
+
+**Symptom**: `ModuleNotFoundError: No module named 'pymdp.agent'`
+
+**Solution**:
+```bash
+pip install pymdp[full]  # Install full package, not just base
+python3 -c "from pymdp.agent import Agent"  # Verify
+```
+
+#### JAX Issues
+
+**Symptom**: `No module named 'flax'` or JAX import errors
+
+**Solution**:
+```bash
+# Reinstall with all components
+pip uninstall jax jaxlib flax -y
+pip install jax[cpu] flax optax
+
+# Verify
+python3 -c "import jax; print(jax.devices())"
+```
+
+#### RxInfer.jl Issues
+
+**Symptom**: `Half-edge has been found` errors
+
+**Solution**: This is a known issue with older generated code templates. Regenerate code with:
+```bash
+# Regenerate RxInfer code with latest templates
+python src/11_render.py --target-dir input/gnn_files --force-regenerate
+```
+
+#### Julia Framework Issues
+
+**Symptom**: Julia packages not found
+
+**Solution**:
+```bash
+# Update Julia packages
+julia -e 'using Pkg; Pkg.update()'
+julia -e 'using Pkg; Pkg.gc()'  # Clean package cache
+
+# Reinstall if needed
+julia -e 'using Pkg; Pkg.add("ActiveInference"); Pkg.add("RxInfer")'
+```
+
+### Framework Performance Comparison
+
+| Framework | Execution Speed | Memory Usage | Setup Complexity | GPU Support |
+|-----------|----------------|--------------|------------------|-------------|
+| DisCoPy | Fast | Low | Easy | No |
+| ActiveInference.jl | Medium | Medium | Medium | No |
+| PyMDP | Medium | Low | Easy | No |
+| JAX | Very Fast | Medium | Easy | Yes |
+| RxInfer.jl | Fast | Low | Medium | No |
+
+### Best Practices
+
+1. **Start with Lite Preset**: Install PyMDP + JAX for most use cases
+2. **Test Incrementally**: Install one framework at a time if issues occur
+3. **Use Virtual Environments**: Isolate framework dependencies
+4. **Check Versions**: Ensure compatible versions of Python/Julia
+5. **Monitor Resources**: Some frameworks require significant memory
+
+### Framework Documentation
+
+- **DisCoPy**: [https://discopy.org/](https://discopy.org/)
+- **ActiveInference.jl**: [https://github.com/biaslab/ActiveInference.jl](https://github.com/biaslab/ActiveInference.jl)
+- **PyMDP**: [https://github.com/infer-actively/pymdp](https://github.com/infer-actively/pymdp)
+- **JAX**: [https://jax.readthedocs.io/](https://jax.readthedocs.io/)
+- **RxInfer.jl**: [https://rxinfer.ml/](https://rxinfer.ml/)
+
+
 ## Common Issues and Troubleshooting
 
 ### JAX Installation Issues
 
 JAX can sometimes have compatibility issues. If you encounter problems:
 
-1. Ensure you have the latest pip: `python -m pip install --upgrade pip`
-2. Install JAX and JAXlib explicitly first: `python -m pip install --upgrade jax jaxlib`
+1. Ensure you have the latest uv: `uv self update`
+2. Install JAX and JAXlib explicitly first: `uv pip install --upgrade jax jaxlib`
 3. Then proceed with the rest of the setup
 
 ### DisCoPy Matrix Backend Problems
 
 If you see errors related to DisCoPy's matrix functionality:
 
-1. Uninstall DisCoPy: `python -m pip uninstall -y discopy`
-2. Reinstall with matrix support: `python -m pip install "discopy[matrix]>=1.0.0"`
+1. Uninstall DisCoPy: `uv pip uninstall -y discopy`
+2. Reinstall with matrix support: `uv pip install "discopy[matrix]>=1.0.0"`
 
 ### PyMDP Import Errors
 
 If you encounter issues importing PyMDP:
 
-1. Check that `inferactively-pymdp` is installed: `python -m pip list | grep pymdp`
-2. Try reinstalling: `python -m pip install --force-reinstall inferactively-pymdp`
+1. Check that PyMDP is installed: `uv pip list | grep pymdp`
+2. Try reinstalling: `uv pip install --force-reinstall pymdp[full]`
 
 ## Dependency Version Compatibility
 
@@ -284,7 +576,7 @@ code --install-extension ms-toolsai.jupyter
 GNN includes Jupyter notebook integration:
 ```bash
 # Install Jupyter support
-pip install jupyter ipykernel
+uv pip install jupyter ipykernel
 python -m ipykernel install --user --name gnn
 
 # Launch Jupyter with GNN kernel
