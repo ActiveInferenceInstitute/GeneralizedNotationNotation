@@ -69,9 +69,12 @@ def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any
                 # Check for parsed GNN files
                 gnn_output_dir = args.output_dir / "3_gnn_output"
                 if gnn_output_dir.exists():
+                    # Look for parsed files at any depth
                     parsed_files = list(gnn_output_dir.rglob("*_parsed.json"))
                     if not parsed_files:
                         result["warnings"].append("No parsed GNN files found in 3_gnn_output")
+                    # Note: Parsed files in model-specific subdirectories (e.g., 3_gnn_output/model_name/model_name_parsed.json)
+                    # is the correct and intended structure - no warning needed
                         
             elif req_step == "11_render.py":
                 # Check for rendered simulation code

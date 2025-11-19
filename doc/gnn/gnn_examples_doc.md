@@ -2,6 +2,25 @@
 
 This document provides practical examples of GNN models, demonstrating how models can be developed with increasing complexity.
 
+## Processing Examples with Pipeline
+
+All examples can be processed through the GNN pipeline for parsing, validation, visualization, and code generation:
+
+```bash
+# Process all examples
+python src/main.py --target-dir doc/gnn/examples/ --verbose
+
+# Run specific processing steps
+python src/main.py --only-steps "3,5,8,11,12" --target-dir doc/gnn/examples/
+```
+
+For module-specific documentation:
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: GNN parsing module
+- **[src/render/AGENTS.md](../../src/render/AGENTS.md)**: Code generation module
+- **[src/AGENTS.md](../../src/AGENTS.md)**: Complete pipeline registry
+
+---
+
 ## Model Progression Overview
 
 GNN supports an incremental approach to model development, allowing you to start with simple models and progressively add complexity. The examples in this document follow a natural progression from basic to advanced models:

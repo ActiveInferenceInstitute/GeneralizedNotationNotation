@@ -76,10 +76,42 @@ Each GNN file is organized into the following sections:
 
 The GNN file structure is designed to be machine-readable, with each section clearly delineated by Markdown headers. This allows for automated parsing and processing of GNN files, enabling:
 
-- Validation of GNN syntax and structure
+- Validation of GNN syntax and structure  
 - Automatic conversion to computational implementations
 - Visualization of model structure
 - Cross-model comparison and analysis
+
+### GNN Processing Pipeline
+
+GNN files are processed through a comprehensive 24-step pipeline orchestrated by **`src/main.py`**. The pipeline handles:
+
+**Parsing and Validation (Steps 3, 5, 6)**
+- `3_gnn.py`: GNN file discovery and multi-format parsing
+- `5_type_checker.py`: Type checking and resource estimation
+- `6_validation.py`: Advanced validation and consistency checking
+
+**Rendering and Execution (Steps 11, 12)**
+- `11_render.py`: Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
+- `12_execute.py`: Execution of rendered simulation scripts
+
+**Analysis and Reporting (Steps 13, 16, 23)**
+- `13_llm.py`: LLM-enhanced analysis and model interpretation
+- `16_analysis.py`: Advanced statistical analysis
+- `23_report.py`: Comprehensive report generation
+
+For complete pipeline documentation, see:
+- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
+- **[src/README.md](../../src/README.md)**: Pipeline architecture and safety documentation
+- **[GNN Tools and Resources](gnn_tools.md)**: Detailed pipeline usage examples
+
+**Quick Start:**
+```bash
+# Process a GNN model through the full pipeline
+python src/main.py --target-dir input/gnn_files --verbose
+
+# Run specific steps
+python src/main.py --only-steps "3,5,11,12" --target-dir input/gnn_files
+```
 
 ## Progressive Model Development with GNN
 

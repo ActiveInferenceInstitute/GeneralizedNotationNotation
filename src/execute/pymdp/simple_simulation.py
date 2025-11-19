@@ -14,7 +14,13 @@ from typing import Dict, Any, Tuple, List
 import matplotlib
 matplotlib.use('Agg')  # Non-interactive backend
 import matplotlib.pyplot as plt
-import seaborn as sns
+
+# Try to import seaborn, fall back gracefully
+try:
+    import seaborn as sns
+    SEABORN_AVAILABLE = True
+except ImportError:
+    SEABORN_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +44,9 @@ def generate_pymdp_visualizations(
     viz_dir = output_dir / "visualizations"
     viz_dir.mkdir(parents=True, exist_ok=True)
     
-    # Set style
-    sns.set_style("whitegrid")
+    # Set style (only if seaborn available)
+    if SEABORN_AVAILABLE:
+        sns.set_style("whitegrid")
     plt.rcParams['figure.facecolor'] = 'white'
     
     try:
@@ -104,9 +111,18 @@ def generate_pymdp_visualizations(
         
         # 3. Observation Model (A matrix) Heatmap
         fig, ax = plt.subplots(figsize=(8, 6))
-        sns.heatmap(A, annot=True, fmt='.3f', cmap='YlOrRd', 
-                   cbar_kws={'label': 'P(obs|state)'}, ax=ax,
-                   linewidths=0.5, linecolor='gray')
+        if SEABORN_AVAILABLE:
+            sns.heatmap(A, annot=True, fmt='.3f', cmap='YlOrRd', 
+                       cbar_kws={'label': 'P(obs|state)'}, ax=ax,
+                       linewidths=0.5, linecolor='gray')
+        else:
+            # Fallback to matplotlib imshow
+            im = ax.imshow(A, cmap='YlOrRd', aspect='auto')
+            plt.colorbar(im, ax=ax, label='P(obs|state)')
+            # Add text annotations
+            for i in range(A.shape[0]):
+                for j in range(A.shape[1]):
+                    ax.text(j, i, f'{A[i, j]:.3f}', ha='center', va='center', color='black', fontsize=9)
         ax.set_xlabel('Hidden State', fontsize=12, fontweight='bold')
         ax.set_ylabel('Observation', fontsize=12, fontweight='bold')
         ax.set_title(f'PyMDP Observation Model (A Matrix)\nLikelihood: P(observation | state)', 

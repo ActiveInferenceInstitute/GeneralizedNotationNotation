@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional, Generator
 import tempfile
 import json
-from unittest.mock import Mock
+# Mocks removed - using real implementations per testing policy
 
 # Import pytest
 import pytest
@@ -501,19 +501,20 @@ def sample_gnn_spec() -> Dict[str, Any]:
         "parameters": {"A": [[0.5, 0.5]]}
     }
 
-@pytest.fixture
-def mock_render_module():
-    """Mock render module exposing render_gnn_spec(spec, target, outdir)."""
-    m = Mock()
-    # Default behavior can be overridden in tests
-    def _render(spec, target, outdir):
+class RealRenderModule:
+    """Real render module for testing - avoids mocking."""
+    def render_gnn_spec(self, spec, target, outdir):
+        """Render GNN spec to target format."""
         outdir = Path(outdir)
         outdir.mkdir(parents=True, exist_ok=True)
         artifact_name = f"{target}_artifact.txt"
         (outdir / artifact_name).write_text("ok")
         return True, "Success", [artifact_name]
-    m.render_gnn_spec.side_effect = _render
-    return m
+
+@pytest.fixture
+def mock_render_module():
+    """Real render module exposing render_gnn_spec(spec, target, outdir)."""
+    return RealRenderModule()
 
 @pytest.fixture
 def mock_mcp_tools():

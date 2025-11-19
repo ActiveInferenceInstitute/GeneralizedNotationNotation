@@ -2,6 +2,47 @@
 
 Comprehensive reference for GNN processing pipeline implementation.
 
+## Complete Pipeline Entry Points (Steps 0-23)
+
+All pipeline steps follow the thin orchestrator pattern. Each step is documented in its module's AGENTS.md:
+
+**Core Processing (0-9)**
+- `0_template.py` → `src/template/AGENTS.md`
+- `1_setup.py` → `src/setup/AGENTS.md`
+- `2_tests.py` → `src/tests/AGENTS.md`
+- `3_gnn.py` → `src/gnn/AGENTS.md`
+- `4_model_registry.py` → `src/model_registry/AGENTS.md`
+- `5_type_checker.py` → `src/type_checker/AGENTS.md`
+- `6_validation.py` → `src/validation/AGENTS.md`
+- `7_export.py` → `src/export/AGENTS.md`
+- `8_visualization.py` → `src/visualization/AGENTS.md`
+- `9_advanced_viz.py` → `src/advanced_visualization/AGENTS.md`
+
+**Simulation & Analysis (10-16)**
+- `10_ontology.py` → `src/ontology/AGENTS.md`
+- `11_render.py` → `src/render/AGENTS.md`
+- `12_execute.py` → `src/execute/AGENTS.md`
+- `13_llm.py` → `src/llm/AGENTS.md`
+- `14_ml_integration.py` → `src/ml_integration/AGENTS.md`
+- `15_audio.py` → `src/audio/AGENTS.md`
+- `16_analysis.py` → `src/analysis/AGENTS.md`
+
+**Integration & Output (17-23)**
+- `17_integration.py` → `src/integration/AGENTS.md`
+- `18_security.py` → `src/security/AGENTS.md`
+- `19_research.py` → `src/research/AGENTS.md`
+- `20_website.py` → `src/website/AGENTS.md`
+- `21_mcp.py` → `src/mcp/AGENTS.md`
+- `22_gui.py` → `src/gui/AGENTS.md`
+- `23_report.py` → `src/report/AGENTS.md`
+
+**Main Documentation:**
+- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
+- **[src/README.md](../../src/README.md)**: Pipeline architecture and safety patterns
+- **[src/main.py](../../src/main.py)**: Pipeline orchestrator implementation
+
+---
+
 ## Round-Trip Data Flow (Actual Implementation)
 
 ### Stage 1: GNN → Parsed JSON (Step 3)

@@ -66,6 +66,26 @@
 
 ---
 
+## Configuration
+
+### Configuration Options
+
+#### Ontology File
+- `ontology_terms_file` (Path): Path to ontology terms JSON file (default: `input/ontology_terms.json`)
+- `ontology_format` (str): Ontology file format (default: `"json"`)
+
+#### Validation Options
+- `strict_validation` (bool): Require all terms to be in ontology (default: `False`)
+- `allow_unknown_terms` (bool): Allow unrecognized terms with warnings (default: `True`)
+- `validate_relationships` (bool): Validate ontological relationships (default: `True`)
+
+#### Processing Options
+- `recursive` (bool): Process directories recursively (default: `True`)
+- `extract_all_terms` (bool): Extract all terms, not just variables (default: `False`)
+- `generate_mappings` (bool): Generate term mappings (default: `True`)
+
+---
+
 ## Dependencies
 
 ### Required Dependencies
@@ -142,6 +162,58 @@ output/10_ontology_output/
 - **Memory**: 28.6 MB
 - **Status**: SUCCESS
 - **Terms Validated**: 13
+
+---
+
+## Error Handling
+
+### Graceful Degradation
+- **Ontology File Missing**: Use default ontology, log warning
+- **Invalid Ontology Format**: Parse what's possible, log error
+- **Invalid GNN Model**: Skip model, log error, continue with others
+- **Term Validation Failure**: Log warning, continue processing
+
+### Error Categories
+1. **File I/O Errors**: Cannot read ontology file (fallback: use default ontology)
+2. **Validation Errors**: Invalid ontology structure (fallback: skip validation)
+3. **Term Extraction Errors**: Cannot extract terms from model (fallback: skip model)
+4. **Mapping Errors**: Cannot generate term mappings (fallback: partial mapping)
+
+### Error Recovery
+- **Default Ontology**: Use built-in ontology if file unavailable
+- **Partial Validation**: Validate what's possible, report failures
+- **Resource Cleanup**: Proper cleanup of ontology resources on errors
+
+---
+
+## Integration Points
+
+### Pipeline Integration
+- **Input**: Receives parsed GNN models from Step 3 (gnn processing)
+- **Output**: Generates ontology validation for Step 6 (validation), Step 11 (render), and Step 23 (report generation)
+- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
+
+### Module Dependencies
+- **gnn/**: Reads parsed GNN model data for term extraction
+- **validation/**: Provides ontology compliance for validation
+- **render/**: Uses ontology mappings for code generation
+- **report/**: Provides ontology compliance summaries
+
+### External Integration
+- **Ontology File**: JSON-based ontology term definitions
+- **Active Inference Standards**: Validates against Active Inference ontology
+
+### Data Flow
+```
+3_gnn.py (GNN parsing)
+  ↓
+10_ontology.py (Ontology processing)
+  ↓
+  ├→ 6_validation.py (Ontology compliance)
+  ├→ 11_render.py (Term mapping)
+  ├→ 23_report.py (Ontology reports)
+  └→ output/10_ontology_output/ (Ontology results)
+```
 
 ---
 

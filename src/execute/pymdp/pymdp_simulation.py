@@ -47,7 +47,12 @@ try:
     PYMDP_AVAILABLE = True
 except ImportError:
     PYMDP_AVAILABLE = False
-    logging.warning("PyMDP not available - simulation will gracefully degrade with informative output")
+    logging.warning(
+        "PyMDP not available - this is normal if not installed. "
+        "To enable PyMDP simulations, install with: pip install pymdp. "
+        "Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. "
+        "Continuing with fallback mode and informative output."
+    )
     # Provide lightweight fallbacks for essential utilities and Agent behaviour so
     # tests can run without the full PyMDP dependency. These are real, deterministic
     # implementations (not mocks) that reproduce minimal Agent behaviour.

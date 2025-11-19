@@ -113,7 +113,7 @@ class OpenRouterProvider(BaseLLMProvider):
             return False
             
         if not self.api_key:
-            logger.warning("OpenRouter API key not provided")
+            logger.debug("OpenRouter API key not provided - OpenRouter provider will not be available")
             return False
             
         try:
@@ -142,7 +142,7 @@ class OpenRouterProvider(BaseLLMProvider):
             return True
             
         except Exception as e:
-            logger.error(f"Failed to initialize OpenRouter client: {e}")
+            logger.debug(f"OpenRouter provider initialization issue (will use other providers if available): {e}")
             return False
     
     def validate_config(self, config: LLMConfig) -> bool:

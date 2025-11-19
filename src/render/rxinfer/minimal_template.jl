@@ -23,7 +23,8 @@ println("⏱️  Time Steps: $TIME_STEPS")
 @model function simple_hmm(y)
     # Create state chain for all time steps
     # Each state is properly connected in the graph
-    states = Vector{Any}(undef, length(y))
+    T = length(y)
+    states = Vector(undef, T)
     
     # Initial state with prior
     states[1] ~ Categorical(fill(1.0/NUM_STATES, NUM_STATES))

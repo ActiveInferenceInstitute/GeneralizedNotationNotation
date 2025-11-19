@@ -5,6 +5,26 @@
 > **Last Updated: October 2025 | **Status**: Production-Ready  
 > **Cross-References**: [PyMDP Guide](../pymdp/gnn_pymdp.md) | [RxInfer Guide](../rxinfer/gnn_rxinfer.md) | [DisCoPy Guide](../discopy/gnn_discopy.md) | [ActiveInference.jl Guide](../activeinference_jl/activeinference-jl.md)
 
+## Pipeline Integration
+
+GNN framework integration is handled by **Steps 11 and 12** of the processing pipeline:
+
+- **`src/11_render.py`** → Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
+  - See: **[src/render/AGENTS.md](../../src/render/AGENTS.md)** for rendering module details
+- **`src/12_execute.py`** → Execution of rendered simulation scripts
+  - See: **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)** for execution module details
+
+**Quick Start:**
+```bash
+# Generate and execute code for all frameworks
+python src/main.py --only-steps "11,12" --target-dir input/gnn_files --verbose
+
+# Execute specific frameworks only
+python src/12_execute.py --frameworks "pymdp,jax" --verbose
+```
+
+For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+
 ## Overview
 
 This guide provides standardized patterns for integrating GNN (Generalized Notation Notation) models with different Active Inference frameworks. It ensures consistent interfaces, error handling, and feature parity across all supported frameworks.

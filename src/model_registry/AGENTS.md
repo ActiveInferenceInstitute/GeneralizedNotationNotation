@@ -78,6 +78,27 @@ registry.save()
 
 ---
 
+## Configuration
+
+### Configuration Options
+
+#### Registry Path
+- `registry_path` (Path): Custom path for registry file (default: `output_dir / "model_registry.json"`)
+- `registry_backup` (bool): Create backup before overwriting (default: `True`)
+- `registry_format` (str): Registry format (default: `"json"`)
+
+#### Model Registration Options
+- `auto_version` (bool): Automatically increment version on re-registration (default: `True`)
+- `extract_metadata` (bool): Extract metadata from GNN files (default: `True`)
+- `validate_before_register` (bool): Validate GNN file before registration (default: `True`)
+
+#### Registry Management
+- `max_registry_size` (int): Maximum registry size in MB (default: `100`)
+- `cleanup_old_versions` (bool): Remove old versions when max size reached (default: `False`)
+- `registry_lock` (bool): Use file locking for concurrent access (default: `True`)
+
+---
+
 ## Usage Examples
 
 ### Basic Usage
@@ -148,6 +169,58 @@ output/4_model_registry_output/
     "formats_generated": 22
   }
 }
+```
+
+---
+
+## Error Handling
+
+### Graceful Degradation
+- **Registry File Locked**: Wait and retry, log warning
+- **Invalid GNN File**: Skip registration, log error, continue with other files
+- **Registry Corruption**: Attempt recovery from backup, log warning
+- **Disk Full**: Return error, cannot save registry
+
+### Error Categories
+1. **File I/O Errors**: Cannot read/write registry file (fallback: use in-memory registry)
+2. **Validation Errors**: Invalid GNN file structure (fallback: skip file, continue)
+3. **Version Conflicts**: Model already registered with different version (fallback: auto-increment)
+4. **Registry Corruption**: Invalid JSON structure (fallback: restore from backup)
+
+### Error Recovery
+- **Backup Restoration**: Automatically restore from backup if registry corrupted
+- **Partial Registration**: Register what's possible, report failures
+- **Resource Cleanup**: Proper cleanup of registry locks on errors
+
+---
+
+## Integration Points
+
+### Pipeline Integration
+- **Input**: Receives GNN files from Step 3 (gnn processing)
+- **Output**: Provides registry data for Step 5 (type checker), Step 6 (validation), and Step 23 (report generation)
+- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
+
+### Module Dependencies
+- **gnn/**: Reads parsed GNN model data for registration
+- **type_checker/**: Uses registry for model lookup
+- **validation/**: Uses registry for model validation
+- **report/**: Uses registry for model summaries
+
+### External Integration
+- **JSON Storage**: Registry persisted as JSON file
+- **File System**: Model metadata stored in directory structure
+
+### Data Flow
+```
+3_gnn.py (GNN parsing)
+  ↓
+4_model_registry.py (Model registration)
+  ↓
+  ├→ 5_type_checker.py (Model lookup)
+  ├→ 6_validation.py (Model validation)
+  ├→ 23_report.py (Registry summaries)
+  └→ output/4_model_registry_output/ (Registry database)
 ```
 
 ---

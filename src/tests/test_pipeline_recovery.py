@@ -21,7 +21,7 @@ import tempfile
 import logging
 import asyncio
 from pathlib import Path
-from unittest.mock import patch, Mock, AsyncMock
+# Mocks removed - using real implementations per testing policy
 from typing import Dict, Any, List
 
 # Import test utilities

@@ -690,11 +690,18 @@ def log_step_success(logger_or_step_name, message: str = None, step_number: int 
         logger = logger_or_step_name
         message = message or "Step completed successfully"
     
-    # Add completion tracking
+    # Add completion tracking - only if step hasn't been completed yet
     global _global_progress_tracker
     if step_number and _global_progress_tracker:
-        completion_summary = _global_progress_tracker.complete_step(step_number, "SUCCESS", duration)
-        message = f"{completion_summary}\n    {message}"
+        # Check if step was already completed to avoid duplicate completion messages
+        step_status = _global_progress_tracker.step_status.get(step_number)
+        if step_status != "RUNNING" and step_status is not None:
+            # Step already completed, just log the message without completion summary
+            pass
+        else:
+            # Step not yet completed, complete it and add summary
+            completion_summary = _global_progress_tracker.complete_step(step_number, "SUCCESS", duration)
+            message = f"{completion_summary}\n    {message}"
     
     # Add performance context to log record
     performance_context = {}
@@ -767,27 +774,35 @@ def log_step_error(logger_or_step_name, message: str = None, step_number: int = 
 def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
     """Enhanced pipeline summary logging with sophisticated visual formatting."""
     
-    # Extract summary statistics
+    # Extract summary statistics - use performance_summary for accurate counts
     steps = summary_data.get('steps', [])
-    total_steps = len(steps)
-    successes = len([s for s in steps if s.get('status') == 'SUCCESS'])
-    warnings = len([s for s in steps if s.get('status') == 'SUCCESS_WITH_WARNINGS'])
+    perf_summary = summary_data.get('performance_summary', {})
+    
+    # Use performance_summary counts which are correctly calculated in main.py
+    total_steps = perf_summary.get('total_steps', len(steps))
+    successful_steps = perf_summary.get('successful_steps', 0)
+    warning_count = perf_summary.get('warnings', 0)
+    failed_steps = perf_summary.get('failed_steps', 0)
+    
+    # Calculate pure successes vs successes with warnings from step statuses
+    pure_successes = len([s for s in steps if s.get('status') == 'SUCCESS'])
+    successes_with_warnings = len([s for s in steps if s.get('status') == 'SUCCESS_WITH_WARNINGS'])
     failures = len([s for s in steps if 'FAILED' in s.get('status', '') or 'ERROR' in s.get('status', '')])
     
-    # Calculate total duration
-    total_duration = sum(s.get('duration_seconds', 0) for s in steps if s.get('duration_seconds'))
+    # Use total_duration from summary if available, otherwise calculate
+    total_duration = summary_data.get('total_duration_seconds', 0)
+    if not total_duration:
+        total_duration = sum(s.get('duration_seconds', 0) for s in steps if s.get('duration_seconds'))
     
-    # Determine overall status
-    if failures > 0:
-        overall_status = "FAILED"
+    # Determine overall status from summary_data
+    overall_status = summary_data.get('overall_status', 'UNKNOWN')
+    if overall_status == 'FAILED':
         status_color = "RED"
         status_icon = "❌"
-    elif warnings > 0:
-        overall_status = "SUCCESS_WITH_WARNINGS"
+    elif overall_status in ('SUCCESS_WITH_WARNINGS', 'PARTIAL_SUCCESS'):
         status_color = "YELLOW" 
         status_icon = "⚠️"
     else:
-        overall_status = "SUCCESS"
         status_color = "GREEN"
         status_icon = "✅"
     
@@ -811,15 +826,20 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
     stats_line = f"║ Total Steps: {VisualLoggingEnhancer.colorize(str(total_steps), 'WHITE', True)}"
     content_lines.append(stats_line.ljust(box_width - 1) + "║")
     
-    # Success statistics with colors
-    success_text = f"✅ Successful: {VisualLoggingEnhancer.colorize(str(successes), 'GREEN', True)}"
-    warning_text = f"⚠️ Warnings: {VisualLoggingEnhancer.colorize(str(warnings), 'YELLOW', True)}"
-    failure_text = f"❌ Failed: {VisualLoggingEnhancer.colorize(str(failures), 'RED', True)}"
+    # Success statistics with colors - show breakdown of pure successes and successes with warnings
+    success_text = f"✅ Successful: {VisualLoggingEnhancer.colorize(str(successful_steps), 'GREEN', True)}"
+    if successes_with_warnings > 0:
+        success_breakdown = f" ({pure_successes} pure, {successes_with_warnings} with warnings)"
+        success_text += success_breakdown
+    warning_text = f"⚠️ Warnings: {VisualLoggingEnhancer.colorize(str(warning_count), 'YELLOW', True)}"
+    failure_text = f"❌ Failed: {VisualLoggingEnhancer.colorize(str(failed_steps), 'RED', True)}"
     
     # Calculate line lengths accounting for ANSI color codes
-    success_display_len = len(f"✅ Successful: {successes}")
-    warning_display_len = len(f"⚠️ Warnings: {warnings}")
-    failure_display_len = len(f"❌ Failed: {failures}")
+    success_display_len = len(f"✅ Successful: {successful_steps}")
+    if successes_with_warnings > 0:
+        success_display_len += len(f" ({pure_successes} pure, {successes_with_warnings} with warnings)")
+    warning_display_len = len(f"⚠️ Warnings: {warning_count}")
+    failure_display_len = len(f"❌ Failed: {failed_steps}")
     
     success_line = f"║ {success_text}"
     content_lines.append(success_line.ljust(box_width - 1 + (len(success_text) - success_display_len)) + "║")
@@ -842,8 +862,8 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
         performance_line = f"║ Average Step Time: {VisualLoggingEnhancer.format_duration(avg_step_time)}"
         content_lines.append(performance_line.ljust(box_width - 1) + "║")
     
-    # Success rate calculation
-    success_rate = ((successes + warnings) / total_steps * 100) if total_steps > 0 else 0
+    # Success rate calculation - use successful_steps which includes both pure successes and successes with warnings
+    success_rate = (successful_steps / total_steps * 100) if total_steps > 0 else 0
     success_rate_color = "GREEN" if success_rate >= 90 else "YELLOW" if success_rate >= 70 else "RED"
     rate_text = f"📊 Success Rate: {VisualLoggingEnhancer.colorize(f'{success_rate:.1f}%', success_rate_color, True)}"
     rate_display_len = len(f"📊 Success Rate: {success_rate:.1f}%")
@@ -860,12 +880,14 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
     logger.info(bottom_border)
     logger.info("")
     
-    # Add step-by-step breakdown for failures/warnings
-    if failures > 0 or warnings > 0:
+    # Add step-by-step breakdown for failures/warnings with detailed warning messages
+    if failed_steps > 0 or successes_with_warnings > 0:
         logger.info("🔍 " + VisualLoggingEnhancer.colorize("DETAILED STEP ANALYSIS:", "CYAN", True))
         for step in steps:
             status = step.get('status', 'UNKNOWN')
             step_name = step.get('script_name', 'Unknown')
+            step_description = step.get('description', step_name)
+            
             if 'FAILED' in status or 'ERROR' in status or 'WARNING' in status:
                 duration = step.get('duration_seconds', 0)
                 duration_str = f" ({VisualLoggingEnhancer.format_duration(duration)})" if duration else ""
@@ -877,7 +899,35 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
                     icon = "⚠️"
                     color = "YELLOW"
                 
+                # Extract warning/error messages from step output
+                warning_messages = []
+                stdout = step.get('stdout', '')
+                stderr = step.get('stderr', '')
+                combined_output = f"{stdout}\n{stderr}"
+                
+                # Look for warning patterns in output
+                import re
+                warning_patterns = [
+                    r'WARNING[:\s]+([^\n]+)',
+                    r'⚠️[:\s]+([^\n]+)',
+                    r'warning[:\s]+([^\n]+)',
+                ]
+                
+                for pattern in warning_patterns:
+                    matches = re.findall(pattern, combined_output, re.IGNORECASE)
+                    warning_messages.extend(matches[:3])  # Limit to first 3 warnings per step
+                
+                # Also check dependency_warnings
+                dep_warnings = step.get('dependency_warnings', [])
+                if dep_warnings:
+                    warning_messages.extend(dep_warnings[:2])  # Limit to first 2 dependency warnings
+                
+                # Display step with warnings
                 logger.info(f"  {icon} {VisualLoggingEnhancer.colorize(step_name, color)}: {status}{duration_str}")
+                if warning_messages:
+                    for msg in warning_messages[:3]:  # Show max 3 warning messages
+                        clean_msg = msg.strip()[:100]  # Limit message length
+                        logger.info(f"    └─ {VisualLoggingEnhancer.colorize(clean_msg, 'YELLOW')}")
         logger.info("")
 
 def get_performance_summary() -> Dict[str, Any]:

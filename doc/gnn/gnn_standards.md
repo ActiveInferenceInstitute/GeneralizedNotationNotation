@@ -1,5 +1,22 @@
 # GNN Domain Knowledge and Standards
 
+## Pipeline Processing Standards
+
+The GNN pipeline follows strict architectural patterns and standards:
+
+- **Thin Orchestrator Pattern**: All 24 pipeline steps delegate to modular implementations
+  - See: **[src/README.md](../../src/README.md)** for thin orchestrator pattern details
+- **Module Architecture**: Each module follows consistent structure with public APIs
+  - See: **[src/AGENTS.md](../../src/AGENTS.md)** for complete module registry
+- **Testing Standards**: No mocks, real data validation, >90% test coverage
+  - See: **[doc/gnn/REPO_COHERENCE_CHECK.md](REPO_COHERENCE_CHECK.md)** for quality standards
+
+**Architecture Documentation:**
+- [architecture_reference.md](architecture_reference.md): Implementation patterns and data flow
+- [src/README.md](../../src/README.md): Pipeline safety and reliability
+
+---
+
 ### GNN File Structure Understanding
 - **GNN Files**: Markdown-based (.md) with specific sections:
   - `GNNVersionAndFlags`: Version specification and processing flags

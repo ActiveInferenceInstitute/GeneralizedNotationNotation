@@ -1,5 +1,7 @@
 # Testing Framework Guidelines
 
+> **Environment Note**: Run all tests via `uv run pytest ...` or `uv`-managed runners to keep dependencies and configurations consistent with the project's locked environment.
+
 ## Overview
 
 This document provides comprehensive guidelines for the GNN testing framework, which has been completely refactored to follow a modular, organized structure with comprehensive coverage for all modules. The framework implements a clean, module-based naming convention and provides robust test execution capabilities.

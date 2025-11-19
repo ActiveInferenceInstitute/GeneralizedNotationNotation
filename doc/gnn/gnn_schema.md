@@ -2,6 +2,29 @@
 
 Complete specification for GNN syntax parsing and validation.
 
+## Pipeline Processing
+
+GNN schema validation is handled by multiple pipeline steps:
+
+- **`src/3_gnn.py`** → GNN file parsing and schema validation
+  - Implementation: `src/gnn/schema_validator.py`
+  - See: **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**
+- **`src/5_type_checker.py`** → Type and dimensional validation
+  - Implementation: `src/type_checker/type_analysis.py`
+  - See: **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)**
+- **`src/6_validation.py`** → Advanced consistency checking
+  - See: **[src/validation/AGENTS.md](../../src/validation/AGENTS.md)**
+
+**Quick Start:**
+```bash
+# Validate GNN schema
+python src/main.py --only-steps "3,5,6" --target-dir input/gnn_files --verbose
+```
+
+For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+
+---
+
 ## Core Schema Components
 
 ### Variable Declaration

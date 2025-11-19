@@ -1001,7 +1001,17 @@ def _generate_fallback_report(
 
 
 def _save_results(output_dir: Path, results: AdvancedVisualizationResults, logger: logging.Logger):
-    """Save visualization results to JSON"""
+    """Save visualization results to JSON with detailed skipped feature tracking"""
+    # Categorize skipped visualizations by reason
+    skipped_by_reason = {}
+    for attempt in results.attempts:
+        if attempt.status == "skipped":
+            reason = attempt.error_message or "Unknown reason"
+            if reason not in skipped_by_reason:
+                skipped_by_reason[reason] = []
+            skipped_by_reason[reason].append(f"{attempt.viz_type}:{attempt.model_name}")
+    
+    # Build the summary
     summary = {
         "timestamp": datetime.now().isoformat(),
         "total_attempts": results.total_attempts,
@@ -1012,6 +1022,19 @@ def _save_results(output_dir: Path, results: AdvancedVisualizationResults, logge
         "output_files": results.output_files,
         "warnings": results.warnings,
         "errors": results.errors,
+        "skipped_features": {
+            "count": results.skipped,
+            "by_reason": skipped_by_reason,
+            "details": [
+                {
+                    "feature": f"{a.viz_type}:{a.model_name}",
+                    "reason": a.error_message or "Unknown",
+                    "fallback_available": a.fallback_used
+                }
+                for a in results.attempts
+                if a.status == "skipped"
+            ]
+        },
         "attempts": [
             {
                 "viz_type": a.viz_type,
@@ -1031,6 +1054,16 @@ def _save_results(output_dir: Path, results: AdvancedVisualizationResults, logge
         json.dump(summary, f, indent=2)
     
     logger.info(f"Saved advanced visualization summary: {output_file}")
+    
+    # Log detailed skipped feature report if there are skipped items
+    if skipped_by_reason:
+        logger.info(f"Skipped visualization features ({results.skipped} total):")
+        for reason, features in skipped_by_reason.items():
+            logger.info(f"  - {reason}: {len(features)} feature(s)")
+            for feature in features[:3]:  # Show first 3 examples
+                logger.debug(f"    • {feature}")
+            if len(features) > 3:
+                logger.debug(f"    ... and {len(features)-3} more")
 
 
 def validate_visualization_data(model_data: Dict, logger: logging.Logger) -> Dict[str, Any]:

@@ -114,6 +114,42 @@ See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
 
 ---
 
+## Configuration
+
+### Configuration Options
+
+#### Visualization Type Selection
+- `viz_type` (str): Type of visualization to generate
+  - `"all"`: Generate all visualization types (default)
+  - `"3d"`: Only 3D network visualizations
+  - `"interactive"`: Only interactive dashboards
+  - `"dashboard"`: Only dashboard interfaces
+  - `"d2"`: Only D2 diagram generation
+  - `"statistical"`: Only statistical analysis plots
+
+#### Interactive Features
+- `interactive` (bool): Enable interactive features (default: `True`)
+  - When `True`: Generates Plotly-based interactive visualizations
+  - When `False`: Generates static matplotlib visualizations
+
+#### Export Formats
+- `export_formats` (List[str]): Formats to export (default: `["html", "json"]`)
+  - Supported: `["html", "json", "png", "svg", "pdf"]`
+  - D2 diagrams support: `["svg", "png", "pdf"]`
+
+#### D2 Configuration
+- `d2_layout_engine` (str): Layout engine for D2 diagrams (default: `"dagre"`)
+  - Options: `"dagre"` (fast), `"elk"` (quality), `"tala"` (advanced)
+- `d2_theme` (str): Theme for D2 diagrams (default: `"default"`)
+  - Options: `"default"`, `"dark"`, `"light"`, `"professional"`
+
+#### Performance Tuning
+- `max_nodes` (int): Maximum nodes for 3D visualization (default: `1000`)
+- `simplify_large_models` (bool): Simplify large models automatically (default: `True`)
+- `enable_animations` (bool): Enable animated visualizations (default: `False`)
+
+---
+
 ## Dependencies
 
 ### Required Dependencies
@@ -294,6 +330,36 @@ output/9_advanced_viz_output/
 7. **Timeline Visualization** - POMDP model development timeline, computational complexity evolution
 8. **State Space Analysis** - Comprehensive state space connectivity and manifold analysis
 9. **Belief Flow Visualization** - Information flow diagrams and belief update process visualization
+
+---
+
+## Integration Points
+
+### Pipeline Integration
+- **Input**: Receives processed GNN models from Step 3 (gnn processing)
+- **Output**: Generates visualizations consumed by Step 20 (website generation) and Step 23 (report generation)
+- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
+
+### Module Dependencies
+- **gnn/**: Reads parsed GNN model data and structure
+- **visualization/**: Complements basic visualization with advanced features
+- **export/**: Uses export formats for visualization data serialization
+
+### External Integration
+- **D2 CLI**: Integrates with D2 diagramming tool for professional diagrams
+- **Plotly**: Optional integration for interactive visualizations
+- **Bokeh**: Optional integration for advanced dashboards
+
+### Data Flow
+```
+3_gnn.py (GNN parsing)
+  ↓
+9_advanced_viz.py (Advanced visualization)
+  ↓
+  ├→ 20_website.py (HTML integration)
+  ├→ 23_report.py (Report generation)
+  └→ output/9_advanced_viz_output/ (Standalone visualizations)
+```
 
 ---
 

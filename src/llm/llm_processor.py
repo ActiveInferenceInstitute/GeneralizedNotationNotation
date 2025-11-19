@@ -26,6 +26,7 @@ from .providers import (
     get_perplexity_provider_class,
     get_ollama_provider_class,
 )
+from .providers.perplexity_provider import PerplexityProvider
 
 logger = logging.getLogger(__name__)
 
@@ -202,17 +203,17 @@ class LLMProcessor:
                     initialized_count += 1
                     logger.info(f"Initialized {provider_type.value} provider")
                 else:
-                    logger.warning(f"Failed to initialize {provider_type.value} provider")
+                    logger.debug(f"Could not initialize {provider_type.value} provider (may not be configured)")
                     
             except Exception as e:
-                logger.error(f"Error initializing {provider_type.value}: {e}")
+                logger.debug(f"Optional provider {provider_type.value} not available: {e}")
         
         self._initialized = initialized_count > 0
         
         if self._initialized:
-            logger.info(f"LLM Processor initialized with {initialized_count} providers")
+            logger.info(f"LLM Processor initialized with {initialized_count}/{len(ProviderType)} providers")
         else:
-            logger.warning("No LLM providers could be initialized")
+            logger.debug("No LLM providers initialized - using fallback analysis")
             
         return self._initialized
     

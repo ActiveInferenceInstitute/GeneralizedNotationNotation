@@ -29,11 +29,10 @@ git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotatio
 cd GeneralizedNotationNotation
 
 # Install dependencies
-cd src
 pip install -r requirements.txt
 
 # Test the installation
-python main.py --help
+python src/main.py --help
 ```
 
 ### Create your workspace:
@@ -199,9 +198,8 @@ Save this as `grid_agent.gnn` in your `my_first_gnn_model` folder.
 Check if your model is correct:
 
 ```bash
-# Run the GNN type checker
-cd ../src
-python 4_gnn_type_checker.py --target-dir ../my_first_gnn_model/
+# Run the GNN type checker (Step 5)
+python src/5_type_checker.py --target-dir my_first_gnn_model/ --verbose
 
 # If successful, you should see:
 # ✅ grid_agent.gnn: Valid GNN model
@@ -210,25 +208,34 @@ python 4_gnn_type_checker.py --target-dir ../my_first_gnn_model/
 
 **If you see errors**: Check the [Common Errors Guide](troubleshooting/common_errors.md) or compare with the template above.
 
+For more information on the type checker, see **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)**.
+
 ## 🚀 Step 5: Generate Runnable Code (3 minutes)
 
 Convert your GNN model to executable Python code:
 
 ```bash
-# Generate PyMDP code
-python main.py --target-dir ../my_first_gnn_model/ --output-dir ../output/my_first_model/
+# Generate PyMDP code (Steps 3, 11, 12)
+python src/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model/ --output-dir output/my_first_model/ --verbose
 
 # This creates several outputs:
-# - ../output/my_first_model/pymdp/grid_agent.py (executable Python)
-# - ../output/my_first_model/visualization/ (model diagrams)
-# - ../output/my_first_model/export/ (JSON, XML formats)
+# - output/11_render_output/ (executable code for PyMDP, RxInfer, etc.)
+# - output/8_visualization_output/ (model diagrams)
+# - output/7_export_output/ (JSON, XML formats)
 ```
+
+For more details on code generation, see:
+- **[src/render/AGENTS.md](../../src/render/AGENTS.md)**: Code rendering module documentation  
+- **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)**: Execution module documentation
 
 ### Test the generated code:
 
 ```bash
-cd ../output/my_first_model/pymdp/
-python grid_agent.py
+# Navigate to rendered output
+cd output/11_render_output/
+
+# Run the PyMDP simulation
+python grid_agent_pymdp.py
 
 # You should see the agent's behavior:
 # Time 0: Position=TopLeft, Action=Right
@@ -262,14 +269,17 @@ Your agent:
 
 ### Deeper Learning:
 1. **Understand the math**: Read [Active Inference basics](about_gnn.md)
-2. **Try examples**: Explore [more complex models](archive/)
+2. **Try examples**: Explore [more complex models](gnn_examples_doc.md)
 3. **Different domains**: Navigation → Perception → Decision making
 4. **Advanced features**: Multi-agent, learning, hierarchical models
+5. **Pipeline architecture**: See **[src/AGENTS.md](../../src/AGENTS.md)** for complete module documentation
+6. **Pipeline safety**: Read **[src/README.md](../../src/README.md)** for architecture patterns
 
 ### Build Your Own Model:
-1. **Start with the template**: Use [`templates/basic_gnn_template.md`](templates/basic_gnn_template.md)
+1. **Start with the template**: Use [`templates/basic_gnn_template.md`](../templates/basic_gnn_template.md)
 2. **Model your domain**: What states, observations, actions make sense?
 3. **Get help**: Check [FAQ](troubleshooting/faq.md) and [community discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
+4. **Process with pipeline**: Use `src/main.py` to run complete workflow
 
 ## 🧠 Key Concepts You've Learned
 
@@ -304,8 +314,11 @@ Your agent:
 
 ## 📚 Resources
 
-- **Documentation**: [Full GNN guide](README.md)
-- **Examples**: [Model gallery](archive/) 
+- **Pipeline Documentation**: 
+  - [src/AGENTS.md](../../src/AGENTS.md): Complete module registry
+  - [src/README.md](../../src/README.md): Pipeline architecture and safety
+- **Documentation**: [Full GNN guide](about_gnn.md) and [GNN Overview](gnn_overview.md)
+- **Examples**: [Model gallery](gnn_examples_doc.md) 
 - **Help**: [FAQ](troubleshooting/faq.md) and [Error guide](troubleshooting/common_errors.md)
 - **Community**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 

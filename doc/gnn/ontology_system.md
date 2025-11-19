@@ -2,6 +2,11 @@
 
 This document describes the ontology system used in conjunction with GNN files, focusing on the Active Inference Ontology.
 
+For implementation details and usage, see:
+- **[src/ontology/AGENTS.md](../../src/ontology/AGENTS.md)**: Ontology processing module documentation
+- **[src/AGENTS.md](../../src/AGENTS.md)**: Complete pipeline module registry
+- **[src/main.py](../../src/main.py)**: Pipeline orchestrator (Step 10 handles ontology processing)
+
 ## 1. Ontology Terms Definition File
 
 The core of the ontology system is a JSON file that defines recognized ontological terms. 
@@ -44,18 +49,29 @@ In this example, `A`, `B`, `D`, `s`, and `o` are variables defined elsewhere in 
 
 ## 3. Validation Process
 
-The GNN processing pipeline includes a step (typically `src/8_ontology.py`) that validates these annotations.
+The GNN processing pipeline includes Step 10 (`src/10_ontology.py`) that validates these annotations.
+
+For detailed implementation, see **[src/ontology/AGENTS.md](../../src/ontology/AGENTS.md)**.
 
 - **Parsing:** The `ActInfOntologyAnnotation` section is parsed to extract all `VariableName=OntologyTerm` mappings.
 - **Validation:** Each `OntologyTerm` used in the GNN file is checked for its existence as a key in the loaded `act_inf_ontology_terms.json` file.
     - If the term is found, the annotation is considered **valid**.
     - If the term is not found, the annotation is considered **invalid**.
-- **Reporting:** A report is generated (usually `output/ontology_processing/ontology_processing_report.md`) that summarizes the validation results, including:
+- **Reporting:** A report is generated (usually `output/10_ontology_output/ontology_processing_report.md`) that summarizes the validation results, including:
     - A list of all processed GNN files.
     - For each file, the parsed annotations and a summary of valid/invalid terms.
     - Overall statistics on the number of annotations found, passed, and failed.
 
 This validation helps ensure that GNN models use consistent and recognized terminology from the specified ontology, aiding in model comparison, interoperability, and semantic clarity.
+
+**Run ontology validation:**
+```bash
+# Validate ontology annotations (Step 10)
+python src/10_ontology.py --target-dir input/gnn_files --verbose
+
+# Or as part of the full pipeline
+python src/main.py --only-steps "3,10" --target-dir input/gnn_files
+```
 
 ## 4. MCP Integration
 

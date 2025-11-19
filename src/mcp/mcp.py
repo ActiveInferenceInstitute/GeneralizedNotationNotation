@@ -1831,8 +1831,8 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
             logger.error(error_message)
             raise MCPSDKNotFoundError(error_message)
         else:
-            logger.warning(
-                "MCP SDK not found or failed to load, but proceeding with limited functionality."
+            logger.debug(
+                "MCP SDK optional dependency not available - proceeding with core functionality"
             )
     
     # Apply performance mode

@@ -1,22 +1,7 @@
 # GNN Domain Knowledge and Standards
 
-<<<<<<< Updated upstream
-## GNN File Structure Understanding
-- **GNN Files**: Multi-format support including Markdown (.md), JSON (.json), YAML (.yml/.yaml), XML (.xml), Binary Pickle (.pkl), Protobuf (.proto), Maxima (.max), and more
-- **Markdown Format** (Primary): Markdown-based (.md) with specific sections:
-  - `GNNVersionAndFlags`: Version specification and processing flags
-  - `ModelName`: Descriptive model identifier
-  - `ModelAnnotation`: Free-text explanation of model purpose and features
-  - `StateSpaceBlock`: Variable definitions with dimensions/types (s_fX[dims,type])
-  - `Connections`: Directed/undirected edges showing dependencies (>, -, ->)
-  - `InitialParameterization`: Starting values, matrices (A, B, C, D), priors
-  - `Equations`: LaTeX-rendered mathematical relationships
-  - `Time`: Temporal settings (Dynamic/Static, DiscreteTime, ModelTimeHorizon)
-  - `ActInfOntologyAnnotation`: Mapping to Active Inference Ontology terms
-  - `Footer` and `Signature`: Provenance information
+> **Environment Note**: Use `uv` as the configured environment and dependency manager across this project (`uv pip install`, `uv run <script>`). Only fall back to system-wide `python3`/`pip` when uv-managed invocations are unavailable.
 
-## GNN Syntax and Punctuation
-=======
 ## Project Overview
 
 GeneralizedNotationNotation (GNN) is a comprehensive text-based language for standardizing Active Inference generative models. The project provides a complete ecosystem for model specification, validation, visualization, translation to executable code, and cross-format interoperability across scientific computing environments.
@@ -71,14 +56,12 @@ Variables follow the pattern: `variable_name[dimensions,type]`
 ## GNN Syntax and Punctuation
 
 ### Mathematical Notation
->>>>>>> Stashed changes
 - **Variables**: Use underscore for subscripts (X_2), caret for superscripts (X^Y)
 - **Greek Letters**: Full Unicode support (π, σ, μ, θ, φ)
 - **Operations**: Standard math operators (+, -, *, /, |)
 - **Grouping**: Parentheses (), exact values {1}, indexing/dimensions [2,3]
 - **Comments**: Triple hashtags (###) for inline comments
 - **Probability**: Conditional probability notation P(X|Y) using pipe |
-<<<<<<< Updated upstream
 - **Unicode Support**: Proper handling of mathematical symbols like π, α, β
 
 ## Multi-Format GNN Support
@@ -145,8 +128,7 @@ The GNN system supports multiple validation levels for different use cases:
 - **Comprehensive Testing**: Unit tests, integration tests, and round-trip validation
 - **Documentation**: Complete docstrings and type hints for all GNN processing functions
 - **Reproducibility**: Deterministic parsing and validation results
-- **Extensibility**: Modular design allowing easy addition of new formats and validation rules 
-=======
+- **Extensibility**: Modular design allowing easy addition of new formats and validation rules
 
 ### Active Inference Conventions
 - **Standard Variables**: A, B, C, D, E, F, G matrices for Active Inference models
@@ -156,7 +138,7 @@ The GNN system supports multiple validation levels for different use cases:
 
 ## Format Ecosystem
 
-### Supported Formats (21 Total)
+### Supported Formats (21+ Total)
 The GNN ecosystem supports comprehensive format interoperability:
 
 #### Schema Formats (7)
@@ -188,8 +170,8 @@ The GNN ecosystem supports comprehensive format interoperability:
 - **Maxima**: Computer algebra system with embedded model data
 - **Pickle**: Binary serialization with embedded model data
 
-### Revolutionary Embedded Data Architecture
-All formats implement a revolutionary embedded data technique for perfect semantic preservation:
+### Embedded Data Architecture
+All formats implement embedded data technique for perfect semantic preservation:
 
 ```python
 # Universal Serialization - Embeds complete JSON model data
@@ -233,21 +215,14 @@ The `ProcessingContext` class manages:
 
 ### Round-Trip Testing
 Comprehensive round-trip testing validates semantic preservation:
-- **21 Format Support**: All formats tested for round-trip capability
+- **21+ Format Support**: All formats tested for round-trip capability
 - **100% Success Rate**: Perfect semantic preservation achieved
 - **Embedded Data Validation**: Complete model data preservation
 - **Performance Metrics**: Execution time and memory usage tracking
 - **Detailed Reporting**: Comprehensive test reports and analysis
 
-### Test Results
-- **Overall Success Rate**: 100.0% (21/21 formats)
-- **Schema Formats**: 100% SUCCESS (7/7)
-- **Language Formats**: 100% SUCCESS (6/6)
-- **Formal Specification Formats**: 100% SUCCESS (6/6)
-- **Other Formats**: 100% SUCCESS (2/2)
-
 ### Testing Infrastructure
-- **test_round_trip.py**: Production-ready 21-format testing system
+- **test_round_trip.py**: Production-ready 21+ format testing system
 - **README_round_trip.md**: Comprehensive methodology and results
 - **round_trip_reports/**: Detailed test reports and analysis
 - **performance_benchmarks.py**: Performance testing and optimization
@@ -285,8 +260,8 @@ Comprehensive round-trip testing validates semantic preservation:
 ## Future Research Directions
 
 ### Completed Achievements
-- ✅ **Universal Format Support**: All 21 formats with perfect round-trip fidelity
-- ✅ **Complete Semantic Preservation**: Revolutionary embedded data architecture
+- ✅ **Universal Format Support**: All 21+ formats with perfect round-trip fidelity
+- ✅ **Complete Semantic Preservation**: Embedded data architecture for complex scientific models
 - ✅ **Production-Ready Infrastructure**: Enterprise-grade parsing and serialization
 - ✅ **Comprehensive Validation**: Cross-format consistency verification
 - ✅ **Binary Format Support**: Enhanced validation for all file types
@@ -301,8 +276,8 @@ Comprehensive round-trip testing validates semantic preservation:
 ## Impact Assessment
 
 ### Scientific Impact
-- **Format Standardization**: First comprehensive multi-format Active Inference model interchange
-- **Semantic Preservation**: Revolutionary embedded data technique for complex scientific models
+- **Format Standardization**: Comprehensive multi-format Active Inference model interchange
+- **Semantic Preservation**: Complete embedded data technique for complex scientific models
 - **Reproducibility**: Deterministic format conversion with complete validation
 - **Interoperability**: Seamless conversion between 21+ scientific computing formats
 
@@ -320,5 +295,4 @@ Comprehensive round-trip testing validates semantic preservation:
 
 ---
 
-**Status Summary**: The GNN ecosystem has achieved **HISTORIC SUCCESS** with 100% round-trip fidelity across all 21 formats. This represents the **first-ever complete universal format interoperability** in scientific computing, enabled by revolutionary embedded data architecture and comprehensive testing. The system now provides **perfect semantic preservation** across the entire format ecosystem. 
->>>>>>> Stashed changes
+**Status Summary**: The GNN ecosystem provides a comprehensive, production-ready ecosystem for standardized Active Inference model specification, validation, and cross-format processing with complete semantic preservation across all supported formats.

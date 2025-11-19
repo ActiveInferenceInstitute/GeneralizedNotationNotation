@@ -6,11 +6,17 @@ to TOML configuration files compatible with RxInfer.jl simulations.
 """
 
 import logging
-import toml
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Union, Tuple
 
 logger = logging.getLogger(__name__)
+
+# Try to import toml, fall back gracefully
+try:
+    import toml
+except ImportError:
+    logger.debug("toml library not available, TOML generation will be skipped")
+    toml = None
 
 def render_gnn_to_rxinfer_toml(
     gnn_spec: Dict[str, Any],

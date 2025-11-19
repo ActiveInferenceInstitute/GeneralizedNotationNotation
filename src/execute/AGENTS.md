@@ -54,6 +54,32 @@
 
 ---
 
+## Configuration
+
+### Configuration Options
+
+#### Simulation Engine Selection
+- `simulation_engine` (str): Engine to use for execution (default: `"auto"`)
+  - `"auto"`: Automatically select best available engine
+  - `"pymdp"`: Use PyMDP for Python simulations
+  - `"rxinfer"`: Use RxInfer.jl for Julia simulations
+  - `"activeinference_jl"`: Use ActiveInference.jl
+  - `"jax"`: Use JAX framework
+  - `"discopy"`: Use DisCoPy for categorical diagrams
+
+#### Execution Parameters
+- `timeout` (int): Execution timeout in seconds (default: `60`)
+- `validate_only` (bool): Only validate scripts, don't execute (default: `False`)
+- `capture_output` (bool): Capture stdout/stderr (default: `True`)
+- `parallel_execution` (bool): Execute scripts in parallel (default: `False`)
+
+#### Framework-Specific Configuration
+- `julia_path` (str): Path to Julia executable (default: auto-detect)
+- `python_env` (str): Python environment to use (default: current environment)
+- `jax_device` (str): JAX device to use (default: `"cpu"`, options: `"cpu"`, `"gpu"`)
+
+---
+
 ## Dependencies
 
 ### Required Dependencies
@@ -138,6 +164,39 @@ output/12_execute_output/
 2. **Syntax Errors**: Generated code has errors
 3. **Runtime Errors**: Simulation crashes
 4. **Timeout Errors**: Execution exceeds limit
+
+---
+
+## Integration Points
+
+### Pipeline Integration
+- **Input**: Receives rendered simulation scripts from Step 11 (render)
+- **Output**: Generates execution results for Step 13 (llm analysis), Step 16 (analysis), and Step 23 (report generation)
+- **Dependencies**: Requires rendered code from `11_render.py` output
+
+### Module Dependencies
+- **render/**: Consumes rendered simulation scripts
+- **llm/**: Provides execution results for LLM analysis
+- **analysis/**: Provides execution data for statistical analysis
+- **report/**: Provides execution summaries for reports
+
+### External Integration
+- **PyMDP**: Executes Python Active Inference simulations
+- **Julia Runtime**: Executes Julia simulation scripts (RxInfer.jl, ActiveInference.jl)
+- **JAX**: Executes JAX-based simulations
+- **DisCoPy**: Executes categorical diagram computations
+
+### Data Flow
+```
+11_render.py (Code generation)
+  ↓
+12_execute.py (Script execution)
+  ↓
+  ├→ 13_llm.py (LLM analysis of results)
+  ├→ 16_analysis.py (Statistical analysis)
+  ├→ 23_report.py (Execution reports)
+  └→ output/12_execute_output/ (Execution results)
+```
 
 ---
 

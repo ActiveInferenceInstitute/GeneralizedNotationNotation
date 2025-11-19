@@ -1,5 +1,7 @@
 # Pipeline Architecture & Implementation Paradigm
 
+> **Environment Note**: The pipeline relies on the `uv` environment manager. Always run orchestration, dependency installs, and tooling through `uv` (e.g., `uv pip install`, `uv run src/main.py`) so configuration, locking, and virtual environment activation remain consistent.
+
 ### Core Pipeline Orchestration
 - **Main Orchestrator**: `src/main.py` dynamically executes numbered pipeline scripts (0-23)
 - **Script Discovery**: Uses predefined pipeline_steps list to execute 24 steps in order
@@ -8,6 +10,11 @@
 - **Dependency Validation**: Comprehensive dependency checking before pipeline execution
 - **Performance Tracking**: Built-in performance monitoring and resource usage tracking
 - **Configuration Management**: YAML-based configuration with CLI argument overrides
+- **Enhanced Visual Logging**: Real-time progress indicators, status icons, and structured summaries
+- **Correlation ID Tracking**: Unique tracking IDs for debugging and monitoring across all steps
+- **Automatic Dependency Resolution**: When using `--only-steps`, dependencies are automatically included
+- **Step Filtering**: Support for `--only-steps` and `--skip-steps` with intelligent dependency resolution
+- **Pipeline Summary**: Comprehensive JSON summary with timing, memory usage, and status for all steps
 
 ### Pipeline Steps (24 Steps - Current Order 0-23)
 Each numbered script corresponds to a specific module folder and implements real functionality:
@@ -51,6 +58,82 @@ Each numbered script corresponds to a specific module folder and implements real
 - **Hybrid Implementation**: Some steps mix approaches
 
 **Target Architecture**: All steps should eventually follow thin orchestrator pattern while maintaining current functionality.
+
+### Main Orchestrator (`src/main.py`)
+
+**Core Functionality:**
+- **Dynamic Step Execution**: Executes numbered scripts (0-23) as subprocesses with proper working directory
+- **Argument Propagation**: Centralized argument passing to all steps via `build_step_command_args()`
+- **Performance Monitoring**: Tracks execution time, memory usage, and resource consumption for each step
+- **Error Recovery**: Comprehensive error handling with retry logic and graceful degradation
+- **Pipeline Summary**: Generates comprehensive JSON summary with all step results, timing, and status
+
+**Enhanced Features:**
+- **Visual Progress Tracking**: Real-time progress indicators with step-by-step visual feedback
+- **Correlation ID System**: Unique tracking IDs for end-to-end pipeline execution monitoring
+- **Automatic Dependency Resolution**: When using `--only-steps`, dependencies are automatically included
+- **Step Filtering**: Support for `--only-steps` and `--skip-steps` with intelligent dependency resolution
+- **Virtual Environment Detection**: Automatic detection and use of `.venv/bin/python` if available
+- **Timeout Management**: Step-specific timeouts (e.g., 20 min for comprehensive tests, 10 min for LLM)
+- **Memory Tracking**: Peak memory usage tracking across all steps
+- **Status Classification**: Enhanced status classification (SUCCESS, SUCCESS_WITH_WARNINGS, PARTIAL_SUCCESS, FAILED, TIMEOUT)
+
+**Execution Flow:**
+1. Parse arguments and create `PipelineArguments` object
+2. Setup enhanced visual logging with correlation ID
+3. Define pipeline steps (0-23) with descriptions
+4. Handle step filtering (`--only-steps`, `--skip-steps`) with dependency resolution
+5. Validate step sequence and prerequisites
+6. Execute each step as subprocess with:
+   - Proper working directory (project root)
+   - Virtual environment Python if available
+   - Timeout protection
+   - Memory usage tracking
+   - Output capture (stdout/stderr)
+7. Collect step results with timing and status
+8. Generate comprehensive pipeline summary JSON
+9. Display visual completion summary with statistics
+
+### Data Dependencies and Step Relationships
+
+The pipeline implements automatic dependency resolution when using `--only-steps`. The following dependencies are automatically included:
+
+```
+Step 3 (3_gnn.py) - Core GNN Processing
+  ↓ [parses GNN files, creates structured model data]
+  ├→ Step 5 (5_type_checker.py) - Requires parsed GNN data
+  ├→ Step 6 (6_validation.py) - Requires parsed GNN data + type checking
+  ├→ Step 7 (7_export.py) - Requires parsed GNN data
+  ├→ Step 8 (8_visualization.py) - Requires parsed GNN data
+  ├→ Step 10 (10_ontology.py) - Requires parsed GNN data
+  ├→ Step 11 (11_render.py) - Requires parsed GNN data
+  ├→ Step 13 (13_llm.py) - Requires parsed GNN data
+  └→ Step 15 (15_audio.py) - Requires parsed GNN data
+
+Step 11 (11_render.py) - Code Generation
+  ↓ [generates simulation code for multiple frameworks]
+  └→ Step 12 (12_execute.py) - Requires rendered code
+
+Step 8 (8_visualization.py) - Core Visualization
+  ↓ [generates graphs and matrices]
+  ├→ Step 9 (9_advanced_viz.py) - Requires visualization outputs
+  ├→ Step 20 (20_website.py) - Requires visualization outputs
+  └→ Step 23 (23_report.py) - Requires visualization outputs
+
+Step 13 (13_llm.py) - LLM Analysis
+  ↓ [generates AI analysis and explanations]
+  └→ Step 23 (23_report.py) - Requires LLM analysis outputs
+
+Step 7 (7_export.py) - Multi-Format Export
+  ↓ [generates exports in multiple formats]
+  └→ Step 16 (16_analysis.py) - Requires export data
+```
+
+**Dependency Resolution Logic:**
+- When `--only-steps "11,12"` is specified, step 3 is automatically included
+- When `--only-steps "9"` is specified, steps 3 and 8 are automatically included
+- When `--only-steps "23"` is specified, steps 3, 8, and 13 are automatically included
+- Dependencies are resolved recursively (e.g., step 6 depends on 5, which depends on 3)
 
 ### Centralized Infrastructure
 

@@ -1,6 +1,0 @@
-{
-  "model_name": "actinf_pomdp_agent",
-  "framework": "ActiveInference.jl",
-  "num_steps": 100,
-  "timestamp": "2025-08-29T11:49:29"
-}

@@ -73,7 +73,7 @@ class OpenAIProvider(BaseLLMProvider):
             True if initialization successful, False otherwise
         """
         if not self.api_key:
-            logger.warning("OpenAI API key not provided")
+            logger.debug("OpenAI API key not provided - OpenAI provider will not be available")
             return False
             
         try:
@@ -99,7 +99,7 @@ class OpenAIProvider(BaseLLMProvider):
             logger.error("OpenAI library not installed. Install with: pip install openai")
             return False
         except Exception as e:
-            logger.error(f"Failed to initialize OpenAI client: {e}")
+            logger.debug(f"OpenAI provider initialization issue (will use other providers if available): {e}")
             return False
     
     def validate_config(self, config: LLMConfig) -> bool:

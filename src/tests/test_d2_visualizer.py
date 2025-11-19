@@ -19,7 +19,7 @@ import sys
 import tempfile
 import json
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+# Mocks removed - using real implementations per testing policy
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))

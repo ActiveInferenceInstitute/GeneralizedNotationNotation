@@ -11,7 +11,7 @@ import pytest
 import sys
 import logging
 from pathlib import Path
-from unittest.mock import Mock
+from dataclasses import dataclass
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -19,6 +19,14 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from pipeline.config import get_output_dir_for_script
 from utils.pipeline_validator import validate_step_prerequisites
 from utils.argument_utils import PipelineArguments
+
+
+@dataclass
+class PipelineArgs:
+    """Mock-free replacement for pipeline arguments."""
+    output_dir: Path
+    target_dir: Path = None
+    verbose: bool = False
 
 
 class TestPipelineWarningsFix:
@@ -41,9 +49,8 @@ class TestPipelineWarningsFix:
         type_checker_output_dir = output_dir / "5_type_checker_output"
         type_checker_output_dir.mkdir()
         
-        # Create mock args
-        args = Mock()
-        args.output_dir = output_dir
+        # Create real args object
+        args = PipelineArgs(output_dir=output_dir)
         
         logger = logging.getLogger("test")
         
@@ -64,13 +71,12 @@ class TestPipelineWarningsFix:
         gnn_output_dir = output_dir / "3_gnn_output" / "3_gnn_output"
         gnn_output_dir.mkdir(parents=True)
         
-        # Create a mock parsed GNN file in the nested location
-        mock_parsed_file = gnn_output_dir / "test_model_parsed.json"
-        mock_parsed_file.write_text('{"ModelName": "test"}')
+        # Create a parsed GNN file in the nested location
+        parsed_file = gnn_output_dir / "test_model_parsed.json"
+        parsed_file.write_text('{"ModelName": "test"}')
         
-        # Create mock args
-        args = Mock()
-        args.output_dir = output_dir
+        # Create real args object
+        args = PipelineArgs(output_dir=output_dir)
         
         logger = logging.getLogger("test")
         
@@ -91,9 +97,8 @@ class TestPipelineWarningsFix:
         
         # Don't create the prerequisite directory
         
-        # Create mock args
-        args = Mock()
-        args.output_dir = output_dir
+        # Create real args object
+        args = PipelineArgs(output_dir=output_dir)
         
         logger = logging.getLogger("test")
         
@@ -171,9 +176,8 @@ class TestPipelineWarningsFix:
         (output_dir / "5_type_checker_output").mkdir()
         (output_dir / "11_render_output").mkdir()
         
-        # Create mock args
-        args = Mock()
-        args.output_dir = output_dir
+        # Create real args object
+        args = PipelineArgs(output_dir=output_dir)
         
         logger = logging.getLogger("test")
         

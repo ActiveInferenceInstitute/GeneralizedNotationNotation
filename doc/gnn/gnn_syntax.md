@@ -2,6 +2,24 @@
 
 Quick reference for GNN syntax with working examples.
 
+## Syntax Validation
+
+GNN syntax is validated through the pipeline type checker:
+
+- **`src/5_type_checker.py`** → Syntax validation and type checking
+  - See: **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)** for validation details
+- **`src/6_validation.py`** → Advanced consistency checking
+
+**Quick Start:**
+```bash
+# Validate GNN syntax
+python src/5_type_checker.py --target-dir input/gnn_files --strict --verbose
+```
+
+For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+
+---
+
 ## Variable Declaration
 
 ```gnn

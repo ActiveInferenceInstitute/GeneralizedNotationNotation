@@ -87,7 +87,7 @@ class PerplexityProvider(BaseLLMProvider):
             return False
             
         if not self.api_key:
-            logger.warning("Perplexity API key not provided")
+            logger.debug("Perplexity API key not provided - Perplexity provider will not be available")
             return False
             
         try:
@@ -115,7 +115,7 @@ class PerplexityProvider(BaseLLMProvider):
             return True
             
         except Exception as e:
-            logger.error(f"Failed to initialize Perplexity client: {e}")
+            logger.debug(f"Perplexity provider initialization issue (will use other providers if available): {e}")
             return False
     
     def validate_config(self, config: LLMConfig) -> bool:

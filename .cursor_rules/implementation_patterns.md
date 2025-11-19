@@ -1,51 +1,94 @@
 # Implementation Patterns and Infrastructure Usage
 
+> **Environment Note**: Follow the `uv` workflow for all implementation and tooling activities. Use `uv pip install`, `uv run <script>`, and `uv test` to ensure consistent dependency and environment configuration before resorting to bare `python3` invocations.
+
 ## Pipeline Script Implementation Pattern
 
-### Standard Import Structure
-Every pipeline script should follow this exact import pattern:
+### Modern Standardized Pattern (PREFERRED)
+
+**All new pipeline scripts should use `create_standardized_pipeline_script`** from `utils.pipeline_template`. This is the current standard pattern used across all 24 pipeline steps (0-23).
 
 ```python
 #!/usr/bin/env python3
 """
-[Script Description]
+Step N: [Step Name] (Thin Orchestrator)
+
+This step orchestrates [step description] for GNN models.
+
+Architectural Role:
+    This is a "thin orchestrator" - a minimal script that delegates core functionality
+    to the corresponding module (src/[module_name]/). It handles argument parsing, logging
+    setup, and calls the actual processing functions from the module.
+
+Pipeline Flow:
+    main.py → N_[module].py (this script) → [module_name]/ (modular implementation)
+
+How to run:
+  python src/N_[module].py --target-dir input/gnn_files --output-dir output --verbose
+  python src/main.py  # (runs as part of the pipeline)
+
+Expected outputs:
+  - [Module-specific outputs] in the specified output directory
+  - Comprehensive reports and summaries
+  - Actionable error messages if dependencies or paths are missing
+  - Clear logging of all resolved arguments and paths
 """
 
 import sys
-import argparse
 from pathlib import Path
-from typing import Optional, List, Dict, Any
 
-# Standard infrastructure imports with fallback
-try:
-    from utils import (
-        setup_step_logging,
-        log_step_start,
-        log_step_success, 
-        log_step_warning,
-        log_step_error,
-        performance_tracker,
-        UTILS_AVAILABLE
-    )
-    
-    from pipeline import (
-        get_output_dir_for_script,
-        get_pipeline_config
-    )
-    
-except ImportError as e:
-    # Fallback implementations for graceful degradation
-    # [Minimal compatibility functions here]
-    UTILS_AVAILABLE = False
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
 
-# Module-specific imports with dependency validation
+from utils.pipeline_template import create_standardized_pipeline_script
+
+# Import module function
 try:
-    from [module_name] import [specific_functions]
-    DEPENDENCIES_AVAILABLE = True
-except ImportError as e:
-    log_step_warning(logger, f"Failed to import dependencies: {e}")
-    DEPENDENCIES_AVAILABLE = False
+    from [module_name] import [process_function]
+except ImportError:
+    def [process_function](target_dir, output_dir, logger, **kwargs):
+        """Fallback processing when module unavailable."""
+        logger.warning("[Module] module not available - using fallback")
+        return True
+
+# Create the standardized pipeline script
+run_script = create_standardized_pipeline_script(
+    "N_[module].py",  # Step name (e.g., "11_render.py")
+    [process_function],  # Module function to call
+    "[Brief step description]",  # Description for help text
+    additional_arguments={  # Optional: step-specific arguments
+        "custom_option": {
+            "type": bool,
+            "help": "Custom option description",
+            "default": False
+        },
+        "custom_path": {
+            "type": Path,
+            "help": "Path to custom resource",
+            "flag": "--custom-path"  # Optional custom flag name
+        }
+    }
+)
+
+def main() -> int:
+    """Main entry point for the pipeline step."""
+    return run_script()
+
+if __name__ == "__main__":
+    sys.exit(main())
 ```
+
+**Key Benefits of Standardized Pattern:**
+- **Consistent Argument Parsing**: Automatic handling of `--target-dir`, `--output-dir`, `--verbose`, `--recursive`
+- **Automatic Output Directory Management**: Uses `get_output_dir_for_script()` to create step-specific output directories
+- **Graceful Degradation**: Fallback argument parser if enhanced parser unavailable
+- **Standardized Logging**: Automatic setup of step logging with correlation IDs
+- **Error Handling**: Consistent error handling and exit codes
+- **Path Normalization**: Automatic conversion of string paths to `Path` objects
+
+### Legacy Pattern (For Reference Only)
+
+The following pattern is shown for reference but should NOT be used for new scripts. All existing scripts are being migrated to the standardized pattern above.
 
 ### Standardized Main Function Pattern
 
@@ -160,6 +203,8 @@ src/[module_name]/
 
 ### Module __init__.py Pattern
 
+**Standard Module Structure:**
+
 ```python
 #!/usr/bin/env python3
 """
@@ -190,6 +235,99 @@ __all__ = [
     '__version__'
 ]
 ```
+
+**Package-Level __init__.py Pattern (src/__init__.py):**
+
+The top-level `src/__init__.py` provides package discovery and metadata:
+
+```python
+"""
+GNN Pipeline Core Module
+
+This module provides the core functionality for the GNN processing pipeline.
+"""
+
+from pathlib import Path
+from typing import List
+
+# Package-level metadata expected by tests
+__version__ = "1.0.0"
+FEATURES = {
+    "pipeline_orchestration": True,
+    "mcp_integration": True,
+}
+
+def _discover_top_level_modules() -> List[str]:
+    """Discover all top-level subpackages under the src package.
+    
+    Returns a sorted list of directory names that contain an __init__.py file
+    and do not start with an underscore.
+    """
+    base_dir = Path(__file__).parent
+    module_names: List[str] = []
+    for entry in base_dir.iterdir():
+        if not entry.is_dir():
+            continue
+        name = entry.name
+        if name.startswith('_'):
+            continue
+        if (entry / '__init__.py').exists():
+            module_names.append(name)
+    return sorted(module_names)
+
+def get_module_info() -> dict[str, object]:
+    """Get information about the core GNN package.
+    
+    Returns a dictionary with high-level metadata about the overall package.
+    """
+    return {
+        "name": "GNN Pipeline Core",
+        "version": __version__,
+        "description": "Core functionality for GNN processing pipeline",
+        "modules": _discover_top_level_modules(),
+        "features": [
+            "Pipeline orchestration",
+            "GNN processing",
+            "Analysis and statistics",
+            # ... additional features
+        ],
+    }
+
+# Lazy imports for optional dependencies with graceful fallback
+import importlib
+
+try:
+    # Attempt to import optional modules with fallback placeholders
+    optional_module = importlib.import_module('src.optional_module')
+except Exception:
+    class _OptionalModulePlaceholder:
+        __version__ = "1.0.0"
+        FEATURES = {'feature': True}
+        
+        @staticmethod
+        def get_module_info() -> dict:
+            return {
+                'version': _OptionalModulePlaceholder.__version__,
+                'description': 'Optional module compatibility shim',
+                'features': _OptionalModulePlaceholder.FEATURES,
+            }
+    
+    optional_module = _OptionalModulePlaceholder()
+
+__all__ = [
+    'get_module_info',
+    'optional_module',
+    '__version__',
+    'FEATURES',
+]
+```
+
+**Key Patterns:**
+- **Module Discovery**: Automatic discovery of subpackages via `_discover_top_level_modules()`
+- **Metadata Exposure**: `get_module_info()` provides standardized module information
+- **Lazy Imports**: Optional dependencies imported with graceful fallback to placeholder objects
+- **Feature Flags**: `FEATURES` dictionary for capability detection
+- **Version Management**: Centralized version tracking
 
 ## MCP Integration Pattern
 
@@ -481,5 +619,139 @@ def performance_monitored_function(data, options):
     
     return result
 ```
+
+## Enhanced Visual Logging Pattern
+
+### Visual Logging Integration
+
+All pipeline steps should integrate with the enhanced visual logging system for better user experience and accessibility:
+
+```python
+from utils.visual_logging import (
+    create_visual_logger,
+    VisualConfig,
+    format_step_header,
+    format_status_message
+)
+
+# Setup enhanced visual logging
+visual_config = VisualConfig(
+    enable_colors=True,
+    enable_progress_bars=True,
+    enable_emoji=True,
+    enable_animation=True,
+    show_timestamps=args.verbose,
+    show_correlation_ids=True,
+    compact_mode=False
+)
+
+visual_logger = create_visual_logger("step_name", visual_config)
+
+# Use visual indicators
+visual_logger.print_header(
+    "🎨 Step Title",
+    f"Processing description | Output: {output_dir}"
+)
+
+visual_logger.print_progress(current, total, "Processing items")
+
+visual_logger.print_success("Operation completed successfully")
+visual_logger.print_warning("Non-critical issue detected")
+visual_logger.print_error("Critical error occurred")
+```
+
+**Visual Features:**
+- **Progress Indicators**: Real-time progress bars and completion indicators
+- **Status Icons**: Standardized emoji icons (✅, ⚠️, ❌, 🔄) for clear status communication
+- **Color Coding**: Consistent color schemes (green=success, yellow=warning, red=error, blue=info)
+- **Screen Reader Support**: Emoji-free alternatives and structured text for accessibility
+- **Correlation IDs**: Unique tracking IDs for debugging and monitoring across pipeline steps
+- **Performance Metrics**: Display timing, memory usage, and resource consumption clearly
+- **Structured Summaries**: Formatted tables and panels for key metrics and completion status
+
+## Module Function Signature Pattern
+
+### Standard Module Function Interface
+
+All module functions called by pipeline scripts must follow this signature:
+
+```python
+def process_module_function(
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
+    recursive: bool = False,
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Process [module] functionality for GNN models.
+    
+    Args:
+        target_dir: Directory containing input files to process
+        output_dir: Step-specific output directory (already normalized by orchestrator)
+        logger: Logger instance for this step
+        recursive: Whether to process files recursively
+        verbose: Whether to enable verbose logging
+        **kwargs: Additional step-specific arguments
+        
+    Returns:
+        True if processing succeeded, False otherwise
+    """
+    try:
+        # Validate inputs
+        if not target_dir.exists():
+            log_step_error(logger, f"Target directory does not exist: {target_dir}")
+            return False
+        
+        # Ensure output directory exists
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Main processing logic here
+        # ...
+        
+        return True
+        
+    except Exception as e:
+        log_step_error(logger, f"Processing failed: {e}")
+        return False
+```
+
+**Critical Requirements:**
+- **First Parameter**: `target_dir: Path` - Input directory
+- **Second Parameter**: `output_dir: Path` - Output directory (already normalized by orchestrator)
+- **Third Parameter**: `logger: logging.Logger` - Logger instance
+- **Standard Parameters**: `recursive: bool = False`, `verbose: bool = False`
+- **Flexible Parameters**: `**kwargs` for step-specific options
+- **Return Type**: `bool` - True for success, False for failure
+
+## Output Directory Management Pattern
+
+### Standardized Output Directory Structure
+
+All pipeline steps use `get_output_dir_for_script()` to create step-specific output directories:
+
+```python
+from pipeline.config import get_output_dir_for_script
+
+# In pipeline script (handled automatically by create_standardized_pipeline_script):
+step_output_dir = get_output_dir_for_script("N_module", output_dir)
+# Creates: output/N_module_output/
+
+# Output directory structure:
+# output/
+# ├── 0_template_output/
+# ├── 1_setup_output/
+# ├── 2_tests_output/
+# ├── 3_gnn_output/
+# ├── ... (all 24 steps)
+# └── pipeline_execution_summary.json
+```
+
+**Directory Naming Convention:**
+- Format: `{step_number}_{module_name}_output`
+- Examples: `3_gnn_output`, `11_render_output`, `22_gui_output`
+- All outputs organized under base `output/` directory
+- Each step has isolated output directory
 
 These patterns ensure consistency, reliability, and maintainability across the entire GNN pipeline system. 

@@ -2,6 +2,32 @@
 
 Comprehensive guide to sophisticated Active Inference modeling techniques using GNN.
 
+## Pipeline Processing for Advanced Models
+
+Advanced GNN models benefit from the full pipeline processing capabilities:
+
+**Parsing & Validation (Steps 3, 5, 6)**
+- Complex hierarchical and multi-agent models are validated for consistency
+- See: **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**, **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)**
+
+**Code Generation & Execution (Steps 11, 12)**
+- Advanced patterns rendered to framework-specific implementations  
+- See: **[src/render/AGENTS.md](../../src/render/AGENTS.md)**, **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)**
+
+**Analysis & Reporting (Steps 13, 16, 23)**
+- Advanced statistical analysis and LLM-enhanced interpretation
+- See: **[src/llm/AGENTS.md](../../src/llm/AGENTS.md)**, **[src/analysis/AGENTS.md](../../src/analysis/AGENTS.md)**
+
+**Quick Start:**
+```bash
+# Process advanced models through full pipeline
+python src/main.py --target-dir input/advanced_models/ --verbose
+```
+
+For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+
+---
+
 ## 🎯 Overview
 
 This guide covers advanced patterns for modeling complex cognitive and behavioral systems using GNN. Each pattern includes theory, implementation, and practical examples.

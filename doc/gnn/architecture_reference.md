@@ -2,6 +2,47 @@
 
 Implementation details of the thin orchestrator pattern and cross-module integration.
 
+For complete pipeline documentation:
+- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
+- **[src/README.md](../../src/README.md)**: Pipeline architecture and safety patterns
+- **[src/main.py](../../src/main.py)**: Pipeline orchestrator script
+
+## Complete 24-Step Pipeline Mapping
+
+The GNN pipeline consists of exactly 24 steps (0-23), each following the thin orchestrator pattern:
+
+**Core Processing (Steps 0-9)**
+- `0_template.py` → `src/template/` - Pipeline initialization
+- `1_setup.py` → `src/setup/` - Environment and dependency setup
+- `2_tests.py` → `src/tests/` - Test suite execution
+- `3_gnn.py` → `src/gnn/` - GNN parsing and multi-format processing
+- `4_model_registry.py` → `src/model_registry/` - Model versioning
+- `5_type_checker.py` → `src/type_checker/` - Type validation
+- `6_validation.py` → `src/validation/` - Consistency checking
+- `7_export.py` → `src/export/` - Multi-format export
+- `8_visualization.py` → `src/visualization/` - Graph visualization
+- `9_advanced_viz.py` → `src/advanced_visualization/` - Advanced plots
+
+**Simulation & Analysis (Steps 10-16)**
+- `10_ontology.py` → `src/ontology/` - Ontology processing
+- `11_render.py` → `src/render/` - Code generation
+- `12_execute.py` → `src/execute/` - Simulation execution
+- `13_llm.py` → `src/llm/` - LLM analysis
+- `14_ml_integration.py` → `src/ml_integration/` - ML integration
+- `15_audio.py` → `src/audio/` - Audio generation
+- `16_analysis.py` → `src/analysis/` - Statistical analysis
+
+**Integration & Output (Steps 17-23)**
+- `17_integration.py` → `src/integration/` - System integration
+- `18_security.py` → `src/security/` - Security validation
+- `19_research.py` → `src/research/` - Research tools
+- `20_website.py` → `src/website/` - Website generation
+- `21_mcp.py` → `src/mcp/` - MCP processing
+- `22_gui.py` → `src/gui/` - GUI interface
+- `23_report.py` → `src/report/` - Report generation
+
+For module-specific documentation, see each `src/[module]/AGENTS.md` file.
+
 ## Thin Orchestrator Pattern (Actual Implementation)
 
 ### Pattern Definition

@@ -82,10 +82,7 @@ from utils.pipeline_template import (
 from utils.argument_utils import ArgumentParser, PipelineArguments
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 from utils.resource_manager import get_current_memory_usage
-from utils.error_recovery import attempt_step_recovery, is_failure_recoverable
-from utils.pipeline_monitor import generate_pipeline_health_report
 from utils.pipeline_validator import validate_step_prerequisites, validate_pipeline_step_sequence
-from utils.pipeline_planner import generate_execution_plan
 
 # Optional logging and progress tracking
 try:
@@ -310,6 +307,9 @@ def main():
         progress_tracker = None
         if STRUCTURED_LOGGING_AVAILABLE:
             progress_tracker = PipelineProgressTracker(len(steps_to_execute))
+            # Set global progress tracker so structured logging functions can use it
+            import utils.logging_utils as logging_utils_module
+            logging_utils_module._global_progress_tracker = progress_tracker
         
         # Validate step sequence before execution
         sequence_validation = validate_pipeline_step_sequence(steps_to_execute, logger)
@@ -422,20 +422,30 @@ def main():
 
             # Step completion logging with progress tracking
             if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
-                completion_summary = progress_tracker.complete_step(actual_step_number, status_for_logging, step_duration)
-                logger.info(completion_summary)
-
                 # Use structured logging functions that support additional parameters
+                # These functions will handle progress tracking via the global tracker
                 if status_for_logging.startswith("SUCCESS"):
                     from utils.logging_utils import log_step_success as structured_log_step_success
                     structured_log_step_success(logger, f"{description} completed",
                                         step_number=actual_step_number,
                                         duration=step_duration,
                                             status=status_for_logging)
+                elif "WARNING" in status_for_logging:
+                    from utils.logging_utils import log_step_warning as structured_log_step_warning
+                    structured_log_step_warning(logger, f"{description} completed with warnings",
+                                        step_number=actual_step_number,
+                                        duration=step_duration,
+                                            status=status_for_logging)
+                else:
+                    from utils.logging_utils import log_step_error as structured_log_step_error
+                    structured_log_step_error(logger, f"{description} failed",
+                                        step_number=actual_step_number,
+                                        duration=step_duration,
+                                            status=status_for_logging)
             else:
                 if str(status_for_logging).startswith("SUCCESS"):
                     logger.info(f"✅ Step {actual_step_number} completed successfully in {step_duration:.2f}s")
-                elif status_for_logging == "PARTIAL_SUCCESS":
+                elif status_for_logging == "PARTIAL_SUCCESS" or "WARNING" in status_for_logging:
                     logger.warning(f"⚠️ Step {actual_step_number} completed with warnings in {step_duration:.2f}s")
                 else:
                     logger.error(f"❌ Step {actual_step_number} failed with status: {status_for_logging}")

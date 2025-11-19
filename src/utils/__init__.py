@@ -53,8 +53,13 @@ try:
     )
     
     from .error_recovery import (
-        attempt_step_recovery,
-        is_failure_recoverable
+        ErrorRecoveryManager,
+        ErrorContext,
+        ErrorSeverity,
+        ErrorCodeRegistry,
+        format_error_message,
+        get_recovery_manager,
+        format_and_log_error
     )
     
     from .pipeline_monitor import (
@@ -267,8 +272,13 @@ __all__ = [
     'get_current_memory_usage',
     
     # Error recovery
-    'attempt_step_recovery',
-    'is_failure_recoverable', 
+    'ErrorRecoveryManager',
+    'ErrorContext',
+    'ErrorSeverity',
+    'ErrorCodeRegistry',
+    'format_error_message',
+    'get_recovery_manager',
+    'format_and_log_error', 
     
     # Pipeline monitoring
     'generate_pipeline_health_report',

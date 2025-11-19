@@ -64,6 +64,43 @@
 
 ---
 
+## Configuration
+
+### Configuration Options
+
+#### LLM Provider Selection
+- `provider` (str): LLM provider to use (default: `"auto"`)
+  - `"auto"`: Automatically select best available provider
+  - `"openai"`: Use OpenAI API (requires OPENAI_API_KEY)
+  - `"anthropic"`: Use Anthropic API (requires ANTHROPIC_API_KEY)
+  - `"ollama"`: Use local Ollama (requires Ollama installation)
+
+#### Analysis Type
+- `analysis_type` (str): Type of analysis to perform (default: `"comprehensive"`)
+  - `"comprehensive"`: Full model analysis
+  - `"summary"`: Brief summary only
+  - `"explain"`: Concept explanations
+  - `"optimize"`: Optimization suggestions
+
+#### LLM Tasks
+- `llm_tasks` (str): Specific tasks to perform (default: `"all"`)
+  - `"all"`: All available tasks
+  - `"summarize"`: Generate model summary
+  - `"explain"`: Explain Active Inference concepts
+  - `"optimize"`: Suggest optimizations
+
+#### Performance Settings
+- `llm_timeout` (int): Timeout for LLM API calls in seconds (default: `60`)
+- `max_tokens` (int): Maximum tokens in response (default: `2000`)
+- `temperature` (float): LLM temperature (default: `0.7`)
+
+#### Environment Variables
+- `OPENAI_API_KEY`: OpenAI API key
+- `ANTHROPIC_API_KEY`: Anthropic API key
+- `OLLAMA_HOST`: Ollama server host (default: `localhost:11434`)
+
+---
+
 ## Dependencies
 
 ### Required Dependencies
@@ -453,6 +490,62 @@ from llm.llm_processor import get_default_provider_configs
 configs = get_default_provider_configs()
 configs['ollama']['default_model'] = 'my-custom-model'
 configs['ollama']['default_max_tokens'] = 1024
+```
+
+---
+
+## Error Handling
+
+### Graceful Degradation
+- **No API Keys**: Automatically fallback to Ollama if available
+- **Ollama Unavailable**: Skip LLM analysis, log informative message, continue pipeline
+- **LLM Timeout**: Retry with shorter timeout, then skip if still fails
+- **Invalid Response**: Parse what's possible, log warning
+
+### Error Categories
+1. **Provider Unavailable**: No API keys and Ollama not available (fallback: skip analysis)
+2. **API Errors**: Rate limits, network errors (fallback: retry with backoff)
+3. **Timeout Errors**: LLM response too slow (fallback: use faster model or skip)
+4. **Parsing Errors**: Invalid LLM response format (fallback: use raw response)
+
+### Error Recovery
+- **Automatic Fallback**: Try next available provider automatically
+- **Partial Analysis**: Generate what's possible, report failures
+- **Resource Cleanup**: Proper cleanup of LLM connections on errors
+- **Informative Messages**: Clear error messages with recovery suggestions
+
+---
+
+## Integration Points
+
+### Pipeline Integration
+- **Input**: Receives GNN models from Step 3 (gnn processing) and execution results from Step 12 (execute)
+- **Output**: Generates LLM analyses for Step 16 (analysis), Step 20 (website generation), and Step 23 (report generation)
+- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output, optionally uses execution results from `12_execute.py`
+
+### Module Dependencies
+- **gnn/**: Reads parsed GNN model data for analysis
+- **execute/**: Optionally uses execution results for enhanced analysis
+- **analysis/**: Provides LLM insights for statistical analysis
+- **report/**: Provides LLM-generated summaries for reports
+
+### External Integration
+- **OpenAI API**: Cloud-based LLM analysis
+- **Anthropic API**: Cloud-based LLM analysis
+- **Ollama**: Local LLM execution for privacy and offline use
+
+### Data Flow
+```
+3_gnn.py (GNN parsing)
+  ↓
+12_execute.py (Execution results) [optional]
+  ↓
+13_llm.py (LLM analysis)
+  ↓
+  ├→ 16_analysis.py (Enhanced analysis)
+  ├→ 20_website.py (LLM summaries)
+  ├→ 23_report.py (Report generation)
+  └→ output/13_llm_output/ (Standalone analyses)
 ```
 
 ---

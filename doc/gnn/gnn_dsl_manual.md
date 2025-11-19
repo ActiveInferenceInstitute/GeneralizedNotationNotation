@@ -3,6 +3,26 @@
 
 This document provides a comprehensive guide to the GNN Domain Specific Language, which is a Markdown-based format for representing computational models, particularly those used in fields like Active Inference.
 
+## Pipeline Processing
+
+GNN DSL files are processed and validated through the pipeline:
+
+- **`src/3_gnn.py`** → GNN file parsing and multi-format processing
+  - See: **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)** for parser implementation details
+- **`src/5_type_checker.py`** → DSL syntax and type validation
+  - See: **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)** for validation details
+
+For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+
+**Quick Start:**
+```bash
+# Parse and validate GNN DSL files
+python src/3_gnn.py --target-dir input/gnn_files --verbose
+python src/5_type_checker.py --target-dir input/gnn_files --strict
+```
+
+---
+
 ## 1. File Structure Specification
 
 | GNNSection                 | SectionMeaning                                                                                                | ControlledTerms                                                                                                                               |

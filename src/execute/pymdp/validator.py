@@ -41,8 +41,15 @@ def validate_pymdp_environment() -> Dict[str, Any]:
             "available": False,
             "error": str(e)
         }
-        validation_results["errors"].append("PyMDP not available - install with: uv pip install pymdp")
-        logger.error("PyMDP not available for execution")
+        validation_results["errors"].append(
+            "PyMDP framework not available - this is expected if PyMDP is not installed. "
+            "To enable PyMDP: install via pip (pip install pymdp) or uv (uv pip install pymdp). "
+            "Alternative frameworks still available: RxInfer.jl, ActiveInference.jl, JAX, DisCoPy."
+        )
+        logger.error(
+            "PyMDP not available for execution - using fallback analysis. "
+            "Install PyMDP if you want to run PyMDP-based simulations: pip install pymdp"
+        )
     
     # Check numpy availability
     try:

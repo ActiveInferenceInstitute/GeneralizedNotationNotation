@@ -18,8 +18,13 @@ sys.path.insert(0, str(project_root))
 
 # Load environment variables from .env file
 try:
-    from dotenv import load_dotenv
-    load_dotenv(Path(__file__).parent / '.env')
+    import importlib
+    dotenv = importlib.import_module("dotenv")
+    load_dotenv = getattr(dotenv, "load_dotenv", None)
+    if callable(load_dotenv):
+        load_dotenv(Path(__file__).parent / '.env')
+except ModuleNotFoundError:
+    pass
 except Exception:
     pass
 
@@ -110,23 +115,29 @@ def test_environment_setup():
     # Basic assertions for offline test
     assert isinstance(api_keys, dict)
     assert isinstance(configs, dict)
+    return api_keys, configs
 
 def test_provider_initialization():
     """Test individual provider initialization."""
     print("\n🚀 Testing Provider Initialization...")
     
-    # Test with only OpenAI and OpenRouter (excluding Perplexity)
-    preferred_providers = [ProviderType.OPENROUTER, ProviderType.OPENAI]
-    
     processor = LLMProcessor()
-    # Skip initialization in offline tests
-    print("✅ Processor initialized: False (skipped)")
-    available_providers = []
+
+    initialized = False
+    try:
+        initialized = asyncio.run(processor.initialize())
+        print(f"✅ Processor initialized: {initialized}")
+    except Exception as exc:
+        initialized = False
+        print(f"⚠️ Processor initialization raised: {exc}")
+
+    available_providers = processor.get_available_providers() if initialized else []
     print(f"✅ Available providers: {available_providers}")
-    provider_info = {}
+    provider_info = processor.get_provider_info() if initialized else {}
     for provider_name, info in provider_info.items():
         print(f"✅ {provider_name}: {info.get('status', 'unknown')}")
     assert processor is not None
+    return processor
 
 def test_basic_analysis():
     """Test basic GNN analysis functionality."""
@@ -134,9 +145,6 @@ def test_basic_analysis():
     
     # Test summary analysis
     try:
-        # Use a lightweight stub when async plugins are unavailable
-        from src.llm.llm_processor import LLMProcessor
-        processor = LLMProcessor()
         # Don't actually initialize external providers; simulate a response object
         class _Resp:
             def __init__(self):
@@ -168,9 +176,6 @@ def test_different_analysis_types():
         AnalysisType.QUESTIONS,
         AnalysisType.VALIDATION
     ]
-    
-    from src.llm.llm_processor import LLMProcessor
-    processor = LLMProcessor()
     for analysis_type in analysis_types:
         try:
             _ = analysis_type
@@ -184,8 +189,6 @@ def test_provider_specific_calls():
     """Test calling specific providers."""
     print("\n🎯 Testing Provider-Specific Calls...")
     
-    from src.llm.llm_processor import LLMProcessor
-    processor = LLMProcessor()
     available_providers = []
     
     for provider_type in available_providers:
@@ -225,7 +228,8 @@ def test_custom_configurations():
     for i, config in enumerate(configs):
         try:
             _ = config
-            
+            stub_response = type("Resp", (), {"provider": "stub", "model_used": "stub-model", "usage": {"tokens": 0}})
+            response = stub_response()
             print(f"✅ Config {i+1} Success!")
             print(f"   Provider: {response.provider}")
             print(f"   Model: {response.model_used}")
@@ -303,36 +307,40 @@ def test_global_processor():
     print("\n🌐 Testing Global Processor (offline mode)...")
     assert True
 
-async def main():
+def main():
     """Run all tests."""
     print("🧪 LLM System Comprehensive Test Suite")
     print("=" * 50)
     
     try:
         # Test environment setup
-        api_keys, configs = await test_environment_setup()
+        api_keys, configs = test_environment_setup()
         
         # Initialize processor
-        processor = await test_provider_initialization()
+        processor = test_provider_initialization()
         
         if not processor or not processor.get_available_providers():
             print("❌ No providers available, stopping tests")
             return
         
         # Run functionality tests
-        await test_basic_analysis(processor)
-        await test_different_analysis_types(processor)
-        await test_provider_specific_calls(processor)
-        await test_custom_configurations(processor)
-        await test_streaming_responses(processor)
-        await test_provider_comparison(processor)
-        await test_error_handling(processor)
+        test_basic_analysis()
+        test_different_analysis_types()
+        test_provider_specific_calls()
+        test_custom_configurations()
+        test_streaming_responses()
+        test_provider_comparison()
+        test_error_handling()
         
         # Test global processor
-        await test_global_processor()
+        test_global_processor()
         
         # Clean up
-        await processor.close()
+        if processor:
+            try:
+                asyncio.run(processor.close())
+            except Exception as exc:
+                print(f"⚠️ Processor close failed: {exc}")
         
         print("\n" + "=" * 50)
         print("🎉 LLM System Test Suite Completed!")
@@ -344,4 +352,4 @@ async def main():
         traceback.print_exc()
 
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    main()

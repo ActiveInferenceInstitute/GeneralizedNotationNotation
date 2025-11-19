@@ -81,6 +81,20 @@ def process_llm_mcp(target_directory: str, output_directory: str, verbose: bool 
             "error": str(e)
         }
 
+# MCP Initialization Function
+def initialize_llm_module(mcp_instance):
+    """
+    Initialize the LLM module for MCP integration.
+    
+    This is called by the MCP loader during module discovery.
+    The LLM module doesn't require special initialization, so this is a no-op.
+    
+    Args:
+        mcp_instance: The MCP instance
+    """
+    logger.debug("LLM module initialized for MCP (no special initialization required)")
+
+
 # MCP Registration Function
 def register_tools(mcp_instance):
     """Register llm utility tools with the MCP."""

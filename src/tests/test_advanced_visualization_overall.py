@@ -13,7 +13,30 @@ import json
 import tempfile
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from unittest.mock import patch, MagicMock
+import logging
+
+# Simple logger replacement for testing - avoids mocking
+class SimpleTestLogger:
+    """A simple test logger without mocking."""
+    def __init__(self):
+        self.logger = logging.getLogger("test_logger")
+        self.messages = []
+    
+    def debug(self, msg, *args, **kwargs):
+        self.logger.debug(msg)
+        self.messages.append(("debug", msg))
+    
+    def info(self, msg, *args, **kwargs):
+        self.logger.info(msg)
+        self.messages.append(("info", msg))
+    
+    def warning(self, msg, *args, **kwargs):
+        self.logger.warning(msg)
+        self.messages.append(("warning", msg))
+    
+    def error(self, msg, *args, **kwargs):
+        self.logger.error(msg)
+        self.messages.append(("error", msg))
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -380,8 +403,8 @@ class TestErrorHandling:
         try:
             from advanced_visualization.processor import _check_dependencies
 
-            # Mock logger
-            logger = MagicMock()
+            # Use real logger
+            logger = SimpleTestLogger()
 
             dependencies = _check_dependencies(logger)
 
@@ -426,8 +449,8 @@ class TestIntegration:
         try:
             from advanced_visualization.processor import process_advanced_viz_standardized_impl
 
-            # Create mock logger
-            logger = MagicMock()
+            # Create real logger
+            logger = SimpleTestLogger()
 
             success = process_advanced_viz_standardized_impl(
                 target_dir=Path("input/gnn_files"),
@@ -548,8 +571,8 @@ def test_end_to_end_workflow():
             output_dir = temp_path / "output"
             output_dir.mkdir()
 
-            # Mock logger
-            logger = MagicMock()
+            # Create real logger
+            logger = SimpleTestLogger()
 
             # Run the processor
             success = process_advanced_viz_standardized_impl(

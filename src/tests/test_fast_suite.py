@@ -21,7 +21,7 @@ import json
 import logging
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from unittest.mock import patch, Mock, MagicMock
+# Mocks removed - using real implementations per testing policy
 import tempfile
 
 # Test markers

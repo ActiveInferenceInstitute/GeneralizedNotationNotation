@@ -2,6 +2,32 @@
 
 This document provides guidance on how to implement GNN models in computational environments, with practical code examples and workflows.
 
+## Pipeline-Based Implementation
+
+GNN models are implemented through the processing pipeline's code generation and execution steps:
+
+**Code Generation (Step 11)**
+- **`src/11_render.py`** → Generate executable code for multiple frameworks
+  - See: **[src/render/AGENTS.md](../../src/render/AGENTS.md)** for rendering details
+  - Supports: PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
+
+**Execution (Step 12)**
+- **`src/12_execute.py`** → Execute rendered simulation scripts
+  - See: **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)** for execution details
+
+**Quick Start:**
+```bash
+# Generate and execute implementations
+python src/main.py --only-steps "3,11,12" --target-dir input/gnn_files --verbose
+
+# Execute specific frameworks
+python src/12_execute.py --frameworks "pymdp,jax" --verbose
+```
+
+For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+
+---
+
 ## Implementation Workflow
 
 The process of implementing a GNN model follows these general steps:

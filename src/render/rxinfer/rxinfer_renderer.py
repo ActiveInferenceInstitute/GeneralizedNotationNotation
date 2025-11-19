@@ -107,25 +107,37 @@ class RxInferRenderer:
         """Generate simplified RxInfer code that actually works with modern API."""
         from datetime import datetime
         
-        # Get model parameters
-        model_display_name = gnn_spec.get('model_name', model_name)
-        num_states = gnn_spec.get('model_parameters', {}).get('num_hidden_states', 3)
-        num_observations = gnn_spec.get('model_parameters', {}).get('num_obs', 3)
-        
-        # Read the minimal working template (no deprecated APIs)
-        template_path = Path(__file__).parent / 'minimal_template.jl'
-        with open(template_path, 'r') as f:
-            template = f.read()
-        
-        # Fill in the template
-        code = template.format(
-            model_name=model_display_name,
-            timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            num_states=num_states,
-            num_observations=num_observations
-        )
-        
-        return code
+        try:
+            # Get model parameters with defaults
+            model_display_name = gnn_spec.get('model_name', model_name)
+            num_states = gnn_spec.get('model_parameters', {}).get('num_hidden_states', 3)
+            num_observations = gnn_spec.get('model_parameters', {}).get('num_obs', 3)
+            
+            # Validate parameters
+            if not isinstance(num_states, int) or num_states < 1:
+                num_states = 3
+            if not isinstance(num_observations, int) or num_observations < 1:
+                num_observations = 3
+            
+            # Read the minimal working template (no deprecated APIs)
+            template_path = Path(__file__).parent / 'minimal_template.jl'
+            if not template_path.exists():
+                raise FileNotFoundError(f"Template file not found: {template_path}")
+            
+            with open(template_path, 'r', encoding='utf-8') as f:
+                template = f.read()
+            
+            # Fill in the template - use careful formatting to avoid Julia syntax conflicts
+            # Replace placeholders one at a time to avoid issues with curly braces
+            code = template
+            code = code.replace('{model_name}', model_display_name)
+            code = code.replace('{timestamp}', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            code = code.replace('{num_states}', str(num_states))
+            code = code.replace('{num_observations}', str(num_observations))
+            
+            return code
+        except Exception as e:
+            raise RuntimeError(f"Failed to generate RxInfer code template: {e}") from e
     
     def _generate_rxinfer_simulation_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
         """

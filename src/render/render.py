@@ -18,7 +18,11 @@ try:
     from .pymdp import render_gnn_to_pymdp
     PYMDP_AVAILABLE = True
 except ImportError as e:
-    logging.warning(f"PyMDP renderer not available: {e}")
+    logging.warning(
+        f"PyMDP renderer not available - this is normal if PyMDP is not installed. "
+        f"Details: {e}. To enable PyMDP rendering: pip install pymdp. "
+        f"Alternative frameworks available: RxInfer.jl, ActiveInference.jl, DisCoPy, JAX."
+    )
     render_gnn_to_pymdp = None
     PYMDP_AVAILABLE = False
 
@@ -92,7 +96,11 @@ def render_gnn_spec(
     
     if target.lower() == "pymdp":
         if not PYMDP_AVAILABLE or render_gnn_to_pymdp is None:
-            return False, "PyMDP renderer not available", []
+            return False, (
+                "PyMDP renderer not available. "
+                "To enable: pip install pymdp. "
+                "Try alternative frameworks: rxinfer, activeinference_jl, discopy, or jax."
+            ), []
         # Render to PyMDP
         model_name = gnn_spec.get("name", "model")
         script_path = output_directory / f"{model_name}_pymdp.py"

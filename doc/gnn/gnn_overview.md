@@ -162,18 +162,92 @@ graph LR
 - **Active Inference Theory**: Provides the theoretical foundation for GNN models
 - **Active Inference Ontology**: Defines standardized terms that GNN variables map to
 - **Model Repositories**: Collections of GNN models for reference and reuse
-- **Software Tools**: Implementations that can parse, visualize, and execute GNN models. The main tools are accessed through the `src/main.py` orchestrator and individual numbered pipeline scripts (0-23).
+- **Software Tools**: Implementations that can parse, visualize, and execute GNN models. The main tools are accessed through the **`src/main.py`** orchestrator and individual numbered pipeline scripts (0-23). See **[src/AGENTS.md](../../src/AGENTS.md)** for complete module documentation.
+
+## GNN Processing Pipeline
+
+The GNN project includes a comprehensive 24-step processing pipeline that transforms GNN specifications into executable simulations, visualizations, and analysis outputs. The pipeline is orchestrated by **`src/main.py`**.
+
+### Quick Start
+
+```bash
+# Run the full pipeline
+python src/main.py --target-dir input/gnn_files --verbose
+
+# Run specific processing steps
+python src/main.py --only-steps "3,5,8,11,12" --verbose
+
+# Skip certain steps
+python src/main.py --skip-steps "15,16" --verbose
+```
+
+### Complete 24-Step Pipeline
+
+The pipeline consists of the following steps (0-23):
+
+**Core Processing (Steps 0-9)**
+- **Step 0**: Template initialization
+- **Step 1**: Environment setup and dependency management
+- **Step 2**: Comprehensive test suite execution
+- **Step 3**: GNN file discovery and multi-format parsing
+- **Step 4**: Model registry management
+- **Step 5**: Type checking and validation
+- **Step 6**: Advanced validation and consistency checking
+- **Step 7**: Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
+- **Step 8**: Graph and matrix visualization generation
+- **Step 9**: Advanced visualization and interactive plots
+
+**Simulation & Analysis (Steps 10-16)**
+- **Step 10**: Active Inference ontology processing
+- **Step 11**: Code rendering for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
+- **Step 12**: Execution of rendered simulation scripts
+- **Step 13**: LLM-enhanced analysis and interpretation
+- **Step 14**: Machine learning integration
+- **Step 15**: Audio generation and sonification
+- **Step 16**: Advanced statistical analysis
+
+**Integration & Output (Steps 17-23)**
+- **Step 17**: System integration and coordination
+- **Step 18**: Security validation and access control
+- **Step 19**: Research tools and experimental features
+- **Step 20**: Static HTML website generation
+- **Step 21**: Model Context Protocol processing
+- **Step 22**: Interactive GUI for model construction
+- **Step 23**: Comprehensive report generation
+
+### Pipeline Documentation
+
+For complete information about the pipeline architecture and individual modules:
+
+- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
+- **[src/README.md](../../src/README.md)**: Pipeline safety and reliability documentation
+- **[GNN Tools and Resources](gnn_tools.md)**: Detailed pipeline usage and examples
+- **[Quickstart Tutorial](quickstart_tutorial.md)**: Step-by-step guide for beginners
 
 ## Related Documentation
 
 For more detailed information about specific aspects of GNN, refer to:
 
+**GNN Language Specification**
 - [GNN Syntax and Punctuation](gnn_syntax.md): Detailed specification of the notation symbols
 - [GNN File Structure](gnn_file_structure_doc.md): Comprehensive guide to GNN file organization
+- [GNN DSL Manual](gnn_dsl_manual.md): Complete Domain-Specific Language reference
+
+**Modeling and Examples**
 - [GNN Examples](gnn_examples_doc.md): Step-by-step examples and use cases
+- [Advanced Modeling Patterns](advanced_modeling_patterns.md): Sophisticated modeling techniques
+- [Multi-Agent Systems](gnn_multiagent.md): Multi-agent modeling specifications
+
+**Implementation and Tools**
 - [GNN Implementation Guide](gnn_implementation.md): Guidelines for implementing GNN in practice
 - [GNN Tools and Resources](gnn_tools.md): Available tools and resources for working with GNN
-- [GNN Future Directions](gnn_future.md): Roadmap and future development plans
+- [Framework Integration Guide](framework_integration_guide.md): Integration with PyMDP, RxInfer, etc.
+- [Technical Reference](technical_reference.md): Detailed technical specifications
+
+**Advanced Topics**
+- [Architecture Reference](architecture_reference.md): Thin orchestrator pattern and data flow
+- [LLM and Neurosymbolic Active Inference](gnn_llm_neurosymbolic_active_inference.md): LLM integration
+- [Ontology System](ontology_system.md): Active Inference ontology annotations
 
 ## References
 

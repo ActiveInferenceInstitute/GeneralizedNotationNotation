@@ -1,5 +1,7 @@
 # Quality Assurance and Development Standards
 
+> **Environment Note**: Standardize all tooling through `uv` (e.g., `uv pip install`, `uv run python src/main.py`, `uv pytest`). This keeps dependency, environment, and lockfile alignment consistent across developers and CI.
+
 ## Quality Assurance Standards
 
 ### Implementation Requirements

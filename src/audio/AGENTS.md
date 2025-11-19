@@ -56,6 +56,35 @@
 
 ---
 
+## Configuration
+
+### Configuration Options
+
+#### Audio Backend Selection
+- `audio_backend` (str): Audio backend to use (default: `"auto"`)
+  - `"auto"`: Automatically select best available backend
+  - `"sapf"`: Use SAPF backend
+  - `"pedalboard"`: Use Pedalboard backend
+  - `"pure_data"`: Use Pure Data backend
+
+#### Audio Generation Parameters
+- `duration` (float): Audio duration in seconds (default: `30.0`)
+- `sample_rate` (int): Audio sample rate in Hz (default: `44100`)
+- `channels` (int): Number of audio channels (default: `1` for mono, `2` for stereo)
+
+#### Sonification Strategy
+- `sonification_strategy` (str): Strategy for model-to-sound mapping (default: `"default"`)
+  - `"default"`: Standard mapping (states→pitch, observations→timbre)
+  - `"harmonic"`: Emphasize harmonic relationships
+  - `"rhythmic"`: Emphasize temporal patterns
+  - `"textural"`: Emphasize timbral variations
+
+#### SAPF Configuration
+- `sapf_output_format` (str): SAPF output format (default: `"python"`)
+  - Options: `"python"`, `"json"`, `"yaml"`
+
+---
+
 ## Dependencies
 
 ### Required Dependencies
@@ -135,6 +164,57 @@ output/15_audio_output/
 3. **Actions → Rhythm**: Action selection creates rhythmic patterns
 4. **Free Energy → Volume**: Lower FE = louder (more confident)
 5. **Connections → Harmonies**: Connected variables create harmonies
+
+---
+
+## Error Handling
+
+### Graceful Degradation
+- **No SAPF**: Skip SAPF generation, log warning, continue with other backends
+- **No Pedalboard**: Skip effects processing, use basic audio generation
+- **No soundfile**: Return error, cannot generate WAV files
+- **Invalid GNN model**: Return structured error, skip model
+
+### Error Categories
+1. **Backend Unavailable**: Framework not installed (fallback: skip backend)
+2. **Audio Generation Failure**: Cannot generate audio (return error)
+3. **File I/O Errors**: Cannot write WAV files (return error)
+4. **Model Parsing Errors**: Invalid GNN structure (skip model, log error)
+
+### Error Recovery
+- **Backend Fallback**: Automatically try next available backend
+- **Partial Generation**: Generate what's possible, report failures
+- **Resource Cleanup**: Proper cleanup of audio resources on errors
+
+---
+
+## Integration Points
+
+### Pipeline Integration
+- **Input**: Receives GNN models from Step 3 (gnn processing)
+- **Output**: Generates audio files for Step 20 (website generation) and Step 23 (report generation)
+- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
+
+### Module Dependencies
+- **gnn/**: Reads parsed GNN model data for sonification
+- **sapf/**: Uses SAPF module for structured audio generation
+- **export/**: Uses export formats for audio metadata
+
+### External Integration
+- **SAPF Backend**: Integrates with SAPF audio processing framework
+- **Pedalboard**: Optional integration for audio effects
+- **Pure Data**: Optional integration for advanced audio processing
+
+### Data Flow
+```
+3_gnn.py (GNN parsing)
+  ↓
+15_audio.py (Audio generation)
+  ↓
+  ├→ 20_website.py (Audio embedding)
+  ├→ 23_report.py (Audio analysis)
+  └→ output/15_audio_output/ (Standalone audio files)
+```
 
 ---
 

@@ -402,115 +402,183 @@ timeline
 
 ## GNN Processing Pipeline (`src/main.py`)
 
-The GNN project includes a main pipeline script, `src/main.py`, designed to orchestrate the entire workflow of processing GNN files and related artifacts. This script provides a unified interface to run various tools and processing stages in a predefined order.
+The GNN project includes a comprehensive 24-step pipeline orchestrated by `src/main.py`. This main pipeline script is designed to process GNN files through the complete workflow from parsing to execution, visualization, and report generation.
+
+For detailed architecture information, see:
+- **[src/AGENTS.md](../../src/AGENTS.md)**: Complete module registry and architectural patterns
+- **[src/README.md](../../src/README.md)**: Pipeline safety and reliability documentation
+- **[Quickstart Tutorial](quickstart_tutorial.md)**: Step-by-step tutorial for using the pipeline
 
 ### Overview
 
-The `main.py` script dynamically discovers and executes numbered Python scripts located in the `src/` directory. Each script corresponds to a specific processing stage and often targets a subdirectory with the same initial name (e.g., `1_gnn.py` relates to tasks in the `src/gnn/` directory or for GNN files in general).
+The `src/main.py` script orchestrates 24 numbered Python scripts (steps 0-23) located in the `src/` directory. Each script corresponds to a specific processing stage following the **thin orchestrator pattern** - delegating core functionality to modular implementations in their associated directories.
 
-The pipeline is designed to be flexible, allowing users to run the entire sequence of operations, skip certain steps, or run only specific steps. It also manages common configurations like target directories for GNN files and output directories for generated artifacts.
+The pipeline is designed to be flexible, allowing users to run the entire sequence, skip certain steps, or run only specific steps. It manages configurations like target directories for GNN files and output directories for generated artifacts.
 
 ### Running the Pipeline
 
-To use the pipeline, navigate to the root directory of the GeneralizedNotationNotation project and execute the script using Python:
+To use the pipeline, navigate to the root directory of the GeneralizedNotationNotation project and execute:
 
 ```bash
 python src/main.py [options]
 ```
 
-### Command-Line Options for `main.py`
+### Command-Line Options
 
-The `main.py` script accepts several command-line arguments to customize its behavior:
+The `src/main.py` script accepts several command-line arguments:
 
-*   `--target-dir DIR`: Specifies the primary target directory for GNN files. Default: `gnn/examples`. Individual pipeline steps might also target their own specific subdirectories (e.g., `src/mcp` for the MCP step).
-*   `--output-dir DIR`: Defines the base directory where all output files from the pipeline steps will be saved. Default: `../output` (relative to `src/`, so it becomes `output/` from the project root).
-*   `--recursive`: If specified, enables recursive processing of directories. This flag is passed down to relevant pipeline steps that support it.
-*   `--skip-steps LIST`: Allows you to provide a comma-separated list of step numbers or script names (without the `.py` extension) to exclude from the run. For example: `"1_gnn,7_mcp"` or `"1,7"`.
-*   `--only-steps LIST`: Allows you to provide a comma-separated list of step numbers or script names to run exclusively. All other steps will be skipped. For example: `"4_gnn_type_checker,6_visualization"` or `"4,6"`.
-*   `--verbose`: Enables more detailed logging output during the pipeline execution, showing more information about each step's progress.
-*   `--strict`: Activates a strict type checking mode. This option is specifically relevant for the `4_gnn_type_checker.py` step.
-*   `--estimate-resources`: Enables the estimation of computational resources. This option is specifically relevant for the `4_gnn_type_checker.py` step.
-*   `--ontology-terms-file FILE`: Specifies the path to a file containing ontology terms (e.g., `ontology/terms.json`). This is used by the `8_ontology.py` step to link GNN models with formal ontological definitions.
+*   `--target-dir DIR`: Specifies the primary target directory for GNN files. Default: `input/gnn_files`
+*   `--output-dir DIR`: Defines the base directory where all output files will be saved. Default: `output/`
+*   `--recursive`: Enables recursive processing of directories
+*   `--skip-steps LIST`: Comma-separated list of step numbers to exclude. Example: `"3,5,7"` or `"3_gnn,5_type_checker"`
+*   `--only-steps LIST`: Comma-separated list of step numbers to run exclusively. Example: `"3,5,8,11,12"`
+*   `--verbose`: Enables detailed logging output
+*   `--strict`: Activates strict type checking mode (for step 5)
+*   `--estimate-resources`: Enables computational resource estimation (for step 5)
 
-You can also view these options by running `python src/main.py --help`.
+View all options: `python src/main.py --help`
 
-### Pipeline Stages (Scripts in `src/`)
+### Complete Pipeline Stages (24 Steps)
 
-The following describes the individual scripts that constitute the pipeline stages, executed in numerical order. Their specific functionalities are determined by their content, but their names and the `main.py` structure suggest their roles:
+The GNN processing pipeline consists of exactly 24 steps (0-23), executed in order:
 
-1.  **`1_setup.py` (Environment Setup)**
-    *   **Associated Folder:** `setup/`
-    *   **Purpose:** This script is designated as a **critical step**. It performs essential setup tasks, configurations, and environment checks required for the rest of the pipeline. If this step fails, the entire pipeline halts.
+0.  **`0_template.py` (Template Initialization)** → `src/template/`
+    *   Purpose: Pipeline template and initialization
 
-2.  **`2_gnn.py` (GNN Core Processing)**
-    *   **Associated Folder:** `gnn/`
-    *   **Purpose:** Handles fundamental parsing, processing, or validation of GNN files themselves. This involves initial syntax checks, structural analysis, and preparing GNN data for subsequent steps.
+1.  **`1_setup.py` (Environment Setup)** → `src/setup/`
+    *   Purpose: Environment setup, virtual environment management, dependency installation
 
-3.  **`3_tests.py` (Testing)**
-    *   **Associated Folder:** `tests/`
-    *   **Purpose:** Executes automated tests for the GNN functionalities or the pipeline itself. This helps ensure the integrity and correctness of the GNN tools and processing logic.
+2.  **`2_tests.py` (Test Suite)** → `src/tests/`
+    *   Purpose: Comprehensive test suite execution
 
-4.  **`4_gnn_type_checker.py` (GNN Type Checker)**
-    *   **Associated Folder:** `gnn_type_checker/`
-    *   **Purpose:** Responsible for performing detailed type checking on GNN files. It validates the consistency of variable types, dimensions, and relationships defined in the GNN models. It can also estimate computational resources if the `--estimate-resources` flag is active.
+3.  **`3_gnn.py` (GNN Core Processing)** → `src/gnn/`
+    *   Purpose: GNN file discovery, multi-format parsing, and validation
+    *   See: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 
-5.  **`5_export.py` (Export Functionality)**
-    *   **Associated Folder:** `export/`
-    *   **Purpose:** Manages the export of GNN models or derived data into various formats. This could include exporting to different modeling languages, data formats for analysis, or generating reports.
+4.  **`4_model_registry.py` (Model Registry)** → `src/model_registry/`
+    *   Purpose: Model registry management and versioning
 
-6.  **`6_visualization.py` (Visualization Generation)**
-    *   **Associated Folder:** `visualization/`
-    *   **Purpose:** Generates graphical representations or visualizations of GNN models. This aids in understanding the model structure, dependencies, and other characteristics.
+5.  **`5_type_checker.py` (Type Checking)** → `src/type_checker/`
+    *   Purpose: GNN syntax validation and resource estimation
+    *   Supports `--strict` and `--estimate-resources` flags
 
-7.  **`7_mcp.py` (Meta-Circular Processing)**
-    *   **Associated Folder:** `mcp/`
-    *   **Purpose:** Handles tasks related to Meta-Circular Processing for GNN. The specifics would depend on the definition of MCP within the project, but it generally implies models or processes that operate on or describe other models/processes.
+6.  **`6_validation.py` (Validation)** → `src/validation/`
+    *   Purpose: Advanced validation and consistency checking
 
-8.  **`8_ontology.py` (Ontology Integration)**
-    *   **Associated Folder:** `ontology/`
-    *   **Purpose:** Deals with linking GNN models to ontological concepts or managing ontology-related data. This could involve mapping GNN elements to terms in a defined Active Inference ontology or similar knowledge representation.
+7.  **`7_export.py` (Export)** → `src/export/`
+    *   Purpose: Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
 
-9.  **`9_render.py` (Rendering)**
-    *   **Associated Folder:** `render/`
-    *   **Purpose:** Handles rendering of GNN files into different formats (e.g., mathematical notation, structured text based on GNN content).
+8.  **`8_visualization.py` (Visualization)** → `src/visualization/`
+    *   Purpose: Graph and matrix visualization generation
+    *   See: [src/visualization/AGENTS.md](../../src/visualization/AGENTS.md)
 
-Each of these scripts is expected to have a `main(args)` function that `src/main.py` calls, passing the parsed command-line arguments to it.
+9.  **`9_advanced_viz.py` (Advanced Visualization)** → `src/advanced_visualization/`
+    *   Purpose: Advanced visualization and interactive plots
 
-## Existing Tools (Invoked via Pipeline)
+10. **`10_ontology.py` (Ontology Processing)** → `src/ontology/`
+    *   Purpose: Active Inference Ontology processing and validation
+    *   See: [src/ontology/AGENTS.md](../../src/ontology/AGENTS.md)
 
-While the `src/main.py` script is the primary entry point, it orchestrates tools that might have previously been standalone or invoked differently. The sections below describe some of these key tools, now integrated as steps within the main pipeline.
+11. **`11_render.py` (Code Rendering)** → `src/render/`
+    *   Purpose: Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
+    *   See: [src/render/AGENTS.md](../../src/render/AGENTS.md)
 
-### GNN Type Checker and Resource Estimator
+12. **`12_execute.py` (Execution)** → `src/execute/`
+    *   Purpose: Execute rendered simulation scripts with result capture
+    *   See: [src/execute/AGENTS.md](../../src/execute/AGENTS.md)
 
-(Previously `gnn_type_checker.py` standalone utility)
+13. **`13_llm.py` (LLM Integration)** → `src/llm/`
+    *   Purpose: LLM-enhanced analysis, model interpretation, and AI assistance
+    *   See: [src/llm/AGENTS.md](../../src/llm/AGENTS.md)
 
-*   **Pipeline Step:** `4_gnn_type_checker.py`
-*   **Functionality:** Validates GNN files for correctness according to the GNN specification. Checks for proper structure, section presence, type consistency of variables, dimensional correctness, and valid connections. Can optionally estimate computational resources (memory, inference time, storage) based on the model's structure.
-*   **Invocation via `main.py`:**
+14. **`14_ml_integration.py` (ML Integration)** → `src/ml_integration/`
+    *   Purpose: Machine learning integration and model training
+
+15. **`15_audio.py` (Audio Generation)** → `src/audio/`
+    *   Purpose: Audio generation (SAPF, Pedalboard, and other backends)
+
+16. **`16_analysis.py` (Analysis)** → `src/analysis/`
+    *   Purpose: Advanced analysis and statistical processing
+
+17. **`17_integration.py` (System Integration)** → `src/integration/`
+    *   Purpose: System integration and cross-module coordination
+
+18. **`18_security.py` (Security)** → `src/security/`
+    *   Purpose: Security validation and access control
+
+19. **`19_research.py` (Research Tools)** → `src/research/`
+    *   Purpose: Research tools and experimental features
+
+20. **`20_website.py` (Website Generation)** → `src/website/`
+    *   Purpose: Static HTML website generation from pipeline artifacts
+
+21. **`21_mcp.py` (Model Context Protocol)** → `src/mcp/`
+    *   Purpose: Model Context Protocol processing and tool registration
+
+22. **`22_gui.py` (GUI)** → `src/gui/`
+    *   Purpose: Interactive GUI for constructing/editing GNN models
+
+23. **`23_report.py` (Report Generation)** → `src/report/`
+    *   Purpose: Comprehensive analysis report generation
+
+### Key Pipeline Tools
+
+#### GNN Parser and Type Checker (Steps 3 & 5)
+
+*   **Pipeline Steps:** `3_gnn.py` and `5_type_checker.py`
+*   **Functionality:** Parse GNN files, validate syntax, check type consistency, and estimate computational resources
+*   **Invocation:**
     ```bash
-    # To run only the type checker (step 4)
-    python src/main.py --only-steps 4 --target-dir path/to/gnn_files
-
-    # To run type checker with resource estimation
-    python src/main.py --only-steps 4 --estimate-resources --target-dir path/to/gnn_files
+    # Parse and type-check GNN files
+    python src/main.py --only-steps "3,5" --target-dir input/gnn_files
+    
+    # With resource estimation
+    python src/main.py --only-steps "3,5" --estimate-resources --target-dir input/gnn_files
     ```
-*   **Key Options (via `main.py`):** `--target-dir`, `--output-dir`, `--recursive`, `--strict`, `--estimate-resources`.
-*   **Outputs:** Generates Markdown reports, HTML visualizations, and JSON data detailing the type check results and resource estimates. These are typically saved in a subdirectory within the main output directory specified by `--output-dir` (e.g., `output/4_gnn_type_checker_outputs/`).
+*   **Outputs:** `output/3_gnn_output/` and `output/5_type_checker_output/`
 
-### GNN Visualization
+#### GNN Visualization (Steps 8 & 9)
 
-(Previously `visualize_gnn.py` standalone utility)
-
-*   **Pipeline Step:** `6_visualization.py`
-*   **Functionality:** Creates graphical representations of GNN models. This can include factor graphs or other diagrams that help visualize the model's structure and variable relationships.
-*   **Invocation via `main.py`:**
+*   **Pipeline Steps:** `8_visualization.py` and `9_advanced_viz.py`
+*   **Functionality:** Generate graphical representations, factor graphs, and interactive visualizations
+*   **Invocation:**
     ```bash
-    # To run only visualization (step 6)
-    python src/main.py --only-steps 6 --target-dir path/to/gnn_file.md
+    # Generate visualizations
+    python src/main.py --only-steps "8,9" --target-dir input/gnn_files
     ```
-*   **Key Options (via `main.py`):** `--target-dir`, `--output-dir`.
-*   **Outputs:** Image files (e.g., PNG, SVG) or HTML reports containing the visualizations. These are saved in a subdirectory within the main output directory (e.g., `output/6_visualization_outputs/`).
+*   **Outputs:** `output/8_visualization_output/` and `output/9_advanced_viz_output/`
 
----
+#### Code Generation and Execution (Steps 11 & 12)
 
-*This section should be expanded as the individual functionalities of each numbered script (`1_*.py`, `2_*.py`, etc.) are further defined or if other tools are integrated into the pipeline.* 
+*   **Pipeline Steps:** `11_render.py` and `12_execute.py`
+*   **Functionality:** Generate executable code for multiple frameworks and run simulations
+*   **Invocation:**
+    ```bash
+    # Generate and execute code
+    python src/main.py --only-steps "11,12" --target-dir input/gnn_files
+    
+    # Execute specific frameworks
+    python src/12_execute.py --frameworks "pymdp,jax" --verbose
+    ```
+*   **Outputs:** `output/11_render_output/` and `output/12_execute_output/`
+
+### Pipeline Examples
+
+```bash
+# Run full pipeline
+python src/main.py --target-dir input/gnn_files --verbose
+
+# Run specific steps only
+python src/main.py --only-steps "3,5,7,8,11,12" --verbose
+
+# Skip certain steps
+python src/main.py --skip-steps "15,16" --verbose
+
+# Run with specific framework execution
+python src/main.py --only-steps "11,12"
+python src/12_execute.py --frameworks "lite" --verbose  # PyMDP, JAX, DisCoPy only
+```
+
+For more detailed information on each module, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+
+--- 
