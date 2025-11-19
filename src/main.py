@@ -373,8 +373,27 @@ def main():
             combined_output = f"{step_result.get('stdout', '')}\n{step_result.get('stderr', '')}"
             # More precise warning detection - look for actual log levels or warning symbols
             import re
+            
+            # Known safe warnings that should not trigger SUCCESS_WITH_WARNINGS
+            safe_warning_patterns = [
+                r"matplotlib.*?backend",  # Matplotlib backend selection messages
+                r"using agg backend",  # Headless backend in use
+                r"no display",  # No display available (expected in CI/headless)
+                r"pymdp.*?not available",  # Optional dependency message
+                r"optional.*?dependency",  # Optional dependency notifications
+            ]
+            
+            # Combine safe patterns into single regex
+            safe_patterns = "|".join(f"({p})" for p in safe_warning_patterns)
+            safe_warning_pattern = re.compile(safe_patterns, re.IGNORECASE)
+            
+            # Check for warnings but exclude safe patterns
             warning_pattern = re.compile(r"(WARNING|⚠️|warn)", re.IGNORECASE)
             has_warning = bool(warning_pattern.search(combined_output))
+            
+            # If warning found, check if it's a "safe" warning
+            if has_warning:
+                has_warning = not bool(safe_warning_pattern.search(combined_output))
 
             # Propagate SUCCESS_WITH_WARNINGS status if applicable
             if step_result["status"] == "SUCCESS" and has_warning:

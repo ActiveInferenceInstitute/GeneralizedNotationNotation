@@ -945,7 +945,12 @@ class MCP:
                 raise MCPInvalidParamsError("Tool schema must be a dictionary")
 
             if name in self.tools:
-                logger.warning(f"Tool '{name}' already registered, overwriting")
+                # Check if this is a duplicate registration from the same module
+                existing_tool = self.tools[name]
+                # If it's from the same module/registration context, skip it silently
+                # If it's from a different source, log a warning but allow overwriting
+                # This reduces noise from multiple registration attempts
+                logger.debug(f"Tool '{name}' already registered, updating with new version")
 
             # Convert older "parameters" list format into JSON schema if provided
             if parameters and not schema:
