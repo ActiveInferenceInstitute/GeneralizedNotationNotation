@@ -97,6 +97,14 @@ def main() -> int:
         )
 
         logger.info(f"🧪 Running {test_mode} test suite")
+        logger.info(f"📍 Output directory: {step_output_dir}")
+        
+        # Check for environment overrides
+        import os
+        if os.getenv("SKIP_TESTS_IN_PIPELINE"):
+            logger.info("⏭️  Environment variable SKIP_TESTS_IN_PIPELINE is set - tests will be skipped")
+        if os.getenv("FAST_TESTS_TIMEOUT"):
+            logger.info(f"⏱️  Custom timeout set: {os.getenv('FAST_TESTS_TIMEOUT')} seconds")
 
         # Run tests
         success = run_tests(

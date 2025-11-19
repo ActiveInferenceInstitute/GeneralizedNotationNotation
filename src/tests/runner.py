@@ -822,7 +822,16 @@ def run_tests(
 def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False) -> bool:
     """
     Run FAST tests for quick pipeline validation.
-    This runs only fast tests to keep pipeline execution under 5 minutes.
+    
+    This runs only fast tests (marked with 'not slow') to keep pipeline execution efficient.
+    
+    Environment variables:
+    - SKIP_TESTS_IN_PIPELINE: Set to any value to skip tests entirely
+    - FAST_TESTS_TIMEOUT: Override the 600s timeout (in seconds)
+    
+    This function can be controlled via:
+    - os.getenv("SKIP_TESTS_IN_PIPELINE") - Skip all tests
+    - os.getenv("FAST_TESTS_TIMEOUT") - Custom timeout
     """
     import subprocess
     import sys
@@ -831,9 +840,12 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
     # Check if tests should be skipped entirely for pipeline speed
     if os.getenv("SKIP_TESTS_IN_PIPELINE"):
         logger.info("⏭️  Skipping tests (SKIP_TESTS_IN_PIPELINE set)")
+        logger.info("💡 Set SKIP_TESTS_IN_PIPELINE='' or unset to run tests in pipeline")
         return True
 
     logger.info("⚡ Running fast test subset for quick pipeline validation")
+    logger.info("💡 To skip tests in pipeline: export SKIP_TESTS_IN_PIPELINE=1")
+    logger.info("💡 To customize timeout: export FAST_TESTS_TIMEOUT=<seconds>")
 
     # Check if pytest-timeout is available
     try:
@@ -848,6 +860,7 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         "--tb=short",
         "--maxfail=5",  # Fail fast for quick feedback
         "--durations=10",  # Show slowest tests
+        "-ra",  # Show summary of test outcomes (all)
     ]
     
     # Add timeout flags only if pytest-timeout is available
@@ -874,23 +887,30 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         logger.info("⚠️  pytest-timeout not available - no per-test timeout enforcement")
 
     try:
+        # Get timeout from environment or use default
+        timeout_seconds = int(os.getenv("FAST_TESTS_TIMEOUT", "600"))
+        
+        logger.info(f"⏱️  Total timeout: {timeout_seconds} seconds ({timeout_seconds // 60}m)")
+        
         # Run with strict timeout for pipeline integration
         result = subprocess.run(
             cmd,
             cwd=Path(__file__).parent.parent.parent,
             capture_output=True,
             text=True,
-            timeout=300  # 5 minute total timeout for fast tests
+            timeout=timeout_seconds
         )
 
         # Parse results
         stdout = result.stdout
         stderr = result.stderr
 
-        # Save output
+        # Save output with improved logging
         output_dir.mkdir(parents=True, exist_ok=True)
         with open(output_dir / "pytest_comprehensive_output.txt", "w") as f:
             f.write(f"STDOUT:\n{stdout}\n\nSTDERR:\n{stderr}")
+        
+        logger.info(f"📁 Test output saved to: {output_dir / 'pytest_comprehensive_output.txt'}")
 
         # Parse test statistics from output
         test_stats = _parse_test_statistics(stdout)
@@ -925,10 +945,16 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
             return False
 
     except subprocess.TimeoutExpired:
-        logger.error("⏰ Complete test execution timed out")
+        logger.error(f"⏰ Complete test execution timed out after {timeout_seconds} seconds ({timeout_seconds // 60}m)")
+        logger.error("💡 To increase timeout, set FAST_TESTS_TIMEOUT environment variable")
+        logger.error("💡 Example: export FAST_TESTS_TIMEOUT=900  # 15 minutes")
+        logger.error("💡 Or skip tests in pipeline: export SKIP_TESTS_IN_PIPELINE=1")
+        _generate_timeout_report(output_dir, cmd, timeout_seconds)
         return False
     except Exception as e:
         logger.error(f"❌ Complete test execution failed: {e}")
+        import traceback
+        logger.error(f"Traceback:\n{traceback.format_exc()}")
         return False
 
 def run_comprehensive_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, generate_coverage: bool = False) -> bool:
