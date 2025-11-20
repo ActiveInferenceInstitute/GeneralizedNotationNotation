@@ -4,6 +4,19 @@
 
 The GNN (Generalized Notation Notation) Pipeline is a comprehensive 24-step system for processing Active Inference generative models. Each module follows the **thin orchestrator pattern** where numbered scripts delegate to modular implementations.
 
+## 📚 GNN Documentation
+
+The GNN system is fully documented in `doc/gnn/`. 
+
+> **[GNN Documentation Index](../doc/gnn/README.md)** - Start here for all GNN guides.
+
+### Specialized Documentation Agents
+See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 24 documentation agents, including:
+- **Syntax & DSL**: `gnn_syntax.md`, `gnn_dsl_manual.md`
+- **Modeling**: `quickstart_tutorial.md`, `gnn_examples_doc.md`
+- **Integration**: `framework_integration_guide.md`, `gnn_implementation.md`
+- **Troubleshooting**: `gnn_troubleshooting.md`
+
 ---
 
 ## Module Registry
@@ -280,6 +293,7 @@ pytest --cov=src --cov-report=term-missing
 ## References
 
 - **Main Documentation**: [README.md](../README.md)
+- **GNN Documentation Index**: [doc/gnn/README.md](../doc/gnn/README.md)
 - **Pipeline Execution Summary**: [pipeline_execution_summary.json](../output/pipeline_execution_summary.json)
 
 ---
@@ -290,5 +304,3 @@ pytest --cov=src --cov-report=term-missing
 **Total Steps**: 24 (0-23)
 **Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README files for modules and subdirectories)
 **Status**: ✅ Production Ready
-
-

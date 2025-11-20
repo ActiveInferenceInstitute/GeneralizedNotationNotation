@@ -4,14 +4,14 @@
 
 This document provides comprehensive agent scaffolding for the Generalized Notation Notation (GNN) documentation system. The GNN documentation is organized as a collection of specialized documentation agents, each responsible for a specific aspect of GNN functionality, architecture, or pedagogy.
 
-**Status**: ✅ Complete documentation system (23 documentation modules)  
+**Status**: ✅ Complete documentation system (24 documentation modules)  
 **Version**: 2.1.0
 
 ---
 
 ## 📚 Documentation Agent Registry
 
-The GNN documentation system consists of 23 specialized agents, each providing focused expertise:
+The GNN documentation system consists of 24 specialized agents, each providing focused expertise:
 
 ### Core Foundation Agents (4 modules)
 
@@ -352,6 +352,16 @@ https://doi.org/10.5281/zenodo.7803328
 - Performance optimization tools
 - Community resources
 
+#### 24. **GNN Troubleshooting Agent** (`gnn_troubleshooting.md`)
+**Purpose**: Comprehensive guide for diagnosing and resolving GNN issues  
+**Audience**: All users  
+**Key Topics**:
+- Parsing errors and solutions
+- Type checking failures
+- Framework integration issues
+- Visualization problems
+- Pipeline recovery strategies
+
 ---
 
 ## 🔄 Documentation Workflow
@@ -448,7 +458,7 @@ https://doi.org/10.5281/zenodo.7803328
 ## 🎯 Key Metrics
 
 ### Documentation Coverage
-- **Total Documentation Modules**: 23
+- **Total Documentation Modules**: 24
 - **Total Lines of Documentation**: ~12,000+
 - **Code Examples Provided**: 100+
 - **Diagrams/Flowcharts**: 50+
@@ -552,7 +562,7 @@ cat doc/gnn/architecture_reference.md | grep "Step 11"
 
 ## ✅ Validation Status
 
-- ✅ All 23 documentation agents complete
+- ✅ All 24 documentation agents complete
 - ✅ Complete cross-referencing
 - ✅ All pipeline steps documented
 - ✅ All 28 modules documented

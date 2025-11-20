@@ -1,5 +1,20 @@
 # GNN Processing Pipeline - Comprehensive Documentation
 
+## 📚 GNN Documentation
+
+**Generalized Notation Notation (GNN)** is the core specification language for this pipeline. 
+
+> **[Start Here: GNN Documentation Index](../doc/gnn/README.md)**
+
+### Key Resources
+- **[GNN Overview](../doc/gnn/gnn_overview.md)**: What is GNN?
+- **[Quickstart Tutorial](../doc/gnn/quickstart_tutorial.md)**: Build your first model
+- **[GNN Syntax Reference](../doc/gnn/gnn_syntax.md)**: Syntax guide
+- **[Troubleshooting Guide](../doc/gnn/gnn_troubleshooting.md)**: Fix common issues
+- **[GNN Examples](../doc/gnn/gnn_examples_doc.md)**: Model patterns
+
+---
+
 ## Pipeline Architecture: Thin Orchestrator Pattern
 
 The GNN processing pipeline follows a **thin orchestrator pattern** for maintainability, modularity, and testability:

@@ -400,7 +400,7 @@ cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 - [.cursorrules](../../.cursorrules)
 
 ### External Resources
-- [GNN Specification](doc/gnn/SPECIFICATION.md)
+- [GNN Specification](../../doc/gnn/gnn_dsl_manual.md)
 - [Active Inference Papers](https://en.wikipedia.org/wiki/Active_inference)
 
 ---

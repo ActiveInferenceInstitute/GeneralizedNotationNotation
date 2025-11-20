@@ -39,6 +39,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 - [GNN File Structure](gnn_file_structure_doc.md) - File organization and sections
 - [GNN Standards](gnn_standards.md) - Domain knowledge and coding standards
 - [About GNN](about_gnn.md) - Detailed GNN specification
+- [GNN Troubleshooting](gnn_troubleshooting.md) - Common issues and solutions
 
 ## 🎯 Modeling and Examples
 
@@ -200,6 +201,7 @@ All GNN documentation follows these principles:
 - [GNN Standards](gnn_standards.md)
 - [GNN Syntax](gnn_syntax.md)
 - [GNN Tools and Resources](gnn_tools.md)
+- [GNN Troubleshooting](gnn_troubleshooting.md)
 - [Improvement Analysis](improvement_analysis.md)
 - [Ontology System](ontology_system.md)
 - [Quickstart Tutorial](quickstart_tutorial.md)
