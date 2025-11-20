@@ -2,7 +2,6 @@
 
 > **📋 Document Metadata**  
 > **Type**: Troubleshooting Guide | **Audience**: Developers & Operators | **Complexity**: Intermediate  
-> **Last Updated: October 2025 | **Status**: Active  
 > **Cross-References**: [Pipeline Architecture](../pipeline/README.md) | [Testing Guide](../testing/README.md)
 
 ## Overview

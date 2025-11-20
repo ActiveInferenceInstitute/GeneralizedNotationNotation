@@ -2,7 +2,6 @@
 
 > **📋 Document Metadata**  
 > **Type**: Performance Guide | **Audience**: Developers & Researchers | **Complexity**: Intermediate-Advanced  
-> **Last Updated: October 2025 | **Status**: Production-Ready  
 > **Cross-References**: [Pipeline Architecture](../pipeline/README.md) | [Troubleshooting](../troubleshooting/README.md) | [API Reference](../api/README.md)
 
 This comprehensive guide covers performance optimization strategies, monitoring methodologies, and scaling approaches for GNN models and processing pipelines.
@@ -640,6 +639,5 @@ jobs:
 
 ---
 
-**Last Updated: October 2025  
 **Status**: Production-Ready Performance Guide  
 **Next Steps**: [Advanced Optimization](optimization_advanced.md) | [Distributed Computing](distributed_computing.md) 

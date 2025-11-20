@@ -2,7 +2,6 @@
 
 > **📋 Document Metadata**  
 > **Type**: Troubleshooting Guide | **Audience**: All Users | **Complexity**: Intermediate  
-> **Last Updated**: October 2025 | **Status**: Production-Ready  
 > **Cross-References**: [Setup Guide](../SETUP.md) | [Pipeline Assessment](../pipeline/pipeline_warning_assessment.md)
 
 This guide helps you diagnose and resolve common warnings in the GNN pipeline execution.
@@ -426,8 +425,6 @@ When reporting warnings/errors, include:
 
 ---
 
-**Last Updated**: October 29, 2025  
 **Guide Version**: 1.0  
 **Compatible Pipeline Version**: 2.1.0+  
-**Next Review**: November 2025
 

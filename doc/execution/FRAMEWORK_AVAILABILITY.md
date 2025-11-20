@@ -256,6 +256,5 @@ python src/12_execute.py --frameworks "all" ...   # All 5 frameworks
 
 ---
 
-**Last Updated**: November 19, 2025  
 **Compatible with**: Pipeline v2.1.0+
 

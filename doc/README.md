@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Navigation Hub | **Audience**: All Users | **Complexity**: Beginner  
-> **Last Updated: October 2025 | **Status**: Production-Ready  
+> **Status**: Production-Ready  
 > **Cross-References**: [Setup Guide](SETUP.md) | [Contributing](../CONTRIBUTING.md)
 
 Welcome to the comprehensive documentation for Generalized Notation Notation (GNN), a standardized text-based language for expressing Active Inference generative models.
@@ -106,6 +106,37 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 
 > **🔗 Cross-References**: [API Documentation](api/README.md) | [Pipeline Integration](pipeline/README.md) | [Performance Comparison](troubleshooting/performance.md)
 
+### Additional Framework Categories
+
+#### Audio and Sonification
+- **[SAPF](sapf/sapf_gnn.md)** - Structured Audio Processing Framework for sonification
+- **[Pedalboard](pedalboard/pedalboard_gnn.md)** - Audio effects framework for model representation
+
+#### Formal Methods and Verification
+- **[Axiom](axiom/axiom_gnn.md)** - Formal verification and theorem proving
+- **[Petri Nets](petri_nets/README.md)** - Workflow modeling and process analysis
+- **[Nock](nock/nock-gnn.md)** - Formal specification language integration
+
+#### Distributed Systems
+- **[Iroh](iroh/iroh.md)** - Peer-to-peer networking for decentralized agents
+- **[X402](x402/gnn_x402.md)** - Distributed inference protocol
+
+#### Specialized Tools
+- **[GUI-Oxdraw](gui_oxdraw/gnn_oxdraw.md)** - Visual model construction interface
+- **[OneFileLLM](onefilellm/onefilellm_gnn.md)** - Single-file LLM wrapper for analysis
+- **[Vec2Text](vec2text/vec2text_gnn.md)** - Vector-to-text model interpretation
+
+#### Research and Benchmarking
+- **[ARC-AGI](arc-agi/arc-agi-gnn.md)** - Abstract reasoning benchmark integration
+- **[D2](d2/gnn_d2.md)** - Scriptable diagram generation
+- **[Glowstick](glowstick/glowstick_gnn.md)** - Interactive visualization framework
+- **[Klong](klong/klong.md)** - Array programming language integration
+
+#### Temporal and Analytical
+- **[TimEP](timep/timep_gnn.md)** - Temporal modeling and time series analysis
+- **[POMDP](pomdp/pomdp_overall.md)** - POMDP analytical framework
+- **[SPM](spm/spm_gnn.md)** - Statistical Parametric Mapping for neuroscience
+
 ## 📖 Example Gallery
 
 > **📈 Progressive Complexity** | **🎯 Learning Path**: Basic → Intermediate → Advanced
@@ -157,6 +188,12 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Cross-refs*: [Tools Guide](gnn/gnn_tools.md), [API Documentation](api/README.md)
 - **[Cerebrum Integration](cerebrum/gnn_cerebrum.md)** - Advanced cognitive architectures
   - *Cross-refs*: [Cognitive Phenomena](cognitive_phenomena/README.md), [Hierarchical Template](templates/hierarchical_template.md)
+|- **[Audio Sonification](sapf/sapf_gnn.md)** - Auditory representation of model dynamics
+  - *Cross-refs*: [SAPF](sapf/README.md), [Pedalboard](pedalboard/pedalboard_gnn.md)
+|- **[Formal Verification](axiom/axiom_gnn.md)** - Provably correct model specification
+  - *Cross-refs*: [Petri Nets](petri_nets/README.md), [Nock](nock/nock-gnn.md)
+|- **[Visual Model Construction](gui_oxdraw/gnn_oxdraw.md)** - Interactive GUI for model building
+  - *Cross-refs*: [Oxdraw](gui_oxdraw/README.md), [Glowstick](glowstick/glowstick_gnn.md)
 
 ## 🔍 Quick Reference
 
@@ -355,7 +392,6 @@ recent_additions: [poe-world_integration, enhanced_cross_references, improved_re
 
 ---
 
-**Last Updated: October 2025  
-**Documentation Version**: Compatible with GNN v1.x  
 **Status**: Comprehensive and Production-Ready  
+**Documentation Version**: Compatible with GNN v1.x  
 **Cross-Reference Network**: ✅ [Fully Integrated](CROSS_REFERENCE_INDEX.md) 

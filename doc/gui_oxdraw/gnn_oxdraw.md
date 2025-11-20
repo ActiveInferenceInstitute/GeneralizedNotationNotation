@@ -1,7 +1,6 @@
 # oxdraw as GNN Interface: Visual Diagram-as-Code for Active Inference Models
 
 **Status**: Integration Proposal
-**Last Updated: October 2025
 **Version**: 1.0
 
 ---
@@ -1179,7 +1178,6 @@ This integration demonstrates how **diagram-as-code** tools can enhance scientif
 ---
 
 **Document Version**: 1.0  
-**Last Updated: October 2025  
 **Authors**: GNN Pipeline Team  
 **License**: MIT
 

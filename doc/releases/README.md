@@ -2,7 +2,6 @@
 
 > **📋 Document Metadata**  
 > **Type**: Release Management | **Audience**: Maintainers, Contributors, Release Managers | **Complexity**: Intermediate  
-> **Last Updated: October 2025 | **Status**: Production-Ready  
 > **Cross-References**: [Contributing Guide](../../CONTRIBUTING.md) | [Development Guide](../development/README.md) | [Deployment Guide](../deployment/README.md)
 
 ## Overview
@@ -453,7 +452,6 @@ jobs:
 
 ---
 
-**Last Updated: October 2025  
 **Release Team**: GNN Maintainers  
 **Next Release**: v1.2.0 (Target: August 2025)  
 **Current Stable**: v1.1.0 

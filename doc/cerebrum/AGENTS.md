@@ -6,7 +6,6 @@ This document provides agent scaffolding for the Cerebrum Cognitive Architecture
 
 **Status**: ✅ Documentation  
 **Version**: 1.0  
-**Last Updated**: November 2025
 
 ---
 

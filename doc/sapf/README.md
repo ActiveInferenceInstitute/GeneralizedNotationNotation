@@ -38,5 +38,4 @@ See the [main documentation index](../README.md) for comprehensive guides and tu
 ---
 
 **Status**: Documentation  
-**Last Updated**: November 2025  
 **Version**: 1.0

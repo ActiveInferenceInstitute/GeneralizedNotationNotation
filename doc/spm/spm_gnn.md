@@ -2,7 +2,6 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Analysis | **Audience**: Neuroscientists, AI Researchers, Developers  
-> **Complexity**: Advanced | **Last Updated: October 2025  
 > **Cross-References**: [SPM Overview](spm.md) | [GNN Framework Guide](../gnn/framework_integration_guide.md) | [Active Inference Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)
 
 ## Executive Summary

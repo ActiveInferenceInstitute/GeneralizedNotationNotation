@@ -2,7 +2,6 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Guide | **Audience**: Developers, Researchers | **Complexity**: Intermediate  
-> **Last Updated: October 2025 | **Status**: Production-Ready  
 > **Cross-References**: [PyMDP Guide](../pymdp/gnn_pymdp.md) | [RxInfer Guide](../rxinfer/gnn_rxinfer.md) | [DisCoPy Guide](../discopy/gnn_discopy.md) | [ActiveInference.jl Guide](../activeinference_jl/activeinference-jl.md)
 
 ## Pipeline Integration
@@ -724,7 +723,6 @@ class IntegrationTestSuite:
 
 ---
 
-**Last Updated: October 2025  
 **Integration Guide Version**: 2.0  
 **Framework Coverage**: PyMDP, RxInfer, DisCoPy  
 **Status**: Production-Ready 

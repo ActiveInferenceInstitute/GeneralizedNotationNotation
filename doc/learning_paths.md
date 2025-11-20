@@ -40,6 +40,8 @@ This document outlines structured learning paths for users of varying expertise 
 3. **Tools and APIs**:
    - Use MCP tools ([MCP Docs](/doc/mcp/gnn_mcp_model_context_protocol.md)).
    - Explore LLM enhancements ([LLM Integration](/doc/llm/README.md)).
+   - Visualization tools: [GUI Oxdraw](/doc/gui_oxdraw/gnn_oxdraw.md) for visual model construction.
+   - Analysis tools: [OneFileLLM](/doc/onefilellm/onefilellm_gnn.md), [Vec2Text](/doc/vec2text/vec2text_gnn.md).
 
 4. **Testing and Troubleshooting**:
    - Run tests ([Testing Docs](/doc/testing/README.md)).
@@ -59,6 +61,9 @@ This document outlines structured learning paths for users of varying expertise 
 2. **Custom Development**:
    - Extend pipeline ([Development Docs](/doc/development/README.md)).
    - Integrate with external tools (e.g., [SymPy](/doc/sympy/gnn_sympy.md), [DSPy](/doc/dspy/gnn_dspy.md)).
+   - Formal methods: [Axiom](/doc/axiom/axiom_gnn.md), [Petri Nets](/doc/petri_nets/README.md), [Nock](/doc/nock/nock-gnn.md).
+   - Audio processing: [SAPF](/doc/sapf/sapf_gnn.md), [Pedalboard](/doc/pedalboard/pedalboard_gnn.md).
+   - Visualization: [D2 Diagramming](/doc/d2/gnn_d2.md), [Glowstick](/doc/glowstick/glowstick_gnn.md), [GUI Oxdraw](/doc/gui_oxdraw/gnn_oxdraw.md).
 
 3. **Performance and Optimization**:
    - Metrics: [Resource Metrics](/doc/gnn/resource_metrics.md).

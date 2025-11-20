@@ -845,7 +845,6 @@ def chunked_simulation(agents, total_steps, chunk_size=100):
 
 ---
 
-**Last Updated: October 2025  
 **FAQ Version**: Compatible with GNN v1.x  
 **Total Questions**: 75+  
 **Covers**: Installation, Modeling, Frameworks, Advanced Topics, Troubleshooting, Contributing 

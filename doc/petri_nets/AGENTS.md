@@ -6,13 +6,12 @@ This directory contains documentation and resources for the petri_nets subsystem
 
 **Status**: ✅ Documentation Module  
 **Version**: 1.0  
-**Last Updated**: November 2025
 
 ---
 
 ## Purpose
 
-X402 experimental protocol
+Petri net modeling and analysis for workflow specification
 
 This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 24-step processing pipeline.
 

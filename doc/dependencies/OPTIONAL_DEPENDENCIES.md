@@ -427,6 +427,5 @@ If you encounter issues with optional dependencies:
 
 ---
 
-**Last Updated**: November 19, 2025  
 **Status**: ✅ Current for Pipeline v2.1.0
 

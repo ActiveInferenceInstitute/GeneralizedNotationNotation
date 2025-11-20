@@ -2,7 +2,6 @@
 
 > **📋 Document Metadata**  
 > **Type**: Technical Guide | **Audience**: Developers & Operators | **Complexity**: Intermediate  
-> **Last Updated: October 2025 | **Status**: Active  
 > **Cross-References**: [Pipeline Architecture](PIPELINE_ARCHITECTURE.md) | [Error Recovery](../troubleshooting/pipeline_error_recovery.md)
 
 ## Pipeline Flow Diagram

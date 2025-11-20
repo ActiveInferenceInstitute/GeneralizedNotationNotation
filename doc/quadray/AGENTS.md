@@ -6,13 +6,12 @@ This directory contains documentation and resources for the quadray subsystem.
 
 **Status**: ✅ Documentation Module  
 **Version**: 1.0  
-**Last Updated**: November 2025
 
 ---
 
 ## Purpose
 
-X402 experimental protocol
+Quadray coordinate system for 4D probability space visualization
 
 This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 24-step processing pipeline.
 

@@ -2,7 +2,6 @@
 
 > **📋 Document Metadata**  
 > **Type**: Research Guide | **Audience**: Researchers, Cognitive Scientists, Developers | **Complexity**: Advanced  
-> **Last Updated: October 2025 | **Status**: Production-Ready  
 > **Cross-References**: [GNN Overview](../gnn/about_gnn.md) | [Advanced Patterns](../gnn/advanced_modeling_patterns.md) | [Templates](../templates/README.md)
 
 ## Overview

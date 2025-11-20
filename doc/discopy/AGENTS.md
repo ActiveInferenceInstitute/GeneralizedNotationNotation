@@ -6,7 +6,6 @@ This document provides agent scaffolding for the DisCoPy Category Theory documen
 
 **Status**: ✅ Documentation  
 **Version**: 1.0  
-**Last Updated**: November 2025
 
 ---
 

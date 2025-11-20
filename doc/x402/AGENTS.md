@@ -6,7 +6,6 @@ This directory contains documentation and resources for the x402 subsystem.
 
 **Status**: ✅ Documentation Module  
 **Version**: 1.0  
-**Last Updated**: November 2025
 
 ---
 
