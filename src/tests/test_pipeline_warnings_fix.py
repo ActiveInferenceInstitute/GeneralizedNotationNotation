@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 """
-Test suite for pipeline warning fixes.
+Pipeline Validation and Prerequisites Tests
 
-This module tests the fixes for:
-1. Prerequisite validation using correct output directory names
-2. Prevention of nested output directories
+This module validates the pipeline's prerequisite checking and output directory management.
+Tests verify that:
+
+1. Output directories are correctly named for each pipeline step
+2. Prerequisite validation detects required dependencies
+3. Nested directory structures (legacy patterns) are detected and warned about
+4. Missing prerequisites generate appropriate warnings without failing execution
+5. The get_output_dir_for_script function prevents unintended directory nesting
+
+All tests use real implementations of validate_step_prerequisites() and 
+get_output_dir_for_script() - no mocking of these functions or filesystem operations.
+Tests use temporary directories for isolation and automatic cleanup.
 """
 
 import pytest
@@ -42,9 +51,12 @@ class TestPipelineWarningsFix:
         gnn_output_dir = output_dir / "3_gnn_output"
         gnn_output_dir.mkdir()
         
-        # Create a mock parsed GNN file (validator checks for *_parsed.json files)
-        mock_parsed_file = gnn_output_dir / "test_model_parsed.json"
-        mock_parsed_file.write_text('{"ModelName": "test"}')
+        # Create a parsed GNN file (validator checks for *_parsed.json files)
+        # Note: Parsed files in model-specific subdirectories is the correct/intended structure
+        model_dir = gnn_output_dir / "test_model"
+        model_dir.mkdir()
+        parsed_file = model_dir / "test_model_parsed.json"
+        parsed_file.write_text('{"ModelName": "test"}')
         
         type_checker_output_dir = output_dir / "5_type_checker_output"
         type_checker_output_dir.mkdir()
@@ -62,17 +74,21 @@ class TestPipelineWarningsFix:
         assert len(result["warnings"]) == 0, f"Should have no warnings, got: {result['warnings']}"
         
     def test_prerequisite_validation_with_nested_directories(self, tmp_path):
-        """Test that prerequisite validation handles nested directories."""
+        """Test that prerequisite validation detects and warns about nested directories."""
         # Setup
         output_dir = tmp_path / "output"
         output_dir.mkdir()
         
+        # Create the expected output directory (which will be empty/just exist)
+        expected_gnn_dir = output_dir / "3_gnn_output"
+        expected_gnn_dir.mkdir()
+        
         # Create nested directory structure (legacy pattern)
-        gnn_output_dir = output_dir / "3_gnn_output" / "3_gnn_output"
-        gnn_output_dir.mkdir(parents=True)
+        nested_gnn_dir = expected_gnn_dir / "3_gnn_output"
+        nested_gnn_dir.mkdir()
         
         # Create a parsed GNN file in the nested location
-        parsed_file = gnn_output_dir / "test_model_parsed.json"
+        parsed_file = nested_gnn_dir / "test_model_parsed.json"
         parsed_file.write_text('{"ModelName": "test"}')
         
         # Create real args object

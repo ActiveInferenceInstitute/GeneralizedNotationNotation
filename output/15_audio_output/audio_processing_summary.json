@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-11-19T17:12:50.863603",
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/15_audio_output",
+  "audio_backends": {
+    "librosa": {
+      "available": false,
+      "version": null
+    },
+    "soundfile": {
+      "available": false,
+      "version": null
+    },
+    "pedalboard": {
+      "available": false,
+      "version": null
+    },
+    "numpy": {
+      "available": true,
+      "version": "2.2.6"
+    }
+  },
+  "processing_status": "completed",
+  "backends_available": [
+    "numpy"
+  ],
+  "message": "Audio processing module ready for sonification and audio generation"
+}

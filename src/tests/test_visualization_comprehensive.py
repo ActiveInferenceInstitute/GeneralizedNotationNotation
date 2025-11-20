@@ -21,7 +21,8 @@ from visualization import (
     generate_graph_visualization,
     generate_matrix_visualization,
     process_visualization_main,
-    generate_combined_analysis
+    generate_combined_analysis,
+    generate_network_visualizations
 )
 
 

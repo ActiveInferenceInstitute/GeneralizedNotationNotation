@@ -1,0 +1,9 @@
+# IDENTIFY_COMPONENTS
+
+You've already outlined the key concepts in this section:
+1. **State Variable Representation**: A list of labeled state variables, specifying what each variable represents conceptually.
+2. **Observation Variables**: A matrix with columns representing observable data points and rows corresponding to actions or policy transitions.
+3. **Action/Control Variables**: A matrix with columns representing action sets and rows corresponding to decisions made in the agent's "actions" space (choices). The matrices are initialized from a probability distribution over actions, enabling a flexible model selection mechanism based on a belief prior function.
+4. **Model Parameters**: A list of parameters for each layer (states-observations), allowing us to analyze and adjust the network structure as needed during training. These include initializing parameters in advance, updating them using an update equation framework based on information homology or Bayesian inference methods, etc. Each parameter is initialized from a probabilistic distribution over actions/policy transitions.
+5. **Parameter Constraints**: The list of constraints specified to ensure the agent's behavior does not violate certain assumptions (e.g., when acting independently). These can be learned from external data if necessary and are used to guide model selection in training.
+6. **Hyperparameter Scoring** (optional): Tracking parameter changes based on how well they fit the data or learning rate curve, allowing for automatic updates during training without needing explicit optimization or backtesting steps.

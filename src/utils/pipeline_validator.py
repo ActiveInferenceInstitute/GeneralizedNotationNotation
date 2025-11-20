@@ -52,14 +52,18 @@ def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any
             nested_output_dir = expected_output_dir / expected_output_dir.name
             
             # Check both possible locations
-            if expected_output_dir.exists():
-                # Found at expected location - good
-                pass
-            elif nested_output_dir.exists():
-                # Found at nested location - issue a warning but don't fail
+            has_expected = expected_output_dir.exists()
+            has_nested = nested_output_dir.exists()
+            
+            if has_expected and has_nested:
+                # Both exist - nested structure detected (issue warning but don't fail)
+                warning_msg = f"Nested directory structure detected for {req_step}: {nested_output_dir}. Consider using only {expected_output_dir}."
+                result["warnings"].append(warning_msg)
+            elif has_nested and not has_expected:
+                # Only nested exists - issue a warning but don't fail
                 warning_msg = f"Prerequisite output found at nested location: {nested_output_dir}. Consider fixing nested directory structure."
                 result["warnings"].append(warning_msg)
-            else:
+            elif not has_expected and not has_nested:
                 # Not found at either location
                 warning_msg = f"Missing prerequisite output directory: {expected_output_dir}. Step {req_step} may not have been executed."
                 result["warnings"].append(warning_msg)

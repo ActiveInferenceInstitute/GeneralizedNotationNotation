@@ -381,6 +381,16 @@ def main():
                 r"no display",  # No display available (expected in CI/headless)
                 r"pymdp.*?not available",  # Optional dependency message
                 r"optional.*?dependency",  # Optional dependency notifications
+                r"plotly.*?not available",  # Optional plotly dependency
+                r"numpy.*?not available",  # Optional numpy dependency
+                r"seaborn.*?not available",  # Optional seaborn dependency
+                r"bokeh.*?not available",  # Optional bokeh dependency
+                r"d2.*?not available",  # Optional D2 CLI dependency
+                r"d2 cli.*?not available",  # Optional D2 CLI dependency (explicit)
+                r"d2 visualizer.*?not available",  # D2 visualizer module
+                r"d2 cli.*?install",  # D2 CLI installation instructions
+                r"interactive.*?limited",  # Interactive visualization limitations
+                r"numeric.*?limited",  # Numeric visualization limitations
             ]
             
             # Combine safe patterns into single regex

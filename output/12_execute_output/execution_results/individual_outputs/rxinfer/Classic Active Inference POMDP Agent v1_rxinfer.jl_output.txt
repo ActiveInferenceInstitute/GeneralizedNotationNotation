@@ -1,0 +1,27 @@
+Execution Results for Classic Active Inference POMDP Agent v1_rxinfer.jl
+Timestamp: 2025-11-19T17:11:56.184949
+Return Code: 1
+Execution Time: 0.89 seconds
+
+STDOUT:
+
+
+STDERR:
+ERROR: LoadError: ArgumentError: Package RxInfer not found in current path.
+- Run `import Pkg; Pkg.add("RxInfer")` to install the RxInfer package.
+Stacktrace:
+ [1] macro expansion
+   @ ./loading.jl:2375 [inlined]
+ [2] macro expansion
+   @ ./lock.jl:376 [inlined]
+ [3] __require(into::Module, mod::Symbol)
+   @ Base ./loading.jl:2358
+ [4] require(into::Module, mod::Symbol)
+   @ Base ./loading.jl:2334
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+in expression starting at /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:5

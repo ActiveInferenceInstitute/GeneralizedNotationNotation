@@ -1,0 +1,84 @@
+STDOUT:
+.............s..........................ssssss.......................... [ 11%]
+........................s...................s........................... [ 22%]
+.......................................................................s [ 33%]
+.........ss.ss.......ss.ss................s.....s....................... [ 45%]
+...........s................s.......sssssss...........................s. [ 56%]
+......s............................................ss......ss........... [ 67%]
+.....................ssssss.ss.ss..s.ss.ssss............................ [ 78%]
+.............................................................s.......... [ 90%]
+..s........................ss.................................           [100%]
+============================= slowest 10 durations =============================
+29.33s call     src/tests/test_pipeline_main.py::TestPipelineMain::test_pipeline_step_11_12_produce_reports
+22.29s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_with_ollama
+11.95s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_model_selection
+10.90s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_creates_outputs
+3.08s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers1]
+2.97s call     src/tests/test_pipeline_improvements_validation.py::TestDependencyValidationImprovements::test_improved_installation_instructions
+2.41s call     src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_executes_help[1_setup.py]
+2.32s call     src/tests/test_pipeline_recovery.py::TestAsyncAwaitRecovery::test_sync_wrapper_recovery
+1.83s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+1.61s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_resource_estimation
+=========================== short test summary info ============================
+SKIPPED [1] src/tests/test_advanced_visualization_overall.py:480: MCP integration not available
+SKIPPED [1] src/tests/test_audio_sapf.py:30: SAPF validation not available
+SKIPPED [1] src/tests/test_audio_sapf.py:51: SAPF validation not available
+SKIPPED [1] src/tests/test_audio_sapf.py:90: SAPF conversion function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:119: SAPF oscillator function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:134: SAPF envelope function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:153: SAPF mixing function not available
+SKIPPED [1] src/tests/test_core_modules.py:136: Validation test skipped due to: Valid GNN file should have basic structure: simple.gnn
+assert False
+SKIPPED [1] src/tests/test_core_modules.py:610: SAPF conversion not available: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
+SKIPPED [1] src/tests/test_gnn_integration.py:28: GNN module not available
+SKIPPED [1] src/tests/test_gnn_overall.py:94: GNN reporting not available
+SKIPPED [1] src/tests/test_gnn_overall.py:117: GNN reporting not available
+SKIPPED [1] src/tests/test_gnn_parsing.py:69: GNN discovery not available
+SKIPPED [1] src/tests/test_gnn_parsing.py:101: GNN discovery not available
+SKIPPED [1] src/tests/test_gnn_processing.py:60: GNN serializers not available
+SKIPPED [1] src/tests/test_gnn_processing.py:80: GNN serializers not available
+SKIPPED [1] src/tests/test_gnn_validation.py:57: GNN validation not available
+SKIPPED [1] src/tests/test_gnn_validation.py:80: GNN validation not available
+SKIPPED [1] src/tests/test_llm_ollama_integration.py:88: Test depends on external Ollama service state - service may be installed but not running
+SKIPPED [1] src/tests/test_llm_ollama_integration.py:287: Ollama unavailability testing requires monkeypatch - use real Ollama state for integration tests
+SKIPPED [1] src/tests/test_mcp_integration.py:28: MCP module not available
+SKIPPED [1] src/tests/test_mcp_overall.py:160: MCP module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:47: MCP TCP server not available
+SKIPPED [1] src/tests/test_mcp_transport.py:60: MCP WebSocket server not available
+SKIPPED [1] src/tests/test_mcp_transport.py:77: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:90: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:103: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:121: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:134: MCP transport module not available
+SKIPPED [1] src/tests/test_mermaid_parser.py:59: Legacy single-line format deprecated in GNN v2.0 - use multiline format instead
+SKIPPED [1] src/tests/test_mermaid_parser.py:137: Trapezoid node shape not in current GNN v2.0 specification
+SKIPPED [1] src/tests/test_performance_baselines.py:175: Core modules not available: cannot import name 'exporter' from 'export' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/export/__init__.py)
+SKIPPED [1] src/tests/test_performance_baselines.py:192: Classes not available: cannot import name 'GNNParser' from 'gnn.parser' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/gnn/parser.py)
+SKIPPED [1] src/tests/test_pipeline_error_scenarios.py:123: Test requires non-existent directory simulation - existing error handling works correctly
+SKIPPED [1] src/tests/test_pipeline_error_scenarios.py:148: Test requires filesystem permission simulation - platform-specific behavior skipped
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:109: Pipeline step template not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:128: Pipeline step template not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:151: Pipeline step template not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:169: Pipeline validation not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:187: Pipeline validation not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:207: Pipeline validation not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:243: Pipeline verify not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:264: Pipeline verify not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:309: Migration helper not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:333: Migration helper not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:397: Pipeline monitor not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:438: Resource manager not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:458: Resource manager not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:495: Script validator not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:526: Script validator not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:553: Pipeline modules not available for integration test
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:579: Utils modules not available for integration test
+SKIPPED [1] src/tests/test_pipeline_scripts.py:528: SAPF audio backend unavailable: cannot import name 'generate_wav_from_sapf' from 'src.audio.sapf.generator' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/audio/sapf/generator.py)
+SKIPPED [1] src/tests/test_render_integration.py:28: Render module not available
+SKIPPED [1] src/tests/test_visualization_comprehensive.py:32: Testing internal implementation - backend auto-configured
+SKIPPED [1] src/tests/test_visualization_comprehensive.py:39: Testing internal implementation - backend auto-configured
+582 passed, 56 skipped, 20 deselected in 110.77s (0:01:50)
+
+
+STDERR:
+DEBUG:2025-11-19 17:11:43,210:jax._src.xla_bridge:886: Clearing JAX backend caches.

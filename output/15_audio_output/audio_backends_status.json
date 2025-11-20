@@ -1,0 +1,18 @@
+{
+  "librosa": {
+    "available": false,
+    "version": null
+  },
+  "soundfile": {
+    "available": false,
+    "version": null
+  },
+  "pedalboard": {
+    "available": false,
+    "version": null
+  },
+  "numpy": {
+    "available": true,
+    "version": "2.2.6"
+  }
+}

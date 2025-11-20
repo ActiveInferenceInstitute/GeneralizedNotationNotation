@@ -1,0 +1,12 @@
+{
+  "processed_files": 1,
+  "total_visualizations": 5,
+  "visualization_files": [
+    "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+    "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_1_heatmap.png",
+    "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_2_heatmap.png",
+    "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_3_heatmap.png",
+    "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png"
+  ],
+  "success": true
+}

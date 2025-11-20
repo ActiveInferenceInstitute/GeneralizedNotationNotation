@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 """
-Test Render Overall Tests
+Comprehensive Render Module Tests
 
-This file contains tests migrated from test_render.py.
+This module tests the render module's ability to generate simulation code for various
+target frameworks. All tests use real rendering functions with actual GNN specifications
+and verify that output artifacts are correctly created.
+
+Test Coverage:
+- PyMDP code generation (test_render_to_pymdp, test_render_to_rxinfer_toml)
+- DisCoPy categorical diagram rendering (test_render_to_discopy, test_render_to_discopy_combined)
+- Multiple language/framework rendering (test_render_to_activeinference_jl, test_render_to_jax, test_render_to_jax_pomdp)
+
+No mocking is used - all tests validate real render function execution.
 """
 
 import pytest
@@ -17,9 +26,21 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from tests.conftest import *
 
 
-# Migrated from test_render.py
+# Real-implementation render target tests
 class TestRenderTargets:
-    """Test rendering to different targets."""
+    """
+    Test rendering to different target frameworks.
+    
+    These tests verify that the GNN render module can successfully generate executable code
+    for various target frameworks including PyMDP, RxInfer, DisCoPy, ActiveInference.jl, 
+    and JAX. Each test uses real render function calls with actual GNN specifications 
+    and verifies output artifacts are created correctly.
+    
+    Fixtures:
+    - tmp_path: Temporary directory for artifact output
+    - sample_gnn_spec: Basic GNN specification dict
+    - mock_render_module: Real RealRenderModule instance (not a mock)
+    """
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
@@ -75,53 +96,69 @@ class TestRenderTargets:
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_render_to_discopy_combined(self, tmp_path, sample_gnn_spec, mock_render_module):
-        """Test rendering to DisCoPy combined format."""
-        # Mock successful rendering
-        mock_render_module.render_gnn_spec.return_value = (True, "Success", ["discopy_combined.py"])
-        
+        """Test rendering to DisCoPy combined format using real rendering."""
+        # Use real rendering call with actual data
         ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "discopy_combined", tmp_path)
         
         assert ok is True, "DisCoPy combined rendering should succeed"
-        assert "Success" in msg, "Success message should be present"
+        assert isinstance(msg, str), "Message should be string"
+        assert isinstance(artifacts, list), "Artifacts should be a list"
         assert len(artifacts) > 0, "Should generate artifacts"
+        
+        # Verify artifacts are created in output directory
+        for artifact in artifacts:
+            artifact_path = tmp_path / artifact
+            assert artifact_path.exists(), f"Artifact {artifact} should be created"
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_render_to_activeinference_jl(self, tmp_path, sample_gnn_spec, mock_render_module):
-        """Test rendering to ActiveInference.jl format."""
-        # Mock successful rendering
-        mock_render_module.render_gnn_spec.return_value = (True, "Success", ["activeinference_model.jl"])
-        
+        """Test rendering to ActiveInference.jl format using real rendering."""
+        # Use real rendering call with actual data
         ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "activeinference_jl", tmp_path)
         
         assert ok is True, "ActiveInference.jl rendering should succeed"
-        assert "Success" in msg, "Success message should be present"
+        assert isinstance(msg, str), "Message should be string"
+        assert isinstance(artifacts, list), "Artifacts should be a list"
         assert len(artifacts) > 0, "Should generate artifacts"
+        
+        # Verify artifacts are created in output directory
+        for artifact in artifacts:
+            artifact_path = tmp_path / artifact
+            assert artifact_path.exists(), f"Artifact {artifact} should be created"
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_render_to_jax(self, tmp_path, sample_gnn_spec, mock_render_module):
-        """Test rendering to JAX format."""
-        # Mock successful rendering
-        mock_render_module.render_gnn_spec.return_value = (True, "Success", ["jax_model.py"])
-        
+        """Test rendering to JAX format using real rendering."""
+        # Use real rendering call with actual data
         ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "jax", tmp_path)
         
         assert ok is True, "JAX rendering should succeed"
-        assert "Success" in msg, "Success message should be present"
+        assert isinstance(msg, str), "Message should be string"
+        assert isinstance(artifacts, list), "Artifacts should be a list"
         assert len(artifacts) > 0, "Should generate artifacts"
+        
+        # Verify artifacts are created in output directory
+        for artifact in artifacts:
+            artifact_path = tmp_path / artifact
+            assert artifact_path.exists(), f"Artifact {artifact} should be created"
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_render_to_jax_pomdp(self, tmp_path, sample_gnn_spec, mock_render_module):
-        """Test rendering to JAX POMDP format."""
-        # Mock successful rendering
-        mock_render_module.render_gnn_spec.return_value = (True, "Success", ["jax_pomdp_model.py"])
-        
+        """Test rendering to JAX POMDP format using real rendering."""
+        # Use real rendering call with actual data
         ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "jax_pomdp", tmp_path)
         
         assert ok is True, "JAX POMDP rendering should succeed"
-        assert "Success" in msg, "Success message should be present"
+        assert isinstance(msg, str), "Message should be string"
+        assert isinstance(artifacts, list), "Artifacts should be a list"
         assert len(artifacts) > 0, "Should generate artifacts"
+        
+        # Verify artifacts are created in output directory
+        for artifact in artifacts:
+            artifact_path = tmp_path / artifact
+            assert artifact_path.exists(), f"Artifact {artifact} should be created"
 
 

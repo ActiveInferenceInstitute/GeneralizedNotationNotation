@@ -322,14 +322,14 @@ def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
     }
 
     if not MATPLOTLIB_AVAILABLE:
-        logger.warning("matplotlib not available - some visualizations will be skipped")
+        logger.info("matplotlib not available - some visualizations will be skipped")
 
     # Check plotly
     try:
         import plotly
         dependencies["plotly"] = True
     except ImportError:
-        logger.warning("plotly not available - interactive visualizations will be limited")
+        logger.info("plotly not available - interactive visualizations will be limited")
 
     # Check seaborn
     global SEABORN_AVAILABLE
@@ -352,7 +352,7 @@ def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
     if np is not None:
         dependencies["numpy"] = True
     else:
-        logger.warning("numpy not available - numeric visualizations will be limited")
+        logger.info("numpy not available - numeric visualizations will be limited")
 
     return dependencies
 

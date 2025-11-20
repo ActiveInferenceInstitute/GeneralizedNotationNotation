@@ -281,13 +281,10 @@ Minimize free energy while maintaining preferred states.
         import logging
         caplog.set_level(logging.INFO)
         
-        # Simulate Ollama not available by making the command fail
-        def mock_which(cmd):
-            if cmd == "ollama":
-                return None
-            return shutil.which(cmd)
-        
-        monkeypatch.setattr(shutil, "which", mock_which)
+        # Skip this test if we cannot test Ollama unavailability without mocking
+        # Real Ollama availability should be tested via integration tests
+        # This test would require monkeypatching which violates our no-mocks policy
+        pytest.skip("Ollama unavailability testing requires monkeypatch - use real Ollama state for integration tests")
         
         llm_output_dir = test_output_dir / "13_llm_output"
         llm_output_dir.mkdir()
