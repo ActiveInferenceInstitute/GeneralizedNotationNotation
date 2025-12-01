@@ -229,36 +229,8 @@ def main():
         else:
             log_step_start(logger, "Starting GNN Processing Pipeline")
         
-        # Define pipeline steps
-        pipeline_steps = [
-            ("0_template.py", "Template initialization"),
-            ("1_setup.py", "Environment setup"),
-            ("2_tests.py", "Test suite execution"),
-            ("3_gnn.py", "GNN file processing"),
-            ("4_model_registry.py", "Model registry"),
-            ("5_type_checker.py", "Type checking"),
-            ("6_validation.py", "Validation"),
-            ("7_export.py", "Multi-format export"),
-            ("8_visualization.py", "Visualization"),
-            ("9_advanced_viz.py", "Advanced visualization"),
-            ("10_ontology.py", "Ontology processing"),
-            ("11_render.py", "Code rendering"),
-            ("12_execute.py", "Execution"),
-            ("13_llm.py", "LLM processing"),
-            ("14_ml_integration.py", "ML integration"),
-            ("15_audio.py", "Audio processing"),
-            ("16_analysis.py", "Analysis"),
-            ("17_integration.py", "Integration"),
-            ("18_security.py", "Security"),
-            ("19_research.py", "Research"),
-            ("20_website.py", "Website generation"),
-            ("21_mcp.py", "Model Context Protocol processing"),
-            ("22_gui.py", "GUI (Interactive GNN Constructor)"),
-            ("23_report.py", "Report generation")
-        ]
-
         # Handle step filtering with automatic dependency resolution
-        steps_to_execute = pipeline_steps  # Initialize with all steps
+        # (pipeline_steps already defined above, steps_to_execute initialized)
         if args.only_steps:
             requested_step_numbers = parse_step_list(args.only_steps)
             

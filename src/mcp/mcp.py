@@ -730,20 +730,27 @@ class MCP:
                     module_load_futures[directory.name] = future
 
                 start_wait = time.time()
+                from concurrent.futures import TimeoutError as FuturesTimeoutError
+                
                 for module_name, future in list(module_load_futures.items()):
                     remaining = max(0.0, overall_timeout - (time.time() - start_wait))
                     try:
                         success = future.result(timeout=min(per_module_timeout, remaining) if remaining > 0 else 0.001)
                         if not success:
                             all_modules_loaded_successfully = False
+                    except FuturesTimeoutError:
+                        # Timeout is a transient issue - module may load later via fallback
+                        logger.debug(f"Module {module_name} loading timed out - will be retried via fallback registration")
+                        # Don't set error status yet - allow fallback registration to succeed
                     except Exception as e:
-                        logger.error(f"Failed to load module {module_name}: {e}")
+                        error_msg = str(e) if str(e) else type(e).__name__
+                        logger.error(f"Failed to load module {module_name}: {error_msg}")
                         all_modules_loaded_successfully = False
                         self.modules[module_name] = MCPModuleInfo(
                             name=f"src.{module_name}.mcp",
                             path=Path(__file__).parent.parent / module_name / "mcp.py",
                             status="error",
-                            error_message=str(e),
+                            error_message=error_msg,
                             last_updated=time.time()
                         )
             else:
@@ -761,13 +768,31 @@ class MCP:
             mcp_dir = Path(__file__).parent
             logger.debug(f"Discovering core MCP tools in {mcp_dir}")
             
-            # Load SymPy MCP integration
+            # Load SymPy MCP integration (special case - located in mcp directory)
             sympy_mcp_file = mcp_dir / "sympy_mcp.py"
             if sympy_mcp_file.exists():
                 try:
-                    success = self._load_module(mcp_dir, sympy_mcp_file, module_name="sympy_mcp")
-                    if not success:
-                        all_modules_loaded_successfully = False
+                    # Import directly as src.mcp.sympy_mcp since it's in the mcp directory
+                    import_start = time.time()
+                    sympy_module = importlib.import_module("src.mcp.sympy_mcp")
+                    import_time = time.time() - import_start
+                    
+                    if hasattr(sympy_module, "register_tools") and callable(sympy_module.register_tools):
+                        tools_before = len(self.tools)
+                        sympy_module.register_tools(self)
+                        tools_added = len(self.tools) - tools_before
+                        
+                        self.modules["sympy_mcp"] = MCPModuleInfo(
+                            name="src.mcp.sympy_mcp",
+                            path=sympy_mcp_file,
+                            tools_count=tools_added,
+                            status="loaded",
+                            load_time=import_time,
+                            last_updated=time.time()
+                        )
+                        logger.debug(f"Loaded sympy_mcp: {tools_added} tools in {import_time:.3f}s")
+                    else:
+                        logger.warning("sympy_mcp module has no register_tools function")
                 except Exception as e:
                     logger.error(f"Failed to load core MCP module src.mcp.sympy_mcp: {str(e)}")
                     all_modules_loaded_successfully = False
@@ -2073,11 +2098,20 @@ def start_mcp_server(mcp_instance: Optional[MCP] = None) -> bool:
     server = create_mcp_server(mcp_instance)
     return server.start()
 
-def register_tools() -> bool:
-    """Register tools with the global MCP instance."""
+def register_tools(mcp: Optional[MCP] = None) -> bool:
+    """
+    Register tools with the MCP instance.
+    
+    Args:
+        mcp: Optional MCP instance. If None, uses the global instance.
+        
+    Returns:
+        True if registration succeeded
+    """
     try:
-        # This function is called by other modules to register their tools
-        # The actual registration happens in the module's mcp.py file
+        # This function is called by the MCP discovery system to register tools
+        # The actual registration happens in individual module's mcp.py files
+        # This core mcp.py doesn't register additional tools itself
         return True
     except Exception as e:
         logger.error(f"Failed to register tools: {e}")

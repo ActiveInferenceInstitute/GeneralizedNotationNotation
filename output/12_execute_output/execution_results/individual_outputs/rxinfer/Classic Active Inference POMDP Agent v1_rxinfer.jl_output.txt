@@ -1,7 +1,7 @@
 Execution Results for Classic Active Inference POMDP Agent v1_rxinfer.jl
-Timestamp: 2025-11-19T17:11:56.184949
+Timestamp: 2025-11-30T16:07:23.218015
 Return Code: 1
-Execution Time: 0.89 seconds
+Execution Time: 2.37 seconds
 
 STDOUT:
 

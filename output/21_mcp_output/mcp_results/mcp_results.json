@@ -1,7 +1,7 @@
 {
-  "timestamp": "2025-11-19T17:13:01.945812",
+  "timestamp": "2025-11-30T16:08:01.220494",
   "mcp_version": "2.0.0",
-  "tools_count": 105,
+  "tools_count": 113,
   "resources_count": 1,
   "tools": [
     {
@@ -567,6 +567,62 @@
     {
       "name": "src.website.list_functions",
       "description": "List callable functions exported by the src.website module public API.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_analyze_stability",
+      "description": "Analyze system stability using eigenvalue analysis",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_cleanup",
+      "description": "Clean up SymPy MCP integration and reset state",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_get_latex",
+      "description": "Convert a mathematical expression to LaTeX format",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_initialize",
+      "description": "Initialize SymPy MCP integration",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_simplify_expression",
+      "description": "Simplify a mathematical expression to canonical form",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_solve_equation",
+      "description": "Solve an equation algebraically for a specified variable",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_validate_equation",
+      "description": "Validate a mathematical equation using SymPy symbolic processing",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_validate_matrix",
+      "description": "Validate matrix properties including stochasticity constraints",
       "module": "",
       "category": "",
       "version": "1.0.0"

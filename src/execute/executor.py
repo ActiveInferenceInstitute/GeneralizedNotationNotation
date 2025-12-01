@@ -538,6 +538,14 @@ def execute_rendered_simulators(
                     "output_dir": str(framework_dirs["pymdp"])
                 })
                 log_step_warning(logger, f"PyMDP script execution failed: {e}")
+        else:
+            # Framework unavailable - log at INFO level (optional dependency)
+            logger.info("ℹ️ PyMDP framework not available - skipping PyMDP execution (install with: pip install pymdp)")
+            execution_results["pymdp_executions"].append({
+                "status": "SKIPPED",
+                "message": "PyMDP framework not installed (optional dependency)",
+                "output_dir": str(framework_dirs["pymdp"])
+            })
         
         # Execute RxInfer scripts if available
         if RXINFER_AVAILABLE and run_rxinfer_scripts:
@@ -573,6 +581,14 @@ def execute_rendered_simulators(
                     "output_dir": str(framework_dirs["rxinfer"])
                 })
                 log_step_warning(logger, f"RxInfer script execution failed: {e}")
+        else:
+            # Framework unavailable - log at INFO level (optional dependency)
+            logger.info("ℹ️ RxInfer framework not available - skipping RxInfer execution (requires Julia and RxInfer.jl)")
+            execution_results["rxinfer_executions"].append({
+                "status": "SKIPPED",
+                "message": "RxInfer framework not installed (optional dependency - requires Julia)",
+                "output_dir": str(framework_dirs["rxinfer"])
+            })
         
         # Execute DisCoPy analysis if available
         if DISCOPY_AVAILABLE and run_discopy_analysis:
@@ -608,6 +624,14 @@ def execute_rendered_simulators(
                     "output_dir": str(framework_dirs["discopy"])
                 })
                 log_step_warning(logger, f"DisCoPy analysis failed: {e}")
+        else:
+            # Framework unavailable - log at INFO level (optional dependency)
+            logger.info("ℹ️ DisCoPy framework not available - skipping DisCoPy execution (install with: pip install discopy)")
+            execution_results["discopy_executions"].append({
+                "status": "SKIPPED",
+                "message": "DisCoPy framework not installed (optional dependency)",
+                "output_dir": str(framework_dirs["discopy"])
+            })
         
         # Execute ActiveInference.jl analysis if available
         if ACTIVEINFERENCE_AVAILABLE and run_activeinference_analysis:
@@ -643,6 +667,14 @@ def execute_rendered_simulators(
                     "output_dir": str(framework_dirs["activeinference_jl"])
                 })
                 log_step_warning(logger, f"ActiveInference.jl analysis failed: {e}")
+        else:
+            # Framework unavailable - log at INFO level (optional dependency)
+            logger.info("ℹ️ ActiveInference.jl framework not available - skipping (requires Julia and ActiveInference.jl)")
+            execution_results["activeinference_executions"].append({
+                "status": "SKIPPED",
+                "message": "ActiveInference.jl framework not installed (optional dependency - requires Julia)",
+                "output_dir": str(framework_dirs["activeinference_jl"])
+            })
         
         # Execute JAX scripts if available
         if JAX_AVAILABLE and run_jax_scripts:
@@ -678,6 +710,14 @@ def execute_rendered_simulators(
                     "output_dir": str(framework_dirs["jax"])
                 })
                 log_step_warning(logger, f"JAX script execution failed: {e}")
+        else:
+            # Framework unavailable - log at INFO level (optional dependency)
+            logger.info("ℹ️ JAX framework not available - skipping JAX execution (install with: pip install jax jaxlib)")
+            execution_results["jax_executions"].append({
+                "status": "SKIPPED",
+                "message": "JAX framework not installed (optional dependency)",
+                "output_dir": str(framework_dirs["jax"])
+            })
         
         # Save execution summary with enhanced details
         summary_file = execution_output_dir / "execution_summary.json"

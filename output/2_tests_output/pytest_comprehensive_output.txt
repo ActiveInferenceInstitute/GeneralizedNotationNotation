@@ -2,23 +2,23 @@ STDOUT:
 .............s..........................ssssss.......................... [ 11%]
 ........................s...................s........................... [ 22%]
 .......................................................................s [ 33%]
-.........ss.ss.......ss.ss................s.....s....................... [ 45%]
+.........ss.ss.......ss.ss..........sss...s.....s....................... [ 45%]
 ...........s................s.......sssssss...........................s. [ 56%]
 ......s............................................ss......ss........... [ 67%]
 .....................ssssss.ss.ss..s.ss.ssss............................ [ 78%]
 .............................................................s.......... [ 90%]
 ..s........................ss.................................           [100%]
 ============================= slowest 10 durations =============================
-29.33s call     src/tests/test_pipeline_main.py::TestPipelineMain::test_pipeline_step_11_12_produce_reports
-22.29s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_with_ollama
-11.95s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_model_selection
-10.90s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_creates_outputs
-3.08s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers1]
-2.97s call     src/tests/test_pipeline_improvements_validation.py::TestDependencyValidationImprovements::test_improved_installation_instructions
-2.41s call     src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_executes_help[1_setup.py]
-2.32s call     src/tests/test_pipeline_recovery.py::TestAsyncAwaitRecovery::test_sync_wrapper_recovery
-1.83s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+30.79s call     src/tests/test_pipeline_main.py::TestPipelineMain::test_pipeline_step_11_12_produce_reports
+2.89s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers1]
+2.78s call     src/tests/test_pipeline_improvements_validation.py::TestDependencyValidationImprovements::test_improved_installation_instructions
+2.61s call     src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_executes_help[1_setup.py]
+2.30s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+1.82s call     src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_api_request_timing
 1.61s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_resource_estimation
+1.42s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers0]
+1.32s call     src/tests/test_pipeline_error_scenarios.py::TestPipelineIntegrationScenarios::test_pipeline_with_missing_dependencies
+1.31s call     src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_executes_real[8_visualization.py-<lambda>]
 =========================== short test summary info ============================
 SKIPPED [1] src/tests/test_advanced_visualization_overall.py:480: MCP integration not available
 SKIPPED [1] src/tests/test_audio_sapf.py:30: SAPF validation not available
@@ -39,6 +39,9 @@ SKIPPED [1] src/tests/test_gnn_processing.py:60: GNN serializers not available
 SKIPPED [1] src/tests/test_gnn_processing.py:80: GNN serializers not available
 SKIPPED [1] src/tests/test_gnn_validation.py:57: GNN validation not available
 SKIPPED [1] src/tests/test_gnn_validation.py:80: GNN validation not available
+SKIPPED [1] src/tests/test_llm_ollama.py:86: Ollama not available locally
+SKIPPED [1] src/tests/test_llm_ollama.py:115: Ollama not available locally
+SKIPPED [1] src/tests/test_llm_ollama.py:178: Ollama service not running for LLM queries
 SKIPPED [1] src/tests/test_llm_ollama_integration.py:88: Test depends on external Ollama service state - service may be installed but not running
 SKIPPED [1] src/tests/test_llm_ollama_integration.py:287: Ollama unavailability testing requires monkeypatch - use real Ollama state for integration tests
 SKIPPED [1] src/tests/test_mcp_integration.py:28: MCP module not available
@@ -77,8 +80,8 @@ SKIPPED [1] src/tests/test_pipeline_scripts.py:528: SAPF audio backend unavailab
 SKIPPED [1] src/tests/test_render_integration.py:28: Render module not available
 SKIPPED [1] src/tests/test_visualization_comprehensive.py:32: Testing internal implementation - backend auto-configured
 SKIPPED [1] src/tests/test_visualization_comprehensive.py:39: Testing internal implementation - backend auto-configured
-582 passed, 56 skipped, 20 deselected in 110.77s (0:01:50)
+579 passed, 59 skipped, 20 deselected in 63.43s (0:01:03)
 
 
 STDERR:
-DEBUG:2025-11-19 17:11:43,210:jax._src.xla_bridge:886: Clearing JAX backend caches.
+DEBUG:2025-11-30 16:07:08,787:jax._src.xla_bridge:886: Clearing JAX backend caches.

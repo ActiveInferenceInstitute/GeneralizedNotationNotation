@@ -1,7 +1,7 @@
 Execution Results for Classic Active Inference POMDP Agent v1_pymdp.py
-Timestamp: 2025-11-19T17:11:53.727253
+Timestamp: 2025-11-30T16:07:18.757344
 Return Code: 1
-Execution Time: 1.32 seconds
+Execution Time: 1.96 seconds
 
 STDOUT:
 

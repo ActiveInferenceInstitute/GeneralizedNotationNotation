@@ -1,7 +1,7 @@
 Execution Results for Classic Active Inference POMDP Agent v1_discopy.py
-Timestamp: 2025-11-19T17:11:55.377089
+Timestamp: 2025-11-30T16:07:21.984228
 Return Code: 0
-Execution Time: 0.81 seconds
+Execution Time: 1.23 seconds
 
 STDOUT:
 🔬 DisCoPy Categorical Diagram Generation

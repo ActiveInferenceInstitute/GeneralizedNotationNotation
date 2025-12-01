@@ -1,14 +1,14 @@
 # GNN Script Execution Report
 
-**Generated:** 2025-11-19T17:11:53.722057
+**Generated:** 2025-11-30T16:07:18.754269
 **Target Directory:** input/gnn_files
 **Output Directory:** output/12_execute_output
 
 ## Summary
 
 - **Total Scripts Found:** 5
-- **Successful Executions:** 2
-- **Failed Executions:** 3
+- **Successful Executions:** 3
+- **Failed Executions:** 2
 
 ## Execution Details
 
@@ -18,18 +18,17 @@
 - **Executor:** python3
 - **Path:** `output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py`
 - **Return Code:** 1
-- **Execution Time:** 1.32 seconds
+- **Execution Time:** 1.96 seconds
 - **Error:** Script failed with return code 1
 - **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log
 
-### Classic Active Inference POMDP Agent v1_jax.py - ❌ FAILED
+### Classic Active Inference POMDP Agent v1_jax.py - ✅ SUCCESS
 
 - **Framework:** jax
 - **Executor:** python3
 - **Path:** `output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py`
-- **Return Code:** 1
-- **Execution Time:** 0.33 seconds
-- **Error:** Script failed with return code 1
+- **Return Code:** 0
+- **Execution Time:** 1.26 seconds
 - **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Classic Active Inference POMDP Agent v1_jax.py_execution.log
 
 ### Classic Active Inference POMDP Agent v1_discopy.py - ✅ SUCCESS
@@ -38,7 +37,7 @@
 - **Executor:** python3
 - **Path:** `output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py`
 - **Return Code:** 0
-- **Execution Time:** 0.81 seconds
+- **Execution Time:** 1.23 seconds
 - **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Classic Active Inference POMDP Agent v1_discopy.py_execution.log
 
 ### Classic Active Inference POMDP Agent v1_rxinfer.jl - ❌ FAILED
@@ -47,7 +46,7 @@
 - **Executor:** julia
 - **Path:** `output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl`
 - **Return Code:** 1
-- **Execution Time:** 0.89 seconds
+- **Execution Time:** 2.37 seconds
 - **Error:** Script failed with return code 1
 - **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Classic Active Inference POMDP Agent v1_rxinfer.jl_execution.log
 
@@ -57,7 +56,7 @@
 - **Executor:** julia
 - **Path:** `output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl`
 - **Return Code:** 0
-- **Execution Time:** 24.22 seconds
+- **Execution Time:** 22.38 seconds
 - **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Classic Active Inference POMDP Agent v1_activeinference.jl_execution.log
 
 ## Next Steps

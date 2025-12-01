@@ -130,3 +130,5 @@ If you encounter an issue not listed here:
 2. Review **[GNN Standards](gnn_standards.md)** for compliance.
 3. Open an issue on the [GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation) with your GNN file and the error log.
 
+
+

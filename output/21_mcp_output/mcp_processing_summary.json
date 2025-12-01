@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-11-19T17:13:01.946724",
+  "timestamp": "2025-11-30T16:08:01.221642",
   "target_dir": "input/gnn_files",
   "output_dir": "output/21_mcp_output",
   "processing_status": "completed",
   "mcp_version": "2.0.0",
-  "tools_registered": 105,
+  "tools_registered": 113,
   "registered_modules_count": 21,
   "registered_modules": [
     "gnn",
@@ -30,5 +30,5 @@
     "utils"
   ],
   "resources_count": 1,
-  "message": "MCP processing completed - 105 tools registered from 21 modules"
+  "message": "MCP processing completed - 113 tools registered from 21 modules"
 }
