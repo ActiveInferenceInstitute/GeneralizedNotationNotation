@@ -67,8 +67,8 @@ class PipelineScriptValidator:
         """Validate all numbered pipeline scripts."""
         results = {}
         
-        # Find all numbered scripts (0-21)
-        for i in range(22):
+        # Find all numbered scripts (0-23)
+        for i in range(24):
             # Look for scripts matching the pattern
             script_patterns = [
                 f"{i}_*.py",

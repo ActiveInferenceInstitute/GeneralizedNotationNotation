@@ -6,7 +6,7 @@ pipeline:
   # Enable/disable pipeline execution
   enabled: true
   
-  # Pipeline steps to execute (0-21)
+  # Pipeline steps to execute (0-23)
   # Leave empty to run all steps
   steps: []
   

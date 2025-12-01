@@ -16,7 +16,7 @@ def verify_pipeline_discovery() -> Dict[str, Any]:
         from pipeline.discovery import get_pipeline_scripts
         scripts = get_pipeline_scripts(Path(__file__).parent)
         
-        expected_steps = list(range(22))  # 0-21
+        expected_steps = list(range(24))  # 0-23
         found_steps = [s['num'] for s in scripts]
         
         return {

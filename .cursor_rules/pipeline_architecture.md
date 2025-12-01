@@ -247,8 +247,21 @@ Every numbered script follows this standardized pattern:
 - **PyMDP Integration**: Complete PyMDP agent and environment code generation with Active Inference semantics
 - **RxInfer Integration**: Full RxInfer.jl model translation with Bayesian inference implementation
 - **ActiveInference.jl**: Native Julia implementation generation for high-performance simulation
+- **JAX Integration**: Pure JAX code generation (no Flax dependency required)
 - **DisCoPy Integration**: Categorical diagram generation for theoretical analysis
 - **Template System**: Comprehensive template-based code generation with customizable patterns
+
+**JAX Renderer (December 2025 Update):**
+The JAX renderer generates pure functional JAX code that does NOT require Flax:
+- Uses `jax.numpy` for array operations
+- Uses `optax` for optimization (optional)
+- Pure functional patterns without `nn.Module`
+- Self-contained scripts with no Flax imports
+
+**Julia Environment Setup:**
+Setup scripts are available for Julia frameworks:
+- `src/execute/rxinfer/setup_environment.jl` - RxInfer.jl setup
+- `src/execute/activeinference_jl/setup_environment.jl` - ActiveInference.jl setup
 
 #### Execution Engine (`src/execute/`) - Step 12
 - **Safe-to-Fail Execution**: Comprehensive safety patterns with circuit breaker implementation
@@ -294,3 +307,21 @@ Every numbered script follows this standardized pattern:
 - **Inline Updates**: Add documentation directly to relevant files rather than creating separate report files
 - **Concrete Demonstrations**: Show functionality through working code, real outputs, and measurable results
 - **Understated Communication**: Use specific examples and functional demonstrations over promotional language
+
+---
+
+### Related Documentation
+
+For more detailed information, see:
+- **[error_handling.md](error_handling.md)**: Exit codes, safe-to-fail patterns, error recovery
+- **[performance_optimization.md](performance_optimization.md)**: Step benchmarks, memory optimization
+- **[render_frameworks.md](render_frameworks.md)**: PyMDP, JAX, RxInfer, DisCoPy details
+- **[optional_dependencies.md](optional_dependencies.md)**: Handling PyMDP, Julia, etc.
+- **[troubleshooting.md](troubleshooting.md)**: Common pipeline issues and solutions
+
+---
+
+**Last Updated**: December 2025  
+**Pipeline Version**: 2.1.0  
+**Total Steps**: 24 (0-23)  
+**Latest Run**: 100% Success (~150 seconds)

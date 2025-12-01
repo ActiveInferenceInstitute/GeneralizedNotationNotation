@@ -754,4 +754,114 @@ step_output_dir = get_output_dir_for_script("N_module", output_dir)
 - All outputs organized under base `output/` directory
 - Each step has isolated output directory
 
-These patterns ensure consistency, reliability, and maintainability across the entire GNN pipeline system. 
+## Optional Dependency Handling Pattern
+
+### Detection and Fallback
+
+```python
+# Standard pattern for optional dependencies
+try:
+    import pymdp
+    PYMDP_AVAILABLE = True
+except ImportError:
+    PYMDP_AVAILABLE = False
+    logger.info(
+        "PyMDP not available - this is normal if not installed. "
+        "Install with: pip install pymdp. "
+        "Continuing with fallback mode."
+    )
+
+def process_with_optional_dep(model: Dict[str, Any]) -> bool:
+    """Process with optional dependency fallback."""
+    if PYMDP_AVAILABLE:
+        return _process_with_pymdp(model)
+    else:
+        return _process_fallback(model)
+```
+
+### Feature Flags Pattern
+
+```python
+# In module __init__.py
+FEATURES = {
+    "pymdp_simulation": _check_pymdp(),
+    "jax_rendering": _check_jax(),
+    "julia_execution": _check_julia(),
+}
+
+def get_available_features() -> Dict[str, bool]:
+    """Get dictionary of available features."""
+    return FEATURES.copy()
+```
+
+**Key Principles:**
+- Optional dependencies should never cause import failures
+- Always provide graceful fallback with informative messages
+- Log availability status for debugging
+- See: [optional_dependencies.md](optional_dependencies.md) for details
+
+## Safe-to-Fail Pattern
+
+### Steps 8, 9, 12 Implementation
+
+These steps implement comprehensive safe-to-fail patterns:
+
+```python
+def safe_to_fail_step(target_dir: Path, output_dir: Path, logger) -> bool:
+    """
+    Safe-to-fail step - NEVER returns False or non-zero exit.
+    """
+    try:
+        # Level 1: Full processing
+        result = full_processing(target_dir, output_dir)
+        if result:
+            return True
+    except Exception as e:
+        logger.warning(f"Full processing failed: {e}")
+    
+    try:
+        # Level 2: Reduced processing
+        result = reduced_processing(target_dir, output_dir)
+        if result:
+            return True
+    except Exception as e:
+        logger.warning(f"Reduced processing failed: {e}")
+    
+    try:
+        # Level 3: Fallback report (always succeeds)
+        generate_fallback_report(output_dir)
+        return True  # ALWAYS return True
+    except Exception:
+        pass
+    
+    return True  # Even on complete failure, return True
+
+def main() -> int:
+    """Main function - always returns 0."""
+    try:
+        success = safe_to_fail_step(...)
+    except Exception as e:
+        logger.error(f"Step failed: {e}")
+    
+    return 0  # ALWAYS return 0 - never stop pipeline
+```
+
+**Key Principles:**
+- Never return exit code 1 (critical error)
+- Implement multiple fallback levels
+- Generate output even on failure
+- See: [error_handling.md](error_handling.md) for details
+
+---
+
+## Related Documentation
+
+- **[module_patterns.md](module_patterns.md)**: Advanced module architecture
+- **[error_handling.md](error_handling.md)**: Error strategies and recovery
+- **[optional_dependencies.md](optional_dependencies.md)**: Optional package handling
+- **[code_quality.md](code_quality.md)**: Quality standards
+
+---
+
+**Last Updated**: December 2025  
+**Status**: Production Standard

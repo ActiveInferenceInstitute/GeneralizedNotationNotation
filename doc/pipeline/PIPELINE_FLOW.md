@@ -60,7 +60,7 @@ graph TD
 6. **Group 6**: 17_integration.py → 18_security.py → 19_research.py (sequential integration chain)
 7. **Group 7**: 20_website.py, 21_mcp.py, 22_gui.py, 23_report.py (final output generation)
 
-## Step Details (22 Steps: 0-21)
+## Step Details (24 Steps: 0-23)
 
 ### 0. Template (0_template.py)
 - **Critical**: No
