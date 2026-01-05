@@ -1,7 +1,7 @@
 Execution Results for Classic Active Inference POMDP Agent v1_rxinfer.jl
-Timestamp: 2025-11-30T16:07:23.218015
+Timestamp: 2026-01-05T12:43:57.940987
 Return Code: 1
-Execution Time: 2.37 seconds
+Execution Time: 0.94 seconds
 
 STDOUT:
 
@@ -24,4 +24,4 @@ Stacktrace:
    @ Base ./client.jl:317
  [7] _start()
    @ Base ./client.jl:550
-in expression starting at /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:5
+in expression starting at /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:5

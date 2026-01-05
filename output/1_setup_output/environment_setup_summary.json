@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-30T16:07:02.974621",
+  "timestamp": "2026-01-05T12:43:41.185338",
   "validation": {
     "system_requirements": true,
     "uv_environment": true,
@@ -11,14 +11,14 @@
   "configuration": {
     "extras_installed": [],
     "dev_dependencies": false,
-    "venv_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv",
+    "venv_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv",
     "python_version": "3.12.11 | packaged by conda-forge | (main, Jun  4 2025, 14:38:53) [Clang 18.1.8 ]"
   },
   "uv_info": {
-    "project_root": "/Users/4d/Documents/GitHub/generalizednotationnotation",
-    "uv_environment_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv",
+    "project_root": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation",
+    "uv_environment_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv",
     "python_version": "3.12.11",
-    "platform": "macOS-26.1-arm64-arm-64bit",
+    "platform": "macOS-26.2-arm64-arm-64bit",
     "uv_setup_status": {
       "system_requirements": true,
       "uv_environment": true,
@@ -180,7 +180,7 @@
   },
   "system_info": {
     "platform": "Darwin",
-    "platform_release": "25.1.0",
-    "python_executable": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python"
+    "platform_release": "25.2.0",
+    "python_executable": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python"
   }
 }

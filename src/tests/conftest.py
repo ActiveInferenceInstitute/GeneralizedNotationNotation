@@ -512,12 +512,12 @@ class RealRenderModule:
         return True, "Success", [artifact_name]
 
 @pytest.fixture
-def mock_render_module():
+def test_render_module():
     """Real render module exposing render_gnn_spec(spec, target, outdir)."""
     return RealRenderModule()
 
 @pytest.fixture
-def mock_mcp_tools():
+def test_mcp_tools():
     """Simple MCP tools registry used by MCP tests.
 
     Supports both positional and keyword-based registration styles used across modules

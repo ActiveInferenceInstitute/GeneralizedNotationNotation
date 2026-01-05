@@ -1,6 +1,6 @@
 # RxInfer.jl Minimal Working Simulation
 # Generated from GNN Model: Classic Active Inference POMDP Agent v1
-# Generated: 2025-11-30 16:07:18
+# Generated: 2026-01-05 12:43:55
 
 using RxInfer
 using Distributions

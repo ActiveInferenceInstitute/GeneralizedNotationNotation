@@ -40,9 +40,9 @@ except ImportError:
         class ParseResult:
             def __init__(self, success, data): self.success = success; self.data = data
         class MarkdownGNNParser:
-            def parse(self, content): return ParseResult(True, {'model_name': 'MockModel'})
+            def parse(self, content): return ParseResult(True, {'model_name': 'FallbackModel'})
         class JSONGNNParser:
-            def parse(self, content): return ParseResult(True, {'model_name': 'MockModel'})
+            def parse(self, content): return ParseResult(True, {'model_name': 'FallbackModel'})
 
 
 def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]]:

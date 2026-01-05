@@ -41,10 +41,11 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from integration import process_integration
 except ImportError:
-    def process_integration(target_dir, output_dir, **kwargs):
+    def process_integration(target_dir, output_dir, logger=None, **kwargs):
         """Fallback integration processing when module unavailable."""
         import logging
-        logger = logging.getLogger(__name__)
+        if logger is None:
+            logger = logging.getLogger(__name__)
         logger.warning("Integration module not available - using fallback")
         return True
 

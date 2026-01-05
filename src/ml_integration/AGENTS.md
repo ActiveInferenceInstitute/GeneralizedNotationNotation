@@ -2,7 +2,7 @@
 
 ## Module Overview
 
-**Purpose**: Machine learning integration and model training capabilities for GNN models with multiple framework support
+**Purpose**: Real Machine Learning integration using Scikit-Learn to train valid state-prediction models from GNN specifications.
 
 **Pipeline Step**: Step 14: ML integration (14_ml_integration.py)
 
@@ -20,12 +20,10 @@
 5. Generate ML-ready datasets from GNN specifications
 
 ### Key Capabilities
-- Multi-framework ML model generation
-- Training pipeline automation
-- Model validation and performance evaluation
-- Dataset preparation and preprocessing
-- Hyperparameter optimization
-- Model serialization and deployment
+- **Real Model Training**: Uses `scikit-learn` Decision Trees to learn state transition dynamics.
+- **Feature Extraction**: Extracts actual dimensional and state properties from GNN markdown files.
+- **Synthetic Data Generation**: Creates dynamically sized datasets matching GNN specifications for valid training simulation.
+- **Model Serialization**: Saves actual `.pkl` model artifacts for deployment.
 
 ---
 

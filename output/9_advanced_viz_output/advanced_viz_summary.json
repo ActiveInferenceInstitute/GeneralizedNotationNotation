@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-30T16:07:17.922773",
+  "timestamp": "2026-01-05T12:43:55.250132",
   "total_attempts": 3,
   "successful": 3,
   "failed": 0,
@@ -38,7 +38,7 @@
       "viz_type": "3d",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 162.05215454101562,
+      "duration_ms": 165.47799110412598,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
       ],
@@ -49,7 +49,7 @@
       "viz_type": "statistical",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 299.4840145111084,
+      "duration_ms": 306.3161373138428,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
       ],
@@ -60,7 +60,7 @@
       "viz_type": "transitions",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 126.63388252258301,
+      "duration_ms": 127.06112861633301,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_state_transitions_conceptual.png"
       ],
@@ -71,7 +71,7 @@
       "viz_type": "belief",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 343.55807304382324,
+      "duration_ms": 354.9211025238037,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_belief_evolution.png"
       ],
@@ -82,7 +82,7 @@
       "viz_type": "policy",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 289.1240119934082,
+      "duration_ms": 296.30017280578613,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_policy_visualization.png"
       ],
@@ -93,7 +93,7 @@
       "viz_type": "correlation",
       "model_name": "actinf_pomdp_agent",
       "status": "skipped",
-      "duration_ms": 0.01811981201171875,
+      "duration_ms": 0.0152587890625,
       "output_files": [],
       "error_message": null,
       "fallback_used": false
@@ -102,7 +102,7 @@
       "viz_type": "timeline",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 287.7390384674072,
+      "duration_ms": 287.6243591308594,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_timeline_visualization.png"
       ],
@@ -113,7 +113,7 @@
       "viz_type": "statespace",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 465.2233123779297,
+      "duration_ms": 467.90504455566406,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_state_space_analysis.png"
       ],
@@ -124,7 +124,7 @@
       "viz_type": "belief_flow",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 467.0138359069824,
+      "duration_ms": 461.23814582824707,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_belief_flow.png"
       ],
@@ -135,7 +135,7 @@
       "viz_type": "d2_diagrams",
       "model_name": "Classic Active Inference POMDP Agent v1",
       "status": "success",
-      "duration_ms": 1590.3611183166504,
+      "duration_ms": 1532.5448513031006,
       "output_files": [
         "output/9_advanced_viz_output/d2_diagrams/Classic Active Inference POMDP Agent v1/classic_active_inference_pomdp_agent_v1_structure.svg",
         "output/9_advanced_viz_output/d2_diagrams/Classic Active Inference POMDP Agent v1/classic_active_inference_pomdp_agent_v1_structure.png"
@@ -147,7 +147,7 @@
       "viz_type": "d2_pipeline_diagrams",
       "model_name": "gnn_pipeline",
       "status": "success",
-      "duration_ms": 3945.4610347747803,
+      "duration_ms": 3496.2570667266846,
       "output_files": [
         "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
         "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",

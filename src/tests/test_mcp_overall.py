@@ -64,10 +64,10 @@ class TestMCPErrorHandling:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_invalid_tool_execution(self, mock_mcp_tools):
+    def test_invalid_tool_execution(self, test_mcp_tools):
         """Test executing non-existent tools."""
         try:
-            result = mock_mcp_tools.execute_tool('non_existent_tool')
+            result = test_mcp_tools.execute_tool('non_existent_tool')
             assert False, "Should have raised an error"
         except ValueError as e:
             # Expected error for non-existent tool
@@ -78,16 +78,16 @@ class TestMCPErrorHandling:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_tool_execution_with_invalid_parameters(self, mock_mcp_tools):
+    def test_tool_execution_with_invalid_parameters(self, test_mcp_tools):
         """Test tool registration with parameter validation (lightweight test)."""
         try:
             from gnn.mcp import register_tools
             
-            register_tools(mock_mcp_tools)
+            register_tools(test_mcp_tools)
             
             # Just verify that tools have proper parameter schemas
-            if 'validate_gnn_content' in mock_mcp_tools.tools:
-                tool_info = mock_mcp_tools.tools['validate_gnn_content']
+            if 'validate_gnn_content' in test_mcp_tools.tools:
+                tool_info = test_mcp_tools.tools['validate_gnn_content']
                 assert 'schema' in tool_info
                 # Verify the schema has required fields
                 schema = tool_info['schema']
@@ -102,17 +102,17 @@ class TestMCPResourceManagement:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_mcp_resource_registration(self, mock_mcp_tools):
+    def test_mcp_resource_registration(self, test_mcp_tools):
         """Test MCP resource registration."""
         try:
             # Register resources from modules that support them
             from gnn.mcp import register_tools
             
-            register_tools(mock_mcp_tools)
+            register_tools(test_mcp_tools)
             
             # Verify resources were registered if supported
-            if hasattr(mock_mcp_tools, 'resources'):
-                assert isinstance(mock_mcp_tools.resources, dict)
+            if hasattr(test_mcp_tools, 'resources'):
+                assert isinstance(test_mcp_tools.resources, dict)
                 
         except ImportError:
             pytest.skip("GNN MCP not available")

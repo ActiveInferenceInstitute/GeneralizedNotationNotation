@@ -293,8 +293,6 @@ def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requ
             if framework not in requested_frameworks:
                 if verbose:
                     logger.debug(f"Skipping {framework} script: {script_path.name} (not in requested frameworks)")
-                execution_results["skipped_executions"] += 1
-                execution_results["framework_status"][framework] = {"status": "skipped", "reason": "not_requested"}
                 continue
 
             # Check if script is executable or can be made executable

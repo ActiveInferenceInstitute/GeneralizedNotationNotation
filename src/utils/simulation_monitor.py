@@ -8,14 +8,12 @@ import logging
 import functools
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import Mock
 import json
 from typing import Dict, List, Any, Callable
 
 class SimulationMonitor:
     """
-    Monitors real simulation execution with function call tracking and logging
-    Based on web search results for simulation monitoring
+    Monitors real simulation execution with function call tracking and logging.
     """
     
     def __init__(self, log_file: Path = None):
@@ -44,30 +42,39 @@ class SimulationMonitor:
     
     def track_simulation(self, simulation_name: str):
         """
-        Decorator to track simulation function execution
-        Uses mock-based tracking as suggested in web results
+        Decorator to track simulation function execution.
         """
         def decorator(func: Callable):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 self.execution_data["total_attempted"] += 1
                 
-                # Create mock to track function calls (from web results)
-                simulation_mock = Mock(side_effect=func)
+                # Real Call Tracker implementation
+                class CallTracker:
+                    def __init__(self, target_func):
+                        self.func = target_func
+                        self.call_count = 0
+                        self.called = False
+                        
+                    def __call__(self, *a, **kw):
+                        self.called = True
+                        self.call_count += 1
+                        return self.func(*a, **kw)
+                
+                tracked_func = CallTracker(func)
                 
                 try:
                     self.logger.info(f"🚀 Starting simulation: {simulation_name}")
                     
                     # Execute the actual simulation function
-                    result = simulation_mock(*args, **kwargs)
+                    result = tracked_func(*args, **kwargs)
                     
-                    # Check if simulation was actually executed (from web results)
-                    if simulation_mock.called:
+                    if tracked_func.called:
                         self.logger.info(f"✅ Simulation '{simulation_name}' executed successfully")
                         self.execution_data["simulations"][simulation_name] = {
                             "status": "success",
                             "timestamp": datetime.now().isoformat(),
-                            "call_count": simulation_mock.call_count,
+                            "call_count": tracked_func.call_count,
                             "result_type": type(result).__name__ if result is not None else "None"
                         }
                         self.execution_data["total_successful"] += 1

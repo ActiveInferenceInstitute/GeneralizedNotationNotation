@@ -8,7 +8,7 @@ This module provides fallback implementations when core modules are not availabl
 import logging
 from pathlib import Path
 
-class MockArgumentParser:
+class FallbackArgumentParser:
     """
     Fallback argument parser for when argument_utils is not available.
     """
@@ -21,14 +21,14 @@ class MockArgumentParser:
             step_name: Name of the step
             
         Returns:
-            MockArgs object with default values
+            DefaultArgs object with default values
         """
-        class MockArgs:
+        class DefaultArgs:
             def __init__(self):
                 self.verbose = False
                 self.output_dir = Path("output")
                 self.step_name = step_name
-        return MockArgs()
+        return DefaultArgs()
 
 def setup_step_logging(step_name: str, verbose: bool = False):
     """

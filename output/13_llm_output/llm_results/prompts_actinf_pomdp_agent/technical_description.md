@@ -6,4 +6,4 @@ Prompt:
 
 Response:
 
-No response generated for custom prompt technical_description. This may indicate that the LLM provider is not available or not responding.
+I'm ready to assist you with the implementation of the algorithm in Python using Python's SciPy library, specifically using the `scipy` module.

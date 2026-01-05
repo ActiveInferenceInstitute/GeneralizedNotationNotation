@@ -70,7 +70,7 @@ class EnhancedDependencyManager:
                 required=["subprocess", "pathlib"],
                 optional=["pymdp", "jax", "julia", "discopy"],
                 fallbacks={
-                    "pymdp": "mock_simulation", 
+                    "pymdp": "fallback_simulation", 
                     "jax": "numpy_fallback",
                     "julia": "skip_julia",
                     "discopy": "basic_category"

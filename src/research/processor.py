@@ -38,6 +38,14 @@ def process_research(
     """
     logger = logging.getLogger("research")
     
+    """
+    Process research for GNN files.
+    
+    Generates deterministic experimental hypotheses based on static analysis rules.
+    This is a rule-based expert system that suggests model extensions.
+    """
+    logger = logging.getLogger("research")
+    
     try:
         log_step_start(logger, "Processing research")
         
@@ -45,23 +53,70 @@ def process_research(
         results_dir = output_dir / "research_results"
         results_dir.mkdir(parents=True, exist_ok=True)
         
-        # Basic research processing
         results = {
             "processed_files": 0,
             "success": True,
+            "hypotheses_generated": [],
             "errors": []
         }
         
-        # Find GNN files
         gnn_files = list(target_dir.glob("*.md"))
-        if gnn_files:
-            results["processed_files"] = len(gnn_files)
+        results["processed_files"] = len(gnn_files)
         
+        for gnn_file in gnn_files:
+            try:
+                # Rule-based Analysis
+                content = gnn_file.read_text()
+                hypotheses = []
+                
+                # Rule 1: High-Dimensionality Check
+                # If we detect matrices with dimensions > 10, suggest dimensionality reduction
+                import re
+                dims = [int(d) for d in re.findall(r'(\d+)', content) if int(d) > 2] # Naive integer extraction
+                max_dim = max(dims) if dims else 0
+                
+                if max_dim > 10:
+                     hypotheses.append({
+                        "type": "dimensionality_reduction",
+                        "description": f"Apply PCA or Factor Analysis to {gnn_file.stem}",
+                        "rationale": f"Detected dimension size {max_dim}, which exceeds recommended baseline for tractable inference."
+                    })
+
+                # Rule 2: Sparse Connectivity Check
+                # If we see many variables but few "->" arrows
+                var_count = len(re.findall(r'name:', content))
+                conn_count = len(re.findall(r'->', content))
+                
+                if var_count > 0 and (conn_count / var_count) < 0.5:
+                     hypotheses.append({
+                        "type": "connectivity_enrichment",
+                        "description": "Investigate missing causal links",
+                        "rationale": f"Variable-to-connection ratio ({conn_count}/{var_count}) suggests sparse causal structure."
+                    })
+                
+                if hypotheses:
+                    results["hypotheses_generated"].append({
+                        "file": str(gnn_file.name),
+                        "hypotheses": hypotheses
+                    })
+                    
+            except Exception as e:
+                logger.warning(f"Could not generate hypotheses for {gnn_file}: {e}")
+
         # Save results
         import json
         results_file = results_dir / "research_results.json"
         with open(results_file, 'w') as f:
             json.dump(results, f, indent=2)
+            
+        # Generate Research Report
+        report = "# Research Hypotheses Report (Rule-Based Analysis)\\n\\n"
+        for entry in results["hypotheses_generated"]:
+            report += f"## {entry['file']}\\n"
+            for h in entry['hypotheses']:
+                report += f"- **{h['type']}**: {h['description']}\\n  - *Rationale*: {h['rationale']}\\n"
+        
+        (results_dir / "research_report.md").write_text(report)
         
         if results["success"]:
             log_step_success(logger, "research processing completed successfully")

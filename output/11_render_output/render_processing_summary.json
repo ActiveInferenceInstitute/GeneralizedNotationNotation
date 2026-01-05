@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-11-30T16:07:18.242660",
+  "timestamp": "2026-01-05T12:43:55.469896",
   "processing_type": "POMDP-aware rendering",
   "total_files": 1,
   "successful_files": 1,
@@ -41,7 +41,7 @@
           "success": true,
           "message": "Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl",
           "output_files": [
-            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl"
+            "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl"
           ],
           "output_directory": "output/11_render_output/actinf_pomdp_agent/activeinference_jl",
           "warnings": []

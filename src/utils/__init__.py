@@ -178,7 +178,7 @@ try:
     
     from .pipeline import (
         setup_step_logging,
-        MockArgumentParser,
+        FallbackArgumentParser,
         get_pipeline_utilities,
         validate_output_directory,
         execute_pipeline_step_template,
@@ -243,7 +243,7 @@ except ImportError as e:
     # Import fallback functions when modules are not available
     logging.warning(f"Some utils modules not available: {e}")
     from .fallback import (
-        MockArgumentParser,
+        FallbackArgumentParser,
         setup_step_logging
     )
 
@@ -331,7 +331,7 @@ __all__ = [
     'get_system_info',
     
     # Pipeline utilities
-    'MockArgumentParser',
+    'FallbackArgumentParser',
     'get_pipeline_utilities',
     'validate_output_directory',
     'get_output_dir_for_script',

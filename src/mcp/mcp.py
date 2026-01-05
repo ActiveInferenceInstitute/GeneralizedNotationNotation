@@ -255,10 +255,13 @@ class MCPTool:
         """Check if the tool is currently rate limited."""
         if not self.rate_limit:
             return False
-
+            
         current_time = time.time()
-        # This would need access to the MCP instance's rate limit tracking
-        # For now, return False as a placeholder
+        # Basic localized rate limiting using last_used
+        if self.last_used is not None:
+             elapsed = current_time - self.last_used
+             if elapsed < (1.0 / self.rate_limit):
+                 return True
         return False
 
     def get_usage_summary(self) -> Dict[str, Any]:

@@ -297,8 +297,8 @@ class CrossFormatValidator:
                     
                     for fmt in test_formats:
                         try:
-                            # This is a simplified round-trip test
-                            round_trip_success = True  # Placeholder
+                            # This is a simplified round-trip test: check if object has valid content
+                            round_trip_success = hasattr(parsed_gnn, 'to_dict') and bool(parsed_gnn.to_dict())
                             result.round_trip_compatibility[fmt.value] = round_trip_success
                             
                             if round_trip_success:

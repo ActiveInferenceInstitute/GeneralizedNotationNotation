@@ -453,7 +453,7 @@ function comprehensive_precision_attention_analysis(output_dir::String)
             try
                 multimodal_data = load_statistical_data(multimodal_path)
                 
-                # Create mock multi-modal beliefs for demonstration
+                # Create synthetic multi-modal beliefs for demonstration
                 n_steps = min(50, size(multimodal_data, 1))
                 modality1_beliefs = rand(n_steps, 3)  # 3-state visual modality
                 modality2_beliefs = rand(n_steps, 2)  # 2-state auditory modality

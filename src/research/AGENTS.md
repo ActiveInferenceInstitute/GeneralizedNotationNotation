@@ -2,7 +2,7 @@
 
 ## Module Overview
 
-**Purpose**: Research tools, experimental features, and advanced analysis capabilities for Active Inference research
+**Purpose**: Rule-based expert system for analyzing GNN models and generating research hypotheses.
 
 **Pipeline Step**: Step 19: Research tools (19_research.py)
 
@@ -21,12 +21,10 @@
 6. Research collaboration tools
 
 ### Key Capabilities
-- Advanced statistical analysis techniques
-- Experimental algorithm implementation
-- Research data visualization
-- Publication-ready output generation
-- Research methodology validation
-- Experimental feature prototyping
+- **Rule-Based Hypothesis Generation**: Uses static analysis heuristics to suggest model improvements.
+- **Complexity Analysis**: Detects high-dimensional matrices (>10 dims) to suggest reduction techniques.
+- **Structural Diagnostics**: Analyzes variable-to-connection ratios to identify sparse causal structures.
+- **Automated Reporting**: Generates markdown reports justifying every hypothesis with discovered evidence.
 
 ---
 

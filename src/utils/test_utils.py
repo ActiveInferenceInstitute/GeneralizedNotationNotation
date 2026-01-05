@@ -84,7 +84,7 @@ TEST_CONFIG = {
     "max_test_files": 10,  # Maximum number of test files to process
     # Add missing keys that tests expect
     "sample_gnn_dir": PROJECT_ROOT / "input" / "gnn_files",
-    "mock_external_deps": True,
+    "simulate_external_deps": True,
     "temp_dir": PROJECT_ROOT / "output" / "test_artifacts",
     "recursive": True,
     "enable_round_trip": True,
@@ -645,8 +645,8 @@ s -> o
 """
     }
 
-def get_mock_filesystem_structure() -> Dict[str, List[str]]:
-    """Get a mock filesystem structure for testing."""
+def get_test_filesystem_structure() -> Dict[str, List[str]]:
+    """Get a test filesystem structure for testing."""
     return {
         "input": {
             "gnn_files": ["model1.md", "model2.md", "model3.md"],

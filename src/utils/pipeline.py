@@ -56,29 +56,29 @@ def setup_step_logging(step_name: str, verbose: bool = False):
             logger.setLevel(logging.INFO)
         return logger
 
-class MockArgumentParser:
+class FallbackArgumentParser:
     """
-    Mock argument parser for fallback scenarios.
+    Fallback argument parser for fallback scenarios.
     """
     
     @staticmethod
     def parse_step_arguments(step_name): 
         """
-        Parse step arguments (mock implementation).
+        Parse step arguments (fallback implementation).
         
         Args:
             step_name: Name of the step
             
         Returns:
-            Mock arguments object
+            Default arguments object
         """
-        class MockArgs:
+        class DefaultArgs:
             def __init__(self):
                 self.verbose = False
                 self.output_dir = Path("output")
                 self.step_name = step_name
         
-        return MockArgs()
+        return DefaultArgs()
 
 def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, ...]:
     """
@@ -102,9 +102,9 @@ def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, 
         return logger, parser
         
     except ImportError:
-        # Fallback to mock utilities
+        # Fallback to default utilities
         logger = setup_step_logging(step_name, verbose)
-        parser = MockArgumentParser()
+        parser = FallbackArgumentParser()
         
         return logger, parser
 

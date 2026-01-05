@@ -44,10 +44,10 @@ class TestRenderTargets:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_render_to_pymdp(self, tmp_path, sample_gnn_spec, mock_render_module):
+    def test_render_to_pymdp(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to PyMDP format."""
         # Call real render function with actual data
-        ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "pymdp", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "pymdp", tmp_path)
         
         # Verify successful rendering
         assert ok is True, "PyMDP rendering should succeed"
@@ -61,10 +61,10 @@ class TestRenderTargets:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_render_to_rxinfer_toml(self, tmp_path, sample_gnn_spec, mock_render_module):
+    def test_render_to_rxinfer_toml(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to RxInfer TOML format."""
         # Call real render function with actual data
-        ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "rxinfer_toml", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "rxinfer_toml", tmp_path)
         
         # Verify successful rendering
         assert ok is True, "RxInfer TOML rendering should succeed"
@@ -78,10 +78,10 @@ class TestRenderTargets:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_render_to_discopy(self, tmp_path, sample_gnn_spec, mock_render_module):
+    def test_render_to_discopy(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to DisCoPy format."""
         # Call real render function with actual data
-        ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "discopy", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "discopy", tmp_path)
         
         # Verify successful rendering
         assert ok is True, "DisCoPy rendering should succeed"
@@ -95,10 +95,10 @@ class TestRenderTargets:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_render_to_discopy_combined(self, tmp_path, sample_gnn_spec, mock_render_module):
+    def test_render_to_discopy_combined(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to DisCoPy combined format using real rendering."""
         # Use real rendering call with actual data
-        ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "discopy_combined", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "discopy_combined", tmp_path)
         
         assert ok is True, "DisCoPy combined rendering should succeed"
         assert isinstance(msg, str), "Message should be string"
@@ -112,10 +112,10 @@ class TestRenderTargets:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_render_to_activeinference_jl(self, tmp_path, sample_gnn_spec, mock_render_module):
+    def test_render_to_activeinference_jl(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to ActiveInference.jl format using real rendering."""
         # Use real rendering call with actual data
-        ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "activeinference_jl", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "activeinference_jl", tmp_path)
         
         assert ok is True, "ActiveInference.jl rendering should succeed"
         assert isinstance(msg, str), "Message should be string"
@@ -129,10 +129,10 @@ class TestRenderTargets:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_render_to_jax(self, tmp_path, sample_gnn_spec, mock_render_module):
+    def test_render_to_jax(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to JAX format using real rendering."""
         # Use real rendering call with actual data
-        ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "jax", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "jax", tmp_path)
         
         assert ok is True, "JAX rendering should succeed"
         assert isinstance(msg, str), "Message should be string"
@@ -146,10 +146,10 @@ class TestRenderTargets:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_render_to_jax_pomdp(self, tmp_path, sample_gnn_spec, mock_render_module):
+    def test_render_to_jax_pomdp(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to JAX POMDP format using real rendering."""
         # Use real rendering call with actual data
-        ok, msg, artifacts = mock_render_module.render_gnn_spec(sample_gnn_spec, "jax_pomdp", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "jax_pomdp", tmp_path)
         
         assert ok is True, "JAX POMDP rendering should succeed"
         assert isinstance(msg, str), "Message should be string"

@@ -39,7 +39,7 @@ from . import (
 pytestmark = [pytest.mark.recovery, pytest.mark.safe_to_fail]
 
 @pytest.fixture
-def mock_environment():
+def test_environment():
     """Create a mock environment for testing."""
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
@@ -49,9 +49,9 @@ def mock_environment():
         yield temp_path
 
 @pytest.fixture
-def sample_gnn_file(mock_environment):
+def sample_gnn_file(test_environment):
     """Create a sample GNN file for testing."""
-    file_path = mock_environment / "input" / "test_model.md"
+    file_path = test_environment / "input" / "test_model.md"
     file_path.write_text("""
     # ModelName
     Test Model
@@ -67,7 +67,7 @@ def sample_gnn_file(mock_environment):
 class TestRecursionErrorRecovery:
     """Test suite for NumPy recursion error recovery."""
     
-    def test_numpy_import_recovery(self, mock_environment):
+    def test_numpy_import_recovery(self, test_environment):
         """Test recovery from NumPy import recursion error.
 
         Patch numpy.typing module import itself to raise RecursionError first,
@@ -92,14 +92,14 @@ class TestRecursionErrorRecovery:
         import numpy as np  # noqa: F401
         assert 'numpy' in sys.modules
             
-    def test_render_step_recovery(self, mock_environment, sample_gnn_file):
+    def test_render_step_recovery(self, test_environment, sample_gnn_file):
         """Test render step recovery from recursion errors."""
         from render.renderer import render_gnn_files
         
         # Execute real render; recovery should be handled internally if needed
         result = render_gnn_files(
-            target_dir=mock_environment / "input",
-            output_dir=mock_environment / "output"
+            target_dir=test_environment / "input",
+            output_dir=test_environment / "output"
         )
             
         assert result["status"] == "SUCCESS"
@@ -109,7 +109,7 @@ class TestAsyncAwaitRecovery:
     """Test suite for async/await error recovery."""
     
     @pytest.mark.asyncio
-    async def test_llm_analysis_recovery(self, mock_environment, sample_gnn_file):
+    async def test_llm_analysis_recovery(self, test_environment, sample_gnn_file):
         """Test LLM analysis with proper async/await handling."""
         from llm.analyzer import analyze_gnn_file_with_llm
         
@@ -121,7 +121,7 @@ class TestAsyncAwaitRecovery:
         assert result["status"] == "SUCCESS"
         assert "analysis" in result
         
-    def test_sync_wrapper_recovery(self, mock_environment, sample_gnn_file):
+    def test_sync_wrapper_recovery(self, test_environment, sample_gnn_file):
         """Test synchronous wrapper for async LLM analysis."""
         from llm.analyzer import analyze_gnn_file_with_llm
         
@@ -136,25 +136,25 @@ class TestAsyncAwaitRecovery:
 class TestLightweightProcessingRecovery:
     """Test suite for lightweight processing fallback."""
     
-    def test_gnn_lightweight_fallback(self, mock_environment, sample_gnn_file):
+    def test_gnn_lightweight_fallback(self, test_environment, sample_gnn_file):
         """Test fallback to lightweight GNN processing."""
         from gnn.core_processor import process_gnn_directory
         
         # Call real method; it should choose a mode based on availability
         result = process_gnn_directory(
-            mock_environment / "input",
-            mock_environment / "output"
+            test_environment / "input",
+            test_environment / "output"
         )
             
         assert result["status"] == "SUCCESS"
         assert result["processing_mode"] == "lightweight"
         assert str(sample_gnn_file) in result["processed_files"]
         
-    def test_lightweight_processing_output(self, mock_environment, sample_gnn_file):
+    def test_lightweight_processing_output(self, test_environment, sample_gnn_file):
         """Test output quality of lightweight processing."""
         from gnn.core_processor import process_gnn_directory_lightweight
         
-        result = process_gnn_directory_lightweight(mock_environment / "input")
+        result = process_gnn_directory_lightweight(test_environment / "input")
         
         assert str(sample_gnn_file) in result
         assert result[str(sample_gnn_file)]["status"] == "processed"
@@ -164,7 +164,7 @@ class TestLightweightProcessingRecovery:
 class TestHardwareInitializationRecovery:
     """Test suite for hardware initialization recovery."""
     
-    def test_jax_cpu_fallback(self, mock_environment):
+    def test_jax_cpu_fallback(self, test_environment):
         """Test JAX CPU fallback when TPU/GPU unavailable."""
         from execute.jax.jax_runner import initialize_jax_devices
         
@@ -173,13 +173,13 @@ class TestHardwareInitializationRecovery:
         assert len(devices) > 0
         assert "cpu" in str(devices[0]).lower()
         
-    def test_execution_hardware_recovery(self, mock_environment, sample_gnn_file):
+    def test_execution_hardware_recovery(self, test_environment, sample_gnn_file):
         """Test execution with hardware fallback."""
         from execute.executor import execute_gnn_model
         
         result = execute_gnn_model(
             sample_gnn_file,
-            mock_environment / "output"
+            test_environment / "output"
         )
             
         assert result["status"] == "SUCCESS"
@@ -188,7 +188,7 @@ class TestHardwareInitializationRecovery:
 class TestResourceManagementRecovery:
     """Test suite for resource management recovery."""
     
-    def test_memory_limit_recovery(self, mock_environment):
+    def test_memory_limit_recovery(self, test_environment):
         """Test recovery from memory limit issues."""
         from utils.resource_manager import with_resource_limits
         
@@ -201,20 +201,20 @@ class TestResourceManagementRecovery:
         result = memory_intensive_operation()
         assert result == "Success"
         
-    def test_disk_space_recovery(self, mock_environment):
+    def test_disk_space_recovery(self, test_environment):
         """Test recovery from disk space issues."""
         from utils.resource_manager import check_disk_space
         
         # Real check: should succeed given temp dir has space; if not, skip gracefully
         try:
-            assert check_disk_space(mock_environment, required_mb=1)
+            assert check_disk_space(test_environment, required_mb=1)
         except RuntimeError:
             pytest.skip("Insufficient disk space on test system")
 
 class TestErrorReportingRecovery:
     """Test suite for error reporting mechanisms."""
     
-    def test_error_collection(self, mock_environment):
+    def test_error_collection(self, test_environment):
         """Test error collection and reporting."""
         from utils.error_recovery import ErrorReporter
         
@@ -228,7 +228,7 @@ class TestErrorReportingRecovery:
         assert errors[0]["type"] == "test_error"
         assert errors[0]["message"] == "Test error message"
         
-    def test_error_recovery_logging(self, mock_environment):
+    def test_error_recovery_logging(self, test_environment):
         """Test error recovery logging functionality."""
         from utils.logging_utils import log_step_error
         

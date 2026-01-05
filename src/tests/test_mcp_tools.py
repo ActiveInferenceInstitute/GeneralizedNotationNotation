@@ -23,16 +23,16 @@ class TestMCPToolExecution:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_gnn_validate_tool_execution(self, mock_mcp_tools, comprehensive_test_data):
+    def test_gnn_validate_tool_execution(self, test_mcp_tools, comprehensive_test_data):
         """Test GNN validation tool registration (lightweight test)."""
         try:
             from gnn.mcp import register_tools
             
-            register_tools(mock_mcp_tools)
+            register_tools(test_mcp_tools)
             
             # Just verify that the tool was registered properly
-            assert 'validate_gnn_content' in mock_mcp_tools.tools
-            tool_info = mock_mcp_tools.tools['validate_gnn_content']
+            assert 'validate_gnn_content' in test_mcp_tools.tools
+            tool_info = test_mcp_tools.tools['validate_gnn_content']
             assert 'function' in tool_info
             assert 'description' in tool_info
             assert callable(tool_info['function'])
@@ -45,16 +45,16 @@ class TestMCPToolExecution:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_export_tool_execution(self, mock_mcp_tools, comprehensive_test_data):
+    def test_export_tool_execution(self, test_mcp_tools, comprehensive_test_data):
         """Test export tool registration (lightweight test)."""
         try:
             from export.mcp import register_tools
             
-            register_tools(mock_mcp_tools)
+            register_tools(test_mcp_tools)
             
             # Just verify that tools were registered properly
-            assert len(mock_mcp_tools.tools) > 0
-            for tool_name, tool_info in mock_mcp_tools.tools.items():
+            assert len(test_mcp_tools.tools) > 0
+            for tool_name, tool_info in test_mcp_tools.tools.items():
                 assert 'function' in tool_info
                 assert 'description' in tool_info
                 assert callable(tool_info['function'])
@@ -67,16 +67,16 @@ class TestMCPToolExecution:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_utils_system_info_execution(self, mock_mcp_tools):
+    def test_utils_system_info_execution(self, test_mcp_tools):
         """Test utils system info tool registration (lightweight test)."""
         try:
             from utils.mcp import register_tools
             
-            register_tools(mock_mcp_tools)
+            register_tools(test_mcp_tools)
             
             # Just verify that the system info tool was registered properly
-            assert 'get_system_info' in mock_mcp_tools.tools
-            tool_info = mock_mcp_tools.tools['get_system_info']
+            assert 'get_system_info' in test_mcp_tools.tools
+            tool_info = test_mcp_tools.tools['get_system_info']
             assert 'function' in tool_info
             assert 'description' in tool_info
             assert callable(tool_info['function'])

@@ -467,7 +467,7 @@ def _validate_binary_cross_format(file_path: Path, cross_validator) -> Any:
         # Binary files need special handling for cross-format validation
         if not file_path.exists():
             logger.error(f"Binary file not found: {file_path}")
-            # Return a mock result
+            # Return a fallback result
             return type('CrossFormatValidationResult', (), {
                 'is_valid': False,
                 'errors': [f"File not found: {file_path}"],

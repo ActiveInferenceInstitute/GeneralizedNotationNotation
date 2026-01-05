@@ -88,7 +88,12 @@ except Exception:
     SRC_DIR = _P(__file__).parent.parent
     PROJECT_ROOT = SRC_DIR.parent
     TEST_DIR = SRC_DIR / "tests"
-    TEST_CONFIG = {}
+    TEST_CONFIG = {
+        "safe_mode": True,
+        "timeout_seconds": 300,
+        "max_test_files": 10,
+        "temp_output_dir": PROJECT_ROOT / "output" / "test_artifacts",
+    }
     TEST_CATEGORIES = {}
     TEST_STAGES = {}
     COVERAGE_TARGETS = {}
@@ -98,14 +103,21 @@ except Exception:
     def get_sample_pipeline_arguments(): return {}
     def create_test_gnn_files(_): return []
     def create_test_files(_, __=3): return []
-    def create_sample_gnn_content(): return {}
+    def create_sample_gnn_content(): return {"valid_basic": "## ModelName\nTestModel\n\n## StateSpaceBlock\ns[3,1]\n\n## Connections\ns -> o"}
     def get_mock_filesystem_structure(): return {}
     def run_all_tests(*_, **__): return True
     from contextlib import contextmanager
+    import time as _time
     @contextmanager
     def performance_tracker():
-        class T: pass
-        yield T()
+        class T:
+            duration = 0.0
+            max_memory_mb = 0.0
+            peak_memory_mb = 0.0
+        t = T()
+        start = _time.time()
+        yield t
+        t.duration = _time.time() - start
     def get_memory_usage(): return 0.0
     def track_peak_memory(f): return f
     def with_resource_limits(*_, **__):
