@@ -38,8 +38,10 @@ class ArgumentDefinition:
         
         if self.action:
             kwargs['action'] = self.action
+            # Boolean actions don't need type
             if self.action in ['store_true', 'store_false']:
-                # Boolean flags don't need type
+                pass
+            elif self.action is argparse.BooleanOptionalAction:
                 pass
             else:
                 kwargs['type'] = self.arg_type

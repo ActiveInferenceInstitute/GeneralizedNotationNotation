@@ -363,4 +363,4 @@ For automated processing, GNN file structures are available in a machine-readabl
 
 1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. https://doi.org/10.5281/zenodo.7803328
 2. Active Inference Institute: [Generalized Notation Notation (GNN) GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
-3. Machine-readable specification: [GNN File Structure Specification](../src/gnn/gnn_file_structure.md) 
+3. Machine-readable specification: [GNN File Structure Specification](../../src/gnn/processor.py) 

@@ -319,7 +319,10 @@ Your agent:
   - [src/README.md](../../src/README.md): Pipeline architecture and safety
 - **Documentation**: [Full GNN guide](about_gnn.md) and [GNN Overview](gnn_overview.md)
 - **Examples**: [Model gallery](gnn_examples_doc.md) 
-- **Help**: [FAQ](troubleshooting/faq.md) and [Error guide](troubleshooting/common_errors.md)
+- **Help**:
+  - [FAQ](../troubleshooting/README.md)
+  - [Error guide](../troubleshooting/api_error_reference.md)
+  - [Support](../SUPPORT.md)
 - **Community**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 
 ---

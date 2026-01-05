@@ -2,7 +2,11 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Guide | **Audience**: Developers, Researchers | **Complexity**: Intermediate  
-> **Cross-References**: [PyMDP Guide](../pymdp/gnn_pymdp.md) | [RxInfer Guide](../rxinfer/gnn_rxinfer.md) | [DisCoPy Guide](../discopy/gnn_discopy.md) | [ActiveInference.jl Guide](../activeinference_jl/activeinference-jl.md)
+> **Cross-References**:- [PyMDP Integration Guide](../pymdp/README.md)
+- [RxInfer Integration Guide](../rxinfer/README.md)
+- [DisCoPy Integration Guide](../discopy/README.md)
+- [Performance Guide](../performance/README.md)
+- [Error Handling Guide](../troubleshooting/README.md)ce_jl/activeinference-jl.md)
 
 ## Pipeline Integration
 
