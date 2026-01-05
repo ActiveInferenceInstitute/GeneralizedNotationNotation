@@ -21,6 +21,34 @@ GNN enables researchers and practitioners to:
 - Parse and analyze model structures across different paradigms
 - Export models to simulation environments (PyMDP, RxInfer.jl)
 - Generate visualizations and documentation
+- Export models to simulation environments (PyMDP, RxInfer.jl)
+- Generate visualizations and documentation
+
+### GNN Processing Workflow
+
+```mermaid
+graph TD
+    Input[Input .md File] -->|Parser| Parsed[Parsed Model]
+    Parsed -->|Schema Validator| Valid{Valid?}
+    Valid -->|No| Error[Error Report]
+    Valid -->|Yes| IR[Intermediate Representation]
+    
+    IR -->|Cross-Format Validator| Consistent{Consistent?}
+    Consistent -->|No| Warn[Consistency Warning]
+    Consistent -->|Yes| Serializer[Multi-Format Serializer]
+    
+    Serializer -->|Export| JSON[JSON]
+    Serializer -->|Export| XML[XML]
+    Serializer -->|Export| Python[Python]
+    Serializer -->|Export| Others[Other 17+ Formats]
+    
+    subgraph "Validation Core"
+    Parsed
+    Valid
+    IR
+    Consistent
+    end
+```
 
 ## Module Structure
 

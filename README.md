@@ -8,7 +8,7 @@
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-24-blue.svg)](#%EF%B8%8F-processing-pipeline)
 [![Latest Run](https://img.shields.io/badge/Latest%20Run-100%25%20Success-brightgreen.svg)](#-performance-characteristics)
-[![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-4-green.svg)](#-key-features)
+[![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-27+-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
 **A standardized text-based language for Active Inference generative models**
@@ -139,7 +139,7 @@ GNN defines a specific file structure, typically using Markdown, to organize mod
 graph TB
     subgraph "🏗️ GNN Project Architecture"
         subgraph "📁 Source Code (src/)"
-            A[⚙️ Pipeline Scripts<br/>0_template.py → 22_mcp.py]
+            A[⚙️ Pipeline Scripts<br/>0_template.py → 23_report.py]
             B[🧠 Core Modules<br/>gnn/, render/, llm/]
             C[🔧 Utilities<br/>utils/, pipeline/]
             D[🧪 Testing<br/>tests/]
@@ -251,9 +251,10 @@ flowchart TD
     S --> T["1️⃣8️⃣ Security<br/>src/security/"]
     T --> U["1️⃣9️⃣ Research<br/>src/research/"]
     U --> V["2️⃣0️⃣ Website<br/>src/website/"]
-    V --> W["2️⃣1️⃣ Report<br/>src/report/"]
-    W --> X["2️⃣2️⃣ MCP<br/>src/mcp/"]
-    X --> Y["✅ Complete"]
+    V --> W["2️⃣1️⃣ MCP<br/>src/mcp/"]
+    W --> X["2️⃣2️⃣ GUI<br/>src/gui/"]
+    X --> Y["2️⃣3️⃣ Report<br/>src/report/"]
+    Y --> Z["✅ Complete"]
 
     style A fill:#e1f5fe
     style G fill:#fff3e0,stroke:#ff9800,stroke-width:2px

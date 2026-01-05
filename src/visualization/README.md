@@ -15,6 +15,30 @@ src/visualization/
 └── mcp.py                         # Model Context Protocol integration
 ```
 
+### Visualization Pipeline
+
+```mermaid
+graph TD
+    Input[GNN Model] --> Extract[Data Extraction]
+    Extract --> GraphData[Graph Data]
+    Extract --> MatrixData[Matrix Data]
+    Extract --> NetworkData[Network Data]
+    
+    GraphData --> LayoutG[Graph Layout]
+    MatrixData --> LayoutM[Matrix Layout]
+    NetworkData --> LayoutN[Network Layout]
+    
+    LayoutG --> RenderG[Graph Visualizer]
+    LayoutM --> RenderM[Matrix Visualizer]
+    LayoutN --> RenderN[Network Visualizer]
+    
+    RenderG --> Interactive[Interactive Plotter]
+    RenderM --> Interactive
+    RenderN --> Interactive
+    
+    Interactive --> Output[HTML/Images]
+```
+
 ## Core Components
 
 ### Visualization Functions

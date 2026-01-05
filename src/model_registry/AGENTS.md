@@ -32,17 +32,15 @@
 
 ### Public Functions
 
-#### `process_model_registry_standardized(target_dir, output_dir, logger, **kwargs) -> bool`
+#### `process_model_registry(target_dir: Path, output_dir: Path, **kwargs) -> Dict[str, Any]`
 **Description**: Main registry processing function
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for registry
-- `logger` (Logger): Logger instance
-- `registry_path` (Path): Optional custom registry path
 - `**kwargs`: Additional options
 
-**Returns**: `True` if registration succeeded
+**Returns**: Dictionary with processing results including success status and registry data
 
 ### Public Classes
 
@@ -103,13 +101,13 @@ registry.save()
 
 ### Basic Usage
 ```python
-from model_registry import process_model_registry_standardized
+from model_registry import process_model_registry
 
-success = process_model_registry_standardized(
+result = process_model_registry(
     target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/4_model_registry_output"),
-    logger=logger
+    output_dir=Path("output/4_model_registry_output")
 )
+success = result.get("success", False)
 ```
 
 ### Direct Registry Usage

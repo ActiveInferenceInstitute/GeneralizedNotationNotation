@@ -820,5 +820,6 @@ print(f"⚡ Processing Time: {report.performance_metrics.total_time:.2f}s")
 
 ---
 
-**Status**: Production-Ready API Reference  
-**Next Steps**: [Integration Examples](integration_examples.md) | [SDK Development](sdk_development.md) 
+**Status**: Production- **Start Here**: [Overview](../../README.md)
+- **Examples**: [Model Examples](../../doc/gnn/gnn_examples_doc.md)
+- **Development**: [Contribution Guide](../../CONTRIBUTING.md)

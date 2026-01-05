@@ -158,6 +158,24 @@ print(f"Performance improvement: {integration_results['performance_gain']}%")
 
 ## Integration Pipeline
 
+```mermaid
+graph TD
+    System[Pipeline System] --> Discovery[Module Discovery]
+    Discovery --> Deps[Dependency Analysis]
+    
+    Deps --> Config[Configuration Integration]
+    Config --> DataFlow[Data Flow Setup]
+    
+    DataFlow --> Resources[Resource Allocation]
+    Resources --> Exec[Integration Execution]
+    
+    Exec --> Coords[Module Coordination]
+    Exec --> Monitor[Performance Monitoring]
+    
+    Coords --> Report[Integration Report]
+    Monitor --> Report
+```
+
 ### 1. Module Discovery
 ```python
 # Discover available modules

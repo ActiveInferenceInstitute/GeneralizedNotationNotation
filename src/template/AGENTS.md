@@ -43,6 +43,28 @@
 
 **Returns**: `True` if template processing succeeded
 
+#### `process_single_file(input_file, output_dir, options) -> bool`
+**Description**: Process a single file using the template logic.
+
+**Parameters**:
+- `input_file`: Path to input file
+- `output_dir`: Directory to save output
+- `options`: Processing options dictionary
+
+#### `validate_file(input_file) -> Dict[str, Any]`
+**Description**: Validate a file against template requirements.
+
+**Parameters**:
+- `input_file`: Path to file to validate
+
+**Returns**: Validation result dictionary
+
+#### `safe_template_execution(func, *args, **kwargs) -> Any`
+**Description**: Execute a template function with comprehensive error handling.
+
+#### `get_version_info() -> Dict[str, str]`
+**Description**: Get module version and metadata.
+
 #### `generate_correlation_id() -> str`
 **Description**: Generate unique correlation ID for pipeline tracking
 

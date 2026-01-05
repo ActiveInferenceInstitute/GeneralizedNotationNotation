@@ -14,6 +14,25 @@ src/validation/
 └── mcp.py                         # Model Context Protocol integration
 ```
 
+### Validation Process
+
+```mermaid
+graph TD
+    Input[Parsed Content] --> Analysis[Content Analysis]
+    Analysis --> Consistency[Consistency Check]
+    Analysis --> Semantic[Semantic Validation]
+    
+    Consistency --> Report
+    Semantic --> Report
+    
+    subgraph "Quality Assessment"
+    Analysis --> Quality[Quality Assessor]
+    Quality --> Structure[Structure Check]
+    end
+    
+    Structure --> Report[Validation Report]
+```
+
 ## Core Components
 
 ### Validation Functions

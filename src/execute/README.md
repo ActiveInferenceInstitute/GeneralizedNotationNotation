@@ -8,6 +8,29 @@ The execute module is now organized into subfolders for each execution environme
 - `discopy/` - DisCoPy diagram validation and analysis
 - `activeinference_jl/` - ActiveInference.jl script execution and comprehensive analysis
 
+- `activeinference_jl/` - ActiveInference.jl script execution and comprehensive analysis
+
+### Execution Workflow
+
+```mermaid
+graph TD
+    Pipeline[Main Pipeline] --> Step12[12_execute.py]
+    Step12 --> Discovery[Discover Scripts]
+    Discovery --> List[Script List]
+    
+    List --> Loop{For Each Script}
+    Loop --> Setup[Env Setup]
+    Setup --> Run[Subprocess Exec]
+    Run --> Capture[Capture Output]
+    Capture --> Report[Execution Report]
+    
+    subgraph "Execution Environments"
+    Run --> PyMDP[PyMDP Env]
+    Run --> RxInfer[RxInfer Env]
+    Run --> Others[Other Envs]
+    end
+```
+
 ## Core Components
 
 ### `pymdp_runner.py`

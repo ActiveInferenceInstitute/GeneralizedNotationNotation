@@ -32,37 +32,38 @@
 
 ### Public Functions
 
-#### `process_validation(target_dir, output_dir, **kwargs) -> bool`
-**Description**: Process validation for GNN models
+#### `process_validation(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
+**Description**: Main validation processing function for GNN models
 
 **Parameters**:
-- `target_dir`: Directory containing files to validate
-- `output_dir`: Output directory for validation results
+- `target_dir` (Path): Directory containing GNN files to validate
+- `output_dir` (Path): Output directory for validation results
+- `verbose` (bool): Enable verbose logging (default: False)
 - `**kwargs`: Additional validation options
 
 **Returns**: `True` if validation succeeded
 
-#### `validate_model_structure(content) -> Dict[str, Any]`
-**Description**: Validate model structure and consistency
+#### `process_semantic_validation(model_data: Dict[str, Any]) -> Dict[str, Any]`
+**Description**: Perform semantic validation on model data
 
 **Parameters**:
-- `content`: Model content to validate
+- `model_data` (Dict[str, Any]): Parsed GNN model data
 
-**Returns**: Dictionary with validation results
+**Returns**: Dictionary with semantic validation results
 
-#### `profile_model_performance(content) -> Dict[str, Any]`
+#### `profile_performance(model_data: Dict[str, Any]) -> Dict[str, Any]`
 **Description**: Profile model performance characteristics
 
 **Parameters**:
-- `content`: Model content to profile
+- `model_data` (Dict[str, Any]): Parsed GNN model data
 
 **Returns**: Dictionary with performance metrics
 
-#### `check_cross_format_consistency(content) -> Dict[str, Any]`
-**Description**: Check consistency across formats
+#### `check_consistency(model_data: Dict[str, Any]) -> Dict[str, Any]`
+**Description**: Check consistency of model data
 
 **Parameters**:
-- `content`: Content to check for consistency
+- `model_data` (Dict[str, Any]): Parsed GNN model data
 
 **Returns**: Dictionary with consistency results
 

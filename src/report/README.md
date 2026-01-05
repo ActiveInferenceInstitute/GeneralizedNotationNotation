@@ -207,6 +207,27 @@ with open("report.html", "w") as f:
 
 ## Report Generation Pipeline
 
+```mermaid
+graph TD
+    Input[Pipeline Results] --> Collect[Data Collection]
+    Collect --> Steps[Step Results]
+    Collect --> Perf[Performance Data]
+    
+    Steps & Perf --> Analyze[Analysis Processing]
+    Analyze --> Metrics[Calculated Metrics]
+    Analyze --> Patterns[Error Patterns]
+    
+    Metrics & Patterns --> Gen[Report Generation]
+    Gen --> Exec[Executive Summary]
+    Gen --> Detailed[Detailed Analysis]
+    Gen --> PerfRep[Performance Report]
+    
+    Exec & Detailed & PerfRep --> Format{Formatting}
+    Format --> MD[Markdown]
+    Format --> HTML[HTML w/ Charts]
+    Format --> JSON[JSON Data]
+```
+
 ### 1. Data Collection
 ```python
 # Collect pipeline results
@@ -252,7 +273,7 @@ save_reports(output_dir, {
 
 ## Integration with Pipeline
 
-### Pipeline Step 21: Report Generation
+### Pipeline Step 23: Report Generation
 ```python
 # Called from 23_report.py
 def process_report(target_dir, output_dir, verbose=False, **kwargs):

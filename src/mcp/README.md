@@ -14,18 +14,25 @@ The GNN MCP implementation provides:
 
 ## Architecture
 
-```
-src/mcp/
-├── mcp.py                 # Core MCP server implementation
-├── server_stdio.py        # stdio transport server
-├── server_http.py         # HTTP transport server
-├── cli.py                 # Command-line interface
-├── meta_mcp.py           # Meta-tools for server introspection
-├── sympy_mcp.py          # SymPy integration tools
-├── sympy_mcp_client.py   # SymPy MCP client
-├── npx_inspector.py      # NPX inspector utilities
-├── README.md             # This documentation
-└── *.md                  # Additional documentation files
+## Architecture
+
+```mermaid
+graph TD
+    Client[MCP Client] --> Transport{Transport Layer}
+    
+    Transport -->|stdio| Stdio[Stdio Server]
+    Transport -->|http| HTTP[HTTP Server]
+    
+    Stdio & HTTP --> Core[Core MCP Server]
+    
+    Core --> Reg[Tool Registry]
+    Core --> Res[Resource Manager]
+    Core --> Meta[Meta Tools]
+    
+    Reg --> GNN[GNN Tools]
+    Reg --> Viz[Viz Tools]
+    Reg --> Export[Export Tools]
+    Reg --> Others[...]
 ```
 
 ## Core Components

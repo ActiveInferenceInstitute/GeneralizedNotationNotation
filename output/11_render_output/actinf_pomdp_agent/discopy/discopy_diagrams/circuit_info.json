@@ -1,0 +1,26 @@
+{
+  "model_name": "Classic Active Inference POMDP Agent v1",
+  "timestamp": "2026-01-05 13:57:11",
+  "parameters": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 3
+  },
+  "components": [
+    "A_matrix",
+    "B_matrix",
+    "C_vector",
+    "D_vector",
+    "E_vector",
+    "state_inference",
+    "policy_inference",
+    "action_selection"
+  ],
+  "analysis": {
+    "num_components": 8,
+    "loop_domain": "O",
+    "loop_codomain": "A",
+    "model_domain": "O",
+    "model_codomain": "A"
+  }
+}

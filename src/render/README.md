@@ -16,8 +16,27 @@ This module provides comprehensive **POMDP-aware code generation** capabilities 
 
 ## POMDP Processing Pipeline
 
-```
-GNN File → POMDP Extraction → Framework Compatibility Check → Modular Injection → Generated Code + Documentation
+## POMDP Processing Pipeline
+
+```mermaid
+graph TD
+    GNN[GNN File] --> Extract[POMDP Extraction]
+    Extract --> Check{Framework<br/>Compatible?}
+    
+    Check -->|Yes| Inject[Modular Injection]
+    Check -->|No| Error[Compatibility Error]
+    
+    Inject --> PyMDP[PyMDP Renderer]
+    Inject --> RxInfer[RxInfer.jl Renderer]
+    Inject --> ActInf[ActiveInference.jl Renderer]
+    Inject --> JAX[JAX Renderer]
+    Inject --> DisCoPy[DisCoPy Renderer]
+    
+    PyMDP --> Code1[Python Code]
+    RxInfer --> Code2[Julia Code]
+    ActInf --> Code3[Julia Code]
+    JAX --> Code4[Python Code]
+    DisCoPy --> Code5[Python Code]
 ```
 
 ## Module Structure

@@ -10,6 +10,21 @@ The GNN pipeline follows a **three-tier architectural pattern**:
 main.py → Numbered Scripts (Thin Orchestrators) → Modular Scripts in Folders
 ```
 
+```mermaid
+flowchart TD
+    Main[main.py<br/>Pipeline Orchestrator] -->| Executes| Step0[0_template.py<br/>Thin Orchestrator]
+    
+    subgraph "src/template/ Module"
+        Processor[processor.py<br/>Core Logic]
+        MCP[mcp.py<br/>MCP Integration]
+        Utils[utils.py<br/>Utilities]
+    end
+    
+    Step0 -->|Imports & Calls| Processor
+    Step0 -->|Registers| MCP
+    Processor -->|Uses| Utils
+```
+
 ### 1. Main Pipeline Orchestrator (`main.py`)
 - **Role**: Central pipeline coordinator
 - **Responsibilities**: 

@@ -16,6 +16,24 @@ src/type_checker/
 └── mcp.py                         # Model Context Protocol integration
 ```
 
+### Type Checking Flow
+
+```mermaid
+graph TD
+    Input[GNN Content] --> Parser[Content Parser]
+    Parser --> Vars[Variables]
+    Parser --> Params[Parameters]
+    
+    Vars --> Infer[Type Inference]
+    Infer --> Constraints[Constraint Analysis]
+    
+    Constraints --> Check[Type Checker]
+    Check -->|Valid| Resource[Resource Estimator]
+    Check -->|Invalid| Error[Error Report]
+    
+    Resource --> Report[Final Report]
+```
+
 ## Core Components
 
 ### Type Checker Functions

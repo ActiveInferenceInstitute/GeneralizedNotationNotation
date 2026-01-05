@@ -165,6 +165,22 @@ generated_files = visualizer.generate_visualizations(
 
 ## Data Processing Pipeline
 
+```mermaid
+graph TD
+    Input[GNN Content] --> Extract[Data Extraction]
+    Extract --> Stats[Statistical Analysis]
+    
+    Extract & Stats --> VizGen[Viz Generator]
+    
+    VizGen --> Dashboard[Interactive Dashboard]
+    VizGen --> 3D[3D Model Viz]
+    VizGen --> Network[Network Graph]
+    VizGen --> Matrix[Matrix Heatmaps]
+    
+    Dashboard & 3D & Network & Matrix --> Assemble[HTML Assembly]
+    Assemble --> Output[Final HTML Reports]
+```
+
 ### 1. Content Extraction
 ```python
 # Extract data from GNN content

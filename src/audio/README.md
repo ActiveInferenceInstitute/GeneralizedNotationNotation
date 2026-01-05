@@ -326,6 +326,28 @@ print(f"Selected backend: {backend}")
 
 ## Audio Generation Pipeline
 
+```mermaid
+graph TD
+    Input[GNN Model] --> Analysis[Content Analysis]
+    Analysis --> Vars[Variable Mapping]
+    Analysis --> Conns[Connection Mapping]
+    
+    Vars --> Backend{Backend Selection}
+    Conns --> Backend
+    
+    Backend --> SAPF[SAPF Synthesis]
+    Backend --> Pedal[Pedalboard Effects]
+    Backend --> Basic[Basic Generation]
+    
+    SAPF --> Audio[Raw Audio]
+    Pedal --> Audio
+    Basic --> Audio
+    
+    Audio --> Process[Post-Processing]
+    Process --> File[Audio File]
+    Process --> Viz[Visualization]
+```
+
 ### 1. Content Analysis
 ```python
 # Extract audio-relevant data from GNN

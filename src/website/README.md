@@ -233,6 +233,28 @@ else:
 
 ## Website Structure
 
+```mermaid
+graph TD
+    Input[Pipeline Artifacts] --> Struct[Structure Generator]
+    Struct --> Pages[Page Templates]
+    Struct --> Assets[Static Assets]
+    
+    Pages & Assets --> Embed[Content Embedding]
+    
+    Input --> Viz[Visualizations]
+    Input --> Reps[Reports]
+    Input --> Analysis[Analysis Results]
+    
+    Viz --> Embed
+    Reps --> Embed
+    Analysis --> Embed
+    
+    Embed --> Custom[Theme Customization]
+    Custom --> Interactive[Interactive Features]
+    
+    Interactive --> Output[Static Website]
+```
+
 ### Generated Website Layout
 ```
 website/

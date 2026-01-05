@@ -231,6 +231,24 @@ archive_model(
 
 ## Registry Pipeline
 
+```mermaid
+graph TD
+    Input[New Model] --> Reg[Registration]
+    Reg --> Valid[Validation]
+    Reg --> Meta[Metadata Extract]
+    
+    Valid & Meta --> Index[Indexing]
+    Index --> Storage[Registry Storage]
+    
+    User[User/System] --> Search[Search Engine]
+    Search --> Filter[Filtering]
+    Filter --> Query[Index Query]
+    Query --> Results[Model Results]
+    
+    Storage --> Version[Version Control]
+    Version --> Lifecycle[Lifecycle Mgmt]
+```
+
 ### 1. Model Discovery
 ```python
 # Discover models in target directory

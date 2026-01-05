@@ -161,6 +161,21 @@ print(f"Best practices: {len(compliance_results['best_practices'])}")
 
 ## Ontology Processing Pipeline
 
+```mermaid
+graph TD
+    Input[GNN Content] --> Extract[Term Extraction]
+    Extract --> Valid[Validation]
+    
+    Valid -->|Valid| Map[Semantic Mapping]
+    Valid -->|Invalid| Suggest[Corrections]
+    
+    Map --> Rel[Relationship Analysis]
+    Rel --> Enhance[Enhancement Gen]
+    
+    Enhance --> Apply[Apply Enhancements]
+    Apply --> Report[Compliance Reporting]
+```
+
 ### 1. Term Extraction
 ```python
 # Extract terms from GNN content

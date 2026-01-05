@@ -112,6 +112,25 @@ MODULAR_TEST_CATEGORIES = {
 
 ## Test Execution
 
+```mermaid
+graph TD
+    Runner[Test Runner] --> Config[Configuration]
+    Runner --> Disc[Test Discovery]
+    
+    Disc --> Filters{Filtering}
+    Filters -->|Category| Unit[Unit Tests]
+    Filters -->|Marker| Integ[Integration Tests]
+    Filters -->|Pattern| Perf[Performance Tests]
+    
+    Unit --> Exec[Test Execution]
+    Integ --> Exec
+    Perf --> Exec
+    
+    Exec --> Results[Result Collection]
+    Results --> Report[Test Report]
+    Results --> Metrics[Metrics Analysis]
+```
+
 ### Running All Tests
 ```bash
 # Run all tests

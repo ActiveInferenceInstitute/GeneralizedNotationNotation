@@ -15,6 +15,28 @@ src/pipeline/
 └── template.py                    # Pipeline step template
 ```
 
+### Pipeline Flow
+
+```mermaid
+graph TD
+    Config[Pipeline Config] --> Orchestrator[Pipeline Orchestrator]
+    Steps[Steps Registry] --> Orchestrator
+    
+    Orchestrator -->|Sequence| Step1[Setup]
+    Step1 --> Step2[GNN Parse]
+    Step2 --> Step3[Validation]
+    Step3 --> Step4[Export]
+    Step4 --> Step5[...]
+    
+    Orchestrator -->|Tracks| State[Pipeline State]
+    State --> Report[Final Report]
+    
+    subgraph "Orchestration Layer"
+    Orchestrator
+    State
+    end
+```
+
 ## Core Components
 
 ### Pipeline Configuration Management

@@ -406,7 +406,7 @@ License: [License type]
 
 ## References
 
-- [Hierarchical Active Inference](../gnn/gnn_hierarchical.md)
-- [Temporal Abstraction in AI](../gnn/gnn_implementation.md#temporal-hierarchy)
-- [Multi-Scale Modeling](../gnn/gnn_examples.md#hierarchical-examples)
-- [Cognitive Architectures](../cognitive_phenomena/gnn_cognitive_architectures.md) 
+- [Hierarchical Active Inference](../gnn/advanced_modeling_patterns.md)
+- [Temporal Abstraction in AI](../gnn/advanced_modeling_patterns.md#temporal-hierarchy)
+- [Multi-Scale Modeling](../gnn/gnn_examples_doc.md#hierarchical-examples)
+- [Cognitive Architectures](../cognitive_phenomena/README.md)

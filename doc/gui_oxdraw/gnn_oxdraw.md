@@ -1161,10 +1161,10 @@ This integration demonstrates how **diagram-as-code** tools can enhance scientif
 ## References
 
 ### GNN Pipeline Documentation
-- [GNN Parser](../src/gnn/AGENTS.md) - Core parsing and validation
-- [Ontology Module](../src/ontology/AGENTS.md) - Active Inference ontology
-- [Visualization Module](../src/visualization/AGENTS.md) - Graph rendering
-- [GUI Module](../src/gui/AGENTS.md) - Interactive constructors
+- [GNN Parser](../../src/gnn/AGENTS.md) - Core parsing and validation
+- [Ontology Module](../../src/ontology/AGENTS.md) - Active Inference ontology
+- [Visualization Module](../../src/visualization/AGENTS.md) - Graph rendering
+- [GUI Module](../../src/gui/AGENTS.md) - Interactive constructors
 
 ### oxdraw Resources
 - [oxdraw GitHub](https://github.com/RohanAdwankar/oxdraw)
@@ -1172,8 +1172,8 @@ This integration demonstrates how **diagram-as-code** tools can enhance scientif
 - [oxdraw Technical Overview](oxdraw.md)
 
 ### Active Inference
-- [Active Inference Ontology](../input/ontology_terms.json)
-- [POMDP Specification](../doc/gnn/SPECIFICATION.md)
+- [Active Inference Ontology](../../input/ontology_terms.json)
+- [POMDP Specification](../../doc/gnn/SPECIFICATION.md)
 
 ---
 

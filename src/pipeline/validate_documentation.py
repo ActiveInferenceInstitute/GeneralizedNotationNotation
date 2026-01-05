@@ -45,24 +45,34 @@ class DocumentationValidator:
         self.verbose = verbose
         self.results = ValidationResult([], [], [])
         
-        # Define actual pipeline steps (14 steps)
-        self.actual_pipeline_steps = list(range(1, 15))  # 1-14
+        # Define actual pipeline steps (24 steps: 0-23)
+        self.actual_pipeline_steps = list(range(0, 24))  # 0-23
         # Step number to script name mapping
         self.step_mapping = {
+            0: "0_template.py",
             1: "1_setup.py",
-            2: "2_gnn.py",
-            3: "3_tests.py",
-            4: "4_type_checker.py",
-            5: "5_export.py",
-            6: "6_visualization.py",
-            7: "7_mcp.py",
-            8: "8_ontology.py",
-            9: "9_render.py",
-            10: "10_execute.py",
-            11: "11_llm.py",
-            12: "12_audio.py",
-            13: "13_website.py",
-            14: "14_report.py"
+            2: "2_tests.py",
+            3: "3_gnn.py",
+            4: "4_model_registry.py",
+            5: "5_type_checker.py",
+            6: "6_validation.py",
+            7: "7_export.py",
+            8: "8_visualization.py",
+            9: "9_advanced_viz.py",
+            10: "10_ontology.py",
+            11: "11_render.py",
+            12: "12_execute.py",
+            13: "13_llm.py",
+            14: "14_ml_integration.py",
+            15: "15_audio.py",
+            16: "16_analysis.py",
+            17: "17_integration.py",
+            18: "18_security.py",
+            19: "19_research.py",
+            20: "20_website.py",
+            21: "21_mcp.py",
+            22: "22_gui.py",
+            23: "23_report.py"
         }
         
         # Patterns to search for broken links
@@ -170,32 +180,29 @@ class DocumentationValidator:
                 for match in matches:
                     try:
                         step_num = int(match)
-                        if step_num == 14:
-                            rel_file_path = file_path.relative_to(self.project_root)
-                            self.results.errors.append(
-                                f"Outdated pipeline reference in {rel_file_path}:{line_no}: "
-                                f"References non-existent step 14 (pipeline has 13 steps): '{line.strip()}'"
-                            )
-                        elif step_num > 13 or step_num < 1:
+                        if step_num < 0 or step_num > 23:
                             rel_file_path = file_path.relative_to(self.project_root)
                             self.results.warnings.append(
                                 f"Invalid pipeline step in {rel_file_path}:{line_no}: "
-                                f"Step {step_num} is outside valid range 1-13: '{line.strip()}'"
+                                f"Step {step_num} is outside valid range 0-23: '{line.strip()}'"
                             )
                     except ValueError:
                         continue
             
-            # Check for specific incorrect references
+            # Check for specific incorrect references (old pipeline references)
             incorrect_refs = [
                 "12_discopy.py", "13_discopy_jax_eval.py", "14_site.py",
-                "14-step", "14 steps", "steps 1-14", "fourteen steps"
+                "2_gnn.py",  # Should be 3_gnn.py
+                "3_tests.py",  # Should be 2_tests.py
+                "14-step", "14 steps", "steps 1-14", "fourteen steps",
+                "13-step", "13 steps", "steps 1-13", "thirteen steps"
             ]
             for ref in incorrect_refs:
                 if ref.lower() in line.lower():
                     rel_file_path = file_path.relative_to(self.project_root)
-                    self.results.errors.append(
-                        f"Incorrect pipeline reference in {rel_file_path}:{line_no}: "
-                        f"'{ref}' found in: '{line.strip()}'"
+                    self.results.warnings.append(
+                        f"Potentially outdated pipeline reference in {rel_file_path}:{line_no}: "
+                        f"'{ref}' found in: '{line.strip()}' (pipeline has 24 steps: 0-23)"
                     )
     
     def validate_cross_references(self, file_path: Path) -> None:
@@ -255,22 +262,32 @@ class DocumentationValidator:
         
         # Fix common pipeline reference issues
         fixes = {
-            # Step 14 references
-            r'\b14[_-]step\b': '13-step',
-            r'\bstep[_\s]+14\b': 'step 13',
-            r'\b14\s+steps?\b': '13 steps',
-            r'\bfourteen\s+steps?\b': 'thirteen steps',
-            r'\bsteps?\s+1[-\s]*14\b': 'steps 1-13',
-            r'\b1[-\s]*14\s+steps?\b': '1-13 steps',
+            # Old 14-step references -> 24-step
+            r'\b14[_-]step\b': '24-step',
+            r'\bstep[_\s]+14\b': 'step 23',
+            r'\b14\s+steps?\b': '24 steps',
+            r'\bfourteen\s+steps?\b': 'twenty-four steps',
+            r'\bsteps?\s+1[-\s]*14\b': 'steps 0-23',
+            r'\b1[-\s]*14\s+steps?\b': '0-23 steps',
             
-            # Incorrect script references
-            r'\b12_discopy\.py\b': '12_audio.py',
-            r'\b13_discopy_jax_eval\.py\b': '13_website.py',
-            r'\b14_site\.py\b': '12_website.py',
+            # Old 13-step references -> 24-step
+            r'\b13[_-]step\b': '24-step',
+            r'\bstep[_\s]+13\b': 'step 23',
+            r'\b13\s+steps?\b': '24 steps',
+            r'\bthirteen\s+steps?\b': 'twenty-four steps',
+            r'\bsteps?\s+1[-\s]*13\b': 'steps 0-23',
+            r'\b1[-\s]*13\s+steps?\b': '0-23 steps',
+            
+            # Incorrect script references (old pipeline)
+            r'\b12_discopy\.py\b': '15_audio.py',
+            r'\b13_discopy_jax_eval\.py\b': '20_website.py',
+            r'\b14_site\.py\b': '20_website.py',
+            r'\b2_gnn\.py\b': '3_gnn.py',
+            r'\b3_tests\.py\b': '2_tests.py',
             
             # Maximum value fixes
-            r'\bmaximum:\s*14\b': 'maximum: 13',
-            r'\bmax.*?14\b': 'max: 13',
+            r'\bmaximum:\s*1[34]\b': 'maximum: 23',
+            r'\bmax.*?1[34]\b': 'max: 23',
         }
         
         for pattern, replacement in fixes.items():

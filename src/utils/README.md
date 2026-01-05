@@ -18,6 +18,23 @@ src/utils/
 
 ## Core Components
 
+```mermaid
+graph TD
+    Pipeline[Pipeline Scripts] --> Utils{Utils Module}
+    
+    Utils --> Log[Unified Logging]
+    Utils --> Args[Arg Parser]
+    Utils --> Files[File Utils]
+    Utils --> Valid[Validation]
+    
+    Log --> StructLog[Structured Logs]
+    Args --> Config[Configuration]
+    Files --> IOSafe[Safe IO Ops]
+    Valid --> Checks[Path/Config Checks]
+    
+    StructLog & Config & IOSafe & Checks --> Standard[Standardization]
+```
+
 ### Unified Logging System
 
 #### `setup_step_logging(module_name: str) -> logging.Logger`

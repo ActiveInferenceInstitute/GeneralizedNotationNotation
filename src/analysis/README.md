@@ -282,6 +282,28 @@ print(f"Technical debt: {tech_debt:.2f}")
 
 ## Analysis Pipeline
 
+```mermaid
+graph TD
+    Input[GNN Model] --> Extract[Data Extraction]
+    Extract --> Vars[Variables]
+    Extract --> Conns[Connections]
+    Extract --> Sections[Sections]
+    
+    Vars & Conns & Sections --> Stats[Statistical Analysis]
+    Vars & Conns --> Complex[Complexity Assessment]
+    
+    Stats --> StatsRep[Statistical Report]
+    Complex --> ComplexRep[Complexity Report]
+    
+    Input --> Perf[Performance Benchmarks]
+    Input --> Quality[Quality Assessment]
+    
+    Perf --> PerfRep[Performance Report]
+    Quality --> QualRep[Quality Report]
+    
+    StatsRep & ComplexRep & PerfRep & QualRep --> Summary[Analysis Summary]
+```
+
 ### 1. Data Extraction
 ```python
 # Extract model components

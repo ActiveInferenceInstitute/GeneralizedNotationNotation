@@ -204,6 +204,24 @@ print(f"Statistical power: {experiment_design['statistical_power']:.3f}")
 
 ## Research Pipeline
 
+```mermaid
+graph TD
+    Input[Research Data] --> Design[Experiment Design]
+    Design --> Exec[Execution]
+    
+    Exec --> Data[Data Collection]
+    Data --> QC[Quality Control]
+    
+    QC --> Analysis[Research Analysis]
+    Analysis --> Stats[Statistical Tests]
+    Analysis --> Trends[Pattern Recog]
+    
+    Stats & Trends --> Insights[Insight Gen]
+    Insights --> Hypothesis[Hypothesis Valid]
+    
+    Hypothesis --> Report[Research Report]
+```
+
 ### 1. Research Question Formulation
 ```python
 # Formulate research questions

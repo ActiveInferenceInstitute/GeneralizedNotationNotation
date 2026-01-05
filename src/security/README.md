@@ -218,6 +218,24 @@ print(f"Incidents generated: {len(monitoring_results['incidents'])}")
 
 ## Security Pipeline
 
+```mermaid
+graph TD
+    Input[GNN System] --> Access[Access Control Analysis]
+    Input --> Vuln[Vulnerability Assessment]
+    Input --> Compl[Compliance Checking]
+    
+    Access --> Perms[Permission Matrix]
+    Vuln --> VulnRep[Vulnerability Report]
+    Compl --> ComplRep[Compliance Report]
+    
+    Perms & VulnRep & ComplRep --> Valid[Security Validation]
+    
+    Valid --> Score[Security Score]
+    Valid --> Recs[Recommendations]
+    
+    Score & Recs --> Doc[Security Documentation]
+```
+
 ### 1. Security Assessment
 ```python
 # Assess security posture

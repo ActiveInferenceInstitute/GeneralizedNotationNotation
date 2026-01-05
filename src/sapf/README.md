@@ -8,6 +8,25 @@ This module enables the conversion of GNN models to audio representations, suppo
 
 ## Features
 
+```mermaid
+graph TD
+    Input[GNN Model] --> Process[SAPF Processor]
+    
+    Process --> Backend{Audio Backend}
+    Backend --> SAPF_Eng[SAPF Engine]
+    Backend --> Pedal[Pedalboard]
+    Backend --> Basic[Basic Synth]
+    
+    SAPF_Eng --> Audio[Audio Signal]
+    Pedal --> Audio
+    Basic --> Audio
+    
+    Audio --> Analyze[Audio Analysis]
+    Audio --> File[WAV/MP3 File]
+    
+    Analyze --> Metrics[Audio Characteristics]
+```
+
 - **GNN to Audio Conversion**: Convert GNN model specifications to audio representations
 - **Multi-backend Support**: Support for SAPF, Pedalboard, and basic audio generation
 - **Audio Analysis**: Comprehensive analysis of generated audio characteristics

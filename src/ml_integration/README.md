@@ -148,6 +148,32 @@ print(f"Best score: {optimization_results['best_score']}")
 
 ## ML Integration Pipeline
 
+```mermaid
+graph TD
+    Input[GNN Model] --> Prep[Model Preparation]
+    Prep --> Data[Training Data]
+    
+    Data --> Framework{Framework Selection}
+    
+    Framework --> TF[TensorFlow]
+    Framework --> PyTorch[PyTorch]
+    Framework --> Sklearn[Scikit-learn]
+    Framework --> XGB[XGBoost]
+    
+    TF --> Train[Model Training]
+    PyTorch --> Train
+    Sklearn --> Train
+    XGB --> Train
+    
+    Train --> Eval[Evaluation]
+    Eval --> Metrics[Performance Metrics]
+    
+    Metrics --> Opt{Optimization<br/>Needed?}
+    Opt -->|Yes| Tuner[Hyperparameter Tuning]
+    Tuner --> Train
+    Opt -->|No| Final[Trained Model]
+```
+
 ### 1. Model Preparation
 ```python
 # Prepare GNN model for ML training

@@ -42,6 +42,10 @@ The GNN (Generalized Notation Notation) Pipeline is a comprehensive 24-step syst
 - **[utils/](src/utils/AGENTS.md)** - Shared utilities and helper functions
 - **[pipeline/](src/pipeline/AGENTS.md)** - Pipeline orchestration and configuration
 
+### Documentation Agents
+- **[gnn/](doc/gnn/AGENTS.md)** - GNN Documentation System
+- **[deployment/](doc/deployment/AGENTS.md)** - Deployment Documentation
+
 ---
 
 ## Architectural Pattern

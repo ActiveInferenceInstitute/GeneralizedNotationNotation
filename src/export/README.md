@@ -13,6 +13,24 @@ src/export/
 └── mcp.py                         # Model Context Protocol integration
 ```
 
+### Export Workflow
+
+```mermaid
+graph LR
+    Input[GNN Model] --> Parser[Parser]
+    Parser --> Data[Model Data]
+    
+    Data --> Valid{Valid?}
+    Valid -->|Yes| JSON[JSON Exporter]
+    Valid -->|Yes| XML[XML Exporter]
+    Valid -->|Yes| GraphML[GraphML Exporter]
+    Valid -->|Yes| Others[...]
+    
+    JSON --> File1[model.json]
+    XML --> File2[model.xml]
+    GraphML --> File3[model.graphml]
+```
+
 ## Core Components
 
 ### Export Functions

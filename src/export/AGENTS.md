@@ -32,14 +32,14 @@
 
 ### Public Functions
 
-#### `process_export(target_dir, output_dir, logger, **kwargs) -> bool`
+#### `process_export(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
 **Description**: Main export processing function
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for exports
-- `logger` (Logger): Logger instance
-- `export_formats` (List[str]): Formats to export
+- `verbose` (bool): Enable verbose logging (default: False)
+- `formats` (List[str]): Formats to export (default: ['json', 'xml', 'graphml', 'gexf', 'pickle'])
 - `**kwargs`: Additional options
 
 **Returns**: `True` if export succeeded

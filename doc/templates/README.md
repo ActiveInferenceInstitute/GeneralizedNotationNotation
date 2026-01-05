@@ -217,7 +217,9 @@ Templates should pass basic syntax validation and resource estimation.
 4. **Add example use cases**
 5. **Update this README**
 
-**Cross-References**: [Contributing Guide](../../CONTRIBUTING.md) | [Development Guide](../development/README.md)
+**Cross-References**:
+- [Contributing Guide](../../CONTRIBUTING.md)
+- [Template Standards](../../doc/gnn/gnn_standards.md)
 
 ### Template Naming Convention
 - **Use descriptive names**: `multimodal_perception_template.md`

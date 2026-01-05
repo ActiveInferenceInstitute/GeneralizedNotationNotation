@@ -231,6 +231,30 @@ for suggestion in suggestions:
 
 ## LLM Analysis Pipeline
 
+```mermaid
+graph TD
+    Input[GNN Model] --> Prep[Content Preparation]
+    Prep --> Selector{Provider<br/>Selector}
+    
+    Selector -->|Auto/Manual| OpenAI[OpenAI Provider]
+    Selector -->|Auto/Manual| Perplexity[Perplexity Provider]
+    Selector -->|Auto/Manual| OpenRouter[OpenRouter Provider]
+    Selector -->|Auto/Manual| Ollama[Ollama Provider]
+    
+    OpenAI --> Analysis[LLM Analysis]
+    Perplexity --> Analysis
+    OpenRouter --> Analysis
+    Ollama --> Analysis
+    
+    Analysis --> Insights[Insight Extraction]
+    Analysis --> Opt[Optimization Suggestions]
+    Analysis --> Doc[Documentation Gen]
+    
+    Insights --> Report[Final Report]
+    Opt --> Report
+    Doc --> Report
+```
+
 ### 1. Content Preparation
 ```python
 # Prepare GNN content for LLM analysis

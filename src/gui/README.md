@@ -115,26 +115,25 @@ process_gui(
 ## Architecture
 
 ### Modular Structure
-```
-src/gui/
-├── __init__.py          # Main module exports and process_gui function
-├── README.md           # This file
-├── gui_1/              # GUI 1 implementation
-│   ├── __init__.py     # GUI 1 exports  
-│   ├── processor.py    # GUI 1 main logic
-│   ├── markdown.py     # Component and state-space helpers
-│   ├── ui.py           # Gradio form-based interface
-│   └── mcp.py          # Optional MCP registration
-├── gui_2/              # GUI 2 implementation
-│   ├── __init__.py     # GUI 2 exports
-│   ├── processor.py    # GUI 2 main logic
-│   ├── matrix_editor.py # Matrix manipulation and templates
-│   ├── ui.py           # Gradio visual interface
-│   └── ui_simple.py    # Simplified matrix editor
-└── gui_3/              # GUI 3 implementation
-    ├── __init__.py     # GUI 3 exports
-    ├── processor.py    # GUI 3 main logic
-    └── ui_designer.py  # Low-dependency design studio
+
+```mermaid
+graph TD
+    User([User]) --> Selector{GUI Selector}
+    
+    Selector -->|GUI 1| Form[Form-based Editor]
+    Selector -->|GUI 2| Visual[Matrix Editor]
+    Selector -->|GUI 3| Design[Design Studio]
+    
+    Form --> API[GUI API]
+    Visual --> API
+    Design --> API
+    
+    API --> GNN[GNN Markdown]
+    API --> JSON[JSON Models]
+    
+    API -->|Validation| Check[Consistency Check]
+    Check -->|Valid| Save[Save Model]
+    Check -->|Invalid| Feedback[Error Feedback]
 ```
 
 ### Adding New GUIs

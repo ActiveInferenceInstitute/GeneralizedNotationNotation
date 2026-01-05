@@ -637,7 +637,6 @@ jobs:
 
 **🔄 Continuous Improvement**: Performance optimization is an ongoing process. Regular profiling and benchmarking ensure sustained high performance as models and requirements evolve.
 
----
-
-**Status**: Production-Ready Performance Guide  
-**Next Steps**: [Advanced Optimization](optimization_advanced.md) | [Distributed Computing](distributed_computing.md) 
+--- **Start Here**: [Overview](../../README.md)
+- **Advanced Optimization**: [Optimization Guide](../gnn/gnn_implementation.md#optimization)
+- **Distributed Computing**: [Multi-Agent Patterns](../gnn/gnn_multiagent.md)

@@ -13,6 +13,28 @@ src/setup/
 └── utils.py                       # Setup utilities
 ```
 
+### Setup Workflow
+
+```mermaid
+flowchart TD
+    Start[Init Setup] --> SystemCheck{System Met?}
+    SystemCheck -->|No| Fail[Error]
+    SystemCheck -->|Yes| UVCheck{UV Installed?}
+    UVCheck -->|No| InstallUV[Install UV]
+    UVCheck -->|Yes| CreateEnv[Create venv]
+    InstallUV --> CreateEnv
+    CreateEnv --> InstallDeps[Install Deps]
+    InstallDeps --> Config[Configure Env]
+    Config --> Done[Setup Complete]
+    
+    subgraph "UV Management"
+    InstallUV
+    CreateEnv
+    InstallDeps
+    Config
+    end
+```
+
 ## Core Components
 
 ### Setup Functions
