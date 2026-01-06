@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl",
   "success": false,
   "return_code": 1,
-  "execution_time": 12.65106,
-  "timestamp": "2026-01-06T11:34:35.233084",
+  "execution_time": 14.143048,
+  "timestamp": "2026-01-06T11:54:02.305847",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -14,13 +14,13 @@
     "observations": [],
     "actions": [],
     "policy": [],
-    "raw_output": "\ud83d\udce6 Ensuring required packages are installed...\n\u2705 Package installation complete\n======================================================================\nActiveInference.jl Script for GNN Model: Classic Active Inference POMDP Agent v1\n======================================================================\nJulia version: 1.12.2\nDate: 2026-01-06T11:34:46.236\nModel dimensions: States=3, Observations=3, Actions=1\n\n\ud83d\udcc1 Output directory: activeinference_outputs_2026-01-06_11-34-46\n\ud83d\udd27 Creating model matrices from GNN specification...\n\u2705 A matrix created: (3,)\n\u2705 B matrix created: (3,)\n\u2705 C vector created: 3\n\u2705 D vector created: 3\n\u26a0\ufe0f  Adjusting E-vector from 3 to 1 elements\n\u2705 E vector created: 1 (matches 1 policies)\n\ud83d\udd27 Normalizing matrices...\n",
+    "raw_output": "\ud83d\udce6 Ensuring required packages are installed...\n\u2705 Package installation complete\n======================================================================\nActiveInference.jl Script for GNN Model: Classic Active Inference POMDP Agent v1\n======================================================================\nJulia version: 1.12.2\nDate: 2026-01-06T11:54:14.561\nModel dimensions: States=3, Observations=3, Actions=1\n\n\ud83d\udcc1 Output directory: activeinference_outputs_2026-01-06_11-54-14\n\ud83d\udd27 Creating model matrices from GNN specification...\n\u2705 A matrix created: (3,)\n\u2705 B matrix created: (3,)\n\u2705 C vector created: 3\n\u2705 D vector created: 3\n\u26a0\ufe0f  Adjusting E-vector from 3 to 1 elements\n\u2705 E vector created: 1 (matches 1 policies)\n\ud83d\udd27 Normalizing matrices...\n",
     "raw_error": "   Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`\nERROR: LoadError: MethodError: no method matching isless(::Int64, ::Vector{Float64})\nThe function `isless` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  isless(!Matched::Missing, ::Any)\n   @ Base missing.jl:87\n  isless(::Real, !Matched::Symbolics.Num)\n   @ Symbolics ~/.julia/packages/Symbolics/T2Tbs/src/num.jl:155\n  isless(::Real, !Matched::AbstractFloat)\n   @ Base operators.jl:223\n  ...\n\nStacktrace:\n [1] <(x::Int64, y::Vector{Float64})\n   @ Base ./operators.jl:399\n [2] >(x::Vector{Float64}, y::Int64)\n   @ Base ./operators.jl:425\n [3] top-level scope\n   @ ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:115\n [4] include(mod::Module, _path::String)\n   @ Base ./Base.jl:306\n [5] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:317\n [6] _start()\n   @ Base ./client.jl:550\nin expression starting at /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:113\n"
   },
   "execution_metadata": {
     "executor": "julia",
     "stdout_length": 731,
     "stderr_length": 1387,
-    "output_directory": "output/12_execute_output/actinf_pomdp_agent/activeinference_jl"
+    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl"
   }
 }

@@ -25,9 +25,10 @@ except Exception:
     process_matrix_visualization = None
 
 try:
-    from .visualizer import GNNVisualizer, generate_graph_visualization, generate_matrix_visualization
+    from .visualizer import GNNVisualizer, generate_graph_visualization, generate_matrix_visualization, generate_visualizations
 except Exception:
     # Fallback for tests
+
     class GNNVisualizer:
         def __init__(self, *args, config: Optional[dict] = None, output_dir: Optional[Union[str, Path]] = None, **kwargs):
             self.available = False
@@ -50,6 +51,10 @@ except Exception:
     def generate_matrix_visualization(matrix_data: dict, output_dir: Optional[Union[str, Path]] = None):
         mv = GNNVisualizer(output_dir=output_dir)
         return mv.generate_matrix_visualization(matrix_data)
+
+    def generate_visualizations(logger, target_dir, output_dir, **kwargs):
+        """Fallback for generate_visualizations."""
+        return True
 
 # Basic GraphVisualizer alias for tests
 GraphVisualizer = GNNVisualizer
@@ -255,6 +260,6 @@ def _visualize_connectivity_matrix(connectivity_matrix, output_path: Path) -> bo
 __all__ = [
     'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer', 'GraphVisualizer',
     'process_matrix_visualization', 'process_visualization',
-    'generate_graph_visualization', 'generate_matrix_visualization',
+    'generate_graph_visualization', 'generate_matrix_visualization', 'generate_visualizations',
     '__version__', 'process_visualization_main'
 ]

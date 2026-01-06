@@ -1,8 +1,8 @@
 # GNN Script Execution Report
 
-**Generated:** 2026-01-06T11:34:19.460129
-**Target Directory:** input/gnn_files
-**Output Directory:** output/12_execute_output
+**Generated:** 2026-01-06T11:53:36.710843
+**Target Directory:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files
+**Output Directory:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output
 
 ## Summary
 
@@ -18,9 +18,9 @@
 - **Executor:** python3
 - **Path:** `output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py`
 - **Return Code:** 1
-- **Execution Time:** 1.47 seconds
+- **Execution Time:** 1.84 seconds
 - **Error:** Script failed with return code 1
-- **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log
+- **Detailed Output:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log
 
 ### Classic Active Inference POMDP Agent v1_jax.py - ❌ FAILED
 
@@ -28,9 +28,9 @@
 - **Executor:** python3
 - **Path:** `output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py`
 - **Return Code:** 1
-- **Execution Time:** 0.03 seconds
+- **Execution Time:** 0.05 seconds
 - **Error:** Script failed with return code 1
-- **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Classic Active Inference POMDP Agent v1_jax.py_execution.log
+- **Detailed Output:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Classic Active Inference POMDP Agent v1_jax.py_execution.log
 
 ### Classic Active Inference POMDP Agent v1_discopy.py - ✅ SUCCESS
 
@@ -38,8 +38,8 @@
 - **Executor:** python3
 - **Path:** `output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py`
 - **Return Code:** 0
-- **Execution Time:** 0.51 seconds
-- **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Classic Active Inference POMDP Agent v1_discopy.py_execution.log
+- **Execution Time:** 0.68 seconds
+- **Detailed Output:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Classic Active Inference POMDP Agent v1_discopy.py_execution.log
 
 ### Classic Active Inference POMDP Agent v1_rxinfer.jl - ❌ FAILED
 
@@ -47,9 +47,9 @@
 - **Executor:** julia
 - **Path:** `output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl`
 - **Return Code:** 1
-- **Execution Time:** 13.75 seconds
+- **Execution Time:** 23.01 seconds
 - **Error:** Script failed with return code 1
-- **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Classic Active Inference POMDP Agent v1_rxinfer.jl_execution.log
+- **Detailed Output:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Classic Active Inference POMDP Agent v1_rxinfer.jl_execution.log
 
 ### Classic Active Inference POMDP Agent v1_activeinference.jl - ❌ FAILED
 
@@ -57,9 +57,9 @@
 - **Executor:** julia
 - **Path:** `output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl`
 - **Return Code:** 1
-- **Execution Time:** 12.65 seconds
+- **Execution Time:** 14.14 seconds
 - **Error:** Script failed with return code 1
-- **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Classic Active Inference POMDP Agent v1_activeinference.jl_execution.log
+- **Detailed Output:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Classic Active Inference POMDP Agent v1_activeinference.jl_execution.log
 
 ## Next Steps
 

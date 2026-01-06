@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-01-06T11:51:25.515742",
+  "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
+  "framework_results": {
+    "discopy": {
+      "framework": "discopy",
+      "result_count": 1,
+      "analyses": []
+    },
+    "jax": {
+      "framework": "jax",
+      "result_count": 1,
+      "analyses": []
+    },
+    "pymdp": {
+      "framework": "pymdp",
+      "result_count": 1,
+      "analyses": []
+    },
+    "activeinference_jl": {
+      "framework": "activeinference_jl",
+      "result_count": 1,
+      "analyses": []
+    },
+    "rxinfer": {
+      "framework": "rxinfer",
+      "result_count": 1,
+      "analyses": []
+    }
+  },
+  "cross_framework_comparison": {
+    "model_name": "actinf_pomdp_agent",
+    "frameworks_compared": [
+      "discopy",
+      "jax",
+      "pymdp",
+      "activeinference_jl",
+      "rxinfer"
+    ],
+    "framework_count": 5,
+    "comparisons": {
+      "execution_time": {
+        "discopy": 0.545512,
+        "jax": 0.036252,
+        "pymdp": 1.026206,
+        "activeinference_jl": 13.273846,
+        "rxinfer": 21.261095
+      },
+      "fastest_execution": {
+        "framework": "jax",
+        "time": 0.036252
+      },
+      "success_rates": {
+        "discopy": true,
+        "jax": false,
+        "pymdp": false,
+        "activeinference_jl": false,
+        "rxinfer": false
+      }
+    }
+  }
+}

@@ -110,9 +110,10 @@ class TestPipelineScriptDiscovery:
         
         test_scripts = [
             ("1_setup.py", True, 1),
-            ("3_gnn.py", True, 2),
+            ("3_gnn.py", True, 3),  # Fixed: regex extracts 3, not 2
             ("13_website.py", True, 13),
         ("14_report.py", True, 14),
+
             ("main.py", False, None),
             ("utils.py", False, None),
             ("not_a_script.txt", False, None)

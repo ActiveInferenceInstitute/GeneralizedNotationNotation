@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py",
   "success": false,
   "return_code": 1,
-  "execution_time": 2.724625,
-  "timestamp": "2026-01-06T11:40:39.952929",
+  "execution_time": 1.836176,
+  "timestamp": "2026-01-06T11:53:36.714432",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

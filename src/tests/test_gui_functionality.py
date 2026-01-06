@@ -30,9 +30,12 @@ class TestGUIFunctionality:
         logger = _Logger()
         ok = process_gui(target_dir=target, output_dir=output, logger=logger, verbose=True, headless=True)
         assert ok
-        status = output / "22_gui_output" / "gui_processing_summary.json"
+        # When process_gui is called directly, it saves to output_dir/gui_processing_summary.json
+        # (22_gui_output subdirectory is only created by the 22_gui.py pipeline script)
+        status = output / "gui_processing_summary.json"
         # process_gui uses get_output_dir_for_script, which nests under output dir passed to script.
-        # In this headless call we passed output directly, so artifacts should exist under output/22_gui_output.
+        # In this headless call we passed output directly, so artifacts should exist under output/.
         assert status.exists()
+
 
 

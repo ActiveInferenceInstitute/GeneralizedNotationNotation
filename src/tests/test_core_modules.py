@@ -196,10 +196,25 @@ class TestRenderModuleComprehensive:
 			from src.render import render_gnn_to_discopy
 			
 			# Test with sample GNN content
-			for file_path in sample_gnn_files.values():
-				result = render_gnn_to_discopy()
-				assert isinstance(result, dict), "render_gnn_to_discopy should return a dict"
-				break  # Test with just one file
+			dummy_spec = {
+				"model_name": "TestModel",
+				"variables": [{"name": "A", "dimensions": [2, 2]}],
+				"model_parameters": {},
+				"initial_parameterization": {},
+				"connections": []
+			}
+			
+			import tempfile
+			with tempfile.TemporaryDirectory() as td:
+				output_path = Path(td) / "discopy_diagram.py"
+				# Pass required arguments: gnn_spec and output_script_path
+				result = render_gnn_to_discopy(dummy_spec, output_path)
+				
+				# Result is (success, message, warnings)
+				assert isinstance(result, tuple), "render_gnn_to_discopy should return a tuple"
+				assert len(result) == 3, "render_gnn_to_discopy should return (success, message, warnings)"
+				assert result[0] is True, "render_gnn_to_discopy should succeed"
+				assert output_path.exists(), "Output file should be created"
 				
 		except ImportError as e:
 			pytest.skip(f"DisCoPy rendering not available: {e}")

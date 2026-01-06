@@ -1,0 +1,97 @@
+{
+  "timestamp": "2026-01-06T11:51:25.518567",
+  "frameworks": {
+    "pymdp": {
+      "success_count": 0,
+      "total_count": 1,
+      "execution_times": [],
+      "output_files": [
+        "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/12_execute_output/actinf_pomdp_agent/pymdp"
+      ],
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": []
+    },
+    "jax": {
+      "success_count": 0,
+      "total_count": 1,
+      "execution_times": [],
+      "output_files": [
+        "output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Classic Active Inference POMDP Agent v1_jax.py_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/12_execute_output/actinf_pomdp_agent/jax"
+      ],
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": []
+    },
+    "discopy": {
+      "success_count": 1,
+      "total_count": 1,
+      "execution_times": [],
+      "output_files": [
+        "output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Classic Active Inference POMDP Agent v1_discopy.py_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/12_execute_output/actinf_pomdp_agent/discopy"
+      ],
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": []
+    },
+    "rxinfer": {
+      "success_count": 0,
+      "total_count": 1,
+      "execution_times": [],
+      "output_files": [
+        "output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Classic Active Inference POMDP Agent v1_rxinfer.jl_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/12_execute_output/actinf_pomdp_agent/rxinfer"
+      ],
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": []
+    },
+    "activeinference_jl": {
+      "success_count": 0,
+      "total_count": 1,
+      "execution_times": [],
+      "output_files": [
+        "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Classic Active Inference POMDP Agent v1_activeinference.jl_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/12_execute_output/actinf_pomdp_agent/activeinference_jl"
+      ],
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": []
+    }
+  },
+  "comparisons": {
+    "success_rates": {
+      "pymdp": 0.0,
+      "jax": 0.0,
+      "discopy": 1.0,
+      "rxinfer": 0.0,
+      "activeinference_jl": 0.0
+    },
+    "performance_comparison": {},
+    "metric_agreement": {}
+  },
+  "metrics": {
+    "total_frameworks": 5,
+    "total_successful": 1,
+    "total_executions": 5,
+    "overall_success_rate": 0.2
+  }
+}

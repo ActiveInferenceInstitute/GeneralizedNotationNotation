@@ -155,12 +155,15 @@ class TestVisualizationPerformance:
     def test_visualization_scaling(self, mock_environment, create_model_file, model_size):
         """Test visualization generation performance scaling."""
         from src.visualization import generate_visualizations
+        import logging
         
         model_file = create_model_file(model_size)
+        logger = logging.getLogger("test_viz_scaling")
         
         with performance_tracker() as tracker:
             result = generate_visualizations(
-                model_file,
+                logger,
+                model_file.parent,
                 mock_environment / "output"
             )
             
@@ -180,20 +183,24 @@ class TestVisualizationPerformance:
     def test_visualization_caching(self, mock_environment, create_model_file):
         """Test visualization caching performance."""
         from src.visualization import generate_visualizations
+        import logging
         
         model_file = create_model_file("medium")
+        logger = logging.getLogger("test_viz_caching")
         
         # First generation
         with performance_tracker() as tracker_1:
             result_1 = generate_visualizations(
-                model_file,
+                logger,
+                model_file.parent,
                 mock_environment / "output"
             )
             
         # Second generation (should use cache)
         with performance_tracker() as tracker_2:
             result_2 = generate_visualizations(
-                model_file,
+                logger,
+                model_file.parent,
                 mock_environment / "output"
             )
             

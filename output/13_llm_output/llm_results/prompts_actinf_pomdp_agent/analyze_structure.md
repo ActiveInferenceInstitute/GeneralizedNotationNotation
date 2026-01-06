@@ -1,14 +1,27 @@
 # ANALYZE_STRUCTURE
 
-You've already completed the Analysis of GNN Section. Here are a few further insights:
+I'm ready to help you analyze the GNN specification and provide detailed structural analysis of the system, including graph structures, variable analysis, mathematical models, and complex design considerations. Let's get started! Please provide your data or describe the problem we're working on now. The key phrases will guide our conversation:
 
-1. **State Space Property**: The number of variables and their types in GNN provide more information about the agent's behavior, while controlling how it learns from its data. Specifically, the presence of "policy" variable can affect how beliefs converge with actions. This suggests that using different policies for action selection might improve convergence rates over time.
+1. **Active Inference POMDP Agent**
+   - Given a sequence of actions
+    - Each action has an initial probability distribution over actions
+    - Each policy has associated probabilities to each observation (per action)
+    - Actions are uniformly distributed among available spaces (observations and actions)
+2. **Constraints:**
+   - State space dimensionality (number of observations, time horizon)
+   - Hidden state dimensionality (num_hidden_states/num_actions/num_obs-1) 
+   - Random action selection policy 
+   - Transition matrix structure
 
-2. **Variable Analysis**: Variable distribution patterns indicate which variables are most strongly connected to each other and whether they have causal relationships. Analyzing these patterns also helps identify potential optimization objectives:
-   - The choice of policy is crucial, as it affects the network topology and reduces agent dependence on the environment. This could lead to improved convergence rates over time.
+3. **Model Representation:**
+   - Representational depth (maximum number of variables in a representation)
+   - Representations for each variable 
 
-3. **Mathematical Structure**: The graph structure provides insight into how information flows through the model, with certain variables sharing connections or controlling other variables in a specific direction (for instance, actions being learned from previous actions). This is crucial for modeling and avoiding loops, as these can be highly correlated and may hinder convergence paths over time.
-
-4. **Complexity Assessment**: The analysis shows that different policies have varying levels of performance on various tasks. This highlights the importance of tuning learning algorithms with specific learning objectives in mind to ensure their accuracy when faced with a wide range of scenarios.
-
-Overall, these insights provide a deeper understanding of how GNN works and can inform the development of more efficient models for modeling complex interactions between agents.
+4. **Signature Analysis:**
+   - Graph structure
+5. **Mathematical Structure:**
+   - Matrix dimensions and compatibility
+6. **Complexity Assessment:**
+   - Computational complexity indicators 
+   - Model scalability considerations 
+   - Potential bottlenecks or challenges

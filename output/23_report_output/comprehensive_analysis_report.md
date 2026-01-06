@@ -1,6 +1,6 @@
 # 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** 2026-01-06T11:35:28.927110  
+**Generated:** 2026-01-06T11:44:11.919101  
 **Pipeline Output Directory:** output  
 **Health Score:** 30.0/100
 
@@ -127,8 +127,8 @@
 
 ## 📈 Pipeline Execution Summary
 
-- **Start Time:** 2026-01-06T11:33:40.971585
-- **End Time:** 2026-01-06T11:34:09.144388
+- **Start Time:** 2026-01-06T11:40:38.711552
+- **End Time:** 2026-01-06T11:41:31.245447
 - **Overall Status:** SUCCESS
 - **Total Steps:** 7
 

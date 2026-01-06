@@ -40,12 +40,16 @@ from utils.pipeline_template import create_standardized_pipeline_script
 # Import module function
 try:
     from analysis import process_analysis
-except ImportError:
+except ImportError as e:
+    import traceback
+    print(f"DEBUG: Failed to import process_analysis from analysis: {e}", file=sys.stderr)
+    traceback.print_exc()
+
     def process_analysis(target_dir, output_dir, **kwargs):
         """Fallback analysis processing when module unavailable."""
         import logging
         logger = logging.getLogger(__name__)
-        logger.warning("Analysis module not available - using fallback")
+        logger.warning(f"Analysis module not available - using fallback (ImportError: {e})")
         return True
 
 run_script = create_standardized_pipeline_script(

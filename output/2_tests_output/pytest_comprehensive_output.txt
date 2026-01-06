@@ -1,66 +1,56 @@
 STDOUT:
 .............s..........................ssssss.......................... [ 11%]
-........................sFFFs...............s........................... [ 22%]
+........................s...F...............s........................... [ 22%]
 ...s...................................................................s [ 33%]
 .........ss.ss.......ss.ss...F....................s..................... [ 44%]
-F
+F.............s................s.......sssssss.......................... [ 56%]
+.s.......s............................................ss......ss........ [ 67%]
+........................ssssss.ss.ss..s.ss.ssss..................FF
 =================================== FAILURES ===================================
-___________ TestRenderModuleComprehensive.test_render_module_imports ___________
-src/tests/test_core_modules.py:146: in test_render_module_imports
-    from src.render import (
-E   ImportError: cannot import name 'render_gnn_to_pymdp' from 'src.render' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
-
-During handling of the above exception, another exception occurred:
-src/tests/test_core_modules.py:158: in test_render_module_imports
-    pytest.fail(f"Failed to import render module: {e}")
-E   Failed: Failed to import render module: cannot import name 'render_gnn_to_pymdp' from 'src.render' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
-______________ TestRenderModuleComprehensive.test_pymdp_rendering ______________
-src/tests/test_core_modules.py:164: in test_pymdp_rendering
-    from src.render import render_gnn_to_pymdp
-E   ImportError: cannot import name 'render_gnn_to_pymdp' from 'src.render' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
-_____________ TestRenderModuleComprehensive.test_rxinfer_rendering _____________
-src/tests/test_core_modules.py:180: in test_rxinfer_rendering
-    from src.render import render_gnn_to_rxinfer
-E   ImportError: cannot import name 'render_gnn_to_rxinfer' from 'src.render' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
+_____________ TestRenderModuleComprehensive.test_discopy_rendering _____________
+src/tests/test_core_modules.py:200: in test_discopy_rendering
+    result = render_gnn_to_discopy()
+             ^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: render_gnn_to_discopy() missing 2 required positional arguments: 'gnn_spec' and 'output_script_path'
 _________________ TestGUIFunctionality.test_headless_artifacts _________________
 src/tests/test_gui_functionality.py:36: in test_headless_artifacts
     assert status.exists()
 E   AssertionError: assert False
 E    +  where False = exists()
-E    +    where exists = PosixPath('/var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/22_gui_output/gui_processing_summary.json').exists
+E    +    where exists = PosixPath('/var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/22_gui_output/gui_processing_summary.json').exists
 ----------------------------- Captured stderr call -----------------------------
-2026-01-06 11:34:13,966 - gui - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
-2026-01-06 11:34:13,966 - gui - INFO - Processing GUI module for files in /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/input
-2026-01-06 11:34:13,966 - gui - INFO - Running GUI types: ['gui_1', 'gui_2']
-2026-01-06 11:34:13,966 - gui - INFO - Mode: HEADLESS
-2026-01-06 11:34:13,966 - gui - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
-2026-01-06 11:34:13,966 - gui - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
-2026-01-06 11:34:13,966 - gui - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/22_gui_output/constructed_model_gui1.md
-2026-01-06 11:34:13,966 - gui - INFO - ✅ GUI 1 completed successfully
-2026-01-06 11:34:13,966 - gui - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
-2026-01-06 11:34:13,967 - gui - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
-2026-01-06 11:34:13,967 - gui - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/22_gui_output/visual_model_gui2.md
-2026-01-06 11:34:13,967 - gui - INFO - ✅ GUI 2 completed successfully
-2026-01-06 11:34:13,967 - gui - INFO - 📊 GUI processing summary saved to: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/gui_processing_summary.json
-2026-01-06 11:34:13,967 - gui - INFO - Generating HTML navigation page for pipeline outputs
-2026-01-06 11:34:13,967 - gui - INFO - ✅ HTML navigation page generated: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/navigation.html
-2026-01-06 11:34:13,967 - gui - INFO - ✅ HTML navigation page generated
+2026-01-06 11:41:36,044 - gui - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-01-06 11:41:36,044 - gui - INFO - Processing GUI module for files in /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/input
+2026-01-06 11:41:36,044 - gui - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-01-06 11:41:36,044 - gui - INFO - Mode: HEADLESS
+2026-01-06 11:41:36,044 - gui - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-01-06 11:41:36,045 - gui - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-01-06 11:41:36,045 - gui - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/22_gui_output/constructed_model_gui1.md
+2026-01-06 11:41:36,045 - gui - INFO - ✅ GUI 1 completed successfully
+2026-01-06 11:41:36,045 - gui - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-01-06 11:41:36,045 - gui - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-01-06 11:41:36,045 - gui - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/22_gui_output/visual_model_gui2.md
+2026-01-06 11:41:36,045 - gui - INFO - ✅ GUI 2 completed successfully
+2026-01-06 11:41:36,046 - gui - INFO - 📊 GUI processing summary saved to: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/gui_processing_summary.json
+2026-01-06 11:41:36,046 - gui - INFO - Generating HTML navigation page for pipeline outputs
+2026-01-06 11:41:36,046 - gui - INFO - ✅ HTML navigation page generated: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/navigation.html
+2026-01-06 11:41:36,046 - gui - INFO - ✅ HTML navigation page generated
 ------------------------------ Captured log call -------------------------------
 INFO     gui:__init__.py:86 📦 Running in HEADLESS mode - generating artifacts only (fast)
-INFO     gui:__init__.py:101 Processing GUI module for files in /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/input
+INFO     gui:__init__.py:101 Processing GUI module for files in /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/input
 INFO     gui:__init__.py:102 Running GUI types: ['gui_1', 'gui_2']
 INFO     gui:__init__.py:103 Mode: HEADLESS
 INFO     gui:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
 INFO     gui:processor.py:65 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
-INFO     gui:pipeline_template.py:48 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/22_gui_output/constructed_model_gui1.md
+INFO     gui:pipeline_template.py:48 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/22_gui_output/constructed_model_gui1.md
 INFO     gui:__init__.py:74 ✅ GUI 1 completed successfully
 INFO     gui:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
 INFO     gui:processor.py:76 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
-INFO     gui:pipeline_template.py:48 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/22_gui_output/visual_model_gui2.md
+INFO     gui:pipeline_template.py:48 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/22_gui_output/visual_model_gui2.md
 INFO     gui:__init__.py:72 ✅ GUI 2 completed successfully
-INFO     gui:__init__.py:171 📊 GUI processing summary saved to: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/gui_processing_summary.json
+INFO     gui:__init__.py:171 📊 GUI processing summary saved to: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/gui_processing_summary.json
 INFO     gui:__init__.py:203 Generating HTML navigation page for pipeline outputs
-INFO     gui:__init__.py:467 ✅ HTML navigation page generated: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/navigation.html
+INFO     gui:__init__.py:467 ✅ HTML navigation page generated: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/navigation.html
 INFO     gui:__init__.py:180 ✅ HTML navigation page generated
 _______ TestPipelineScriptDiscovery.test_pipeline_script_discovery_logic _______
 src/tests/test_main_orchestrator.py:129: in test_pipeline_script_discovery_logic
@@ -68,19 +58,27 @@ src/tests/test_main_orchestrator.py:129: in test_pipeline_script_discovery_logic
 E   AssertionError: Script 3_gnn.py should extract number 2
 E   assert 3 == 2
 E    +  where 3 = int('3')
-E    +    where '3' = <built-in method group of re.Match object at 0x1175a8310>(1)
-E    +      where <built-in method group of re.Match object at 0x1175a8310> = <re.Match object; span=(0, 8), match='3_gnn.py'>.group
+E    +    where '3' = <built-in method group of re.Match object at 0x115d8c0d0>(1)
+E    +      where <built-in method group of re.Match object at 0x115d8c0d0> = <re.Match object; span=(0, 8), match='3_gnn.py'>.group
+________ TestVisualizationPerformance.test_visualization_scaling[small] ________
+src/tests/test_pipeline_performance.py:157: in test_visualization_scaling
+    from src.visualization import generate_visualizations
+E   ImportError: cannot import name 'generate_visualizations' from 'src.visualization' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/visualization/__init__.py)
+_______ TestVisualizationPerformance.test_visualization_scaling[medium] ________
+src/tests/test_pipeline_performance.py:157: in test_visualization_scaling
+    from src.visualization import generate_visualizations
+E   ImportError: cannot import name 'generate_visualizations' from 'src.visualization' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/visualization/__init__.py)
 ============================= slowest 10 durations =============================
-2.56s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
-1.33s call     src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys
-0.73s call     src/tests/test_llm_ollama.py::test_ollama_simple_chat
-0.44s call     src/tests/test_llm_ollama.py::test_ollama_streaming
-0.36s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
-0.20s call     src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
-0.10s call     src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes
-0.09s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
-0.08s call     src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help
-0.06s call     src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats
+38.92s call     src/tests/test_pipeline_main.py::TestPipelineMain::test_pipeline_step_11_12_produce_reports
+2.98s call     src/tests/test_pipeline_main.py::TestPipelineMain::test_pipeline_steps_3_7_8_produce_artifacts
+2.74s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers1]
+2.34s call     src/tests/test_pipeline_improvements_validation.py::TestDependencyValidationImprovements::test_improved_installation_instructions
+2.19s call     src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys
+2.17s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+2.02s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+1.83s call     src/tests/test_pipeline_error_scenarios.py::TestPipelineIntegrationScenarios::test_pipeline_with_missing_dependencies
+1.53s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers0]
+1.23s call     src/tests/test_pipeline_error_scenarios.py::TestResourceConstraintScenarios::test_concurrent_pipeline_execution
 =========================== short test summary info ============================
 SKIPPED [1] src/tests/test_advanced_visualization_overall.py:480: MCP integration not available
 SKIPPED [1] src/tests/test_audio_sapf.py:30: SAPF validation not available
@@ -91,7 +89,6 @@ SKIPPED [1] src/tests/test_audio_sapf.py:134: SAPF envelope function not availab
 SKIPPED [1] src/tests/test_audio_sapf.py:153: SAPF mixing function not available
 SKIPPED [1] src/tests/test_core_modules.py:136: Validation test skipped due to: Valid GNN file should have basic structure: simple.gnn
 assert False
-SKIPPED [1] src/tests/test_core_modules.py:205: DisCoPy rendering not available: cannot import name 'render_gnn_to_discopy' from 'src.render' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
 SKIPPED [1] src/tests/test_core_modules.py:610: SAPF conversion not available: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
 SKIPPED [1] src/tests/test_d2_visualizer.py:260: D2 CLI not available
 SKIPPED [1] src/tests/test_gnn_integration.py:28: GNN module not available
@@ -104,13 +101,45 @@ SKIPPED [1] src/tests/test_gnn_processing.py:80: GNN serializers not available
 SKIPPED [1] src/tests/test_gnn_validation.py:57: GNN validation not available
 SKIPPED [1] src/tests/test_gnn_validation.py:80: GNN validation not available
 SKIPPED [1] src/tests/test_llm_ollama_integration.py:88: Test depends on external Ollama service state - service may be installed but not running
-FAILED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
-FAILED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering
-FAILED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering
+SKIPPED [1] src/tests/test_mcp_integration.py:28: MCP module not available
+SKIPPED [1] src/tests/test_mcp_overall.py:160: MCP module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:47: MCP TCP server not available
+SKIPPED [1] src/tests/test_mcp_transport.py:60: MCP WebSocket server not available
+SKIPPED [1] src/tests/test_mcp_transport.py:77: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:90: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:103: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:121: MCP transport module not available
+SKIPPED [1] src/tests/test_mcp_transport.py:134: MCP transport module not available
+SKIPPED [1] src/tests/test_mermaid_parser.py:59: Legacy single-line format deprecated in GNN v2.0 - use multiline format instead
+SKIPPED [1] src/tests/test_mermaid_parser.py:137: Trapezoid node shape not in current GNN v2.0 specification
+SKIPPED [1] src/tests/test_performance_baselines.py:175: Core modules not available: cannot import name 'exporter' from 'export' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py)
+SKIPPED [1] src/tests/test_performance_baselines.py:192: Classes not available: cannot import name 'GNNParser' from 'gnn.parser' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/gnn/parser.py)
+SKIPPED [1] src/tests/test_pipeline_error_scenarios.py:123: Test requires non-existent directory simulation - existing error handling works correctly
+SKIPPED [1] src/tests/test_pipeline_error_scenarios.py:148: Test requires filesystem permission simulation - platform-specific behavior skipped
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:109: Pipeline step template not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:128: Pipeline step template not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:151: Pipeline step template not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:169: Pipeline validation not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:187: Pipeline validation not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:207: Pipeline validation not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:243: Pipeline verify not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:264: Pipeline verify not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:309: Migration helper not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:333: Migration helper not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:397: Pipeline monitor not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:438: Resource manager not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:458: Resource manager not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:495: Script validator not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:526: Script validator not available
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:553: Pipeline modules not available for integration test
+SKIPPED [1] src/tests/test_pipeline_infrastructure.py:579: Utils modules not available for integration test
+FAILED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering
 FAILED src/tests/test_gui_functionality.py::TestGUIFunctionality::test_headless_artifacts
 FAILED src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_discovery_logic
+FAILED src/tests/test_pipeline_performance.py::TestVisualizationPerformance::test_visualization_scaling[small]
+FAILED src/tests/test_pipeline_performance.py::TestVisualizationPerformance::test_visualization_scaling[medium]
 !!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
-5 failed, 263 passed, 21 skipped, 25 deselected in 7.40s
+5 failed, 442 passed, 52 skipped, 25 deselected in 65.61s (0:01:05)
 
 
 STDERR:
